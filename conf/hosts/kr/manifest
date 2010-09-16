@@ -1,0 +1,2 @@
+cdist_package --install vim zsh
+cdist_file /etc/issue --source issue
