@@ -16,13 +16,15 @@ What do I need from puppet?
 
    - handling of package managers
    - Modules: Nice to put stuff together
-   - All the helper types like
+      - and reuse
+   - [LIBRARY] All the helper types like 
       - file
       - ssh_keys
       - package
       - service
-   - facter is cool
-   - clients for every unix
+      - user
+   - [CONDITIONS] facter is cool
+   - [PORTABILITY] clients for every unix
       - mostly ruby + facter in puppet
    - the DSL
       - with many bugs
@@ -43,6 +45,9 @@ What do I miss from puppet?
    - development configurations / tests
    - editing of configuration files
       - similar to cfengine
+   - replace bug squasher with bug avoidance
+      - qmail did not need one either
+   - push infrastructure
 --------------------------------------------------------------------------------
 Simple stuff done by Unix[notm]
 
@@ -51,9 +56,17 @@ Simple stuff done by Unix[notm]
       - and case
       - and and and
       - and there's no os (solaris doesn't count) without a usable /bin/sh
+      - cdist defines what you can use
+         - you _can_ use os specific stuff
+         - but it's ugly and you shoot into your own foot
+      - "manifests" (use the same name here?) will be run/sourced
+         - inheritance possible via sourcing
+         - cdist-lib always preloaded
    - version control via git
    - file distribution via ssh
    - authentication via ssh
    - dumb clients, similar to manifest compile in puppet
       - clients just execute commands
    - dependencies via make?
+--------------------------------------------------------------------------------
+
