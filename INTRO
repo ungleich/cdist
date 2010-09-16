@@ -25,6 +25,7 @@ What do I need from puppet?
       - mostly ruby + facter in puppet
    - the DSL
       - with many bugs
+   - templates
 
 --------------------------------------------------------------------------------
 What do I miss from puppet?
@@ -35,6 +36,12 @@ What do I miss from puppet?
    - documentation
    - the "no surprise" factor
    - easy to use "data memory" (i.e. external ressources)
+   - easy integration into installation process
+      - copy identity to master
+   - multi master setups
+   - development configurations / tests
+   - editing of configuration files
+      - similar to cfengine
 --------------------------------------------------------------------------------
 Simple stuff done by Unix[notm]
 
