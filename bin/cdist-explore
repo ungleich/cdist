@@ -12,6 +12,8 @@ cdist_explore_os()
 
 }
 
-# join those two if output needed
-cdist_explore_os
+# could work, if cdist_explore_os would be a different program
+# nope, does not work, set -x output is not sourcable...
+[ "$1" = "-o" ] && set -x
+
 CDIST_OS="$(cdist_explore_os)"
