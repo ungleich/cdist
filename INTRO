@@ -21,6 +21,10 @@ What do I need from puppet?
       - ssh_keys
       - 
    - facter is cool
+   - clients for every unix
+      - mostly ruby + facter in puppet
+   - the DSL
+      - with many bugs
 
 --------------------------------------------------------------------------------
 What do I miss from puppet?
@@ -39,4 +43,4 @@ Simple stuff done by Unix[notm]
    - authentication via ssh
    - dumb clients, similar to manifest compile in puppet
       - clients just execute commands
-
+   - dependencies via make?
