@@ -19,7 +19,8 @@ What do I need from puppet?
    - All the helper types like
       - file
       - ssh_keys
-      - 
+      - package
+      - service
    - facter is cool
    - clients for every unix
       - mostly ruby + facter in puppet
@@ -45,6 +46,11 @@ What do I miss from puppet?
 --------------------------------------------------------------------------------
 Simple stuff done by Unix[notm]
 
+   - DSL: Shell!
+      - gives if, else and EVEN elsif for free!
+      - and case
+      - and and and
+      - and there's no os (solaris doesn't count) without a usable /bin/sh
    - version control via git
    - file distribution via ssh
    - authentication via ssh
