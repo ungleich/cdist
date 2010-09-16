@@ -1,0 +1,17 @@
+#!/bin/sh
+# output or sourcable
+
+# OS
+cdist_explore_os()
+{
+   [ -f /etc/arch-release ] && echo archlinux
+
+   [ -f /etc/debian_version ] && echo debian
+
+   grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null && echo ubuntu
+
+}
+
+# join those two if output needed
+cdist_explore_os
+CDIST_OS="$(cdist_explore_os)"
