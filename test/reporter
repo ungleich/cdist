@@ -1,0 +1,4 @@
+reporter()
+{
+   echo 0: $0
+}
