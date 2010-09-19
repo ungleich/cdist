@@ -19,12 +19,8 @@
 #
 #
 
-reports="os"
+cdist_package()
+{
 
-for report in $reports; do
-   func="cdist_explore_$report"
-   var="__cdist_$report"
-   . "../lib/$func"
-   eval $var=\"\$\($func\)\"
-   eval echo $var=\\\"\$$var\\\"
-done
+
+}

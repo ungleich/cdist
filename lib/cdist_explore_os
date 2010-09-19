@@ -19,12 +19,11 @@
 #
 #
 
-reports="os"
+cdist_explore_os()
+{
+   [ -f /etc/arch-release ] && echo archlinux
 
-for report in $reports; do
-   func="cdist_explore_$report"
-   var="__cdist_$report"
-   . "../lib/$func"
-   eval $var=\"\$\($func\)\"
-   eval echo $var=\\\"\$$var\\\"
-done
+   [ -f /etc/debian_version ] && echo debian
+
+   grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null && echo ubuntu
+}

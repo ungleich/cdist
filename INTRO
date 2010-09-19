@@ -29,6 +29,9 @@ What do I need from puppet?
    - the DSL
       - with many bugs
    - templates
+   - Client/Server approach is nice to have
+      - Clients only get the part of the documentation, that's
+        relevant to them
 
 --------------------------------------------------------------------------------
 What do I miss from puppet?
@@ -62,12 +65,30 @@ Simple stuff done by Unix[notm]
       - "manifests" (use the same name here?) will be run/sourced
          - inheritance possible via sourcing
          - cdist-lib always preloaded
+      - library == functions?
    - version control via git
    - file distribution via ssh
    - authentication via ssh
    - dumb clients, similar to manifest compile in puppet
       - clients just execute commands
    - dependencies via make?
+      - how to ensure sigletons / conflicting definitions?
+         file { "/a":
+            ensure => present,
+         file { "/a":
+            ensure => absent,
+   - matching on explored items, not only on host name?
+      - match function in host? [optional]
+   - file source:
+      - relative to specification
+      - or absolute
+
+
+--------------------------------------------------------------------------------
+Architecture
+
+   
+
 --------------------------------------------------------------------------------
 Implementation
 
