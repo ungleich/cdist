@@ -1,37 +1,60 @@
-cdist (=opposite to ccollect)
-   aka puppet don right
+## Introduction
+
+cdist configures your system. It is similar to
+[cfengine](http://www.cfengine.org/) and [puppet](http://www.puppetlabs.com/).
+It is inspired by both of those tools:
+
+ * Try to redo the great power you get
+ * But leave out the bugs you also got
+
+### Principles
+
+cdist is more
 
    - reuse of unix, no need for perl^Wruby 
    - shell
 
---------------------------------------------------------------------------------
-what is puppet?
+### Unsupported stuff?
 
-   A configuration deployment assistant,
-   a DSL that allows you define the objectives.
-   A webserver with fileserver capabilities.
-   A client based scheduled polling infrastructure.
---------------------------------------------------------------------------------
-What do I need from puppet?
+## What do I need [from puppet?]
 
-   - handling of package managers
-   - Modules: Nice to put stuff together
-      - and reuse
+### Abstraction of package managers
+
+I don't want to care about apt, rpm, yum, pacman, etc. I just
+want to ensure, some package exists or does not exist.
+
+
+### Common tasks already done
+
    - [LIBRARY] All the helper types like 
       - file
       - ssh_keys
       - package
       - service
       - user
-   - [CONDITIONS] facter is cool
+
+### PORTABILITY
    - [PORTABILITY] clients for every unix
       - mostly ruby + facter in puppet
+
+   - Modules: Nice to put stuff together
+      - and reuse
+   - [CONDITIONS] facter is cool
    - the DSL
       - with many bugs
    - templates
    - Client/Server approach is nice to have
       - Clients only get the part of the documentation, that's
         relevant to them
+
+--------------------------------------------------------------------------------
+what is puppet? [FOR ME]
+
+   A configuration deployment assistant,
+   a DSL that allows you define the objectives.
+   A webserver with fileserver capabilities.
+   A client based scheduled polling infrastructure.
+--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 What do I miss from puppet?
