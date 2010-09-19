@@ -18,15 +18,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Print configuration directories - helper for all other scripts
+#
 
-reports="hostname os"
+: ${CDIST_CONFIG:=/etc/cdist}
+: ${CDIST_COREDIR:=$CDIST_CONFIG/core}
+: ${CDIST_LIBDIR:=$CDIST_CONFIG/lib}
 
-. cdist-config
 
-for report in $reports; do
-   func="cdist_explore_$report"
-   var="__cdist_$report"
-   . "${CDIST_LIBDIR}/${func}"
-   eval $var=\"\$\($func\)\"
-   eval echo $var=\\\"\$$var\\\"
-done
+#echo $CDIST_CONFIG
+#echo $CDIST_LIBDIR
