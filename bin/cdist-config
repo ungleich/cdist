@@ -24,6 +24,7 @@
 : ${CDIST_CONFIG:=/etc/cdist}
 : ${CDIST_COREDIR:=$CDIST_CONFIG/core}
 : ${CDIST_LIBDIR:=$CDIST_CONFIG/lib}
+: ${CDIST_HOSTS:=$CDIST_CONFIG/hosts}
 
 set -e
 

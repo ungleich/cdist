@@ -18,20 +18,19 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Apply configuration to local host
+#
 
-cdist_package()
-{
-   # select backend
-   backend="$(cdist_package_select_backend)"
+. cdist-config
 
-   case "$1" in
-      install|uninstall)
-         operation="$1"; shift
-         ${backend}_${operation} "$@"
-      ;;
-      
-      *)
-         echo "Unsupported operation"
-      ;;
-   esac
-}
+whereiam="$(cdist_explore_hostname)"
+conf="${CDIST_HOSTS}/${whereiam}"
+
+if [ ! -d "${conf}" ]; then
+   echo "Sorry, ${whereiam} has no configuration"
+   exit 1
+fi
+
+# Run the manifest, but abort on first error
+set -e
+. "${conf}/manifest"
