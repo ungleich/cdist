@@ -18,12 +18,11 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Install a package
+#
+#
 
-cdist_explore_os()
+cdist_package_backend_pacman_install()
 {
-   [ -f /etc/arch-release ] && echo archlinux
-
-   [ -f /etc/debian_version ] && echo debian
-
-   grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null && echo ubuntu
+   pacman --noconfirm --noprogressbar "$@"
 }

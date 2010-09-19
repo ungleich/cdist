@@ -18,12 +18,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Select correct package management system
+#
+#
 
-cdist_explore_os()
+cdist_package_select_backend()
 {
-   [ -f /etc/arch-release ] && echo archlinux
+   echo "cdist_package_backend_$(cdist_explore_pkg_system)"
 
-   [ -f /etc/debian_version ] && echo debian
 
-   grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null && echo ubuntu
 }

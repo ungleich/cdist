@@ -19,8 +19,19 @@
 #
 #
 
-cdist_package_install()
+cdist_package()
 {
-   :
+   # select backend
+   backend="$(cdist_package_select_backend)"
 
+   case "$1" in
+      install|remove)
+         operation="$1"; shift
+         echo ${backend}_${operation} "$@"
+      ;;
+      
+      *)
+         echo "Unsupported operation"
+      ;;
+   esac
 }
