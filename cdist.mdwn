@@ -9,12 +9,34 @@ It is inspired by both of those tools:
 
 ### Principles
 
-cdist is more
+cdist is
 
-   - reuse of unix, no need for perl^Wruby 
-   - shell
+ * unix, reuse of tools, no need for high level scripting language interpreter
 
-### Unsupported stuff?
+### Requirements
+
+ * A posix like shell
+
+## How cdist works
+
+### Exploring your system
+
+cdist analyses the system to apply the configuration on and
+selects the right backends. You can use ***cdist-explore*** to
+the results of the explore functions.
+
+### Applying the configuration
+
+cdist looks for the configuration to apply on the local host
+and applies it using ***cdist-apply***.
+
+### Managing many hosts
+
+Whereas ***cdist-apply*** manages one host, ***cdist-deploy***
+applies the configuration on enabled hosts.
+
+## How to use cdist?
+
 
 ## What do I need [from puppet?]
 

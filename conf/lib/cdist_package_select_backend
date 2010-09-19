@@ -25,6 +25,4 @@
 cdist_package_select_backend()
 {
    echo "cdist_package_backend_$(cdist_explore_pkg_system)"
-
-
 }
