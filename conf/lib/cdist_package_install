@@ -21,6 +21,6 @@
 
 cdist_package_install()
 {
-
+   :
 
 }

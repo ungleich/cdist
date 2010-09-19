@@ -33,7 +33,7 @@ cd "${CDIST_LIBDIR}"
 for __cdist_lib in *; do
    . "./${__cdist_lib}"
 done
-
+set +e
 
 #echo $CDIST_CONFIG
 #echo $CDIST_LIBDIR
