@@ -1,2 +1,4 @@
-cdist_package --install vim zsh
-cdist_file /etc/issue --source issue
+cdist_package_install vim zsh
+
+#cdist_file /etc/issue --source issue
+#cdist_file /etc/issue --via my_func

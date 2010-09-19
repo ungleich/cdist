@@ -19,7 +19,7 @@
 #
 #
 
-cdist_package()
+cdist_package_install()
 {
 
 

@@ -19,17 +19,8 @@
 #
 #
 
-#reports="hostname os"
-
-. cdist-config
-
-cd ${CDIST_LIBDIR}
-
-for func in cdist_explore_*; do
-   #func="cdist_explore_$report"
-   var="__$func"
-
-   . "${CDIST_LIBDIR}/${func}"
-   eval $var=\"\$\($func\)\"
-   eval echo $var=\\\"\$$var\\\"
-done
+cdist_explore_pkg_system()
+{
+#   case $(cdist_explore_os)
+   :
+}
