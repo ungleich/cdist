@@ -25,6 +25,14 @@
 : ${CDIST_COREDIR:=$CDIST_CONFIG/core}
 : ${CDIST_LIBDIR:=$CDIST_CONFIG/lib}
 
+set -e
+
+# load libraries so every program has them available
+__cdist_cur="$(pwd -P)"
+cd "${CDIST_LIBDIR}"
+for __cdist_lib in *; do
+   . "./${__cdist_lib}"
+done
 
 
 #echo $CDIST_CONFIG
