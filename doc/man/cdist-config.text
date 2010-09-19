@@ -1,0 +1,64 @@
+cinit(8)
+========
+Nico Schottelius <nico-cinit--@--schottelius.org>
+
+
+NAME
+----
+cinit - fast executing, small and simple init with support for profiles
+
+
+SYNOPSIS
+--------
+'cinit' [cprofile:name_of_profile]
+
+
+DESCRIPTION
+-----------
+Cinit is an init system. It normally gets started by the operating
+system (Linux, *BSD, ...) directly after the kernel has been loaded.
+
+Cinit uses parallel execution of services as far as possible. To
+ensure the correct boot order you need to specify which service
+'needs' or 'wants' another service. The resulting dependency tree
+is used at startup to determine which service to start when.
+
+This may result in different boot orders depending on whether
+one service is one time faster or slower. Due to the dependencies
+this is not a problem, but allowed and wished per design.
+
+For more information refer to the texinfo or html documentation.
+
+
+OPTIONS
+-------
+
+cprofile:name_of_profile::
+   If specified, cinit will start the named profile instead of the
+   standard 'init' service
+
+
+BUGS
+----
+cinit is not tested nor documented very well currently.
+
+The porting to other OS is not finished yet (mainly missing
+system level binaries: shutdown, reboot, halt).
+
+Both is work in progress.
+
+
+AUTHOR
+------
+Nico Schottelius <mailto:nico-cinit--@--schottelius.org[]>
+
+
+RESOURCES
+---------
+Main web site: http://unix.schottelius.org/cinit/[]
+
+
+COPYING
+-------
+Copyright \(C) 2006 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License (GPL).
