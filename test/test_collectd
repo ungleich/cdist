@@ -18,32 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Print configuration directories - helper for all other scripts
-#
 
-: ${CDIST_CONFIG:=/etc/cdist}
-: ${CDIST_COREDIR:=$CDIST_CONFIG/core}
-: ${CDIST_LIBDIR:=$CDIST_CONFIG/lib}
-: ${CDIST_HOSTS:=$CDIST_CONFIG/hosts}
-: ${CDIST_MODULES:=$CDIST_CONFIG/modules}
+. cdist-config
 
-set -e
-
-# load libraries so every program has them available
-__cdist_cur="$(pwd -P)"
-cd "${CDIST_LIBDIR}"
-for __cdist_lib in *; do
-   . "./${__cdist_lib}"
-done
-
-# load modules
-cd "${CDIST_MODULES}"
-for __cdist_mod in *; do
-   . "./${__cdist_mod}/manifest"
-done
-
-
-set +e
-
-#echo $CDIST_CONFIG
-#echo $CDIST_LIBDIR
+collectd

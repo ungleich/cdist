@@ -23,6 +23,6 @@ collectd()
 {
    config_source="${1:-modules/collectd/collectd.conf}"
 
-   cdist_package collectd
-   cdist_file /etc/collectd/collectd.conf "${config_source}"
+   echo cdist_package collectd
+   echo cdist_file /etc/collectd/collectd.conf "${config_source}"
 }
