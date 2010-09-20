@@ -1,7 +1,8 @@
 ## Introduction
 
 cdist configures your system. It is similar to
-[cfengine](http://www.cfengine.org/) and [puppet](http://www.puppetlabs.com/).
+[cfengine](http://www.cfengine.org/) and
+[puppet](http://www.puppetlabs.com/).
 It is inspired by both of those tools:
 
  * Try to redo the great power you get
@@ -9,9 +10,8 @@ It is inspired by both of those tools:
 
 ### Principles
 
-cdist is
-
- * unix, reuse of tools, no need for high level scripting language interpreter
+cdist is unix: It's designed to reuse existing tools
+and does not need high level scripting language interpreters.
 
 ### Requirements
 
@@ -76,8 +76,6 @@ what is puppet? [FOR ME]
    a DSL that allows you define the objectives.
    A webserver with fileserver capabilities.
    A client based scheduled polling infrastructure.
---------------------------------------------------------------------------------
-
 --------------------------------------------------------------------------------
 What do I miss from puppet?
 
