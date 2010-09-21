@@ -33,4 +33,9 @@ fi
 
 # Run the manifest, but abort on first error
 set -e
+
+# change to config dir, to be able to use relative filenames
+cd "${conf}"
+
+# And apply the stuff
 . "${conf}/manifest"
