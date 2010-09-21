@@ -1,3 +1,23 @@
+## TO DOC
+
+Before initial release, document:
+
+   - how to add package backends
+   - how to write a minimal host manifest
+   - create library with all functions (and their parameters)
+      - cdist_package
+      - cdist_file
+      - cdist_dir
+
+   - only do necessary work
+      - install packages only if not existent
+      - copy file only if different
+
+   - how to write a module
+      - module function autoloading via *.sh?
+         - if yes => all .sh for consistency
+
+
 ## Introduction
 
 cdist configures your system. It is similar to
@@ -37,6 +57,10 @@ applies the configuration on enabled hosts.
 
 ## How to use cdist?
 
+ 0. Create a host specification (/etc/cdist/hosts/**hostname**)
+ 0. Add functionalilty to add
+ 0. Run ***cdist-apply***
+
 
 ## What do I need [from puppet?]
 
@@ -59,6 +83,7 @@ want to ensure, some package exists or does not exist.
    - [PORTABILITY] clients for every unix
       - mostly ruby + facter in puppet
 
+### Other
    - Modules: Nice to put stuff together
       - and reuse
    - [CONDITIONS] facter is cool
@@ -68,6 +93,11 @@ want to ensure, some package exists or does not exist.
    - Client/Server approach is nice to have
       - Clients only get the part of the documentation, that's
         relevant to them
+   - detect impossible/unsafe things:
+      - creating a file twice
+      - installing and removing a package
+      - and report location of occurence
+         - parse afterwards?
 
 --------------------------------------------------------------------------------
 what is puppet? [FOR ME]
