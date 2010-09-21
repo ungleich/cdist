@@ -1,0 +1,5 @@
+. ./func_var1
+. ./func_var2
+
+func1
+func2

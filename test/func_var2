@@ -1,0 +1,4 @@
+func2()
+{
+   echo $myvar
+}
