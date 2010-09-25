@@ -1,0 +1,2 @@
+setenv PATH ${PATH}:${HOME}/cdist/bin
+setenv CDIST_CONFIG ${HOME}/cdist/conf
