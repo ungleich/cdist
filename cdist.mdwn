@@ -25,6 +25,15 @@ Before initial release, document:
          to a subdirectory named "files"
 
 
+## Architecture
+
+ - User write shell scripts, which are run on the server
+ - Shell scripts call cdist functions
+ - cdist functions generate cconfig, which can be verified
+ - if verified, generate "command file" to execute on the client
+   - client only sees the commands
+   - no special requirements on the client
+
 ## next: cdist-deploy-to
 
    - sync conf/{lib/,modules,host/$name}

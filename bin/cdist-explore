@@ -21,7 +21,7 @@
 
 . cdist-config
 
-find "${CDIST_LIBDIR}" -type f -name cdist_explore\* > "${CDIST_TMP}"
+find "${CDIST_LIBDIR}" -type f -name cdist_explore\*.sh > "${CDIST_TMP}"
 
 while read funcfull; do
    sh="${funcfull##*/}"

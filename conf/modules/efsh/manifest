@@ -1,0 +1,5 @@
+efsh()
+{
+   cdist_dir /home/services /home/users /home/groups
+
+}

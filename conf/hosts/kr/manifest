@@ -1,6 +1,9 @@
+# works
 cdist_package install vim zsh rxvt-unicode
 
+# works
 cdist_file files/notebook /etc/nicos_notebook
+
 #collectd
 #cdist_file /etc/issue issue 
 #cdist_file /etc/issue --via my_func

@@ -27,23 +27,28 @@
 : ${CDIST_HOSTS:=$CDIST_CONFIG/hosts}
 : ${CDIST_MODULES:=$CDIST_CONFIG/modules}
 
-set -e
+cdist_debug_echo()
+{
+   [ "$CDIST_DEBUG" ] && echo "Debug: $@"
+}
+
+: ${CDIST_TMP:=$(mktemp /tmp/cdist.XXXXXXXXXXXX)}
+
+#set -e
 
 # load libraries so every program has them available
-__cdist_cur="$(pwd -P)"
-cd "${CDIST_LIBDIR}"
-for __cdist_lib in *; do
-   . "./${__cdist_lib}"
-done
+find "${CDIST_LIBDIR}" -type f > "${CDIST_TMP}"
+while read __cdist_lib; do
+   cdist_debug_echo "Loading $__cdist_lib ..."
+   . "${__cdist_lib}"
+done < "${CDIST_TMP}"
 
-# load modules
-cd "${CDIST_MODULES}"
-for __cdist_mod in *; do
-   . "./${__cdist_mod}/manifest"
-done
+# load modules, all parts
+#find "${CDIST_MODULES}" -name manifest > "${CDIST_TMP}"
 
-
-set +e
+#set +e
 
 #echo $CDIST_CONFIG
-#echo $CDIST_LIBDIR
+# FIXME: here or somewhere else? other parts may reuse tmp
+rm -f $CDIST_TMP
+#__cdist_cur="$(pwd -P)"

@@ -25,7 +25,7 @@ cdist_package()
    backend="$(cdist_package_select_backend)"
 
    case "$1" in
-      install|uninstall)
+      install|is_installed|uninstall)
          operation="$1"; shift
          ${backend}_${operation} "$@"
       ;;
