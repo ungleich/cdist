@@ -21,12 +21,13 @@
 
 . cdist-config
 
-cd ${CDIST_LIBDIR}
+find "${CDIST_LIBDIR}" -type f -name cdist_explore\* > "${CDIST_TMP}"
 
-for func in cdist_explore_*; do
-   #func="cdist_explore_$report"
+while read funcfull; do
+   sh="${funcfull##*/}"
+   func="${sh%.sh}"
    var="__$func"
 
    eval $var=\"\$\($func\)\"
    eval echo $var=\\\"\$$var\\\"
-done
+done < "${CDIST_TMP}"
