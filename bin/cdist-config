@@ -43,12 +43,13 @@ while read __cdist_lib; do
    . "${__cdist_lib}"
 done < "${CDIST_TMP}"
 
-# load modules, all parts
+# load modules, all parts => really
 #find "${CDIST_MODULES}" -name manifest > "${CDIST_TMP}"
 
 #set +e
 
 #echo $CDIST_CONFIG
 # FIXME: here or somewhere else? other parts may reuse tmp
-rm -f $CDIST_TMP
+: > "$CDIST_TMP"
+#rm -f "$CDIST_TMP"
 #__cdist_cur="$(pwd -P)"
