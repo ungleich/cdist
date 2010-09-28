@@ -27,6 +27,9 @@
 : ${CDIST_HOSTS:=$CDIST_CONFIG/hosts}
 : ${CDIST_MODULES:=$CDIST_CONFIG/modules}
 
+# always export variables -- needed if everything gets sourced?
+set -a
+
 cdist_debug_echo()
 {
    [ "$CDIST_DEBUG" ] && echo "Debug: $@"
