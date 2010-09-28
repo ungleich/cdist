@@ -1,1 +1,4 @@
 cat bin/* | awk '/^export/ { print $2 }'
+
+# __cdist_intern_*   : set by internal processes
+# __cdist_explore_*  : filled with information of the target host
