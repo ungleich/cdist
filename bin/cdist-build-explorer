@@ -27,13 +27,8 @@ while read funcfull; do
    sh="${funcfull##*/}"
    func="${sh%.sh}"
    var="__$func"
-   funclist="$func $funclist"
-
-   # Correct working block for local execution
-   #eval $var=\"\$\($func\)\"
-   #eval echo $var=\\\"\$$var\\\"
 
    cat "${funcfull}"
-   echo "$func"
-   
+   echo "$var=\"\$($func)\""
+   echo "echo $var=\\\"\$$var\\\""
 done < "${CDIST_TMP}"
