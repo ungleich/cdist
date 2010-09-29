@@ -27,9 +27,24 @@
 : ${CDIST_HOSTS:=$CDIST_CONFIG/hosts}
 : ${CDIST_MODULES:=$CDIST_CONFIG/modules}
 
-cdist_debug_echo()
+################################################################################
+# cconf standard vars prefixed with cdist
+__cdist_pwd="$(pwd -P)"
+__cdist_mydir="${0%/*}";
+__cdist_abs_mydir="$(cd "$__mydir" && pwd -P)"
+__cdist_myname=${0##*/};
+__cdist_abs_myname="$__abs_mydir/$__myname"
+
+
+__cdist_debug_echo()
 {
    [ "$CDIST_DEBUG" ] && echo "Debug: $@"
+}
+
+__cdist_usage()
+{
+   echo "$__cdist_myname: $@"
+   exit 1
 }
 
 : ${CDIST_TMP:=$(mktemp /tmp/cdist.XXXXXXXXXXXX)}
@@ -39,7 +54,7 @@ cdist_debug_echo()
 # load libraries so every program has them available
 find "${CDIST_LIBDIR}" -type f > "${CDIST_TMP}"
 while read __cdist_lib; do
-   cdist_debug_echo "Loading $__cdist_lib ..."
+   __cdist_debug_echo "Loading $__cdist_lib ..."
    . "${__cdist_lib}"
 done < "${CDIST_TMP}"
 
