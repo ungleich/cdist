@@ -4,10 +4,12 @@ cdist using the push principle (triggered by server)
    cdist-deploy-to <client-hostname>
       cdist-preprocess  # fills up variables with content
          cdist-explore  % client # explores client configuration
-      cdist-compile     # parses configuration, creates internal state in cconfig format, verifies
-      cdist-link        # uses cconfig output, creates executable
-      cdist-transfer    # transfer executable to client
-      cdist-execute     % client # execute resulting executable
+      cdist-build
+         cdist-compile     # parses configuration, creates internal state in cconfig format, verifies
+         cdist-link        # uses cconfig output, creates executable
+      cdist-remote-exec # 
+         cdist-transfer    # transfer executable to client
+         cdist-execute     % client # execute resulting executable
 
 Operation on the server is run as "cdist" user.
 Operation on the client is run as "root" user.
