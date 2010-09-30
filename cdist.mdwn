@@ -25,6 +25,17 @@ Before initial release, document:
          to a subdirectory named "files"
 
 
+## Testing cdist
+
+cdist-build-explorer| ssh localhost
+
+set -e
+git clone git://git.schottelius.org/cdist
+cd cdist
+export PATH=$PATH:$(pwd -P)/bin 
+cdist-build-explorer | ssh localhost
+
+
 ## Architecture
 
  - User write shell scripts, which are run on the server
