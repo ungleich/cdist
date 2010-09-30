@@ -23,12 +23,17 @@
 
 find "${CDIST_LIBDIR}" -type f -name cdist_explore\*.sh > "${CDIST_TMP}"
 
+# first load all functions
 while read funcfull; do
    sh="${funcfull##*/}"
    func="${sh%.sh}"
    var="__$func"
 
    cat "${funcfull}"
+done < "${CDIST_TMP}"
+
+# then execute functions
+while read funcfull; do
    echo "$var=\"\$($func)\""
    echo "echo $var=\\\"\$$var\\\""
 done < "${CDIST_TMP}"
