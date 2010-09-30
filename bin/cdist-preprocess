@@ -23,9 +23,10 @@
 
 . cdist-config
 
-set -e
+[ $# -eq 1 ] || __cdist_usage "target"
 
-cdist-build-explorer | ssh "$__cdist_intern_target_host" > "${CDIST_TMP}"
+set -e
+cdist-build-explorer | ssh "$1" > "${CDIST_TMP}"
 
 # FIXME: Warning: An untrusted/compromised client could in theory exploit us
 # And a filter function like grep '^__cdist_explore.*=".*"$'
