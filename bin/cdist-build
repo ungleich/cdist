@@ -23,8 +23,11 @@
 
 . cdist-config
 
-set -e
+[ $# -eq 1 ] || __cdist_usage "target"
 
-. cdist-preprocess
-. cdist-compile
-. cdist-link
+set -e
+set -x
+
+. cdist-preprocess "$1"
+. cdist-compile "$1"
+. cdist-link "$1"
