@@ -1,0 +1,33 @@
+cdist(7)
+========
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist - Configuration distribution system
+
+
+DESCRIPTION
+-----------
+Cdist allows you to define centrally a configurations for
+all systems and apply them. Cdist generally uses the push
+approach (a server pushes out the configuration to the clients),
+but can also be used the pull way (see cdist-push-pull(7)).
+
+Cdist is configured in shell syntax, which is "compiled" to an
+internal configuration representation, which again is used to
+generate an executable, which is run on the client
+(see cdist-language(7), cdist-design(7)).
+
+
+
+SEE ALSO
+--------
+cdist-deploy-to(1), website: http://www.nico.schottelius.org/cdist/[]
+
+
+COPYING
+-------
+Copyright \(C) 2010 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
