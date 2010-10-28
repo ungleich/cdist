@@ -1,72 +1,54 @@
-## TO DOC
-
-Before initial release, document:
-
-   - how to add package backends
-   - how to write a minimal host manifest
-   - create library with all functions (and their parameters)
-      - cdist_package
-      - cdist_file
-      - cdist_dir
-
-   - only do necessary work
-      - install packages only if not existent
-      - copy file only if different
-
-   - how to write a module
-      - module function autoloading via *.sh
-      - module "manifest"?
-         - create functions in *.sh
-         - name functions "modulename_function"
-            module hellow
-            function kitty
-            => hellow_kitty
-      - you are advised (not forced) to put files
-         to a subdirectory named "files"
-
-
-## Testing cdist
-
-cdist-build-explorer| ssh localhost
-
-set -e
-git clone git://git.schottelius.org/cdist
-cd cdist
-export PATH=$PATH:$(pwd -P)/bin 
-cdist-build-explorer | ssh localhost
-
-
-## Architecture
-
- - User write shell scripts, which are run on the server
- - Shell scripts call cdist functions
- - cdist functions generate cconfig, which can be verified
- - if verified, generate "command file" to execute on the client
-   - client only sees the commands
-   - no special requirements on the client
-
-## next: cdist-deploy-to
-
-   - sync conf/{lib/,modules,host/$name}
-
 ## Introduction
 
 cdist configures your system. It is similar to
-[cfengine](http://www.cfengine.org/) and
-[puppet](http://www.puppetlabs.com/).
+[cfengine](http://www.cfengine.org/) and [puppet](http://www.puppetlabs.com/).
 It is inspired by both of those tools:
 
  * Try to redo the great power you get
  * But leave out the bugs you also got
 
-### Principles
+And cdist is UNIX:
 
-cdist is unix: It's designed to reuse existing tools
-and does not need high level scripting language interpreters.
+It's designed to reuse existing tools,
+does not require high level scripting language interpreters
+and is equipped with manpages.
 
-### Requirements
+### Architecture
+
+ * KISS (keep it simple and stupid)
+  * Allow very easy extension of cdist (creating own types for instance)
+ * Push (server pushes configuration) and Pull (client retrieves config) supported
+ * User defines configuration in shell scripts using cdist functions
+ * Cdist generates internal configuration (cconfig style) and afterwards applies configuration
+
+## Requirements
+
+### Server
 
  * A posix like shell
+ * SSH-Client (for push architecture)
+ * SSH-Server (for pull architecture)
+
+### Client
+
+ * A posix like shell
+ * SSH-Client (for pull architecture)
+ * SSH-Server (for push architecture)
+
+## How to get cdist
+
+    git clone git://git.schottelius.org/cdist
+
+## How to install cdist
+
+    make install
+
+## How to use cdist
+
+    man cdist
+
+--------------------------------------------------------------------------------
+
 
 ## How cdist works
 
@@ -137,6 +119,7 @@ what is puppet? [FOR ME]
    a DSL that allows you define the objectives.
    A webserver with fileserver capabilities.
    A client based scheduled polling infrastructure.
+
 --------------------------------------------------------------------------------
 What do I miss from puppet?
 
@@ -191,11 +174,6 @@ Simple stuff done by Unix[notm]
 
 
 --------------------------------------------------------------------------------
-Architecture
-
-   
-
---------------------------------------------------------------------------------
 Implementation
 
    "cdist-server"
@@ -203,3 +181,39 @@ Implementation
       -> no need to reimplement scheduling
    "cdist-explore" (facter replacement)
       -> running on the client
+--------------------------------------------------------------------------------
+Requirements:
+   It MUST be incredible easy/dumb to add new types.
+      => growable default types
+      
+      
+--------------------------------------------------------------------------------
+
+      ## TO DOC
+
+Before initial release, document:
+
+   - how to add package backends
+   - how to write a minimal host manifest
+   - create library with all functions (and their parameters)
+      - cdist_package
+      - cdist_file
+      - cdist_dir
+
+   - only do necessary work
+      - install packages only if not existent
+      - copy file only if different
+
+   - how to write a module
+      - module function autoloading via *.sh
+      - module "manifest"?
+         - create functions in *.sh
+         - name functions "modulename_function"
+            module hellow
+            function kitty
+            => hellow_kitty
+      - you are advised (not forced) to put files
+         to a subdirectory named "files"
+
+
+
