@@ -1,8 +1,9 @@
 - doc:
-   - readme (cleanup, define)
    - cdist manpage (main manpage)
    - create todos from doc/internal/puppet-analysis
+   - cleanup / integrate doc/man/cdist.text
 - cdist-deply-to
    - sync conf/{lib/,modules,host/$name}
 - cdist-build-explorer| ssh localhost
-- 
+- Create usable Makefile 
+   - install
