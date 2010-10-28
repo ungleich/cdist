@@ -9,9 +9,10 @@ It is inspired by both of those tools:
 
 And cdist is UNIX:
 
-It's designed to reuse existing tools,
-does not require high level scripting language interpreters
-and is equipped with manpages.
+It's designed to
+reuse existing tools,
+it does not require high level scripting language interpreters
+and it is equipped with manpages.
 
 ### Architecture
 
