@@ -1,20 +1,48 @@
-cdist using the push principle (triggered by server)
+cdist-design(7)
+===============
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
+
+NAME
+----
+cdist-design - Design ideas for cdist
+
+DESCRIPTION
+-----------
+
+When using cdist with the push principle, the execution tree looks likes this:
+
+--------------------------------------------------------------------------------
 % server
-   cdist-deploy-to <client-hostname>
-      cdist-build
-         cdist-preprocess  # fills up variables with content
-            cdist-explore  % client # explores client configuration
-         cdist-compile     # parses configuration, creates internal state in cconfig format, verifies
-         cdist-link        # uses cconfig output, creates executable
-      cdist-remote-exec # 
-         cdist-transfer    # transfer executable to client
-         cdist-execute     % client # execute resulting executable
+   cdist-deploy-to(1)
+      cdist-build(1)
+         cdist-preprocess(1)  # fills up variables with content
+            cdist-explore(1)  % client # explores client configuration
+         cdist-compile(1)     # parses configuration, creates internal state in cconfig format, verifies
+         cdist-link(1)        # uses cconfig output, creates executable
+      cdist-remote-exec(1) # 
+         cdist-transfer(1)    # transfer executable to client
+         cdist-execute(1)     % client # execute resulting executable
+--------------------------------------------------------------------------------
 
 Operation on the server is run as "cdist" user.
 Operation on the client is run as "root" user.
 
-cdist using the pull principle (triggered by client)
+When using cdist with the pull principle (configuration triggered by client):
+
+--------------------------------------------------------------------------------
 % client
-   cdist-trigger <server-hostname> # connects to server
-      cdist-deploy-to <client-hostname> % server: see above
+   cdist-trigger(1) <server-hostname> # connects to server
+      cdist-deploy-to(1) <client-hostname> % server: see above
+--------------------------------------------------------------------------------
+
+SEE ALSO
+--------
+cdist(7), website: http://www.nico.schottelius.org/cdist/[]
+
+
+COPYING
+-------
+Copyright \(C) 2010 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
+
