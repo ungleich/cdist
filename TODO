@@ -1,9 +1,47 @@
 - doc:
    - cdist manpage (main manpage)
-   - create todos from doc/internal/puppet-analysis
+      - add terminology
+      - define entry point
+      - define modules / mix with library?
+         - and entry point is my only real configuration?
+      - define steps within configuration apply
+         - detect impossible/unsafe things:
+         - creating a file twice
+         - installing and removing a package
+         - and report location of occurence
+         - parse afterwards?
+
+   - how to define templates
+      - variable substitution from shell may be problematic
+         - SHELL SCRIPTS! (executables? do not support?)
+            - stdout
    - cleanup / integrate doc/man/cdist.text
 - cdist-deply-to
    - sync conf/{lib/,modules,host/$name}
+- cdist-explore
+   - add more stuff to explore
+   - write manpage
 - cdist-build-explorer| ssh localhost
 - Create usable Makefile 
    - install
+- to implement (from puppet):
+   - package management and different "providers"
+   - file / directory handling
+   - ssh key handling
+   - services
+   - user management
+      - including passwords
+   - integrate "external ressources"
+      - probably via explorer
+      - what about blobs?
+      - what about source = ${host}/.../
+- to implement (from cfengine):
+   - file editing (sed, awk)
+   - huge library of functions shipped by default
+- release first public version, which includes at least:
+   - manpages
+
+--------------------------------------------------------------------------------
+Later:
+
+   - multi master setups
