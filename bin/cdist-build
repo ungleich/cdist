@@ -26,7 +26,6 @@
 [ $# -eq 1 ] || __cdist_usage "target"
 
 set -e
-set -x
 
 . cdist-preprocess "$1"
 . cdist-compile "$1"

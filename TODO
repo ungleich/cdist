@@ -1,2 +1,8 @@
-- find out where I left work :-)
-- create real todo
+- doc:
+   - readme (cleanup, define)
+   - cdist manpage (main manpage)
+   - create todos from doc/internal/puppet-analysis
+- cdist-deply-to
+   - sync conf/{lib/,modules,host/$name}
+- cdist-build-explorer| ssh localhost
+- 
