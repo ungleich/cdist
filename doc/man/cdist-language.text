@@ -55,6 +55,17 @@ Requirements:
    It MUST be incredible easy/dumb to add new types.
       => growable default types
 
+   - how to write a module
+      - module function autoloading via *.sh
+      - module "manifest"?
+         - create functions in *.sh 
+         - name functions "modulename_function"
+            module hellow
+            function kitty
+            => hellow_kitty
+
+      - you are advised (not forced) to put files
+         to a subdirectory named "files"
 
 SEE ALSO
 --------

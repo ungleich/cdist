@@ -1,8 +1,10 @@
 - doc:
    - cdist manpage (main manpage)
       - cleanup following man + their tree:
-         - cdist.text
-         - cdist-design.text
+         - cdist-language        [IMPORTANT]
+         - cdist-design.text     [IMPORTANT]
+         - cdist-push-pull
+         - cdist-quickstart
       - add terminology
       - define entry point
       - define modules / mix with library?
