@@ -16,6 +16,8 @@
          - SHELL SCRIPTS! (executables? do not support?)
             - stdout
    - cleanup / integrate doc/man/cdist.text
+   - define how to write / provide functions
+      - keep generic / easy extension
 - cdist-deply-to
    - sync conf/{lib/,modules,host/$name}
 - cdist-explore
@@ -38,6 +40,7 @@
 - to implement (from cfengine):
    - file editing (sed, awk)
    - huge library of functions shipped by default
+   - disconnected clients with "cache"
 - release first public version, which includes at least:
    - manpages
 
@@ -45,3 +48,4 @@
 Later:
 
    - multi master setups
+   - pull strategy

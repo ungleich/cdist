@@ -16,8 +16,8 @@ approach (a server pushes out the configuration to the clients),
 but can also be used the pull way (see cdist-push-pull(7)).
 
 Cdist is configured in shell syntax, which is "compiled" to an
-internal configuration representation, which again is used to
-generate an executable, which is run on the client
+internal configuration representation (cconfig), which again
+is used to generate an executable, which is run on the client
 (see cdist-language(7), cdist-design(7)).
 
 
