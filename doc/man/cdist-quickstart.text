@@ -1,0 +1,5 @@
+## How to use cdist?
+
+ 0. Create a host specification (/etc/cdist/hosts/**hostname**)
+  0. Add functionalilty to add
+   0. Run ***cdist-apply***

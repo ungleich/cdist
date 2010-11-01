@@ -29,6 +29,33 @@ The three stages are used to seperate configurations:
 - the library is shipped with cdist, but can be extendet locally
 
 
+   - DSL: Shell!
+      - gives if, else and EVEN elsif for free!
+      - and case
+      - and and and
+      - and there's no os (solaris doesn't count) without a usable /bin/sh
+      - cdist defines what you can use
+         - you _can_ use os specific stuff
+         - but it's ugly and you shoot into your own foot
+      - "manifests" (use the same name here?) will be run/sourced
+         - inheritance possible via sourcing
+         - cdist-lib always preloaded
+      - library == functions?
+
+   - matching on explored items, not only on host name?
+         - match function in host? [optional]
+         - explorer ran before!
+
+- document exported variables!
+   use __ prefix instead of __cdist (shorter writing, __ is defined as sytem anyway)
+
+- library vs. modules?
+
+Requirements:
+   It MUST be incredible easy/dumb to add new types.
+      => growable default types
+
+
 SEE ALSO
 --------
 

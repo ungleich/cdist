@@ -1,5 +1,8 @@
 - doc:
    - cdist manpage (main manpage)
+      - cleanup following man + their tree:
+         - cdist.text
+         - cdist-design.text
       - add terminology
       - define entry point
       - define modules / mix with library?
@@ -43,6 +46,20 @@
    - disconnected clients with "cache"
 - release first public version, which includes at least:
    - manpages
+   - only do necessary work
+         - install packages only if not existent
+               - copy file only if different
+
+Before initial release, document:
+      
+   - how to add package backends
+   - how to write a minimal host manifest
+   - create library with all functions (and their parameters)
+      - cdist_package
+      - cdist_file
+      - cdist_dir
+
+
 
 --------------------------------------------------------------------------------
 Later:

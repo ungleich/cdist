@@ -1,0 +1,9 @@
+On the server:
+
+conf/hosts/init $hostname
+   => will be called by $whatever
+   => may source other files
+   => $__hosts_dir can be used to source other scripts
+
+Cached client:
+   Has generated file, which will be (re-)applied

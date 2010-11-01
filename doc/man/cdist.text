@@ -20,120 +20,16 @@ internal configuration representation (cconfig), which again
 is used to generate an executable, which is run on the client
 (see cdist-language(7), cdist-design(7)).
 
+To get your fingers dirty with cdist very quick, have
+a look at cdist-quickstart(7).
 
 
 SEE ALSO
 --------
-cdist-deploy-to(1), website: http://www.nico.schottelius.org/cdist/[]
+Website: http://www.nico.schottelius.org/cdist/[]
 
 
 COPYING
 -------
 Copyright \(C) 2010 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
-
---------------------------------------------------------------------------------
-
-
-## How cdist works
-
-### Exploring your system
-
-cdist analyses the system to apply the configuration on and
-selects the right backends. You can use ***cdist-explore*** to
-the results of the explore functions.
-
-### Applying the configuration
-
-cdist looks for the configuration to apply on the local host
-and applies it using ***cdist-apply***.
-
-### Managing many hosts
-
-Whereas ***cdist-apply*** manages one host, ***cdist-deploy***
-applies the configuration on enabled hosts.
-
-## How to use cdist?
-
- 0. Create a host specification (/etc/cdist/hosts/**hostname**)
- 0. Add functionalilty to add
- 0. Run ***cdist-apply***
-
-
---------------------------------------------------------------------------------
-Simple stuff done by Unix[notm]
-
-   - DSL: Shell!
-      - gives if, else and EVEN elsif for free!
-      - and case
-      - and and and
-      - and there's no os (solaris doesn't count) without a usable /bin/sh
-      - cdist defines what you can use
-         - you _can_ use os specific stuff
-         - but it's ugly and you shoot into your own foot
-      - "manifests" (use the same name here?) will be run/sourced
-         - inheritance possible via sourcing
-         - cdist-lib always preloaded
-      - library == functions?
-   - version control via git
-   - file distribution via ssh
-   - authentication via ssh
-   - dumb clients, similar to manifest compile in puppet
-      - clients just execute commands
-   - dependencies via make?
-      - how to ensure sigletons / conflicting definitions?
-         file { "/a":
-            ensure => present,
-         file { "/a":
-            ensure => absent,
-   - matching on explored items, not only on host name?
-      - match function in host? [optional]
-   - file source:
-      - relative to specification
-      - or absolute
-
-
---------------------------------------------------------------------------------
-Implementation
-
-   "cdist-server"
-      -> called by cron?
-      -> no need to reimplement scheduling
-   "cdist-explore" (facter replacement)
-      -> running on the client
---------------------------------------------------------------------------------
-Requirements:
-   It MUST be incredible easy/dumb to add new types.
-      => growable default types
-      
-      
---------------------------------------------------------------------------------
-
-      ## TO DOC
-
-Before initial release, document:
-
-   - how to add package backends
-   - how to write a minimal host manifest
-   - create library with all functions (and their parameters)
-      - cdist_package
-      - cdist_file
-      - cdist_dir
-
-   - only do necessary work
-      - install packages only if not existent
-      - copy file only if different
-
-   - how to write a module
-      - module function autoloading via *.sh
-      - module "manifest"?
-         - create functions in *.sh
-         - name functions "modulename_function"
-            module hellow
-            function kitty
-            => hellow_kitty
-      - you are advised (not forced) to put files
-         to a subdirectory named "files"
-
-
-

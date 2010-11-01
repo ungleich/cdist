@@ -36,6 +36,41 @@ When using cdist with the pull principle (configuration triggered by client):
       cdist-deploy-to(1) <client-hostname> % server: see above
 --------------------------------------------------------------------------------
 
+
+MERGE INTO ABOVE.....
+## How cdist works
+
+### Exploring your system
+
+cdist analyses the system to apply the configuration on and 
+selects the right backends. You can use ***cdist-explore*** to
+the results of the explore functions.
+
+### Applying the configuration
+
+cdist looks for the configuration to apply on the local host
+and applies it using ***cdist-apply***.
+
+### Managing many hosts
+
+Whereas ***cdist-apply*** manages one host, ***cdist-deploy***
+applies the configuration on enabled hosts.
+
+   - version control via git
+   - file distribution via ssh
+   - authentication via ssh
+
+   - dumb clients, similar to manifest compile in puppet
+         - clients just execute commands
+   - dependencies via make?
+      - how to ensure sigletons / conflicting definitions?
+         file { "/a": 
+            ensure => present,
+         file { "/a": 
+            ensure => absent,
+         =>=>>>>>>>>>>>>>>>> via cconfig
+
+
 SEE ALSO
 --------
 cdist(7), website: http://www.nico.schottelius.org/cdist/[]
