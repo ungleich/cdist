@@ -92,10 +92,13 @@ Where to place/start the configuration?
 --------------------------------------------------------------------------------
 cdist installation / paths:
 
-   /etc/cdist/                   # CDIST_DIR
-      config/                    # CONFIGDIR
-      types/                     # USERTYPEDIR
+   /etc/cdist/                   # CDISTBASEDIR
+      config/                    # CDISTCONFIGDIR
+      types/                     # CDISTUSERTYPEDIR 
 
-   $prefix/lib/cdist/types/      # SYSTYPEDIR
+   $prefix/lib/cdist/types/      # CDISTSYSTYPEDIR
 
 
+cdist environment:
+   $__loaded_from                # path where $type has been loaded from
+   PATH=$CDISTUSERTYPEDIR:$CDISTSYSTYPEDIR:$PATH
