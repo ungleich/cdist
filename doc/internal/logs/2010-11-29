@@ -1,0 +1,4 @@
+- $type is handled by cdist and generates cconfig
+- $type itself gets called by cdist after cconfig generation
+   - $path as argument
+   - or chroot
