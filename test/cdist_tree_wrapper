@@ -31,7 +31,7 @@ echo "I am $__cdist_myname and have been called with $@"
 id="$1"; shift
 
 # FIXME: find a better definiton of sane (i.e. everything that is a valid filename)
-echo "$id" | grep -q '^[A-Za-z0-9]*$' || __cdist_usage "Provide sane id, please"
+echo "$id" | grep -q '^[A-Za-z0-9_]*$' || __cdist_usage "Provide sane id, please"
 
 
 echo mkdir -p "${cdist_confdir}/${__cdist_myname}/${id}"
