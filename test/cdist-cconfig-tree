@@ -25,7 +25,8 @@
 
 . cdist-config
 
-set -aux
+set -au
+
 # all types cdist is aware of
 export cdist_types="file service user"
 
