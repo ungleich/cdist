@@ -31,7 +31,27 @@ echo "I am $__cdist_myname and have been called with $@"
 id="$1"; shift
 
 # FIXME: find a better definiton of sane (i.e. everything that is a valid filename)
-echo "$id" | grep -q '^[A-Za-z0-9_]*$' || __cdist_usage "Provide sane id, please"
+sanechars='[A-Za-z0-9_]'
+
+echo "$id" | grep -q "^${sanechars}*\$" || __cdist_usage "Provide sane id, please"
+
+if [ -e "${cdist_confdir}/${__cdist_myname}/${id}" ]; then
+   # FIXME: add source! $cdist_config_base/source
+   __cdist_usage "${__cdist_myname}/${id} already exists"
+fi
+
+mkdir -p "${cdist_confdir}/${__cdist_myname}/${id}"
+
+while [ $# -gt 0 ]; do
+   opt="$1"; shift
+
+   echo "$opt" | grep -q "^--${sanechars}*\$" || __cdist_usage "Provide sane options"
 
 
-echo mkdir -p "${cdist_confdir}/${__cdist_myname}/${id}"
+   [ $# -ge 1 ] || __cdist_usage "Missing value for $opt"
+
+   value="$1"; shift
+
+   
+
+done

@@ -21,6 +21,12 @@
 # Define configuration, currently global, add matches later!
 #
 
-__file /usr/bin/cdist --source /from/outer/space
+__file cdist_bin --source /from/outer/space --destination /to/earth
 __user hal --uid 9000
 __service puppet --status disabled
+
+# fails
+__service puppet --status duplicated
+
+# fails
+__service time --missing

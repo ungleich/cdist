@@ -32,13 +32,14 @@ export cdist_types="file service user"
 
 # the file that contains mapping from hosts to types
 # we will execute this later
-config_base="./cdist_config_base"
+cdist_config_base="./cdist_config_base"
 
 cdist_tree_wrapper="./cdist_tree_wrapper"
 
 # used to build the tree and other stuff
 tmpdir=/tmp/cdist-test-hardcoded
 cdist_bindir="${tmpdir}/bin"
+cdist_confdir="${tmpdir}/conf"
 
 cdist_type_prefix="__"
 
@@ -69,10 +70,15 @@ mkdir -p "${cdist_bindir}"
 # prepend our path
 PATH="${cdist_bindir}:$PATH"
 
+# create output dir
+mkdir -p "${cdist_confdir}"
+
 # force -x, so the user is aware the file is executed
-if [ -x "${config_base}" ]; then
-   "${config_base}"
+if [ -x "${cdist_config_base}" ]; then
+   "${cdist_config_base}"
 else
    echo Throw some error, as you forgot to +x it.
    exit 1
 fi
+
+echo "Finished tree generation, have a look at ${cdist_confdir}."
