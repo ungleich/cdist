@@ -35,22 +35,28 @@ sanechars='[A-Za-z0-9_]'
 
 echo "$id" | grep -q "^${sanechars}*\$" || __cdist_usage "Provide sane id, please"
 
-if [ -e "${cdist_confdir}/${__cdist_myname}/${id}" ]; then
+tid="${__cdist_myname}/${id}"
+ddir="${cdist_confdir}/${tid}"
+
+if [ -e "${ddir}" ]; then
    # FIXME: add source! $cdist_config_base/source
-   __cdist_usage "${__cdist_myname}/${id} already exists"
+   __cdist_usage "${tid} already exists"
 fi
 
-mkdir -p "${cdist_confdir}/${__cdist_myname}/${id}"
+mkdir -p "${ddir}"
 
 while [ $# -gt 0 ]; do
    opt="$1"; shift
 
    echo "$opt" | grep -q "^--${sanechars}*\$" || __cdist_usage "Provide sane options"
 
+   opt_file="$(echo $opt | sed 's/^--//')"
 
    [ $# -ge 1 ] || __cdist_usage "Missing value for $opt"
 
    value="$1"; shift
+
+   echo "${value}" > "${ddir}/${opt_file}"
 
    
 
