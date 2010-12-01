@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# 
+# Let's build a cconfig tree from a generic configuration (example)
+#
+
+#[ $# -eq 1 ] || __cdist_usage "cconf"
+
+. cdist-config
+
+set -ax
+# all types cdist is aware of
+export cdist_types="file service user"
+
+# the file that contains mapping from hosts to types
+# we will execute this later
+config_base="./cdist_config_base"
+
+cdist_tree_wrapper="./cdist_tree_wrapper"
+
+# used to build the tree and other stuff
+tmpdir=/tmp/cdist-test-hardcoded
+export cdist_bindir="${tmpdir}/bin"
+
+################################################################################
+# Begin execution
+
+cdist_tree_wrapper_name=${cdist_tree_wrapper##*/}
+cdist_tree_wrapper_absdir=$(cd ${cdist_tree_wrapper%/*} && pwd -P)
+cdist_tree_wrapper_abs="$cdist_tree_wrapper_absdir/$cdist_tree_wrapper_name"
+
+
+rm -rf "${tmpdir}"
+
+# contains cdist-tree binaries
+mkdir -p "${cdist_bindir}"
+#ln -s "${cdist_tree_wrapper_abs}" "${bindir}"
+(
+   set -e
+   cd "${cdist_bindir}"
+   for bin in $cdist_types; do
+      ln -s "${cdist_tree_wrapper_abs}" "${bin}"
+   done
+)
+
+
+
+# Cdist_tree_wrapper does not need any other tool, so remove them from the path.
+unset PATH
+
+
