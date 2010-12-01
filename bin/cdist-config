@@ -57,12 +57,13 @@ __cdist_usage()
 
 #set -e
 
-# load libraries so every program has them available
-find "${CDIST_LIBDIR}" -type f > "${CDIST_TMP}"
-while read __cdist_lib; do
-   __cdist_debug_echo "Loading $__cdist_lib ..."
-   . "${__cdist_lib}"
-done < "${CDIST_TMP}"
+# load libraries so every program has them available - FIXME
+## find "${CDIST_LIBDIR}" -type f > "${CDIST_TMP}"
+## while read __cdist_lib; do
+##    __cdist_debug_echo "Loading $__cdist_lib ..."
+##    . "${__cdist_lib}"
+## done < "${CDIST_TMP}"
+## 
 
 # load modules, all parts => really
 #find "${CDIST_MODULES}" -name manifest > "${CDIST_TMP}"
