@@ -25,7 +25,7 @@
 
 . cdist-config
 
-set -ax
+set -aux
 # all types cdist is aware of
 export cdist_types="file service user"
 
@@ -37,7 +37,9 @@ cdist_tree_wrapper="./cdist_tree_wrapper"
 
 # used to build the tree and other stuff
 tmpdir=/tmp/cdist-test-hardcoded
-export cdist_bindir="${tmpdir}/bin"
+cdist_bindir="${tmpdir}/bin"
+
+cdist_type_prefix="__"
 
 ################################################################################
 # Begin execution
@@ -56,13 +58,20 @@ mkdir -p "${cdist_bindir}"
    set -e
    cd "${cdist_bindir}"
    for bin in $cdist_types; do
-      ln -s "${cdist_tree_wrapper_abs}" "${bin}"
+      ln -s "${cdist_tree_wrapper_abs}" "${cdist_type_prefix}${bin}"
    done
 )
 
-
-
 # Cdist_tree_wrapper does not need any other tool, so remove them from the path.
-unset PATH
+#unset PATH
 
+# prepend our path
+PATH="${cdist_bindir}:$PATH"
 
+# force -x, so the user is aware the file is executed
+if [ -x "${config_base}" ]; then
+   "${config_base}"
+else
+   echo Throw some error, as you forgot to +x it.
+   exit 1
+fi
