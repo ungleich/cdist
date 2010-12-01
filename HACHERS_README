@@ -1,0 +1,18 @@
+Hey hackers,
+
+cdist has not been published, you're accessing a early in developent
+code.
+
+Do not believe anything written in cdist, besides what's written in this file
+(everything else may be future stuff for the initial release).
+
+   -- Nico, 20101201
+
+
+What you can do so far:
+
+# prepare use:
+export PATH="$PATH:$(pwd -P)/bin"
+
+## Test config tree wrapper
+cd test && ./cdist-cconfig-tree

@@ -1,0 +1,49 @@
+## Introduction
+
+cdist configures your system. It is similar to
+[cfengine](http://www.cfengine.org/) and [puppet](http://www.puppetlabs.com/).
+It is inspired by both of those tools:
+
+ * Try to redo the great power you get
+ * But leave out the bugs you also got
+
+And cdist is UNIX:
+
+It's designed to
+reuse existing tools,
+it does not require high level scripting language interpreters
+and it is equipped with manpages.
+
+### Architecture
+
+ * KISS (keep it simple and stupid)
+  * Allow very easy extension of cdist (creating own types for instance)
+ * Push (server pushes configuration) and Pull (client retrieves config) supported
+ * User defines configuration in shell scripts using cdist functions
+ * Cdist generates internal configuration (cconfig style) and afterwards applies configuration
+
+## Requirements
+
+### Server
+
+ * A posix like shell
+ * SSH-Client (for push architecture)
+ * SSH-Server (for pull architecture)
+
+### Client
+
+ * A posix like shell
+ * SSH-Client (for pull architecture)
+ * SSH-Server (for push architecture)
+
+## How to get cdist
+
+    git clone git://git.schottelius.org/cdist
+
+## How to install cdist
+
+    make install
+
+## How to use cdist
+
+    man cdist
