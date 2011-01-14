@@ -31,7 +31,7 @@ set -au
 export cdist_types="file service user"
 
 # the file that contains mapping from hosts to types
-# we will execute this later
+# we will execute this later -- call this MANIFEST?
 cdist_config_base="./cdist_config_base"
 
 cdist_tree_wrapper="./cdist_tree_wrapper"
@@ -56,6 +56,8 @@ rm -rf "${tmpdir}"
 # contains cdist-tree binaries
 mkdir -p "${cdist_bindir}"
 #ln -s "${cdist_tree_wrapper_abs}" "${bindir}"
+
+# Create our binaries, will are called from the manifest - temporary
 (
    set -e
    cd "${cdist_bindir}"

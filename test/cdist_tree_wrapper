@@ -20,6 +20,9 @@
 # 
 # Wrapper script that generates cconfig from arguments
 #
+# This script will be called everytime the manifest decides to create
+# a new type
+#
 
 
 . cdist-config
@@ -40,6 +43,7 @@ ddir="${cdist_confdir}/${tid}"
 
 if [ -e "${ddir}" ]; then
    # FIXME: add source! $cdist_config_base/source
+   # FIXME: force $source information to be present from outside!
    __cdist_usage "${tid} already exists"
 fi
 
@@ -51,6 +55,9 @@ while [ $# -gt 0 ]; do
    echo "$opt" | grep -q "^--${sanechars}*\$" || __cdist_usage "Provide sane options"
 
    opt_file="$(echo $opt | sed 's/^--//')"
+
+   # FIXME: check for options supported by type - or leave it to the type?
+   # I guess do it here, so we also check whether
 
    [ $# -ge 1 ] || __cdist_usage "Missing value for $opt"
 
