@@ -4,6 +4,6 @@ x Define how to get information from clients
    x Create shell script that creates code to run on client (cdist-build-explorer)
 x Create configuration tree from manifest
    x write binaries, which create the tree when called from manifest (cdist_tree_wrapper)
-- Parse configuration tree
-- Generate code to be executed on client
-- Cleanup / refactor
+- Parse configuration tree / generate code to be executed on client
+
+- Cleanup / refactor / documentation
