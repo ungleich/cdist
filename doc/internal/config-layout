@@ -8,7 +8,7 @@ conf/MANIFEST
    -  will be called by $whatever and relative path
       will be setup for source tracking:
 
-conf/providers/<modname>/
+conf/providers/<name>/
    - provide standard types
    - may make use of other providers to realise a new type
       - how to overwrite stuff?
@@ -18,10 +18,6 @@ conf/providers/<modname>/
               but more like reusable defines
    - or may implement some functionality on their own
 
-conf/modules/<modname>/
-   - configuration put together
-   - needed additionally to providers?
-   - perhaps as singletons / objects of class?
-
-Cached client: ???????
-   Has generated file, which will be (re-)applied
+lib/providers/<name>/
+   - same as above, but included into cdist distribution
+   - if name exists in both, conf/ has priority
