@@ -29,3 +29,12 @@ conf/providers/<name>/
 lib/providers/<name>/
    - same as above, but provided by the cdist distribution
    - if name exists in both, conf/ has priority
+
+Differences manifests vs. providers
+
+
+                     manifests               providers
+
+main purpose         map config to host      provide functionality
+can change config    no (prevent conflicts)  yes (allow inheritance)
+specificness         site specific           (globally) reusable
