@@ -43,19 +43,51 @@ attributes.
 
 
 --------------------------------------------------------------------------------
+provider layout:
+
+   <name>/
+      config   # binary that is called to adjust cconfig tree
+      change   # binary that is called on the remote host?
+--------------------------------------------------------------------------------
 cdist view on providers:
 
 How providers are integrated/run:
 
+   First stage:
    - If cdist encounters provider in manifest,
      a wrapper script is run, that creates a
      new entry in the cconfig database and adds
-     attribute values:
+     attribute values. This defines a cconfig
+     tree, that may look as follows:
       
-      conf/__file/cdist_bin/source
-      conf/__file/cdist_bin/destination
+      <hostname>/<provider>/<id>/<parameters>:
+
+      myhost/__file/cdist_bin/source
+      myhost/__file/cdist_bin/destination
+      ...
 
    - In this stage, no conflicts may occur, as
      no provider code has been called (i.e. only
      manifests, which map config to hosts is
      applied).
+
+   Second stage:
+   - The "manifest" script of every used provider
+     (i.e. the manifests created at least one object)
+     is called, which again is able to call other
+     providers. All created objects may also be modified
+     by the provider.
+
+     For instance a "httpd" provider may call the
+     "webroot" provider with --path / ... 
+     # FIND CASE WHERE SENSEFUL => look through
+     current puppet config
+
+   - The newly created objects are merged back into
+     the existing tree. No conflicts may occur during
+     the merge, because this would implicit that the
+     provider conflicts with other providers.
+
+     The idea of this that a provider may expand another
+     provider with functionality, but may need to adjust
+     ("overwrite") settings from the original provider.
