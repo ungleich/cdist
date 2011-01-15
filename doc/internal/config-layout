@@ -10,6 +10,8 @@ conf/MANIFEST
 
 conf/providers/<name>/
    - provide standard types
+   - have required and optional arguments
+   - are independent of hosts
    - may make use of other providers to realise a new type
       - how to overwrite stuff?
       - overwrite in own tree?
