@@ -91,3 +91,35 @@ How providers are integrated/run:
      The idea of this that a provider may expand another
      provider with functionality, but may need to adjust
      ("overwrite") settings from the original provider.
+
+   Third stage:
+   - Cdist calls the "gencode" binary of the providers
+     for every created object. This binary should create
+     code to be executed on the target on stdout.
+
+     If the gencode binary fails, it must print diagnostic
+     messages on stderr and exit non-zero.
+
+     A description of what the generated code may/must/should
+     do can be found at the end of this document.
+
+   - Cdist merges together the generated code
+
+   Fourth stage:
+   - The resulting 
+   - Create code to be run on the client.
+
+
+--------------------------------------------------------------------------------
+Scope of code execution on the client
+
+   It should be assumed that the clients are pretty dumb
+   and thus do not have high level tools like python
+   installed.
+
+   If a provider requires specific tools to be present
+   on the target, there must be another provider that
+   provides this tool and the first provider must create
+   an object of the specific provider.
+
+
