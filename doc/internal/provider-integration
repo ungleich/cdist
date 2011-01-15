@@ -122,4 +122,7 @@ Scope of code execution on the client
    provides this tool and the first provider must create
    an object of the specific provider.
 
+   If the generated code fails on the client, it must
+   print diagnostistic messages on stderr and call
+   "exit 1", so the configuration is aborted.
 
