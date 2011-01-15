@@ -1,9 +1,12 @@
 On the server:
 
-conf/hosts/init $hostname
+conf/MANIFEST
+   - the central entry point
+   - is a shell script
+   - defines mapping from modules or providers to hosts
    => will be called by $whatever
    => may source other files
-   => $__hosts_dir can be used to source other scripts
+   => 
 
 Cached client:
    Has generated file, which will be (re-)applied
