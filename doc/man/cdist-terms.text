@@ -13,6 +13,8 @@ DESCRIPTION
 provider: Provides functionality.
 object: Instance with provider unique id of a provider.
 manifest: Define which objects to create [on hosts]
+server: The machine that configures all targets.
+target: Host that should be configured.
 
 SEE ALSO
 --------
