@@ -4,9 +4,24 @@ conf/MANIFEST
    - the central entry point
    - is a shell script
    - defines mapping from modules or providers to hosts
-   => will be called by $whatever
-   => may source other files
-   => 
+   - can call other MANIFESTs in modules
+   -  will be called by $whatever and relative path
+      will be setup for source tracking:
 
-Cached client:
+conf/providers/<modname>/
+   - provide standard types
+   - may make use of other providers to realise a new type
+      - how to overwrite stuff?
+      - overwrite in own tree?
+         - needs knowledge of inherited provider
+            - similar to current situation in puppet,
+              but more like reusable defines
+   - or may implement some functionality on their own
+
+conf/modules/<modname>/
+   - configuration put together
+   - needed additionally to providers?
+   - perhaps as singletons / objects of class?
+
+Cached client: ???????
    Has generated file, which will be (re-)applied
