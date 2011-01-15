@@ -1,0 +1,34 @@
+cdist-explorer-coordinator(1)
+=============================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-explorer-coordinator - Coordinate explorer on target systems
+
+DESCRIPTION
+-----------
+
+The cdist-explorer-coordinator is responsible for getting information
+about the target system. Its job is to find locally the available
+explorers and prepare them for execution on the remote host.
+
+Each and every explorer may return the information from the target system,
+which is assigned to a local variable of the name __explorer_EXPLORERNAME.
+
+NOTES
+-----
+The first version of the cdist-explorer-coordinator (named cdist-build-explorer)
+used to create strings remote, taken literally. saves ssh, insecure.
+
+SEE ALSO
+--------
+cdist(7)
+
+
+COPYING
+-------
+Copyright \(C) 2010 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
+
