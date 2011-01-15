@@ -1,12 +1,18 @@
 On the server:
 
-conf/MANIFEST
+conf/manifests/init
    - the central entry point
    - is a shell script
-   - defines mapping from modules or providers to hosts
-   - can call other MANIFESTs in modules
-   -  will be called by $whatever and relative path
-      will be setup for source tracking:
+   - defines mapping from providers to hosts
+   -  will be called by cdist and the name
+      will be available for tracking in
+      cdist core functions
+
+core/manifests/* (all other)
+   - same function as above
+   - but won't be called by cdist
+   - method to seperate configuration parts
+
 
 conf/providers/<name>/
    - provide standard types
@@ -21,5 +27,5 @@ conf/providers/<name>/
    - or may implement some functionality on their own
 
 lib/providers/<name>/
-   - same as above, but included into cdist distribution
+   - same as above, but provided by the cdist distribution
    - if name exists in both, conf/ has priority
