@@ -1,0 +1,24 @@
+cdist-terms(7)
+==============
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-terms - Describe terms used in cdist
+
+
+DESCRIPTION
+-----------
+provider: Provides functionality.
+object: Instance with provider unique id of a provider.
+manifest: Define which objects to create [on hosts]
+
+SEE ALSO
+--------
+
+
+COPYING
+-------
+Copyright \(C) 2010 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
