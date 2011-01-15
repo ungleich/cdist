@@ -1,2 +1,42 @@
 This document is a brainstorming document,
-on how to integrate providers.
+on how to integrate providers. Providers
+had been "type" in previous discussion.
+
+Proposed/discussed structures:
+
+1) 2010-11-02
+   $basedir/$type/
+      properties/
+         name/
+            required # required | optional
+         choices  # \n liste
+            
+
+      meta/
+         default (shell script)
+      providers/
+         pukman/
+
+2) 2010-11-09
+
+How to write my own type named "coffee":
+
+   Create the directory /etc/cdist/types/coffee/
+   Create the file /etc/cdist/types/coffee/README containing a description of the 
+type.
+   If your type supports attributes, create the directory /etc/cdist/types/coffee/
+attributes.
+   For each attribute, create the file
+      /etc/cdist/types/coffee/attributes/$attribute_name which contains
+
+      a short description on the first line
+      then a blank line
+      then a long description (probably over several lines)
+
+   If you think your type may be useful for others, submit it for inclusion
+   into cdist at cdist -- at -- l.schottelius.org.
+
+   Create /etc/cdist/types/coffee/init which reads $configinput
+   (either via cconfig or via environment) and outputs a block of
+   shell code suitable for running on the client.
+
