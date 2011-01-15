@@ -104,11 +104,12 @@ How providers are integrated/run:
      do can be found at the end of this document.
 
    - Cdist merges together the generated code
+     (taking care of DEPENDENCIES (which are not
+     yet defined (take care, double nested brackets)))
 
    Fourth stage:
-   - The resulting 
-   - Create code to be run on the client.
-
+   - The resulting shell script is transferred
+     to the target and executed.
 
 --------------------------------------------------------------------------------
 Scope of code execution on the client
