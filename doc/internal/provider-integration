@@ -40,3 +40,22 @@ attributes.
    (either via cconfig or via environment) and outputs a block of
    shell code suitable for running on the client.
 
+
+
+--------------------------------------------------------------------------------
+cdist view on providers:
+
+How providers are integrated/run:
+
+   - If cdist encounters provider in manifest,
+     a wrapper script is run, that creates a
+     new entry in the cconfig database and adds
+     attribute values:
+      
+      conf/__file/cdist_bin/source
+      conf/__file/cdist_bin/destination
+
+   - In this stage, no conflicts may occur, as
+     no provider code has been called (i.e. only
+     manifests, which map config to hosts is
+     applied).
