@@ -67,6 +67,7 @@ mkdir -p "${cdist_bindir}"
 )
 
 # Cdist_tree_wrapper does not need any other tool, so remove them from the path.
+# but the manifest may need so - FIXME: think about it.
 #unset PATH
 
 # prepend our path

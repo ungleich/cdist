@@ -5,5 +5,9 @@ x Define how to get information from clients
 x Create configuration tree from manifest
    x write binaries, which create the tree when called from manifest (cdist_tree_wrapper)
 - Parse configuration tree / generate code to be executed on client
+   - providers?
+   - can/may providers modify tree?
+      - may open door for getting information from manifest / other stuff
 
 - Cleanup / refactor / documentation
+- Write providers, providers, providers, ...

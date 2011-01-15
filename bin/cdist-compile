@@ -23,4 +23,4 @@
 
 [ $# -eq 1 ] || __cdist_usage "target"
 
-
+echo This script should run the manifest file
