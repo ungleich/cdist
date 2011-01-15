@@ -1,0 +1,12 @@
+1) safer and fast version
+   cat blob | ssh host > tmp;
+   for var in ...
+      var=grep ^var= tmp
+2) slow & secure
+   for var in ...
+   eval var=$(cat single_blob | ssh host"
+
+3) easy & insecure
+   cat blob | ssh host > tmp; . tmp
+   
+
