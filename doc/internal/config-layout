@@ -3,7 +3,7 @@ On the server:
 conf/manifests/init
    - the central entry point
    - is a shell script
-   - defines mapping from providers to hosts
+   - defines mapping from types to hosts
    -  will be called by cdist and the name
       will be available for tracking in
       cdist core functions
@@ -14,11 +14,11 @@ core/manifests/* (all other)
    - method to seperate configuration parts
 
 
-conf/providers/<name>/
+conf/types/<name>/
    - provide standard types
    - have required and optional arguments
    - are independent of hosts
-   - may make use of other providers to realise a new type
+   - may make use of other types to realise a new type
       - how to overwrite stuff?
       - overwrite in own tree?
          - needs knowledge of inherited provider
@@ -26,14 +26,14 @@ conf/providers/<name>/
               but more like reusable defines
    - or may implement some functionality on their own
 
-lib/providers/<name>/
+lib/types/<name>/
    - same as above, but provided by the cdist distribution
    - if name exists in both, conf/ has priority
 
-Differences manifests vs. providers
+Differences manifests vs. types
 
 
-                     manifests               providers
+                     manifests               types
 
 main purpose         map config to host      provide functionality
 can change config    no (prevent conflicts)  yes (allow inheritance)
