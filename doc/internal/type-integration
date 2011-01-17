@@ -1,6 +1,4 @@
-This document is a brainstorming document,
-on how to integrate providers. Providers
-had been "type" in previous discussion.
+This document is a brainstorming document, on how to integrate types.
 
 Proposed/discussed structures:
 
@@ -14,7 +12,7 @@ Proposed/discussed structures:
 
       meta/
          default (shell script)
-      providers/
+      types/
          pukman/
 
 2) 2010-11-09
@@ -43,57 +41,57 @@ attributes.
 
 
 --------------------------------------------------------------------------------
-provider layout:
+type layout:
 
    <name>/
       config   # binary that is called to adjust cconfig tree
       change   # binary that is called on the remote host?
 --------------------------------------------------------------------------------
-cdist view on providers:
+cdist view on types:
 
-How providers are integrated/run:
+How types are integrated/run:
 
    First stage:
-   - If cdist encounters provider in manifest,
+   - If cdist encounters type in manifest,
      a wrapper script is run, that creates a
      new entry in the cconfig database and adds
      attribute values. This defines a cconfig
      tree, that may look as follows:
       
-      <hostname>/<provider>/<id>/<parameters>:
+      <hostname>/<type>/<id>/<parameters>:
 
       myhost/__file/cdist_bin/source
       myhost/__file/cdist_bin/destination
       ...
 
    - In this stage, no conflicts may occur, as
-     no provider code has been called (i.e. only
+     no type code has been called (i.e. only
      manifests, which map config to hosts is
      applied).
 
    Second stage:
-   - The "manifest" script of every used provider
+   - The "manifest" script of every used type
      (i.e. the manifests created at least one object)
      is called, which again is able to call other
-     providers. All created objects may also be modified
-     by the provider.
+     types. All created objects may also be modified
+     by the type.
 
-     For instance a "httpd" provider may call the
-     "webroot" provider with --path / ... 
+     For instance a "httpd" type may call the
+     "webroot" type with --path / ... 
      # FIND CASE WHERE SENSEFUL => look through
      current puppet config
 
    - The newly created objects are merged back into
      the existing tree. No conflicts may occur during
      the merge, because this would implicit that the
-     provider conflicts with other providers.
+     type conflicts with other types.
 
-     The idea of this that a provider may expand another
-     provider with functionality, but may need to adjust
-     ("overwrite") settings from the original provider.
+     The idea of this that a type may expand another
+     type with functionality, but may need to adjust
+     ("overwrite") settings from the original type.
 
    Third stage:
-   - Cdist calls the "gencode" binary of the providers
+   - Cdist calls the "gencode" binary of the types
      for every created object. This binary should create
      code to be executed on the target on stdout.
 
@@ -118,10 +116,10 @@ Scope of code execution on the client
    and thus do not have high level tools like python
    installed.
 
-   If a provider requires specific tools to be present
-   on the target, there must be another provider that
-   provides this tool and the first provider must create
-   an object of the specific provider.
+   If a type requires specific tools to be present
+   on the target, there must be another type that
+   provides this tool and the first type must create
+   an object of the specific type.
 
    If the generated code fails on the client, it must
    print diagnostistic messages on stderr and call
