@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case "$__arg_type" in
+
+   directory)
+      if [ "$__arg_mode" ]; then
+         echo mkdir -m \"$__arg_mode\" \"$__arg_path\"
+      else
+         echo mkdir \"$__arg_path\"
+      fi
+   ;;
+
+esac
