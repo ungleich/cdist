@@ -23,6 +23,9 @@ In case of significant errors, the shell script may exit
 non-zero and return an error message on stderr, which
 will cause the cdist run to abort.
 
+Explorers can reuse other explorers on the target system
+by calling $__cdist_explorer_path/<explorer_name>.
+
 SEE ALSO
 --------
 cdist(7)

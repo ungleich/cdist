@@ -19,7 +19,4 @@
 #
 #
 
-cdist_explore_hostname()
-{
-   hostname
-}
+hostname

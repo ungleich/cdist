@@ -22,18 +22,14 @@
 #
 #
 
-cdist_explore_os()
-{
-   # Ubuntu is also Debian, thus return if Ubuntu was found
-   if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
-      echo ubuntu
-      return
-   fi
+# Ubuntu is also Debian, thus return if Ubuntu was found
+if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
+   echo ubuntu
+   exit 0
+fi
 
-   [ -f /etc/arch-release ] && echo archlinux
+[ -f /etc/arch-release ] && echo archlinux
 
-   [ -f /etc/debian_version ] && echo debian
+[ -f /etc/debian_version ] && echo debian
 
-   [ -f /etc/redhat-release ] && echo redhat
-
-}
+[ -f /etc/redhat-release ] && echo redhat
