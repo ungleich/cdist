@@ -26,13 +26,14 @@
 [ $# -eq 1 ] || __cdist_usage "target"
 
 set -e
-cdist-build-explorer | ssh "$1" > "${CDIST_TMP}"
+cdist-build-explorer | ssh "$1" > "${__cdist_tmp_file}"
 
 # FIXME: Warning: An untrusted/compromised client could in theory exploit us
 # And a filter function like grep '^__cdist_explore.*=".*"$'
 # is probably not effective!
-. "${CDIST_TMP}"
+. "${__cdist_tmp_file}"
 
 
-# Create cconfig for the host
-# cdist-manifest ...
+# Create cconfig for the host - FIXME: replace with a recursive version
+# to allow type runners, overwrites and merges
+cdist-manifest-init
