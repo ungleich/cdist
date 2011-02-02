@@ -24,7 +24,11 @@
 : ${__cdist_config:=/etc/cdist}
 : ${__cdist_manifest_dir:=$__cdist_config/manifests}
 : ${__cdist_manifest_init:=$__cdist_manifest_dir/init}
+
 : ${__cdist_type_dir:=$__cdist_config/types}
+
+: ${__cdist_cache_dir:=$__cdist_config/cache}
+: ${__cdist_cache_hosts:=$__cdist_cache_dir/hosts}
 
 
 # obsolete?: lib not needed, hosts replaced by manifests, modules by types
@@ -77,9 +81,3 @@ __cdist_usage()
 #find "${__cdist_MODULES}" -name manifest > "${__cdist_TMP}"
 
 #set +e
-
-#echo $__cdist_CONFIG
-# FIXME: here or somewhere else? other parts may reuse tmp
-: > "$__cdist_TMP"
-#rm -f "$__cdist_TMP"
-#__cdist_cur="$(pwd -P)"
