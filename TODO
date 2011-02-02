@@ -5,6 +5,7 @@
          - cdist-design.text     [IMPORTANT]
          - cdist-push-pull
          - cdist-quickstart
+         - cdist-types           [IMPORTANT]
       - add terminology
       - define steps within configuration apply
          - detect impossible/unsafe things:
@@ -18,18 +19,15 @@
          - SHELL SCRIPTS! (executables? do not support?)
             - stdout
    - cleanup / integrate doc/man/cdist.text
-- cdist-deply-to
-   - sync conf/{lib/,modules,host/$name}
 - cdist-explore
    - add more stuff to explore
    - write manpage
-- cdist-build-explorer| ssh localhost
 - Create usable Makefile 
    - install
-- to implement (from puppet):
-   - package management and different "providers"
+- types needed (inspired by what I use from puppet)
+   - package management
    - file / directory handling
-   - ssh key handling
+   - ssh-host-key: that uses cache / explored data from hosts!
    - services
    - user management
       - including passwords
