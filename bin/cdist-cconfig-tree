@@ -22,13 +22,13 @@
 # And save it into the cache tree
 #
 
-#[ $# -eq 1 ] || __cdist_usage "cconf"
-
 . cdist-config
+
+[ "${__cdist_target_host}" ] || __cdist_usage "Need \$__cdist_target_host setup"
 
 set -au
 
-cdist_tree_wrapper="$(which cdist_tree_wrapper)"
+__cdist_tree_wrapper="$(which cdist_tree_wrapper)"
 
 # used to build the tree and other stuff
 __cdist_bindir="${__cdist_tmp_dir}/bin"

@@ -29,6 +29,7 @@
 
 : ${__cdist_cache_dir:=$__cdist_config/cache}
 : ${__cdist_cache_hosts:=$__cdist_cache_dir/hosts}
+: ${__cdist_cache_bin:=$__cdist_cache_dir/bin}
 
 
 # obsolete?: lib not needed, hosts replaced by manifests, modules by types
@@ -50,6 +51,13 @@ __cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
 __cdist_myname=${0##*/};
 __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
+
+################################################################################
+# Other constants
+
+# Used for generating binaries in cdist-build-bin
+__cdist_bin_prefix="__"
+
 ################################################################################
 # Function list
 #
@@ -60,10 +68,15 @@ __cdist_debug_echo()
    fi
 }
 
+__cdist_exit_err()
+{
+   echo "$@"
+   exit 1
+}
+
 __cdist_usage()
 {
-   echo "$__cdist_myname: $@"
-   exit 1
+   __cdist_exit_err "$__cdist_myname: $@"
 }
 
 

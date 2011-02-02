@@ -32,3 +32,6 @@ cdist-build-explorer | ssh "$1" > "${CDIST_TMP}"
 # And a filter function like grep '^__cdist_explore.*=".*"$'
 # is probably not effective!
 . "${CDIST_TMP}"
+
+
+

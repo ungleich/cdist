@@ -38,4 +38,4 @@ ls -1 > "${__cdist_tmp_file}"
 mkdir -p "${__cdist_cache_bin}"
 while read type; do
    ln -s "${__cdist_tree_wrapper}" "${__cdist_cache_bin}/${__cdist_bin_prefix}${type}"
-done
+done < "${__cdist_tmp_file}"
