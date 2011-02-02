@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -24,35 +24,31 @@
 # a new type
 #
 
-
 . cdist-config
 
 [ $# -ge 1 ] || __cdist_usage "<id> <options>"
 
 echo "I am $__cdist_myname and have been called with $@"
 
-id="$1"; shift
+__cdist_id="$1"; shift
 
-# FIXME: find a better definiton of sane (i.e. everything that is a valid filename)
-sanechars='[A-Za-z0-9_]'
+echo "$__cdist_id" | grep -q "^${__cdist_sane_chars}*\$" || __cdist_usage "Provide sane id, please"
 
-echo "$id" | grep -q "^${sanechars}*\$" || __cdist_usage "Provide sane id, please"
+__cdist_tid="${__cdist_myname}/${__cdist_id}"
+__cdist_ddir="$(__cdist_cache_host)/${__cdist_tid}"
 
-tid="${__cdist_myname}/${id}"
-ddir="${cdist_confdir}/${tid}"
-
-if [ -e "${ddir}" ]; then
+if [ -e "${__cdist_ddir}" ]; then
    # FIXME: add source! $cdist_config_base/source
    # FIXME: force $source information to be present from outside!
-   __cdist_usage "${tid} already exists"
+   __cdist_usage "${__cdist_tid} already exists"
 fi
 
-mkdir -p "${ddir}"
+mkdir -p "${__cdist_ddir}"
 
 while [ $# -gt 0 ]; do
    opt="$1"; shift
 
-   echo "$opt" | grep -q "^--${sanechars}*\$" || __cdist_usage "Provide sane options"
+   echo "$opt" | grep -q "^--${__cdist_sane_chars}*\$" || __cdist_usage "Provide sane options"
 
    opt_file="$(echo $opt | sed 's/^--//')"
 
@@ -63,7 +59,7 @@ while [ $# -gt 0 ]; do
 
    value="$1"; shift
 
-   echo "${value}" > "${ddir}/${opt_file}"
+   echo "${value}" > "${__cdist_ddir}/${opt_file}"
 
    
 

@@ -58,6 +58,9 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 # Used for generating binaries in cdist-build-bin
 __cdist_bin_prefix="__"
 
+# Used for IDs
+__cdist_sane_chars='[A-Za-z0-9_]'
+
 ################################################################################
 # Function list
 #
@@ -77,6 +80,11 @@ __cdist_exit_err()
 __cdist_usage()
 {
    __cdist_exit_err "$__cdist_myname: $@"
+}
+
+__cdist_cache_host()
+{
+   echo "${__cdist_cache_hosts}/${__cdist_target_host}"
 }
 
 
