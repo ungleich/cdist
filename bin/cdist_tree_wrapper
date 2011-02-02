@@ -32,7 +32,7 @@ echo "I am $__cdist_myname and have been called with $@"
 
 __cdist_id="$1"; shift
 
-echo "$__cdist_id" | grep -q "^${__cdist_sane_chars}*\$" || __cdist_usage "Provide sane id, please"
+echo "$__cdist_id" | grep -q "^${__cdist_sane_regexp}\$" || __cdist_usage "Provide sane id, please"
 
 __cdist_tid="${__cdist_myname}/${__cdist_id}"
 __cdist_ddir="$(__cdist_cache_host)/${__cdist_tid}"
@@ -47,7 +47,7 @@ mkdir -p "${__cdist_ddir}"
 while [ $# -gt 0 ]; do
    opt="$1"; shift
 
-   echo "$opt" | grep -q "^--${__cdist_sane_chars}*\$" || __cdist_usage "Provide sane options"
+   echo "$opt" | grep -q "^--${__cdist_sane_regexp}\$" || __cdist_usage "Provide sane options"
 
    opt_file="$(echo $opt | sed 's/^--//')"
 

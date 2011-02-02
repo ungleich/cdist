@@ -58,7 +58,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 __cdist_bin_prefix="__"
 
 # Used for IDs
-__cdist_sane_chars='[A-Za-z0-9_]'
+__cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 
 # Used to mark file that created a specific type
 __cdist_object_source=".source"
