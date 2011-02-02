@@ -13,6 +13,7 @@ DESCRIPTION
 Using the available types and shell language, you can create mappings of what
 should be configured on a host.
 
+ENTRYPOINT: $prefix/manifests/init
 
 
 ENVIRONMENT

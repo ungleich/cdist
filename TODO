@@ -6,7 +6,6 @@
          - cdist-push-pull
          - cdist-quickstart
       - add terminology
-      - define entry point
       - define modules / mix with library?
          - and entry point is my only real configuration?
       - define steps within configuration apply
