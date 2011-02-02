@@ -10,3 +10,6 @@ sync:
 
 web:
 	cp REAL_README $$HOME/niconetz/software/cdist.mdwn
+
+pub:
+	git push --mirror
