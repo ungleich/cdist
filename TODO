@@ -6,8 +6,6 @@
          - cdist-push-pull
          - cdist-quickstart
       - add terminology
-      - define modules / mix with library?
-         - and entry point is my only real configuration?
       - define steps within configuration apply
          - detect impossible/unsafe things:
          - creating a file twice
@@ -20,8 +18,6 @@
          - SHELL SCRIPTS! (executables? do not support?)
             - stdout
    - cleanup / integrate doc/man/cdist.text
-   - define how to write / provide functions
-      - keep generic / easy extension
 - cdist-deply-to
    - sync conf/{lib/,modules,host/$name}
 - cdist-explore
