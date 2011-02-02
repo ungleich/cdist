@@ -34,4 +34,5 @@ cdist-build-explorer | ssh "$1" > "${CDIST_TMP}"
 . "${CDIST_TMP}"
 
 
-
+# Create cconfig for the host
+# cdist-manifest ...

@@ -33,7 +33,6 @@
 
 
 # obsolete?: lib not needed, hosts replaced by manifests, modules by types
-: ${__cdist_hosts:=$__cdist_config/hosts}
 : ${__cdist_modules:=$__cdist_config/modules}
 : ${__cdist_coredir:=$__cdist_config/core}
 

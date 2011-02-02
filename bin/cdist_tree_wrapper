@@ -61,6 +61,4 @@ while [ $# -gt 0 ]; do
 
    echo "${value}" > "${__cdist_ddir}/${opt_file}"
 
-   
-
 done

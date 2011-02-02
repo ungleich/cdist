@@ -25,62 +25,24 @@
 . cdist-config
 
 [ "${__cdist_target_host}" ] || __cdist_usage "Need \$__cdist_target_host setup"
+[ "${__cdist_output_dir}" ]  || __cdist_usage "Need \$__cdist_output_dir setup"
 
 set -au
 
-__cdist_tree_wrapper="$(which cdist_tree_wrapper)"
+# FIXME: Save output in cache -- or make flexible?
+__cdist_output_dir="$(__cdist_cache_host)"
 
-# used to build the tree and other stuff
-__cdist_bindir="${__cdist_tmp_dir}/bin"
-
-# FIXME: create cache/bin dir only once / do that in its
-# own function
-
-# Save output in cache
-__cdist_output="${__cdist_cache_hosts}/${__cdist_target_host}"
-
-cdist_type_prefix="__"
-
-################################################################################
-# Begin execution
-
-cdist_tree_wrapper_name=${cdist_tree_wrapper##*/}
-cdist_tree_wrapper_absdir=$(cd ${cdist_tree_wrapper%/*} && pwd -P)
-cdist_tree_wrapper_abs="$cdist_tree_wrapper_absdir/$cdist_tree_wrapper_name"
-
-
-rm -rf "${__cdist_tmp_dir}"
-
-# contains cdist-tree binaries
-mkdir -p "${cdist_bindir}"
-#ln -s "${cdist_tree_wrapper_abs}" "${bindir}"
-
-# Create our binaries, will are called from the manifest - temporary
-(
-   set -e
-   cd "${__cdist_type_dir}"
-   # FIXME: replace with redirect to file + read
-   for bin in *; do
-      ln -s "${cdist_tree_wrapper_abs}" "${cdist_type_prefix}${bin}"
-   cd "${cdist_bindir}"
-   done
-)
-
-# Cdist_tree_wrapper does not need any other tool, so remove them from the path.
-# but the manifest may need so - FIXME: think about it.
-#unset PATH
-
-# prepend our path
+# prepend our path, so all cdist tools come before other tools
 PATH="${__cdist_cache_bin}:$PATH"
 
-# create output dir
-mkdir -p "${cdist_confdir}"
-
-# force -x, so the user is aware the file is executed
+# Force -x, so the user is aware the file is executed
 if [ ! -x "${__cdist_manifest_init}" ]; then
    __cdist_exit_err "${__cdist_manifest_init} needs to be executable."
 fi
 
+# create output dir
+mkdir -p "$(__cdist_cache_host)"
+
 "${__cdist_manifest_init}"
 
-echo "Finished tree generation, have a look at ${cdist_confdir}."
+echo "Finished tree generation, have a look at ${__cdist_output_dir}."

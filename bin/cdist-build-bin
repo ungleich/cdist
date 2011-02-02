@@ -24,6 +24,7 @@
 
 set -aeu
 
+# FIXME: load this from the cdist-core library
 __cdist_tree_wrapper="$(which cdist_tree_wrapper)"
 
 if [ ! -d ${__cdist_type_dir} ]; then
