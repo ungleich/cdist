@@ -1,0 +1,33 @@
+cdist-manifests(7)
+==================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-manifests - Map configuration to hosts
+
+
+DESCRIPTION
+-----------
+Using the available types and shell language, you can create mappings of what
+should be configured on a host.
+
+
+
+ENVIRONMENT
+-----------
+The following variables are available in manifests:
+
+- __{explorer|fact}_{name}
+- __core_hostname: Hostname that we are deploying to
+- __core_localhostname: Hostname that we are deploying from
+
+EXAPMLES
+--------
+
+
+COPYING
+-------
+Copyright \(C) 2010 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
