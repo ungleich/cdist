@@ -18,7 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 # 
-# Let's build a cconfig tree from a generic configuration (example)
+# Let's build a cconfig tree from a configuration
+# And save it into the cache tree
 #
 
 #[ $# -eq 1 ] || __cdist_usage "cconf"
@@ -27,15 +28,16 @@
 
 set -au
 
-# all types cdist is aware of
-export __cdist_types="file service user"
-
-cdist_tree_wrapper="cdist_tree_wrapper"
+cdist_tree_wrapper="$(which cdist_tree_wrapper)"
 
 # used to build the tree and other stuff
-tmpdir=/tmp/cdist-test-hardcoded
-cdist_bindir="${tmpdir}/bin"
-cdist_confdir="${tmpdir}/conf"
+__cdist_bindir="${__cdist_tmp_dir}/bin"
+
+# FIXME: create cache/bin dir only once / do that in its
+# own function
+
+# Save output in cache
+__cdist_output="${__cdist_cache_hosts}/${__cdist_target_host}"
 
 cdist_type_prefix="__"
 
@@ -47,7 +49,7 @@ cdist_tree_wrapper_absdir=$(cd ${cdist_tree_wrapper%/*} && pwd -P)
 cdist_tree_wrapper_abs="$cdist_tree_wrapper_absdir/$cdist_tree_wrapper_name"
 
 
-rm -rf "${tmpdir}"
+rm -rf "${__cdist_tmp_dir}"
 
 # contains cdist-tree binaries
 mkdir -p "${cdist_bindir}"
@@ -56,9 +58,11 @@ mkdir -p "${cdist_bindir}"
 # Create our binaries, will are called from the manifest - temporary
 (
    set -e
-   cd "${cdist_bindir}"
-   for bin in $__core_types; do
+   cd "${__cdist_type_dir}"
+   # FIXME: replace with redirect to file + read
+   for bin in *; do
       ln -s "${cdist_tree_wrapper_abs}" "${cdist_type_prefix}${bin}"
+   cd "${cdist_bindir}"
    done
 )
 
