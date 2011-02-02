@@ -7,3 +7,6 @@ install:
 sync:
 	.rsync lyni@tablett:cdist
 	.rsync nicosc@free.ethz.ch:cdist
+
+web:
+	cp REAL_README $$HOME/niconetz/software/cdist.mdwn
