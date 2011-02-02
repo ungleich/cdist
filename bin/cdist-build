@@ -23,7 +23,7 @@
 
 . cdist-config
 
-[ $# -eq 1 ] || __cdist_usage "target_host"
+[ $# -eq 1 ] || __cdist_usage "<target host>"
 
 set -e
 

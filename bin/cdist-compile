@@ -21,6 +21,6 @@
 # Compile configuration - create cconfig from manifests
 #
 
-[ $# -eq 1 ] || __cdist_usage "target"
+[ $# -eq 1 ] || __cdist_usage "<target host>"
 
 echo This script should run the manifest file
