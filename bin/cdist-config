@@ -60,6 +60,9 @@ __cdist_bin_prefix="__"
 # Used for IDs
 __cdist_sane_chars='[A-Za-z0-9_]'
 
+# Used to mark file that created a specific type
+__cdist_object_source=".source"
+
 ################################################################################
 # Function list
 #

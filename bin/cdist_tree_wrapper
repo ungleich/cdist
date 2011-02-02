@@ -38,9 +38,8 @@ __cdist_tid="${__cdist_myname}/${__cdist_id}"
 __cdist_ddir="$(__cdist_cache_host)/${__cdist_tid}"
 
 if [ -e "${__cdist_ddir}" ]; then
-   # FIXME: add source! $cdist_config_base/source
-   # FIXME: force $source information to be present from outside!
-   __cdist_usage "${__cdist_tid} already exists"
+   source="$(cat "${__cdist_ddir}/${__cdist_object_source}")"
+   __cdist_usage "${__cdist_tid} already exists (source: $source)"
 fi
 
 mkdir -p "${__cdist_ddir}"
@@ -60,5 +59,7 @@ while [ $# -gt 0 ]; do
    value="$1"; shift
 
    echo "${value}" > "${__cdist_ddir}/${opt_file}"
+
+   echo "${__cdist_abs_myname}" > "${__cdist_ddir}/${__cdist_object_source}"
 
 done
