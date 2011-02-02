@@ -10,18 +10,24 @@ cdist - Configuration distribution system
 
 DESCRIPTION
 -----------
-Cdist allows you to define centrally a configurations for
-all systems and apply them. Cdist generally uses the push
+Cdist allows you to centrally define a configurations for
+UNIX systems and apply them. Cdist generally uses the push
 approach (a server pushes out the configuration to the clients),
 but can also be used the pull way (see cdist-push-pull(7)).
 
 Cdist is configured in shell syntax, which is "compiled" to an
-internal configuration representation (cconfig), which again
+internal configuration representation (cdist-cconfig(7)), which again
 is used to generate an executable, which is run on the client
 (see cdist-language(7), cdist-design(7)).
 
 To get your fingers dirty with cdist very quick, have
 a look at cdist-quickstart(7).
+
+
+REQUIREMENTS
+------------
+Cdist requires enabled ssh-server and a posix shell on the clients and
+ssh-client and posix shell on the server.
 
 
 SEE ALSO
