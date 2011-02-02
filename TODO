@@ -13,6 +13,7 @@
          - installing and removing a package
          - and report location of occurence
          - parse afterwards?
+      - multi master setups
 
    - how to define templates
       - variable substitution from shell may be problematic
@@ -22,24 +23,25 @@
 - cdist-explore
    - add more stuff to explore
    - write manpage
+   - save in cache as well
 - Create usable Makefile 
    - install
-- types needed (inspired by what I use from puppet)
+- types needed:
    - package management
    - file / directory handling
    - ssh-host-key: that uses cache / explored data from hosts!
    - services
    - user management
       - including passwords
-- to implement (from cfengine):
-   - file editing (sed, awk)
-   - huge library of functions shipped by default
-   - disconnected clients with "cache"
+   - file editing
+      - add_line_to_file_if_not_existing
+      - delete_line_from_file
+      - regexp replace (can probably cover all?)
 - release first public version, which includes at least:
    - manpages
-   - only do necessary work
-         - install packages only if not existent
-               - copy file only if different
+   - only do necessary work [TYPE IMPLEMENTATION HINTS]
+      - install packages only if not existent
+      - copy file only if different
 
 Before initial release, document:
       
@@ -50,10 +52,3 @@ Before initial release, document:
       - cdist_file
       - cdist_dir
 
-
-
---------------------------------------------------------------------------------
-Later:
-
-   - multi master setups
-   - pull strategy
