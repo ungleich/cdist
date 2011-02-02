@@ -28,10 +28,13 @@ if [ $# -ne 2 ]; then
    __cdist_usage "<outdir> <manifest>"
 fi
 
-set -au
+set -aeu
 
 __cdist_output_dir="$1"; shift
 __cdist_manifest="$1"; shift
+
+# Ensure binaries exist and are up-to-date
+cdist-build-bin
 
 # prepend our path, so all cdist tools come before other tools
 PATH="${__cdist_cache_bin}:$PATH"
@@ -42,4 +45,4 @@ if [ ! -x "${__cdist_manifest_init}" ]; then
 fi
 
 mkdir -p "${__cdist_output_dir}"
-"${__cdist_manifest_init}"
+"${__cdist_manifest}"
