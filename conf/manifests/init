@@ -2,8 +2,9 @@
 # This is a sample manifest, but used in real world
 #
 
+set -x
 # All ikqs get a sample file
-case "$__core_hostname" in
+case "$__cdist_target_host" in
    ikq*)
       __file cdist-config --source /home/users/nico/p/cdist/bin/cdist-config  --destination /usr/bin/cdist-config
       ;;
