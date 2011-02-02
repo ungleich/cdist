@@ -29,9 +29,6 @@
 
 set -au
 
-# FIXME: Save output in cache -- or make flexible?
-__cdist_output_dir="$(__cdist_cache_host)"
-
 # prepend our path, so all cdist tools come before other tools
 PATH="${__cdist_cache_bin}:$PATH"
 
@@ -40,9 +37,10 @@ if [ ! -x "${__cdist_manifest_init}" ]; then
    __cdist_exit_err "${__cdist_manifest_init} needs to be executable."
 fi
 
-# create output dir
-mkdir -p "$(__cdist_cache_host)"
+# create output dir ??
+mkdir -p "$(__cdist_output_dir)"
 
+# Create output / take manifest as argument?
 "${__cdist_manifest_init}"
 
 echo "Finished tree generation, have a look at ${__cdist_output_dir}."
