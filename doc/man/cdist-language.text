@@ -12,7 +12,7 @@ DESCRIPTION
 -----------
 A cdist configuration consists of the following parts:
 
-- host definitions (cdist-language-hosts(7))
+- manifests (cdist-manifests(7))
 - library (cdist-language-library(7))
 - modules (cdist-language-modules(7))
 

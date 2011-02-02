@@ -18,7 +18,7 @@ These prefixes are supposed to be used. If you write a new type, you
 should stick to these conventions.
 
 - __: All variables setup by cdist are prefixed with a double _
-- __core: Variables setup by the cdist core
+- __cdist_: Variables setup by the cdist core
 - __<type>_<name>: Variable <name> setup by type <type>
 
 
