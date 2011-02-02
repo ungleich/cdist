@@ -1,5 +1,10 @@
-case "$__target_hostname" in
-   thilo)
-      echo "postgresql"
+#
+# This is a sample manifest, but used in real world
+#
+
+# All ikqs get a sample file
+case "$__core_hostname" in
+   ikq*)
+      __file cdist-config --source /home/users/nico/p/cdist/bin/cdist-config  --destination /usr/bin/cdist-config
       ;;
 esac

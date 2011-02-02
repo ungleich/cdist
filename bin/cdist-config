@@ -46,18 +46,6 @@ __cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
 __cdist_myname=${0##*/};
 __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
-
-################################################################################
-# Generate list of types
-#
-
-# FIXME: ignore error?
-cd "$__cdist_type_dir"
-for __cdist_type in ${__cdist_type_dir}/*; do
-   __cdist_types="$__cdist_types $__cdist_type"
-done
-cd "$__cdist_abs_mydir"
-
 ################################################################################
 # Function list
 #
