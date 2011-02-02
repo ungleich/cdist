@@ -21,6 +21,8 @@
 # Print configuration directories - helper for all other scripts
 #
 
+# Values can be overriden from outside, so you can
+# customise paths as you like (for distributors, geeks and hackers)
 : ${__cdist_config:=/etc/cdist}
 : ${__cdist_manifest_dir:=$__cdist_config/manifests}
 : ${__cdist_manifest_init:=$__cdist_manifest_dir/init}
@@ -30,12 +32,6 @@
 : ${__cdist_cache_dir:=$__cdist_config/cache}
 : ${__cdist_cache_hosts:=$__cdist_cache_dir/hosts}
 : ${__cdist_cache_bin:=$__cdist_cache_dir/bin}
-
-
-# obsolete?: lib not needed, hosts replaced by manifests, modules by types
-: ${__cdist_modules:=$__cdist_config/modules}
-: ${__cdist_coredir:=$__cdist_config/core}
-
 
 # create basedir + tempfile for direct usage
 # FIXME: remove on exit

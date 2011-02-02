@@ -14,5 +14,8 @@ What you can do so far:
 # prepare use:
 export PATH="$PATH:$(pwd -P)/bin"
 
-## Test config tree wrapper
-cd test && ./cdist-cconfig-tree
+# Test first level manifest execution
+__cdist_config=$(pwd -P)/conf __cdist_target_host=ikq02.ethz.ch cdist-manifest-init 
+
+# See what it generated
+find conf/cache
