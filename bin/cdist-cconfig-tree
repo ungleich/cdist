@@ -28,13 +28,9 @@
 set -au
 
 # all types cdist is aware of
-export cdist_types="file service user"
+export __cdist_types="file service user"
 
-# the file that contains mapping from hosts to types
-# we will execute this later -- call this MANIFEST?
-cdist_config_base="./EXAMPLE_MANIFEST"
-
-cdist_tree_wrapper="./cdist_tree_wrapper"
+cdist_tree_wrapper="cdist_tree_wrapper"
 
 # used to build the tree and other stuff
 tmpdir=/tmp/cdist-test-hardcoded
@@ -61,7 +57,7 @@ mkdir -p "${cdist_bindir}"
 (
    set -e
    cd "${cdist_bindir}"
-   for bin in $cdist_types; do
+   for bin in $__core_types; do
       ln -s "${cdist_tree_wrapper_abs}" "${cdist_type_prefix}${bin}"
    done
 )
@@ -77,8 +73,8 @@ PATH="${cdist_bindir}:$PATH"
 mkdir -p "${cdist_confdir}"
 
 # force -x, so the user is aware the file is executed
-if [ -x "${cdist_config_base}" ]; then
-   "${cdist_config_base}"
+if [ -x "${__cdist_manifest_init}" ]; then
+   "${__cdist_manifest_init}"
 else
    echo Throw some error, as you forgot to +x it.
    exit 1

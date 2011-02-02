@@ -21,16 +21,22 @@
 # Print configuration directories - helper for all other scripts
 #
 
-: ${CDIST_CONFIG:=/etc/cdist}
-: ${CDIST_COREDIR:=$CDIST_CONFIG/core}
-: ${CDIST_LIBDIR:=$CDIST_CONFIG/lib}
-: ${CDIST_HOSTS:=$CDIST_CONFIG/hosts}
-: ${CDIST_MODULES:=$CDIST_CONFIG/modules}
+: ${__cdist_config:=/etc/cdist}
+: ${__cdist_manifest_dir:=$__cdist_config/manifests}
+: ${__cdist_manifest_init:=$__cdist_manifest_dir/init}
+: ${__cdist_type_dir:=$__cdist_config/types}
+
+
+# obsolete?: lib not needed, hosts replaced by manifests, modules by types
+: ${__cdist_hosts:=$__cdist_config/hosts}
+: ${__cdist_modules:=$__cdist_config/modules}
+: ${__cdist_coredir:=$__cdist_config/core}
+
 
 # create basedir + tempfile for direct usage
-: ${CDIST_TMPBASEDIR:=/tmp}
-: ${CDIST_TMPDIR:=$(mktemp -d "$CDIST_TMPBASEDIR/cdist.XXXXXXXXXXXX")}
-: ${CDIST_TMP:=$(mktemp "$CDIST_TMPDIR/cdist.XXXXXXXXXXXX")}
+# FIXME: remove on exit
+: ${__cdist_tmp_dir:=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")}
+: ${__cdist_tmp_file:=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")}
 
 ################################################################################
 # cconf standard vars prefixed with cdist
@@ -41,9 +47,23 @@ __cdist_myname=${0##*/};
 __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 
+################################################################################
+# Generate list of types
+#
+
+# FIXME: ignore error?
+cd "$__cdist_type_dir"
+for __cdist_type in ${__cdist_type_dir}/*; do
+   __cdist_types="$__cdist_types $__cdist_type"
+done
+cd "$__cdist_abs_mydir"
+
+################################################################################
+# Function list
+#
 __cdist_debug_echo()
 {
-   if [ "$CDIST_DEBUG" ]; then
+   if [ "$__cdist_debug" ]; then
       echo "Debug: $@"
    fi
 }
@@ -58,20 +78,20 @@ __cdist_usage()
 #set -e
 
 # load libraries so every program has them available - FIXME
-## find "${CDIST_LIBDIR}" -type f > "${CDIST_TMP}"
+## find "${__cdist_LIBDIR}" -type f > "${__cdist_TMP}"
 ## while read __cdist_lib; do
 ##    __cdist_debug_echo "Loading $__cdist_lib ..."
 ##    . "${__cdist_lib}"
-## done < "${CDIST_TMP}"
+## done < "${__cdist_TMP}"
 ## 
 
 # load modules, all parts => really
-#find "${CDIST_MODULES}" -name manifest > "${CDIST_TMP}"
+#find "${__cdist_MODULES}" -name manifest > "${__cdist_TMP}"
 
 #set +e
 
-#echo $CDIST_CONFIG
+#echo $__cdist_CONFIG
 # FIXME: here or somewhere else? other parts may reuse tmp
-: > "$CDIST_TMP"
-#rm -f "$CDIST_TMP"
+: > "$__cdist_TMP"
+#rm -f "$__cdist_TMP"
 #__cdist_cur="$(pwd -P)"
