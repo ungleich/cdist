@@ -4,13 +4,14 @@ x Define how to get information from clients
    x Create shell script that creates code to run on client (cdist-build-explorer)
 x Create configuration tree from manifest
    x write binaries, which create the tree when called from manifest (cdist_tree_wrapper)
-- Define configuration paths (doc/internal/config-layout)
+x Define configuration paths (doc/internal/config-layout)
+- Write at least one type
 - Parse configuration tree / generate code to be executed on client
-   - providers?
-   - can/may providers modify tree?
+   - types?
+   - can/may types modify tree?
       - may open door for getting information from manifest / other stuff
 
 - Cleanup / refactor / documentation
-- Write providers, providers, providers, ...
-   doc/internal/provider-integration
-   - provider side: Steven
+- Write types, types, types, ...
+   doc/internal/type-integration
+   - type side: Steven
