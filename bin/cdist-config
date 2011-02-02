@@ -85,19 +85,3 @@ __cdist_cache_host()
 {
    echo "${__cdist_cache_hosts}/${__cdist_target_host}"
 }
-
-
-#set -e
-
-# load libraries so every program has them available - FIXME
-## find "${__cdist_LIBDIR}" -type f > "${__cdist_TMP}"
-## while read __cdist_lib; do
-##    __cdist_debug_echo "Loading $__cdist_lib ..."
-##    . "${__cdist_lib}"
-## done < "${__cdist_TMP}"
-## 
-
-# load modules, all parts => really
-#find "${__cdist_MODULES}" -name manifest > "${__cdist_TMP}"
-
-#set +e
