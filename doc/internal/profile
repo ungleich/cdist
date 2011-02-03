@@ -1,2 +1,0 @@
-export PATH=$PATH:$HOME/cdist/bin
-export CDIST_CONFIG=$HOME/cdist/conf

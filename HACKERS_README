@@ -9,13 +9,13 @@ Do not believe anything written in cdist, besides what's written in this file
    -- Nico, 20101201
 
 
-What you can do so far:
+What you can do so far: (executed from top level directory)
 
 # prepare use:
 export PATH="$PATH:$(pwd -P)/bin"
 
 # Test first level manifest execution
-__cdist_config=$(pwd -P)/conf __cdist_target_host=ikq02.ethz.ch cdist-manifest-init 
+__cdist_config=$(pwd -P)/conf __cdist_target_host=ikq02.ethz.ch cdist-manifest-init
 
 # See what it generated
 find conf/cache

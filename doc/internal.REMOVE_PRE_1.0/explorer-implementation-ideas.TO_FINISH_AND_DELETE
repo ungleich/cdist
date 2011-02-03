@@ -1,0 +1,22 @@
+1) safer and fast version
+   cat blob | ssh host > tmp;
+   for var in ...
+      var=grep ^var= tmp
+2) slow & secure
+   for var in ...
+   eval var=$(cat single_blob | ssh host"
+
+3) easy & insecure
+   cat blob | ssh host > tmp; . tmp
+   
+4)   - rsync here/explorers target/explorers
+   - ssh target_host for explorer in target/explorers/; do
+      target/explorers/$explorer > target/cache/explorers/$explorer
+     done
+   - rsync target/cache/explorers here/cache/explorers....
+   - MINUS RSYNC!!!!!!!!!??????????
+ 
+--------------------------------------------------------------------------------
+
+TO_MAN: EXPLORER VALUES ARE UNTRUSTED (think of webclients and webapps)
+

@@ -6,6 +6,7 @@
          - cdist-push-pull
          - cdist-quickstart
          - cdist-types           [IMPORTANT]
+         - cdist.text            [IMPORTANT]
       - add terminology
       - define steps within configuration apply
          - detect impossible/unsafe things:
@@ -14,12 +15,11 @@
          - and report location of occurence
          - parse afterwards?
       - multi master setups
-
-   - how to define templates
-      - variable substitution from shell may be problematic
+      - templating
+         - how to define templates
+            - variable substitution from shell may be problematic
          - SHELL SCRIPTS! (executables? do not support?)
-            - stdout
-   - cleanup / integrate doc/man/cdist.text
+            - stdout == output of template == what will be used
 - cdist-explore
    - add more stuff to explore
    - write manpage

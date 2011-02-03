@@ -8,7 +8,7 @@ conf/manifests/init
       will be available for tracking in
       cdist core functions
 
-core/manifests/* (all other)
+conf/manifests/* (all other)
    - same function as above
    - but won't be called by cdist
    - method to seperate configuration parts
@@ -26,9 +26,8 @@ conf/types/<name>/
               but more like reusable defines
    - or may implement some functionality on their own
 
-lib/types/<name>/
-   - same as above, but provided by the cdist distribution
-   - if name exists in both, conf/ has priority
+conf/explorers/<name>
+   - explorers to be run on the target hosts
 
 Differences manifests vs. types
 
