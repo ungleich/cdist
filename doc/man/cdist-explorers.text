@@ -26,6 +26,11 @@ will cause the cdist run to abort.
 Explorers can reuse other explorers on the target system
 by calling $__cdist_explorer_path/<explorer_name>.
 
+REQUIREMENTS
+------------
+The directory $__cdist_remote_base_dir must be creatable
+on the target host (i.e. requires read/write permission).
+
 SEE ALSO
 --------
 cdist(7)
