@@ -19,9 +19,6 @@
 #
 #
 
-cdist_explore_pkg_system()
-{
-   case "$(cdist_explore_os)" in
+case "$(__cdist_explorer_dir/os)" in
       archlinux) echo pacman ;;
-   esac
-}
+esac
