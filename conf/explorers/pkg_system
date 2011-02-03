@@ -21,4 +21,5 @@
 
 case "$(__cdist_explorer_dir/os)" in
       archlinux) echo pacman ;;
+      debian|ubuntu) echo apt ;;
 esac
