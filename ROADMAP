@@ -5,14 +5,14 @@ x Define how to get information from clients
 x Create configuration tree from manifest
    x write binaries, which create the tree when called from manifest (cdist_tree_wrapper)
 x Define configuration paths (doc/internal/config-layout)
-- redo explorers (see manpage)
+x Redo explorers (see manpage)
 / Write at least one type
-- Parse configuration tree / generate code to be executed on client
-   - types?
+
+- Parse configuration tree/objects recursively
    - can/may types modify tree?
       - may open door for getting information from manifest / other stuff
+- generate code to be executed on client
+   - check return codes
+   - abort on first error?
 
-- Cleanup / refactor / documentation
-- Write types, types, types, ...
-   doc/internal/type-integration
-   - type side: Steven
+-> 1.0
