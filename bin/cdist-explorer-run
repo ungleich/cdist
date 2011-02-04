@@ -18,6 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# FIXME: This script is ugly, should be either seperated into smaller ones,
+# but definitely be cleaned up - PROOF OF CONCEPT CODE
+#
 
 . cdist-config
 
