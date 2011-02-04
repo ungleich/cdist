@@ -21,25 +21,34 @@
 
 . cdist-config
 
+[ "${__cdist_target_host}" ] || __cdist_usage "Need \$__cdist_target_host setup"
+
 set -e
+
+# create basedir
+ssh root@${__cdist_target_host} "mkdir -p \"${__cdist_remote_base_dir}\" \
+         \"${__cdist_remote_cache_dir}\" \"${__cdist_remote_cache_bin}\" \
+        \"${__cdist_remote_cache_explorer}\""
 
 # Transfer all explorers to the target dir - must be one level above, so
 # coyping it multiple times works: a -> remote:/base/ = remote:/base/a vs.
 # a -> remote:/base/a = remote:/base/a/a (second copy)
 scp -r "${__cdist_explorer_dir}" \
-       "root@${__cdist_target_host}:${__cdist_remote_cache_dir}"
+       "root@${__cdist_target_host}:${__cdist_remote_base_dir}"
 
-# Transfer explorer coordinator
-scp "$(which cdist-explorer-coordinator)" \
+# Transfer cdist binaries - FIXME: should transfer all (needed?) of them!
+scp "$(which cdist-explorer-coordinator)" "$(which cdist-config)" \
     "root@${__cdist_target_host}:${__cdist_remote_cache_bin}"
 
 # Execute explorer coordinator, which will save results on target
-ssh root@${__cdist_target_host} "\"${__cdist_remote_cache_bin}/cdist-explorer-coordinator\" \
+ssh root@${__cdist_target_host} \
+   "PATH=\"${__cdist_remote_cache_bin}:\$PATH\"
+   \"${__cdist_remote_cache_bin}/cdist-explorer-coordinator\" \
          \"${__cdist_remote_explorer_dir}\" \"${__cdist_remote_cache_explorer}\""
 
 
 # Transfer back all results
-scp -r "root@${__cdist_target_host}:${__cdist_remote_dir}"
+# scp -r "root@${__cdist_target_host}:${__cdist_remote_dir}"
 
 
 exit 0

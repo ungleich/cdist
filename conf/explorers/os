@@ -33,3 +33,6 @@ fi
 [ -f /etc/debian_version ] && echo debian
 
 [ -f /etc/redhat-release ] && echo redhat
+
+# ensure correct exit, otherwise other explorer won't get started
+exit 0

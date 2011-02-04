@@ -37,10 +37,12 @@
 
 # Paths used on the target - must be kind of secure....
 : ${__cdist_remote_base_dir:=/var/lib/cdist}
-: ${__cdist_remote_explorer_dir:=$__cdist_remote_base/explorers}
-: ${__cdist_remote_cache_dir:=$__cdist_remote_base/cache}
-: ${__cdist_remote_cache_explorer:=$__cdist_remote_base/cache}
-: ${__cdist_remote_cache_bin:=$__cdist_remote_base/bin}
+: ${__cdist_remote_explorer_dir:=$__cdist_remote_base_dir/explorers}
+export __cdist_remote_explorer_dir
+: ${__cdist_remote_cache_dir:=$__cdist_remote_base_dir/cache}
+: ${__cdist_remote_cache_explorer:=$__cdist_remote_cache_dir/explorers}
+export __cdist_remote_cache_explorer
+: ${__cdist_remote_cache_bin:=$__cdist_remote_base_dir/bin}
 
 # create basedir + tempfile for direct usage
 # FIXME: remove on exit
