@@ -1,0 +1,2 @@
+install/pacman:
+pacman --noconfirm --noprogressbar -S
