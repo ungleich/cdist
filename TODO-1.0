@@ -42,6 +42,9 @@ x Redo explorers (see manpage)
             - variable substitution from shell may be problematic
          - SHELL SCRIPTS! (executables? do not support?)
             - stdout == output of template == what will be used
+   - cleanup website
+   - remove HACKERS_README
+   - create doc/dev/HACKERS_README
 - Add install target to Makefile
 
 - types needed
