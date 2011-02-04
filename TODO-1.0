@@ -46,6 +46,7 @@ x Redo explorers (see manpage)
    - remove HACKERS_README
    - create doc/dev/HACKERS_README
 - Add install target to Makefile
+   - create cdist-config-init to create basic tree
 
 - types needed
    - file (with directory)

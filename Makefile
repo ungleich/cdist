@@ -3,6 +3,8 @@ BINDIR=$(PREFIX}/bin
 WEBDIR=$$HOME/niconetz
 WEBPAGE=software/cdist.mdwn
 
+# FIXME: some distro nerd, can you make this more beautiful?
+# I'm just a hacker, I don't really care...
 install:
 	cp bin/* $(BINDIR)
 
