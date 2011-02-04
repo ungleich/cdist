@@ -15,4 +15,6 @@ x Redo explorers (see manpage)
    - check return codes
    - abort on first error?
 
+- Cleanup directories, cleanly document, what's possible
+
 -> 1.0
