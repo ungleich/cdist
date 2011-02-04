@@ -1,2 +1,0 @@
-# Ensure postgresql 8.4 is instelled
-__package --ensure installed --name postgresql-8.4
