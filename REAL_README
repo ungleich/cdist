@@ -19,7 +19,7 @@ and it is equipped with manpages.
  * KISS (keep it simple and stupid)
   * Allow very easy extension of cdist (creating own types for instance)
  * Push (server pushes configuration) and Pull (client retrieves config) supported
- * User defines configuration in shell scripts using cdist functions
+ * User defines configuration in shell scripts
  * Cdist generates internal configuration (cconfig style) and afterwards applies configuration
 
 ## Requirements
