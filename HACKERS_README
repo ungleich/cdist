@@ -19,3 +19,9 @@ __cdist_config=$(pwd -P)/conf __cdist_target_host=ikq02.ethz.ch cdist-manifest-i
 
 # See what it generated
 find conf/cache
+
+# Run explorer on a "remote" host
+__cdist_config=$(pwd -P)/conf __cdist_target_host=localhost ./bin/cdist-explorer-run
+
+# Display result
+find conf/cache/hosts/localhost
