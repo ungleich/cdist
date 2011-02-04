@@ -1,5 +1,0 @@
-func1()
-{
-   myvar="blu"
-   echo $myvar
-}
