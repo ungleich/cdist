@@ -47,3 +47,19 @@ and it is equipped with manpages.
 ## How to use cdist
 
     man cdist
+
+## Support
+
+### IRC
+
+You can join the development ***IRC channel***
+[#cLinux on irc.freenode.org](irc://irc.freenode.org/#cLinux).
+
+### Mailing list
+Bug reports, questions, patches, etc. should be send to the
+[cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
+
+
+
+
+
