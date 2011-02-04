@@ -1,0 +1,9 @@
+Types:
+   - ssh-keys (host/user)
+   - services
+   - user management
+   - file editing 
+      - add_line_to_file_if_not_existing
+      - delete_line_from_file
+      - regexp replace (can probably cover all?)
+

@@ -1,0 +1,52 @@
+This document defines how to continue work on cdist:
+
+x Define how to get information from clients
+   x Create shell script that creates code to run on client (cdist-build-explorer)
+x Create configuration tree from manifest
+   x write binaries, which create the tree when called from manifest (cdist_tree_wrapper)
+x Define configuration paths (doc/internal/config-layout)
+x Redo explorers (see manpage)
+/ Write at least one type
+
+- Parse configuration tree/objects recursively
+   - can/may types modify tree?
+      - may open door for getting information from manifest / other stuff
+- generate code to be executed on client
+   - check return codes
+   - abort on first error?
+
+- doc 1.0:
+   - cdist manpage (main manpage)
+      - cleanup following man + their tree:
+         - cdist-language        [IMPORTANT]
+         - cdist-design.text     [IMPORTANT]
+         - cdist-push-pull
+         - cdist-quickstart
+            - how to write a minimal host manifest
+         - cdist-types           [IMPORTANT]
+            - only do necessary work [TYPE IMPLEMENTATION HINTS]
+               - install packages only if not existent
+               - copy file only if different
+         - cdist                 [IMPORTANT]
+         - cdist-explorers
+      - add terminology
+      - define steps within configuration apply
+         - detect impossible/unsafe things:
+         - creating a file twice
+         - installing and removing a package
+         - and report location of occurence
+         - parse afterwards?
+      - multi master setups
+      - templating
+         - how to define templates
+            - variable substitution from shell may be problematic
+         - SHELL SCRIPTS! (executables? do not support?)
+            - stdout == output of template == what will be used
+- Add install target to Makefile
+
+- types needed
+   - file (with directory)
+   - package
+
+- Cleanup directories, cleanly document, what's possible
+
