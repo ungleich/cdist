@@ -33,6 +33,15 @@
 : ${__cdist_cache_hosts:=$__cdist_cache_dir/hosts}
 : ${__cdist_cache_bin:=$__cdist_cache_dir/bin}
 
+: ${__cdist_explorer_dir:=$__cdist_config/explorers}
+
+# Paths used on the target - must be kind of secure....
+: ${__cdist_remote_base_dir:=/var/lib/cdist}
+: ${__cdist_remote_explorer_dir:=$__cdist_remote_base/explorers}
+: ${__cdist_remote_cache_dir:=$__cdist_remote_base/cache}
+: ${__cdist_remote_cache_explorer:=$__cdist_remote_base/cache}
+: ${__cdist_remote_cache_bin:=$__cdist_remote_base/bin}
+
 # create basedir + tempfile for direct usage
 # FIXME: remove on exit
 : ${__cdist_tmp_dir:=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")}

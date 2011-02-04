@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Coordinate run of explorers on target
+# Coordinate run of explorers on target (this script runs on the target)
 #
 
 . cdist-config
@@ -32,4 +32,5 @@ result_dir="$1"; shift
 
 cd "${explorer_dir}"
 for explorer in *; do
-   ./$explorer > "${result_dir}/${explorer}"
+   "./$explorer" > "${result_dir}/${explorer}"
+done
