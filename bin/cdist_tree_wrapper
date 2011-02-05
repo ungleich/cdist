@@ -28,6 +28,8 @@
 
 [ $# -ge 1 ] || __cdist_usage "<id> <options>"
 
+set -eu
+
 echo "I am $__cdist_myname and have been called with $@"
 
 __cdist_id="$1"; shift
