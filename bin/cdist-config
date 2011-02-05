@@ -21,6 +21,7 @@
 # Print configuration directories - helper for all other scripts
 #
 
+
 # Values can be overriden from outside, so you can
 # customise paths as you like (for distributors, geeks and hackers)
 : ${__cdist_config:=/etc/cdist}
@@ -46,10 +47,11 @@ export __cdist_remote_explorer_dir
 export __cdist_remote_cache_explorer
 : ${__cdist_remote_cache_bin:=$__cdist_remote_base_dir/bin}
 
-# create basedir + tempfile for direct usage
-# FIXME: remove on exit
-: ${__cdist_tmp_dir:=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")}
-: ${__cdist_tmp_file:=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")}
+# Tempfiles need to be recreated for each individual script, unshared!
+__cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")
+export __cdist_tmp_dir
+__cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
+export __cdist_tmp_file
 
 ################################################################################
 # cconf standard vars prefixed with cdist
@@ -71,6 +73,7 @@ __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 
 # Used to mark file that created a specific type
 __cdist_object_source=".source"
+
 
 ################################################################################
 # Function list
@@ -97,3 +100,13 @@ __cdist_cache_host()
 {
    echo "${__cdist_cache_hosts}/${__cdist_target_host}"
 }
+
+__cdist_tmp_removal()
+{
+   rm -rf "${__cdist_tmp_dir}"
+}
+
+################################################################################
+# Trap for tmp removal
+#
+trap __cdist_tmp_removal EXIT
