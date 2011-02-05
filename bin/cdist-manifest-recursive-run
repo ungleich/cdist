@@ -24,23 +24,43 @@
 # mark the object as being run
 # and iterate until all objects are marked being run.
 #
+#
+#
 
 . cdist-config
 
 if [ $# -ne 2 ]; then
-   __cdist_usage "<outdir> <manifest>"
+   __cdist_usage "<outdir> <object_dir>"
 fi
 
 set -eu
 
 __cdist_output_dir="$1"; shift
-__cdist_manifest="$1"; shift
+__cdist_object_dir="$1"; shift
 
 __cdist_object_ran_all=0
 
 while [ "$__cdist_object_ran_all" = 0 ]; do
+   cd "$__cdist_object_dir"
 
+   # FIXME past 1.0: allow multi level ids (/example/id instead of example_id only)
+   # OUTER LOOP NEEDED IF GOING OVER ALL OBJECTS WITH FIND?
+   for type in *; do
+      cd "$__cdist_object_dir/$type"
+
+      # find all objects (every object has the source recorded)
+      find . -name "$__cdist_object_source" > "$__cdist_tmp_file"
+
+      while read object; do
+         echo "Running object ${type}/${object} ..."
+      done < "$__cdist_tmp_file"
+   done
+   
+   # FIXME: abort on real case only :-)
+   __cdist_object_ran_all=1
 done
+
+exit 0
 
 # Ensure binaries exist and are up-to-date
 cdist-build-bin
