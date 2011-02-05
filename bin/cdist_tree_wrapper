@@ -37,7 +37,7 @@ __cdist_id="$1"; shift
 echo "$__cdist_id" | grep -q "^${__cdist_sane_regexp}\$" || __cdist_usage "Provide sane id, please"
 
 __cdist_tid="${__cdist_myname}/${__cdist_id}"
-__cdist_ddir="$(__cdist_cache_host)/${__cdist_tid}"
+__cdist_ddir="$(__cdist_cache_host)/${__cdist_name_object}/${__cdist_tid}"
 
 if [ -e "${__cdist_ddir}" ]; then
    source="$(cat "${__cdist_ddir}/${__cdist_object_source}")"
