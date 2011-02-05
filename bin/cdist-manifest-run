@@ -31,7 +31,7 @@ fi
 set -aeu
 
 __cdist_output_dir="$1"; shift
-__cdist_manifest="$1"; shift
+export __cdist_manifest="$1"; shift
 
 # Ensure binaries exist and are up-to-date
 cdist-build-bin

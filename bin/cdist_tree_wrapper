@@ -46,6 +46,9 @@ fi
 
 mkdir -p "${__cdist_ddir}"
 
+# Record (correct ;-) source
+echo "${__cdist_manifest}" > "${__cdist_ddir}/${__cdist_object_source}"
+
 while [ $# -gt 0 ]; do
    opt="$1"; shift
 
@@ -61,7 +64,5 @@ while [ $# -gt 0 ]; do
    value="$1"; shift
 
    echo "${value}" > "${__cdist_ddir}/${opt_file}"
-
-   echo "${__cdist_abs_myname}" > "${__cdist_ddir}/${__cdist_object_source}"
 
 done
