@@ -40,8 +40,8 @@ cdist-build-bin
 PATH="${__cdist_cache_bin}:$PATH"
 
 # Force -x, so the user is aware the file is executed
-if [ ! -x "${__cdist_manifest_init}" ]; then
-   __cdist_exit_err "${__cdist_manifest_init} needs to be executable."
+if [ ! -x "${__cdist_manifest}" ]; then
+   __cdist_exit_err "${__cdist_manifest} needs to be executable."
 fi
 
 mkdir -p "${__cdist_output_dir}"
