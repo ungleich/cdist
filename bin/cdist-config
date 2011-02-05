@@ -24,17 +24,26 @@
 
 # Values can be overriden from outside, so you can
 # customise paths as you like (for distributors, geeks and hackers)
+
+# Names
+: ${__cdist_name_bin:=bin}
+: ${__cdist_name_cache:=cache}
+: ${__cdist_name_explorer:=explorers}
+: ${__cdist_name_host:=hosts}
+: ${__cdist_name_init:=init}
+: ${__cdist_name_object:=objects}
+: ${__cdist_name_type:=types}
+
+# Base
 : ${__cdist_config:=/etc/cdist}
 : ${__cdist_manifest_dir:=$__cdist_config/manifests}
-: ${__cdist_manifest_init:=$__cdist_manifest_dir/init}
+: ${__cdist_manifest_init:=$__cdist_manifest_dir/$__cdist_name_init}
+: ${__cdist_type_dir:=$__cdist_config/$__cdist_name_type}
 
-: ${__cdist_name_explorer:=explorers}
-
-: ${__cdist_type_dir:=$__cdist_config/types}
-
+# Cache
 : ${__cdist_cache_dir:=$__cdist_config/cache}
-: ${__cdist_cache_hosts:=$__cdist_cache_dir/hosts}
-: ${__cdist_cache_bin:=$__cdist_cache_dir/bin}
+: ${__cdist_cache_hosts:=$__cdist_cache_dir/$__cdist_name_host}
+: ${__cdist_cache_bin:=$__cdist_cache_dir/$__cdist_name_bin}
 
 : ${__cdist_explorer_dir:=$__cdist_config/$__cdist_name_explorer}
 
@@ -42,10 +51,10 @@
 : ${__cdist_remote_base_dir:=/var/lib/cdist}
 : ${__cdist_remote_explorer_dir:=$__cdist_remote_base_dir/$__cdist_name_explorer}
 export __cdist_remote_explorer_dir
-: ${__cdist_remote_cache_dir:=$__cdist_remote_base_dir/cache}
+: ${__cdist_remote_cache_dir:=$__cdist_remote_base_dir/$__cdist_name_cache}
 : ${__cdist_remote_cache_explorer:=$__cdist_remote_cache_dir/$__cdist_name_explorer}
 export __cdist_remote_cache_explorer
-: ${__cdist_remote_cache_bin:=$__cdist_remote_base_dir/bin}
+: ${__cdist_remote_cache_bin:=$__cdist_remote_base_dir/$__cdist_name_bin}
 
 # Tempfiles need to be recreated for each individual script, unshared!
 __cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")
