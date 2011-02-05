@@ -15,7 +15,7 @@ What you can do so far: (executed from top level directory)
 export PATH="$PATH:$(pwd -P)/bin"
 
 # Test first level manifest execution
-__cdist_config=$(pwd -P)/conf __cdist_target_host=ikq02.ethz.ch cdist-manifest-init
+__cdist_config=$(pwd -P)/conf __cdist_target_host=localhost cdist-manifest-init
 
 # See what it generated
 find conf/cache
