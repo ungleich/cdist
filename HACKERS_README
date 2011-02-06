@@ -25,3 +25,7 @@ __cdist_config=$(pwd -P)/conf __cdist_target_host=localhost cdist-explorer-run
 
 # Display result
 find conf/cache/hosts/localhost
+
+# Soon working:
+cdist-manifest-recursive-run /tmp ~/p/cdist/conf/cache/hosts/localhost/objects
+

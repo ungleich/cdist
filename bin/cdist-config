@@ -80,8 +80,11 @@ __cdist_bin_prefix="__"
 # Used for IDs
 __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 
-# Used to mark file that created a specific type
+# File that contains source of a specific object creation
 __cdist_object_source=".source"
+
+# Mark object finished
+__cdist_object_finished=".done"
 
 
 ################################################################################

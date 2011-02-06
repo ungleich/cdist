@@ -27,7 +27,11 @@ a look at cdist-quickstart(7).
 REQUIREMENTS
 ------------
 Cdist requires enabled ssh-server and a posix shell on the clients and
-ssh-client and posix shell on the server.
+ssh-client and posix shell on the server. Additionaly, it requires
+the following unix tools:
+
+- find
+- 
 
 
 SEE ALSO

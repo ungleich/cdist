@@ -43,21 +43,35 @@ __cdist_object_ran_all=0
 while [ "$__cdist_object_ran_all" = 0 ]; do
    cd "$__cdist_object_dir"
 
-   # FIXME past 1.0: allow multi level ids (/example/id instead of example_id only)
-   # OUTER LOOP NEEDED IF GOING OVER ALL OBJECTS WITH FIND?
-   for type in *; do
-      cd "$__cdist_object_dir/$type"
+   # find all objects (every object has the source recorded)
+   find . -name "$__cdist_object_source" |   \
+      sed -e "s;$__cdist_object_source\$;;"  \
+          -e 's;^./;;'                       \
+      > "$__cdist_tmp_file"
 
-      # find all objects (every object has the source recorded)
-      find . -name "$__cdist_object_source" > "$__cdist_tmp_file"
+   while read object; do
+      if [ ! -f "${object}/$__cdist_object_finished" ]; then
+         echo "Running object ${object} ..."
+         echo "Merging stuff back..."
+         touch "${object}/$__cdist_object_finished"
+      fi
+   done < "$__cdist_tmp_file"
 
-      while read object; do
-         echo "Running object ${type}/${object} ..."
-      done < "$__cdist_tmp_file"
-   done
-   
-   # FIXME: abort on real case only :-)
-   __cdist_object_ran_all=1
+#    # FIXME past 1.0: allow multi level ids (/example/id instead of example_id only)
+#    # OUTER LOOP NEEDED IF GOING OVER ALL OBJECTS WITH FIND?
+#    for type in *; do
+#       cd "$__cdist_object_dir/$type"
+# 
+#       # find all objects (every object has the source recorded)
+#       find . -name "$__cdist_object_source" > "$__cdist_tmp_file"
+# 
+#       while read object; do
+#          echo "Running object ${type}/${object} ..."
+#       done < "$__cdist_tmp_file"
+#    done
+#    
+#    # FIXME: abort on real case only :-)
+#    __cdist_object_ran_all=1
 done
 
 exit 0
