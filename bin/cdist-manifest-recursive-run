@@ -29,13 +29,12 @@
 
 . cdist-config
 
-if [ $# -ne 2 ]; then
-   __cdist_usage "<outdir> <object_dir>"
+if [ $# -ne 1 ]; then
+   __cdist_usage "<object_dir>"
 fi
 
 set -eu
 
-__cdist_output_dir="$1"; shift
 __cdist_object_dir="$1"; shift
 
 # change to directory containing objects
@@ -66,13 +65,45 @@ while [ "$__cdist_object_created_new" = 1 ]; do
          if [ -x "${manifest}" ]; then
             cdist-manifest-run "${manifest}" "${__cdist_tmp_dir}"
 
-            echo "Merging stuff back..."
+            echo "Trying to merge... "
+
+            # list of new objects
+            cd "${__cdist_tmp_dir}"
+            find . -name "$__cdist_object_source" |   \
+               sed -e "s;$__cdist_object_source\$;;"  \
+                   -e 's;^./;;'                       \
+               > "$__cdist_tmp_file"
+
+            while read newobject; do
+               if [ -e "$__cdist_object_dir/${newobject}" ]; then
+                  echo FAIIIIIIIIL
+                  exit 23
+               else
+                  # Fine, merge back!
+                  pax -r -w "$newobject" "$__cdist_object_dir"
+               fi
+
+            done < "$__cdist_tmp_file"
+
+            # Always rerun the whole loop if we ran
+            # a manifest of an object
+            break
+
+
             # FIXME: continue here
-            # tar, cp, pax?
+            # tar, cp, pax, mv?
+            # mv/cp -n look good - posix?
+
+            # pax:
+            # pax -r -w  -k could work, but -k does not raise an error if files
+            # are already existing
+
             # - copy if not existing
             # fail (abort whole recursive run) if existing
             # 
             # iterate over all new objects and copy each back?
+
+            # FIXME: cleanup tmp directory, if necessary!
 
          else
             # Be nice, warn user if manifests exists, but is not executable
