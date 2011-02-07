@@ -33,6 +33,7 @@ set -eu
 echo "I am $__cdist_myname and have been called with $@"
 
 export __cdist_object_id="$1"; shift
+export __cdist_type_current="$__cdist_myname"
 
 echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || __cdist_usage "Provide sane id, please"
 
