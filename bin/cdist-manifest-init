@@ -24,6 +24,11 @@
 
 . cdist-config
 
-[ "${__cdist_target_host}" ] || __cdist_usage "Need \$__cdist_target_host setup"
+if [ $# -ne 2 ]; then
+   __cdist_usage "<target host> <outdir>"
+fi
 
-cdist-manifest-run "$(__cdist_cache_host)" "${__cdist_manifest_init}"
+export __cdist_target_host="$1"; shift
+export __cdist_output_dir="$1"; shift
+
+cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest_init" "$__cdist_output_dir"

@@ -35,14 +35,15 @@ echo "I am $__cdist_myname and have been called with $@"
 export __cdist_object_id="$1"; shift
 export __cdist_type_current="$__cdist_myname"
 
-echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || __cdist_usage "Provide sane id, please"
+echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || \
+   __cdist_usage "Insane object id, ${__cdist_object_id}."
 
-__cdist_tid="${__cdist_myname}/${__cdist_object_id}"
-__cdist_ddir="$(__cdist_cache_host)/${__cdist_name_object}/${__cdist_tid}"
+__cdist_tid="${__cdist_type_current}/${__cdist_object_id}"
+__cdist_ddir="$__cdist_output_dir/${__cdist_tid}"
 
 if [ -e "${__cdist_ddir}" ]; then
-   source="$(cat "${__cdist_ddir}/${__cdist_object_source}")"
-   __cdist_usage "${__cdist_tid} already exists (source: $source)"
+   source="$(__cdist_object_source "${__cdist_ddir}")"
+   __cdist_exit_err "${__cdist_tid} already exists (source: $source)"
 fi
 
 mkdir -p "${__cdist_ddir}"

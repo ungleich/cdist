@@ -24,7 +24,12 @@
 
 . cdist-config
 
-[ "${__cdist_target_host}" ] || __cdist_usage "Need \$__cdist_target_host setup"
+if [ $# -ne 2 ]; then
+   __cdist_usage "<target host> <outdir>"
+fi
+
+export __cdist_target_host="$1"; shift
+export __cdist_output_dir="$1"; shift
 
 set -e
 
@@ -52,12 +57,12 @@ ssh root@${__cdist_target_host} \
          \"${__cdist_remote_explorer_dir}\" \"${__cdist_remote_cache_explorer}\""
 
 # Ensure local destination directory exists
-mkdir -p "$(__cdist_cache_host)/$__cdist_name_explorer"
+mkdir -p "$__cdist_output_dir"
 
 # FIXME: enable -q as soon as the code is cleaned up
 # Transfer back all results - FIXME: Add 2 level cache, so old version is kept until success
 scp -r "root@${__cdist_target_host}:${__cdist_remote_cache_explorer}/*" \
-      "$(__cdist_cache_host)/$__cdist_name_explorer"
+      "$__cdist_output_dir"
 
 
 exit 0

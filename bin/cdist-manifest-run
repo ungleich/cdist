@@ -24,14 +24,16 @@
 
 . cdist-config
 
-if [ $# -ne 2 ]; then
-   __cdist_usage "<outdir> <manifest>"
+if [ $# -ne 3 ]; then
+   __cdist_usage "<target host> <manifest> <outdir>"
 fi
 
+set -x
 set -aeu
 
-__cdist_output_dir="$1"; shift
+export __cdist_target_host="$1"; shift
 export __cdist_manifest="$1"; shift
+export __cdist_output_dir="$1"; shift
 
 # Ensure binaries exist and are up-to-date
 cdist-build-bin
