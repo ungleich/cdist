@@ -1,0 +1,78 @@
+cdist-types(7)
+===============
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-types - Functionality bundled
+
+
+DESCRIPTION
+-----------
+   First stage: [done]
+   - If cdist encounters type in manifest,
+     a wrapper script is run, that creates a
+     new entry in the cconfig database and adds
+     attribute values. This defines a cconfig
+     tree, that may look as follows:
+      
+      <hostname>/<type>/<id>/<parameters>:
+
+      myhost/__file/cdist_bin/source
+      myhost/__file/cdist_bin/destination
+      ...
+
+   - In this stage, no conflicts may occur, as
+     no type code has been called (i.e. only
+     manifests, which map config to hosts is
+     applied).
+
+   Second stage: [done]
+   - The "init" script of every used type
+     (i.e. the manifests created at least one object)
+     is called, which again is able to call other
+     types. All created objects may also be modified
+     by the type.
+
+     For instance a "httpd" type may call the
+     "webroot" type with --path / ... 
+     # FIND CASE WHERE SENSEFUL => look through
+     current puppet config
+
+   - The newly created objects are merged back into
+     the existing tree. No conflicts may occur during
+     the merge, because this would implicit that the
+     type conflicts with other types.
+
+     The idea of this that a type may expand another
+     type with functionality, but may need to adjust
+     ("overwrite") settings from the original type.
+
+   Third stage:
+   - Cdist calls the "gencode" binary of the types
+     for every created object. This binary should create
+     code to be executed on the target on stdout.
+
+     If the gencode binary fails, it must print diagnostic
+     messages on stderr and exit non-zero.
+
+     A description of what the generated code may/must/should
+     do can be found at the end of this document.
+
+   - Cdist merges together the generated code
+     (taking care of DEPENDENCIES (which are not
+     yet defined (take care, double nested brackets)))
+
+   Fourth stage:
+   - The resulting shell script is transferred
+     to the target and executed.
+
+SEE ALSO
+--------
+
+
+COPYING
+-------
+Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
