@@ -55,20 +55,18 @@ while [ "$__cdist_object_created_new" = 1 ]; do
           -e 's;^./;;'                       \
       > "$__cdist_tmp_file"
 
+   # FIXME: DEBUG
    cat "$__cdist_tmp_file"
 
    while read object; do
       if [ ! -f "${object}/$__cdist_object_finished" ]; then
-         echo "Running object ${object} ..."
-
-         set -x
-         pwd
+         echo "Working on object ${object} ..."
 
          type=${object%%/*}
-
          manifest="$__cdist_type_dir/${type}/${__cdist_name_init}"
 
          if [ -x "${manifest}" ]; then
+            echo "Running manifest of type ${type} ..."
             cdist-manifest-run "${__cdist_tmp_dir}" "${manifest}"
 
             echo "Trying to merge... "
