@@ -1,0 +1,28 @@
+cdist-types(7)
+===============
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-types - Functionality bundled
+
+
+DESCRIPTION
+-----------
+A cdist type describes some kind of functionality.
+Types can be run from manifests.
+It is recommeneded to prefix all types with two
+underscores, because types will be executed and
+thus you prevent collisions with real binaries
+(like "file").
+
+
+SEE ALSO
+--------
+
+
+COPYING
+-------
+Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
