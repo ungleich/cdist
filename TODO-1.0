@@ -12,21 +12,24 @@ x Parse configuration tree/objects recursively
       -> yes, of everything a type created itself!
       x may open door for getting information from manifest / other stuff
 
-- Cleanly define paths for object creation, especially recursive calls
+x Cleanly define paths for object creation, especially recursive calls
+   x doc/man/cdist-config-layout.text
 
 - generate code to be executed on client
    - check return codes
    - abort on first error?
+
+- execute code on client
 
 / Write at least one type (completly!)
 
 - doc 1.0:
    - cdist manpage (main manpage)
       - cleanup following man + their tree:
-         - cdist-language        [IMPORTANT]
-         - cdist-design.text     [IMPORTANT]
-         - cdist-push-pull
-         - cdist-quickstart
+         - cdist-language        [CLEANUP AND REMOVE]
+         - cdist-design.text     [CLEANUP AND REMOVE]
+         - cdist-push-pull       [WRITE]
+         - cdist-quickstart      [WRITE]
             - how to write a minimal host manifest
          - cdist-types           [IMPORTANT]
             - only do necessary work [TYPE IMPLEMENTATION HINTS]
@@ -58,4 +61,3 @@ x Parse configuration tree/objects recursively
    - package
 
 - Cleanup directories, cleanly document, what's possible
-
