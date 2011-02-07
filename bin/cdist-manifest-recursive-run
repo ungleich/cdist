@@ -61,9 +61,15 @@ while [ "$__cdist_object_created_new" = 1 ]; do
       if [ ! -f "${object}/$__cdist_object_finished" ]; then
          echo "Running object ${object} ..."
 
-         manifest="${object}/${__cdist_name_init}"
+         set -x
+         pwd
+
+         type=${object%%/*}
+
+         manifest="$__cdist_type_dir/${type}/${__cdist_name_init}"
+
          if [ -x "${manifest}" ]; then
-            cdist-manifest-run "${manifest}" "${__cdist_tmp_dir}"
+            cdist-manifest-run "${__cdist_tmp_dir}" "${manifest}"
 
             echo "Trying to merge... "
 

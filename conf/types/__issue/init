@@ -19,6 +19,8 @@
 #
 #
 
+. cdist-config
+
 destination=/etc/issue
 
 case "$__cdist_explorer_os" in
