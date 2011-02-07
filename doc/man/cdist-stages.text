@@ -50,7 +50,7 @@ cdist passes through different stages:
    objects try to create the same object, which indicates a
    broken configuration.
 
-- Third stage: Code generation
+- Third stage: Code generation [TODO]
    The "gencode" binary of the types for every existing object is
    called to generate code that will be executed on the target host.
 
@@ -62,7 +62,7 @@ cdist passes through different stages:
    A description of what the generated code may/must/should
    do can be found in cdist-types-gencode(7).
 
-- Fourth stage:
+- Fourth stage: [TODO]
    The resulting code is transferred to the target host and executed,
    the run of cdist-deploy-to(1) ends.
 
