@@ -1,33 +1,89 @@
-On the server:
-
-conf/manifests/init
-   - the central entry point
-   - is a shell script
-   - defines mapping from types to hosts
-   -  will be called by cdist and the name
-      will be available for tracking in
-      cdist core functions
-
-conf/manifests/* (all other)
-   - same function as above
-   - but won't be called by cdist
-   - method to seperate configuration parts
+cdist-config-layout(7)
+======================
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
-conf/types/<name>/
-   - provide standard types
-   - have required and optional arguments
-   - are independent of hosts
-   - may make use of other types to realise a new type
-      - how to overwrite stuff?
-      - overwrite in own tree?
-         - needs knowledge of inherited provider
-            - similar to current situation in puppet,
-              but more like reusable defines
-   - or may implement some functionality on their own
 
-conf/explorers/<name>
-   - explorers to be run on the target hosts
+NAME
+----
+cdist-config-layout - Usage of paths in cdist
+
+
+DESCRIPTION
+-----------
+If not otherwise specified, all paths are relative to the configuration
+directory, which is normally /etc/cdist (but can be changed using environment
+variables, see cdist-environment(7)).
+
+- manifests/init:
+   This is the central entry point used by cdist-manifest-init(1).
+   It is an executable (+x bit set) shell script that can use
+   values for the explorers to decide which configuration to create
+   for the specified target host.
+
+   It should be primary used to define mapping from configurations to hosts.
+
+- manifests/*: All other files in this directory
+   Cdist does not use them directly, but you can seperate
+   configuration mappings, if you have a lot of code in the manifest/init
+   file. This may also be very helpful to have different admins maintain
+   different groups of hosts.
+
+- explorers/<name>
+   Contains explorers to be run on the target hosts, see cdist-explorers(7).
+
+- types/
+   Contains all available types, which are used to provide
+   some kind of functionality. See cdist-stages(7).
+
+- types/<name>/init:
+   Used to generate additional objects from a type.
+   See cdist-stages(7), cdist-types(7).
+
+- types/<name>/gencode:
+   Used to generate code to be executed on the client.
+   See cdist-types(7).
+
+- cache/
+   The cache contains results from previous runs, which may also
+   be used in types to gather information about other hosts
+   (like ssh-keys).
+
+- cache/
+
+- tmpdir: Temporary storage
+   A tempdir and a tempfile is provided by cdist-config(1), which
+   will be removed when the scripts ends automatically.
+
+- tmpdir/cache/: New cache
+   This directory contains elements for the new cache of the host.
+   If all stages are completed successfully, the new cache is used
+   to replace the previous one.
+
+- tmpdir/explorers/: Output of explorers
+   If the run was successful, the results are copied into the new cache.
+
+- tmpdir/objects/: Objects created during run
+   If the run was successful, the results are copied into the new cache.
+
+
+AUTHOR
+------
+Nico Schottelius <mailto:nico-cdist--@--schottelius.org[]>
+
+
+RESOURCES
+---------
+Main web site: http://www.nico.schottelius.org/cdist/[]
+
+
+COPYING
+-------
+Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
+
+
+
 
 Differences manifests vs. types
 
@@ -37,3 +93,21 @@ Differences manifests vs. types
 main purpose         map config to host      provide functionality
 can change config    no (prevent conflicts)  yes (allow inheritance)
 specificness         site specific           (globally) reusable
+
+
+--------------------------------------------------------------------------------
+unsorted: cache / objects
+
+   - If cdist encounters type in manifest,
+     a wrapper script is run, that creates a
+     new entry in the cconfig database and adds
+     attribute values. This defines a cconfig
+     tree, that may look as follows:
+
+
+      <hostname>/<type>/<id>/<parameters>:
+
+      myhost/__file/cdist_bin/source
+      myhost/__file/cdist_bin/destination
+      ... 
+
