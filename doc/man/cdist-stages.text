@@ -1,75 +1,75 @@
-cdist-types(7)
+cdist-stages(7)
 ===============
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-types - Functionality bundled
+cdist-stages - How the configuration is built
 
 
 DESCRIPTION
 -----------
-   First stage: [done]
-   - If cdist encounters type in manifest,
-     a wrapper script is run, that creates a
-     new entry in the cconfig database and adds
-     attribute values. This defines a cconfig
-     tree, that may look as follows:
-      
-      <hostname>/<type>/<id>/<parameters>:
+Starting the execution of deployment with cdist-deploy-to(1),
+cdist passes through different stages:
 
-      myhost/__file/cdist_bin/source
-      myhost/__file/cdist_bin/destination
-      ...
+- First stage: Get information about target
+   Every existing explorer (see cdist-explorers(7) is run on
+   the target and the results are copied back into the local
+   cache (see cdist-cache(7)). These values can be used by
+   manifests and types.
 
-   - In this stage, no conflicts may occur, as
-     no type code has been called (i.e. only
-     manifests, which map config to hosts is
-     applied).
+- Second stage: Initial manifest run
+   The initial manifest (see cdist-manifests(7) is run,
+   which is done by cdist-manifest-init(1).
+   
+   This run creates an internal database in cconfig
+   format (see cdist-config-layout(7), that contains all
+   objects configured for the specific host.
 
-   Second stage: [done]
-   - The "init" script of every used type
-     (i.e. the manifests created at least one object)
-     is called, which again is able to call other
-     types. All created objects may also be modified
-     by the type.
+   In this stage, no conflicts may occur, i.e. no
+   object of the same type with the same id may
+   be created.
+   
+   You can trigger the first stage part using
+   cdist-manifest-init(1).
 
-     For instance a "httpd" type may call the
-     "webroot" type with --path / ... 
-     # FIND CASE WHERE SENSEFUL => look through
-     current puppet config
+- Third stage: Execution of types
+   Every object is checked whether its type has an init
+   script (see cdist-types(7)). If the type of the object
+   has an init script, it is run. This init script may
+   generate additional objects.
 
-   - The newly created objects are merged back into
-     the existing tree. No conflicts may occur during
-     the merge, because this would implicit that the
-     type conflicts with other types.
+   For instance the object __apache/www.test.ch is of
+   type __apache, which may contain an init script, which
+   creates new objects of type __file.
 
-     The idea of this that a type may expand another
-     type with functionality, but may need to adjust
-     ("overwrite") settings from the original type.
+   The newly created objects are merged back into
+   the existing tree. No conflicts may occur during
+   the merge. A conflict would mean that two different
+   objects try to create the same object, which indicates a
+   broken configuration.
 
-   Third stage:
-   - Cdist calls the "gencode" binary of the types
-     for every created object. This binary should create
-     code to be executed on the target on stdout.
+- Third stage: Code generation
+   The "gencode" binary of the types for every existing object is
+   called to generate code that will be executed on the target host.
 
-     If the gencode binary fails, it must print diagnostic
-     messages on stderr and exit non-zero.
+   This binary should create code to be executed on the target on stdout.
 
-     A description of what the generated code may/must/should
-     do can be found at the end of this document.
+   If the gencode binary fails, it must print diagnostic messages on stderr
+   and exit non-zero.
 
-   - Cdist merges together the generated code
-     (taking care of DEPENDENCIES (which are not
-     yet defined (take care, double nested brackets)))
+   A description of what the generated code may/must/should
+   do can be found in cdist-types-gencode(7).
 
-   Fourth stage:
-   - The resulting shell script is transferred
-     to the target and executed.
+- Fourth stage:
+   The resulting code is transferred to the target host and executed,
+   the run of cdist-deploy-to(1) ends.
+
 
 SEE ALSO
 --------
+cdist(7), cdist-deploy-to(1), cdist-config-layout(7), cdist-manifest-init(1)
 
 
 COPYING
