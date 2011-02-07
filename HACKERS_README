@@ -13,19 +13,21 @@ What you can do so far: (executed from top level directory)
 
 # prepare use:
 export PATH="$PATH:$(pwd -P)/bin"
+object_tmp=/tmp/localhost/objects
+explorer_tmp=/tmp/localhost/explorers
 
 # Test first level manifest execution
-__cdist_config=$(pwd -P)/conf __cdist_target_host=localhost cdist-manifest-init
+__cdist_config=$(pwd -P)/conf cdist-manifest-init localhost $object_tmp
 
 # See what it generated
-find conf/cache
+find $object_tmp
 
 # Run explorer on a "remote" host
-__cdist_config=$(pwd -P)/conf __cdist_target_host=localhost cdist-explorer-run
+__cdist_config=$(pwd -P)/conf cdist-explorer-run localhost $explorer_tmp
 
 # Display result
-find conf/cache/hosts/localhost
+find $explorer_tmp
 
 # Soon working:
-__cdist_config=$(pwd -P)/conf __cdist_target_host=localhost cdist-manifest-recursive-run ~/p/cdist/conf/cache/hosts/localhost/objects
+__cdist_config=$(pwd -P)/conf cdist-manifest-recursive-run localhost $object_tmp
 

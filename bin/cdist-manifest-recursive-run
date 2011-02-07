@@ -29,12 +29,13 @@
 
 . cdist-config
 
-if [ $# -ne 1 ]; then
-   __cdist_usage "<object_dir>"
+if [ $# -ne 2 ]; then
+   __cdist_usage "<target host> <object_dir>"
 fi
 
 set -eu
 
+__cdist_target_host="$1"; shift
 __cdist_object_dir="$1"; shift
 
 # change to directory containing objects
@@ -67,7 +68,7 @@ while [ "$__cdist_object_created_new" = 1 ]; do
 
          if [ -x "${manifest}" ]; then
             echo "Running manifest of type ${type} ..."
-            cdist-manifest-run "${__cdist_tmp_dir}" "${manifest}"
+            cdist-manifest-run "$__cdist_target_host" "${manifest}" "${__cdist_tmp_dir}"
 
             echo "Trying to merge... "
 
@@ -80,8 +81,7 @@ while [ "$__cdist_object_created_new" = 1 ]; do
 
             while read newobject; do
                if [ -e "$__cdist_object_dir/${newobject}" ]; then
-                  echo FAIIIIIIIIL
-                  exit 23
+                  __cdist_exit_err "${newobject} already exists, merge failed."
                else
                   # Fine, merge back!
                   pax -r -w "$newobject" "$__cdist_object_dir"

@@ -28,7 +28,6 @@ if [ $# -ne 3 ]; then
    __cdist_usage "<target host> <manifest> <outdir>"
 fi
 
-set -x
 set -aeu
 
 export __cdist_target_host="$1"; shift
