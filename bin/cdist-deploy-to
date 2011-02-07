@@ -27,9 +27,27 @@
 
 set -e
 
-# Internal variables, usable by
-export __cdist_target_host="$1"
-export __cdist_source_host="$(cdist_explore_hostname)"
+__cdist_target_host="$1"
 
-. cdist-build "$__cdist_target_host"
-. cdist-remote-exec "$__cdist_target_host"
+tmp_exp="$__cdist_tmp_dir/$__cdist_name_explorer"
+tmp_obj="$__cdist_tmp_dir/$__cdist_name_object"
+tmp_code="$__cdist_tmp_dir/$__cdist_name_code"
+
+# See cdist-stages(7)
+cdist-explorer-run "$__cdist_target_host" "$tmp_exp"
+cdist-manifest-init "$__cdist_target_host" "$tmp_obj"
+cdist-manifest-recursive-run "$__cdist_target_host" "$tmp_obj"
+
+# Create new cache - put into seperate script?
+echo rm -rf "$(__cdist_cache_host)"
+mkdir -p "$(__cdist_cache_host)"
+mv "$tmp_exp" "$tmp_obj" "$(__cdist_cache_host)"
+
+# FIXME: continue below here
+exit 1
+
+cdist-code-gen "$(__cdist_cache_host)" > "$tmp_code"
+cdist-target-exec "$__cdist_target_host" "$tmp_code"
+
+# Also save last code fragment
+mv "$tmp_code" "$(__cdist_cache_host)"

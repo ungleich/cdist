@@ -28,6 +28,7 @@
 # Names
 : ${__cdist_name_bin:=bin}
 : ${__cdist_name_cache:=cache}
+: ${__cdist_name_code:=code}
 : ${__cdist_name_explorer:=explorers}
 : ${__cdist_name_host:=hosts}
 : ${__cdist_name_init:=init}

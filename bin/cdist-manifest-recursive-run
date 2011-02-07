@@ -68,6 +68,8 @@ while [ "$__cdist_object_created_new" = 1 ]; do
 
          if [ -x "${manifest}" ]; then
             echo "Running manifest of type ${type} ..."
+
+            # FIXME: use subdir in tmpdir?
             cdist-manifest-run "$__cdist_target_host" "${manifest}" "${__cdist_tmp_dir}"
 
             echo "Trying to merge... "
@@ -83,10 +85,10 @@ while [ "$__cdist_object_created_new" = 1 ]; do
                if [ -e "$__cdist_object_dir/${newobject}" ]; then
                   __cdist_exit_err "${newobject} already exists, merge failed."
                else
-                  # Fine, merge back!
+                  # Fine, merge back! FIXME: touch correct here?
+                  touch "${object}/$__cdist_object_finished"
                   pax -r -w "$newobject" "$__cdist_object_dir"
                fi
-
             done < "$__cdist_tmp_file"
 
             # Always rerun the whole loop if we ran
@@ -107,8 +109,6 @@ while [ "$__cdist_object_created_new" = 1 ]; do
             # 
             # iterate over all new objects and copy each back?
 
-            # FIXME: cleanup tmp directory, if necessary!
-
          else
             # Be nice, warn user if manifests exists, but is not executable
             if [ -f "${manifest}" ]; then
@@ -116,7 +116,6 @@ while [ "$__cdist_object_created_new" = 1 ]; do
             fi
          fi
 
-         touch "${object}/$__cdist_object_finished"
 
          # At least one more run needed
          __cdist_object_created_new=1
