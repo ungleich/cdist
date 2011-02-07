@@ -3,7 +3,6 @@ cdist-config-layout(7)
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
-
 NAME
 ----
 cdist-config-layout - Usage of paths in cdist
@@ -49,7 +48,17 @@ variables, see cdist-environment(7)).
    be used in types to gather information about other hosts
    (like ssh-keys).
 
-- cache/
+- cache/hosts/:
+   Contains cache of every known host.
+
+- cache/hosts/<name>:
+   Contains cache of the specific host.
+
+- cache/hosts/<name>/explorers:
+   Output of explorers from last run for the host.
+
+- cache/hosts/<name>/objects:
+   Objects created during last run for the host.
 
 - tmpdir: Temporary storage
    A tempdir and a tempfile is provided by cdist-config(1), which
@@ -81,33 +90,3 @@ COPYING
 -------
 Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
-
-
-
-
-Differences manifests vs. types
-
-
-                     manifests               types
-
-main purpose         map config to host      provide functionality
-can change config    no (prevent conflicts)  yes (allow inheritance)
-specificness         site specific           (globally) reusable
-
-
---------------------------------------------------------------------------------
-unsorted: cache / objects
-
-   - If cdist encounters type in manifest,
-     a wrapper script is run, that creates a
-     new entry in the cconfig database and adds
-     attribute values. This defines a cconfig
-     tree, that may look as follows:
-
-
-      <hostname>/<type>/<id>/<parameters>:
-
-      myhost/__file/cdist_bin/source
-      myhost/__file/cdist_bin/destination
-      ... 
-
