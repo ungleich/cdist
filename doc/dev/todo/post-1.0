@@ -7,3 +7,5 @@ Types:
       - delete_line_from_file
       - regexp replace (can probably cover all?)
 
+Core:
+   - Support singletons (see types/issue for a good reason)
