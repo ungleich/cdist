@@ -81,6 +81,27 @@ Scope of code execution on the client
    print diagnostistic messages on stderr and call
    "exit 1", so the configuration is aborted.
 
+--------------------------------------------------------------------------------
+   - have required and optional arguments
+   - are independent of hosts
+   - may make use of other types to realise a new type
+      - how to overwrite stuff?
+      - overwrite in own tree?
+         - needs knowledge of inherited provider
+            - similar to current situation in puppet,
+              but more like reusable defines
+   - or may implement some functionality on their own 
+
+--------------------------------------------------------------------------------
+Differences manifests vs. types
+
+
+                     manifests               types
+
+main purpose         map config to host      provide functionality
+can change config    no (prevent conflicts)  yes (allow inheritance)
+specificness         site specific           (globally) reusable
+
 
 SEE ALSO
 --------

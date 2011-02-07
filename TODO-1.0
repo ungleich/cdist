@@ -6,14 +6,19 @@ x Create configuration tree from manifest
    x write binaries, which create the tree when called from manifest (cdist_tree_wrapper)
 x Define configuration paths (doc/internal/config-layout)
 x Redo explorers (see manpage)
-/ Write at least one type
 
-- Parse configuration tree/objects recursively
-   - can/may types modify tree?
-      - may open door for getting information from manifest / other stuff
+x Parse configuration tree/objects recursively
+   x can/may types modify tree?
+      -> yes, of everything a type created itself!
+      x may open door for getting information from manifest / other stuff
+
+- Cleanly define paths for object creation, especially recursive calls
+
 - generate code to be executed on client
    - check return codes
    - abort on first error?
+
+/ Write at least one type (completly!)
 
 - doc 1.0:
    - cdist manpage (main manpage)

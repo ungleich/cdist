@@ -15,6 +15,21 @@ should be configured on a host.
 
 ENTRYPOINT: $prefix/manifests/init
 
+unsorted: cache / objects
+   
+   - If cdist encounters type in manifest, 
+     a wrapper script is run, that creates a
+     new entry in the cconfig database and adds
+     attribute values. This defines a cconfig
+     tree, that may look as follows:
+     
+      
+      <hostname>/<type>/<id>/<parameters>:
+      
+      myhost/__file/cdist_bin/source
+      myhost/__file/cdist_bin/destination
+      ...
+
 
 ENVIRONMENT
 -----------
