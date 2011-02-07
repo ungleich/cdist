@@ -5,7 +5,7 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
-cdist - Configuration distribution system
+cdist - Configuration management system
 
 
 DESCRIPTION
@@ -15,28 +15,27 @@ UNIX systems and apply them. Cdist generally uses the push
 approach (a server pushes out the configuration to the clients),
 but can also be used the pull way (see cdist-push-pull(7)).
 
-Cdist is configured in shell syntax, which is "compiled" to an
-internal configuration representation (cdist-cconfig(7)), which again
-is used to generate an executable, which is run on the client
-(see cdist-language(7), cdist-design(7)).
+Cdist-deploy-to(1) is the main command to be used to deploy
+configurations to a host.
 
-To get your fingers dirty with cdist very quick, have
-a look at cdist-quickstart(7).
+The mapping of configurations to hosts is defined
+in so called manifests, which are written in shell
+script language (see cdist-manifest(7)).
 
+Logical units of files and directives are called "types" in cdist jargon
+(see cdist-types(7)). Cdist ships with some types, which you can change
+or create new ones or even submit your types for inclusion into mainstream
+(see cdist-type-inclusion(7)).
 
-REQUIREMENTS
-------------
-Cdist requires enabled ssh-server and a posix shell on the clients and
-ssh-client and posix shell on the server. Additionaly, it requires
-the following unix tools:
-
-- find
-- 
+The fastest way to get a host configured using cdist is probably
+cdist-quickstart(7).
 
 
 SEE ALSO
 --------
-Website: http://www.nico.schottelius.org/cdist/[]
+Website: http://www.nico.schottelius.org/cdist/[], cdist-push-pull(7),
+cdist-deploy-to(1), cdist-manifest(7), cdist-types(7), cdist-type-inclusion(7),
+cdist-quickstart(7)
 
 
 COPYING
