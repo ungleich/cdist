@@ -22,6 +22,7 @@
 case "$("${__cdist_remote_explorer_dir}/os")" in
       archlinux) echo pacman ;;
       debian|ubuntu) echo apt ;;
+      gentoo) echo emerge ;;
 esac
 
 exit 0
