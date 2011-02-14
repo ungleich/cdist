@@ -1,3 +1,5 @@
+cat << eof
+
 Hey hackers,
 
 cdist has not been published, you're accessing a early in developent
@@ -10,6 +12,10 @@ Do not believe anything written in cdist, besides what's written in this file
 
 
 What you can do so far: (executed from top level directory)
+
+The following code will get executed if you run this README:
+
+eof
 
 # prepare use:
 export PATH="$PATH:$(pwd -P)/bin"
