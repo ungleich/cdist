@@ -30,6 +30,7 @@
 : ${__cdist_name_cache:=cache}
 : ${__cdist_name_code:=code}
 : ${__cdist_name_explorer:=explorers}
+: ${__cdist_name_gencode:=gencode}
 : ${__cdist_name_host:=hosts}
 : ${__cdist_name_init:=init}
 : ${__cdist_name_manifest:=manifests}
