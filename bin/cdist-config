@@ -118,6 +118,21 @@ __cdist_type_mydir()
    echo "${__cdist_type_dir}/${__cdist_type_current}"
 }
 
+__cdist_type_gencode()
+{
+   local type="$1"
+
+   echo "${__cdist_type_dir}/${type}/$__cdist_name_gencode"
+}
+
+__cdist_object_arg()
+{
+   local arg="$1"; shift
+   local object="$1"; shift
+
+   cat "${__cdist_object_base_dir}/${object}/${arg}"
+}
+
 __cdist_tmp_removal()
 {
    rm -rf "${__cdist_tmp_dir}"
