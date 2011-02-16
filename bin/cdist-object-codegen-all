@@ -34,10 +34,6 @@ __cdist_target_host="$1"; shift
 __cdist_object_base_dir="$1"; shift
 __cdist_exec_dir="$1"; shift
 
-# change to directory containing objects
-# cd "$__cdist_object_base_dir"
-
-set -x
 __cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
 
 while read object; do
