@@ -89,8 +89,6 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 # Used for IDs
 __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
-
-
 ################################################################################
 # Function list
 #
@@ -143,14 +141,9 @@ __cdist_object_list()
 
    cd "${basedir}"
 
-   find . -name "$__cdist_object_source" |   \   
-      sed -e "s;$__cdist_object_source\$;;"  \
-          -e 's;^./;;'                       \   
-      > "$__cdist_tmp_file"
-
-
-   cat "${__cdist_object_base_dir}/${object}/${arg}"
-
+   find . -name "$__cdist_name_object_source" |    \   
+      sed -e "s;$__cdist_name_object_source\$;;"   \
+          -e 's;^./;;'
 }
 
 __cdist_tmp_removal()
