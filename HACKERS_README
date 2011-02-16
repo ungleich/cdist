@@ -32,6 +32,12 @@ __cdist_config=$(pwd -P)/conf cdist-manifest-init localhost "$object_tmp"
 # See what it generated
 find "$object_tmp"
 
+# Generate all objects, including from types that generate objects as well
+__cdist_config=$(pwd -P)/conf cdist-manifest-recursive-run localhost "$object_tmp"
+
+# See what it generated
+find "$object_tmp"
+
 # Run explorer on a "remote" host
 __cdist_config=$(pwd -P)/conf cdist-explorer-run localhost "$explorer_tmp"
 
@@ -43,10 +49,3 @@ __cdist_config=$(pwd -P)/conf cdist-object-codegen-all localhost "$object_tmp" "
 
 # Display result
 find "$exec_tmp"
-
-################################################################################
-# Soon working
-#
-
-# Generate all objects, including from types that generate objects as well
-__cdist_config=$(pwd -P)/conf cdist-manifest-recursive-run localhost "$object_tmp"
