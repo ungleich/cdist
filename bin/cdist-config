@@ -35,7 +35,11 @@
 : ${__cdist_name_init:=init}
 : ${__cdist_name_manifest:=manifests}
 : ${__cdist_name_object:=objects}
+
 : ${__cdist_name_type:=types}
+: ${__cdist_name_type_params:=parameters}
+: ${__cdist_name_type_params_required:=required}
+: ${__cdist_name_type_params_optional:=optional}
 
 # Name of the executable generated
 : ${__cdist_name_exec:=exec}
@@ -125,6 +129,14 @@ __cdist_type_gencode()
    local type="$1"
 
    echo "${__cdist_type_dir}/${type}/$__cdist_name_gencode"
+}
+
+__cdist_type_param_file()
+{
+   local type="$1"; shift
+   local paramtype="$1"; shift
+
+   echo "${__cdist_type_dir}/$type/$__cdist_name_type_params/$paramtype"
 }
 
 __cdist_object_arg()
