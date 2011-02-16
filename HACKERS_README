@@ -17,6 +17,9 @@ The following code will get executed if you run this README:
 
 eof
 
+# Tell the user what we do, so this script makes sense during execution
+set -x
+
 # prepare use:
 export PATH="$PATH:$(pwd -P)/bin"
 object_tmp=/tmp/localhost/objects
