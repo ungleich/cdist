@@ -65,5 +65,6 @@ x Cleanly define paths for object creation, especially recursive calls
 - rename $__object_dir to $__object_base_dir
 - cd $__object_dir, before running manifest
    && document it in doc/man/cdist-types.text
-- document that /manifest|/init is executed for every object/instance
+- use $type/manifest instead of $type/init
+- document that $type/manifest is executed for every object/instance
 
