@@ -36,6 +36,11 @@
 : ${__cdist_name_manifest:=manifests}
 : ${__cdist_name_object:=objects}
 : ${__cdist_name_type:=types}
+: ${__cdist_name_exec:=exec}
+
+# File that contains source of a specific object creation
+: ${__cdist_name_object_source=.source}
+
 
 # Base
 : ${__cdist_config:=/etc/cdist}
@@ -79,9 +84,6 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 # Used for IDs
 __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
-
-# File that contains source of a specific object creation
-__cdist_object_source=".source"
 
 # Mark object finished
 __cdist_object_finished=".done"
@@ -131,6 +133,22 @@ __cdist_object_arg()
    local object="$1"; shift
 
    cat "${__cdist_object_base_dir}/${object}/${arg}"
+}
+
+__cdist_object_list()
+{
+   local basedir="$1"; shift
+
+   cd "${basedir}"
+
+   find . -name "$__cdist_object_source" |   \   
+      sed -e "s;$__cdist_object_source\$;;"  \
+          -e 's;^./;;'                       \   
+      > "$__cdist_tmp_file"
+
+
+   cat "${__cdist_object_base_dir}/${object}/${arg}"
+
 }
 
 __cdist_tmp_removal()
