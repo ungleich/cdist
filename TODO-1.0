@@ -20,9 +20,9 @@ x run initial manifest (stage 2)
       x doc/man/cdist-config-layout.text
    x cd $__object_dir, before running manifest
    x rename $__object_dir to $__object_base_dir
-   - document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
+   - DOC document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
    - use $type/manifest instead of $type/init
-   - document that $type/manifest is executed for every object/instance
+   - DOC document that $type/manifest is executed for every object/instance
    - find $object_id in recursive runner (before merge)
 
 x generate code to be executed on clients (stage 4)
