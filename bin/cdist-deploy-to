@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -25,29 +25,31 @@
 
 [ $# -eq 1 ] || __cdist_usage "<target host>"
 
-set -e
+set -eu
 
 __cdist_target_host="$1"
 
 tmp_exp="$__cdist_tmp_dir/$__cdist_name_explorer"
 tmp_obj="$__cdist_tmp_dir/$__cdist_name_object"
-tmp_code="$__cdist_tmp_dir/$__cdist_name_code"
+tmp_exec="$__cdist_tmp_dir/$__cdist_name_exec"
 
 # See cdist-stages(7)
-cdist-explorer-run "$__cdist_target_host" "$tmp_exp"
-cdist-manifest-init "$__cdist_target_host" "$tmp_obj"
-cdist-manifest-recursive-run "$__cdist_target_host" "$tmp_obj"
+cdist-explorer-run            "$__cdist_target_host" "$tmp_exp"
+cdist-manifest-init           "$__cdist_target_host" "$tmp_obj"
+cdist-manifest-recursive-run  "$__cdist_target_host" "$tmp_obj"
+cdist-object-codegen-all      "$__cdist_target_host" "$tmp_obj" "$tmp_exec"
 
-# Create new cache - put into seperate script?
-echo rm -rf "$(__cdist_cache_host)"
-mkdir -p "$(__cdist_cache_host)"
-mv "$tmp_exp" "$tmp_obj" "$(__cdist_cache_host)"
-
-# FIXME: continue below here
 exit 1
 
-cdist-code-gen "$(__cdist_cache_host)" > "$tmp_code"
 cdist-target-exec "$__cdist_target_host" "$tmp_code"
+
+# Create new cache - put into seperate script?
+# cdist-cache migrate?
+
+# echo rm -rf "$(__cdist_cache_host)"
+# mkdir -p "$(__cdist_cache_host)"
+# mv "$tmp_exp" "$tmp_obj" "$(__cdist_cache_host)"
+
 
 # Also save last code fragment
 mv "$tmp_code" "$(__cdist_cache_host)"
