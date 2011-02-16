@@ -67,4 +67,5 @@ x Cleanly define paths for object creation, especially recursive calls
    && document it in doc/man/cdist-types.text
 - use $type/manifest instead of $type/init
 - document that $type/manifest is executed for every object/instance
+- find $object_id in recursive runner
 
