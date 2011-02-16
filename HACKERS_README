@@ -24,18 +24,25 @@ set -x
 export PATH="$PATH:$(pwd -P)/bin"
 object_tmp=/tmp/localhost/objects
 explorer_tmp=/tmp/localhost/explorers
+exec_tmp=/tmp/localhost/exec
 
 # Test first level manifest execution
 __cdist_config=$(pwd -P)/conf cdist-manifest-init localhost "$object_tmp"
 
 # See what it generated
-find $object_tmp
+find "$object_tmp"
 
 # Run explorer on a "remote" host
 __cdist_config=$(pwd -P)/conf cdist-explorer-run localhost "$explorer_tmp"
 
 # Display result
-find $explorer_tmp
+find "$explorer_tmp"
+
+# Generate code for all objects in object dir
+__cdist_config=$(pwd -P)/conf cdist-object-codegen-all localhost "$object_tmp" "$exec_tmp"
+
+# Display result
+find "$exec_tmp"
 
 ################################################################################
 # Soon working
@@ -43,9 +50,3 @@ find $explorer_tmp
 
 # Generate all objects, including from types that generate objects as well
 __cdist_config=$(pwd -P)/conf cdist-manifest-recursive-run localhost "$object_tmp"
-
-# Generate code for one object
-__cdist_config=$(pwd -P)/conf cdist-object-codegen localhost "$object_tmp" __file/etc-issue
-
-# Generate code for all objects in object dir
-__cdist_config=$(pwd -P)/conf cdist-code-gen-all localhost "$object_tmp"

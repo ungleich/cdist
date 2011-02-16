@@ -141,9 +141,8 @@ __cdist_object_list()
 
    cd "${basedir}"
 
-   find . -name "$__cdist_name_object_source" |    \   
-      sed -e "s;$__cdist_name_object_source\$;;"   \
-          -e 's;^./;;'
+   find . -name "$__cdist_name_object_source" |    \
+      sed -e "s;$__cdist_name_object_source\$;;" -e 's;^./;;'
 }
 
 __cdist_tmp_removal()
