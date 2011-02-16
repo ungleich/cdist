@@ -34,12 +34,12 @@ __cdist_config=$(pwd -P)/conf cdist-explorer-run localhost "$explorer_tmp"
 # Display result
 find $explorer_tmp
 
-# Soon working:
-__cdist_config=$(pwd -P)/conf cdist-manifest-recursive-run localhost "$object_tmp"
-
 ################################################################################
-# Further in the future
+# Soon working
 #
+
+# Generate all objects, including from types that generate objects as well
+__cdist_config=$(pwd -P)/conf cdist-manifest-recursive-run localhost "$object_tmp"
 
 # Generate code for one object
 __cdist_config=$(pwd -P)/conf cdist-code-gen localhost "$object_tmp" __file/etc-issue
