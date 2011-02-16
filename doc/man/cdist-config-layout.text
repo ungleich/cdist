@@ -43,6 +43,14 @@ variables, see cdist-environment(7)).
    Used to generate code to be executed on the client.
    See cdist-types(7).
 
+- types/<name>/parameters/required:
+   Parameters required by type.
+   See cdist-types(7).
+
+- types/<name>/parameters/required:
+   Parameters optionally accepted by type.
+   See cdist-types(7).
+
 - cache/
    The cache contains results from previous runs, which may also
    be used in types to gather information about other hosts
