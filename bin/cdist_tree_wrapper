@@ -46,25 +46,50 @@ fi
 
 mkdir -p "${__cdist_ddir}"
 
-# echo "I am $__cdist_myname and have been called with $@"
+echo "I am $__cdist_myname and have been called with $@"
 
 # Record (correct ;-) source
 echo "${__cdist_manifest}" > "${__cdist_ddir}/${__cdist_name_object_source}"
 
+# Record parameters to subdir
+tempparams="${__cdist_tmp_dir}/params"
+mkdir -p "$tempparams"
+
 while [ $# -gt 0 ]; do
    opt="$1"; shift
 
-   echo "$opt" | grep -q "^--${__cdist_sane_regexp}\$" || __cdist_usage "Provide sane options"
+   echo "$opt" | grep -q "^--${__cdist_sane_regexp}\$" || \
+      __cdist_usage "Provide sane options"
 
    opt_file="$(echo $opt | sed 's/^--//')"
-
-   # FIXME: check for options supported by type - or leave it to the type?
-   # I guess do it here, so we also check whether
 
    [ $# -ge 1 ] || __cdist_usage "Missing value for $opt"
 
    value="$1"; shift
 
-   echo "${value}" > "${__cdist_ddir}/${opt_file}"
-
+   echo "${value}" > "${tempparams}/${opt_file}"
 done
+
+# Ensure required parameters are given
+while read required; do
+   if [ ! -f "${tempparams}/${required}" ]; then
+      __cdist_usage "Missing required parameter $required"
+   fi
+
+   mv "${tempparams}/${required}" "${__cdist_ddir}"
+done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_type_params_required")"
+
+# Allow optional parameters
+while read optional; do
+   if [ -f "${tempparams}/${opt_file}" ]; then
+      mv "${tempparams}/${optional}" "${__cdist_ddir}"
+   fi
+done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_type_params_optional")"
+
+# Error out on other paramaters
+cd "${tempparams}"
+other="$(ls)"
+
+if [ "$other" ]; then
+   __cdist_usage "Unsupported parameter: $other"
+fi
