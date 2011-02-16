@@ -25,12 +25,13 @@ x run initial manifest (stage 2)
    - document that $type/manifest is executed for every object/instance
    - find $object_id in recursive runner (before merge)
 
-- generate code to be executed on clients (stage 4)
-   x for one type (cdist-code-gen)
-   - check return codes
-   - abort on first error?
+x generate code to be executed on clients (stage 4)
+   x for one object
+   x for all objects
 
 - execute code on client (stage 5)
+   - check return codes
+   - abort on first error?
 
 - Other stuff pre 1.0:
    - Write some basic types
