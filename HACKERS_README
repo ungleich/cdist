@@ -45,7 +45,7 @@ find $explorer_tmp
 __cdist_config=$(pwd -P)/conf cdist-manifest-recursive-run localhost "$object_tmp"
 
 # Generate code for one object
-__cdist_config=$(pwd -P)/conf cdist-code-gen localhost "$object_tmp" __file/etc-issue
+__cdist_config=$(pwd -P)/conf cdist-object-codegen localhost "$object_tmp" __file/etc-issue
 
 # Generate code for all objects in object dir
 __cdist_config=$(pwd -P)/conf cdist-code-gen-all localhost "$object_tmp"
