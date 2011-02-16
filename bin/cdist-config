@@ -36,10 +36,15 @@
 : ${__cdist_name_manifest:=manifests}
 : ${__cdist_name_object:=objects}
 : ${__cdist_name_type:=types}
+
+# Name of the executable generated
 : ${__cdist_name_exec:=exec}
 
 # File that contains source of a specific object creation
-: ${__cdist_name_object_source=.source}
+: ${__cdist_name_object_source:=.source}
+
+# Marks an object finished
+: ${__cdist_name_object_finished:=.done}
 
 
 # Base
@@ -84,9 +89,6 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 # Used for IDs
 __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
-
-# Mark object finished
-__cdist_object_finished=".done"
 
 
 ################################################################################

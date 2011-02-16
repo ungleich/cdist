@@ -60,7 +60,7 @@ while [ "$__cdist_object_created_new" = 1 ]; do
    cat "$__cdist_tmp_file"
 
    while read object; do
-      if [ ! -f "${object}/$__cdist_object_finished" ]; then
+      if [ ! -f "${object}/$___cdist_name_object_finished" ]; then
          echo "Working on object ${object} ..."
 
          type=${object%%/*}
@@ -86,7 +86,7 @@ while [ "$__cdist_object_created_new" = 1 ]; do
                   __cdist_exit_err "${newobject} already exists, merge failed."
                else
                   # Fine, merge back! FIXME: touch correct here?
-                  touch "${newobject}/$__cdist_object_finished"
+                  touch "${newobject}/$___cdist_name_object_finished"
                   pax -r -w "$newobject" "$__cdist_object_dir"
                fi
             done < "$__cdist_tmp_file"
