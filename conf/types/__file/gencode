@@ -18,25 +18,33 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# __file is a very basic type and should be able to be used as an
+# example for typewrites later
+#
 
+. cdist-config
 
-case "$__arg_type" in
+type="$(cat type)"
+mode="$(cat mode)"
+path="$(cat path)"
+
+case "$type" in
 
    directory)
-      echo mkdir \"$__arg_path\"
+      echo mkdir \"$path\"
    ;;
 
    file)
-      echo touch \"$__arg_path\"
+      echo touch \"$path\"
    ;;
 
    *)
-      echo "Unsupported type: $__arg_type" >&2
+      echo "Unsupported type: \"$type\"" >&2
       exit 1
    ;;
 
 esac
 
-if [ "$__arg_mode" ]; then
-   echo chmod \"$__arg_mode\" \"$__arg_path\"
+if [ "$mode" ]; then
+   echo chmod \"$mode\" \"$path\"
 fi
