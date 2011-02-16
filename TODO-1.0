@@ -1,71 +1,70 @@
 This document defines how to continue work on cdist:
 
-x Define how to get information from clients
-   x Create shell script that creates code to run on client (cdist-build-explorer)
-x Create configuration tree from manifest
-   x write binaries, which create the tree when called from manifest (cdist_tree_wrapper)
-x Define configuration paths (doc/internal/config-layout)
-x Redo explorers (see manpage)
+x general stuff
+   x Define configuration paths (doc/internal/config-layout)
 
-x Parse configuration tree/objects recursively
-   x can/may types modify tree?
-      -> yes, of everything a type created itself!
-      x may open door for getting information from manifest / other stuff
+x get information from target (stage 1)
+   x Define how to get information from targets
+      x Create shell script that creates code to run on client (cdist-build-explorer)
+   x Redo explorers (see manpage)
+x run initial manifest (stage 2)
+   x Create configuration tree from manifest
+      x write binaries, which create the tree when called from manifest (cdist_tree_wrapper)
 
-x Cleanly define paths for object creation, especially recursive calls
-   x doc/man/cdist-config-layout.text
+- be able to run manifest of types (stage 3)
+   x Parse configuration tree/objects recursively
+      x can/may types modify tree?
+         -> yes, of everything a type created itself!
+         x may open door for getting information from manifest / other stuff
+   x Cleanly define paths for object creation, especially recursive calls
+      x doc/man/cdist-config-layout.text
+   x cd $__object_dir, before running manifest
+   x rename $__object_dir to $__object_base_dir
+   - document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
+   - use $type/manifest instead of $type/init
+   - document that $type/manifest is executed for every object/instance
+   - find $object_id in recursive runner (before merge)
 
-- generate code to be executed on client
+- generate code to be executed on clients (stage 4)
+   x for one type (cdist-code-gen)
    - check return codes
    - abort on first error?
 
-- execute code on client
+- execute code on client (stage 5)
 
-/ Write at least one type (completly!)
-
-- doc 1.0:
-   - cdist manpage (main manpage)
-      - cleanup following man + their tree:
-         - cdist-language        [CLEANUP AND REMOVE]
-         - cdist-design.text     [CLEANUP AND REMOVE]
-         - cdist-push-pull       [WRITE]
-         - cdist-quickstart      [WRITE]
-            - how to write a minimal host manifest
-         - cdist-types           [IMPORTANT]
-            - only do necessary work [TYPE IMPLEMENTATION HINTS]
-               - install packages only if not existent
-               - copy file only if different
-         - cdist                 [IMPORTANT]
-         - cdist-explorers
-      - add terminology
-      - define steps within configuration apply
-         - detect impossible/unsafe things:
-         - creating a file twice
-         - installing and removing a package
-         - and report location of occurence
-         - parse afterwards?
-      - multi master setups
-      - templating
-         - how to define templates
-            - variable substitution from shell may be problematic
-         - SHELL SCRIPTS! (executables? do not support?)
-            - stdout == output of template == what will be used
-   - cleanup website
-   - remove HACKERS_README
-   - create doc/dev/HACKERS_README
-- Add install target to Makefile
+- Other stuff pre 1.0:
+   - Write some basic types
+      - file (with directory)
+      - package
+   - doc cleanup for 1.0:
+      - cdist manpage (main manpage)
+         - cleanup following man + their tree:
+            - cdist-language        [CLEANUP AND REMOVE]
+            - cdist-design.text     [CLEANUP AND REMOVE]
+            - cdist-push-pull       [WRITE]
+            - cdist-quickstart      [WRITE]
+               - how to write a minimal host manifest
+            - cdist-types           [IMPORTANT]
+               - only do necessary work [TYPE IMPLEMENTATION HINTS]
+                  - install packages only if not existent
+                  - copy file only if different
+            - cdist                 [IMPORTANT]
+            - cdist-explorers
+         - add terminology
+         - define steps within configuration apply
+            - detect impossible/unsafe things:
+            - creating a file twice
+            - installing and removing a package
+            - and report location of occurence
+            - parse afterwards?
+         - multi master setups
+         - templating
+            - how to define templates
+               - variable substitution from shell may be problematic
+            - SHELL SCRIPTS! (executables? do not support?)
+               - stdout == output of template == what will be used
+      - cleanup website
+      - remove HACKERS_README
+      - create doc/dev/HACKERS_README
+   - Add install target to Makefile
    - create cdist-config-init to create basic tree
-
-- types needed
-   - file (with directory)
-   - package
-
-- Cleanup directories, cleanly document, what's possible
-
-- rename $__object_dir to $__object_base_dir
-- cd $__object_dir, before running manifest
-   && document it in doc/man/cdist-types.text
-- use $type/manifest instead of $type/init
-- document that $type/manifest is executed for every object/instance
-- find $object_id in recursive runner
-
