@@ -61,3 +61,7 @@ x Cleanly define paths for object creation, especially recursive calls
    - package
 
 - Cleanup directories, cleanly document, what's possible
+
+- rename $__object_dir to $__object_base_dir
+- cd $__object_dir, before running manifest
+   && document it in doc/man/cdist-types.text
