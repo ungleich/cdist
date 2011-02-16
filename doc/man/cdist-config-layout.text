@@ -44,11 +44,11 @@ variables, see cdist-environment(7)).
    See cdist-types(7).
 
 - types/<name>/parameters/required:
-   Parameters required by type.
+   Parameters required by type, \n seperated list.
    See cdist-types(7).
 
 - types/<name>/parameters/required:
-   Parameters optionally accepted by type.
+   Parameters optionally accepted by type, \n seperated list.
    See cdist-types(7).
 
 - cache/
