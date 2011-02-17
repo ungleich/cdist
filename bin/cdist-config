@@ -77,6 +77,7 @@ export __cdist_remote_explorer_dir
 : ${__cdist_remote_cache_explorer:=$__cdist_remote_cache_dir/$__cdist_name_explorer}
 export __cdist_remote_cache_explorer
 : ${__cdist_remote_cache_bin:=$__cdist_remote_base_dir/$__cdist_name_bin}
+: ${__cdist_remote_cache_exec:=$__cdist_remote_base_dir/$__cdist_name_exec}
 
 # Tempfiles need to be recreated for each individual script, unshared!
 __cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")

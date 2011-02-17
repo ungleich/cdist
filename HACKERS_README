@@ -52,3 +52,6 @@ cdist-object-codegen-all localhost "$object_tmp" "$exec_tmp"
 
 # Display result
 find "$exec_tmp"
+
+# Transfer generated code
+cdist-exec-transfer localhost "$exec_tmp"
