@@ -25,7 +25,7 @@
 
 [ $# -eq 3 ] || __cdist_usage "<target host>" "<object_base_dir>" "<object>"
 
-set -ue
+set -u
 
 export __cdist_target_host="$1"; shift
 export __cdist_object_base_dir="$1"; shift
@@ -47,6 +47,7 @@ cd "$__cdist_object_dir"
 
 # Call gencode of type with __cdist_object
 if [ -x "$gencode" ]; then
+   # Prepend header to each script
    cat << eof
 #
 # Code imported from $gencode
@@ -54,5 +55,12 @@ if [ -x "$gencode" ]; then
 
 eof
 
-   "$gencode"
+   "$gencode"; ret=$?
+
+else
+   ret=0
+fi
+
+if [ "$ret" -ne 0 ]; then
+   __cdist_exit_err "Error: $gencode exited non-zero"
 fi
