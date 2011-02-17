@@ -36,7 +36,7 @@ tmp_exec="$__cdist_tmp_dir/$__cdist_name_exec"
 # See cdist-stages(7)
 cdist-explorer-run            "$__cdist_target_host" "$tmp_exp"
 cdist-manifest-init           "$__cdist_target_host" "$tmp_obj"
-cdist-manifest-recursive-run  "$__cdist_target_host" "$tmp_obj"
+cdist-manifest-recursive-all  "$__cdist_target_host" "$tmp_obj"
 cdist-object-codegen-all      "$__cdist_target_host" "$tmp_obj" "$tmp_exec"
 
 exit 1
