@@ -38,15 +38,14 @@ __cdist_objects_list="${__cdist_tmp_dir}/objects_file"
 __cdist_new_objects_list="${__cdist_tmp_dir}/new_objects_file"
 __cdist_new_objects_dir="${__cdist_tmp_dir}/new_objects_dir"
 
-__cdist_new_objects_created=y
 
 # Loop until we do not create new objects anymore
 # which is equal to all objects have been run
+__cdist_new_objects_created=y
 while [ "$__cdist_new_objects_created" = "y"  ]; do
-   # assume we're done after this run
+   # Assume we're done after this run
    __cdist_new_objects_created=n
 
-   # find all objects (every object has the source recorded)
    __cdist_object_list "$__cdist_object_base_dir" > "$__cdist_objects_list"
 
    # Check every object, if we need to run it
@@ -76,20 +75,17 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
             while read __cdist_new_object; do
                 [ "$__cdist_new_objects_created" = "n" ] && __cdist_new_objects_created="y"
                
-               set -x
                # where to save the newly created object
                __cdist_object_dir="$__cdist_object_base_dir/$__cdist_new_object"
 
                # Source of the new object
                __cdist_new_object_dir="${__cdist_new_objects_dir}/$__cdist_new_object"
 
-               find $__cdist_new_object_dir
-
                mkdir -p "$__cdist_object_dir"
+
                # Move parameters and source information
                mv "${__cdist_new_object_dir}/"* "$__cdist_object_dir"
                mv "${__cdist_new_object_dir}/${__cdist_name_object_source}" "$__cdist_object_dir"
-               set +x
             done < "$__cdist_new_objects_list"
 
             # Remove listing and objects, otherwise the next type will reuse it...
