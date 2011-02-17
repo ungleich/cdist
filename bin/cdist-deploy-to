@@ -22,9 +22,7 @@
 #
 
 . cdist-config
-
 [ $# -eq 1 ] || __cdist_usage "<target host>"
-
 set -eu
 
 __cdist_target_host="$1"
@@ -39,19 +37,12 @@ cdist-manifest-init           "$__cdist_target_host" "$tmp_obj"
 cdist-manifest-run-all        "$__cdist_target_host" "$tmp_obj"
 cdist-object-codegen-all      "$__cdist_target_host" "$tmp_obj" "$tmp_exec"
 cdist-object-codegen-all      "$__cdist_target_host" "$tmp_obj" "$tmp_exec"
-
-exit 1
-
 cdist-exec-transfer           "$__cdist_target_host" "$tmp_exec"
-cdist-exec-run                "$__cdist_target_host" "$tmp_exec"
+cdist-exec-run                "$__cdist_target_host"
 
-# Create new cache - put into seperate script?
-# cdist-cache migrate?
-
+# FIXME: Create new cache from results
 # echo rm -rf "$(__cdist_cache_host)"
 # mkdir -p "$(__cdist_cache_host)"
 # mv "$tmp_exp" "$tmp_obj" "$(__cdist_cache_host)"
-
-
 # Also save last code fragment
-mv "$tmp_code" "$(__cdist_cache_host)"
+# mv "$tmp_code" "$(__cdist_cache_host)"
