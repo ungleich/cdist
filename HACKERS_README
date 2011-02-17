@@ -35,6 +35,12 @@ explorer_tmp=/tmp/localhost/explorers
 exec_tmp=/tmp/localhost/exec
 
 
+# Run explorer on a "remote" host
+cdist-explorer-run localhost "$explorer_tmp"
+
+# Display result
+find "$explorer_tmp"
+
 # Test first level manifest execution
 cdist-manifest-init localhost "$object_tmp"
 
@@ -46,12 +52,6 @@ cdist-manifest-run-all localhost "$object_tmp"
 
 # See what it generated
 find "$object_tmp"
-
-# Run explorer on a "remote" host
-cdist-explorer-run localhost "$explorer_tmp"
-
-# Display result
-find "$explorer_tmp"
 
 # Generate code for all objects in object dir
 cdist-object-codegen-all localhost "$object_tmp" "$exec_tmp"

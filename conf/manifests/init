@@ -5,7 +5,9 @@
 # All ikqs get a sample file
 case "$__cdist_target_host" in
    ikq*|localhost)
-      __file cdist-config --source /home/users/nico/p/cdist/bin/cdist-config  --destination /usr/bin/cdist-config
+      __file cdist-config --source /home/users/nico/p/cdist/bin/cdist-config  \
+                          --destination /usr/bin/cdist-config \
+                          --type file
       __issue iddoesnotmatterhere
       ;;
 esac
