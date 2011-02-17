@@ -36,7 +36,7 @@ cdist-manifest-init localhost "$object_tmp"
 find "$object_tmp"
 
 # Generate all objects, including from types that generate objects as well
-cdist-manifest-recursive-all localhost "$object_tmp"
+cdist-manifest-run-all localhost "$object_tmp"
 
 # See what it generated
 find "$object_tmp"

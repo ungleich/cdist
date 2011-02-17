@@ -28,11 +28,7 @@
 #
 
 . cdist-config
-
-if [ $# -ne 2 ]; then
-   __cdist_usage "<target host> <object_base_dir>"
-fi
-
+[ $# -eq 2 ] || __cdist_usage "<target host> <object_base_dir>"
 set -eu
 
 __cdist_target_host="$1"; shift
@@ -89,11 +85,12 @@ while [ "$no_new_object" = "n"  ]; do
                # Source of the new object
                new_object_dir="${newobjects}/$newobject"
 
-               echo "MIGRATING: $newobject"
                find $new_object_dir
 
                mkdir -p "$object_dir"
+               # Move parameters and source information
                mv "${new_object_dir}/"* "$object_dir"
+               mv "${new_object_dir}/${__cdist_name_object_source}" "$object_dir"
                set +x
             done < "$newobjectlist"
 
