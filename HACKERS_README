@@ -18,7 +18,8 @@ The following code will get executed if you run this README:
 eof
 
 # Tell the user what we do, so this script makes sense during execution
-set -x
+# And abort on any error
+set -ex
 
 # prepare use (only from top level directory)
 export PATH="$PATH:$(pwd -P)/bin"
@@ -50,8 +51,11 @@ find "$explorer_tmp"
 # Generate code for all objects in object dir
 cdist-object-codegen-all localhost "$object_tmp" "$exec_tmp"
 
-# Display result
-find "$exec_tmp"
+# Display result, including permissions
+ls -lR "$exec_tmp"
 
 # Transfer generated code
 cdist-exec-transfer localhost "$exec_tmp"
+
+# Execute generated code
+cdist-exec-run localhost
