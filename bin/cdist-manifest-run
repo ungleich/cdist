@@ -46,4 +46,11 @@ if [ ! -x "${__cdist_manifest}" ]; then
 fi
 
 mkdir -p "${__cdist_output_dir}"
-"${__cdist_manifest}"
+
+set +e
+
+"${__cdist_manifest}"; ret=$?
+
+if [ "$ret" -ne 0 ]; then
+   __cdist_exit_err "Error: ${__cdist_manifest} exited non-zero."
+fi
