@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -38,84 +38,77 @@ set -eu
 __cdist_target_host="$1"; shift
 __cdist_object_base_dir="$1"; shift
 
-# change to directory containing objects
-cd "$__cdist_object_base_dir"
+objectlist="${__cdist_tmp_dir}/objectfile"
+newobjectlist="${__cdist_tmp_dir}/newobjectfile"
+newobjects="${__cdist_tmp_dir}/newobjects"
+
+no_new_object=n
 
 # Loop until we do not create new objects anymore
 # which is equal to all objects have been run
-__cdist_object_created_new=1
-
-
-while [ "$__cdist_object_created_new" = 1 ]; do
+while [ "$no_new_object" = "n"  ]; do
    # assume we're done after this run
-   __cdist_object_created_new=0
+   no_new_object=y
 
    # find all objects (every object has the source recorded)
-   __cdist_object_list . > "$__cdist_tmp_file"
+   __cdist_object_list "$__cdist_object_base_dir" > "$objectlist"
 
-   # FIXME: DEBUG
-   cat "$__cdist_tmp_file"
-
+   # Check every object, if we need to run it
    while read object; do
-      if [ ! -f "${object}/$__cdist_name_object_finished" ]; then
+      cur_object_dir="$__cdist_object_base_dir/$object"
+
+      if [ ! -f "${cur_object_dir}/$__cdist_name_object_finished" ]; then
          echo "Working on object ${object} ..."
 
-         type=${object%%/*}
-         manifest="$__cdist_type_dir/${type}/${__cdist_name_init}"
+         type="${object%%/*}"
+         manifest="$__cdist_type_dir/${type}/${__cdist_name_manifest}"
+         echo $manifest
 
          if [ -x "${manifest}" ]; then
-            echo "Running manifest of type ${type} ..."
+            echo "Executing manifest ${manifest} ..."
+            cdist-manifest-run "$__cdist_target_host" "${manifest}" "${newobjects}"
+            __cdist_object_list "${newobjects}" > "$newobjectlist"
 
-            # FIXME: use subdir in tmpdir?
-            cdist-manifest-run "$__cdist_target_host" "${manifest}" "${__cdist_tmp_dir}"
-
-            echo "Trying to merge... "
-
-            # list of new objects
-            cd "${__cdist_tmp_dir}"
-            __cdist_object_list .  > "$__cdist_tmp_file"
-
+            # Verify no conflicting objects have been created
             while read newobject; do
-               if [ -e "$__cdist_object_base_dir/${newobject}" ]; then
-                  __cdist_exit_err "${newobject} already exists, merge failed."
-               else
-                  # Fine, merge back! FIXME: touch correct here?
-                  touch "${newobject}/$___cdist_name_object_finished"
-                  pax -r -w "$newobject" "$__cdist_object_base_dir"
-               fi
-            done < "$__cdist_tmp_file"
-
-            # Always rerun the whole loop if we ran
-            # a manifest of an object
-            break
+               grep -q "^$newobject\$" "$objectlist" && \
+                  __cdist_exit_err "${manifest} tried to recreate ${newobject}"
+            done < "$newobjectlist"
 
 
-            # FIXME: continue here
-            # tar, cp, pax, mv?
-            # mv/cp -n look good - posix?
+            # Safe harbour: We can merge all objects into main tree
+            # Merge = mkdir + mv parameters
+            while read newobject; do
+               # Unset no_new_object - only once needed... FIXME (beautify)
+               no_new_object="n"
+               
+               set -x
+               # where to save the newly created object
+               object_dir="$__cdist_object_base_dir/$newobject"
 
-            # pax:
-            # pax -r -w  -k could work, but -k does not raise an error if files
-            # are already existing
+               # Source of the new object
+               new_object_dir="${newobjects}/$newobject"
 
-            # - copy if not existing
-            # fail (abort whole recursive run) if existing
-            # 
-            # iterate over all new objects and copy each back?
+               echo "MIGRATING: $newobject"
+               find $new_object_dir
 
+               mkdir -p "$object_dir"
+               mv "${new_object_dir}/"* "$object_dir"
+               set +x
+            done < "$newobjectlist"
+
+            # Remove listing and rest of newobjects, otherwise the next type will reuse it...
+            rm -rf "$newobjects" "$newobjectlist"
          else
             # Be nice, warn user if manifests exists, but is not executable
             if [ -f "${manifest}" ]; then
-               echo "Warning ${manifest} is not executable"
+               echo "Warning ${manifest} exists, but is not executable." >&2
             fi
          fi
-
-
-         # At least one more run needed
-         __cdist_object_created_new=1
       fi
-   done < "$__cdist_tmp_file"
 
+      # done with this object
+      touch "$cur_object_dir/$__cdist_name_object_finished"
+
+   done < "$objectlist"
 done
-
-exit 0
