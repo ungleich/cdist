@@ -1,0 +1,2 @@
+DO NOT CREATE cdist-config in a path before path of cdist,
+because this renders cdist-config unusable!!!!!!!!
