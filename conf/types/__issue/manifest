@@ -19,16 +19,14 @@
 #
 #
 
-. cdist-config
-
 destination=/etc/issue
 
-case "$__cdist_explorer_os" in
+case "$(cat "$__cdist_out_explorers/os")" in
    archlinux)
-      source="$(__cdist_type_mydir)/files/archlinux"
+      source="$(pwd -P)/files/archlinux"
    ;;
    *)
-      source="$(__cdist_type_mydir)/files/default"
+      source="$(pwd -P)/files/default"
    ;;
 esac
 

@@ -30,37 +30,37 @@ set -e
 export PATH="$PATH:$(pwd -P)/bin"
 export __cdist_config="$(pwd -P)/conf"
 
-object_tmp=/tmp/localhost/objects
-explorer_tmp=/tmp/localhost/explorers
-exec_tmp=/tmp/localhost/exec
+__cdist_out_objects=/tmp/localhost/objects
+__cdist_out_explorers=/tmp/localhost/explorers
+__cdist_out_execs=/tmp/localhost/exec
 
 
 # Run explorer on a "remote" host
-cdist-explorer-run localhost "$explorer_tmp"
+cdist-explorer-run localhost "$__cdist_out_explorers"
 
 # Display result
-find "$explorer_tmp"
+find "$__cdist_out_explorers"
 
 # Test first level manifest execution
-cdist-manifest-init localhost "$object_tmp"
+cdist-manifest-init localhost "$__cdist_out_objects"
 
 # See what it generated
-find "$object_tmp"
+find "$__cdist_out_objects"
 
 # Generate all objects, including from types that generate objects as well
-cdist-manifest-run-all localhost "$object_tmp"
+cdist-manifest-run-all localhost "$__cdist_out_objects"
 
 # See what it generated
-find "$object_tmp"
+find "$__cdist_out_objects"
 
 # Generate code for all objects in object dir
-cdist-object-codegen-all localhost "$object_tmp" "$exec_tmp"
+cdist-object-codegen-all localhost "$__cdist_out_objects" "$__cdist_out_execs"
 
 # Display result, including permissions
-ls -lR "$exec_tmp"
+ls -lR "$__cdist_out_execs"
 
 # Transfer generated code
-cdist-exec-transfer localhost "$exec_tmp"
+cdist-exec-transfer localhost "$__cdist_out_execs"
 
 # Execute generated code
 cdist-exec-run localhost

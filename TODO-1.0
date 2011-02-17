@@ -24,6 +24,11 @@ x run initial manifest (stage 2)
    x find $object_id in recursive runner (before merge)
    - DOC document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
    - DOC document that $type/manifest is executed for every object/instance
+   - DOC: types can always access
+      __cdist_out_objects, __cdist_out_explorers, 
+      __cdist_out_execs
+
+      --> create cdist-variables document?
 
 x generate code to be executed on clients (stage 4)
    x for one object
