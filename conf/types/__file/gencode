@@ -25,12 +25,15 @@
 . cdist-config
 set -e
 
+pwd -P >&2
+ls >&2
+
 type="$(cat type)"
 mode="$(cat mode)"
 path="$(cat path)"
 
-case "$type" in
 
+case "$type" in
    directory)
       echo mkdir \"$path\"
    ;;

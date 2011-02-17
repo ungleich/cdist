@@ -23,19 +23,15 @@
 #
 
 . cdist-config
-
-if [ $# -ne 3 ]; then
-   __cdist_usage "<target host> <manifest> <outdir>"
-fi
-
-set -aeu
+[ $# -eq 3 ] || __cdist_usage "<target host> <manifest> <outdir>"
+set -u
 
 export __cdist_target_host="$1"; shift
 export __cdist_manifest="$1"; shift
 export __cdist_output_dir="$1"; shift
 
 # Ensure binaries exist and are up-to-date
-cdist-build-bin
+cdist-build-bin || __cdist_exit_err "Failed to build support binaries"
 
 # prepend our path, so all cdist tools come before other tools
 PATH="${__cdist_cache_bin}:$PATH"
@@ -50,7 +46,12 @@ mkdir -p "${__cdist_output_dir}"
 # Catch errors ourselves now
 set +e
 
-"${__cdist_manifest}"; ret=$?
+# Ensure manifest fails if any error exists - FIXME: redundant, cdist-object-codegen
+(
+   set -e
+   . "${__cdist_manifest}"
+); ret=$?
+
 if [ "$ret" -ne 0 ]; then
    __cdist_exit_err "Error: ${__cdist_manifest} exited non-zero."
 fi

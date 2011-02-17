@@ -56,7 +56,12 @@ eof
 
    # Catch errors ourself now
    set +e
-   "$gencode"; ret=$?
+   (
+      # Ensure manifest fails if something within manifest fails
+      # And not all manifests need to include set -e themselves
+      set -e
+      . "$gencode"
+   ); ret=$?
 
 else
    ret=0

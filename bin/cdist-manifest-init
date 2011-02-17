@@ -23,10 +23,8 @@
 #
 
 . cdist-config
-
-if [ $# -ne 2 ]; then
-   __cdist_usage "<target host> <outdir>"
-fi
+[ $# -eq 2 ] || __cdist_usage "<target host> <outdir>"
+set -e
 
 export __cdist_target_host="$1"; shift
 export __cdist_output_dir="$1"; shift

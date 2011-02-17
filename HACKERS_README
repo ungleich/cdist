@@ -21,8 +21,10 @@ I usually do it like this:
 eof
 
 # Tell the user what we do, so this script makes sense during execution
-# And abort on any error
-set -ex
+set -x
+
+# Abort on any error
+set -e
 
 # prepare use (only from top level directory)
 export PATH="$PATH:$(pwd -P)/bin"
