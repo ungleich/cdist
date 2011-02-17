@@ -23,15 +23,12 @@
 #
 
 . cdist-config
-set -e
 
 pwd -P >&2
 ls >&2
 
 type="$(cat type)"
-mode="$(cat mode)"
-path="$(cat path)"
-
+path="$(cat destination)"
 
 case "$type" in
    directory)
@@ -49,6 +46,7 @@ case "$type" in
 
 esac
 
-if [ "$mode" ]; then
+if [ -f mode ]; then
+   mode="$(cat mode)"
    echo chmod \"$mode\" \"$path\"
 fi

@@ -31,4 +31,4 @@ case "$(cat "$__cdist_out_explorers/os")" in
 esac
 
 # FIXME: replace id with $destination post-1.0
-__file etc-issue --source "$source" --destination "$destination"
+__file etc-issue --source "$source" --destination "$destination" --type file
