@@ -38,13 +38,13 @@ objectlist="${__cdist_tmp_dir}/objectfile"
 newobjectlist="${__cdist_tmp_dir}/newobjectfile"
 newobjects="${__cdist_tmp_dir}/newobjects"
 
-no_new_object=n
+new_objects_created=y
 
 # Loop until we do not create new objects anymore
 # which is equal to all objects have been run
-while [ "$no_new_object" = "n"  ]; do
+while [ "$new_objects_created" = "y"  ]; do
    # assume we're done after this run
-   no_new_object=y
+   new_objects_created=n
 
    # find all objects (every object has the source recorded)
    __cdist_object_list "$__cdist_object_base_dir" > "$objectlist"
@@ -71,12 +71,10 @@ while [ "$no_new_object" = "n"  ]; do
                   __cdist_exit_err "${manifest} tried to recreate ${newobject}"
             done < "$newobjectlist"
 
-
             # Safe harbour: We can merge all objects into main tree
-            # Merge = mkdir + mv parameters
+            # Merge = mkdir + mv parameters and source information
             while read newobject; do
-               # Unset no_new_object - only once needed... FIXME (beautify)
-               no_new_object="n"
+                [ "$new_objects_created" = "n" ] && new_objects_created="y"
                
                set -x
                # where to save the newly created object
@@ -106,6 +104,5 @@ while [ "$no_new_object" = "n"  ]; do
 
       # done with this object
       touch "$cur_object_dir/$__cdist_name_object_finished"
-
    done < "$objectlist"
 done
