@@ -20,32 +20,35 @@ eof
 # Tell the user what we do, so this script makes sense during execution
 set -x
 
-# prepare use:
+# prepare use (only from top level directory)
 export PATH="$PATH:$(pwd -P)/bin"
+export __cdist_config="$(pwd -P)/conf"
+
 object_tmp=/tmp/localhost/objects
 explorer_tmp=/tmp/localhost/explorers
 exec_tmp=/tmp/localhost/exec
 
+
 # Test first level manifest execution
-__cdist_config=$(pwd -P)/conf cdist-manifest-init localhost "$object_tmp"
+cdist-manifest-init localhost "$object_tmp"
 
 # See what it generated
 find "$object_tmp"
 
 # Generate all objects, including from types that generate objects as well
-__cdist_config=$(pwd -P)/conf cdist-manifest-recursive-run localhost "$object_tmp"
+cdist-manifest-recursive-all localhost "$object_tmp"
 
 # See what it generated
 find "$object_tmp"
 
 # Run explorer on a "remote" host
-__cdist_config=$(pwd -P)/conf cdist-explorer-run localhost "$explorer_tmp"
+cdist-explorer-run localhost "$explorer_tmp"
 
 # Display result
 find "$explorer_tmp"
 
 # Generate code for all objects in object dir
-__cdist_config=$(pwd -P)/conf cdist-object-codegen-all localhost "$object_tmp" "$exec_tmp"
+cdist-object-codegen-all localhost "$object_tmp" "$exec_tmp"
 
 # Display result
 find "$exec_tmp"
