@@ -111,7 +111,7 @@ __cdist_debug_echo()
 
 __cdist_exit_err()
 {
-   echo "$@"
+   echo "$@" >&2
    exit 1
 }
 

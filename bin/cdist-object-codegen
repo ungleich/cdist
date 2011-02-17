@@ -19,12 +19,11 @@
 #
 #
 # Generate code from one object (object must be relative path!)
+# WARNING: OUTPUT ON STDOUT, ERRORS NEED TO BE ON STDERR!
 #
 
 . cdist-config
-
 [ $# -eq 3 ] || __cdist_usage "<target host>" "<object_base_dir>" "<object>"
-
 set -u
 
 export __cdist_target_host="$1"; shift

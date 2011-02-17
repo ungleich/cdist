@@ -23,6 +23,7 @@
 #
 
 . cdist-config
+set -e
 
 type="$(cat type)"
 mode="$(cat mode)"
