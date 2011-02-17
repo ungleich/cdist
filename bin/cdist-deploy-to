@@ -23,8 +23,7 @@
 
 . cdist-config
 [ $# -eq 1 ] || __cdist_usage "<target host>"
-
-set -e
+set -eu
 
 __cdist_target_host="$1"
 

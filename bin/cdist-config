@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -21,6 +21,10 @@
 # Print configuration directories - helper for all other scripts
 #
 
+echo teeeeeeeeeeeeeeeeeees
+
+# Fail if something bogus is going on
+set -u
 
 # Values can be overriden from outside, so you can
 # customise paths as you like (for distributors, geeks and hackers)
@@ -55,7 +59,6 @@
 # Marks an object finished
 : ${__cdist_name_object_finished:=.done}
 
-
 # Base
 : ${__cdist_config:=/etc/cdist}
 : ${__cdist_explorer_dir:=$__cdist_config/$__cdist_name_explorer}
@@ -71,13 +74,17 @@
 
 # Remote
 : ${__cdist_remote_base_dir:=/var/lib/cdist}
+export __cdist_remote_base_dir
 : ${__cdist_remote_explorer_dir:=$__cdist_remote_base_dir/$__cdist_name_explorer}
 export __cdist_remote_explorer_dir
 : ${__cdist_remote_cache_dir:=$__cdist_remote_base_dir/$__cdist_name_cache}
+export __cdist_remote_cache_dir
 : ${__cdist_remote_cache_explorer:=$__cdist_remote_cache_dir/$__cdist_name_explorer}
 export __cdist_remote_cache_explorer
 : ${__cdist_remote_cache_bin:=$__cdist_remote_base_dir/$__cdist_name_bin}
+export __cdist_remote_cache_bin
 : ${__cdist_remote_cache_exec:=$__cdist_remote_base_dir/$__cdist_name_exec}
+export __cdist_remote_cache_exec
 
 # Tempfiles need to be recreated for each individual script, unshared!
 __cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")
