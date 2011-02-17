@@ -13,7 +13,10 @@ Do not believe anything written in cdist, besides what's written in this file
 
 What you can do so far: (executed from top level directory)
 
-The following code will get executed if you run this README:
+The following code will get executed if you run this README,
+I usually do it like this:
+
+   % rm -rf /tmp/localhost && ./HACKERS_README
 
 eof
 

@@ -24,7 +24,7 @@
 
 . cdist-config
 [ $# -eq 3 ] || __cdist_usage "<target host>" "<object_base_dir>" "<object>"
-set -u
+set -eu
 
 export __cdist_target_host="$1"; shift
 export __cdist_object_base_dir="$1"; shift
@@ -54,6 +54,8 @@ if [ -x "$gencode" ]; then
 
 eof
 
+   # Catch errors ourself now
+   set +e
    "$gencode"; ret=$?
 
 else
