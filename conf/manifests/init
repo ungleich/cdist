@@ -6,7 +6,7 @@
 case "$__cdist_target_host" in
    ikq*|localhost)
       __file cdist-config --source /home/users/nico/p/cdist/bin/cdist-config  \
-                          --destination /usr/bin/cdist-config \
+                          --destination /usr/bin/NOT-cdist-config \
                           --type file
       __issue iddoesnotmatterhere
       ;;
