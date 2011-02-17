@@ -18,21 +18,16 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Transfer executables
+# Exec executables on the remote side
 #
 
 . cdist-config
-
-[ $# -eq 2 ] || __cdist_usage "<target host> <exec_dir>"
+[ $# -eq 1 ] || __cdist_usage "<target host>"
 set -e
 
 export __cdist_target_host="$1"; shift
-export __cdist_exec_dir="$1"; shift
 
 
-# re-create basedir so it's clean
-ssh "root@${__cdist_target_host}" "rm -rf \"${__cdist_remote_cache_exec}\" && mkdir -p \"${__cdist_remote_cache_exec}\""
-
-# FIXME: enable -q as soon as the code is cleaned up
-scp -r "${__cdist_exec_dir}"/* \
-       "root@${__cdist_target_host}:${__cdist_remote_cache_exec}"
+# Run executables - no order, no dependencies yet
+ssh "root@${__cdist_target_host}" \
+   "find \"${__cdist_remote_cache_exec}\" -type f -name \"${__cdist_name_exec}\" -exec {} \\;"
