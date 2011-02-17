@@ -23,13 +23,18 @@
 
 . cdist-config
 [ $# -eq 1 ] || __cdist_usage "<target host>"
+
 set -e
 
 __cdist_target_host="$1"
 
-export __cdist_out_explorers="$__cdist_tmp_dir/$__cdist_name_explorer"
-export __cdist_out_objects="$__cdist_tmp_dir/$__cdist_name_object"
-export __cdist_out_execs="$__cdist_tmp_dir/$__cdist_name_exec"
+: ${__cdist_out_explorers:="$__cdist_tmp_dir/$__cdist_name_explorer"}
+: ${__cdist_out_objects:="$__cdist_tmp_dir/$__cdist_name_object"}
+: ${__cdist_out_execs:="$__cdist_tmp_dir/$__cdist_name_exec"}
+
+export __cdist_out_explorers
+export __cdist_out_objects
+export __cdist_out_execs
 
 # See cdist-stages(7)
 cdist-explorer-run            "$__cdist_target_host" "$__cdist_out_explorers"

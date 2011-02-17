@@ -23,44 +23,16 @@ eof
 # Tell the user what we do, so this script makes sense during execution
 set -x
 
-# Abort on any error
-set -e
-
 # prepare use (only from top level directory)
 export PATH="$PATH:$(pwd -P)/bin"
 export __cdist_config="$(pwd -P)/conf"
 
-__cdist_out_objects=/tmp/localhost/objects
-__cdist_out_explorers=/tmp/localhost/explorers
-__cdist_out_execs=/tmp/localhost/exec
+# Change paths so we can debug stuff :-)
+base=/tmp/localhost
+export __cdist_out_objects=${base}/objects
+export __cdist_out_explorers=${base}/explorers
+export __cdist_out_execs=${base}/exec
 
+cdist-deploy-to localhost
 
-# Run explorer on a "remote" host
-cdist-explorer-run localhost "$__cdist_out_explorers"
-
-# Display result
-find "$__cdist_out_explorers"
-
-# Test first level manifest execution
-cdist-manifest-init localhost "$__cdist_out_objects"
-
-# See what it generated
-find "$__cdist_out_objects"
-
-# Generate all objects, including from types that generate objects as well
-cdist-manifest-run-all localhost "$__cdist_out_objects"
-
-# See what it generated
-find "$__cdist_out_objects"
-
-# Generate code for all objects in object dir
-cdist-object-codegen-all localhost "$__cdist_out_objects" "$__cdist_out_execs"
-
-# Display result, including permissions
-ls -lR "$__cdist_out_execs"
-
-# Transfer generated code
-cdist-exec-transfer localhost "$__cdist_out_execs"
-
-# Execute generated code
-cdist-exec-run localhost
+find "${base}"
