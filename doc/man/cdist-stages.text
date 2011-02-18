@@ -14,10 +14,10 @@ Starting the execution of deployment with cdist-deploy-to(1),
 cdist passes through different stages:
 
 - First stage: Get information about target
-   Every existing explorer (see cdist-explorers(7) is run on
-   the target and the results are copied back into the local
-   cache (see cdist-cache(7)). These values can be used by
-   manifests and types.
+   Every existing explorer is run on the target and the results
+   are copied back into the local cache.
+   The results can be used by manifests and types.
+   See cdist-explorers(7) and see cdist-cache(7).
 
 - Second stage: Initial manifest run
    The initial manifest (see cdist-manifests(7) is run,

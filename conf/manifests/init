@@ -10,4 +10,12 @@ case "$__cdist_target_host" in
                           --type file
       __issue iddoesnotmatterhere
       ;;
+
+   tee.schottelius.org)
+      __package qemu-kvm --wtf installed
+   ;;
+
+   katze*)
+      __package qemu-kvm --wtf installed
+   ;;
 esac
