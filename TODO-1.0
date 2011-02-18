@@ -34,9 +34,7 @@ x generate code to be executed on clients (stage 4)
    x for one object
    x for all objects
 
-- execute code on client (stage 5)
-   - check return codes
-   - abort on first error?
+x execute code on client (stage 5)
 
 - Other stuff pre 1.0:
    - Write some basic types
