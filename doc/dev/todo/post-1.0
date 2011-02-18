@@ -1,4 +1,20 @@
-Types:
+Core:
+   - Support singletons (see types/issue for a good reason)
+   - extend cdist_tree_wrapper to look for optional/mandority parameters for types
+      - gives "good" database, which contains only valid objects
+
+Type handler:
+   - add dependency parameters to core available for every type
+      --requires
+      --excludes?
+
+Stage 5 (code execution):
+   - check return codes
+   - abort on first error?
+   - dependencies
+
+
+Types to be written:
    - ssh-keys (host/user)
    - services
    - user management
@@ -6,8 +22,3 @@ Types:
       - add_line_to_file_if_not_existing
       - delete_line_from_file
       - regexp replace (can probably cover all?)
-
-Core:
-   - Support singletons (see types/issue for a good reason)
-   - extend cdist_tree_wrapper to look for optional/mandority parameters for types
-      - gives "good" database, which contains only valid objects
