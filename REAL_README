@@ -1,25 +1,30 @@
+[[!meta title="cdist - configuration management]]
+
 ## Introduction
 
-cdist configures your system. It is similar to
-[cfengine](http://www.cfengine.org/) and [puppet](http://www.puppetlabs.com/).
-It is inspired by both of those tools:
+cdist configures your system and is similar to
+other configuration management systems like
+[cfengine](http://www.cfengine.org/),
+[bcfg2](http://trac.mcs.anl.gov/projects/bcfg2),
+[chef](http://wiki.opscode.com/display/chef/)
+and [puppet](http://www.puppetlabs.com/), but
+it ticks differently:
 
- * Try to redo the great power you get
- * But leave out the bugs you also got
-
-And cdist is UNIX:
-
-It's designed to
-reuse existing tools,
-it does not require high level scripting language interpreters
-and it is equipped with manpages.
+ * cdist sticks completly to the KISS (keep it simple and stupid) paradigma
+  * cdist's core is very small (currently around 400 lines of code)
+  * There is only one type to extend cdist called ***type***.
+  * 
+ * cdist is UNIX
+  * It reuses existing tools like cat, find, mv, ...
+  * cdist's documentation is bundled as manpages
+ * cdist is written in POSIX shell
+  * No special requirements like high level interpreters needed on server or target
 
 ### Architecture
 
- * KISS (keep it simple and stupid)
-  * Allow very easy extension of cdist (creating own types for instance)
- * Push (server pushes configuration) and Pull (client retrieves config) supported
- * User defines configuration in shell scripts
+ * Push mode (server pushes configuration)
+ * Pull mode (client triggers configuration)
+ * User defines configuration in shell scripts (called ***manifests***)
  * Cdist generates internal configuration (cconfig style) and afterwards applies configuration
 
 ## Requirements
