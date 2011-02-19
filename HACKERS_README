@@ -33,6 +33,7 @@ export __cdist_out_objects=${base}/objects
 export __cdist_out_explorers=${base}/explorers
 export __cdist_out_execs=${base}/exec
 
-cdist-deploy-to localhost
+target="${1:-localhost}"
+cdist-deploy-to "$target"
 
 find "${base}"
