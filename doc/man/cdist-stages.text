@@ -34,7 +34,7 @@ cdist passes through different stages:
    You can trigger the first stage part using
    cdist-manifest-init(1).
 
-- Third stage: Execution of types [TODO]
+- Third stage: Execution of types
    Every object is checked whether its type has an init
    script (see cdist-types(7)). If the type of the object
    has an init script, it is run. This init script may
@@ -50,7 +50,7 @@ cdist passes through different stages:
    objects try to create the same object, which indicates a
    broken configuration.
 
-- Fourth stage: Code generation [TODO]
+- Fourth stage: Code generation
    The "gencode" binary of the types for every existing object is
    called to generate code that will be executed on the target host.
 
@@ -62,7 +62,7 @@ cdist passes through different stages:
    A description of what the generated code may/must/should
    do can be found in cdist-types-gencode(7).
 
-- Fifth stage: [TODO]
+- Fifth stage:
    The resulting code is transferred to the target host and executed,
    the run of cdist-deploy-to(1) ends.
 
