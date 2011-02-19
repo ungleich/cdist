@@ -11,13 +11,17 @@ cdist-stages - How the configuration is built
 DESCRIPTION
 -----------
 Starting the execution of deployment with cdist-deploy-to(1),
-cdist passes through different stages:
+cdist passes through different stages, each can be triggered
+and debugged on its own.
 
-- First stage: Get information about target
-   Every existing explorer is run on the target and the results
-   are copied back into the local cache.
-   The results can be used by manifests and types.
-   See cdist-explorers(7) and see cdist-cache(7).
+STAGE 1: TARGET INFORMATION RETRIEVAL
+--------------------------------------
+In this stage information is collected about target using
+so called explorers.
+Every existing explorer is run on the target and the output
+of all explorers are copied back into the local cache.
+The results can be used by manifests and types.
+See cdist-explorers(7) and see cdist-cache(7).
 
 - Second stage: Initial manifest run
    The initial manifest (see cdist-manifests(7) is run,
