@@ -35,3 +35,4 @@ pub:
 
 man:
 	echo $(MANSRC)
+	a2x -f manpage --no-xmllint doc/man/cdist-stages.text
