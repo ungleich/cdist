@@ -12,7 +12,9 @@ DESCRIPTION
 -----------
 Starting the execution of deployment with cdist-deploy-to(1),
 cdist passes through different stages, each can be triggered
-and debugged on its own.
+and debugged on its own. Reading the source of the
+cdist-deploy-to script shous the binaries being responsible
+for each stage.
 
 STAGE 1: TARGET INFORMATION RETRIEVAL
 --------------------------------------
@@ -21,24 +23,26 @@ so called explorers.
 Every existing explorer is run on the target and the output
 of all explorers are copied back into the local cache.
 The results can be used by manifests and types.
-See cdist-explorers(7) and see cdist-cache(7).
 
-- Second stage: Initial manifest run
-   The initial manifest (see cdist-manifests(7) is run,
-   which is done by cdist-manifest-init(1).
-   
-   This run creates an internal database in cconfig
-   format (see cdist-config-layout(7), that contains all
-   objects configured for the specific host.
+Related manpages are cdist-explorers(7) and cdist-cache(7).
 
-   In this stage, no conflicts may occur, i.e. no
-   object of the same type with the same id may
-   be created.
-   
-   You can trigger the first stage part using
-   cdist-manifest-init(1).
 
-- Third stage: Execution of types
+STAGE 2: RUN THE INITIAL MANIFEST
+---------------------------------
+The initial manifest, which should be used for mappings
+of hosts to types, is executed.
+
+This stage creates objects in a cconfig database that
+contains as defined in the manifest for the specific host.
+
+In this stage, no conflicts may occur, i.e. no object of
+the same type with the same id may be created.
+
+Related manpages are cdist-manifest-init(1), cdist-manifests(7) and
+cdist-config-layout(7).
+
+STAGE 3: EXECUTION OF TYPES
+---------------------------
    Every object is checked whether its type has an init
    script (see cdist-types(7)). If the type of the object
    has an init script, it is run. This init script may
@@ -54,7 +58,8 @@ See cdist-explorers(7) and see cdist-cache(7).
    objects try to create the same object, which indicates a
    broken configuration.
 
-- Fourth stage: Code generation
+STAGE 4: CODE GENERATION
+------------------------
    The "gencode" binary of the types for every existing object is
    called to generate code that will be executed on the target host.
 
@@ -66,7 +71,8 @@ See cdist-explorers(7) and see cdist-cache(7).
    A description of what the generated code may/must/should
    do can be found in cdist-types-gencode(7).
 
-- Fifth stage:
+STAGE 5: CODE EXECUTION
+-----------------------
    The resulting code is transferred to the target host and executed,
    the run of cdist-deploy-to(1) ends.
 
