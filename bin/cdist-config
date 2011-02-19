@@ -21,8 +21,6 @@
 # Print configuration directories - helper for all other scripts
 #
 
-echo teeeeeeeeeeeeeeeeeees
-
 # Fail if something bogus is going on
 set -u
 
