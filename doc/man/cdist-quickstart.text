@@ -1,5 +1,42 @@
-## How to use cdist?
+cdist-quickstart(7)
+===================
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
+MAKE cdist-quickstart(1) an put into a script!
+
+NAME
+----
+cdist-quickstart - Make use of cinit in 5 minutes
+
+
+DESCRIPTION
+-----------
+This document helps you to take the first steps with cdist.
+We'll begin to configure the host "localhost" to have two files
+in place, /etc/DO-NOT-CHANGE and /root/CDIST-ENABLED-HOST, which
+both are used to warn other sysadmins that this system is managed
+by configuration management and manual changes may get overwritten.
+
+Firstly, we create the basic directory structure to hold the
+configuration for cdist:
+
+mkdir -p /etc/cdist/manifests
+
+# Create 
+
+Cdist uses 
+kgives you an impression of 
  0. Create a host specification (/etc/cdist/hosts/**hostname**)
   0. Add functionalilty to add
    0. Run ***cdist-apply***
+
+SEE ALSO
+--------
+cdist-config-layout(7)
+
+
+COPYING
+-------
+Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
+## How to use cdist?
