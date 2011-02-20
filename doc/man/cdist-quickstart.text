@@ -1,8 +1,6 @@
-cdist-quickstart(7)
+cdist-quickstart(1)
 ===================
 Nico Schottelius <nico-cdist--@--schottelius.org>
-
-MAKE cdist-quickstart(1) an put into a script!
 
 NAME
 ----
@@ -17,8 +15,10 @@ in place, /etc/DO-NOT-CHANGE and /root/CDIST-ENABLED-HOST, which
 both are used to warn other sysadmins that this system is managed
 by configuration management and manual changes may get overwritten.
 
-Firstly, we create the basic directory structure to hold the
-configuration for cdist:
+Begin to execute cdist-quickstart, it will show you the steps it
+takes and explains what it does:
+
+% cdist-quickstart
 
 mkdir -p /etc/cdist/manifests
 
