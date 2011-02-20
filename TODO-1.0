@@ -66,6 +66,7 @@ x execute code on client (stage 5)
       - create doc/dev/HACKERS_README
    - Add install target to Makefile
    - create cdist-config-init to create basic tree
+   - cdist-type integration!
    - DOC document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
    - DOC document that $type/manifest is executed for every object/instance
    - DOC: types can always access __cdist_out_objects, __cdist_out_explorers, __cdist_out_execs
