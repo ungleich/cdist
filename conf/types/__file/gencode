@@ -22,13 +22,14 @@
 # example for typewrites later
 #
 
-. cdist-config
-
-pwd -P >&2
-ls >&2
-
 type="$(cat type)"
-path="$(cat destination)"
+
+# If destination was specified, do not use the id
+if [ -f destination ]; then
+   destination="$(cat destination)"
+else
+   destination="$1"
+fi
 
 case "$type" in
    directory)
@@ -43,7 +44,6 @@ case "$type" in
       echo "Unsupported type: \"$type\"" >&2
       exit 1
    ;;
-
 esac
 
 if [ -f mode ]; then
