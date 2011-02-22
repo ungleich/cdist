@@ -2,6 +2,8 @@ This document defines how to continue work on cdist:
 
 x general stuff
    x Define configuration paths (doc/internal/config-layout)
+   - check whether remote and local view of objects can be the same,
+    i.e. local:/outdir == remote:/var/lib/cdist
 
 x get information from target (stage 1)
    x Define how to get information from targets
