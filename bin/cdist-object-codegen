@@ -52,3 +52,7 @@ cat << eof
 eof
 
 [ -x "$gencode" ] && __cdist_exec_fail_on_error "$gencode" "$__cdist_object_id"
+
+# Ensure non-error exit status
+exit 0
+
