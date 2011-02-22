@@ -46,12 +46,6 @@ ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
 
 # Copy explorers to remote source directory
 # FIXME: enable -q as soon as the code is cleaned up
-
-cd "${explorer_dir}"
-for explorer in *; do
-   "./$explorer" > "${result_dir}/${explorer}"
-done
-
 scp "${__cdist_src_dir}"/* \
     "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_src_dir}"
 
