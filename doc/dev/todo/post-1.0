@@ -4,6 +4,7 @@ Core:
       - gives "good" database, which contains only valid objects
    - use ssh with master socket?
       - saves connection delay for new connections: -M
+      - hint: http://protempore.net/~calvins/howto/ssh-connection-sharing/
 
 Type handler:
    - add dependency parameters to core available for every type
