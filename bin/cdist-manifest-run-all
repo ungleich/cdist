@@ -50,7 +50,10 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
 
    # Check every object, if we need to run it
    while read __cdist_object; do
+      # Full path to current object
       __cdist_cur_object_dir="$__cdist_object_base_dir/$__cdist_object"
+      # Only the id
+      __cdist_object_id="${__cdist_object#*/}"
 
       if [ ! -f "${__cdist_cur_object_dir}/$__cdist_name_object_finished" ]; then
          echo "Working on object ${__cdist_object} ..."
@@ -61,7 +64,14 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
 
          if [ -x "${__cdist_manifest}" ]; then
             echo "Executing manifest ${__cdist_manifest} ..."
-            cdist-manifest-run "$__cdist_target_host" "${__cdist_manifest}" "${__cdist_new_objects_dir}"
+
+            # Safely change directory, convienent for type-writers
+            (
+               cd "$__cdist_cur_object_dir"
+               cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest"     \
+                                  "$__cdist_new_objects_dir" "$__cdist_object_id"
+            )
+
             __cdist_object_list "${__cdist_new_objects_dir}" > "$__cdist_new_objects_list"
 
             # Verify no conflicting objects have been created
