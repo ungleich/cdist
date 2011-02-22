@@ -44,15 +44,11 @@ gencode="$(__cdist_type_gencode "$__cdist_type")"
 
 cd "$__cdist_object_dir"
 
-# Call gencode of type with __cdist_object
-if [ -x "$gencode" ]; then
-   # Prepend header to each script
-   cat << eof
+cat << eof
 #
-# Code imported from $gencode
+# The following code is imported from output of $gencode
 #
 
 eof
 
-   __cdist_exec_fail_on_error "$gencode" "$__cdist_object_id"
-fi
+[ -x "$gencode" ] || __cdist_exec_fail_on_error "$gencode" "$__cdist_object_id"
