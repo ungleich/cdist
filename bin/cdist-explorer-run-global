@@ -28,7 +28,6 @@ set -ue
 export __cdist_target_host="$1"; shift
 export __cdist_output_dir="$1"; shift
 
-
 # create basedir
 ssh root@${__cdist_target_host} "mkdir -p \"${__cdist_remote_base_dir}\" \
          \"${__cdist_remote_cache_dir}\" \"${__cdist_remote_cache_bin}\" \

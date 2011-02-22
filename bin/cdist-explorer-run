@@ -23,43 +23,24 @@
 #
 
 . cdist-config
-if [ $# -ne 5 ]; then
-   __cdist_usage "<target host> <local srcdir> <local dstdir> <remote srcdir> <remote dstdir>"
-fi
+[ $# -eq 2 ] || __cdist_usage "<target host> <outdir>"
 set -ue
 
 export __cdist_target_host="$1"; shift
+export __cdist_output_dir="$1"; shift
 
-export __cdist_local_src_dir="$1"; shift
-export __cdist_local_dst_dir="$1"; shift
-export __cdist_remote_src_dir="$1"; shift
-export __cdist_remote_dst_dir="$1"; shift
-
-################################################################################
-# New code
-#
-
-# Create remote source and destination directory
-ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
-      "mkdir -p   \"${__cdist_remote_src_dir}\"       \
-                  \"${__cdist_remote_dst_dir}\""
-
-# Copy explorers to remote source directory
-# FIXME: enable -q as soon as the code is cleaned up
-scp "${__cdist_src_dir}"/* \
-    "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_src_dir}"
-
-# Execute explorers and save results in remote destination directory
-
-# Copy results back to us
-
-################################################################################
-# Old code
-#
 # create basedir
+ssh root@${__cdist_target_host} "mkdir -p \"${__cdist_remote_base_dir}\" \
+         \"${__cdist_remote_cache_dir}\" \"${__cdist_remote_cache_bin}\" \
+        \"${__cdist_remote_cache_explorer}\""
+
 # Transfer all explorers to the target dir - must be one level above, so
 # coyping it multiple times works: a -> remote:/base/ = remote:/base/a vs.
 # a -> remote:/base/a = remote:/base/a/a (second copy)
+
+# FIXME: enable -q as soon as the code is cleaned up
+scp -r "${__cdist_explorer_dir}" \
+       "root@${__cdist_target_host}:${__cdist_remote_base_dir}"
 
 # Transfer cdist binaries - FIXME: should transfer all (needed?) of them!
 scp "$(which cdist-explorer-coordinator)" "$(which cdist-config)" \
@@ -72,12 +53,12 @@ ssh root@${__cdist_target_host} \
          \"${__cdist_remote_explorer_dir}\" \"${__cdist_remote_cache_explorer}\""
 
 # Ensure local destination directory exists
-mkdir -p "$__cdist_local_dst_dir"
+mkdir -p "$__cdist_output_dir"
 
 # FIXME: enable -q as soon as the code is cleaned up
 # Transfer back all results - FIXME: Add 2 level cache, so old version is kept until success
 scp -r "root@${__cdist_target_host}:${__cdist_remote_cache_explorer}/*" \
-      "$__cdist_local_dst_dir"
+      "$__cdist_output_dir"
 
 
 exit 0
@@ -87,7 +68,7 @@ exit 0
 # Keep until above version successfully works
 
 
-cd "${__cdist_src_dir}"
+cd "${__cdist_explorer_dir}"
 ls > "${__cdist_tmp_file}"
 
 # first load all functions
