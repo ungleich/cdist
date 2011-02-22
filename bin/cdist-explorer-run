@@ -44,22 +44,69 @@ ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
       "mkdir -p   \"${__cdist_remote_src_dir}\"       \
                   \"${__cdist_remote_dst_dir}\""
 
+# Copy explorers to remote source directory
+# FIXME: enable -q as soon as the code is cleaned up
+
+cd "${explorer_dir}"
+for explorer in *; do
+   "./$explorer" > "${result_dir}/${explorer}"
+done
+
+scp "${__cdist_src_dir}"/* \
+    "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_src_dir}"
+
+# Execute explorers and save results in remote destination directory
+
+# Copy results back to us
+
+################################################################################
+# Old code
+#
+# create basedir
+# Transfer all explorers to the target dir - must be one level above, so
+# coyping it multiple times works: a -> remote:/base/ = remote:/base/a vs.
+# a -> remote:/base/a = remote:/base/a/a (second copy)
+
+# Transfer cdist binaries - FIXME: should transfer all (needed?) of them!
+scp "$(which cdist-explorer-coordinator)" "$(which cdist-config)" \
+    "root@${__cdist_target_host}:${__cdist_remote_cache_bin}"
+
+# Execute explorer coordinator, which will save results on target
+ssh root@${__cdist_target_host} \
+   "PATH=\"${__cdist_remote_cache_bin}:\$PATH\"
+   \"${__cdist_remote_cache_bin}/cdist-explorer-coordinator\" \
+         \"${__cdist_remote_explorer_dir}\" \"${__cdist_remote_cache_explorer}\""
+
 # Ensure local destination directory exists
 mkdir -p "$__cdist_local_dst_dir"
 
 # FIXME: enable -q as soon as the code is cleaned up
-cd "${__cdist_local_src_dir}"
-for explorer in *; do
-   # Copy explorers to remote source directory
-   scp "${explorer}" \
-       "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_src_dir}"
+# Transfer back all results - FIXME: Add 2 level cache, so old version is kept until success
+scp -r "root@${__cdist_target_host}:${__cdist_remote_cache_explorer}/*" \
+      "$__cdist_local_dst_dir"
 
-   # Execute explorers and save results in remote destination directory
-   ssh "${__cdist_remote_user}@${__cdist_target_host}" \
-       "\"${__cdist_remote_src_dir}/$explorer\" > \
-       \"${__cdist_remote_dst_dir}/${explorer}\""
 
-   # Copy results back to us
-   scp "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_dst_dir}/${explorer}" \
-       "$__cdist_local_dst_dir/$explorer"
-done
+exit 0
+
+# --------------------------------------------------------------------------------
+# old idea with shell scripts (also sexy)
+# Keep until above version successfully works
+
+
+cd "${__cdist_src_dir}"
+ls > "${__cdist_tmp_file}"
+
+# first load all functions
+while read funcfull; do
+   cat "${funcfull}"
+done < "${__cdist_tmp_file}"
+
+# then execute functions
+while read funcfull; do
+   sh="${funcfull##*/}"
+   func="${sh%.sh}"
+   var="__$func"
+
+   echo "$var=\"\$($func)\""
+   echo "echo $var=\\\"\$$var\\\""
+done < "${CDIST_TMP}"
