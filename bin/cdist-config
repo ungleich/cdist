@@ -27,7 +27,7 @@ set -u
 # Values can be overriden from outside, so you can
 # customise paths as you like (for distributors, geeks and hackers)
 
-# Names
+# Names / Constants
 : ${__cdist_name_bin:=bin}
 : ${__cdist_name_cache:=cache}
 : ${__cdist_name_code:=code}
@@ -69,8 +69,14 @@ set -u
 : ${__cdist_cache_hosts:=$__cdist_cache_dir/$__cdist_name_host}
 : ${__cdist_cache_bin:=$__cdist_cache_dir/$__cdist_name_bin}
 
+# Used for IDs
+__cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 
 # Remote
+
+# Default remote user
+: ${__cdist_remote_user:=root}
+
 : ${__cdist_remote_base_dir:=/var/lib/cdist}
 export __cdist_remote_base_dir
 : ${__cdist_remote_explorer_dir:=$__cdist_remote_base_dir/$__cdist_name_explorer}
@@ -98,12 +104,6 @@ __cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
 __cdist_myname=${0##*/};
 __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
-
-################################################################################
-# Other constants
-
-# Used for IDs
-__cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 ################################################################################
 # Function list
 #
