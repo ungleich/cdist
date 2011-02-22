@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,26 +18,33 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 # 
-# For each created object create the code to be executed on the
-# target.
+# For each created object check the explorers and run them if needed.
 #
 
 . cdist-config
-
-if [ $# -ne 3 ]; then
-   __cdist_usage "<target host> <object_base_dir> <outdir>"
-fi
-
+[ $# -eq 2 ] || __cdist_usage "<target host> <object_base_dir>"
 set -eu
 
 __cdist_target_host="$1"; shift
 __cdist_object_base_dir="$1"; shift
-__cdist_exec_dir="$1"; shift
 
 __cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
 
+# need to create pseudo array, as ssh will destroy while-read loops
 while read object; do
-   outdir="$__cdist_exec_dir/${object}"
+   set -- "$@" "$object"
+done < "$__cdist_tmp_file"
+
+while [ $# -gt 0 ]; do
+   object="$1"; shift
+   type=$(__cdist_type_from_object "$object")
+
+   local_src_dir="$__cdist_object_base_dir/${object}/${__cdist_name_explorer}"
+   local_dst_dir="$__cdist_object_base_dir/${object}/${__cdist_name_explorer}"
+   # FIXME: stopped here
+
+   cdist-explorer-run "$__cdist_target_host" 
+
    outfile="${outdir}/${__cdist_name_exec}"
 
    mkdir -p "${outdir}"
