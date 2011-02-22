@@ -36,7 +36,7 @@ export __cdist_out_objects
 export __cdist_out_execs
 
 # See cdist-stages(7)
-cdist-explorer-run            "$__cdist_target_host" "$__cdist_out_explorers"
+cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorers"
 cdist-manifest-init           "$__cdist_target_host" "$__cdist_out_objects"
 cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_objects"
 cdist-object-codegen-all      "$__cdist_target_host" "$__cdist_out_objects" "$__cdist_out_execs"
