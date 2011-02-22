@@ -1,0 +1,7 @@
+install/pacman:
+pacman --noconfirm --noprogressbar -S
+--------------------------------------------------------------------------------
+
+ensure: What state the package should be in: present | absent | latest | versionstring (1.0.3)
+name: The package name as used by the packaging system
+
