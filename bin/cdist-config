@@ -135,6 +135,11 @@ __cdist_type_mydir()
    echo "${__cdist_type_dir}/${__cdist_type_current}"
 }
 
+__cdist_type_explorers()
+{
+   echo "${__cdist_type_dir}/$1/$__cdist_name_explorer"
+}
+
 __cdist_type_gencode()
 {
    local type="$1"
