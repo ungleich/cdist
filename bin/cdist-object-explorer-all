@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# 
+# For each created object create the code to be executed on the
+# target.
+#
+
+. cdist-config
+
+if [ $# -ne 3 ]; then
+   __cdist_usage "<target host> <object_base_dir> <outdir>"
+fi
+
+set -eu
+
+__cdist_target_host="$1"; shift
+__cdist_object_base_dir="$1"; shift
+__cdist_exec_dir="$1"; shift
+
+__cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
+
+while read object; do
+   outdir="$__cdist_exec_dir/${object}"
+   outfile="${outdir}/${__cdist_name_exec}"
+
+   mkdir -p "${outdir}"
+
+   cdist-object-codegen "$__cdist_target_host"     \
+                        "$__cdist_object_base_dir" \
+                        "$object" > "${outfile}"
+
+   chmod u+x "${outfile}"
+done < "$__cdist_tmp_file"
