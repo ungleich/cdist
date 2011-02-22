@@ -2,20 +2,15 @@
 # This is a sample manifest, but used in real world
 #
 
+# All systems get a file /etc/cdist-managed, so the sysadmin knows
+# who manages the configuration.
+__file /etc/cdist-managed --type file
+
 # All ikqs get a sample file
 case "$__cdist_target_host" in
-   ikq*|localhost)
-      __file cdist-config --source /home/users/nico/p/cdist/bin/cdist-config  \
-                          --destination /usr/bin/NOT-cdist-config \
-                          --type file
+   localhost)
       __issue iddoesnotmatterhere
-      ;;
-
-   tee.schottelius.org)
       __package qemu-kvm --wtf installed
-   ;;
-
-   katze*)
-      __package qemu-kvm --wtf installed
+      __package tftpd-hpa --fancyoption installed
    ;;
 esac
