@@ -150,6 +150,11 @@ __cdist_type_param_file()
    echo "${__cdist_type_dir}/$type/$__cdist_name_type_params/$paramtype"
 }
 
+__cdist_type_from_object()
+{
+   echo "${1%%/*}"
+}
+
 __cdist_object_arg()
 {
    local arg="$1"; shift
