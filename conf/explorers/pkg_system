@@ -19,7 +19,7 @@
 #
 #
 
-case "$("${__cdist_remote_explorer_dir}/os")" in
+case "$(./os)" in
       archlinux) echo pacman ;;
       debian|ubuntu) echo apt ;;
       gentoo) echo emerge ;;
