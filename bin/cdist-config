@@ -21,8 +21,6 @@
 # Print configuration directories - helper for all other scripts
 #
 
-echo teeeeeeeeeeeeeeeeeees
-
 # Fail if something bogus is going on
 set -u
 
@@ -180,6 +178,13 @@ __cdist_object_source()
 
    cat "${object_dir}/$__cdist_name_object_source"
 }
+
+__cdist_exec_fail_on_error()
+{
+   sh -e "$@"
+   [ "$?" -eq 0 ] || __cdist_exit_err "Error: $1 exited non-zero."
+}
+
 
 __cdist_tmp_removal()
 {

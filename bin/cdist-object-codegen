@@ -54,19 +54,5 @@ if [ -x "$gencode" ]; then
 
 eof
 
-   # Catch errors ourself now
-   set +e
-   (
-      # Ensure manifest fails if something within manifest fails
-      # And not all manifests need to include set -e themselves
-      set -e
-      . "$gencode"
-   ); ret=$?
-
-else
-   ret=0
-fi
-
-if [ "$ret" -ne 0 ]; then
-   __cdist_exit_err "Error: $gencode exited non-zero"
+   __cdist_exec_fail_on_error "$gencode"
 fi

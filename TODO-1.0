@@ -11,7 +11,7 @@ x run initial manifest (stage 2)
    x Create configuration tree from manifest
       x write binaries, which create the tree when called from manifest (cdist_tree_wrapper)
 
-- be able to run manifest of types (stage 3)
+x be able to run manifest of types (stage 3)
    x Parse configuration tree/objects recursively
       x can/may types modify tree?
          -> yes, of everything a type created itself!
@@ -22,13 +22,6 @@ x run initial manifest (stage 2)
    x rename $__object_dir to $__object_base_dir
    x use $type/manifest instead of $type/init
    x find $object_id in recursive runner (before merge)
-   - DOC document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
-   - DOC document that $type/manifest is executed for every object/instance
-   - DOC: types can always access
-      __cdist_out_objects, __cdist_out_explorers, 
-      __cdist_out_execs
-
-      --> create cdist-variables document?
 
 x generate code to be executed on clients (stage 4)
    x for one object
@@ -41,6 +34,7 @@ x execute code on client (stage 5)
       - file (with directory)
       - package
    - doc cleanup for 1.0:
+      - ensure every file in bin/ has a correspondent manpage
       - cdist manpage (main manpage)
          - cleanup following man + their tree:
             - cdist-language        [CLEANUP AND REMOVE]
@@ -72,3 +66,11 @@ x execute code on client (stage 5)
       - create doc/dev/HACKERS_README
    - Add install target to Makefile
    - create cdist-config-init to create basic tree
+   - cdist-type integration!
+   - DOC document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
+   - DOC document that $type/manifest is executed for every object/instance
+   - DOC: types can always access __cdist_out_objects, __cdist_out_explorers, __cdist_out_execs
+      --> create cdist-variables document?
+
+   - include generation in makefile
+

@@ -13,7 +13,6 @@ it ticks differently:
  * cdist sticks completly to the KISS (keep it simple and stupid) paradigma
   * cdist's core is very small (currently around 400 lines of code)
   * There is only one type to extend cdist called ***type***.
-  * 
  * cdist is UNIX
   * It reuses existing tools like cat, find, mv, ...
   * cdist's documentation is bundled as manpages
