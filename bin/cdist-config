@@ -158,6 +158,7 @@ __cdist_object_arg()
    cat "${__cdist_object_base_dir}/${object}/${arg}"
 }
 
+# Find objects, remove ./ and /MARKER
 __cdist_object_list()
 {
    local basedir="$1"; shift
@@ -167,7 +168,7 @@ __cdist_object_list()
       cd "${basedir}"
 
       find . -name "$__cdist_name_object_source" |    \
-         sed -e "s;$__cdist_name_object_source\$;;" -e 's;^./;;'
+         sed -e 's;^./;;' -e "s;/$__cdist_name_object_source\$;;"
    )
 
 }
