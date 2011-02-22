@@ -181,7 +181,8 @@ __cdist_object_source()
 
 __cdist_exec_fail_on_error()
 {
-   sh -e "$1"
+   sh -e "$@"
+   [ "$?" -eq 0 ] || __cdist_exit_err "Error: $1 exited non-zero."
 }
 
 
