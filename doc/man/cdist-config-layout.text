@@ -51,37 +51,47 @@ variables, see cdist-environment(7)).
    Parameters optionally accepted by type, \n seperated list.
    See cdist-types(7).
 
-- cache/
-   The cache contains results from previous runs, which may also
-   be used in types to gather information about other hosts
-   (like ssh-keys).
+- types/<name>/explorers:
+   Location of the type specific explorers.
+   See cdist-explorers(7).
 
-- cache/hosts/:
-   Contains cache of every known host.
+- /output-tree/
+   This directory contains output of cdist and is mirrored into the
+   cache after a successful run. This directory may be placed below
+   the tmpdir or at any other location.
 
-- cache/hosts/<name>:
+- /output-tree/hosts/:
+   Contains output of hosts.
+
+- /output-tree/hosts/<name>:
    Contains cache of the specific host.
 
-- cache/hosts/<name>/explorers:
-   Output of explorers from last run for the host.
+- /output-tree/hosts/<name>/explorers:
+   Output of general explorers.
 
-- cache/hosts/<name>/objects:
+- /output-tree/hosts/<name>/objects:
    Objects created during last run for the host.
+
+- /output-tree/hosts/<name>/objects/<object>/explorers:
+   Output of type specific explorers, per object.
 
 - tmpdir: Temporary storage
    A tempdir and a tempfile is provided by cdist-config(1), which
    will be removed when the scripts ends automatically.
+
+FUTURE
+------
+The following functionality may be implemented in the next release (or so).
 
 - tmpdir/cache/: New cache
    This directory contains elements for the new cache of the host.
    If all stages are completed successfully, the new cache is used
    to replace the previous one.
 
-- tmpdir/explorers/: Output of explorers
-   If the run was successful, the results are copied into the new cache.
-
-- tmpdir/objects/: Objects created during run
-   If the run was successful, the results are copied into the new cache.
+- cache/
+   The cache contains the cconfig output tree from previous runs, which
+   may also be used in types to gather information about other hosts
+   (like ssh-keys).
 
 
 AUTHOR
