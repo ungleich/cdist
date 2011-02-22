@@ -13,4 +13,9 @@ case "$__cdist_target_host" in
       __package qemu-kvm --wtf installed
       __package tftpd-hpa --fancyoption installed
    ;;
+
+   icarus)
+      __package tree --ensure installed
+   ;;
+
 esac
