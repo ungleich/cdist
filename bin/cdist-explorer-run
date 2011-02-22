@@ -29,12 +29,12 @@ if [ $# -ne 5 ]; then
 fi
 set -ue
 
-export __cdist_target_host="$1"; shift
+__cdist_target_host="$1"; shift
 
-export __cdist_local_src_dir="$1"; shift
-export __cdist_local_dst_dir="$1"; shift
-export __cdist_remote_src_dir="$1"; shift
-export __cdist_remote_dst_dir="$1"; shift
+__cdist_local_src_dir="$1"; shift
+__cdist_local_dst_dir="$1"; shift
+__cdist_remote_src_dir="$1"; shift
+__cdist_remote_dst_dir="$1"; shift
 
 ################################################################################
 # New code
@@ -60,6 +60,7 @@ fi
 # Copy all explorers to remote source directory
 scp * "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_src_dir}"
 
+# Execute all explorers
 for explorer in *; do
    # Execute explorers and save results in remote destination directory
    ssh "${__cdist_remote_user}@${__cdist_target_host}" \
