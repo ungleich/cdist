@@ -179,6 +179,12 @@ __cdist_object_source()
    cat "${object_dir}/$__cdist_name_object_source"
 }
 
+__cdist_exec_fail_on_error()
+{
+   sh -e -c "$1"
+}
+
+
 __cdist_tmp_removal()
 {
    rm -rf "${__cdist_tmp_dir}"
