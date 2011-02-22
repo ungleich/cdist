@@ -22,6 +22,8 @@ x be able to run manifest of types (stage 3)
    x rename $__object_dir to $__object_base_dir
    x use $type/manifest instead of $type/init
    x find $object_id in recursive runner (before merge)
+   - move attributes of object to subdir attributes
+   - run explorers for every object
 
 x generate code to be executed on clients (stage 4)
    x for one object
