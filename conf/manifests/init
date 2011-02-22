@@ -18,4 +18,9 @@ case "$__cdist_target_host" in
    katze*)
       __package qemu-kvm --wtf installed
    ;;
+
+   icarus)
+      __package tree --ensure installed
+   ;;
+
 esac
