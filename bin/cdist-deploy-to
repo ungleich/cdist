@@ -46,7 +46,7 @@ cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
 # Create initial object base
 cdist-manifest-init           "$__cdist_target_host" "$__cdist_out_object_dir"
 
-# Create dependent objects
+# Create dependent objects - BUG: does not abort on error in manifest!!!!
 cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_object_dir"
 
 exit 2
