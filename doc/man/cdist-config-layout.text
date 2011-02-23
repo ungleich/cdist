@@ -62,7 +62,8 @@ variables, see cdist-environment(7)).
 - out_dir/
    This directory contains output of cdist and is mirrored into the
    cache after a successful run. This directory may be placed below
-   the tmpdir or at any other location.
+   the tmpdir or at any other location and is also available on the
+   target.
 
 - out_dir/explorers:
    Output of general explorers.
