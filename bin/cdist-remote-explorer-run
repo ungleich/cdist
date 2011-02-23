@@ -47,6 +47,8 @@ fi
 
 # Execute all explorers
 for explorer in "$__cdist_explorer_dir/"*; do
+   explorer_name="${explorer##*/}"
+
    if [ -f "$explorer" ]; then
       if [ ! -x "$explorer" ]; then
          echo "Explorer \"$explorer\" exists, but is not executable."
@@ -54,7 +56,7 @@ for explorer in "$__cdist_explorer_dir/"*; do
       fi
 
       # Execute explorers and save results in remote destination directory
-      "$explorer" "$@" > "${__cdist_my_out_dir}"
+      "$explorer" "$@" > "${__cdist_my_out_dir}/$explorer_name"
    else
       if [ -e "$explorer" ]; then
          echo "Explorer \"$explorer\" exists, but is not a file."
