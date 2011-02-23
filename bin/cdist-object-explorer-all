@@ -47,6 +47,7 @@ while [ $# -gt 0 ]; do
    remote_dst_dir="$__cdist_remote_cache_dir/$__cdist_name_object/$object/$__cdist_name_explorer"
 
    if [ -d "$local_src_dir" ]; then
+      echo "Executing explorers for $object ..."
       num="$(ls -1 "$local_src_dir" | wc -l)"
 
       # Skip if there is not at least one explorer
@@ -54,9 +55,11 @@ while [ $# -gt 0 ]; do
          continue
       fi
 
-      cdist-explorer-run "$__cdist_target_host" \ 
+      set -x
+      cdist-explorer-run "$__cdist_target_host" \
          "$local_src_dir"  "$local_dst_dir"     \
          "$remote_src_dir" "$remote_dst_dir"    \
          "$object_id"
+      set +x
    fi
 done
