@@ -51,7 +51,7 @@ mkdir -p "${__cdist_ddir}"
 echo "${__cdist_manifest}" > "${__cdist_ddir}/${__cdist_name_object_source}"
 
 # Record parameters to subdir
-tempparams="${__cdist_tmp_dir}/params"
+tempparams="${__cdist_tmp_dir}/${__cdist_name_type_params}"
 mkdir -p "$tempparams"
 
 while [ $# -gt 0 ]; do
