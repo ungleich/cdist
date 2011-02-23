@@ -77,26 +77,18 @@ variables, see cdist-environment(7)).
    A tempdir and a tempfile is provided by cdist-config(1), which
    will be removed when the scripts ends automatically.
 
+
 FUTURE
 ------
-The following functionality may be implemented in the next release (or so).
+The following functionality may be implemented in one of the next releases:
 
-- tmpdir/cache/: New cache
-   This directory contains elements for the new cache of the host.
-   If all stages are completed successfully, the new cache is used
-   to replace the previous one.
-
-- cache/
-   The cache contains the cconfig output tree from previous runs, which
+- cache_dir/
+   The cache contains the out_dir from previous runs, which
    may also be used in types to gather information about other hosts
    (like ssh-keys).
 
-- out_dir/hosts/:
-   Contains output of hosts.
-
-- out_dir/hosts/<name>:
-   Contains cache of the specific host.
-
+- cache_dir/hosts/<name>:
+   Contains the last out_dir of the specific host.
 
 
 AUTHOR
