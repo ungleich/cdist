@@ -44,9 +44,9 @@ set -u
 : ${__cdist_name_object:=objects}
 
 : ${__cdist_name_type:=types}
-: ${__cdist_name_type_params:=parameters}
-: ${__cdist_name_type_params_required:=required}
-: ${__cdist_name_type_params_optional:=optional}
+: ${__cdist_name_params:=parameters}
+: ${__cdist_name_params_required:=required}
+: ${__cdist_name_params_optional:=optional}
 
 # Name of the executable generated
 : ${__cdist_name_exec:=exec}
@@ -152,7 +152,7 @@ __cdist_type_param_file()
    local type="$1"; shift
    local paramtype="$1"; shift
 
-   echo "${__cdist_type_dir}/$type/$__cdist_name_type_params/$paramtype"
+   echo "${__cdist_type_dir}/$type/$__cdist_name_params/$paramtype"
 }
 
 __cdist_type_from_object()

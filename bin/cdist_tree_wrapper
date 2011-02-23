@@ -51,7 +51,7 @@ mkdir -p "${__cdist_ddir}"
 echo "${__cdist_manifest}" > "${__cdist_ddir}/${__cdist_name_object_source}"
 
 # Record parameters to subdir
-tempparams="${__cdist_tmp_dir}/${__cdist_name_type_params}"
+tempparams="${__cdist_tmp_dir}/${__cdist_name_params}"
 mkdir -p "$tempparams"
 
 while [ $# -gt 0 ]; do
@@ -76,14 +76,14 @@ while read required; do
    fi
 
    mv "${tempparams}/${required}" "${__cdist_ddir}"
-done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_type_params_required")"
+done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_params_required")"
 
 # Allow optional parameters
 while read optional; do
    if [ -f "${tempparams}/${optional}" ]; then
       mv "${tempparams}/${optional}" "${__cdist_ddir}"
    fi
-done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_type_params_optional")"
+done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_params_optional")"
 
 # Error out on other paramaters
 cd "${tempparams}"
