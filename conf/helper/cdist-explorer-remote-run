@@ -1,0 +1,71 @@
+#!/bin/sh
+#
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# FIXME: Replace * references: * breaks if there is no explorer
+# or FIXME: check that there is at least one explorer?
+#
+
+
+. cdist-config
+if [ $# -lt 3 ]; then
+   __cdist_usage "<target host> <remote srcdir> <remote dstdir> [explorer args]"
+fi
+set -ue
+
+__cdist_target_host="$1"; shift
+__cdist_remote_src_dir="$1"; shift
+__cdist_remote_dst_dir="$1"; shift
+
+# Create remote destination directory
+ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
+      "mkdir -p \"${__cdist_remote_dst_dir}\""
+
+# FIXME: enable -q as soon as the code is cleaned up
+cd "${__cdist_local_src_dir}"
+
+# Ensure there is at least one explorer
+num="$(ls -1 | wc -l)"
+if [ "$num" -lt 1 ]; then
+   __cdist_exit_err "${__cdist_local_src_dir}: Contains no explorers"
+fi
+
+# Execute all explorers
+for explorer in *; do
+   if [ -f "$explorer" ]; then
+      if [ ! -x "$explorer" ]; then
+         echo "Explorer \"$explorer\" exists, but is not executable."
+         continue
+      fi
+
+      # Execute explorers and save results in remote destination directory
+      ssh "${__cdist_remote_user}@${__cdist_target_host}" \
+          "cd \"${__cdist_remote_src_dir}\" && \"./$explorer\" > \
+          \"${__cdist_remote_dst_dir}/${explorer}\"" "$@"
+   else
+      if [ -e "$explorer" ]; then
+         echo "Explorer \"$explorer\" exists, but is not a file."
+         continue
+      fi
+   fi
+done
+
+# Copy results back to us
+scp "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_dst_dir}/*" \
+    "$__cdist_local_dst_dir"
