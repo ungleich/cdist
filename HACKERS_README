@@ -33,4 +33,4 @@ export __cdist_out_dir=/tmp/localhost
 target="${1:-localhost}"
 cdist-deploy-to "$target"
 
-find "${base}"
+find "${__cdist_out_dir}"
