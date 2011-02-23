@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Transfer all executables
+#
+
+. cdist-config
+[ $# -eq 2 ] || __cdist_usage "<target host> <remote bin dir>"
+set -eu
+
+__cdist_target_host="$1"; shift
+__cdist_my_remote_out_dir="$1"; shift
+
+# Find directory that contains cdist binaries
+__cdist_config_path=$(which cdist-config)
+__cdist_src_base=${__cdist_config_path%config}
+
+# re-create basedir so it's clean
+ssh "${__cdist_remote_user}@${__cdist_target_host}" \
+   "rm -rf \"${__cdist_my_remote_out_dir}\" && mkdir -p \"${__cdist_my_remote_out_dir}\""
+
+# FIXME: enable -q as soon as the code is cleaned up
+# Transfer cdist-* to the remote host
+scp -r "${__cdist_src_base}"* \
+       "root@${__cdist_target_host}:${__cdist_my_remote_out_dir}"
