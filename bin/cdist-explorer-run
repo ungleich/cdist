@@ -58,10 +58,22 @@ scp * "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_src_dir}"
 
 # Execute all explorers
 for explorer in *; do
-   # Execute explorers and save results in remote destination directory
-   ssh "${__cdist_remote_user}@${__cdist_target_host}" \
-       "cd \"${__cdist_remote_src_dir}\" && \"./$explorer\" > \
-       \"${__cdist_remote_dst_dir}/${explorer}\"" "$@"
+   if [ -f "$explorer" ]; then
+      if [ ! -x "$explorer" ]; then
+         echo "Explorer \"$explorer\" exists, but is not executable."
+         continue
+      fi
+
+      # Execute explorers and save results in remote destination directory
+      ssh "${__cdist_remote_user}@${__cdist_target_host}" \
+          "cd \"${__cdist_remote_src_dir}\" && \"./$explorer\" > \
+          \"${__cdist_remote_dst_dir}/${explorer}\"" "$@"
+   else
+      if [ -e "$explorer" ]; then
+         echo "Explorer \"$explorer\" exists, but is not a file."
+         continue
+      fi
+   fi
 done
 
 # Copy results back to us
