@@ -1,4 +1,0 @@
-setenv PATH ${PATH}:${HOME}/cdist/bin
-setenv CDIST_CONFIG ${HOME}/cdist/conf
-export PATH=$PATH:$HOME/cdist/bin
-export CDIST_CONFIG=$HOME/cdist/conf
