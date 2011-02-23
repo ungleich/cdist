@@ -73,7 +73,7 @@ variables, see cdist-environment(7)).
 - out_dir/objects/<object>/explorers:
    Output of type specific explorers, per object.
 
-- tmpdir: Temporary storage
+- tmp_dir: Temporary storage
    A tempdir and a tempfile is provided by cdist-config(1), which
    will be removed when the scripts ends automatically.
 
