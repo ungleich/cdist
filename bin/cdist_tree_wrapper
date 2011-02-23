@@ -36,6 +36,7 @@ echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || \
 
 __cdist_object="${__cdist_type}/${__cdist_object_id}"
 __cdist_ddir="$__cdist_output_dir/${__cdist_object}"
+__cdist_params_dir="$__cdist_ddir/$__cdist_name_params"
 
 # Append id for error messages
 __cdist_myname="$__cdist_myname ($__cdist_object_id)"
@@ -46,11 +47,12 @@ if [ -e "${__cdist_ddir}" ]; then
 fi
 
 mkdir -p "${__cdist_ddir}"
+mkdir -p "${__cdist_params_dir}"
 
 # Record (correct ;-) source
 echo "${__cdist_manifest}" > "${__cdist_ddir}/${__cdist_name_object_source}"
 
-# Record parameters to subdir
+# Record parameters to tmpdir
 tempparams="${__cdist_tmp_dir}/${__cdist_name_params}"
 mkdir -p "$tempparams"
 
@@ -75,13 +77,13 @@ while read required; do
       __cdist_usage "Missing required parameter $required"
    fi
 
-   mv "${tempparams}/${required}" "${__cdist_ddir}"
+   mv "${tempparams}/${required}" "${__cdist_params_dir}"
 done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_params_required")"
 
 # Allow optional parameters
 while read optional; do
    if [ -f "${tempparams}/${optional}" ]; then
-      mv "${tempparams}/${optional}" "${__cdist_ddir}"
+      mv "${tempparams}/${optional}" "${__cdist_params_dir}"
    fi
 done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_params_optional")"
 
