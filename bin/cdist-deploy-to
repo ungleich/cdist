@@ -36,10 +36,10 @@ cdist-dir push "$__cdist_target_host" "${__cdist_helper_dir}" "${__cdist_remote_
 scp "$(which cdist-config)" \
    "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_helper_dir}"
 
-exit 2
-
 # Execute explorer
 cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
+
+exit 2
 
 cdist-manifest-init           "$__cdist_target_host" "$__cdist_out_object_dir"
 cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_object_dir"

@@ -35,6 +35,7 @@ __cdist_explorer_dir="$1"; shift
 __cdist_my_out_dir="$1"; shift
 
 cd "${__cdist_work_dir}"
+mkdir -p "$__cdist_my_out_dir"
 
 # Ensure there is at least one explorer
 num="$(ls -1 "$__cdist_explorer_dir" | wc -l)"
