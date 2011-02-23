@@ -36,7 +36,7 @@ set -au
 : ${__cdist_name_host:=hosts}
 : ${__cdist_name_init:=init}
 : ${__cdist_name_out_dir:=out_dir}
-: ${__cdist_name_conf_dir:=out_dir}
+: ${__cdist_name_conf_dir:=conf_dir}
 
 # Name of the manifest file in types
 : ${__cdist_name_manifest:=manifest}
