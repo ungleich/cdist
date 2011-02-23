@@ -35,6 +35,7 @@ set -u
 : ${__cdist_name_gencode:=gencode}
 : ${__cdist_name_host:=hosts}
 : ${__cdist_name_init:=init}
+: ${__cdist_name_out_dir:=out_dir}
 
 # Name of the manifest file in types
 : ${__cdist_name_manifest:=manifest}
@@ -72,29 +73,26 @@ set -u
 # Used for IDs
 __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 
-# Remote
-
 # Default remote user
 : ${__cdist_remote_user:=root}
 
+# Remote paths
 : ${__cdist_remote_base_dir:=/var/lib/cdist}
-export __cdist_remote_base_dir
 : ${__cdist_remote_explorer_dir:=$__cdist_remote_base_dir/$__cdist_name_explorer}
-export __cdist_remote_explorer_dir
 : ${__cdist_remote_cache_dir:=$__cdist_remote_base_dir/$__cdist_name_cache}
-export __cdist_remote_cache_dir
 : ${__cdist_remote_cache_explorer:=$__cdist_remote_cache_dir/$__cdist_name_explorer}
-export __cdist_remote_cache_explorer
 : ${__cdist_remote_cache_bin:=$__cdist_remote_base_dir/$__cdist_name_bin}
-export __cdist_remote_cache_bin
 : ${__cdist_remote_cache_exec:=$__cdist_remote_base_dir/$__cdist_name_exec}
-export __cdist_remote_cache_exec
 
-# Tempfiles need to be recreated for each individual script, unshared!
+# Tempfiles
 __cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")
 export __cdist_tmp_dir
 __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 export __cdist_tmp_file
+
+# Local output base directory
+: ${__cdist_out_dir:=$__cdist_tmp_dir/$__cdist_name_out_dir}
+
 
 ################################################################################
 # cconf standard vars prefixed with cdist
