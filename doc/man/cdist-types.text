@@ -10,39 +10,35 @@ cdist-types - Functionality bundled
 
 DESCRIPTION
 -----------
-A cdist type describes some kind of functionality, starting from
-simple stuff like copying files until complex user auth/ldap/
-kerberos infrastructure designs.
+A cdist type describes some kind of functionality, starting from simple stuff
+like copying files until complex user auth/ldap/ kerberos infrastructure
+designs. The name of every type is prefixed with two underscores (__), because
+types will be executed and the two underscores prevent collisions with real
+binaries (like "file").
+In general, types should be written independent of hosts (as in reusable
+code), but may be used implement functionality only needed on one host
+as well.
+It must be assumed that the clients are pretty dumb and thus do not have high
+level tools like ruby installed. If a type requires specific tools to be present
+on the target, there must be another type that provides this tool and the first
+type must create an object of the specific type.
+If the generated code fails on the client, it must print diagnostistic messages on
+stderr and exit non-zero, so the configuration is aborted.
+Types may make use of other types to realise a new type or may implement some
+functionality on their own.
 
-The name of every type is prefixed with two underscores (__),
-because types will be executed and the two underscores prevent
-collisions with real binaries (like "file").
+Types may consist of 
+- a number of required and optional parameters they accept,
+- a manifest script that makes use of the parameters and may create other objects
+- explorers that explore type specific information on the target
+- a gencode script, that may generate code to be executed on the target
 
-It must be assumed that the clients are pretty dumb
-and thus do not have high level tools like python
-installed.
-
-If a type requires specific tools to be present
-on the target, there must be another type that
-provides this tool and the first type must create
-an object of the specific type.
-
-If the generated code fails on the client, it must
-print diagnostistic messages on stderr and call
-"exit 1", so the configuration is aborted.
-
-   - are independent of hosts in general
-   - may make use of other types to realise a new type
-   - can overwrite stuff (HOW?)
-      - overwrite in own tree?
-         - needs knowledge of inherited provider
-            - similar to current situation in puppet,
-              but more like reusable defines
-   - or may implement some functionality on their own 
+Every time a type is used, a new object is created of the specific type,
+with a type specific unique id that stores the parameters
 
 
 HOW TO WRITE A NEW TYPE (TODO)
------------------------
+------------------------------
 Assume you want to create the new type named "coffee":
 
 Create the directory /etc/cdist/types/coffee/
@@ -67,6 +63,8 @@ shell code suitable for running on the client.
 
 SEE ALSO
 --------
+cdist-config-layout(7), cdist-type-manifest(7), cdist-type-explorer(7),
+cdist-type-gencode(7)
 
 
 COPYING
