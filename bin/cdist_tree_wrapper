@@ -25,13 +25,11 @@
 #
 
 . cdist-config
-
 [ $# -ge 1 ] || __cdist_usage "<id> <options>"
-
 set -eu
 
-export __cdist_object_id="$1"; shift
-export __cdist_type="$__cdist_myname"
+__cdist_object_id="$1"; shift
+__cdist_type="$__cdist_myname"
 
 echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || \
    __cdist_usage "Insane object id, ${__cdist_object_id}."
@@ -53,7 +51,7 @@ mkdir -p "${__cdist_ddir}"
 echo "${__cdist_manifest}" > "${__cdist_ddir}/${__cdist_name_object_source}"
 
 # Record parameters to subdir
-tempparams="${__cdist_tmp_dir}/params"
+tempparams="${__cdist_tmp_dir}/${__cdist_name_type_params}"
 mkdir -p "$tempparams"
 
 while [ $# -gt 0 ]; do
@@ -82,7 +80,7 @@ done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_type_params_req
 
 # Allow optional parameters
 while read optional; do
-   if [ -f "${tempparams}/${opt_file}" ]; then
+   if [ -f "${tempparams}/${optional}" ]; then
       mv "${tempparams}/${optional}" "${__cdist_ddir}"
    fi
 done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_type_params_optional")"

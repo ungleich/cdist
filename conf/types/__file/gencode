@@ -33,11 +33,11 @@ fi
 
 case "$type" in
    directory)
-      echo mkdir \"$path\"
+      echo mkdir \"$destination\"
    ;;
 
    file)
-      echo touch \"$path\"
+      echo touch \"$destination\"
    ;;
 
    *)
@@ -48,5 +48,5 @@ esac
 
 if [ -f mode ]; then
    mode="$(cat mode)"
-   echo chmod \"$mode\" \"$path\"
+   echo chmod \"$mode\" \"$destination\"
 fi
