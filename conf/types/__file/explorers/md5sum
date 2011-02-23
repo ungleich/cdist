@@ -18,44 +18,20 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# __file is a very basic type and should be able to be used as an
-# example for typewrites later
+# Retrieve the md5sum of a file to be created, if it is already existing.
 #
 
 ################################################################################
 # New code
 #
 
-exit 1
-################################################################################
-# Old code
-#
-
-type="$(cat type)"
-
-# If destination was specified, do not use the id
-if [ -f destination ]; then
-   destination="$(cat destination)"
+if [ -f parameters/destination ]; then
+   destination="$(cat parameters/destination)"
 else
    destination="$1"
 fi
 
-case "$type" in
-   directory)
-      echo mkdir \"$destination\"
-   ;;
-
-   file)
-      echo touch \"$destination\"
-   ;;
-
-   *)
-      echo "Unsupported type: \"$type\"" >&2
-      exit 1
-   ;;
-esac
-
-if [ -f mode ]; then
-   mode="$(cat mode)"
-   echo chmod \"$mode\" \"$destination\"
+# No output if file does not exist - does definitely not match the md5sum :-)
+if [ -e "$destination" ]; then
+   md5sum "$destination"
 fi
