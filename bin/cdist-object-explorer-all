@@ -30,7 +30,7 @@ __cdist_object_base_dir="$1"; shift
 
 __cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
 
-# need to create pseudo array, as ssh will destroy while-read loops
+# need to create pseudo array, as ssh in cdist-explorer-run will destroy while-read loops
 while read object; do
    set -- "$@" "$object"
 done < "$__cdist_tmp_file"
@@ -39,19 +39,21 @@ while [ $# -gt 0 ]; do
    object="$1"; shift
    type=$(__cdist_type_from_object "$object")
 
-   local_src_dir="$__cdist_object_base_dir/${object}/${__cdist_name_explorer}"
+   local_src_dir="$(__cdist_type_explorer_dir "$type")"
    local_dst_dir="$__cdist_object_base_dir/${object}/${__cdist_name_explorer}"
-   # FIXME: stopped here
 
-   cdist-explorer-run "$__cdist_target_host" 
+   remote_src_dir="$__cdist_remote_cache_dir/$__cdist_name_type/$type/$__cdist_name_explorer"
+   remote_dst_dir="$__cdist_remote_cache_dir/$__cdist_name_object/$object/$__cdist_name_explorer"
 
-   outfile="${outdir}/${__cdist_name_exec}"
+   if [ -d "$local_src_dir" ]; then
+      num="$(ls -1 "$local_src_dir" | wc -l)"
 
-   mkdir -p "${outdir}"
+      # Skip if there is not at least one explorer
+      if [ "$num" -lt 1 ]; then
+         continue
+      fi
 
-   cdist-object-codegen "$__cdist_target_host"     \
-                        "$__cdist_object_base_dir" \
-                        "$object" > "${outfile}"
-
-   chmod u+x "${outfile}"
-done < "$__cdist_tmp_file"
+      cdist-explorer-run "$__cdist_target_host" \
+         "$local_src_dir" "$local_dst_dir" "$remote_src_dir" "$remote_dst_dir"
+   fi
+done
