@@ -64,19 +64,13 @@ variables, see cdist-environment(7)).
    cache after a successful run. This directory may be placed below
    the tmpdir or at any other location.
 
-- out_dir/hosts/:
-   Contains output of hosts.
-
-- out_dir/hosts/<name>:
-   Contains cache of the specific host.
-
-- out_dir/hosts/<name>/explorers:
+- out_dir/explorers:
    Output of general explorers.
 
-- out_dir/hosts/<name>/objects:
-   Objects created during last run for the host.
+- out_dir/objects:
+   Objects created for the host.
 
-- out_dir/hosts/<name>/objects/<object>/explorers:
+- out_dir/objects/<object>/explorers:
    Output of type specific explorers, per object.
 
 - tmpdir: Temporary storage
@@ -96,6 +90,13 @@ The following functionality may be implemented in the next release (or so).
    The cache contains the cconfig output tree from previous runs, which
    may also be used in types to gather information about other hosts
    (like ssh-keys).
+
+- out_dir/hosts/:
+   Contains output of hosts.
+
+- out_dir/hosts/<name>:
+   Contains cache of the specific host.
+
 
 
 AUTHOR
