@@ -37,7 +37,8 @@ done < "$__cdist_tmp_file"
 
 while [ $# -gt 0 ]; do
    object="$1"; shift
-   type=$(__cdist_type_from_object "$object")
+   object_id="$(__cdist_object_id_from_object "$object")"
+   type="$(__cdist_type_from_object "$object")"
 
    local_src_dir="$(__cdist_type_explorer_dir "$type")"
    local_dst_dir="$__cdist_object_base_dir/${object}/${__cdist_name_explorer}"
@@ -53,7 +54,9 @@ while [ $# -gt 0 ]; do
          continue
       fi
 
-      cdist-explorer-run "$__cdist_target_host" \
-         "$local_src_dir" "$local_dst_dir" "$remote_src_dir" "$remote_dst_dir"
+      cdist-explorer-run "$__cdist_target_host" \ 
+         "$local_src_dir"  "$local_dst_dir"     \
+         "$remote_src_dir" "$remote_dst_dir"    \
+         "$object_id"
    fi
 done
