@@ -43,8 +43,23 @@ while [ $# -gt 0 ]; do
    local_src_dir="$(__cdist_type_explorer_dir "$type")"
    local_dst_dir="$__cdist_object_base_dir/${object}/${__cdist_name_explorer}"
 
+   # FIXME: remove path concatenation from here and construct paths only in
+   # cdist-config!
    remote_src_dir="$__cdist_remote_cache_dir/$__cdist_name_type/$type/$__cdist_name_explorer"
-   remote_dst_dir="$__cdist_remote_cache_dir/$__cdist_name_object/$object/$__cdist_name_explorer"
+
+   set -x
+   # Contains parameters + output of explorers
+   remote_object_dir="$__cdist_remote_cache_dir/$__cdist_name_object/$object"
+   remote_dst_dir="$remote_object_dir/$__cdist_name_explorer"
+
+   # Also copy parameters
+   # FIXME: add function to copy whole host specific tree!
+   local_params_dir="$__cdist_object_base_dir/$object/$__cdist_name_params"
+
+   # Copy directory, needs to be one level above, otherwise subdir is created
+   # FIXME: add -q later
+   ssh "${__cdist_remote_user}@${__cdist_target_host}" "mkdir -p \"$remote_object_dir\""
+   scp -r "$local_params_dir" "${__cdist_remote_user}@${__cdist_target_host}:$remote_object_dir"
 
    if [ -d "$local_src_dir" ]; then
       echo "Executing explorers for $object ..."
@@ -55,11 +70,10 @@ while [ $# -gt 0 ]; do
          continue
       fi
 
-      set -x
       cdist-explorer-run "$__cdist_target_host" \
          "$local_src_dir"  "$local_dst_dir"     \
          "$remote_src_dir" "$remote_dst_dir"    \
          "$object_id"
-      set +x
    fi
+   set +x
 done
