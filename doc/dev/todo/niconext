@@ -1,1 +1,3 @@
 add explorers per type/object
+   - create clean trees locally and remote
+      - invent cdist-dir-{push|pull} for directory exchange (same name)
