@@ -10,8 +10,7 @@
 case "$__cdist_target_host" in
    localhost)
       __issue iddoesnotmatterhere
-      __package qemu-kvm --wtf installed
-      __package tftpd-hpa --fancyoption installed
+      __file test --type file --destination /tmp/cdist-testfile
    ;;
 
    icarus)
