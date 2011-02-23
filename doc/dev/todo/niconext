@@ -1,3 +1,5 @@
 add explorers per type/object
    - create clean trees locally and remote
-      - invent cdist-dir-{push|pull} for directory exchange (same name)
+      - define paths in cdist-config
+   - rewrite cdist-explorer-run
+      - define helpers on the remote side (like cdist-explorer-coordinator)
