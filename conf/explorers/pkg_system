@@ -19,7 +19,7 @@
 #
 #
 
-case "$(./os)" in
+case "$(./conf/explorers/os)" in
       archlinux) echo pacman ;;
       debian|ubuntu) echo apt ;;
       gentoo) echo emerge ;;
