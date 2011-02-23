@@ -32,8 +32,8 @@ __cdist_my_out_dir="$1"; shift
 cdist-dir push "$__cdist_target_host" \
    "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
 
-# run the explorers remotely
-cdist-explorer-run "$__cdist_target_host"          \
+# run the initial explorers remotely
+cdist-explorer-run "$__cdist_target_host" "$__cdist_remote_base_dir" \
    "$__cdist_remote_explorer_dir" "$__cdist_remote_out_explorer_dir"
 
 # retrieve the results
