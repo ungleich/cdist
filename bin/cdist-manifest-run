@@ -31,10 +31,10 @@ export __cdist_manifest="$1"; shift
 export __cdist_output_dir="$1"; shift
 
 # Ensure binaries exist and are up-to-date
-cdist-build-bin || __cdist_exit_err "Failed to build support binaries"
+cdist-type-build-emulation || __cdist_exit_err "Failed to build type emulation binaries"
 
 # prepend our path, so all cdist tools come before other tools
-PATH="${__cdist_cache_bin}:$PATH"
+PATH="${__cdist_out_type_bin_dir}:$PATH"
 
 # Force -x, so the user is aware the file is executed
 if [ ! -x "${__cdist_manifest}" ]; then

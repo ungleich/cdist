@@ -37,6 +37,7 @@ set -au
 : ${__cdist_name_init:=init}
 : ${__cdist_name_out_dir:=out}
 : ${__cdist_name_conf_dir:=conf}
+: ${__cdist_name_type_bin:=type_bin}
 
 # Name of the manifest file in types
 : ${__cdist_name_manifest:=manifest}
@@ -92,6 +93,7 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 : ${__cdist_out_dir:=$__cdist_tmp_dir/$__cdist_name_out_dir}
 : ${__cdist_out_explorer_dir:=$__cdist_out_dir/$__cdist_name_explorer}
 : ${__cdist_out_object_dir:=$__cdist_out_dir/$__cdist_name_object}
+: ${__cdist_out_type_bin_dir:=$__cdist_out_dir/$__cdist_name_type_bin}
 
 
 ################################################################################
