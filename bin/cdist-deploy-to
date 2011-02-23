@@ -31,10 +31,8 @@ __cdist_target_host="$1"
 # See cdist-stages(7)
 #
 
-# Transfer core helpers plus cdist-config
-cdist-dir push "$__cdist_target_host" "${__cdist_helper_dir}" "${__cdist_remote_helper_dir}"
-scp "$(which cdist-config)" \
-   "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_helper_dir}"
+# Transfer cdist "binaries"
+cdist-bin-transfer "$__cdist_target_host" "${__cdist_remote_bin_dir}"
 
 # Execute explorer
 cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"

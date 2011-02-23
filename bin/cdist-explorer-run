@@ -23,8 +23,8 @@
 
 
 . cdist-config
-if [ $# -lt 3 ]; then
-   __cdist_usage "<target host> <remote srcdir> <remote dstdir> [explorer args]"
+if [ $# -lt 4 ]; then
+   __cdist_usage "<target host> <remote work dir> <remote src dir> <remote dst dir> [explorer args]"
 fi
 set -ue
 

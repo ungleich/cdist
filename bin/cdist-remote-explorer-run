@@ -18,6 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# This binary is executed on the remote side to execute explorers
+#
 
 . cdist-config
 if [ $# -lt 3 ]; then
