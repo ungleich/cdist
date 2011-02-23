@@ -10,97 +10,59 @@ cdist-types - Functionality bundled
 
 DESCRIPTION
 -----------
-A cdist type describes some kind of functionality.
-Types can be run from manifests.
-It is recommeneded to prefix all types with two
-underscores, because types will be executed and
-thus you prevent collisions with real binaries
-(like "file").
+A cdist type describes some kind of functionality, starting from
+simple stuff like copying files until complex user auth/ldap/
+kerberos infrastructure designs.
 
-This document is a brainstorming document, on how to integrate types.
+The name of every type is prefixed with two underscores (__),
+because types will be executed and the two underscores prevent
+collisions with real binaries (like "file").
 
-Proposed/discussed structures:
+It must be assumed that the clients are pretty dumb
+and thus do not have high level tools like python
+installed.
 
-1) 2010-11-02
-   $basedir/$type/
-      properties/
-         name/
-            required # required | optional
-         choices  # \n liste
-            
+If a type requires specific tools to be present
+on the target, there must be another type that
+provides this tool and the first type must create
+an object of the specific type.
 
-      meta/
-         default (shell script)
-      types/
-         pukman/
+If the generated code fails on the client, it must
+print diagnostistic messages on stderr and call
+"exit 1", so the configuration is aborted.
 
-2) 2010-11-09
-
-How to write my own type named "coffee":
-
-   Create the directory /etc/cdist/types/coffee/
-   Create the file /etc/cdist/types/coffee/README containing a description of the 
-type.
-   If your type supports attributes, create the directory /etc/cdist/types/coffee/
-attributes.
-   For each attribute, create the file
-      /etc/cdist/types/coffee/attributes/$attribute_name which contains
-
-      a short description on the first line
-      then a blank line
-      then a long description (probably over several lines)
-
-   If you think your type may be useful for others, submit it for inclusion
-   into cdist at cdist -- at -- l.schottelius.org.
-
-   Create /etc/cdist/types/coffee/init which reads $configinput
-   (either via cconfig or via environment) and outputs a block of
-   shell code suitable for running on the client.
-
-
-
---------------------------------------------------------------------------------
-type layout:
-
-   <name>/
-      config   # binary that is called to adjust cconfig tree
-      change   # binary that is called on the remote host?
---------------------------------------------------------------------------------
-Scope of code execution on the client
-
-   It should be assumed that the clients are pretty dumb
-   and thus do not have high level tools like python
-   installed.
-
-   If a type requires specific tools to be present
-   on the target, there must be another type that
-   provides this tool and the first type must create
-   an object of the specific type.
-
-   If the generated code fails on the client, it must
-   print diagnostistic messages on stderr and call
-   "exit 1", so the configuration is aborted.
-
---------------------------------------------------------------------------------
-   - have required and optional arguments
-   - are independent of hosts
+   - are independent of hosts in general
    - may make use of other types to realise a new type
-      - how to overwrite stuff?
+   - can overwrite stuff (HOW?)
       - overwrite in own tree?
          - needs knowledge of inherited provider
             - similar to current situation in puppet,
               but more like reusable defines
    - or may implement some functionality on their own 
 
---------------------------------------------------------------------------------
-Differences manifests vs. types
 
+HOW TO WRITE A NEW TYPE (TODO)
+-----------------------
+Assume you want to create the new type named "coffee":
 
-                     manifests               types
+Create the directory /etc/cdist/types/coffee/
+Create the file /etc/cdist/types/coffee/README containing a description of the 
+type.
+If your type supports attributes, create the directory /etc/cdist/types/coffee/
+attributes.
+For each attribute, create the file
+   /etc/cdist/types/coffee/attributes/$attribute_name which contains
 
-main purpose         map config to host      provide functionality
-can change config    no (prevent conflicts)  yes (allow inheritance)
-specificness         site specific           (globally) reusable
+   a short description on the first line
+   then a blank line
+   then a long description (probably over several lines)
+
+If you think your type may be useful for others, submit it for inclusion
+into cdist at cdist -- at -- l.schottelius.org.
+
+Create /etc/cdist/types/coffee/init which reads $configinput
+(either via cconfig or via environment) and outputs a block of
+shell code suitable for running on the client.
 
 
 SEE ALSO
