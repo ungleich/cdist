@@ -31,5 +31,10 @@ set -ue
 
 __cdist_target_host="$1"; shift
 
+cdist-helper-exec "${__cdist_target_host}" "cdist-explorer-remote-run" "$@"
+
+exit 23
+
+# use this in cdist-helper-exec
 ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
       "${__cdist_remote_helper_dir}/cdist-explorer-remote-run" "$@"
