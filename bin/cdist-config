@@ -61,11 +61,11 @@ set -au
 : ${__cdist_name_object_finished:=.done}
 
 # Base
-: ${__cdist_config:=/etc/cdist}
-: ${__cdist_explorer_dir:=$__cdist_config/$__cdist_name_explorer}
-: ${__cdist_manifest_dir:=$__cdist_config/$__cdist_name_manifests}
+: ${__cdist_conf_dir:=/etc/cdist}
+: ${__cdist_explorer_dir:=$__cdist_conf_dir/$__cdist_name_explorer}
+: ${__cdist_manifest_dir:=$__cdist_conf_dir/$__cdist_name_manifests}
 : ${__cdist_manifest_init:=$__cdist_manifest_dir/$__cdist_name_init}
-: ${__cdist_type_dir:=$__cdist_config/$__cdist_name_type}
+: ${__cdist_type_dir:=$__cdist_conf_dir/$__cdist_name_type}
 
 # Used for IDs
 __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'

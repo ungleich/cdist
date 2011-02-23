@@ -29,8 +29,8 @@ __cdist_target_host="$1"; shift
 __cdist_my_remote_out_dir="$1"; shift
 
 # Find directory that contains cdist binaries
-__cdist_config_path=$(which cdist-config)
-__cdist_src_base=${__cdist_config_path%config}
+__cdist_conf_dir_path=$(which cdist-config)
+__cdist_src_base=${__cdist_conf_dir_path%config}
 
 # re-create basedir so it's clean
 ssh "${__cdist_remote_user}@${__cdist_target_host}" \

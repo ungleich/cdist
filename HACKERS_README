@@ -25,7 +25,7 @@ set -x
 
 # prepare use (only from top level directory)
 export PATH="$PATH:$(pwd -P)/bin"
-export __cdist_config="$(pwd -P)/conf"
+export __cdist_conf_dir="$(pwd -P)/conf"
 
 # Change paths so we can debug stuff :-)
 export __cdist_out_dir=/tmp/localhost
