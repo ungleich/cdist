@@ -47,7 +47,7 @@ variables, see cdist-environment(7)).
    Parameters required by type, \n seperated list.
    See cdist-types(7).
 
-- types/<name>/parameters/required:
+- types/<name>/parameters/optional:
    Parameters optionally accepted by type, \n seperated list.
    See cdist-types(7).
 
