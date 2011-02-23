@@ -39,11 +39,16 @@ export __cdist_out_execs
 cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorers"
 cdist-manifest-init           "$__cdist_target_host" "$__cdist_out_objects"
 cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_objects"
+cdist-object-explorer-all     "$__cdist_target_host" "$__cdist_out_objects"
+exit 0
 cdist-object-codegen-all      "$__cdist_target_host" "$__cdist_out_objects" "$__cdist_out_execs"
 cdist-exec-transfer           "$__cdist_target_host" "$__cdist_out_execs"
 cdist-exec-run                "$__cdist_target_host"
 
-# FIXME: Create new cache from results
+# FIXME: Create new cache from results:
+# cdist-cache-copy "$__cdist_target_host" __cdist_out_explorers __cdist_out_objects __cdist_out_execs
+# or similar, better with one directory
+#
 # echo rm -rf "$(__cdist_cache_host)"
 # mkdir -p "$(__cdist_cache_host)"
 # mv "$__cdist_out_explorers" "$__cdist_out_objects" "$(__cdist_cache_host)"
