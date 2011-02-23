@@ -14,7 +14,11 @@ If not otherwise specified, all paths are relative to the configuration
 directory, which is normally /etc/cdist (but can be changed using environment
 variables, see cdist-environment(7)).
 
-- manifests/init:
+- conf_dir/:
+   Contains the (static) configuration like manifests, types and
+   explorers.
+
+- conf_dir/manifests/init:
    This is the central entry point used by cdist-manifest-init(1).
    It is an executable (+x bit set) shell script that can use
    values for the explorers to decide which configuration to create
@@ -22,57 +26,57 @@ variables, see cdist-environment(7)).
 
    It should be primary used to define mapping from configurations to hosts.
 
-- manifests/*: All other files in this directory
+- conf_dir/manifests/*: All other files in this directory
    Cdist does not use them directly, but you can seperate
    configuration mappings, if you have a lot of code in the manifest/init
    file. This may also be very helpful to have different admins maintain
    different groups of hosts.
 
-- explorers/<name>
+- conf_dir/explorers/<name>
    Contains explorers to be run on the target hosts, see cdist-explorers(7).
 
-- types/
+- conf_dir/types/
    Contains all available types, which are used to provide
    some kind of functionality. See cdist-stages(7).
 
-- types/<name>/init:
+- conf_dir/types/<name>/init:
    Used to generate additional objects from a type.
    See cdist-stages(7), cdist-types(7).
 
-- types/<name>/gencode:
+- conf_dir/types/<name>/gencode:
    Used to generate code to be executed on the client.
    See cdist-types(7).
 
-- types/<name>/parameters/required:
+- conf_dir/types/<name>/parameters/required:
    Parameters required by type, \n seperated list.
    See cdist-types(7).
 
-- types/<name>/parameters/optional:
+- conf_dir/types/<name>/parameters/optional:
    Parameters optionally accepted by type, \n seperated list.
    See cdist-types(7).
 
-- types/<name>/explorers:
+- conf_dir/types/<name>/explorers:
    Location of the type specific explorers.
    See cdist-explorers(7).
 
-- /output-tree/
+- out_dir/
    This directory contains output of cdist and is mirrored into the
    cache after a successful run. This directory may be placed below
    the tmpdir or at any other location.
 
-- /output-tree/hosts/:
+- out_dir/hosts/:
    Contains output of hosts.
 
-- /output-tree/hosts/<name>:
+- out_dir/hosts/<name>:
    Contains cache of the specific host.
 
-- /output-tree/hosts/<name>/explorers:
+- out_dir/hosts/<name>/explorers:
    Output of general explorers.
 
-- /output-tree/hosts/<name>/objects:
+- out_dir/hosts/<name>/objects:
    Objects created during last run for the host.
 
-- /output-tree/hosts/<name>/objects/<object>/explorers:
+- out_dir/hosts/<name>/objects/<object>/explorers:
    Output of type specific explorers, per object.
 
 - tmpdir: Temporary storage
