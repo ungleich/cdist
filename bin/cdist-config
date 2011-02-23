@@ -29,13 +29,13 @@ set -u
 
 # Names / Constants
 : ${__cdist_name_bin:=bin}
-: ${__cdist_name_cache:=cache}
 : ${__cdist_name_code:=code}
 : ${__cdist_name_explorer:=explorers}
 : ${__cdist_name_gencode:=gencode}
 : ${__cdist_name_host:=hosts}
 : ${__cdist_name_init:=init}
 : ${__cdist_name_out_dir:=out_dir}
+: ${__cdist_name_conf_dir:=out_dir}
 
 # Name of the manifest file in types
 : ${__cdist_name_manifest:=manifest}
@@ -65,34 +65,31 @@ set -u
 : ${__cdist_manifest_init:=$__cdist_manifest_dir/$__cdist_name_init}
 : ${__cdist_type_dir:=$__cdist_config/$__cdist_name_type}
 
-# Cache
-: ${__cdist_cache_dir:=$__cdist_config/cache}
-: ${__cdist_cache_hosts:=$__cdist_cache_dir/$__cdist_name_host}
-: ${__cdist_cache_bin:=$__cdist_cache_dir/$__cdist_name_bin}
-
 # Used for IDs
 __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 
 # Default remote user
 : ${__cdist_remote_user:=root}
 
-# Remote paths
+# Remote base
 : ${__cdist_remote_base_dir:=/var/lib/cdist}
-: ${__cdist_remote_explorer_dir:=$__cdist_remote_base_dir/$__cdist_name_explorer}
-: ${__cdist_remote_cache_dir:=$__cdist_remote_base_dir/$__cdist_name_cache}
-: ${__cdist_remote_cache_explorer:=$__cdist_remote_cache_dir/$__cdist_name_explorer}
-: ${__cdist_remote_cache_bin:=$__cdist_remote_base_dir/$__cdist_name_bin}
-: ${__cdist_remote_cache_exec:=$__cdist_remote_base_dir/$__cdist_name_exec}
+
+# Remote config
+: ${__cdist_remote_conf_dir:=$__cdist_remote_base_dir/$__cdist_name_conf_dir}
+: ${__cdist_remote_explorer_dir:=$__cdist_remote_conf_dir/$__cdist_name_explorer}
+
+# Remote out
+: ${__cdist_remote_out_dir:=$__cdist_remote_base_dir/$__cdist_name_out_dir}
+: ${__cdist_remote_out_explorer_dir:=$__cdist_remote_out_dir/$__cdist_name_explorer}
 
 # Tempfiles
 __cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")
-export __cdist_tmp_dir
 __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
-export __cdist_tmp_file
 
 # Local output base directory
 : ${__cdist_out_dir:=$__cdist_tmp_dir/$__cdist_name_out_dir}
 : ${__cdist_out_explorer_dir:=$__cdist_out_dir/$__cdist_name_explorer}
+: ${__cdist_out_object_dir:=$__cdist_out_dir/$__cdist_name_object}
 
 
 ################################################################################
@@ -124,10 +121,10 @@ __cdist_usage()
    __cdist_exit_err "$__cdist_myname: $@"
 }
 
-__cdist_cache_host()
-{
-   echo "${__cdist_cache_hosts}/${__cdist_target_host}"
-}
+# __cdist_cache_host()
+# {
+#    echo "${__cdist_cache_hosts}/${__cdist_target_host}"
+# }
 
 __cdist_type_mydir()
 {
