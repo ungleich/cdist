@@ -18,16 +18,24 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Run the global explorers, i.e. not bound to types
+# Copy & run the general explorers, i.e. not bound to types
 #
 
 . cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host> <outdir>"
+[ $# -eq 2 ] || __cdist_usage "<target_host> <out_dir>"
 set -ue
 
 __cdist_target_host="$1"; shift
-__cdist_output_dir="$1"; shift
+__cdist_my_out_dir="$1"; shift
 
+# copy the explorers
+cdist-dir push "$__cdist_target_host" \
+   "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
+
+# run the explorers remotely
 cdist-explorer-run "$__cdist_target_host"          \
-   "$__cdist_explorer_dir" "$__cdist_output_dir"   \
-   "$__cdist_remote_explorer_dir" "$__cdist_remote_cache_explorer"
+   "$__cdist_remote_explorer_dir" "$__cdist_remote_out_explorer_dir"
+
+# retrieve the results
+cdist-dir pull "$__cdist_target_host" \
+   "${__cdist_remote_out_explorer_dir}" "${__cdist_my_out_dir}"

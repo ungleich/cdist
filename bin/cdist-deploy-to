@@ -27,10 +27,20 @@ set -eu
 
 __cdist_target_host="$1"
 
+################################################################################
 # See cdist-stages(7)
-cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
+#
+
+# Transfer core helpers plus cdist-config
+cdist-dir push "$__cdist_target_host" "${__cdist_helper_dir}" "${__cdist_remote_helper_dir}"
+scp "$(which cdist-config)" \
+   "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_remote_helper_dir}"
 
 exit 2
+
+# Execute explorer
+cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
+
 cdist-manifest-init           "$__cdist_target_host" "$__cdist_out_object_dir"
 cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_object_dir"
 cdist-object-explorer-all     "$__cdist_target_host" "$__cdist_out_object_dir"

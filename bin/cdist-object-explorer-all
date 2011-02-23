@@ -59,6 +59,10 @@ while [ $# -gt 0 ]; do
    # Copy directory, needs to be one level above, otherwise subdir is created
    # FIXME: add -q later
    ssh "${__cdist_remote_user}@${__cdist_target_host}" "mkdir -p \"$remote_object_dir\""
+
+   # 
+   ssh "${__cdist_remote_user}@${__cdist_target_host}" "mkdir -p \"$remote_object_dir\""
+
    scp -r "$local_params_dir" "${__cdist_remote_user}@${__cdist_target_host}:$remote_object_dir"
 
    if [ -d "$local_src_dir" ]; then
