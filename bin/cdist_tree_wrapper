@@ -25,13 +25,11 @@
 #
 
 . cdist-config
-
 [ $# -ge 1 ] || __cdist_usage "<id> <options>"
-
 set -eu
 
-export __cdist_object_id="$1"; shift
-export __cdist_type="$__cdist_myname"
+__cdist_object_id="$1"; shift
+__cdist_type="$__cdist_myname"
 
 echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || \
    __cdist_usage "Insane object id, ${__cdist_object_id}."
