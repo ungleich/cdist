@@ -82,7 +82,7 @@ done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_type_params_req
 
 # Allow optional parameters
 while read optional; do
-   if [ -f "${tempparams}/${opt_file}" ]; then
+   if [ -f "${tempparams}/${optional}" ]; then
       mv "${tempparams}/${optional}" "${__cdist_ddir}"
    fi
 done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_type_params_optional")"
