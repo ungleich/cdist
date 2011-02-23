@@ -1,70 +1,21 @@
-cdist-types(7)
-===============
+cdist-type-manifest(7)
+======================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-types - Functionality bundled
+cdist-type-manifest - Manifest of a type
 
 
 DESCRIPTION
 -----------
-A cdist type describes some kind of functionality, starting from simple stuff
-like copying files until complex user auth/ldap/ kerberos infrastructure
-designs. The name of every type is prefixed with two underscores (__), because
-types will be executed and the two underscores prevent collisions with real
-binaries (like "file").
-In general, types should be written independent of hosts (as in reusable
-code), but may be used implement functionality only needed on one host
-as well.
-It must be assumed that the clients are pretty dumb and thus do not have high
-level tools like ruby installed. If a type requires specific tools to be present
-on the target, there must be another type that provides this tool and the first
-type must create an object of the specific type.
-If the generated code fails on the client, it must print diagnostistic messages on
-stderr and exit non-zero, so the configuration is aborted.
-Types may make use of other types to realise a new type or may implement some
-functionality on their own.
-
-Types may consist of 
-- a number of required and optional parameters they accept,
-- a manifest script that makes use of the parameters and may create other objects
-- explorers that explore type specific information on the target
-- a gencode script, that may generate code to be executed on the target
-
-Every time a type is used, a new object is created of the specific type,
-with a type specific unique id that stores the parameters
-
-
-HOW TO WRITE A NEW TYPE (TODO)
-------------------------------
-Assume you want to create the new type named "coffee":
-
-Create the directory /etc/cdist/types/coffee/
-Create the file /etc/cdist/types/coffee/README containing a description of the 
-type.
-If your type supports attributes, create the directory /etc/cdist/types/coffee/
-attributes.
-For each attribute, create the file
-   /etc/cdist/types/coffee/attributes/$attribute_name which contains
-
-   a short description on the first line
-   then a blank line
-   then a long description (probably over several lines)
-
-If you think your type may be useful for others, submit it for inclusion
-into cdist at cdist -- at -- l.schottelius.org.
-
-Create /etc/cdist/types/coffee/init which reads $configinput
-(either via cconfig or via environment) and outputs a block of
-shell code suitable for running on the client.
-
+CWD   = object directory
+ARGV  = target host, basedir
+ENV   = 
 
 SEE ALSO
 --------
-cdist-config-layout(7), cdist-type-manifest(7), cdist-type-explorer(7),
-cdist-type-gencode(7)
 
 
 COPYING
