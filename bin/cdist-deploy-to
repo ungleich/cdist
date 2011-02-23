@@ -31,8 +31,14 @@ __cdist_target_host="$1"
 # See cdist-stages(7)
 #
 
+# Init base
+mkdir -p "$__cdist_local_base_dir"
+
+# Link configuration source directory - consistent with remote
+ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
+
 # Transfer cdist "binaries"
-cdist-bin-transfer "$__cdist_target_host" "${__cdist_remote_bin_dir}"
+cdist-bin-transfer            "$__cdist_target_host" "$__cdist_remote_bin_dir"
 
 # Execute explorer
 cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
