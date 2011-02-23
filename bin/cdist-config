@@ -33,7 +33,6 @@ set -au
 : ${__cdist_name_code:=code}
 : ${__cdist_name_explorer:=explorers}
 : ${__cdist_name_gencode:=gencode}
-: ${__cdist_name_helper:=helper}
 : ${__cdist_name_host:=hosts}
 : ${__cdist_name_init:=init}
 : ${__cdist_name_out_dir:=out_dir}
@@ -63,7 +62,6 @@ set -au
 # Base
 : ${__cdist_config:=/etc/cdist}
 : ${__cdist_explorer_dir:=$__cdist_config/$__cdist_name_explorer}
-: ${__cdist_helper_dir:=$__cdist_config/$__cdist_name_helper}
 : ${__cdist_manifest_dir:=$__cdist_config/$__cdist_name_manifests}
 : ${__cdist_manifest_init:=$__cdist_manifest_dir/$__cdist_name_init}
 : ${__cdist_type_dir:=$__cdist_config/$__cdist_name_type}
@@ -80,9 +78,9 @@ __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 # Remote config
 : ${__cdist_remote_conf_dir:=$__cdist_remote_base_dir/$__cdist_name_conf_dir}
 : ${__cdist_remote_explorer_dir:=$__cdist_remote_conf_dir/$__cdist_name_explorer}
-: ${__cdist_remote_helper_dir:=$__cdist_remote_conf_dir/$__cdist_name_helper}
+: ${__cdist_remote_bin_dir:=$__cdist_remote_conf_dir/$__cdist_name_bin}
 
-# Remote out
+# Remot} out
 : ${__cdist_remote_out_dir:=$__cdist_remote_base_dir/$__cdist_name_out_dir}
 : ${__cdist_remote_out_explorer_dir:=$__cdist_remote_out_dir/$__cdist_name_explorer}
 

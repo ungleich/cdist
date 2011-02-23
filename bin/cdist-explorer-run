@@ -18,8 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# FIXME: Replace * references: * breaks if there is no explorer
-# or FIXME: check that there is at least one explorer?
+# Run already copied explorers
 #
 
 
@@ -31,10 +30,4 @@ set -ue
 
 __cdist_target_host="$1"; shift
 
-cdist-helper-exec "${__cdist_target_host}" "cdist-explorer-remote-run" "$@"
-
-exit 23
-
-# use this in cdist-helper-exec
-ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
-      "${__cdist_remote_helper_dir}/cdist-explorer-remote-run" "$@"
+cdist-run-remote "${__cdist_target_host}" "cdist-remote-explorer-run" "$@"
