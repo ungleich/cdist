@@ -27,16 +27,16 @@ set -eu
 
 __cdist_target_host="$1"
 
-: ${__cdist_out_explorers:="$__cdist_tmp_dir/$__cdist_name_explorer"}
 : ${__cdist_out_objects:="$__cdist_tmp_dir/$__cdist_name_object"}
 : ${__cdist_out_execs:="$__cdist_tmp_dir/$__cdist_name_exec"}
 
-export __cdist_out_explorers
 export __cdist_out_objects
 export __cdist_out_execs
 
 # See cdist-stages(7)
-cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorers"
+cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
+
+exit 2
 cdist-manifest-init           "$__cdist_target_host" "$__cdist_out_objects"
 cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_objects"
 cdist-object-explorer-all     "$__cdist_target_host" "$__cdist_out_objects"

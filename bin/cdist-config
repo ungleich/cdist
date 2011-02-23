@@ -92,6 +92,7 @@ export __cdist_tmp_file
 
 # Local output base directory
 : ${__cdist_out_dir:=$__cdist_tmp_dir/$__cdist_name_out_dir}
+: ${__cdist_out_explorer_dir:=$__cdist_out_dir/$__cdist_name_explorer}
 
 
 ################################################################################
