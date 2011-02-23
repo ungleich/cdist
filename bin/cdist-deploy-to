@@ -40,11 +40,12 @@ cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
 # Create initial object base
 cdist-manifest-init           "$__cdist_target_host" "$__cdist_out_object_dir"
 
+# Create dependent objects
+cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_object_dir"
+
 exit 2
 
-cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_object_dir"
 cdist-object-explorer-all     "$__cdist_target_host" "$__cdist_out_object_dir"
-exit 0
 cdist-object-codegen-all      "$__cdist_target_host" "$__cdist_out_object_dir" "$__cdist_out_execs"
 cdist-exec-transfer           "$__cdist_target_host" "$__cdist_out_execs"
 cdist-exec-run                "$__cdist_target_host"

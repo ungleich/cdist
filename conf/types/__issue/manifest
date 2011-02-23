@@ -21,7 +21,7 @@
 
 destination=/etc/issue
 
-case "$(cat "$__cdist_out_explorers/os")" in
+case "$(cat "out/explorers/os")" in
    archlinux)
       source="$(pwd -P)/files/archlinux"
    ;;

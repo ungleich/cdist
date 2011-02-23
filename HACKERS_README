@@ -27,10 +27,9 @@ set -x
 export PATH="$PATH:$(pwd -P)/bin"
 export __cdist_conf_dir="$(pwd -P)/conf"
 
-# Change paths so we can debug stuff :-)
-export __cdist_out_dir=/tmp/localhost
+export __cdist_local_base_dir=/tmp/localhost
 
 target="${1:-localhost}"
 cdist-deploy-to "$target"
 
-find "${__cdist_out_dir}"
+find "${__cdist_local_base_dir}"

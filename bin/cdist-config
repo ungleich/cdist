@@ -90,7 +90,8 @@ __cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")
 __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 
 # Local output base directory
-: ${__cdist_out_dir:=$__cdist_tmp_dir/$__cdist_name_out_dir}
+: ${__cdist_local_base_dir:=$__cdist_tmp_dir}
+: ${__cdist_out_dir:=$__cdist_local_base_dir/$__cdist_name_out_dir}
 : ${__cdist_out_explorer_dir:=$__cdist_out_dir/$__cdist_name_explorer}
 : ${__cdist_out_object_dir:=$__cdist_out_dir/$__cdist_name_object}
 : ${__cdist_out_type_bin_dir:=$__cdist_out_dir/$__cdist_name_type_bin}
