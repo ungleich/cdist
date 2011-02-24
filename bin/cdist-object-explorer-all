@@ -50,8 +50,8 @@ done < "$type_listing"
 
 # For every type that has explorers, Transfer the explorers
 i=0
-while [ "$i" -le "$tc" ]; do
-   eval cur_type=\"type_$i\"
+while [ "$i" -lt "$tc" ]; do
+   eval cur_type=\"\$type_$i\"
 
    src_dir="$(__cdist_type_explorer_dir "$cur_type")"
    dst_dir="$(__cdist_remote_type_explorer_dir "$cur_type")"
