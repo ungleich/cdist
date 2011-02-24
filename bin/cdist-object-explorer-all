@@ -28,9 +28,6 @@ set -eux
 __cdist_target_host="$1"; shift
 __cdist_object_base_dir="$1"; shift
 
-################################################################################
-# New code
-#
 object_listing="$__cdist_tmp_dir/objects"
 type_listing_all="$__cdist_tmp_dir/types_all"
 type_listing="$__cdist_tmp_dir/types"
@@ -68,7 +65,6 @@ done
 ################################################################################
 # Explorer execution per object
 #
-
 # need to create pseudo array, as ssh in cdist-explorer-run will destroy while-read loops
 while read object; do
    set -- "$@" "$object"
@@ -76,43 +72,29 @@ done < "$object_listing"
 
 # For every object of a type that has explorers, execute the explorers
 # and retrieve the results
-
 while [ $# -gt 0 ]; do
+   # NEW CODE
    object="$1"; shift
    object_id="$(__cdist_object_id_from_object "$object")"
    type="$(__cdist_type_from_object "$object")"
+   type_explorer_dir="$(__cdist_remote_type_explorer_dir "$object")"
+   object_explorer_out_dir="$(__cdist_out_type_explorer_dir "$object")"
+   remote_object_explorer_out_dir="$(__cdist_remote_out_type_explorer_dir "$object")"
 
-   local_src_dir="$(__cdist_type_explorer_dir "$type")"
-   local_dst_dir="$__cdist_object_base_dir/${object}/${__cdist_name_explorer}"
+   # Always copy object parameters (looks weired if done only for the ones with explorer)
+   # Really always?
 
-   # FIXME: remove path concatenation from here and construct paths only in
-   # cdist-config!
-   remote_src_dir="$__cdist_remote_cache_dir/$__cdist_name_type/$type/$__cdist_name_explorer"
+   # Check if type of object has >= 1 explorer
+   has_explorer="$(__cdist_type_has_explorer "$type")"
 
-   set -x
-   # Contains parameters + output of explorers
-   remote_object_dir="$__cdist_remote_cache_dir/$__cdist_name_object/$object"
-   remote_dst_dir="$remote_object_dir/$__cdist_name_explorer"
-
-   # Also copy parameters
-   # FIXME: add function to copy whole host specific tree!
-   local_params_dir="$__cdist_object_base_dir/$object/$__cdist_name_params"
-
-   # Copy directory, needs to be one level above, otherwise subdir is created
-   # FIXME: add -q later
-   ssh "${__cdist_remote_user}@${__cdist_target_host}" "mkdir -p \"$remote_object_dir\""
-
-   # 
-   ssh "${__cdist_remote_user}@${__cdist_target_host}" "mkdir -p \"$remote_object_dir\""
-
-   scp -r "$local_params_dir" "${__cdist_remote_user}@${__cdist_target_host}:$remote_object_dir"
-
-   if [ -d "$local_src_dir" ]; then
-      echo "Executing explorers for $object ..."
-      cdist-explorer-run "$__cdist_target_host" \
-         "$local_src_dir"  "$local_dst_dir"     \
-         "$remote_src_dir" "$remote_dst_dir"    \
-         "$object_id"
+   # If so, run explorers on remote side
+   if [ "$has_explorer" ]; then
+      cdist-run-remote "$__cdist_target_host" cdist-remote-explorer-run \
+         "$__cdist_name_var_type_explorer" "$type_explorer_dir" \
+         "$remote_object_explorer_out_dir"
+   
+      # Copy back results
+      cdist-dir pull "$__cdist_target_host" \
+         "$remote_object_explorer_out_dir" "$object_explorer_out_dir"
    fi
-   set +x
 done

@@ -42,10 +42,13 @@ set -u
 : ${__cdist_name_out_dir:=out}
 : ${__cdist_name_conf_dir:=conf}
 : ${__cdist_name_target_host:=target_host}
+: ${__cdist_name_type:=types}
 : ${__cdist_name_type_bin:=type_bin}
+: ${__cdist_name_type_explorers:=type_explores}
 
 # Exported variable names (usable for non core)
 : ${__cdist_name_var_explorer:=__$__cdist_name_explorer}
+: ${__cdist_name_var_type_explorer:=__$__cdist_name_type_explorers}
 : ${__cdist_name_var_manifest:=__$__cdist_name_manifest_dir}
 : ${__cdist_name_var_target_host:=__$__cdist_name_target_host}
 : ${__cdist_name_var_object:=__$__cdist_name_object}
@@ -55,7 +58,6 @@ set -u
 : ${__cdist_name_manifests:=manifests}
 : ${__cdist_name_object:=objects}
 
-: ${__cdist_name_type:=types}
 : ${__cdist_name_params:=parameters}
 : ${__cdist_name_params_required:=required}
 : ${__cdist_name_params_optional:=optional}
@@ -141,6 +143,11 @@ __cdist_usage()
 #    echo "${__cdist_cache_hosts}/${__cdist_target_host}"
 # }
 
+__cdist_type_has_explorer()
+{
+   echo "${__cdist_type_dir}/${__cdist_type_current}"
+}
+
 __cdist_type_mydir()
 {
    echo "${__cdist_type_dir}/${__cdist_type_current}"
@@ -181,12 +188,14 @@ __cdist_object_id_from_object()
    echo "${1#*/}"
 }
 
-__cdist_object_arg()
+__cdist_object_param_dir()
 {
-   local arg="$1"; shift
-   local object="$1"; shift
+   echo "${__cdist_object_base_dir}/$1/$__cdist_name_params}"
+}
 
-   cat "${__cdist_object_base_dir}/${object}/${arg}"
+__cdist_remote_object_param_dir()
+{
+   echo "${__cdist_remote_object_base_dir}/$1/$__cdist_name_params}"
 }
 
 # Find objects, remove ./ and /MARKER
