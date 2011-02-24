@@ -49,9 +49,11 @@ cdist-manifest-init           "$__cdist_target_host" "$__cdist_out_object_dir"
 # Create dependent objects - BUG: does not abort on error in manifest!!!!
 cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_object_dir"
 
+# Run explorer of each type for every object of types with explorer
+cdist-object-explorer-all     "$__cdist_target_host" "$__cdist_out_object_dir"
+
 exit 2
 
-cdist-object-explorer-all     "$__cdist_target_host" "$__cdist_out_object_dir"
 cdist-object-codegen-all      "$__cdist_target_host" "$__cdist_out_object_dir" "$__cdist_out_execs"
 cdist-exec-transfer           "$__cdist_target_host" "$__cdist_out_execs"
 cdist-exec-run                "$__cdist_target_host"
