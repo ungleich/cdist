@@ -20,8 +20,9 @@
 #
 
 destination=/etc/issue
+os="$(cat "out/explorers/os")"
 
-case "$(cat "out/explorers/os")" in
+case "$os" in
    archlinux)
       source="$(pwd -P)/files/archlinux"
    ;;
