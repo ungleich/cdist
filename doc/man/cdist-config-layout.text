@@ -39,7 +39,7 @@ variables, see cdist-environment(7)).
    Contains all available types, which are used to provide
    some kind of functionality. See cdist-stages(7).
 
-- conf_dir/types/<name>/init:
+- conf_dir/types/<name>/manifest:
    Used to generate additional objects from a type.
    See cdist-stages(7), cdist-types(7).
 
