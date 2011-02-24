@@ -38,6 +38,7 @@ set -u
 : ${__cdist_name_manifest:=manifest}
 : ${__cdist_name_manifest_dir:=manifests}
 : ${__cdist_name_object:=object}
+: ${__cdist_name_objects:=objects}
 : ${__cdist_name_object_id:=object_id}
 : ${__cdist_name_out_dir:=out}
 : ${__cdist_name_conf_dir:=conf}
@@ -56,7 +57,6 @@ set -u
 
 # Name of the base directory containing the initial manifests
 : ${__cdist_name_manifests:=manifests}
-: ${__cdist_name_object:=objects}
 
 : ${__cdist_name_params:=parameters}
 : ${__cdist_name_params_required:=required}
@@ -96,6 +96,7 @@ __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 # Remote out
 : ${__cdist_remote_out_dir:=$__cdist_remote_base_dir/$__cdist_name_out_dir}
 : ${__cdist_remote_out_explorer_dir:=$__cdist_remote_out_dir/$__cdist_name_explorer}
+: ${__cdist_remote_out_object_base_dir:=$__cdist_remote_out_dir/$__cdist_name_object}
 
 # Tempfiles
 __cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")
@@ -145,7 +146,11 @@ __cdist_usage()
 
 __cdist_type_has_explorer()
 {
-   echo "${__cdist_type_dir}/${__cdist_type_current}"
+   # We only create output, if there's at least one explorer
+   # and can thus be used as a boolean ;-)
+   if [ -d "$(__cdist_type_explorer_dir "$1")" ]; then
+      ls -1 "$(__cdist_type_explorer_dir "$1")"
+   fi
 }
 
 __cdist_type_mydir()
@@ -191,6 +196,16 @@ __cdist_object_id_from_object()
 __cdist_object_param_dir()
 {
    echo "${__cdist_object_base_dir}/$1/$__cdist_name_params}"
+}
+
+__cdist_object_type_explorer_dir()
+{
+   echo "${__cdist_object_base_dir}/$1/$__cdist_name_explorer}"
+}
+
+__cdist_remote_object_type_explorer_dir()
+{
+   echo "${__cdist_remote_object_base_dir}/$1/$__cdist_name_explorer}"
 }
 
 __cdist_remote_object_param_dir()

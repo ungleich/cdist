@@ -25,8 +25,8 @@
 #
 
 . cdist-config
-if [ $# -lt 3 ]; then
-   __cdist_usage "<variable name> <explorer dir> <out dir> [explorer args]"
+if [ $# -ne 3 ]; then
+   __cdist_usage "<variable name> <explorer dir> <out dir>"
 fi
 set -ue
 

@@ -70,16 +70,10 @@ while read object; do
    set -- "$@" "$object"
 done < "$object_listing"
 
-# For every object of a type that has explorers, execute the explorers
-# and retrieve the results
 while [ $# -gt 0 ]; do
-   # NEW CODE
    object="$1"; shift
    object_id="$(__cdist_object_id_from_object "$object")"
    type="$(__cdist_type_from_object "$object")"
-   type_explorer_dir="$(__cdist_remote_type_explorer_dir "$object")"
-   object_explorer_out_dir="$(__cdist_out_type_explorer_dir "$object")"
-   remote_object_explorer_out_dir="$(__cdist_remote_out_type_explorer_dir "$object")"
 
    # Always copy object parameters (looks weired if done only for the ones with explorer)
    # Really always?
@@ -89,12 +83,15 @@ while [ $# -gt 0 ]; do
 
    # If so, run explorers on remote side
    if [ "$has_explorer" ]; then
-      cdist-run-remote "$__cdist_target_host" cdist-remote-explorer-run \
-         "$__cdist_name_var_type_explorer" "$type_explorer_dir" \
-         "$remote_object_explorer_out_dir"
+      cdist-run-remote "$__cdist_target_host"            \
+         cdist-remote-explorer-run                       \
+         "$__cdist_name_var_type_explorer"               \
+         "$(__cdist_remote_type_explorer_dir "$type")"   \
+         "$(__cdist_remote_object_type_explorer_dir "$object")"
    
       # Copy back results
-      cdist-dir pull "$__cdist_target_host" \
-         "$remote_object_explorer_out_dir" "$object_explorer_out_dir"
+      cdist-dir pull "$__cdist_target_host"                       \
+         "$(__cdist_remote_object_type_explorer_dir "$object")"   \
+         "$(__cdist_object_type_explorer_dir "$object")"
    fi
 done
