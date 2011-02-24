@@ -21,12 +21,6 @@
 # Retrieve the md5sum of a file to be created, if it is already existing.
 #
 
-
-exec 3>&1
-exec 1>&2
-
-set -x
-
 if [ -f "$__object/parameter/destination" ]; then
    destination="$(cat "$__object/parameter/destination")"
 else
@@ -35,7 +29,7 @@ fi
 
 # No output if file does not exist - does definitely not match the md5sum :-)
 if [ -e "$destination" ]; then
-   md5sum "$destination" >&3
+   md5sum "$destination"
 else
-   echo "NO FILE NOT FOUND, NO CHECKSUM CALCULATED." >&3
+   echo "NO FILE NOT FOUND, NO CHECKSUM CALCULATED."
 fi
