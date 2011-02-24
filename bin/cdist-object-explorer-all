@@ -31,21 +31,31 @@ __cdist_object_base_dir="$1"; shift
 ################################################################################
 # New code
 #
+object_listing="$__cdist_tmp_dir/objects"
+type_listing_all="$__cdist_tmp_dir/types_all"
+type_listing="$__cdist_tmp_dir/types"
 
 # Get listing of objects
+__cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
 
 # Get listing of types used
+while read object; do
+   echo "$(__cdist_type_from_object "$object")" >> "$type_listing_all"
+done < "$__cdist_tmp_file"
+sort "$type_listing_all" | uniq > "$type_listing"
+
+cat "$type_listing"
 
 # For every type that has explorers, Transfer the explorers
 
 # For every object of a type that has explorers, execute the explorers
 # and retrieve the results
 
+exit 1
+
 ################################################################################
 # Old code
 #
-
-__cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
 
 # need to create pseudo array, as ssh in cdist-explorer-run will destroy while-read loops
 while read object; do

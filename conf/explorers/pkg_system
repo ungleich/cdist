@@ -19,10 +19,14 @@
 #
 #
 
-case "$(./conf/explorers/os)" in
+os="$("$__explorers/os")"
+
+case "$os" in
       archlinux) echo pacman ;;
       debian|ubuntu) echo apt ;;
       gentoo) echo emerge ;;
+      *)
+         echo "Unknown OS: $os" >&2
+         exit 1
+      ;;
 esac
-
-exit 0

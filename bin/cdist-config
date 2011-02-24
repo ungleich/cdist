@@ -39,6 +39,9 @@ set -au
 : ${__cdist_name_conf_dir:=conf}
 : ${__cdist_name_type_bin:=type_bin}
 
+# Exported variable names
+: ${__cdist_name_var_explorer:=__$__cdist_name_explorer}
+
 # Name of the manifest file in types
 : ${__cdist_name_manifest:=manifest}
 

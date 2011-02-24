@@ -1,2 +1,3 @@
 add explorers per type/object
    - change exec directory for all stages
+      - create cdist-remote-explorer-run that sets

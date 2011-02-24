@@ -45,4 +45,5 @@ fi
 mkdir -p "${__cdist_output_dir}" || __cdist_exit_err "Cannot create output dir ${__cdist_output_dir}"
 
 cd "$__cdist_work_dir" || __cdist_exit_err "Cannot change to work dir \"$__cdist_work_dir\"."
+
 __cdist_exec_fail_on_error "${__cdist_manifest}" "$@"
