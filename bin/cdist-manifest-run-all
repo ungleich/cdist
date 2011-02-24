@@ -67,8 +67,12 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
          if [ -x "${__cdist_manifest}" ]; then
             echo "Executing manifest ${__cdist_manifest} ..."
 
-            cdist-manifest-run "$__cdist_target_host" "$__cdist_cur_object_dir" \
-               "$__cdist_manifest" "$__cdist_new_objects_dir" "$__cdist_object_id"
+            # Make variables available to non-core
+            export $__cdist_name_object="$__cdist_object"
+            export $__cdist_name_object_id="$__cdist_object_id"
+
+            cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest" \
+               "$__cdist_new_objects_dir" "$__cdist_object_id"
 
             __cdist_object_list "${__cdist_new_objects_dir}" > "$__cdist_new_objects_list"
 
