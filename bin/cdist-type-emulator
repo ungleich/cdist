@@ -36,7 +36,7 @@ echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || \
 
 __cdist_object="${__cdist_type}/${__cdist_object_id}"
 __cdist_ddir="$__cdist_output_dir/${__cdist_object}"
-__cdist_params_dir="$__cdist_ddir/$__cdist_name_params"
+__cdist_parameter_dir="$__cdist_ddir/$__cdist_name_parameter"
 
 # Append id for error messages
 __cdist_myname="$__cdist_myname ($__cdist_object_id)"
@@ -47,14 +47,14 @@ if [ -e "${__cdist_ddir}" ]; then
 fi
 
 mkdir -p "${__cdist_ddir}"
-mkdir -p "${__cdist_params_dir}"
+mkdir -p "${__cdist_parameter_dir}"
 
 # Record (correct ;-) source
 echo "${__cdist_manifest}" > "${__cdist_ddir}/${__cdist_name_object_source}"
 
 # Record parameters to tmpdir
-tempparams="${__cdist_tmp_dir}/${__cdist_name_params}"
-mkdir -p "$tempparams"
+tempparameter="${__cdist_tmp_dir}/${__cdist_name_parameter}"
+mkdir -p "$tempparameter"
 
 while [ $# -gt 0 ]; do
    opt="$1"; shift
@@ -68,27 +68,27 @@ while [ $# -gt 0 ]; do
 
    value="$1"; shift
 
-   echo "${value}" > "${tempparams}/${opt_file}"
+   echo "${value}" > "${tempparameter}/${opt_file}"
 done
 
 # Ensure required parameters are given
 while read required; do
-   if [ ! -f "${tempparams}/${required}" ]; then
+   if [ ! -f "${tempparameter}/${required}" ]; then
       __cdist_usage "Missing required parameter $required"
    fi
 
-   mv "${tempparams}/${required}" "${__cdist_params_dir}"
-done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_params_required")"
+   mv "${tempparameter}/${required}" "${__cdist_parameter_dir}"
+done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_parameter_required")"
 
 # Allow optional parameters
 while read optional; do
-   if [ -f "${tempparams}/${optional}" ]; then
-      mv "${tempparams}/${optional}" "${__cdist_params_dir}"
+   if [ -f "${tempparameter}/${optional}" ]; then
+      mv "${tempparameter}/${optional}" "${__cdist_parameter_dir}"
    fi
-done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_params_optional")"
+done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_parameter_optional")"
 
 # Error out on other paramaters
-cd "${tempparams}"
+cd "${tempparameter}"
 other="$(ls)"
 
 if [ "$other" ]; then

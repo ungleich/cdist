@@ -20,7 +20,7 @@
 #
 
 destination=/etc/issue
-os="$(cat "out/explorers/os")"
+os="$(cat "out/explorer/os")"
 
 case "$os" in
    archlinux)
