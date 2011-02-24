@@ -26,8 +26,9 @@
 [ $# -eq 2 ] || __cdist_usage "<target host> <outdir>"
 set -e
 
-export __cdist_target_host="$1"; shift
-export __cdist_output_dir="$1"; shift
+__cdist_target_host="$1"; shift
+__cdist_output_dir="$1"; shift
 
-cdist-manifest-run "$__cdist_target_host" "$__cdist_local_base_dir" \
-   "$__cdist_manifest_init" "$__cdist_output_dir"
+eval export $__cdist_name_var_manifest=\"\$__cdist_manifest_dir\"
+
+cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest_init" "$__cdist_output_dir"

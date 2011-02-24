@@ -23,13 +23,15 @@
 #
 
 . cdist-config
-[ $# -ge 4 ] || __cdist_usage "<target host> <work dir> <manifest> <out dir> [manifest arguments]"
+[ $# -ge 3 ] || __cdist_usage "<target host> <manifest> <out dir> [manifest arguments]"
 set -u
 
 __cdist_target_host="$1"; shift
-__cdist_work_dir="$1"; shift
 __cdist_manifest="$1"; shift
 __cdist_output_dir="$1"; shift
+
+# Always start from local base
+__cdist_work_dir="$__cdist_local_base_dir"
 
 # Ensure binaries exist and are up-to-date
 cdist-type-build-emulation || __cdist_exit_err "Failed to build type emulation binaries"

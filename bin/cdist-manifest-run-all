@@ -61,6 +61,9 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
          __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
          __cdist_manifest="$__cdist_type_dir/${__cdist_type}/${__cdist_name_manifest}"
 
+         # Make __cdist_manifest available for cdist-type-emulator
+         export __cdist_manifest
+
          if [ -x "${__cdist_manifest}" ]; then
             echo "Executing manifest ${__cdist_manifest} ..."
 

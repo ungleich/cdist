@@ -2,6 +2,8 @@
 # This is a sample manifest, but used in real world
 #
 
+echo $__manifests
+
 # All systems get a file /etc/cdist-managed, so the sysadmin knows
 # who manages the configuration.
 #__file /etc/cdist-managed --type file
