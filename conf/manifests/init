@@ -6,13 +6,6 @@
 echo "Running initial manifest for $__target_host"
 echo "We could access other manifests in $__manifests"
 
-set -x
-
-# All systems get a file /etc/cdist-managed, so the sysadmin knows
-# who manages the configuration.
-#__file /etc/cdist-managed --type file
-
-# All ikqs get a sample file
 case "$__target_host" in
    localhost)
       __issue iddoesnotmatterhere
