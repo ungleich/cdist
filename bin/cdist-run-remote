@@ -26,7 +26,6 @@
 set -ue
 
 __cdist_target_host="$1"; shift
-__cdist_remote_binary="$1"; shift
 
 ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
-   "PATH=\"${__cdist_remote_bin_dir}:\$PATH\" \"$__cdist_remote_binary\"" "$@"
+   "PATH=\"${__cdist_remote_bin_dir}:\$PATH\"" "$@"
