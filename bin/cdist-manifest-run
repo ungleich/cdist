@@ -23,8 +23,8 @@
 #
 
 . cdist-config
-[ $# -ge 3 ] || __cdist_usage "<target host> <manifest> <out dir> [manifest arguments]"
-set -ux
+[ $# -eq 3 ] || __cdist_usage "<target host> <manifest> <out dir>"
+set -u
 
 __cdist_target_host="$1"; shift
 __cdist_manifest="$1"; shift
