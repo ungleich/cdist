@@ -33,6 +33,9 @@ __cdist_output_dir="$1"; shift
 # Always start from local base
 __cdist_work_dir="$__cdist_local_base_dir"
 
+# Export information for cdist-type-emulator
+export __cdist_output_dir __cdist_manifest
+
 # Ensure binaries exist and are up-to-date
 cdist-type-build-emulation || __cdist_exit_err "Failed to build type emulation binaries"
 
@@ -45,7 +48,6 @@ if [ ! -x "${__cdist_manifest}" ]; then
 fi
 
 mkdir -p "${__cdist_output_dir}" || __cdist_exit_err "Cannot create output dir ${__cdist_output_dir}"
-
 cd "$__cdist_work_dir" || __cdist_exit_err "Cannot change to work dir \"$__cdist_work_dir\"."
 
 __cdist_exec_fail_on_error "${__cdist_manifest}" "$@"
