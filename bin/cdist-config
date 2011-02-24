@@ -23,7 +23,7 @@
 
 # Fail if something bogus is going on and export all variables
 # The export is mainly needed for remote knowledge
-set -au
+set -u
 
 # Values can be overriden from outside, so you can
 # customise paths as you like (for distributors, geeks and hackers)
