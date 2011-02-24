@@ -43,7 +43,7 @@ __cdist_my_out_dir="$1"; shift
 __cdist_work_dir="$__cdist_remote_base_dir"
 
 # Setup environment
-eval export $__cdist_variable_name=\"$__cdist_explorer_dir\"
+export $__cdist_variable_name="$__cdist_explorer_dir"
 cd "${__cdist_work_dir}"
 mkdir -p "$__cdist_my_out_dir"
 

@@ -2,12 +2,18 @@
 # This is a sample manifest, but used in real world
 #
 
+# This is debug and should not be in a production environment
+echo "Running initial manifest for $__target_host"
+echo "We could access other manifests in $__manifests"
+
+set -x
+
 # All systems get a file /etc/cdist-managed, so the sysadmin knows
 # who manages the configuration.
 #__file /etc/cdist-managed --type file
 
 # All ikqs get a sample file
-case "$__cdist_target_host" in
+case "$__target_host" in
    localhost)
       __issue iddoesnotmatterhere
       __file test --type file --destination /tmp/cdist-testfile

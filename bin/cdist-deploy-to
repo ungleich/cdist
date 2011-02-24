@@ -28,7 +28,7 @@ set -eu
 __cdist_target_host="$1"
 
 # Make target host available for non-core
-export $__cdist_name_var_target_host=\"\$__cdist_target_host\"
+export $__cdist_name_var_target_host="$__cdist_target_host"
 
 ################################################################################
 # See cdist-stages(7)
