@@ -23,7 +23,7 @@
 
 . cdist-config
 [ $# -eq 2 ] || __cdist_usage "<target host> <object_base_dir>"
-set -eux
+set -eu
 
 __cdist_target_host="$1"; shift
 __cdist_object_base_dir="$1"; shift
@@ -83,6 +83,7 @@ while [ $# -gt 0 ]; do
 
    # If so, run explorers on remote side
    if [ "$has_explorer" ]; then
+      echo "Running explorers for $object ..."
       cdist-run-remote "$__cdist_target_host"            \
          cdist-remote-explorer-run                       \
          "$__cdist_name_var_type_explorer"               \
