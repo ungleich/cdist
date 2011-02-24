@@ -89,6 +89,7 @@ __cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
 : ${__cdist_remote_conf_dir:=$__cdist_remote_base_dir/$__cdist_name_conf_dir}
 : ${__cdist_remote_explorer_dir:=$__cdist_remote_conf_dir/$__cdist_name_explorer}
 : ${__cdist_remote_bin_dir:=$__cdist_remote_conf_dir/$__cdist_name_bin}
+: ${__cdist_remote_type_dir:=$__cdist_remote_conf_dir/$__cdist_name_type}
 
 # Remote out
 : ${__cdist_remote_out_dir:=$__cdist_remote_base_dir/$__cdist_name_out_dir}
@@ -148,6 +149,11 @@ __cdist_type_mydir()
 __cdist_type_explorer_dir()
 {
    echo "${__cdist_type_dir}/$1/$__cdist_name_explorer"
+}
+
+__cdist_remote_type_explorer_dir()
+{
+   echo "${__cdist_remote_type_dir}/$1/$__cdist_name_explorer"
 }
 
 __cdist_type_gencode()

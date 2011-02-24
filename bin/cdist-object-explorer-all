@@ -23,7 +23,7 @@
 
 . cdist-config
 [ $# -eq 2 ] || __cdist_usage "<target host> <object_base_dir>"
-set -eu
+set -eux
 
 __cdist_target_host="$1"; shift
 __cdist_object_base_dir="$1"; shift
@@ -36,31 +36,46 @@ type_listing_all="$__cdist_tmp_dir/types_all"
 type_listing="$__cdist_tmp_dir/types"
 
 # Get listing of objects
-__cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
+__cdist_object_list "$__cdist_object_base_dir" > "$object_listing"
 
 # Get listing of types used
 while read object; do
    echo "$(__cdist_type_from_object "$object")" >> "$type_listing_all"
-done < "$__cdist_tmp_file"
+done < "$object_listing"
 sort "$type_listing_all" | uniq > "$type_listing"
 
-cat "$type_listing"
+# Create pseudo array to avoid issues with ssh
+tc=0
+while read type; do
+   eval type_$tc=\"\$type\"
+   tc=$((tc+1))
+done < "$type_listing"
 
 # For every type that has explorers, Transfer the explorers
+i=0
+while [ "$i" -le "$tc" ]; do
+   eval cur_type=\"type_$i\"
 
-# For every object of a type that has explorers, execute the explorers
-# and retrieve the results
+   src_dir="$(__cdist_type_explorer_dir "$cur_type")"
+   dst_dir="$(__cdist_remote_type_explorer_dir "$cur_type")"
 
-exit 1
+   if [ -d "$src_dir" ]; then
+      cdist-dir push "$__cdist_target_host" "$src_dir" "$dst_dir"
+   fi
+   i=$((i+1))
+done
 
 ################################################################################
-# Old code
+# Explorer execution per object
 #
 
 # need to create pseudo array, as ssh in cdist-explorer-run will destroy while-read loops
 while read object; do
    set -- "$@" "$object"
-done < "$__cdist_tmp_file"
+done < "$object_listing"
+
+# For every object of a type that has explorers, execute the explorers
+# and retrieve the results
 
 while [ $# -gt 0 ]; do
    object="$1"; shift
@@ -94,13 +109,6 @@ while [ $# -gt 0 ]; do
 
    if [ -d "$local_src_dir" ]; then
       echo "Executing explorers for $object ..."
-      num="$(ls -1 "$local_src_dir" | wc -l)"
-
-      # Skip if there is not at least one explorer
-      if [ "$num" -lt 1 ]; then
-         continue
-      fi
-
       cdist-explorer-run "$__cdist_target_host" \
          "$local_src_dir"  "$local_dst_dir"     \
          "$remote_src_dir" "$remote_dst_dir"    \

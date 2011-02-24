@@ -36,7 +36,6 @@ __cdist_src_base=${__cdist_conf_dir_path%config}
 ssh "${__cdist_remote_user}@${__cdist_target_host}" \
    "rm -rf \"${__cdist_my_remote_out_dir}\" && mkdir -p \"${__cdist_my_remote_out_dir}\""
 
-# FIXME: enable -q as soon as the code is cleaned up
 # Transfer cdist-* to the remote host
-scp -r "${__cdist_src_base}"* \
+scp -qr "${__cdist_src_base}"* \
        "root@${__cdist_target_host}:${__cdist_my_remote_out_dir}"
