@@ -1,6 +1,1 @@
 add explorers per type/object
-   - create clean trees locally and remote
-      - define paths in cdist-config
-   - rewrite cdist-explorer-run
-      - define helpers on the remote side (like cdist-explorer-coordinator)
-         - make cdist-config available / put helpers into path
