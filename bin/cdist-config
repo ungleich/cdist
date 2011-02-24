@@ -31,39 +31,31 @@ set -u
 # Names / Constants
 : ${__cdist_name_bin:=bin}
 : ${__cdist_name_code:=code}
-: ${__cdist_name_explorer:=explorers}
+: ${__cdist_name_explorer:=explorer}
 : ${__cdist_name_gencode:=gencode}
-: ${__cdist_name_host:=hosts}
+: ${__cdist_name_host:=host}
 : ${__cdist_name_init:=init}
 : ${__cdist_name_manifest:=manifest}
-: ${__cdist_name_manifest_dir:=manifests}
 : ${__cdist_name_object:=object}
-: ${__cdist_name_objects:=objects}
 : ${__cdist_name_object_id:=object_id}
+: ${__cdist_name_parameter:=parameter}
+: ${__cdist_name_parameter_required:=required}
+: ${__cdist_name_parameter_optional:=optional}
+: ${__cdist_name_target_host:=target_host}
+: ${__cdist_name_type:=type}
+: ${__cdist_name_type_bin:=type_bin}
+: ${__cdist_name_type_explorer:=type_explorer}
+
 : ${__cdist_name_out_dir:=out}
 : ${__cdist_name_conf_dir:=conf}
-: ${__cdist_name_target_host:=target_host}
-: ${__cdist_name_type:=types}
-: ${__cdist_name_type_bin:=type_bin}
-: ${__cdist_name_type_explorers:=type_explores}
 
 # Exported variable names (usable for non core)
 : ${__cdist_name_var_explorer:=__$__cdist_name_explorer}
-: ${__cdist_name_var_type_explorer:=__$__cdist_name_type_explorers}
-: ${__cdist_name_var_manifest:=__$__cdist_name_manifest_dir}
+: ${__cdist_name_var_type_explorer:=__$__cdist_name_type_explorer}
+: ${__cdist_name_var_manifest:=__$__cdist_name_manifest}
 : ${__cdist_name_var_target_host:=__$__cdist_name_target_host}
 : ${__cdist_name_var_object:=__$__cdist_name_object}
 : ${__cdist_name_var_object_id:=__$__cdist_name_object_id}
-
-# Name of the base directory containing the initial manifests
-: ${__cdist_name_manifests:=manifests}
-
-: ${__cdist_name_params:=parameters}
-: ${__cdist_name_params_required:=required}
-: ${__cdist_name_params_optional:=optional}
-
-# Name of the executable generated
-: ${__cdist_name_exec:=exec}
 
 # File that contains source of a specific object creation
 : ${__cdist_name_object_source:=.source}
@@ -74,7 +66,7 @@ set -u
 # Base
 : ${__cdist_conf_dir:=/etc/cdist}
 : ${__cdist_explorer_dir:=$__cdist_conf_dir/$__cdist_name_explorer}
-: ${__cdist_manifest_dir:=$__cdist_conf_dir/$__cdist_name_manifests}
+: ${__cdist_manifest_dir:=$__cdist_conf_dir/$__cdist_name_manifest}
 : ${__cdist_manifest_init:=$__cdist_manifest_dir/$__cdist_name_init}
 : ${__cdist_type_dir:=$__cdist_conf_dir/$__cdist_name_type}
 
@@ -177,10 +169,11 @@ __cdist_type_gencode()
 
 __cdist_type_param_file()
 {
+   # FIXME: local == posix?
    local type="$1"; shift
    local paramtype="$1"; shift
 
-   echo "${__cdist_type_dir}/$type/$__cdist_name_params/$paramtype"
+   echo "${__cdist_type_dir}/$type/$__cdist_name_parameter/$paramtype"
 }
 
 __cdist_type_from_object()
@@ -195,7 +188,7 @@ __cdist_object_id_from_object()
 
 __cdist_object_param_dir()
 {
-   echo "${__cdist_object_base_dir}/$1/$__cdist_name_params}"
+   echo "${__cdist_object_base_dir}/$1/$__cdist_name_parameter}"
 }
 
 __cdist_object_type_explorer_dir()
@@ -210,7 +203,7 @@ __cdist_remote_object_type_explorer_dir()
 
 __cdist_remote_object_param_dir()
 {
-   echo "${__cdist_remote_object_base_dir}/$1/$__cdist_name_params}"
+   echo "${__cdist_remote_object_base_dir}/$1/$__cdist_name_parameter}"
 }
 
 # Find objects, remove ./ and /MARKER
