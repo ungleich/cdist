@@ -31,13 +31,17 @@ set -u
 # Names / Constants
 : ${__cdist_name_bin:=bin}
 : ${__cdist_name_code:=code}
+: ${__cdist_name_conf_dir:=conf}
 : ${__cdist_name_explorer:=explorer}
 : ${__cdist_name_gencode:=gencode}
 : ${__cdist_name_host:=host}
 : ${__cdist_name_init:=init}
 : ${__cdist_name_manifest:=manifest}
 : ${__cdist_name_object:=object}
+: ${__cdist_name_object_finished:=.done}
 : ${__cdist_name_object_id:=object_id}
+: ${__cdist_name_object_source:=.source}
+: ${__cdist_name_out_dir:=out}
 : ${__cdist_name_parameter:=parameter}
 : ${__cdist_name_parameter_required:=required}
 : ${__cdist_name_parameter_optional:=optional}
@@ -46,8 +50,6 @@ set -u
 : ${__cdist_name_type_bin:=type_bin}
 : ${__cdist_name_type_explorer:=type_explorer}
 
-: ${__cdist_name_out_dir:=out}
-: ${__cdist_name_conf_dir:=conf}
 
 # Exported variable names (usable for non core)
 : ${__cdist_name_var_explorer:=__$__cdist_name_explorer}
@@ -57,11 +59,6 @@ set -u
 : ${__cdist_name_var_object:=__$__cdist_name_object}
 : ${__cdist_name_var_object_id:=__$__cdist_name_object_id}
 
-# File that contains source of a specific object creation
-: ${__cdist_name_object_source:=.source}
-
-# Marks an object finished
-: ${__cdist_name_object_finished:=.done}
 
 # Base
 : ${__cdist_conf_dir:=/etc/cdist}
@@ -152,19 +149,19 @@ __cdist_type_mydir()
 
 __cdist_type_explorer_dir()
 {
-   echo "${__cdist_type_dir}/$1/$__cdist_name_explorer"
+   echo "${__cdist_type_dir}/$1/${__cdist_name_explorer}"
 }
 
 __cdist_remote_type_explorer_dir()
 {
-   echo "${__cdist_remote_type_dir}/$1/$__cdist_name_explorer"
+   echo "${__cdist_remote_type_dir}/$1/${__cdist_name_explorer}"
 }
 
 __cdist_type_gencode()
 {
    local type="$1"
 
-   echo "${__cdist_type_dir}/${type}/$__cdist_name_gencode"
+   echo "${__cdist_type_dir}/${type}/${__cdist_name_gencode}"
 }
 
 __cdist_type_param_file()
@@ -173,7 +170,7 @@ __cdist_type_param_file()
    local type="$1"; shift
    local paramtype="$1"; shift
 
-   echo "${__cdist_type_dir}/$type/$__cdist_name_parameter/$paramtype"
+   echo "${__cdist_type_dir}/${type}/${__cdist_name_parameter}/${paramtype}"
 }
 
 __cdist_type_from_object()
@@ -193,17 +190,17 @@ __cdist_object_param_dir()
 
 __cdist_object_type_explorer_dir()
 {
-   echo "${__cdist_object_base_dir}/$1/$__cdist_name_explorer}"
+   echo "${__cdist_object_base_dir}/$1/${__cdist_name_explorer}"
 }
 
 __cdist_remote_object_type_explorer_dir()
 {
-   echo "${__cdist_remote_object_base_dir}/$1/$__cdist_name_explorer}"
+   echo "${__cdist_remote_out_object_base_dir}/$1/${__cdist_name_explorer}"
 }
 
-__cdist_remote_object_param_dir()
+__cdist_remote_object_parameter_dir()
 {
-   echo "${__cdist_remote_object_base_dir}/$1/$__cdist_name_parameter}"
+   echo "${__cdist_remote_out_object_base_dir}/$1/${__cdist_name_parameter}"
 }
 
 # Find objects, remove ./ and /MARKER
@@ -216,7 +213,7 @@ __cdist_object_list()
       cd "${basedir}"
 
       find . -name "$__cdist_name_object_source" |    \
-         sed -e 's;^./;;' -e "s;/$__cdist_name_object_source\$;;"
+         sed -e 's;^./;;' -e "s;/${__cdist_name_object_source}\$;;"
    )
 
 }
@@ -225,7 +222,7 @@ __cdist_object_source()
 {
    local object_dir="$1"; shift
 
-   cat "${object_dir}/$__cdist_name_object_source"
+   cat "${object_dir}/${__cdist_name_object_source}"
 }
 
 __cdist_exec_fail_on_error()
