@@ -75,17 +75,21 @@ while [ $# -gt 0 ]; do
    __object_id="$(__cdist_object_id_from_object "$__object")"
    __cdist_type="$(__cdist_type_from_object "$__object")"
 
-   # Always copy object parameters (looks weired if done only for the ones with explorer)
-   # Really always?
-
    # Check if type of object has >= 1 explorer
    has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
 
    # If so, run explorers on remote side
    if [ "$has_explorer" ]; then
       echo "Running explorers for $__object ..."
+      # Copy object parameters
+      cdist-dir push "$__cdist_target_host"                       \
+         "$(__cdist_object_parameter_dir "$__object")"            \
+         "$(__cdist_remote_object_parameter_dir "$__object")"
+
+      # Execute explorers
       cdist-run-remote "$__cdist_target_host"                     \
-         "__object=\"$__object\" __object_id=\"$__object_id\""    \
+         "__object=\"$(__cdist_remote_object_dir "$__object")\""   \
+         "__object_id=\"$__object_id\""                           \
          cdist-remote-explorer-run                                \
          "$__cdist_name_var_type_explorer"                        \
          "$(__cdist_remote_type_explorer_dir "$__cdist_type")"    \

@@ -183,24 +183,34 @@ __cdist_object_id_from_object()
    echo "${1#*/}"
 }
 
-__cdist_object_param_dir()
+__cdist_object_dir()
 {
-   echo "${__cdist_object_base_dir}/$1/$__cdist_name_parameter}"
+   echo "${__cdist_object_base_dir}/$1"
 }
 
-__cdist_object_type_explorer_dir()
+__cdist_remote_object_dir()
 {
-   echo "${__cdist_object_base_dir}/$1/${__cdist_name_explorer}"
+   echo "${__cdist_remote_out_object_base_dir}/$1"
 }
 
-__cdist_remote_object_type_explorer_dir()
+__cdist_object_parameter_dir()
 {
-   echo "${__cdist_remote_out_object_base_dir}/$1/${__cdist_name_explorer}"
+   echo "$(__cdist_object_dir "$1")/${__cdist_name_parameter}"
 }
 
 __cdist_remote_object_parameter_dir()
 {
-   echo "${__cdist_remote_out_object_base_dir}/$1/${__cdist_name_parameter}"
+   echo "$(__cdist_remote_object_dir "$1")/${__cdist_name_parameter}"
+}
+
+__cdist_object_type_explorer_dir()
+{
+   echo "$(__cdist_object_dir "$1")/${__cdist_name_explorer}"
+}
+
+__cdist_remote_object_type_explorer_dir()
+{
+   echo "$(__cdist_remote_object_dir "$1")/${__cdist_name_explorer}"
 }
 
 # Find objects, remove ./ and /MARKER
