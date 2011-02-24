@@ -18,7 +18,7 @@ variables, see cdist-environment(7)).
    Contains the (static) configuration like manifests, types and
    explorers.
 
-- conf_dir/manifests/init:
+- conf_dir/manifest/init:
    This is the central entry point used by cdist-manifest-init(1).
    It is an executable (+x bit set) shell script that can use
    values from the explorers to decide which configuration to create
@@ -26,36 +26,36 @@ variables, see cdist-environment(7)).
 
    It should be primary used to define mapping from configurations to hosts.
 
-- conf_dir/manifests/*:
+- conf_dir/manifest/*:
    All other files in this directory are not directly used by Cdist, but you
    can seperate configuration mappings, if you have a lot of code in the
    manifest/init file. This may also be very helpful to have different admins
    maintain different groups of hosts.
 
-- conf_dir/explorers/<name>
+- conf_dir/explorer/<name>
    Contains explorers to be run on the target hosts, see cdist-explorers(7).
 
-- conf_dir/types/
+- conf_dir/type/
    Contains all available types, which are used to provide
    some kind of functionality. See cdist-stages(7).
 
-- conf_dir/types/<name>/manifest:
+- conf_dir/type/<name>/manifest:
    Used to generate additional objects from a type.
    See cdist-stages(7), cdist-types(7).
 
-- conf_dir/types/<name>/gencode:
+- conf_dir/type/<name>/gencode:
    Used to generate code to be executed on the client.
    See cdist-types(7).
 
-- conf_dir/types/<name>/parameters/required:
+- conf_dir/type/<name>/parameters/required:
    Parameters required by type, \n seperated list.
    See cdist-types(7).
 
-- conf_dir/types/<name>/parameters/optional:
+- conf_dir/type/<name>/parameters/optional:
    Parameters optionally accepted by type, \n seperated list.
    See cdist-types(7).
 
-- conf_dir/types/<name>/explorers:
+- conf_dir/type/<name>/explorer:
    Location of the type specific explorers.
    See cdist-explorers(7).
 
@@ -65,13 +65,13 @@ variables, see cdist-environment(7)).
    the tmpdir or at any other location and is also available on the
    target.
 
-- out_dir/explorers:
+- out_dir/explorer:
    Output of general explorers.
 
-- out_dir/objects:
+- out_dir/object:
    Objects created for the host.
 
-- out_dir/objects/<object>/explorers:
+- out_dir/object/<object>/explorers:
    Output of type specific explorers, per object.
 
 - tmp_dir: Temporary storage
@@ -88,7 +88,7 @@ The following functionality may be implemented in one of the next releases:
    may also be used in types to gather information about other hosts
    (like ssh-keys).
 
-- cache_dir/hosts/<name>:
+- cache_dir/host/<name>:
    Contains the last out_dir of the specific host.
 
 
