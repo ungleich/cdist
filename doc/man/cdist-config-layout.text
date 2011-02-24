@@ -10,7 +10,7 @@ cdist-config-layout - Usage of paths in cdist
 
 DESCRIPTION
 -----------
-If not otherwise specified, all paths are relative to the configuration
+If not specified otherwise, all paths are relative to the configuration
 directory, which is normally /etc/cdist (but can be changed using environment
 variables, see cdist-environment(7)).
 
@@ -21,16 +21,16 @@ variables, see cdist-environment(7)).
 - conf_dir/manifests/init:
    This is the central entry point used by cdist-manifest-init(1).
    It is an executable (+x bit set) shell script that can use
-   values for the explorers to decide which configuration to create
+   values from the explorers to decide which configuration to create
    for the specified target host.
 
    It should be primary used to define mapping from configurations to hosts.
 
-- conf_dir/manifests/*: All other files in this directory
-   Cdist does not use them directly, but you can seperate
-   configuration mappings, if you have a lot of code in the manifest/init
-   file. This may also be very helpful to have different admins maintain
-   different groups of hosts.
+- conf_dir/manifests/*:
+   All other files in this directory are not directly used by Cdist, but you
+   can seperate configuration mappings, if you have a lot of code in the
+   manifest/init file. This may also be very helpful to have different admins
+   maintain different groups of hosts.
 
 - conf_dir/explorers/<name>
    Contains explorers to be run on the target hosts, see cdist-explorers(7).
