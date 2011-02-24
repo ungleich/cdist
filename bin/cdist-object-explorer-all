@@ -28,6 +28,23 @@ set -eu
 __cdist_target_host="$1"; shift
 __cdist_object_base_dir="$1"; shift
 
+################################################################################
+# New code
+#
+
+# Get listing of objects
+
+# Get listing of types used
+
+# For every type that has explorers, Transfer the explorers
+
+# For every object of a type that has explorers, execute the explorers
+# and retrieve the results
+
+################################################################################
+# Old code
+#
+
 __cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
 
 # need to create pseudo array, as ssh in cdist-explorer-run will destroy while-read loops
