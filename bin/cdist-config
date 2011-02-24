@@ -39,12 +39,13 @@ set -u
 : ${__cdist_name_manifest_dir:=manifests}
 : ${__cdist_name_out_dir:=out}
 : ${__cdist_name_conf_dir:=conf}
+: ${__cdist_name_target_host:=target_host}
 : ${__cdist_name_type_bin:=type_bin}
 
 # Exported variable names (usable for non core)
 : ${__cdist_name_var_explorer:=__$__cdist_name_explorer}
 : ${__cdist_name_var_manifest:=__$__cdist_name_manifest_dir}
-
+: ${__cdist_name_var_target_host:=__$__cdist_name_target_host}
 
 # Name of the base directory containing the initial manifests
 : ${__cdist_name_manifests:=manifests}

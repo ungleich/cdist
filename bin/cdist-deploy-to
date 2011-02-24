@@ -27,6 +27,9 @@ set -eu
 
 __cdist_target_host="$1"
 
+# Make target host available for non-core
+export $__cdist_name_var_target_host=\"\$__cdist_target_host\"
+
 ################################################################################
 # See cdist-stages(7)
 #
@@ -43,11 +46,10 @@ cdist-bin-transfer            "$__cdist_target_host" "$__cdist_remote_bin_dir"
 # Execute general explorers
 cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
 
-
-exit 2
-
 # Create initial object base
 cdist-manifest-run-init       "$__cdist_target_host" "$__cdist_out_object_dir"
+
+exit 2
 
 # Create dependent objects - BUG: does not abort on error in manifest!!!!
 cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_object_dir"
