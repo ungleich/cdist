@@ -19,7 +19,7 @@
 #
 #
 
-os="$("$__explorers/os")"
+os="$("$__explorer/os")"
 
 case "$os" in
       archlinux) echo pacman ;;

@@ -4,7 +4,7 @@
 
 # This is debug and should not be in a production environment
 echo "Running initial manifest for $__target_host"
-echo "We could access other manifests in $__manifests"
+echo "We could access other manifests in $__manifest"
 
 case "$__target_host" in
    localhost)
