@@ -40,22 +40,43 @@ if ! $(echo "$destination" | grep -q ^/); then
    exit 1
 fi
 
-# FIXME: Add file copying part here
+# Copy source if existing
+if [ -f "$__object/parameter/source" ]; then
+   source="$(cat "$__object/parameter/source")"
 
-case "$type" in
-   directory)
-      echo mkdir \"$destination\"
-   ;;
+   exec 3>&1
+   exec 1>&2
 
-   file)
-      echo touch \"$destination\"
-   ;;
+   set -x
+   md5sum="$(md5sum "$source")"
+   remote_md5sum="$(cat "$__object/explorer/md5sum")"
 
-   *)
-      echo "Unsupported type: \"$type\"" >&2
-      exit 1
-   ;;
-esac
+   # Is md5sum the right approach?
+   if [ "$md5sum" != "$remote_md5sum" ]; then
+      # FIXME: This is ugly and hardcoded, replace after 1.0!
+      # Probably a better aproach is to have the user configured
+      # ~/.ssh/config to contain the right username
+      # Probably describe it in cdist-quickstart...
+      scp "$source" "root@${__target_host}:${destination}"
+   fi
+
+# No source? Create empty file/dir
+else
+   case "$type" in
+      directory)
+         echo mkdir \"$destination\"
+      ;;
+
+      file)
+         echo touch \"$destination\"
+      ;;
+
+      *)
+         echo "Unsupported type: \"$type\"" >&2
+         exit 1
+      ;;
+   esac
+fi
 
 if [ -f "$__object/parameter/mode" ]; then
    mode="$(cat "$__object/parameters/mode")"
