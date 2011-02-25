@@ -32,6 +32,9 @@ __cdist_my_remote_out_dir="$1"; shift
 __cdist_conf_dir_path=$(which cdist-config)
 __cdist_src_base=${__cdist_conf_dir_path%config}
 
+# Help the user
+echo "Transferring cdist binaries ..."
+
 # re-create basedir so it's clean
 ssh "${__cdist_remote_user}@${__cdist_target_host}" \
    "rm -rf \"${__cdist_my_remote_out_dir}\" && mkdir -p \"${__cdist_my_remote_out_dir}\""

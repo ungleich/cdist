@@ -34,6 +34,8 @@ export $__cdist_name_var_target_host="$__cdist_target_host"
 # See cdist-stages(7)
 #
 
+echo "cdist $__cdist_version: Configuring $__cdist_target_host"
+
 # Init base
 mkdir -p "$__cdist_local_base_dir"
 

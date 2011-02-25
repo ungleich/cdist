@@ -18,14 +18,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Print configuration directories - helper for all other scripts
-#
 
 # Fail if something bogus is going on and export all variables
-# The export is mainly needed for remote knowledge
 set -u
 
-# Values can be overriden from outside, so you can
+__cdist_version="1.0.0"
+
+# Most values can be overriden from outside, so you can
 # customise paths as you like (for distributors, geeks and hackers)
 
 # Names / Constants

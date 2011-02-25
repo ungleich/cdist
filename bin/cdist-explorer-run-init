@@ -28,6 +28,8 @@ set -ue
 __cdist_target_host="$1"; shift
 __cdist_my_out_dir="$1"; shift
 
+echo "Running general explorers ..."
+
 # copy the explorers
 cdist-dir push "$__cdist_target_host" \
    "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
