@@ -43,7 +43,6 @@ export __object="$__cdist_object_dir"
 
 cd "$__cdist_local_base_dir"
 
-echo "Generating code for $__cdist_object ..."
 cat << eof
 #
 # The following code is imported from output of $gencode

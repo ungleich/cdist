@@ -18,16 +18,14 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Exec executables on the remote side
+# Exec code on the remote side
 #
 
 . cdist-config
 [ $# -eq 1 ] || __cdist_usage "<target host>"
 set -e
 
-export __cdist_target_host="$1"; shift
+__cdist_target_host="$1"; shift
 
-
-# Run executables - no order, no dependencies yet
-ssh "root@${__cdist_target_host}" \
-   "find \"${__cdist_remote_cache_exec}\" -type f -name \"${__cdist_name_exec}\" -exec {} \\;"
+cdist-run-remote "$__cdist_target_host" \
+   "cdist-remote-code-run-all" "${__cdist_remote_out_object_base_dir}"

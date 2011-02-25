@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# This binary is executed on the remote side to execute explorers
+# 
+# It supports different variables names to be used, so __explorers
+# and __type_explorers can be submitted :-)
+#
+
+. cdist-config
+if [ $# -ne 1 ]; then
+   __cdist_usage "<object dir>"
+fi
+set -ue
+
+__cdist_object_base_dir="$1"; shift
+
+__cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
+
+# FIXME post 1.0: add dependencies
+while read object; do
+   code="$(__cdist_object_code "$object")"
+   echo "Running code for $object ..."
+   if [ -e "$code" ]; then
+      if [ -f "$code" ]; then
+         if [ -x "$code" ]; then
+            "$code"
+         else
+            __cdist_exit_err "$code exists, but is not executable."
+         fi
+      else
+         __cdist_exit_err "$code exists, but is not a file."
+      fi
+   else
+      __cdist_exit_err "Missing code for ${object}."
+   fi
+done < "$__cdist_tmp_file"
