@@ -6,6 +6,8 @@ Core:
    - use ssh with master socket?
       - saves connection delay for new connections: -M
       - hint: http://protempore.net/~calvins/howto/ssh-connection-sharing/
+   - remove remote_base_dir at beginning - otherwise fragments from
+     previous runs may still be existing!
 
 Type handler:
    - add dependency parameters to core available for every type
