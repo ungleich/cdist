@@ -56,19 +56,9 @@ cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_object_dir"
 cdist-object-explorer-all     "$__cdist_target_host" "$__cdist_out_object_dir"
 
 # Generate code for all objects
-cdist-object-codegen-all      "$__cdist_target_host" "$__cdist_out_object_dir" \
-   "$__cdist_out_code_dir"
+cdist-object-codegen-all      "$__cdist_target_host" "$__cdist_out_object_dir"
 
 exit 2
+
 cdist-exec-transfer           "$__cdist_target_host" "$__cdist_out_execs"
 cdist-exec-run                "$__cdist_target_host"
-
-# FIXME: Create new cache from results:
-# cdist-cache-copy "$__cdist_target_host" __cdist_out_explorers __cdist_out_object_dir __cdist_out_execs
-# or similar, better with one directory
-#
-# echo rm -rf "$(__cdist_cache_host)"
-# mkdir -p "$(__cdist_cache_host)"
-# mv "$__cdist_out_explorers" "$__cdist_out_object_dir" "$(__cdist_cache_host)"
-# Also save last code fragment
-# mv "$tmp_code" "$(__cdist_cache_host)"
