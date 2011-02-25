@@ -159,9 +159,7 @@ __cdist_remote_type_explorer_dir()
 
 __cdist_type_gencode()
 {
-   local type="$1"
-
-   echo "${__cdist_type_dir}/${type}/${__cdist_name_gencode}"
+   echo "${__cdist_type_dir}/$1/${__cdist_name_gencode}"
 }
 
 __cdist_type_param_file()
