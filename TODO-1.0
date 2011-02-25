@@ -2,8 +2,9 @@ This document defines how to continue work on cdist:
 
 x general stuff
    x Define configuration paths (doc/internal/config-layout)
-   - check whether remote and local view of objects can be the same,
+   x check whether remote and local view of objects can be the same,
     i.e. local:/outdir == remote:/var/lib/cdist
+    x similar, but not the same
 
 x get information from target (stage 1)
    x Define how to get information from targets
@@ -24,8 +25,8 @@ x be able to run manifest of types (stage 3)
    x rename $__object_dir to $__object_base_dir
    x use $type/manifest instead of $type/init
    x find $object_id in recursive runner (before merge)
-   - move attributes of object to subdir attributes
-   - run explorers for every object
+   x move parameters of object to subdir parameter
+   x run explorers for every object
 
 x generate code to be executed on clients (stage 4)
    x for one object
@@ -77,4 +78,3 @@ x execute code on client (stage 5)
       --> create cdist-variables document?
 
    - include generation in makefile
-
