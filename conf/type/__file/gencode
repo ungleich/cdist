@@ -22,13 +22,13 @@
 # example for typewrites later
 #
 
-type="$(cat parameters/type)"
+type="$(cat "$__object/parameter/type")"
 
 # If destination was specified, do not use the id
-if [ -f parameters/destination ]; then
-   destination="$(cat parameters/destination)"
+if [ -f "$__object/parameter/destination" ]; then
+   destination="$(cat "$__object/parameter/destination")"
 else
-   destination="$1"
+   destination="$__object_id"
 fi
 
 case "$type" in
@@ -46,7 +46,7 @@ case "$type" in
    ;;
 esac
 
-if [ -f parameters/mode ]; then
-   mode="$(cat parameters/mode)"
+if [ -f "$__object/parameter/mode" ]; then
+   mode="$(cat "$__object/parameters/mode")"
    echo chmod \"$mode\" \"$destination\"
 fi
