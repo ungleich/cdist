@@ -1,3 +1,11 @@
+Steps needed until 1.0:
+
+   - finish type __file
+   - finish type __package
+   - cleanup documentation (see below)
+
+--------------------------------------------------------------------------------
+
 This document defines how to continue work on cdist:
 
 x general stuff
@@ -35,9 +43,6 @@ x generate code to be executed on clients (stage 4)
 x execute code on client (stage 5)
 
 - Other stuff pre 1.0:
-   - Write some basic types
-      - file (with directory)
-      - package
    - doc cleanup for 1.0:
       - ensure every file in bin/ has a correspondent manpage
       - cdist manpage (main manpage)
