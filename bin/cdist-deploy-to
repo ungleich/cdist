@@ -58,7 +58,11 @@ cdist-object-explorer-all     "$__cdist_target_host" "$__cdist_out_object_dir"
 # Generate code for all objects
 cdist-object-codegen-all      "$__cdist_target_host" "$__cdist_out_object_dir"
 
+# Transfer all objects including code
+cdist-dir push "$__cdist_target_host" "$__cdist_out_object_dir" \
+   "${__cdist_remote_out_object_base_dir}"
+
 exit 2
 
-cdist-exec-transfer           "$__cdist_target_host" "$__cdist_out_execs"
+
 cdist-exec-run                "$__cdist_target_host"
