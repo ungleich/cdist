@@ -57,6 +57,7 @@ __cdist_version="1.0.0"
 : ${__cdist_name_var_target_host:=__$__cdist_name_target_host}
 : ${__cdist_name_var_object:=__$__cdist_name_object}
 : ${__cdist_name_var_object_id:=__$__cdist_name_object_id}
+: ${__cdist_name_var_type:=__$__cdist_name_type}
 
 
 # Base

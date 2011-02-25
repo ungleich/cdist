@@ -24,10 +24,10 @@ os="$(cat "out/explorer/os")"
 
 case "$os" in
    archlinux)
-      source="$(pwd -P)/files/archlinux"
+      source="$__type/files/archlinux"
    ;;
    *)
-      source="$(pwd -P)/files/default"
+      source="$__type/files/default"
    ;;
 esac
 

@@ -70,6 +70,7 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
             # Make variables available to non-core
             export $__cdist_name_var_object="$__cdist_cur_object_dir"
             export $__cdist_name_var_object_id="$__cdist_object_id"
+            export $__cdist_name_var_type="$(__cdist_type_dir "$__cdist_type")"
 
             cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest" \
                "$__cdist_new_objects_dir"
