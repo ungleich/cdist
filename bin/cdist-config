@@ -141,9 +141,9 @@ __cdist_type_has_explorer()
    fi
 }
 
-__cdist_type_mydir()
+__cdist_type_dir()
 {
-   echo "${__cdist_type_dir}/${__cdist_type_current}"
+   echo "${__cdist_type_dir}/$1"
 }
 
 __cdist_type_explorer_dir()
