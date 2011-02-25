@@ -56,7 +56,7 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
       __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
 
       if [ ! -f "${__cdist_cur_object_dir}/$__cdist_name_object_finished" ]; then
-         echo "Working on object ${__cdist_object} ..."
+         echo "Checking manifest for ${__cdist_object} ..."
 
          __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
          __cdist_manifest="$__cdist_type_dir/${__cdist_type}/${__cdist_name_manifest}"
