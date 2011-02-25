@@ -67,7 +67,7 @@ __cdist_version="1.0.0"
 : ${__cdist_type_dir:=$__cdist_conf_dir/$__cdist_name_type}
 
 # Used for IDs
-__cdist_sane_regexp='[A-Za-z0-9]*[-A-Za-z0-9_]*'
+__cdist_sane_regexp='[A-Za-z0-9/]*[-A-Za-z0-9_/]*'
 
 # Default remote user
 : ${__cdist_remote_user:=root}

@@ -28,8 +28,19 @@ type="$(cat "$__object/parameter/type")"
 if [ -f "$__object/parameter/destination" ]; then
    destination="$(cat "$__object/parameter/destination")"
 else
-   destination="$__object_id"
+   # If no destination has been supplied, the id is the destination
+   # Prepend /, which got lost in the object id (and relative paths
+   # don't make sense)
+   destination="/$__object_id"
 fi
+
+# Ensure we have an absolute path
+if ! $(echo "$destination" | grep -q ^/); then
+   echo "Error: Destination ($destination) of $__object_id is not absolute." >&2
+   exit 1
+fi
+
+# FIXME: Add file copying part here
 
 case "$type" in
    directory)
