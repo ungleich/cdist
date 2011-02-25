@@ -193,6 +193,11 @@ __cdist_remote_object_dir()
    echo "${__cdist_remote_out_object_base_dir}/$1"
 }
 
+__cdist_object_code()
+{
+   echo "$(__cdist_object_dir "$1")/${__cdist_name_code}"
+}
+
 __cdist_object_parameter_dir()
 {
    echo "$(__cdist_object_dir "$1")/${__cdist_name_parameter}"

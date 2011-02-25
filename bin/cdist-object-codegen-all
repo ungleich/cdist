@@ -25,26 +25,22 @@
 . cdist-config
 
 if [ $# -ne 3 ]; then
-   __cdist_usage "<target host> <object_base_dir> <outdir>"
+   __cdist_usage "<target host> <object_base_dir>"
 fi
 
 set -eu
 
 __cdist_target_host="$1"; shift
 __cdist_object_base_dir="$1"; shift
-__cdist_exec_dir="$1"; shift
 
 __cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
 
 while read object; do
-   outdir="$__cdist_exec_dir/${object}"
-   outfile="${outdir}/${__cdist_name_exec}"
-
-   mkdir -p "${outdir}"
+   code="$(__cdist_object_code "$object")"
 
    cdist-object-codegen "$__cdist_target_host"     \
                         "$__cdist_object_base_dir" \
-                        "$object" > "${outfile}"
+                        "$object" > "${code}"
 
-   chmod u+x "${outfile}"
+   chmod u+x "${code}"
 done < "$__cdist_tmp_file"
