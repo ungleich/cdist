@@ -26,24 +26,24 @@
 [ $# -eq 3 ] || __cdist_usage "<target host>" "<object_base_dir>" "<object>"
 set -eu
 
-export __cdist_target_host="$1"; shift
-export __cdist_object_base_dir="$1"; shift
-export __cdist_object="$1"; shift
+__cdist_target_host="$1"; shift
+__cdist_object_base_dir="$1"; shift
+__cdist_object="$1"; shift
 
-# Full path to object
-export __cdist_object_dir="${__cdist_object_base_dir}/${__cdist_object}"
-
-# Get type from object path
-export __cdist_type="${__cdist_object%%/*}"
-
-# Get id from object path (i.e no type prefix)
-export __cdist_object_id="${__cdist_object#*/}"
+__cdist_object_dir="$(__cdist_object_dir "$__cdist_object")"
+__cdist_type="$(__cdist_type_from_object "$__cdist_object")"
+__cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
 
 # Full path to where the executable of the type should exist, if the type has one
 gencode="$(__cdist_type_gencode "$__cdist_type")"
 
-cd "$__cdist_object_dir"
+# export variables for gencode
+export __object_id="$__cdist_object_id"
+export __object="$__cdist_object_dir"
 
+cd "$__cdist_local_base_dir"
+
+echo "Generating code for $__cdist_object ..."
 cat << eof
 #
 # The following code is imported from output of $gencode
@@ -52,7 +52,7 @@ cat << eof
 eof
 
 if [ -x "$gencode" ]; then
-   __cdist_exec_fail_on_error "$gencode" "$__cdist_object_id"
+   __cdist_exec_fail_on_error "$gencode"
 else
    if [ -f "$gencode" ]; then
       echo "$gencode" exists, but is not executable >&2
