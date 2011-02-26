@@ -43,6 +43,7 @@ x generate code to be executed on clients (stage 4)
 x execute code on client (stage 5)
 
 - Last doc stuff for 1.0.0:
+   - remove old documentation from doc/man/!
    - ensure every file in bin/ has a correspondent manpage
    - cdist-quickstart      [WRITE]
       - how to write a minimal host manifest

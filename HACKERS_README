@@ -11,13 +11,19 @@ Do not believe anything written in cdist, besides what's written in this file
    -- Nico, 20101201
 
 
-What you can do so far: (executed from top level directory)
+## Conventions
 
-The following code will get executed if you run this README,
-I usually do it like this:
+- All variables exported by cdist are prefixed with a double underscore (__)
+- All cdist-internal variables are prefixed with __cdist_ and are generally not exported.
+
+## Running cdist when developing
+
+This file is suitable for execution and saving the objects and
+explorers from cdist. I usually do it like this:
 
    % rm -rf /tmp/localhost && ./HACKERS_README
 
+################################################################################
 eof
 
 # Tell the user what we do, so this script makes sense during execution
