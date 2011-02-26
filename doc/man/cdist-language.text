@@ -16,9 +16,6 @@ A cdist configuration consists of the following parts:
 - library (cdist-language-library(7))
 - modules (cdist-language-modules(7))
 
-- document exported variables!
-   use __ prefix instead of __cdist (shorter writing, __ is defined as sytem anyway)
-
 - library vs. modules?
 
 Requirements:
