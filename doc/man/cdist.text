@@ -29,9 +29,12 @@ pull mechanism (client requests configuration).
 
 SEE ALSO
 --------
-Website: http://www.nico.schottelius.org/cdist/[], cdist-push-pull(7),
-cdist-deploy-to(1), cdist-manifest(7), cdist-types(7), cdist-type-inclusion(7),
-cdist-quickstart(1)
+Website: http://www.nico.schottelius.org/cdist/[],
+cdist-deploy-to(1),
+cdist-manifest(7),
+cdist-quickstart(1),
+cdist-type(7),
+cdist-type-inclusion(7)
 
 
 COPYING
