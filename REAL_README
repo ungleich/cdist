@@ -39,6 +39,7 @@ but is not. Or: The reason why I began to write cdist.
  * No surprise factor
  * Consistency in behaviour, naming and documentation
  * Easy integration nacked installations
+ * Simple and well-known DSL: posix shell
 
 ## Requirements
 

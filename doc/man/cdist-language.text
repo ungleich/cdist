@@ -40,11 +40,6 @@ The three stages are used to seperate configurations:
       - "manifests" (use the same name here?) will be run/sourced
          - inheritance possible via sourcing
          - cdist-lib always preloaded
-      - library == functions?
-
-   - matching on explored items, not only on host name?
-         - match function in host? [optional]
-         - explorer ran before!
 
 - document exported variables!
    use __ prefix instead of __cdist (shorter writing, __ is defined as sytem anyway)

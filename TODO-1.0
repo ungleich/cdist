@@ -1,6 +1,6 @@
 Steps needed until 1.0:
 
-   - finish type __file
+   x finish type __file
    - finish type __package
    - cleanup documentation (see below)
 
@@ -81,5 +81,6 @@ x execute code on client (stage 5)
    - DOC document that $type/manifest is executed for every object/instance
    - DOC: types can always access __cdist_out_objects, __cdist_out_explorers, __cdist_out_execs
       --> create cdist-variables document?
+   - cleanup READMEs
 
    - include generation in makefile
