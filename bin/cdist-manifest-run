@@ -24,7 +24,7 @@
 
 . cdist-config
 [ $# -eq 3 ] || __cdist_usage "<target host> <manifest> <out dir>"
-set -ux
+set -u
 
 __cdist_target_host="$1"; shift
 __cdist_manifest="$1"; shift
