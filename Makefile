@@ -1,6 +1,7 @@
 # General
 PREFIX=/usr
-BINDIR=$(PREFIX}/bin
+BINDIR=$(PREFIX)/bin
+MANDIR=$(PREFIX)/share/man
 A2X=a2x -f manpage --no-xmllint
 
 # Developer only
@@ -18,11 +19,11 @@ MANSRC=doc/man/cdist-config-layout.text \
 	doc/man/cdist.text 				\
 	doc/man/cdist-type.text
 
+################################################################################
+# User targets
+#
 
-# FIXME: some distro nerd, can you make this more beautiful?
-# I'm just a hacker, I don't really care...
-install:
-	cp bin/* $(BINDIR)
+all: man
 
 man: doc/man/.marker
 
@@ -32,6 +33,19 @@ doc/man/.marker: $(MANSRC)
 
 clean:
 	rm -f doc/man/*.html doc/man/*.[1-9]
+
+################################################################################
+# Install targets
+#
+
+# FIXME: some distro nerd, can you make this more beautiful?
+# Like integrating install, ...
+# I'm just a hacker, I don't really care...
+install:
+	cp bin/* $(BINDIR)
+
+install-man:
+	for p in doc/man/*.[1-9]; do n=$${p##*.}; cp $$p $(MANDIR)/man$$n/; done
 
 ################################################################################
 # Developer targets
@@ -52,5 +66,3 @@ web:
 
 pub:
 	git push --mirror
-
-
