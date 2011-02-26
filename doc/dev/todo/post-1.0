@@ -38,3 +38,4 @@ Documentation:
       - cdist-trigger after first run from /var/lib/cdist/out/bin?
    - Different environments (production, integration, development)
       - via version control
+   - Define how to raise errors in types
