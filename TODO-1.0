@@ -42,46 +42,27 @@ x generate code to be executed on clients (stage 4)
 
 x execute code on client (stage 5)
 
-- Other stuff pre 1.0:
-   - doc cleanup for 1.0:
-      - ensure every file in bin/ has a correspondent manpage
-      - cdist manpage (main manpage)
-         - cleanup following man + their tree:
-            - cdist-push-pull       [WRITE]
-            - cdist-quickstart      [WRITE]
-               - how to write a minimal host manifest
-            - cdist-types           [IMPORTANT]
-               - only do necessary work [TYPE IMPLEMENTATION HINTS]
-                  - install packages only if not existent
-                  - copy file only if different
-            - cdist                 [IMPORTANT]
-               - explain the general approach
-               - give right pointers
-            - cdist-explorers
-         - add terminology
-         - define steps within configuration apply
-            - detect impossible/unsafe things:
-            - creating a file twice
-            - installing and removing a package
-            - and report location of occurence
-            - parse afterwards?
-         - multi master setups
-         - templating
-            - how to define templates
-               - variable substitution from shell may be problematic
-            - SHELL SCRIPTS! (executables? do not support?)
-               - stdout == output of template == what will be used
-      - cleanup website
-      - remove HACKERS_README
-      - create doc/dev/HACKERS_README
-   - Add install target to Makefile
-   - create cdist-config-init to create basic tree
-   - cdist-type integration!
+- Last doc stuff for 1.0.0:
+   - ensure every file in bin/ has a correspondent manpage
+   - cdist-quickstart      [WRITE]
+      - how to write a minimal host manifest
+   - cdist-type           [IMPORTANT]
+      - only do necessary work [TYPE IMPLEMENTATION HINTS]
+         - install packages only if not existent
+         - copy file only if different
+   - cdist-type-integration
+   - cdist                 [IMPORTANT]
+      - explain the general approach
+      - give right pointers
+   - cdist-explorer
+
    - DOC document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
    - DOC document that $type/manifest is executed for every object/instance
    - DOC: exported variables: __type, __explorer, __type_explorer, __object, __object_id
 
-   - cleanup READMEs
+   - Cleanup READMEs
    - Check all references in manpages, ensure all manpages exist
 
-   - include generation in makefile
+- Makefile:
+   - Add install target
+   - Include manpage generation

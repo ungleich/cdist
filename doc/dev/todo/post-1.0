@@ -18,20 +18,23 @@ Stage 5 (code execution):
    - dependencies
 
 
-Types to be written:
-   - ssh-keys (host/user)
-   - services
-   - user management
-   - file editing 
+Types to be written/extended:
+   - __ssh-keys (host/user)
+   - __service
+   - __user
+   - __file_edit
       - add_line_to_file_if_not_existing
       - delete_line_from_file
       - regexp replace (can probably cover all?)
+   - __file:
+      - template == [shell script] stdout
 
 Documentation:
-   - Multi master setups
+   - Describe Multi master setups
    - use ssh with master socket?
       - saves connection delay for new connections: -M
       - hint: http://protempore.net/~calvins/howto/ssh-connection-sharing/
    - Describe pull architecture and requirements
       - cdist-trigger after first run from /var/lib/cdist/out/bin?
    - Different environments (production, integration, development)
+      - via version control
