@@ -36,7 +36,6 @@ esac
 
 The manifest of the type "nologin" may look like this:
 
-
 --------------------------------------------------------------------------------
 __file /etc/nologin --type file --source "$__type/files/default.nologin"
 --------------------------------------------------------------------------------
@@ -46,7 +45,7 @@ SEE ALSO
 --------
 cdist-manifest-run(1),
 cdist-manifest-run-all(1),
-cdist-manifest-run-init(1)
+cdist-manifest-run-init(1),
 cdist-type(7)
 
 

@@ -24,17 +24,42 @@
 . cdist-config
 set -eu
 
+banner="cdist-quickstart>"
+continue="Press enter to continue or ctrl-c to abort."
+
 __prompt()
 {
-   echo "Press enter to continue or ctrl-c to abort"
-   echo "[Enter]"
+   echo -n "$banner" "$@"
    read answer
 }
 
 cat << eof
+$banner cdist version $__cdist_version
 
-Welcome to cdist-quickstart, the interactive guide to cdist!
+Welcome to the interactive guide to cdist!
+This is the interactive tutorial and beginners help for cdist.
 
-After you press enter, I'll create the basic directories for you.
 
 eof
+__prompt "$continue"
+
+cat << eof
+
+To make any use of cdist, we need to create the configuration base, which
+can normally be found below ${__cdist_conf_dir}:
+
+${__cdist_explorer_dir}: Contains explorer, which explore the target
+${__cdist_manifest_dir}: Contains manifests which define types being used
+${__cdist_manifest_init}: The first manifest executed (i.e. cdist entry point)
+${__cdist_type_dir}: Contains types
+
+eof
+__prompt "$continue"
+
+set -x
+mkdir ${__cdist_conf_dir}
+mkdir ${__cdist_explorer_dir}
+mkdir ${__cdist_manifest_dir}
+touch ${__cdist_manifest_init}
+mkdir ${__cdist_type_dir}
+set +x
