@@ -37,3 +37,6 @@ man:
 	echo $(MANSRC)
 	a2x -f manpage --no-xmllint doc/man/cdist-stages.text
 	echo man ./doc/man/cdist-stages.7
+
+clean:
+	rm -f doc/man/*.html doc/man/*.[1-9]
