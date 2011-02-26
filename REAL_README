@@ -46,6 +46,10 @@ but is not. Or: The reason why I began to write cdist.
  * It is very easy to
   * extend cdist
   * debug cdist-core and cdist-types
+ * Focus on reuse of existing functionality
+  * ssh
+  * sh
+  * find, rm, ...
 
 ## Requirements
 
@@ -61,7 +65,13 @@ but is not. Or: The reason why I began to write cdist.
  * SSH-Client (for pull architecture)
  * SSH-Server (for push architecture)
 
-## How to get cdist
+## Installation
+
+### Get cdist
+
+Operation on the server is run as "cdist" user.
+Operation on the client is run as "root" user.
+
 
     git clone git://git.schottelius.org/cdist
 

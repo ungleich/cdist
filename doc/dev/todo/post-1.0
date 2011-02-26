@@ -33,3 +33,5 @@ Documentation:
       - saves connection delay for new connections: -M
       - hint: http://protempore.net/~calvins/howto/ssh-connection-sharing/
    - Describe pull architecture and requirements
+      - cdist-trigger after first run from /var/lib/cdist/out/bin?
+   - Different environments (production, integration, development)

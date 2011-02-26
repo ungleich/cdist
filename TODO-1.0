@@ -47,8 +47,6 @@ x execute code on client (stage 5)
       - ensure every file in bin/ has a correspondent manpage
       - cdist manpage (main manpage)
          - cleanup following man + their tree:
-            - cdist-language        [CLEANUP AND REMOVE]
-            - cdist-design.text     [CLEANUP AND REMOVE]
             - cdist-push-pull       [WRITE]
             - cdist-quickstart      [WRITE]
                - how to write a minimal host manifest
@@ -81,8 +79,7 @@ x execute code on client (stage 5)
    - cdist-type integration!
    - DOC document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
    - DOC document that $type/manifest is executed for every object/instance
-   - DOC: exported variables:
-      __type, __explorer, __type_explorer, __object, __object_id
+   - DOC: exported variables: __type, __explorer, __type_explorer, __object, __object_id
 
    - cleanup READMEs
    - Check all references in manpages, ensure all manpages exist
