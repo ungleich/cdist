@@ -6,7 +6,7 @@
 echo "Running initial manifest for $__target_host"
 echo "We could access other manifests in $__manifest"
 
-__file /etc/configured-via-cdist --type file
+__file /etc/cdist-configured --type file
 
 case "$__target_host" in
    localhost)
