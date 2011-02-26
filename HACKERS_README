@@ -26,8 +26,8 @@ explorers from cdist. I usually do it like this:
 ################################################################################
 eof
 
-# Tell the user what we do, so this script makes sense during execution
 set -x
+# Tell the user what we do, so this script makes sense during execution
 
 # prepare use (only from top level directory)
 export PATH="$PATH:$(pwd -P)/bin"
@@ -35,7 +35,11 @@ export __cdist_conf_dir="$(pwd -P)/conf"
 
 export __cdist_local_base_dir=/tmp/localhost
 
+# Allow user to suply hostname
 target="${1:-localhost}"
+
+# Run the real script
 cdist-deploy-to "$target"
 
+# Display results
 find "${__cdist_local_base_dir}"
