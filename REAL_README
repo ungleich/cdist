@@ -19,6 +19,9 @@ it ticks differently:
  * cdist is written in POSIX shell
   * No special requirements like high level interpreters needed on server or target
 
+MAIN AIM:  It MUST be incredible easy/dumb to add new types.
+
+
 ### Architecture
 
  * Push mode (server pushes configuration)
@@ -40,6 +43,9 @@ but is not. Or: The reason why I began to write cdist.
  * Consistency in behaviour, naming and documentation
  * Easy integration nacked installations
  * Simple and well-known DSL: posix shell
+ * It is very easy to
+  * extend cdist
+  * debug cdist-core and cdist-types
 
 ## Requirements
 
