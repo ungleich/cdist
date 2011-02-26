@@ -82,5 +82,6 @@ x execute code on client (stage 5)
    - DOC: types can always access __cdist_out_objects, __cdist_out_explorers, __cdist_out_execs
       --> create cdist-variables document?
    - cleanup READMEs
+   - Check all references in manpages, ensure all manpages exist
 
    - include generation in makefile

@@ -1,8 +1,6 @@
 Core:
    - Support singletons (see types/issue for a good reason)
       - probably name them only_once and use that as the internal id!
-   - extend cdist_tree_wrapper to look for optional/mandority parameters for types
-      - gives "good" database, which contains only valid objects
    - remove remote_base_dir at beginning - otherwise fragments from
      previous runs may still be existing!
 
