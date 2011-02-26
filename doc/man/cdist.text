@@ -8,35 +8,41 @@ NAME
 cdist - Configuration management system
 
 
+NEW DESCRIPTION
+-----------
+- is cm
+- quickstart - cdist-quickstart 
+- configured in shell dsl - pointers to posix and problems (sh != bash), os specific
+- how to apply - cdist-deploy-to
+- how to write - cdist-manifest, cdist-type
+- 
+
+
 DESCRIPTION
 -----------
-Cdist allows you to centrally define a configurations for
-UNIX systems and apply them. Cdist generally uses the push
-approach (a server pushes out the configuration to the clients),
-but can also be used the pull way (see cdist-push-pull(7)).
+Cdist is a very simple, elegant, cleanly designed configuration management
+system. Cdist allows you to centrally define configurations for UNIX systems
+Cdist generally uses the push approach (a server pushes out the
+configuration to the clients), but can also be used the pull way.
 
-Cdist-deploy-to(1) is the main command to be used to deploy
-configurations to a host.
+Cdist-deploy-to is the main command to be used to configure a host.
 
-The mapping of configurations to hosts is defined
-in so called manifests, which are written in shell
-script language (see cdist-manifest(7)).
+The mapping of configurations to hosts is defined in so called manifests,
+which are written in shell script language.
 
-Logical units of files and directives are called "types" in cdist jargon
-(see cdist-types(7)). Cdist ships with some types, which you can change
-or create new ones or even submit your types for inclusion into mainstream
-(see cdist-type-inclusion(7)).
+Logical units of functionality are called "types" in cdist jargon. Cdist ships
+with some types, which you can change or create new ones or even submit your
+types for inclusion into cdist.
 
-The fastest way to get a host configured using cdist is probably
-cdist-quickstart(7).
+The fastest way to get a host configured using cdist is probably using
+cdist-quickstart.
 
 
 SEE ALSO
 --------
 Website: http://www.nico.schottelius.org/cdist/[], cdist-push-pull(7),
 cdist-deploy-to(1), cdist-manifest(7), cdist-types(7), cdist-type-inclusion(7),
-cdist-quickstart(7)
-
+cdist-quickstart(1)
 
 COPYING
 -------
