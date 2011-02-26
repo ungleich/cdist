@@ -24,7 +24,20 @@ MANSRC=doc/man/cdist-config-layout.text \
 install:
 	cp bin/* $(BINDIR)
 
-sync:
+man: doc/man/.marker
+
+doc/man/.marker: $(MANSRC)
+	for man in $(MANSRC); do $(A2X) $$man; done
+	touch $@
+
+clean:
+	rm -f doc/man/*.html doc/man/*.[1-9]
+
+################################################################################
+# Developer targets
+#
+
+test:
 	# ubuntu
 	.rsync lyni@tablett:cdist
 	# redhat
@@ -40,11 +53,4 @@ web:
 pub:
 	git push --mirror
 
-man: doc/man/.marker
 
-doc/man/.marker: $(MANSRC)
-	for man in $(MANSRC); do $(A2X) $$man; done
-	touch $@
-
-clean:
-	rm -f doc/man/*.html doc/man/*.[1-9]

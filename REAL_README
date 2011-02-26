@@ -67,21 +67,23 @@ but is not. Or: The reason why I began to write cdist.
 
 ## Installation
 
-### Get cdist
+Cdist stable always in master
+
+ * Create a new unpriviliged user (probably "cdist")
+ * Become that user, execute the following code:
+
+git clone git://git.schottelius.org/cdist
+cd cdist
+export PATH=$PATH:$(pwd -P)/bin
+ 
+That's it.
 
 Operation on the server is run as "cdist" user.
 Operation on the client is run as "root" user.
 
+## Update
 
-    git clone git://git.schottelius.org/cdist
-
-## How to install cdist
-
-    make install
-
-## How to use cdist
-
-    man cdist
+git pull && make install
 
 ## Support
 
@@ -94,3 +96,7 @@ You can join the development ***IRC channel***
 
 Bug reports, questions, patches, etc. should be send to the
 [cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
+
+## Commercial Support
+
+To be done.
