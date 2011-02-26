@@ -41,7 +41,7 @@ clean:
 # FIXME: some distro nerd, can you make this more beautiful?
 # Like integrating install, ...
 # I'm just a hacker, I don't really care...
-install:
+install: install-man
 	cp bin/* $(BINDIR)
 
 install-man:

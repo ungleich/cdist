@@ -8,34 +8,23 @@ NAME
 cdist - Configuration management system
 
 
-NEW DESCRIPTION
------------
-- is cm
-- quickstart - cdist-quickstart 
-- configured in shell dsl - pointers to posix and problems (sh != bash), os specific
-- how to apply - cdist-deploy-to
-- how to write - cdist-manifest, cdist-type
-- 
-
-
 DESCRIPTION
 -----------
 Cdist is a very simple, elegant, cleanly designed configuration management
-system. Cdist allows you to centrally define configurations for UNIX systems
-Cdist generally uses the push approach (a server pushes out the
-configuration to the clients), but can also be used the pull way.
+system. The easiest way to get started with cdist is to run cdist-quickstart.
 
-Cdist-deploy-to is the main command to be used to configure a host.
-
+Cdist configurations are written in the shell scripting language.
 The mapping of configurations to hosts is defined in so called manifests,
-which are written in shell script language.
+logical units of functionality are called "types" in cdist jargon.
+Cdist ships with some types included. You can use or change them, create new
+ones or even submit your types for inclusion into cdist.
 
-Logical units of functionality are called "types" in cdist jargon. Cdist ships
-with some types, which you can change or create new ones or even submit your
-types for inclusion into cdist.
-
-The fastest way to get a host configured using cdist is probably using
-cdist-quickstart.
+The main command is cdist-deploy-to, which runs several stages to push
+configurations to a host. If you want to deeply understand cdist, reading
+the source of cdist-deploy-to is recommended.
+Cdist currently uses the push approach (a server pushes out the
+configuration to the clients), but future version will also support the
+pull mechanism (client requests configuration).
 
 
 SEE ALSO
@@ -43,6 +32,7 @@ SEE ALSO
 Website: http://www.nico.schottelius.org/cdist/[], cdist-push-pull(7),
 cdist-deploy-to(1), cdist-manifest(7), cdist-types(7), cdist-type-inclusion(7),
 cdist-quickstart(1)
+
 
 COPYING
 -------
