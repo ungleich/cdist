@@ -41,6 +41,7 @@ if ! $(echo "$destination" | grep -q ^/); then
 fi
 
 # Copy source if existing
+# FIXME: directory handling not supported - add recursive flag?
 if [ -f "$__object/parameter/source" ]; then
    source="$(cat "$__object/parameter/source")"
 
@@ -59,7 +60,6 @@ if [ -f "$__object/parameter/source" ]; then
       # Probably describe it in cdist-quickstart...
       scp "$source" "root@${__target_host}:${destination}"
    fi
-
 # No source? Create empty file/dir
 else
    case "$type" in

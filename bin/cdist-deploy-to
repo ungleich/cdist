@@ -30,6 +30,9 @@ __cdist_target_host="$1"
 # Make target host available for non-core
 export $__cdist_name_var_target_host="$__cdist_target_host"
 
+# Export variables for core, which others do not reset
+export __cdist_local_base_dir
+
 ################################################################################
 # See cdist-stages(7)
 #
