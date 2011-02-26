@@ -24,7 +24,7 @@
 
 . cdist-config
 [ $# -eq 3 ] || __cdist_usage "<target host> <manifest> <out dir>"
-set -u
+set -ux
 
 __cdist_target_host="$1"; shift
 __cdist_manifest="$1"; shift
@@ -37,14 +37,18 @@ __cdist_work_dir="$__cdist_local_base_dir"
 export __cdist_output_dir __cdist_manifest
 
 # Ensure binaries exist and are up-to-date
-cdist-type-build-emulation || __cdist_exit_err "Failed to build type emulation binaries"
+cdist-type-build-emulation "${__cdist_out_type_bin_dir}" \
+   || __cdist_exit_err "Failed to build type emulation binaries"
 
 # prepend our path, so all cdist tools come before other tools
-PATH="${__cdist_out_type_bin_dir}:$PATH"
+export PATH="${__cdist_out_type_bin_dir}:$PATH"
 
 # Force -x, so the user is aware the file is executed
-[ -x "${__cdist_manifest}" ] || __cdist_exit_err "${__cdist_manifest} needs to be executable."
-mkdir -p "${__cdist_output_dir}" || __cdist_exit_err "Cannot create output dir ${__cdist_output_dir}"
-cd "$__cdist_work_dir" || __cdist_exit_err "Cannot change to work dir \"$__cdist_work_dir\"."
+[ -x "${__cdist_manifest}" ] \
+   || __cdist_exit_err "${__cdist_manifest} needs to be executable."
+mkdir -p "${__cdist_output_dir}" \
+   || __cdist_exit_err "Cannot create output dir ${__cdist_output_dir}"
+cd "$__cdist_work_dir" \
+   || __cdist_exit_err "Cannot change to work dir \"$__cdist_work_dir\"."
 
 __cdist_exec_fail_on_error "${__cdist_manifest}" "$@"

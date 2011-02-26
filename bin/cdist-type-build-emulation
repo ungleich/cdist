@@ -21,12 +21,14 @@
 #
 
 . cdist-config
-set -aeu
+[ $# -eq 1 ] || __cdist_usage "<out dir>"
+set -eu
 
-# FIXME: load this from the cdist-core library
+__cdist_output_dir="$1"; shift
+
 __cdist_type_emulator="$(which cdist-type-emulator)"
 
-if [ ! -d ${__cdist_type_dir} ]; then
+if [ ! -d "${__cdist_type_dir}" ]; then
    __cdist_exit_err "$__cdist_type_dir must exist and contain available types"
 fi
 
@@ -35,7 +37,7 @@ cd "${__cdist_type_dir}"
 ls -1 > "${__cdist_tmp_file}"
 
 # Create binaries
-mkdir -p "${__cdist_out_type_bin_dir}"
+mkdir -p "${__cdist_output_dir}"
 while read type; do
-   ln -sf "${__cdist_type_emulator}" "${__cdist_out_type_bin_dir}/${type}"
+   ln -sf "${__cdist_type_emulator}" "${__cdist_output_dir}/${type}"
 done < "${__cdist_tmp_file}"
