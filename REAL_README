@@ -26,6 +26,20 @@ it ticks differently:
  * User defines configuration in shell scripts (called ***manifests***)
  * Cdist generates internal configuration (cconfig style) and afterwards applies configuration
 
+### Features
+
+Stuff that should probably be included in every configuration management,
+but is not. Or: The reason why I began to write cdist.
+
+ * Speed
+ * Elegant code
+ * Clean design
+ * Good documentation (man pages)
+ * Meaningful error messages
+ * No surprise factor
+ * Consistency in behaviour, naming and documentation
+ * Easy integration nacked installations
+
 ## Requirements
 
 ### Server
