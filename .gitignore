@@ -1,2 +1,3 @@
 .*.swp
 doc/man/*.[1-9]
+doc/man/.marker
