@@ -22,8 +22,6 @@
 destination=/etc/issue
 os="$(cat "out/explorer/os")"
 
-set -x
-
 case "$os" in
    archlinux)
       source="$__type/files/archlinux"
@@ -33,5 +31,4 @@ case "$os" in
    ;;
 esac
 
-# FIXME: replace id with $destination post-1.0
 __file "$destination" --source "$source" --type file
