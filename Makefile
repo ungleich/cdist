@@ -10,14 +10,16 @@ WEBPAGE=software/cdist.mdwn
 
 MANSRC=doc/man/cdist-config-layout.text \
 	doc/man/cdist-config.text 		\
-   doc/man/cdist-deploy-to.text 	\
 	doc/man/cdist-explorer.text	\
-	doc/man/cdist-manifest.text 	\
 	doc/man/cdist-quickstart.text \
 	doc/man/cdist-stages.text		\
 	doc/man/cdist-terms.text 		\
-	doc/man/cdist.text 				\
 	doc/man/cdist-type.text
+
+MANSRC=doc/man/cdist.text			\
+   doc/man/cdist-deploy-to.text 	\
+	doc/man/cdist-manifest.text 	\
+
 
 ################################################################################
 # User targets
