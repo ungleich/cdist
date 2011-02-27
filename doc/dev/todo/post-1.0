@@ -28,6 +28,7 @@ Types to be written/extended:
       - regexp replace (can probably cover all?)
    - __file:
       - template == [shell script] stdout
+   - cron
 
 Documentation:
    - Describe Multi master setups
