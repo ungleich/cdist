@@ -27,4 +27,4 @@ else
    name="$__object_id"
 fi
 
-dpkg -l "$name" 2>/dev/null | awk '{ print $1 }'
+pacman -Q "$name" 2>/dev/null | awk '{ print $2 }'

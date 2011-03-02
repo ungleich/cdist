@@ -18,8 +18,10 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on Debian and co.
+# Manage packages with Pacman (mostly archlinux)
 #
+
+pacopts="--noconfirm --noprogressbar"
 
 if [ -f "$__object/parameter/name" ]; then
    name="$__object/parameter/name"
@@ -31,14 +33,16 @@ state="$(cat "$__object/parameter/state")"
 
 case "$state" in
    installed)
-      pkg_status="$(cat "$__object/explorer/pkg_status")"
-      if [ "$pkg_status" != "ii" ]; then
-         echo apt-get --quiet --yes install \"$name\"
+      pkg_version="$(cat "$__object/explorer/pkg_version")"
+
+      # Empty? Not installed.
+      if [ -z "$pkg_version" ]; then
+         echo pacman "$pacopts" -S \"$name\"
       fi
    ;;
    deinstalled)
-      if [ "$pkg_status" != "un" ]; then
-         echo apt-get --quiet --yes remove \"$name\"
+      if [ "$pkg_version" ]; then
+         echo pacman "$pacopts" -R \"$name\"
       fi
    ;;
 esac
