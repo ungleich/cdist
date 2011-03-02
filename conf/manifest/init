@@ -14,6 +14,13 @@ case "$__target_host" in
       __file test --type file --destination /tmp/cdist-testfile
    ;;
 
+   # Alias in /etc/hosts for localhost
+   cdist-archlinux)
+      __package_pacman django --state deinstalled
+      __package_pacman wireshark-cli --state installed
+      __package_pacman zsh --state installed
+   ;;
+
    ikq*)
       __package_apt zsh --state installed
    ;;
