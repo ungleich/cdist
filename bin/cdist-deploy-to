@@ -42,6 +42,9 @@ echo "cdist $__cdist_version: Configuring $__cdist_target_host"
 # Init base
 mkdir -p "$__cdist_local_base_dir"
 
+# Ensure there is no old link, otherwise the new link is created below the old
+rm -f "$__cdist_local_base_dir/$__cdist_name_conf_dir"
+
 # Link configuration source directory - consistent with remote
 ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
 
