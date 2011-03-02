@@ -21,6 +21,10 @@
 # Manage packages with Pacman (mostly archlinux)
 #
 
+# Debug
+# exec >&2
+# set -x
+
 pacopts="--noconfirm --noprogressbar"
 
 if [ -f "$__object/parameter/name" ]; then
@@ -30,10 +34,10 @@ else
 fi
 
 state="$(cat "$__object/parameter/state")"
+pkg_version="$(cat "$__object/explorer/pkg_version")"
 
 case "$state" in
    installed)
-      pkg_version="$(cat "$__object/explorer/pkg_version")"
 
       # Empty? Not installed.
       if [ -z "$pkg_version" ]; then
