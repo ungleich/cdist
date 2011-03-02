@@ -27,14 +27,18 @@ else
    name="$__object_id"
 fi
 
-state=$(cat "$__object/parameter/state")
+state="$(cat "$__object/parameter/state")"
 
 case "$state" in
    installed)
-      echo apt-get --quiet --yes install \"$name\"
+      pkg_status="$(cat "$__object/explorer/pkg_status")"
+      if [ "$pkg_status" != "ii" ]; then
+         echo apt-get --quiet --yes install \"$name\"
+      fi
    ;;
    deinstalled)
-      echo apt-get --quiet --yes remove \"$name\"
+      if [ "$pkg_status" != "un" ]; then
+         echo apt-get --quiet --yes remove \"$name\"
+      fi
    ;;
 esac
-
