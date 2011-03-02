@@ -33,10 +33,11 @@ set -x
 export PATH="$PATH:$(pwd -P)/bin"
 export __cdist_conf_dir="$(pwd -P)/conf"
 
-export __cdist_local_base_dir=/tmp/localhost
-
-# Allow user to suply hostname
+# Allow user to supply hostname
 target="${1:-localhost}"
+
+# And use hostname as basedir (dangerous, but hackers know what they do)
+export __cdist_local_base_dir="/tmp/$target"
 
 # Run the real script
 cdist-deploy-to "$target"
