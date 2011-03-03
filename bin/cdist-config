@@ -22,7 +22,7 @@
 # Fail if something bogus is going on and export all variables
 set -u
 
-__cdist_version="1.0.0"
+__cdist_version="$(git describe)"
 
 ################################################################################
 # cconf standard vars prefixed with cdist
