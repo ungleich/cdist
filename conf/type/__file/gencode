@@ -45,10 +45,6 @@ fi
 if [ -f "$__object/parameter/source" ]; then
    source="$(cat "$__object/parameter/source")"
 
-   exec 3>&1
-   exec 1>&2
-
-   set -x
    md5sum="$(md5sum < "$source")"
    remote_md5sum="$(cat "$__object/explorer/md5sum")"
 
