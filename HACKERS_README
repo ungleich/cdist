@@ -21,7 +21,7 @@ Do not believe anything written in cdist, besides what's written in this file
 This file is suitable for execution and saving the objects and
 explorers from cdist. I usually do it like this:
 
-   % rm -rf /tmp/localhost && ./HACKERS_README
+   % ./HACKERS_README
 
 ################################################################################
 eof
