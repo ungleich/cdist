@@ -37,7 +37,7 @@ __cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
 
 while read object; do
    code="$(__cdist_object_code "$object")"
-   echo "Generating code for $object ..."
+   echo "Generating  code  for $object ..."
 
    cdist-object-codegen "$__cdist_target_host"     \
                         "$__cdist_object_base_dir" \

@@ -3,7 +3,6 @@
 #
 
 # This is debug and should not be in a production environment
-echo "Running initial manifest for $__target_host"
 echo "We could access other manifests in $__manifest"
 
 __file /etc/cdist-configured --type file

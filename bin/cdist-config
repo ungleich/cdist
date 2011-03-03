@@ -130,7 +130,7 @@ __cdist_usage()
 
 __cdist_init_deploy()
 {
-   echo "Creating clean directory structur ..."
+   echo "Creating clean directory structure ..."
 
    # Ensure there is no old stuff, neither local nor remote
    rm -rf "$__cdist_local_base_dir"
