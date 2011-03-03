@@ -40,7 +40,7 @@ echo "cdist $__cdist_version: Configuring $__cdist_target_host"
 #
 
 # Prepare local and remote directories
-__cdist_init_deploy "$__cdist_target_host"
+__cdist_init_deploy           "$__cdist_target_host"
 
 # Transfer cdist "binaries"
 cdist-bin-transfer            "$__cdist_target_host" "$__cdist_remote_bin_dir"
