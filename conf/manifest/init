@@ -20,13 +20,14 @@ case "$__target_host" in
       __package_pacman wireshark-cli --state installed
       __package_pacman zsh --state installed
    ;;
+   cdist-gentoo)
+      __package tree --ensure installed
+   ;;
 
+   # Real machines
    ikq*)
       __package_apt zsh --state installed
    ;;
 
-   icarus)
-      __package tree --ensure installed
-   ;;
 
 esac
