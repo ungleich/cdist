@@ -3,3 +3,4 @@ Prepare documentation for 1.0.0.
       - cdist.text, cdist-quickstart
          - write cdist-quickstart
             - redefine installation + configuration base?
+               - make cdist run from checkout by default
