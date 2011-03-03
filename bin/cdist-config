@@ -128,6 +128,22 @@ __cdist_usage()
    __cdist_exit_err "$__cdist_myname: $@"
 }
 
+__cdist_init_deploy()
+{
+   echo "Creating clean directory structur ..."
+
+   # Ensure there is no old stuff, neither local nor remote
+   rm -rf "$__cdist_local_base_dir"
+   ssh "${__cdist_remote_user}@$1" "rm -rf ${__cdist_remote_base_dir}"
+
+   # Init base
+   mkdir -p "$__cdist_local_base_dir"
+   ssh "${__cdist_remote_user}@$1" "mkdir -p ${__cdist_remote_base_dir}"
+
+   # Link configuration source directory - consistent with remote
+   ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
+}
+
 # __cdist_cache_host()
 # {
 #    echo "${__cdist_cache_hosts}/${__cdist_target_host}"
