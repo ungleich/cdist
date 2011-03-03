@@ -40,6 +40,7 @@ gencode="$(__cdist_type_gencode "$__cdist_type")"
 # export variables for gencode
 export __object_id="$__cdist_object_id"
 export __object="$__cdist_object_dir"
+export __global="$__cdist_out_dir"
 
 cd "$__cdist_local_base_dir"
 
