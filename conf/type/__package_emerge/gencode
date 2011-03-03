@@ -21,18 +21,24 @@
 # Manage packages on gentoo.
 #
 
-. cdist-config
-
-object_id="$1"; shift
-
-if [ -f name ]; then
-   name="$(cat name)"
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
 else
-   name="$object_id"
+   name="$__object_id"
 fi
 
+state="$(cat "$__object/parameter/state")"
 
-# FIXME: super simple proof of concept
-echo "emerge -q \"$name\""
+case "$state" in
+   installed)
+      # FIXME: only install if not already installed
+      echo "emerge -q \"$name\""
+   ;;
+   deinstalled)
+      # FIXME: only uninstall if currently installed
+      # FIXME: rename deinstalled to uninstalled
+      echo "emerge -q -C \"$name\""
+   ;;
+esac
 
 exit 0
