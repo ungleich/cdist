@@ -42,12 +42,14 @@ x generate code to be executed on clients (stage 4)
 
 x execute code on client (stage 5)
 
+- make cdist run from checkout
+
 - Last doc stuff for 1.0.0:
    x remove old documentation from doc/man/!
    - Check all references in manpages, ensure all manpages exist
-      - cdist
+      + cdist
       - cdist-deploy-to
-      - cdist-manifest
+      + cdist-manifest
       - cdist-quickstart: how to get started
    - ensure every file in bin/ has a correspondent manpage
    - cdist-type           [IMPORTANT]
@@ -55,9 +57,6 @@ x execute code on client (stage 5)
          - install packages only if not existent
          - copy file only if different
    - cdist-type-integration
-   - cdist                 [IMPORTANT]
-      - explain the general approach
-      - give right pointers
    - cdist-explorer
 
    - DOC document "cd $__object_dir, before running manifest" in doc/man/cdist-types.text
