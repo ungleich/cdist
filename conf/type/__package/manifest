@@ -23,21 +23,28 @@
 # system.
 #
 
-. cdist-config
-
-object_id="$1"; shift
-
-if [ -f type ]; then
-   type="$(cat type)"
+type="$__object/parameter/type"
+if [ -f "$type" ]; then
+   type="$(cat "$type")"
 else
-   # Default to value taken from explorer
-   type="$(cat $__cdist_out_explorers/pkg_system)"
+   # By default determine package manager based on operating system
+   os="$(cat "out/explorer/os")"
+   case "$os" in
+         archlinux) type="pacman" ;;
+         debian|ubuntu) type="apt" ;;
+         gentoo) type="emerge" ;;
+         *)
+            echo "Don't know how to manage packages on: $os" >&2
+            exit 1
+         ;;
+   esac
 fi
 
-set -- "$@" "$object_id"
+set -- "$@" "$__object_id"
+cd "$__object/parameter"
 for property in $(ls .); do
    if [ "$property" != "type" ]; then
-      set -- "$@" "--$property" "$(cat $property)"
+      set -- "$@" "--$property" "$(cat "$property")"
    fi
 done
 
