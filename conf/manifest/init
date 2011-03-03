@@ -16,7 +16,7 @@ case "$__target_host" in
 
    # Alias in /etc/hosts for localhost
    cdist-archlinux)
-      __package_pacman django --state deinstalled
+      __package_pacman django --state uninstalled
       __package_pacman wireshark-cli --state installed
       __package_pacman zsh --state installed
    ;;
@@ -27,6 +27,6 @@ case "$__target_host" in
    # Real machines
    ikq*)
       __package_apt zsh --state installed
-      __package_apt apache2 --state deinstalled
+      __package_apt apache2 --state uninstalled
    ;;
 esac

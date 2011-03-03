@@ -44,7 +44,7 @@ case "$state" in
          echo pacman "$pacopts" -S \"$name\"
       fi
    ;;
-   deinstalled)
+   uninstalled)
       if [ "$pkg_version" ]; then
          echo pacman "$pacopts" -R \"$name\"
       fi

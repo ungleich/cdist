@@ -38,7 +38,7 @@ case "$state" in
          echo apt-get --quiet --yes install \"$name\"
       fi
    ;;
-   deinstalled)
+   uninstalled)
       # Remove only if existent
       if [ -n "$is_installed" ]; then
          echo apt-get --quiet --yes remove \"$name\"
