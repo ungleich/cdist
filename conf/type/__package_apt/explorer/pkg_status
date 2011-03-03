@@ -27,4 +27,5 @@ else
    name="$__object_id"
 fi
 
-dpkg -l "$name" 2>/dev/null | awk '{ print $1 }'
+# Except dpkg failing, if package is not known / installed
+dpkg -s "$name" 2>/dev/null || exit 0

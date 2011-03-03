@@ -29,15 +29,18 @@ fi
 
 state="$(cat "$__object/parameter/state")"
 
+is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status")"
+
 case "$state" in
    installed)
-      pkg_status="$(cat "$__object/explorer/pkg_status")"
-      if [ "$pkg_status" != "ii" ]; then
+      # Install only if non-existent
+      if [ -z "$is_installed" ]; then
          echo apt-get --quiet --yes install \"$name\"
       fi
    ;;
    deinstalled)
-      if [ "$pkg_status" != "un" ]; then
+      # Remove only if existent
+      if [ -n "$is_installed" ]; then
          echo apt-get --quiet --yes remove \"$name\"
       fi
    ;;
