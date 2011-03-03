@@ -21,7 +21,7 @@ case "$__target_host" in
       __package_pacman zsh --state installed
    ;;
    cdist-gentoo)
-      __package tree --ensure installed
+      __package tree --state installed
    ;;
 
    # Real machines
