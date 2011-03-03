@@ -24,10 +24,24 @@ set -u
 
 __cdist_version="1.0.0"
 
+################################################################################
+# cconf standard vars prefixed with cdist
+#
+__cdist_pwd="$(pwd -P)"
+__cdist_mydir="${0%/*}";
+__cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
+__cdist_myname=${0##*/};
+__cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
+
+
+
+################################################################################
+# Names / Constants
+#
 # Most values can be overriden from outside, so you can
 # customise paths as you like (for distributors, geeks and hackers)
+#
 
-# Names / Constants
 : ${__cdist_name_bin:=bin}
 : ${__cdist_name_code:=code}
 : ${__cdist_name_conf_dir:=conf}
@@ -50,8 +64,16 @@ __cdist_version="1.0.0"
 : ${__cdist_name_type_bin:=type_bin}
 : ${__cdist_name_type_explorer:=type_explorer}
 
+# Used for IDs
+: ${__cdist_sane_regexp:=[A-Za-z0-9/]*[-A-Za-z0-9_/]*}
 
-# Exported variable names (usable for non core)
+# Default remote user
+: ${__cdist_remote_user:=root}
+
+
+################################################################################
+# Exported variable names (usable for non core
+#
 : ${__cdist_name_var_explorer:=__$__cdist_name_explorer}
 : ${__cdist_name_var_type_explorer:=__$__cdist_name_type_explorer}
 : ${__cdist_name_var_global:=__$__cdist_name_global}
@@ -62,51 +84,45 @@ __cdist_version="1.0.0"
 : ${__cdist_name_var_type:=__$__cdist_name_type}
 
 
+################################################################################
 # Local Base
+# 
 : ${__cdist_conf_dir:=/etc/cdist}
 : ${__cdist_explorer_dir:=$__cdist_conf_dir/$__cdist_name_explorer}
 : ${__cdist_manifest_dir:=$__cdist_conf_dir/$__cdist_name_manifest}
 : ${__cdist_manifest_init:=$__cdist_manifest_dir/$__cdist_name_init}
 : ${__cdist_type_dir:=$__cdist_conf_dir/$__cdist_name_type}
 
-# Local output base directory
+################################################################################
+# Local output
+# 
 : ${__cdist_local_base_dir:=$__cdist_tmp_dir}
 : ${__cdist_out_dir:=$__cdist_local_base_dir/$__cdist_name_out_dir}
 : ${__cdist_out_explorer_dir:=$__cdist_out_dir/$__cdist_name_explorer}
 : ${__cdist_out_object_dir:=$__cdist_out_dir/$__cdist_name_object}
 : ${__cdist_out_type_bin_dir:=$__cdist_out_dir/$__cdist_name_type_bin}
 
+################################################################################
 # Remote base
+# 
 : ${__cdist_remote_base_dir:=/var/lib/cdist}
-
-# Remote config
 : ${__cdist_remote_conf_dir:=$__cdist_remote_base_dir/$__cdist_name_conf_dir}
 : ${__cdist_remote_explorer_dir:=$__cdist_remote_conf_dir/$__cdist_name_explorer}
 : ${__cdist_remote_bin_dir:=$__cdist_remote_conf_dir/$__cdist_name_bin}
 : ${__cdist_remote_type_dir:=$__cdist_remote_conf_dir/$__cdist_name_type}
 
-# Remote out
+################################################################################
+# Remote output
+#
 : ${__cdist_remote_out_dir:=$__cdist_remote_base_dir/$__cdist_name_out_dir}
 : ${__cdist_remote_out_explorer_dir:=$__cdist_remote_out_dir/$__cdist_name_explorer}
 : ${__cdist_remote_out_object_base_dir:=$__cdist_remote_out_dir/$__cdist_name_object}
 
+################################################################################
 # Tempfiles
+# 
 __cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")
 __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
-
-# Used for IDs
-__cdist_sane_regexp='[A-Za-z0-9/]*[-A-Za-z0-9_/]*'
-
-# Default remote user
-: ${__cdist_remote_user:=root}
-
-################################################################################
-# cconf standard vars prefixed with cdist
-__cdist_pwd="$(pwd -P)"
-__cdist_mydir="${0%/*}";
-__cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
-__cdist_myname=${0##*/};
-__cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 ################################################################################
 # Function list
