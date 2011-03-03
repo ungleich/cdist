@@ -9,6 +9,7 @@ echo "We could access other manifests in $__manifest"
 __file /etc/cdist-configured --type file
 
 case "$__target_host" in
+   # Everybody has this
    localhost)
       __issue iddoesnotmatterhere
       __file test --type file --destination /tmp/cdist-testfile
@@ -28,6 +29,4 @@ case "$__target_host" in
    ikq*)
       __package_apt zsh --state installed
    ;;
-
-
 esac
