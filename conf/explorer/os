@@ -36,5 +36,7 @@ fi
 
 [ -f /etc/redhat-release ] && echo redhat
 
+[ -f /etc/SuSE-release ] && echo suse
+
 # ensure correct exit, otherwise other explorer won't get started
 exit 0
