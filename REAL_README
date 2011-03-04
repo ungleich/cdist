@@ -70,15 +70,6 @@ but is not. Or: The reason why I began to write cdist.
 You can clone cdist from git, which gives you the advantage of having
 a version control in place for development of your own stuff as well.
 
-There are at least two branches available:
-
- * 1.0: stable branch of version 1.0
- * next: preparing next cdist version
-
-Other branches may be available as well for features or bugfixes, but they
-may vanish at any point.
-
-
 ### Installation
 
 To install cdist, execute the following commands:
@@ -91,18 +82,32 @@ To install cdist, execute the following commands:
 Afterwards you can run ***cdist-quickstart*** to get an impression on
 how to use cdist.
 
+### Available versions
+
+There are at least two branches available:
+
+ * master: the development branch
+ * 1.0: stable branch of version 1.0
+
+Other branches may be available as well for features or bugfixes, but they
+may vanish at any point. To select a specific branch use
+
+    # Generic code
+    git checkout -b <name> origin/<name>
+    
+    # Stay on version 1.0
+    git checkout -b 1.0 origin/1.0
 
 ### Update
 
-As the stable branch always contains the stable code, you can upgrade
-cdist using
+To upgrade cdist in the current branch use
 
     git pull
 
-If there are any incompatibilities, at least the minor version (1.0 -> 1.1)
-will change and thus a git pull will never break your cdist installation
-(in theory).
- 
+The version branches are designed to change if there are incompatibilities.
+Or the other way round: As long as you stay on 1.0 and do git pull, nothing
+should break.
+
 ## Support
 
 ### IRC
