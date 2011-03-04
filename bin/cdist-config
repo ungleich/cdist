@@ -26,7 +26,7 @@ __cdist_version="$(git describe)"
 
 ################################################################################
 # cconf standard vars prefixed with cdist
-#
+
 __cdist_pwd="$(pwd -P)"
 __cdist_mydir="${0%/*}";
 __cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
