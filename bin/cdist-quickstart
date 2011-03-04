@@ -248,3 +248,18 @@ __prompt "Press enter to run \"$cmd\""
 
 # No quotes, we need field splitting
 $cmd
+
+################################################################################
+# End
+#
+
+cat << eof
+
+That's it, this is the end of the cdist-introduction.
+
+I hope you've got some impression on how cdist works, here are again some
+pointers on where to continue to read:
+
+cdist(7), cdist-deploy-to(1), cdist-type(7), cdist-stages(7)
+
+eof

@@ -1,5 +1,3 @@
 Prepare documentation for 1.0.0.
    - Check all references in manpages
-      - cdist.text, cdist-quickstart
-         - write cdist-quickstart
-            - fix cdist-config / version on remote!
+      - cdist.text
