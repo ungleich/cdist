@@ -88,6 +88,10 @@ To install cdist, execute the following commands:
     export PATH=$PATH:$(pwd -P)/bin
 
 
+Afterwards you can run ***cdist-quickstart*** to get an impression on
+how to use cdist.
+
+
 ### Update
 
 As the stable branch always contains the stable code, you can upgrade
