@@ -40,3 +40,56 @@ Documentation:
    - Different environments (production, integration, development)
       - via version control
    - Define how to raise errors in types
+
+   - = todo
+   + = in progress -> S|N
+   x = done
+
+
+   x remove old documentation from doc/man/!
+   - Check all references in manpages, ensure all manpages exist, generic ones:
+      + cdist
+         + cdist-deploy-to
+         + cdist-manifest
+         - cdist-quickstart: how to get started
+      - cdist-type           [IMPORTANT]
+         - only do necessary work [TYPE IMPLEMENTATION HINTS]
+            - install packages only if not existent
+            - copy file only if different
+         - DOC document that $type/manifest is executed for every object/instance
+      - cdist-explorer
+      - exported variables:
+         - general explorer: __explorer                           # cdist-explorer
+         - initial manifest: __manifest, __global                 # cdist-manifest
+         - type manifests  __object, __object_id, __global        # cdist-type
+         - type explorers:  __object, __object_id, __type_explorers # cdist-type
+         - type codegen:  __object, __object_id, __global         # cdist-type
+         - type code:  -                                          # cdist-code
+      - cdist-type-integration
+         - Ensure available types are documented (!)
+            - define how to in cdist-type-integration
+         - referenced on the webpage via cdist-type(7)!
+   - ensure every file in bin/ has a correspondent manpage
+      - cdist-bin-transfer
+      - cdist-code-run-all
+      - cdist-config
+      - cdist-deploy-to
+      - cdist-dir
+      - cdist-explorer-run-init
+      - cdist-manifest-run
+      - cdist-manifest-run-all
+      - cdist-manifest-run-init
+      - cdist-object-codegen
+      - cdist-object-codegen-all
+      - cdist-object-explorer-all
+      - cdist-quickstart
+      - cdist-remote-code-run-all
+      - cdist-remote-explorer-run
+      - cdist-run-remote
+      - cdist-type-build-emulation
+      - cdist-type-emulator
+   - Cleanup READMEs
+   - Ensure html output of manpages are published on the web
+
+- Makefile:
+   - Include manpage generation
