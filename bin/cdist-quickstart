@@ -35,100 +35,216 @@ __prompt()
 }
 
 ################################################################################
-# Intro
+# Intro of quickstart
 #
 cat << eof
 $banner cdist version $__cdist_version
 
 Welcome to the interactive guide to cdist!
-This is the interactive tutorial and beginners help for cdist.
+This is the interactive tutorial and beginners help for cdist and here's
+our schedule:
 
-If you would like to run this tutorial completly without root priveliges,
-setup the variables __cdist_conf_dir to point to a writable locaction
-(i.e. $HOME/cdist-config).
-
-eof
-__prompt "$continue"
-
-################################################################################
-# /etc/cdist via root
-#
-cat << eof
-To make any use of cdist, we need to create the configuration base, which
-can normally be found below ${__cdist_conf_dir}. As cdist does not need
-any root priveliges normally, it is recommended that you create this
-directory as root and change the owner to a dedicated user (for instance
-cdist).
-
-MANUAL STEP:
-
-   - Become root: su -
-   - Create ${__cdist_conf_dir}: mkdir ${__cdist_conf_dir}
-   - Change owner to $USER: chown $USER ${__cdist_conf_dir}
+   - Stages:   How cdist operates
+   - Explorer: Explore facts of the target host
+   - Manifest: Map configurations to hosts
+   - Types:    Bundled functionality
+   - Deploy a configuration to the local host!
 
 eof
 __prompt "$continue"
 
 ################################################################################
-# Basic directories
+# Stages
 #
 cat << eof
-Now we need to create some basic directories:
 
-   - ${__cdist_explorer_dir}: Contains explorer, which explore the target
-   - ${__cdist_manifest_dir}: Contains manifests which define types being used
-   - ${__cdist_type_dir}: Contains types
+To deploy configurations to a host, you call
+
+   cdist-deploy-to <hostname>
+
+which makes calls to other scripts, which realise the so called "stages".
+Usually you'll not notice this, but in case you want to debug or hack cdist,
+you can run each stage on its own. Besides that, you just need to remember
+that the command cdist-deploy-to is the main cdist command.
+
+See also:
+
+   Source of cdist-deploy-to, cdist-stages(7)
 
 eof
-__prompt "$create_continue"
+__prompt "$continue"
+
+################################################################################
+# Explorer
+#
+cat << eof
+
+The first thing cdist always does is running different explorers on the
+target host. The explorers can be found in the directory
+
+   ${__cdist_explorer_dir}
+
+An explorer is executed on the target host and its output is saved to a file.
+You can use these files later to decide what or how to configure the host.
+
+For a demonstration, we'll call the OS explorer locally now, but remember:
+This is only for demonstration, normally it is run on the target host.
+The os explorer will which either displays the detected operating system or
+nothing if it does not know your OS.
+
+See also:
+
+   cdist-explorer(7)
+
+eof
+explorer="${__cdist_explorer_dir}/os"
+
+__prompt "Press enter to execute $explorer"
 
 set -x
-mkdir -p ${__cdist_explorer_dir}
-mkdir -p ${__cdist_manifest_dir}
-mkdir -p ${__cdist_type_dir}
+"$explorer"
 set +x
 
 ################################################################################
-# create manifest/init
+# Manifest
 #
 cat << eof
-At the beginning of a configuration deployment the first file cdist reads is
-${__cdist_manifest_init}, which defines the types to be created on
-a specific host.
 
-We'll create the initial manifest and add some example types to it.
+The initial manifest is the entry point for cdist to find out, what you would
+like to have configured. It is located at
 
-eof
-__prompt "$create_continue"
+   ${__cdist_manifest_init}
 
-set -x
-cat << eof > "${__cdist_manifest_init}"
-# Always create a marker
+And can be as simple as
+
+--------------------------------------------------------------------------------
 __file /etc/cdist-configured --type file
-
-case "\$__target_host" in
-   $(hostname)*)
-      __file /tmp/cdist-quickstart --type file
-   ;;
-esac
-
-eof
-set +x
-
-################################################################################
-# show generated manifest/niit
-#
-cat << eof
-Let's have a look how the initial manifest looks like currently:
 --------------------------------------------------------------------------------
-eof
-cat "${__cdist_manifest_init}"
-cat << eof
---------------------------------------------------------------------------------
-eof
 
+See also:
+
+   cdist-manifest(7)
+
+eof
+__prompt "$continue"
+
+cat << eof
+
+Let's take a deeper look at the initial manifest to understand what it means:
+
+   __file /etc/cdist-configured --type file
+      |     |                    |        \\
+      |     |        The parameter type    \\ With the value file
+      |     |
+      |     |
+      |     | This is the object id
+      |
+   __file is a so called "type"
+
+
+This essentially looks like a standard command executed in the shell.
+eof
+__prompt "$continue"
+
+cat << eof
+
+And that's exactly true. Manifests are shell snippets that can use
+types as commands with arguments. cdist prepends a special path
+that contain links to the cdist-type-emulator, to \$PATH, so you
+can use your types as a command.
+
+This is also the reason why types should always be prefixed with
+"__", to prevent collisions with existing binaries.
+
+The object id is unique per type and used to prevent you from creating
+the same object twice.
+
+Parameters are type specific and are always specified as --parameter <value>.
+
+See also:
+
+   cdist-type-build-emulation(1), cdist-type-emulator(1)
+
+eof
 __prompt "$continue"
 
 ################################################################################
-# add type file
+# Types
 #
+cat << eof
+
+Types are bundled functionality and are the main component of cdist.
+If you want to have a feature x, you write the type __x. Types are stored in
+
+   ${__cdist_type_dir}
+
+And cdist ships with some types already!
+
+See also:
+
+   cdist-type(7)
+
+eof
+__prompt "Press enter to see available types"
+
+set -x
+ls ${__cdist_type_dir}
+set +x
+
+cat << eof
+
+Types consist of the following parts:
+
+   - ${__cdist_name_parameter} (${__cdist_name_parameter_required}/${__cdist_name_parameter_optional}
+   - ${__cdist_name_manifest}
+   - ${__cdist_name_explorer}
+   - ${__cdist_name_gencode}
+
+eof
+__prompt "$continue"
+
+
+cat << eof
+
+Every type must have a directory named ${__cdist_name_parameter}, which
+contains required or optional parameters (in newline seperated files).
+
+If an object of a specific type was created in the initial manifest,
+the manifest of the type is run and may create other objects.
+
+A type may have ${__cdist_name_explorer}, which are very similar to the
+${__cdist_name_explorer} seen above, but with a different purpose:
+They are specific to the type and are not relevant for other types.
+
+You may use them for instance to find out details on the target host,
+so you can decide what to do on the target host eventually.
+
+After the ${__cdist_name_manifest} and the ${__cdist_name_explorer} of
+a type have been run, ${__cdist_name_gencode} is executed, which creates
+code to be executed on the target on stdout.
+
+eof
+__prompt "$continue"
+
+################################################################################
+# Deployment
+#
+
+cat << eof
+
+Now you've got some basic knowledge about cdist, let's configure your localhost!
+
+Ensure that you have a ssh server running locally and that you can login as root.
+
+The cdist distribution contains some sensible default initial manifest, which
+will create 2 files, /etc/cdist-configured (for every host) and
+/tmp/cdist-testfile (only for localhost).
+
+eof
+
+cmd="cdist-deploy-to localhost"
+
+__prompt "Press enter to run \"$cmd\""
+
+# No quotes, we need field splitting
+$cmd
