@@ -28,7 +28,7 @@ if [ -f "$type" ]; then
    type="$(cat "$type")"
 else
    # By default determine package manager based on operating system
-   os="$(cat "out/explorer/os")"
+   os="$(cat "$__global/explorer/os")"
    case "$os" in
          archlinux) type="pacman" ;;
          debian|ubuntu) type="apt" ;;
