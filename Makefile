@@ -37,19 +37,6 @@ clean:
 	rm -f doc/man/*.html doc/man/*.[1-9]
 
 ################################################################################
-# Install targets
-#
-
-# FIXME: some distro nerd, can you make this more beautiful?
-# Like integrating install, ...
-# I'm just a hacker, I don't really care...
-install: install-man
-	cp bin/* $(BINDIR)
-
-install-man:
-	for p in doc/man/*.[1-9]; do n=$${p##*.}; cp $$p $(MANDIR)/man$$n/; done
-
-################################################################################
 # Developer targets
 #
 
