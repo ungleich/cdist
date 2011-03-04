@@ -31,7 +31,7 @@ __cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
 __cdist_myname=${0##*/};
 __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
-__cdist_version="$(cd "$__cdist_abs_mydir/.." && git describe)"
+: ${__cdist_version:="$(cd "$__cdist_abs_mydir/.." && git describe)"}
 
 ################################################################################
 # Names / Constants

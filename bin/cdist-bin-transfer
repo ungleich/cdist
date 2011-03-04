@@ -45,7 +45,7 @@ scp -qr "${__cdist_src_base}"* \
 
 # Adjust cdist-config to contain static version string
 tmp_version="$__cdist_version"
-sed "s/^\(__cdist_version=\).*/\1\"$tmp_version\"/" "$(which cdist-config)" | \
+sed "s/^: \${\(__cdist_version\):=.*/\1=\"$tmp_version\"/" "$(which cdist-config)" | \
    ssh -q "${__cdist_remote_user}@${__cdist_target_host}"                     \
       "cat > \"${__cdist_my_remote_out_dir}\"/cdist-config"
 
