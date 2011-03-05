@@ -8,29 +8,40 @@ A2X=a2x -f manpage --no-xmllint
 WEBDIR=$$HOME/niconetz
 WEBPAGE=software/cdist.mdwn
 
-MANSRC=doc/man/cdist-config-layout.text \
-	doc/man/cdist-config.text 		\
-	doc/man/cdist-explorer.text	\
-	doc/man/cdist-quickstart.text \
-	doc/man/cdist-stages.text		\
-	doc/man/cdist-terms.text 		\
-	doc/man/cdist-type.text
+MANDIR=doc/man
+MANSRC=$(MANDIR)/cdist-config-layout.text \
+	$(MANDIR)/cdist-config.text 		\
+	$(MANDIR)/cdist-explorer.text	\
+	$(MANDIR)/cdist-quickstart.text \
+	$(MANDIR)/cdist-stages.text		\
+	$(MANDIR)/cdist-terms.text 		\
+	$(MANDIR)/cdist-type.text
 
-MANSRC=doc/man/cdist.text			\
-   doc/man/cdist-deploy-to.text 	\
-	doc/man/cdist-manifest.text 	\
+MANSRC=$(MANDIR)/cdist.text			\
+   $(MANDIR)/cdist-deploy-to.text 	\
+	$(MANDIR)/cdist-manifest.text 	\
 
 
 ################################################################################
 # User targets
 #
 
-all: man
+all:
+	@echo ''
+	@echo 'Welcome to cdist!'
+	@echo ''
+	@echo 'Here are the possible targets:'
+	@echo ''
+	@echo '	man: Build manpages'
+	@echo '	clean: Remove build stuff'
+	@echo ''
+	@echo ''
 
 man: doc/man/.marker
 
 doc/man/.marker: $(MANSRC)
-	for man in $(MANSRC); do $(A2X) $$man; done
+	for mansrc in $(MANSRC); do $(A2X) $$mansrc; done
+	for manpage in $(MANDIR)/*.[1-9]; do cat=$${manpage##*.}; echo $$cat; mandir=$(MANDIR)/man$$cat; mkdir -p $$mandir; mv $$manpage $$mandir; done
 	touch $@
 
 clean:
