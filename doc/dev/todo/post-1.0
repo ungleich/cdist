@@ -1,9 +1,6 @@
 Core:
    - Support singletons (see types/issue for a good reason)
       - probably name them only_once and use that as the internal id!
-   - remove remote_base_dir at beginning - otherwise fragments from
-     previous runs may still be existing!
-      -> probably also local_base_dir!
    - cdist-deploy-to: Configure more than one host
       - plus parallel mode like in ccollect
 
@@ -70,7 +67,6 @@ Documentation:
             - define how to in cdist-type-integration
          - referenced on the webpage via cdist-type(7)!
    - ensure every file in bin/ has a correspondent manpage
-      - cdist-bin-transfer
       - cdist-code-run-all
       - cdist-config
       - cdist-deploy-to
