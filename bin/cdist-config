@@ -196,14 +196,14 @@ __cdist_type_gencode()
    echo "${__cdist_type_dir}/$1/${__cdist_name_gencode}"
 }
 
-__cdist_type_param_dir()
+__cdist_type_parameter_dir()
 {
    echo "$(__cdist_type_dir "$1")/${__cdist_name_parameter}"
 }
 
-__cdist_type_param_file()
+__cdist_type_parameter_file()
 {
-   echo "$(__cdist_type_param_dir "$1")/$2"
+   echo "$(__cdist_type_parameter_dir "$1")/$2"
 }
 
 __cdist_type_from_object()
