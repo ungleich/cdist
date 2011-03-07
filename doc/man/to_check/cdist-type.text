@@ -65,7 +65,8 @@ A type consists of
 Types are stored below conf/type/. Their name should always be prefixed with
 two underscores (__) to prevent collisions with other binaries in $PATH.
 
-To begin a new type from a template, execute "cdist-type-template __NAME".
+To begin a new type from a template, execute "cdist-type-template __NAME"
+and cd to conf/type/__NAME.
 
 
 DEFINING PARAMETERS
