@@ -39,9 +39,10 @@ with a type specific unique id that stores the parameters
 
 HOW TO WRITE A NEW TYPE (TODO)
 ------------------------------
-Assume you want to create the new type named "coffee":
+Assume you want to create the new type named "coffee", which creates
+files which contain the word "c0ffee".
 
-Create the directory /etc/cdist/types/coffee/
+Create the directory conf/type/coffee/.
 Create the file /etc/cdist/types/coffee/README containing a description of the 
 type.
 If your type supports attributes, create the directory /etc/cdist/types/coffee/
