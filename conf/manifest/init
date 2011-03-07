@@ -10,7 +10,6 @@ __file /etc/cdist-configured --type file
 case "$__target_host" in
    # Everybody has this
    localhost)
-      __issue iddoesnotmatterhere
       __file test --type file --destination /tmp/cdist-testfile
    ;;
 
@@ -28,5 +27,8 @@ case "$__target_host" in
    ikq*)
       __package_apt zsh --state installed
       __package_apt apache2 --state uninstalled
+   ;;
+   kr)
+      __issue iddoesnotmatterhere
    ;;
 esac

@@ -1,5 +1,7 @@
 [[!meta title="cdist - configuration management"]]
 
+[[!toc  levels=2]]
+
 ## Introduction
 
 cdist configures your system and is similar to
@@ -11,23 +13,23 @@ and [puppet](http://www.puppetlabs.com/), but
 it ticks differently:
 
  * cdist sticks completly to the KISS (keep it simple and stupid) paradigma
-  * cdist's core is very small (currently around 400 lines of code)
+  * cdist's core is very small (< 1k lines of code)
   * There is only one type to extend cdist called ***type***.
+  * One main development target: ***It must be incredible easy to add new types.***
  * cdist is UNIX
   * It reuses existing tools like cat, find, mv, ...
   * cdist's documentation is bundled as manpages
  * cdist is written in POSIX shell
   * No special requirements like high level interpreters needed on server or target
 
-MAIN AIM:  It MUST be incredible easy/dumb to add new types.
-
-
 ### Architecture
 
  * Push mode (server pushes configuration)
- * Pull mode (client triggers configuration)
+ * Pull mode planned (client triggers configuration)
  * User defines configuration in shell scripts (called ***manifests***)
- * Cdist generates internal configuration (cconfig style) and afterwards applies configuration
+ * Generates internal configuration (cconfig style)
+ * Uses ***types*** to generate code be executed on the target
+ * And finally executes the code on the target / applies the configuration
 
 ### Features
 
@@ -51,39 +53,69 @@ but is not. Or: The reason why I began to write cdist.
   * sh
   * find, rm, ...
 
+### Roadmap
+
+[[!table  data="""
+**Version** | **Objectives** | **Status**
+1.0.0 | Initial release |
+1.0.1 | Documentation cleanup |
+"""]]
+
 ## Requirements
 
 ### Server
 
  * A posix like shell
- * SSH-Client (for push architecture)
- * SSH-Server (for pull architecture)
+ * SSH-Client
 
-### Client
+### Client ("target host")
 
  * A posix like shell
- * SSH-Client (for pull architecture)
- * SSH-Server (for push architecture)
+ * SSH-Server
 
-## Installation
 
-Cdist stable always in master
+## Getting cdist
 
- * Create a new unpriviliged user (probably "cdist")
- * Become that user, execute the following code:
+You can clone cdist from git, which gives you the advantage of having
+a version control in place for development of your own stuff as well.
 
-git clone git://git.schottelius.org/cdist
-cd cdist
-export PATH=$PATH:$(pwd -P)/bin
- 
-That's it.
+### Installation
 
-Operation on the server is run as "cdist" user.
-Operation on the client is run as "root" user.
+To install cdist, execute the following commands:
 
-## Update
+    git clone git://git.schottelius.org/cdist
+    cd cdist
+    export PATH=$PATH:$(pwd -P)/bin
 
-git pull && make install
+
+Afterwards you can run ***cdist-quickstart*** to get an impression on
+how to use cdist.
+
+### Available versions
+
+There are at least two branches available:
+
+ * master: the development branch
+ * 1.0: stable branch of version 1.0
+
+Other branches may be available as well for features or bugfixes, but they
+may vanish at any point. To select a specific branch use
+
+    # Generic code
+    git checkout -b <name> origin/<name>
+    
+    # Stay on version 1.0
+    git checkout -b 1.0 origin/1.0
+
+### Update
+
+To upgrade cdist in the current branch use
+
+    git pull
+
+The version branches are designed to change if there are incompatibilities.
+Or the other way round: As long as you stay on 1.0 and do git pull, nothing
+should break.
 
 ## Support
 
@@ -96,7 +128,3 @@ You can join the development ***IRC channel***
 
 Bug reports, questions, patches, etc. should be send to the
 [cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
-
-## Commercial Support
-
-To be done.

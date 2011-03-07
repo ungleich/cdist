@@ -34,7 +34,10 @@ __cdist_output_dir="$1"; shift
 __cdist_work_dir="$__cdist_local_base_dir"
 
 # Export information for cdist-type-emulator
-export __cdist_output_dir __cdist_manifest
+export __cdist_conf_dir __cdist_output_dir __cdist_manifest __cdist_version
+
+# Export information for manifests
+export __global="$__cdist_out_dir"
 
 # Ensure binaries exist and are up-to-date
 cdist-type-build-emulation "${__cdist_out_type_bin_dir}" \

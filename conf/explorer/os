@@ -28,13 +28,56 @@ if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
    exit 0
 fi
 
-[ -f /etc/arch-release ] && echo archlinux
+if [ -f /etc/arch-release ]; then
+   echo archlinux
+   exit 0
+fi
 
-[ -f /etc/debian_version ] && echo debian
+if [ -f /etc/debian_version ]; then
+   echo debian
+   exit 0
+fi
 
-[ -f /etc/gentoo-release ] && echo gentoo
+if [ -f /etc/gentoo-release ]; then
+   echo gentoo
+   exit 0
+fi
 
-[ -f /etc/redhat-release ] && echo redhat
+if [ -f /etc/redhat-release ]; then
+   echo redhat
+   exit 0
+fi
 
-# ensure correct exit, otherwise other explorer won't get started
-exit 0
+if [ -f /etc/SuSE-release ]; then
+   echo suse
+   exit 0
+fi
+
+uname_s="$(uname -s)"
+
+# Assume there is no tr on the client -> do lower case ourselves
+case "$uname_s" in
+   Darwin)
+      echo macosx
+      exit 0
+   ;;
+   NetBSD)
+      echo netbsd
+      exit 0
+   ;;
+   FreeBSD)
+      echo freebsd
+      exit 0
+   ;;
+   OpenBSD)
+      echo openbsd
+      exit 0
+   ;;
+   SunOS)
+      echo solaris
+      exit 0
+   ;;
+esac
+
+echo "Unknown OS" >&2
+exit 1
