@@ -28,15 +28,37 @@ if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
    exit 0
 fi
 
-[ -f /etc/arch-release ] && echo archlinux
+if [ -f /etc/arch-release ]; then
+   echo archlinux
+   exit 0
+fi
 
-[ -f /etc/debian_version ] && echo debian
+if [ -f /etc/debian_version ]; then
+   echo debian
+   exit 0
+fi
 
-[ -f /etc/gentoo-release ] && echo gentoo
+if [ -f /etc/gentoo-release ]; then
+   echo gentoo
+   exit 0
+fi
 
-[ -f /etc/redhat-release ] && echo redhat
+if [ -f /etc/redhat-release ]; then
+   echo redhat
+   exit 0
+fi
 
-[ -f /etc/SuSE-release ] && echo suse
+if [ -f /etc/SuSE-release ]; then
+   echo suse
+   exit 0
+fi
 
-# ensure correct exit, otherwise other explorer won't get started
-exit 0
+case "$(uname -s)" in
+   Darwin)
+      echo macosx
+      exit 0
+   ;;
+esac
+
+echo "Unknown OS" >&2
+exit 1
