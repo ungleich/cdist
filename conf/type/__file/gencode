@@ -40,16 +40,26 @@ if ! $(echo "$destination" | grep -q ^/); then
    exit 1
 fi
 
+case "$os" in
+   macosx)
+      md5sum="md5"
+   ;;  
+
+   *)  
+      md5sum="md5sum"
+   ;;  
+esac
+
 # Copy source if existing
 # FIXME: directory handling not supported - add recursive flag?
 if [ -f "$__object/parameter/source" ]; then
    source="$(cat "$__object/parameter/source")"
 
-   md5sum="$(md5sum < "$source")"
+   local_md5sum="$($md5sum < "$source")"
    remote_md5sum="$(cat "$__object/explorer/md5sum")"
 
    # Is md5sum the right approach?
-   if [ "$md5sum" != "$remote_md5sum" ]; then
+   if [ "$local_md5sum" != "$remote_md5sum" ]; then
       # FIXME: This is ugly and hardcoded, replace after 1.0!
       # Probably a better aproach is to have the user configured
       # ~/.ssh/config to contain the right username
