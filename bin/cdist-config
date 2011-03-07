@@ -196,13 +196,14 @@ __cdist_type_gencode()
    echo "${__cdist_type_dir}/$1/${__cdist_name_gencode}"
 }
 
+__cdist_type_param_dir()
+{
+   echo "$(__cdist_type_dir "$1")/${__cdist_name_parameter}"
+}
+
 __cdist_type_param_file()
 {
-   # FIXME: local == posix?
-   local type="$1"; shift
-   local paramtype="$1"; shift
-
-   echo "${__cdist_type_dir}/${type}/${__cdist_name_parameter}/${paramtype}"
+   echo "$(__cdist_type_param_dir "$1")/$2"
 }
 
 __cdist_type_from_object()
