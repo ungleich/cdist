@@ -44,7 +44,7 @@ man: doc/man/.marker
 
 doc/man/.marker: $(MANSRC)
 	for mansrc in $(MANSRC); do $(A2X) $$mansrc; done
-	for manpage in $(MANDIR)/*.[1-9]; do cat=$${manpage##*.}; echo $$cat; mandir=$(MANDIR)/man$$cat; mkdir -p $$mandir; mv $$manpage $$mandir; done
+	for manpage in $(MANDIR)/*.[1-9]; do cat=$${manpage##*.}; mandir=$(MANDIR)/man$$cat; mkdir -p $$mandir; mv $$manpage $$mandir; done
 	touch $@
 
 clean:
