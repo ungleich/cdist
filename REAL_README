@@ -22,13 +22,14 @@ it ticks differently:
  * cdist is written in POSIX shell
   * No special requirements like high level interpreters needed on server or target
 
-
 ### Architecture
 
  * Push mode (server pushes configuration)
  * Pull mode planned (client triggers configuration)
  * User defines configuration in shell scripts (called ***manifests***)
- * Cdist generates internal configuration (cconfig style) and afterwards applies configuration
+ * Generates internal configuration (cconfig style)
+ * Uses ***types*** to generate code be executed on the target
+ * And finally executes the code on the target / applies the configuration
 
 ### Features
 
