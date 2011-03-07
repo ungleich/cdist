@@ -1,7 +1,5 @@
 Documentation cleanup
    - to_check/cdist-type.text
-      - add cdist-type-template
-         - plus manpage
    - cdist-type-integration
       - Ensure available types are documented (!) 
          - define how to in cdist-type-integration
