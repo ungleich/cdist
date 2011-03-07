@@ -10,7 +10,11 @@ __file /etc/cdist-configured --type file
 case "$__target_host" in
    # Everybody has this
    localhost)
-      __file test --type file --destination /tmp/cdist-testfile
+#      __file test --type file --destination /tmp/cdist-testfile
+      __addifnosuchline testfile_foo --file /tmp/myTestFile --line "foo"
+      __addifnosuchline testfile2_foo --file /tmp/myTestFile2 --line "foo"
+      __addifnosuchline testfile_bar --file /tmp/myTestFile --line "bar"
+      __addifnosuchline /tmp/myTestFile3 --line "bar"
    ;;
 
    # Alias in /etc/hosts for localhost
