@@ -1,18 +1,34 @@
-cdist-types(7)
-===============
+cdist-type(7)
+==============
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-types - Functionality bundled
+cdist-type - Functionality bundled
+
+
+SYNOPSIS
+--------
+Other languages name this module or class 
 
 
 DESCRIPTION
 -----------
+Types are the main component of cdist and define functionality. If you
+use cdist, you'll write a type for every functionality you would like
+to use.
+
+
+
+Was man mit cdist type machen kann.....
+
 A cdist type describes some kind of functionality, starting from simple stuff
 like copying files until complex user auth/ldap/ kerberos infrastructure
-designs. The name of every type is prefixed with two underscores (__), because
+designs. The name of every type is prefixed with two underscores (__) by convention.
+
+
+, because
 types will be executed and the two underscores prevent collisions with real
 binaries (like "file").
 In general, types should be written independent of hosts (as in reusable
@@ -35,6 +51,26 @@ Types may consist of
 
 Every time a type is used, a new object is created of the specific type,
 with a type specific unique id that stores the parameters
+
+
+HOW TO WRITE A NEW TYPE
+-----------------------
+A type consists of
+
+- parameter (required)
+- manifest  (optional)
+- gencode   (optional)
+- explorer  (optional)
+
+Types are stored below conf/type/. Their name should always be prefixed with
+two underscores (__) to prevent collisions with other binaries in $PATH.
+
+To begin a new type from a template, execute "cdist-type-template __NAME".
+
+
+DEFINING PARAMETERS
+-------------------
+Every type consists of optional and 
 
 
 HOW TO WRITE A NEW TYPE (TODO)
