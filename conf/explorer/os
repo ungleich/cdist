@@ -53,9 +53,23 @@ if [ -f /etc/SuSE-release ]; then
    exit 0
 fi
 
-case "$(uname -s)" in
+uname_s="$(uname -s)"
+
+# Assume there is no tr on the client -> do lower case ourselves
+case "$uname_s" in
    Darwin)
       echo macosx
+      exit 0
+   NetBSD)
+      echo netbsd
+      exit 0
+   ;;
+   FreeBSD)
+      echo freebsd
+      exit 0
+   ;;
+   OpenBSD)
+      echo openbsd
       exit 0
    ;;
 esac
