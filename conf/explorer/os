@@ -72,6 +72,10 @@ case "$uname_s" in
       echo openbsd
       exit 0
    ;;
+   SunOS)
+      echo solaris
+      exit 0
+   ;;
 esac
 
 echo "Unknown OS" >&2
