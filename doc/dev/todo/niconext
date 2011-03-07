@@ -1,5 +1,4 @@
 Documentation cleanup
-   - cdist-bin-transfer
    - cdist-type-integration
       - Ensure available types are documented (!) 
          - define how to in cdist-type-integration

@@ -1,42 +1,30 @@
-cdist-deploy-to(1)
-==================
+cdist-bin-transfer(1)
+=====================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-deploy-to - Deploy configuration to host
+cdist-bin-transfer
 
 
 SYNOPSIS
 --------
-cdist-deploy-to HOSTNAME
+cdist-deploy-to HOSTNAME REMOTE_DIR
 
 
 DESCRIPTION
 -----------
-Deploy configurations to the specified host, as configured in the initial
-manifest. This script triggers the execution of several other scripts, in so
-called stages. It is intented to run either from the command line or from cron.
-
-
-ENVIRONMENT
------------
-If the environment variable **__cdist_conf_dir** is not set, the
-configuration is read from /etc/cdist. The local output directory can
-be changed by the variable **__cdist_local_base_dir**. All environment
-variables are handled by cdist-config.
-
+cdist-bin-transfer copies all cdist binaries to the given host HOSTNAME
+into the given directory REMOTE_DIR. These binaries will be used in
+further stages to retrieve information or apply configurations.
 
 SEE ALSO
 --------
-cdist(7),
-cdist-config(1),
-cdist-config-layout(7),
-cdist-stages(7)
+cdist(7)
 
 
 COPYING
 -------
-Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
