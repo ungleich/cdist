@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,34 +18,49 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Transfer all executables
+# Create a new type from scratch
 #
 
 . cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host> <remote bin dir>"
+[ $# -eq 1 ] || __cdist_usage "<type>"
 set -eu
 
-__cdist_target_host="$1"; shift
-__cdist_my_remote_out_dir="$1"; shift
+__cdist_type="$1"; shift
 
-# Find directory that contains cdist binaries
-__cdist_conf_dir_path=$(which cdist-config)
-__cdist_src_base=${__cdist_conf_dir_path%config}
 
-# Help the user
-echo "Transferring cdist binaries ..."
+# Base
+mkdir -p "$(__cdist_type_dir "$__cdist_type")"
 
-# re-create basedir so it's clean
-ssh "${__cdist_remote_user}@${__cdist_target_host}" \
-   "rm -rf \"${__cdist_my_remote_out_dir}\" && mkdir -p \"${__cdist_my_remote_out_dir}\""
+# Parameter
+mkdir -p "$(__cdist_type_parameter_dir "$__cdist_type")"
+touch "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_parameter_required}"
+touch "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_parameter_optional}"
 
-# Transfer cdist-* to the remote host
-scp -qr "${__cdist_src_base}"* \
-       "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_my_remote_out_dir}"
+# Manifest
+cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_manifest}"
 
-# Adjust cdist-config to contain static version string
-tmp_version="$__cdist_version"
-sed "s/^: \${\(__cdist_version\):=.*/\1=\"$tmp_version\"/" "$(which cdist-config)" | \
-   ssh -q "${__cdist_remote_user}@${__cdist_target_host}"                     \
-      "cat > \"${__cdist_my_remote_out_dir}\"/cdist-config"
+#
+# This is the manifest, which can be used to create other objects like this:
+# __file /path/to/destination --source /from/where/ --type file
+#
+# To tell cdist to make use of it, you need to make it executable (chmod +x)
+#
+#
 
+eof
+
+# Gencode
+cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_gencode}"
+
+#
+# This file should generate code on stdout, which will be collected by cdist
+# and run on the target.
+#
+# To tell cdist to make use of it, you need to make it executable (chmod +x)
+#
+#
+
+eof
+
+# Explorer
+mkdir -p "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_explorer}"
