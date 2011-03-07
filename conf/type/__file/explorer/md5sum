@@ -27,9 +27,21 @@ else
    destination="/$__object_id"
 fi
 
+os="$(cat $__global/explorer/os)"
+
+case "$os" in
+   macosx)
+      md5sum="md5"
+   ;;
+
+   *)
+      md5sum="md5sum"
+   ;;
+esac
+
 # No output if file does not exist - does definitely not match the md5sum :-)
 if [ -e "$destination" ]; then
-   md5sum < "$destination"
+   $md5sum < "$destination"
 else
    echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
 fi
