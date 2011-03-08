@@ -1,0 +1,7 @@
+1.0.1: 2011-03-08
+	* Added cdist-type-template including manpage
+	* Fix manpage building
+	* Add new manpages: cdist-stages, cdist-bin-transfer
+
+1.0.0: 2011-03-07
+	* Initial release

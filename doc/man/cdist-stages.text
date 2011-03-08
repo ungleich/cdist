@@ -16,14 +16,25 @@ Reading the source of the cdist-deploy-to executable shous the scripts
 responsible for each stage.
 
 
+STAGE 0: INTERNAL PREPERATION
+-----------------------------
+Before running the user facing stages, cdist prepares the target host
+to contain cdist binaries and creates a clean environment for the
+configuration run.
+
+Related manpages:
+   - cdist-bin-transfer(1)
+
+
 STAGE 1: TARGET INFORMATION RETRIEVAL
 --------------------------------------
-In this stage information is collected about target using so called explorers.
-Every existing explorer is run on the target and the output of all explorers
-are copied back into the local cache. The results can be used by manifests and
-types.
+In this stage information is collected about the target host using so called
+explorers. Every existing explorer is run on the target and the output of all 
+explorers are copied back into the local cache. The results can be used by 
+manifests and types.
 
-Related manpages are cdist-explorers(7) and cdist-cache(7).
+Related manpages:
+   - cdist-explorer(7)
 
 
 STAGE 2: RUN THE INITIAL MANIFEST
@@ -34,8 +45,11 @@ the objects as defined in the manifest for the specific host. In this stage,
 no conflicts may occur, i.e. no object of the same type with the same id may
 be created.
 
-Related manpages are cdist-manifest-init(1), cdist-manifests(7) and
-cdist-config-layout(7).
+Related manpages: 
+   - cdist-manifest-run(1)
+   - cdist-manifest-run-init(1)
+   - cdist-manifest(7)
+   - cdist-config-layout(7)
 
 
 STAGE 3: EXECUTION OF TYPES
@@ -46,13 +60,16 @@ may generate and change the created objects. In other words, one type can reuse
 other types.
 
 For instance the object __apache/www.test.ch is of type __apache, which may 
-contain an manifest script, which creates new objects of type __file.
+contain a manifest script, which creates new objects of type __file.
 
 The newly created objects are merged back into the existing tree. No conflicts
 may occur during the merge. A conflict would mean that two different objects
 try to create the same object, which indicates a broken configuration.
 
-Related manpage are cdist-types(7) and cdist-manifest-run-all(1).
+Related manpages:
+   - cdist-type(7) 
+   - cdist-manifest-run(1)
+   - cdist-manifest-run-all(1)
 
 
 STAGE 4: CODE GENERATION
@@ -63,8 +80,10 @@ be executed. This executable should create code to be executed on the target
 on stdout. If the gencode executable fails, it must print diagnostic messages
 on stderr and exit non-zero.
 
-Related manpages are cdist-types-gencode(7), cdist-gencode(1) and
-cdist-gencode-all(1).
+Related manpages:
+   - cdist-types-gencode(7)
+   - cdist-gencode(1)
+   - cdist-gencode-all(1)
 
 
 STAGE 5: CODE EXECUTION
@@ -72,7 +91,9 @@ STAGE 5: CODE EXECUTION
 The resulting code from the previous stage is transferred to the target host
 and executed there to apply the configuration changes,
 
-Related manpages are cdist-exec-transfer(1) and cdist-exec-run(1).
+Related manpages:
+   - cdist-exec-transfer(1)
+   - cdist-exec-run(1)
 
 
 SUMMARY
@@ -85,7 +106,7 @@ in correct order.
 
 SEE ALSO
 --------
-cdist(7), cdist-deploy-to(1), cdist-config-layout(7), cdist-manifest-init(1)
+cdist(7), cdist-deploy-to(1), cdist-config-layout(7)
 
 
 COPYING

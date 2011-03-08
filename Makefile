@@ -17,9 +17,12 @@ MANSRC=$(MANDIR)/cdist-config-layout.text \
 	$(MANDIR)/cdist-terms.text 		\
 	$(MANDIR)/cdist-type.text
 
-MANSRC=$(MANDIR)/cdist.text			\
-   $(MANDIR)/cdist-deploy-to.text 	\
-	$(MANDIR)/cdist-manifest.text 	\
+MANSRC=$(MANDIR)/cdist.text				\
+   $(MANDIR)/cdist-bin-transfer.text	\
+   $(MANDIR)/cdist-deploy-to.text 		\
+	$(MANDIR)/cdist-manifest.text 		\
+	$(MANDIR)/cdist-stages.text			\
+	$(MANDIR)/cdist-type-template.text	\
 
 
 ################################################################################
@@ -41,7 +44,7 @@ man: doc/man/.marker
 
 doc/man/.marker: $(MANSRC)
 	for mansrc in $(MANSRC); do $(A2X) $$mansrc; done
-	for manpage in $(MANDIR)/*.[1-9]; do cat=$${manpage##*.}; echo $$cat; mandir=$(MANDIR)/man$$cat; mkdir -p $$mandir; mv $$manpage $$mandir; done
+	for manpage in $(MANDIR)/*.[1-9]; do cat=$${manpage##*.}; mandir=$(MANDIR)/man$$cat; mkdir -p $$mandir; mv $$manpage $$mandir; done
 	touch $@
 
 clean:

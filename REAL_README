@@ -53,14 +53,6 @@ but is not. Or: The reason why I began to write cdist.
   * sh
   * find, rm, ...
 
-### Roadmap
-
-[[!table  data="""
-**Version** | **Objectives** | **Status**
-1.0.0 | Initial release |
-1.0.1 | Documentation cleanup |
-"""]]
-
 ## Requirements
 
 ### Server

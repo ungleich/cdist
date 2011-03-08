@@ -1,9 +1,6 @@
 Core:
    - Support singletons (see types/issue for a good reason)
       - probably name them only_once and use that as the internal id!
-   - remove remote_base_dir at beginning - otherwise fragments from
-     previous runs may still be existing!
-      -> probably also local_base_dir!
    - cdist-deploy-to: Configure more than one host
       - plus parallel mode like in ccollect
 
@@ -51,13 +48,11 @@ Documentation:
       + cdist
          + cdist-deploy-to
          + cdist-manifest
-         - cdist-quickstart: how to get started
       - cdist-type           [IMPORTANT]
          - only do necessary work [TYPE IMPLEMENTATION HINTS]
             - install packages only if not existent
             - copy file only if different
          - DOC document that $type/manifest is executed for every object/instance
-      - cdist-explorer
       - exported variables:
          - general explorer: __explorer                           # cdist-explorer
          - initial manifest: __manifest, __global                 # cdist-manifest
@@ -65,12 +60,11 @@ Documentation:
          - type explorers:  __object, __object_id, __type_explorers # cdist-type
          - type codegen:  __object, __object_id, __global         # cdist-type
          - type code:  -                                          # cdist-code
-      - cdist-type-integration
-         - Ensure available types are documented (!)
-            - define how to in cdist-type-integration
-         - referenced on the webpage via cdist-type(7)!
+   - category 7:
+      - cdist-manifest(7)
+      - cdist-explorer
+      - cdist-config-layout
    - ensure every file in bin/ has a correspondent manpage
-      - cdist-bin-transfer
       - cdist-code-run-all
       - cdist-config
       - cdist-deploy-to

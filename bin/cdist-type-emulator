@@ -78,14 +78,14 @@ while read required; do
    fi
 
    mv "${tempparameter}/${required}" "${__cdist_parameter_dir}"
-done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_parameter_required")"
+done < "$(__cdist_type_parameter_file "$__cdist_type" "$__cdist_name_parameter_required")"
 
 # Allow optional parameters
 while read optional; do
    if [ -f "${tempparameter}/${optional}" ]; then
       mv "${tempparameter}/${optional}" "${__cdist_parameter_dir}"
    fi
-done < "$(__cdist_type_param_file "$__cdist_type" "$__cdist_name_parameter_optional")"
+done < "$(__cdist_type_parameter_file "$__cdist_type" "$__cdist_name_parameter_optional")"
 
 # Error out on other paramaters
 cd "${tempparameter}"

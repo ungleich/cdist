@@ -39,7 +39,7 @@ while read object; do
    code="$(__cdist_object_code "$object")"
    echo "Generating  code  for $object ..."
 
-   cdist-object-codegen "$__cdist_target_host"     \
+   cdist-object-gencode "$__cdist_target_host"     \
                         "$__cdist_object_base_dir" \
                         "$object" > "${code}"
 
