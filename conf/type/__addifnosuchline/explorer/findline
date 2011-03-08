@@ -29,13 +29,10 @@ regex=$(cat "$__object/parameter/line")
 if [ -f "$file" ]; then
    grep -q "^$regex\$" "$file"
    if [ $? -eq 1 ]; then
-      # regex pattern not found --> success
-      echo "SUCCESS"
+      echo "NOTFOUND"
    else
-      # regex pattern found --> failure
-      echo "FAILURE"
+      echo "FOUND"
    fi
 else
-   # file does not exist --> line not in file
-   echo "SUCCESS"
+   echo "NOTFOUND"
 fi

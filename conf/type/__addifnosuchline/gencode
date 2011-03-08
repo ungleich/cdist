@@ -27,7 +27,7 @@ fi
 
 result=$(cat "$__object/explorer/findline")
 
-if [ $result = "SUCCESS" ]; then
+if [ "$result" = "NOTFOUND" ]; then
   line=$(cat "$__object/parameter/line")
   echo "echo $line >> $file"
 fi
