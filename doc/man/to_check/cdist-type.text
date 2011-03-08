@@ -1,5 +1,5 @@
 cdist-type(7)
-==============
+=============
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
@@ -18,39 +18,6 @@ DESCRIPTION
 Types are the main component of cdist and define functionality. If you
 use cdist, you'll write a type for every functionality you would like
 to use.
-
-
-
-Was man mit cdist type machen kann.....
-
-A cdist type describes some kind of functionality, starting from simple stuff
-like copying files until complex user auth/ldap/ kerberos infrastructure
-designs. The name of every type is prefixed with two underscores (__) by convention.
-
-
-, because
-types will be executed and the two underscores prevent collisions with real
-binaries (like "file").
-In general, types should be written independent of hosts (as in reusable
-code), but may be used implement functionality only needed on one host
-as well.
-It must be assumed that the clients are pretty dumb and thus do not have high
-level tools like ruby installed. If a type requires specific tools to be present
-on the target, there must be another type that provides this tool and the first
-type must create an object of the specific type.
-If the generated code fails on the client, it must print diagnostistic messages on
-stderr and exit non-zero, so the configuration is aborted.
-Types may make use of other types to realise a new type or may implement some
-functionality on their own.
-
-Types may consist of 
-- a number of required and optional parameters they accept,
-- a manifest script that makes use of the parameters and may create other objects
-- explorers that explore type specific information on the target
-- a gencode script, that may generate code to be executed on the target
-
-Every time a type is used, a new object is created of the specific type,
-with a type specific unique id that stores the parameters
 
 
 HOW TO USE A TYPE
@@ -128,12 +95,36 @@ which are documented in cdist-environment-variables(7).
 Always ensure the manifest is executable, otherwise cdist will not be able
 to execute it.
 
+
 THE TYPE EXPLORERS
 ------------------
 
 WRITING THE GENCODE SCRIPT
 --------------------------
-The gencode script can make use
+The gencode script can make use of the parameters, the global explorers
+and the type specific explorers. The output (stdout) of this script is
+saved by cdist and will be executed on the target.
+
+If the gencode script encounters an error, it should print diagnostic
+messages to stderr and exit non-zero. If you need to debug the gencode
+script, you can write to stderr:
+
+--------------------------------------------------------------------------------
+# Debug output to stderr
+echo "My fancy debug line" >&2
+
+# Output to be saved by cdist for execution on the target
+echo "touch /etc/cdist-configured"
+--------------------------------------------------------------------------------
+
+
+HINTS FOR TYPEWRITERS
+----------------------
+It must be assumed that the target is pretty dumb and thus does not have high
+level tools like ruby installed. If a type requires specific tools to be present
+on the target, there must be another type that provides this tool and the first
+type should create an object of the specific type.
+
 
 HOW TO INCLUDE A TYPE INTO UPSTREAM CDIST
 -----------------------------------------
@@ -148,6 +139,7 @@ underscores) included.
 SEE ALSO
 --------
 - cdist-manifest-run(1)
+- cdist-stages(7)
 
 
 COPYING
