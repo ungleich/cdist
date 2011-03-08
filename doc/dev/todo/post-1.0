@@ -23,7 +23,6 @@ Types to be written/extended:
    - __service
    - __user
    - __file_edit
-      - add_line_to_file_if_not_existing
       - delete_line_from_file
       - regexp replace (can probably cover all?)
    - __file:
