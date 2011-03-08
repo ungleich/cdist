@@ -1,0 +1,30 @@
+cdist-type-addifnosuchline(1)
+======================
+Daniel Roth <dani-cdist--@--d-roth.li>
+
+
+NAME
+----
+cdist-type-addifnosuchline
+
+
+SYNOPSIS
+--------
+cdist-type-addifnosuchline Add if no such line
+
+
+DESCRIPTION
+-----------
+cdist-type-addifnosuchline can be used to check a file for existence of a 
+specific line and adding that if not found
+
+
+SEE ALSO
+--------
+cdist(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Daniel Roth. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
