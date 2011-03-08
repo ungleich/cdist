@@ -33,7 +33,7 @@ set -x
 # Tell the user what we do, so this script makes sense during execution
 
 # prepare use (only from top level directory)
-export PATH="$PATH:$(pwd -P)/bin"
+export PATH="$(pwd -P)/bin:$PATH"
 export __cdist_conf_dir="$(pwd -P)/conf"
 
 # Allow user to supply hostname

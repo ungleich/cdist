@@ -53,11 +53,29 @@ Every time a type is used, a new object is created of the specific type,
 with a type specific unique id that stores the parameters
 
 
+HOW TO USE A TYPE
+-----------------
+You can use types from the initial manifest or the type manifest like a
+normal command:
+
+--------------------------------------------------------------------------------
+# Creates empty file /etc/cdist-configured
+__file /etc/cdist-configured --type file
+
+# Ensure tree is installed
+__package tree --state installed
+--------------------------------------------------------------------------------
+
+Internally cdist-type-emulator(1) will be called from cdist-manifest-run(1) to
+save the given parameters into a cconfig database, so they can be accessed by
+the manifest and gencode scripts of the type (see below).
+
+
 HOW TO WRITE A NEW TYPE
 -----------------------
 A type consists of
 
-- parameter (required)
+- parameter (optional)
 - manifest  (optional)
 - gencode   (optional)
 - explorer  (optional)
@@ -66,43 +84,66 @@ Types are stored below conf/type/. Their name should always be prefixed with
 two underscores (__) to prevent collisions with other binaries in $PATH.
 
 To begin a new type from a template, execute "cdist-type-template __NAME"
-and cd to conf/type/__NAME.
+and cd conf/type/__NAME.
 
 
 DEFINING PARAMETERS
 -------------------
-Every type consists of optional and 
+Every type consists of optional and required parameters, which must
+be created in a newline seperated file in parameters/required and
+parameters/optional. If either or both missing, the type will have
+no required, no optional or no parameters at all.
+
+Example:
+--------------------------------------------------------------------------------
+echo servername >> conf/type/__nginx_vhost/parameter/required
+echo logdirectory >> conf/type/__nginx_vhost/parameter/optional
+--------------------------------------------------------------------------------
 
 
-HOW TO WRITE A NEW TYPE (TODO)
-------------------------------
-Assume you want to create the new type named "coffee", which creates
-files which contain the word "c0ffee".
+WRITING THE MANIFEST
+--------------------
+In the manifest of a type you can use other types, so your type extends
+their functionality. A good example is the __package type, which in
+a shortened version looks like this:
 
-Create the directory conf/type/coffee/.
-Create the file /etc/cdist/types/coffee/README containing a description of the 
-type.
-If your type supports attributes, create the directory /etc/cdist/types/coffee/
-attributes.
-For each attribute, create the file
-   /etc/cdist/types/coffee/attributes/$attribute_name which contains
+--------------------------------------------------------------------------------
+os="$(cat "$__global/explorer/os")"
+case "$os" in
+      archlinux) type="pacman" ;;
+      debian|ubuntu) type="apt" ;;
+      gentoo) type="emerge" ;;
+      *)
+         echo "Don't know how to manage packages on: $os" >&2
+         exit 1
+      ;;
+esac
 
-   a short description on the first line
-   then a blank line
-   then a long description (probably over several lines)
+__package_$type "$@"
+--------------------------------------------------------------------------------
 
-If you think your type may be useful for others, submit it for inclusion
-into cdist at cdist -- at -- l.schottelius.org.
+As you can see, the type can reference different environment variables,
+which are documented in cdist-environment-variables(7).
 
-Create /etc/cdist/types/coffee/init which reads $configinput
-(either via cconfig or via environment) and outputs a block of
-shell code suitable for running on the client.
+Always ensure the manifest is executable, otherwise cdist will not be able
+to execute it.
+
+WRITING THE GENCODE SCRIPT
+--------------------------
+
+HOW TO INCLUDE A TYPE INTO UPSTREAM CDIST
+-----------------------------------------
+If you think your type may be useful for others, ensure it works with the
+current master branch of cdist and submit the git url containing the type for
+inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**.
+
+Ensure there is a corresponding manpage named cdist-type-NAME (without
+underscores) included.
 
 
 SEE ALSO
 --------
-cdist-config-layout(7), cdist-type-manifest(7), cdist-type-explorer(7),
-cdist-type-gencode(7)
+- cdist-manifest-run(1)
 
 
 COPYING
