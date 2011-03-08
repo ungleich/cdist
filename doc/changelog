@@ -1,3 +1,7 @@
+1.0.2: upcoming
+	* Add manpages: cdist-type
+	* Make doc/man/ usable as MANPATH entry
+
 1.0.1: 2011-03-08
 	* Added cdist-type-template including manpage
 	* Fix manpage building
