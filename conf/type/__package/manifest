@@ -49,5 +49,3 @@ for property in $(ls .); do
 done
 
 __package_$type "$@"
-
-exit 0
