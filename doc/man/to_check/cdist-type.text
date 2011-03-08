@@ -77,8 +77,8 @@ A type consists of
 
 - parameter (optional)
 - manifest  (optional)
-- gencode   (optional)
 - explorer  (optional)
+- gencode   (optional)
 
 Types are stored below conf/type/. Their name should always be prefixed with
 two underscores (__) to prevent collisions with other binaries in $PATH.
@@ -128,8 +128,12 @@ which are documented in cdist-environment-variables(7).
 Always ensure the manifest is executable, otherwise cdist will not be able
 to execute it.
 
+THE TYPE EXPLORERS
+------------------
+
 WRITING THE GENCODE SCRIPT
 --------------------------
+The gencode script can make use
 
 HOW TO INCLUDE A TYPE INTO UPSTREAM CDIST
 -----------------------------------------
