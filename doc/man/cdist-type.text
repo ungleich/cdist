@@ -98,6 +98,25 @@ to execute it.
 
 THE TYPE EXPLORERS
 ------------------
+If a type needs to explore specific details, it can provide type specific
+explorers, which will be executed on the target for every created object.
+
+The explorers are stored under the "explorer" directory below the type.
+It could for instance contain code to check the md5sum of a file on the
+client, like this (shortened version from real type __file):
+
+--------------------------------------------------------------------------------
+if [ -f "$__object/parameter/destination" ]; then
+   destination="$(cat "$__object/parameter/destination")"
+else
+   destination="/$__object_id"
+fi
+
+if [ -e "$destination" ]; then
+   md5sum < "$destination"
+fi
+--------------------------------------------------------------------------------
+
 
 WRITING THE GENCODE SCRIPT
 --------------------------
@@ -132,8 +151,8 @@ If you think your type may be useful for others, ensure it works with the
 current master branch of cdist and submit the git url containing the type for
 inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**.
 
-Ensure there is a corresponding manpage named cdist-type-NAME (without
-underscores) included.
+Ensure a corresponding manpage named cdist-type-NAME (without
+underscores) is included.
 
 
 SEE ALSO
@@ -144,5 +163,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
