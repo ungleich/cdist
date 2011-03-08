@@ -23,6 +23,7 @@ MANSRC=$(MANDIR)/cdist.text				\
 	$(MANDIR)/cdist-stages.text			\
 	$(MANDIR)/cdist-type.text				\
 	$(MANDIR)/cdist-type-template.text	\
+	$(MANDIR)/cdist-type__file.text	\
 
 
 ################################################################################
