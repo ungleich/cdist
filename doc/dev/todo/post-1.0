@@ -38,12 +38,6 @@ Documentation:
       - via version control
    - Define how to raise errors in types
 
-   - = todo
-   + = in progress -> S|N
-   x = done
-
-
-   x remove old documentation from doc/man/!
    - Check all references in manpages, ensure all manpages exist, generic ones:
       + cdist
          + cdist-deploy-to
@@ -53,13 +47,6 @@ Documentation:
             - install packages only if not existent
             - copy file only if different
          - DOC document that $type/manifest is executed for every object/instance
-      - exported variables:
-         - general explorer: __explorer                           # cdist-explorer
-         - initial manifest: __manifest, __global                 # cdist-manifest
-         - type manifests  __object, __object_id, __global        # cdist-type
-         - type explorers:  __object, __object_id, __type_explorers # cdist-type
-         - type codegen:  __object, __object_id, __global         # cdist-type
-         - type code:  -                                          # cdist-code
    - category 7:
       - cdist-manifest(7)
       - cdist-explorer
