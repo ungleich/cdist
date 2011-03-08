@@ -53,11 +53,29 @@ Every time a type is used, a new object is created of the specific type,
 with a type specific unique id that stores the parameters
 
 
+HOW TO USE A TYPE
+-----------------
+You can use types from the initial manifest or the type manifest like a
+normal command:
+
+--------------------------------------------------------------------------------
+# Creates empty file /etc/cdist-configured
+__file /etc/cdist-configured --type file
+
+# Ensure tree is installed
+__package tree --state installed
+--------------------------------------------------------------------------------
+
+Internally cdist-type-emulator(1) will be called from cdist-manifest-run(1) to
+save the given parameters into a cconfig database, so they can be accessed by
+the manifest and gencode scripts of the type (see below).
+
+
 HOW TO WRITE A NEW TYPE
 -----------------------
 A type consists of
 
-- parameter (required)
+- parameter (optional)
 - manifest  (optional)
 - gencode   (optional)
 - explorer  (optional)
@@ -66,13 +84,25 @@ Types are stored below conf/type/. Their name should always be prefixed with
 two underscores (__) to prevent collisions with other binaries in $PATH.
 
 To begin a new type from a template, execute "cdist-type-template __NAME"
-and cd to conf/type/__NAME.
+and cd conf/type/__NAME.
 
 
 DEFINING PARAMETERS
 -------------------
-Every type consists of optional and 
+Every type consists of optional and required parameters, which must
+be created in a newline seperated file in parameters/required and
+parameters/optional. If either or both missing, the type will have
+no required, no optional or no parameters at all.
 
+Example:
+--------------------------------------------------------------------------------
+echo servername >> conf/type/__nginx_vhost/parameter/required
+echo logdirectory >> conf/type/__nginx_vhost/parameter/optional
+--------------------------------------------------------------------------------
+
+
+WRITING THE MANIFEST
+--------------------
 
 HOW TO WRITE A NEW TYPE (TODO)
 ------------------------------
@@ -103,6 +133,8 @@ SEE ALSO
 --------
 cdist-config-layout(7), cdist-type-manifest(7), cdist-type-explorer(7),
 cdist-type-gencode(7)
+
+- cdist-manifest-run(1)
 
 
 COPYING
