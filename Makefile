@@ -48,7 +48,7 @@ doc/man/.marker: $(MANSRC)
 	touch $@
 
 clean:
-	rm -f doc/man/*.html doc/man/*.[1-9]
+	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9]
 
 ################################################################################
 # Developer targets
