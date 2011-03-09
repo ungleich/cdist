@@ -9,21 +9,25 @@ WEBDIR=$$HOME/niconetz
 WEBPAGE=software/cdist.mdwn
 
 MANDIR=doc/man
+# Unchecked
 MANSRC=$(MANDIR)/cdist-config-layout.text \
 	$(MANDIR)/cdist-config.text 		\
-	$(MANDIR)/cdist-explorer.text	\
 	$(MANDIR)/cdist-quickstart.text \
 	$(MANDIR)/cdist-stages.text		\
 	$(MANDIR)/cdist-terms.text 		\
 
+# Clean documentation
+MANGENERATED=$(MANDIR)/cdist-reference.text
+
 MANSRC=$(MANDIR)/cdist.text				\
    $(MANDIR)/cdist-bin-transfer.text	\
    $(MANDIR)/cdist-deploy-to.text 		\
+	$(MANDIR)/cdist-explorer.text			\
 	$(MANDIR)/cdist-manifest.text 		\
 	$(MANDIR)/cdist-stages.text			\
 	$(MANDIR)/cdist-type.text				\
 	$(MANDIR)/cdist-type-template.text	\
-	$(MANDIR)/cdist-type__file.text	\
+	$(MANDIR)/cdist-type__file.text		\
 
 
 ################################################################################
@@ -43,13 +47,18 @@ all:
 
 man: doc/man/.marker
 
-doc/man/.marker: $(MANSRC)
-	for mansrc in $(MANSRC); do $(A2X) $$mansrc; done
+doc/man/.marker: $(MANSRC) $(MANGENERATED)
+	for mansrc in $^; do $(A2X) $$mansrc; done
 	for manpage in $(MANDIR)/*.[1-9]; do cat=$${manpage##*.}; mandir=$(MANDIR)/man$$cat; mkdir -p $$mandir; mv $$manpage $$mandir; done
 	touch $@
 
+# Only depends on cdist-type__*.text in reality
+$(MANDIR)/cdist-reference.text: $(MANSRC) $(MANDIR)/cdist-reference.text.sh
+	$(MANDIR)/cdist-reference.text.sh
+	
+
 clean:
-	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9]
+	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9] $(MANGENERATED)
 
 ################################################################################
 # Developer targets

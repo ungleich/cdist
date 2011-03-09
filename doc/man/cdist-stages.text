@@ -46,10 +46,9 @@ no conflicts may occur, i.e. no object of the same type with the same id may
 be created.
 
 Related manpages: 
+   - cdist-manifest(7)
    - cdist-manifest-run(1)
    - cdist-manifest-run-init(1)
-   - cdist-manifest(7)
-   - cdist-config-layout(7)
 
 
 STAGE 3: EXECUTION OF TYPES
@@ -67,9 +66,9 @@ may occur during the merge. A conflict would mean that two different objects
 try to create the same object, which indicates a broken configuration.
 
 Related manpages:
-   - cdist-type(7) 
    - cdist-manifest-run(1)
    - cdist-manifest-run-all(1)
+   - cdist-type(7) 
 
 
 STAGE 4: CODE GENERATION
@@ -81,9 +80,9 @@ on stdout. If the gencode executable fails, it must print diagnostic messages
 on stderr and exit non-zero.
 
 Related manpages:
-   - cdist-types-gencode(7)
    - cdist-gencode(1)
    - cdist-gencode-all(1)
+   - cdist-type(7) 
 
 
 STAGE 5: CODE EXECUTION
@@ -92,8 +91,8 @@ The resulting code from the previous stage is transferred to the target host
 and executed there to apply the configuration changes,
 
 Related manpages:
-   - cdist-exec-transfer(1)
    - cdist-exec-run(1)
+   - cdist-exec-transfer(1)
 
 
 SUMMARY
@@ -106,7 +105,9 @@ in correct order.
 
 SEE ALSO
 --------
-cdist(7), cdist-deploy-to(1), cdist-config-layout(7)
+- cdist(7)
+- cdist-deploy-to(1)
+- cdist-reference(7)
 
 
 COPYING
