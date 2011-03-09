@@ -46,7 +46,7 @@ all:
 
 man: doc/man/.marker
 
-doc/man/.marker: 
+doc/man/.marker: $(MANDIR)/cdist-reference.text
 	touch $@
 
 # Manual from core
@@ -61,13 +61,12 @@ mantype:
 manmove: mantype mancore
 	for manpage in $(MANDIR)/*.[1-9] conf/type/*/*.7; do \
 		cat=$${manpage##*.}; \
-		echo $$cat; \
 		mandir=$(MANDIR)/man$$cat; \
 		mkdir -p $$mandir; \
 		mv $$manpage $$mandir; \
 	done
 
-# Reference
+# Reference depends on conf/type/*/man.text - HOWTO with posix make?
 $(MANDIR)/cdist-reference.text: manmove $(MANDIR)/cdist-reference.text.sh
 	$(MANDIR)/cdist-reference.text.sh
 	$(A2X) $(MANDIR)/cdist-reference.text
