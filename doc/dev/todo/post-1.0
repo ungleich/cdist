@@ -34,8 +34,6 @@ Documentation:
       - cdist-trigger after first run from /var/lib/cdist/out/bin?
    - Different environments (production, integration, development)
       - via version control
-   - Define how to raise errors in types
-
    - Check all references in manpages, ensure all manpages exist, generic ones:
       + cdist
          + cdist-deploy-to
@@ -45,10 +43,6 @@ Documentation:
             - install packages only if not existent
             - copy file only if different
          - DOC document that $type/manifest is executed for every object/instance
-   - category 7:
-      - cdist-manifest(7)
-      - cdist-explorer
-      - cdist-config-layout
    - ensure every file in bin/ has a correspondent manpage
       - cdist-code-run-all
       - cdist-config
@@ -67,8 +61,4 @@ Documentation:
       - cdist-run-remote
       - cdist-type-build-emulation
       - cdist-type-emulator
-   - Cleanup READMEs
    - Ensure html output of manpages are published on the web
-
-- Makefile:
-   - Include manpage generation
