@@ -57,6 +57,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_parameter:=parameter}
 : ${__cdist_name_parameter_required:=required}
 : ${__cdist_name_parameter_optional:=optional}
+: ${__cdist_name_singleton:=singleton}
 : ${__cdist_name_target_host:=target_host}
 : ${__cdist_name_type:=type}
 : ${__cdist_name_type_bin:=type_bin}
@@ -162,11 +163,6 @@ __cdist_init_deploy()
    ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
 }
 
-# __cdist_cache_host()
-# {
-#    echo "${__cdist_cache_hosts}/${__cdist_target_host}"
-# }
-
 __cdist_type_has_explorer()
 {
    # We only create output, if there's at least one explorer
@@ -194,6 +190,11 @@ __cdist_remote_type_explorer_dir()
 __cdist_type_gencode()
 {
    echo "${__cdist_type_dir}/$1/${__cdist_name_gencode}"
+}
+
+__cdist_type_singleton()
+{
+   echo "${__cdist_type_dir}/$1/${__cdist_name_singleton}"
 }
 
 __cdist_type_parameter_dir()

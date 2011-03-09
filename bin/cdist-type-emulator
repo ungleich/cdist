@@ -25,11 +25,17 @@
 #
 
 . cdist-config
-[ $# -ge 1 ] || __cdist_usage "<id> <options>"
 set -eu
 
-__cdist_object_id="$1"; shift
+# Find out whether type is a singleton or regular type
 __cdist_type="$__cdist_myname"
+
+if [ -f "$(__cdist_type_singleton "$__cdist_type")" ]; then
+   __cdist_object_id="singleton"
+else
+   [ $# -ge 1 ] || __cdist_usage "<id> <options>"
+   __cdist_object_id="$1"; shift
+fi
 
 echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || \
    __cdist_usage "Insane object id, ${__cdist_object_id}."
