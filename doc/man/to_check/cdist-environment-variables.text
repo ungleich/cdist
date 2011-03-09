@@ -1,0 +1,14 @@
+Update on env:
+
+   general explorer: __explorer
+   initial manifest: __manifest, __global
+   type manifests  __object, __object_id, __global
+   type explorers:  __object, __object_id, __type_explorers, __global
+   type codegen:  __object, __object_id, __global
+   type code:  -
+
+
+- __object: Path to the object that we are working on
+- __object_id: type unique object id
+- __global: contains global information (see cdist-env
+

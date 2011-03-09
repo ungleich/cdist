@@ -15,14 +15,15 @@ MANSRC=$(MANDIR)/cdist-config-layout.text \
 	$(MANDIR)/cdist-quickstart.text \
 	$(MANDIR)/cdist-stages.text		\
 	$(MANDIR)/cdist-terms.text 		\
-	$(MANDIR)/cdist-type.text
 
 MANSRC=$(MANDIR)/cdist.text				\
    $(MANDIR)/cdist-bin-transfer.text	\
    $(MANDIR)/cdist-deploy-to.text 		\
 	$(MANDIR)/cdist-manifest.text 		\
 	$(MANDIR)/cdist-stages.text			\
+	$(MANDIR)/cdist-type.text				\
 	$(MANDIR)/cdist-type-template.text	\
+	$(MANDIR)/cdist-type__file.text	\
 
 
 ################################################################################
@@ -48,7 +49,7 @@ doc/man/.marker: $(MANSRC)
 	touch $@
 
 clean:
-	rm -f doc/man/*.html doc/man/*.[1-9]
+	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9]
 
 ################################################################################
 # Developer targets

@@ -1,8 +1,4 @@
 Documentation cleanup
-   - to_check/cdist-type.text
-   - cdist-type-integration
-      - Ensure available types are documented (!) 
-         - define how to in cdist-type-integration
-      - referenced on the webpage via cdist-type(7)!
-
-      - how to debug explorer and codegen
+   - document environment variables
+   - Reference all types somewhere (on the webpage?)
+   - how to debug explorer
