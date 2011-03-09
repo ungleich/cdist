@@ -16,7 +16,7 @@ MANSRC=$(MANDIR)/cdist-config-layout.text \
 	$(MANDIR)/cdist-stages.text		\
 	$(MANDIR)/cdist-terms.text 		\
 
-MANGENERATED=$(MANDIR)/cdist-type-listing.text
+MANGENERATED=$(MANDIR)/cdist-reference.text
 
 MANSRC=$(MANDIR)/cdist.text				\
    $(MANDIR)/cdist-bin-transfer.text	\
@@ -52,8 +52,8 @@ doc/man/.marker: $(MANSRC) $(MANGENERATED)
 	touch $@
 
 # Only depends on cdist-type__*.text in reality
-$(MANDIR)/cdist-type-listing.text: $(MANSRC) $(MANDIR)/cdist-type-listing.text.sh
-	$(MANDIR)/cdist-type-listing.text.sh
+$(MANDIR)/cdist-reference.text: $(MANSRC) $(MANDIR)/cdist-reference.text.sh
+	$(MANDIR)/cdist-reference.text.sh
 	
 
 clean:
