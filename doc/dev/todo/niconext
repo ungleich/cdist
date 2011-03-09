@@ -1,4 +1,5 @@
 Documentation cleanup
    - document environment variables
+      - and merge with config-layout!
    - how to debug explorer
    => 1.0.2
