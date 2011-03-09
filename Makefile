@@ -16,6 +16,8 @@ MANSRC=$(MANDIR)/cdist-config-layout.text \
 	$(MANDIR)/cdist-stages.text		\
 	$(MANDIR)/cdist-terms.text 		\
 
+MANGENERATED=$(MANDIR)/cdist-type-listing.text
+
 MANSRC=$(MANDIR)/cdist.text				\
    $(MANDIR)/cdist-bin-transfer.text	\
    $(MANDIR)/cdist-deploy-to.text 		\
@@ -23,7 +25,7 @@ MANSRC=$(MANDIR)/cdist.text				\
 	$(MANDIR)/cdist-stages.text			\
 	$(MANDIR)/cdist-type.text				\
 	$(MANDIR)/cdist-type-template.text	\
-	$(MANDIR)/cdist-type__file.text	\
+	$(MANDIR)/cdist-type__file.text		\
 
 
 ################################################################################
@@ -43,10 +45,15 @@ all:
 
 man: doc/man/.marker
 
-doc/man/.marker: $(MANSRC)
-	for mansrc in $(MANSRC); do $(A2X) $$mansrc; done
+doc/man/.marker: $(MANSRC) $(MANGENERATED)
+	for mansrc in $^; do $(A2X) $$mansrc; done
 	for manpage in $(MANDIR)/*.[1-9]; do cat=$${manpage##*.}; mandir=$(MANDIR)/man$$cat; mkdir -p $$mandir; mv $$manpage $$mandir; done
 	touch $@
+
+# Only depends on cdist-type__*.text in reality
+$(MANDIR)/cdist-type-listing.text: $(MANSRC) $(MANDIR)/cdist-type-listing.text.sh
+	$(MANDIR)/cdist-type-listing.text.sh
+	
 
 clean:
 	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9]
