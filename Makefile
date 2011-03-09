@@ -9,6 +9,7 @@ WEBDIR=$$HOME/niconetz
 WEBPAGE=software/cdist.mdwn
 
 MANDIR=doc/man
+# Unchecked
 MANSRC=$(MANDIR)/cdist-config-layout.text \
 	$(MANDIR)/cdist-config.text 		\
 	$(MANDIR)/cdist-explorer.text	\
@@ -16,6 +17,7 @@ MANSRC=$(MANDIR)/cdist-config-layout.text \
 	$(MANDIR)/cdist-stages.text		\
 	$(MANDIR)/cdist-terms.text 		\
 
+# Clean documentation
 MANGENERATED=$(MANDIR)/cdist-reference.text
 
 MANSRC=$(MANDIR)/cdist.text				\
