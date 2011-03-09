@@ -28,6 +28,8 @@ $__type_explorer/<explorer name> (type explorer).
 In case of significant errors, the explorer may exit non-zero and return an
 error message on stderr, which will cause the cdist run to abort.
 
+You can also use stderr for debugging purposes while developing a new
+explorer.
 
 EXAMPLES
 --------
