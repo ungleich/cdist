@@ -22,6 +22,7 @@ MANSRC=$(MANDIR)/cdist.text				\
    $(MANDIR)/cdist-bin-transfer.text	\
    $(MANDIR)/cdist-deploy-to.text 		\
 	$(MANDIR)/cdist-manifest.text 		\
+	$(MANDIR)/cdist-reference.text		\
 	$(MANDIR)/cdist-stages.text			\
 	$(MANDIR)/cdist-type.text				\
 	$(MANDIR)/cdist-type-template.text	\
