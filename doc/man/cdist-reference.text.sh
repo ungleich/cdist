@@ -32,7 +32,7 @@ dest="$__cdist_abs_mydir/$filename"
 
 cd "$__cdist_abs_mydir"
 
-# exec > "$dest"
+exec > "$dest"
 cat << eof 
 cdist-reference(7)
 ==================
@@ -146,28 +146,28 @@ cat << eof
 VARIABLES
 ---------
 __explorer::
-   Directory that contains all explorers
+   Directory that contains all explorers.
    Available for: explorer
 __manifest::
-   Directory that contains the initial manifest
+   Directory that contains the initial manifest.
    Available for: initial manifest
 __global::
-   Directory that contains generic output like explorer
+   Directory that contains generic output like explorer.
    Available for: initial manifest, type manifest, type explorer, type codegen
 __object::
-   Directory that contains the current object
+   Directory that contains the current object.
    Available for: type manifest, type explorer, type codegen
 __object_id::
-   The type unique object id
+   The type unique object id.
    Available for: type manifest, type explorer, type codegen
 __target_host::
    The host we are deploying to.
    Available for: initial manifest, type manifest, type codegen
 __type::
-   Path to the current type
+   Path to the current type.
    Available for: type manifest
 __type_explorers::
-   Directory that contains the type explorers
+   Directory that contains the type explorers.
    Available for: type explorer
 
 
