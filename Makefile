@@ -56,7 +56,7 @@ $(MANDIR)/cdist-type-listing.text: $(MANSRC) $(MANDIR)/cdist-type-listing.text.s
 	
 
 clean:
-	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9]
+	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9] $(MANGENERATED)
 
 ################################################################################
 # Developer targets
