@@ -1,4 +1,3 @@
-Core:
-   - Support singletons (see types/issue for a good reason)
-      - probably name them only_once and use that as the internal id! 
+- Support singletons (see types/issue for a good reason)
+   - add documentation!
 
