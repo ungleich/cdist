@@ -12,6 +12,7 @@ __file /etc/cdist-configured --type file
 case "$__target_host" in
    # Everybody has this
    localhost)
+      # Usual example
       __file test --type file --destination /tmp/cdist-testfile
    ;;
 
@@ -26,6 +27,9 @@ case "$__target_host" in
       
       # The __package type autoselect the right type based on the os
       __package vim --state installed
+
+      # If the type is a singleton, it does not take an object id
+      __issue
    ;;
    # This is how it would look like on gentoo
    cdist-gentoo)
