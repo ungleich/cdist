@@ -3,8 +3,10 @@
 #
 
 # This is debug and should not be in a production environment
-echo "We could access other manifests in $__manifest"
+# echo "We could access other manifests in $__manifest"
 
+# Every machine becomes a marker, so sysadmins know that automatic
+# configurations are happening
 __file /etc/cdist-configured --type file
 
 case "$__target_host" in
@@ -13,22 +15,34 @@ case "$__target_host" in
       __file test --type file --destination /tmp/cdist-testfile
    ;;
 
+   #
+   # Examples using different types
+   #
+
    # Alias in /etc/hosts for localhost
    cdist-archlinux)
-      __package_pacman django --state deinstalled
-      __package_pacman wireshark-cli --state installed
+      # This is the specific package type for pacman
       __package_pacman zsh --state installed
+      
+      # The __package type autoselect the right type based on the os
+      __package vim --state installed
    ;;
+   # This is how it would look like on gentoo
    cdist-gentoo)
+      # Same stuff for gentoo
       __package tree --state installed
    ;;
+   cdist-debian)
+      __package_apt atop --state installed
+      __package apache2 --state deinstalled
+   ;;
 
-   # Real machines
-   ikq*)
-      __package_apt zsh --state installed
-      __package_apt apache2 --state deinstalled
-   ;;
-   kr)
-      __issue iddoesnotmatterhere
-   ;;
+   # Real machines may be used with their hostname or fqdn,
+   # depending on how you call cdist-deploy-to
+   # machine)
+   # ...
+   # ;;
+   # machine.example.org)
+   # ...
+   # ;;
 esac
