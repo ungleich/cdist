@@ -1,3 +1,7 @@
 - Support singletons (see types/issue for a good reason)
    - add documentation!
 
+- think about splitting __file:
+   __file --source
+   __directory --recursive yes|no --source
+   __link --type symbolic|hard
