@@ -18,30 +18,17 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on Debian and co.
+# Check whether file exists or not
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "$__object/parameter/destination" ]; then
+   destination="$(cat "$__object/parameter/destination")"
 else
-   name="$__object_id"
+   destination="/$__object_id"
 fi
 
-state="$(cat "$__object/parameter/state")"
-
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
-
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo apt-get --quiet --yes install \"$name\"
-      fi
-   ;;
-   deinstalled)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo apt-get --quiet --yes remove \"$name\"
-      fi
-   ;;
-esac
+if [ -e "$destination" ]; then
+   echo yes
+else
+   echo no
+fi

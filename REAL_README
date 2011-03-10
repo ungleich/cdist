@@ -79,6 +79,10 @@ To install cdist, execute the following commands:
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 
+    # If you want the manpages
+    make man
+    export MANPATH=$MANPATH:$(pwd -P)/doc/man
+
 
 Afterwards you can run ***cdist-quickstart*** to get an impression on
 how to use cdist.
@@ -104,6 +108,11 @@ may vanish at any point. To select a specific branch use
 To upgrade cdist in the current branch use
 
     git pull
+
+    # Also update the manpages
+    make man
+    export MANPATH=$MANPATH:$(pwd -P)/doc/man
+
 
 The version branches are designed to change if there are incompatibilities.
 Or the other way round: As long as you stay on 1.0 and do git pull, nothing

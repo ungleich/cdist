@@ -1,5 +1,10 @@
-1.0.2: upcoming
-	* Add manpages: cdist-type
+1.0.3: upcoming
+	* Update regexp used for sane characters
+	* Allow types without parameters
+	* Allow type to be singleton (DOCUMENTATION MISSING)
+
+1.0.2: 2011-03-09
+	* Add manpages: cdist-type, cdist-type__file, cdist-reference, cdist-explorer
 	* Make doc/man/ usable as MANPATH entry
 
 1.0.1: 2011-03-08

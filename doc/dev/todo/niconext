@@ -1,4 +1,3 @@
-Documentation cleanup
-   - document environment variables
-   - Reference all types somewhere (on the webpage?)
-   - how to debug explorer
+- Support singletons (see types/issue for a good reason)
+   - add documentation!
+

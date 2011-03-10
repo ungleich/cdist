@@ -37,6 +37,8 @@ Internally cdist-type-emulator(1) will be called from cdist-manifest-run(1) to
 save the given parameters into a cconfig database, so they can be accessed by
 the manifest and gencode scripts of the type (see below).
 
+A list of supported types can be found in the cdist-type-listing(7) manpage.
+
 
 HOW TO WRITE A NEW TYPE
 -----------------------
@@ -151,8 +153,8 @@ If you think your type may be useful for others, ensure it works with the
 current master branch of cdist and submit the git url containing the type for
 inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**.
 
-Ensure a corresponding manpage named cdist-type-NAME (without
-underscores) is included.
+Ensure a corresponding manpage named man.text in asciidoc format with
+the manpage-name "cdist-type__NAME" is included in the type directory.
 
 
 SEE ALSO

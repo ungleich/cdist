@@ -57,13 +57,14 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_parameter:=parameter}
 : ${__cdist_name_parameter_required:=required}
 : ${__cdist_name_parameter_optional:=optional}
+: ${__cdist_name_singleton:=singleton}
 : ${__cdist_name_target_host:=target_host}
 : ${__cdist_name_type:=type}
 : ${__cdist_name_type_bin:=type_bin}
 : ${__cdist_name_type_explorer:=type_explorer}
 
-# Used for IDs
-: ${__cdist_sane_regexp:=[A-Za-z0-9/]*[-A-Za-z0-9_/]*}
+# Used for IDs: Allow everything not starting with - and .
+: ${__cdist_sane_regexp:=[^-\.].*}
 
 # Default remote user
 : ${__cdist_remote_user:=root}
@@ -162,11 +163,6 @@ __cdist_init_deploy()
    ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
 }
 
-# __cdist_cache_host()
-# {
-#    echo "${__cdist_cache_hosts}/${__cdist_target_host}"
-# }
-
 __cdist_type_has_explorer()
 {
    # We only create output, if there's at least one explorer
@@ -196,14 +192,25 @@ __cdist_type_gencode()
    echo "${__cdist_type_dir}/$1/${__cdist_name_gencode}"
 }
 
+__cdist_type_singleton()
+{
+   echo "${__cdist_type_dir}/$1/${__cdist_name_singleton}"
+}
+
 __cdist_type_parameter_dir()
 {
    echo "$(__cdist_type_dir "$1")/${__cdist_name_parameter}"
 }
 
-__cdist_type_parameter_file()
+# Shorthand for required and optional
+__cdist_type_parameter_required()
 {
-   echo "$(__cdist_type_parameter_dir "$1")/$2"
+   echo "$(__cdist_type_parameter_dir "$1")/$__cdist_name_parameter_required"
+}
+
+__cdist_type_parameter_optional()
+{
+   echo "$(__cdist_type_parameter_dir "$1")/$__cdist_name_parameter_optional"
 }
 
 __cdist_type_from_object()
