@@ -149,4 +149,6 @@ Yes, I'm actually eating my own dogfood and currently managing
  * [apache](http://httpd.apache.org/) (webserver)
  * [kerberos (mit)](http://web.mit.edu/kerberos/) (authentication)
 
-with cdist on a total of **2** production servers.
+with cdist on a total of **2** production servers of the
+[Systems Group](http://www.systems.ethz.ch) at the
+[ETH Zurich](http://www.ethz.ch).
