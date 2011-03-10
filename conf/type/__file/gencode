@@ -70,20 +70,23 @@ if [ -f "$__object/parameter/source" ]; then
    fi
 # No source? Create empty file/dir
 else
-   case "$type" in
-      directory)
-         echo mkdir \"$destination\"
-      ;;
+   # Only touch / create if it does not exist
+   if [ no = "$(cat "$__object/explorer/exists")" ]; then
+      case "$type" in
+         directory)
+            echo mkdir \"$destination\"
+         ;;
 
-      file)
-         echo touch \"$destination\"
-      ;;
+         file)
+            echo touch \"$destination\"
+         ;;
 
-      *)
-         echo "Unsupported type: \"$type\"" >&2
-         exit 1
-      ;;
-   esac
+         *)
+            echo "Unsupported type: \"$type\"" >&2
+            exit 1
+         ;;
+      esac
+   fi
 fi
 
 if [ -f "$__object/parameter/mode" ]; then
