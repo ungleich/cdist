@@ -20,7 +20,7 @@
 #
 
 destination=/etc/issue
-Zs="$(cat "out/explorer/os")"
+source="$(cat "out/explorer/os")"
 
 case "$os" in
    archlinux)
