@@ -79,6 +79,9 @@ case "$type" in
                # Probably describe it in cdist-quickstart...
                scp "$source" "root@${__target_host}:${destination}"
             fi
+         else
+            echo "Source \"$source\" does not exist." >&2
+            exit 1
          fi
       else
          if [ no = "$(cat "$__object/explorer/exists")" ]; then
