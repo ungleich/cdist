@@ -78,20 +78,24 @@ while [ $# -gt 0 ]; do
 done
 
 # Ensure required parameters are given
-while read required; do
-   if [ ! -f "${tempparameter}/${required}" ]; then
-      __cdist_usage "Missing required parameter $required"
-   fi
+if [ -f "$(__cdist_type_parameter_required "$__cdist_type")" ]; then
+   while read required; do
+      if [ ! -f "${tempparameter}/${required}" ]; then
+         __cdist_usage "Missing required parameter $required"
+      fi
 
-   mv "${tempparameter}/${required}" "${__cdist_parameter_dir}"
-done < "$(__cdist_type_parameter_file "$__cdist_type" "$__cdist_name_parameter_required")"
+      mv "${tempparameter}/${required}" "${__cdist_parameter_dir}"
+   done < "$(__cdist_type_parameter_required "$__cdist_type")"
+fi
 
 # Allow optional parameters
-while read optional; do
-   if [ -f "${tempparameter}/${optional}" ]; then
-      mv "${tempparameter}/${optional}" "${__cdist_parameter_dir}"
-   fi
-done < "$(__cdist_type_parameter_file "$__cdist_type" "$__cdist_name_parameter_optional")"
+if [ -f "$(__cdist_type_parameter_optional "$__cdist_type")" ]; then
+   while read optional; do
+      if [ -f "${tempparameter}/${optional}" ]; then
+         mv "${tempparameter}/${optional}" "${__cdist_parameter_dir}"
+      fi
+   done < "$(__cdist_type_parameter_optional "$__cdist_type")"
+fi
 
 # Error out on other paramaters
 cd "${tempparameter}"
