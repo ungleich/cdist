@@ -55,33 +55,38 @@ esac
 if [ -f "$__object/parameter/source" ]; then
    source="$(cat "$__object/parameter/source")"
 
-   local_md5sum="$($md5sum < "$source")"
-   remote_md5sum="$(cat "$__object/explorer/md5sum")"
+   if [ -f "$source" ]; then
+      local_md5sum="$($md5sum < "$source")"
+      remote_md5sum="$(cat "$__object/explorer/md5sum")"
 
-   # Is md5sum the right approach?
-   if [ "$local_md5sum" != "$remote_md5sum" ]; then
-      # FIXME: This is ugly and hardcoded, replace after 1.0!
-      # Probably a better aproach is to have the user configured
-      # ~/.ssh/config to contain the right username
-      # Probably describe it in cdist-quickstart...
-      scp "$source" "root@${__target_host}:${destination}"
+      # Is md5sum the right approach?
+      if [ "$local_md5sum" != "$remote_md5sum" ]; then
+         # FIXME: This is ugly and hardcoded, replace after 1.0!
+         # Probably a better aproach is to have the user configured
+         # ~/.ssh/config to contain the right username
+         # Probably describe it in cdist-quickstart...
+         scp "$source" "root@${__target_host}:${destination}"
+      fi
    fi
 # No source? Create empty file/dir
 else
-   case "$type" in
-      directory)
-         echo mkdir \"$destination\"
-      ;;
+   # Only touch / create if it does not exist
+   if [ no = "$(cat "$__object/explorer/exists")" ]; then
+      case "$type" in
+         directory)
+            echo mkdir \"$destination\"
+         ;;
 
-      file)
-         echo touch \"$destination\"
-      ;;
+         file)
+            echo touch \"$destination\"
+         ;;
 
-      *)
-         echo "Unsupported type: \"$type\"" >&2
-         exit 1
-      ;;
-   esac
+         *)
+            echo "Unsupported type: \"$type\"" >&2
+            exit 1
+         ;;
+      esac
+   fi
 fi
 
 if [ -f "$__object/parameter/mode" ]; then

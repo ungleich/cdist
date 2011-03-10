@@ -41,7 +41,11 @@ esac
 
 # No output if file does not exist - does definitely not match the md5sum :-)
 if [ -e "$destination" ]; then
-   $md5sum < "$destination"
+   if [ -f  "$destination" ]; then
+      $md5sum < "$destination"
+   else
+      echo "NO REGULAR FILE"
+   fi
 else
    echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
 fi
