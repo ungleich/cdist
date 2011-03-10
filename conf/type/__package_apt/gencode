@@ -29,7 +29,7 @@ fi
 
 state="$(cat "$__object/parameter/state")"
 
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status")"
+is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
 
 case "$state" in
    installed)
