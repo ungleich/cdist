@@ -129,3 +129,24 @@ You can join the development ***IRC channel***
 
 Bug reports, questions, patches, etc. should be send to the
 [cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
+
+## Used by
+
+If you're using cdist, feel free to send a report to the mailing list.
+Interesting information are for instance
+
+ * Which services do you manage?
+ * How many machines do you manage?
+ * What are the pros/cons you see in cdist?
+ * General comments/critics
+
+### Nico Schottelius, Systems Group ETH Zurich
+
+Yes, I'm actually eating my own dogfood and currently managing
+
+ * [plone](http://plone.org/) (cms)
+ * [moinmoin](http://moinmo.in/) (wiki)
+ * [apache](http://httpd.apache.org/) (webserver)
+ * [kerberos (mit)](http://web.mit.edu/kerberos/) (authentication)
+
+with cdist on a total of **2** production servers.
