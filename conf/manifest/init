@@ -13,7 +13,7 @@ case "$__target_host" in
    # Everybody has this
    localhost)
       # Usual example
-      __file test --type file --destination /tmp/cdist-testfile
+      __file test --type symlink --source /etc/cdist-configured --destination /tmp/cdist-testfile
    ;;
 
    #
