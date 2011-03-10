@@ -202,20 +202,15 @@ __cdist_type_parameter_dir()
    echo "$(__cdist_type_dir "$1")/${__cdist_name_parameter}"
 }
 
-__cdist_type_parameter_file()
-{
-   echo "$(__cdist_type_parameter_dir "$1")/$2"
-}
-
 # Shorthand for required and optional
 __cdist_type_parameter_required()
 {
-   __cdist_type_parameter_file "$1/$__cdist_name_parameter_required"
+   echo "$(__cdist_type_parameter_dir "$1")/$__cdist_name_parameter_required"
 }
 
 __cdist_type_parameter_optional()
 {
-   __cdist_type_parameter_file "$1/$__cdist_name_parameter_optional"
+   echo "$(__cdist_type_parameter_dir "$1")/$__cdist_name_parameter_optional"
 }
 
 __cdist_type_from_object()
