@@ -64,7 +64,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_type_explorer:=type_explorer}
 
 # Used for IDs: Allow everything not starting with - and .
-: ${__cdist_sane_regexp:=^[^-\.]}
+: ${__cdist_sane_regexp:=^[^-\.].*}
 
 # Default remote user
 : ${__cdist_remote_user:=root}
