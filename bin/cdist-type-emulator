@@ -27,9 +27,9 @@
 . cdist-config
 set -eu
 
-# Find out whether type is a singleton or regular type
 __cdist_type="$__cdist_myname"
 
+# Find out whether type is a singleton or regular type
 if [ -f "$(__cdist_type_singleton "$__cdist_type")" ]; then
    __cdist_object_id="singleton"
 else
