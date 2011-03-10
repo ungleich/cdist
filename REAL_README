@@ -79,7 +79,7 @@ To install cdist, execute the following commands:
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 
-    # If you want the manpages
+    # If you want the manpages (requires asciidoc to be installed)
     make man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
