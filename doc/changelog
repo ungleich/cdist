@@ -1,3 +1,6 @@
+1.0.3: upcoming
+	* Update regexp used for sane characters
+
 1.0.2: 2011-03-09
 	* Add manpages: cdist-type, cdist-type__file, cdist-reference, cdist-explorer
 	* Make doc/man/ usable as MANPATH entry
