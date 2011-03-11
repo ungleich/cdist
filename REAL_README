@@ -148,7 +148,9 @@ Yes, I'm actually eating my own dogfood and currently managing
  * [moinmoin](http://moinmo.in/) (wiki)
  * [apache](http://httpd.apache.org/) (webserver)
  * [kerberos (mit)](http://web.mit.edu/kerberos/) (authentication)
+ * [ircd-hybrid](http://www.ircd-hybrid.org/) (chat)
+ * [stunnel](http://stunnel.mirt.net/) (SSL tunnel)
 
-with cdist on a total of **2** production servers of the
+with cdist on a total of **3** production servers of the
 [Systems Group](http://www.systems.ethz.ch) at the
 [ETH Zurich](http://www.ethz.ch).
