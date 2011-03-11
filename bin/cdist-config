@@ -19,7 +19,7 @@
 #
 #
 
-# Fail if something bogus is going on and export all variables
+# Fail if something bogus is going on
 set -u
 
 ################################################################################
