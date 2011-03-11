@@ -1,7 +1,7 @@
-1.0.3: upcoming
+1.0.3: 2011-03-11
 	* Update regexp used for sane characters
 	* Allow types without parameters
-	* Allow type to be singleton (DOCUMENTATION MISSING)
+	* Allow type to be singleton
 	* Type __file learned --type symlink
 
 1.0.2: 2011-03-09
