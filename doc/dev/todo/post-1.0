@@ -1,13 +1,8 @@
-Type handler:
-   - add dependency parameters to core available for every type
-      --requires
-      --excludes?
-
-Stage 5 (code execution):
-   - check return codes
-   - abort on first error?
-   - dependencies
-
+Dependencies:
+   - Add meta parameters like --requires --excludes --depends?
+   - Build dependency tree
+   - Exit on any error
+   - Check return codes
 
 Types to be written/extended:
    - __ssh-keys (host/user)
@@ -20,6 +15,18 @@ Types to be written/extended:
    - __file:
       - template == [shell script] stdout
    - cron
+   - __file: think about splitting
+      __file 
+         source
+         mode
+         owner
+      __directory
+         parents
+         mode
+         owner
+      __link 
+      type symbolic | hard
+
 
 Documentation:
    - Describe Multi master setups
@@ -58,9 +65,3 @@ Documentation:
       - cdist-type-build-emulation
       - cdist-type-emulator
    - Ensure html output of manpages are published on the web
---------------------------------------------------------------------------------
-Fix:
-Running initial manifest for sgv-wiki-01 ...
-/tmp/cdist.VfhjaH8LP3GE/out/type_bin/__ethz_systems_wiki: Zeile 87: /home/users/nico/privat/firmen/ethz/vcs/cdist/conf/type/__ethz_systems_wiki/parameter/required: Datei oder Verzeichnis nicht gefunden
-/tmp/cdist.VfhjaH8LP3GE/out/type_bin/__ethz_systems_wiki: Zeile 94: /home/users/nico/privat/firmen/ethz/vcs/cdist/conf/type/__ethz_systems_wiki/parameter/optional: Datei oder Verzeichnis nicht gefunden
-
