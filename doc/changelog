@@ -1,3 +1,6 @@
+1.0.4:
+	* New type: __motd
+
 1.0.3: 2011-03-11
 	* Update regexp used for sane characters
 	* Allow types without parameters
