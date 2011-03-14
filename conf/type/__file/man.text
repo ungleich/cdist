@@ -55,7 +55,6 @@ __file /etc/issue --source "$__type/files/archlinux" --type file
 # Supply some more settings
 __file /etc/shadow --source "$__type/files/shadow" --type file \
    --owner root --group shadow --mode 0640
-
 --------------------------------------------------------------------------------
 
 
