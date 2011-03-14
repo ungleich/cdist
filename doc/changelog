@@ -2,6 +2,7 @@
 	* New type __motd
 	* New type __addifnosuchline
 	* Document type __issue
+	* Document type __package_pacman
 
 1.0.3: 2011-03-11
 	* Update regexp used for sane characters

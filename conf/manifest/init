@@ -14,6 +14,7 @@ case "$__target_host" in
    localhost)
       # Usual example
       __file test --type symlink --source /etc/cdist-configured --destination /tmp/cdist-testfile
+      __motd
    ;;
 
    #
