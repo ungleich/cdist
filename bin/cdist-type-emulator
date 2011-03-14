@@ -25,11 +25,17 @@
 #
 
 . cdist-config
-[ $# -ge 1 ] || __cdist_usage "<id> <options>"
 set -eu
 
-__cdist_object_id="$1"; shift
 __cdist_type="$__cdist_myname"
+
+# Find out whether type is a singleton or regular type
+if [ -f "$(__cdist_type_singleton "$__cdist_type")" ]; then
+   __cdist_object_id="singleton"
+else
+   [ $# -ge 1 ] || __cdist_usage "<id> <options>"
+   __cdist_object_id="$1"; shift
+fi
 
 echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || \
    __cdist_usage "Insane object id, ${__cdist_object_id}."
@@ -72,20 +78,24 @@ while [ $# -gt 0 ]; do
 done
 
 # Ensure required parameters are given
-while read required; do
-   if [ ! -f "${tempparameter}/${required}" ]; then
-      __cdist_usage "Missing required parameter $required"
-   fi
+if [ -f "$(__cdist_type_parameter_required "$__cdist_type")" ]; then
+   while read required; do
+      if [ ! -f "${tempparameter}/${required}" ]; then
+         __cdist_usage "Missing required parameter $required"
+      fi
 
-   mv "${tempparameter}/${required}" "${__cdist_parameter_dir}"
-done < "$(__cdist_type_parameter_file "$__cdist_type" "$__cdist_name_parameter_required")"
+      mv "${tempparameter}/${required}" "${__cdist_parameter_dir}"
+   done < "$(__cdist_type_parameter_required "$__cdist_type")"
+fi
 
 # Allow optional parameters
-while read optional; do
-   if [ -f "${tempparameter}/${optional}" ]; then
-      mv "${tempparameter}/${optional}" "${__cdist_parameter_dir}"
-   fi
-done < "$(__cdist_type_parameter_file "$__cdist_type" "$__cdist_name_parameter_optional")"
+if [ -f "$(__cdist_type_parameter_optional "$__cdist_type")" ]; then
+   while read optional; do
+      if [ -f "${tempparameter}/${optional}" ]; then
+         mv "${tempparameter}/${optional}" "${__cdist_parameter_dir}"
+      fi
+   done < "$(__cdist_type_parameter_optional "$__cdist_type")"
+fi
 
 # Error out on other paramaters
 cd "${tempparameter}"

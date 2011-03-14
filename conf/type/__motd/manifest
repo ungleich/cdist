@@ -18,30 +18,14 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on Debian and co.
-#
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+destination=/etc/motd
+
+# Select motd source
+if [ -f "$__object/parameter/source" ]; then
+   source="$(cat "$__object/parameter/source")"
 else
-   name="$__object_id"
+   source="$__type/files/motd"
 fi
 
-state="$(cat "$__object/parameter/state")"
-
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
-
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo apt-get --quiet --yes install \"$name\"
-      fi
-   ;;
-   uninstalled)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo apt-get --quiet --yes remove \"$name\"
-      fi
-   ;;
-esac
+__file "$destination" --source "$source" --type file

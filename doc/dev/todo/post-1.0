@@ -1,31 +1,32 @@
-Core:
-   - Support singletons (see types/issue for a good reason)
-      - probably name them only_once and use that as the internal id!
-   - cdist-deploy-to: Configure more than one host
-      - plus parallel mode like in ccollect
-
-Type handler:
-   - add dependency parameters to core available for every type
-      --requires
-      --excludes?
-
-Stage 5 (code execution):
-   - check return codes
-   - abort on first error?
-   - dependencies
-
+Dependencies:
+   - Add meta parameters like --requires --excludes --depends?
+   - Build dependency tree
+   - Exit on any error
+   - Check return codes
 
 Types to be written/extended:
    - __ssh-keys (host/user)
    - __service
    - __user
    - __file_edit
-      - add_line_to_file_if_not_existing
       - delete_line_from_file
       - regexp replace (can probably cover all?)
    - __file:
       - template == [shell script] stdout
    - cron
+   - __file: think about splitting
+      __file 
+         source
+         mode
+         owner
+      __directory
+         parents
+         mode
+         owner
+      __link 
+      type symbolic | hard
+   - __issue: add --source
+
 
 Documentation:
    - Describe Multi master setups
@@ -36,8 +37,6 @@ Documentation:
       - cdist-trigger after first run from /var/lib/cdist/out/bin?
    - Different environments (production, integration, development)
       - via version control
-   - Define how to raise errors in types
-
    - Check all references in manpages, ensure all manpages exist, generic ones:
       + cdist
          + cdist-deploy-to
@@ -47,10 +46,6 @@ Documentation:
             - install packages only if not existent
             - copy file only if different
          - DOC document that $type/manifest is executed for every object/instance
-   - category 7:
-      - cdist-manifest(7)
-      - cdist-explorer
-      - cdist-config-layout
    - ensure every file in bin/ has a correspondent manpage
       - cdist-code-run-all
       - cdist-config
@@ -69,8 +64,4 @@ Documentation:
       - cdist-run-remote
       - cdist-type-build-emulation
       - cdist-type-emulator
-   - Cleanup READMEs
    - Ensure html output of manpages are published on the web
-
-- Makefile:
-   - Include manpage generation

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2011 Daniel Roth (dani-cdist@d-roth.li)
 #
 # This file is part of cdist.
 #
@@ -18,34 +18,21 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the md5sum of a file to be created, if it is already existing.
-#
 
-if [ -f "$__object/parameter/destination" ]; then
-   destination="$(cat "$__object/parameter/destination")"
+if [ -f "$__object/parameter/file" ]; then
+   file=$(cat "$__object/parameter/file")
 else
-   destination="/$__object_id"
+   file="/$__object_id"
 fi
 
-os="$(cat $__global/explorer/os)"
-
-case "$os" in
-   macosx)
-      md5sum="md5"
-   ;;
-
-   *)
-      md5sum="md5sum"
-   ;;
-esac
-
-# No output if file does not exist - does definitely not match the md5sum :-)
-if [ -e "$destination" ]; then
-   if [ -f  "$destination" ]; then
-      $md5sum < "$destination"
+regex=$(cat "$__object/parameter/line")
+if [ -f "$file" ]; then
+   grep -q "^$regex\$" "$file"
+   if [ $? -eq 1 ]; then
+      echo "NOTFOUND"
    else
-      echo "NO REGULAR FILE"
+      echo "FOUND"
    fi
 else
-   echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
+   echo "NOTFOUND"
 fi

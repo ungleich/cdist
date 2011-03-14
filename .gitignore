@@ -1,4 +1,8 @@
+# -vim
 .*.swp
+
+# Ignore generated manpages
 doc/man/*.[1-9]
 doc/man/.marker
 doc/man/man*/
+conf/type/*/*.7

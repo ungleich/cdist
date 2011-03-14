@@ -10,7 +10,9 @@ cdist-type - Functionality bundled
 
 SYNOPSIS
 --------
-Other languages name this module or class 
+__TYPE ID --parameter value [--parameter value ...]
+
+__TYPE --parameter value [--parameter value ...] (for singletons)
 
 
 DESCRIPTION
@@ -37,7 +39,23 @@ Internally cdist-type-emulator(1) will be called from cdist-manifest-run(1) to
 save the given parameters into a cconfig database, so they can be accessed by
 the manifest and gencode scripts of the type (see below).
 
-A list of supported types can be found in the cdist-type-listing(7) manpage.
+A list of supported types can be found in the cdist-reference(7) manpage.
+
+SINGLETON TYPES
+---------------
+If a type is flagged as a singleton, it may me used only once. This
+is useful for types which can be used only once on a system. If a type
+can only be used once, it does not take an 
+
+Example:
+--------------------------------------------------------------------------------
+# __issue type manages /etc/issue
+__issue
+
+# Probably your own type - singletons may use parameters
+__myfancysingleton --colour green
+--------------------------------------------------------------------------------
+
 
 
 HOW TO WRITE A NEW TYPE
@@ -46,6 +64,7 @@ A type consists of
 
 - parameter (optional)
 - manifest  (optional)
+- singleton (optional)
 - explorer  (optional)
 - gencode   (optional)
 
@@ -96,6 +115,20 @@ which are documented in cdist-environment-variables(7).
 
 Always ensure the manifest is executable, otherwise cdist will not be able
 to execute it.
+
+
+SINGLETON - ONLY INSTANCE ONLY
+------------------------------
+If you want to ensure that a type can only be used once per target, you can
+mark it as a singleton: Just create the (empty) file "singleton" in your type
+directory. This will also change the way your type must be called:
+
+--------------------------------------------------------------------------------
+__YOURTYPE --parameter value
+--------------------------------------------------------------------------------
+
+As you can see, the ID is omitted, because it does not make any sense, if your
+type can be used only once.
 
 
 THE TYPE EXPLORERS
@@ -153,7 +186,8 @@ If you think your type may be useful for others, ensure it works with the
 current master branch of cdist and submit the git url containing the type for
 inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**.
 
-Ensure a corresponding manpage named cdist-type__NAME is included.
+Ensure a corresponding manpage named man.text in asciidoc format with
+the manpage-name "cdist-type__NAME" is included in the type directory.
 
 
 SEE ALSO

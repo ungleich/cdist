@@ -18,30 +18,16 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on Debian and co.
+# Setup environment for use with cdist
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
-else
-   name="$__object_id"
-fi
+. cdist-config
+[ $# -eq 0 ] || __cdist_usage "no arguments"
 
-state="$(cat "$__object/parameter/state")"
+# Allow access to unset variables like PATH and MANPATH
+set +u
 
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
+echo export PATH=$__cdist_abs_mydir:$PATH
 
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo apt-get --quiet --yes install \"$name\"
-      fi
-   ;;
-   uninstalled)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo apt-get --quiet --yes remove \"$name\"
-      fi
-   ;;
-esac
+cd "$__cdist_abs_mydir/../doc/man"
+echo export MANPATH=$(pwd -P):$MANPATH

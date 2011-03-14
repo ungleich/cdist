@@ -83,6 +83,9 @@ conf/type/<name>/::
 
    This directory is referenced by the variable __type (see below).
 
+conf/type/<name>/man.text::
+   Manpage in Asciidoc format (nequired for inclusion into upstream)
+
 conf/type/<name>/manifest::
    Used to generate additional objects from a type.
 
@@ -132,9 +135,9 @@ TYPES
 The following types are available:
 
 eof
-for type in cdist-type__*.text; do
-   name_1="${type#cdist-type}"
-   name_2="${name_1%.text}"
+for type in man7/cdist-type__*; do
+   name_1="${type#man7/cdist-type}"
+   name_2="${name_1%.7}"
 
    name="$name_2"
    echo "- $name"
@@ -175,8 +178,9 @@ SEE ALSO
 --------
 - cdist(7)
 eof
-for type in cdist-type__*.text; do
-   name_2="${type%.text}"
+for type in man7/cdist-type__*; do
+   name_1="${type#man7/}"
+   name_2="${name_1%.7}"
 
    name="$name_2"
    echo "- ${name}(7)"
