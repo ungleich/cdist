@@ -1,5 +1,20 @@
 [[!meta title="cdist - configuration management"]]
 
+     
+                 ..          .       .x+=:.        s   
+               dF           @88>    z`    ^%      :8  
+              '88bu.        %8P        .   <k    .88 
+          .   '*88888bu      .       .@8Ned8"   :888ooo
+     .udR88N    ^"*8888N   .@88u   .@^%8888"  -*8888888
+    <888'888k  beWE "888L ''888E` x88:  `)8b.   8888
+    9888 'Y"   888E  888E   888E  8888N=*8888   8888
+    9888       888E  888E   888E   %8"    R88   8888
+    9888       888E  888F   888E    @8Wou 9%   .8888Lu=
+    ?8888u../ .888N..888    888&  .888888P`    ^%888*
+     "8888P'   `"888*""     R888" `   ^"F        'Y" 
+       "P'        ""         ""  
+     
+
 [[!toc  levels=2]]
 
 ## Introduction
@@ -79,7 +94,7 @@ To install cdist, execute the following commands:
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 
-    # If you want the manpages
+    # If you want the manpages (requires asciidoc to be installed)
     make man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
@@ -129,3 +144,28 @@ You can join the development ***IRC channel***
 
 Bug reports, questions, patches, etc. should be send to the
 [cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
+
+## Used by
+
+If you're using cdist, feel free to send a report to the mailing list.
+Interesting information are for instance
+
+ * Which services do you manage?
+ * How many machines do you manage?
+ * What are the pros/cons you see in cdist?
+ * General comments/critics
+
+### Nico Schottelius, Systems Group ETH Zurich
+
+Yes, I'm actually eating my own dogfood and currently managing
+
+ * [plone](http://plone.org/) (cms)
+ * [moinmoin](http://moinmo.in/) (wiki)
+ * [apache](http://httpd.apache.org/) (webserver)
+ * [kerberos (mit)](http://web.mit.edu/kerberos/) (authentication)
+ * [ircd-hybrid](http://www.ircd-hybrid.org/) (chat)
+ * [stunnel](http://stunnel.mirt.net/) (SSL tunnel)
+
+with cdist on a total of **3** production servers of the
+[Systems Group](http://www.systems.ethz.ch) at the
+[ETH Zurich](http://www.ethz.ch).
