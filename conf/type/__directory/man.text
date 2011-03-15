@@ -1,30 +1,25 @@
-cdist-type__file(7)
-===================
+cdist-type__directory(7)
+========================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-type__file - Create files
+cdist-type__directory - Create a directory
 
 
 DESCRIPTION
 -----------
-This cdist type allows you to create files on the target.
+This cdist type allows you to create directories on the target.
 
 
 REQUIRED PARAMETERS
 -------------------
-type::
-   Specifies the type of file to be created. Either "directory" or "file"
+None.
 
 
 OPTIONAL PARAMETERS
 -------------------
-destination::
-   If supplied, use this as the destination on the target. Otherwise the
-   object_id is used.
-
 group::
    Group to chgrp to.
 
@@ -34,9 +29,8 @@ mode::
 owner::
    User to chown to.
 
-source::
-   If supplied, copy this file from the host running cdist to the target.
-   If not supplied, an empty file or directory will be created.
+parents::
+   Whether to create parents as well (mkdir -p behaviour)
 
 
 EXAMPLES

@@ -20,27 +20,26 @@
 #
 # Handle directories
 #
+#
+# __directory /etc [--mode --owner --group --parents [yes|no] ]
+#
 
-# If destination was specified, do not use the id
-if [ -f "$__object/parameter/destination" ]; then
-   destination="$(cat "$__object/parameter/destination")"
-else
-   # If no destination has been supplied, the id is the destination
-   # Prepend /, which got lost in the object id (and relative paths
-   # don't make sense)
-   destination="/$__object_id"
+destination="/$__object_id"
+
+# Include parent directories?
+if [ -f "$__object/parameter/parents" ]; then
+   parents="$(cat "$__object/parameter/parents")"
+   if [ yes = "$parents" ]; then
+      mkdiropt="-p"
+   else
+      mkdiropt=""
+   fi
 fi
 
-# Ensure we have an absolute path
-if ! $(echo "$destination" | grep -q ^/); then
-   echo "Error: Destination ($destination) of $__object_id is not absolute." >&2
-   exit 1
-fi
-
+# Only create if not already existent
 if [ no = "$(cat "$__object/explorer/exists")" ]; then
-   echo mkdir \"$destination\"
+   echo mkdir $mkdiropt \"$destination\"
 fi
-
 
 # Mode settings
 if [ -f "$__object/parameter/mode" ]; then
