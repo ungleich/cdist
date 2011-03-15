@@ -1,16 +1,16 @@
-cdist-type__user(7)
+cdist-type__group(7)
 ===================
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 NAME
 ----
-cdist-type__user - Manage users
+cdist-type__group - Manage groups
 
 
 DESCRIPTION
 -----------
-This cdist type allows you to create or modify users on the target.
+This cdist type allows you to create or modify groups on the target.
 
 
 REQUIRED PARAMETERS
@@ -20,19 +20,9 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-comment::
-   see usermod(8)
-home::
-   see above
 gid::
-   see above
-groups::
-   see above
+   see groupmod(8)
 password::
-   see above
-shell::
-   see above
-uid::
    see above
 
 
@@ -40,14 +30,14 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Create user account for foobar with operating system default settings
-__user foobar
+# Create a group 'foobar' with operating system default settings
+__group foobar
 
-# Same but with a different shell
-__user foobar --shell /bin/zsh
+# Same but with a specific gid
+__group foobar --gid 1234
 
-# Set explicit uid and home
-__user foobar --uid 1001 --shell /bin/zsh --home /home/foobar
+# Same but with a gid and password
+__group foobar --gid 1234 --password 'crypted-password-string'
 --------------------------------------------------------------------------------
 
 
