@@ -3,6 +3,7 @@
 	* New type __addifnosuchline
 	* Document type __issue
 	* Document type __package_pacman
+	* Document type __package_apt
 	* New parameter for __file: --owner and --group
 
 1.0.3: 2011-03-11
