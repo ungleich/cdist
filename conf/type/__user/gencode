@@ -37,6 +37,10 @@ get_current_value() {
    local key="$1"
    local index
    case "$key" in
+      password)
+         cut -d':' -f 2 "$__object/explorer/shadow"
+         break
+      ;;
       uid) index=3;;
       gid) index=4;;
       comment) index=5;;
