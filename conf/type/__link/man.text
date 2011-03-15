@@ -1,0 +1,57 @@
+cdist-type__link(7)
+===================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__link - Create links
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to hard and symoblic links. The given
+object id is the destination for the link.
+
+
+REQUIRED PARAMETERS
+-------------------
+source::
+   Specifies the link source.
+
+source::
+   Specifies the link type: Either hard or symoblic.
+
+
+OPTIONAL PARAMETERS
+-------------------
+None.
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Create /etc/cdist-configured as an empty file
+__file /etc/cdist-configured --type file
+
+# Same but with a different object id
+__file cdist-marker --type file --destination /etc/cdist-configured
+
+# Use __file from another type
+__file /etc/issue --source "$__type/files/archlinux" --type file
+
+# Supply some more settings
+__file /etc/shadow --source "$__type/files/shadow" --type file \
+   --owner root --group shadow --mode 0640
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
