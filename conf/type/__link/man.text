@@ -19,7 +19,7 @@ REQUIRED PARAMETERS
 source::
    Specifies the link source.
 
-source::
+type::
    Specifies the link type: Either hard or symoblic.
 
 
@@ -31,18 +31,16 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Create /etc/cdist-configured as an empty file
-__file /etc/cdist-configured --type file
+# Create hard link of /etc/shadow
+__file /root/shadow --source /etc/shadow --type hard
 
-# Same but with a different object id
-__file cdist-marker --type file --destination /etc/cdist-configured
+# Relative symbolic link
+__file /etc/apache2/sites-enabled/www.test.ch   \
+   --source ../sites-available/www.test.ch      \
+   --type symbolic
 
-# Use __file from another type
-__file /etc/issue --source "$__type/files/archlinux" --type file
-
-# Supply some more settings
-__file /etc/shadow --source "$__type/files/shadow" --type file \
-   --owner root --group shadow --mode 0640
+# Relative absolute link
+__file /opt/plone --source /home/services/plone --type symbolic
 --------------------------------------------------------------------------------
 
 
