@@ -19,6 +19,31 @@ cdist-type-addifnosuchline can be used to check a file for existence of a
 specific line and adding that if not found
 
 
+REQUIRED PARAMETERS
+-------------------
+line::
+   Specifies the content which shall be added if not existing. 
+
+
+OPTIONAL PARAMETERS
+-------------------
+file::
+   If supplied, use this as the destination file. Otherwise the
+   object_id is used.
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Creates or appends the line specifiend in "foo" to the file "bar"
+
+__addifnosuchline foo --file bar --line foo
+
+# Adds the line "foo2" to the file "bar"
+__addifnosuchline foo --file bar --line foo2
+
+--------------------------------------------------------------------------------
+
 SEE ALSO
 --------
 cdist(7)
