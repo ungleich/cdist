@@ -1,3 +1,2 @@
-- gencode: compair new value with existing one in $__object/explorer/passwd, only change if nessecary
 - delete users
 

@@ -33,12 +33,34 @@ else
 fi
 
 
+get_current_value() {
+   local key="$1"
+   local index
+   case "$key" in
+      uid) index=3;;
+      gid) index=4;;
+      comment) index=5;;
+      home) index=6;;
+      shell) index=7;;
+   esac
+   cut -d':' -f $index "$__object/explorer/passwd"
+}
+
+
 set -- "$@"
 cd "$__object/parameter"
 for property in $(ls .); do
-   # TODO: compair new value with existing one in $__object/explorer/passwd, only change if nessecary
-   set -- "$@" "--$property" "$(cat "$property")"
+   current_value=$(get_current_value "$property")
+   new_value="$(cat "$property")"
+   if [ "$new_value" != "$current_value" ]; then
+      # Shedule changed properties for update
+      set -- "$@" "--$property" \"$new_value\"
+   fi
 done
 
-echo $command $@ $name
+
+if [ $# -gt 0 ]; then
+   # Update changed properties
+   echo $command $@ $name
+fi
 
