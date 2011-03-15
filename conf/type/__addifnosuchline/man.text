@@ -1,0 +1,54 @@
+cdist-type__addifnosuchline(1)
+======================
+Daniel Roth <dani-cdist--@--d-roth.li>
+
+
+NAME
+----
+cdist-type__addifnosuchline - Add if no such line
+
+
+SYNOPSIS
+--------
+cdist-type__addifnosuchline - Add if no such line
+
+
+DESCRIPTION
+-----------
+cdist-type__addifnosuchline - can be used to check a file for existence of a
+specific line and adding that if not found
+
+
+REQUIRED PARAMETERS
+-------------------
+line::
+   Specifies the content which shall be added if not existing.
+
+
+OPTIONAL PARAMETERS
+-------------------
+file::
+   If supplied, use this as the destination file. Otherwise the
+   object_id is used.
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Creates or appends the line specifiend in "include_www" to the file "lighttpd.conf"
+__addifnosuchline www --file lighttpd.conf --line include_www
+
+# Adds the line "include_git" to the file "lighttpd.conf"
+__addifnosuchline lighttpd.conf --line include_git
+
+--------------------------------------------------------------------------------
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Daniel Roth. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
