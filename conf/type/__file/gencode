@@ -18,27 +18,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# __file is a very basic type and should be able to be used as an
-# example for typewrites later
+# __file is a very basic type, which will probably be reused quite often
 #
 
-# If destination was specified, do not use the id
-if [ -f "$__object/parameter/destination" ]; then
-   destination="$(cat "$__object/parameter/destination")"
-else
-   # If no destination has been supplied, the id is the destination
-   # Prepend /, which got lost in the object id (and relative paths
-   # don't make sense)
-   destination="/$__object_id"
-fi
-
-# Ensure we have an absolute path
-if ! $(echo "$destination" | grep -q ^/); then
-   echo "Error: Destination ($destination) of $__object_id is not absolute." >&2
-   exit 1
-fi
+destination="/$__object_id"
 
 # Use correct md5sum binary - MacOSx is different here
+# FIXME: broken: we don't know the host os!
 case "$os" in
    macosx)
       md5sum="md5"
@@ -49,63 +35,31 @@ case "$os" in
    ;;  
 esac
 
-type="$(cat "$__object/parameter/type")"
+if [ -f "$__object/parameter/source" ]; then
+   source="$(cat "$__object/parameter/source")"
 
-case "$type" in
-   directory)
-      if [ -f "$__object/parameter/source" ]; then
-         echo "Source not supported for directory currently - FIXME" >&2
-         exit 1
-      else
-         if [ no = "$(cat "$__object/explorer/exists")" ]; then
-            echo mkdir \"$destination\"
-         fi
+   if [ -f "$source" ]; then
+      local_md5sum="$($md5sum < "$source")"
+      remote_md5sum="$(cat "$__object/explorer/md5sum")"
+
+      # FIXME: Is md5sum the right approach?
+      if [ "$local_md5sum" != "$remote_md5sum" ]; then
+         # FIXME: This is ugly and hardcoded, replace after 1.0!
+         # Probably a better aproach is to have the user configured
+         # ~/.ssh/config to contain the right username
+         # Probably describe it in cdist-quickstart...
+         scp "$source" "root@${__target_host}:${destination}"
       fi
-   ;;
-
-   file)
-      if [ -f "$__object/parameter/source" ]; then
-         source="$(cat "$__object/parameter/source")"
-
-         if [ -f "$source" ]; then
-            local_md5sum="$($md5sum < "$source")"
-            remote_md5sum="$(cat "$__object/explorer/md5sum")"
-
-            # FIXME: Is md5sum the right approach?
-            if [ "$local_md5sum" != "$remote_md5sum" ]; then
-               # FIXME: This is ugly and hardcoded, replace after 1.0!
-               # Probably a better aproach is to have the user configured
-               # ~/.ssh/config to contain the right username
-               # Probably describe it in cdist-quickstart...
-               scp "$source" "root@${__target_host}:${destination}"
-            fi
-         else
-            echo "Source \"$source\" does not exist." >&2
-            exit 1
-         fi
-      else
-         if [ no = "$(cat "$__object/explorer/exists")" ]; then
-            echo touch \"$destination\"
-         fi
-      fi
-   ;;
-
-   symlink)
-      if [ ! -f "$__object/parameter/source" ]; then
-         echo "Source required for symlink" >&2
-         exit 1
-      fi
-      source="$(cat "$__object/parameter/source")"
-
-      # FIXME: handle directories or document & ignore?
-      echo ln -sf \"$source\" \"$destination\"
-   ;;
-
-   *)
-      echo "Unsupported type: \"$type\"" >&2
+   else
+      echo "Source \"$source\" does not exist." >&2
       exit 1
-   ;;
-esac
+   fi
+else
+   if [ no = "$(cat "$__object/explorer/exists")" ]; then
+      echo touch \"$destination\"
+   fi
+fi
+
 
 # Mode settings
 if [ -f "$__object/parameter/mode" ]; then
