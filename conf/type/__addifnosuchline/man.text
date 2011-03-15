@@ -1,22 +1,17 @@
-cdist-type__addifnosuchline(1)
-======================
+cdist-type__addifnosuchline(7)
+==============================
 Daniel Roth <dani-cdist--@--d-roth.li>
 
 
 NAME
 ----
-cdist-type__addifnosuchline - Add if no such line
-
-
-SYNOPSIS
---------
-cdist-type__addifnosuchline - Add if no such line
+cdist-type__addifnosuchline - Add a line (if not existing already)
 
 
 DESCRIPTION
 -----------
-cdist-type__addifnosuchline - can be used to check a file for existence of a
-specific line and adding that if not found
+This type can be used to check a file for existence of a
+specific line and adding it, if it was not found.
 
 
 REQUIRED PARAMETERS
@@ -28,20 +23,21 @@ line::
 OPTIONAL PARAMETERS
 -------------------
 file::
-   If supplied, use this as the destination file. Otherwise the
-   object_id is used.
+   If supplied, use this as the destination file.
+   Otherwise the object_id is used.
+
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
 # Creates or appends the line specifiend in "include_www" to the file "lighttpd.conf"
-__addifnosuchline www --file lighttpd.conf --line include_www
+__addifnosuchline www --file /etc/lighttpd.conf --line include_www
 
 # Adds the line "include_git" to the file "lighttpd.conf"
-__addifnosuchline lighttpd.conf --line include_git
-
+__addifnosuchline /etc/lighttpd.conf --line include_git
 --------------------------------------------------------------------------------
+
 
 SEE ALSO
 --------
