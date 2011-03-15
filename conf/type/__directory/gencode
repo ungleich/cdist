@@ -37,13 +37,8 @@ if ! $(echo "$destination" | grep -q ^/); then
    exit 1
 fi
 
-if [ -f "$__object/parameter/source" ]; then
-   echo "Source not supported for directory currently - FIXME" >&2
-   exit 1
-else
-   if [ no = "$(cat "$__object/explorer/exists")" ]; then
-      echo mkdir \"$destination\"
-   fi
+if [ no = "$(cat "$__object/explorer/exists")" ]; then
+   echo mkdir \"$destination\"
 fi
 
 
