@@ -25,8 +25,14 @@ destination::
    If supplied, use this as the destination on the target. Otherwise the
    object_id is used.
 
+group::
+   Group to chgrp to.
+
 mode::
    Unix permissions, suitable for chmod.
+
+owner::
+   User to chown to.
 
 source::
    If supplied, copy this file from the host running cdist to the target.
@@ -45,6 +51,10 @@ __file cdist-marker --type file --destination /etc/cdist-configured
 
 # Use __file from another type
 __file /etc/issue --source "$__type/files/archlinux" --type file
+
+# Supply some more settings
+__file /etc/shadow --source "$__type/files/shadow" --type file \
+   --owner root --group shadow --mode 0640
 --------------------------------------------------------------------------------
 
 

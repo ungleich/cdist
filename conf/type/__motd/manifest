@@ -19,13 +19,23 @@
 #
 #
 
-destination=/etc/motd
-
 # Select motd source
 if [ -f "$__object/parameter/source" ]; then
    source="$(cat "$__object/parameter/source")"
 else
    source="$__type/files/motd"
 fi
+
+os=$(cat $__global/explorer/os)
+
+
+case "$os" in
+   debian|ubuntu)
+      destination=/etc/motd.tail
+   ;;
+   *)
+      destination=/etc/motd
+   ;;
+esac
 
 __file "$destination" --source "$source" --type file

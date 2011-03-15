@@ -33,7 +33,7 @@ EXAMPLES
 __motd
 
 # Supply source file from a different type
-__file --source "$__type/files/my-motd"
+__motd --source "$__type/files/my-motd"
 --------------------------------------------------------------------------------
 
 
