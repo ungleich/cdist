@@ -15,14 +15,14 @@ cdist-type-addifnosuchline Add if no such line
 
 DESCRIPTION
 -----------
-cdist-type-addifnosuchline can be used to check a file for existence of a 
+cdist-type-addifnosuchline can be used to check a file for existence of a
 specific line and adding that if not found
 
 
 REQUIRED PARAMETERS
 -------------------
 line::
-   Specifies the content which shall be added if not existing. 
+   Specifies the content which shall be added if not existing.
 
 
 OPTIONAL PARAMETERS
@@ -35,12 +35,12 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Creates or appends the line specifiend in "foo" to the file "bar"
+# Creates or appends the line specifiend in "include_www" to the file "lighttpd.conf"
 
-__addifnosuchline foo --file bar --line foo
+__addifnosuchline www --file lighttpd.conf --line include_www
 
-# Adds the line "foo2" to the file "bar"
-__addifnosuchline foo --file bar --line foo2
+# Adds the line "include_git" to the file "bar"
+__addifnosuchline git_web --file lighttpd.conf --line include_git
 
 --------------------------------------------------------------------------------
 
