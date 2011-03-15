@@ -2,6 +2,9 @@
 	* New type __motd
 	* New type __addifnosuchline
 	* Document type __issue
+	* New type __user
+	* Document type __package
+	* Document type __package_emerge
 
 1.0.3: 2011-03-11
 	* Update regexp used for sane characters
