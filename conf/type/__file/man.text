@@ -15,8 +15,7 @@ This cdist type allows you to create files on the target.
 
 REQUIRED PARAMETERS
 -------------------
-type::
-   Specifies the type of file to be created. Either "directory" or "file"
+None.
 
 
 OPTIONAL PARAMETERS
