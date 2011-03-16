@@ -37,9 +37,15 @@ case "$__target_host" in
       # Same stuff for gentoo
       __package tree --state installed
    ;;
+
    cdist-debian)
       __package_apt atop --state installed
       __package apache2 --state deinstalled
+   ;;
+
+   cdist-redhat)
+      __issue
+      __motd
    ;;
 
    # Real machines may be used with their hostname or fqdn,
