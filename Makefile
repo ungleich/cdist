@@ -8,12 +8,8 @@ A2X=a2x -f manpage --no-xmllint
 WEBDIR=$$HOME/niconetz
 WEBPAGE=software/cdist.mdwn
 
+# Documentation
 MANDIR=doc/man
-# Unchecked
-MANSRC=$(MANDIR)/cdist-config-layout.text \
-	$(MANDIR)/cdist-stages.text		\
-
-# Clean documentation
 MANGENERATED=$(MANDIR)/cdist-reference.text
 
 MANSRC=$(MANDIR)/cdist.text				\
