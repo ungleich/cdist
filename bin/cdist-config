@@ -57,6 +57,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_parameter:=parameter}
 : ${__cdist_name_parameter_required:=required}
 : ${__cdist_name_parameter_optional:=optional}
+: ${__cdist_name_require:=require}
 : ${__cdist_name_singleton:=singleton}
 : ${__cdist_name_target_host:=target_host}
 : ${__cdist_name_type:=type}
@@ -246,6 +247,11 @@ __cdist_object_parameter_dir()
 __cdist_remote_object_parameter_dir()
 {
    echo "$(__cdist_remote_object_dir "$1")/${__cdist_name_parameter}"
+}
+
+__cdist_object_require()
+{
+   echo "$(__cdist_object_dir "$1")/${__cdist_name_require}"
 }
 
 __cdist_object_type_explorer_dir()
