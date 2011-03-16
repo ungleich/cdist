@@ -18,14 +18,14 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Setup environment for use with cdist
+# Setup environment for use with cdist - must be standalone!
 #
 
-. cdist-config
-[ $# -eq 0 ] || __cdist_usage "no arguments"
-
-# Allow access to unset variables like PATH and MANPATH
-set +u
+__cdist_pwd="$(pwd -P)"
+__cdist_mydir="${0%/*}";
+__cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
+__cdist_myname=${0##*/};
+__cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 echo export PATH=$__cdist_abs_mydir:$PATH
 
