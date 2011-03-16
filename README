@@ -48,19 +48,22 @@ it ticks differently:
 ### Features
 
 Stuff that should probably be included in every configuration management,
-but is not. Or: The reason why I began to write cdist.
+but is not. Or: Why I began to write cdist:
 
  * Speed
  * Elegant code
  * Clean design
  * Good documentation (man pages)
  * Meaningful error messages
- * No surprise factor
+ * The no surprise factor
  * Consistency in behaviour, naming and documentation
  * Easy integration into bare metal installations
  * Simple and well-known DSL: posix shell
  * It must be very easy to extend and debug cdist
  * Focus on reuse of existing functionality (like sh, ssh, find, rm, ...)
+ * Easy upgrade: ***There is no need to update cdist on target hosts!***
+  * cdist only needs to be update on the master server
+
 
 ## Requirements
 
@@ -171,7 +174,9 @@ Yes, I'm actually eating my own dogfood and currently managing
  * [ircd-hybrid](http://www.ircd-hybrid.org/) (chat)
  * [stunnel](http://stunnel.mirt.net/) (SSL tunnel)
  * [mercurial-server](http://www.lshift.net/mercurial-server.html)
+ * [xfce](http://www.xfce.org/)
+ * [slim](http://slim.berlios.de/)
 
-with cdist on a total of **4** production servers of the
+with cdist on a total of **5** production machines of the
 [Systems Group](http://www.systems.ethz.ch) at the
 [ETH Zurich](http://www.ethz.ch).
