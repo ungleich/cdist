@@ -104,3 +104,8 @@ other="$(ls)"
 if [ "$other" ]; then
    __cdist_usage "Unsupported parameter: $other"
 fi
+
+# Record requirements
+for requirement in $require; do
+   echo $requirement >> "$(__cdist_object_require "$__cdist_object")"
+done
