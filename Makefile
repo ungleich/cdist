@@ -86,7 +86,7 @@ test:
 	.rsync nicosc@ru3.inf.ethz.ch:cdist
 
 web:
-	cp REAL_README $(WEBDIR)/$(WEBPAGE)
+	cp README $(WEBDIR)/$(WEBPAGE)
 	cd $(WEBDIR) && git commit -m "cdist update" $(WEBPAGE)
 	cd $(WEBDIR) && make pub
 
