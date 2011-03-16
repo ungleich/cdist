@@ -34,7 +34,7 @@ cd "$__cdist_abs_mydir/../doc/man"
 NEWMANPATH="$(pwd -P):$MANPATH"
 
 # Match csh, tcsh to handle differently
-if $(echo $shell_binary | grep -q 'csh$'); then
+if [ "$(echo $shell_binary | grep 'csh$')" ]; then
    echo setenv PATH $NEWPATH \;
    echo setenv MANPATH $NEWMANPATH
 else
