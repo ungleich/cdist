@@ -1,1 +1,198 @@
-REAL_README
+[[!meta title="cdist - configuration management"]]
+
+     
+                 ..          .       .x+=:.        s   
+               dF           @88>    z`    ^%      :8  
+              '88bu.        %8P        .   <k    .88 
+          .   '*88888bu      .       .@8Ned8"   :888ooo
+     .udR88N    ^"*8888N   .@88u   .@^%8888"  -*8888888
+    <888'888k  beWE "888L ''888E` x88:  `)8b.   8888
+    9888 'Y"   888E  888E   888E  8888N=*8888   8888
+    9888       888E  888E   888E   %8"    R88   8888
+    9888       888E  888F   888E    @8Wou 9%   .8888Lu=
+    ?8888u../ .888N..888    888&  .888888P`    ^%888*
+     "8888P'   `"888*""     R888" `   ^"F        'Y" 
+       "P'        ""         ""  
+     
+
+[[!toc  levels=2]]
+
+## Introduction
+
+cdist configures your system and is similar to
+other configuration management systems like
+[cfengine](http://www.cfengine.org/),
+[bcfg2](http://trac.mcs.anl.gov/projects/bcfg2),
+[chef](http://wiki.opscode.com/display/chef/)
+and [puppet](http://www.puppetlabs.com/), but
+it ticks differently:
+
+ * cdist sticks completly to the KISS (keep it simple and stupid) paradigma
+  * cdist's core is very small (< 1k lines of code)
+  * There is only one type to extend cdist called ***type***.
+  * One main development target: ***It must be incredible easy to add new types.***
+ * cdist is UNIX
+  * It reuses existing tools like cat, find, mv, ...
+  * cdist's documentation is bundled as manpages
+ * cdist is written in POSIX shell
+  * No special requirements like high level interpreters needed on server or target
+
+### Architecture
+
+ * Push mode (server pushes configuration)
+ * User defines configuration in shell scripts (called ***manifests***)
+ * Generates internal configuration (cconfig style)
+ * Uses ***types*** to generate code be executed on the target
+ * And finally executes the code on the target / applies the configuration
+
+### Features
+
+Stuff that should probably be included in every configuration management,
+but is not. Or: Why I began to write cdist:
+
+ * Speed
+ * Elegant code
+ * Clean design
+ * Good documentation (man pages)
+ * Meaningful error messages
+ * The no surprise factor
+ * Consistency in behaviour, naming and documentation
+ * Easy integration into bare metal installations
+ * Simple and well-known DSL: posix shell
+ * It must be very easy to extend and debug cdist
+ * Focus on reuse of existing functionality (like sh, ssh, find, rm, ...)
+ * Easy upgrade: ***There is no need to update cdist on target hosts!***
+  * cdist only needs to be update on the master server
+
+### OS support
+
+cdist was tested or is know to run on at least
+
+ * [Archlinux](http://www.archlinux.org/)
+ * [Debian](http://www.debian.org/)
+ * [Gentoo](http://www.gentoo.org/)
+ * [Mac OS X](http://www.apple.com/macosx/)
+ * [Redhat](http://www.redhat.com/)
+ * [Ubuntu](http://www.ubuntu.com/)
+
+
+## Requirements
+
+### Server
+
+ * A posix like shell
+ * SSH-Client
+
+### Client ("target host")
+
+ * A posix like shell
+ * SSH-Server
+
+
+## Getting cdist
+
+You can clone cdist from git, which gives you the advantage of having
+a version control in place for development of your own stuff as well.
+
+### Installation
+
+To install cdist, execute the following commands:
+
+    git clone git://git.schottelius.org/cdist
+    cd cdist
+    export PATH=$PATH:$(pwd -P)/bin
+
+    # If you want the manpages (requires asciidoc to be installed)
+    make man
+    export MANPATH=$MANPATH:$(pwd -P)/doc/man
+
+
+Afterwards you can run ***cdist-quickstart*** to get an impression on
+how to use cdist.
+
+### Available versions
+
+There are at least the following branches available:
+
+ * master: the development branch
+ * 1.0: First official release
+ * 1.1: Current stable (includes \_\_file type change)
+
+Other branches may be available for features or bugfixes, but they
+may vanish at any point. To select a specific branch use
+
+    # Generic code
+    git checkout -b <name> origin/<name>
+    
+    # Stay on version 1.1
+    git checkout -b 1.1 origin/1.1
+
+### Mirrors
+
+ * git://github.com/telmich/cdist.git ([github](https://github.com/telmich/cdist))
+ * git://git.sans.ethz.ch/cdist ([sans](http://git.sans.ethz.ch/?p=cdist;a=summary))
+
+## Update
+
+To upgrade cdist in the current branch use
+
+    git pull
+
+    # Also update the manpages
+    make man
+    export MANPATH=$MANPATH:$(pwd -P)/doc/man
+
+If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
+The master branch on the other hand is the development branch and may not be
+working, break your setup or eat the tree in your garden.
+
+### Upgrading from 1.0 to 1.1
+
+In 1.1 the type **\_\_file** was split into **\_\_directory**, **\_\_file** and
+**\_\_link**. The parameter **--type** was removed from **\_\_file**. Thus you
+need to replace **\_\_file** calls in your manifests:
+
+ * Remove --type from all \_\_file calls
+ * If type was symlink, use \_\_link and --type symbolic
+ * If type was directory, use \_\_directory
+
+
+## Support
+
+### IRC
+
+You can join the development ***IRC channel***
+[#cLinux on irc.freenode.org](irc://irc.freenode.org/#cLinux).
+
+### Mailing list
+
+Bug reports, questions, patches, etc. should be send to the
+[cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
+
+## Used by
+
+If you're using cdist, feel free to send a report to the mailing list.
+Interesting information are for instance
+
+ * Which services do you manage?
+ * How many machines do you manage?
+ * What are the pros/cons you see in cdist?
+ * General comments/critics
+
+### Nico Schottelius, Systems Group ETH Zurich
+
+Yes, I'm actually eating my own dogfood and currently managing
+
+ * [plone](http://plone.org/) (cms)
+ * [moinmoin](http://moinmo.in/) (wiki)
+ * [apache](http://httpd.apache.org/) (webserver)
+ * [kerberos (mit)](http://web.mit.edu/kerberos/) (authentication)
+ * [ircd-hybrid](http://www.ircd-hybrid.org/) (chat)
+ * [stunnel](http://stunnel.mirt.net/) (SSL tunnel)
+ * [mercurial-server](http://www.lshift.net/mercurial-server.html) (version control)
+ * [xfce](http://www.xfce.org/) (lightweight desktop environment)
+ * [slim](http://slim.berlios.de/) (graphical login manager for X11)
+
+with cdist on a total of **5** production machines of the
+[Systems Group](http://www.systems.ethz.ch) at the
+[ETH Zurich](http://www.ethz.ch).

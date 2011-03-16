@@ -18,17 +18,17 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Retrieve the md5sum of a file to be created, if it is already existing.
+#
 
-destination=/etc/issue
-source="$(cat "out/explorer/os")"
+destination="/$__object_id"
 
-case "$os" in
-   archlinux|redhat)
-      source="$__type/files/$os"
-   ;;
-   *)
-      source="$__type/files/default"
-   ;;
-esac
-
-__file "$destination" --source "$source"
+if [ -e "$destination" ]; then
+   if [ -f  "$destination" ]; then
+      cksum < "$destination"
+   else
+      echo "NO REGULAR FILE"
+   fi
+else
+   echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
+fi

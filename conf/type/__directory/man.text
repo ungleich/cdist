@@ -1,16 +1,16 @@
-cdist-type__issue(7)
-====================
+cdist-type__directory(7)
+========================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-type__issue - Manage issue
+cdist-type__directory - Create a directory
 
 
 DESCRIPTION
 -----------
-This cdist type allows you to easily setup /etc/issue.
+This cdist type allows you to create directories on the target.
 
 
 REQUIRED PARAMETERS
@@ -20,13 +20,28 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-None
+group::
+   Group to chgrp to.
+
+mode::
+   Unix permissions, suitable for chmod.
+
+owner::
+   User to chown to.
+
+parents::
+   Whether to create parents as well (mkdir -p behaviour)
+
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-__issue
+# A silly example
+__directory /tmp/foobar
+
+# Ensure /etc exists correctly
+__file /etc --owner root --group root --mode 0755
 --------------------------------------------------------------------------------
 
 

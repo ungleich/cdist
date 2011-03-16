@@ -8,22 +8,19 @@ A2X=a2x -f manpage --no-xmllint
 WEBDIR=$$HOME/niconetz
 WEBPAGE=software/cdist.mdwn
 
+# Documentation
 MANDIR=doc/man
-# Unchecked
-MANSRC=$(MANDIR)/cdist-config-layout.text \
-	$(MANDIR)/cdist-config.text 		\
-	$(MANDIR)/cdist-quickstart.text \
-	$(MANDIR)/cdist-stages.text		\
-	$(MANDIR)/cdist-terms.text 		\
-
-# Clean documentation
 MANGENERATED=$(MANDIR)/cdist-reference.text
 
 MANSRC=$(MANDIR)/cdist.text				\
    $(MANDIR)/cdist-bin-transfer.text	\
+	$(MANDIR)/cdist-config.text 			\
+   $(MANDIR)/cdist-dir.text         	\
+   $(MANDIR)/cdist-env.text         	\
    $(MANDIR)/cdist-deploy-to.text 		\
 	$(MANDIR)/cdist-explorer.text			\
 	$(MANDIR)/cdist-manifest.text 		\
+	$(MANDIR)/cdist-quickstart.text 		\
 	$(MANDIR)/cdist-stages.text			\
 	$(MANDIR)/cdist-type.text				\
 	$(MANDIR)/cdist-type-template.text	\
@@ -39,7 +36,7 @@ all:
 	@echo ''
 	@echo 'Here are the possible targets:'
 	@echo ''
-	@echo '	man: Build manpages'
+	@echo '	man: Build manpages (requires Asciidoc (a2x binary))'
 	@echo '	clean: Remove build stuff'
 	@echo ''
 	@echo ''
@@ -89,9 +86,10 @@ test:
 	.rsync nicosc@ru3.inf.ethz.ch:cdist
 
 web:
-	cp REAL_README $(WEBDIR)/$(WEBPAGE)
+	cp README $(WEBDIR)/$(WEBPAGE)
 	cd $(WEBDIR) && git commit -m "cdist update" $(WEBPAGE)
 	cd $(WEBDIR) && make pub
 
 pub:
 	git push --mirror
+	git push --mirror github

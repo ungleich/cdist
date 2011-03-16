@@ -7,13 +7,14 @@
 
 # Every machine becomes a marker, so sysadmins know that automatic
 # configurations are happening
-__file /etc/cdist-configured --type file
+__file /etc/cdist-configured
 
 case "$__target_host" in
    # Everybody has this
    localhost)
-      # Usual example
-      __file test --type symlink --source /etc/cdist-configured --destination /tmp/cdist-testfile
+      __link /tmp/cdist-testfile --source /etc/cdist-configured  --type symbolic
+      __directory /tmp/cdist-test-dir --mode 4777
+      __file /tmp/cdist-test-file --mode 0750 --owner nobody --group root
    ;;
 
    #
@@ -36,9 +37,15 @@ case "$__target_host" in
       # Same stuff for gentoo
       __package tree --state installed
    ;;
+
    cdist-debian)
       __package_apt atop --state installed
       __package apache2 --state deinstalled
+   ;;
+
+   cdist-redhat)
+      __issue
+      __motd
    ;;
 
    # Real machines may be used with their hostname or fqdn,

@@ -18,34 +18,26 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the md5sum of a file to be created, if it is already existing.
+# __file is a very basic type and should be able to be used as an
+# example for typewrites later
 #
 
-if [ -f "$__object/parameter/destination" ]; then
-   destination="$(cat "$__object/parameter/destination")"
-else
-   destination="/$__object_id"
-fi
+destination="/$__object_id"
 
-os="$(cat $__global/explorer/os)"
+type="$(cat "$__object/parameter/type")"
+source="$(cat "$__object/parameter/source")"
 
-case "$os" in
-   macosx)
-      md5sum="md5"
+case "$type" in
+   symbolic)
+      lnopt="-s"
    ;;
-
+   hard)
+      lnopt=""
+   ;;
    *)
-      md5sum="md5sum"
+      echo "Unknown type: $type" >&2
+      exit 1
    ;;
 esac
 
-# No output if file does not exist - does definitely not match the md5sum :-)
-if [ -e "$destination" ]; then
-   if [ -f  "$destination" ]; then
-      $md5sum < "$destination"
-   else
-      echo "NO REGULAR FILE"
-   fi
-else
-   echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
-fi
+echo ln ${lnopt} -f \"$source\" \"$destination\"

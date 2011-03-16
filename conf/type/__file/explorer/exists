@@ -21,11 +21,7 @@
 # Check whether file exists or not
 #
 
-if [ -f "$__object/parameter/destination" ]; then
-   destination="$(cat "$__object/parameter/destination")"
-else
-   destination="/$__object_id"
-fi
+destination="/$__object_id"
 
 if [ -e "$destination" ]; then
    echo yes

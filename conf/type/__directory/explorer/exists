@@ -18,17 +18,17 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Check whether file exists or not
+#
 
-destination=/etc/issue
-source="$(cat "out/explorer/os")"
+if [ -f "$__object/parameter/destination" ]; then
+   destination="$(cat "$__object/parameter/destination")"
+else
+   destination="/$__object_id"
+fi
 
-case "$os" in
-   archlinux|redhat)
-      source="$__type/files/$os"
-   ;;
-   *)
-      source="$__type/files/default"
-   ;;
-esac
-
-__file "$destination" --source "$source"
+if [ -e "$destination" ]; then
+   echo yes
+else
+   echo no
+fi
