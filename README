@@ -102,7 +102,7 @@ There are at least the following branches available:
 
  * master: the development branch
  * 1.0: First official release
- * 1.1: Current stable (includes __file type change)
+ * 1.1: Current stable (includes \_\_file type change)
 
 Other branches may be available for features or bugfixes, but they
 may vanish at any point. To select a specific branch use
@@ -129,13 +129,13 @@ working, break your setup or eat the tree in your garden.
 
 ### Upgrading from 1.0 to 1.1
 
-In 1.1 the type **__file** was split into **__directory**, **__file** and
-**__link**. The parameter **--type** was removed from **__file**. Thus you
-need to replace **__file** calls in your manifests:
+In 1.1 the type **\_\_file** was split into **\_\_directory**, **\_\_file** and
+**\_\_link**. The parameter **--type** was removed from **\_\_file**. Thus you
+need to replace **\_\_file** calls in your manifests:
 
- * Remove --type from all __file calls
- * If type was symlink, use __link and --type symbolic
- * If type was directory, use __directory
+ * Remove --type from all \_\_file calls
+ * If type was symlink, use \_\_link and --type symbolic
+ * If type was directory, use \_\_directory
 
 
 ## Support
