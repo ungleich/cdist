@@ -115,8 +115,11 @@ how to use cdist.
 There are at least the following branches available:
 
  * master: the development branch
+ * 1.1: Current stable
+
+Old versions:
+
  * 1.0: First official release
- * 1.1: Current stable (includes \_\_file type change)
 
 Other branches may be available for features or bugfixes, but they
 may vanish at any point. To select a specific branch use
