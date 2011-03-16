@@ -129,8 +129,8 @@ may vanish at any point. To select a specific branch use
 
 ### Mirrors
 
- * git://github.com/telmich/cdist.git (Nicos Schottelius' backup)
- * git://git.sans.ethz.ch/cdist (Steven Armstrongs main repo)
+ * git://github.com/telmich/cdist.git ([github](https://github.com/telmich/cdist))
+ * git://git.sans.ethz.ch/cdist ([sans](http://git.sans.ethz.ch/?p=cdist;a=summary))
 
 ## Update
 
