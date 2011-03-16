@@ -20,10 +20,6 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-destination::
-   If supplied, use this as the destination on the target. Otherwise the
-   object_id is used.
-
 group::
    Group to chgrp to.
 
@@ -43,16 +39,13 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Create  /etc/cdist-configured as an empty file
-__file /etc/cdist-configured --type file
-
-# Same but with a different object id
-__file cdist-marker --type file --destination /etc/cdist-configured
+__file /etc/cdist-configured
 
 # Use __file from another type
-__file /etc/issue --source "$__type/files/archlinux" --type file
+__file /etc/issue --source "$__type/files/archlinux"
 
 # Supply some more settings
-__file /etc/shadow --source "$__type/files/shadow" --type file \
+__file /etc/shadow --source "$__type/files/shadow" \
    --owner root --group shadow --mode 0640
 --------------------------------------------------------------------------------
 

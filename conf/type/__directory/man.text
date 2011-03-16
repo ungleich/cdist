@@ -37,18 +37,11 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Create  /etc/cdist-configured as an empty file
-__file /etc/cdist-configured --type file
+# A silly example
+__directory /tmp/foobar
 
-# Same but with a different object id
-__file cdist-marker --type file --destination /etc/cdist-configured
-
-# Use __file from another type
-__file /etc/issue --source "$__type/files/archlinux" --type file
-
-# Supply some more settings
-__file /etc/shadow --source "$__type/files/shadow" --type file \
-   --owner root --group shadow --mode 0640
+# Ensure /etc exists correctly
+__file /etc --owner root --group root --mode 0755
 --------------------------------------------------------------------------------
 
 

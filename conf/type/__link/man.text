@@ -27,20 +27,21 @@ OPTIONAL PARAMETERS
 -------------------
 None.
 
+
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
 # Create hard link of /etc/shadow
-__file /root/shadow --source /etc/shadow --type hard
+__link /root/shadow --source /etc/shadow --type hard
 
 # Relative symbolic link
-__file /etc/apache2/sites-enabled/www.test.ch   \
+__link /etc/apache2/sites-enabled/www.test.ch   \
    --source ../sites-available/www.test.ch      \
    --type symbolic
 
-# Relative absolute link
-__file /opt/plone --source /home/services/plone --type symbolic
+# Absolute symbolic link
+__link /opt/plone --source /home/services/plone --type symbolic
 --------------------------------------------------------------------------------
 
 
