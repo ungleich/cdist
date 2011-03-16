@@ -27,7 +27,17 @@ __cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
 __cdist_myname=${0##*/};
 __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
-echo export PATH=$__cdist_abs_mydir:$PATH
+shell_binary=${SHELL##*/}
 
+NEWPATH="$__cdist_abs_mydir:$PATH"
 cd "$__cdist_abs_mydir/../doc/man"
-echo export MANPATH=$(pwd -P):$MANPATH
+NEWMANPATH="$(pwd -P):$MANPATH"
+
+# Match csh, tcsh to handle differently
+if $(echo $shell_binary | grep -q 'csh$'); then
+   echo setenv PATH $NEWPATH
+   echo setenv MANPATH $NEWMANPATH
+else
+   echo export PATH=$NEWPATH
+   echo export MANPATH=$NEWMANPATH
+fi
