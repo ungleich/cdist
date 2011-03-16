@@ -29,10 +29,10 @@ For use in bourne shell variants (like dash, bash, ksh) as well as
 in csh variants (csh, tcsh):
 
 --------------------------------------------------------------------------------
-eval `~/cdist/bin/cdist-env`
+eval `./bin/cdist-env`
 --------------------------------------------------------------------------------
 
-Replace ~/cdist with the checkout directory of cdist.
+Replace "./" with the checkout directory of cdist.
 
 
 SEE ALSO
