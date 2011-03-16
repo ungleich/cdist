@@ -24,6 +24,8 @@ In the push case DST_DIR is remote, in the pull case local.
 cdist-dir does not cleanup DST_DIR and thus it may contain old
 stuff if used multiple times.
 
+cdist-dir does not rely on rsync or other high level tools, because
+it cannot expect its existence on the local or target host.
 
 SEE ALSO
 --------
