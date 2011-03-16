@@ -21,11 +21,7 @@
 # Retrieve the md5sum of a file to be created, if it is already existing.
 #
 
-if [ -f "$__object/parameter/destination" ]; then
-   destination="$(cat "$__object/parameter/destination")"
-else
-   destination="/$__object_id"
-fi
+destination="/$__object_id"
 
 if [ -e "$destination" ]; then
    if [ -f  "$destination" ]; then
