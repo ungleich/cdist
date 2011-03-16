@@ -64,6 +64,16 @@ but is not. Or: Why I began to write cdist:
  * Easy upgrade: ***There is no need to update cdist on target hosts!***
   * cdist only needs to be update on the master server
 
+### OS support
+
+cdist was tested or is know to run on at least
+
+ * [Archlinux](http://www.archlinux.org/)
+ * [Debian](http://www.debian.org/)
+ * [Gentoo](http://www.gentoo.org/)
+ * [Mac OS X](http://www.apple.com/macosx/)
+ * [Ubuntu](http://www.ubuntu.com/)
+
 
 ## Requirements
 
