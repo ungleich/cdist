@@ -1,9 +1,10 @@
 1.1:
 	* Replace type __file with __file, __directory, __link
+	* Document cdist-env
 
 1.0.4: 2011-03-15
 	* New type __motd
-	* New type __addifnosuchline
+	* New type __addifnosuchline (Daniel Roth)
 	* Document type __issue
 	* Document type __package_pacman
 	* Document type __package_apt
