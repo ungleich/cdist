@@ -40,4 +40,4 @@ case "$type" in
    ;;
 esac
 
-echo ln ${lnopts} -f \"$source\" \"$destination\"
+echo ln ${lnopt} -f \"$source\" \"$destination\"
