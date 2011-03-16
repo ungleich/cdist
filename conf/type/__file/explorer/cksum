@@ -27,22 +27,9 @@ else
    destination="/$__object_id"
 fi
 
-os="$(cat $__global/explorer/os)"
-
-case "$os" in
-   macosx)
-      md5sum="md5"
-   ;;
-
-   *)
-      md5sum="md5sum"
-   ;;
-esac
-
-# No output if file does not exist - does definitely not match the md5sum :-)
 if [ -e "$destination" ]; then
    if [ -f  "$destination" ]; then
-      $md5sum < "$destination"
+      cksum < "$destination"
    else
       echo "NO REGULAR FILE"
    fi
