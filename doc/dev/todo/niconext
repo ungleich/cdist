@@ -1,1 +1,3 @@
-Release 1.1.0
+Dependencies:
+   Record in bin/cdist-type-emulator
+      Fix __cdist_object_base_dir issue (vs. $__cdist_out_object_dir in deploy-to)
