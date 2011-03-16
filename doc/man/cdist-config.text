@@ -10,18 +10,14 @@ cdist-config - Read basic cdist configuration
 
 DESCRIPTION
 -----------
-Cdist-config is sourced by all helper programs and provides
-hints on where to find the library. Cdist-config needs to be
-in the path.
-
-AUTHOR
-------
-Nico Schottelius <mailto:nico-cdist--@--schottelius.org[]>
+Cdist-config is sourced by cdist programs and provides hints on where to find
+types, manifests, etc. Generally speaking, it's just usable from within the
+core and is only of interest for cdist-developers.
 
 
-RESOURCES
----------
-Main web site: http://www.nico.schottelius.org/cdist/[]
+SEE ALSO
+--------
+cdist(7)
 
 
 COPYING

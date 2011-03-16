@@ -11,7 +11,6 @@ WEBPAGE=software/cdist.mdwn
 MANDIR=doc/man
 # Unchecked
 MANSRC=$(MANDIR)/cdist-config-layout.text \
-	$(MANDIR)/cdist-config.text 		\
 	$(MANDIR)/cdist-quickstart.text \
 	$(MANDIR)/cdist-stages.text		\
 	$(MANDIR)/cdist-terms.text 		\
@@ -21,6 +20,7 @@ MANGENERATED=$(MANDIR)/cdist-reference.text
 
 MANSRC=$(MANDIR)/cdist.text				\
    $(MANDIR)/cdist-bin-transfer.text	\
+	$(MANDIR)/cdist-config.text 			\
    $(MANDIR)/cdist-env.text         	\
    $(MANDIR)/cdist-deploy-to.text 		\
 	$(MANDIR)/cdist-explorer.text			\
@@ -40,7 +40,7 @@ all:
 	@echo ''
 	@echo 'Here are the possible targets:'
 	@echo ''
-	@echo '	man: Build manpages'
+	@echo '	man: Build manpages (requires Asciidoc (a2x binary))'
 	@echo '	clean: Remove build stuff'
 	@echo ''
 	@echo ''
