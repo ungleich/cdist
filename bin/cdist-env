@@ -35,7 +35,7 @@ NEWMANPATH="$(pwd -P):$MANPATH"
 
 # Match csh, tcsh to handle differently
 if $(echo $shell_binary | grep -q 'csh$'); then
-   echo setenv PATH $NEWPATH
+   echo setenv PATH $NEWPATH \;
    echo setenv MANPATH $NEWMANPATH
 else
    echo export PATH=$NEWPATH
