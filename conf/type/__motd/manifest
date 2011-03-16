@@ -38,4 +38,4 @@ case "$os" in
    ;;
 esac
 
-__file "$destination" --source "$source" --type file
+__file "$destination" --source "$source" --mode 0644
