@@ -21,6 +21,7 @@ MANGENERATED=$(MANDIR)/cdist-reference.text
 MANSRC=$(MANDIR)/cdist.text				\
    $(MANDIR)/cdist-bin-transfer.text	\
 	$(MANDIR)/cdist-config.text 			\
+   $(MANDIR)/cdist-dir.text         	\
    $(MANDIR)/cdist-env.text         	\
    $(MANDIR)/cdist-deploy-to.text 		\
 	$(MANDIR)/cdist-explorer.text			\
