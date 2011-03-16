@@ -11,9 +11,7 @@ WEBPAGE=software/cdist.mdwn
 MANDIR=doc/man
 # Unchecked
 MANSRC=$(MANDIR)/cdist-config-layout.text \
-	$(MANDIR)/cdist-quickstart.text \
 	$(MANDIR)/cdist-stages.text		\
-	$(MANDIR)/cdist-terms.text 		\
 
 # Clean documentation
 MANGENERATED=$(MANDIR)/cdist-reference.text
@@ -26,6 +24,7 @@ MANSRC=$(MANDIR)/cdist.text				\
    $(MANDIR)/cdist-deploy-to.text 		\
 	$(MANDIR)/cdist-explorer.text			\
 	$(MANDIR)/cdist-manifest.text 		\
+	$(MANDIR)/cdist-quickstart.text 		\
 	$(MANDIR)/cdist-stages.text			\
 	$(MANDIR)/cdist-type.text				\
 	$(MANDIR)/cdist-type-template.text	\

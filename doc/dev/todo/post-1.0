@@ -38,7 +38,6 @@ Documentation:
       - cdist-object-codegen
       - cdist-object-codegen-all
       - cdist-object-explorer-all
-      - cdist-quickstart
       - cdist-remote-code-run-all
       - cdist-remote-explorer-run
       - cdist-run-remote

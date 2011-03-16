@@ -2,6 +2,8 @@
 	* Replace type __file with __file, __directory, __link
 	* Document cdist-env
 	* Document cdist-config
+	* Document cdist-dir
+	* Document cdist-quickstart
 
 1.0.4: 2011-03-15
 	* New type __motd
