@@ -106,6 +106,8 @@ if [ "$other" ]; then
 fi
 
 # Record requirements
+# it's fine, if it's not set
+set +u
 for requirement in $require; do
    echo $requirement >> "$(__cdist_object_require "$__cdist_object")"
 done
