@@ -23,11 +23,10 @@
 #
 
 . cdist-config
-[ $# -eq 3 ] || __cdist_usage "<target host>" "<object_base_dir>" "<object>"
+[ $# -eq 2 ] || __cdist_usage "<target host>" "<object>"
 set -eu
 
 __cdist_target_host="$1"; shift
-__cdist_object_base_dir="$1"; shift
 __cdist_object="$1"; shift
 
 __cdist_object_dir="$(__cdist_object_dir "$__cdist_object")"
@@ -55,7 +54,7 @@ if [ -x "$gencode" ]; then
    __cdist_exec_fail_on_error "$gencode"
 else
    if [ -f "$gencode" ]; then
-      echo "$gencode" exists, but is not executable >&2
+      echo "Warning: $gencode exists, but is not executable" >&2
    fi
 
    # No gencode? also fine! Ensure we exit 0

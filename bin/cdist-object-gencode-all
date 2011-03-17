@@ -23,7 +23,6 @@
 
 . cdist-config
 [ $# -eq 1 ] || __cdist_usage "<target host>"
-
 set -eu
 
 __cdist_target_host="$1"; shift
@@ -34,9 +33,7 @@ while read object; do
    code="$(__cdist_object_code "$object")"
    echo "Generating  code  for $object ..."
 
-   cdist-object-gencode "$__cdist_target_host"     \
-                        "$__cdist_out_object_dir" \
-                        "$object" > "${code}"
+   cdist-object-gencode "$__cdist_target_host" "$object" > "${code}"
 
    chmod u+x "${code}"
 done < "$__cdist_tmp_file"
