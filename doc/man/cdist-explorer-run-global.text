@@ -1,0 +1,31 @@
+cdist-explorer-run-global(1)
+============================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-explorer-run-global - Run the global explorers
+
+
+SYNOPSIS
+--------
+cdist-explorer-run-global HOSTNAME
+
+
+DESCRIPTION
+-----------
+Transfer the global explorers to HOSTNAME, execute them and transfer
+back the results.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-deploy-to(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
