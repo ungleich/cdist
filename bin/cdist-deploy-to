@@ -47,7 +47,7 @@ echo "Transferring cdist binaries ...X"
 cdist-dir push "$__cdist_target_host" "${__cdist_abs_mydir}" "${__cdist_remote_bin_dir}"
 
 # Execute general explorers
-cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
+cdist-explorer-run-global     "$__cdist_target_host"
 
 # Create initial object base
 cdist-manifest-run-init       "$__cdist_target_host" "$__cdist_out_object_dir"
