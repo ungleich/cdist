@@ -43,7 +43,7 @@ echo "cdist $__cdist_version: Configuring $__cdist_target_host"
 __cdist_init_deploy           "$__cdist_target_host"
 
 # Transfer cdist "binaries"
-cdist-bin-transfer            "$__cdist_target_host" "$__cdist_remote_bin_dir"
+cdist-bin-transfer            "$__cdist_target_host"
 
 # Execute general explorers
 cdist-explorer-run-init       "$__cdist_target_host" "$__cdist_out_explorer_dir"
