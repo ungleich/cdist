@@ -18,21 +18,17 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# This binary is executed on the remote side to execute explorers
+# This binary is executed on the remote side to execute code
 # 
-# It supports different variables names to be used, so __explorers
-# and __type_explorers can be submitted :-)
-#
 
 . cdist-config
-if [ $# -ne 1 ]; then
-   __cdist_usage "<object dir>"
-fi
+[ $# -eq 1 ] || __cdist_usage "<object dir>"
 set -ue
 
-__cdist_object_base_dir="$1"; shift
+# Warning: Variable is special, as interpreted by __cdist_object_dir()
+__cdist_out_object_dir="$1"; shift
 
-__cdist_object_list "$__cdist_object_base_dir" > "$__cdist_tmp_file"
+__cdist_object_list "$__cdist_out_object_dir" > "$__cdist_tmp_file"
 
 # FIXME post 1.0: add dependencies
 while read object; do
