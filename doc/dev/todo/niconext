@@ -22,3 +22,10 @@ In essence:
          var1="" var2="" var3="" ... cdist-$tool_to_debug
       vs. currently
          var1="" cdist-$tool_to_debug opt1 opt2
+
+--------------------------------------------------------------------------------
+It seems that being able to pass the target host as argv makes sense,
+but everything else can be used from cdist-config -> do not pass.
+
+Changing those variables is only needed if debugging the core and for
+this purpose setting variables is fine.
