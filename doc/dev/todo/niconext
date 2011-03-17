@@ -29,3 +29,6 @@ but everything else can be used from cdist-config -> do not pass.
 
 Changing those variables is only needed if debugging the core and for
 this purpose setting variables is fine.
+--------------------------------------------------------------------------------
+
+   ----------> go through cdist-deploy-to and do a cleanup round
