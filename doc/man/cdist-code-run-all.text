@@ -1,0 +1,32 @@
+cdist-code-run-all(1)
+=====================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-code-run-all - Execute all generated code on the target
+
+
+SYNOPSIS
+--------
+cdist-code-run-all HOSTNAME
+
+
+DESCRIPTION
+-----------
+cdist-code-run-all is just a wrapper for cdist-remote-code-run-all.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-deploy-to(1)
+- cdist-remote-code-run-all(1)
+- cdist-run-remote(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

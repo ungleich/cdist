@@ -13,6 +13,7 @@ MANDIR=doc/man
 MANGENERATED=$(MANDIR)/cdist-reference.text
 
 MANSRC=$(MANDIR)/cdist.text						\
+	$(MANDIR)/cdist-code-run-all.text			\
 	$(MANDIR)/cdist-config.text 					\
    $(MANDIR)/cdist-dir.text         			\
    $(MANDIR)/cdist-env.text         			\
