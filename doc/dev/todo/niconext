@@ -1,3 +1,24 @@
 Dependencies:
    Record in bin/cdist-type-emulator
       Fix __cdist_object_base_dir issue (vs. $__cdist_out_object_dir in deploy-to)
+      |
+      |
+|-----|
+|
+|
+| New problem:
+
+Parts of the core use argv (see bin/cdist-deploy-to),
+assign this either an own name or a "standard" name.
+
+cdist-config has a function that uses this "standard" var:
+   /home/users/nico/oeffentlich/rechner/projekte/cdist/bin/cdist-config: Zeile 229: __cdist_object_base_dir ist nicht gesetzt.
+
+In essence:
+
+   - either argv lists get much longer (supplying all relevant arguments)
+   - OR cdist-core commands depend on the given environment:
+      - makes debugging more look like
+         var1="" var2="" var3="" ... cdist-$tool_to_debug
+      vs. currently
+         var1="" cdist-$tool_to_debug opt1 opt2
