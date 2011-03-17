@@ -27,6 +27,7 @@ MANSRC=$(MANDIR)/cdist.text						\
 	$(MANDIR)/cdist-object-gencode.text    	\
 	$(MANDIR)/cdist-object-gencode-all.text	\
 	$(MANDIR)/cdist-quickstart.text 				\
+	$(MANDIR)/cdist-run-remote.text				\
 	$(MANDIR)/cdist-stages.text					\
 	$(MANDIR)/cdist-type.text						\
 	$(MANDIR)/cdist-type-template.text			\
