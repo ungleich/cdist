@@ -11,7 +11,7 @@ cdist-type__removeline - Remove a line (if existing)
 DESCRIPTION
 -----------
 This type can be used to check a file for existence of a
-specific line and removeing it, if it was not found.
+specific line and removeing it, if it was found.
 
 
 REQUIRED PARAMETERS
