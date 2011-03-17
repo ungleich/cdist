@@ -13,7 +13,7 @@ case "$__target_host" in
    # Everybody has this
    localhost)
       __link /tmp/cdist-testfile --source /etc/cdist-configured  --type symbolic
-      __directory /tmp/cdist-test-dir --mode 4777
+      require="foo" __directory /tmp/cdist-test-dir --mode 4777
       __file /tmp/cdist-test-file --mode 0750 --owner nobody --group root
    ;;
 
