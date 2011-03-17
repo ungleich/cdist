@@ -1,0 +1,32 @@
+cdist-manifest-run-all(1)
+==========================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-manifest-run-all - Run manifests of all created types
+
+
+SYNOPSIS
+--------
+cdist-manifest-run-all HOSTNAME
+
+
+DESCRIPTION
+-----------
+cdist-manifest-run-all iterates over every existing object and
+executes the manifest of its type.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-deploy-to(1)
+- cdist-manifest-run-init(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

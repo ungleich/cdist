@@ -8,3 +8,4 @@ Dependencies:
 done:
 * Document cdist-explorer-run-global
 * Document cdist-manifest-run-init
+* Document cdist-manifest-run-all
