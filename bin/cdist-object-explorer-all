@@ -22,18 +22,17 @@
 #
 
 . cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host> <object_base_dir>"
+[ $# -eq 1 ] || __cdist_usage "<target host>"
 set -eu
 
 __cdist_target_host="$1"; shift
-__cdist_object_base_dir="$1"; shift
 
 object_listing="$__cdist_tmp_dir/objects"
 type_listing_all="$__cdist_tmp_dir/types_all"
 type_listing="$__cdist_tmp_dir/types"
 
 # Get listing of objects
-__cdist_object_list "$__cdist_object_base_dir" > "$object_listing"
+__cdist_object_list "$__cdist_out_object_dir" > "$object_listing"
 
 # Get listing of types used
 while read object; do
