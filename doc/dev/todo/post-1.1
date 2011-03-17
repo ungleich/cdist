@@ -1,9 +1,9 @@
 Core:
-   -  write test case: test.sh
+   - write test case: test.sh
    - probably remove grep -q (solaris does not have it)
 
 Dependencies:
-   - Add meta parameters like --requires --excludes --depends?
+   - via env
    - Build dependency tree
    - Exit on any error
    - Check return codes
@@ -28,17 +28,9 @@ Documentation:
    - Different environments (production, integration, development)
       - via version control
    - Check all references in manpages, ensure all manpages exist, generic ones:
-      + cdist
-         + cdist-deploy-to
-         + cdist-manifest
    - ensure every file in bin/ has a correspondent manpage
-      - cdist-code-run-all
-      - cdist-manifest-run
-      - cdist-object-codegen
-      - cdist-object-codegen-all
       - cdist-remote-code-run-all
       - cdist-remote-explorer-run
-      - cdist-run-remote
       - cdist-type-build-emulation
       - cdist-type-emulator
    - Ensure html output of manpages are published on the web
