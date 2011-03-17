@@ -18,19 +18,10 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# __package is an abstract type which dispatches to the lower level
-# __package_$name types which do the actual interaction with the packaging 
-# system.
+# Get an existing groups group entry.
 #
 
-# TODO: depend on package gentoolkit for qpkg
+name=$__object_id
 
-# TODO:
-# if /var/cache/eix is older then /usr/portage/metadata/timestamp
-#   then run /usr/bin/eix-update
-#
-# check if package is installed:
-#
-# get currently installed version:
-#
+getent group "$name" || true
 

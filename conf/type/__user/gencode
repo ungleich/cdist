@@ -1,0 +1,70 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage users.
+#
+
+name="$__object_id"
+
+command=
+if grep -q "^$name" "$__object/explorer/passwd"; then
+   # user exists
+   command="usermod"
+else
+   # user does not exist
+   command="useradd"
+fi
+
+
+get_current_value() {
+   local key="$1"
+   local index
+   case "$key" in
+      password)
+         cut -d':' -f 2 "$__object/explorer/shadow"
+         break
+      ;;
+      uid) index=3;;
+      gid) index=4;;
+      comment) index=5;;
+      home) index=6;;
+      shell) index=7;;
+   esac
+   cut -d':' -f $index "$__object/explorer/passwd"
+}
+
+
+set -- "$@"
+cd "$__object/parameter"
+for property in $(ls .); do
+   current_value=$(get_current_value "$property")
+   new_value="$(cat "$property")"
+   if [ "$new_value" != "$current_value" ]; then
+      # Shedule changed properties for update
+      set -- "$@" "--$property" \"$new_value\"
+   fi
+done
+
+
+if [ $# -gt 0 ]; then
+   # Update changed properties
+   echo $command $@ $name
+fi
+

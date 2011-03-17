@@ -37,7 +37,7 @@ touch "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_parameter_re
 touch "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_parameter_optional}"
 
 # Manifest
-cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_manifest}"
+cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_dir "$__cdist_type")/${__cdist_name_manifest}"
 
 #
 # This is the manifest, which can be used to create other objects like this:
@@ -50,7 +50,7 @@ cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_parameter_
 eof
 
 # Gencode
-cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_gencode}"
+cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_dir "$__cdist_type")/${__cdist_name_gencode}"
 
 #
 # This file should generate code on stdout, which will be collected by cdist
@@ -63,4 +63,4 @@ cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_parameter_
 eof
 
 # Explorer
-mkdir -p "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_explorer}"
+mkdir -p "$(__cdist_type_dir "$__cdist_type")/${__cdist_name_explorer}"

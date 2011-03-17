@@ -9,6 +9,8 @@
 	* New type __motd
 	* New type __addifnosuchline (Daniel Roth)
 	* Document type __issue
+	* New type __user
+	* Document type __package
 	* Document type __package_pacman
 	* Document type __package_apt
 	* New parameter for __file: --owner and --group
