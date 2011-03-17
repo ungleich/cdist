@@ -48,9 +48,7 @@ cdist-dir push "$__cdist_target_host" "${__cdist_abs_mydir}" "${__cdist_remote_b
 
 cdist-explorer-run-global     "$__cdist_target_host"
 cdist-manifest-run-init       "$__cdist_target_host"
-
-# Create dependent objects
-cdist-manifest-run-all        "$__cdist_target_host" "$__cdist_out_object_dir"
+cdist-manifest-run-all        "$__cdist_target_host"
 
 # Run explorer of each type for every object of types with explorer
 cdist-object-explorer-all     "$__cdist_target_host" "$__cdist_out_object_dir"

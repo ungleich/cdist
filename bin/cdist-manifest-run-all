@@ -28,11 +28,10 @@
 #
 
 . cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host> <object_base_dir>"
+[ $# -eq 1 ] || __cdist_usage "<target host>"
 set -eu
 
 __cdist_target_host="$1"; shift
-__cdist_object_base_dir="$1"; shift
 
 __cdist_objects_list="${__cdist_tmp_dir}/objects_file"
 __cdist_new_objects_list="${__cdist_tmp_dir}/new_objects_file"
@@ -46,12 +45,12 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
    # Assume we're done after this run
    __cdist_new_objects_created=n
 
-   __cdist_object_list "$__cdist_object_base_dir" > "$__cdist_objects_list"
+   __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_objects_list"
 
    # Check every object, if we need to run it
    while read __cdist_object; do
       # Full path to current object
-      __cdist_cur_object_dir="$__cdist_object_base_dir/$__cdist_object"
+      __cdist_cur_object_dir="$__cdist_out_object_dir/$__cdist_object"
       # Only the id
       __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
 
@@ -89,7 +88,7 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
                 [ "$__cdist_new_objects_created" = "n" ] && __cdist_new_objects_created="y"
                
                # where to save the newly created object
-               __cdist_object_dir="$__cdist_object_base_dir/$__cdist_new_object"
+               __cdist_object_dir="$__cdist_out_object_dir/$__cdist_new_object"
 
                # Source of the new object
                __cdist_new_object_dir="${__cdist_new_objects_dir}/$__cdist_new_object"
