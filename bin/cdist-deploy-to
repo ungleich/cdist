@@ -50,9 +50,7 @@ cdist-explorer-run-global     "$__cdist_target_host"
 cdist-manifest-run-init       "$__cdist_target_host"
 cdist-manifest-run-all        "$__cdist_target_host"
 cdist-object-explorer-all     "$__cdist_target_host"
-
-# Generate code for all objects
-cdist-object-gencode-all      "$__cdist_target_host" "$__cdist_out_object_dir"
+cdist-object-gencode-all      "$__cdist_target_host"
 
 # Transfer all objects including code
 cdist-dir push "$__cdist_target_host" "$__cdist_out_object_dir" \
