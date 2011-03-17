@@ -21,6 +21,7 @@ MANSRC=$(MANDIR)/cdist.text						\
    $(MANDIR)/cdist-deploy-to.text 				\
 	$(MANDIR)/cdist-explorer.text					\
 	$(MANDIR)/cdist-manifest.text 				\
+	$(MANDIR)/cdist-manifest-run.text			\
    $(MANDIR)/cdist-manifest-run-init.text		\
    $(MANDIR)/cdist-manifest-run-all.text	 	\
 	$(MANDIR)/cdist-object-explorer-all.text	\

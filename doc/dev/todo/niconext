@@ -9,3 +9,9 @@ done:
 * Document cdist-explorer-run-global
 * Document cdist-manifest-run-init
 * Document cdist-manifest-run-all
+cdist-run-remote
+cdist-code-run-all
+cdist-object-gencode
+
+cdist-object-gencode-all
+cdist-manifest-run
