@@ -1,6 +1,8 @@
 1.2.0:
 	* Added dependencies
 	* New type __removeline (Daniel Roth)
+	* New type __group (Steven Armstrong)
+	* New type __user (Steven Armstrong)
 	* Document cdist-run-remote
 	* Document cdist-code-run-all
 	* Document cdist-object-gencode
