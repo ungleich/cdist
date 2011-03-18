@@ -35,27 +35,39 @@ fi
 
 get_current_value() {
    local key="$1"
+   local new_value="$2"
+
+   local explorer="$__object/explorer/passwd"
    local index
    case "$key" in
       password)
-         cut -d':' -f 2 "$__object/explorer/shadow"
-         break
+         explorer="$__object/explorer/shadow"
+         index=2
       ;;
       uid) index=3;;
-      gid) index=4;;
+      gid)
+         if [[ $new_value =~ ^[0-9]+$ ]]; then
+            # numeric gid
+            index=4
+         else
+            # group name
+            explorer="$__object/explorer/group"
+            index=1
+         fi
+      ;;
       comment) index=5;;
       home) index=6;;
       shell) index=7;;
    esac
-   cut -d':' -f $index "$__object/explorer/passwd"
+   cut -d':' -f $index "$explorer"
 }
 
 
 set -- "$@"
 cd "$__object/parameter"
 for property in $(ls .); do
-   current_value=$(get_current_value "$property")
    new_value="$(cat "$property")"
+   current_value=$(get_current_value "$property" "$new_value")
    if [ "$new_value" != "$current_value" ]; then
       # Shedule changed properties for update
       set -- "$@" "--$property" \"$new_value\"
