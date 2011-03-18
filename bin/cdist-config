@@ -227,7 +227,8 @@ __cdist_object_id_from_object()
 
 __cdist_object_dir()
 {
-   echo "${__cdist_out_object_dir}/$1"
+   __cdist_object_dir="${__cdist_out_object_dir}/$1"
+   echo "$__cdist_object_dir"
 }
 
 __cdist_remote_object_dir()
