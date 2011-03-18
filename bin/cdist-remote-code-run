@@ -45,7 +45,7 @@ if [ -f "$finished" ]; then
    exit 0
 fi
 
-echo "Checking code for $object ..."
+echo "Checking    code for $object ..."
 
 if [ -f "$require" ]; then
    while read requirement; do
