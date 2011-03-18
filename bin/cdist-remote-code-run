@@ -31,7 +31,7 @@ __cdist_out_object_dir="$1"; shift
 object="$1"; shift
 
 if [ ! -d "$(__cdist_object_dir "$object")" ]; then
-   __cdist_exit_err "Object $object missing."
+   __cdist_exit_err "Object $object is missing."
 fi  
 
 
@@ -45,11 +45,11 @@ if [ -f "$finished" ]; then
    exit 0
 fi
 
-echo "Checking    code for $object ..."
+echo "Checking    code  for $object ..."
 
 if [ -f "$require" ]; then
    while read requirement; do
-      echo "Running dependency $requirement for $object ..."
+      echo "Requiring object $requirement for $object ..."
       cdist-remote-code-run "$__cdist_out_object_dir" "$requirement"
    done < "$require"
 fi
