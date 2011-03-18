@@ -45,7 +45,7 @@ echo "Checking code for $object ..."
 if [ -f "$require" ]; then
    while read requirement; do
       echo "Running dependency $requirement for $object ..."
-      cdist-remote-code-run "$__cdist_out_object_dir" "$object"
+      cdist-remote-code-run "$__cdist_out_object_dir" "$requirement"
    done < "$require"
 fi
 
