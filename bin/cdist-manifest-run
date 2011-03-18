@@ -47,6 +47,8 @@ cdist-type-build-emulation "${__cdist_out_type_bin_dir}" \
 export PATH="${__cdist_out_type_bin_dir}:$PATH"
 
 # Force -x, so the user is aware the file is executed
+[ -f "${__cdist_manifest}" ] \
+   || __cdist_exit_err "Missing manifest ${__cdist_manifest}"
 [ -x "${__cdist_manifest}" ] \
    || __cdist_exit_err "${__cdist_manifest} needs to be executable."
 mkdir -p "${__cdist_output_dir}" \
