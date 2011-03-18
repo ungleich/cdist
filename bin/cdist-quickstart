@@ -69,7 +69,7 @@ that the command cdist-deploy-to is the main cdist command.
 
 See also:
 
-   Source of cdist-deploy-to, cdist-stages(7)
+   Source of cdist-deploy-to(1), cdist-stages(7)
 
 eof
 __prompt "$continue"
@@ -232,17 +232,60 @@ __prompt "$continue"
 
 cat << eof
 
-Now you've got some basic knowledge about cdist, let's configure your localhost!
+Now you've got some basic knowledge about cdist, let's configure your a host!
 
-Ensure that you have a ssh server running locally and that you can login as root.
-
-The cdist distribution contains some sensible default initial manifest, which
-will create 2 files, /etc/cdist-configured (for every host) and
-/tmp/cdist-testfile (only for localhost).
+Ensure that you have a ssh server running on the host and that you can login as root.
 
 eof
 
-cmd="cdist-deploy-to localhost"
+__prompt "Enter hostname or press enter for localhost: "
+
+if [ "$answer" ]; then
+   host="$answer"
+else
+   host="localhost"
+fi
+
+manifestinit="conf/manifest/init"
+cat << eof
+
+I'll know setup $manifestinit, containing the following code:
+
+--------------------------------------------------------------------------------
+# Every machine becomes a marker, so sysadmins know that automatic
+# configurations are happening
+__file /etc/cdist-configured
+
+case "\$__target_host" in
+   $host)
+      __link /tmp/cdist-testfile --source /etc/cdist-configured  --type symbolic
+      __addifnosuchline /tmp/cdist-welcome --line "Welcome to cdist"
+   ;;
+esac
+--------------------------------------------------------------------------------
+
+WARNING: This will overwrite ${manifestinit}.
+
+eof
+
+cat > "$__cdist_abs_mydir/../$manifestinit" << eof
+
+# Every machine becomes a marker, so sysadmins know that automatic
+# configurations are happening
+__file /etc/cdist-configured
+
+case "\$__target_host" in
+   $host)
+      __link /tmp/cdist-testfile --source /etc/cdist-configured  --type symbolic
+      __addifnosuchline /tmp/cdist-welcome --line "Welcome to cdist"
+   ;;
+esac
+
+eof
+
+chmod u+x "$__cdist_abs_mydir/../$manifestinit"
+
+cmd="cdist-deploy-to $host"
 
 __prompt "Press enter to run \"$cmd\""
 
@@ -255,7 +298,9 @@ $cmd
 
 cat << eof
 
-That's it, this is the end of the cdist-introduction.
+
+--------------------------------------------------------------------------------
+That's it, this is the end of the cdist-quickstart.
 
 I hope you've got some impression on how cdist works, here are again some
 pointers on where to continue to read:
