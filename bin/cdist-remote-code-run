@@ -49,7 +49,7 @@ echo "Checking    code  for $object ..."
 
 if [ -f "$require" ]; then
    while read requirement; do
-      echo "Requiring object $requirement for $object ..."
+      echo "Requiring  dependency $requirement for $object ..."
       cdist-remote-code-run "$__cdist_out_object_dir" "$requirement"
    done < "$require"
 fi
@@ -57,9 +57,9 @@ fi
 if [ -e "$code" ]; then
    if [ -f "$code" ]; then
       if [ -x "$code" ]; then
-         echo "Executing code for $object ..."
+         echo "Executing   code  for $object ..."
          "$code"
-         touch "$__cdist_finished"
+         touch "$finished"
       else
          __cdist_exit_err "$code exists, but is not executable."
       fi
