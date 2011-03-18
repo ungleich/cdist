@@ -42,6 +42,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 : ${__cdist_name_bin:=bin}
 : ${__cdist_name_code:=code}
+: ${__cdist_name_code_finished:=.codedone}
 : ${__cdist_name_conf_dir:=conf}
 : ${__cdist_name_explorer:=explorer}
 : ${__cdist_name_gencode:=gencode}
@@ -237,6 +238,11 @@ __cdist_remote_object_dir()
 __cdist_object_code()
 {
    echo "$(__cdist_object_dir "$1")/${__cdist_name_code}"
+}
+
+__cdist_object_code_finished()
+{
+   echo "$(__cdist_object_dir "$1")/${__cdist_name_code_finished}"
 }
 
 __cdist_object_parameter_dir()
