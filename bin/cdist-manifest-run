@@ -43,8 +43,8 @@ export __cdist_conf_dir
 # Used to record the source in the object
 export __cdist_manifest
 
-# Export information for manifests
-export __global="$__cdist_out_object_dir"
+# Export information for manifests - __cdist_out_dir comes from cdist-config
+export __global="$__cdist_out_dir"
 
 ################################################################################
 # The actual run
