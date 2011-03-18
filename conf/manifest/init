@@ -12,9 +12,15 @@ __file /etc/cdist-configured
 case "$__target_host" in
    # Everybody has this
    localhost)
-      require="__file/etc/cdist-configured" __link /tmp/cdist-testfile --source /etc/cdist-configured  --type symbolic
-      require="__directory/tmp/cdist-test-dir" __file /tmp/cdist-test-dir/test-file --mode 0750 --owner nobody --group root
+      require="__file/etc/cdist-configured" __link /tmp/cdist-testfile \
+         --source /etc/cdist-configured  --type symbolic
+      require="__directory/tmp/cdist-test-dir" __file /tmp/cdist-test-dir/test-file \
+         --mode 0750 --owner nobody --group root
       __directory /tmp/cdist-test-dir --mode 4777
+
+      require="__file/etc/cdist-configured __link/tmp/cdist-testfile" \
+         __file /tmp/cdist-another-testfile
+
    ;;
 
    #

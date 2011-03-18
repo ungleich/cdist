@@ -40,6 +40,28 @@ The manifest of the type "nologin" may look like this:
 __file /etc/nologin --type file --source "$__type/files/default.nologin"
 --------------------------------------------------------------------------------
 
+DEPENDENCIES
+------------
+If you want to describe that something requires something else, just
+setup the variable "require" to contain the requirements. Multiple
+requirements can be added white space seperated.
+
+
+--------------------------------------------------------------------------------
+# No dependency
+__file /etc/cdist-configured
+
+# Require above object
+require="__file/etc/cdist-configured" __link /tmp/cdist-testfile \
+   --source /etc/cdist-configured  --type symbolic
+
+# Require two objects
+require="__file/etc/cdist-configured __link/tmp/cdist-testfile" \
+   __file /tmp/cdist-another-testfile
+
+
+--------------------------------------------------------------------------------
+
 
 SEE ALSO
 --------
