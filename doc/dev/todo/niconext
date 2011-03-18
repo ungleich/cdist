@@ -1,7 +1,5 @@
 Cleanup and release 1.2.0
-   - ensure every file in bin/ has a correspondent manpage
    - cdist-remote-code-run-all
    - cdist-remote-explorer-run
    - cdist-type-build-emulation
    - cdist-type-emulator
-
