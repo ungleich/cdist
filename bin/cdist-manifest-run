@@ -30,9 +30,6 @@ __cdist_target_host="$1"; shift
 __cdist_manifest="$1"; shift
 __cdist_output_dir="$1"; shift
 
-# Always start from local base
-__cdist_work_dir="$__cdist_local_base_dir"
-
 # Export information for cdist-type-emulator
 export __cdist_conf_dir __cdist_output_dir __cdist_manifest __cdist_version
 
@@ -46,14 +43,13 @@ cdist-type-build-emulation "${__cdist_out_type_bin_dir}" \
 # prepend our path, so all cdist tools come before other tools
 export PATH="${__cdist_out_type_bin_dir}:$PATH"
 
-# Force -x, so the user is aware the file is executed
+# Sanity checks
 [ -f "${__cdist_manifest}" ] \
    || __cdist_exit_err "Missing manifest ${__cdist_manifest}"
 [ -x "${__cdist_manifest}" ] \
    || __cdist_exit_err "${__cdist_manifest} needs to be executable."
 mkdir -p "${__cdist_output_dir}" \
    || __cdist_exit_err "Cannot create output dir ${__cdist_output_dir}"
-cd "$__cdist_work_dir" \
-   || __cdist_exit_err "Cannot change to work dir \"$__cdist_work_dir\"."
 
+# FIXME remove $@? i think this has been deprecated!
 __cdist_exec_fail_on_error "${__cdist_manifest}" "$@"
