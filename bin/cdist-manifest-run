@@ -23,18 +23,32 @@
 #
 
 . cdist-config
-[ $# -eq 3 ] || __cdist_usage "<target host> <manifest> <out dir>"
+[ $# -eq 3 ] || __cdist_usage "<target host> <manifest> <out object dir>"
 set -u
 
 __cdist_target_host="$1"; shift
 __cdist_manifest="$1"; shift
-__cdist_output_dir="$1"; shift
 
-# Export information for cdist-type-emulator
-export __cdist_conf_dir __cdist_output_dir __cdist_manifest __cdist_version
+################################################################################
+# Export information for cdist-type-emulator or manifest
+#
+
+# This is a special variable, as being used by __cdist_object_dir
+# We need to adjust it, so cdist-type-emulator writes to the right location
+export __cdist_out_object_dir="$1"; shift
+
+# Config dir should not get reset - FIXME: why did I do this?
+export __cdist_conf_dir
+
+# Used to record the source in the object
+export __cdist_manifest
 
 # Export information for manifests
-export __global="$__cdist_out_dir"
+export __global="$__cdist_out_object_dir"
+
+################################################################################
+# The actual run
+#
 
 # Ensure binaries exist and are up-to-date
 cdist-type-build-emulation "${__cdist_out_type_bin_dir}" \
@@ -48,8 +62,7 @@ export PATH="${__cdist_out_type_bin_dir}:$PATH"
    || __cdist_exit_err "Missing manifest ${__cdist_manifest}"
 [ -x "${__cdist_manifest}" ] \
    || __cdist_exit_err "${__cdist_manifest} needs to be executable."
-mkdir -p "${__cdist_output_dir}" \
-   || __cdist_exit_err "Cannot create output dir ${__cdist_output_dir}"
+mkdir -p "${__cdist_out_object_dir}" \
+   || __cdist_exit_err "Cannot create output dir ${__cdist_out_object_dir}"
 
-# FIXME remove $@? i think this has been deprecated!
-__cdist_exec_fail_on_error "${__cdist_manifest}" "$@"
+__cdist_exec_fail_on_error "${__cdist_manifest}"
