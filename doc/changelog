@@ -1,5 +1,15 @@
-1.1.1:
-	* New type __removeline
+1.2.0:
+	* Added dependencies
+	* New type __removeline (Daniel Roth)
+	* Document cdist-run-remote
+	* Document cdist-code-run-all
+	* Document cdist-object-gencode
+	* Document cdist-explorer-run-global
+	* Document cdist-manifest-run-init
+	* Document cdist-manifest-run-all
+	* Document cdist-object-gencode-all
+	* Document cdist-manifest-run
+
 
 1.1.0: 2011-03-16
 	* Replace type __file with __file, __directory, __link

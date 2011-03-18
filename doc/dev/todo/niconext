@@ -1,17 +1,1 @@
-Dependencies:
-   Record in bin/cdist-type-emulator
-      Fix __cdist_object_base_dir issue (vs. $__cdist_out_object_dir in deploy-to)
-         go through cdist-deploy-to and do a cleanup round
-
-
---------------------------------------------------------------------------------
-done:
-* Document cdist-explorer-run-global
-* Document cdist-manifest-run-init
-* Document cdist-manifest-run-all
-cdist-run-remote
-cdist-code-run-all
-cdist-object-gencode
-
-cdist-object-gencode-all
-cdist-manifest-run
+Cleanup and release 1.2.0
