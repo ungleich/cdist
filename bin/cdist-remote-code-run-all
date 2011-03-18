@@ -31,13 +31,5 @@ __cdist_out_object_dir="$1"; shift
 __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_tmp_file"
 
 while read object; do
-   code="$(__cdist_object_code "$object")"
-   require="$(__cdist_object_require "$object")"
-
-   # Object code depends on others, execute them before us
-   if [ -f "$require" ]; then
-      while read requirement; do
-         cdist-remote-code-run "$code"
-      done < "$require"
-   fi
+   cdist-remote-code-run "$__cdist_out_object_dir" "$object"
 done < "$__cdist_tmp_file"
