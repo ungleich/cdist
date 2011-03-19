@@ -1,4 +1,5 @@
-1.2.1:
+1.3.0:
+	* Add support for local and remote code generation and execution
 	* Bugfix: Remove obsolete $@ call in cdist-remote-explorer-run
 	* Bugfix: Correct manpage for __removeline (broke manpage generation)
 
