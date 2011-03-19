@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Exec code on the remote side
+# Exec code locally and remote
 #
 
 . cdist-config
@@ -27,5 +27,21 @@ set -e
 
 __cdist_target_host="$1"; shift
 
+__cdist_out_object_dir="$1"; shift
+
+__cdist_object_list "$__cdist_out_object_dir" > "$__cdist_tmp_file"
+
+while read object; do
+   # Code local
+   cdist-code-run "$__cdist_out_object_dir" "$object" "${__cdist_name_gencode_local}"
+
+   # Code remote
+   cdist-run-remote "$__cdist_target_host" "cdist-code-run" \
+      "${__cdist_remote_out_object_base_dir}" "${__cdist_name_gencode_remote}"
+done < "$__cdist_tmp_file"
+
+exit 0
+
+# OLD:
 cdist-run-remote "$__cdist_target_host" \
    "cdist-remote-code-run-all" "${__cdist_remote_out_object_base_dir}"
