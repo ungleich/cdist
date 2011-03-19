@@ -31,9 +31,14 @@ __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_tmp_file"
 
 while read object; do
    code="$(__cdist_object_code "$object")"
-   echo "Generating local code for $object ..."
 
-   cdist-object-gencode "$__cdist_target_host" "$object" > "${code}"
+   echo "Generating local code for $object ..."
+   cdist-object-gencode "$__cdist_target_host" "$object" \
+      "${__cdist_name_gencode_local}" > "${code}"
+
+   echo "Generating remote code for $object ..."
+   cdist-object-gencode "$__cdist_target_host" "$object" \
+      "${__cdist_name_gencode_remote}" > "${code}"
 
    chmod u+x "${code}"
 done < "$__cdist_tmp_file"

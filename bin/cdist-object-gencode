@@ -35,7 +35,7 @@ __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
 __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
 
 # Full path to where the executable of the type should exist, if the type has one
-gencode="$(__cdist_type_gencode "$__cdist_type")"
+gencode="$(__cdist_type_gencode "$__cdist_type")-${__cdist_gencode_type}"
 
 # export variables for gencode
 export __object_id="$__cdist_object_id"
