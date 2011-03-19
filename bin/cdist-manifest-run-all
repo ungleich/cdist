@@ -93,8 +93,11 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
                # Source of the new object
                __cdist_new_object_dir="${__cdist_new_objects_dir}/$__cdist_new_object"
 
+               # Create top directory
+               __cdist_new_object_top_dir=${__cdist_new_object_dir%/*}
+
                # Move object, not only parts
-               mv "${__cdist_new_object_dir}/" "$__cdist_object_dir"
+               mv "${__cdist_new_object_dir}/" "$__cdist_object_top_dir"
             done < "$__cdist_new_objects_list"
 
             # Remove listing and objects, otherwise the next type will reuse it...
