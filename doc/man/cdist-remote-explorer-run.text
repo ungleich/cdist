@@ -1,0 +1,33 @@
+cdist-remote-explorer-run(1)
+============================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-remote-explorer-run - Run explorer remotely
+
+
+SYNOPSIS
+--------
+cdist-remote-explorer-run VARIABLE_NAME EXPLORER_DIR OUT_DIR
+
+
+DESCRIPTION
+-----------
+cdist-remote-explorer-run is executed on the target.
+It sets up the variable VARIABLE_NAME to point to the given
+EXPLORER_DIR and runs all explorer found in EXPLORER_DIR.
+The output of every run explorer is saved into OUT_DIR.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-explorer-run-global(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

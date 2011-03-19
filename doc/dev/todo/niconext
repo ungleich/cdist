@@ -1,3 +1,6 @@
 Ensure bin/* is documented
-   - cdist-remote-code-run-all
-   - cdist-remote-explorer-run
+
+[0:43] kr:bin% for a in *; do test -f ../doc/man/${a}.text || echo $a missing ; done
+cdist-code-run missing
+[0:44] kr:bin% 
+
