@@ -23,7 +23,7 @@
 #
 
 . cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host>" "<object>" "<remote|local>"
+[ $# -eq 3 ] || __cdist_usage "<target host>" "<object>" "<remote|local>"
 set -eu
 
 __cdist_target_host="$1"; shift
