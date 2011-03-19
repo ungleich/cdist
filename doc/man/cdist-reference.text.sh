@@ -89,7 +89,10 @@ conf/type/<name>/man.text::
 conf/type/<name>/manifest::
    Used to generate additional objects from a type.
 
-conf/type/<name>/gencode::
+conf/type/<name>/gencode-local::
+   Used to generate code to be executed on the server.
+
+conf/type/<name>/gencode-remote::
    Used to generate code to be executed on the client.
 
 conf/type/<name>/parameters/required::
