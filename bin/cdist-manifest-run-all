@@ -89,16 +89,26 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
                
                # where to save the newly created object
                __cdist_object_dir="$__cdist_out_object_dir/$__cdist_new_object"
+               mkdir -p "$__cdist_object_dir"
 
-               # Create top directory
-               __cdist_object_top_dir=${__cdist_object_dir%/*}
-               mkdir -p "$__cdist_object_top_dir"
+               # Move parts of the object (CANNOT MOVE COMPLETLEY, HIERACHY!)
+               __cdist_new_object_dir="$__cdist_new_objects_dir/$__cdist_new_object"
 
-               # Source of the new object
-               __cdist_new_object_dir="${__cdist_new_objects_dir}/$__cdist_new_object"
+               # Source
+               mv "${__cdist_new_object_dir}/${__cdist_name_object_source}" \
+                  "$__cdist_object_dir"
 
-               # Move object, not only parts
-               mv "${__cdist_new_object_dir}/" "$__cdist_object_top_dir"
+               # Parameter
+               if [ -d "${__cdist_new_object_dir}/${__cdist_name_parameter}" ]; then
+                  mv "${__cdist_new_object_dir}/${__cdist_name_parameter}" \
+                  "$__cdist_object_dir"
+               fi
+
+               # Explorer
+               if [ -d "${__cdist_new_object_dir}/${__cdist_name_explorer}" ]; then
+                  mv "${__cdist_new_object_dir}/${__cdist_name_explorer}" \
+                  "$__cdist_object_dir"
+               fi
             done < "$__cdist_new_objects_list"
 
             # Remove listing and objects, otherwise the next type will reuse it...
