@@ -115,12 +115,13 @@ how to use cdist.
 There are at least the following branches available:
 
  * master: the development branch
- * 1.2: Current stable: Dependencies supported
+ * 1.3: Support for local and remote code execution (current stable)
 
 Old versions:
 
  * 1.0: First official release
  * 1.1: __file to __file, __directory, __link migration
+ * 1.2: Dependencies supported
 
 Other branches may be available for features or bugfixes, but they
 may vanish at any point. To select a specific branch use
