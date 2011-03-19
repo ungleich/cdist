@@ -90,14 +90,15 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
                # where to save the newly created object
                __cdist_object_dir="$__cdist_out_object_dir/$__cdist_new_object"
 
+               # Create top directory
+               __cdist_object_top_dir=${__cdist_object_dir%/*}
+               mkdir -p "$__cdist_object_top_dir"
+
                # Source of the new object
                __cdist_new_object_dir="${__cdist_new_objects_dir}/$__cdist_new_object"
 
-               # Create top directory
-               __cdist_new_object_top_dir=${__cdist_new_object_dir%/*}
-
                # Move object, not only parts
-               mv "${__cdist_new_object_dir}/" "$__cdist_new_object_top_dir"
+               mv "${__cdist_new_object_dir}/" "$__cdist_object_top_dir"
             done < "$__cdist_new_objects_list"
 
             # Remove listing and objects, otherwise the next type will reuse it...
