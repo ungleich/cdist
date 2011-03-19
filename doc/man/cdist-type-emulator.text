@@ -1,0 +1,56 @@
+cdist-type-emulator(1)
+======================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type-emulator - Emulate type and record parameters and dependencies
+
+
+SYNOPSIS
+--------
+cdist-type-emulator [TYPE ARGS]
+
+
+DESCRIPTION
+-----------
+cdist-type-emulator is normally called through a link to it of the
+name of a specifc type. It saves the given parameters into
+a parameters directory and the requirements into a require file.
+
+It checks whether the parameters are valid:
+
+- are required parameter given?
+- are all other required parameters specified as optional?
+
+
+EXAMPLES
+--------
+Your manifest may contain stuff like this:
+
+
+--------------------------------------------------------------------------------
+__addifnosuchline /tmp/linetest --line "test"
+
+__motd
+--------------------------------------------------------------------------------
+
+In both cases, cdist-type-emulator is called instead of a real type.
+In the first case, the object id "/tmp/linetest" is recorded and the
+parameter "line" stored with the content "test".
+
+In the second case, __motd must be decleared as a singleton, as the
+object id is missing.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-type-build-emulation(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

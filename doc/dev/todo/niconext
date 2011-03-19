@@ -1,5 +1,3 @@
 Ensure bin/* is documented
    - cdist-remote-code-run-all
    - cdist-remote-explorer-run
-   - cdist-type-emulator
-
