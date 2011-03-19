@@ -1,4 +1,4 @@
-1.2.0:
+1.2.0: 2011-03-19
 	* Added dependencies (see cdist-type(7))
 	* New type __removeline (Daniel Roth)
 	* New type __group (Steven Armstrong)

@@ -129,7 +129,7 @@ may vanish at any point. To select a specific branch use
     git checkout -b <name> origin/<name>
     
     # Stay on version 1.1
-    git checkout -b 1.1 origin/1.1
+    git checkout -b 1.2 origin/1.2
 
 ### Mirrors
 
@@ -149,6 +149,10 @@ To upgrade cdist in the current branch use
 If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
 The master branch on the other hand is the development branch and may not be
 working, break your setup or eat the tree in your garden.
+
+### Upgrading from 1.1 to 1.2
+
+No incompatiblities.
 
 ### Upgrading from 1.0 to 1.1
 
