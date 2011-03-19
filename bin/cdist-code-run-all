@@ -27,8 +27,6 @@ set -e
 
 __cdist_target_host="$1"; shift
 
-__cdist_out_object_dir="$1"; shift
-
 __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_tmp_file"
 
 while read object; do
@@ -37,11 +35,6 @@ while read object; do
 
    # Code remote
    cdist-run-remote "$__cdist_target_host" "cdist-code-run" \
-      "${__cdist_remote_out_object_base_dir}" "${__cdist_name_gencode_remote}"
+      "${__cdist_remote_out_object_base_dir}" "$object"     \
+      "${__cdist_name_gencode_remote}"
 done < "$__cdist_tmp_file"
-
-exit 0
-
-# OLD:
-cdist-run-remote "$__cdist_target_host" \
-   "cdist-remote-code-run-all" "${__cdist_remote_out_object_base_dir}"
