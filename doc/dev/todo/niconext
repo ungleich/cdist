@@ -1,1 +1,6 @@
-Cleanup and release 1.2.0
+Dependency problem:
+
+Generating  code  for __file/home/lyni/dos/scorch15/SCORCH.DOC ...
+scp: /home/lyni/dos/scorch15/SCORCH.DOC: No such file or directory
+
+-> explorea cop file t  a directory that does not yet exist!
