@@ -18,8 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# __file is a very basic type and should be able to be used as an
-# example for typewrites later
+# Mostly a wrapper for ln
 #
 
 destination="/$__object_id"
