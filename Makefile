@@ -31,6 +31,7 @@ MANSRC=$(MANDIR)/cdist.text						\
 	$(MANDIR)/cdist-run-remote.text				\
 	$(MANDIR)/cdist-stages.text					\
 	$(MANDIR)/cdist-type.text						\
+	$(MANDIR)/cdist-type-build-emulation.text \
 	$(MANDIR)/cdist-type-template.text			\
 
 

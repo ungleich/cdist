@@ -1,0 +1,33 @@
+cdist-type-build-emulation(1)
+=============================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type-build-emulation - Build executables for types
+
+
+SYNOPSIS
+--------
+cdist-type-build-emulation OUT_DIR
+
+
+DESCRIPTION
+-----------
+cdist-type-build-emulation creates a link to cdist-type-emulator
+for every TYPE. These links are placed in a OUT_DIR, which
+is prepended into $PATH. This way the user can use TYPE in the
+manifests like any other executable.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-type-emulator(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
