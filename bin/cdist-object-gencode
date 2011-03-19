@@ -23,11 +23,12 @@
 #
 
 . cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host>" "<object>"
+[ $# -eq 2 ] || __cdist_usage "<target host>" "<object>" "<remote|local>"
 set -eu
 
 __cdist_target_host="$1"; shift
 __cdist_object="$1"; shift
+__cdist_gencode_type="$1"; shift
 
 __cdist_object_dir="$(__cdist_object_dir "$__cdist_object")"
 __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
