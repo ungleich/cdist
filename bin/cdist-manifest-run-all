@@ -93,11 +93,8 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
                # Source of the new object
                __cdist_new_object_dir="${__cdist_new_objects_dir}/$__cdist_new_object"
 
-               mkdir -p "$__cdist_object_dir"
-
-               # Move parameters and source information
-               mv "${__cdist_new_object_dir}/"* "$__cdist_object_dir"
-               mv "${__cdist_new_object_dir}/${__cdist_name_object_source}" "$__cdist_object_dir"
+               # Move object, not only parts
+               mv "${__cdist_new_object_dir}/" "$__cdist_object_dir"
             done < "$__cdist_new_objects_list"
 
             # Remove listing and objects, otherwise the next type will reuse it...
