@@ -62,7 +62,7 @@ for explorer in "$__cdist_explorer_dir/"*; do
       fi
 
       # Execute explorers and save results in remote destination directory
-      "$explorer" "$@" > "${__cdist_my_out_dir}/$explorer_name"
+      "$explorer" > "${__cdist_my_out_dir}/$explorer_name"
    else
       if [ -e "$explorer" ]; then
          echo "Explorer \"$explorer\" exists, but is not a file."
