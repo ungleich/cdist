@@ -26,7 +26,7 @@ set -eu
 
 __cdist_output_dir="$1"; shift
 
-__cdist_type_emulator="$(which cdist-type-emulator)"
+__cdist_type_emulator="$__cdist_abs_mydir/cdist-type-emulator"
 
 if [ ! -d "${__cdist_type_dir}" ]; then
    __cdist_exit_err "$__cdist_type_dir must exist and contain available types"
