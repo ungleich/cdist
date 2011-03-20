@@ -29,12 +29,22 @@ __cdist_target_host="$1"; shift
 
 __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_tmp_file"
 
+# NEED TO CREATE ARRAY, SSH DESTROYS WHILE READ LOOP
 while read object; do
+   set -- "$@" "$object"
+done < "$__cdist_tmp_file"
+
+while [ $# -ge 1 ]; do
+   object="$1"; shift
+
    # Code local
-   cdist-code-run "$__cdist_out_object_dir" "$object" "${__cdist_name_gencode_local}"
+   cdist-code-run "$__cdist_out_object_dir" "$object" \
+      "${__cdist_name_gencode_local}"                 \
+         || __exit_err "Remote code failed for $object"
 
    # Code remote
    cdist-run-remote "$__cdist_target_host" "cdist-code-run" \
       "${__cdist_remote_out_object_base_dir}" "$object"     \
-      "${__cdist_name_gencode_remote}"
+      "${__cdist_name_gencode_remote}"                      \
+      || __exit_err "Remote code failed for $object"
 done < "$__cdist_tmp_file"
