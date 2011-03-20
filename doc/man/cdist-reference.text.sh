@@ -40,7 +40,7 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
-cdist-reference - Variable, path and type reference for cdist $(git describe)
+cdist-reference - Variable, path and type reference for cdist
 
 
 DESCRIPTION
