@@ -5,4 +5,10 @@
 doc/man/*.[1-9]
 doc/man/.marker
 doc/man/man*/
+
+doc/html
+
 conf/type/*/*.7
+conf/type/*/man.html
+
+

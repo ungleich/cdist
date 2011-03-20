@@ -2,7 +2,11 @@
 PREFIX=/usr
 BINDIR=$(PREFIX)/bin
 MANDIR=$(PREFIX)/share/man
-A2X=a2x -f manpage --no-xmllint
+
+# Manpage and HTML
+A2XM=a2x -f manpage --no-xmllint
+# A2XH=a2x -f xhtml --no-xmllint
+A2XH=asciidoc -b xhtml11
 
 # Developer only
 WEBDIR=$$HOME/niconetz
@@ -60,11 +64,11 @@ doc/man/.marker: $(MANDIR)/cdist-reference.text
 
 # Manual from core
 mancore: $(MANSRC)
-	for mansrc in $^; do $(A2X) $$mansrc; done
+	for mansrc in $^; do $(A2XM) $$mansrc; $(A2XH) $$mansrc; done
 
 # Manuals from types
 mantype:
-	for man in conf/type/*/man.text; do $(A2X) $$man; done
+	for man in conf/type/*/man.text; do $(A2XM) $$man; $(A2XH) $$man; done
 
 # Move into manpath directories
 manmove: mantype mancore
@@ -74,16 +78,21 @@ manmove: mantype mancore
 		mkdir -p $$mandir; \
 		mv $$manpage $$mandir; \
 	done
+	mkdir -p doc/html
+	mv doc/man/*.html doc/html
+	mv conf/type/*/man
 
 # Reference depends on conf/type/*/man.text - HOWTO with posix make?
 $(MANDIR)/cdist-reference.text: manmove $(MANDIR)/cdist-reference.text.sh
 	$(MANDIR)/cdist-reference.text.sh
-	$(A2X) $(MANDIR)/cdist-reference.text
+	$(A2XM) $(MANDIR)/cdist-reference.text
+	$(A2XH) $(MANDIR)/cdist-reference.text
 	# Move us to the destination as well
 	make manmove
 	
 clean:
 	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9] $(MANGENERATED)
+	rm -f conf/type/*/man.html conf/type/*/docbook-xsl.css
 
 ################################################################################
 # Developer targets
