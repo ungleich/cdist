@@ -80,7 +80,11 @@ manmove: mantype mancore
 	done
 	mkdir -p doc/html
 	mv doc/man/*.html doc/html
-	mv conf/type/*/man
+
+	for mantype in conf/type/*/man.html; do \
+	mannew=$$(echo $$mantype | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;');\
+	mv $$mantype doc/html/$$mannew; \
+	done
 
 # Reference depends on conf/type/*/man.text - HOWTO with posix make?
 $(MANDIR)/cdist-reference.text: manmove $(MANDIR)/cdist-reference.text.sh
@@ -92,7 +96,7 @@ $(MANDIR)/cdist-reference.text: manmove $(MANDIR)/cdist-reference.text.sh
 	
 clean:
 	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9] $(MANGENERATED)
-	rm -f conf/type/*/man.html conf/type/*/docbook-xsl.css
+	rm -f conf/type/*/man.html
 
 ################################################################################
 # Developer targets
