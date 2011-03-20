@@ -1,7 +1,5 @@
 Core:
    - write test case: test.sh
-   - doc/man/cdist-reference.text.sh: use static version from cdist-config
-   - export remote user name -> $__user
 
 Types to be written/extended:
    j __ssh-keys (host/user)
@@ -9,15 +7,12 @@ Types to be written/extended:
    - __file_edit
       - regexp replace (can probably cover all?)
    - __cron
-   - __issue: add --source
 
 Documentation:
    - Describe Multi master setups
    - use ssh with master socket?
       - saves connection delay for new connections: -M
       - hint: http://protempore.net/~calvins/howto/ssh-connection-sharing/
-   - Describe pull architecture and requirements
-      - cdist-trigger after first run from /var/lib/cdist/out/bin?
    - Different environments (production, integration, development)
       - via version control
    - Ensure html output of manpages are published on the web
