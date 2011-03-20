@@ -23,7 +23,7 @@
 
 . cdist-config
 [ $# -eq 3 ] || __cdist_usage "<object dir> <object> <type>"
-set -uex
+set -ue
 
 # This variable MUST be exactly like this - see __cdist_object_dir
 __cdist_out_object_dir="$1"; shift
