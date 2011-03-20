@@ -2,6 +2,8 @@
 	* Document cdist-type-build-emulation
 	* Document cdist-type-emulator
 	* Document cdist-remote-explorer-run
+	* Fix dependencies in cdist-code-run
+	* Add --source to __issue and fix os check
 
 1.3.0: 2011-03-20
 	* Add support for local and remote code generation and execution

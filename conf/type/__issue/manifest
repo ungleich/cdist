@@ -20,15 +20,21 @@
 #
 
 destination=/etc/issue
-source="$(cat "out/explorer/os")"
 
-case "$os" in
-   archlinux|redhat)
-      source="$__type/files/$os"
-   ;;
-   *)
-      source="$__type/files/default"
-   ;;
-esac
+os="$(cat "$__global/explorer/os")"
+
+if [ -f "$__object/parameter/source" ]; then
+   source="$(cat "$__object/parameter/source")"
+   echo using $source
+else
+   case "$os" in
+      archlinux|redhat)
+         source="$__type/files/$os"
+      ;;
+      *)
+         source="$__type/files/default"
+      ;;
+   esac
+fi
 
 __file "$destination" --source "$source"
