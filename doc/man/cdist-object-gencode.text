@@ -22,6 +22,7 @@ executable on stdout will be used by cdist-object-gencode-all(1).
 SEE ALSO
 --------
 - cdist(7)
+- cdist-code-run(1)
 - cdist-deploy-to(1)
 - cdist-object-gencode-all(1)
 

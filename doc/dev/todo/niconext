@@ -1,6 +1,0 @@
-Ensure bin/* is documented
-
-[0:43] kr:bin% for a in *; do test -f ../doc/man/${a}.text || echo $a missing ; done
-cdist-code-run missing
-[0:44] kr:bin% 
-
