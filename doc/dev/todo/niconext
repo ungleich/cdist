@@ -1,1 +1,2 @@
-   - Ensure html output of manpages are published on the web
+- add --preseed to __package_apt
+- Ensure html output of manpages are published on the web
