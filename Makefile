@@ -9,8 +9,8 @@ A2XM=a2x -f manpage --no-xmllint
 A2XH=asciidoc -b xhtml11
 
 # Developer only
-WEBDIR=$$HOME/niconetz
-WEBPAGE=software/cdist.mdwn
+WEBPAGEBASE=$$HOME/niconetz/software/cdist
+WEBPAGE=$(WEBPAGEBASE).mdwn
 
 # Documentation
 MANDIR=doc/man
@@ -52,7 +52,7 @@ all:
 	@echo ''
 	@echo 'Here are the possible targets:'
 	@echo ''
-	@echo '	man: Build manpages (requires Asciidoc (a2x binary))'
+	@echo '	man: Build manpages (requires Asciidoc)'
 	@echo '	clean: Remove build stuff'
 	@echo ''
 	@echo ''
@@ -97,6 +97,7 @@ $(MANDIR)/cdist-reference.text: manmove $(MANDIR)/cdist-reference.text.sh
 clean:
 	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9] $(MANGENERATED)
 	rm -f conf/type/*/man.html
+	rm -rf doc/html
 
 ################################################################################
 # Developer targets
@@ -110,9 +111,12 @@ test:
 	# gentoo
 	.rsync nicosc@ru3.inf.ethz.ch:cdist
 
+#web: manmove
 web:
-	cp README $(WEBDIR)/$(WEBPAGE)
-	cd $(WEBDIR) && git commit -m "cdist update" $(WEBPAGE)
+	cp README $(WEBPAGE)
+	cp -r doc/html/* $(WEBPAGEBASE)/man
+	exit 1
+	cd $(WEBDIR) && git commit -m "cdist update" $(WEBPAGEBASE)
 	cd $(WEBDIR) && make pub
 
 pub:
