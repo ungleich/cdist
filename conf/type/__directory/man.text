@@ -30,7 +30,7 @@ owner::
    User to chown to.
 
 parents::
-   Whether to create parents as well (mkdir -p behaviour)
+   Whether to create parents as well (mkdir -p behaviour). Must be yes or no.
 
 
 EXAMPLES
@@ -41,7 +41,10 @@ EXAMPLES
 __directory /tmp/foobar
 
 # Ensure /etc exists correctly
-__file /etc --owner root --group root --mode 0755
+__directory /etc --owner root --group root --mode 0755
+
+# Create nfs service directory, including parents
+__directory /home/services/nfs --parents yes
 --------------------------------------------------------------------------------
 
 
