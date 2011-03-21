@@ -1,6 +1,6 @@
-Further Documentation: (probably cdist-best-practises?)
-   - Describe Multi master setups
-   - use ssh with master socket?
+Write cdist-best-practise:
+   - Multi master setups
+   - ssh with master socket?
       - saves connection delay for new connections: -M
       - hint: http://protempore.net/~calvins/howto/ssh-connection-sharing/
    - Different environments (production, integration, development)

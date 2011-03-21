@@ -1,0 +1,23 @@
+cdist-best-practise(1)
+======================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+NAME
+----
+cdist-best-practise - Practises used in real environments
+
+
+TOPIC1
+------
+
+
+
+SEE ALSO
+--------
+- cdist(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

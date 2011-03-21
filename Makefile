@@ -19,8 +19,9 @@ MANDIR=doc/man
 MANGENERATED=$(MANDIR)/cdist-reference.text
 
 MANSRC=$(MANDIR)/cdist.text						\
-	$(MANDIR)/cdist-code-run-all.text			\
+	$(MANDIR)/cdist-best-practise.text			\
 	$(MANDIR)/cdist-code-run.text					\
+	$(MANDIR)/cdist-code-run-all.text			\
 	$(MANDIR)/cdist-config.text 					\
    $(MANDIR)/cdist-dir.text         			\
    $(MANDIR)/cdist-env.text         			\
@@ -29,8 +30,8 @@ MANSRC=$(MANDIR)/cdist.text						\
 	$(MANDIR)/cdist-explorer.text					\
 	$(MANDIR)/cdist-manifest.text 				\
 	$(MANDIR)/cdist-manifest-run.text			\
-   $(MANDIR)/cdist-manifest-run-init.text		\
    $(MANDIR)/cdist-manifest-run-all.text	 	\
+   $(MANDIR)/cdist-manifest-run-init.text		\
 	$(MANDIR)/cdist-object-explorer-all.text	\
 	$(MANDIR)/cdist-object-gencode.text    	\
 	$(MANDIR)/cdist-object-gencode-all.text	\
