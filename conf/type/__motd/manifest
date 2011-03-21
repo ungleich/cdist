@@ -26,7 +26,7 @@ else
    source="$__type/files/motd"
 fi
 
-os=$(cat $__global/explorer/os)
+os=$(cat "$__global/explorer/os")
 
 
 case "$os" in
