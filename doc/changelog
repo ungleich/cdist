@@ -15,7 +15,6 @@
 	* Bugfix: Remove obsolete $@ call in cdist-remote-explorer-run
 	* Bugfix: Correct manpage for __removeline (broke manpage generation)
 
-
 1.2.0: 2011-03-19
 	* Added dependencies (see cdist-type(7))
 	* New type __removeline (Daniel Roth)
