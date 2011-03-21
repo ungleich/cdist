@@ -31,6 +31,36 @@ Host *
 --------------------------------------------------------------------------------
 
 
+MULTI MASTER OR ENVIRONMENT SETUPS
+----------------------------------
+If you plan to distribute cdist among servers or use different
+environments, you can do so easily with the included version
+control git. For instance if you plan to use the typical three
+environments production, integration and development, you can
+realise this with git branches:
+
+--------------------------------------------------------------------------------
+# Go to cdist checkout
+cd /path/to/cdist
+
+# Create branches
+git branch development
+git branch integration
+git branch production
+
+# Make use of a branch, for instance production
+git checkout production
+--------------------------------------------------------------------------------
+
+Similar if you want to have cdist checked out at multiple machines,
+you can clone it multiple times:
+
+--------------------------------------------------------------------------------
+machine-a % git clone git://your-git-server/cdist
+machine-b % git clone git://your-git-server/cdist
+--------------------------------------------------------------------------------
+
+
 
 SEE ALSO
 --------

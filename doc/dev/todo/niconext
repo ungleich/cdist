@@ -1,4 +1,0 @@
-Write cdist-best-practise:
-   - Multi master setups
-   - Different environments (production, integration, development)
-      - via version control
