@@ -1,7 +1,4 @@
 Write cdist-best-practise:
    - Multi master setups
-   - ssh with master socket?
-      - saves connection delay for new connections: -M
-      - hint: http://protempore.net/~calvins/howto/ssh-connection-sharing/
    - Different environments (production, integration, development)
       - via version control

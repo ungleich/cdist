@@ -1,4 +1,4 @@
-cdist-best-practise(1)
+cdist-best-practise(7)
 ======================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
@@ -7,8 +7,28 @@ NAME
 cdist-best-practise - Practises used in real environments
 
 
-TOPIC1
-------
+PASSWORDLESS CONNECTIONS
+------------------------
+It is recommended to run cdist with public key authentication.
+This requires a private/public key pair and the entry
+"PermitRootLogin without-password" in the sshd server.
+See sshd_config(5) and ssh-keygen(1).
+
+
+SPEEDING UP SSH CONNECTIONS
+---------------------------
+When connecting to a new host, the initial delay with ssh connections
+is pretty big. You can work around this by
+"sharing of multiple sessions over a single network connection"
+(quote from ssh_config(5)). The following code is suitable for
+inclusion into your ~/.ssh/config:
+
+--------------------------------------------------------------------------------
+Host *
+  ControlPath ~/.ssh/master-%l-%r@%h:%p
+  ControlMaster auto
+  ControlPersist 10
+--------------------------------------------------------------------------------
 
 
 
