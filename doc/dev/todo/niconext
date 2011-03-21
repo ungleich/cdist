@@ -1,0 +1,2 @@
+- think about using .cdist for meta information?
+   - otherwise: parameter, gencode-local, etc. are not valid object id stuff
