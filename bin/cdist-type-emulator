@@ -110,4 +110,5 @@ fi
 set +u
 for requirement in $require; do
    echo $requirement >> "$(__cdist_object_require "$__cdist_object")"
+   echo Recording: $__cdist_object requires $requirement
 done
