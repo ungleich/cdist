@@ -9,8 +9,10 @@ A2XM=a2x -f manpage --no-xmllint
 A2XH=asciidoc -b xhtml11
 
 # Developer only
-WEBPAGEBASE=$$HOME/niconetz/software/cdist
-WEBPAGE=$(WEBPAGEBASE).mdwn
+WEBDIR=$$HOME/niconetz
+WEBBASE=software/cdist
+WEBPAGE=$(WEBBASE).mdwn
+
 
 # Documentation
 MANDIR=doc/man
@@ -113,9 +115,9 @@ test:
 
 #web: manmove
 web:
-	cp README $(WEBPAGE)
-	cp -r doc/html/* $(WEBPAGEBASE)/man
-	cd $(WEBDIR) && git commit -m "cdist update" $(WEBPAGEBASE)
+	cp README $(WEBDIR)/$(WEBPAGE)
+	cp -r doc/html/* $(WEBDIR)/$(WEBBASE)/man
+	cd $(WEBDIR) && git commit -m "cdist update" $(WEBBASE) $(WEBPAGE)
 	cd $(WEBDIR) && make pub
 
 pub:
