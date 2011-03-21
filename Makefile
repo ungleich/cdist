@@ -115,7 +115,6 @@ test:
 web:
 	cp README $(WEBPAGE)
 	cp -r doc/html/* $(WEBPAGEBASE)/man
-	exit 1
 	cd $(WEBDIR) && git commit -m "cdist update" $(WEBPAGEBASE)
 	cd $(WEBDIR) && make pub
 
