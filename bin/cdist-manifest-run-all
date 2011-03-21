@@ -105,7 +105,7 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
                   ${__cdist_name_require}    \
                   ; do
                   
-                  if [ -e "${__cdist_new_object_dir}/${__cdist_name_parameter}" ]; then
+                  if [ -e "${__cdist_new_object_dir}/${__cdist_object_file}" ]; then
                      mv "${__cdist_new_object_dir}/${__cdist_object_file}" \
                      "$__cdist_object_dir"
                   fi
