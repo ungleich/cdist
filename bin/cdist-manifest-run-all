@@ -98,17 +98,18 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
                mv "${__cdist_new_object_dir}/${__cdist_name_object_source}" \
                   "$__cdist_object_dir"
 
-               # Parameter
-               if [ -d "${__cdist_new_object_dir}/${__cdist_name_parameter}" ]; then
-                  mv "${__cdist_new_object_dir}/${__cdist_name_parameter}" \
-                  "$__cdist_object_dir"
-               fi
-
-               # Explorer
-               if [ -d "${__cdist_new_object_dir}/${__cdist_name_explorer}" ]; then
-                  mv "${__cdist_new_object_dir}/${__cdist_name_explorer}" \
-                  "$__cdist_object_dir"
-               fi
+               # Explorer, Parameter, Require
+               for __cdist_object_file in   \
+                  ${__cdist_name_explorer}   \
+                  ${__cdist_name_parameter}  \
+                  ${__cdist_name_require}    \
+                  ; do
+                  
+                  if [ -e "${__cdist_new_object_dir}/${__cdist_name_parameter}" ]; then
+                     mv "${__cdist_new_object_dir}/${__cdist_object_file}" \
+                     "$__cdist_object_dir"
+                  fi
+               done
             done < "$__cdist_new_objects_list"
 
             # Remove listing and objects, otherwise the next type will reuse it...
