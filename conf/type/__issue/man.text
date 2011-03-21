@@ -20,13 +20,19 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-None
+source::
+   If supplied, use this file as /etc/issue instead of default.
+
+
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
 __issue
+
+# When called from another type
+__issue --source "$__type/files/myfancyissue"
 --------------------------------------------------------------------------------
 
 
