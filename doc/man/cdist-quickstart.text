@@ -20,10 +20,8 @@ of the first tools you use when you begin with cdist.
 
 EXAMPLES
 --------
-
-To use cdist-quickstart, add the bin directory to your PATH,
-execute cdist-quickstart and enjoy cdist:
-
+To use cdist-quickstart, add the bin directory to your PATH, execute
+cdist-quickstart and enjoy cdist:
 
 --------------------------------------------------------------------------------
 # Bourne shell example
@@ -37,7 +35,6 @@ cdist-quickstart
 --------------------------------------------------------------------------------
 
 
-
 SEE ALSO
 --------
 - cdist(7)
@@ -48,4 +45,3 @@ COPYING
 -------
 Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
-## How to use cdist?
