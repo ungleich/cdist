@@ -1,7 +1,7 @@
-1.3.2:
+1.3.2: 2011-03-21
 	* Add --source to __motd
 	* Add --preseed to __package_apt
-	* Include HTML documentation of manpages
+	* Include HTML documentation of manpages and publish them
 
 1.3.1: 2011-03-21
 	* Document cdist-type-build-emulation
