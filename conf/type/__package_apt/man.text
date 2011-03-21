@@ -25,6 +25,9 @@ OPTIONAL PARAMETERS
 name::
    If supplied, use the name and not the object id as the package name.
 
+preseed::
+   If supplied, use the given filename as input for debconf-set-selections(1)
+
 
 EXAMPLES
 --------
@@ -35,6 +38,9 @@ __package_apt zsh --state installed
 
 # In case you only want *a* webserver, but don't care which one
 __package_apt webserver --state installed --name nginx
+
+# Install package with defaults (from a type)
+__package_apt postfix --state installed --preseed "$__type/files/postfix-seed"
 
 # Remove obsolete package
 __package_apt puppet --state deinstalled
