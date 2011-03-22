@@ -202,7 +202,7 @@ Interesting information are for instance
  * What are the pros/cons you see in cdist?
  * General comments/critics
 
-### Nico Schottelius, Systems Group ETH Zurich
+### Nico Schottelius, Systems Group ETH Zurich and privately
 
 Yes, I'm actually eating my own dogfood and currently managing
 
@@ -216,9 +216,9 @@ Yes, I'm actually eating my own dogfood and currently managing
  * [xfce](http://www.xfce.org/) (lightweight desktop environment)
  * [slim](http://slim.berlios.de/) (graphical login manager for X11)
 
-with cdist on a total of **5** production machines of the
+with cdist on a total of **9** production machines of the
 [Systems Group](http://www.systems.ethz.ch) at the
-[ETH Zurich](http://www.ethz.ch).
+[ETH Zurich](http://www.ethz.ch) as well at home.
 
 ### Steven Armstrong, CBRG ETH Zurich
 
