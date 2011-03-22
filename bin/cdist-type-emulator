@@ -40,7 +40,13 @@ fi
 echo "$__cdist_object_id" | grep -q "^${__cdist_sane_regexp}\$" || \
    __cdist_usage "Insane object id, ${__cdist_object_id}."
 
-__cdist_object="${__cdist_type}/${__cdist_object_id}"
+# Remove double slash if id begins with /
+if [ "$(echo $__cdist_object_id | grep "^/")" ]; then
+   __cdist_object="${__cdist_type}${__cdist_object_id}"
+else
+   __cdist_object="${__cdist_type}/${__cdist_object_id}"
+fi
+
 __cdist_ddir="$(__cdist_object_dir "$__cdist_object")"
 __cdist_parameter_dir="$(__cdist_object_parameter_dir "$__cdist_object")"
 
