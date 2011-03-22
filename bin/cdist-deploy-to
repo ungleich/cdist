@@ -53,7 +53,7 @@ cdist-manifest-run-all        "$__cdist_target_host"
 cdist-object-explorer-all     "$__cdist_target_host"
 cdist-object-gencode-all      "$__cdist_target_host"
 
-echo "Transferring created objects to $__cdist_target_host ..."
+echo "Transferring objects to $__cdist_target_host ..."
 cdist-dir push "$__cdist_target_host" "$__cdist_out_object_dir" \
    "${__cdist_remote_out_object_base_dir}"
 
