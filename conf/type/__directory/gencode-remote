@@ -36,6 +36,12 @@ if [ -f "$__object/parameter/parents" ]; then
    fi
 fi
 
+if [ -f "$__object/parameter/recursive" ]; then
+   if [ yes = "$(cat "$__object/parameter/recursive")" ]; then
+      recursive="-R"
+   fi
+fi
+
 # Only create if not already existent
 if [ no = "$(cat "$__object/explorer/exists")" ]; then
    echo mkdir $mkdiropt \"$destination\"
@@ -48,10 +54,10 @@ fi
 
 # Group
 if [ -f "$__object/parameter/group" ]; then
-   echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
+   echo chgrp $recursive \"$(cat "$__object/parameter/group")\" \"$destination\"
 fi
 
 # Owner
 if [ -f "$__object/parameter/owner" ]; then
-   echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
+   echo chown $recursive \"$(cat "$__object/parameter/owner")\" \"$destination\"
 fi

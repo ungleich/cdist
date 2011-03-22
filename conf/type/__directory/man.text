@@ -32,6 +32,11 @@ owner::
 parents::
    Whether to create parents as well (mkdir -p behaviour). Must be yes or no.
 
+recursive::
+   If supplied the chgrp and chown call will run recursively.
+   This does *not* influence the behaviour of chmod.
+   Must be yes or no.
+
 
 EXAMPLES
 --------
@@ -45,6 +50,9 @@ __directory /etc --owner root --group root --mode 0755
 
 # Create nfs service directory, including parents
 __directory /home/services/nfs --parents yes
+
+# Change permissions recursively
+__directory /home/services --recursive yes --owner root --group root
 --------------------------------------------------------------------------------
 
 
