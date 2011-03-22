@@ -1,3 +1,9 @@
+Core:
+   - allow redefine object, if everything same
+   - support $__self = relative_type/object_id
+   - .cdist
+   - cache
+
 Cache:
    Assume you want to configure stuff one host ("monitor node"),
    depending on the configuration of other hosts ("cluster nodes").
@@ -23,4 +29,5 @@ Types to be written/extended:
    - __service
    - __file_edit
       - regexp replace (can probably cover all?)
+         -> aka sed.
    - __cron
