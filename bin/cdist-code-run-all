@@ -43,8 +43,9 @@ while [ $# -ge 1 ]; do
          || __cdist_exit_err "Remote code failed for $object"
 
    # Code remote
-   cdist-run-remote "$__cdist_target_host" "cdist-code-run" \
-      "${__cdist_remote_out_object_base_dir}" "$object"     \
-      "${__cdist_name_gencode_remote}"                      \
+   cdist-run-remote "$__cdist_target_host"                                 \
+      "__cdist_out_object_dir=\"$__cdist_remote_out_object_base_dir\""     \
+      "cdist-code-run" "${__cdist_remote_out_object_base_dir}" "$object"   \
+      "${__cdist_name_gencode_remote}"                                     \
       || __cdist_exit_err "Remote code failed for $object"
 done < "$__cdist_tmp_file"
