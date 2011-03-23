@@ -1,5 +1,6 @@
 - think about using .cdist for meta information?
-   - otherwise: parameter, gencode-local, etc. are not valid object id stuff
+   - cleanup cdist-manifest-run-all
 
+later
 - check cdist-manifest-run-all whether -x -f to manifest shouldn't be better
    in cdist-manifest-run

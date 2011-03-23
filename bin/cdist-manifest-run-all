@@ -17,14 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-# 
-# For each created object
-# run the manifest of the type (with object id),
-# try to merge back newly created objects (otherwise fail),
-# mark the object as being run
-# and iterate until all objects are marked being run.
-#
-#
+# Run all manifests 
 #
 
 . cdist-config
@@ -35,8 +28,6 @@ __cdist_target_host="$1"; shift
 
 __cdist_objects_list="${__cdist_tmp_dir}/objects_file"
 __cdist_new_objects_list="${__cdist_tmp_dir}/new_objects_file"
-__cdist_new_objects_dir="${__cdist_tmp_dir}/new_objects_dir"
-
 
 # Loop until we do not create new objects anymore
 # which is equal to all objects have been run
@@ -48,82 +39,29 @@ while [ "$__cdist_new_objects_created" = "y"  ]; do
    __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_objects_list"
 
    # Check every object, if we need to run it
-   while read __cdist_object; do
+   while read __cdist_object_self; do
       # Full path to current object
-      __cdist_cur_object_dir="$__cdist_out_object_dir/$__cdist_object"
+      __cdist_cur_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
+
       # Only the id
-      __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
+      __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object_self")"
 
       if [ ! -f "${__cdist_cur_object_dir}/$__cdist_name_object_finished" ]; then
          echo "Checking manifest for ${__cdist_object} ..."
 
-         __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
-         __cdist_manifest="$__cdist_type_dir/${__cdist_type}/${__cdist_name_manifest}"
+         __cdist_type="$(__cdist_type_from_object "$__cdist_object_self")"
+         __cdist_manifest="$(__cdist_type_manifest "${__cdist_type}")"
 
          # Make __cdist_manifest available for cdist-type-emulator
          export __cdist_manifest
 
-         if [ -x "${__cdist_manifest}" ]; then
-            echo "Executing manifest ${__cdist_manifest} ..."
+         echo "Executing manifest ${__cdist_manifest} ..."
+         # Make variables available to non-core - FIXME: beatify
+         export $__cdist_name_var_object="$__cdist_cur_object_dir"
+         export $__cdist_name_var_object_id="$__cdist_object_id"
+         export $__cdist_name_var_type="$(__cdist_type_dir "$__cdist_type")"
 
-            # Make variables available to non-core
-            export $__cdist_name_var_object="$__cdist_cur_object_dir"
-            export $__cdist_name_var_object_id="$__cdist_object_id"
-            export $__cdist_name_var_type="$(__cdist_type_dir "$__cdist_type")"
-
-            cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest" \
-               "$__cdist_new_objects_dir"
-
-            __cdist_object_list "${__cdist_new_objects_dir}" > "$__cdist_new_objects_list"
-
-            # Verify no conflicting objects have been created
-            while read __cdist_new_object; do
-               __cdist_object_found=$(grep "^$__cdist_new_object\$" "$__cdist_objects_list" || true)
-
-               if [ "$__cdist_object_found" ]; then
-                  __cdist_object_source="$(cat "$(__cdist_object_dir "$__cdist_new_object")/${__cdist_name_object_source}")"
-                  __cdist_exit_err "${__cdist_manifest}: ${__cdist_new_object} already exists (source: $__cdist_object_source)"
-               fi
-            done < "$__cdist_new_objects_list"
-
-            # Safe harbour: We can merge all objects into main tree
-            # Merge = mkdir + mv parameters and source information
-            while read __cdist_new_object; do
-                [ "$__cdist_new_objects_created" = "n" ] && __cdist_new_objects_created="y"
-               
-               # where to save the newly created object
-               __cdist_object_dir="$__cdist_out_object_dir/$__cdist_new_object"
-               mkdir -p "$__cdist_object_dir"
-
-               # Move parts of the object (CANNOT MOVE COMPLETLEY, HIERACHY!)
-               __cdist_new_object_dir="$__cdist_new_objects_dir/$__cdist_new_object"
-
-               # Source
-               mv "${__cdist_new_object_dir}/${__cdist_name_object_source}" \
-                  "$__cdist_object_dir"
-
-               # Explorer, Parameter, Require
-               for __cdist_object_file in   \
-                  ${__cdist_name_explorer}   \
-                  ${__cdist_name_parameter}  \
-                  ${__cdist_name_require}    \
-                  ; do
-                  
-                  if [ -e "${__cdist_new_object_dir}/${__cdist_object_file}" ]; then
-                     mv "${__cdist_new_object_dir}/${__cdist_object_file}" \
-                     "$__cdist_object_dir"
-                  fi
-               done
-            done < "$__cdist_new_objects_list"
-
-            # Remove listing and objects, otherwise the next type will reuse it...
-            rm -rf "$__cdist_new_objects_dir" "$__cdist_new_objects_list"
-         else
-            # Be nice, warn user if manifests exists, but is not executable
-            if [ -f "${__cdist_manifest}" ]; then
-               echo "Warning ${__cdist_manifest} exists, but is not executable." >&2
-            fi
-         fi
+         cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest"
       fi
 
       # done with this object

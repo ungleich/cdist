@@ -319,6 +319,11 @@ __cdist_type_gencode()
    echo "${__cdist_type_dir}/$1/${__cdist_name_gencode}"
 }
 
+__cdist_type_manifest()
+{
+   echo "${__cdist_type_dir}/$1/${__cdist_name_manifest}"
+}
+
 __cdist_type_parameter_dir()
 {
    echo "$(__cdist_type_dir "$1")/${__cdist_name_parameter}"
