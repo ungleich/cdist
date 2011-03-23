@@ -71,11 +71,11 @@ __cdist_out_object_dir_orig="$__cdist_out_object_dir"
 # Store to tmp now
 __cdist_out_object_dir="$__cdist_tmp_dir"
 
-__cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
+__cdist_new_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
 
 # Record source
-mkdir -p "${__cdist_object_dir}"
-__cdist_object_source_add "${__cdist_object_dir}"
+mkdir -p "${__cdist_new_object_dir}"
+__cdist_object_source_add "${__cdist_new_object_dir}"
 
 # Record parameter
 __cdist_parameter_dir="$(__cdist_object_parameter_dir "$__cdist_object_self")"
@@ -147,15 +147,15 @@ done
 # Restore original destination
 __cdist_out_object_dir="$__cdist_out_object_dir_orig"
 
-__cdist_new_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
+__cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
 
 #
 # If the object already exists and is exactly the same, merge it. Otherwise fail.
 #
-if [ -e "${__cdist_new_object_dir}" ]; then
+if [ -e "${__cdist_object_dir}" ]; then
    # Allow diff to fail
    set +e
-   diff -ru "${__cdist_object_dir}" "${__cdist_new_object_dir}" \
+   diff -ru "${__cdist_new_object_dir}" "${__cdist_object_dir}" \
       > "$__cdist_tmp_file"; ret=$?
    set -e
    
@@ -164,14 +164,14 @@ if [ -e "${__cdist_new_object_dir}" ]; then
       exec >&2
       echo "${__cdist_object_self} already exists differently."
       echo "Recorded source(s):"
-      __cdist_object_source "${__cdist_new_object_dir}"
+      __cdist_object_source "${__cdist_object_dir}"
       echo "Differences:"
       cat "$__cdist_tmp_file"
       __cdist_exit_err "Aborting due to object conflict."
    fi
 
    # Add ourselves, if we're compatible
-   __cdist_object_source_add "${__cdist_new_object_dir}"
+   __cdist_object_source_add "${__cdist_object_dir}"
 else
    #
    # Move object into tree:
@@ -179,5 +179,5 @@ else
    #
    __cdist_new_object_base_dir="$(__cdist_object_base_dir "$__cdist_object_self")"
    mkdir -p "$__cdist_new_object_base_dir"
-   mv "$__cdist_object_dir"  "$__cdist_new_object_base_dir"
+   mv "$__cdist_new_object_dir"  "$__cdist_new_object_base_dir"
 fi
