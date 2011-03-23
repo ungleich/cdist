@@ -190,6 +190,18 @@ __cdist_object_code_finished()
    echo "$(__cdist_object_dir "$1")/${__cdist_name_code_finished}"
 }
 
+__cdist_object_dir()
+{
+   __cdist_object_dir="${__cdist_out_object_dir}/$1/${__cdist_name_dot_cdist}"
+   echo "$__cdist_object_dir"
+}
+
+
+__cdist_object_id_from_object()
+{
+   echo "${1#*/}"
+}
+
 # Find objects, remove ./ and /MARKER
 __cdist_object_list()
 {
@@ -205,21 +217,9 @@ __cdist_object_list()
 
 }
 
-__cdist_object_source()
-{
-   local object_dir="$1"; shift
-
-   cat "${object_dir}/${__cdist_name_object_source}"
-}
-
 __cdist_object_parameter_dir()
 {
    echo "$(__cdist_object_dir "$1")/${__cdist_name_parameter}"
-}
-
-__cdist_remote_object_parameter_dir()
-{
-   echo "$(__cdist_remote_object_dir "$1")/${__cdist_name_parameter}"
 }
 
 __cdist_object_require()
@@ -227,20 +227,14 @@ __cdist_object_require()
    echo "$(__cdist_object_dir "$1")/${__cdist_name_require}"
 }
 
+__cdist_object_source()
+{
+   cat "$1/${__cdist_name_object_source}"
+}
+
 __cdist_object_type_explorer_dir()
 {
    echo "$(__cdist_object_dir "$1")/${__cdist_name_explorer}"
-}
-
-__cdist_object_id_from_object()
-{
-   echo "${1#*/}"
-}
-
-__cdist_object_dir()
-{
-   __cdist_object_dir="${__cdist_out_object_dir}/$1/${__cdist_name_dot_cdist}"
-   echo "$__cdist_object_dir"
 }
 
 ################################################################################
@@ -250,6 +244,11 @@ __cdist_object_dir()
 __cdist_remote_object_dir()
 {
    echo "${__cdist_remote_out_object_base_dir}/$1"
+}
+
+__cdist_remote_object_parameter_dir()
+{
+   echo "$(__cdist_remote_object_dir "$1")/${__cdist_name_parameter}"
 }
 
 __cdist_remote_object_type_explorer_dir()
