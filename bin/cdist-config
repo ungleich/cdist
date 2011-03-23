@@ -215,8 +215,8 @@ __cdist_object_list()
    (
       cd "${basedir}"
 
-      find . -name "$__cdist_name_object_source" |    \
-         sed -e 's;^./;;' -e "s;/${__cdist_name_object_source}\$;;"
+      find . -name "$__cdist_name_dot_cdist" |    \
+         sed -e 's;^./;;' -e "s;/${__cdist_name_dot_cdist}\$;;"
    )
 }
 
