@@ -79,8 +79,6 @@ __cdist_object_source_add "${__cdist_object_dir}"
 
 
 # Record parameter
-set -x
-
 __cdist_parameter_dir="$(__cdist_object_parameter_dir "$__cdist_object_self")"
 mkdir -p "${__cdist_parameter_dir}"
 
@@ -106,44 +104,55 @@ for requirement in $require; do
    echo $requirement >> "$(__cdist_object_require "$__cdist_object_self")"
    echo Object $__cdist_object_self requires $requirement
 done
+set -u
 
-
-exit 1
 ################################################################################
 # Check newly created object
 #
 
+set -x
+
+#
 # Ensure required parameters are given
+#
 if [ -f "$(__cdist_type_parameter_required "$__cdist_type")" ]; then
    while read required; do
-      if [ ! -f "${tempparameter}/${required}" ]; then
+      if [ ! -f "${__cdist_parameter_dir}/${required}" ]; then
          __cdist_usage "Missing required parameter $required"
       fi
-
-      mv "${tempparameter}/${required}" "${__cdist_parameter_dir}"
    done < "$(__cdist_type_parameter_required "$__cdist_type")"
 fi
 
-# Allow optional parameters
-if [ -f "$(__cdist_type_parameter_optional "$__cdist_type")" ]; then
-   while read optional; do
-      if [ -f "${tempparameter}/${optional}" ]; then
-         mv "${tempparameter}/${optional}" "${__cdist_parameter_dir}"
-      fi
-   done < "$(__cdist_type_parameter_optional "$__cdist_type")"
-fi
+#
+# Ensure that only optional or required parameters are given
+#
 
-# Error out on other paramaters
-cd "${tempparameter}"
-other="$(ls)"
+if [ -f "$(__cdist_type_parameter_optional "$__cdist_type")" ]; then
+   cat "$(__cdist_type_parameter_optional "$__cdist_type")" > \
+      "$__cdist_tmp_file"
+fi
+ 
+if [ -f "$(__cdist_type_parameter_required "$__cdist_type")" ]; then
+   cat "$(__cdist_type_parameter_required "$__cdist_type")" >> \
+      "$__cdist_tmp_file"
+fi
+   
+cd "$__cdist_parameter_dir"
+for parameter in $(ls -1); do
+   is_valid=$(grep "^$parameter\$" "$__cdist_tmp_file")
+
+   [ "$is_valid" ] ||  "Unknown parameter $parameter"
+done
 
 exit 1
 
-if [ "$other" ]; then
-   __cdist_usage "Unsupported parameter: $other"
-fi
+################################################################################
+# Merge object
+#
 
-
+#
+# Ensure that only optional or required parameters are given
+#
 
 # old stuff
 # if [ -e "${__cdist_new_object_dir}" ]; then
