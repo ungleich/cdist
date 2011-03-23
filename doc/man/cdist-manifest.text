@@ -15,8 +15,12 @@ host as well as to define which configurations should be applied within a
 type. Manifests are executed locally and the resulting objects are stored in
 an internal database.
 
+The same object can be redefined in multiple different manifests as long as it is
+exactly the same, that is, all its parameters are equal.
+
 In general, manifests are used to define which types are used depending
-on given conditions
+on given conditions.
+
 
 EXAMPLE
 -------
