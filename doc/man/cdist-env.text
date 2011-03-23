@@ -32,7 +32,10 @@ in csh variants (csh, tcsh):
 eval `./bin/cdist-env`
 --------------------------------------------------------------------------------
 
-Replace "./" with the checkout directory of cdist.
+For bourne shell, the is also a shorter version:
+--------------------------------------------------------------------------------
+. ./bin/cdist-env
+--------------------------------------------------------------------------------
 
 
 SEE ALSO
