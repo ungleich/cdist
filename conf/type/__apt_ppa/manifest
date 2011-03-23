@@ -18,13 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+name="$__object_id"
 
 __package python-software-properties --state installed
-
-require="__package/python-software-properties" \
-   __file /usr/local/bin/check-apt-repository \
-   --source "$__type/files/check-apt-repository" \
-   --mode 0755
 
 require="__package/python-software-properties" \
    __file /usr/local/bin/remove-apt-repository \
