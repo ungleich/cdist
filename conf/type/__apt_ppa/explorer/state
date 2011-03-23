@@ -23,6 +23,10 @@
 
 name="$__object_id"
 
-# FIXME: on first run check-apt-repository may not be installed
-check-apt-repository "$name" && echo enabled || echo disabled
+. /etc/lsb-release
+
+repo_name="${name#ppa:}"
+repo_file_name="$(echo "$repo_name" | sed "s:\/:\-:")-${DISTRIB_CODENAME}.list"
+
+[ -f "/etc/apt/sources.list.d/${repo_file_name}" ] && echo enabled || echo disabled
 
