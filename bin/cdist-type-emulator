@@ -62,37 +62,27 @@ fi
 __cdist_myname="$__cdist_myname ($__cdist_object_id)"
 
 ################################################################################
-# Create object in tmpdir
+# Create object in tmpdir first
 #
 
-__cdist_new_object_dir="$__cdist_tmp_dir/$__cdist_object_self"
-mkdir -p "${__cdist_new_object_dir}"
+# Save original destination
+__cdist_out_object_dir_orig="$__cdist_out_object_dir"
+
+# Store to tmp now
+__cdist_out_object_dir="$__cdist_tmp_dir"
+
+__cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
+
+set -x
 
 # Record source
-echo "${__cdist_manifest}" > "${__cdist_new_object_dir}/${__cdist_name_object_source}"
+mkdir -p "${__cdist_object_dir}"
+__cdist_object_source_add "${__cdist_object_dir}"
 
 
-
-################################################################################
-# Try to merge object into global object directory
-#
-
-# 
-__cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
-__cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
-
+# Record parameter
 __cdist_parameter_dir="$(__cdist_object_parameter_dir "$__cdist_object")"
-
-# if [ -e "${__cdist_new_object_dir}" ]; then
-#    source="$(__cdist_object_source "${__cdist_new_object_dir}")"
-#    __cdist_exit_err "${__cdist_object} already exists (source: $source)"
-# fi
-
 mkdir -p "${__cdist_parameter_dir}"
-
-# Record parameters to tmpdir
-tempparameter="${__cdist_tmp_dir}/${__cdist_name_parameter}"
-mkdir -p "$tempparameter"
 
 while [ $# -gt 0 ]; do
    opt="$1"; shift
@@ -108,6 +98,14 @@ while [ $# -gt 0 ]; do
 
    echo "${value}" > "${tempparameter}/${opt_file}"
 done
+
+exit 1
+
+
+################################################################################
+# Try to merge object into global object directory
+#
+
 
 # Ensure required parameters are given
 if [ -f "$(__cdist_type_parameter_required "$__cdist_type")" ]; then
@@ -144,3 +142,11 @@ for requirement in $require; do
    echo $requirement >> "$(__cdist_object_require "$__cdist_object")"
    echo Recording: $__cdist_object requires $requirement
 done
+
+
+# old stuff
+# if [ -e "${__cdist_new_object_dir}" ]; then
+#    source="$(__cdist_object_source "${__cdist_new_object_dir}")"
+#    __cdist_exit_err "${__cdist_object} already exists (source: $source)"
+# fi
+
