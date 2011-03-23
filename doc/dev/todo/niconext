@@ -1,6 +1,3 @@
-- think about using .cdist for meta information?
-   - cleanup cdist-manifest-run-all
-
-later
-- check cdist-manifest-run-all whether -x -f to manifest shouldn't be better
-   in cdist-manifest-run
+Document redefine behaviour
+release cdist 1.4.0
+   perhaps include __self
