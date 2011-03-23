@@ -227,9 +227,19 @@ __cdist_object_require()
    echo "$(__cdist_object_dir "$1")/${__cdist_name_require}"
 }
 
+__cdist_object_source_name()
+{
+   echo "$1/${__cdist_name_object_source}"
+}
+
 __cdist_object_source()
 {
-   cat "$1/${__cdist_name_object_source}"
+   cat "$(__cdist_object_source_name "$1")"
+}
+
+__cdist_object_source_add()
+{
+   echo "$__cdist_manifest" >> "$(__cdist_object_source_name "$1")"
 }
 
 __cdist_object_type_explorer_dir()
