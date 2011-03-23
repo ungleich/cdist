@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+#
+# Check if the given apt repository is installed or not.
+# Exit with:
+#   0: if it is installed
+#   1: if not
+#   2: on error
+#
+
+import sys
+from aptsources import distro, sourceslist
+from softwareproperties import ppa
+
+
+def is_repository_installed(repository):
+    #print 'repository:', repository
+    codename = distro.get_distro().codename
+    #print 'codename:', codename
+    (line, file) = ppa.expand_ppa_line(repository.strip(), codename)
+    #print 'line:', line
+    #print 'file:', file
+    sources_list = sourceslist.SourcesList()
+    source_entry = sourceslist.SourceEntry(line, file)
+
+    if source_entry in sources_list:
+        #print 'yes'
+        return True
+    else:
+        #print 'no'
+        return False
+
+if __name__ == '__main__':
+    if (len(sys.argv) != 2):
+        print 'Error: need a repository as argument'
+        sys.exit(2)
+    #repository = 'ppa:freenx-team'
+    repository = sys.argv[1]
+    if is_repository_installed(repository):
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
