@@ -49,6 +49,9 @@ cdist-dir push "$__cdist_target_host" "${__cdist_abs_mydir}" "${__cdist_remote_b
 
 cdist-explorer-run-global     "$__cdist_target_host"
 cdist-manifest-run-init       "$__cdist_target_host"
+
+exit 1
+
 cdist-manifest-run-all        "$__cdist_target_host"
 cdist-object-explorer-all     "$__cdist_target_host"
 cdist-object-gencode-all      "$__cdist_target_host"
