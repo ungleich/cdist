@@ -73,15 +73,15 @@ __cdist_out_object_dir="$__cdist_tmp_dir"
 
 __cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
 
-set -x
-
 # Record source
 mkdir -p "${__cdist_object_dir}"
 __cdist_object_source_add "${__cdist_object_dir}"
 
 
 # Record parameter
-__cdist_parameter_dir="$(__cdist_object_parameter_dir "$__cdist_object")"
+set -x
+
+__cdist_parameter_dir="$(__cdist_object_parameter_dir "$__cdist_object_self")"
 mkdir -p "${__cdist_parameter_dir}"
 
 while [ $# -gt 0 ]; do
@@ -90,14 +90,16 @@ while [ $# -gt 0 ]; do
    echo "$opt" | grep -q "^--${__cdist_sane_regexp}\$" || \
       __cdist_usage "Provide sane options"
 
-   opt_file="$(echo $opt | sed 's/^--//')"
+   opt_file="${opt#--}"
 
    [ $# -ge 1 ] || __cdist_usage "Missing value for $opt"
 
    value="$1"; shift
 
-   echo "${value}" > "${tempparameter}/${opt_file}"
+   echo "${value}" > "${__cdist_parameter_dir}/${opt_file}"
 done
+
+find $__cdist_object_dir
 
 exit 1
 
