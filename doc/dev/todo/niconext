@@ -1,2 +1,3 @@
-- think about using .cdist for meta information?
-   - otherwise: parameter, gencode-local, etc. are not valid object id stuff
+Document redefine behaviour
+release cdist 1.4.0
+   perhaps include __self

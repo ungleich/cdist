@@ -87,7 +87,7 @@ while [ $# -gt 0 ]; do
 
       # Execute explorers
       cdist-run-remote "$__cdist_target_host"                     \
-         "__object=\"$(__cdist_remote_object_dir "$__object")\""   \
+         "__object=\"$(__cdist_remote_object_dir "$__object")\""  \
          "__object_id=\"$__object_id\""                           \
          cdist-remote-explorer-run                                \
          "$__cdist_name_var_type_explorer"                        \

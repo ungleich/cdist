@@ -31,4 +31,4 @@ __cdist_target_host="$1"; shift
 eval export $__cdist_name_var_manifest=\"\$__cdist_manifest_dir\"
 
 echo "Running initial manifest for $__cdist_target_host ..."
-cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest_init" "$__cdist_out_object_dir"
+cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest_init"
