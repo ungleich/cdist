@@ -192,8 +192,7 @@ __cdist_object_code_finished()
 
 __cdist_object_dir()
 {
-   __cdist_object_dir="${__cdist_out_object_dir}/$1/${__cdist_name_dot_cdist}"
-   echo "$__cdist_object_dir"
+   echo "${__cdist_out_object_dir}/$1/${__cdist_name_dot_cdist}"
 }
 
 
