@@ -1,4 +1,4 @@
-1.4:
+1.4.0:
 	* Add --recursive to __directory
 	* Move cdist generated stuff to .cdist of object
 	* Allow objects to be redefined
