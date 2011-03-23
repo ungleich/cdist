@@ -28,7 +28,6 @@ name="$__object_id"
 repo_name="${name#ppa:}"
 repo_file_name="$(echo "$repo_name" | sed "s:\/:\-:")-${DISTRIB_CODENAME}.list"
 
-[ -f "/etc/apt/sources.list.d/${repo_file_name}" -a \
-   -s "/etc/apt/sources.list.d/${repo_file_name}" ] \
+[ -s "/etc/apt/sources.list.d/${repo_file_name}" ] \
    && echo enabled || echo disabled
 
