@@ -18,16 +18,17 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+name="$__object_id"
 
 __package python-software-properties --state installed
-
-require="__package/python-software-properties" \
-   __file /usr/local/bin/check-apt-repository \
-   --source "$__type/files/check-apt-repository" \
-   --mode 0755
 
 require="__package/python-software-properties" \
    __file /usr/local/bin/remove-apt-repository \
    --source "$__type/files/remove-apt-repository" \
    --mode 0755
+
+# FIXME: rewrite to use $__self once that exists
+# FIXME: only run if something changed. currently working arround this in
+#    __apt_update_index/gencode-remote
+require="__apt_ppa/$__object_id" __apt_update_index
 
