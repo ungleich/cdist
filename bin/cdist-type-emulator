@@ -168,9 +168,6 @@ if [ -e "${__cdist_object_dir}" ]; then
       cat "$__cdist_tmp_file"
       __cdist_exit_err "Aborting due to object conflict."
    fi
-
-   # Add ourselves, if we're compatible
-   __cdist_object_source_add "${__cdist_object_dir}"
 else
    #
    # Move object into tree:
@@ -180,3 +177,6 @@ else
    mkdir -p "$__cdist_new_object_base_dir"
    mv "$__cdist_new_object_dir"  "$__cdist_new_object_base_dir"
 fi
+
+# Add "I was here message"
+__cdist_object_source_add "${__cdist_object_dir}"
