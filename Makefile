@@ -16,10 +16,8 @@ WEBPAGE=$(WEBBASE).mdwn
 
 # Documentation
 MANDIR=doc/man
-MANGENERATED=$(MANDIR)/cdist-reference.text
 
-MANSRC=$(MANDIR)/cdist.text						\
-	$(MANDIR)/cdist-best-practise.text			\
+MAN1SRC=                        				 	\
 	$(MANDIR)/cdist-code-run.text					\
 	$(MANDIR)/cdist-code-run-all.text			\
 	$(MANDIR)/cdist-config.text 					\
@@ -28,23 +26,29 @@ MANSRC=$(MANDIR)/cdist.text						\
    $(MANDIR)/cdist-explorer-run-global.text 	\
    $(MANDIR)/cdist-deploy-to.text 				\
 	$(MANDIR)/cdist-explorer.text					\
-	$(MANDIR)/cdist-hacker.text  					\
 	$(MANDIR)/cdist-manifest.text 				\
 	$(MANDIR)/cdist-manifest-run.text			\
-   $(MANDIR)/cdist-manifest-run-all.text	 	\
    $(MANDIR)/cdist-manifest-run-init.text		\
+   $(MANDIR)/cdist-manifest-run-all.text	 	\
 	$(MANDIR)/cdist-object-explorer-all.text	\
 	$(MANDIR)/cdist-object-gencode.text    	\
 	$(MANDIR)/cdist-object-gencode-all.text	\
-	$(MANDIR)/cdist-quickstart.text 				\
    $(MANDIR)/cdist-remote-explorer-run.text 	\
 	$(MANDIR)/cdist-run-remote.text				\
-	$(MANDIR)/cdist-stages.text					\
-	$(MANDIR)/cdist-type.text						\
 	$(MANDIR)/cdist-type-build-emulation.text \
 	$(MANDIR)/cdist-type-emulator.text			\
 	$(MANDIR)/cdist-type-template.text			\
 
+MAN7SRC=$(MANDIR)/cdist.text						\
+	$(MANDIR)/cdist-best-practise.text			\
+	$(MANDIR)/cdist-hacker.text  					\
+	$(MANDIR)/cdist-quickstart.text 				\
+   $(MANDIR)/cdist-reference.text				\
+	$(MANDIR)/cdist-stages.text					\
+	$(MANDIR)/cdist-type.text						\
+
+MAN1DST=$(MAN1SRC:.text=.1)
+MAN7DST=$(MAN1SRC:.text=.7)
 
 ################################################################################
 # User targets
