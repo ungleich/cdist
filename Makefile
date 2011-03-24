@@ -121,10 +121,10 @@ test:
 	# gentoo
 	.rsync nicosc@ru3.inf.ethz.ch:cdist
 
-web: man
+web: manmove
 	cp README $(WEBDIR)/$(WEBPAGE)
 	rm -rf $(WEBDIR)/$(WEBBASE)/man && mkdir $(WEBDIR)/$(WEBBASE)/man
-	cp -r doc/html/* $(WEBDIR)/$(WEBBASE)/man
+	cp -r $(HTMLDIR)/* $(WEBDIR)/$(WEBBASE)/man
 	cd $(WEBDIR) && git add $(WEBBASE)/man
 	cd $(WEBDIR) && git commit -m "cdist update" $(WEBBASE) $(WEBPAGE)
 	cd $(WEBDIR) && make pub
