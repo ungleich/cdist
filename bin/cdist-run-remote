@@ -28,4 +28,4 @@ set -ue
 __cdist_target_host="$1"; shift
 
 ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
-   "PATH=\"${__cdist_remote_bin_dir}:\$PATH\"" "$@"
+   "export PATH=\"${__cdist_remote_bin_dir}:\$PATH\";" "$@"
