@@ -17,7 +17,7 @@ file.
 REQUIRED PARAMETERS
 -------------------
 value::
-   The value for the key. Setting the value to __NOTSET__ will remove the key
+   The value for the key. Setting the value to `__NOTSET__` will remove the key
    from the file.
 file::
    The file to operate on.
