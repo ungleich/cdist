@@ -95,7 +95,7 @@ manmove: $(MAN1DST) $(MAN7DST) $(MANHTML)
 	mv doc/man/*.html $(HTMLDIR)
 	for mantype in conf/type/*/man.html; do \
 		mannew=$$(echo $$mantype | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;');\
-		mv $$mantype doc/html/$$mannew; \
+		mv $$mantype $(HTMLDIR)/$$mannew; \
 	done
 
 # Reference depends on conf/type/*/man.text - HOWTO with posix make?
