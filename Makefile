@@ -116,6 +116,7 @@ test:
 
 web: man
 	cp README $(WEBDIR)/$(WEBPAGE)
+	rm -rf $(WEBDIR)/$(WEBBASE)/man && mkdir $(WEBDIR)/$(WEBBASE)/man
 	cp -r doc/html/* $(WEBDIR)/$(WEBBASE)/man
 	cd $(WEBDIR) && git add $(WEBBASE)/man
 	cd $(WEBDIR) && git commit -m "cdist update" $(WEBBASE) $(WEBPAGE)
