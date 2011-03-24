@@ -27,6 +27,12 @@ read the scripts bin/cdist-deploy-to calls. The magnificent HACKERS_README
 may be of great help as well.
 
 
+CODING CONVENTIONS (CORE)
+-------------------------
+- All variables exported by cdist are prefixed with a double underscore (__)
+- All cdist-internal variables are prefixed with __cdist_ and are generally not exported.
+
+
 HOW TO SUBMIT STUFF FOR INCLUSION INTO UPSTREAM CDIST
 -----------------------------------------------------
 If you did some cool changes to cdist, which you value as a benefit for
@@ -40,6 +46,8 @@ work nor kill the authors brain:
    - Exception: Bugfixes to a version branch
 - Code submissions must be in your master branch
    - Exception: If you only want a comment on your code, but not an inclusion.
+- Do not add conf/manifest/init - This file should only be touched in your
+  private branch!
 
 As soon as your work meets these requirements, you can contact me
 (IRC, Mailinglist, Phone, RFC 1149) and I'll check your code before
