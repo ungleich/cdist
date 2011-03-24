@@ -1,6 +1,10 @@
+The following list of todos has not been assigned to any developer.
+
+Feel free to pick one:
+
 Types to be written/extended:
    - __ssh-keys (host/user)
-   - __service
+   - Think about __service - necessary?
    - __file_edit
       - regexp replace (can probably cover all?)
          -> aka sed.
