@@ -28,6 +28,7 @@ MANSRC=$(MANDIR)/cdist.text						\
    $(MANDIR)/cdist-explorer-run-global.text 	\
    $(MANDIR)/cdist-deploy-to.text 				\
 	$(MANDIR)/cdist-explorer.text					\
+	$(MANDIR)/cdist-hacker.text  					\
 	$(MANDIR)/cdist-manifest.text 				\
 	$(MANDIR)/cdist-manifest-run.text			\
    $(MANDIR)/cdist-manifest-run-all.text	 	\
