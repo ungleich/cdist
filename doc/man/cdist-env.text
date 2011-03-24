@@ -32,7 +32,7 @@ in csh variants (csh, tcsh):
 eval `./bin/cdist-env`
 --------------------------------------------------------------------------------
 
-For bourne shell, the is also a shorter version:
+For bourne shell, there is also a shorter version:
 --------------------------------------------------------------------------------
 . ./bin/cdist-env
 --------------------------------------------------------------------------------

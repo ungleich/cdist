@@ -27,8 +27,3 @@ require="__package/python-software-properties" \
    --source "$__type/files/remove-apt-repository" \
    --mode 0755
 
-# FIXME: rewrite to use $__self once that exists
-# FIXME: only run if something changed. currently working arround this in
-#    __apt_update_index/gencode-remote
-require="__apt_ppa/$__object_id" __apt_update_index
-

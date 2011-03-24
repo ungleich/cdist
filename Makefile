@@ -28,6 +28,7 @@ MANSRC=$(MANDIR)/cdist.text						\
    $(MANDIR)/cdist-explorer-run-global.text 	\
    $(MANDIR)/cdist-deploy-to.text 				\
 	$(MANDIR)/cdist-explorer.text					\
+	$(MANDIR)/cdist-hacker.text  					\
 	$(MANDIR)/cdist-manifest.text 				\
 	$(MANDIR)/cdist-manifest-run.text			\
    $(MANDIR)/cdist-manifest-run-all.text	 	\
@@ -62,7 +63,8 @@ all:
 
 man: doc/man/.marker
 
-doc/man/.marker: $(MANDIR)/cdist-reference.text
+# FIXME: also depends on conf/type/*/man.text!
+doc/man/.marker: manmove
 	touch $@
 
 # Manual from core
@@ -74,7 +76,7 @@ mantype:
 	for man in conf/type/*/man.text; do $(A2XM) $$man; $(A2XH) $$man; done
 
 # Move into manpath directories
-manmove: mantype mancore
+manmove: mantype mancore $(MANGENERATED)
 	for manpage in $(MANDIR)/*.[1-9] conf/type/*/*.7; do \
 		cat=$${manpage##*.}; \
 		mandir=$(MANDIR)/man$$cat; \
@@ -90,15 +92,13 @@ manmove: mantype mancore
 	done
 
 # Reference depends on conf/type/*/man.text - HOWTO with posix make?
-$(MANDIR)/cdist-reference.text: manmove $(MANDIR)/cdist-reference.text.sh
+$(MANDIR)/cdist-reference.text: $(MANDIR)/cdist-reference.text.sh
 	$(MANDIR)/cdist-reference.text.sh
 	$(A2XM) $(MANDIR)/cdist-reference.text
 	$(A2XH) $(MANDIR)/cdist-reference.text
-	# Move us to the destination as well
-	make manmove
 	
 clean:
-	rm -rf doc/man/*.html doc/man/*.[1-9] doc/man/man[1-9] $(MANGENERATED)
+	rm -rf doc/man/html/* doc/man/*.[1-9] doc/man/man[1-9] $(MANGENERATED)
 	rm -f conf/type/*/man.html
 	rm -rf doc/html
 
@@ -114,10 +114,11 @@ test:
 	# gentoo
 	.rsync nicosc@ru3.inf.ethz.ch:cdist
 
-#web: manmove
-web:
+web: man
 	cp README $(WEBDIR)/$(WEBPAGE)
+	rm -rf $(WEBDIR)/$(WEBBASE)/man && mkdir $(WEBDIR)/$(WEBBASE)/man
 	cp -r doc/html/* $(WEBDIR)/$(WEBBASE)/man
+	cd $(WEBDIR) && git add $(WEBBASE)/man
 	cd $(WEBDIR) && git commit -m "cdist update" $(WEBBASE) $(WEBPAGE)
 	cd $(WEBDIR) && make pub
 
