@@ -1,5 +1,6 @@
 1.4.1:
 	* Manpage generation cleanup
+	* New type __key_value (Steven Armstrong)
 
 1.4.0: 2011-03-24
 	* Add --recursive to __directory
