@@ -1,6 +1,6 @@
-1.4.0:
+1.4.0: 2011-03-24
 	* Add --recursive to __directory
-	* Move cdist generated stuff to .cdist of object
+	* Move cdist generated stuff to .cdist of an object
 	* Allow objects to be redefined
 
 1.3.2: 2011-03-21
