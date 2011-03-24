@@ -1,3 +1,6 @@
+1.4.1:
+	* Manpage generation cleanup
+
 1.4.0: 2011-03-24
 	* Add --recursive to __directory
 	* Move cdist generated stuff to .cdist of an object

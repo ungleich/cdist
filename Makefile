@@ -16,6 +16,7 @@ WEBPAGE=$(WEBBASE).mdwn
 
 # Documentation
 MANDIR=doc/man
+HTMLDIR=$(MANDIR)/html
 
 MAN1SRC=                        				 	\
 	$(MANDIR)/cdist-code-run.text					\
@@ -46,9 +47,11 @@ MAN7SRC=$(MANDIR)/cdist.text						\
    $(MANDIR)/cdist-reference.text				\
 	$(MANDIR)/cdist-stages.text					\
 	$(MANDIR)/cdist-type.text						\
+	$(shell ls conf/type/*/man.text)
 
 MAN1DST=$(MAN1SRC:.text=.1)
-MAN7DST=$(MAN1SRC:.text=.7)
+MAN7DST=$(MAN7SRC:.text=.7)
+MANHTML=$(MAN1SRC:.text=.html) $(MAN7SRC:.text=.html)
 
 ################################################################################
 # User targets
@@ -65,34 +68,34 @@ all:
 	@echo ''
 	@echo ''
 
-man: doc/man/.marker
 
-# FIXME: also depends on conf/type/*/man.text!
-doc/man/.marker: manmove
-	touch $@
+%.1 %.7: %.text
+	$(A2XM) $*.text
 
-# Manual from core
-mancore: $(MANSRC)
-	for mansrc in $^; do $(A2XM) $$mansrc; $(A2XH) $$mansrc; done
+%.html: %.text
+	$(A2XH) $*.text
 
-# Manuals from types
-mantype:
-	for man in conf/type/*/man.text; do $(A2XM) $$man; $(A2XH) $$man; done
+man: $(MAN1DST) $(MAN7DST)
+
+html: $(MANHTML)
+
+# man: doc/man/.marker
 
 # Move into manpath directories
-manmove: mantype mancore $(MANGENERATED)
+manmove: $(MAN1DST) $(MAN7DST) $(MANHTML)
 	for manpage in $(MANDIR)/*.[1-9] conf/type/*/*.7; do \
 		cat=$${manpage##*.}; \
 		mandir=$(MANDIR)/man$$cat; \
 		mkdir -p $$mandir; \
 		mv $$manpage $$mandir; \
 	done
-	mkdir -p doc/html
-	mv doc/man/*.html doc/html
 
+	# HTML
+	mkdir -p $(HTMLDIR)
+	mv doc/man/*.html $(HTMLDIR)
 	for mantype in conf/type/*/man.html; do \
-	mannew=$$(echo $$mantype | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;');\
-	mv $$mantype doc/html/$$mannew; \
+		mannew=$$(echo $$mantype | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;');\
+		mv $$mantype doc/html/$$mannew; \
 	done
 
 # Reference depends on conf/type/*/man.text - HOWTO with posix make?
@@ -102,9 +105,9 @@ $(MANDIR)/cdist-reference.text: $(MANDIR)/cdist-reference.text.sh
 	$(A2XH) $(MANDIR)/cdist-reference.text
 	
 clean:
-	rm -rf doc/man/html/* doc/man/*.[1-9] doc/man/man[1-9] $(MANGENERATED)
-	rm -f conf/type/*/man.html
-	rm -rf doc/html
+	rm -rf doc/man/html/* doc/man/*.[1-9] doc/man/man[1-9]
+	rm -f conf/type/*/man.html $(MANDIR)/cdist-reference.text
+	rm -rf $(HTMLDIR)
 
 ################################################################################
 # Developer targets
