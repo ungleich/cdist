@@ -73,9 +73,8 @@ __cdist_out_object_dir="$__cdist_tmp_dir"
 
 __cdist_new_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
 
-# Record source
+# Initialise object
 mkdir -p "${__cdist_new_object_dir}"
-__cdist_object_source_add "${__cdist_new_object_dir}"
 
 # Record parameter
 __cdist_parameter_dir="$(__cdist_object_parameter_dir "$__cdist_object_self")"
