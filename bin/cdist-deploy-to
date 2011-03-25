@@ -52,6 +52,9 @@ cdist-manifest-run-init       "$__cdist_target_host"
 cdist-manifest-run-all        "$__cdist_target_host"
 
 # Change workflow here: cdist-object-{apply, run, foo}
+cdist-object-run-all          "$__cdist_target_host"
+exit
+
 cdist-object-explorer-all     "$__cdist_target_host"
 cdist-object-gencode-all      "$__cdist_target_host"
 
