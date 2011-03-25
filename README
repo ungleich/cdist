@@ -52,22 +52,28 @@ You can [browse the documentation for the latest version online](man) as well.
 
 ### Features
 
-Stuff that should probably be included in every configuration management,
-but is not. Or: Why I began to write cdist:
-
- * Speed
- * Elegant code
- * Clean design
+ * Elegant code and clean design
+  * Type and core cleanly seperated
+  * Small codebase in core
  * Good documentation (man pages)
- * Meaningful error messages
- * The no surprise factor
  * Consistency in behaviour, naming and documentation
+ * Meaningful error messages
+  * Either standard error messages from tools or added description for clearification
+ * The no surprise factor
+  * No magic guessing of what the user wants
+ * Simple and well-known DSL
+  * Posix shell
  * Easy integration into bare metal installations
- * Simple and well-known DSL: posix shell
- * It must be very easy to extend and debug cdist
- * Focus on reuse of existing functionality (like sh, ssh, find, rm, ...)
- * Easy upgrade: ***There is no need to update cdist on target hosts!***
-  * cdist only needs to be update on the master server
+  * requires only ssh + sh
+ * Easy upgrade
+  * ***There is no need to update cdist on target hosts!***
+  * cdist only needs to be updated on the master server(s)
+ * Very easy to extend
+  * Can be done via types, which can be stacked on top of others
+ * Reuse of existing functionality
+  * sh, ssh, find, rm, mv, ...
+ * Very easy to debug
+  * Just add set -x in the scripts
 
 ### OS support
 
