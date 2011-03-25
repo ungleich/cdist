@@ -1,0 +1,19 @@
+UNASSIGNED TODOS
+----------------
+The following list of todos has not been assigned to any developer.
+Feel free to pick one!
+
+CORE
+----
+Only build manpages if necessary for types as well as for the core!
+
+TYPES
+------
+Types to be written/extended:
+   - __ssh-keys (host/user)
+   - Think about __service - necessary?
+   - __file_edit
+      - regexp replace (can probably cover all?)
+         -> aka sed.
+   - __cron
+

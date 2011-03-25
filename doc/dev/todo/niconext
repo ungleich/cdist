@@ -1,3 +1,23 @@
-Document redefine behaviour
-release cdist 1.4.0
-   perhaps include __self
+Core:
+   - support $__self = relative_type/object_id
+   - cache
+
+Cache:
+   Assume you want to configure stuff one host ("monitor node"),
+   depending on the configuration of other hosts ("cluster nodes").
+
+   For instance, the monitor host would like to know,
+   which hosts are configured with the provider
+   "apache" and option --start true.
+
+   This requires the monitor node to be able to
+   query all other configured nodes. It can't
+   ask for all hosts, because cdist does not
+   know which hosts are configured or may exist.
+
+   Example implementation
+
+   If cdist keeps ("caches") the configuration of every
+   node it configures, each new node can query the
+   cache for existing nodes that acquired the given
+   configuration.

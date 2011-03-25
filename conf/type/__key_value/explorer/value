@@ -17,13 +17,17 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
+# Get the current value of key or __NOTSET__ if the key doesn't exist.
+#
 
-name="$__object_id"
+key="$(cat "$__object/parameter/key")"
+file="$(cat "$__object/parameter/file")"
+delimiter="$(cat "$__object/parameter/delimiter")"
 
-__package python-software-properties --state installed
-
-require="__package/python-software-properties" \
-   __file /usr/local/bin/remove-apt-repository \
-   --source "$__type/files/remove-apt-repository" \
-   --mode 0755
+awk -F "$delimiter" '
+BEGIN { found=0 }
+/^'$key'/ { print $2; found=1 }
+END { if (found) exit 0; else exit 1 }' "$file" \
+|| echo "__NOTSET__"
 

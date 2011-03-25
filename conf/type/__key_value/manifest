@@ -18,18 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# BIG FAT FIXME: there must be a better way to do this!
-tmpdir=$(mktemp -d)
-cleanup() {
-   rm -rf "$tmpdir"
-}
-trap cleanup EXIT
-
-should="$tmpdir/should"
-is="$tmpdir/is"
-
-find "$__global/object/__apt_ppa" -path "*.cdist/parameter/state" | xargs cat > "$should"
-find "$__global/object/__apt_ppa" -path "*.cdist/explorer/state" | xargs cat > "$is"
-
-diff -ru "$is" "$should" || echo apt-get update
+if [ -f "$__object/parameter/key" ]; then
+   key="$(cat "$__object/parameter/key")"
+else
+   echo "$__object_id" > "$__object/parameter/key"
+fi
 

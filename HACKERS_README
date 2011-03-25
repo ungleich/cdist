@@ -3,21 +3,12 @@ cat << eof
 Hey hackers,
 
 this README is for you, for those who want to dig into cdist, hack it or try
-to get a deeper understanding.
-
-A lot of documentation is still missing, but running cdist-quickstart should
-give you an impression of how cdist works.
+to get a deeper understanding. Please read doc/man/cdist-hacker.text.
 
 I hope you have a lot of fun with cdist, because it was also a lot of fun to
 develop it!
 
-   -- Nico, 20110304
-
-
-## Conventions
-
-- All variables exported by cdist are prefixed with a double underscore (__)
-- All cdist-internal variables are prefixed with __cdist_ and are generally not exported.
+   -- Nico, 20110324
 
 ## Running cdist when developing
 
