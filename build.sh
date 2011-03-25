@@ -86,7 +86,7 @@ case "$1" in
    man7)
       for man in cdist.text cdist-best-practice.text cdist-hacker.text         \
       cdist-quickstart.text cdist-reference.text cdist-stages.text             \
-      cdist-type.text
+      cdist-type.text cdist-cache.text
          do
          ln -sf ../$man ${MAN7DSTDIR}
       done
