@@ -1,6 +1,9 @@
 Cache:
    - add example how to use 
    - export variable $__cache
-      -> to all hosts or this host?
+      -> for current host
+      -> add function to cdist-config, import from cdist-cache
+
+
 Core:
    - support $__self = relative_type/object_id
