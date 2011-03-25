@@ -82,10 +82,12 @@ all:
 #
 
 # Type manpages are in no good format for asciidoc, make them look good!
-manlinktypes: $(MANTMPDIR)
+manlink: $(MANTMPDIR)
 	for mansrc in $(MAN7TYPESRC); do \
 		dst="$$(echo $$mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;$(MANTMPDIR)/;')"; \
 		ln -sf ../../../$$mansrc $$dst; done
+	for mansrc in $(MAN1SRC); do ln -sf ../../../$$mansrc $(MANTMPDIR); done
+	for mansrc in $(MAN7SRC); do ln -sf ../../../$$mansrc $(MANTMPDIR); done
 
 ################################################################################
 
