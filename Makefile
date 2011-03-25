@@ -87,7 +87,7 @@ all:
 man: $(MAN1DST) $(MAN7DST)
 manhtml: $(MANHTML)
 
-$(MANHTML): $(MANHTMLDIR)
+$(MAN1DST) $(MAN7DST) $(MANHTML): $(MANOUTDIRS)
 
 # Create output dirs
 $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR) $(MANTMPDIR):
