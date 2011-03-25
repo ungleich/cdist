@@ -84,8 +84,8 @@ $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR):
 
 # Link source files
 manlink: $(MAN1DSTDIR) $(MAN7DSTDIR)
-	for mansrc in $(MAN1SRC); do ln -sf $$mansrc $(MAN1DSTDIR); done
-	for mansrc in $(MAN7SRC); do ln -sf $$mansrc $(MAN7DSTDIR); done
+	for mansrc in $(notdir $(MAN1SRC)); do ln -sf ../$$mansrc $(MAN1DSTDIR); done
+	for mansrc in $(notdir $(MAN7SRC)); do ln -sf ../$$mansrc $(MAN7DSTDIR); done
 	for mansrc in $(MAN7TYPESRC); do \
 		dst="$$(echo $$mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;doc/man/man7/;')"; \
 		ln -sf $$mansrc $$dst; done
