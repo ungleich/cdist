@@ -1,8 +1,12 @@
 Core:
    - support $__self = relative_type/object_id
-   - cache
 
 Cache:
+   - add manpage
+   - add example how to use 
+   - export variable $__cache
+      -> to all hosts or this host?
+
    Assume you want to configure stuff one host ("monitor node"),
    depending on the configuration of other hosts ("cluster nodes").
 
