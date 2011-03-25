@@ -52,7 +52,7 @@ MAN7SRC=$(MANDIR)/cdist.text						\
 	$(MANDIR)/cdist-type.text						\
 
 MAN7TYPESRC=$(shell ls conf/type/*/man.text)
-
+MAN7TYPEDST=$(shell for mansrc in $(MAN7TYPESRC:.text=.7); do dst="$$(echo $$mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;doc/man/man7/;')"; echo $$dst; done)
 MAN1DST=$(addprefix $(MAN1DSTDIR)/,$(notdir $(MAN1SRC:.text=.1)))
 MAN7DST=$(addprefix $(MAN7DSTDIR)/,$(notdir $(MAN7SRC:.text=.7)))
 MANHTML=$(MAN1SRC:.text=.html) $(MAN7SRC:.text=.html)
@@ -84,11 +84,11 @@ $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR):
 
 # Link source files
 manlink: $(MAN1DSTDIR) $(MAN7DSTDIR)
-	for mansrc in $(notdir $(MAN1SRC)); do ln -sf ../$$mansrc $(MAN1DSTDIR); done
-	for mansrc in $(notdir $(MAN7SRC)); do ln -sf ../$$mansrc $(MAN7DSTDIR); done
+	for mansrc in $(MAN1SRC); do ln -sf ../../../$$mansrc $(MAN1DSTDIR); done
+	for mansrc in $(MAN7SRC); do ln -sf ../../../$$mansrc $(MAN7DSTDIR); done
 	for mansrc in $(MAN7TYPESRC); do \
 		dst="$$(echo $$mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;doc/man/man7/;')"; \
-		ln -sf $$mansrc $$dst; done
+		ln -sf ../../../$$mansrc $$dst; done
 
 %.1 %.7: %.text manlink
 	$(A2XM) $*.text
@@ -96,7 +96,7 @@ manlink: $(MAN1DSTDIR) $(MAN7DSTDIR)
 %.html: %.text
 	$(A2XH) -o $(MANHTMLDIR)/$(@F) $<
 
-man: $(MAN1DST) $(MAN7DST)
+man: $(MAN1DST) $(MAN7DST) $(MAN7TYPEDST)
 
 html: $(MANHTML)
 
