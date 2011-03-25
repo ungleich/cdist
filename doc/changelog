@@ -1,6 +1,8 @@
-1.4.1:
-	* Manpage generation cleanup
+1.4.1: 2011-03-25
 	* New type __key_value (Steven Armstrong)
+	* New type __apt_ppa (Steven Armstrong)
+	* Documentation: Manpage generation cleanup
+	* Documentation: Manpage fix for __apt_ppa
 
 1.4.0: 2011-03-24
 	* Add --recursive to __directory
