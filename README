@@ -77,6 +77,7 @@ cdist was tested or is know to run on at least
  * [Debian](http://www.debian.org/)
  * [Gentoo](http://www.gentoo.org/)
  * [Mac OS X](http://www.apple.com/macosx/)
+ * [OpenBSD](http://www.openbsd.org)
  * [Redhat](http://www.redhat.com/)
  * [Ubuntu](http://www.ubuntu.com/)
 
@@ -108,7 +109,7 @@ To install cdist, execute the following commands:
     export PATH=$PATH:$(pwd -P)/bin
 
     # If you want the manpages (requires gmake and asciidoc to be installed)
-    make man
+    ./build.sh man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 
@@ -150,7 +151,7 @@ To upgrade cdist in the current branch use
     git pull
 
     # Also update the manpages
-    make man
+    ./build.sh man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
