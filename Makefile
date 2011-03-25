@@ -20,6 +20,8 @@ MANDIR=doc/man
 MAN1DSTDIR=$(MANDIR)/man1
 MAN7DSTDIR=$(MANDIR)/man7
 MANHTMLDIR=$(MANDIR)/html
+MANTMPDIR=$(MANDIR)/tmp
+MANOUTDIRS=$(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR)
 
 MAN1SRC=                        				 	\
 	$(MANDIR)/cdist-code-run.text					\
@@ -79,8 +81,18 @@ all:
 # Documentation
 #
 
+# Type manpages are in no good format for asciidoc, make them look good!
+manlinktypes: $(MANTMPDIR)
+	for mansrc in $(MAN7TYPESRC); do \
+		dst="$$(echo $$mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;$(MANTMPDIR)/;')"; \
+		ln -sf ../../../$$mansrc $$dst; done
+
+################################################################################
+
+man: $(MAN1DST) $(MAN7DST) $(MAN7TYPEDST)
+
 # Create output dirs
-$(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR):
+$(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR) $(MANTMPDIR):
 	mkdir -p $@
 
 # Link source files
@@ -91,13 +103,11 @@ manlink: $(MAN1SRC) $(MAN7SRC) $(MANTYPE7SRC) $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANH
 		dst="$$(echo $$mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;doc/man/man7/;')"; \
 		ln -sf ../../../$$mansrc $$dst; done
 
-%.1 %.7: %.text manlink
+%.1 %.7: %.text manlink $(MANOUTDIRS)
 	$(A2XM) $*.text
 
 %.html: %.text manlink
 	$(A2XH) -o $(MANHTMLDIR)/$(@F) $<
-
-man: $(MAN1DST) $(MAN7DST) $(MAN7TYPEDST)
 
 # $(MANHTML): $(MANHTMLDIR)
 manhtml: $(MANHTML)
