@@ -23,34 +23,15 @@
 #
 
 . cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host> <manifest>"
+[ $# -eq 1 ] || __cdist_usage "<target host>"
 set -u
 
 __cdist_target_host="$1"; shift
-__cdist_manifest="$1"; shift
 
-################################################################################
-# Export information for cdist-type-emulator or manifest
-#
+mkdir -p "${__cdist_local_base_cache_dir}"
+__cdist_abs_cache_dir="$(cd "$__cdist_local_base_cache_dir" && pwd -P)"
+__cdist_abs_ddir="$__cdist_abs_cache_dir/$__cdist_target_host"
 
-# Config dir should not get reset - FIXME: why did I do this?
-export __cdist_conf_dir
-
-# Used to record the source in the object
-export __cdist_manifest
-
-# Export information for manifests - __cdist_out_dir comes from cdist-config
-export __global="$__cdist_out_dir"
-
-################################################################################
-# The actual run
-#
-
-# Ensure binaries exist and are up-to-date
-cdist-type-build-emulation "${__cdist_out_type_bin_dir}" \
-   || __cdist_exit_err "Failed to build type emulation binaries"
-
-# prepend our path, so all cdist tools come before other tools
-export PATH="${__cdist_out_type_bin_dir}:$PATH"
-
-__cdist_exec_fail_on_error "${__cdist_manifest}"
+echo "Saving cache to $__cdist_abs_ddir ..."
+rm -rf "$__cdist_abs_ddir"
+mv "$__cdist_local_base_dir" "$__cdist_abs_ddir"
