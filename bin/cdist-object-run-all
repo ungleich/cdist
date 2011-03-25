@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# 
+# For each created object:
+#  - run type explorers
+#  - generate code
+#  - copy object to target
+#  - execute code on target
+#
+
+. cdist-config
+[ $# -eq 1 ] || __cdist_usage "<target host>"
+set -eu
+
+__cdist_target_host="$1"; shift
+
+object_listing="$__cdist_tmp_dir/objects"
+type_listing_all="$__cdist_tmp_dir/types_all"
+type_listing="$__cdist_tmp_dir/types"
+types_pushed="$__cdist_tmp_dir/types_pushed"
+touch "$types_pushed"
+
+
+# Get listing of objects
+__cdist_object_list "$__cdist_out_object_dir" > "$object_listing"
+
+
+while read object; do
+   __cdist_type="$(__cdist_type_from_object "$object")"
+   if __cdist_type_has_explorer "$__cdist_type"; then
+      # Transfer the type explorers
+      if ! grep -q "$__cdist_type" "$types_pushed"; then
+         cdist-type-explorer-push "$__cdist_target_host" "$__cdist_type"
+         echo "$__cdist_type" >> "$types_pushed"
+      fi
+
+      # Run the type explorers for the current object
+      cdist-object-explorer-run "$__cdist_target_host" "$object"
+
+   fi
+
+done < "$object_listing"
+
