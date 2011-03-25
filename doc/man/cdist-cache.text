@@ -1,0 +1,47 @@
+cdist-cache(1)
+==============
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-cache - Cache output of last run
+
+
+SYNOPSIS
+--------
+cdist-cache TARGET_HOST
+
+
+DESCRIPTION
+-----------
+
+   Assume you want to configure stuff one host ("monitor node"),
+   depending on the configuration of other hosts ("cluster nodes").
+
+   For instance, the monitor host would like to know,
+   which hosts are configured with the provider
+   "apache" and option --start true.
+
+   This requires the monitor node to be able to
+   query all other configured nodes. It can't
+   ask for all hosts, because cdist does not 
+   know which hosts are configured or may exist.
+
+   Example implementation
+
+   If cdist keeps ("caches") the configuration of every
+   node it configures, each new node can query the 
+   cache for existing nodes that acquired the given
+   configuration.
+
+
+SEE ALSO
+--------
+cdist(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
