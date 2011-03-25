@@ -37,60 +37,81 @@ MANDIR=doc/man
 MAN1DSTDIR=${MANDIR}/man1
 MAN7DSTDIR=${MANDIR}/man7
 
-MAN1SRC=                        				 	\
-	${MANDIR}/cdist-code-run.text					\
-	${MANDIR}/cdist-code-run-all.text			\
-	${MANDIR}/cdist-config.text 					\
-   ${MANDIR}/cdist-dir.text         			\
-   ${MANDIR}/cdist-env.text         			\
-   ${MANDIR}/cdist-explorer-run-global.text 	\
-   ${MANDIR}/cdist-deploy-to.text 				\
-	${MANDIR}/cdist-explorer.text					\
-	${MANDIR}/cdist-manifest.text 				\
-	${MANDIR}/cdist-manifest-run.text			\
-   ${MANDIR}/cdist-manifest-run-init.text		\
-   ${MANDIR}/cdist-manifest-run-all.text	 	\
-	${MANDIR}/cdist-object-explorer-all.text	\
-	${MANDIR}/cdist-object-gencode.text    	\
-	${MANDIR}/cdist-object-gencode-all.text	\
-   ${MANDIR}/cdist-remote-explorer-run.text 	\
-	${MANDIR}/cdist-run-remote.text				\
-	${MANDIR}/cdist-type-build-emulation.text \
-	${MANDIR}/cdist-type-emulator.text			\
-	${MANDIR}/cdist-type-template.text
-
-MAN7SRC=${MANDIR}/cdist.text						\
-	${MANDIR}/cdist-best-practise.text			\
-	${MANDIR}/cdist-hacker.text  					\
-	${MANDIR}/cdist-quickstart.text 				\
-   ${MANDIR}/cdist-reference.text				\
-	${MANDIR}/cdist-stages.text					\
-	${MANDIR}/cdist-type.text						\
-
-
 case "$1" in
    man)
-	   for mansrc in ${MAN1SRC} ${MAN7SRC}; do
-         ln -sf ../../../$mansrc ${MAN1DSTDIR};
+      set -e
+      "$0" mandirs
+      "$0" mantype
+      "$0" man1
+      "$0" man7
+      "$0" manbuild
+   ;;
+
+   manbuild)
+      for src in ${MAN1DSTDIR}/*.text ${MAN7DSTDIR}/*.text; do
+         echo "Compiling manpage and html for $src"
+         $A2XM "$src"
+         $A2XH "$src"
       done
+   ;;
+
+   mandirs)
+      # Create destination directories
+      mkdir -p "${MAN1DSTDIR}" "${MAN7DSTDIR}"
+   ;;
+
+   mantype)
 	   for mansrc in ${MAN7TYPESRC}; do
          dst="$(echo $mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;doc/man/man7/;')"
-         ln -sf ../../../$$mansrc $$dst
+         ln -sf "../../../$mansrc" "$dst"
       done
+   ;;
+
+   man1)
+      for man in cdist-code-run.text cdist-code-run-all.text cdist-config.text \
+         cdist-dir.text cdist-env.text cdist-explorer-run-global.text          \
+         cdist-deploy-to.text cdist-explorer.text cdist-manifest.text          \
+         cdist-manifest-run.text cdist-manifest-run-init.text                  \
+         cdist-manifest-run-all.text cdist-object-explorer-all.text            \
+         cdist-object-gencode.text cdist-object-gencode-all.text               \
+         cdist-remote-explorer-run.text cdist-run-remote.text                  \
+         cdist-type-build-emulation.text cdist-type-emulator.text              \
+         cdist-type-template.text
+         do
+         ln -sf ../$man ${MAN1DSTDIR}
+      done
+   ;;
+
+   man7)
+      for man in cdist.text cdist-best-practise.text cdist-hacker.text         \
+      cdist-quickstart.text cdist-reference.text cdist-stages.text             \
+      cdist-type.text
+         do
+         ln -sf ../$man ${MAN7DSTDIR}
+      done
+   ;;
+
+   mangen)
+      ${MANDIR}/cdist-reference.text.sh
    ;;
 
    web)
       cp README ${WEBDIR}/${WEBPAGE}
       rm -rf ${WEBDIR}/${WEBBASE}/man && mkdir ${WEBDIR}/${WEBBASE}/man
-      cp -r $(MANHTMLDIR)/* ${WEBDIR}/${WEBBASE}/man
-      cd ${WEBDIR} && git add ${WEBBASE}/man
-      cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
-      cd ${WEBDIR} && make pub
+      cp -r ${MANHTMLDIR}/* ${WEBDIR}/${WEBBASE}/man
+      cd ${WEBDIR} && echo git add ${WEBBASE}/man
+      cd ${WEBDIR} && echo git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
+      cd ${WEBDIR} && echo make pub
    ;;
 
    pub)
       git push --mirror
       git push --mirror github
+   ;;
+
+   clean)
+      rm -rf "$MAN1DSTDIR" "$MAN7DSTDIR"
+      rm -f  ${MANDIR}/cdist-reference.text
    ;;
 
    *)
@@ -108,63 +129,3 @@ case "$1" in
       exit 1
    ;;
 esac
-
-
-# Manpages from types
-MAN7TYPESRC=$(ls conf/type/*/man.text)
-
-# Source files after linking them
-MAN1TMPSRC=$(shell ls ${MAN1DSTDIR}/*.text)
-MAN7TMPSRC=$(shell ls ${MAN7DSTDIR}/*.text)
-
-# Destination files based on linked files, not static list
-MAN1DST=$(MAN1TMPSRC:.text=.1)
-MAN7DST=$(MAN7TMPSRC:.text=.7)
-MANHTML=$(MAN1TMPSRC:.text=.html) $(MAN7TMPSRC:.text=.html)
-
-################################################################################
-# User targets
-#
-
-
-################################################################################
-# Documentation
-#
-
-# Create manpages
-man: $(MAN1DST) $(MAN7DST)
-manhtml: $(MANHTML)
-
-$(MAN1DST) $(MAN7DST) $(MANHTML): $(MANOUTDIRS)
-
-# Create output dirs
-${MAN1DSTDIR} ${MAN7DSTDIR} $(MANHTMLDIR) $(MANTMPDIR):
-	mkdir -p $@
-
-# Link source files
-manlink: ${MAN1SRC} ${MAN7SRC} $(MANTYPE7SRC) $(MANOUTDIRS)
-
-%.1 %.7: %.text manlink
-	$(A2XM) $*.text
-
-%.html: %.text manlink
-	$(A2XH) $<
-
-${MANDIR}/cdist-reference.text: ${MANDIR}/cdist-reference.text.sh
-	${MANDIR}/cdist-reference.text.sh
-	
-clean:
-	rm -rf $(MANOUTDIRS)
-	rm -f  ${MANDIR}/cdist-reference.text
-
-################################################################################
-# Developer targets
-#
-
-test:
-	# ubuntu
-	.rsync lyni@tablett:cdist
-	# redhat
-	.rsync nicosc@free.ethz.ch:cdist
-	# gentoo
-	.rsync nicosc@ru3.inf.ethz.ch:cdist
