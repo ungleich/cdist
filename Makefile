@@ -69,6 +69,7 @@ all:
 	@echo 'Here are the possible targets:'
 	@echo ''
 	@echo '	man: Build manpages (requires Asciidoc)'
+	@echo '	manhtml: Build html-manpages (requires Asciidoc)'
 	@echo '	clean: Remove build stuff'
 	@echo ''
 	@echo ''
@@ -83,7 +84,7 @@ $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR):
 	mkdir -p $@
 
 # Link source files
-manlink: $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR)
+manlink: $(MAN1SRC) $(MAN7SRC) $(MANTYPE7SRC) $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR)
 	for mansrc in $(MAN1SRC); do ln -sf ../../../$$mansrc $(MAN1DSTDIR); done
 	for mansrc in $(MAN7SRC); do ln -sf ../../../$$mansrc $(MAN7DSTDIR); done
 	for mansrc in $(MAN7TYPESRC); do \
@@ -93,14 +94,14 @@ manlink: $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR)
 %.1 %.7: %.text manlink
 	$(A2XM) $*.text
 
-%.html: %.text
+%.html: %.text manlink
 	$(A2XH) -o $(MANHTMLDIR)/$(@F) $<
 
 man: $(MAN1DST) $(MAN7DST) $(MAN7TYPEDST)
 
-html: $(MANHTML)
+# $(MANHTML): $(MANHTMLDIR)
+manhtml: $(MANHTML)
 
-# Reference depends on conf/type/*/man.text - HOWTO with posix make?
 $(MANDIR)/cdist-reference.text: $(MANDIR)/cdist-reference.text.sh
 	$(MANDIR)/cdist-reference.text.sh
 	$(A2XM) $(MANDIR)/cdist-reference.text
@@ -109,7 +110,7 @@ $(MANDIR)/cdist-reference.text: $(MANDIR)/cdist-reference.text.sh
 clean:
 	rm -rf doc/man/html/* doc/man/*.[1-9] doc/man/man[1-9]
 	rm -f conf/type/*/man.html $(MANDIR)/cdist-reference.text
-	rm -rf $(MANHTMLDIR)
+	rm -rf $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR)
 
 ################################################################################
 # Developer targets
