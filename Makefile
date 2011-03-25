@@ -16,7 +16,10 @@ WEBPAGE=$(WEBBASE).mdwn
 
 # Documentation
 MANDIR=doc/man
-HTMLDIR=$(MANDIR)/html
+
+MAN1DSTDIR=$(MANDIR)/man1
+MAN7DSTDIR=$(MANDIR)/man7
+MANHTMLDIR=$(MANDIR)/html
 
 MAN1SRC=                        				 	\
 	$(MANDIR)/cdist-code-run.text					\
@@ -47,11 +50,13 @@ MAN7SRC=$(MANDIR)/cdist.text						\
    $(MANDIR)/cdist-reference.text				\
 	$(MANDIR)/cdist-stages.text					\
 	$(MANDIR)/cdist-type.text						\
-	$(shell ls conf/type/*/man.text)
+
+MAN7TYPESRC=$(shell ls conf/type/*/man.text)
 
 MAN1DST=$(MAN1SRC:.text=.1)
 MAN7DST=$(MAN7SRC:.text=.7)
 MANHTML=$(MAN1SRC:.text=.html) $(MAN7SRC:.text=.html)
+
 
 ################################################################################
 # User targets
@@ -69,11 +74,15 @@ all:
 	@echo ''
 
 
-%.1 %.7: %.text
+$(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR):
+	mkdir -p $<
+
+%.1 %.7: %.text $(MAN1DSTDIR) $(MAN7DSTDIR)
 	$(A2XM) $*.text
 
 %.html: %.text
-	$(A2XH) $*.text
+	$(A2XH) -o $(MANHTMLDIR)/$(@F) $<
+	#$(A2XH) -o $(MANHTMLDIR)/$(@F) $*.text
 
 man: $(MAN1DST) $(MAN7DST)
 
@@ -91,11 +100,11 @@ manmove: $(MAN1DST) $(MAN7DST) $(MANHTML)
 	done
 
 	# HTML
-	mkdir -p $(HTMLDIR)
-	mv doc/man/*.html $(HTMLDIR)
+	mkdir -p $(MANHTMLDIR)
+	mv doc/man/*.html $(MANHTMLDIR)
 	for mantype in conf/type/*/man.html; do \
 		mannew=$$(echo $$mantype | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;');\
-		mv $$mantype $(HTMLDIR)/$$mannew; \
+		mv $$mantype $(MANHTMLDIR)/$$mannew; \
 	done
 
 # Reference depends on conf/type/*/man.text - HOWTO with posix make?
@@ -107,7 +116,7 @@ $(MANDIR)/cdist-reference.text: $(MANDIR)/cdist-reference.text.sh
 clean:
 	rm -rf doc/man/html/* doc/man/*.[1-9] doc/man/man[1-9]
 	rm -f conf/type/*/man.html $(MANDIR)/cdist-reference.text
-	rm -rf $(HTMLDIR)
+	rm -rf $(MANHTMLDIR)
 
 ################################################################################
 # Developer targets
@@ -124,7 +133,7 @@ test:
 web: manmove
 	cp README $(WEBDIR)/$(WEBPAGE)
 	rm -rf $(WEBDIR)/$(WEBBASE)/man && mkdir $(WEBDIR)/$(WEBBASE)/man
-	cp -r $(HTMLDIR)/* $(WEBDIR)/$(WEBBASE)/man
+	cp -r $(MANHTMLDIR)/* $(WEBDIR)/$(WEBBASE)/man
 	cd $(WEBDIR) && git add $(WEBBASE)/man
 	cd $(WEBDIR) && git commit -m "cdist update" $(WEBBASE) $(WEBPAGE)
 	cd $(WEBDIR) && make pub
