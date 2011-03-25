@@ -98,10 +98,10 @@ case "$1" in
    web)
       cp README ${WEBDIR}/${WEBPAGE}
       rm -rf ${WEBDIR}/${WEBBASE}/man && mkdir ${WEBDIR}/${WEBBASE}/man
-      cp -r ${MANHTMLDIR}/* ${WEBDIR}/${WEBBASE}/man
-      cd ${WEBDIR} && echo git add ${WEBBASE}/man
-      cd ${WEBDIR} && echo git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
-      cd ${WEBDIR} && echo make pub
+      cp ${MAN1DSTDIR}/*.html ${MAN7DSTDIR}/*.html ${WEBDIR}/${WEBBASE}/man
+      cd ${WEBDIR} && git add ${WEBBASE}/man
+      cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
+      cd ${WEBDIR} && make pub
    ;;
 
    pub)
