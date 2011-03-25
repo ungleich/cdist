@@ -55,7 +55,7 @@ MAN7TYPESRC=$(shell ls conf/type/*/man.text)
 MAN7TYPEDST=$(shell for mansrc in $(MAN7TYPESRC:.text=.7); do dst="$$(echo $$mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;doc/man/man7/;')"; echo $$dst; done)
 MAN1DST=$(addprefix $(MAN1DSTDIR)/,$(notdir $(MAN1SRC:.text=.1)))
 MAN7DST=$(addprefix $(MAN7DSTDIR)/,$(notdir $(MAN7SRC:.text=.7)))
-MANHTML=$(MAN1SRC:.text=.html) $(MAN7SRC:.text=.html)
+MANHTML=$(MAN1DST:.1=.html) $(MAN7DST:.7=.html) $(MAN7TYPEDST:.7=.html)
 
 
 ################################################################################
@@ -83,7 +83,7 @@ $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR):
 	mkdir -p $@
 
 # Link source files
-manlink: $(MAN1DSTDIR) $(MAN7DSTDIR)
+manlink: $(MAN1DSTDIR) $(MAN7DSTDIR) $(MANHTMLDIR)
 	for mansrc in $(MAN1SRC); do ln -sf ../../../$$mansrc $(MAN1DSTDIR); done
 	for mansrc in $(MAN7SRC); do ln -sf ../../../$$mansrc $(MAN7DSTDIR); done
 	for mansrc in $(MAN7TYPESRC); do \
@@ -99,25 +99,6 @@ manlink: $(MAN1DSTDIR) $(MAN7DSTDIR)
 man: $(MAN1DST) $(MAN7DST) $(MAN7TYPEDST)
 
 html: $(MANHTML)
-
-# man: doc/man/.marker
-
-# Move into manpath directories
-manmove: $(MAN1DST) $(MAN7DST) $(MANHTML)
-	for manpage in $(MANDIR)/*.[1-9] conf/type/*/*.7; do \
-		cat=$${manpage##*.}; \
-		mandir=$(MANDIR)/man$$cat; \
-		mkdir -p $$mandir; \
-		mv $$manpage $$mandir; \
-	done
-
-	# HTML
-	mkdir -p $(MANHTMLDIR)
-	mv doc/man/*.html $(MANHTMLDIR)
-	for mantype in conf/type/*/man.html; do \
-		mannew=$$(echo $$mantype | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;');\
-		mv $$mantype $(MANHTMLDIR)/$$mannew; \
-	done
 
 # Reference depends on conf/type/*/man.text - HOWTO with posix make?
 $(MANDIR)/cdist-reference.text: $(MANDIR)/cdist-reference.text.sh
