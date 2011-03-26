@@ -51,6 +51,7 @@ cdist-explorer-run-global     "$__cdist_target_host"
 cdist-manifest-run-init       "$__cdist_target_host"
 cdist-manifest-run-all        "$__cdist_target_host"
 
+
 # Change workflow here: cdist-object-{apply, run, foo}
 cdist-object-run-all          "$__cdist_target_host"
 exit
@@ -60,7 +61,7 @@ cdist-object-gencode-all      "$__cdist_target_host"
 
 echo "Transferring objects to $__cdist_target_host ..."
 cdist-dir push "$__cdist_target_host" "$__cdist_out_object_dir" \
-   "${__cdist_remote_out_object_base_dir}"
+   "${__cdist_remote_out_object_dir}"
 
 cdist-code-run-all            "$__cdist_target_host"
 
