@@ -43,9 +43,21 @@ touch "$types_pushed"
 __cdist_object_list "$__cdist_out_object_dir" > "$object_listing"
 
 
+# NEED TO CREATE ARRAY, SSH DESTROYS WHILE READ LOOP
 while read object; do
+   set -- "$@" "$object"
+done < "$object_listing"
+
+while [ $# -gt 0 ]; do
+   object="$1"; shift
+
    __cdist_type="$(__cdist_type_from_object "$object")"
-   if __cdist_type_has_explorer "$__cdist_type"; then
+
+   # Check if type of object has >= 1 explorer
+   has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
+
+   # If so, run explorers on remote side
+   if [ "$has_explorer" ]; then
       # Transfer the type explorers
       if ! grep -q "$__cdist_type" "$types_pushed"; then
          cdist-type-explorer-push "$__cdist_target_host" "$__cdist_type"
@@ -57,5 +69,14 @@ while read object; do
 
    fi
 
-done < "$object_listing"
+   # Run the gencode scripts for the current object
+   cdist-object-gencode-run "$__cdist_target_host" "$object"
+
+   # Transfer the current object to the target
+   cdist-object-push "$__cdist_target_host" "$object"
+
+   # Run the code for the current object
+   cdist-object-code-run "$__cdist_target_host" "$object"
+
+done
 
