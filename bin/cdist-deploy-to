@@ -58,5 +58,6 @@ cdist-dir push "$__cdist_target_host" "$__cdist_out_object_dir" \
    "${__cdist_remote_out_object_base_dir}"
 
 cdist-code-run-all            "$__cdist_target_host"
+cdist-cache                   "$__cdist_target_host"
 
 echo "cdist $__cdist_version: Successfully finished run on $__cdist_target_host"

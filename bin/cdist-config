@@ -41,6 +41,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 #
 
 : ${__cdist_name_bin:=bin}
+: ${__cdist_name_cache:=cache}
 : ${__cdist_name_code:=code}
 : ${__cdist_name_code_finished:=codedone}
 : ${__cdist_name_conf_dir:=conf}
@@ -100,6 +101,7 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 # Local Base
 # 
 : ${__cdist_local_base_dir:=$__cdist_tmp_dir}
+: ${__cdist_local_base_cache_dir:=$__cdist_abs_mydir/../$__cdist_name_cache}
 
 : ${__cdist_conf_dir:="$(cd "$__cdist_abs_mydir/../conf" && pwd -P)"}
 
