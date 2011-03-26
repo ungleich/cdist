@@ -1,6 +1,6 @@
 1.5.0:
 	* Add cache functionality
-	* Restructured execution: Run whole object at once (REPHRASE)
+	* Restructured execution: Run whole object at once (REPHRASE) (Steven Armstrong)
 
 1.4.1: 2011-03-25
 	* New type __key_value (Steven Armstrong)
