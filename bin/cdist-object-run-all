@@ -33,8 +33,6 @@ set -eu
 __cdist_target_host="$1"; shift
 
 object_listing="$__cdist_tmp_dir/objects"
-type_listing_all="$__cdist_tmp_dir/types_all"
-type_listing="$__cdist_tmp_dir/types"
 types_pushed="$__cdist_tmp_dir/types_pushed"
 touch "$types_pushed"
 
