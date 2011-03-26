@@ -1,52 +1,33 @@
-cdist-type__file(7)
-===================
+cdist-type__process(7)
+======================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-type__file - Create files
+cdist-type__process - Start or stop process
 
 
 DESCRIPTION
 -----------
-This cdist type allows you to create files on the target.
+This cdist type allows you to define the state of a process.
 
 
 REQUIRED PARAMETERS
 -------------------
-None.
+state::
+   State of the process: Either stopped or running.
 
 
 OPTIONAL PARAMETERS
 -------------------
-group::
-   Group to chgrp to.
-
-mode::
-   Unix permissions, suitable for chmod.
-
-owner::
-   User to chown to.
-
-source::
-   If supplied, copy this file from the host running cdist to the target.
-   If not supplied, an empty file or directory will be created.
-
+None
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Create  /etc/cdist-configured as an empty file
-__file /etc/cdist-configured
-
-# Use __file from another type
-__file /etc/issue --source "$__type/files/archlinux"
-
-# Supply some more settings
-__file /etc/shadow --source "$__type/files/shadow" \
-   --owner root --group shadow --mode 0640
+__process /usr/sbin/sshd --state running --start "/etc/rc.d/sshd start"
 --------------------------------------------------------------------------------
 
 
