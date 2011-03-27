@@ -21,6 +21,9 @@ state::
 
 OPTIONAL PARAMETERS
 -------------------
+name::
+   Process name to match on when using pgrep -f -x.
+
 stop::
    Executable to use for stopping the process.
 

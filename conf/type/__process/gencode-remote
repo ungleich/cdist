@@ -21,7 +21,11 @@
 # __file is a very basic type, which will probably be reused quite often
 #
 
-process="$__object_id"
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
 
 runs="$(cat "$__object/explorer/runs")"
 state="$(cat "$__object/parameter/state")"
@@ -33,7 +37,7 @@ case "$state" in
          if [ -f "$__object/parameter/start" ]; then
             cat "$__object/parameter/start"
          else
-            echo "$process"
+            echo "$name"
          fi
       fi
    ;;
@@ -47,4 +51,9 @@ case "$state" in
          fi
       fi
    ;;
+   *)
+      echo "Unknown state: $state" >&2
+      exit 1
+   ;;
+
 esac

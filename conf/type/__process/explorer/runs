@@ -21,6 +21,10 @@
 # Check whether a process runs
 #
 
-process="$__object_id"
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
 
-pgrep -x -f "$process" || true
+pgrep -x -f "$name" || true
