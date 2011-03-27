@@ -23,4 +23,5 @@
 
 process="$__object_id"
 
-pgrep -f "$process" || true
+ps aux
+pgrep -x -f "$process" || true
