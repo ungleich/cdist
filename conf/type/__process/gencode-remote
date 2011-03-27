@@ -21,26 +21,30 @@
 # __file is a very basic type, which will probably be reused quite often
 #
 
-destination="/$__object_id"
+process="$__object_id"
 
-# No source? Create empty file
-if [ ! -f "$__object/parameter/source" ]; then
-   if [ no = "$(cat "$__object/explorer/exists")" ]; then
-      echo touch \"$destination\"
-   fi
-fi
+runs="$(cat "$__object/explorer/runs")"
+state="$(cat "$__object/parameter/state")"
 
-# Mode settings
-if [ -f "$__object/parameter/mode" ]; then
-   echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
-fi
-
-# Group
-if [ -f "$__object/parameter/group" ]; then
-   echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
-fi
-
-# Owner
-if [ -f "$__object/parameter/owner" ]; then
-   echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
-fi
+case "$state" in
+   running)
+      # Does not run, start it!
+      if [ -z "$runs" ]; then
+         if [ -f "$__object/parameter/start" ]; then
+            cat "$__object/parameter/start"
+         else
+            echo "$process"
+         fi
+      fi
+   ;;
+   stopped)
+      # Runs, kill it!
+      if [ "$runs" ]; then
+         if [ -f "$__object/parameter/stop" ]; then
+            cat "$__object/parameter/stop"
+         else
+            echo kill "${runs}"
+         fi
+      fi
+   ;;
+esac
