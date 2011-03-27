@@ -5,5 +5,5 @@ Cache:
       -> add function to cdist-config, import from cdist-cache
 
 
-Core:
-   - support $__self = relative_type/object_id
+remove --preseed from package_apt and add debconf_set_selection or similar
+   -> much cleaner!
