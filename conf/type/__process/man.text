@@ -46,6 +46,11 @@ __process /usr/sbin/sshd --state stopped
 
 # Stop the process using /etc/rc.d/sshd stop
 __process /usr/sbin/sshd --state stopped --stop "/etc/rc.d/sshd stop"
+
+# Ensure cups is running, which runs with -C ...:
+__process cups --start "/etc/rc.d/cups start" --state running \
+   --name "/usr/sbin/cupsd -C /etc/cups/cupsd.conf"
+
 --------------------------------------------------------------------------------
 
 
