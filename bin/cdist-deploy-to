@@ -51,5 +51,6 @@ cdist-explorer-run-global     "$__cdist_target_host"
 cdist-manifest-run-init       "$__cdist_target_host"
 cdist-manifest-run-all        "$__cdist_target_host"
 cdist-object-run-all          "$__cdist_target_host"
+cdist-cache                   "$__cdist_target_host"
 
 echo "cdist $__cdist_version: Successfully finished run on $__cdist_target_host"

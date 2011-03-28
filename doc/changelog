@@ -1,3 +1,8 @@
+1.5.0:
+	* Add cache functionality
+	* New type __process
+	* Restructured execution: Run whole object at once (REPHRASE) (Steven Armstrong)
+
 1.4.1: 2011-03-25
 	* New type __key_value (Steven Armstrong)
 	* New type __apt_ppa (Steven Armstrong)
@@ -40,7 +45,6 @@
 	* Document cdist-manifest-run-all
 	* Document cdist-object-gencode-all
 	* Document cdist-manifest-run
-
 
 1.1.0: 2011-03-16
 	* Replace type __file with __file, __directory, __link

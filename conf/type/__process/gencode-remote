@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# __file is a very basic type, which will probably be reused quite often
+#
+
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
+
+runs="$(cat "$__object/explorer/runs")"
+state="$(cat "$__object/parameter/state")"
+
+case "$state" in
+   running)
+      # Does not run, start it!
+      if [ -z "$runs" ]; then
+         if [ -f "$__object/parameter/start" ]; then
+            cat "$__object/parameter/start"
+         else
+            echo "$name"
+         fi
+      fi
+   ;;
+   stopped)
+      # Runs, kill it!
+      if [ "$runs" ]; then
+         if [ -f "$__object/parameter/stop" ]; then
+            cat "$__object/parameter/stop"
+         else
+            echo kill "${runs}"
+         fi
+      fi
+   ;;
+   *)
+      echo "Unknown state: $state" >&2
+      exit 1
+   ;;
+
+esac

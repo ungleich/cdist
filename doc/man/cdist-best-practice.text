@@ -1,10 +1,10 @@
-cdist-best-practise(7)
+cdist-best-practice(7)
 ======================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
-cdist-best-practise - Practises used in real environments
+cdist-best-practice - Practices used in real environments
 
 
 PASSWORDLESS CONNECTIONS
@@ -59,7 +59,6 @@ you can clone it multiple times:
 machine-a % git clone git://your-git-server/cdist
 machine-b % git clone git://your-git-server/cdist
 --------------------------------------------------------------------------------
-
 
 
 SEE ALSO
