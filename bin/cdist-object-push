@@ -1,6 +1,7 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,14 +18,20 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Check whether a process runs
+# 
+# Transfer the given object to the target host.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
-else
-   name="/$__object_id"
-fi
+. cdist-config
+[ $# -eq 2 ] || __cdist_usage "<target host> <object>"
+set -eu
 
-pgrep -x -f "$name" || true
+__cdist_target_host="$1"; shift
+__cdist_object="$1"; shift
+
+
+echo "Transferring object $__cdist_object to target host ..."
+cdist-dir push "$__cdist_target_host" \
+   "$(__cdist_object_dir "$__cdist_object")" \
+   "$(__cdist_remote_object_dir "$__cdist_object")"
+

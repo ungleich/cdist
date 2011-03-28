@@ -22,7 +22,7 @@ It ensures PATH is setup correctly on the target side.
 SEE ALSO
 --------
 - cdist(7)
-- cdist-code-run-all(1)
+- cdist-object-code-run(1)
 - cdist-deploy-to(1)
 - cdist-remote-code-run-all(1)
 

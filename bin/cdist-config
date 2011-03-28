@@ -133,7 +133,7 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 #
 : ${__cdist_remote_out_dir:=$__cdist_remote_base_dir/$__cdist_name_out_dir}
 : ${__cdist_remote_out_explorer_dir:=$__cdist_remote_out_dir/$__cdist_name_explorer}
-: ${__cdist_remote_out_object_base_dir:=$__cdist_remote_out_dir/$__cdist_name_object}
+: ${__cdist_remote_out_object_dir:=$__cdist_remote_out_dir/$__cdist_name_object}
 
 ################################################################################
 # Internal functions
@@ -256,9 +256,14 @@ __cdist_object_type_explorer_dir()
 # Remote
 #
 
+__cdist_remote_object_base_dir()
+{
+   echo "${__cdist_remote_out_object_dir}/$1"
+}
+
 __cdist_remote_object_dir()
 {
-   echo "${__cdist_remote_out_object_base_dir}/$1"
+   echo "$(__cdist_remote_object_base_dir "$1")/${__cdist_name_dot_cdist}"
 }
 
 __cdist_remote_object_parameter_dir()

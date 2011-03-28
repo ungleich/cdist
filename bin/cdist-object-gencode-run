@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -18,28 +19,26 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 # 
-# For each created object create the code to be executed on the target.
+# For the given object create the code to be executed on the target.
 #
 
 . cdist-config
-[ $# -eq 1 ] || __cdist_usage "<target host>"
+[ $# -eq 2 ] || __cdist_usage "<target host> <object>"
 set -eu
 
 __cdist_target_host="$1"; shift
+__cdist_object="$1"; shift
 
-__cdist_object_list "$__cdist_out_object_dir" > "$__cdist_tmp_file"
+code_local="$(__cdist_object_code "$__cdist_object")-${__cdist_name_gencode_local}"
+code_remote="$(__cdist_object_code "$__cdist_object")-${__cdist_name_gencode_remote}"
 
-while read object; do
-   code_local="$(__cdist_object_code "$object")-${__cdist_name_gencode_local}"
-   code_remote="$(__cdist_object_code "$object")-${__cdist_name_gencode_remote}"
+echo "Generating local code for $__cdist_object ..."
+cdist-object-gencode "$__cdist_target_host" "$__cdist_object" \
+   "${__cdist_name_gencode_local}" > "${code_local}"
 
-   echo "Generating local code for $object ..."
-   cdist-object-gencode "$__cdist_target_host" "$object" \
-      "${__cdist_name_gencode_local}" > "${code_local}"
+echo "Generating remote code for $__cdist_object ..."
+cdist-object-gencode "$__cdist_target_host" "$__cdist_object" \
+   "${__cdist_name_gencode_remote}" > "${code_remote}"
 
-   echo "Generating remote code for $object ..."
-   cdist-object-gencode "$__cdist_target_host" "$object" \
-      "${__cdist_name_gencode_remote}" > "${code_remote}"
+chmod u+x "${code_local}" "${code_remote}"
 
-   chmod u+x "${code_local}" "${code_remote}"
-done < "$__cdist_tmp_file"
