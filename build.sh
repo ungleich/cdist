@@ -51,8 +51,8 @@ case "$1" in
    manbuild)
       for src in ${MAN1DSTDIR}/*.text ${MAN7DSTDIR}/*.text; do
          echo "Compiling manpage and html for $src"
-         $A2XM "$src" &
-         $A2XH "$src" &
+         $A2XM "$src"
+         $A2XH "$src"
       done
       wait
    ;;
