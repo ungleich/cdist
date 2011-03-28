@@ -48,6 +48,8 @@ done < "$__cdist_objects"
 
 while [ $# -gt 0 ]; do
    __cdist_object="$1"; shift
+   echo
+   echo "Running object $__cdist_object"
 
    __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
 
@@ -66,6 +68,9 @@ while [ $# -gt 0 ]; do
       cdist-object-explorer-run "$__cdist_target_host" "$__cdist_object"
 
    fi
+
+   # Run the manifest for the current object
+   cdist-object-manifest-run "$__cdist_target_host" "$__cdist_object"
 
    # Run the gencode scripts for the current object
    cdist-object-gencode-run "$__cdist_target_host" "$__cdist_object"
