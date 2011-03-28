@@ -34,14 +34,12 @@ set -eu
 __cdist_target_host="$1"; shift
 __cdist_object="$1"; shift
 
-
 __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
 __cdist_types_pushed="$__cdist_tmp_dir/types_pushed"
 touch "$__cdist_types_pushed"
 
 __cdist_object_finished="$(__cdist_object_finished "$__cdist_object")"
 if [ ! -f "$__cdist_object_finished" ]; then
-
    echo
    echo "Running object $__cdist_object"
 
@@ -59,18 +57,17 @@ if [ ! -f "$__cdist_object_finished" ]; then
    fi
 
    # Run the manifest for the current object
-   cdist-object-manifest-run "$__cdist_target_host" "$__cdist_object"
+   cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object"
 
    # Run the gencode scripts for the current object
-   cdist-object-gencode-run "$__cdist_target_host" "$__cdist_object"
+   cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object"
 
    # Transfer the current object to the target
-   cdist-object-push "$__cdist_target_host" "$__cdist_object"
+   cdist-object-push          "$__cdist_target_host" "$__cdist_object"
 
    # Run the code for the current object
-   cdist-object-code-run "$__cdist_target_host" "$__cdist_object"
+   cdist-object-code-run      "$__cdist_target_host" "$__cdist_object"
 
    # Mark this object as done
    touch "$__cdist_object_finished"
-
 fi
