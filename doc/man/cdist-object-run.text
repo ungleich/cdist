@@ -1,30 +1,33 @@
-cdist-object-run-all(1)
-=======================
+cdist-object-run(1)
+===================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 Steven Armstrong <steven-dist--@--armstrong.cc>
 
 
 NAME
 ----
-cdist-object-run-all - Run all created objects on the target host
+cdist-object-run - Run an object
 
 
 SYNOPSIS
 --------
-cdist-object-run-all HOSTNAME
+cdist-object-run HOSTNAME OBJECT
 
 
 DESCRIPTION
 -----------
-Transfers type explorers to the target then runs cdist-object-run(1) 
-for each created object.
+Runs the given object on the given target host.
+The different subtasks are dispatched to specialized exectuables.
+See related man pages for details.
 
 
 SEE ALSO
 --------
 - cdist(7)
-- cdist-type-explorer-push(1)
-- cdist-object-run(1)
+- cdist-object-explorer-run(1)
+- cdist-object-gencode-run(1)
+- cdist-object-push(1)
+- cdist-object-code-run(1)
 - cdist-type(1)
 
 
