@@ -10,8 +10,13 @@ cdist - Configuration management system
 
 DESCRIPTION
 -----------
-Cdist is a very simple, elegant, cleanly designed configuration management
-system. The easiest way to get started with cdist is to run cdist-quickstart.
+Cdist is a usable configuration management system.
+The easiest way to get started with cdist is to initialise
+the environment and run cdist-quickstart:
+
+--------------------------------------------------------------------------------
+eval `./bin/cdist-env` && cdist-quickstart
+--------------------------------------------------------------------------------
 
 Cdist configurations are written in the shell scripting language.
 The mapping of configurations to hosts is defined in so called manifests,

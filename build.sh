@@ -41,6 +41,7 @@ case "$1" in
    man)
       set -e
       "$0" mandirs
+      "$0" mangen
       "$0" mantype
       "$0" man1
       "$0" man7
@@ -50,9 +51,10 @@ case "$1" in
    manbuild)
       for src in ${MAN1DSTDIR}/*.text ${MAN7DSTDIR}/*.text; do
          echo "Compiling manpage and html for $src"
-         $A2XM "$src"
-         $A2XH "$src"
+         $A2XM "$src" &
+         $A2XH "$src" &
       done
+      wait
    ;;
 
    mandirs)
@@ -61,7 +63,7 @@ case "$1" in
    ;;
 
    mantype)
-	   for mansrc in ${MAN7TYPESRC}; do
+	   for mansrc in conf/type/*/man.text; do
          dst="$(echo $mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;doc/man/man7/;')"
          ln -sf "../../../$mansrc" "$dst"
       done
@@ -83,9 +85,9 @@ case "$1" in
    ;;
 
    man7)
-      for man in cdist.text cdist-best-practise.text cdist-hacker.text         \
+      for man in cdist.text cdist-best-practice.text cdist-hacker.text         \
       cdist-quickstart.text cdist-reference.text cdist-stages.text             \
-      cdist-type.text
+      cdist-type.text cdist-cache.text
          do
          ln -sf ../$man ${MAN7DSTDIR}
       done
