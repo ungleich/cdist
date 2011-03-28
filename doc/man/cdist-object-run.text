@@ -1,0 +1,37 @@
+cdist-object-run(1)
+===================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+Steven Armstrong <steven-dist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-object-run - Run an object
+
+
+SYNOPSIS
+--------
+cdist-object-run HOSTNAME OBJECT
+
+
+DESCRIPTION
+-----------
+Runs the given object on the given target host.
+The different subtasks are dispatched to specialized exectuables.
+See related man pages for details.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-object-explorer-run(1)
+- cdist-object-gencode-run(1)
+- cdist-object-push(1)
+- cdist-object-code-run(1)
+- cdist-type(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius, Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

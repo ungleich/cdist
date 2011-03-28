@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# 
+# For the given object:
+#  - run type explorers
+#  - generate code
+#  - copy object to target
+#  - execute code on target
+#
+
+. cdist-config
+[ $# -eq 2 ] || __cdist_usage "<target host> <object>"
+set -eu
+
+__cdist_target_host="$1"; shift
+__cdist_object="$1"; shift
+
+
+__cdist_type="$(__cdist_type_from_object "$__cdist_object")"
+
+# Check if type of object has >= 1 explorer
+__cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
+
+# Run the type explorers for the current object if any
+if [ "$__cdist_has_explorer" ]; then
+   cdist-object-explorer-run "$__cdist_target_host" "$__cdist_object"
+fi
+
+# Run the manifest for the current object
+cdist-object-manifest-run "$__cdist_target_host" "$__cdist_object"
+
+# Run the gencode scripts for the current object
+cdist-object-gencode-run "$__cdist_target_host" "$__cdist_object"
+
+# Transfer the current object to the target
+cdist-object-push "$__cdist_target_host" "$__cdist_object"
+
+# Run the code for the current object
+cdist-object-code-run "$__cdist_target_host" "$__cdist_object"
+
