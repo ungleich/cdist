@@ -21,6 +21,7 @@
 # 
 # For the given object:
 #  - run type explorers
+#  - run type manifest
 #  - generate code
 #  - copy object to target
 #  - execute code on target
@@ -35,24 +36,41 @@ __cdist_object="$1"; shift
 
 
 __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
+__cdist_types_pushed="$__cdist_tmp_dir/types_pushed"
+touch "$__cdist_types_pushed"
 
-# Check if type of object has >= 1 explorer
-__cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
+__cdist_object_finished="$(__cdist_object_finished "$__cdist_object")"
+if [ ! -f "$__cdist_object_finished" ]; then
 
-# Run the type explorers for the current object if any
-if [ "$__cdist_has_explorer" ]; then
-   cdist-object-explorer-run "$__cdist_target_host" "$__cdist_object"
+   echo
+   echo "Running object $__cdist_object"
+
+   # Check if type of object has >= 1 explorer
+   __cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
+
+   # Run the type explorers for the current object if any
+   if [ "$__cdist_has_explorer" ]; then
+      if ! grep -q "$__cdist_type" "$__cdist_types_pushed"; then
+         cdist-type-explorer-push "$__cdist_target_host" "$__cdist_type"
+         echo "$__cdist_type" >> "$__cdist_types_pushed" 
+      fi 
+
+      cdist-object-explorer-run "$__cdist_target_host" "$__cdist_object"
+   fi
+
+   # Run the manifest for the current object
+   cdist-object-manifest-run "$__cdist_target_host" "$__cdist_object"
+
+   # Run the gencode scripts for the current object
+   cdist-object-gencode-run "$__cdist_target_host" "$__cdist_object"
+
+   # Transfer the current object to the target
+   cdist-object-push "$__cdist_target_host" "$__cdist_object"
+
+   # Run the code for the current object
+   cdist-object-code-run "$__cdist_target_host" "$__cdist_object"
+
+   # Mark this object as done
+   touch "$__cdist_object_finished"
+
 fi
-
-# Run the manifest for the current object
-cdist-object-manifest-run "$__cdist_target_host" "$__cdist_object"
-
-# Run the gencode scripts for the current object
-cdist-object-gencode-run "$__cdist_target_host" "$__cdist_object"
-
-# Transfer the current object to the target
-cdist-object-push "$__cdist_target_host" "$__cdist_object"
-
-# Run the code for the current object
-cdist-object-code-run "$__cdist_target_host" "$__cdist_object"
-

@@ -29,39 +29,38 @@ set -eu
 __cdist_target_host="$1"; shift
 
 __cdist_objects="$__cdist_tmp_dir/objects"
-__cdist_types_pushed="$__cdist_tmp_dir/types_pushed"
-touch "$__cdist_types_pushed"
+
+# Loop until we do not create new objects anymore
+# which is equal to all objects have been run
+touch "$__cdist_new_objects_created"
+while [ -f "$__cdist_new_objects_created" ]; do
+   # Assume we're done after this run
+   rm "$__cdist_new_objects_created"
+
+   # Get listing of objects
+   __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_objects"
 
 
-# Get listing of objects
-__cdist_object_list "$__cdist_out_object_dir" > "$__cdist_objects"
+   # NEED TO CREATE ARRAY, SSH DESTROYS WHILE READ LOOP
+   while read __cdist_object; do
+      set -- "$@" "$__cdist_object"
+   done < "$__cdist_objects"
 
+   while [ $# -gt 0 ]; do
+      __cdist_object="$1"; shift
 
-# NEED TO CREATE ARRAY, SSH DESTROYS WHILE READ LOOP
-while read __cdist_object; do
-   set -- "$@" "$__cdist_object"
-done < "$__cdist_objects"
+      __cdist_object_require="$(__cdist_object_require "$__cdist_object")"
+      if [ -f "$__cdist_object_require" ]; then
+         echo 
+         while read __cdist_requirement; do
+            echo "Resolving dependency $__cdist_object -> $__cdist_requirement ..."
+            cdist-object-run "$__cdist_target_host" "$__cdist_requirement"
+         done < "$__cdist_object_require"
+      fi
 
-while [ $# -gt 0 ]; do
-   __cdist_object="$1"; shift
-   echo
-   echo "Running object $__cdist_object"
+      # Process the object
+      cdist-object-run "$__cdist_target_host" "$__cdist_object"
 
-   __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
-
-   # Check if type of object has >= 1 explorer
-   __cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
-
-   # Transfer the type explorers if any
-   if [ "$__cdist_has_explorer" ]; then
-      if ! grep -q "$__cdist_type" "$__cdist_types_pushed"; then
-         cdist-type-explorer-push "$__cdist_target_host" "$__cdist_type"
-         echo "$__cdist_type" >> "$__cdist_types_pushed" 
-      fi 
-   fi
-
-   # Process the given object
-   cdist-object-run "$__cdist_target_host" "$__cdist_object"
-
+   done
 done
 

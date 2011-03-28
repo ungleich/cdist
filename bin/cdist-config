@@ -42,7 +42,6 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 : ${__cdist_name_bin:=bin}
 : ${__cdist_name_code:=code}
-: ${__cdist_name_code_finished:=codedone}
 : ${__cdist_name_conf_dir:=conf}
 : ${__cdist_name_dot_cdist:=.cdist}
 : ${__cdist_name_explorer:=explorer}
@@ -68,6 +67,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_type:=type}
 : ${__cdist_name_type_bin:=type_bin}
 : ${__cdist_name_type_explorer:=type_explorer}
+: ${__cdist_name_objects_created:=objects_created}
 
 # Used for IDs: Allow everything not starting with - and .
 : ${__cdist_sane_regexp:=[^-\.].*}
@@ -107,6 +107,7 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 : ${__cdist_manifest_dir:=$__cdist_conf_dir/$__cdist_name_manifest}
 : ${__cdist_manifest_init:=$__cdist_manifest_dir/$__cdist_name_init}
 : ${__cdist_type_dir:=$__cdist_conf_dir/$__cdist_name_type}
+: ${__cdist_new_objects_created:=$__cdist_local_base_dir/$__cdist_name_objects_created}
 
 ################################################################################
 # Local output
@@ -176,6 +177,14 @@ __cdist_init_deploy()
    ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
 }
 
+__cdist_new_objects_created() {
+   touch "$__cdist_tmp_dir/object_created"
+}
+
+__cdist_has_new_objects() {
+   touch "$__cdist_tmp_dir/object_created"
+}
+
 ################################################################################
 # Object
 #
@@ -185,9 +194,9 @@ __cdist_object_code()
    echo "$(__cdist_object_dir "$1")/${__cdist_name_code}"
 }
 
-__cdist_object_code_finished()
+__cdist_object_finished()
 {
-   echo "$(__cdist_object_dir "$1")/${__cdist_name_code_finished}"
+   echo "$(__cdist_object_dir "$1")/${__cdist_name_object_finished}"
 }
 
 __cdist_object_dir()
@@ -249,6 +258,7 @@ __cdist_object_type_explorer_dir()
 {
    echo "$(__cdist_object_dir "$1")/${__cdist_name_explorer}"
 }
+
 
 ################################################################################
 # Remote
