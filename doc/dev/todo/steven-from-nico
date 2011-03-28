@@ -15,3 +15,31 @@
 - bin/cdist-object-run: type_explorer stuff: probably put into own binary
    - sounds like cdist-object-explorer-run is already the right executable to
       place such stuff into
+
+- remove enormous amount of empty lines :-)
+   - at end of file
+   - between [ $# -eq 2 ] ||  and set
+   - after if
+   - before fi
+
+- cdist-type-explorer-push: wherefore if [ -d "$src_dir" ];?
+   -> does this not even hide bugs?
+   -> not sure whether covering cdist-dir in its own script makes
+      sense, as cdist-dir push is only a one liner
+      -> if cdist-dir does too less, enhance it
+
+- code aus cdist-object-run-all für requirements:
+   in cdist-object-requirements oder so auslagern?
+   cdist-object-run-all wäre dann eine schöne zwei-zeiler-schleife
+
+- try to prefix all internal variables with __cdist!
+   - only avoid if waayyyyyyyyyyy tooooooooo long
+   - f.i.: cdist-object-explorer-run
+
+- cdist-object-explorer-run and bin/cdist-object-run seem to contain
+   very very similar code regarding transfer and co.
+
+
+- general: cdist-object-run-all looks like a good idea!
+
+

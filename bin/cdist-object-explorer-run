@@ -24,7 +24,6 @@
 
 . cdist-config
 [ $# -eq 2 ] || __cdist_usage "<target host> <object>"
-
 set -eu
 
 __cdist_target_host="$1"; shift
