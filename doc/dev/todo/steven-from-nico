@@ -39,6 +39,8 @@
 - cdist-object-explorer-run and bin/cdist-object-run seem to contain
    very very similar code regarding transfer and co.
 
+- cdist-object-manifest-run: 
+   # Tell cdist that there may be new objects -> WHO? :-)
 
 - general: cdist-object-run-all looks like a good idea!
 
