@@ -155,7 +155,7 @@ if [ -e "${__cdist_object_dir}" ]; then
    # Allow diff to fail
    set +e
    diff -ru "${__cdist_new_object_dir}/${__cdist_name_parameter}" \
-      "${__cdist_object_dir}/${__cdist_name_parameter}" \
+      "${__cdist_object_dir}/${__cdist_name_parameter}"           \
       > "$__cdist_tmp_file"; ret=$?
    set -e
    
