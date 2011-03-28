@@ -40,7 +40,6 @@ while [ -f "$__cdist_new_objects_created" ]; do
    # Get listing of objects
    __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_objects"
 
-
    # NEED TO CREATE ARRAY, SSH DESTROYS WHILE READ LOOP
    while read __cdist_object; do
       set -- "$@" "$__cdist_object"
@@ -60,7 +59,5 @@ while [ -f "$__cdist_new_objects_created" ]; do
 
       # Process the object
       cdist-object-run "$__cdist_target_host" "$__cdist_object"
-
    done
 done
-
