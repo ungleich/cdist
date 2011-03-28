@@ -18,4 +18,7 @@ Types to be written/extended:
          -> aka sed.
    - __cron
 
-
+DOCUMENTATION
+--------------
+- asciidoc interprets __, which we use for variables
+  names -> seek through docs and replace with \_\_!
