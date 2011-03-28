@@ -56,16 +56,9 @@ if [ ! -f "$__cdist_object_finished" ]; then
       cdist-object-explorer-run "$__cdist_target_host" "$__cdist_object"
    fi
 
-   # Run the manifest for the current object
    cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object"
-
-   # Run the gencode scripts for the current object
    cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object"
-
-   # Transfer the current object to the target
    cdist-object-push          "$__cdist_target_host" "$__cdist_object"
-
-   # Run the code for the current object
    cdist-object-code-run      "$__cdist_target_host" "$__cdist_object"
 
    # Mark this object as done
