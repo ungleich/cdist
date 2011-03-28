@@ -53,4 +53,3 @@ cdist-object-run-all          "$__cdist_target_host"
 cdist-cache                   "$__cdist_target_host"
 
 echo "cdist $__cdist_version: Successfully finished run on $__cdist_target_host"
-
