@@ -1,6 +1,7 @@
 - check: echo without parameters == valid in posix? bin/cdist-object-run:45 and others
 - align messages (already in todo for steven, but makes life much easier, thus repeated)
 - advantage of touch/rm loop vs. y == variable? bin/cdist-object-run-all
+    also in bin/cdist-object-run
 - bin/cdist-object-run-all: "->" graphic: can be useful, but if -> consistent!
    -> all graphics could look cool:
 
@@ -10,3 +11,7 @@
    |--> ...
 
    but maybe bad do parse from outside
+
+- bin/cdist-object-run: type_explorer stuff: probably put into own binary
+   - sounds like cdist-object-explorer-run is already the right executable to
+      place such stuff into
