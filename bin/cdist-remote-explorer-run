@@ -25,9 +25,7 @@
 #
 
 . cdist-config
-if [ $# -ne 3 ]; then
-   __cdist_usage "<variable name> <explorer dir> <out dir>"
-fi
+[ $# -eq 3 ] || __cdist_usage "<variable name> <explorer dir> <out dir>"
 set -ue
 
 # Variable that defines the home of the explorers
