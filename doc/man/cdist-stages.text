@@ -24,7 +24,7 @@ to contain cdist binaries and creates a clean environment for the
 configuration run.
 
 Related documentation:
-   - cdist-bin-transfer(1) FIXME: does not exist
+   - Source of cdist-deploy-to
 
 
 STAGE 1: TARGET INFORMATION RETRIEVAL
