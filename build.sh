@@ -23,6 +23,9 @@
 # Pull a directory from a target, both sides have the same name (i.e. explorers)
 #
 
+# exit on any error
+set -e
+
 # Manpage and HTML
 A2XM="a2x -f manpage --no-xmllint"
 A2XH="a2x -f xhtml --no-xmllint"
