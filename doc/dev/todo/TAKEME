@@ -17,5 +17,3 @@ Types to be written/extended:
       - regexp replace (can probably cover all?)
          -> aka sed.
    - __cron
-
-
