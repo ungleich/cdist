@@ -122,6 +122,8 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 : ${__cdist_out_type_dir:=$__cdist_out_dir/$__cdist_name_type}
 : ${__cdist_out_type_bin_dir:=$__cdist_out_dir/$__cdist_name_type_bin}
 
+: ${__cdist_objects_created:=$__cdist_out_object_dir/$__cdist_name_objects_created}
+
 ################################################################################
 # Remote base
 # 
@@ -139,10 +141,6 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 : ${__cdist_remote_out_explorer_dir:=$__cdist_remote_out_dir/$__cdist_name_explorer}
 : ${__cdist_remote_out_object_dir:=$__cdist_remote_out_dir/$__cdist_name_object}
 
-################################################################################
-# Global internal variables
-#
-: ${__cdist_objects_created:=$__cdist_out_object_dir/$__cdist_name_objects_created}
 
 ################################################################################
 # Internal functions
