@@ -6,7 +6,6 @@ Feel free to pick one!
 CORE
 ----
 - Only build manpages if necessary for types as well as for the core!
-- support $__self = relative_type/object_id
 
 TYPES
 ------

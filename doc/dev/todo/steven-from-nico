@@ -1,0 +1,5 @@
+- align messages (already in todo for steven, but makes life much easier, thus repeated)
+   -> prefix all object stuff with $__self
+   -> __cdist_echo object string
+      -> $__cdist_object_self :-)
+

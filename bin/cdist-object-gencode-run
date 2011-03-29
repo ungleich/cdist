@@ -41,4 +41,3 @@ cdist-object-gencode "$__cdist_target_host" "$__cdist_object" \
    "${__cdist_name_gencode_remote}" > "${code_remote}"
 
 chmod u+x "${code_local}" "${code_remote}"
-

@@ -24,38 +24,45 @@
 
 . cdist-config
 [ $# -eq 2 ] || __cdist_usage "<target host> <object>"
-
 set -eu
 
 __cdist_target_host="$1"; shift
-__object="$1"; shift
+__cdist_object="$1"; shift
 
-__object_id="$(__cdist_object_id_from_object "$__object")"
-__cdist_type="$(__cdist_type_from_object "$__object")"
+__object_id="$(__cdist_object_id_from_object "$__cdist_object")"
+__cdist_type="$(__cdist_type_from_object "$__cdist_object")"
+
 
 # Check if type of object has >= 1 explorer
-has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
+__cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
+# Run the type explorers for the current object if any
+if [ "$__cdist_has_explorer" ]; then
+   if ! __cdist_type_explorer_pushed "$__cdist_type"; then
+      src_dir="$(__cdist_type_explorer_dir "$__cdist_type")"
+      dst_dir="$(__cdist_remote_type_explorer_dir "$__cdist_type")"
+      echo "Transfering explorers for $__cdist_type ..."
+      cdist-dir push "$__cdist_target_host" "$src_dir" "$dst_dir"
+      __cdist_type_explorer_pushed_add "$__cdist_type"
+   fi
 
-# If so, run explorers on remote side
-if [ "$has_explorer" ]; then
-   echo "Running explorers for $__object ..."
+   echo "Running explorers for $__cdist_object ..."
    # Copy object parameters
    cdist-dir push "$__cdist_target_host"                       \
-      "$(__cdist_object_parameter_dir "$__object")"            \
-      "$(__cdist_remote_object_parameter_dir "$__object")"
+      "$(__cdist_object_parameter_dir "$__cdist_object")"            \
+      "$(__cdist_remote_object_parameter_dir "$__cdist_object")"
 
    # Execute explorers
    cdist-run-remote "$__cdist_target_host"                     \
-      "__object=\"$(__cdist_remote_object_dir "$__object")\""  \
-      "__object_id=\"$__object_id\""                           \
+      "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object")\"" \
+      "$__cdist_name_var_object_id=\"$__object_id\""           \
+      "$__cdist_name_var_self=\"$__cdist_object\""             \
       cdist-remote-explorer-run                                \
       "$__cdist_name_var_type_explorer"                        \
       "$(__cdist_remote_type_explorer_dir "$__cdist_type")"    \
-      "$(__cdist_remote_object_type_explorer_dir "$__object")"
+      "$(__cdist_remote_object_type_explorer_dir "$__cdist_object")"
 
    # Copy back results
    cdist-dir pull "$__cdist_target_host"                       \
-      "$(__cdist_remote_object_type_explorer_dir "$__object")" \
-      "$(__cdist_object_type_explorer_dir "$__object")"
+      "$(__cdist_remote_object_type_explorer_dir "$__cdist_object")" \
+      "$(__cdist_object_type_explorer_dir "$__cdist_object")"
 fi
-

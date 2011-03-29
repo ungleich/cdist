@@ -1,6 +1,7 @@
 cdist-stages(7)
 ===============
 Nico Schottelius <nico-cdist--@--schottelius.org>
+Steven Armstrong <steven-dist--@--armstrong.cc>
 
 
 NAME
@@ -12,8 +13,8 @@ DESCRIPTION
 -----------
 Starting the execution of deployment with cdist-deploy-to(1), cdist passes
 through different stages, each can be triggered and debugged on its own.
-Reading the source of the cdist-deploy-to executable shous the scripts
-responsible for each stage.
+Reading the source of the cdist-deploy-to and cdist-object-run-all executables
+shows the scripts responsible for each stage.
 
 
 STAGE 0: INTERNAL PREPERATION
@@ -22,8 +23,8 @@ Before running the user facing stages, cdist prepares the target host
 to contain cdist binaries and creates a clean environment for the
 configuration run.
 
-Related manpages:
-   - cdist-bin-transfer(1)
+Related documentation:
+   - Source of cdist-deploy-to
 
 
 STAGE 1: TARGET INFORMATION RETRIEVAL
@@ -33,7 +34,9 @@ explorers. Every existing explorer is run on the target and the output of all
 explorers are copied back into the local cache. The results can be used by 
 manifests and types.
 
-Related manpages:
+Related documentation:
+   - cdist-explorer-run-global(1)
+   - cdist-remote-explorer-run(1)
    - cdist-explorer(7)
 
 
@@ -45,14 +48,28 @@ the objects as defined in the manifest for the specific host. In this stage,
 no conflicts may occur, i.e. no object of the same type with the same id may
 be created.
 
-Related manpages: 
-   - cdist-manifest(7)
-   - cdist-manifest-run(1)
+Related documentation: 
    - cdist-manifest-run-init(1)
+   - cdist-manifest-run(1)
+   - cdist-manifest(7)
 
 
-STAGE 3: EXECUTION OF TYPES
----------------------------
+STAGE 3: OBJECT INFORMATION RETRIEVAL
+-------------------------------------
+Every object is checked whether its type has explorers and if so, these are 
+transfered to the target host and executed. The results are transfered back
+and can be used in the following stages to decide what changes need to made
+on the target to implement the desired state.
+
+Related documentation:
+   - cdist-object-explorer-run(1)
+   - cdist-remote-explorer-run(1)
+   - cdist-type(7) 
+   - cdist-explorer(7)
+
+
+STAGE 4: RUN THE OBJECT MANIFEST
+--------------------------------
 Every object is checked whether its type has a manifest file. If the type has
 a manifest file and it is executable, it will be executed. The manifest script
 may generate and change the created objects. In other words, one type can reuse
@@ -65,13 +82,13 @@ The newly created objects are merged back into the existing tree. No conflicts
 may occur during the merge. A conflict would mean that two different objects
 try to create the same object, which indicates a broken configuration.
 
-Related manpages:
+Related documentation:
+   - cdist-object-manifest-run(1)
    - cdist-manifest-run(1)
-   - cdist-manifest-run-all(1)
    - cdist-type(7) 
 
 
-STAGE 4: CODE GENERATION
+STAGE 5: CODE GENERATION
 ------------------------
 In this stage for every created objects its type is checked whether it has a
 gencode script. If the type has a gencode script and it is executable it will
@@ -79,20 +96,28 @@ be executed. This executable should create code to be executed on the target
 on stdout. If the gencode executable fails, it must print diagnostic messages
 on stderr and exit non-zero.
 
-Related manpages:
-   - cdist-gencode(1)
-   - cdist-gencode-all(1)
+Related documentation:
+   - cdist-object-gencode-run(1)
+   - cdist-object-gencode(1)
    - cdist-type(7) 
 
 
-STAGE 5: CODE EXECUTION
+STAGE 6: CODE EXECUTION
 -----------------------
-The resulting code from the previous stage is transferred to the target host
-and executed there to apply the configuration changes,
+For every object the resulting code from the previous stage is transferred to
+the target host and executed there to apply the configuration changes.
 
-Related manpages:
-   - cdist-exec-run(1)
-   - cdist-exec-transfer(1)
+Related documentation:
+   - cdist-object-code-run(1)
+   - cdist-code-run(1)
+
+
+STAGE 7: CACHE
+--------------
+The cache stores the information from the current run for later use.
+
+Related documentation:
+   - cdist-cache(1)
 
 
 SUMMARY
@@ -112,5 +137,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2010-2011 Nico Schottelius, Steven Armstrong. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

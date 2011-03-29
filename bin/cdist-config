@@ -43,7 +43,6 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_bin:=bin}
 : ${__cdist_name_cache:=cache}
 : ${__cdist_name_code:=code}
-: ${__cdist_name_code_finished:=codedone}
 : ${__cdist_name_conf_dir:=conf}
 : ${__cdist_name_dot_cdist:=.cdist}
 : ${__cdist_name_explorer:=explorer}
@@ -58,17 +57,20 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_object_finished:=done}
 : ${__cdist_name_object_id:=object_id}
 : ${__cdist_name_object_source:=source}
+: ${__cdist_name_objects_created:=.objects_created}
 : ${__cdist_name_out_dir:=out}
 : ${__cdist_name_parameter:=parameter}
 : ${__cdist_name_parameter_required:=required}
 : ${__cdist_name_parameter_optional:=optional}
 : ${__cdist_name_require:=require}
+: ${__cdist_name_self:=self}
 : ${__cdist_name_singleton:=singleton}
 : ${__cdist_name_target_host:=target_host}
 : ${__cdist_name_target_user:=target_user}
 : ${__cdist_name_type:=type}
 : ${__cdist_name_type_bin:=type_bin}
 : ${__cdist_name_type_explorer:=type_explorer}
+: ${__cdist_name_type_explorer_pushed:=.explorer_pushed}
 
 # Used for IDs: Allow everything not starting with - and .
 : ${__cdist_sane_regexp:=[^-\.].*}
@@ -88,6 +90,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_var_target_user:=__$__cdist_name_target_user}
 : ${__cdist_name_var_object:=__$__cdist_name_object}
 : ${__cdist_name_var_object_id:=__$__cdist_name_object_id}
+: ${__cdist_name_var_self:=__$__cdist_name_self}
 : ${__cdist_name_var_type:=__$__cdist_name_type}
 
 
@@ -116,7 +119,10 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 : ${__cdist_out_dir:=$__cdist_local_base_dir/$__cdist_name_out_dir}
 : ${__cdist_out_explorer_dir:=$__cdist_out_dir/$__cdist_name_explorer}
 : ${__cdist_out_object_dir:=$__cdist_out_dir/$__cdist_name_object}
+: ${__cdist_out_type_dir:=$__cdist_out_dir/$__cdist_name_type}
 : ${__cdist_out_type_bin_dir:=$__cdist_out_dir/$__cdist_name_type_bin}
+
+: ${__cdist_objects_created:=$__cdist_out_object_dir/$__cdist_name_objects_created}
 
 ################################################################################
 # Remote base
@@ -134,6 +140,7 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 : ${__cdist_remote_out_dir:=$__cdist_remote_base_dir/$__cdist_name_out_dir}
 : ${__cdist_remote_out_explorer_dir:=$__cdist_remote_out_dir/$__cdist_name_explorer}
 : ${__cdist_remote_out_object_dir:=$__cdist_remote_out_dir/$__cdist_name_object}
+
 
 ################################################################################
 # Internal functions
@@ -178,6 +185,16 @@ __cdist_init_deploy()
    ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
 }
 
+__cdist_new_objects_created()
+{
+   touch "$__cdist_tmp_dir/object_created"
+}
+
+__cdist_has_new_objects()
+{
+   touch "$__cdist_tmp_dir/object_created"
+}
+
 ################################################################################
 # Object
 #
@@ -187,9 +204,9 @@ __cdist_object_code()
    echo "$(__cdist_object_dir "$1")/${__cdist_name_code}"
 }
 
-__cdist_object_code_finished()
+__cdist_object_finished()
 {
-   echo "$(__cdist_object_dir "$1")/${__cdist_name_code_finished}"
+   echo "$(__cdist_object_dir "$1")/${__cdist_name_object_finished}"
 }
 
 __cdist_object_dir()
@@ -319,6 +336,18 @@ __cdist_type_has_explorer()
    if [ -d "$(__cdist_type_explorer_dir "$1")" ]; then
       ls -1 "$(__cdist_type_explorer_dir "$1")"
    fi
+}
+
+__cdist_type_explorer_pushed()
+{
+   [ -f "${__cdist_out_type_dir}/${__cdist_name_type_explorer_pushed}" ] \
+      && grep -q "$1" "${__cdist_out_type_dir}/${__cdist_name_type_explorer_pushed}"
+}
+
+__cdist_type_explorer_pushed_add()
+{
+   [ -d "$__cdist_out_type_dir" ] || mkdir "$__cdist_out_type_dir"
+   echo "$1" >> "${__cdist_out_type_dir}/${__cdist_name_type_explorer_pushed}"
 }
 
 __cdist_type_gencode()
