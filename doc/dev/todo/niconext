@@ -1,11 +1,1 @@
-/ prefix all internal variables with __cdist! -> Nico
-
-Cache:
-   - add example how to use 
-   - export variable $__cache
-      -> for current host
-      -> add function to cdist-config, import from cdist-cache
-
-
-remove --preseed from package_apt and add debconf_set_selection or similar
-   -> much cleaner!
+Release 1.5.0 correctly :-)

@@ -144,7 +144,8 @@ may vanish at any point. To select a specific branch use
     git checkout -b <name> origin/<name>
     
     # Stay on a specific version
-    git checkout -b 1.4 origin/1.4
+    version=1.5
+    git checkout -b $version origin/$version
 
 ### Mirrors
 

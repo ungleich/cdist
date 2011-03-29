@@ -23,6 +23,9 @@
 # Pull a directory from a target, both sides have the same name (i.e. explorers)
 #
 
+# exit on any error
+set -e
+
 # Manpage and HTML
 A2XM="a2x -f manpage --no-xmllint"
 A2XH="a2x -f xhtml --no-xmllint"
@@ -94,6 +97,10 @@ case "$1" in
 
    mangen)
       ${MANDIR}/cdist-reference.text.sh
+   ;;
+
+   release)
+      "$0" clean && "$0" man && "$0" web
    ;;
 
    web)
