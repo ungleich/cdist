@@ -49,10 +49,24 @@ case "$1" in
    ;;
 
    manbuild)
-      for src in ${MAN1DSTDIR}/*.text ${MAN7DSTDIR}/*.text; do
-         echo "Compiling manpage and html for $src"
-         $A2XM "$src"
-         $A2XH "$src"
+      trap abort INT
+      abort() {
+         kill 0
+      }
+      for section in 1 7; do
+         for src in ${MANDIR}/man${section}/*.text; do
+            manpage="${src%.text}.$section"
+            if [ ! -f "$manpage" -o "$manpage" -ot "$src" ]; then
+               echo "Compiling manpage for $src"
+               setsid $A2XM "$src"
+               a2x_pids=""
+            fi
+            htmlpage="${src%.text}.html"
+            if [ ! -f "$htmlpage" -o "$htmlpage" -ot "$src" ]; then
+               echo "Compiling html for $src"
+               $A2XH "$src"
+            fi
+         done
       done
    ;;
 
