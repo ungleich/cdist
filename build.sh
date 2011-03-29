@@ -70,12 +70,11 @@ case "$1" in
    ;;
 
    man1)
-      for man in cdist-code-run.text cdist-code-run-all.text cdist-config.text \
+      for man in cdist-code-run.text cdist-config.text                         \
          cdist-dir.text cdist-env.text cdist-explorer-run-global.text          \
          cdist-deploy-to.text cdist-explorer.text cdist-manifest.text          \
          cdist-manifest-run.text cdist-manifest-run-init.text                  \
-         cdist-manifest-run-all.text cdist-object-explorer-all.text            \
-         cdist-object-gencode.text cdist-object-gencode-all.text               \
+         cdist-object-gencode.text                                             \
          cdist-remote-explorer-run.text cdist-run-remote.text                  \
          cdist-type-build-emulation.text cdist-type-emulator.text              \
          cdist-type-template.text
