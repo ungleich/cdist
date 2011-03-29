@@ -185,16 +185,6 @@ __cdist_init_deploy()
    ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
 }
 
-__cdist_new_objects_created()
-{
-   touch "$__cdist_tmp_dir/object_created"
-}
-
-__cdist_has_new_objects()
-{
-   touch "$__cdist_tmp_dir/object_created"
-}
-
 ################################################################################
 # Object
 #
