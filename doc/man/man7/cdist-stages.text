@@ -1,7 +1,6 @@
 cdist-stages(7)
 ===============
-Nico Schottelius <nico-cdist--@--schottelius.org>, Steven Armstrong <steven-dist--@--armstrong.cc>
-
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
@@ -27,7 +26,7 @@ Related documentation:
 
 
 STAGE 1: TARGET INFORMATION RETRIEVAL
---------------------------------------
+-------------------------------------
 In this stage information is collected about the target host using so called
 explorers. Every existing explorer is run on the target and the output of all 
 explorers are copied back into the local cache. The results can be used by 
