@@ -122,6 +122,8 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 : ${__cdist_out_type_dir:=$__cdist_out_dir/$__cdist_name_type}
 : ${__cdist_out_type_bin_dir:=$__cdist_out_dir/$__cdist_name_type_bin}
 
+: ${__cdist_objects_created:=$__cdist_out_object_dir/$__cdist_name_objects_created}
+
 ################################################################################
 # Remote base
 # 
@@ -139,10 +141,6 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 : ${__cdist_remote_out_explorer_dir:=$__cdist_remote_out_dir/$__cdist_name_explorer}
 : ${__cdist_remote_out_object_dir:=$__cdist_remote_out_dir/$__cdist_name_object}
 
-################################################################################
-# Global internal variables
-#
-: ${__cdist_objects_created:=$__cdist_out_object_dir/$__cdist_name_objects_created}
 
 ################################################################################
 # Internal functions
@@ -187,11 +185,13 @@ __cdist_init_deploy()
    ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
 }
 
-__cdist_new_objects_created() {
+__cdist_new_objects_created()
+{
    touch "$__cdist_tmp_dir/object_created"
 }
 
-__cdist_has_new_objects() {
+__cdist_has_new_objects()
+{
    touch "$__cdist_tmp_dir/object_created"
 }
 
@@ -268,7 +268,6 @@ __cdist_object_type_explorer_dir()
 {
    echo "$(__cdist_object_dir "$1")/${__cdist_name_explorer}"
 }
-
 
 ################################################################################
 # Remote
