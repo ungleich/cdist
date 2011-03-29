@@ -30,15 +30,12 @@ __cdist_target_host="$1"; shift
 
 __cdist_objects="$__cdist_tmp_dir/objects"
 
-FIXME: reuse in subscripts, save in objects_base_dir
-export __cdist_objects_created="$__cdist_tmp_dir/objects_created"
-
 # Loop until we do not create new objects anymore
 # which is equal to all objects have been run
-touch "$__cdist_new_objects_created"
-while [ -f "$__cdist_new_objects_created" ]; do
+touch "$__cdist_objects_created"
+while [ -f "$__cdist_objects_created" ]; do
    # Assume we're done after this run
-   rm "$__cdist_new_objects_created"
+   rm "$__cdist_objects_created"
 
    # Get listing of objects
    __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_objects"
@@ -50,18 +47,6 @@ while [ -f "$__cdist_new_objects_created" ]; do
 
    while [ $# -gt 0 ]; do
       __cdist_object="$1"; shift
-
-      FIXME: migrate into cdist-object-run
-      FIXME: take care of SSH foo after migration in while loop
-      __cdist_object_require="$(__cdist_object_require "$__cdist_object")"
-      if [ -f "$__cdist_object_require" ]; then
-         echo 
-         while read __cdist_requirement; do
-            echo "Resolving dependency $__cdist_requirement for $__cdist_object  ..."
-            cdist-object-run "$__cdist_target_host" "$__cdist_requirement"
-         done < "$__cdist_object_require"
-      fi
-
       # Process the object
       cdist-object-run "$__cdist_target_host" "$__cdist_object"
    done

@@ -51,8 +51,11 @@ Related manpages:
    - cdist-manifest-run-init(1)
 
 
-STAGE 3: EXECUTION OF TYPES
----------------------------
+STAGE 3: EXECUTION OF OBJECTS
+-----------------------------
+Each object in the cconfig database is run through the following stages:
+- 
+
 Every object is checked whether its type has a manifest file. If the type has
 a manifest file and it is executable, it will be executed. The manifest script
 may generate and change the created objects. In other words, one type can reuse

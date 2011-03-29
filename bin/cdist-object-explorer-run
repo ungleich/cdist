@@ -32,11 +32,19 @@ __object="$1"; shift
 __object_id="$(__cdist_object_id_from_object "$__object")"
 __cdist_type="$(__cdist_type_from_object "$__object")"
 
-# Check if type of object has >= 1 explorer
-__cdist_has_explorer="$(__cdist_type___cdist_has_explorer "$__cdist_type")"
 
-# If so, run explorers on remote side
+# Check if type of object has >= 1 explorer
+__cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
+# Run the type explorers for the current object if any
 if [ "$__cdist_has_explorer" ]; then
+   if ! __cdist_type_explorer_pushed "$__cdist_type"; then
+      src_dir="$(__cdist_type_explorer_dir "$__cdist_type")"
+      dst_dir="$(__cdist_remote_type_explorer_dir "$__cdist_type")"
+      echo "Transfering explorers for $__cdist_type ..."
+      cdist-dir push "$__cdist_target_host" "$src_dir" "$dst_dir"
+      __cdist_type_explorer_pushed_add "$__cdist_type"
+   fi
+
    echo "Running explorers for $__object ..."
    # Copy object parameters
    cdist-dir push "$__cdist_target_host"                       \

@@ -40,23 +40,26 @@ touch "$__cdist_types_pushed"
 
 __cdist_object_finished="$(__cdist_object_finished "$__cdist_object")"
 if [ ! -f "$__cdist_object_finished" ]; then
-   echo
-   echo "Running object $__cdist_object"
 
-   # Check if type of object has >= 1 explorer
-   __cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
+   # Resolve dependencies if any
+   __cdist_object_require="$(__cdist_object_require "$__cdist_object")"
+   if [ -f "$__cdist_object_require" ]; then
+      echo 
+      # NEED TO CREATE ARRAY, SSH DESTROYS WHILE READ LOOP
+      while read __cdist_requirement; do
+         set -- "$@" "$__cdist_requirement"
+      done < "$__cdist_object_require"
 
-   FIXME: put into cdist-object-explorer-run
-   # Run the type explorers for the current object if any
-   if [ "$__cdist_has_explorer" ]; then
-      if ! grep -q "$__cdist_type" "$__cdist_types_pushed"; then
-         cdist-type-explorer-push "$__cdist_target_host" "$__cdist_type"
-         echo "$__cdist_type" >> "$__cdist_types_pushed" 
-      fi 
-
-      cdist-object-explorer-run "$__cdist_target_host" "$__cdist_object"
+      while [ $# -gt 0 ]; do
+         __cdist_requirement="$1"; shift
+         echo "Resolving dependency $__cdist_requirement for $__cdist_object  ..."
+         cdist-object-run "$__cdist_target_host" "$__cdist_requirement"
+      done
    fi
 
+   echo
+   echo "Running object $__cdist_object"
+   cdist-object-explorer-run  "$__cdist_target_host" "$__cdist_object"
    cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object"
    cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object"
    cdist-object-push          "$__cdist_target_host" "$__cdist_object"
