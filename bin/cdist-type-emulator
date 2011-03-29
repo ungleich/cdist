@@ -25,7 +25,7 @@
 #
 
 . cdist-config
-set -eu
+set -u
 
 ################################################################################
 # Prepare object and type
@@ -137,7 +137,7 @@ cd "$__cdist_parameter_dir"
 for parameter in $(ls -1); do
    is_valid=$(grep "^$parameter\$" "$__cdist_tmp_file")
 
-   [ "$is_valid" ] ||  "Unknown parameter $parameter"
+   [ "$is_valid" ] || __cdist_usage "Unknown parameter $parameter"
 done
 
 ################################################################################
