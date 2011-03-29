@@ -1,0 +1,32 @@
+cdist-object-manifest-run(1)
+============================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+Steven Armstrong <steven-dist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-object-manifest-run - Run an objects manifest
+
+
+SYNOPSIS
+--------
+cdist-object-manifest-run HOSTNAME OBJECT
+
+
+DESCRIPTION
+-----------
+Run the manifest for the given object.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-deploy-to(1)
+- cdist-manifest-run(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius, Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
