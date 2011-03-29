@@ -25,22 +25,22 @@
 [ $# -eq 2 ] || __cdist_usage "<object> <type>"
 set -ue
 
-object="$1"; shift
+__cdist_object="$1"; shift
 __cdist_gencode_type="$1"; shift
 
-if [ ! -d "$(__cdist_object_dir "$object")" ]; then
-   __cdist_exit_err "Object $object is missing."
+if [ ! -d "$(__cdist_object_dir "$__cdist_object")" ]; then
+   __cdist_exit_err "Object $__cdist_object is missing."
 fi  
 
-code="$(__cdist_object_code "$object")-${__cdist_gencode_type}"
+code="$(__cdist_object_code "$__cdist_object")-${__cdist_gencode_type}"
 
-echo "Checking code-${__cdist_gencode_type} for $object ..."
+echo "Checking code-${__cdist_gencode_type} for $__cdist_object ..."
 
 
 if [ -e "$code" ]; then
    if [ -f "$code" ]; then
       if [ -x "$code" ]; then
-         echo "Executing code-${__cdist_gencode_type}  for $object ..."
+         echo "Executing code-${__cdist_gencode_type}  for $__cdist_object ..."
          "$code"
       else
          __cdist_exit_err "$code exists, but is not executable."
@@ -49,5 +49,5 @@ if [ -e "$code" ]; then
       __cdist_exit_err "$code exists, but is not a file."
    fi
 else
-   __cdist_exit_err "Missing code for ${object}."
+   __cdist_exit_err "Missing code for ${__cdist_object}."
 fi
