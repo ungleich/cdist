@@ -46,6 +46,7 @@ if [ ! -f "$__cdist_object_finished" ]; then
    # Check if type of object has >= 1 explorer
    __cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
 
+   FIXME: put into cdist-object-explorer-run
    # Run the type explorers for the current object if any
    if [ "$__cdist_has_explorer" ]; then
       if ! grep -q "$__cdist_type" "$__cdist_types_pushed"; then

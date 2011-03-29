@@ -52,10 +52,9 @@ if [ -f "$__cdist_manifest" ]; then
       export $__cdist_name_var_type="$(__cdist_type_dir "$__cdist_type")"
 
       cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest"
-      # Tell cdist that there may be new objects
+      FIXME: Tell cdist that there may be new objects - WHO? Mama?
       touch "$__cdist_new_objects_created"
    else
       __cdist_exit_err "${__cdist_manifest} needs to be executable."
    fi
 fi
-

@@ -68,7 +68,6 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_type:=type}
 : ${__cdist_name_type_bin:=type_bin}
 : ${__cdist_name_type_explorer:=type_explorer}
-: ${__cdist_name_objects_created:=objects_created}
 
 # Used for IDs: Allow everything not starting with - and .
 : ${__cdist_sane_regexp:=[^-\.].*}
@@ -109,7 +108,6 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 : ${__cdist_manifest_dir:=$__cdist_conf_dir/$__cdist_name_manifest}
 : ${__cdist_manifest_init:=$__cdist_manifest_dir/$__cdist_name_init}
 : ${__cdist_type_dir:=$__cdist_conf_dir/$__cdist_name_type}
-: ${__cdist_new_objects_created:=$__cdist_local_base_dir/$__cdist_name_objects_created}
 
 ################################################################################
 # Local output
