@@ -55,6 +55,7 @@ if [ "$__cdist_has_explorer" ]; then
    cdist-run-remote "$__cdist_target_host"                     \
       "__object=\"$(__cdist_remote_object_dir "$__object")\""  \
       "__object_id=\"$__object_id\""                           \
+      "$__cdist_name_var_self=\"$__cdist_object\""              \
       cdist-remote-explorer-run                                \
       "$__cdist_name_var_type_explorer"                        \
       "$(__cdist_remote_type_explorer_dir "$__cdist_type")"    \

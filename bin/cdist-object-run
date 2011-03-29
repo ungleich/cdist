@@ -33,6 +33,8 @@ set -eu
 
 __cdist_target_host="$1"; shift
 __cdist_object="$1"; shift
+# Export to non-core for use in manifest and gencode scripts
+export $__cdist_name_var_self=$__cdist_object
 
 __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
 
