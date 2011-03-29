@@ -29,9 +29,7 @@ set -eu
 __cdist_target_host="$1"; shift
 __cdist_object="$1"; shift
 
-
-echo "Transferring object $__cdist_object to target host ..."
+echo "Transferring object $__cdist_object to $__cdist_target_host ..."
 cdist-dir push "$__cdist_target_host" \
    "$(__cdist_object_dir "$__cdist_object")" \
    "$(__cdist_remote_object_dir "$__cdist_object")"
-

@@ -1,3 +1,5 @@
+/ prefix all internal variables with __cdist! -> Nico
+
 Cache:
    - add example how to use 
    - export variable $__cache

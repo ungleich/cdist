@@ -1,29 +1,29 @@
-cdist-type-explorer-push(1)
-===========================
+cdist-object-manifest-run(1)
+============================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 Steven Armstrong <steven-dist--@--armstrong.cc>
 
 
 NAME
 ----
-cdist-type-explorer-push - Transfer type explorers to the target host
+cdist-object-manifest-run - Run an objects manifest
 
 
 SYNOPSIS
 --------
-cdist-type-explorer-push HOSTNAME TYPE
+cdist-object-manifest-run HOSTNAME OBJECT
 
 
 DESCRIPTION
 -----------
-Transfers the explorers of the given type to the target host.
+Run the manifest for the given object.
 
 
 SEE ALSO
 --------
 - cdist(7)
-- cdist-object-run(1)
-- cdist-type(1)
+- cdist-deploy-to(1)
+- cdist-manifest-run(1)
 
 
 COPYING
