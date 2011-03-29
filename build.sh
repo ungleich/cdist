@@ -99,6 +99,10 @@ case "$1" in
       ${MANDIR}/cdist-reference.text.sh
    ;;
 
+   release)
+      "$0" clean && "$0" man && "$0" web
+   ;;
+
    web)
       cp README ${WEBDIR}/${WEBPAGE}
       rm -rf ${WEBDIR}/${WEBBASE}/man && mkdir ${WEBDIR}/${WEBBASE}/man
