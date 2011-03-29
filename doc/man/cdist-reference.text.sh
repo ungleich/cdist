@@ -166,6 +166,9 @@ __object::
 __object_id::
    The type unique object id.
    Available for: type manifest, type explorer, type codegen
+__self::
+   The full qualified name of the current object.
+   Available for: type manifest, type explorer, type codegen
 __target_host::
    The host we are deploying to.
    Available for: initial manifest, type manifest, type codegen
