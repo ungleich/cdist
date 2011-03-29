@@ -24,7 +24,7 @@
 #
 
 # exit on any error
-set -e
+#set -e
 
 # Manpage and HTML
 A2XM="a2x -f manpage --no-xmllint"
@@ -43,11 +43,8 @@ MAN7DSTDIR=${MANDIR}/man7
 case "$1" in
    man)
       set -e
-      "$0" mandirs
       "$0" mangen
       "$0" mantype
-      "$0" man1
-      "$0" man7
       "$0" manbuild
    ;;
 
@@ -57,41 +54,12 @@ case "$1" in
          $A2XM "$src"
          $A2XH "$src"
       done
-      wait
-   ;;
-
-   mandirs)
-      # Create destination directories
-      mkdir -p "${MAN1DSTDIR}" "${MAN7DSTDIR}"
    ;;
 
    mantype)
 	   for mansrc in conf/type/*/man.text; do
          dst="$(echo $mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;doc/man/man7/;')"
          ln -sf "../../../$mansrc" "$dst"
-      done
-   ;;
-
-   man1)
-      for man in cdist-code-run.text cdist-config.text                         \
-         cdist-dir.text cdist-env.text cdist-explorer-run-global.text          \
-         cdist-deploy-to.text cdist-explorer.text cdist-manifest.text          \
-         cdist-manifest-run.text cdist-manifest-run-init.text                  \
-         cdist-object-gencode.text                                             \
-         cdist-remote-explorer-run.text cdist-run-remote.text                  \
-         cdist-type-build-emulation.text cdist-type-emulator.text              \
-         cdist-type-template.text
-         do
-         ln -sf ../$man ${MAN1DSTDIR}
-      done
-   ;;
-
-   man7)
-      for man in cdist.text cdist-best-practice.text cdist-hacker.text         \
-      cdist-quickstart.text cdist-reference.text cdist-stages.text             \
-      cdist-type.text cdist-cache.text
-         do
-         ln -sf ../$man ${MAN7DSTDIR}
       done
    ;;
 
@@ -118,8 +86,13 @@ case "$1" in
    ;;
 
    clean)
-      rm -rf "$MAN1DSTDIR" "$MAN7DSTDIR"
-      rm -f  ${MANDIR}/cdist-reference.text
+      rm -f ${MANDIR}/cdist-reference.text
+      find "${MANDIR}" -mindepth 2 -type l \
+         -o -name "*.1" \
+         -o -name "*.7" \
+         -o -name "*.html" \
+         -o -name "*.xml" \
+      | xargs rm -f
    ;;
 
    *)
@@ -129,7 +102,6 @@ case "$1" in
       echo 'Here are the possible targets:'
       echo ''
       echo '	man: Build manpages (requires Asciidoc)'
-      echo '	manhtml: Build html-manpages (requires Asciidoc)'
       echo '	clean: Remove build stuff'
       echo ''
       echo ''
