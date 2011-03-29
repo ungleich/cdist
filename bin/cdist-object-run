@@ -35,8 +35,6 @@ __cdist_target_host="$1"; shift
 __cdist_object="$1"; shift
 
 __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
-__cdist_types_pushed="$__cdist_tmp_dir/types_pushed"
-touch "$__cdist_types_pushed"
 
 __cdist_object_finished="$(__cdist_object_finished "$__cdist_object")"
 if [ ! -f "$__cdist_object_finished" ]; then
