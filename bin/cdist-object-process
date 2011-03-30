@@ -22,9 +22,6 @@
 # For the given object:
 #  - run type explorers
 #  - run type manifest
-#  - generate code
-#  - copy object to target
-#  - execute code on target
 #
 
 . cdist-config
@@ -39,33 +36,13 @@ __cdist_object_dir="$(__cdist_object_dir "$__cdist_object")"
 # Export to non-core for use in manifest and gencode scripts
 export $__cdist_name_var_self=$__cdist_object
 
-__cdist_object_finished="$(__cdist_object_finished "$__cdist_object")"
-if [ ! -f "$__cdist_object_finished" ]; then
-
-   # Resolve dependencies if any
-   __cdist_object_require="$(__cdist_object_require "$__cdist_object")"
-   if [ -f "$__cdist_object_require" ]; then
-      echo 
-      # NEED TO CREATE ARRAY, SSH DESTROYS WHILE READ LOOP
-      while read __cdist_requirement; do
-         set -- "$@" "$__cdist_requirement"
-      done < "$__cdist_object_require"
-
-      while [ $# -gt 0 ]; do
-         __cdist_requirement="$1"; shift
-         echo "Resolving dependency $__cdist_requirement for $__cdist_object  ..."
-         cdist-object-run "$__cdist_target_host" "$__cdist_requirement"
-      done
-   fi
-
+__cdist_object_processed="$(__cdist_object_processed "$__cdist_object")"
+if [ ! -f "$__cdist_object_processed" ]; then
    echo
-   echo "Running object $__cdist_object"
-   #cdist-object-explorer-run  "$__cdist_target_host" "$__cdist_object"
-   #cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object"
-   cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object"
-   cdist-object-push          "$__cdist_target_host" "$__cdist_object"
-   cdist-object-code-run      "$__cdist_target_host" "$__cdist_object"
+   echo "Processing object $__cdist_object"
+   cdist-object-explorer-run  "$__cdist_target_host" "$__cdist_object"
+   cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object"
 
    # Mark this object as done
-   touch "$__cdist_object_finished"
+   touch "$__cdist_object_processed"
 fi

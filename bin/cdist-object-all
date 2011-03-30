@@ -19,14 +19,15 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 # 
-# Run cdist-object-run for each created object.
+# Run the given command for each created object.
 #
 
 . cdist-config
-[ $# -eq 1 ] || __cdist_usage "<target host>"
+[ $# -eq 2 ] || __cdist_usage "<target host> <command>"
 set -eu
 
 __cdist_target_host="$1"; shift
+__cdist_command="$1"; shift
 
 __cdist_objects="$__cdist_tmp_dir/objects"
 
@@ -47,7 +48,6 @@ while [ -f "$__cdist_objects_created" ]; do
 
    while [ $# -gt 0 ]; do
       __cdist_object="$1"; shift
-      # Process the object
-      cdist-object-run "$__cdist_target_host" "$__cdist_object"
+      $__cdist_command "$__cdist_target_host" "$__cdist_object"
    done
 done
