@@ -60,8 +60,6 @@ if [ ! -f "$__cdist_object_finished" ]; then
 
    echo
    echo "Running object $__cdist_object"
-   #cdist-object-explorer-run  "$__cdist_target_host" "$__cdist_object"
-   #cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object"
    cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object"
    cdist-object-push          "$__cdist_target_host" "$__cdist_object"
    cdist-object-code-run      "$__cdist_target_host" "$__cdist_object"

@@ -43,6 +43,6 @@ if [ ! -f "$__cdist_object_processed" ]; then
    cdist-object-explorer-run  "$__cdist_target_host" "$__cdist_object"
    cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object"
 
-   # Mark this object as done
+   # Mark this object as processed
    touch "$__cdist_object_processed"
 fi
