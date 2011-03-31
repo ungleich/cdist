@@ -58,8 +58,7 @@ case "$1" in
             manpage="${src%.text}.$section"
             if [ ! -f "$manpage" -o "$manpage" -ot "$src" ]; then
                echo "Compiling manpage for $src"
-               setsid $A2XM "$src"
-               a2x_pids=""
+               $A2XM "$src"
             fi
             htmlpage="${src%.text}.html"
             if [ ! -f "$htmlpage" -o "$htmlpage" -ot "$src" ]; then
