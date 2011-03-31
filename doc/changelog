@@ -1,4 +1,4 @@
-1.5.0: 2011-03-29
+1.5.0:
 	* Add basic cache functionality
 	* New type __process
 	* Restructured execution: (Steven Armstrong)
