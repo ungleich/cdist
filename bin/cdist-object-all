@@ -31,6 +31,9 @@ __cdist_command="$1"; shift
 
 __cdist_objects="$__cdist_tmp_dir/objects"
 
+# Ensure object dir exists, so marker can be created
+mkdir -p "${__cdist_out_object_dir}"
+
 # Loop until we do not create new objects anymore
 # which is equal to all objects have been run
 touch "$__cdist_objects_created"

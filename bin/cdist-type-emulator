@@ -53,7 +53,6 @@ if [ "$(echo $__cdist_object_id | grep "^/")" ]; then
 else
    __cdist_object_self="${__cdist_type}/${__cdist_object_id}"
 fi
-
 ################################################################################
 # Internal quirks
 #

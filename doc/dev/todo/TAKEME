@@ -5,10 +5,24 @@ Feel free to pick one!
 
 CORE
 ----
-- Add echo function:
+- Add echo function / beautify output
    __cdist_echo [level] [messages...]
       level := syslog alike:
          debug, notice, err
+   Include object_self prefixing, if given!
+- Think about moving cdist-type-build-emulation out of cdist-manifest-run to
+   cdist-deploy-to: more dependency of cdist-manifest-run, but a lot of
+   less cycles consumed
+
+- cdist-object-gencode: remove code if output empty?
+   - also take care of that in cdist-code-run!
+- cdist-object-process -> cdist-object-prepare
+- Remove cdist-object-push, covers only one line and is used only once:
+   [20:22] kr:bin% grep cdist-object-push *
+   cdist-object-run:   cdist-object-push          "$__cdist_target_host" "$__cdist_object"
+   [20:22] kr:bin% 
+
+- probably remove or improve cdist-type-template
 
 TYPES
 ------
