@@ -16,6 +16,7 @@ CORE
 
 - cdist-object-gencode: remove code if output empty?
    - also take care of that in cdist-code-run!
+- cdist-object-process -> cdist-object-prepare
 
 TYPES
 ------

@@ -46,12 +46,12 @@ if [ -f "$__cdist_manifest" ]; then
       export __cdist_manifest
 
       echo "Executing manifest ${__cdist_manifest} ..."
-      # Make variables available to non-core - FIXME: beatify
       export $__cdist_name_var_object="$__cdist_cur_object_dir"
       export $__cdist_name_var_object_id="$__cdist_object_id"
       export $__cdist_name_var_type="$(__cdist_type_dir "$__cdist_type")"
 
       cdist-manifest-run "$__cdist_target_host" "$__cdist_manifest"
+
       # Tell cdist-object-run-all that there may be new objects
       touch "$__cdist_objects_created"
    else
