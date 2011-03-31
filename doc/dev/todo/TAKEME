@@ -5,7 +5,6 @@ Feel free to pick one!
 
 CORE
 ----
-- Only build manpages if necessary for types as well as for the core!
 - Add echo function:
    __cdist_echo [level] [messages...]
       level := syslog alike:
