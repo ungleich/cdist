@@ -27,7 +27,6 @@ set -eu
 
 __cdist_type="$1"; shift
 
-
 # Base
 mkdir -p "$(__cdist_type_dir "$__cdist_type")"
 

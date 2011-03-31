@@ -41,8 +41,7 @@ export $__cdist_name_var_self=$__cdist_object
 
 __cdist_object_finished="$(__cdist_object_finished "$__cdist_object")"
 if [ ! -f "$__cdist_object_finished" ]; then
-
-   # Resolve dependencies if any
+   # Resolve dependencies, if any
    __cdist_object_require="$(__cdist_object_require "$__cdist_object")"
    if [ -f "$__cdist_object_require" ]; then
       echo 

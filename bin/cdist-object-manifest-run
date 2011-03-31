@@ -29,10 +29,7 @@ set -eu
 __cdist_target_host="$1"; shift
 __cdist_object="$1"; shift
 
-# Full path to current object
 __cdist_cur_object_dir="$(__cdist_object_dir "$__cdist_object")"
-
-# Only the id
 __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
 
 echo "Checking manifest for $__cdist_object ..."
