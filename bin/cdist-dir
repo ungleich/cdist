@@ -25,14 +25,11 @@
 
 
 . cdist-config
-if [ $# -ne 4 ]; then
-   __cdist_usage "<push|pull> <target host> <src dir> <dst dir>"
-fi
+[ $# -eq 4 ] || __cdist_usage "<push|pull> <target host> <src dir> <dst dir>"
 set -ue
 
 __cdist_action="$1"; shift
 __cdist_target_host="$1"; shift
-
 __cdist_src_dir="$1"; shift
 __cdist_dst_dir="$1"; shift
 

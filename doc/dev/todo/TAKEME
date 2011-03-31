@@ -10,6 +10,9 @@ CORE
    __cdist_echo [level] [messages...]
       level := syslog alike:
          debug, notice, err
+- Think about moving cdist-type-build-emulation out of cdist-manifest-run to
+   cdist-deploy-to: more dependency of cdist-manifest-run, but a lot of
+   less cycles consumed
 
 TYPES
 ------

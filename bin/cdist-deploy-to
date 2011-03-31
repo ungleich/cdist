@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Apply configuration to a host
+# Deploy configuration to a host
 #
 
 . cdist-config
@@ -45,8 +45,8 @@ __cdist_init_deploy           "$__cdist_target_host"
 
 # Transfer cdist executables
 echo "Transferring cdist binaries to $__cdist_target_host ..."
-cdist-dir push "$__cdist_target_host" "${__cdist_abs_mydir}" "${__cdist_remote_bin_dir}"
-
+cdist-dir push                "$__cdist_target_host" \
+   "${__cdist_abs_mydir}" "${__cdist_remote_bin_dir}"
 cdist-explorer-run-global     "$__cdist_target_host"
 cdist-manifest-run-init       "$__cdist_target_host"
 cdist-object-all              "$__cdist_target_host" cdist-object-process
