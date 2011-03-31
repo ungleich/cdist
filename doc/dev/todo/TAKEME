@@ -14,6 +14,9 @@ CORE
    cdist-deploy-to: more dependency of cdist-manifest-run, but a lot of
    less cycles consumed
 
+- cdist-object-gencode: remove code if output empty?
+   - also take care of that in cdist-code-run!
+
 TYPES
 ------
 Types to be written/extended:

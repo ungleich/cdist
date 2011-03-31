@@ -29,15 +29,15 @@ set -eu
 __cdist_target_host="$1"; shift
 __cdist_object="$1"; shift
 
-code_local="$(__cdist_object_code "$__cdist_object")-${__cdist_name_gencode_local}"
-code_remote="$(__cdist_object_code "$__cdist_object")-${__cdist_name_gencode_remote}"
+__cdist_code_local="$(__cdist_object_code "$__cdist_object")-${__cdist_name_gencode_local}"
+__cdist_code_remote="$(__cdist_object_code "$__cdist_object")-${__cdist_name_gencode_remote}"
 
 echo "Generating local code for $__cdist_object ..."
 cdist-object-gencode "$__cdist_target_host" "$__cdist_object" \
-   "${__cdist_name_gencode_local}" > "${code_local}"
+   "${__cdist_name_gencode_local}" > "${__cdist_code_local}"
 
 echo "Generating remote code for $__cdist_object ..."
 cdist-object-gencode "$__cdist_target_host" "$__cdist_object" \
-   "${__cdist_name_gencode_remote}" > "${code_remote}"
+   "${__cdist_name_gencode_remote}" > "${__cdist_code_remote}"
 
-chmod u+x "${code_local}" "${code_remote}"
+chmod u+x "${__cdist_code_local}" "${__cdist_code_remote}"
