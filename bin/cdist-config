@@ -105,6 +105,8 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 # Local Base
 # 
 : ${__cdist_local_base_dir:=$__cdist_tmp_dir}
+
+# Cache may *NOT* be below __cdist_local_base_dir!
 : ${__cdist_local_base_cache_dir:=$__cdist_abs_mydir/../$__cdist_name_cache}
 
 : ${__cdist_conf_dir:="$(cd "$__cdist_abs_mydir/../conf" && pwd -P)"}
@@ -184,6 +186,19 @@ __cdist_init_deploy()
 
    # Link configuration source directory - consistent with remote
    ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
+}
+
+################################################################################
+# Cache
+#
+__cdist_cache_dir()
+{
+   cd "${__cdist_local_base_cache_dir}" && pwd -P
+}
+
+__cdist_host_cache_dir()
+{
+   echo "$(__cdist_cache_dir)/$1" 
 }
 
 ################################################################################
