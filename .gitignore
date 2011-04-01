@@ -6,6 +6,8 @@ doc/man/.marker
 doc/man/man1/*.1
 doc/man/man7/*.7
 doc/man/man*/*.html
+doc/man/man7/cdist-type__*.text
+doc/man/man*/docbook-xsl.css
 
 # Ignore cache for version control
 cache/
