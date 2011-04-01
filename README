@@ -28,6 +28,7 @@ and [puppet](http://www.puppetlabs.com/), but it ticks differently.
 Here are some features that makes it unique: 
 
 [[!table  data="""
+Keywords | Description
 Simplicity | There is only one type to extend cdist called ***type***
 Design | Type and core cleanly seperated
 Design | cdist sticks completly to the KISS (keep it simple and stupid) paradigma
