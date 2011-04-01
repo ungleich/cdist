@@ -230,7 +230,7 @@ Yes, I'm actually eating my own dogfood and currently managing
  * [xfce](http://www.xfce.org/) (lightweight desktop environment)
  * [slim](http://slim.berlios.de/) (graphical login manager for X11)
 
-with cdist on a total of **9** production machines of the
+with cdist on a total of **20** production machines of the
 [Systems Group](http://www.systems.ethz.ch) at the
 [ETH Zurich](http://www.ethz.ch) as well at home.
 
