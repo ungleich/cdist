@@ -3,7 +3,9 @@
 
 # Ignore generated manpages
 doc/man/.marker
-doc/man/man*/
+doc/man/man1/*.1
+doc/man/man7/*.7
+doc/man/man*/*.html
 
 # Ignore cache for version control
 cache/

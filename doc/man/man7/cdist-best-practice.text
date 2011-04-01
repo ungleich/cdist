@@ -60,6 +60,20 @@ machine-a % git clone git://your-git-server/cdist
 machine-b % git clone git://your-git-server/cdist
 --------------------------------------------------------------------------------
 
+SEPERATING WORK BY GROUPS
+-------------------------
+If you are working with different groups on one cdist-configuration,
+you can delegate to other manifests and have the groups edit only
+their manifests. You can use the following snippet in
+**conf/manifests/init**:
+
+--------------------------------------------------------------------------------
+# Include other groups
+sh -e "$__manifest/systems"
+
+sh -e "$__manifest/cbrg"
+--------------------------------------------------------------------------------
+
 
 SEE ALSO
 --------
