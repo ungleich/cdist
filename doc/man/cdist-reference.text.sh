@@ -28,7 +28,7 @@ __cdist_myname=${0##*/};
 __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 filename="${__cdist_myname%.sh}"
-dest="$__cdist_abs_mydir/$filename"
+dest="$__cdist_abs_mydir/man7/$filename"
 
 cd "$__cdist_abs_mydir"
 
