@@ -166,7 +166,7 @@ If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
 The master branch on the other hand is the development branch and may not be
 working, break your setup or eat the tree in your garden.
 
-### Upgrading from 1.3 to 1.4
+### Upgrading from 1.3 to 1.5
 
 No incompatiblities.
 
