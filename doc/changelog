@@ -1,9 +1,9 @@
-1.5.0:
+1.5.0: 2011-04-01
 	* Add basic cache functionality
 	* New type __process
 	* Restructured execution: (Steven Armstrong)
-		Process each object as a whole, resolve dependencies and ensure
-		correct execution order.
+		Orientate processing on objects, resolve dependencies and
+		ensure correct execution order.
 	* Documentation: Rewrite stages docs (Steven Armstrong)
 	* Documentation: Remove legacy man pages (Steven Armstrong)
 
