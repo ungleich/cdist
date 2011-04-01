@@ -1,31 +1,22 @@
-cdist-type__package_apt(7)
-==========================
+cdist-type__debconf_set_selections(7)
+=====================================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-type__package_apt - Manage packages with apt-get
+cdist-type__debconf_set_selections - Setup debconf selections
 
 
 DESCRIPTION
 -----------
-apt-get is usually used on Debian and variants (like Ubuntu) to
-manage packages.
+On Debian and alike systems debconf-set-selections(1) can be used
+to setup configuration parameters.
 
 
 REQUIRED PARAMETERS
 -------------------
-state::
-   Either "installed" or "deinstalled".
-
-
-OPTIONAL PARAMETERS
--------------------
-name::
-   If supplied, use the name and not the object id as the package name.
-
-preseed::
+file::
    If supplied, use the given filename as input for debconf-set-selections(1)
 
 
@@ -33,24 +24,17 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Ensure zsh in installed
-__package_apt zsh --state installed
+# Setup configuration for nslcd
+__debconf_set_selections nslcd --file /path/to/file
 
-# In case you only want *a* webserver, but don't care which one
-__package_apt webserver --state installed --name nginx
-
-# Install package with defaults (from a type)
-__package_apt postfix --state installed --preseed "$__type/files/postfix-seed"
-
-# Remove obsolete package
-__package_apt puppet --state deinstalled
+# Setup configuration for nslcd from another type
+__debconf_set_selections nslcd --file "$__type/files/preseed/nslcd"
 --------------------------------------------------------------------------------
 
 
 SEE ALSO
 --------
 - cdist-type(7)
-- cdist-type__package(7)
 
 
 COPYING

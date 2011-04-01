@@ -18,36 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on Debian and co.
+# Setup selections
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
-else
-   name="$__object_id"
-fi
-
-# Check for preseeding and add preseed as here document
-if [ -f "$__object/parameter/preseed" ]; then
-   echo "debconf-set-selections << __file-eof"
-   cat "$(cat "$__object/parameter/preseed")"
-   echo "__file-eof"
-fi
-
-state="$(cat "$__object/parameter/state")"
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
-
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo apt-get --quiet --yes install \"$name\"
-      fi
-   ;;
-   uninstalled)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo apt-get --quiet --yes remove \"$name\"
-      fi
-   ;;
-esac
+echo "debconf-set-selections << __file-eof"
+cat "$__object/parameter/file"
+echo "__file-eof"
