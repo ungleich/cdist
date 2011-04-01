@@ -24,56 +24,33 @@ other configuration management systems like
 [cfengine](http://www.cfengine.org/),
 [bcfg2](http://trac.mcs.anl.gov/projects/bcfg2),
 [chef](http://wiki.opscode.com/display/chef/)
-and [puppet](http://www.puppetlabs.com/), but
-it ticks differently:
+and [puppet](http://www.puppetlabs.com/), but it ticks differently.
+Here are some features that makes it unique: 
 
- * cdist sticks completly to the KISS (keep it simple and stupid) paradigma
-  * cdist's core is very small (< 1k lines of code)
-  * There is only one type to extend cdist called ***type***.
-  * One main development target: ***It must be incredible easy to add new types.***
- * cdist is UNIX
-  * It reuses existing tools like cat, find, mv, ...
-  * cdist's documentation is bundled as manpages
- * cdist is written in POSIX shell
-  * No special requirements like high level interpreters needed on server or target
+[[!table  data="""
+Simplicity | There is only one type to extend cdist called ***type***
+Design | Type and core cleanly seperated
+Design | cdist sticks completly to the KISS (keep it simple and stupid) paradigma
+Design | Meaningful error messages - do not lose time debugging error messages
+Design | Consistency in behaviour, naming and documentation
+Design | No surprise factor: Only do what is obviously clear, no magic
+Design | Define target state, do not focus on methods or scripts
+Small core | cdist's core is very small - less code, less bugs
+Fast development | Focus on straightforwardness of type creation is a main development objective
+Requirements, Scalability | No central server needed, cdist operates in push mode and can be run from any computer
+Requirements, Scalability, Upgrade | cdist only needs to be updated on the master, not on the target hosts
+Requirements | cdist requires only SSH and a shell on the target
+Requirements | 
+UNIX | Reuse of existing tools like cat, find, mv, ...
+UNIX, familar environment, documentation | Is available as manpages and HTML
+UNIX, simplicity, familar environment | cdist is written in POSIX shell
+UNIX, simplicity, familar environment | cdist is configured in POSIX shell
+"""]]
 
 ### Documentation
 
 The cdist documentation is included as manpages in the distribution.
 You can [browse the documentation for the latest version online](man) as well.
-
-### Architecture
-
- * Push mode (server pushes configuration)
- * User defines configuration in shell scripts (called ***manifests***)
- * Generates internal configuration (cconfig style)
- * Uses ***types*** to generate code be executed on the target
- * And finally executes the code on the target / applies the configuration
-
-### Features
-
- * Elegant code and clean design
-  * Type and core cleanly seperated
-  * Small codebase in core
- * Good documentation (man pages)
- * Consistency in behaviour, naming and documentation
- * Meaningful error messages
-  * Either standard error messages from tools or added description for clearification
- * The no surprise factor
-  * No magic guessing of what the user wants
- * Simple and well-known DSL
-  * Posix shell
- * Easy integration into bare metal installations
-  * requires only ssh + sh
- * Easy upgrade
-  * ***There is no need to update cdist on target hosts!***
-  * cdist only needs to be updated on the master server(s)
- * Very easy to extend
-  * Can be done via types, which can be stacked on top of others
- * Reuse of existing functionality
-  * sh, ssh, find, rm, mv, ...
- * Very easy to debug
-  * Just add set -x in the scripts
 
 ### OS support
 
