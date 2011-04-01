@@ -1,6 +1,7 @@
 1.6.0:
 	* Removed --preseed support from __package_apt
 	* New type __debconf_set_selections which allows to preseed debian packages
+	* Explorer/os: Support Fedora
 
 1.5.0: 2011-04-01
 	* Add basic cache functionality
