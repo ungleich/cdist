@@ -75,6 +75,37 @@ sh -e "$__manifest/cbrg"
 --------------------------------------------------------------------------------
 
 
+MAINTAINING MULTIPLE CONFIGURATIONS
+-----------------------------------
+When you need to manage multiple sites with cdist, like company_a, company_b
+and private for instance, you can easily use git for this purpose.
+Including a possible common base that is reused accross the different sites:
+
+--------------------------------------------------------------------------------
+# create branches
+git branch company_a company_b common private
+
+# make stuff for company a
+git checkout company_a
+# work, commit, etc.
+
+# make stuff for company b
+git checkout company_b
+# work, commit, etc.
+
+# make stuff relevant for all sites
+git checkout common
+# work, commit, etc.
+
+# change to private and include latest common stuff
+git checkout private
+git merge common
+--------------------------------------------------------------------------------
+
+Have a look at git-remote(1) to adjust the remote configuration, which allows
+you to push certain branches to certain remotes.
+
+
 SEE ALSO
 --------
 - cdist(7)
