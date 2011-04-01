@@ -37,17 +37,19 @@ fi
 state="$(cat "$__object/parameter/state")"
 is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
 
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
+
 case "$state" in
    installed)
       # Install only if non-existent
       if [ -z "$is_installed" ]; then
-         echo apt-get --quiet --yes install \"$name\"
+         echo $aptget install \"$name\"
       fi
    ;;
    uninstalled)
       # Remove only if existent
       if [ -n "$is_installed" ]; then
-         echo apt-get --quiet --yes remove \"$name\"
+         echo $aptget remove \"$name\"
       fi
    ;;
 esac
