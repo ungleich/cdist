@@ -29,15 +29,20 @@ fi
 
 state="$(cat "$__object/parameter/state")"
 
+cat "$__object/explorer/pkg_version"
+
 opts="--assumeyes --quiet"
+
+not_installed="^no package provides"
+
 case "$state" in
    installed)
-      if grep -q "is not installed\$" "$__object/explorer/pkg_version"; then
+      if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
          echo yum $opts install \"$name\"
       fi
    ;;
    uninstalled)
-      if ! grep -q "is not installed\$" "$__object/explorer/pkg_version"; then
+      if ! grep -q "$not_installed" "$__object/explorer/pkg_version"; then
          echo yum $opts remove \"$name\"
       fi
    ;;
