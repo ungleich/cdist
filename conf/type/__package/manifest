@@ -33,6 +33,7 @@ else
          archlinux) type="pacman" ;;
          debian|ubuntu) type="apt" ;;
          gentoo) type="emerge" ;;
+         fedora) type="yum" ;;
          *)
             echo "Don't know how to manage packages on: $os" >&2
             exit 1
