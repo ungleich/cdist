@@ -158,7 +158,7 @@ __cdist_debug_echo()
 __cdist_exec_fail_on_error()
 {
    sh -e "$@"
-   [ "$?" -eq 0 ] || __cdist_exit_err "Error: $1 exited non-zero."
+   [ "$?" -eq 0 ] || __cdist_exit_err "$1 exited non-zero."
 }
 
 __cdist_exit_err()
