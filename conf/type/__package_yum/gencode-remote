@@ -18,14 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages with Pacman (mostly archlinux)
+# Manage packages with yum (mostly Fedora)
 #
-
-# Debug
-# exec >&2
-# set -x
-
-pacopts="--noconfirm --noprogressbar"
 
 if [ -f "$__object/parameter/name" ]; then
    name="$__object/parameter/name"
@@ -34,19 +28,17 @@ else
 fi
 
 state="$(cat "$__object/parameter/state")"
-pkg_version="$(cat "$__object/explorer/pkg_version")"
 
+opts="--assumeyes --quiet"
 case "$state" in
    installed)
-
-      # Empty? Not installed.
-      if [ -z "$pkg_version" ]; then
-         echo pacman "$pacopts" -S \"$name\"
+      if grep -q "is not installed\$" "$__object/explorer/pkg_version"; then
+         echo yum $opts install \"$name\"
       fi
    ;;
    uninstalled)
-      if [ "$pkg_version" ]; then
-         echo pacman "$pacopts" -R \"$name\"
+      if ! grep -q "is not installed\$" "$__object/explorer/pkg_version"; then
+         echo yum $opts remove \"$name\"
       fi
    ;;
 esac
