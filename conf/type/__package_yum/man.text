@@ -11,6 +11,8 @@ cdist-type__package_yum - Manage packages with yum
 DESCRIPTION
 -----------
 Yum is usually used on the Fedora distribution to manage packages.
+If you specify an unknown package, yum will display the
+slightly confusing error message "Error: Nothing to do".
 
 
 REQUIRED PARAMETERS
