@@ -135,19 +135,8 @@ tmp_dir::
 
 TYPES
 -----
-The following types are available:
-
-eof
-for type in man7/cdist-type__*; do
-   name_1="${type#man7/cdist-type}"
-   name_2="${name_1%.7}"
-
-   name="$name_2"
-   echo "- $name"
-done
-
-cat << eof
-
+The available types are listed in the SEE ALSO section
+and are referenced as cdist-type__TYPENAME.
 
 VARIABLES
 ---------
