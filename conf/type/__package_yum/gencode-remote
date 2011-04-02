@@ -29,8 +29,6 @@ fi
 
 state="$(cat "$__object/parameter/state")"
 
-cat "$__object/explorer/pkg_version"
-
 opts="--assumeyes --quiet"
 
 not_installed="^no package provides"
