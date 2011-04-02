@@ -26,13 +26,14 @@ CORE
 
 TYPES
 ------
-Types to be written/extended:
-   - __ssh-keys (host/user)
-   - Think about __service - necessary?
-   - __file_edit
-      - regexp replace (can probably cover all?)
-         -> aka sed.
-   - __cron
+- __ssh-keys (host/user)
+- __file_edit
+   - regexp replace (can probably cover all?)
+      -> aka sed.
+- __cron
+- __user:
+   add option to include --create-home
+   fix __user NAME case (same issue as __group)
 
 DOCUMENTATION
 --------------
