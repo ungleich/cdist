@@ -37,9 +37,7 @@ get_current_value() {
    cut -d':' -f $index "$__object/explorer/group"
 }
 
-set -- "$@"
 cd "$__object/parameter"
-
 if grep -q "^$name" "$__object/explorer/group"; then
    # group exists, only change changed values
    for property in $(ls .); do
