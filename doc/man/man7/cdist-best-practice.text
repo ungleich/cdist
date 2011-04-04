@@ -102,6 +102,39 @@ git checkout private
 git merge common
 --------------------------------------------------------------------------------
 
+The following **.git/config** is taken from a a real world scenario:
+--------------------------------------------------------------------------------
+# Track upstream, merge from time to time
+[remote "upstream"]
+   url = git://git.schottelius.org/cdist
+   fetch = +refs/heads/*:refs/remotes/upstream/*
+
+# Same as upstream, but works when being offline 
+[remote "local"]
+   fetch = +refs/heads/*:refs/remotes/local/*
+   url = /home/users/nico/p/cdist
+
+# Remote containing various ETH internal branches
+[remote "eth"]
+   url = sans.ethz.ch:/home/services/sans/git/cdist-eth
+   fetch = +refs/heads/*:refs/remotes/eth/*
+
+# Public remote that contains my private changes to cdist upstream
+[remote "nico"]
+   url = git.schottelius.org:/home/services/git/cdist-nico
+   fetch = +refs/heads/*:refs/remotes/nico/*
+
+# The "nico" branch will be synced with the remote nico, branch master
+[branch "nico"]
+   remote = nico
+   merge = refs/heads/master
+
+# ETH stable contains rock solid configurations used in various places
+[branch "eth-stable"]
+   remote = eth
+   merge = refs/heads/stable
+--------------------------------------------------------------------------------
+
 Have a look at git-remote(1) to adjust the remote configuration, which allows
 you to push certain branches to certain remotes.
 
