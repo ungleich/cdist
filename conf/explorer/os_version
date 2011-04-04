@@ -23,7 +23,11 @@
 #
 
 case "$($__explorer/os)" in
-   openbsd)
+   archlinux)
+      # empty, but well...
+      cat /etc/arch-release
+   ;;
+   macosx|openbsd)
       uname -r
    ;;
 esac
@@ -33,11 +37,6 @@ exit 0
 # Ubuntu is also Debian, thus return if Ubuntu was found
 if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
    echo ubuntu
-   exit 0
-fi
-
-if [ -f /etc/arch-release ]; then
-   echo archlinux
    exit 0
 fi
 
@@ -71,10 +70,6 @@ uname_s="$(uname -s)"
 
 # Assume there is no tr on the client -> do lower case ourselves
 case "$uname_s" in
-   Darwin)
-      echo macosx
-      exit 0
-   ;;
    NetBSD)
       echo netbsd
       exit 0
