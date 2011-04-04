@@ -5,6 +5,7 @@
 	* Type __package gained Fedora support
 	* Removed --preseed support from __package_apt
 	* explorer/os: gained Fedora support
+	* Simplified types __user and __group
 
 1.5.0: 2011-04-01
 	* Add basic cache functionality
