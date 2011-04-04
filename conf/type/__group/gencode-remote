@@ -38,7 +38,7 @@ get_current_value() {
 }
 
 cd "$__object/parameter"
-if grep -q "^$name" "$__object/explorer/group"; then
+if grep -q "^${name}:" "$__object/explorer/group"; then
    # group exists, only change changed values
    for property in $(ls .); do
       current_value=$(get_current_value "$property")
