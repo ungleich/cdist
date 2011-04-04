@@ -60,6 +60,84 @@ machine-a % git clone git://your-git-server/cdist
 machine-b % git clone git://your-git-server/cdist
 --------------------------------------------------------------------------------
 
+SEPERATING WORK BY GROUPS
+-------------------------
+If you are working with different groups on one cdist-configuration,
+you can delegate to other manifests and have the groups edit only
+their manifests. You can use the following snippet in
+**conf/manifests/init**:
+
+--------------------------------------------------------------------------------
+# Include other groups
+sh -e "$__manifest/systems"
+
+sh -e "$__manifest/cbrg"
+--------------------------------------------------------------------------------
+
+
+MAINTAINING MULTIPLE CONFIGURATIONS
+-----------------------------------
+When you need to manage multiple sites with cdist, like company_a, company_b
+and private for instance, you can easily use git for this purpose.
+Including a possible common base that is reused accross the different sites:
+
+--------------------------------------------------------------------------------
+# create branches
+git branch company_a company_b common private
+
+# make stuff for company a
+git checkout company_a
+# work, commit, etc.
+
+# make stuff for company b
+git checkout company_b
+# work, commit, etc.
+
+# make stuff relevant for all sites
+git checkout common
+# work, commit, etc.
+
+# change to private and include latest common stuff
+git checkout private
+git merge common
+--------------------------------------------------------------------------------
+
+The following **.git/config** is taken from a a real world scenario:
+--------------------------------------------------------------------------------
+# Track upstream, merge from time to time
+[remote "upstream"]
+   url = git://git.schottelius.org/cdist
+   fetch = +refs/heads/*:refs/remotes/upstream/*
+
+# Same as upstream, but works when being offline 
+[remote "local"]
+   fetch = +refs/heads/*:refs/remotes/local/*
+   url = /home/users/nico/p/cdist
+
+# Remote containing various ETH internal branches
+[remote "eth"]
+   url = sans.ethz.ch:/home/services/sans/git/cdist-eth
+   fetch = +refs/heads/*:refs/remotes/eth/*
+
+# Public remote that contains my private changes to cdist upstream
+[remote "nico"]
+   url = git.schottelius.org:/home/services/git/cdist-nico
+   fetch = +refs/heads/*:refs/remotes/nico/*
+
+# The "nico" branch will be synced with the remote nico, branch master
+[branch "nico"]
+   remote = nico
+   merge = refs/heads/master
+
+# ETH stable contains rock solid configurations used in various places
+[branch "eth-stable"]
+   remote = eth
+   merge = refs/heads/stable
+--------------------------------------------------------------------------------
+
+Have a look at git-remote(1) to adjust the remote configuration, which allows
+you to push certain branches to certain remotes.
+
 
 SEE ALSO
 --------

@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on Debian and co.
+# Retrieve the status of a package - parsed dpkg output
 #
 
 if [ -f "$__object/parameter/name" ]; then
@@ -27,29 +27,4 @@ else
    name="$__object_id"
 fi
 
-# Check for preseeding and add preseed as here document
-if [ -f "$__object/parameter/preseed" ]; then
-   echo "debconf-set-selections << __file-eof"
-   cat "$(cat "$__object/parameter/preseed")"
-   echo "__file-eof"
-fi
-
-state="$(cat "$__object/parameter/state")"
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
-
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
-
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo $aptget install \"$name\"
-      fi
-   ;;
-   uninstalled)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo $aptget remove \"$name\"
-      fi
-   ;;
-esac
+rpm -q --whatprovides "$name" 2>/dev/null || true

@@ -1,1 +1,2 @@
-Release 1.5.0 correctly :-)
+remove --preseed from package_apt and add debconf_set_selection or similar
+   -> much cleaner!

@@ -3,13 +3,13 @@
 
 # Ignore generated manpages
 doc/man/.marker
-doc/man/man*/*.1
-doc/man/man*/*.7
+doc/man/man1/*.1
+doc/man/man7/*.7
 doc/man/man*/*.html
 doc/man/man*/*.xml
-doc/man/man*/cdist-reference.text
-# Ignore type manpages
-doc/man/man*/*__*.text
+doc/man/man7/cdist-type__*.text
+doc/man/man7/cdist-reference.text
+doc/man/man*/docbook-xsl.css
 
 # Ignore cache for version control
 cache/

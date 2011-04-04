@@ -26,13 +26,14 @@ CORE
 
 TYPES
 ------
-Types to be written/extended:
-   - __ssh-keys (host/user)
-   - Think about __service - necessary?
-   - __file_edit
-      - regexp replace (can probably cover all?)
-         -> aka sed.
-   - __cron
+- __ssh-keys (host/user)
+- __file_edit
+   - regexp replace (can probably cover all?)
+      -> aka sed.
+- __cron
+- __user:
+   add option to include --create-home
+   fix __user NAME case (same issue as __group)
 
 DOCUMENTATION
 --------------
@@ -45,7 +46,3 @@ Cache:
    - export variable $__cache
       -> for current host
       -> add function to cdist-config, import from cdist-cache
-
-
-remove --preseed from package_apt and add debconf_set_selection or similar
-   -> much cleaner!

@@ -18,38 +18,30 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on Debian and co.
+# Manage packages with yum (mostly Fedora)
 #
 
 if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+   name="$__object/parameter/name"
 else
    name="$__object_id"
 fi
 
-# Check for preseeding and add preseed as here document
-if [ -f "$__object/parameter/preseed" ]; then
-   echo "debconf-set-selections << __file-eof"
-   cat "$(cat "$__object/parameter/preseed")"
-   echo "__file-eof"
-fi
-
 state="$(cat "$__object/parameter/state")"
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
 
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
+opts="--assumeyes --quiet"
+
+not_installed="^no package provides"
 
 case "$state" in
    installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo $aptget install \"$name\"
+      if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
+         echo yum $opts install \"$name\"
       fi
    ;;
    uninstalled)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo $aptget remove \"$name\"
+      if ! grep -q "$not_installed" "$__object/explorer/pkg_version"; then
+         echo yum $opts remove \"$name\"
       fi
    ;;
 esac
