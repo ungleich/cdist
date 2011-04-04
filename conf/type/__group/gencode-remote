@@ -24,35 +24,26 @@
 
 name="$__object_id"
 
-get_current_value() {
-   local key="$1"
-   local index
-   case "$key" in
-      password)
-         cut -d':' -f 2 "$__object/explorer/gshadow"
-         break
-      ;;
-      gid) index=3;;
-   esac
-   cut -d':' -f $index "$__object/explorer/group"
-}
-
 cd "$__object/parameter"
 if grep -q "^${name}:" "$__object/explorer/group"; then
-   # group exists, only change changed values
    for property in $(ls .); do
-      current_value=$(get_current_value "$property")
       new_value="$(cat "$property")"
+
+      case "$key" in
+         password)
+            current_value="$(awk -F: '{ print $2 }' < "$__object/explorer/gshadow")"
+         ;;
+         gid)
+            current_value="$(awk -F: '{ print $3 }' < "$__object/explorer/group")"
+         ;;
+      esac
+
       if [ "$new_value" != "$current_value" ]; then
-         # Shedule changed properties for update
          set -- "$@" "--$property" \"$new_value\"
       fi
    done
 
-   if [ $# -gt 0 ]; then
-      # Update changed properties
-      echo groupmod $@ $name
-   fi
+   [ $# -gt 0 ] && echo groupmod $@ $name
 else
    for property in $(ls .); do
       new_value="$(cat "$property")"
