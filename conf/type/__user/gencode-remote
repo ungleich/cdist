@@ -32,10 +32,6 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
       file="$__object/explorer/passwd"
 
       case "$property" in
-         password)
-            field=3 
-            file="$__object/explorer/shadow"
-         ;;
          gid)
             if $(echo "$new_value" | grep -q '^[0-9][0-9]*$'); then
                field=4
@@ -45,10 +41,14 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
                field=1
             fi
          ;;
-         uid)     field=3 ;;
+         password)
+            field=3 
+            file="$__object/explorer/shadow"
+         ;;
          comment) field=5 ;;
          home)    field=6 ;;
          shell)   field=7 ;;
+         uid)     field=3 ;;
       esac
 
       export field
