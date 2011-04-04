@@ -7,6 +7,7 @@ doc/man/man*/*.1
 doc/man/man*/*.7
 doc/man/man*/*.html
 doc/man/man*/*.xml
+doc/man/man*/cdist-reference.text
 # Ignore type manpages
 doc/man/man*/*__*.text
 
