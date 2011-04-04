@@ -23,60 +23,50 @@
 
 name="$__object_id"
 
-command=
-if grep -q "^$name" "$__object/explorer/passwd"; then
-   # user exists
-   command="usermod"
-else
-   # user does not exist
-   command="useradd"
-fi
-
-
-get_current_value() {
-   local key="$1"
-   local new_value="$2"
-
-   local explorer="$__object/explorer/passwd"
-   local index
-   case "$key" in
-      password)
-         explorer="$__object/explorer/shadow"
-         index=2
-      ;;
-      uid) index=3;;
-      gid)
-         if [[ $new_value =~ ^[0-9]+$ ]]; then
-            # numeric gid
-            index=4
-         else
-            # group name
-            explorer="$__object/explorer/group"
-            index=1
-         fi
-      ;;
-      comment) index=5;;
-      home) index=6;;
-      shell) index=7;;
-   esac
-   cut -d':' -f $index "$explorer"
-}
-
-
-set -- "$@"
 cd "$__object/parameter"
-for property in $(ls .); do
-   new_value="$(cat "$property")"
-   current_value=$(get_current_value "$property" "$new_value")
-   if [ "$new_value" != "$current_value" ]; then
-      # Shedule changed properties for update
-      set -- "$@" "--$property" \"$new_value\"
+if grep -q "^${name}:" "$__object/explorer/passwd"; then
+   for property in $(ls .); do
+      new_value="$(cat "$property")"
+
+      file="$__object/explorer/passwd"
+
+      case "$key" in
+         password)
+            field=3 
+            file="$__object/explorer/shadow"
+         ;;
+         gid)
+            if $(echo "$new_value" | grep -q '^[0-9][0-9]*$'); then
+               field=4
+            else
+               # group name
+               file="$__object/explorer/group"
+               field=1
+            fi
+         ;;
+         uid)     field=3 ;;
+         comment) field=5 ;;
+         home)    field=6 ;;
+         shell)   field=7 ;;
+      esac
+
+      current_value="$(awk -F: '{ print $ENVIRON["field"] }' < "$file")"
+
+      if [ "$new_value" != "$current_value" ]; then
+         # Shedule changed properties for update
+         set -- "$@" "--$property" \"$new_value\"
+      fi
+   done
+
+   if [ $# -gt 0 ]; then
+      # Update changed properties
+      echo usermod "$@" "$name"
    fi
-done
+else
+   for property in $(ls .); do
+      new_value="$(cat "$property")"
+      set -- "$@" "--$property" \"$new_value\"
+   done
 
-
-if [ $# -gt 0 ]; then
-   # Update changed properties
-   echo $command $@ $name
+   echo useradd "$@" "$name"
 fi
-
