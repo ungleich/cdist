@@ -87,10 +87,10 @@ Related documentation:
 
 STAGE 5: CODE GENERATION
 ------------------------
-In this stage for every created objects its type is checked for executable 
-gencode whether scripts. The gencode scripts generate the code to be executed 
-on the target on stdout. If the gencode executables fail, they must print 
-diagnostic messages on stderr and exit non-zero.
+In this stage for every created object its type is checked for executable 
+gencode scripts. The gencode scripts generate the code to be executed on the 
+target on stdout. If the gencode executables fail, they must print diagnostic 
+messages on stderr and exit non-zero.
 
 Related documentation:
    - cdist-object-gencode-run(1)
