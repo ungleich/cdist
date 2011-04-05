@@ -52,4 +52,8 @@ case "$state" in
          echo $aptget remove \"$name\"
       fi
    ;;
+   *)
+      echo "Unknown state: $state" >&2
+      exit 1
+   ;;
 esac
