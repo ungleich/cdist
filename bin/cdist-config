@@ -55,7 +55,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_manifest:=manifest}
 : ${__cdist_name_object:=object}
 : ${__cdist_name_object_finished:=done}
-: ${__cdist_name_object_processed:=processed}
+: ${__cdist_name_object_prepared:=prepared}
 : ${__cdist_name_object_id:=object_id}
 : ${__cdist_name_object_source:=source}
 : ${__cdist_name_objects_created:=.objects_created}
@@ -210,9 +210,9 @@ __cdist_object_code()
    echo "$(__cdist_object_dir "$1")/${__cdist_name_code}"
 }
 
-__cdist_object_processed()
+__cdist_object_prepared()
 {
-   echo "$(__cdist_object_dir "$1")/${__cdist_name_object_processed}"
+   echo "$(__cdist_object_dir "$1")/${__cdist_name_object_prepared}"
 }
 
 __cdist_object_finished()
