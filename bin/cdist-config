@@ -19,7 +19,7 @@
 #
 #
 
-__cdist_version="1.5.0"
+__cdist_version="1.6.0pre"
 
 # Fail if something bogus is going on
 set -u
