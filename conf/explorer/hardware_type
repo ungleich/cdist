@@ -22,13 +22,10 @@
 #
 #
 
-os="$(cat "$__global/explorer/os")"
+os="$($__explorer/os)"
 
 case "$os" in
-   archlinux)
-		echo $(uname -m)
-   ;;
-   openbsd)
+   archlinux|*bsd)
 		echo $(uname -m)
    ;;
 esac

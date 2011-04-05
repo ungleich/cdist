@@ -1,6 +1,6 @@
 cdist-type__package_pkg(7)
 =============================
-Andreas Brönnimann <andi-cdist--@--v-net.ch>
+Andi Brönnimann <andi-cdist--@--v-net.ch>
 
 
 NAME
@@ -16,7 +16,7 @@ This type is usually used on OpenBSD to manage packages.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "installed" or "uninstalled".
+   Either "installed" or "removed".
 
 
 OPTIONAL PARAMETERS
@@ -42,7 +42,7 @@ __package_pkg_openbsd vim --state installed --flavor no_x11
 __package_pkg_openbsd python --state installed --name python2
 
 # Remove obsolete package
-__package_pkg_openbsd puppet --state uninstalled
+__package_pkg_openbsd puppet --state removed
 --------------------------------------------------------------------------------
 
 
