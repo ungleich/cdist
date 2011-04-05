@@ -23,6 +23,9 @@ CORE
    [20:22] kr:bin% 
 
 - probably remove or improve cdist-type-template
+- add $__tmp?
+   - for use in manifest, code, etc.?
+      - for creating temporary files, etc.
 
 
 TYPES
