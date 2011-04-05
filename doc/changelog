@@ -3,6 +3,8 @@
 	* New type __debconf_set_selections
 	* New explorer os_version
 	* Fix Type __group in case of __group NAME syntax
+	* Fix __package* types: consistently name --state removed instead of
+		uninstalled or deinstalled
 	* Type __package gained Fedora support
 	* Removed --preseed support from __package_apt
 	* explorer/os: gained Fedora support
