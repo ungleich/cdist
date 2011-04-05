@@ -106,14 +106,15 @@ how to use cdist.
 There are at least the following branches available:
 
  * master: the development branch
- * 1.5: Focus on object orientation instead of global stage orientation
+ * 1.6: New types, cleaned up \_\_package* types, internal cleanup
 
 Old versions:
 
+ * 1.5: Focus on object orientation instead of global stage orientation
  * 1.4: Support for redefiniton of objects (if equal)
  * 1.3: Support for local and remote code execution (current stable)
  * 1.2: Dependencies supported
- * 1.1: __file to __file, __directory, __link migration
+ * 1.1: \_\_file to \_\_file, \_\_directory, \_\_link migration
  * 1.0: First official release
 
 Other branches may be available for features or bugfixes, but they
@@ -123,7 +124,7 @@ may vanish at any point. To select a specific branch use
     git checkout -b <name> origin/<name>
     
     # Stay on a specific version
-    version=1.5
+    version=1.6
     git checkout -b $version origin/$version
 
 ### Mirrors
@@ -144,6 +145,14 @@ To upgrade cdist in the current branch use
 If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
 The master branch on the other hand is the development branch and may not be
 working, break your setup or eat the tree in your garden.
+
+### Upgrading from 1.5 to 1.6
+
+* If you used **\_\_package_apt --preseed**, you need to use the new
+  type **\_\_debconf_set_selections** instead.
+* The **\_\_package** types accepted either --state deinstalled or
+  --state uninstaaled. Starting with 1.6, it was made consistently
+  to --state removed.
 
 ### Upgrading from 1.3 to 1.5
 
