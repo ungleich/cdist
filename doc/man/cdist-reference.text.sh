@@ -45,9 +45,11 @@ cdist-reference - Variable, path and type reference for cdist
 
 DESCRIPTION
 -----------
-Various scripts which are not in the core need information on how
-to find information. This manpage summarises the available environment
-variables, types and paths and clearifies with part may access which variables.
+This reference summarises
+
+- environment variables
+- paths
+- types 
 
 
 PATHS
@@ -62,7 +64,6 @@ conf/manifest/init::
    It is an executable (+x bit set) shell script that can use
    values from the explorers to decide which configuration to create
    for the specified target host.
-
    It should be primary used to define mapping from configurations to hosts.
 
 conf/manifest/*::
@@ -103,15 +104,12 @@ conf/type/<name>/parameters/optional::
 
 conf/type/<name>/explorer::
    Location of the type specific explorers.
-
    This directory is referenced by the variable __type_explorer (see below).
-
    See cdist-explorer(7).
 
 out/::
    This directory contains output of cdist and is usually located
    in a temporary directory and thus will be removed after the run.
-
    This directory is referenced by the variable __global (see below).
 
 out/explorer::
@@ -122,7 +120,6 @@ out/object::
 
 out/object/<object>::
    Contains all object specific information.
-
    This directory is referenced by the variable __object (see below).
 
 out/object/<object>/explorers::
@@ -138,8 +135,8 @@ TYPES
 The available types are listed in the SEE ALSO section
 and are referenced as cdist-type__TYPENAME.
 
-VARIABLES
----------
+ENVIRONMENT VARIABLES
+---------------------
 __explorer::
    Directory that contains all explorers.
    Available for: explorer

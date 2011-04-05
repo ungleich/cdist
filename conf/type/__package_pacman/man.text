@@ -17,7 +17,7 @@ packages.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "installed" or "deinstalled".
+   Either "installed" or "removed".
 
 
 OPTIONAL PARAMETERS
@@ -37,7 +37,7 @@ __package_pacman zsh --state installed
 __package_pacman python --state installed --name python2
 
 # Remove obsolete package
-__package_pacman puppet --state deinstalled
+__package_pacman puppet --state removed
 --------------------------------------------------------------------------------
 
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,34 +18,34 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages with yum (mostly Fedora)
+# All os variables are lower case
+#
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$__object/parameter/name"
-else
-   name="$__object_id"
-fi
-
-state="$(cat "$__object/parameter/state")"
-
-opts="--assumeyes --quiet"
-
-not_installed="^no package provides"
-
-case "$state" in
-   installed)
-      if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-         echo yum $opts install \"$name\"
-      fi
+case "$($__explorer/os)" in
+   archlinux)
+      # empty, but well...
+      cat /etc/arch-release
    ;;
-   removed)
-      if ! grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-         echo yum $opts remove \"$name\"
-      fi
+   debian)
+      cat /etc/debian_version
    ;;
-   *)
-      echo "Unknown state: $state" >&2
-      exit 1
+   fedora)
+      cat /etc/fedora-release
+   ;;
+   gentoo)
+      cat /etc/gentoo-release
+   ;;
+   macosx|*bsd|solaris)
+      uname -r
+   ;;
+   redhat)
+      cat /etc/redhat-release
+   ;;
+   suse)
+      cat /etc/SuSE-release
+   ;;
+   ubuntu)
+      lsb_release -sr
    ;;
 esac
