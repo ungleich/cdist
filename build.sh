@@ -99,6 +99,7 @@ case "$1" in
    ;;
 
    clean)
+      rm -f ${MAN7DSTDIR}/cdist-reference.text
       find "${MANDIR}" -mindepth 2 -type l \
          -o -name "*.1" \
          -o -name "*.7" \
