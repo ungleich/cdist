@@ -11,8 +11,8 @@ DESCRIPTION
 -----------
 Starting the execution of deployment with cdist-deploy-to(1), cdist passes
 through different stages, each can be triggered and debugged on its own.
-Reading the source of the cdist-deploy-to and cdist-object-run-all executables
-shows the scripts responsible for each stage.
+Reading the source of the cdist-deploy-to executable shows the scripts 
+responsible for each stage.
 
 
 STAGE 0: INTERNAL PREPERATION
@@ -56,7 +56,7 @@ STAGE 3: OBJECT INFORMATION RETRIEVAL
 -------------------------------------
 Every object is checked whether its type has explorers and if so, these are 
 transfered to the target host and executed. The results are transfered back
-and can be used in the following stages to decide what changes need to made
+and can be used in the following stages to decide what changes need to be made
 on the target to implement the desired state.
 
 Related documentation:
@@ -68,10 +68,9 @@ Related documentation:
 
 STAGE 4: RUN THE OBJECT MANIFEST
 --------------------------------
-Every object is checked whether its type has a manifest file. If the type has
-a manifest file and it is executable, it will be executed. The manifest script
-may generate and change the created objects. In other words, one type can reuse
-other types.
+Every object is checked whether its type has a executable manifest. The 
+manifest script may generate and change the created objects. In other words, 
+one type can reuse other types.
 
 For instance the object __apache/www.test.ch is of type __apache, which may 
 contain a manifest script, which creates new objects of type __file.
@@ -88,11 +87,10 @@ Related documentation:
 
 STAGE 5: CODE GENERATION
 ------------------------
-In this stage for every created objects its type is checked whether it has a
-gencode script. If the type has a gencode script and it is executable it will
-be executed. This executable should create code to be executed on the target
-on stdout. If the gencode executable fails, it must print diagnostic messages
-on stderr and exit non-zero.
+In this stage for every created objects its type is checked for executable 
+gencode whether scripts. The gencode scripts generate the code to be executed 
+on the target on stdout. If the gencode executables fail, they must print 
+diagnostic messages on stderr and exit non-zero.
 
 Related documentation:
    - cdist-object-gencode-run(1)
