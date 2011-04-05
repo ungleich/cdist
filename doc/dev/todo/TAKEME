@@ -27,6 +27,7 @@ CORE
    - for use in manifest, code, etc.?
       - for creating temporary files, etc.
 
+- How to cleanly implement "restart service if config file changed"
 
 TYPES
 ------
