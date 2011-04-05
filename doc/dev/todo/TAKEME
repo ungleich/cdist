@@ -29,6 +29,14 @@ CORE
 
 - How to cleanly implement "restart service if config file changed"
 
+- Cache
+   - add example how to use 
+   - export variable $__cache
+      -> for current host
+      -> add function to cdist-config, import from cdist-cache
+
+- check all all internal variables are prefixed with __cdist
+
 TYPES
 ------
 - __ssh-keys (host/user)
@@ -36,19 +44,12 @@ TYPES
    - regexp replace (can probably cover all?)
       -> aka sed.
 - __cron
-- __user:
+- __user
    add option to include --create-home
-   fix __user NAME case (same issue as __group)
 
 DOCUMENTATION
 --------------
 - asciidoc interprets __, which we use for variables
   names -> seek through docs and replace with \_\_!
-- check all all internal variables are prefixed with __cdist
 - reference explorers in cdist-reference!
 
-Cache:
-   - add example how to use 
-   - export variable $__cache
-      -> for current host
-      -> add function to cdist-config, import from cdist-cache
