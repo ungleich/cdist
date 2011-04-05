@@ -17,7 +17,7 @@ It dispatches the actual work to the package system dependant types.
 REQUIRED PARAMETERS
 -------------------
 state::
-   The state the package should be in, either "installed" or "uninstalled"
+   The state the package should be in, either "installed" or "removed"
 
 
 OPTIONAL PARAMETERS

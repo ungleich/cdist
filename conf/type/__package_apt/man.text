@@ -17,7 +17,7 @@ manage packages.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "installed" or "deinstalled".
+   Either "installed" or "removed".
 
 
 OPTIONAL PARAMETERS
@@ -37,7 +37,7 @@ __package_apt zsh --state installed
 __package_apt webserver --state installed --name nginx
 
 # Remove obsolete package
-__package_apt puppet --state deinstalled
+__package_apt puppet --state removed
 --------------------------------------------------------------------------------
 
 

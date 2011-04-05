@@ -46,10 +46,14 @@ case "$state" in
          echo $aptget install \"$name\"
       fi
    ;;
-   uninstalled)
+   removed)
       # Remove only if existent
       if [ -n "$is_installed" ]; then
          echo $aptget remove \"$name\"
       fi
+   ;;
+   *)
+      echo "Unknown state: $state" >&2
+      exit 1
    ;;
 esac

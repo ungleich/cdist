@@ -39,9 +39,13 @@ case "$state" in
          echo yum $opts install \"$name\"
       fi
    ;;
-   uninstalled)
+   removed)
       if ! grep -q "$not_installed" "$__object/explorer/pkg_version"; then
          echo yum $opts remove \"$name\"
       fi
+   ;;
+   *)
+      echo "Unknown state: $state" >&2
+      exit 1
    ;;
 esac
