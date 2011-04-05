@@ -132,8 +132,17 @@ tmp_dir::
 
 TYPES
 -----
-The available types are listed in the SEE ALSO section
-and are referenced as cdist-type__TYPENAME.
+The following types are available:
+eof
+
+for type in man7/cdist-type__*.text; do
+   name_1="${type#man7/}"; man="${name_1%.text}(7)"
+   name_2="${name_1%.7}";
+   name="$name_2"
+   echo "- $name" "($man)"
+done
+
+cat << eof
 
 ENVIRONMENT VARIABLES
 ---------------------
@@ -172,16 +181,7 @@ __type_explorers::
 SEE ALSO
 --------
 - cdist(7)
-eof
-for type in man7/cdist-type__*.7; do
-   name_1="${type#man7/}"
-   name_2="${name_1%.7}"
 
-   name="$name_2"
-   echo "- ${name}(7)"
-done
-
-cat <<eof
 
 COPYING
 -------
