@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# 2011 Andi Brönnimann (andi-cdist at v-net.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage packages with Pacman (mostly archlinux)
+#
+
+# Debug
+# exec >&2
+# set -x
+
+os_version="$(cat "$__global/explorer/os_version")"
+platform="$(cat "$__global/explorer/platform")"
+
+
+if [ -f "$__object/parameter/flavor" ]; then
+	flavor="$(cat "$__object/parameter/flavor")"
+fi
+
+# do not show progress bar
+pkgopts="-x"
+
+if [ -f "$__object/parameter/name" ]; then
+   name="$__object/parameter/name"
+else
+   name="$__object_id"
+fi
+
+state="$(cat "$__object/parameter/state")"
+pkg_version="$(cat "$__object/explorer/pkg_version")"
+
+# TODO: Shouldn't be hardcoded
+echo export PKG_PATH=ftp://ftp.openbsd.org/pub/OpenBSD/$os_version/packages/$platform/
+
+case "$state" in
+   installed)
+
+      # Empty? Not installed.
+      if [ -z "$pkg_version" ]; then
+         echo pkg_add "$pkgopts" \"$name--$flavor\"
+      fi
+   ;;
+   uninstalled)
+      if [ "$pkg_version" ]; then
+         echo pkg_delete "$pkgopts" \"$name--$flavor\"
+      fi
+   ;;
+esac
