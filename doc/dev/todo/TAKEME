@@ -24,6 +24,7 @@ CORE
 
 - probably remove or improve cdist-type-template
 
+
 TYPES
 ------
 - __ssh-keys (host/user)
@@ -40,6 +41,7 @@ DOCUMENTATION
 - asciidoc interprets __, which we use for variables
   names -> seek through docs and replace with \_\_!
 - check all all internal variables are prefixed with __cdist
+- reference explorers in cdist-reference!
 
 Cache:
    - add example how to use 
