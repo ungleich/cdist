@@ -21,7 +21,7 @@ Execute the local and remote code for the given object.
 SEE ALSO
 --------
 - cdist(7)
-- cdist-object-run-all(1)
+- cdist-object-run(1)
 - cdist-code-run(1)
 - cdist-run-remote(1)
 
