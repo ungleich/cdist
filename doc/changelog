@@ -1,6 +1,7 @@
 1.6.0:
 	* New Type __package_yum
 	* New type __debconf_set_selections
+	* New explorer os_version
 	* Fix Type __group in case of __group NAME syntax
 	* Type __package gained Fedora support
 	* Removed --preseed support from __package_apt
