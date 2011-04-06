@@ -1,2 +1,3 @@
-remove --preseed from package_apt and add debconf_set_selection or similar
-   -> much cleaner!
+Cleanup documentation:
+   type reference -> add types + manpages
+   add explorer reference

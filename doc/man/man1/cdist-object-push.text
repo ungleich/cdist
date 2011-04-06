@@ -21,7 +21,7 @@ Transfers the given object to the target host.
 SEE ALSO
 --------
 - cdist(7)
-- cdist-object-run-all(1)
+- cdist-object-run(1)
 - cdist-type(1)
 
 

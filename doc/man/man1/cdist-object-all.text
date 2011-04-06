@@ -1,0 +1,31 @@
+cdist-object-all(1)
+===================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-object-all - Run the given command on all objects
+
+
+SYNOPSIS
+--------
+cdist-object-all HOSTNAME COMMAND
+
+
+DESCRIPTION
+-----------
+Iterates over all defined objects and executes the given command on each
+of them.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-type(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

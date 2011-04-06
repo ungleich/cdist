@@ -15,17 +15,16 @@
        "P'        ""         ""  
      
 
-[[!toc  levels=2]]
+[[!toc levels=2]]
 
 ## Introduction
 
-cdist configures your system and is similar to
-other configuration management systems like
+cdist is an alternative to other configuration management systems like
 [cfengine](http://www.cfengine.org/),
 [bcfg2](http://trac.mcs.anl.gov/projects/bcfg2),
 [chef](http://wiki.opscode.com/display/chef/)
-and [puppet](http://www.puppetlabs.com/), but it ticks differently.
-Here are some features that makes it unique: 
+and [puppet](http://www.puppetlabs.com/).
+But cdist ticks differently, here is the feature set that makes it unique: 
 
 [[!table  data="""
 Keywords | Description

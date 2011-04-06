@@ -1,4 +1,4 @@
-1.6.0:
+1.6.0: 2011-04-06
 	* New Type __package_yum
 	* New type __debconf_set_selections
 	* New explorer os_version
@@ -9,6 +9,7 @@
 	* Removed --preseed support from __package_apt
 	* explorer/os: gained Fedora support
 	* Simplified types __user and __group
+	* New helper binary: cdist-mass-deploy
 
 1.5.0: 2011-04-01
 	* Add basic cache functionality

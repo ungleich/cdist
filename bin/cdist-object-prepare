@@ -36,13 +36,13 @@ __cdist_object_dir="$(__cdist_object_dir "$__cdist_object")"
 # Export to non-core for use in manifest and gencode scripts
 export $__cdist_name_var_self=$__cdist_object
 
-__cdist_object_processed="$(__cdist_object_processed "$__cdist_object")"
-if [ ! -f "$__cdist_object_processed" ]; then
+__cdist_object_prepared="$(__cdist_object_prepared "$__cdist_object")"
+if [ ! -f "$__cdist_object_prepared" ]; then
    echo
-   echo "Processing object $__cdist_object"
+   echo "Preparing object $__cdist_object"
    cdist-object-explorer-run  "$__cdist_target_host" "$__cdist_object"
    cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object"
 
-   # Mark this object as processed
-   touch "$__cdist_object_processed"
+   # Mark this object as prepared
+   touch "$__cdist_object_prepared"
 fi
