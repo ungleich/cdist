@@ -27,10 +27,12 @@
 set -u
 
 __cdist_target_host="$1"; shift
-__cdist_ddir="$(__cdist_host_cache_dir "$__cdist_target_host")"
 
 # Create base to move into
-mkdir -p "$(__cdist_cache_dir)"
+mkdir -p "${__cdist_local_base_cache_dir}"
+
+# Now determine absolute path
+__cdist_ddir="$(__cdist_host_cache_dir "$__cdist_target_host")"
 
 __cdist_echo info "Saving cache to $__cdist_ddir "
 rm -rf "$__cdist_ddir"
