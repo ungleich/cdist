@@ -21,6 +21,8 @@
 # Generate manpage that lists available types
 #
 
+FIXME: __ breaks again in asciidoc!
+
 __cdist_pwd="$(pwd -P)"
 __cdist_mydir="${0%/*}";
 __cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
@@ -133,12 +135,15 @@ tmp_dir::
 TYPES
 -----
 The following types are available:
+
 eof
 
 for type in man7/cdist-type__*.text; do
-   name_1="${type#man7/}"; man="${name_1%.text}(7)"
-   name_2="${name_1%.7}";
-   name="$name_2"
+   no_dir="${type#man7/}";
+   no_type="${no_dir#cdist-type}";
+   name="${no_type%.text}";
+   man="${no_dir%.text}(7)"
+
    echo "- $name" "($man)"
 done
 
