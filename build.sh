@@ -88,6 +88,7 @@ case "$1" in
       cp README ${WEBDIR}/${WEBPAGE}
       rm -rf ${WEBDIR}/${WEBBASE}/man && mkdir ${WEBDIR}/${WEBBASE}/man
       cp ${MAN1DSTDIR}/*.html ${MAN7DSTDIR}/*.html ${WEBDIR}/${WEBBASE}/man
+      git describe > ${WEBDIR}/${WEBBASE}/man/VERSION
       cd ${WEBDIR} && git add ${WEBBASE}/man
       cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
       cd ${WEBDIR} && make pub
