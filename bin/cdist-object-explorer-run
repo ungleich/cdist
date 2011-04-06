@@ -45,7 +45,7 @@ if [ "$__cdist_has_explorer" ]; then
       __cdist_type_explorer_pushed_add "$__cdist_type"
    fi
 
-   echo "Running explorers for $__cdist_object ..."
+   __cdist_echo info "Running explorers for $__cdist_object ..."
    # Copy object parameters
    cdist-dir push "$__cdist_target_host"                          \
       "$(__cdist_object_parameter_dir "$__cdist_object")"         \
