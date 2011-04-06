@@ -1,5 +1,6 @@
 1.6.1:
 	* Logging restructured
+	* New Type __package_pkg_openbsd
 
 1.6.0: 2011-04-06
 	* New Type __package_yum
