@@ -22,10 +22,25 @@
 #
 
 . cdist-config
-[ $# -ge 1 ] || __cdist_usage "<target host> [target host ...]"
+[ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ...]"
 set -eu
 
+if [ "$1" = "-p" ]; then
+   parallel=yes
+else
+   parallel=""
+fi
+
 while [ $# -ge 1 ]; do
-   cdist-deploy-to "$1"
+   if [ "$parallel" ]; then
+      cdist-deploy-to "$1" &
+   else
+      cdist-deploy-to "$1"
+   fi
    shift
 done
+
+if [ "$parallel" ]; then
+   echo "Waiting for cdist-deploy-to jobs to finish..."
+   wait
+fi
