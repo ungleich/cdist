@@ -2,6 +2,7 @@
 	* Improved logging: Show code responsible for abort
 	* New Type __package_pkg_openbsd
 	* Bugfix: Type __debconf_set_selections used wrong contens for selection
+	* Bugfix: Don't fail, if cache directory is not existing
 	* New explorer: hardware_type
 
 1.6.0: 2011-04-06
