@@ -5,6 +5,8 @@ Feel free to pick one!
 
 CORE
 ----
+- Inconsistent error messages if object is not existing!
+   -> always use "Object undefined"
 - Add echo function / beautify output
    __cdist_echo [level] [messages...]
       level := syslog alike:

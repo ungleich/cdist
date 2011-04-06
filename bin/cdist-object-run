@@ -32,17 +32,17 @@
 set -eu
 
 __cdist_target_host="$1"; shift
-__cdist_object="$1"; shift
-__cdist_object_dir="$(__cdist_object_dir "$__cdist_object")"
-[ -d "$__cdist_object_dir" ] || __cdist_exit_err "Requested object is not defined: $__cdist_object"
+__cdist_object_self="$1"; shift
+__cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
+[ -d "$__cdist_object_dir" ] || __cdist_exit_err "Object undefined"
 
 # Export to non-core for use in manifest and gencode scripts
-export $__cdist_name_var_self=$__cdist_object
+export $__cdist_name_var_self=$__cdist_object_self
 
-__cdist_object_finished="$(__cdist_object_finished "$__cdist_object")"
+__cdist_object_finished="$(__cdist_object_finished "$__cdist_object_self")"
 if [ ! -f "$__cdist_object_finished" ]; then
    # Resolve dependencies, if any
-   __cdist_object_require="$(__cdist_object_require "$__cdist_object")"
+   __cdist_object_require="$(__cdist_object_require "$__cdist_object_self")"
    if [ -f "$__cdist_object_require" ]; then
       echo 
       # NEED TO CREATE ARRAY, SSH DESTROYS WHILE READ LOOP
@@ -52,13 +52,11 @@ if [ ! -f "$__cdist_object_finished" ]; then
 
       while [ $# -gt 0 ]; do
          __cdist_requirement="$1"; shift
-         echo "Resolving dependency $__cdist_requirement for $__cdist_object  ..."
+         echo "Resolving dependency $__cdist_requirement"
          cdist-object-run "$__cdist_target_host" "$__cdist_requirement"
       done
    fi
 
-   echo
-   echo "Running object $__cdist_object"
    cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object"
    cdist-object-push          "$__cdist_target_host" "$__cdist_object"
    cdist-object-code-run      "$__cdist_target_host" "$__cdist_object"
