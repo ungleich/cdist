@@ -21,8 +21,6 @@
 # Generate manpage that lists available types
 #
 
-FIXME: __ breaks again in asciidoc!
-
 __cdist_pwd="$(pwd -P)"
 __cdist_mydir="${0%/*}";
 __cdist_abs_mydir="$(cd "$__cdist_mydir" && pwd -P)"
