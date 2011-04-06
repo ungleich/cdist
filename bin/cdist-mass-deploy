@@ -42,6 +42,6 @@ done
 
 # else wait after all are started
 if [ "$parallel" ]; then
-   echo "Waiting for cdist-deploy-to jobs to finish..."
+   __cdist_echo info "Waiting for cdist-deploy-to jobs to finish..."
    wait
 fi

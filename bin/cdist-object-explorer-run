@@ -31,6 +31,7 @@ __cdist_object="$1"; shift
 
 __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
 __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
+__cdist_object_self="$__cdist_type/$__cdist_object_id"
 
 # Check if type of object has >= 1 explorer
 __cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
