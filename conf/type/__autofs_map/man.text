@@ -41,7 +41,7 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Add auto mounter at /net
-__autofs_map /net --map /etc/auto.net --type program 
+__autofs_map /net --map /etc/auto.net --type program
 
 # Add auto mounter at /pub
 __autofs_map /pub --map /etc/auto.pub \
