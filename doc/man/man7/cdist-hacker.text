@@ -27,6 +27,11 @@ read the scripts bin/cdist-deploy-to calls. The magnificent HACKERS_README
 may be of great help as well.
 
 
+CODING CONVENTIONS (EVERYWHERE)
+-------------------------------
+If something should be better done or needs to fixed, add the word FIXME
+nearby, so grepping for FIXME gives all positions that need to be fixed.
+
 CODING CONVENTIONS (CORE)
 -------------------------
 - All variables exported by cdist are prefixed with a double underscore (__)
