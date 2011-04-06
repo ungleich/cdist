@@ -27,12 +27,12 @@
 set -eu
 
 __cdist_target_host="$1"; shift
-__cdist_object="$1"; shift
+__cdist_object_self="$1"; shift
 __cdist_gencode_type="$1"; shift
 
-__cdist_object_dir="$(__cdist_object_dir "$__cdist_object")"
-__cdist_type="$(__cdist_type_from_object "$__cdist_object")"
-__cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
+__cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
+__cdist_type="$(__cdist_type_from_object "$__cdist_object_self")"
+__cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object_self")"
 
 # Full path to where the executable of the type should exist, if the type has one
 gencode="$(__cdist_type_gencode "$__cdist_type")-${__cdist_gencode_type}"
@@ -55,7 +55,7 @@ eof
    __cdist_exec_fail_on_error "$gencode"
 else
    if [ -f "$gencode" ]; then
-      echo "Warning: $gencode exists, but is not executable" >&2
+      __cdist_exit_err "$gencode exists, but is not executable"
    fi
 
    # No gencode? also fine! Ensure we exit 0
