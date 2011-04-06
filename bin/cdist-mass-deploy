@@ -22,7 +22,7 @@
 #
 
 . cdist-config
-[ $# -lt 1 ] || __cdist_usage "<target host> [target host ...]"
+[ $# -ge 1 ] || __cdist_usage "<target host> [target host ...]"
 set -eu
 
 while [ $# -ge 1 ]; do
