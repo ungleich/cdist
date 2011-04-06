@@ -22,7 +22,7 @@
 #
 
 . cdist-config
-[ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ...]"
+[ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ]"
 set -eu
 
 parallel=""
@@ -42,6 +42,6 @@ done
 
 # else wait after all are started
 if [ "$parallel" ]; then
-   __cdist_echo info "Waiting for cdist-deploy-to jobs to finish..."
+   __cdist_echo info "Waiting for cdist-deploy-to jobs to finish"
    wait
 fi
