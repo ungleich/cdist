@@ -1,5 +1,5 @@
 cdist-type__autofs_map(7)
-========================
+=========================
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
@@ -15,7 +15,7 @@ This cdist type allows you to define maps for autofs.
 
 OBJECT ID
 ---------
-The object_id Is used as the mount-point as described in auto.master(5).
+The object_id is used as the mount-point as described in auto.master(5).
 
 
 REQUIRED PARAMETERS
