@@ -34,7 +34,7 @@ fi
 
 code="$(__cdist_object_code "$__cdist_object")-${__cdist_gencode_type}"
 
-echo "Checking code-${__cdist_gencode_type} for $__cdist_object ..."
+__cdist_echo info "Checking code-${__cdist_gencode_type}"
 
 if [ -e "$code" ]; then
    if [ -f "$code" ]; then
