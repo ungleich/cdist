@@ -176,6 +176,7 @@ __cdist_echo()
 
 __cdist_exec_fail_on_error()
 {
+   set +e
    sh -e "$@"
    if [ "$?" -ne 0 ]; then
       __cdist_echo error  "$1 exited non-zero, showing code:"
