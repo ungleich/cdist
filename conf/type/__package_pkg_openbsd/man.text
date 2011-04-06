@@ -25,7 +25,7 @@ name::
    If supplied, use the name and not the object id as the package name.
 
 flavor::
-   If supplied, use to avoid ambigous 
+   If supplied, use to avoid ambiguity.
 
 
 EXAMPLES
