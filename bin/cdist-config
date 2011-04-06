@@ -161,6 +161,9 @@ __cdist_echo()
       info)
          echo "$@"
       ;;
+      warning)
+         echo "Warning: $@"
+      ;;
       error)
          echo "Error: $@" >&2
       ;;
