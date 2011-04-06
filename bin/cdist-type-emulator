@@ -99,7 +99,7 @@ done
 set +u
 for requirement in $require; do
    echo $requirement >> "$(__cdist_object_require "$__cdist_object_self")"
-   echo Object $__cdist_object_self requires $requirement
+   __cdist_echo info "Recording requirement $requirement"
 done
 set -u
 
