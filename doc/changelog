@@ -1,10 +1,13 @@
 1.6.1:
 	* Improved logging: Show code responsible for abort
-	* New Type __package_pkg_openbsd
+	* Improved logging: Consistently prefix with current object or core
 	* Bugfix: Type __debconf_set_selections used wrong contens for selection
 	* Bugfix: Don't fail, if cache directory is not existing
 	* Bugfix: __user and __group exited non-zero if no change was necessary
-	* New explorer: hardware_type
+	* New Explorer: hardware_type
+	* New Type __package_pkg_openbsd (Andi Brönnimann)
+	* New Type: __autofs_map (Steven Armstrong)
+	* New Type: __autofs_master (Steven Armstrong)
 
 1.6.0: 2011-04-06
 	* New Type __package_yum
