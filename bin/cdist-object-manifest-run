@@ -43,7 +43,7 @@ if [ -f "$__cdist_manifest" ]; then
       # Make __cdist_manifest available for cdist-type-emulator
       export __cdist_manifest
 
-      __cdist_echo info "Executing manifest ${__cdist_manifest} ..."
+      __cdist_echo info "Executing manifest ..."
       export $__cdist_name_var_object="$__cdist_cur_object_dir"
       export $__cdist_name_var_object_id="$__cdist_object_id"
       export $__cdist_name_var_type="$(__cdist_type_dir "$__cdist_type")"
