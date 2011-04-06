@@ -40,7 +40,7 @@ if [ -e "$code" ]; then
    if [ -f "$code" ]; then
       if [ -x "$code" ]; then
          echo "Executing code-${__cdist_gencode_type}  for $__cdist_object ..."
-         "$code"
+         __cdist_exec_fail_on_error "$code"
       else
          __cdist_exit_err "$code exists, but is not executable."
       fi

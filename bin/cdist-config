@@ -152,20 +152,24 @@ __cdist_echo()
 {
    __cdist_echo_type="$1"; shift
 
+   if [ "$__cdist_object_self" ]; then
+      __cdist_echo_prefix="$__cdist_object_self"
+   fi
+
    case "$__cdist_echo_type" in
       debug)
          if [ "$__cdist_debug" ]; then
-            echo "Debug: $@"
+            echo $__cdist_echo_prefix "Debug: $@"
          fi
       ;;
       info)
-         echo "$@"
+         echo $__cdist_echo_prefix "$@"
       ;;
       warning)
-         echo "Warning: $@"
+         echo $__cdist_echo_prefix "Warning: $@"
       ;;
       error)
-         echo "Error: $@" >&2
+         echo $__cdist_echo_prefix "Error: $@" >&2
       ;;
    esac
 }
