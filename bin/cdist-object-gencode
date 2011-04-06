@@ -44,14 +44,14 @@ export __global="$__cdist_out_dir"
 
 cd "$__cdist_local_base_dir"
 
-cat << eof
+if [ -x "$gencode" ]; then
+   cat << eof
 #
 # The following code is imported from output of $gencode
 #
 
 eof
 
-if [ -x "$gencode" ]; then
    __cdist_exec_fail_on_error "$gencode"
 else
    if [ -f "$gencode" ]; then
