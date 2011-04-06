@@ -1,5 +1,5 @@
 1.6.1:
-	* Logging restructured
+	* Improved logging: Show code responsible for abort
 	* New Type __package_pkg_openbsd
 	* Bugfix: Type __debconf_set_selections used wrong contens for selection
 
