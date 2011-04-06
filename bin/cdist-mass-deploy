@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Deploy configuration to a host
+#
+
+. cdist-config
+[ $# -eq 1 ] || __cdist_usage "<target host>"
+set -eu
+
+__cdist_target_host="$1"
+
+# Make target host available for non-core
+export $__cdist_name_var_target_host="$__cdist_target_host"
+export $__cdist_name_var_target_user="$__cdist_remote_user"
+
+# Export variables for core, which others do not reset
+export __cdist_local_base_dir
+
+echo "cdist $__cdist_version: Configuring $__cdist_target_host"
+
+################################################################################
+# See cdist-stages(7)
+#
+
+# Prepare local and remote directories
+__cdist_init_deploy           "$__cdist_target_host"
+
+# Transfer cdist executables
+echo "Transferring cdist binaries to $__cdist_target_host ..."
+cdist-dir push                "$__cdist_target_host" \
+   "${__cdist_abs_mydir}" "${__cdist_remote_bin_dir}"
+cdist-explorer-run-global     "$__cdist_target_host"
+cdist-manifest-run-init       "$__cdist_target_host"
+cdist-object-all              "$__cdist_target_host" cdist-object-prepare
+cdist-object-all              "$__cdist_target_host" cdist-object-run
+cdist-cache                   "$__cdist_target_host"
+
+echo "cdist $__cdist_version: Successfully finished run on $__cdist_target_host"
