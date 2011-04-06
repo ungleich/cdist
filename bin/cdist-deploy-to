@@ -34,7 +34,7 @@ export $__cdist_name_var_target_user="$__cdist_remote_user"
 # Export variables for core, which others do not reset
 export __cdist_local_base_dir
 
-echo "cdist $__cdist_version: Configuring $__cdist_target_host"
+__cdist_echo info "cdist $__cdist_version: Configuring $__cdist_target_host ..."
 
 ################################################################################
 # See cdist-stages(7)
@@ -44,7 +44,7 @@ echo "cdist $__cdist_version: Configuring $__cdist_target_host"
 __cdist_init_deploy           "$__cdist_target_host"
 
 # Transfer cdist executables
-echo "Transferring cdist binaries to $__cdist_target_host ..."
+__cdist_echo info "Transferring cdist binaries to the target host ..."
 cdist-dir push                "$__cdist_target_host" \
    "${__cdist_abs_mydir}" "${__cdist_remote_bin_dir}"
 cdist-explorer-run-global     "$__cdist_target_host"
@@ -53,4 +53,4 @@ cdist-object-all              "$__cdist_target_host" cdist-object-prepare
 cdist-object-all              "$__cdist_target_host" cdist-object-run
 cdist-cache                   "$__cdist_target_host"
 
-echo "cdist $__cdist_version: Successfully finished run on $__cdist_target_host"
+__cdist_echo info "cdist $__cdist_version: Successfully finished run"

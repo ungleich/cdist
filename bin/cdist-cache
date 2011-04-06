@@ -32,6 +32,6 @@ __cdist_ddir="$(__cdist_host_cache_dir "$__cdist_target_host")"
 # Create base to move into
 mkdir -p "$(__cdist_cache_dir)"
 
-echo "Saving cache to $__cdist_ddir ..."
+__cdist_echo info "Saving cache to $__cdist_ddir ..."
 rm -rf "$__cdist_ddir"
 mv "$__cdist_local_base_dir" "$__cdist_ddir"
