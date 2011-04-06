@@ -33,7 +33,7 @@ fi
 
 while [ $# -ge 1 ]; do
    # always assume we run parallel
-   cdist-deploy-to "$1" | awk -v host=$1 '{ print "[" host "]" $0 }"' &
+   cdist-deploy-to "$1" | awk -v host=$1 '{ print "[" host "] " $0 }' &
    shift
 
    # if not, wait for it _now_
