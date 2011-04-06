@@ -1,3 +1,6 @@
+1.6.1:
+	* Logging restructured
+
 1.6.0: 2011-04-06
 	* New Type __package_yum
 	* New type __debconf_set_selections
