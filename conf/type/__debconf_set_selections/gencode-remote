@@ -22,5 +22,5 @@
 #
 
 echo "debconf-set-selections << __file-eof"
-cat "$__object/parameter/file"
+cat "$(cat "$__object/parameter/file")"
 echo "__file-eof"
