@@ -19,6 +19,13 @@ twice before merging or implementing a feature: Less features
 with good usability are far better than the opposite.
 
 
+REPORTING BUGS
+--------------
+If you believe you've found a bug and verified that it is
+in the latest version, drop a mail to the cdist mailing list,
+subject prefixed with "[BUG] ".
+
+
 UNDERSTANDING CDIST INTERNALS
 -----------------------------
 IF you are interested in how cdist internally works, you can open
@@ -31,6 +38,7 @@ CODING CONVENTIONS (EVERYWHERE)
 -------------------------------
 If something should be better done or needs to fixed, add the word FIXME
 nearby, so grepping for FIXME gives all positions that need to be fixed.
+
 
 CODING CONVENTIONS (CORE)
 -------------------------
