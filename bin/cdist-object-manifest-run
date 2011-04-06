@@ -27,14 +27,15 @@
 set -eu
 
 __cdist_target_host="$1"; shift
-__cdist_object="$1"; shift
+__cdist_object_self="$1"; shift
 
-__cdist_cur_object_dir="$(__cdist_object_dir "$__cdist_object")"
-__cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
+# FIXME: rename to __cdist_object_dir (everywhere!)
+__cdist_cur_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
+__cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object_self")"
 
-echo "Checking manifest for $__cdist_object ..."
+__cdist_echo info "Checking manifest ..."
 
-__cdist_type="$(__cdist_type_from_object "$__cdist_object")"
+__cdist_type="$(__cdist_type_from_object "$__cdist_object_self")"
 __cdist_manifest="$(__cdist_type_manifest "$__cdist_type")"
 
 if [ -f "$__cdist_manifest" ]; then
@@ -42,7 +43,7 @@ if [ -f "$__cdist_manifest" ]; then
       # Make __cdist_manifest available for cdist-type-emulator
       export __cdist_manifest
 
-      echo "Executing manifest ${__cdist_manifest} ..."
+      __cdist_echo "Executing manifest ${__cdist_manifest} ..."
       export $__cdist_name_var_object="$__cdist_cur_object_dir"
       export $__cdist_name_var_object_id="$__cdist_object_id"
       export $__cdist_name_var_type="$(__cdist_type_dir "$__cdist_type")"
