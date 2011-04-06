@@ -37,7 +37,7 @@ while [ $# -ge 1 ]; do
    shift
 
    # if not, wait for it _now_
-   [ "$parallel" ] || fg
+   [ "$parallel" ] || wait
 done
 
 # else wait after all are started
