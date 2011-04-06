@@ -32,6 +32,7 @@ SEE ALSO
 --------
 - cdist(7)
 - cdist-config(1)
+- cdist-mass-deploy(1)
 - cdist-reference(7)
 - cdist-stages(7)
 
