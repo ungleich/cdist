@@ -52,7 +52,7 @@ if [ ! -f "$__cdist_object_finished" ]; then
 
       while [ $# -gt 0 ]; do
          __cdist_requirement="$1"; shift
-         echo "Resolving dependency $__cdist_requirement"
+         __cdist_echo info "Resolving dependency $__cdist_requirement"
          cdist-object-run "$__cdist_target_host" "$__cdist_requirement"
       done
    fi
