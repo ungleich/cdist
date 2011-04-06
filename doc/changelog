@@ -5,7 +5,7 @@
 	* Bugfix: Don't fail, if cache directory is not existing
 	* Bugfix: __user and __group exited non-zero if no change was necessary
 	* New Explorer: hardware_type
-	* New Type __package_pkg_openbsd (Andi Brönnimann)
+	* New Type: __package_pkg_openbsd (Andi Brönnimann)
 	* New Type: __autofs_map (Steven Armstrong)
 	* New Type: __autofs_master (Steven Armstrong)
 
