@@ -27,7 +27,7 @@ set -ue
 
 __cdist_target_host="$1"; shift
 
-echo "Running global explorers ..."
+__cdist_info "Running global explorers ..."
 
 # copy the explorers
 cdist-dir push "$__cdist_target_host" \
