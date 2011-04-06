@@ -187,7 +187,8 @@ __cdist_exec_fail_on_error()
    set +e
    sh -e "$@"
    if [ "$?" -ne 0 ]; then
-      __cdist_echo error  "$1 exited non-zero, showing code:"
+      __cdist_echo error  "$1 exited non-zero"
+      __cdist_echo info "Faulty code:"
       cat "$1"
       __cdist_exit_err "Aborting due to non-zero exit code."
    fi
