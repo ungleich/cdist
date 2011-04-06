@@ -57,12 +57,12 @@ case "$1" in
          for src in ${MANDIR}/man${section}/*.text; do
             manpage="${src%.text}.$section"
             if [ ! -f "$manpage" -o "$manpage" -ot "$src" ]; then
-               echo "Compiling manpage for $src"
+               echo "Compiling man page for $src"
                $A2XM "$src"
             fi
             htmlpage="${src%.text}.html"
             if [ ! -f "$htmlpage" -o "$htmlpage" -ot "$src" ]; then
-               echo "Compiling html for $src"
+               echo "Compiling html page for $src"
                $A2XH "$src"
             fi
          done
@@ -99,7 +99,7 @@ case "$1" in
    ;;
 
    clean)
-      rm -f ${MANDIR}/cdist-reference.text
+      rm -f ${MAN7DSTDIR}/cdist-reference.text
       find "${MANDIR}" -mindepth 2 -type l \
          -o -name "*.1" \
          -o -name "*.7" \

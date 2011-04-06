@@ -23,7 +23,7 @@ called stages. It is intented to run either from the command line or from cron.
 ENVIRONMENT
 -----------
 If the environment variable **__cdist_conf_dir** is not set, the
-configuration is read from /etc/cdist. The local output directory can
+configuration is read from <git-checkout>/conf. The local output directory can
 be changed by the variable **__cdist_local_base_dir**. All environment
 variables are handled by cdist-config.
 

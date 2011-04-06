@@ -22,7 +22,7 @@ SEE ALSO
 --------
 - cdist(7)
 - cdist-code-run(1)
-- cdist-object-run-all(1)
+- cdist-object-run(1)
 - cdist-object-gencode(1)
 
 
