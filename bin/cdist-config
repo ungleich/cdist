@@ -155,6 +155,8 @@ __cdist_echo()
    set +u
    if [ "$__cdist_object_self" ]; then
       __cdist_echo_prefix="$__cdist_object_self"
+   else
+      __cdist_echo_prefix=""
    fi
    set -u
 
