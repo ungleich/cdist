@@ -175,6 +175,10 @@ __cdist_echo()
       error)
          echo $__cdist_echo_prefix "Error: $@" >&2
       ;;
+      *)
+         echo "CORE BUG, who created the broken commit?" >&2
+         exit 23
+      ;;
    esac
 }
 

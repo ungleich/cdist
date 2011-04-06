@@ -40,7 +40,7 @@ if [ "$__cdist_has_explorer" ]; then
    if ! __cdist_type_explorer_pushed "$__cdist_type"; then
       src_dir="$(__cdist_type_explorer_dir "$__cdist_type")"
       dst_dir="$(__cdist_remote_type_explorer_dir "$__cdist_type")"
-      echo "Transfering explorers for $__cdist_type ..."
+      __cdist_echo info "Transfering explorers for $__cdist_type ..."
       cdist-dir push "$__cdist_target_host" "$src_dir" "$dst_dir"
       __cdist_type_explorer_pushed_add "$__cdist_type"
    fi
