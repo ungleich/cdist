@@ -27,11 +27,10 @@
 set -eu
 
 __cdist_target_host="$1"; shift
-__cdist_object="$1"; shift
+__cdist_object_self="$1"; shift
 
 __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object")"
 __cdist_type="$(__cdist_type_from_object "$__cdist_object")"
-__cdist_object_self="$__cdist_type/$__cdist_object_id"
 
 # Check if type of object has >= 1 explorer
 __cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
@@ -45,7 +44,7 @@ if [ "$__cdist_has_explorer" ]; then
       __cdist_type_explorer_pushed_add "$__cdist_type"
    fi
 
-   __cdist_echo info "Running explorers for $__cdist_object ..."
+   __cdist_echo info "Running explorers ..."
    # Copy object parameters
    cdist-dir push "$__cdist_target_host"                          \
       "$(__cdist_object_parameter_dir "$__cdist_object")"         \
@@ -53,9 +52,9 @@ if [ "$__cdist_has_explorer" ]; then
 
    # Execute explorers
    cdist-run-remote "$__cdist_target_host"                     \
-      "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object")\"" \
-      "$__cdist_name_var_object_id=\"$__cdist_object_id\"      \
-      "$__cdist_name_var_self=\"$__cdist_object\""             \
+      "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\"" \
+      "$__cdist_name_var_object_id=\"$__cdist_object_id\""     \
+      "$__cdist_name_var_self=\"$__cdist_object_self\""        \
       cdist-remote-explorer-run                                \
       "$__cdist_name_var_type_explorer"                        \
       "$(__cdist_remote_type_explorer_dir "$__cdist_type")"    \
