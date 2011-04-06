@@ -59,7 +59,11 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
       fi
    done
 
-   [ $# -gt 0 ] && echo usermod "$@" "$name"
+   if [ $# -gt 0 ]; then
+      echo usermod "$@" "$name"
+   else
+      true
+   fi
 else
    for property in $(ls .); do
       new_value="$(cat "$property")"
