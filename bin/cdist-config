@@ -148,22 +148,37 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 ################################################################################
 # Internal functions
 #
-__cdist_debug_echo()
+__cdist_echo()
 {
-   if [ "$__cdist_debug" ]; then
-      echo "Debug: $@"
-   fi
+   __cdist_echo_type="$1"; shift
+
+   case "$__cdist_echo_type" in
+      debug)
+         if [ "$__cdist_debug" ]; then
+            echo "Debug: $@"
+         fi
+      ;;
+      info)
+         echo "$@"
+      ;;
+      error)
+         echo "Error: $@" >&2
+      ;;
+   esac
 }
 
 __cdist_exec_fail_on_error()
 {
    sh -e "$@"
-   [ "$?" -eq 0 ] || __cdist_exit_err "$1 exited non-zero."
+   if [ "$?" -ne 0 ]; then
+      __cdist_echo error  "$1 exited non-zero."
+      __cdist_exit_err "$1 exited non-zero."
+   fi
 }
 
 __cdist_exit_err()
 {
-   echo "Error: $@" >&2
+   __cdist_echo error "$@"
    exit 1
 }
 
