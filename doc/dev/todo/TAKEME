@@ -44,7 +44,6 @@ TYPES
 - __file_edit
    - regexp replace (can probably cover all?)
       -> aka sed.
-- __cron
 - __user
    add option to include --create-home
 

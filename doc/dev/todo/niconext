@@ -1,3 +1,5 @@
+- type: __cron
+
 Fix bin/cdist-type-template
 
 Cleanup documentation:
