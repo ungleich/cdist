@@ -1,0 +1,47 @@
+cdist-type__crontab(7)
+======================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__crontab - Manage crontab
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to easily setup crontab entries for a given user.
+
+
+REQUIRED PARAMETERS
+-------------------
+user::
+   The user for whom to install the crontab entry for.
+line::
+   The crontab entry itself.
+
+
+OPTIONAL PARAMETERS
+-------------------
+None
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__crontab irc-statistics \
+   --user nico \
+   --line '*/5 * * * * ( cd $HOME/netzseiten/stats.eof.name-pisg && pisg --silent )'
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
