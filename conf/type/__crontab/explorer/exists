@@ -24,4 +24,4 @@
 user="$(cat "$__object/parameter/user")"
 line="$(cat "$__object/parameter/line")"
 
-crontab -l -u "$user" | grep "^$line\$"
+crontab -l -u "$user"
