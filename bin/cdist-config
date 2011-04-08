@@ -98,7 +98,8 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 ################################################################################
 # Tempfiles
 # 
-__cdist_tmp_dir=$(mktemp -d "/tmp/cdist.XXXXXXXXXXXX")
+: ${__cdist_tmp_base_dir=/tmp}
+__cdist_tmp_dir=$(mktemp -d "$__cdist_tmp_base_dir/cdist.XXXXXXXXXXXX")
 __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 
 ################################################################################
