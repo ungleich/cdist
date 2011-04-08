@@ -36,7 +36,8 @@ CORE
       -> for current host
       -> add function to cdist-config, import from cdist-cache
 
-- check all all internal variables are prefixed with __cdist
+- Think about $__object_remote[_dir], so one can use
+   these paths in gencode/manifest
 
 TYPES
 ------
