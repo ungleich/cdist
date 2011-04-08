@@ -15,6 +15,28 @@ types, manifests, etc. Generally speaking, it's just usable from within the
 core and is only of interest for cdist-developers.
 
 
+ENVIRONMENT VARIABLES
+---------------------
+The following list contains environment variables that are known
+to be changed by users in various situations. To change the variable,
+use your current shell and export it, so all cdist-binaries know about it.
+
+__cdist_tmp_base_dir::
+   Normally this points to /tmp. In case /tmp is not suitable for
+   cdist (i.e. has noexec flag setup) you can change this variable
+   to point to a better location.
+
+
+EXAMPLES
+--------
+
+If /tmp has the noexec flag, you can use $HOME/.tmp for instance:
+
+--------------------------------------------------------------------------------
+export __cdist_tmp_base_dir=$HOME/.tmp
+--------------------------------------------------------------------------------
+
+
 SEE ALSO
 --------
 cdist(7)
