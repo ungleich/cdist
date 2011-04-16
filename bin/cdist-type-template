@@ -26,9 +26,11 @@
 set -eu
 
 __cdist_type="$1"; shift
+__cdist_type_dir="$(__cdist_type_dir "$__cdist_type")"
 
+echo "Creating type $__cdist_type in $__cdist_type_dir ..."
 # Base
-mkdir -p "$(__cdist_type_dir "$__cdist_type")"
+mkdir -p "$__cdist_type_dir"
 
 # Parameter
 mkdir -p "$(__cdist_type_parameter_dir "$__cdist_type")"
