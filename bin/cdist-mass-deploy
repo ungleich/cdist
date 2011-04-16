@@ -25,23 +25,38 @@
 [ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ]"
 set -eu
 
+filter()
+{
+   awk -v host=$1 '{ print "[" host "] " $0 }'
+}
+
 parallel=""
 if [ "$1" = "-p" ]; then
    parallel=yes
    shift
 fi
 
+i=0
 while [ $# -ge 1 ]; do
-   # always assume we run parallel
-   cdist-deploy-to "$1" | awk -v host=$1 '{ print "[" host "] " $0 }' &
-   shift
+   if [ "$parallel" ]; then
+      cdist-deploy-to "$1" | filter
+      # Record pid and host for use later
+      eval pid_$i=$!
+      eval host_$i=\$1
+      i=$((i+1))
+   else
+      cdist-deploy-to "$1" | filter
+   fi
 
-   # if not, wait for it _now_
-   [ "$parallel" ] || wait
+   shift
 done
 
 # else wait after all are started
 if [ "$parallel" ]; then
    __cdist_echo info "Waiting for cdist-deploy-to jobs to finish"
+   while [ $i -gt 0 ]; do
+
+   done
+      
    wait
 fi
