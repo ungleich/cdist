@@ -53,14 +53,14 @@ done
 # else wait after all are started
 if [ "$parallel" ]; then
    __cdist_echo info "Waiting for cdist-deploy-to jobs to finish"
-   while [ "$i" -gt 0 ]; do
+   while [ "$i" -ge 0 ]; do
+      i=$((i-1))
       eval pid=\$pid_$i
       eval host=\$host_$i
       wait "$pid"
       if [ $? -ne 0 ]; then
          __cdist_echo error "Configuration of host $host failed."
       fi
-      i=$((i-1))
       shift
    done
 fi
