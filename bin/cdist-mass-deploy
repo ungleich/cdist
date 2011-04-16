@@ -39,7 +39,7 @@ fi
 i=0
 while [ $# -ge 1 ]; do
    if [ "$parallel" ]; then
-      cdist-deploy-to "$1" | filter
+      cdist-deploy-to "$1" | filter &
       # Record pid and host for use later
       eval pid_$i=$!
       eval host_$i=\$1
@@ -47,16 +47,20 @@ while [ $# -ge 1 ]; do
    else
       cdist-deploy-to "$1" | filter
    fi
-
    shift
 done
 
 # else wait after all are started
 if [ "$parallel" ]; then
    __cdist_echo info "Waiting for cdist-deploy-to jobs to finish"
-   while [ $i -gt 0 ]; do
-
+   while [ "$i" -gt 0 ]; do
+      eval pid=\$pid_$i
+      eval host=\$host_$i
+      wait "$pid"
+      if [ $? -ne 0 ]; then
+         __cdist_echo error "Configuration of host $host failed."
+      fi
+      i=$((i-1))
+      shift
    done
-      
-   wait
 fi
