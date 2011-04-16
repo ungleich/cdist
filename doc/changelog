@@ -1,6 +1,7 @@
 1.6.2:
 	* Core: Introduce __cdist_tmp_base_dir
 	* Core: Cleanup and enhance cdist-type-template
+	* Core: cdist-mass-deploy: Report failed cdist-deploy-to instances
 
 1.6.1: 2011-04-07
 	* Improved logging: Show code responsible for abort
