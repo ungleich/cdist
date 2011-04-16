@@ -28,6 +28,10 @@ set -eu
 __cdist_type="$1"; shift
 __cdist_my_type_dir="$(__cdist_type_dir "$__cdist_type")"
 
+if [ -d "$__cdist_my_type_dir" ]; then
+   __cdist_usage "Type $__cdist_type already exists"
+fi
+
 echo "Creating type $__cdist_type in $__cdist_my_type_dir ..."
 # Base
 mkdir -p "$__cdist_my_type_dir"
