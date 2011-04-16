@@ -1,5 +1,6 @@
 1.6.2:
 	* Core: Introduce __cdist_tmp_base_dir
+	* Core: Cleanup and enhance cdist-type-template
 
 1.6.1: 2011-04-07
 	* Improved logging: Show code responsible for abort
