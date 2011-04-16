@@ -65,7 +65,7 @@ if [ "$parallel" ]; then
    done
 fi
 
-# Display all failed hosts after all runs are done
+# Display all failed hosts after all runs are done, so the sysadmin gets them
 while [ "$e" -gt 0 ]; do
    eval host=\$host_$e
    __cdist_echo error "Configuration of host $host failed."
