@@ -37,7 +37,7 @@ if [ "$1" = "-p" ]; then
 fi
 
 i=0
-while [ $# -ge 1 ]; do
+while [ $# -gt 0 ]; do
    if [ "$parallel" ]; then
       cdist-deploy-to "$1" | filter "$1" &
       # Record pid and host for use later
