@@ -22,9 +22,9 @@
 #
 # set documentroot value
 if [ -f "$__object/parameter/root" ]; then
-  root=`cat $__object/parameter/root`
+  root=`cat $__object/parameter/root|sed 's/\//\\\//g'`
 else
-  root="/var/www/`cat $__object/parameter/id`"
+  root="\/var\/www\/$__object_id"
 fi
 
 if [ -f "$__object/parameter/template" ] && [ -f "$__object/parameter/source" ]; then
@@ -35,7 +35,7 @@ fi
 if [ -f "$__object/parameter/source" ]; then
   tpl="$__type/files/`cat $__object/parameter/source`"
 else
-  if [ -f "$__object/parameter/template"]; then
+  if [ -f "$__object/parameter/template" ]; then
     tpl="$__type/files/`cat $__object/parameter/template`"
   else
     tpl="$__type/files/basic_template"
@@ -48,29 +48,29 @@ else
   servername="demo.example"
 fi
 if [ -f "$__object/parameter/location" ]; then
-  location=`cat $__object/parameter/location`
+  location=`cat $__object/parameter/location|sed 's/\//\\\//g'`
 else
-  location="/"
+  location="\/"
 fi
 if [ -f "$__object/parameter/index" ]; then
-  index=`cat $__object/parameter/index`
+  index=`cat $__object/parameter/index|sed 's/\//\\\//g'`
 else
   index="index.php"
 fi
 
 # copy the conf to tmp location
-tmpconf="/tmp/cdist-$__object-template-`cat $__object/id`"
+tmpconf="$__object/template-$__object_id"
 cat $__type/files/header > $tmpconf
 cat $tpl >> $tmpconf
 # generate file if template is used
-sed -i 's/$SERVERNAME/'$servername'/g' $tmpconf
-sed -i 's/$ROOT/'$root'/g' $tmpconf
-sed -i 's/$LOCATION/'$location'/g' $tmpconf
-sed -i 's/$INDEX/'$index'/g' $tmpconf
+sed -i "s/\$SERVERNAME/$servername/g" $tmpconf
+sed -i "s/\$ROOT/$root/g" $tmpconf
+sed -i "s/\$LOCATION/$location/g" $tmpconf
+sed -i "s/\$INDEX/$index/g" $tmpconf
 echo "}" >> $tmpconf
 
 # send the file
-__directory /etc/nginx/sites-available
+require="__package/nginx" __directory /etc/nginx/sites-available
 require="__directory/etc/nginx/sites-available" __file /etc/nginx/sites-available/$servername.conf --source $tmpconf
 
 
