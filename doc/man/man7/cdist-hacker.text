@@ -55,12 +55,16 @@ There are though some requirements to ensure your changes don't break others
 work nor kill the authors brain:
 
 - Code submission must be done via git
-- Code to be included should be branched of the upstream "master" branch
-   - Exception: Bugfixes to a version branch
-- Code submissions must be in your master branch
-   - Exception: If you only want a comment on your code, but not an inclusion.
 - Do not add conf/manifest/init - This file should only be touched in your
   private branch!
+- Code to be included should be branched of the upstream "master" branch
+   - Exception: Bugfixes to a version branch
+- Code submissions should be in your master branch
+   - Other branches are fine as well, but you need to tell me which branch
+     your work is in!
+- If you developed more than **one** feature, consider submitting them in
+  seperate branches. This way one feature can already be included, even if
+  the other needs to be improved.
 
 As soon as your work meets these requirements, you can contact me
 (IRC, Mailinglist, Phone, RFC 1149) and I'll check your code before
