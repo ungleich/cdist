@@ -1,16 +1,17 @@
-cdist-type__sshkey(7)
+cdist-type__nginx_vhost(7)
 ===================
 aurelien.bondis@gmail.com
 
 
 NAME
 ----
-cdist-type__ssh_authorized_key - Sends a user's public key to another user's authorized_keys
+cdist-type__nginx_vhost - Configures an nginx vhost
 
 
 DESCRIPTION
 -----------
-This type sends a rsa key. By default uses root's key and sends it to root's authorized_keys
+Sends a vhost's conf based on a full conf '--source' or a template '--template'
+Templates are a bunch of sed
 
 
 REQUIRED PARAMETERS
@@ -20,18 +21,18 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-srcuser:: the user to take the rsa public key from
-dstuser:: the user to give the rsa public key to
-
+source:: the source configuration
+template:: the template to use
+root:: the documents root
+index:: index file of the location
+location:: the location parameter to pass the template
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-#deploy root's public key
-__ssh_authorized_key admin
-#deploy bob's public key to alice's authorized_keys
-__ssh_authorized_key --srcuser bob --dstuser alice
+# add a simple vhost configuration
+__nginx_vhost myhost
 --------------------------------------------------------------------------------
 
 
