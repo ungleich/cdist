@@ -1,0 +1,84 @@
+#!/bin/sh
+#
+# 2011 Aurélien Bondis (aurelien.bondis AT gmail DOT com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# USEFUL DESCRIPTION
+#
+# set documentroot value
+if [ -f "$__object/parameter/root" ]; then
+  root=`cat $__object/parameter/root`
+else
+  root="/var/www/`cat $__object/parameter/id`"
+fi
+
+if [ -f "$__object/parameter/template" ] && [ -f "$__object/parameter/source" ]; then
+  echo "Please use either a source or a template"
+  exit 1;
+fi
+#FIXME: need to find a place for full configurations
+if [ -f "$__object/parameter/source" ]; then
+  tpl="$__type/files/`cat $__object/parameter/source`"
+else
+  if [ -f "$__object/parameter/template"]; then
+    tpl="$__type/files/`cat $__object/parameter/template`"
+  else
+    tpl="$__type/files/basic_template"
+  fi
+fi
+
+if [ -f "$__object/parameter/servername" ]; then
+  servername=`cat $__object/parameter/servername`
+else
+  servername="demo.example"
+fi
+if [ -f "$__object/parameter/location" ]; then
+  location=`cat $__object/parameter/location`
+else
+  location="/"
+fi
+if [ -f "$__object/parameter/index" ]; then
+  index=`cat $__object/parameter/index`
+else
+  index="index.php"
+fi
+
+# copy the conf to tmp location
+tmpconf="/tmp/cdist-$__object-template-`cat $__object/id`"
+cat $__type/files/header > $tmpconf
+cat $tpl >> $tmpconf
+# generate file if template is used
+sed -i 's/$SERVERNAME/'$servername'/g' $tmpconf
+sed -i 's/$ROOT/'$root'/g' $tmpconf
+sed -i 's/$LOCATION/'$location'/g' $tmpconf
+sed -i 's/$INDEX/'$index'/g' $tmpconf
+echo "}" >> $tmpconf
+
+# send the file
+__directory /etc/nginx/sites-available
+require="__directory/etc/nginx/sites-available" __file /etc/nginx/sites-available/$servername.conf --source $tmpconf
+
+
+#
+# This is the manifest, which can be used to create other objects like this:
+# __file /path/to/destination --source /from/where/ --type file
+#
+# To tell cdist to make use of it, you need to make it executable (chmod +x)
+#
+#
+
