@@ -52,6 +52,8 @@ UNIX, simplicity, familar environment | cdist is configured in POSIX shell
 
 The cdist documentation is included as manpages in the distribution.
 You can [browse the documentation for the latest version online](man) as well.
+Or you can watch the youtube video
+[cdist installation and first usage in less than 60 seconds][http://www.youtube.com/watch?v=PRMjzy48eTI).
 
 ### OS support
 
@@ -189,7 +191,7 @@ You can join the development ***IRC channel***
 Bug reports, questions, patches, etc. should be send to the
 [cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
 
-## Commercial support
+### Commercial support
 
 You can request commercial support for cdist from
 [my company](http://firma.schottelius.org/english/).
