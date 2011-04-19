@@ -1,0 +1,16 @@
+# Stuff to take care of when doing a release
+
+# adjust version
+vi bin/cdist-config 
+
+# adjust release date
+vi doc/changelog
+
+# Import into current version branch
+git checkout 1.6
+git merge master
+
+# Ensure documentation builds cleanly
+./build.sh clean && ./build.sh man
+
+
