@@ -28,6 +28,7 @@ git tag "$version" "$tagmessage"
 # Import into current version branch
 git checkout $branch
 git merge master
+git checkout master
 
 # Publish manpages and sourcecode
 ./build.sh web
