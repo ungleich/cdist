@@ -21,52 +21,51 @@
 # USEFUL DESCRIPTION
 #
 # set documentroot value
-if [ -f "$__object/parameter/root" ]; then
-  root=`cat $__object/parameter/root|sed 's/\//\\\//g'`
-else
-  root="\/var\/www\/$__object_id"
+# function to prepare variables regarding parameters
+# takes variable's name, parameter's name and default value
+function prepare() {
+set -x
+if [ ! "$3" ]; then
+  echo "We need a default value"
+  exit 1
 fi
+
+if [ -f "$__object/parameter/$2" ]; then
+  eval $1=`cat $__object/parameter/$2`
+else
+  eval $1=$3
+fi
+set +x
+}
+
+prepare "root" "root" "/var/www/$__object_id"
 
 if [ -f "$__object/parameter/template" ] && [ -f "$__object/parameter/source" ]; then
   echo "Please use either a source or a template"
   exit 1;
 fi
 #FIXME: need to find a place for full configurations
-if [ -f "$__object/parameter/source" ]; then
-  tpl="$__type/files/`cat $__object/parameter/source`"
-else
-  if [ -f "$__object/parameter/template" ]; then
-    tpl="$__type/files/`cat $__object/parameter/template`"
-  else
-    tpl="$__type/files/basic_template"
-  fi
+prepare "tpl" "template" "$__type/files/basic.tpl"
+if [ ! -f "$tpl" ]; then
+  echo "Missing template $tpl"
+  exit 1
 fi
 
-if [ -f "$__object/parameter/servername" ]; then
-  servername=`cat $__object/parameter/servername`
-else
-  servername="demo.example"
-fi
-if [ -f "$__object/parameter/location" ]; then
-  location=`cat $__object/parameter/location|sed 's/\//\\\//g'`
-else
-  location="\/"
-fi
-if [ -f "$__object/parameter/index" ]; then
-  index=`cat $__object/parameter/index|sed 's/\//\\\//g'`
-else
-  index="index.php"
-fi
+prepare "servername" "servername" "$__object_id"
+prepare "location" "location" "/"
+prepare "index" "index" "index.php"
 
 # copy the conf to tmp location
 tmpconf="$__object/template-$__object_id"
-cat $__type/files/header > $tmpconf
+cat $__type/files/header.tpl > $tmpconf
 cat $tpl >> $tmpconf
 # generate file if template is used
-sed -i "s/\$SERVERNAME/$servername/g" $tmpconf
-sed -i "s/\$ROOT/$root/g" $tmpconf
-sed -i "s/\$LOCATION/$location/g" $tmpconf
-sed -i "s/\$INDEX/$index/g" $tmpconf
+sed -i "s!\$SERVERNAME!$servername!g" $tmpconf
+sed -i "s!\$ROOT!$root!g" $tmpconf
+sed -i "s!\$LOCATION!$location!g" $tmpconf
+sed -i "s!\$INDEX!$index!g" $tmpconf
+sed -i "s!\$REPOROOT!$reporoot!g" $tmpconf
+sed -i "s!\$REPO!$repo!g" $tmpconf
 echo "}" >> $tmpconf
 
 # send the file
