@@ -2,6 +2,7 @@
 	* Core: Introduce __cdist_tmp_base_dir
 	* Core: Cleanup and enhance cdist-type-template
 	* Core: cdist-mass-deploy: Report failed cdist-deploy-to instances
+	* New Type __ssh_authorized_key (Aurélien Bondis)
 
 1.6.1: 2011-04-07
 	* Improved logging: Show code responsible for abort
