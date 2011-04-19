@@ -20,6 +20,11 @@ vi $files
 # Commit stuff
 git commit $files
 
+# add tag
+printf "Enter description for %s>" "$version"
+read tagmessage
+git tag "$version" "$tagmessage"
+
 # Import into current version branch
 git checkout $branch
 git merge master
@@ -27,5 +32,3 @@ git merge master
 # Publish manpages and sourcecode
 ./build.sh web
 ./build.sh pub
-
-# FIXME: add tagging somewhere!
