@@ -35,6 +35,7 @@ Design | Meaningful error messages - do not lose time debugging error messages
 Design | Consistency in behaviour, naming and documentation
 Design | No surprise factor: Only do what is obviously clear, no magic
 Design | Define target state, do not focus on methods or scripts
+Design | Push architecture: Instantly apply your changes
 Small core | cdist's core is very small - less code, less bugs
 Fast development | Focus on straightforwardness of type creation is a main development objective
 Requirements, Scalability | No central server needed, cdist operates in push mode and can be run from any computer
