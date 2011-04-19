@@ -1,19 +1,31 @@
-#!/bin/sh
+#!/bin/sh -e
+
+files="bin/cdist-config doc/changelog"
 
 # Stuff to take care of when doing a release
 echo "Preparing next release"
 
-# adjust version
-vi bin/cdist-config 
-
-# adjust release date
-vi doc/changelog
-
-# Import into current version branch
-git checkout 1.6
-git merge master
-
 # Ensure documentation builds cleanly
 ./build.sh clean && ./build.sh man
 
+# get version
+version=$(awk -F'=' '/^__cdist_version/ { print $2 }' bin/cdist-config | sed 's/"//g')
 
+# get target branch
+branch=${version%.?}
+
+# adjust version and release date
+vi $files
+
+# Commit stuff
+git commit $files
+
+# Import into current version branch
+git checkout $branch
+git merge master
+
+# Publish manpages and sourcecode
+./build.sh web
+./build.sh pub
+
+# FIXME: add tagging somewhere!
