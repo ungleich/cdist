@@ -1,6 +1,6 @@
 cdist-type__nginx_vhost(7)
-===================
-aurelien.bondis@gmail.com
+==========================
+Aurélien Bondis - aurelien.bondis AT gmail DOT com
 
 
 NAME
@@ -33,12 +33,18 @@ EXAMPLES
 --------------------------------------------------------------------------------
 # add a simple vhost configuration
 __nginx_vhost myhost
+# add a drupal vhost using fastcgi
+require="__package/nginx" __nginx_vhost mydrupal --template \$__type/files/drupal.tpl --root /home/keru/www/drupal6
 --------------------------------------------------------------------------------
 
 
 SEE ALSO
 --------
 - cdist-type(7)
+
+TODO
+----
+- add possibility to add many locations based on templates ( type __nginx_location or many --location arguments ? )
 
 
 COPYING
