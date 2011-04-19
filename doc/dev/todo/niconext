@@ -1,5 +1,3 @@
-Fix bin/cdist-type-template
-
 Cleanup documentation:
    type reference -> add types + manpages
    add explorer reference
