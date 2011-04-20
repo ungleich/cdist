@@ -23,7 +23,7 @@
 
 . cdist-config
 [ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ]"
-set -eu
+set -ux
 
 filter()
 {
@@ -50,8 +50,8 @@ while [ $# -gt 0 ]; do
    shift
 done
 
-e=0
 if [ "$parallel" ]; then
+   e=0
    __cdist_echo info "Waiting for cdist-deploy-to jobs to finish"
    while [ "$i" -gt 0 ]; do
       eval pid=\$pid_$i
@@ -61,7 +61,6 @@ if [ "$parallel" ]; then
          eval e_host_$e=\$host_$i
       fi
       i=$((i-1))
-      shift
    done
 fi
 
