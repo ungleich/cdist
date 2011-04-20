@@ -23,7 +23,7 @@
 
 . cdist-config
 [ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ]"
-set -ux
+set -u
 
 filter()
 {
