@@ -26,9 +26,15 @@
 set -eu
 
 __cdist_type="$1"; shift
+__cdist_my_type_dir="$(__cdist_type_dir "$__cdist_type")"
 
+if [ -d "$__cdist_my_type_dir" ]; then
+   __cdist_usage "Type $__cdist_type already exists"
+fi
+
+echo "Creating type $__cdist_type in $__cdist_my_type_dir ..."
 # Base
-mkdir -p "$(__cdist_type_dir "$__cdist_type")"
+mkdir -p "$__cdist_my_type_dir"
 
 # Parameter
 mkdir -p "$(__cdist_type_parameter_dir "$__cdist_type")"
@@ -36,11 +42,11 @@ touch "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_parameter_re
 touch "$(__cdist_type_parameter_dir "$__cdist_type")/${__cdist_name_parameter_optional}"
 
 # Manifest
-cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_dir "$__cdist_type")/${__cdist_name_manifest}"
+cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$__cdist_my_type_dir/${__cdist_name_manifest}"
 
 #
 # This is the manifest, which can be used to create other objects like this:
-# __file /path/to/destination --source /from/where/ --type file
+# __file /path/to/destination --source /from/where/
 #
 # To tell cdist to make use of it, you need to make it executable (chmod +x)
 #
@@ -48,8 +54,8 @@ cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_dir "$__cd
 
 eof
 
-# Gencode
-cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_dir "$__cdist_type")/${__cdist_name_gencode}"
+# Gencode remote
+cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_dir "$__cdist_type")/${__cdist_name_gencode}-${__cdist_name_gencode_remote}"
 
 #
 # This file should generate code on stdout, which will be collected by cdist
@@ -61,5 +67,17 @@ cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_dir "$__cd
 
 eof
 
+cat "$__cdist_abs_mydir/../doc/dev/header" - << eof > "$(__cdist_type_dir "$__cdist_type")/${__cdist_name_gencode}-${__cdist_name_gencode_local}"
+
+#
+# This file should generate code on stdout, which will be collected by cdist
+# and run on the same machine cdist-deploy-to is executed.
+#
+# To tell cdist to make use of it, you need to make it executable (chmod +x)
+#
+#
+
+eof
+
 # Explorer
-mkdir -p "$(__cdist_type_dir "$__cdist_type")/${__cdist_name_explorer}"
+mkdir -p "$__cdist_my_type_dir/${__cdist_name_explorer}"

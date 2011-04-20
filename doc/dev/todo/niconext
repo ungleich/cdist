@@ -1,5 +1,6 @@
-Fix bin/cdist-type-template
-
 Cleanup documentation:
    type reference -> add types + manpages
    add explorer reference
+
+Catch broken instances in cdist-mass-deploy -p and report
+broken deployements at the end!

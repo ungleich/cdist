@@ -53,6 +53,9 @@ __directory /home/services/nfs --parents yes
 
 # Change permissions recursively
 __directory /home/services --recursive yes --owner root --group root
+
+# Setup a temp directory
+__directory /local --mode 1777
 --------------------------------------------------------------------------------
 
 

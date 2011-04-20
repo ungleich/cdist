@@ -23,7 +23,12 @@
 
 . cdist-config
 [ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ]"
-set -eu
+set -u
+
+filter()
+{
+   awk -v host=$1 '{ print "[" host "] " $0 }'
+}
 
 parallel=""
 if [ "$1" = "-p" ]; then
@@ -31,17 +36,37 @@ if [ "$1" = "-p" ]; then
    shift
 fi
 
-while [ $# -ge 1 ]; do
-   # always assume we run parallel
-   cdist-deploy-to "$1" | awk -v host=$1 '{ print "[" host "] " $0 }' &
+i=0
+while [ $# -gt 0 ]; do
+   if [ "$parallel" ]; then
+      cdist-deploy-to "$1" | filter "$1" &
+      # Record pid and host for use later
+      i=$((i+1))
+      eval pid_$i=$!
+      eval host_$i=\$1
+   else
+      cdist-deploy-to "$1" | filter "$1"
+   fi
    shift
-
-   # if not, wait for it _now_
-   [ "$parallel" ] || wait
 done
 
-# else wait after all are started
 if [ "$parallel" ]; then
+   e=0
    __cdist_echo info "Waiting for cdist-deploy-to jobs to finish"
-   wait
+   while [ "$i" -gt 0 ]; do
+      eval pid=\$pid_$i
+      wait "$pid"
+      if [ $? -ne 0 ]; then
+         e=$((e+1))
+         eval e_host_$e=\$host_$i
+      fi
+      i=$((i-1))
+   done
 fi
+
+# Display all failed hosts after all runs are done, so the sysadmin gets them
+while [ "$e" -gt 0 ]; do
+   eval host=\$host_$e
+   __cdist_echo error "Configuration of host $host failed."
+   e=$((e-1))
+done
