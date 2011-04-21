@@ -25,6 +25,23 @@
 [ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ]"
 set -u
 
+# trap __cdist_tmp_removal EXIT
+trap killandclean EXIT
+
+killandclean()
+{
+   # i may have been altered outside, just use the current offset
+   while [ "$i" -gt 0 ]; do
+      eval pid=\$pid_$i
+      kill "$pid"
+      i=$((i-1))
+   done
+
+   # Ensure tmp stuff is being removed
+   __cdist_tmp_removal
+}
+
+
 filter()
 {
    awk -v host=$1 '{ print "[" host "] " $0 }'
