@@ -67,8 +67,8 @@ while [ $# -gt 0 ]; do
    shift
 done
 
+e=0
 if [ "$parallel" ]; then
-   e=0
    __cdist_echo info "Waiting for cdist-deploy-to jobs to finish"
    while [ "$i" -gt 0 ]; do
       eval pid=\$pid_$i
