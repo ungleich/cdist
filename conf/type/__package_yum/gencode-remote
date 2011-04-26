@@ -29,7 +29,11 @@ fi
 
 state="$(cat "$__object/parameter/state")"
 
-opts="--assumeyes --quiet"
+if grep -q -E "(centos|redhat)" "$__global/explorer/os"; then
+    opts="-y --quiet"
+else
+    opts="--assumeyes --quiet"
+fi
 
 not_installed="^no package provides"
 

@@ -39,7 +39,7 @@ case "$($__explorer/os)" in
    macosx|*bsd|solaris)
       uname -r
    ;;
-   redhat)
+   redhat|centos)
       cat /etc/redhat-release
    ;;
    suse)
