@@ -1,3 +1,9 @@
+1.6.3:
+	* Bugfix/Feature: Type __package_yum: Add centos support, fix redhat
+	support (Ramon Salvadó)
+	* New Type __timezone (Ramon Salvadó)
+
+
 1.6.2: 2011-04-19
 	* Core: Introduce __cdist_tmp_base_dir
 	* Core: Cleanup and enhance cdist-type-template
