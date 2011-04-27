@@ -1,5 +1,8 @@
+benchmarking
+
+kill 0 in cdist-mass-deploy
+
 Cleanup documentation:
-   type reference -> add types + manpages
    add explorer reference
 
 Catch broken instances in cdist-mass-deploy -p and report
