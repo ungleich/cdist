@@ -23,5 +23,6 @@
 timezone="$__object_id"
 
 __package tzdata --state installed
-require="__package/tzdata" __link /etc/localtime \
-   --source /usr/share/zoneinfo/${timezone} --type symbolic
+require="__package/tzdata" __link /etc/localtime   \
+   --source "/usr/share/zoneinfo/${timezone}"      \
+   --type symbolic
