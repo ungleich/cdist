@@ -45,12 +45,19 @@ __cdist_init_deploy           "$__cdist_target_host"
 
 # Transfer cdist executables
 __cdist_echo info "Transferring cdist binaries to the target host "
+__cdist_echo debug $(date)
 cdist-dir push                "$__cdist_target_host" \
    "${__cdist_abs_mydir}" "${__cdist_remote_bin_dir}"
+__cdist_echo debug $(date)
 cdist-explorer-run-global     "$__cdist_target_host"
+__cdist_echo debug $(date)
 cdist-manifest-run-init       "$__cdist_target_host"
+__cdist_echo debug $(date)
 cdist-object-all              "$__cdist_target_host" cdist-object-prepare
+__cdist_echo debug $(date)
 cdist-object-all              "$__cdist_target_host" cdist-object-run
+__cdist_echo debug $(date)
 cdist-cache                   "$__cdist_target_host"
+__cdist_echo debug $(date)
 
 __cdist_echo info "cdist $__cdist_version: Successfully finished run"
