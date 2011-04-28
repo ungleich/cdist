@@ -23,7 +23,7 @@
 #
 
 . cdist-config
-[ $# -eq 3 ] || __cdist_usage "<target host>" "<object>" "<type>"
+[ $# -eq 4 ] || __cdist_usage "<target host>" "<object>" "<type>" "<outfile>"
 set -eu
 
 __cdist_target_host="$1"; shift
@@ -45,14 +45,14 @@ export __global="$__cdist_out_dir"
 cd "$__cdist_local_base_dir"
 
 if [ -x "$gencode" ]; then
-   cat << eof
-#
-# The following code is imported from output of $gencode
-#
+#    cat << eof
+# #
+# # The following code is imported from output of $gencode
+# #
+# 
+# eof
 
-eof
-
-   __cdist_exec_fail_on_error "$gencode"
+   __cdist_exec_fail_on_error "$gencode" > "$__cdist_tmp_file"
 else
    if [ -f "$gencode" ]; then
       __cdist_exit_err "$gencode exists, but is not executable"
@@ -61,3 +61,6 @@ else
    # No gencode? also fine! Ensure we exit 0
    exit 0
 fi
+
+chmod u+x "${__cdist_code_local}" "${__cdist_code_remote}"
+
