@@ -47,6 +47,4 @@ if [ -e "$code" ]; then
    else
       __cdist_exit_err "$code exists, but is not a file."
    fi
-else
-   __cdist_echo info "No code-${__cdist_code_type}"
 fi
