@@ -23,7 +23,7 @@
 #
 
 . cdist-config
-[ $# -eq 4 ] || __cdist_usage "<target host>" "<object>" "<type>" "<outfile>"
+[ $# -eq 3 ] || __cdist_usage "<target host>" "<object>" "<type>"
 set -eu
 
 __cdist_target_host="$1"; shift
@@ -33,6 +33,7 @@ __cdist_gencode_type="$1"; shift
 __cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
 __cdist_type="$(__cdist_type_from_object "$__cdist_object_self")"
 __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object_self")"
+__cdist_code_output="$(__cdist_object_code "$__cdist_object_self" "${__cdist_gencode_type}")"
 
 # Full path to where the executable of the type should exist, if the type has one
 gencode="$(__cdist_type_gencode "$__cdist_type")-${__cdist_gencode_type}"
