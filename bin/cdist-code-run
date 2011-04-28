@@ -32,7 +32,7 @@ if [ ! -d "$(__cdist_object_dir "$__cdist_object_self")" ]; then
    __cdist_exit_err "Object undefined"
 fi  
 
-code="$(__cdist_object_code "$__cdist_object_self")-${__cdist_code_type}"
+code="$(__cdist_object_code "$__cdist_object_self" "${__cdist_code_type}")"
 
 __cdist_echo info "Checking code-${__cdist_code_type}"
 
