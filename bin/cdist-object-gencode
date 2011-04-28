@@ -41,9 +41,6 @@ export __object_id="$__cdist_object_id"
 export __object="$__cdist_object_dir"
 export __global="$__cdist_out_dir"
 
-# FIXME Needed?
-cd "$__cdist_local_base_dir"
-
 if [ -x "$__cdist_type_gencode" ]; then
    __cdist_exec_fail_on_error "$gencode" > "$__cdist_tmp_file"
 else
@@ -64,5 +61,4 @@ if [ "$(wc -l < "$__cdist_tmp_file")" -gt 0 ]; then
 
 eof
    chmod u+x "${__cdist_code_output}"
-
 fi
