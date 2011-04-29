@@ -84,6 +84,14 @@ case "$1" in
       "$0" clean && "$0" man && "$0" web
    ;;
 
+   speeches)
+      for speech in doc/speeches/*tex; do
+         pdflatex $speech
+         pdflatex $speech
+         pdflatex $speech
+      done
+   ;;
+      
    web)
       cp README ${WEBDIR}/${WEBPAGE}
       rm -rf ${WEBDIR}/${WEBBASE}/man && mkdir ${WEBDIR}/${WEBBASE}/man
