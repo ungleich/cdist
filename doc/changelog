@@ -5,7 +5,6 @@
 	* Renamed explorer: hardware_type to machine
 	* Core: Do not execute empty code fragments
 
-
 1.6.2: 2011-04-19
 	* Core: Introduce __cdist_tmp_base_dir
 	* Core: Cleanup and enhance cdist-type-template
