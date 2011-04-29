@@ -2,6 +2,7 @@
 	* Bugfix/Feature: Type __package_yum: Add centos support, fix redhat
 	support (Ramon Salvadó)
 	* New Type __timezone (Ramon Salvadó)
+	* Rename explorer hardware_type to machine
 
 
 1.6.2: 2011-04-19
