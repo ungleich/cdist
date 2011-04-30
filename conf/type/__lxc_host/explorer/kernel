@@ -1,0 +1,7 @@
+#!/bin/sh
+# check kernel version
+if [ `echo $kernel | grep -q '^2.6.[3-9][3-9]'` ]; then
+  echo no
+else
+  echo yes
+fi
