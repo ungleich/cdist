@@ -1,0 +1,46 @@
+cdist-type__bridge(7)
+=================================
+Aurélien Bondis - aurelien.bondis AT gmail DOT com
+
+
+NAME
+----
+cdist-type__bridge - adds a bridge interface and configures it
+
+
+DESCRIPTION
+-----------
+Using distro's specifics, adds a bridge interface and adds an interface (ie eth0) to it.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+brname:: the bridge interface to create (default is br0)
+ifname:: the interface to bridge (default is eth0)
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# create a bridge between brigde0 and eth2
+__bridge bridge0 --brname bridge0 --ifname eth2
+# create a bridge using defaults (br0 and eth0)
+__bridge default
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
