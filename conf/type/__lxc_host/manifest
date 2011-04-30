@@ -1,4 +1,32 @@
 #!/bin/sh
+#
+# 2011 Aurelien Bondis - aurelien DOT bondis AT gmail DOT com
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# USEFUL DESCRIPTION
+#
+
+#
+# This is the manifest, which can be used to create other objects like this:
+# __file /path/to/destination --source /from/where/
+#
+# To tell cdist to make use of it, you need to make it executable (chmod +x)
+
 function prepare() {
   #set -x
   if [ ! "$3" ]; then
@@ -26,16 +54,17 @@ fi
 prepare "brname" "brname" "br0"
 prepare "ifname" "ifname" "eth0"
 
-__bridge $brname $ifname
+__bridge brlxc --brname $brname --ifname $ifname
+__addifnosuchline cgroup --file /etc/fstab --line "none /cgroup cgroup defaults 0 0"
 
 # install lxc-tools
 __package lxc --state installed
-
 # send templates if some
-if [ -d "$__type/templates" ] 
+if [ -d "$__type/templates" ]; then
   require="__package/lxc" __directory /var/lib/lxc/conf
-  for vm in `find $__type/templates  -maxdepth 1 -name '*.conf'`; do
-    require="__directory/var/lib/lxc" __file /var/lib/lxc/conf/$vm --source $__type/templates/$vm
+  cd $__type/templates
+  for vm in `find .  -maxdepth 1 -name '*.conf'`; do
+    require="__directory/var/lib/lxc/conf" __file /var/lib/lxc/conf/$vm --source $__type/templates/$vm
   done
 fi
 # set packages cache if asked
