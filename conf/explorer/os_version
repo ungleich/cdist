@@ -36,7 +36,10 @@ case "$($__explorer/os)" in
    gentoo)
       cat /etc/gentoo-release
    ;;
-   macosx|*bsd|solaris)
+   macosx)
+      sw_vers -productVersion
+   ;;
+   *bsd|solaris)
       uname -r
    ;;
    redhat|centos)
