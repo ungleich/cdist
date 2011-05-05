@@ -35,7 +35,7 @@ if [ -f "$__object/parameter/preseed" ]; then
 fi
 
 state="$(cat "$__object/parameter/state")"
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
+is_installed="$(grep "$name" "$__global/explorer/apt_versions" | grep uptodate)"
 
 aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
 
