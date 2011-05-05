@@ -1,0 +1,357 @@
+sar@icarus ~/vcs/cdist-cbrg $ timeit cdist-run -m ./conf/manifest/init themis
+Using manifest from: ./conf/manifest/init
++ git describe
+1.6.2-54-gdc23d93
++ set +x
+core: cdist 1.6.2: Configuring themis 
+core: Creating clean directory structure 
+core: Transferring cdist binaries to the target host 
+core: Running global explorers 
+core: Running initial manifest for themis 
+__package/python-scipy: Preparing object
+__package/python-scipy: Checking manifest 
+__package/python-scipy: Executing manifest 
+__package/python-numpy: Preparing object
+__package/python-numpy: Checking manifest 
+__package/python-numpy: Executing manifest 
+__package/libxpm4: Preparing object
+__package/libxpm4: Checking manifest 
+__package/libxpm4: Executing manifest 
+__package/libxmu6: Preparing object
+__package/libxmu6: Checking manifest 
+__package/libxmu6: Executing manifest 
+__package/libxt6: Preparing object
+__package/libxt6: Checking manifest 
+__package/libxt6: Executing manifest 
+__package/libxext6: Preparing object
+__package/libxext6: Checking manifest 
+__package/libxext6: Executing manifest 
+__package/libxp6: Preparing object
+__package/libxp6: Checking manifest 
+__package/libxp6: Executing manifest 
+__package/language-pack-en: Preparing object
+__package/language-pack-en: Checking manifest 
+__package/language-pack-en: Executing manifest 
+__package/libc6-i386: Preparing object
+__package/libc6-i386: Checking manifest 
+__package/libc6-i386: Executing manifest 
+__package/ia32-libs: Preparing object
+__package/ia32-libs: Checking manifest 
+__package/ia32-libs: Executing manifest 
+__package/vim: Preparing object
+__package/vim: Checking manifest 
+__package/vim: Executing manifest 
+__package/htop: Preparing object
+__package/htop: Checking manifest 
+__package/htop: Executing manifest 
+__package/wget: Preparing object
+__package/wget: Checking manifest 
+__package/wget: Executing manifest 
+__package/timeout: Preparing object
+__package/timeout: Checking manifest 
+__package/timeout: Executing manifest 
+__package/keychain: Preparing object
+__package/keychain: Checking manifest 
+__package/keychain: Executing manifest 
+__package/curl: Preparing object
+__package/curl: Checking manifest 
+__package/curl: Executing manifest 
+__package/xauth: Preparing object
+__package/xauth: Checking manifest 
+__package/xauth: Executing manifest 
+__package/lsof: Preparing object
+__package/lsof: Checking manifest 
+__package/lsof: Executing manifest 
+__package/screen: Preparing object
+__package/screen: Checking manifest 
+__package/screen: Executing manifest 
+__package/ncompress: Preparing object
+__package/ncompress: Checking manifest 
+__package/ncompress: Executing manifest 
+__package/tcsh: Preparing object
+__package/tcsh: Checking manifest 
+__package/tcsh: Executing manifest 
+__package/zsh: Preparing object
+__package/zsh: Checking manifest 
+__package/zsh: Executing manifest 
+__file/etc/cdist-configured: Preparing object
+__file/etc/cdist-configured: Transfering explorers for __file 
+__file/etc/cdist-configured: Running explorers
+__file/etc/cdist-configured: Checking manifest 
+__package_apt/zsh: Preparing object
+__package_apt/zsh: Checking manifest 
+__package_apt/tcsh: Preparing object
+__package_apt/tcsh: Checking manifest 
+__package_apt/ncompress: Preparing object
+__package_apt/ncompress: Checking manifest 
+__package_apt/screen: Preparing object
+__package_apt/screen: Checking manifest 
+__package_apt/lsof: Preparing object
+__package_apt/lsof: Checking manifest 
+__package_apt/xauth: Preparing object
+__package_apt/xauth: Checking manifest 
+__package_apt/curl: Preparing object
+__package_apt/curl: Checking manifest 
+__package_apt/keychain: Preparing object
+__package_apt/keychain: Checking manifest 
+__package_apt/timeout: Preparing object
+__package_apt/timeout: Checking manifest 
+__package_apt/wget: Preparing object
+__package_apt/wget: Checking manifest 
+__package_apt/htop: Preparing object
+__package_apt/htop: Checking manifest 
+__package_apt/vim: Preparing object
+__package_apt/vim: Checking manifest 
+__package_apt/ia32-libs: Preparing object
+__package_apt/ia32-libs: Checking manifest 
+__package_apt/libc6-i386: Preparing object
+__package_apt/libc6-i386: Checking manifest 
+__package_apt/language-pack-en: Preparing object
+__package_apt/language-pack-en: Checking manifest 
+__package_apt/libxp6: Preparing object
+__package_apt/libxp6: Checking manifest 
+__package_apt/libxext6: Preparing object
+__package_apt/libxext6: Checking manifest 
+__package_apt/libxt6: Preparing object
+__package_apt/libxt6: Checking manifest 
+__package_apt/libxmu6: Preparing object
+__package_apt/libxmu6: Checking manifest 
+__package_apt/libxpm4: Preparing object
+__package_apt/libxpm4: Checking manifest 
+__package_apt/python-numpy: Preparing object
+__package_apt/python-numpy: Checking manifest 
+__package_apt/python-scipy: Preparing object
+__package_apt/python-scipy: Checking manifest 
+__package_apt/zsh: Generating local code 
+__package_apt/zsh: Generating remote code 
+__package_apt/zsh: Transferring object
+__package_apt/zsh: Checking code-local
+__package_apt/zsh: Checking code-remote
+__package_apt/tcsh: Generating local code 
+__package_apt/tcsh: Generating remote code 
+__package_apt/tcsh: Transferring object
+__package_apt/tcsh: Checking code-local
+__package_apt/tcsh: Checking code-remote
+__package_apt/ncompress: Generating local code 
+__package_apt/ncompress: Generating remote code 
+__package_apt/ncompress: Transferring object
+__package_apt/ncompress: Checking code-local
+__package_apt/ncompress: Checking code-remote
+__package_apt/screen: Generating local code 
+__package_apt/screen: Generating remote code 
+__package_apt/screen: Transferring object
+__package_apt/screen: Checking code-local
+__package_apt/screen: Checking code-remote
+__package_apt/lsof: Generating local code 
+__package_apt/lsof: Generating remote code 
+__package_apt/lsof: Transferring object
+__package_apt/lsof: Checking code-local
+__package_apt/lsof: Checking code-remote
+__package_apt/xauth: Generating local code 
+__package_apt/xauth: Generating remote code 
+__package_apt/xauth: Transferring object
+__package_apt/xauth: Checking code-local
+__package_apt/xauth: Checking code-remote
+__package_apt/curl: Generating local code 
+__package_apt/curl: Generating remote code 
+__package_apt/curl: Transferring object
+__package_apt/curl: Checking code-local
+__package_apt/curl: Checking code-remote
+__package_apt/keychain: Generating local code 
+__package_apt/keychain: Generating remote code 
+__package_apt/keychain: Transferring object
+__package_apt/keychain: Checking code-local
+__package_apt/keychain: Checking code-remote
+__package_apt/timeout: Generating local code 
+__package_apt/timeout: Generating remote code 
+__package_apt/timeout: Transferring object
+__package_apt/timeout: Checking code-local
+__package_apt/timeout: Checking code-remote
+__package_apt/wget: Generating local code 
+__package_apt/wget: Generating remote code 
+__package_apt/wget: Transferring object
+__package_apt/wget: Checking code-local
+__package_apt/wget: Checking code-remote
+__package_apt/htop: Generating local code 
+__package_apt/htop: Generating remote code 
+__package_apt/htop: Transferring object
+__package_apt/htop: Checking code-local
+__package_apt/htop: Checking code-remote
+__package_apt/vim: Generating local code 
+__package_apt/vim: Generating remote code 
+__package_apt/vim: Transferring object
+__package_apt/vim: Checking code-local
+__package_apt/vim: Checking code-remote
+__package_apt/ia32-libs: Generating local code 
+__package_apt/ia32-libs: Generating remote code 
+__package_apt/ia32-libs: Transferring object
+__package_apt/ia32-libs: Checking code-local
+__package_apt/ia32-libs: Checking code-remote
+__package_apt/libc6-i386: Generating local code 
+__package_apt/libc6-i386: Generating remote code 
+__package_apt/libc6-i386: Transferring object
+__package_apt/libc6-i386: Checking code-local
+__package_apt/libc6-i386: Checking code-remote
+__package_apt/language-pack-en: Generating local code 
+__package_apt/language-pack-en: Generating remote code 
+__package_apt/language-pack-en: Transferring object
+__package_apt/language-pack-en: Checking code-local
+__package_apt/language-pack-en: Checking code-remote
+__package_apt/libxp6: Generating local code 
+__package_apt/libxp6: Generating remote code 
+__package_apt/libxp6: Transferring object
+__package_apt/libxp6: Checking code-local
+__package_apt/libxp6: Checking code-remote
+__package_apt/libxext6: Generating local code 
+__package_apt/libxext6: Generating remote code 
+__package_apt/libxext6: Transferring object
+__package_apt/libxext6: Checking code-local
+__package_apt/libxext6: Checking code-remote
+__package_apt/libxt6: Generating local code 
+__package_apt/libxt6: Generating remote code 
+__package_apt/libxt6: Transferring object
+__package_apt/libxt6: Checking code-local
+__package_apt/libxt6: Checking code-remote
+__package_apt/libxmu6: Generating local code 
+__package_apt/libxmu6: Generating remote code 
+__package_apt/libxmu6: Transferring object
+__package_apt/libxmu6: Checking code-local
+__package_apt/libxmu6: Checking code-remote
+__package_apt/libxpm4: Generating local code 
+__package_apt/libxpm4: Generating remote code 
+__package_apt/libxpm4: Transferring object
+__package_apt/libxpm4: Checking code-local
+__package_apt/libxpm4: Checking code-remote
+__package_apt/python-numpy: Generating local code 
+__package_apt/python-numpy: Generating remote code 
+__package_apt/python-numpy: Transferring object
+__package_apt/python-numpy: Checking code-local
+__package_apt/python-numpy: Checking code-remote
+__package_apt/python-scipy: Generating local code 
+__package_apt/python-scipy: Generating remote code 
+__package_apt/python-scipy: Transferring object
+__package_apt/python-scipy: Checking code-local
+__package_apt/python-scipy: Checking code-remote
+__package/python-scipy: Generating local code 
+__package/python-scipy: Generating remote code 
+__package/python-scipy: Transferring object
+__package/python-scipy: Checking code-local
+__package/python-scipy: Checking code-remote
+__package/python-numpy: Generating local code 
+__package/python-numpy: Generating remote code 
+__package/python-numpy: Transferring object
+__package/python-numpy: Checking code-local
+__package/python-numpy: Checking code-remote
+__package/libxpm4: Generating local code 
+__package/libxpm4: Generating remote code 
+__package/libxpm4: Transferring object
+__package/libxpm4: Checking code-local
+__package/libxpm4: Checking code-remote
+__package/libxmu6: Generating local code 
+__package/libxmu6: Generating remote code 
+__package/libxmu6: Transferring object
+__package/libxmu6: Checking code-local
+__package/libxmu6: Checking code-remote
+__package/libxt6: Generating local code 
+__package/libxt6: Generating remote code 
+__package/libxt6: Transferring object
+__package/libxt6: Checking code-local
+__package/libxt6: Checking code-remote
+__package/libxext6: Generating local code 
+__package/libxext6: Generating remote code 
+__package/libxext6: Transferring object
+__package/libxext6: Checking code-local
+__package/libxext6: Checking code-remote
+__package/libxp6: Generating local code 
+__package/libxp6: Generating remote code 
+__package/libxp6: Transferring object
+__package/libxp6: Checking code-local
+__package/libxp6: Checking code-remote
+__package/language-pack-en: Generating local code 
+__package/language-pack-en: Generating remote code 
+__package/language-pack-en: Transferring object
+__package/language-pack-en: Checking code-local
+__package/language-pack-en: Checking code-remote
+__package/libc6-i386: Generating local code 
+__package/libc6-i386: Generating remote code 
+__package/libc6-i386: Transferring object
+__package/libc6-i386: Checking code-local
+__package/libc6-i386: Checking code-remote
+__package/ia32-libs: Generating local code 
+__package/ia32-libs: Generating remote code 
+__package/ia32-libs: Transferring object
+__package/ia32-libs: Checking code-local
+__package/ia32-libs: Checking code-remote
+__package/vim: Generating local code 
+__package/vim: Generating remote code 
+__package/vim: Transferring object
+__package/vim: Checking code-local
+__package/vim: Checking code-remote
+__package/htop: Generating local code 
+__package/htop: Generating remote code 
+__package/htop: Transferring object
+__package/htop: Checking code-local
+__package/htop: Checking code-remote
+__package/wget: Generating local code 
+__package/wget: Generating remote code 
+__package/wget: Transferring object
+__package/wget: Checking code-local
+__package/wget: Checking code-remote
+__package/timeout: Generating local code 
+__package/timeout: Generating remote code 
+__package/timeout: Transferring object
+__package/timeout: Checking code-local
+__package/timeout: Checking code-remote
+__package/keychain: Generating local code 
+__package/keychain: Generating remote code 
+__package/keychain: Transferring object
+__package/keychain: Checking code-local
+__package/keychain: Checking code-remote
+__package/curl: Generating local code 
+__package/curl: Generating remote code 
+__package/curl: Transferring object
+__package/curl: Checking code-local
+__package/curl: Checking code-remote
+__package/xauth: Generating local code 
+__package/xauth: Generating remote code 
+__package/xauth: Transferring object
+__package/xauth: Checking code-local
+__package/xauth: Checking code-remote
+__package/lsof: Generating local code 
+__package/lsof: Generating remote code 
+__package/lsof: Transferring object
+__package/lsof: Checking code-local
+__package/lsof: Checking code-remote
+__package/screen: Generating local code 
+__package/screen: Generating remote code 
+__package/screen: Transferring object
+__package/screen: Checking code-local
+__package/screen: Checking code-remote
+__package/ncompress: Generating local code 
+__package/ncompress: Generating remote code 
+__package/ncompress: Transferring object
+__package/ncompress: Checking code-local
+__package/ncompress: Checking code-remote
+__package/tcsh: Generating local code 
+__package/tcsh: Generating remote code 
+__package/tcsh: Transferring object
+__package/tcsh: Checking code-local
+__package/tcsh: Checking code-remote
+__package/zsh: Generating local code 
+__package/zsh: Generating remote code 
+__package/zsh: Transferring object
+__package/zsh: Checking code-local
+__package/zsh: Checking code-remote
+__file/etc/cdist-configured: Generating local code 
+__file/etc/cdist-configured: Generating remote code 
+__file/etc/cdist-configured: Transferring object
+__file/etc/cdist-configured: Checking code-local
+__file/etc/cdist-configured: Checking code-remote
+core: Saving cache to /home/sar/vcs/cdist-cbrg/cache/themis 
+core: cdist 1.6.2: Successfully finished run
+
+--------------------------------------------------
+__cdist_local_base_dir: /tmp/themis
+12.63
+sar@icarus ~/vcs/cdist-cbrg $ 
+
