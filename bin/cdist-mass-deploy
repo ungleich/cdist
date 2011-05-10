@@ -30,10 +30,11 @@ trap killandclean EXIT
 
 killandclean()
 {
+   __cdist_echo info "Existing and killing children..." 
    kill 0
 
    # Ensure tmp stuff is being removed
-   __cdist_tmp_removal
+   __cdist_cleanly_exit
 }
 
 
