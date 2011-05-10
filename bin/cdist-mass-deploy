@@ -30,12 +30,7 @@ trap killandclean EXIT
 
 killandclean()
 {
-   # i may have been altered outside, just use the current offset
-   while [ "$i" -gt 0 ]; do
-      eval pid=\$pid_$i
-      kill "$pid"
-      i=$((i-1))
-   done
+   kill 0
 
    # Ensure tmp stuff is being removed
    __cdist_tmp_removal
