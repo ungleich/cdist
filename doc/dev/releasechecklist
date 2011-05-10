@@ -23,7 +23,7 @@ git commit $files
 # add tag
 printf "Enter description for %s>" "$version"
 read tagmessage
-git tag "$version" "$tagmessage"
+git tag "$version" -m "$tagmessage"
 
 # Import into current version branch
 git checkout $branch
