@@ -1,0 +1,12 @@
+10:37 <dynamite> #!/bin/sh
+10:37 <dynamite> opcontrol --no-vmlinux > /dev/null
+10:37 <dynamite> opcontrol --stop > /dev/null
+10:37 <dynamite> opcontrol --shutdown > /dev/null
+10:37 <dynamite> opcontrol --reset > /dev/null
+10:37 <dynamite> opcontrol --separate=none > /dev/null
+10:37 <dynamite> opcontrol $* > /dev/null
+10:37 <dynamite> opcontrol --start > /dev/null
+10:37 <dynamite> ./urpcbench 0 0 1
+10:37 <dynamite> opcontrol --stop > /dev/null
+10:37 <dynamite> opcontrol --dump > /dev/null
+10:37 <dynamite> opreport -l urpcbench
