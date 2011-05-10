@@ -2,3 +2,5 @@
 - Use one pipe-shell for type execution
 - Parallelise gencode and code-run of all objects
 - Diff against local cache only instead of real target
+- Use only one ssh session?
+   - Can be indirectly improved via ssh config already!
