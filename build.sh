@@ -39,6 +39,7 @@ WEBPAGE=${WEBBASE}.mdwn
 MANDIR=doc/man
 MAN1DSTDIR=${MANDIR}/man1
 MAN7DSTDIR=${MANDIR}/man7
+SPEECHESDIR=doc/speeches
 
 case "$1" in
    man)
@@ -85,7 +86,8 @@ case "$1" in
    ;;
 
    speeches)
-      for speech in doc/speeches/*tex; do
+      cd "$SPEECHESDIR"
+      for speech in *tex; do
          pdflatex $speech
          pdflatex $speech
          pdflatex $speech
@@ -95,9 +97,13 @@ case "$1" in
    web)
       cp README ${WEBDIR}/${WEBPAGE}
       rm -rf ${WEBDIR}/${WEBBASE}/man && mkdir ${WEBDIR}/${WEBBASE}/man
+      rm -rf ${WEBDIR}/${WEBBASE}/speeches && mkdir ${WEBDIR}/${WEBBASE}/speeches
+
       cp ${MAN1DSTDIR}/*.html ${MAN7DSTDIR}/*.html ${WEBDIR}/${WEBBASE}/man
+      cp ${SPEECHESDIR}/*.pdf ${WEBDIR}/${WEBBASE}/speeches
+      
       git describe > ${WEBDIR}/${WEBBASE}/man/VERSION
-      cd ${WEBDIR} && git add ${WEBBASE}/man
+      cd ${WEBDIR} && git add ${WEBBASE}
       cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
       cd ${WEBDIR} && make pub
    ;;
