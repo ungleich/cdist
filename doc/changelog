@@ -1,4 +1,4 @@
-1.7.0:
+1.7.0: 2011-05-10
 	* Bugfix type __package_yum: Fix redhat support (Ramon Salvadó)
 	* Improved type __package_yum: Add centos support (Ramon Salvadó)
 	* New Type: __timezone (Ramon Salvadó)
