@@ -24,5 +24,5 @@
 dirs="cdist cdist-nutzung"
 
 for dir in $dirs; do
-   rsync -av --delete /home/users/nico/p/$dir root@rnic01:$dir
+   rsync -av --delete /home/users/nico/p/$dir/ root@rnic01:$dir
 done
