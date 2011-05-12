@@ -12,6 +12,9 @@ A type __get_and_build:
       require="__directory/var/tmp" $__self "$@"
          -> construct $@ from params in directory
 
+   Answer2 for now:
+      Use a second type:
+
    Answert for soon:
       Should be doable easier!
    
