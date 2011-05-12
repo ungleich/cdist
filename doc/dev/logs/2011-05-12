@@ -1,0 +1,17 @@
+Steven, Nico
+
+A type __get_and_build:
+   requires __directory /var/tmp
+   wget's source to /var/tmp
+   builds programm in /var/tmp
+
+   Question: How to define that this object depends on
+      __directory/var/tmp?
+
+   Answer for now:
+      require="__directory/var/tmp" $__self "$@"
+         -> construct $@ from params in directory
+
+   Answert for soon:
+      Should be doable easier!
+   
