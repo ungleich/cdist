@@ -33,7 +33,7 @@ fi
 
 # if a source user is defined, use it's public key
 if [ "$srcuser" ]; then
-   srcrsa="/home/${srcuser}/.ssh/id_rsa.pub"
+   srcrsa="$__type/publickeys/$srcuser.pub"
 # if no source user is defined we use root's public key
 else
    srcrsa="/root/.ssh/id_rsa.pub"
@@ -50,6 +50,6 @@ __directory $sshpath
 # the file authorized_keys depends on the .ssh folder
 require="__directory${sshpath}" __file "$sshpath/authorized_keys" --mode 640
 # the line added depends on authorized_keys existence
-require="__file${sshpath}/authorized_keys" __addifnosuchline sshkey --file \
+require="__file${sshpath}/authorized_keys" __addifnosuchline $srcuser-$dstuser --file \
  "$sshpath/authorized_keys" --line "$rsa"
 
