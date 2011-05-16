@@ -1,0 +1,45 @@
+cdist-type__lxc_guest(7)
+=========================
+Aurélien Bondis - aurelien.bondis AT gmail DOT com
+
+
+NAME
+----
+cdist-type__lxc_guest - creates a VM on the host
+
+
+DESCRIPTION
+-----------
+The machine will host a new VM if it does not exist.
+Takes the initial configuration file and a name.
+Uses the 'template' dir deployed using the __lxc_host.
+
+
+REQUIRED PARAMETERS
+-------------------
+guestname:: the name of the VM
+initconfig:: the configuration file to start the vm
+
+
+OPTIONAL PARAMETERS
+-------------------
+template:: the lxc template to use to create the vm (default is lucid)
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# declare a VM on the host
+__lxc_guest MyFirstVM --guestname MyFirstVM --initconfig /etc/lxc/MyFirstVM.conf
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

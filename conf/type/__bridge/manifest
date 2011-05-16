@@ -1,0 +1,63 @@
+#!/bin/sh 
+#
+# 2011 Aurelien Bondis - aurelien DOT bondis AT gmail DOT com
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# USEFUL DESCRIPTION
+#
+
+#
+# This is the manifest, which can be used to create other objects like this:
+# __file /path/to/destination --source /from/where/
+#
+# To tell cdist to make use of it, you need to make it executable (chmod +x)
+#
+#
+# for now only sets up the bridge using dhcp
+function prepare() {
+if [ ! "$3" ]; then
+  echo "We need a default value"
+  exit 1
+fi
+
+if [ -f "$__object/parameter/$2" ]; then
+  eval $1=`cat $__object/parameter/$2`
+else
+  eval $1=$3
+fi
+}
+os="$(cat "$__global/explorer/os")"
+
+__package "bridge-utils" --state installed
+require="__package/bridge-utils"
+prepare "brname" "brname" "br0"
+prepare "ifname" "ifname" "eth0"
+set -x
+
+case "$os" in
+  archlinux)                                                                                              
+    __addifnosuchline ifname --file /etc/rc.conf --line "$ifname=\"up\"";
+    __addifnosuchline brname --file /etc/rc.conf --line "$brname=\"dhcp\"";
+    __addifnosuchline ifs --file /etc/rc.conf --line 'INTERFACES=('$ifname' '$brname')'; 
+  ;;
+  *)
+    exit 1;
+  ;;
+esac
+
+

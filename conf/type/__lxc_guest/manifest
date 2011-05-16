@@ -1,0 +1,25 @@
+#!/bin/sh
+if [ ! -f "$__object/parameter/guestname" ]; then
+  echo "Please provide a name for your lxc guest"
+  exit 1
+else
+  guestname="`cat $__object/parameter/guestname`"
+fi
+set -x
+
+# add the machine to manifest
+if grep "$guestname" $__type/../../manifest/init ; then
+  edit $__type/../../manifest/init << EOF
+/esac
+i
+  $guestname)
+  ;;
+.
+:x
+EOF
+fi
+
+
+# if roles are defined 
+## add it's roles to manifest
+# send its configuration

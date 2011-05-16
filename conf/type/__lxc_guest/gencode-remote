@@ -1,0 +1,38 @@
+#!/bin/sh
+function prepare() {
+  #set -x
+  if [ ! "$3" ]; then
+    echo "We need a default value"
+    exit 1
+  fi
+
+  if [ -f "$__object/parameter/$2" ]; then
+    eval $1=`cat $__object/parameter/$2`
+  else
+    eval $1=$3
+  fi 
+  #set +x
+}
+set -x
+if [ -f "$__object/parameter/initconfig" ]; then
+  initconfig=`cat $__object/parameter/initconfig`
+else
+  echo "Please give an initial config to use"
+fi
+
+prepare "template" "template" "lucid"
+require="__lxc_host"
+if [ ! -f "$__object/parameter/guestname" ]; then
+  echo "Please provide a name for your lxc guest"
+  exit 1
+else
+  guestname="`cat $__object/parameter/guestname`"
+fi
+# create the machine if it does not exist
+vmlist=$(cat "$__object/explorer/vm")
+if echo $vmlist | grep -q $guestname ; then
+  echo "echo The VM already exists"
+else
+  echo "lxc-create -n $guestname -f $initconfig -t $template"
+fi
+
