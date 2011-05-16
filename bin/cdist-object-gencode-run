@@ -29,17 +29,10 @@ set -eu
 __cdist_target_host="$1"; shift
 __cdist_object_self="$1"; shift
 
-__cdist_code_local="$(__cdist_object_code "$__cdist_object_self")-${__cdist_name_gencode_local}"
-__cdist_code_remote="$(__cdist_object_code "$__cdist_object_self")-${__cdist_name_gencode_remote}"
-
-# FIXME: check that no file is created if there is no gencode
-# probably move output code to cdist-object-gencode
 __cdist_echo info "Generating local code "
 cdist-object-gencode "$__cdist_target_host" "$__cdist_object_self" \
-   "${__cdist_name_gencode_local}" > "${__cdist_code_local}"
+   "${__cdist_name_gencode_local}"
 
 __cdist_echo info "Generating remote code "
 cdist-object-gencode "$__cdist_target_host" "$__cdist_object_self" \
-   "${__cdist_name_gencode_remote}" > "${__cdist_code_remote}"
-
-chmod u+x "${__cdist_code_local}" "${__cdist_code_remote}"
+   "${__cdist_name_gencode_remote}"

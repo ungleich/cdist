@@ -43,14 +43,19 @@ NAME
 cdist-reference - Variable, path and type reference for cdist
 
 
-DESCRIPTION
------------
-This reference summarises
+EXPLORERS
+---------
+The following global explores are available:
 
-- environment variables
-- paths
-- types 
+eof
+(
+   cd ../../conf/explorer
+   for explorer in *; do
+      echo "- $explorer"
+   done
+)
 
+cat << eof 
 
 PATHS
 -----
@@ -140,9 +145,10 @@ for type in man7/cdist-type__*.text; do
    no_dir="${type#man7/}";
    no_type="${no_dir#cdist-type}";
    name="${no_type%.text}";
+   name_no_underline="$(echo $name | sed 's/^__/\\__/g')"
    man="${no_dir%.text}(7)"
 
-   echo "- $name" "($man)"
+   echo "- $name_no_underline" "($man)"
 done
 
 cat << eof

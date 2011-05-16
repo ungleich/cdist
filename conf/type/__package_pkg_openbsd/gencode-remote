@@ -26,7 +26,7 @@
 # set -x
 
 os_version="$(cat "$__global/explorer/os_version")"
-hardware_type="$(cat "$__global/explorer/hardware_type")"
+machine="$(cat "$__global/explorer/machine")"
 
 
 if [ -f "$__object/parameter/flavor" ]; then
@@ -46,7 +46,7 @@ state="$(cat "$__object/parameter/state")"
 pkg_version="$(cat "$__object/explorer/pkg_version")"
 
 # TODO: Shouldn't be hardcoded
-echo export PKG_PATH=ftp://ftp.openbsd.org/pub/OpenBSD/$os_version/packages/$hardware_type/
+echo export PKG_PATH=ftp://ftp.openbsd.org/pub/OpenBSD/$os_version/packages/$machine/
 
 case "$state" in
    installed)

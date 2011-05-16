@@ -19,7 +19,7 @@
 #
 #
 
-__cdist_version="1.6.2"
+__cdist_version="1.7.0"
 
 # Fail if something bogus is going on
 set -u
@@ -163,9 +163,11 @@ __cdist_echo()
 
    case "$__cdist_echo_type" in
       debug)
+         set +u
          if [ "$__cdist_debug" ]; then
             echo $__cdist_echo_prefix "Debug: $@"
          fi
+         set -u
       ;;
       info)
          echo $__cdist_echo_prefix "$@"
@@ -241,7 +243,7 @@ __cdist_host_cache_dir()
 
 __cdist_object_code()
 {
-   echo "$(__cdist_object_dir "$1")/${__cdist_name_code}"
+   echo "$(__cdist_object_dir "$1")/${__cdist_name_code}-$2"
 }
 
 __cdist_object_prepared()
@@ -346,14 +348,22 @@ __cdist_remote_type_explorer_dir()
 
 
 ################################################################################
-# Temp clenup
+# Traps
 #
 __cdist_tmp_removal()
 {
    rm -rf "${__cdist_tmp_dir}"
 }
 
+__cdist_exit_on_kill()
+{
+   # FIXME: before 1.8.0 -> kill all children, but do not segfault
+   # kill 0
+   __cdist_tmp_removal
+}
+
 trap __cdist_tmp_removal EXIT
+trap __cdist_exit_on_kill INT TERM
 
 
 ################################################################################
@@ -397,7 +407,7 @@ __cdist_type_explorer_pushed_add()
 
 __cdist_type_gencode()
 {
-   echo "${__cdist_type_dir}/$1/${__cdist_name_gencode}"
+   echo "${__cdist_type_dir}/$1/${__cdist_name_gencode}-$2"
 }
 
 __cdist_type_manifest()

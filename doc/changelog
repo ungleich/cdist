@@ -1,8 +1,18 @@
+1.7.1:
+	* Add explorers to reference documentation
+
+1.7.0: 2011-05-10
+	* Bugfix type __package_yum: Fix redhat support (Ramon Salvadó)
+	* Improved type __package_yum: Add centos support (Ramon Salvadó)
+	* New Type: __timezone (Ramon Salvadó)
+	* Renamed explorer: hardware_type to machine
+	* Core: Do not execute empty code fragments
+
 1.6.2: 2011-04-19
 	* Core: Introduce __cdist_tmp_base_dir
 	* Core: Cleanup and enhance cdist-type-template
 	* Core: cdist-mass-deploy: Report failed cdist-deploy-to instances
-	* New Type __ssh_authorized_key (Aurélien Bondis)
+	* New Type: __ssh_authorized_key (Aurélien Bondis)
 
 1.6.1: 2011-04-07
 	* Improved logging: Show code responsible for abort
@@ -10,10 +20,10 @@
 	* Bugfix: Type __debconf_set_selections used wrong contens for selection
 	* Bugfix: Don't fail, if cache directory is not existing
 	* Bugfix: __user and __group exited non-zero if no change was necessary
-	* New Explorer hardware_type
-	* New Type __package_pkg_openbsd (Andi Brönnimann)
-	* New Type __autofs_map (Steven Armstrong)
-	* New Type __autofs_master (Steven Armstrong)
+	* New Explorer: hardware_type
+	* New Type: __package_pkg_openbsd (Andi Brönnimann)
+	* New Type: __autofs_map (Steven Armstrong)
+	* New Type: __autofs_master (Steven Armstrong)
 
 1.6.0: 2011-04-06
 	* New Type: __package_yum
