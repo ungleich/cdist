@@ -1,0 +1,132 @@
+#!/bin/sh
+#
+# 2011 Aurélien Bondis (aurelien.bondis AT gmail DOT com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# USEFUL DESCRIPTION
+#
+# set documentroot value
+# function to prepare variables regarding parameters
+# takes variable's name, parameter's name and default value
+prepare() {
+set -x
+if [ ! "$3" ]; then
+  echo "We need a default value"
+  exit 1
+fi
+
+if [ -f "$__object/parameter/$2" ]; then
+  eval $1=`cat $__object/parameter/$2`
+else
+  eval $1=$3
+fi
+set +x
+}
+
+prepare "root" "root" "/var/www/$__object_id"
+prepare "servername" "servername" "$__object_id"
+prepare "location" "location" "/"
+prepare "index" "index" "index.php"
+prepare	"state"	"state"	"disabled"
+
+if [ -f "$__object/parameter/template" ] && [ -f "$__object/parameter/source" ]; then
+  echo "Please use either a source or a template"
+  exit 1;
+fi
+#FIXME: need to find a place for full configurations
+if [ -f "$__object/parameter/template" ]; then
+	prepare "tpl" "template" "$__type/files/basic.tpl"
+	if [ ! -f "$tpl" ]; then
+	  echo "Missing template $tpl"
+	  exit 1
+	fi
+fi
+
+if  [ -f "$__object/parameter/source" ]; then
+        prepare "tpl" "template" "$__type/files/basic.vhost"
+        if [ ! -f "$tpl" ]; then
+          echo "Missing template $tpl"
+          exit 1
+        fi
+fi
+
+
+
+# copy the conf to tmp location
+tmpconf="$__object/template-$__object_id"
+echo "" > $tmpconf
+if [ -f "$__object/parameter/template" ]; then
+	cat $__type/files/header.tpl > $tmpconf
+fi
+cat $tpl >> $tmpconf
+# generate file if template is used
+sed -i "s!\$SERVERNAME!$servername!g" $tmpconf
+sed -i "s!\$ROOT!$root!g" $tmpconf
+sed -i "s!\$LOCATION!$location!g" $tmpconf
+sed -i "s!\$INDEX!$index!g" $tmpconf
+sed -i "s!\$REPOROOT!$reporoot!g" $tmpconf
+sed -i "s!\$REPO!$repo!g" $tmpconf
+echo "}" >> $tmpconf
+
+# send the file
+case "$os" in
+	centos|redhat)
+		a2package="httpd"
+		__addifnosuchline sites --file /etc/$a2package/httpd.conf --line "Include /etc/$a2package/sites-enabled/*.conf"
+	;;
+	archlinux)
+		a2package="apache2"
+	;;
+	debian)
+		a2package="apache2"
+	;;
+	*)
+		echo "your distro is not currently supported"
+		exit 1
+	;;
+esac	
+__package $a2package --state installed
+__directory /etc/$a2package/sites-available
+require="__package/$a2package" __directory /etc/$a2package/sites-available
+require="__directory/etc/$a2package/sites-available" __file /etc/$a2package/sites-available/$servername.conf --source $tmpconf
+
+
+case $state in
+	enabled)
+		__link /etc/$a2package/sites-enabled/$servername.conf   \
+		      --source ../sites-available/$servername.conf \
+		      --type symbolic
+	;;
+	disabled)
+		__link /etc/$a2package/sites-enabled/$servername.conf   \
+		      --source /dev/null \
+		      --type symbolic
+	;;
+	*)
+		echo "unknown state"
+	;;
+esac
+
+#
+# This is the manifest, which can be used to create other objects like this:
+# __file /path/to/destination --source /from/where/ --type file
+#
+# To tell cdist to make use of it, you need to make it executable (chmod +x)
+#
+#
+
