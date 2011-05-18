@@ -23,7 +23,7 @@
 # set documentroot value
 # function to prepare variables regarding parameters
 # takes variable's name, parameter's name and default value
-function prepare() {
+prepare() {
 set -x
 if [ ! "$3" ]; then
   echo "We need a default value"
@@ -54,6 +54,7 @@ fi
 prepare "servername" "servername" "$__object_id"
 prepare "location" "location" "/"
 prepare "index" "index" "index.php"
+prepare	"state"	"state"	"disabled"
 
 # copy the conf to tmp location
 tmpconf="$__object/template-$__object_id"
@@ -72,6 +73,22 @@ echo "}" >> $tmpconf
 require="__package/nginx" __directory /etc/nginx/sites-available
 require="__directory/etc/nginx/sites-available" __file /etc/nginx/sites-available/$servername.conf --source $tmpconf
 
+
+case $state in
+	enabled)
+		__link /etc/nginx/sites-enabled/$servername.conf   \
+		      --source ../sites-available/$servername.conf \
+		      --type symbolic
+	;;
+	disabled)
+		__link /etc/nginx/sites-enabled/$servername.conf   \
+		      --source /dev/null \
+		      --type symbolic
+	;;
+	*)
+		echo "unknown state"
+	;;
+esac
 
 #
 # This is the manifest, which can be used to create other objects like this:
