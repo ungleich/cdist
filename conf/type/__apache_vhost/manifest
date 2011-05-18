@@ -85,7 +85,7 @@ echo "}" >> $tmpconf
 
 # send the file
 case "$os" in
-	centos|redhat)
+	fedora|centos|redhat)
 		a2package="httpd"
 		__addifnosuchline sites --file /etc/$a2package/httpd.conf --line "Include /etc/$a2package/sites-enabled/*.conf"
 	;;
