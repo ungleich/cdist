@@ -100,7 +100,7 @@ case "$os" in
 	;;
 esac	
 __package $a2package --state installed
-__directory /etc/$a2package/sites-available
+require="__package/$a2package" __directory /etc/$a2package/sites-enabled
 require="__package/$a2package" __directory /etc/$a2package/sites-available
 require="__directory/etc/$a2package/sites-available" __file /etc/$a2package/sites-available/$servername.conf --source $tmpconf
 
