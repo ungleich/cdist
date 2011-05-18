@@ -55,10 +55,10 @@ __bridge brlxc --brname $brname --ifname $ifname
 __addifnosuchline cgroup --file /etc/fstab --line "none /cgroup cgroup defaults 0 0"
 
 # install lxc-tools
-__package lxc --state installed
+#__package lxc --state installed
 # send templates if some
 if [ -d "$__type/templates" ]; then
-  require="__package/lxc" __directory /etc/lxc
+  __directory /etc/lxc
   cd $__type/templates
   for vm in `find .  -maxdepth 1 -name '*.conf'`; do
     require="__directory/etc/lxc" __file /etc/lxc/$vm --source $__type/templates/$vm

@@ -51,9 +51,12 @@ set -x
 
 case "$os" in
   archlinux)                                                                                              
-    __addifnosuchline ifname --file /etc/rc.conf --line "$ifname=\"up\"";
+    __addifnosuchline ifname --file /etc/rc.conf --line "$ifname=\"$ifname up\"";
     __addifnosuchline brname --file /etc/rc.conf --line "$brname=\"dhcp\"";
     __addifnosuchline ifs --file /etc/rc.conf --line 'INTERFACES=('$ifname' '$brname')'; 
+    __addifnosuchline  bridge --file /etc/conf.d/bridges --line "bridge_$ifname=\"$ifname\"";
+    __addifnosuchline  control --file /etc/conf.d/bridges --line "control_$ifname=\"setfd $brname 0\"";
+    __addifnosuchline  brifs --file /etc/conf.d/bridges --line 'BRIDGE_INTERFACES=('$brname')';
   ;;
   *)
     exit 1;
