@@ -25,7 +25,7 @@
 # exec >&2
 # set -x
 
-pacopts="--noconfirm --noprogressbar"
+pacopts="--needed --noconfirm --noprogressbar"
 
 if [ -f "$__object/parameter/name" ]; then
    name="$__object/parameter/name"
