@@ -1,0 +1,20 @@
+#!/bin/sh
+set -x
+os="$(cat "$__global/explorer/os")"
+hostname="$(cat "$__global/explorer/hostname")"
+case "$os" in
+	macosx)
+		__file /var/root/fusioninventory-agent_macosx.zip --source "$__type/files/fusioninventory-agent_macosx.zip"
+	require="__file/var/root/fusioninventory-agent_macosx.zip" __unzip /var/root/fusioninventory-agent_macosx.zip --dir /var/root
+	require="__unzip/var/root/fusioninventory-agent_macosx.zip" __file agent.cfg --source "$__type/files/agent.cfg"
+	;;
+	archlinux)
+		echo "Utiliser cpan"
+	;;
+	centos|redhat|fedora)
+		echo "Utiliser cpan ou rpm"
+	;;
+	*)
+		echo "Pas encore supporte"
+	;;
+esac

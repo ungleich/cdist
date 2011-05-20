@@ -1,0 +1,75 @@
+# NamedSequencesProv-5.2.0.txt
+# Date: 2009-09-14, 12:47:00 PDT [KW]
+#
+# Unicode Character Database
+# Copyright (c) 1991-2009 Unicode, Inc.
+# For terms of use, see http://www.unicode.org/terms_of_use.html
+# For documentation, see http://www.unicode.org/reports/tr44/
+#
+# Provisional Named Sequences
+# Note: This data file contains those named
+#   sequences which have been designated to be provisional,
+#   rather than fully approved.
+#
+# Format:
+# Name of Sequence; Code Point Sequence for USI
+#
+# Note: The order of entries in this file is not significant.
+# However, entries are generally in script order corresponding
+# to block order in the Unicode Standard, to make it easier
+# to find entries currently in the list.
+
+# ================================================
+
+# Provisional entries for NamedSequences.txt.
+
+# Entry for a Bangla entity.
+# Provisional: 2009-August-10.
+
+BENGALI LETTER KHINYA;0995 09CD 09B7
+
+# Entries for JIS X 0213 compatibility mapping.
+# Provisional: 2008-November-07.
+
+LATIN SMALL LETTER AE WITH GRAVE;00E6 0300
+LATIN SMALL LETTER OPEN O WITH GRAVE;0254 0300
+LATIN SMALL LETTER OPEN O WITH ACUTE;0254 0301
+LATIN SMALL LETTER TURNED V WITH GRAVE;028C 0300
+LATIN SMALL LETTER TURNED V WITH ACUTE;028C 0301
+LATIN SMALL LETTER SCHWA WITH GRAVE;0259 0300
+LATIN SMALL LETTER SCHWA WITH ACUTE;0259 0301
+LATIN SMALL LETTER HOOKED SCHWA WITH GRAVE;025A 0300
+LATIN SMALL LETTER HOOKED SCHWA WITH ACUTE;025A 0301
+HIRAGANA LETTER BIDAKUON NGA;304B 309A
+HIRAGANA LETTER BIDAKUON NGI;304D 309A
+HIRAGANA LETTER BIDAKUON NGU;304F 309A
+HIRAGANA LETTER BIDAKUON NGE;3051 309A
+HIRAGANA LETTER BIDAKUON NGO;3053 309A
+KATAKANA LETTER BIDAKUON NGA;30AB 309A
+KATAKANA LETTER BIDAKUON NGI;30AD 309A
+KATAKANA LETTER BIDAKUON NGU;30AF 309A
+KATAKANA LETTER BIDAKUON NGE;30B1 309A
+KATAKANA LETTER BIDAKUON NGO;30B3 309A
+KATAKANA LETTER AINU CE;30BB 309A
+KATAKANA LETTER AINU TU;30C4 309A
+KATAKANA LETTER AINU TO;30C8 309A
+MODIFIER LETTER EXTRA-LOW EXTRA-HIGH CONTOUR TONE BAR;02E9 02E5
+
+# ================================================
+
+# Entries from Unicode 4.1.0 version of NamedSequences.txt,
+# subsequently disapproved because of potential errors in
+# representation.
+
+# GURMUKHI HALF YA;0A2F 0A4D
+# GURMUKHI PARI YA;0A4D 0A2F
+
+# Entry removed 2006-05-18:
+# 
+# LATIN SMALL LETTER A WITH ACUTE AND OGONEK;00E1 0328
+#
+# This entry was removed because the sequence was not in NFC,
+# as required. It was replaced with the NFC version of
+# the sequence, based on the Lithuanian additions accepted
+# for Unicode 5.0.
+

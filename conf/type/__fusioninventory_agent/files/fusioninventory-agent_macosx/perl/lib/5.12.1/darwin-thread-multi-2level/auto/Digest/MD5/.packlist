@@ -1,0 +1,4 @@
+/Users/fusioninventory/Desktop/fusioninventory-agent-base/tmp/perl/lib/5.12.1/darwin-thread-multi-2level/Digest/MD5.pm relocate_as=../../../Digest/MD5.pm
+/Users/fusioninventory/Desktop/fusioninventory-agent-base/tmp/perl/lib/5.12.1/darwin-thread-multi-2level/auto/Digest/MD5/MD5.bs relocate_as=MD5.bs
+/Users/fusioninventory/Desktop/fusioninventory-agent-base/tmp/perl/lib/5.12.1/darwin-thread-multi-2level/auto/Digest/MD5/MD5.bundle relocate_as=MD5.bundle
+/Users/fusioninventory/Desktop/fusioninventory-agent-base/tmp/perl/man/man3/Digest::MD5.3 relocate_as=../../../../../../man/man3/Digest::MD5.3
