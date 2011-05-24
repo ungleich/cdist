@@ -81,7 +81,6 @@ sed -i "s!\$LOCATION!$location!g" $tmpconf
 sed -i "s!\$INDEX!$index!g" $tmpconf
 sed -i "s!\$REPOROOT!$reporoot!g" $tmpconf
 sed -i "s!\$REPO!$repo!g" $tmpconf
-echo "}" >> $tmpconf
 
 # send the file
 os=$(cat "$__global/explorer/os")
@@ -89,7 +88,7 @@ echo "$os"
 case "$os" in
 	fedora|centos|redhat)
 		a2package="httpd"
-		__addifnosuchline sites --file /etc/$a2package/httpd.conf --line "Include /etc/$a2package/sites-enabled/*.conf"
+		require="__package/$a2package" __addifnosuchline sites --file /etc/$a2package/conf/httpd.conf --line "Include /etc/$a2package/sites-enabled/\*.conf"
 	;;
 	archlinux|ubuntu|debian)
 		a2package="apache2"
@@ -112,9 +111,7 @@ case $state in
 		      --type symbolic
 	;;
 	disabled)
-		__link /etc/$a2package/sites-enabled/$servername.conf   \
-		      --source /dev/null \
-		      --type symbolic
+		#Ensure file does not exist ...
 	;;
 	*)
 		echo "unknown state"

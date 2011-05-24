@@ -1,4 +1,5 @@
-location  $LOCATION {
-  root	$ROOT;
-  index	$INDEX;
-}
+<VirtualHost *:80>
+    DocumentRoot $ROOT
+    ServerName	$SERVERNAME
+</VirtualHost>
+
