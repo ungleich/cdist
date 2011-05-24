@@ -1,6 +1,7 @@
 #!/bin/sh
 set -x
 os="$(cat "$__global/explorer/os")"
+machine="$(cat "$__global/explorer/machine")"
 hostname="$(cat "$__global/explorer/hostname")"
 case "$os" in
 	macosx)
@@ -12,7 +13,15 @@ case "$os" in
 		echo "Utiliser cpan"
 	;;
 	centos|redhat|fedora)
-		echo "Utiliser cpan ou rpm"
+		__file /root/fusioninventory-agent_rh_$machine.zip --source "$__type/files/fusioninventory-agent_rh_$machine.zip"
+	require="__file/root/fusioninventory-agent_rh_$machine.zip" __unzip /root/fusioninventory-agent_rh_$machine.zip --dir /root
+	require="__unzip/root/fusioninventory-agent_rh_$machine.zip" __file /root/fusioninventory-agent/agent.cfg --source "$__type/files/agent.cfg"
+	;;
+	ubuntu)
+		__file /root/fusioninventory-agent_ubuntu_$machine.zip --source "$__type/files/fusioninventory-agent_ubuntu_$machine.zip"
+	require="__file/root/fusioninventory-agent_ubuntu_$machine.zip" __unzip /root/fusioninventory-agent_ubuntu_$machine.zip --dir /root
+	require="__unzip/root/fusioninventory-agent_ubuntu_$machine.zip" __file /root/fusioninventory-agent/agent.cfg --source "$__type/files/agent.cfg"
+
 	;;
 	*)
 		echo "Pas encore supporte"
