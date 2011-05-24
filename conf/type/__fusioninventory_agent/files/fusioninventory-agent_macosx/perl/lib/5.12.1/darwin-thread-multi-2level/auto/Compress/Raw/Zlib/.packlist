@@ -1,5 +1,0 @@
-/Users/fusioninventory/Desktop/fusioninventory-agent-base/tmp/perl/lib/5.12.1/darwin-thread-multi-2level/Compress/Raw/Zlib.pm relocate_as=../../../../Compress/Raw/Zlib.pm
-/Users/fusioninventory/Desktop/fusioninventory-agent-base/tmp/perl/lib/5.12.1/darwin-thread-multi-2level/auto/Compress/Raw/Zlib/Zlib.bs relocate_as=Zlib.bs
-/Users/fusioninventory/Desktop/fusioninventory-agent-base/tmp/perl/lib/5.12.1/darwin-thread-multi-2level/auto/Compress/Raw/Zlib/Zlib.bundle relocate_as=Zlib.bundle
-/Users/fusioninventory/Desktop/fusioninventory-agent-base/tmp/perl/lib/5.12.1/darwin-thread-multi-2level/auto/Compress/Raw/Zlib/autosplit.ix relocate_as=autosplit.ix
-/Users/fusioninventory/Desktop/fusioninventory-agent-base/tmp/perl/man/man3/Compress::Raw::Zlib.3 relocate_as=../../../../../../../man/man3/Compress::Raw::Zlib.3
