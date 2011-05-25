@@ -57,13 +57,13 @@ echo "FIXME"
 	fi
 echo "Template"
 
-#if  [ -f "$__object/parameter/source" ]; then
-#        prepare "tpl" "template" "$__type/files/basic.vhost"
-#        if [ ! -f "$tpl" ]; then
-#          echo "Missing template $tpl"
-#          exit 1
-#        fi
-#fi
+if  [ -f "$__object/parameter/source" ]; then
+        prepare "tpl" "source" "$__type/files/basic.vhost"
+        if [ ! -f "$tpl" ]; then
+          echo "Missing template $tpl"
+          exit 1
+        fi
+fi
 
 
 
