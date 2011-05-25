@@ -1,0 +1,6 @@
+#!/bin/sh
+__file /etc/profile.d/ruby_env.sh --source $__type/files/ruby_env.sh
+__package gcc-c++ --state installed
+__package zlib-devel --state installed
+__package openssl-devel --state installed
+__package readline-devel --state installed
