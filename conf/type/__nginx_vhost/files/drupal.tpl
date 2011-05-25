@@ -32,3 +32,12 @@
         fastcgi_param  CONTENT_LENGTH   $content_length;
     }
 
+#  Disable after installation
+#  location = /install.php {
+#    include /etc/nginx/fastcgi_params;
+#    fastcgi_param SCRIPT_FILENAME /home/keru/www/drupal/install.php;
+#    fastcgi_param QUERY_STRING q=$uri&$args;
+#    fastcgi_pass 127.0.0.1:9000;
+#  }
+
+

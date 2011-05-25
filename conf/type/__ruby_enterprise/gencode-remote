@@ -1,0 +1,30 @@
+#!/bin/sh
+#set -x
+export require="__package/gcc-c++ __package/zlib-devel __package/openssl-devel __package/readline-devel"
+
+hasruby="$(cat "$__object/explorer/ruby_bins")"
+rubyversion="$(cat "$__object/explorer/rubyversion")"
+if [ "$hasruby" = 'no' ]; then
+	#parse ruby enterprise site to get the url
+	url=`wget -q -O - http://www.rubyenterpriseedition.com/download.html|grep "<a href.*ruby-enterprise.*tar.gz" |sed 's!.*<a href="\(.*ruby-enterprise.*.tar.gz\)">.*!\1!g'`
+	ruby_new=`echo $url|sed 's!http://.*/\(ruby-enterprise.*.tar.gz\).*!\1!g'`
+	# download ruby tar.gz
+	# if not already downloaded
+	echo " 
+	cd /opt
+	if [ ! -f $ruby_new ]; then
+		wget $url
+	fi
+	if [ ! -d ${ruby_new%.tar.gz} ]; then
+		tar xzvf $ruby_new
+		./${ruby_new%.tar.gz}/installer -a /opt/${ruby_new%.tar.gz}
+	fi
+	#if [ -d /opt/ruby ] || [ -f /opt/ruby ]; then
+	#	echo sorry /opt/ruby is a real file/folder
+	#else
+	rm -f /opt/ruby
+	ln -fbs /opt/${ruby_new%.tar.gz}/ /opt/ruby
+	#fi
+	"
+fi
+unset require

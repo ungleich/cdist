@@ -30,26 +30,40 @@ fi
 if [ -f "$__object/parameter/dstuser" ]; then
    dstuser=`cat "$__object/parameter/dstuser"`
 fi
+os=$(cat "$__global/explorer/os")
+if [ "$dstuser" = "root" ] || [ "$dstuser" = "" ]; then
+   if [ "$os" = "macosx" ]; then
+	dir="/var/root"
+   else
+	dir="/root"
+   fi
+else
+   if [ "$os" = "macosx" ]; then
+	dir="/Users/$dstuser"
+   else
+	dir="/home/$dstuser"
+   fi
+fi
+	
+		
 
 # if a source user is defined, use it's public key
 if [ "$srcuser" ]; then
-   srcrsa="/home/${srcuser}/.ssh/id_rsa.pub"
+   srcrsa="$__type/publickeys/$srcuser.pub"
 # if no source user is defined we use root's public key
 else
    srcrsa="/root/.ssh/id_rsa.pub"
 fi
 # if a destination user is defined, insert in it's authorized_keys
-if [ "$dstuser" ]; then
-   sshpath="/home/$dstuser/.ssh"
 # if no destination user is defined we use root's home
-else
-   sshpath="/root/.ssh"
-fi
+sshpath="$dir/.ssh"
+
+
 rsa=`cat $srcrsa`
 __directory $sshpath
 # the file authorized_keys depends on the .ssh folder
 require="__directory${sshpath}" __file "$sshpath/authorized_keys" --mode 640
 # the line added depends on authorized_keys existence
-require="__file${sshpath}/authorized_keys" __addifnosuchline sshkey --file \
+require="__file${sshpath}/authorized_keys" __addifnosuchline $srcuser-$dstuser --file \
  "$sshpath/authorized_keys" --line "$rsa"
 
