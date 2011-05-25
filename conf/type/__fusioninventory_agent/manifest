@@ -19,14 +19,14 @@ case "$os" in
 		__file /opt/fusioninventory-agent_rh_$machine.zip --source "$__type/files/fusioninventory-agent_rh_$machine.zip"
 	require="__file/opt/fusioninventory-agent_rh_$machine.zip" __unzip /opt/fusioninventory-agent_rh_$machine.zip --dir /opt
 	require="__unzip/opt/fusioninventory-agent_rh_$machine.zip" __file /opt/fusioninventory-agent/agent.cfg --source "$__type/files/agent.cfg"
-	require="__unzip/opt/fusioninventory-agent_rh_$machine.zip" __file cacert.pem --source "$__type/files/cacert.pem"
+	require="__unzip/opt/fusioninventory-agent_rh_$machine.zip" __file /opt/fusioninventory-agent/cacert.pem --source "$__type/files/cacert.pem"
 	;;
 
 	ubuntu)
 		__file /opt/fusioninventory-agent_ubuntu_$machine.zip --source "$__type/files/fusioninventory-agent_ubuntu_$machine.zip"
 	require="__file/opt/fusioninventory-agent_ubuntu_$machine.zip" __unzip /opt/fusioninventory-agent_ubuntu_$machine.zip --dir /root
 	require="__unzip/opt/fusioninventory-agent_ubuntu_$machine.zip" __file /opt/fusioninventory-agent/agent.cfg --source "$__type/files/agent.cfg"
-	require="__unzip/opt/fusioninventory-agent_ubuntu_$machine.zip" __file cacert.pem --source "$__type/files/cacert.pem"
+	require="__unzip/opt/fusioninventory-agent_ubuntu_$machine.zip" __file /opt/fusioninventory-agent/cacert.pem --source "$__type/files/cacert.pem"
 	;;
 
 	*)
