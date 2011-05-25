@@ -1,0 +1,4 @@
+#!/bin/sh
+if `which ruby`; then
+	echo ruby -v
+fi
