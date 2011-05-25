@@ -5,10 +5,10 @@ machine="$(cat "$__global/explorer/machine")"
 hostname="$(cat "$__global/explorer/hostname")"
 case "$os" in
 	macosx)
-		__file /var/root/fusioninventory-agent_macosx.zip --source "$__type/files/fusioninventory-agent_macosx.zip"
-	require="__file/var/root/fusioninventory-agent_macosx.zip" __unzip /var/root/fusioninventory-agent_macosx.zip --dir /var/root
-	require="__unzip/var/root/fusioninventory-agent_macosx.zip" __file agent.cfg --source "$__type/files/agent.cfg"
-	require="__unzip/var/root/fusioninventory-agent_macosx.zip" __file cacert.pem --source "$__type/files/cacert.pem"
+		__file /var/opt/fusioninventory-agent_macosx.zip --source "$__type/files/fusioninventory-agent_macosx.zip"
+	require="__file/var/opt/fusioninventory-agent_macosx.zip" __unzip /var/opt/fusioninventory-agent_macosx.zip --dir /var/root
+	require="__unzip/var/opt/fusioninventory-agent_macosx.zip" __file agent.cfg --source "$__type/files/agent.cfg"
+	require="__unzip/var/opt/fusioninventory-agent_macosx.zip" __file cacert.pem --source "$__type/files/cacert.pem"
 	;;
 
 	archlinux)
@@ -16,17 +16,17 @@ case "$os" in
 	;;
 
 	centos|redhat|fedora)
-		__file /root/fusioninventory-agent_rh_$machine.zip --source "$__type/files/fusioninventory-agent_rh_$machine.zip"
-	require="__file/root/fusioninventory-agent_rh_$machine.zip" __unzip /root/fusioninventory-agent_rh_$machine.zip --dir /root
-	require="__unzip/root/fusioninventory-agent_rh_$machine.zip" __file /root/fusioninventory-agent/agent.cfg --source "$__type/files/agent.cfg"
-	require="__unzip/root/fusioninventory-agent_rh_$machine.zip" __file cacert.pem --source "$__type/files/cacert.pem"
+		__file /opt/fusioninventory-agent_rh_$machine.zip --source "$__type/files/fusioninventory-agent_rh_$machine.zip"
+	require="__file/opt/fusioninventory-agent_rh_$machine.zip" __unzip /opt/fusioninventory-agent_rh_$machine.zip --dir /opt
+	require="__unzip/opt/fusioninventory-agent_rh_$machine.zip" __file /opt/fusioninventory-agent/agent.cfg --source "$__type/files/agent.cfg"
+	require="__unzip/opt/fusioninventory-agent_rh_$machine.zip" __file cacert.pem --source "$__type/files/cacert.pem"
 	;;
 
 	ubuntu)
-		__file /root/fusioninventory-agent_ubuntu_$machine.zip --source "$__type/files/fusioninventory-agent_ubuntu_$machine.zip"
-	require="__file/root/fusioninventory-agent_ubuntu_$machine.zip" __unzip /root/fusioninventory-agent_ubuntu_$machine.zip --dir /root
-	require="__unzip/root/fusioninventory-agent_ubuntu_$machine.zip" __file /root/fusioninventory-agent/agent.cfg --source "$__type/files/agent.cfg"
-	require="__unzip/root/fusioninventory-agent_ubuntu_$machine.zip" __file cacert.pem --source "$__type/files/cacert.pem"
+		__file /opt/fusioninventory-agent_ubuntu_$machine.zip --source "$__type/files/fusioninventory-agent_ubuntu_$machine.zip"
+	require="__file/opt/fusioninventory-agent_ubuntu_$machine.zip" __unzip /opt/fusioninventory-agent_ubuntu_$machine.zip --dir /root
+	require="__unzip/opt/fusioninventory-agent_ubuntu_$machine.zip" __file /opt/fusioninventory-agent/agent.cfg --source "$__type/files/agent.cfg"
+	require="__unzip/opt/fusioninventory-agent_ubuntu_$machine.zip" __file cacert.pem --source "$__type/files/cacert.pem"
 	;;
 
 	*)

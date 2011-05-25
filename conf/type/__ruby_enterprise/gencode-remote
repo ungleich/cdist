@@ -4,8 +4,7 @@ export require="__package/gcc-c++ __package/zlib-devel __package/openssl-devel _
 
 hasruby="$(cat "$__object/explorer/ruby_bins")"
 rubyversion="$(cat "$__object/explorer/rubyversion")"
-set -x
-if [ $hasruby = 'no' ]; then
+if [ "$hasruby" = 'no' ]; then
 	#parse ruby enterprise site to get the url
 	url=`wget -q -O - http://www.rubyenterpriseedition.com/download.html|grep "<a href.*ruby-enterprise.*tar.gz" |sed 's!.*<a href="\(.*ruby-enterprise.*.tar.gz\)">.*!\1!g'`
 	ruby_new=`echo $url|sed 's!http://.*/\(ruby-enterprise.*.tar.gz\).*!\1!g'`
