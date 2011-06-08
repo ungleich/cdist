@@ -25,19 +25,6 @@
 [ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ]"
 set -u
 
-# trap __cdist_tmp_removal EXIT
-trap killandclean EXIT
-
-killandclean()
-{
-   __cdist_echo info "Existing and killing children..." 
-   kill 0
-
-   # Ensure tmp stuff is being removed
-   __cdist_cleanly_exit
-}
-
-
 filter()
 {
    awk -v host=$1 '{ print "[" host "] " $0 }'
