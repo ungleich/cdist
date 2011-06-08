@@ -355,6 +355,8 @@ __cdist_tmp_removal()
    rm -rf "${__cdist_tmp_dir}"
 }
 
+# Does not work in children, will be called again in every script!
+# Use only in interactive "front end" scripts
 __cdist_kill_on_interrupt()
 {
    __cdist_tmp_removal
@@ -363,9 +365,6 @@ __cdist_kill_on_interrupt()
 
 # Remove tempfiles at normal exit
 trap __cdist_tmp_removal EXIT
-
-# Kill children on interrupt
-trap __cdist_kill_on_interrupt INT TERM
 
 
 ################################################################################

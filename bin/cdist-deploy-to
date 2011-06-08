@@ -25,6 +25,9 @@
 [ $# -eq 1 ] || __cdist_usage "<target host>"
 set -eu
 
+# Kill children on interrupt - only in interactive scripts
+trap __cdist_kill_on_interrupt INT TERM
+
 __cdist_target_host="$1"
 
 # Make target host available for non-core

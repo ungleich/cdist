@@ -25,6 +25,9 @@
 [ $# -ge 1 ] || __cdist_usage "[-p] <target host> [target host ]"
 set -u
 
+# Kill children on interrupt - only in interactive scripts
+trap __cdist_kill_on_interrupt INT TERM
+
 filter()
 {
    awk -v host=$1 '{ print "[" host "] " $0 }'
