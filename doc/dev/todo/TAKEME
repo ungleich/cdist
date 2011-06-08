@@ -37,6 +37,9 @@ CORE
       -> add function to cdist-config, import from cdist-cache
 
 - check all all internal variables are prefixed with __cdist
+- Define / document "this is what should be on host X"
+   and have it parsable by different (shinken) tool
+   -> given after manifest run already!
 
 TYPES
 ------
