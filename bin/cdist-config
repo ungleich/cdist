@@ -361,6 +361,7 @@ __cdist_kill_on_interrupt()
 {
    __cdist_tmp_removal
    kill 0
+   exit 1
 }
 
 # Remove tempfiles at normal exit
