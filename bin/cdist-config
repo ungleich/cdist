@@ -82,7 +82,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 
 ################################################################################
-# Exported variable names (usable for non core
+# Exported variable names (usable for non core)
 #
 : ${__cdist_name_var_explorer:=__$__cdist_name_explorer}
 : ${__cdist_name_var_type_explorer:=__$__cdist_name_type_explorer}

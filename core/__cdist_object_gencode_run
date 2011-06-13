@@ -22,17 +22,15 @@
 # For the given object create the code to be executed on the target.
 #
 
-. cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host> <object>"
-set -eu
+__cdist_object_gencode_run()
+{
+   __cdist_object_gencode_run_object="$1"; shift
 
-__cdist_target_host="$1"; shift
-__cdist_object_self="$1"; shift
+   __cdist_echo info "Generating local code "
+   __cdist_object_gencode "$__cdist_object_gencode_run_object" \
+      "${__cdist_name_gencode_local}"
 
-__cdist_echo info "Generating local code "
-cdist-object-gencode "$__cdist_target_host" "$__cdist_object_self" \
-   "${__cdist_name_gencode_local}"
-
-__cdist_echo info "Generating remote code "
-cdist-object-gencode "$__cdist_target_host" "$__cdist_object_self" \
+   __cdist_echo info "Generating remote code "
+   __cdist_object_gencode "$__cdist_object_gencode_run_object" \
    "${__cdist_name_gencode_remote}"
+}
