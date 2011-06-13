@@ -5,6 +5,8 @@ Feel free to pick one!
 
 CORE
 ----
+- Fix warnings / __cdist_usage in core/*
+   -> __cdist_usage prints $0! not function name!
 - Inconsistent error messages if object is not existing!
    -> always use "Object undefined"
 - Add echo function / beautify output
