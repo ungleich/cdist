@@ -22,17 +22,16 @@
 # Exec the code for the given object locally and remote
 #
 
-. cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host> <object>"
-set -e
+__cdist_object_code_run()
+{
 
-__cdist_target_host="$1"; shift
-__cdist_object="$1"; shift
+   __cdist_object_code_run_object="$1"; shift
 
-# Code local
-export __cdist_out_object_dir="$__cdist_out_object_dir"
-cdist-code-run "$__cdist_object" "${__cdist_name_gencode_local}"
+   # Code local
+   export __cdist_out_object_dir="$__cdist_out_object_dir"
+   cdist-code-run "$__cdist_object_code_run_object" "${__cdist_name_gencode_local}"
 
-# Code remote
-cdist-run-remote "$__cdist_target_host" \
-   "cdist-code-run" "$__cdist_object" "${__cdist_name_gencode_remote}"
+   # Code remote
+   cdist-run-remote "$__cdist_target_host" \
+      "cdist-code-run" "$__cdist_object_code_run_object" "${__cdist_name_gencode_remote}"
+}
