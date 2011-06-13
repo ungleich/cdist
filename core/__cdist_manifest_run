@@ -46,7 +46,8 @@ __cdist_manifest_run()
    #
 
    # Ensure binaries exist and are up-to-date
-   cdist-type-build-emulation "${__cdist_out_type_bin_dir}" \
+   # FIXME: do only once! no need to check for every manifest!
+   __cdist_type_build_emulation "${__cdist_out_type_bin_dir}" \
       || __cdist_exit_err "Failed to build type emulation binaries"
 
    # prepend our path, so all cdist tools come before other tools
