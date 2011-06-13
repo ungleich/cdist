@@ -24,24 +24,26 @@
 #  - run type manifest
 #
 
-. cdist-config
-[ $# -eq 2 ] || __cdist_usage "<target host> <object>"
-set -eu
+__cdist_object_prepare()
+{
+   [ $# -eq 1 ] || __cdist_usage "<object>"
+   set -eu
 
-__cdist_target_host="$1"; shift
-__cdist_object_self="$1"; shift
-__cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
-[ -d "$__cdist_object_dir" ] || __cdist_exit_err "Object undefined"
+   __cdist_target_host="$1"; shift
+   __cdist_object_self="$1"; shift
+   __cdist_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
+   [ -d "$__cdist_object_dir" ] || __cdist_exit_err "Object undefined"
 
-# Export to non-core for use in manifest and gencode scripts
-export $__cdist_name_var_self=$__cdist_object_self
+   # Export to non-core for use in manifest and gencode scripts
+   export $__cdist_name_var_self=$__cdist_object_self
 
-__cdist_object_prepared="$(__cdist_object_prepared "$__cdist_object_self")"
-if [ ! -f "$__cdist_object_prepared" ]; then
-   __cdist_echo info "Preparing object"
-   cdist-object-explorer-run  "$__cdist_target_host" "$__cdist_object_self"
-   cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object_self"
+   __cdist_object_prepared="$(__cdist_object_prepared "$__cdist_object_self")"
+   if [ ! -f "$__cdist_object_prepared" ]; then
+      __cdist_echo info "Preparing object"
+      cdist-object-explorer-run  "$__cdist_target_host" "$__cdist_object_self"
+      cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object_self"
 
-   # Mark this object as prepared
-   touch "$__cdist_object_prepared"
-fi
+      # Mark this object as prepared
+      touch "$__cdist_object_prepared"
+   fi
+}
