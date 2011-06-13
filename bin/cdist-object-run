@@ -57,7 +57,8 @@ if [ ! -f "$__cdist_object_finished" ]; then
    fi
 
    __cdist_object_gencode_run "$__cdist_object_self"
-   cdist-object-push          "$__cdist_target_host" "$__cdist_object_self"
+   __cdist_dir push "$(__cdist_object_dir "$__cdist_object_self")" \
+             "$(__cdist_remote_object_dir "$__cdist_object_self")"
    cdist-object-code-run      "$__cdist_target_host" "$__cdist_object_self"
 
    # Mark this object as done
