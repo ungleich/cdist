@@ -30,6 +30,5 @@ __cdist_target_host="$1"; shift
 __cdist_object_self="$1"; shift
 
 __cdist_echo info "Transferring object"
-cdist-dir push "$__cdist_target_host" \
-   "$(__cdist_object_dir "$__cdist_object_self")" \
+__cdist_dir push "$(__cdist_object_dir "$__cdist_object_self")" \
    "$(__cdist_remote_object_dir "$__cdist_object_self")"

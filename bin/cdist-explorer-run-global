@@ -30,8 +30,7 @@ __cdist_target_host="$1"; shift
 __cdist_echo info "Running global explorers "
 
 # copy the explorers
-cdist-dir push "$__cdist_target_host" \
-   "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
+__cdist_dir push "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
 
 # run the initial explorers remotely
 cdist-run-remote "${__cdist_target_host}" cdist-remote-explorer-run  \
@@ -39,5 +38,4 @@ cdist-run-remote "${__cdist_target_host}" cdist-remote-explorer-run  \
    "$__cdist_remote_out_explorer_dir"
 
 # retrieve the results
-cdist-dir pull "$__cdist_target_host" \
-   "${__cdist_remote_out_explorer_dir}" "${__cdist_out_explorer_dir}"
+__cdist_dir pull "${__cdist_remote_out_explorer_dir}" "${__cdist_out_explorer_dir}"

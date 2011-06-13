@@ -40,13 +40,13 @@ if [ "$__cdist_has_explorer" ]; then
       src_dir="$(__cdist_type_explorer_dir "$__cdist_type")"
       dst_dir="$(__cdist_remote_type_explorer_dir "$__cdist_type")"
       __cdist_echo info "Transfering explorers for $__cdist_type "
-      cdist-dir push "$__cdist_target_host" "$src_dir" "$dst_dir"
+      __cdist_dir push "$src_dir" "$dst_dir"
       __cdist_type_explorer_pushed_add "$__cdist_type"
    fi
 
    __cdist_echo info "Running explorers"
    # Copy object parameters
-   cdist-dir push "$__cdist_target_host"                          \
+   __cdist_dir push \
       "$(__cdist_object_parameter_dir "$__cdist_object_self")"         \
       "$(__cdist_remote_object_parameter_dir "$__cdist_object_self")"
 
@@ -61,7 +61,6 @@ if [ "$__cdist_has_explorer" ]; then
       "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")"
 
    # Copy back results
-   cdist-dir pull "$__cdist_target_host"                             \
-      "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")" \
+   __cdist_dir pull "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")" \
       "$(__cdist_object_type_explorer_dir "$__cdist_object_self")"
 fi

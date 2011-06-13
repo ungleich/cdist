@@ -48,8 +48,7 @@ __cdist_init_deploy           "$__cdist_target_host"
 
 # Transfer cdist executables
 __cdist_echo info "Transferring cdist binaries to the target host "
-cdist-dir push                "$__cdist_target_host" \
-   "${__cdist_abs_mydir}" "${__cdist_remote_bin_dir}"
+__cdist_dir push "${__cdist_abs_mydir}" "${__cdist_remote_bin_dir}"
 cdist-explorer-run-global     "$__cdist_target_host"
 cdist-manifest-run-init       "$__cdist_target_host"
 cdist-object-all              "$__cdist_target_host" cdist-object-prepare
