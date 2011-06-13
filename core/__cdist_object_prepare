@@ -38,7 +38,7 @@ __cdist_object_prepare()
    __cdist_object_prepared="$(__cdist_object_prepared "$__cdist_object_self")"
    if [ ! -f "$__cdist_object_prepared" ]; then
       __cdist_echo info "Preparing object"
-      cdist-object-explorer-run  "$__cdist_target_host" "$__cdist_object_self"
+      __cdist_object_explorer_run "$__cdist_object_self"
       cdist-object-manifest-run  "$__cdist_target_host" "$__cdist_object_self"
 
       # Mark this object as prepared
