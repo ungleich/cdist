@@ -17,3 +17,6 @@ run_code_from_user()
    load_lib
    . file_from_user
 }
+
+Introduce global variables:
+   __cdist_target_host
