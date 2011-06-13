@@ -48,7 +48,7 @@ __cdist_object_manifest_run()
          export $__cdist_name_var_object_id="$__cdist_object_id"
          export $__cdist_name_var_type="$(__cdist_type_dir "$__cdist_type")"
 
-         __cdist_manifest_run "$__cdist_target_host" "$__cdist_manifest"
+         __cdist_manifest_run "$__cdist_manifest"
 
          # Tell cdist-object-run-all that there may be new objects
          touch "$__cdist_objects_created"
