@@ -155,7 +155,7 @@ __cdist_tmp_file=$(mktemp "$__cdist_tmp_dir/cdist.XXXXXXXXXXXX")
 
 # *NEW* Load functions from library
 for __cdist_lib in $__cdist_core_dir/*; do
-   echo Loading $__cdist_lib ...
+   # echo Loading $__cdist_lib ...
    . "$__cdist_lib"
 done
 
