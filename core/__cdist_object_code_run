@@ -32,6 +32,6 @@ __cdist_object_code_run()
    __cdist_code_run "$__cdist_object_code_run_object" "${__cdist_name_gencode_local}"
 
    # Code remote
-   cdist-run-remote "$__cdist_target_host" \
-      "cdist-code-run" "$__cdist_object_code_run_object" "${__cdist_name_gencode_remote}"
+   __cdist_run_remote "$__cdist_target_host" \
+      "__cdist_code_run" "$__cdist_object_code_run_object" "${__cdist_name_gencode_remote}"
 }

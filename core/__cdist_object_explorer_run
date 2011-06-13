@@ -49,7 +49,7 @@ __cdist_object_explorer_run()
          "$(__cdist_remote_object_parameter_dir "$__cdist_object_self")"
 
       # Execute explorers
-      cdist-run-remote "$__cdist_target_host"                     \
+      __cdist_run_remote                                          \
          "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\"" \
          "$__cdist_name_var_object_id=\"$__cdist_object_id\""     \
          "$__cdist_name_var_self=\"$__cdist_object_self\""        \

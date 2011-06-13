@@ -55,9 +55,9 @@ __cdist_dir push "${__cdist_abs_mydir}" "${__cdist_remote_bin_dir}"
 __cdist_dir push "${__cdist_core_dir}" "${__cdist_remote_core_dir}"
 
 cdist-explorer-run-global     "$__cdist_target_host"
-__cdist_manifest_run_init       "$__cdist_target_host"
+__cdist_manifest_run_init
 __cdist_object_all            __cdist_object_prepare
 __cdist_object_all            __cdist_object_run
-cdist-cache                   "$__cdist_target_host"
+__cdist_cache
 
 __cdist_echo info "cdist $__cdist_version: Successfully finished run"
