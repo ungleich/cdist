@@ -22,13 +22,10 @@
 # And save it into the cache tree
 #
 
-. cdist-config
-[ $# -eq 1 ] || __cdist_usage "<target host>"
-set -e
+__cdist_manifest_run_init()
+{
+   eval export $__cdist_name_var_manifest=\"\$__cdist_manifest_dir\"
 
-__cdist_target_host="$1"; shift
-
-eval export $__cdist_name_var_manifest=\"\$__cdist_manifest_dir\"
-
-__cdist_echo info "Running initial manifest for $__cdist_target_host "
-__cdist_manifest_run "$__cdist_manifest_init"
+   __cdist_echo info "Running initial manifest for $__cdist_target_host "
+   __cdist_manifest_run "$__cdist_manifest_init"
+}

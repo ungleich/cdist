@@ -24,9 +24,7 @@
 
 __cdist_manifest_run()
 {
-
    [ $# -eq 1 ] || __cdist_usage "<manifest>"
-   set -u
 
    __cdist_manifest="$1"; shift
 
