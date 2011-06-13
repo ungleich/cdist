@@ -1,0 +1,13 @@
+Provisioning Server ideas
+
+   - bootup kernel on target host via TFTP/PXE
+   - start our code that
+      - enables networking (dhcp)
+      - enables sshd
+
+Requires:
+   - Program that creates our blob that needs to be started
+      - for Linux: initrd
+      - Including ssh keys -> known!
+      - startup sshd
+
