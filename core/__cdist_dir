@@ -24,28 +24,30 @@
 #
 
 
-. cdist-config
-[ $# -eq 4 ] || __cdist_usage "<push|pull> <target host> <src dir> <dst dir>"
-set -ue
+__cdist_dir()
+{
+   [ $# -eq 4 ] || __cdist_usage "<push|pull> <target host> <src dir> <dst dir>"
+   set -ue
 
-__cdist_action="$1"; shift
-__cdist_target_host="$1"; shift
-__cdist_src_dir="$1"; shift
-__cdist_dst_dir="$1"; shift
+   __cdist_action="$1"; shift
+   __cdist_target_host="$1"; shift
+   __cdist_src_dir="$1"; shift
+   __cdist_dst_dir="$1"; shift
 
-# This will be the destination directory, so no subdirectories
-# of the same name are created, if the directory is already existing
-__cdist_top_dir="${__cdist_dst_dir%/*}"
+   # This will be the destination directory, so no subdirectories
+   # of the same name are created, if the directory is already existing
+   __cdist_top_dir="${__cdist_dst_dir%/*}"
 
-if [ "$__cdist_action" = "push" ]; then
-   ssh "${__cdist_remote_user}@${__cdist_target_host}" \
-      "mkdir -p \"${__cdist_dst_dir}\""
-   scp -qr "$__cdist_src_dir" \
-      "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_top_dir}"
-elif [ "$__cdist_action" = "pull" ]; then
-   mkdir -p "${__cdist_dst_dir}"
-   scp -qr "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_src_dir}" \
-      "${__cdist_top_dir}"
-else
-   __cdist_exit_err "Unknown action $__cdist_action"
-fi
+   if [ "$__cdist_action" = "push" ]; then
+      ssh "${__cdist_remote_user}@${__cdist_target_host}" \
+         "mkdir -p \"${__cdist_dst_dir}\""
+      scp -qr "$__cdist_src_dir" \
+         "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_top_dir}"
+   elif [ "$__cdist_action" = "pull" ]; then
+      mkdir -p "${__cdist_dst_dir}"
+      scp -qr "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_src_dir}" \
+         "${__cdist_top_dir}"
+   else
+      __cdist_exit_err "Unknown action $__cdist_action"
+   fi
+}
