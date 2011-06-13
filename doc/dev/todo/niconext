@@ -1,1 +1,5 @@
+- run-remote does not work anymore, because there is no binary :-)
+   either make functions available on the other side or
+   put logic on the server side.
+
 Catch broken instances in cdist-mass-deploy -p and report broken deployements at the end!
