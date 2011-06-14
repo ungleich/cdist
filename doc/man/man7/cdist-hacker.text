@@ -54,6 +54,7 @@ everybody using cdist, you're welcome to propose inclusion into upstream.
 There are though some requirements to ensure your changes don't break others
 work nor kill the authors brain:
 
+- All files should contain the usual header (Author, Copying, etc.)
 - Code submission must be done via git
 - Do not add conf/manifest/init - This file should only be touched in your
   private branch!

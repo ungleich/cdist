@@ -183,12 +183,12 @@ level tools like ruby installed. If a type requires specific tools to be present
 on the target, there must be another type that provides this tool and the first
 type should create an object of the specific type.
 
-If your type wants to save temporay data, that may be used by other types
+If your type wants to save temporary data, that may be used by other types
 later on (for instance __file), you can save them in the subdirectory
 "files" below $__object (but you must create it yourself). cdist will not touch
 this directory.
 
-If your type contains static files, it's also recommened to place them in
+If your type contains static files, it's also recommended to place them in
 a folder named "files" within the type (again, because cdist guarantees to
 never ever touch this folder).
 
