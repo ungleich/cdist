@@ -23,7 +23,6 @@
 
 __cdist_code_run()
 {
-
    [ $# -eq 2 ] || __cdist_usage "<object> <type>"
 
    __cdist_object_self="$1"; shift
@@ -49,4 +48,7 @@ __cdist_code_run()
          __cdist_exit_err "$__cdist_code exists, but is not a file."
       fi
    fi
+
+   # Exit gracefully if nothing is todo
+   true
 }

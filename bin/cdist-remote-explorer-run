@@ -24,45 +24,50 @@
 # and __type_explorers can be submitted :-)
 #
 
-. cdist-config
-[ $# -eq 3 ] || __cdist_usage "<variable name> <explorer dir> <out dir>"
-set -ue
+# FIXME: cleanup!
+__cdist_remote_explorer_run()
+{
+   [ $# -eq 3 ] || __cdist_usage "<variable name> <explorer dir> <out dir>"
+   set -ue
 
-# Variable that defines the home of the explorers
-__cdist_variable_name="$1"; shift
+   "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\""
 
-# Find explorers here
-__cdist_explorer_dir="$1"; shift
+   # Variable that defines the home of the explorers
+   __cdist_variable_name="$1"; shift
 
-# Write output here
-__cdist_my_out_dir="$1"; shift
+   # Find explorers here
+   __cdist_explorer_dir="$1"; shift
 
-# Setup environment
-export $__cdist_variable_name="$__cdist_explorer_dir"
-export __global="$__cdist_remote_out_dir"
+   # Write output here
+   __cdist_my_out_dir="$1"; shift
 
-mkdir -p "$__cdist_my_out_dir"
+   # Setup environment
+   export $__cdist_variable_name="$__cdist_explorer_dir"
+   export __global="$__cdist_remote_out_dir"
 
-# Ensure there is at least one explorer
-num="$(ls -1 "$__cdist_explorer_dir" | wc -l)"
-if [ "$num" -lt 1 ]; then
-   __cdist_exit_err "${__cdist_explorer_dir}: Contains no explorers"
-fi
+   mkdir -p "$__cdist_my_out_dir"
 
-# Execute all explorers
-for explorer in "$__cdist_explorer_dir/"*; do
-   explorer_name="${explorer##*/}"
-
-   if [ -f "$explorer" ]; then
-      if [ ! -x "$explorer" ]; then
-         __cdist_exit_err "Explorer \"$explorer\" exists, but is not executable."
-      fi
-
-      # Execute explorers and save results in remote destination directory
-      "$explorer" > "${__cdist_my_out_dir}/$explorer_name"
-   else
-      if [ -e "$explorer" ]; then
-         __cdist_exit_err "Explorer \"$explorer\" exists, but is not a file."
-      fi
+   # Ensure there is at least one explorer
+   num="$(ls -1 "$__cdist_explorer_dir" | wc -l)"
+   if [ "$num" -lt 1 ]; then
+      __cdist_exit_err "${__cdist_explorer_dir}: Contains no explorers"
    fi
-done
+
+   # Execute all explorers
+   for explorer in "$__cdist_explorer_dir/"*; do
+      explorer_name="${explorer##*/}"
+
+      if [ -f "$explorer" ]; then
+         if [ ! -x "$explorer" ]; then
+            __cdist_exit_err "Explorer \"$explorer\" exists, but is not executable."
+         fi
+
+         # Execute explorers and save results in remote destination directory
+         "$explorer" > "${__cdist_my_out_dir}/$explorer_name"
+      else
+         if [ -e "$explorer" ]; then
+            __cdist_exit_err "Explorer \"$explorer\" exists, but is not a file."
+         fi
+      fi
+   done
+}

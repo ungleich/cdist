@@ -28,7 +28,6 @@
 
 __cdist_object_gencode()
 {
-   __cdist_myname="foo"
    [ $# -eq 2 ] || __cdist_usage "<object>" "<type>"
 
    __cdist_object_self="$1"; shift
