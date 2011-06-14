@@ -24,11 +24,9 @@
 # and __type_explorers can be submitted :-)
 #
 
-# FIXME: cleanup!
 __cdist_remote_explorer_run()
 {
    [ $# -eq 3 ] || __cdist_usage "<variable name> <explorer dir> <out dir>"
-   set -ue
 
    "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\""
 
