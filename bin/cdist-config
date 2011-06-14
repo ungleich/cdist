@@ -24,6 +24,9 @@ __cdist_version="1.7.0"
 # Fail if something bogus is going on
 set -u
 
+# Fail if exited non-zero as well
+set -e
+
 ################################################################################
 # cconf standard vars prefixed with cdist
 
