@@ -33,7 +33,7 @@ __cdist_echo info "Running global explorers "
 __cdist_dir push "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
 
 # run the initial explorers remotely
-__cdist_run_remote __cdist_remote_explorer_run  \
+__cdist_run_remote __cdist_remote_explorer_run  # FIXME: add object_self!!!! \
    "$__cdist_name_var_explorer" "$__cdist_remote_explorer_dir"       \
    "$__cdist_remote_out_explorer_dir"
 
