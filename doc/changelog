@@ -1,5 +1,7 @@
 1.7.1:
-	* Add explorers to reference documentation
+	* Documentation: Add explorers to reference
+	* Documentation: Typo cleanup (Derek Brost)
+	* Type __key_value: Bugfix (Steven Armstrong)
 
 1.7.0: 2011-05-10
 	* Bugfix type __package_yum: Fix redhat support (Ramon Salvadó)
