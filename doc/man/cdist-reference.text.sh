@@ -153,10 +153,11 @@ done
 
 cat << eof
 
+
 ENVIRONMENT VARIABLES
 ---------------------
 __explorer::
-   Directory that contains all explorers.
+   Directory that contains all global explorers.
    Available for: explorer
 __manifest::
    Directory that contains the initial manifest.
