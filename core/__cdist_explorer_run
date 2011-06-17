@@ -18,20 +18,24 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# This binary is executed on the remote side to execute explorers
-# 
-# It supports different variables names to be used, so __explorers
-# and __type_explorers can be submitted :-)
+# Run explorers
 #
 
 __cdist_explorer_run()
 {
-   [ $# -eq 3 ] || __cdist_usage "<variable name> <explorer dir> <out dir>"
+   [ $# -eq 3 ] || __cdist_usage "<global|type> <explorer dir> <out dir>"
 
-   "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\""
+   case "$1" in
+      global)
+      type)
+         "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\""
+      *)
+      ;;
+   esac
+
 
    # Variable that defines the home of the explorers
-   __cdist_variable_name="$1"; shift
+   # __cdist_variable_name="$1"; shift
 
    # Find explorers here
    __cdist_explorer_dir="$1"; shift
@@ -39,11 +43,11 @@ __cdist_explorer_run()
    # Write output here
    __cdist_my_out_dir="$1"; shift
 
-   # Setup environment
+   # Setup remote environment
    export $__cdist_variable_name="$__cdist_explorer_dir"
    export __global="$__cdist_remote_out_dir"
 
-   mkdir -p "$__cdist_my_out_dir"
+   # mkdir -p "$__cdist_my_out_dir"
 
    # Ensure there is at least one explorer
    num="$(ls -1 "$__cdist_explorer_dir" | wc -l)"
