@@ -183,7 +183,7 @@ __target_user::
 __type::
    Path to the current type.
    Available for: type manifest
-__type_explorers::
+__type_explorer::
    Directory that contains the type explorers.
    Available for: type explorer
 
