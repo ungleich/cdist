@@ -2,7 +2,10 @@
    either make functions available on the other side or
    put logic on the server side.
 
-   - trying to run global explorers nicely from local side
+   - trying to run type explorers nicely from local side
+      - must check whether type directory has been transmitted before!
+
+--------------------------------------------------------------------------------
 
 
    - Both type and global have...
