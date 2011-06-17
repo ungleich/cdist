@@ -36,8 +36,6 @@ export $__cdist_name_var_target_user="$__cdist_remote_user"
 
 # Export variables for core, which others do not reset
 export __cdist_local_base_dir
-
-# Load library always from the checkout
 export __cdist_core_dir
 
 __cdist_echo info "cdist $__cdist_version: Configuring $__cdist_target_host "
@@ -48,6 +46,8 @@ __cdist_echo info "cdist $__cdist_version: Configuring $__cdist_target_host "
 
 # Prepare local and remote directories
 __cdist_init_deploy           "$__cdist_target_host"
+
+FIXME: stopped here!
 
 # Transfer cdist executables
 __cdist_echo info "Transferring cdist binaries/functions to the target host "
