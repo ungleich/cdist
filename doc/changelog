@@ -2,6 +2,8 @@
 	* Documentation: Add explorers to reference
 	* Documentation: Typo cleanup (Derek Brost)
 	* Type __key_value: Bugfix (Steven Armstrong)
+	* New Type: __postgres_role (Steven Armstrong)
+	* New Type: __postgres_database (Steven Armstrong)
 
 1.7.0: 2011-05-10
 	* Bugfix type __package_yum: Fix redhat support (Ramon Salvadó)
