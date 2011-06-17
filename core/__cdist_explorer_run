@@ -24,7 +24,7 @@
 # and __type_explorers can be submitted :-)
 #
 
-__cdist_remote_explorer_run()
+__cdist_explorer_run()
 {
    [ $# -eq 3 ] || __cdist_usage "<variable name> <explorer dir> <out dir>"
 
