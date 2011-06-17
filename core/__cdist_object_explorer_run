@@ -30,7 +30,7 @@ __cdist_object_explorer_run()
    __cdist_type="$(__cdist_type_from_object "$__cdist_object_self")"
 
    # Check if type of object has >= 1 explorer
-   __cdist_has_explorer="$(__cdist_type_has_explorer "$__cdist_type")"
+   __cdist_has_explorer="$(__cdist_dir_listing "$(__cdist_type_explorer_dir "$__cdist_type")")"
    # Run the type explorers for the current object if any
    if [ "$__cdist_has_explorer" ]; then
       if ! __cdist_type_explorer_pushed "$__cdist_type"; then
