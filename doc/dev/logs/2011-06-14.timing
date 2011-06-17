@@ -1,0 +1,6 @@
+ikq04:
+
+cdist-deploy-to ikq04.ethz.ch  35.44s user 30.65s system 34% cpu 3:11.45 total # also migrate cdist-object-gencode
+cdist-deploy-to ikq04.ethz.ch  23.56s user 22.44s system 35% cpu 2:09.78 total # ../bin/cdist-object-all -> __cdist_object_all
+cdist-deploy-to ikq04.ethz.ch  17.35s user 16.83s system 30% cpu 1:53.69 total # bin/cdist-object-manifest-run -> core/__cdist_object_manifest_run
+cdist-deploy-to ikq04.ethz.ch  19.76s user 23.58s system 35% cpu 2:03.33 total # ../core/__cdist_manifest_run_init

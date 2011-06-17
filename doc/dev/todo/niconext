@@ -2,4 +2,19 @@
    either make functions available on the other side or
    put logic on the server side.
 
+   - trying to run global explorers nicely from local side
+
+
+   - Both type and global have...
+      - local sourcedir
+      - remote destination dir
+      - remote out dir
+      - local out dir
+
+   - Differences are in...
+      - variables exposed / submitted
+
+  
+
+
 Catch broken instances in cdist-mass-deploy -p and report broken deployements at the end!
