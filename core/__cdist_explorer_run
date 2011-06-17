@@ -23,15 +23,38 @@
 
 __cdist_explorer_run()
 {
-   [ $# -eq 3 ] || __cdist_usage "<global|type> <explorer dir> <out dir>"
+   # [ $# -eq 3 ] || __cdist_usage "<global|type> <explorer dir> <out dir>"
+   [ $# -eq 5 ] || __cdist_usage "<global|type> <local explorer dir> <remote explorer dir> <remote out dir> <local out dir>"
+   set -x
 
-   case "$1" in
-      global)
-      type)
-         "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\""
-      *)
-      ;;
-   esac
+   # Only do something, if there's at least one entry
+   [ "$(__cdist_dir_listing "$2")" ] || return
+
+   # Transfer explorers
+   __cdist_dir push "$2" "$3"
+
+   # Create output directory
+   __cdist_run_remote mkdir -p "$4"
+
+   # Execute all explorers
+   cd "$2";
+   for __cdist_explorer_run_explorer in *; do
+      __cdist_run_remote "$3/$__cdist_explorer_run_explorer" ">" \
+         "$4/$__cdist_explorer_run_explorer"
+   done
+
+   # Transfer results back
+   __cdist_dir pull "$4" "$5"
+
+   return
+
+#    case "$1" in
+#       global)
+#       type)
+#          "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\""
+#       *)
+#       ;;
+#    esac
 
 
    # Variable that defines the home of the explorers
@@ -47,7 +70,6 @@ __cdist_explorer_run()
    export $__cdist_variable_name="$__cdist_explorer_dir"
    export __global="$__cdist_remote_out_dir"
 
-   # mkdir -p "$__cdist_my_out_dir"
 
    # Ensure there is at least one explorer
    num="$(ls -1 "$__cdist_explorer_dir" | wc -l)"
