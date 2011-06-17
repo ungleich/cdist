@@ -49,4 +49,4 @@ for property in $(ls .); do
    fi
 done
 
-__package_$type "$@"
+require="$__self" __package_$type "$@"

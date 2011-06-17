@@ -21,7 +21,11 @@
 # Get the current value of key or __NOTSET__ if the key doesn't exist.
 #
 
-key="$(cat "$__object/parameter/key")"
+if [ -f "$__object/parameter/key" ]; then
+   key="$(cat "$__object/parameter/key")"
+else
+   key="$__object_id"
+fi
 file="$(cat "$__object/parameter/file")"
 delimiter="$(cat "$__object/parameter/delimiter")"
 
