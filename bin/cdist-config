@@ -162,30 +162,6 @@ for __cdist_lib in $__cdist_core_dir/*; do
    . "$__cdist_lib"
 done
 
-
-__cdist_exec_fail_on_error()
-{
-   set +e
-   sh -e "$@"
-   if [ "$?" -ne 0 ]; then
-      __cdist_echo error  "$1 exited non-zero"
-      __cdist_echo warn "Faulty code:"
-      cat "$1"
-      __cdist_exit_err "Aborting due to non-zero exit code."
-   fi
-}
-
-__cdist_exit_err()
-{
-   __cdist_echo error "$@"
-   exit 1
-}
-
-__cdist_usage()
-{
-   __cdist_exit_err "$__cdist_myname: $@"
-}
-
 ___cdist_lib_path()
 {
    echo $_
