@@ -27,11 +27,13 @@ __cdist_init_deploy()
 
    # Ensure there is no old stuff, neither local nor remote
    rm -rf "$__cdist_local_base_dir"
-   ssh "${__cdist_remote_user}@$1" "rm -rf ${__cdist_remote_base_dir}"
+   ssh "${__cdist_remote_user}@${__cdist_target_host}" \
+      "rm -rf ${__cdist_remote_base_dir}"
 
    # Init base
    mkdir -p "$__cdist_local_base_dir"
-   ssh "${__cdist_remote_user}@$1" "mkdir -p ${__cdist_remote_base_dir}"
+   ssh "${__cdist_remote_user}@${__cdist_target_host}" \
+      "mkdir -p ${__cdist_remote_base_dir}"
 
    # Link configuration source directory - consistent with remote
    ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
