@@ -45,10 +45,10 @@ if [ "$state_is" != "$state_should" ]; then
          [ "$inherit" = "true" ] && inherit="INHERIT" || inherit="NOINHERIT"
 
          cmd="CREATE ROLE $name WITH $password $login $createdb $createrole $superuser $inherit"
-         echo "su - postgres -c \"/usr/bin/psql -c \\\"$cmd\\\"\""
+         echo "su - postgres -c \"psql -c \\\"$cmd\\\"\""
       ;;
       absent)
-         echo "su - postgres -c \"/usr/bin/dropuser \\\"$name\\\"\""
+         echo "su - postgres -c \"dropuser \\\"$name\\\"\""
       ;;
    esac
 fi
