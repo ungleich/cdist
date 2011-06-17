@@ -25,14 +25,8 @@ __cdist_explorer_run_global()
 {
    __cdist_echo info "Running global explorers "
 
-   # copy the explorers
-#   __cdist_dir push "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
-
    # run the global explorers remotely
    __cdist_explorer_run global \
       "$__cdist_explorer_dir" "$__cdist_remote_explorer_dir" \
       "$__cdist_remote_out_explorer_dir" "$__cdist_out_explorer_dir"
-
-   # retrieve the results
-#   __cdist_dir pull "${__cdist_remote_out_explorer_dir}" "${__cdist_out_explorer_dir}"
 }
