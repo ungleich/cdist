@@ -21,22 +21,19 @@
 # Copy & run the global explorers, i.e. not bound to types
 #
 
-. cdist-config
-[ $# -eq 1 ] || __cdist_usage "<target_host>"
-set -uex
+__cdist_explorer_run_global()
+{
+   __cdist_echo info "Running global explorers "
 
-__cdist_target_host="$1"; shift
+   # copy the explorers
+   __cdist_dir push "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
 
-__cdist_echo info "Running global explorers "
-
-# copy the explorers
-__cdist_dir push "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
-
-# run the initial explorers remotely
-__cdist_run_remote __cdist_remote_explorer_run  # FIXME: add object_self!!!! \
-   "$__cdist_name_var_explorer" "$__cdist_remote_explorer_dir"       \
-   "$__cdist_remote_out_explorer_dir"
+   # run the initial explorers remotely
+   __cdist_run_remote __cdist_remote_explorer_run  # FIXME: add object_self!!!! \
+      "$__cdist_name_var_explorer" "$__cdist_remote_explorer_dir"       \
+      "$__cdist_remote_out_explorer_dir"
 
 
-# retrieve the results
-__cdist_dir pull "${__cdist_remote_out_explorer_dir}" "${__cdist_out_explorer_dir}"
+   # retrieve the results
+   __cdist_dir pull "${__cdist_remote_out_explorer_dir}" "${__cdist_out_explorer_dir}"
+}
