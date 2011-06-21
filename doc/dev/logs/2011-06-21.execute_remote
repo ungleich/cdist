@@ -1,0 +1,38 @@
+Steven, Nico:
+
+Problem:
+   How to execute a function instead of binary
+
+Solutions:
+
+   1)
+      (
+         cat $lib/*
+         cat bin/cdist-config
+         echo $function $args
+      ) | ssh foo
+
+   2)
+      scp $dir/lib.sh root@foo:/tmp/lib.sh
+      cat << DONE | ssh root@foo sh
+      source /tmp/lib.sh
+      DONE
+
+   3) follow up to 1)
+      __run_remote()
+      {
+         cat << eof | ssh foo
+
+         . /cdist-config
+         "$@" # NOT USABLE, no export = export = lines possible!
+
+         eof
+
+
+Problems found and solved:
+
+   - remote shell cannot work due to multi line variable export
+   - caching library directory with scp
+   - create function for every remote action
+      -> prepares environment
+
