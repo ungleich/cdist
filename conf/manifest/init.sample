@@ -50,7 +50,7 @@ case "$__target_host" in
 
    cdist-debian)
       __package_apt atop --state installed
-      __package apache2 --state deinstalled
+      __package apache2 --state removed
    ;;
 
    cdist-redhat)
