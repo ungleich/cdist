@@ -12,11 +12,18 @@ Solutions:
          echo $function $args
       ) | ssh foo
 
+      Works partly, does not work for export = ...
+      Needs to copy over lib every time again!
+
    2)
       scp $dir/lib.sh root@foo:/tmp/lib.sh
       cat << DONE | ssh root@foo sh
       source /tmp/lib.sh
+      export foo=bla
+      function args
       DONE
+
+      Caches lib directory
 
    3) follow up to 1)
       __run_remote()
@@ -27,6 +34,22 @@ Solutions:
          "$@" # NOT USABLE, no export = export = lines possible!
 
          eof
+
+   4) final solution
+      - write for every remote job a new function
+      - this functions prepares env + reuses ssh header
+
+      __cdist_remote_explorer()
+      {
+         cat << eof
+         $__cdist_remote_header
+         export foo1=bar
+         export foo2=bar
+         export foo3=bar
+
+         "$@"
+         eof | __cdist_ssh
+      }
 
 
 Problems found and solved:
