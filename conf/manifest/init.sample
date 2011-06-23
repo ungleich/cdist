@@ -27,7 +27,11 @@ case "$__target_host" in
    # Examples using different types
    #
 
-   # Alias in /etc/hosts for localhost
+   #
+   # Use an alias in /etc/hosts for localhost to use these hosts:
+   # 
+   # 127.0.0.1    localhost.localdomain   localhost cdist-archlinux
+   #
    cdist-archlinux)
       # This is the specific package type for pacman
       __package_pacman zsh --state installed
