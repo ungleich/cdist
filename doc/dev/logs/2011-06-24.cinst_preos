@@ -6,5 +6,5 @@
 
 - update $__explorer/os to recognize preos
 
-- cinst types only do something if $__explorer/os == 'preos'
+- cinst types will ONLY BE CALLED if $__explorer/os == 'preos'
 
