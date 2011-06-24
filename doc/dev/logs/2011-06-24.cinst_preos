@@ -1,0 +1,10 @@
+- new executable cinst-deploy-to
+- types used by cinst are marked as such ('cinst-only')
+- cdist-deploy-to and cinst-deploy-to read the same manifest
+- cdist ignores types marked as 'cinst-only'
+- cinst ignores types not marked as 'cinst-only'
+
+- update $__explorer/os to recognize preos
+
+- cinst types only do something if $__explorer/os == 'preos'
+
