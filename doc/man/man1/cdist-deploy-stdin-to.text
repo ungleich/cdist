@@ -1,0 +1,30 @@
+cdist-deploy-stdin-to(1)
+========================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-deploy-stdin-to - Deploy the configuration given on stdin to host
+
+
+SYNOPSIS
+--------
+echo "__file /tmp/whatever" | cdist-deploy-stdin-to HOSTNAME
+
+
+DESCRIPTION
+-----------
+Use stdin as the manifest for cdist-deploy-to.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-deploy-to(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
