@@ -18,13 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="$__object_id"
-
-__package python-software-properties --state installed
-
-require="__package/python-software-properties" \
-   __file /usr/local/bin/remove-apt-repository \
-   --source "$__type/files/remove-apt-repository" \
-   --mode 0755
-
-require="$__self" __apt_update_index
+# run 'apt-get update' if anything in /etc/apt is newer then /var/lib/apt/lists
+cat << DONE
+if find /etc/apt -cnewer /var/lib/apt/lists | grep . > /dev/null; then
+   apt-get update || apt-get update
+fi
+DONE

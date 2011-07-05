@@ -17,14 +17,20 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
+# Use stdin as the manifest to deploy on the given host.
+#
 
-name="$__object_id"
+. cdist-config
+[ $# -eq 1 ] || __cdist_usage "<target host>"
+set -eu
 
-__package python-software-properties --state installed
+__cdist_target_host="$1"
+shift
 
-require="__package/python-software-properties" \
-   __file /usr/local/bin/remove-apt-repository \
-   --source "$__type/files/remove-apt-repository" \
-   --mode 0755
+cat >> "$__cdist_tmp_file"
 
-require="$__self" __apt_update_index
+chmod +x "$__cdist_tmp_file"
+
+export __cdist_manifest_init="$__cdist_tmp_file"
+cdist-deploy-to "$__cdist_target_host"
