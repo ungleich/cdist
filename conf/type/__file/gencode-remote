@@ -22,25 +22,33 @@
 #
 
 destination="/$__object_id"
+state_should="$(cat "$__object/parameter/state")"
+exists="$(cat "$__object/explorer/exists")"
 
-# No source? Create empty file
-if [ ! -f "$__object/parameter/source" ]; then
-   if [ no = "$(cat "$__object/explorer/exists")" ]; then
-      echo touch \"$destination\"
+if [ "$state_should" = "present" ]; then
+   # No source? Create empty file
+   if [ ! -f "$__object/parameter/source" ]; then
+      if [ "$exists" = "no" ]; then
+         echo touch \"$destination\"
+      fi
    fi
-fi
 
-# Mode settings
-if [ -f "$__object/parameter/mode" ]; then
-   echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
-fi
+   # Mode settings
+   if [ -f "$__object/parameter/mode" ]; then
+      echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
+   fi
 
-# Group
-if [ -f "$__object/parameter/group" ]; then
-   echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
-fi
+   # Group
+   if [ -f "$__object/parameter/group" ]; then
+      echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
+   fi
 
-# Owner
-if [ -f "$__object/parameter/owner" ]; then
-   echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
+   # Owner
+   if [ -f "$__object/parameter/owner" ]; then
+      echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
+   fi
+elif [ "$state_should" = "absent" ]; then
+   if [ "$exists" = "yes" ]; then
+      echo rm \"$destination\"
+   fi
 fi
