@@ -45,7 +45,7 @@ case "$state_should" in
       echo ln ${lnopt} -f \"$source\" \"$destination\"
    ;;
    absent)
-      echo rm \"$destination\"
+      echo rm -f \"$destination\"
    ;;
    *)
       echo "Unknown state" >&2
