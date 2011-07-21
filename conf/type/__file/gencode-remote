@@ -49,6 +49,6 @@ if [ "$state_should" = "present" ]; then
    fi
 elif [ "$state_should" = "absent" ]; then
    if [ "$exists" = "yes" ]; then
-      echo rm \"$destination\"
+      echo rm -f \"$destination\"
    fi
 fi
