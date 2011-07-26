@@ -27,8 +27,21 @@ __cdist_explorer_run()
    [ $# -eq 5 ] || __cdist_usage "<global|type> <local explorer dir> <remote explorer dir> <remote out dir> <local out dir>"
    set -x
 
-   # Only do something, if there's at least one entry
-   [ "$(__cdist_dir_listing "$2")" ] || return
+   # Ensure there is at least one explorer
+   num="$(ls -1 "$__cdist_explorer_dir" | wc -l)"
+   if [ "$num" -lt 1 ]; then
+      __cdist_exit_err "${__cdist_explorer_dir}: Contains no explorers"
+   fi
+
+   # Check whether to setup variable for type explorer
+   case "$1" in
+      global)
+      ;;
+      type)
+         # FIXME: think about how and where this gets setup!
+         "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\""
+      ;;
+   esac
 
    # Transfer explorers
    __cdist_dir push "$2" "$3"
@@ -38,67 +51,31 @@ __cdist_explorer_run()
 
    # Execute all explorers
    cd "$2";
+   # FIXME: cleanup double variable, no need when in directory
    for __cdist_explorer_run_explorer in *; do
-      #BUG: need to export __explorer to remote side!
-      #exit 23
-      # BUG: no need for remote out dir probably?
+      __cdist_explorer_explorer_name="${__cdist_explorer_run_explorer##*/}"
+
+      if [ -f "$__cdist_explorer_run_explorer" ]; then
+         if [ ! -x "$__cdist_explorer_run_explorer" ]; then
+            __cdist_exit_err "Explorer \"$__cdist_explorer_run_explorer\" exists, but is not executable."
+         fi
+
+      else
+         if [ -e "$__cdist_explorer_run_explorer" ]; then
+            __cdist_exit_err "Explorer \"$__cdist_explorer_run_explorer\" exists, but is not a file."
+         fi
+      fi
+
+      # FIXME: no need for remote out dir probably?
       # or should we leave it and continue using __cdist_dir pull?
       __cdist_run_remote \
          "export $__cdist_name_var_explorer=\"$__cdist_remote_explorer_dir\";" \
          "export $__cdist_name_var_global=\"$__cdist_remote_out_dir\";" \
          "$3/$__cdist_explorer_run_explorer" ">" \
-            "$4/$__cdist_explorer_run_explorer"
+            "$4/$__cdist_explorer_run_explorer" || \
+               __cdist_exit_err "Explorer $__cdist_explorer_run_explorer failed."
    done
 
    # Transfer results back
    __cdist_dir pull "$4" "$5"
-
-   return
-
-#    case "$1" in
-#       global)
-#       type)
-#          "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\""
-#       *)
-#       ;;
-#    esac
-
-
-   # Variable that defines the home of the explorers
-   # __cdist_variable_name="$1"; shift
-
-   # Find explorers here
-   __cdist_explorer_dir="$1"; shift
-
-   # Write output here
-   __cdist_my_out_dir="$1"; shift
-
-   # Setup remote environment
-   export $__cdist_variable_name="$__cdist_explorer_dir"
-   export __global="$__cdist_remote_out_dir"
-
-
-   # Ensure there is at least one explorer
-   num="$(ls -1 "$__cdist_explorer_dir" | wc -l)"
-   if [ "$num" -lt 1 ]; then
-      __cdist_exit_err "${__cdist_explorer_dir}: Contains no explorers"
-   fi
-
-   # Execute all explorers
-   for explorer in "$__cdist_explorer_dir/"*; do
-      explorer_name="${explorer##*/}"
-
-      if [ -f "$explorer" ]; then
-         if [ ! -x "$explorer" ]; then
-            __cdist_exit_err "Explorer \"$explorer\" exists, but is not executable."
-         fi
-
-         # Execute explorers and save results in remote destination directory
-         "$explorer" > "${__cdist_my_out_dir}/$explorer_name"
-      else
-         if [ -e "$explorer" ]; then
-            __cdist_exit_err "Explorer \"$explorer\" exists, but is not a file."
-         fi
-      fi
-   done
 }
