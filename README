@@ -109,8 +109,8 @@ how to use cdist.
 
 There are at least the following branches available:
 
- * master: the development branch
- * 1.7: Bugfixes, cleanups, new type and explorer rename
+ * Development: master
+ * Current Stable: 1.7 (Bugfixes, cleanups, new type and explorer rename)
 
 Old versions:
 

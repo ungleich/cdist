@@ -1,4 +1,4 @@
-1.7.1:
+1.7.1: 2011-07-26
 	* Documentation: Add explorers to reference
 	* Documentation: Typo cleanup (Derek Brost)
 	* Type __key_value: Bugfix (Steven Armstrong)
