@@ -41,10 +41,12 @@ __cdist_explorer_run()
    for __cdist_explorer_run_explorer in *; do
       #BUG: need to export __explorer to remote side!
       #exit 23
+      # BUG: no need for remote out dir probably?
+      # or should we leave it and continue using __cdist_dir pull?
       __cdist_run_remote \
          "export $__cdist_name_var_explorer=\"$__cdist_remote_explorer_dir\";" \
          "export $__cdist_name_var_global=\"$__cdist_remote_out_dir\";" \
-         "$3/$__cdist_explorer_run_explorer" > \
+         "$3/$__cdist_explorer_run_explorer" ">" \
             "$4/$__cdist_explorer_run_explorer"
    done
 
