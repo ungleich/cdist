@@ -48,6 +48,7 @@ CORE
          pink     # empty file
          wood     # empty file
 
+- allow cdist to run without $PATH setup: ./bin/cdist-deploy-to
 
 TYPES
 ------
