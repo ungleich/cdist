@@ -10,20 +10,18 @@ cdist-manifest-run - Run a given manifest
 
 SYNOPSIS
 --------
-cdist-manifest-run HOSTNAME MANIFEST OUTPUT_DIR
+cdist-manifest-run HOSTNAME MANIFEST
 
 
 DESCRIPTION
 -----------
-cdist-manifest-run executes the given MANIFEST and saves the output into
-OUTPUT_DIR.
+cdist-manifest-run executes the given MANIFEST.
 
 
 SEE ALSO
 --------
 - cdist(7)
 - cdist-deploy-to(1)
-- cdist-manifest-run-all(1)
 - cdist-manifest-run-init(1)
 
 

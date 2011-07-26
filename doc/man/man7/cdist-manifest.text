@@ -70,7 +70,6 @@ require="__file/etc/cdist-configured __link/tmp/cdist-testfile" \
 SEE ALSO
 --------
 - cdist-manifest-run(1)
-- cdist-manifest-run-all(1)
 - cdist-manifest-run-init(1)
 - cdist-type(7)
 

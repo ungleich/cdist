@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+__directory /home/services
+
+for nfsshare in audio video; do
+   dir="/home/services/$nfsshare"
+   __addifnosuchline nfs-$nfsshare --file /etc/fstab \
+      --line "192.168.42.1:$dir $dir nfs defaults 0 0"
+   require="__directory/home/services" __directory $dir
+done
+
+__directory /home/services/eingehend
+for nfsshare in bibliothek buch spiegel; do
+   dir="/home/services/eingehend/$nfsshare"
+   __addifnosuchline nfs-$nfsshare --file /etc/fstab \
+      --line "192.168.42.1:$dir $dir nfs defaults,noauto 0 0"
+   require="__directory/home/services" __directory $dir
+done
+
+case "$(cat "$__global/explorer/os")" in
+   debian|ubuntu)
+      __package nfs-common --state installed
+   ;;
+
+   fedora|archlinux)
+      __package nfs-utils --state installed
+   ;;
+esac

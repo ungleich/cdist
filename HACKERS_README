@@ -3,7 +3,7 @@ cat << eof
 Hey hackers,
 
 this README is for you, for those who want to dig into cdist, hack it or try
-to get a deeper understanding. Please read doc/man/cdist-hacker.text.
+to get a deeper understanding. Please read doc/man/man7/cdist-hacker.text.
 
 I hope you have a lot of fun with cdist, because it was also a lot of fun to
 develop it!

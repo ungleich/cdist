@@ -43,6 +43,15 @@ CORE
    and have it parsable by different (shinken) tool
    -> given after manifest run already!
 
+- Allow types to have parameters without values (boolean flags).
+   e.g. __chair fancychair --pink --wood
+   would result in:
+      $__object/parameter/
+         pink     # empty file
+         wood     # empty file
+
+- allow cdist to run without $PATH setup: ./bin/cdist-deploy-to
+
 TYPES
 ------
 - __ssh-keys (host/user)

@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+name="$__object_id"
+state_should="$(cat "$__object/parameter/state")"
+state_is="$(cat "$__object/explorer/state")"
+
+if [ "$state_should" != "$state_is" ]; then
+   case "$state_should" in
+      present)
+         owner=""
+         if [ -f "$__object/parameter/owner" ]; then
+            owner="-O '$(cat "$__object/parameter/owner")'"
+         fi
+         echo "su - postgres -c \"createdb $owner '$name'\""
+      ;;
+      absent)
+         echo "su - postgres -c \"dropdb '$name'\""
+      ;;
+   esac
+fi

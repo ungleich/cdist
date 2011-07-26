@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+
+__directory /root/.ssh --mode 0700
+
+__file /root/.ssh/authorized_keys --mode 0600
+
+cd "$__type/files/ssh"
+for key in *; do
+   require="__directory/root/.ssh"  \
+      __addifnosuchline ssh-$key --file /root/.ssh/authorized_keys \
+      --line "$(cat "$key")"
+done
+
+for pkg in openafs-client openafs-krb5 krb5-user; do
+   __package $pkg --state installed
+done
+
+# Kerberos Config
+__file /etc/krb5.conf --source "$__type/files/krb5/krb5.conf"
+
+# AFS config
+cd "$__type/files/afs"
+for afsconf in *; do
+   __file /etc/openafs/$afsconf --source "$__type/files/afs/$afsconf"
+done
