@@ -54,9 +54,9 @@ __cdist_dir push "${__cdist_core_dir}" "${__cdist_remote_core_dir}"
 
 __cdist_explorer_run_global
 __cdist_manifest_run_init
+__cdist_object_all            __cdist_object_prepare
 exit 1
 
-__cdist_object_all            __cdist_object_prepare
 __cdist_object_all            __cdist_object_run
 __cdist_cache
 

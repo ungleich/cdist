@@ -22,6 +22,8 @@
 # Run the explorers for the given object on the target host.
 #
 
+# FIXME: many cleanups needed before going production!
+
 __cdist_object_explorer_run()
 {
    __cdist_object_self="$1"; shift
@@ -49,14 +51,36 @@ __cdist_object_explorer_run()
          "$(__cdist_remote_object_parameter_dir "$__cdist_object_self")"
 
       # Execute explorers
-      __cdist_run_remote                                          \
-         "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\"" \
-         "$__cdist_name_var_object_id=\"$__cdist_object_id\""     \
-         "$__cdist_name_var_self=\"$__cdist_object_self\""        \
-         cdist-remote-explorer-run                                \
-         "$__cdist_name_var_type_explorer"                        \
-         "$(__cdist_remote_type_explorer_dir "$__cdist_type")"    \
-         "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")"
+      # FIXME: STOPPED:
+      #  - remove cdist-remote-explorer-run
+      #  - problem: new variables / need to run explorer directly?
+      #     -> or put logic into __cdist_explorer_run
+      #        -> think about having _one_ wrapper script for remote to execute
+      #           shell functions
+
+      # Create remote output directory
+      __cdist_run_remote mkdir -p "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")"
+
+      cd "$(__cdist_type_explorer_dir "$__cdist_type")"
+
+
+      for __cdist_object_explorer_run_explorer in *; do
+         __cdist_run_remote                                          \
+            "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\"" \
+            "$__cdist_name_var_object_id=\"$__cdist_object_id\""     \
+            "$__cdist_name_var_self=\"$__cdist_object_self\""        \
+            "$(__cdist_remote_type_explorer_dir "$__cdist_type")/$__cdist_object_explorer_run_explorer"    \
+            ">" "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")/$__cdist_object_explorer_run_explorer"
+      done
+
+#       __cdist_run_remote                                          \
+#          "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\"" \
+#          "$__cdist_name_var_object_id=\"$__cdist_object_id\""     \
+#          "$__cdist_name_var_self=\"$__cdist_object_self\""        \
+#          cdist-remote-explorer-run                                \
+#          "$__cdist_name_var_type_explorer"                        \
+#          "$(__cdist_remote_type_explorer_dir "$__cdist_type")"    \
+#          "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")"
 
       # Copy back results
       __cdist_dir pull "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")" \
