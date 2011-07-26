@@ -39,10 +39,6 @@ __cdist_remote_explorer_run()
    # Write output here
    __cdist_my_out_dir="$1"; shift
 
-   # Setup environment
-   export $__cdist_variable_name="$__cdist_explorer_dir"
-   export __global="$__cdist_remote_out_dir"
-
    mkdir -p "$__cdist_my_out_dir"
 
    # Ensure there is at least one explorer
