@@ -23,9 +23,7 @@
 
 __cdist_explorer_run()
 {
-   # [ $# -eq 3 ] || __cdist_usage "<global|type> <explorer dir> <out dir>"
    [ $# -eq 5 ] || __cdist_usage "<global|type> <local explorer dir> <remote explorer dir> <remote out dir> <local out dir>"
-   set -x
 
    # Ensure there is at least one explorer
    num="$(ls -1 "$__cdist_explorer_dir" | wc -l)"
