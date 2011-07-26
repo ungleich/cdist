@@ -1,0 +1,52 @@
+cdist-type__package_zypper(7)
+==========================
+Franky Van Liedekerke <franky.van.liedekerke--@--telenet.be>
+
+
+NAME
+----
+cdist-type__package_zypper - Manage packages with zypper
+
+
+DESCRIPTION
+-----------
+zypper is usually used on the Suse distribution to manage packages.
+
+
+REQUIRED PARAMETERS
+-------------------
+state::
+   Either "installed" or "removed".
+
+
+OPTIONAL PARAMETERS
+-------------------
+name::
+   If supplied, use the name and not the object id as the package name.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Ensure zsh in installed
+__package_zypper zsh --state installed
+
+# If you don't want to follow pythonX packages, but always use python
+__package_zypper python --state installed --name python2
+
+# Remove obsolete package
+__package_zypper puppet --state removed
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__package(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
