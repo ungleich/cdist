@@ -108,7 +108,7 @@ case "$1" in
       cd ${WEBDIR} && make pub
    ;;
 
-   pub)
+   p|pu|pub)
       git push --mirror
       git push --mirror github
    ;;
