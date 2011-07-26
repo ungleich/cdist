@@ -88,9 +88,9 @@ case "$1" in
    speeches)
       cd "$SPEECHESDIR"
       for speech in *tex; do
-         pdflatex $speech
-         pdflatex $speech
-         pdflatex $speech
+         pdflatex "$speech"
+         pdflatex "$speech"
+         pdflatex "$speech"
       done
    ;;
       
