@@ -39,8 +39,13 @@ __cdist_explorer_run()
    # Execute all explorers
    cd "$2";
    for __cdist_explorer_run_explorer in *; do
-      __cdist_run_remote "$3/$__cdist_explorer_run_explorer" ">" \
-         "$4/$__cdist_explorer_run_explorer"
+      #BUG: need to export __explorer to remote side!
+      #exit 23
+      __cdist_run_remote \
+         "export $__cdist_name_var_explorer=\"$__cdist_remote_explorer_dir\";" \
+         "export $__cdist_name_var_global=\"$__cdist_remote_out_dir\";" \
+         "$3/$__cdist_explorer_run_explorer" > \
+            "$4/$__cdist_explorer_run_explorer"
    done
 
    # Transfer results back
