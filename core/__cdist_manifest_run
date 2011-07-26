@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -39,7 +39,7 @@ __cdist_manifest_run()
    export __cdist_manifest
 
    # Export information for manifests - __cdist_out_dir comes from cdist-config
-   export __global="$__cdist_out_dir"
+   export $__cdist_name_var_global="$__cdist_out_dir"
 
    ################################################################################
    # The actual run
