@@ -26,7 +26,6 @@
 
 __cdist_object_explorer_run()
 {
-   set -x
    __cdist_object_self="$1"; shift
 
    __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object_self")"
