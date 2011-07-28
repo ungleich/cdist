@@ -42,13 +42,13 @@ fi
 i=0
 while [ $# -gt 0 ]; do
    if [ "$parallel" ]; then
-      cdist-deploy-to "$1" | filter "$1" &
+      cdist-deploy-to "$1" 2>&1 | filter "$1" &
       # Record pid and host for use later
       i=$((i+1))
       eval pid_$i=$!
       eval host_$i=\$1
    else
-      cdist-deploy-to "$1" | filter "$1"
+      cdist-deploy-to "$1" 2>&1 | filter "$1"
    fi
    shift
 done
