@@ -1,3 +1,10 @@
+core/__cdist_object_code_run:
+   make remote run work again
+
+__cdist_code_run:
+   should be changed to run _all_ code (has nice checks)
+
+--------------------------------------------------------------------------------
 - run-remote does not work anymore, because there is no binary :-)
    either make functions available on the other side or
    put logic on the server side.
