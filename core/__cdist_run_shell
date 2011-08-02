@@ -18,18 +18,19 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Exit if an error occurs
+# Exit if an error occurs when running a shell script
 #
 
-__cdist_exec_fail_on_error()
+__cdist_run_shell()
 {
    set +e
    sh -e "$@"
    if [ "$?" -ne 0 ]; then
-      __cdist_echo error  "$1 exited non-zero"
-      __cdist_echo warn "Faulty code:"
-      cat "$1"
-      __cdist_exit_err "Aborting due to non-zero exit code."
+      __cdist_echo error  "$1 exited non-zero, aborting."
+      # __cdist_echo error  "$1 exited non-zero"
+      # __cdist_echo warn "Faulty code:"
+      # cat "$1"
+      # __cdist_exit_err "Aborting due to non-zero exit code."
    fi  
    set -e
 }
