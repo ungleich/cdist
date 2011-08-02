@@ -53,5 +53,5 @@ __cdist_manifest_run()
    # prepend our path, so all cdist tools come before other tools
    export PATH="${__cdist_out_type_bin_dir}:$PATH"
 
-   __cdist_exec_fail_on_error "${__cdist_manifest}"
+   __cdist_run_shell "${__cdist_manifest}"
 }
