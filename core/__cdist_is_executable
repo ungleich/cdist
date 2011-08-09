@@ -21,25 +21,23 @@
 # Exec the code for the given object locally and remote
 #
 
-__cdist_run_if_executable()
+__cdist_is_executable()
 {
-   [ $# -gt 1 ] || __cdist_exit_err "<executable> <command> <args>"
+   [ $# -eq 1 ] || __cdist_exit_err "<executable>"
 
-   __cdist_run_if_executable_exec="$1"; shift
-
-   if [ -e "$__cdist_run_if_executable_exec" ]; then
-      if [ -f "$__cdist_run_if_executable_exec" ]; then
-         if [ -x "$__cdist_run_if_executable_exec" ]; then
-            __cdist_echo debug "Running $@ ..."
-            "$@"
+   if [ -e "$1" ]; then
+      if [ -f "$1" ]; then
+         if [ -x "$1" ]; then
+            # Exists and is a correct executable
+            true
          else
-            __cdist_exit_err "$__cdist_run_if_executable_exec exists, but is not executable."
+            __cdist_exit_err "$1 exists, but is not executable."
          fi
       else
-         __cdist_exit_err "$__cdist_run_if_executable_exec exists, but is not a file."
+         __cdist_exit_err "$1 exists, but is not a file."
       fi
+   else
+      # Does not exist
+      false
    fi
-
-   # Exit gracefully if nothing is todo
-   true
 }
