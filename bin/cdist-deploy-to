@@ -56,6 +56,7 @@ __cdist_explorer_run_global
 __cdist_manifest_run_init
 __cdist_object_all            __cdist_object_prepare
 __cdist_object_all            __cdist_object_run
+unset __cdist_object_self
 
 __cdist_cache
 
