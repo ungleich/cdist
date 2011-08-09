@@ -26,7 +26,7 @@ __cdist_object_code_run()
 {
    [ $# -eq 1 ] || __cdist_exit_err "<object>"
 
-   set -x
+   # set -x
 
    if [ ! -d "$(__cdist_object_dir "$1")" ]; then
       __cdist_exit_err "Object undefined"
@@ -44,5 +44,7 @@ __cdist_object_code_run()
    if __cdist_is_executable \
       "$(__cdist_object_code "$1" "${__cdist_name_gencode_remote}")"; then
 
+      __cdist_run_remote $(__cdist_remote_object_code "$1")
    fi
+   # set +x
 }

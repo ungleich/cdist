@@ -274,6 +274,13 @@ __cdist_remote_object_dir()
    echo "$(__cdist_remote_object_base_dir "$1")/${__cdist_name_dot_cdist}"
 }
 
+__cdist_remote_object_code()
+{
+   # FIXME: this should probably be __cdist_name_CODE_remote instead, although
+   # they have the same name always
+   echo "$(__cdist_remote_object_dir "$1")/${__cdist_name_code}-${__cdist_name_gencode_remote}"
+}
+
 __cdist_remote_object_parameter_dir()
 {
    echo "$(__cdist_remote_object_dir "$1")/${__cdist_name_parameter}"
