@@ -24,7 +24,8 @@
 __cdist_run_shell()
 {
    set +e
-   sh -e "$@"
+   # Prepend our path, so all cdist tools come before other tools
+   PATH="${__cdist_out_type_bin_dir}:$PATH" sh -e "$@"
    if [ "$?" -ne 0 ]; then
       __cdist_echo error  "$1 exited non-zero"
       __cdist_echo warn "Faulty code:"

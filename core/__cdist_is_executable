@@ -18,7 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Exec the code for the given object locally and remote
+# Test whether something is executable (that should be executable) or
+# is missing
 #
 
 __cdist_is_executable()
