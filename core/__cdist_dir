@@ -23,29 +23,24 @@
 # Pull a directory from a target, both sides have the same name (i.e. explorers)
 #
 
-
 __cdist_dir()
 {
    [ $# -eq 3 ] || __cdist_usage "<push|pull> <src dir> <dst dir>"
 
-   __cdist_dir_action="$1"; shift
-   __cdist_dir_src="$1"; shift
-   __cdist_dir_dst="$1"; shift
-
-   # This will be the destination directory, so no subdirectories
+   # ${3%/*} will be the destination directory, so no subdirectories
    # of the same name are created, if the directory is already existing
-   __cdist_dir_top="${__cdist_dir_dst%/*}"
 
-   if [ "$__cdist_dir_action" = "push" ]; then
+   if [ "$1" = "push" ]; then
+      # FIXME: add error handling with __cdist_run_remote_... or so
       ssh "${__cdist_remote_user}@${__cdist_target_host}" \
-         "mkdir -p \"${__cdist_dir_dst}\""
-      scp -qr "$__cdist_dir_src" \
-         "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_dir_top}"
-   elif [ "$__cdist_dir_action" = "pull" ]; then
-      mkdir -p "${__cdist_dir_dst}"
-      scp -qr "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_dir_src}" \
-         "${__cdist_dir_top}"
+         "mkdir -p \"$3\""
+      scp -qr "$2" \
+         "${__cdist_remote_user}@${__cdist_target_host}:${3%/*}"
+   elif [ "$1" = "pull" ]; then
+      mkdir -p "$3"
+      scp -qr "${__cdist_remote_user}@${__cdist_target_host}:$2" \
+         "${3%/*}"
    else
-      __cdist_exit_err "Unknown action $__cdist_dir_action"
+      __cdist_exit_err "Unknown action $1"
    fi
 }
