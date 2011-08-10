@@ -22,9 +22,8 @@
 
 __cdist_type_build_emulation()
 {
-   [ $# -eq 1 ] || __cdist_usage "<out dir>"
+   [ $# -eq 0 ] || __cdist_usage "No arguments"
 
-   __cdist_output_dir="$1"; shift
    __cdist_type_emulator="$__cdist_abs_mydir/cdist-type-emulator"
 
    if [ ! -d "${__cdist_type_dir}" ]; then
@@ -32,12 +31,15 @@ __cdist_type_build_emulation()
    fi
 
    # Get Types
-   cd "${__cdist_type_dir}"
-   ls -1 > "${__cdist_tmp_file}"
+   (
+      cd "${__cdist_type_dir}"
+      ls -1 > "${__cdist_tmp_file}"
+   )
 
    # Create binaries
-   mkdir -p "${__cdist_output_dir}"
-   while read type; do
-      ln -sf "${__cdist_type_emulator}" "${__cdist_output_dir}/${type}"
+   mkdir -p "${__cdist_out_type_bin_dir}"
+   while read __cdist_type_build_emulation_type; do
+      ln -sf "${__cdist_type_emulator}" \
+         "${__cdist_out_type_bin_dir}/${__cdist_type_build_emulation_type}"
    done < "${__cdist_tmp_file}"
 }
