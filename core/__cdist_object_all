@@ -26,7 +26,7 @@ __cdist_object_all()
 {
    [ $# -eq 1 ] || __cdist_usage "<command>"
 
-   __cdist_command="$1"; shift
+   __cdist_object_all_command="$1"; shift
 
    __cdist_objects="$__cdist_tmp_dir/objects"
 
@@ -50,7 +50,7 @@ __cdist_object_all()
 
       while [ $# -gt 0 ]; do
          __cdist_object="$1"; shift
-         $__cdist_command "$__cdist_object"
+         $__cdist_object_all_command "$__cdist_object"
       done
    done
 }
