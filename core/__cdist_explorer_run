@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Run explorers
+# Run explorers - FIXME: this function is ugly
 #
 
 __cdist_explorer_run()
@@ -47,7 +47,7 @@ __cdist_explorer_run()
    # Create output directory
    __cdist_run_remote mkdir -p "$4"
 
-   # Execute all explorers
+   # Execute all explorers - FIXME: isolate cd call?
    cd "$2";
    # FIXME: cleanup double variable, no need when in directory
    for __cdist_explorer_run_explorer in *; do

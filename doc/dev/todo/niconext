@@ -1,36 +1,3 @@
-core/__cdist_object_code_run:
-   make remote run work again
-
-__cdist_code_run:
-   should be changed to run _all_ code (has nice checks)
-
---------------------------------------------------------------------------------
-- run-remote does not work anymore, because there is no binary :-)
-   either make functions available on the other side or
-   put logic on the server side.
-
-   - trying to run type explorers nicely from local side
-      - must check whether type directory has been transmitted before!
-
---------------------------------------------------------------------------------
-
-
-   - Both type and global have...
-      - local sourcedir
-      - remote destination dir
-      - remote out dir
-      - local out dir
-
-   - Differences are in...
-      - variables exposed / submitted
-
-  
-
-
-Catch broken instances in cdist-mass-deploy -p and report broken deployements at the end!
-
-
---------------------------------------------------------------------------------
 Bug with requirements when indirect requires is scheduled late:
 
 __package/collectd: Generating local code 
