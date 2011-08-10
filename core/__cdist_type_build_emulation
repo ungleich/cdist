@@ -24,6 +24,8 @@ __cdist_type_build_emulation()
 {
    [ $# -eq 0 ] || __cdist_usage "No arguments"
 
+   [ -f "${__cdist_out_type_bin_dir}/.marker" ] && return 0
+
    __cdist_type_emulator="$__cdist_abs_mydir/cdist-type-emulator"
 
    if [ ! -d "${__cdist_type_dir}" ]; then
@@ -42,4 +44,6 @@ __cdist_type_build_emulation()
       ln -sf "${__cdist_type_emulator}" \
          "${__cdist_out_type_bin_dir}/${__cdist_type_build_emulation_type}"
    done < "${__cdist_tmp_file}"
+
+   touch "${__cdist_out_type_bin_dir}/.marker"
 }
