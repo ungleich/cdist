@@ -22,35 +22,36 @@
 # Run the given command for each created object.
 #
 
-__cdist_object_all()
+__cdist_object_all_object_all()
 {
    [ $# -eq 1 ] || __cdist_usage "<command>"
 
-   __cdist_object_all_command="$1"; shift
+   __cdist_object_all_object_all_command="$1"; shift
 
-   __cdist_objects="$__cdist_tmp_dir/objects"
+   __cdist_object_all_object_all_objects="$__cdist_tmp_dir/objects"
 
    # Ensure object dir exists, so marker can be created
    mkdir -p "${__cdist_out_object_dir}"
 
    # Loop until we do not create new objects anymore
    # which is equal to all objects have been run
-   touch "$__cdist_objects_created"
-   while [ -f "$__cdist_objects_created" ]; do
+   touch "$__cdist_object_all_object_all_objects_created"
+   while [ -f "$__cdist_object_all_object_all_objects_created" ]; do
       # Assume we're done after this run
-      rm "$__cdist_objects_created"
+      rm "$__cdist_object_all_object_all_objects_created"
 
       # Get listing of objects
-      __cdist_object_list "$__cdist_out_object_dir" > "$__cdist_objects"
+      __cdist_object_all_object_list "$__cdist_out_object_dir" > \
+         "$__cdist_object_all_object_all_objects"
 
       # NEED TO CREATE ARRAY, SSH DESTROYS WHILE READ LOOP
-      while read __cdist_object; do
-         set -- "$@" "$__cdist_object"
-      done < "$__cdist_objects"
+      while read __cdist_object_all_object; do
+         set -- "$@" "$__cdist_object_all_object"
+      done < "$__cdist_object_all_object_all_objects"
 
       while [ $# -gt 0 ]; do
-         __cdist_object="$1"; shift
-         $__cdist_object_all_command "$__cdist_object"
+         __cdist_object_all_object="$1"; shift
+         $__cdist_object_all_object_all_command "$__cdist_object_all_object"
       done
    done
 }
