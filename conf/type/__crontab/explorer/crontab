@@ -24,4 +24,4 @@
 user="$(cat "$__object/parameter/user")"
 line="$(cat "$__object/parameter/line")"
 
-crontab -l -u "$user"
+crontab -l -u "$user" 2>/dev/null || __cdist_echo warn "No crontab for '$user'"
