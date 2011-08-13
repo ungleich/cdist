@@ -24,7 +24,14 @@
 # and __type_explorers can be submitted :-)
 #
 
+# When running with sudo, it kills our PATH, so we need to set
+# this manually
+if [ -d /var/lib/cdist/bin ]; then
+  export PATH="/var/lib/cdist/bin:$PATH"
+fi
+
 . cdist-config
+
 [ $# -eq 3 ] || __cdist_usage "<variable name> <explorer dir> <out dir>"
 set -ue
 
