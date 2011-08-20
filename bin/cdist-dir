@@ -33,13 +33,25 @@ __cdist_target_host="$1"; shift
 __cdist_src_dir="$1"; shift
 __cdist_dst_dir="$1"; shift
 
+if [ -f `dirname $0`/cdist-my-config ]; then
+  . cdist-my-config
+fi
+
 # This will be the destination directory, so no subdirectories
 # of the same name are created, if the directory is already existing
 __cdist_top_dir="${__cdist_dst_dir%/*}"
 
 if [ "$__cdist_action" = "push" ]; then
    ssh "${__cdist_remote_user}@${__cdist_target_host}" \
-      "mkdir -p \"${__cdist_dst_dir}\""
+      "${__cdist_remote_sudo} mkdir -p \"${__cdist_dst_dir}\""
+
+   # If sudo is needed, we should probably change the ownership of the
+   # target directory so that the remote user can write to it
+   if [ $__cdist_remote_sudo ]; then
+      ssh "${__cdist_remote_user}@${__cdist_target_host}" \
+         "${__cdist_remote_sudo} chown -R ${__cdist_remote_user} \"${__cdist_dst_dir}\""
+   fi
+
    scp -qr "$__cdist_src_dir" \
       "${__cdist_remote_user}@${__cdist_target_host}:${__cdist_top_dir}"
 elif [ "$__cdist_action" = "pull" ]; then

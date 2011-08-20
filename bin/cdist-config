@@ -68,6 +68,7 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 : ${__cdist_name_singleton:=singleton}
 : ${__cdist_name_target_host:=target_host}
 : ${__cdist_name_target_user:=target_user}
+: ${__cdist_name_remote_sudo:=remote_sudo}
 : ${__cdist_name_type:=type}
 : ${__cdist_name_type_bin:=type_bin}
 : ${__cdist_name_type_explorer:=type_explorer}
@@ -78,6 +79,9 @@ __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 # Default remote user
 : ${__cdist_remote_user:=root}
+
+# Don't use sudo by default
+: ${__cdist_remote_sudo:=}
 
 
 ################################################################################
@@ -214,11 +218,21 @@ __cdist_init_deploy()
 
    # Ensure there is no old stuff, neither local nor remote
    rm -rf "$__cdist_local_base_dir"
-   ssh "${__cdist_remote_user}@$1" "rm -rf ${__cdist_remote_base_dir}"
+   if [ -n ${__cdist_remote_sudo} ]; then
+      ssh "${__cdist_remote_user}@$1" \
+          "${__cdist_remote_sudo} rm -rf ${__cdist_remote_base_dir}"
 
-   # Init base
-   mkdir -p "$__cdist_local_base_dir"
-   ssh "${__cdist_remote_user}@$1" "mkdir -p ${__cdist_remote_base_dir}"
+      # Init base
+      mkdir -p "$__cdist_local_base_dir"
+      ssh "${__cdist_remote_user}@$1" \
+          "${__cdist_remote_sudo} mkdir -p ${__cdist_remote_base_dir}"
+   else
+      ssh "${__cdist_remote_user}@$1" "rm -rf ${__cdist_remote_base_dir}"
+
+      # Init base
+      mkdir -p "$__cdist_local_base_dir"
+      ssh "${__cdist_remote_user}@$1" "mkdir -p ${__cdist_remote_base_dir}"
+   fi
 
    # Link configuration source directory - consistent with remote
    ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"

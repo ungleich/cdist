@@ -30,6 +30,10 @@ trap __cdist_kill_on_interrupt INT TERM
 
 __cdist_target_host="$1"
 
+if [ -f `dirname $0`/cdist-my-config ]; then
+  . cdist-my-config
+fi
+
 # Make target host available for non-core
 export $__cdist_name_var_target_host="$__cdist_target_host"
 export $__cdist_name_var_target_user="$__cdist_remote_user"

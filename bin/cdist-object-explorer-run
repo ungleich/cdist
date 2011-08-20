@@ -51,6 +51,20 @@ if [ "$__cdist_has_explorer" ]; then
       "$(__cdist_remote_object_parameter_dir "$__cdist_object_self")"
 
    # Execute explorers
+   # Note: if __cdist_remote_sudo is set, we assume that sudo might
+   # hack up the the PATH, so we prepend the command with the absolute
+   # path
+
+   if [ $__cdist_remote_sudo ]; then
+   cdist-run-remote "$__cdist_target_host" ${__cdist_remote_sudo} \
+      "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\"" \
+      "$__cdist_name_var_object_id=\"$__cdist_object_id\""     \
+      "$__cdist_name_var_self=\"$__cdist_object_self\""        \
+      "$__cdist_remote_bin_dir/cdist-remote-explorer-run"      \
+      "$__cdist_name_var_type_explorer"                        \
+      "$(__cdist_remote_type_explorer_dir "$__cdist_type")"    \
+      "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")"
+   else
    cdist-run-remote "$__cdist_target_host"                     \
       "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\"" \
       "$__cdist_name_var_object_id=\"$__cdist_object_id\""     \
@@ -59,6 +73,7 @@ if [ "$__cdist_has_explorer" ]; then
       "$__cdist_name_var_type_explorer"                        \
       "$(__cdist_remote_type_explorer_dir "$__cdist_type")"    \
       "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")"
+   fi
 
    # Copy back results
    cdist-dir pull "$__cdist_target_host"                             \

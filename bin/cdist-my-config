@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2011 Scott Hardin
 #
 # This file is part of cdist.
 #
@@ -18,20 +18,16 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Run a cdist binary on the remote side
-#
+# This file massages some ENV vars to meet my needs
 
-. cdist-config
-[ $# -ge 2 ] || __cdist_usage "<target_host> <binary> [opts]"
-set -ue
+# Fail if something bogus is going on
+set -u
 
-__cdist_target_host="$1"; shift
+case "$__cdist_target_host" in
+    *.compute-1.amazonaws.com)
+        __cdist_remote_user="ubuntu"
+        export __cdist_remote_sudo="sudo"
 
-if [ -f `dirname $0`/cdist-my-config ]; then
-  . cdist-my-config
-fi
+    ;;
+esac
 
-ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
-   "export PATH=\"${__cdist_remote_bin_dir}:\$PATH\";" \
-   "export __cdist_out_object_dir=\"$__cdist_remote_out_object_dir\";" \
-   "$@"

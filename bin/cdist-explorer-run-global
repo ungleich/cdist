@@ -27,6 +27,10 @@ set -ue
 
 __cdist_target_host="$1"; shift
 
+if [ -f `dirname $0`/cdist-my-config ]; then
+  . cdist-my-config
+fi
+
 __cdist_echo info "Running global explorers "
 
 # copy the explorers
@@ -34,9 +38,19 @@ cdist-dir push "$__cdist_target_host" \
    "${__cdist_explorer_dir}" "${__cdist_remote_explorer_dir}"
 
 # run the initial explorers remotely
+# Note: if __cdist_remote_sudo is set, we assume that sudo might
+# hack up the the PATH, so we prepend the command with the absolute
+# path
+if [ $__cdist_remote_sudo ]; then
+cdist-run-remote "${__cdist_target_host}" ${__cdist_remote_sudo}     \
+   "$__cdist_remote_bin_dir/cdist-remote-explorer-run"               \
+   "$__cdist_name_var_explorer" "$__cdist_remote_explorer_dir"       \
+   "$__cdist_remote_out_explorer_dir"
+else
 cdist-run-remote "${__cdist_target_host}" cdist-remote-explorer-run  \
    "$__cdist_name_var_explorer" "$__cdist_remote_explorer_dir"       \
    "$__cdist_remote_out_explorer_dir"
+fi
 
 # retrieve the results
 cdist-dir pull "$__cdist_target_host" \
