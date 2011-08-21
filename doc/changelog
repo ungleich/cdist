@@ -1,3 +1,6 @@
+next:
+	* New Type: __package_rubygem (Chase Allen James)
+
 1.7.1: 2011-07-26
 	* Documentation: Add explorers to reference
 	* Documentation: Typo cleanup (Derek Brost)
