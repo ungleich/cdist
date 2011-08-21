@@ -20,3 +20,15 @@ __file/etc/collectd/collectd.conf: Warning: Faulty code:
 scp /home/users/nico/oeffentlich/rechner/projekte/cdist-nutzung/conf/type/__ethz_collectd/files/collectd.conf.client root@shrek08:/etc/collectd/collectd.conf
 __file/etc/collectd/collectd.conf: Error: Aborting due to non-zero exit code.
 
+--------------------------------------------------------------------------------
+
+Bad error reporting in functions:
+
+[15:15] ikn:cdist-nutzung% cdist-deploy-to ikn
+core: cdist 1.8.0: Configuring ikn 
+core: Creating clean directory structure 
+core: Transferring cdist binaries/functions to the target host 
+core: Running global explorers 
+core: Running initial manifest for ikn 
+core: Error: cdist-deploy-to: No arguments
+
