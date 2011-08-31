@@ -49,6 +49,7 @@ CORE
          wood     # empty file
 
 - allow cdist to run without $PATH setup: ./bin/cdist-deploy-to
+- use absent/present for state by default
 
 TYPES
 ------
