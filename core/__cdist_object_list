@@ -27,10 +27,10 @@ __cdist_object_list()
    local basedir="$1"; shift
 
    # Use subshell to prevent changing cwd in program
-   (   
+   (
       cd "${basedir}"
 
-      find . -name "$__cdist_name_dot_cdist" |    \   
+      find . -name "$__cdist_name_dot_cdist" |    \
          sed -e 's;^./;;' -e "s;/${__cdist_name_dot_cdist}\$;;"
-   )   
+   )
 }
