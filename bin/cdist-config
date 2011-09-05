@@ -219,20 +219,6 @@ __cdist_object_id_from_object()
    echo "${1#*/}"
 }
 
-# Find objects, remove ./ and /MARKER
-__cdist_object_list()
-{
-   local basedir="$1"; shift
-
-   # Use subshell to prevent changing cwd in program
-   (
-      cd "${basedir}"
-
-      find . -name "$__cdist_name_dot_cdist" |    \
-         sed -e 's;^./;;' -e "s;/${__cdist_name_dot_cdist}\$;;"
-   )
-}
-
 __cdist_object_parameter_dir()
 {
    echo "$(__cdist_object_dir "$1")/${__cdist_name_parameter}"
