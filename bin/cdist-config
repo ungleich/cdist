@@ -21,14 +21,14 @@
 
 __cdist_version="1.8.0"
 
+# Enable debugging
+[ "$__cdist_debug" ] && set -x
+
 # Fail if something bogus is going on
 set -u
 
 # Fail if exited non-zero as well
 set -e
-
-# enable debugging
-[ "$__cdist_debug" ] && set -x
 
 ################################################################################
 # cconf standard vars prefixed with cdist

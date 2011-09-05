@@ -33,13 +33,9 @@ __cdist_object_all_object_all()
    # Ensure object dir exists, so marker can be created
    mkdir -p "${__cdist_out_object_dir}"
 
-   BUG: 
-      - where does $__cdist_objects_created get setup?
-      - why do we use a file?
-      core/__cdist_object_manifest_run:         touch "$__cdist_objects_created"
+   # FIXME: : - why do we use a file?
+   #    core/__cdist_object_manifest_run:         touch "$__cdist_objects_created"
 
-
-   exit 23
    # Loop until we do not create new objects anymore
    # which is equal to all objects have been run
    touch "$__cdist_objects_created"
