@@ -22,7 +22,7 @@
 # Run the given command for each created object.
 #
 
-__cdist_object_all_object_all()
+__cdist_object_all()
 {
    [ $# -eq 1 ] || __cdist_usage "<command>"
 
