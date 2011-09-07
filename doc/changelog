@@ -1,3 +1,6 @@
+1.8.0:
+	* Added debug (via __cdist_debug={1,2} environment variable)
+
 1.7.1: 2011-07-26
 	* Documentation: Add explorers to reference
 	* Documentation: Typo cleanup (Derek Brost)
