@@ -64,6 +64,7 @@ __cdist_object_run()
                 "$(__cdist_remote_object_dir "$__cdist_object_self")"
       __cdist_echo debug "Before run"
       __cdist_object_code_run "$__cdist_object_self"
+      __cdist_echo debug "Object run done
 
       # Mark this object as done
       touch "$__cdist_object_finished"
