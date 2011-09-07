@@ -21,8 +21,16 @@
 
 __cdist_version="1.8.0"
 
-# Enable debugging
-[ "$__cdist_debug" ] && set -x
+#
+# Enable debugging:
+#
+# __cdist_debug unset -> no debug
+# __cdist_debug = 1 -> debug via __cdist_echo
+# __cdist_debug = 2 -> debug via set -x
+#
+
+: ${__cdist_debug:=0}
+[ "$__cdist_debug" = 2 ] && set -x
 
 # Fail if something bogus is going on
 set -u
