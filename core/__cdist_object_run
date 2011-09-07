@@ -57,9 +57,12 @@ __cdist_object_run()
          done
       fi
 
+      __cdist_echo debug "Before gencode"
       __cdist_object_gencode_run "$__cdist_object_self"
+      __cdist_echo debug "Before push"
       __cdist_dir push "$(__cdist_object_dir "$__cdist_object_self")" \
                 "$(__cdist_remote_object_dir "$__cdist_object_self")"
+      __cdist_echo debug "Before run"
       __cdist_object_code_run "$__cdist_object_self"
 
       # Mark this object as done
