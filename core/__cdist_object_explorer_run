@@ -1,0 +1,89 @@
+#!/bin/sh
+#
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# 
+# Run the explorers for the given object on the target host.
+#
+
+# FIXME: many cleanups needed before going production!
+
+__cdist_object_explorer_run()
+{
+   __cdist_object_self="$1"; shift
+
+   __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object_self")"
+   __cdist_type="$(__cdist_type_from_object "$__cdist_object_self")"
+
+   # Check if type of object has >= 1 explorer
+   __cdist_has_explorer="$(__cdist_dir_listing "$(__cdist_type_explorer_dir "$__cdist_type")" | wc -l)"
+   # Run the type explorers for the current object if any
+   if [ "$__cdist_has_explorer" -ge 1 ]; then
+      if ! __cdist_type_explorer_pushed "$__cdist_type"; then
+         # FIXME: variables!
+         src_dir="$(__cdist_type_explorer_dir "$__cdist_type")"
+         dst_dir="$(__cdist_remote_type_explorer_dir "$__cdist_type")"
+         __cdist_echo info "Transfering explorers for $__cdist_type "
+         __cdist_dir push "$src_dir" "$dst_dir"
+         __cdist_type_explorer_pushed_add "$__cdist_type"
+      fi
+
+      __cdist_echo info "Running explorers"
+      # Copy object parameters
+      __cdist_dir push \
+         "$(__cdist_object_parameter_dir "$__cdist_object_self")"         \
+         "$(__cdist_remote_object_parameter_dir "$__cdist_object_self")"
+
+      # Execute explorers
+      # FIXME: STOPPED:
+      #  - remove cdist-remote-explorer-run
+      #  - problem: new variables / need to run explorer directly?
+      #     -> or put logic into __cdist_explorer_run
+      #        -> think about having _one_ wrapper script for remote to execute
+      #           shell functions
+
+      # Create remote output directory
+      __cdist_run_remote mkdir -p "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")"
+
+      cd "$(__cdist_type_explorer_dir "$__cdist_type")"
+
+
+      for __cdist_object_explorer_run_explorer in *; do
+         __cdist_run_remote                                          \
+            "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\"" \
+            "$__cdist_name_var_object_id=\"$__cdist_object_id\""     \
+            "$__cdist_name_var_self=\"$__cdist_object_self\""        \
+            "$(__cdist_remote_type_explorer_dir "$__cdist_type")/$__cdist_object_explorer_run_explorer"    \
+            ">" "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")/$__cdist_object_explorer_run_explorer"
+      done
+
+#       __cdist_run_remote                                          \
+#          "$__cdist_name_var_object=\"$(__cdist_remote_object_dir "$__cdist_object_self")\"" \
+#          "$__cdist_name_var_object_id=\"$__cdist_object_id\""     \
+#          "$__cdist_name_var_self=\"$__cdist_object_self\""        \
+#          cdist-remote-explorer-run                                \
+#          "$__cdist_name_var_type_explorer"                        \
+#          "$(__cdist_remote_type_explorer_dir "$__cdist_type")"    \
+#          "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")"
+
+      # Copy back results
+      __cdist_dir pull "$(__cdist_remote_object_type_explorer_dir "$__cdist_object_self")" \
+         "$(__cdist_object_type_explorer_dir "$__cdist_object_self")"
+   fi
+}

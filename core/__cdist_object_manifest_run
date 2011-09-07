@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# 
+# Run the manifest for the given object.
+#
+
+
+__cdist_object_manifest_run()
+{
+   [ $# -eq 1 ] || __cdist_usage "<object>"
+
+   __cdist_object_self="$1"; shift
+
+   # FIXME: rename to __cdist_object_dir (everywhere!)
+   __cdist_cur_object_dir="$(__cdist_object_dir "$__cdist_object_self")"
+   __cdist_object_id="$(__cdist_object_id_from_object "$__cdist_object_self")"
+
+   __cdist_echo info "Checking manifest "
+
+   __cdist_type="$(__cdist_type_from_object "$__cdist_object_self")"
+   __cdist_manifest="$(__cdist_type_manifest "$__cdist_type")"
+
+   if [ -f "$__cdist_manifest" ]; then
+      if [ -x "$__cdist_manifest" ]; then
+         # Make __cdist_manifest available for cdist-type-emulator
+         export __cdist_manifest
+
+         __cdist_echo info "Executing manifest "
+         export $__cdist_name_var_object="$__cdist_cur_object_dir"
+         export $__cdist_name_var_object_id="$__cdist_object_id"
+         export $__cdist_name_var_type="$(__cdist_type_dir "$__cdist_type")"
+
+         __cdist_manifest_run "$__cdist_manifest"
+
+         # Tell cdist-object-run-all that there may be new objects
+         touch "$__cdist_objects_created"
+      else
+         __cdist_exit_err "${__cdist_manifest} needs to be executable."
+      fi
+   fi
+}

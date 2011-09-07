@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Run a cdist binary on the remote side
+#
+
+__cdist_run_remote()
+{
+   [ $# -ge 1 ] || __cdist_usage "<binary> [opts]"
+
+   ssh "${__cdist_remote_user}@${__cdist_target_host}"   \
+      "export PATH=\"${__cdist_remote_bin_dir}:\$PATH\";" \
+      "export __cdist_out_object_dir=\"$__cdist_remote_out_object_dir\";" \
+      "$@"
+}
