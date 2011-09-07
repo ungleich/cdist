@@ -53,6 +53,8 @@ __cdist_object_run()
          while [ $# -gt 0 ]; do
             __cdist_requirement="$1"; shift
             __cdist_echo info "Resolving requirement $__cdist_requirement"
+            # FIXME: BUG: at this point, the other __cdist_object_run may have
+            # overwritten all our variables!
             __cdist_object_run "$__cdist_requirement"
          done
       fi

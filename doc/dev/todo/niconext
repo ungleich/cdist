@@ -1,3 +1,7 @@
+BUG in core/__cdist_object_run: each recursive call overwrites the variables!
+
+--------------------------------------------------------------------------------
+
 Bug with requirements when indirect requires is scheduled late:
 
 __package/collectd: Generating local code 
