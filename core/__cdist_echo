@@ -36,7 +36,7 @@ __cdist_echo()
    case "$__cdist_echo_type" in
       debug)
          if [ "$__cdist_debug" = 1 ]; then
-            echo $__cdist_echo_prefix "Debug: $@"
+            echo $__cdist_echo_prefix "DEBUG: $@"
          fi
       ;;
       info)
