@@ -20,20 +20,51 @@
 #
 
 import sys # argv
+import subprocess # execute stuff
 
 __cdist_version="2.0.0"
 
-def cdist_echo(type, *args):
+def logger(type, *args):
    """Ignore type for now, support later"""
    print(*args)
 
+def exit_error(*args):
+   logger(*args)
+   sys.exit(1)
+   
+
+def run_or_fail(*args):
+   try:
+      subprocess.check_call(*args)
+   except CalledProcessError:
+      exit_error("Command failed:", *args)
+
+
 def cdist_deploy_to(hostname):
    """Mimic the old deploy to: Deploy to one host"""
-   cdist_echo("info", "Deploying to host", hostname)
+   logger("info", "Deploying to host", hostname)
+
+
+def init_deploy():
+   logger("info", "Creating clean directory structure")
+
+   # Ensure there is no old stuff, neither local nor remote
+   run_or_fail(["echo rm -rf", "$__cdist_local_base_dir"])
+
+#   ssh "${__cdist_remote_user}@${__cdist_target_host}" \
+#      "rm -rf ${__cdist_remote_base_dir}"
+#
+#   # Init base
+#   mkdir -p "$__cdist_local_base_dir"
+#   ssh "${__cdist_remote_user}@${__cdist_target_host}" \
+#      "mkdir -p ${__cdist_remote_base_dir}"
+#
+#   # Link configuraion source directory - consistent with remote
+#   ln -sf "$__cdist_conf_dir" "$__cdist_local_base_dir/$__cdist_name_conf_dir"
 
 
 if __name__ == "__main__":
    hostname=sys.argv[1]
-   cdist_echo("info", "cdist", __cdist_version, ": Configuring host", hostname)
+   logger("info", "cdist", __cdist_version, ": Configuring host", hostname)
    cdist_deploy_to(hostname)
 
