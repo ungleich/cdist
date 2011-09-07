@@ -1,5 +1,6 @@
 1.8.0:
 	* Added debug (via __cdist_debug={1,2} environment variable)
+	* Transformed shell script based approach to shell functions (performance improvement)
 
 1.7.1: 2011-07-26
 	* Documentation: Add explorers to reference
