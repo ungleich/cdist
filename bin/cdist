@@ -34,25 +34,34 @@ def exit_error(*args):
    
 
 def run_or_fail(*args):
+   newargs = ["echo"]
+   newargs.extend(*args)
+
    try:
-      subprocess.check_call(*args)
+      subprocess.check_call(newargs)
    except CalledProcessError:
-      exit_error("Command failed:", *args)
+      exit_error("Command failed:", newargs)
+
+def remote_run_or_fail(hostname, *args):
+   newargs = ["ssh", hostname]
+   newargs.extend(*args)
+
+   run_or_fail(newargs)
 
 
 def cdist_deploy_to(hostname):
    """Mimic the old deploy to: Deploy to one host"""
    logger("info", "Deploying to host", hostname)
+   init_deploy(hostname)
 
 
-def init_deploy():
+def init_deploy(hostname):
    logger("info", "Creating clean directory structure")
 
    # Ensure there is no old stuff, neither local nor remote
-   run_or_fail(["echo rm -rf", "$__cdist_local_base_dir"])
+   run_or_fail(["echo", "rm -rf", "$__cdist_local_base_dir"])
 
-#   ssh "${__cdist_remote_user}@${__cdist_target_host}" \
-#      "rm -rf ${__cdist_remote_base_dir}"
+   remote_run_or_fail(hostname, ["rm -rf", "${__cdist_remote_base_dir}"])
 #
 #   # Init base
 #   mkdir -p "$__cdist_local_base_dir"
