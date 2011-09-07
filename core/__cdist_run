@@ -23,10 +23,5 @@
 
 __cdist_run()
 {
-   set +e
-   "$@"
-   if [ "$?" -ne 0 ]; then
-      __cdist_echo error  "$1 exited non-zero, aborting."
-   fi  
-   set -e
+   "$@" || __cdist_echo error  "$1 exited non-zero, aborting."
 }

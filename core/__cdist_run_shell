@@ -23,7 +23,6 @@
 
 __cdist_run_shell()
 {
-   set +e
    # Prepend our path, so all cdist tools come before other tools
    PATH="${__cdist_out_type_bin_dir}:$PATH" sh -e "$@"
    if [ "$?" -ne 0 ]; then
@@ -32,5 +31,4 @@ __cdist_run_shell()
       cat "$1"
       __cdist_exit_err "Aborting due to non-zero exit code."
    fi  
-   set -e
 }
