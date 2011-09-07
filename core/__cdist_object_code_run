@@ -38,6 +38,8 @@ __cdist_object_code_run()
       "$(__cdist_object_code "$1" "${__cdist_name_gencode_local}")"; then
       __cdist_run_shell \
          "$(__cdist_object_code "$1" "${__cdist_name_gencode_local}")"
+   else
+      __cdist_echo debug "Local code: none"
    fi
 
    # Code remote
@@ -46,5 +48,7 @@ __cdist_object_code_run()
       "$(__cdist_object_code "$1" "${__cdist_name_gencode_remote}")"; then
 
       __cdist_run_remote $(__cdist_remote_object_code "$1")
+   else
+      __cdist_echo debug "Remote code: none"
    fi
 }
