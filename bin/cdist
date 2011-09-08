@@ -107,7 +107,6 @@ class Cdist:
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
-         # FIXME: print out shell script!
          script_fd = open(script)
          log.error("Code that raised the error:\n" + script_fd.read())
          script_fd.close()
