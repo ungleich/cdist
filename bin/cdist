@@ -45,7 +45,7 @@ def run_or_fail(*args):
       exit_error("Command failed:", newargs)
 
 def remote_run_or_fail(hostname, *args):
-   newargs = ["ssh", hostname]
+   newargs = ["ssh", "root@" + hostname]
    newargs.extend(*args)
 
    run_or_fail(newargs)
@@ -55,7 +55,7 @@ def remove_remote_dir(hostname, destination):
 
 def transfer_dir(hostname, source, destination):
    remove_remote_dir(hostname, destination)
-   run_or_fail(["scp", "-r", source, hostname + ":" + destination])
+   run_or_fail(["scp", "-r", source, "root@" + hostname + ":" + destination])
 
 def base_directory():
    """Returns the directory in which all cdist stuff is based in"""
@@ -94,6 +94,8 @@ def global_explore(hostname):
    explorer = list_global_explorers()
    if(len(explorer) == 0):
       exit_error("No explorers found in", global_explorer_directory())
+
+   transfer_global_explorers(hostname)
 
 def init_deploy(hostname):
    logger("info", "Creating clean directory structure")
