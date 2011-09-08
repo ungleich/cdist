@@ -50,7 +50,11 @@ def remote_run_or_fail(hostname, *args):
 
    run_or_fail(newargs)
 
+def remove_remote_dir(hostname, destination):
+   remote_run_or_fail(hostname, ["rm", "-rf",  destination])
+
 def transfer_dir(hostname, source, destination):
+   remove_remote_dir(hostname, destination)
    run_or_fail(["scp", "-r", source, hostname + ":" + destination])
 
 def base_directory():
