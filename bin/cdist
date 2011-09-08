@@ -158,7 +158,7 @@ class Cdist:
 
    def deploy_to(self):
       """Mimic the old deploy to: Deploy to one host"""
-      log.info("Deploying to host" + self.hostname)
+      log.info("Deploying to host " + self.hostname)
       self.init_deploy()
       self.global_explore()
 
