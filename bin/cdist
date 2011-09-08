@@ -30,127 +30,136 @@ class Cdist:
    """Cdist main class to hold arbitrary data"""
    version="2.0.0"
 
-   def __init__(self):
+   def __init__(self, hostname):
       self.tempdir = tempfile.mkdtemp()
+      self.hostname = hostname
+      print(self.hostname)
       print(self.tempdir)
 
-   def __del__(self):
-      print("Zerstoeren")
+   def cleanup(self):
+      # Do not use in __del__:
+      # http://docs.python.org/reference/datamodel.html#customization
+      # "other globals referenced by the __del__() method may already have been deleted 
+      # or in the process of being torn down (e.g. the import machinery shutting down)"
+      #
       print(self.tempdir)
       shutil.rmtree(self.tempdir)
 
-def logger(type, *args):
-   """Ignore type for now, support later"""
-   print(*args)
+   def out_dir(self):
+      # FIXME: stopped - probably need static temp know!
+      """Local directory containing output"""
+      return os.path.join(base_directory(), "conf")
 
-def exit_error(*args):
-   logger("error", *args)
-   sys.exit(1)
-   
+   def logger(self,type, *args):
+      """Ignore type for now, support later"""
+      print(*args)
 
-def run_or_fail(*args):
-   # newargs = ["echo"]
-   newargs = []
-   newargs.extend(*args)
-   print(newargs)
+   def exit_error(self,*args):
+      self.logger("error", *args)
+      sys.exit(1)
+      
 
-   try:
-      subprocess.check_call(newargs)
-   except subprocess.CalledProcessError:
-      exit_error("Command failed:", " ".join(newargs))
+   def run_or_fail(self,*args):
+      # newargs = ["echo"]
+      newargs = []
+      newargs.extend(*args)
+      print(newargs)
 
-def remote_run_or_fail(hostname, *args):
-   """Run something on the remote side and fail is something breaks"""
-   newargs = ["ssh", "root@" + hostname]
-   newargs.extend(*args)
-   run_or_fail(newargs)
+      try:
+         subprocess.check_call(newargs)
+      except subprocess.CalledProcessError:
+         self.exit_error("Command failed:", " ".join(newargs))
 
-def remove_remote_dir(hostname, destination):
-   remote_run_or_fail(hostname, ["rm", "-rf",  destination])
+   def remote_run_or_fail(self, *args):
+      """Run something on the remote side and fail is something breaks"""
+      newargs = ["ssh", "root@" + self.hostname]
+      newargs.extend(*args)
+      print(newargs, "bbbbb", self.hostname)
+      self.run_or_fail(newargs)
 
-def transfer_dir(hostname, source, destination):
-   remove_remote_dir(hostname, destination)
-   run_or_fail(["scp", "-r", source, "root@" + hostname + ":" + destination])
+   def remove_remote_dir(self, destination):
+      self.remote_run_or_fail(["rm", "-rf",  destination])
 
-def base_directory():
-   """Returns the directory in which all cdist stuff is based in"""
-   print("Going to", __file__, os.path.join(os.path.dirname(__file__), os.pardir))
-   os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
-   return os.getcwd()
+   def transfer_dir(self, source, destination):
+      self.remove_remote_dir(destination)
+      self.run_or_fail(["scp", "-qr", source, "root@" + self.hostname + ":" + destination])
 
-def remote_base_directory():
-   return "/var/lib/cdist"
+   def base_directory(self):
+      """Returns the directory in which all cdist stuff is based in"""
+      print("Going to", __file__, os.path.join(os.path.dirname(__file__), os.pardir))
+      os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
+      return os.getcwd()
 
-def conf_directory():
-   """Returns path to main configuration directory"""
-   return os.path.join(base_directory(), "conf")
+   def remote_base_directory(self):
+      return "/var/lib/cdist"
 
-def remote_conf_directory():
-   """Returns path to remote main configuration directory"""
-   return os.path.join(remote_base_directory(), "conf")
+   def conf_directory(self):
+      """Returns path to main configuration directory"""
+      return os.path.join(self.base_directory(), "conf")
 
-def out_dir():
-   # FIXME: stopped - probably need static temp know!
-   """Local directory containing output"""
-   return os.path.join(base_directory(), "conf")
+   def remote_conf_directory(self):
+      """Returns path to remote main configuration directory"""
+      return os.path.join(self.remote_base_directory(), "conf")
 
-def global_explorer_directory():
-   """Returns path to directory containing the global explorers"""
-   return os.path.join(conf_directory(), "explorer")
+   def global_explorer_directory(self):
+      """Returns path to directory containing the global explorers"""
+      return os.path.join(self.conf_directory(), "explorer")
 
-def remote_global_explorer_directory():
-   """Returns path to the remote directory containing the global explorers"""
-   return os.path.join(remote_conf_directory(), "explorer")
+   def remote_global_explorer_directory(self):
+      """Returns path to the remote directory containing the global explorers"""
+      return os.path.join(self.remote_conf_directory(), "explorer")
 
-def remote_global_explorer_path(explorer):
-   """Returns path to the remote explorer"""
-   return os.path.join(remote_global_explorer_directory(), explorer)
+   def remote_global_explorer_path(self,explorer):
+      """Returns path to the remote explorer"""
+      return os.path.join(self.remote_global_explorer_directory(), explorer)
 
-def list_global_explorers():
-   """Return list of available explorers"""
-   return os.listdir(global_explorer_directory())
+   def list_global_explorers(self):
+      """Return list of available explorers"""
+      return os.listdir(self.global_explorer_directory())
 
-def transfer_global_explorers(hostname):
-   transfer_dir(hostname, global_explorer_directory(), remote_global_explorer_directory())
+   def transfer_global_explorers(self):
+      self.transfer_dir(self.global_explorer_directory(), self.remote_global_explorer_directory())
 
-def global_explore(hostname):
-   """Run global explorers"""
-   explorers = list_global_explorers()
-   if(len(explorers) == 0):
-      exit_error("No explorers found in", global_explorer_directory())
+   def global_explore(self):
+      """Run global explorers"""
+      explorers = self.list_global_explorers()
+      if(len(explorers) == 0):
+         self.exit_error("No explorers found in", self.global_explorer_directory())
 
-   transfer_global_explorers(hostname)
-   for explorer in explorers:
-      remote_run_or_fail(hostname, [remote_global_explorer_path(explorer)])
+      self.transfer_global_explorers()
+      for explorer in explorers:
+         self.remote_run_or_fail([self.remote_global_explorer_path(explorer)])
 
 
-def init_deploy(hostname):
-   logger("info", "Creating clean directory structure")
+   def init_deploy(self):
+      self.logger("info", "Creating clean directory structure")
 
-   # Ensure there is no old stuff, neither local nor remote
-#   run_or_fail(["rm -rf", "$__cdist_local_base_dir"])
-#
-#   remote_run_or_fail(hostname, ["rm -rf", "${__cdist_remote_base_dir}"])
-#
-#   # Create base directories
-#   run_or_fail(["mkdir -p", "$__cdist_local_base_dir"])
-#   remote_run_or_fail(hostname,["mkdir -p", "${__cdist_remote_base_dir}"])
-#
-#   # Link configuraion source directory - consistent with remote
-#   run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
+      # Ensure there is no old stuff, neither local nor remote
+   #   run_or_fail(["rm -rf", "$__cdist_local_base_dir"])
+   #
+   #   remote_run_or_fail(hostname, ["rm -rf", "${__cdist_remote_base_dir}"])
+   #
+   #   # Create base directories
+   #   run_or_fail(["mkdir -p", "$__cdist_local_base_dir"])
+   #   remote_run_or_fail(hostname,["mkdir -p", "${__cdist_remote_base_dir}"])
+   #
+   #   # Link configuraion source directory - consistent with remote
+   #   run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
 
-def cdist_deploy_to(hostname):
-   """Mimic the old deploy to: Deploy to one host"""
-   logger("info", "Deploying to host", hostname)
-   init_deploy(hostname)
-   global_explore(hostname)
+   def deploy_to(self):
+      """Mimic the old deploy to: Deploy to one host"""
+      self.logger("info", "Deploying to host", self.hostname)
+      self.init_deploy()
+      self.global_explore()
 
 
 if __name__ == "__main__":
    hostname=sys.argv[1]
 #   logger("info", "cdist", cdist_version, ": Configuring host", hostname)
-   cdist_deploy_to(hostname)
-   print(list_global_explorers())
 
-   c = Cdist()
+   for host in sys.argv[1:]:
+      c = Cdist(host)
+      c.deploy_to()
+      print(c.list_global_explorers())
+      c.cleanup()
 
