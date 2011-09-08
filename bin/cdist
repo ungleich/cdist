@@ -98,12 +98,11 @@ class Cdist:
       sys.exit(1)
 
    def shell_run_or_debug_fail(self, script, *args, **kargs):
-      kargs['shell'] = True
+      # Manually execute /bin/sh, because sh -e does what we want
+      # and sh -c -e does not exit if /bin/false called
+      args[0].insert(0,"/bin/sh")
+      args[0].insert(1,"-e")
       log.debug("Shell exec: " + " ".join(*args))
-
-      # Fail if the script fails
-      args[0].insert(0,"-e")
-      print(args)
 
       try:
          subprocess.check_call(*args, **kargs)
@@ -115,14 +114,12 @@ class Cdist:
          self.exit_error("Non-Zero exit code exit of " + " ".join(*args))
 
    def run_or_fail(self, *args, **kargs):
-      # newargs = ["echo"]
-      newargs = []
-      newargs.extend(*args)
+      log.debug("Exec: " + " ".join(*args))
 
       try:
-         subprocess.check_call(newargs, **kargs)
+         subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
-         self.exit_error("Command failed:", " ".join(newargs))
+         self.exit_error("Command failed:", " ".join(*args))
 
    def remote_run_or_fail(self, *args, **kargs):
       """Run something on the remote side and fail is something breaks"""
