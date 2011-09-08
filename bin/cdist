@@ -201,7 +201,7 @@ if __name__ == "__main__":
        action='store_true')
    parser.add_argument('-i', '--initial-manifest', 
        help='path to a cdist manifest or - to read from stdin',
-       dest='manifest', required=True)
+       dest='manifest', required=False)
    parser.add_argument('-p', '--parallel',
        help='operate on multiple hosts in parallel',
        action='store_true', dest='parallel')
@@ -214,11 +214,9 @@ if __name__ == "__main__":
        logging.root.setLevel(logging.DEBUG)
    
    try:
-      print(args)
-      import cdist
-      sys.exit(cdist.main(args))
+      log.debug(args)
 
-      for host in sys.argv[1:]:
+      for host in args.host:
          c = Cdist(host)
          c.deploy_to()
          print(c.list_global_explorers())
