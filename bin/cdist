@@ -211,14 +211,19 @@ class Cdist:
 
    def transfer_type_explorers(self, type):
       """Transfer explorers of a type, but only once"""
-      if self.type_explorers_transferred[type] == 1
+      if type in self.type_explorers_transferred:
          return
-      else
-         self.type_explorers_transferred[type] = 1
 
       src = os.path.join(TYPE_DIR, type)
-      dst = os.path.join(REMOTE_TYPE_DIR, type, "explorer")
+      base = os.path.join(REMOTE_TYPE_DIR, type)
+      dst = os.path.join(base, "explorer")
+
+      # Ensure the path path exists
+      self.remote_run_or_fail(["mkdir", "-p", base])
       self.transfer_dir(src, dst)
+
+      # Do not retransfer
+      self.type_explorers_transferred[type] = 1
 
    def link_type_to_emulator(self):
       """Link type names to cdist-type-emulator"""
