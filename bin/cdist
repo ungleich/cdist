@@ -30,7 +30,7 @@ def logger(type, *args):
    print(*args)
 
 def exit_error(*args):
-   logger(*args)
+   logger("error", *args)
    sys.exit(1)
    
 
@@ -50,13 +50,9 @@ def remote_run_or_fail(hostname, *args):
    run_or_fail(newargs)
 
 
-def cdist_deploy_to(hostname):
-   """Mimic the old deploy to: Deploy to one host"""
-   logger("info", "Deploying to host", hostname)
-   init_deploy(hostname)
-
 def base_directory():
    """Returns the directory in which all cdist stuff is based in"""
+   print("Going to", __file__, os.path.join(os.path.dirname(__file__), os.pardir))
    os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
    return os.getcwd()
 
@@ -70,10 +66,14 @@ def global_explorer_directory():
 
 def list_global_explorers():
    """Return list of available explorers"""
-   os.listdir(path=global_explorer_directory())
+   return os.listdir(global_explorer_directory())
 
-def explore(hostname, type=''):
-   """Run explorers"""
+def global_explore(hostname):
+   """Run global explorers"""
+   explorer = list_global_explorers()
+   if(len(explorer) == 0):
+      exit_error("No explorers found in", global_explorer_directory())
+      
 
 def init_deploy(hostname):
    logger("info", "Creating clean directory structure")
@@ -90,10 +90,16 @@ def init_deploy(hostname):
    # Link configuraion source directory - consistent with remote
    run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
 
+def cdist_deploy_to(hostname):
+   """Mimic the old deploy to: Deploy to one host"""
+   logger("info", "Deploying to host", hostname)
+   init_deploy(hostname)
+   global_explore(hostname)
+
 
 if __name__ == "__main__":
    hostname=sys.argv[1]
    logger("info", "cdist", __cdist_version, ": Configuring host", hostname)
    cdist_deploy_to(hostname)
-   print(global_explorer_directory())
+   print(list_global_explorers())
 
