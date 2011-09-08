@@ -160,7 +160,7 @@ class Cdist:
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
-         self.exit_error("Command failed:", " ".join(*args))
+         self.exit_error("Command failed: " + " ".join(*args))
 
    def remote_run_or_fail(self, *args, **kargs):
       """Run something on the remote side and fail is something breaks"""
@@ -349,20 +349,20 @@ class Cdist:
 
 if __name__ == "__main__":
    parser = argparse.ArgumentParser(description='cdist ' + VERSION)
-   parser.add_argument('host', nargs='+', help='one or more hosts to operate on')
+   parser.add_argument('host', nargs='*', help='one or more hosts to operate on')
    parser.add_argument('-b', '--banner',
        help='Show cdist banner',
        action='store_true', dest='banner')
-   parser.add_argument('-d', '--debug', help='set log level to debug',
+   parser.add_argument('-d', '--debug', help='Set log level to debug',
        action='store_true')
    parser.add_argument('-i', '--initial-manifest', 
-       help='path to a cdist manifest or - to read from stdin',
+       help='Path to a cdist manifest or - to read from stdin',
        dest='manifest', required=False)
    parser.add_argument('-p', '--parallel',
-       help='operate on multiple hosts in parallel',
+       help='Operate on multiple hosts in parallel',
        action='store_true', dest='parallel')
    parser.add_argument('-s', '--sequential',
-       help='operate on multiple hosts sequentially',
+       help='Operate on multiple hosts sequentially',
        action='store_false', dest='parallel')
    
    args = parser.parse_args(sys.argv[1:])
