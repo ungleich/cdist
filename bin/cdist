@@ -20,13 +20,13 @@
 #
 #
 
-import sys
-import subprocess # execute stuff
-import os
-import tempfile
-import shutil
+import argparse
 import logging
-
+import os
+import subprocess
+import shutil
+import sys
+import tempfile
 
 # Given paths from installation
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -37,6 +37,7 @@ MANIFEST_DIR               = os.path.join(CONF_DIR, "manifest")
 REMOTE_BASE_DIR            = "/var/lib/cdist"
 REMOTE_CONF_DIR            = os.path.join(REMOTE_BASE_DIR, "conf")
 REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
+VERSION                    = "2.0.0"
 
 
 #class Context(object):
@@ -64,7 +65,6 @@ log = logging.getLogger()
 
 class Cdist:
    """Cdist main class to hold arbitrary data"""
-   version="2.0.0"
 
    def __init__(self, hostname, initial_manifest=False):
       self.hostname = hostname
@@ -195,47 +195,33 @@ class Cdist:
 if __name__ == "__main__":
    hostname=sys.argv[1]
 
-   for host in sys.argv[1:]:
-      c = Cdist(host)
-      c.deploy_to()
-      print(c.list_global_explorers())
-      c.cleanup()
+   parser = argparse.ArgumentParser(description='cdist ' + VERSION)
+   parser.add_argument('host', nargs='+', help='one or more hosts to operate on')
+   parser.add_argument('-d', '--debug', help='set log level to debug',
+       action='store_true')
+   parser.add_argument('-i', '--initial-manifest', 
+       help='path to a cdist manifest or - to read from stdin',
+       dest='manifest', required=True)
+   parser.add_argument('-p', '--parallel',
+       help='operate on multiple hosts in parallel',
+       action='store_true', dest='parallel')
+   parser.add_argument('-s', '--sequential',
+       help='operate on multiple hosts sequentially',
+       action='store_false', dest='parallel')
+   
+   args = parser.parse_args(sys.argv[1:])
+   if args.debug:
+       logging.root.setLevel(logging.DEBUG)
+   
+   try:
+      print(args)
+      import cdist
+      sys.exit(cdist.main(args))
 
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-import logging
-# TODO: configure logging based on config and/or user given arguments
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
-log = logging.getLogger()
-
-import argparse
-import sys
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Some helpfull blabla')
-    parser.add_argument('host', nargs='+', help='one or more hosts to operate on')
-    parser.add_argument('-i', '--initial-manifest', 
-        help='path to a cdist manifest or - to read from stdin',
-        dest='manifest', required=True)
-    parser.add_argument('-p', '--parallel',
-        help='operate on multiple hosts in parallel',
-        action='store_true', dest='parallel')
-    parser.add_argument('-s', '--sequential',
-        help='operate on multiple hosts sequentially',
-        action='store_false', dest='parallel')
-    parser.add_argument('-d', '--debug', help='set log level to debug',
-        action='store_true')
-
-    args = parser.parse_args(sys.argv[1:])
-    if args.debug:
-        logging.root.setLevel(logging.DEBUG)
-    log.debug('Look ma, now whe\'re showing debug messages')
-    
-    try:
-        print(args)
-        #import cdist
-        #sys.exit(cdist.main(args))
-    except KeyboardInterrupt:
-        sys.exit(0)
+      for host in sys.argv[1:]:
+         c = Cdist(host)
+         c.deploy_to()
+         print(c.list_global_explorers())
+         c.cleanup()
+   except KeyboardInterrupt:
+       sys.exit(0)
