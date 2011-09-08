@@ -187,7 +187,7 @@ class Cdist:
 
       return object_paths
 
-   def get_type_from_object(cdist_object):
+   def get_type_from_object(self, cdist_object):
       return cdist_object.split(os.sep)[0]
 
    def list_objects(self, starting_point = False):
@@ -250,11 +250,13 @@ class Cdist:
          self.remote_run_or_fail(cmd, stdout=output_fd)
          output_fd.close()
 
-   def run_type_explorer(self, object):
+   def run_type_explorer(self, cdist_object):
       """Run type specific explorers for objects"""
       # Based on bin/cdist-object-explorer-run
 
       # Transfering explorers for this type
+      type = self.get_type_from_object(cdist_object)
+      self.transfer_type_explorers(type)
 
    def init_deploy(self):
       log.info("Creating clean directory structure")
@@ -294,6 +296,11 @@ class Cdist:
       self.init_deploy()
       self.run_global_explores()
       self.run_initial_manifest()
+      
+      objects = self.list_objects()
+
+      for cdist_object in objects:
+         self.run_type_explorer(cdist_object)
 
 
 if __name__ == "__main__":
