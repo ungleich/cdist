@@ -22,8 +22,22 @@
 import sys # argv
 import subprocess # execute stuff
 import os
+import tempfile
+import shutil
 
-__cdist_version="2.0.0"
+
+class Cdist:
+   """Cdist main class to hold arbitrary data"""
+   version="2.0.0"
+
+   def __init__(self):
+      self.tempdir = tempfile.mkdtemp()
+      print(self.tempdir)
+
+   def __del__(self):
+      print("Zerstoeren")
+      print(self.tempdir)
+      shutil.rmtree(self.tempdir)
 
 def logger(type, *args):
    """Ignore type for now, support later"""
@@ -76,7 +90,7 @@ def remote_conf_directory():
    return os.path.join(remote_base_directory(), "conf")
 
 def out_dir():
-   FIXME: stopped - probably need static temp know!
+   # FIXME: stopped - probably need static temp know!
    """Local directory containing output"""
    return os.path.join(base_directory(), "conf")
 
@@ -134,7 +148,9 @@ def cdist_deploy_to(hostname):
 
 if __name__ == "__main__":
    hostname=sys.argv[1]
-   logger("info", "cdist", __cdist_version, ": Configuring host", hostname)
+#   logger("info", "cdist", cdist_version, ": Configuring host", hostname)
    cdist_deploy_to(hostname)
    print(list_global_explorers())
+
+   c = Cdist()
 
