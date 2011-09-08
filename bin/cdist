@@ -31,6 +31,8 @@ import logging
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 CONF_DIR                   = os.path.join(BASE_DIR, "conf")
 GLOBAL_EXPLORER_DIR        = os.path.join(CONF_DIR, "explorer")
+MANIFEST_DIR               = os.path.join(CONF_DIR, "manifest")
+
 REMOTE_BASE_DIR            = "/var/lib/cdist"
 REMOTE_CONF_DIR            = os.path.join(REMOTE_BASE_DIR, "conf")
 REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
@@ -63,7 +65,7 @@ class Cdist:
    """Cdist main class to hold arbitrary data"""
    version="2.0.0"
 
-   def __init__(self, hostname):
+   def __init__(self, hostname, initial_manifest=False):
       self.hostname = hostname
 
       # log.info("foobar")
@@ -74,6 +76,12 @@ class Cdist:
       os.mkdir(self.out_dir)
       self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
       os.mkdir(self.global_explorer_out_dir)
+
+      # Mostly static, but can be overwritten on user demand
+      if initial_manifest:
+         self.initial_manifest = initial_manifest
+      else:
+         self.initial_manifest = os.path.join(MANIFEST_DIR, "init")
 
    def cleanup(self):
       # Do not use in __del__:
@@ -157,11 +165,15 @@ class Cdist:
    #   # Link configuraion source directory - consistent with remote
    #   run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
 
+   def initial_manifes(self):
+      """Run the initial manifest"""
+
    def deploy_to(self):
       """Mimic the old deploy to: Deploy to one host"""
       log.info("Deploying to host " + self.hostname)
       self.init_deploy()
       self.global_explore()
+      self.initial_manifest()
 
 
 if __name__ == "__main__":
