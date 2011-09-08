@@ -169,7 +169,7 @@ class Cdist:
          log.debug("Linking %s to %s", source, destination)
          os.symlink(source, destination)
 
-   def global_explore(self):
+   def run_global_explores(self):
       """Run global explorers"""
       explorers = self.list_global_explorers()
       if(len(explorers) == 0):
@@ -186,6 +186,7 @@ class Cdist:
          self.remote_run_or_fail(cmd, stdout=output_fd)
          output_fd.close()
 
+   # def run_type_explorer(self):
 
    def init_deploy(self):
       log.info("Creating clean directory structure")
@@ -203,8 +204,16 @@ class Cdist:
       """Run the initial manifest"""
       log.info("Running the initial manifest")
       env = os.environ.copy()
-      env['__target_host'] = self.target_host
       env['PATH'] = self.bin_dir + ":" + env['PATH']
+
+      env['__target_host']    = self.target_host
+      env['__global']         = self.out_dir
+      
+      # Legacy stuff to make cdist-type-emulator work
+      env['__cdist_conf_dir']       = CONF_DIR
+      env['__cdist_core_dir']       = os.path.join(BASE_DIR, "core")
+      env['__cdist_local_base_dir'] = self.temp_dir
+      env['__cdist_manifest']       = self.initial_manifest
 
       self.shell_run_or_debug_fail(self.initial_manifest,
                                   [self.initial_manifest],
@@ -215,7 +224,7 @@ class Cdist:
       """Mimic the old deploy to: Deploy to one host"""
       log.info("Deploying to host " + self.target_host)
       self.init_deploy()
-      self.global_explore()
+      self.run_global_explores()
       self.run_initial_manifest()
 
 
