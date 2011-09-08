@@ -28,6 +28,21 @@ import shutil
 import sys
 import tempfile
 
+BANNER = """
+             ..          .       .x+=:.        s
+           dF           @88>    z`    ^%      :8
+          '88bu.        %8P        .   <k    .88
+      .   '*88888bu      .       .@8Ned8"   :888ooo
+ .udR88N    ^"*8888N   .@88u   .@^%8888"  -*8888888
+<888'888k  beWE "888L ''888E` x88:  `)8b.   8888
+9888 'Y"   888E  888E   888E  8888N=*8888   8888
+9888       888E  888E   888E   %8"    R88   8888
+9888       888E  888F   888E    @8Wou 9%   .8888Lu=
+?8888u../ .888N..888    888&  .888888P`    ^%888*
+ "8888P'   `"888*""     R888" `   ^"F        'Y"
+   "P'        ""         ""
+"""
+
 # Given paths from installation
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 CONF_DIR                   = os.path.join(BASE_DIR, "conf")
@@ -71,6 +86,12 @@ log = logging.getLogger()
 # List types
 def list_types():
    return os.listdir(TYPE_DIR)
+
+def banner():
+   """Guess what :-)"""
+   print(BANNER)
+
+
 
 class Cdist:
    """Cdist main class to hold arbitrary data"""
@@ -166,6 +187,10 @@ class Cdist:
       """Return list of available explorers"""
       return os.listdir(GLOBAL_EXPLORER_DIR)
 
+   def list_type_explorers(self, type):
+      """Return list of available explorers for a specific type"""
+      return os.listdir(type_explorer_dir(type))
+
    def list_object_paths(self, starting_point = False):
       """Return list of paths of existing objects"""
       object_paths = []
@@ -199,12 +224,19 @@ class Cdist:
       object_paths = self.list_object_paths(starting_point)
       objects = []
       log.debug("Paths recieved: %s", object_paths)
-      log.debug("And te starting point: %s", starting_point)
 
       for path in object_paths:
          objects.append(os.path.relpath(path, starting_point))
 
       return objects
+
+   def type_explorer_dir(self, type):
+      """Return directory that holds the explorers of a type"""
+      return os.path.join(TYPE_DIR, type, "explorer")
+
+   def remote_type_explorer_dir(type):
+      """Return remote directory that holds the explorers of a type"""
+      return os.path.join(REMOTE_TYPE_DIR, type, "explorer")
 
    def transfer_global_explorers(self):
       self.transfer_dir(GLOBAL_EXPLORER_DIR, REMOTE_GLOBAL_EXPLORER_DIR)
@@ -212,14 +244,15 @@ class Cdist:
    def transfer_type_explorers(self, type):
       """Transfer explorers of a type, but only once"""
       if type in self.type_explorers_transferred:
+         log.debug("Skipping retransfer for %s", type)
          return
 
-      src = os.path.join(TYPE_DIR, type)
-      base = os.path.join(REMOTE_TYPE_DIR, type)
-      dst = os.path.join(base, "explorer")
+      src = self.type_explorer_dir(type)
+      remote_base = os.path.join(REMOTE_TYPE_DIR, type)
+      dst = self.type_explorer_dir(type)
 
       # Ensure the path path exists
-      self.remote_run_or_fail(["mkdir", "-p", base])
+      self.remote_run_or_fail(["mkdir", "-p", remote_base])
       self.transfer_dir(src, dst)
 
       # Do not retransfer
@@ -257,6 +290,17 @@ class Cdist:
       # Transfering explorers for this type
       type = self.get_type_from_object(cdist_object)
       self.transfer_type_explorers(type)
+
+      cmd = []
+      cmd.append("__explorer=" + REMOTE_GLOBAL_EXPLORER_DIR)
+      cmd.append("__type_explorer=" + remote_type_explorer_dir(type))
+
+      explorers = list_type_explorers(type)
+      for explorer in explorers:
+         remote_cmd = cmd
+         remote_cmd.append(os.path.join(remote_type_explorer_dir(type), explorer))
+
+         self.remote_run_or_fail(remote_cmd)
 
    def init_deploy(self):
       log.info("Creating clean directory structure")
@@ -306,6 +350,9 @@ class Cdist:
 if __name__ == "__main__":
    parser = argparse.ArgumentParser(description='cdist ' + VERSION)
    parser.add_argument('host', nargs='+', help='one or more hosts to operate on')
+   parser.add_argument('-b', '--banner',
+       help='Show cdist banner',
+       action='store_true', dest='banner')
    parser.add_argument('-d', '--debug', help='set log level to debug',
        action='store_true')
    parser.add_argument('-i', '--initial-manifest', 
@@ -321,6 +368,10 @@ if __name__ == "__main__":
    args = parser.parse_args(sys.argv[1:])
    if args.debug:
        logging.root.setLevel(logging.DEBUG)
+
+   if args.banner:
+      banner()
+      sys.exit(0)
    
    try:
       log.debug(args)
