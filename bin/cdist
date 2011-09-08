@@ -34,6 +34,7 @@ CONF_DIR                   = os.path.join(BASE_DIR, "conf")
 GLOBAL_EXPLORER_DIR        = os.path.join(CONF_DIR, "explorer")
 LIB_DIR                    = os.path.join(BASE_DIR, "lib")
 MANIFEST_DIR               = os.path.join(CONF_DIR, "manifest")
+TYPE_DIR                   = os.path.join(CONF_DIR, "type")
 
 REMOTE_BASE_DIR            = "/var/lib/cdist"
 REMOTE_CONF_DIR            = os.path.join(REMOTE_BASE_DIR, "conf")
@@ -64,6 +65,10 @@ VERSION                    = "2.0.0"
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
 
+# List types
+def list_types():
+   return os.listdir(TYPE_DIR)
+
 class Cdist:
    """Cdist main class to hold arbitrary data"""
 
@@ -74,10 +79,17 @@ class Cdist:
 
       # Setup directory paths
       self.temp_dir = tempfile.mkdtemp()
+
       self.out_dir = os.path.join(self.temp_dir, "out")
       os.mkdir(self.out_dir)
+
       self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
       os.mkdir(self.global_explorer_out_dir)
+
+      # Setup binary directory + contents
+      self.bin_dir = os.path.join(self.out_dir, "bin")
+      os.mkdir(self.bin_dir)
+      self.link_type_to_emulator()
 
       # Mostly static, but can be overwritten on user demand
       if initial_manifest:
@@ -149,6 +161,14 @@ class Cdist:
    def transfer_global_explorers(self):
       self.transfer_dir(GLOBAL_EXPLORER_DIR, REMOTE_GLOBAL_EXPLORER_DIR)
 
+   def link_type_to_emulator(self):
+      """Link type names to cdist-type-emulator"""
+      for type in list_types():
+         source = os.path.join(LIB_DIR, "cdist-type-emulator")
+         destination = os.path.join(self.bin_dir, type)
+         log.debug("Linking %s to %s", source, destination)
+         os.symlink(source, destination)
+
    def global_explore(self):
       """Run global explorers"""
       explorers = self.list_global_explorers()
@@ -184,6 +204,7 @@ class Cdist:
       log.info("Running the initial manifest")
       env = os.environ.copy()
       env['__target_host'] = self.target_host
+      env['PATH'] = self.bin_dir + ":" + env['PATH']
 
       self.shell_run_or_debug_fail(self.initial_manifest,
                                   [self.initial_manifest],
