@@ -101,6 +101,10 @@ class Cdist:
       kargs['shell'] = True
       log.debug("Shell exec: " + " ".join(*args))
 
+      # Fail if the script fails
+      args[0].insert(0,"-e")
+      print(args)
+
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
@@ -219,7 +223,6 @@ if __name__ == "__main__":
       for host in args.host:
          c = Cdist(host)
          c.deploy_to()
-         print(c.list_global_explorers())
          c.cleanup()
    except KeyboardInterrupt:
        sys.exit(0)
