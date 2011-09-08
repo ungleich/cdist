@@ -30,7 +30,7 @@ def logger(type, *args):
    print(*args)
 
 def exit_error(*args):
-   logger("error", args)
+   logger("error", *args)
    sys.exit(1)
    
 
@@ -42,8 +42,8 @@ def run_or_fail(*args):
 
    try:
       subprocess.check_call(newargs)
-   except CalledProcessError:
-      exit_error("Command failed:", newargs)
+   except subprocess.CalledProcessError:
+      exit_error("Command failed:", " ".join(newargs))
 
 def remote_run_or_fail(hostname, *args):
    """Run something on the remote side and fail is something breaks"""
@@ -104,8 +104,6 @@ def global_explore(hostname):
    for explorer in explorers:
       remote_run_or_fail(hostname, [remote_global_explorer_path(explorer)])
 
-   remote_run_or_fail(hostname, [remote_global_explorer_path("moo")])
-      
 
 def init_deploy(hostname):
    logger("info", "Creating clean directory structure")
