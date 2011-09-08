@@ -21,6 +21,7 @@
 
 import sys # argv
 import subprocess # execute stuff
+import os
 
 __cdist_version="2.0.0"
 
@@ -54,6 +55,20 @@ def cdist_deploy_to(hostname):
    logger("info", "Deploying to host", hostname)
    init_deploy(hostname)
 
+def base_directory():
+   """Returns the directory in which all cdist stuff is based in"""
+   os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
+   return os.getcwd()
+
+def global_explorer_directory():
+   """Returns path to directory containing the global explorers"""
+
+def list_global_explorers():
+   """Return list of available explorers"""
+   os.listdir(path=global_explorer_directory())
+
+def explore(hostname, type=''):
+   """Run explorers"""
 
 def init_deploy(hostname):
    logger("info", "Creating clean directory structure")
@@ -75,4 +90,5 @@ if __name__ == "__main__":
    hostname=sys.argv[1]
    logger("info", "cdist", __cdist_version, ": Configuring host", hostname)
    cdist_deploy_to(hostname)
+   print(base_directory())
 
