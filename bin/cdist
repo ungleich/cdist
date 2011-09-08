@@ -60,8 +60,13 @@ def base_directory():
    os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
    return os.getcwd()
 
+def conf_directory():
+   """Returns path to main configuration directory"""
+   return os.path.join(base_directory(), "conf")
+
 def global_explorer_directory():
    """Returns path to directory containing the global explorers"""
+   return os.path.join(conf_directory(), "explorer")
 
 def list_global_explorers():
    """Return list of available explorers"""
@@ -90,5 +95,5 @@ if __name__ == "__main__":
    hostname=sys.argv[1]
    logger("info", "cdist", __cdist_version, ": Configuring host", hostname)
    cdist_deploy_to(hostname)
-   print(base_directory())
+   print(global_explorer_directory())
 
