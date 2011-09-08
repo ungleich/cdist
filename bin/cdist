@@ -38,7 +38,10 @@ TYPE_DIR                   = os.path.join(CONF_DIR, "type")
 
 REMOTE_BASE_DIR            = "/var/lib/cdist"
 REMOTE_CONF_DIR            = os.path.join(REMOTE_BASE_DIR, "conf")
+REMOTE_TYPE_DIR            = os.path.join(REMOTE_CONF_DIR, "type")
 REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
+
+DOT_CDIST                  = ".cdist"
 VERSION                    = "2.0.0"
 
 
@@ -92,6 +95,9 @@ class Cdist:
       self.bin_dir = os.path.join(self.out_dir, "bin")
       os.mkdir(self.bin_dir)
       self.link_type_to_emulator()
+
+      # List of type explorers transferred
+      self.type_explorers_transferred = {}
 
       # Mostly static, but can be overwritten on user demand
       if initial_manifest:
@@ -175,11 +181,14 @@ class Cdist:
             object_paths.extend(self.list_object_paths(starting_point = full_path))
 
          # Directory contains .cdist -> is an object
-         if content == ".cdist":
+         if content == DOT_CDIST:
             log.debug("Adding Object Path %s", starting_point)
             object_paths.append(starting_point)
 
       return object_paths
+
+   def get_type_from_object(cdist_object):
+      return cdist_object.split(os.sep)[0]
 
    def list_objects(self, starting_point = False):
       """Return list of existing objects"""
@@ -197,9 +206,19 @@ class Cdist:
 
       return objects
 
-
    def transfer_global_explorers(self):
       self.transfer_dir(GLOBAL_EXPLORER_DIR, REMOTE_GLOBAL_EXPLORER_DIR)
+
+   def transfer_type_explorers(self, type):
+      """Transfer explorers of a type, but only once"""
+      if self.type_explorers_transferred[type] == 1
+         return
+      else
+         self.type_explorers_transferred[type] = 1
+
+      src = os.path.join(TYPE_DIR, type)
+      dst = os.path.join(REMOTE_TYPE_DIR, type, "explorer")
+      self.transfer_dir(src, dst)
 
    def link_type_to_emulator(self):
       """Link type names to cdist-type-emulator"""
@@ -226,7 +245,11 @@ class Cdist:
          self.remote_run_or_fail(cmd, stdout=output_fd)
          output_fd.close()
 
-   # def run_type_explorer(self):
+   def run_type_explorer(self, object):
+      """Run type specific explorers for objects"""
+      # Based on bin/cdist-object-explorer-run
+
+      # Transfering explorers for this type
 
    def init_deploy(self):
       log.info("Creating clean directory structure")
