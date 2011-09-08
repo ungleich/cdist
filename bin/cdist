@@ -201,3 +201,41 @@ if __name__ == "__main__":
       print(c.list_global_explorers())
       c.cleanup()
 
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import logging
+# TODO: configure logging based on config and/or user given arguments
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+log = logging.getLogger()
+
+import argparse
+import sys
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Some helpfull blabla')
+    parser.add_argument('host', nargs='+', help='one or more hosts to operate on')
+    parser.add_argument('-i', '--initial-manifest', 
+        help='path to a cdist manifest or - to read from stdin',
+        dest='manifest', required=True)
+    parser.add_argument('-p', '--parallel',
+        help='operate on multiple hosts in parallel',
+        action='store_true', dest='parallel')
+    parser.add_argument('-s', '--sequential',
+        help='operate on multiple hosts sequentially',
+        action='store_false', dest='parallel')
+    parser.add_argument('-d', '--debug', help='set log level to debug',
+        action='store_true')
+
+    args = parser.parse_args(sys.argv[1:])
+    if args.debug:
+        logging.root.setLevel(logging.DEBUG)
+    log.debug('Look ma, now whe\'re showing debug messages')
+    
+    try:
+        print(args)
+        #import cdist
+        #sys.exit(cdist.main(args))
+    except KeyboardInterrupt:
+        sys.exit(0)
