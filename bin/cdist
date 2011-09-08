@@ -59,22 +59,22 @@ class Cdist:
       sys.exit(1)
       
 
-   def run_or_fail(self,*args):
+   def run_or_fail(self,*args, **kargs):
       # newargs = ["echo"]
       newargs = []
       newargs.extend(*args)
       print(newargs)
 
       try:
-         subprocess.check_call(newargs)
+         subprocess.check_call(newargs, **kargs)
       except subprocess.CalledProcessError:
          self.exit_error("Command failed:", " ".join(newargs))
 
-   def remote_run_or_fail(self, *args):
+   def remote_run_or_fail(self, *args, **kargs):
       """Run something on the remote side and fail is something breaks"""
       newargs = ["ssh", "root@" + self.hostname]
       newargs.extend(*args)
-      self.run_or_fail(newargs)
+      self.run_or_fail(newargs, **kargs)
 
    def remove_remote_dir(self, destination):
       self.remote_run_or_fail(["rm", "-rf",  destination])
