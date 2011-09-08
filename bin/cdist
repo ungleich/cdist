@@ -92,16 +92,16 @@ def init_deploy(hostname):
    logger("info", "Creating clean directory structure")
 
    # Ensure there is no old stuff, neither local nor remote
-   run_or_fail(["rm -rf", "$__cdist_local_base_dir"])
-
-   remote_run_or_fail(hostname, ["rm -rf", "${__cdist_remote_base_dir}"])
-
-   # Create base directories
-   run_or_fail(["mkdir -p", "$__cdist_local_base_dir"])
-   remote_run_or_fail(hostname,["mkdir -p", "${__cdist_remote_base_dir}"])
-
-   # Link configuraion source directory - consistent with remote
-   run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
+#   run_or_fail(["rm -rf", "$__cdist_local_base_dir"])
+#
+#   remote_run_or_fail(hostname, ["rm -rf", "${__cdist_remote_base_dir}"])
+#
+#   # Create base directories
+#   run_or_fail(["mkdir -p", "$__cdist_local_base_dir"])
+#   remote_run_or_fail(hostname,["mkdir -p", "${__cdist_remote_base_dir}"])
+#
+#   # Link configuraion source directory - consistent with remote
+#   run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
 
 def cdist_deploy_to(hostname):
    """Mimic the old deploy to: Deploy to one host"""
