@@ -86,6 +86,8 @@ class Cdist:
       self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
       os.mkdir(self.global_explorer_out_dir)
 
+      self.object_dir = os.path.join(self.out_dir, "object")
+
       # Setup binary directory + contents
       self.bin_dir = os.path.join(self.out_dir, "bin")
       os.mkdir(self.bin_dir)
