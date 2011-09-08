@@ -66,8 +66,8 @@ log = logging.getLogger()
 class Cdist:
    """Cdist main class to hold arbitrary data"""
 
-   def __init__(self, hostname, initial_manifest=False):
-      self.hostname = hostname
+   def __init__(self, target_host, initial_manifest=False):
+      self.target_host = target_host
 
       # log.info("foobar")
 
@@ -126,7 +126,7 @@ class Cdist:
 
    def remote_run_or_fail(self, *args, **kargs):
       """Run something on the remote side and fail is something breaks"""
-      newargs = ["ssh", "root@" + self.hostname]
+      newargs = ["ssh", "root@" + self.target_host]
       newargs.extend(*args)
       self.run_or_fail(newargs, **kargs)
 
@@ -135,7 +135,7 @@ class Cdist:
 
    def transfer_dir(self, source, destination):
       self.remove_remote_dir(destination)
-      self.run_or_fail(["scp", "-qr", source, "root@" + self.hostname + ":" + destination])
+      self.run_or_fail(["scp", "-qr", source, "root@" + self.target_host + ":" + destination])
 
    def global_explorer_output_path(self, explorer):
       """Returns path of the output for a global explorer"""
@@ -185,20 +185,23 @@ class Cdist:
    def run_initial_manifest(self):
       """Run the initial manifest"""
       log.info("Running the initial manifest")
-      self.shell_run_or_debug_fail(self.initial_manifest, [self.initial_manifest])
+      env = os.environ.copy()
+      env['__target_host'] = self.target_host
+
+      self.shell_run_or_debug_fail(self.initial_manifest,
+                                  [self.initial_manifest],
+                                  env=env)
 
 
    def deploy_to(self):
       """Mimic the old deploy to: Deploy to one host"""
-      log.info("Deploying to host " + self.hostname)
+      log.info("Deploying to host " + self.target_host)
       self.init_deploy()
       self.global_explore()
       self.run_initial_manifest()
 
 
 if __name__ == "__main__":
-   hostname=sys.argv[1]
-
    parser = argparse.ArgumentParser(description='cdist ' + VERSION)
    parser.add_argument('host', nargs='+', help='one or more hosts to operate on')
    parser.add_argument('-d', '--debug', help='set log level to debug',
