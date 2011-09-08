@@ -160,6 +160,44 @@ class Cdist:
       """Return list of available explorers"""
       return os.listdir(GLOBAL_EXPLORER_DIR)
 
+   def list_object_paths(self, starting_point = False):
+      """Return list of paths of existing objects"""
+      object_paths = []
+
+      if not starting_point:
+         starting_point = self.object_dir
+
+      for content in os.listdir(starting_point):
+         full_path = os.path.join(starting_point, content)
+         print(full_path)
+         if os.path.isdir(full_path):
+            log.debug("Recursing for %s", full_path)
+            object_paths.extend(self.list_object_paths(starting_point = full_path))
+
+         # Directory contains .cdist -> is an object
+         if content == ".cdist":
+            log.debug("Adding Object Path %s", starting_point)
+            object_paths.append(starting_point)
+
+      return object_paths
+
+   def list_objects(self, starting_point = False):
+      """Return list of existing objects"""
+
+      if not starting_point:
+         starting_point = self.object_dir
+
+      object_paths = self.list_object_paths(starting_point)
+      objects = []
+      log.debug("Paths recieved: %s", object_paths)
+      log.debug("And te starting point: %s", starting_point)
+
+      for path in object_paths:
+         objects.append(os.path.relpath(path, starting_point))
+
+      return objects
+
+
    def transfer_global_explorers(self):
       self.transfer_dir(GLOBAL_EXPLORER_DIR, REMOTE_GLOBAL_EXPLORER_DIR)
 
