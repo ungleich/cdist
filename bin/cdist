@@ -81,8 +81,8 @@ class Cdist:
       # "other globals referenced by the __del__() method may already have been deleted 
       # or in the process of being torn down (e.g. the import machinery shutting down)"
       #
-      print(self.temp_dir)
-      shutil.rmtree(self.temp_dir)
+      print("I should cleanup " + self.temp_dir)
+      # shutil.rmtree(self.temp_dir)
 
    def exit_error(self,*args):
       log.error(args)
@@ -137,7 +137,11 @@ class Cdist:
       for explorer in explorers:
          output = self.global_explorer_output_path(explorer)
          output_fd = open(output, mode='w')
-         self.remote_run_or_fail([self.remote_global_explorer_path(explorer)], stdout=output_fd)
+         cmd = []
+         cmd.append("__explorer=" + REMOTE_GLOBAL_EXPLORER_DIR)
+         cmd.append(self.remote_global_explorer_path(explorer))
+
+         self.remote_run_or_fail(cmd, stdout=output_fd)
          output_fd.close()
 
 
@@ -145,12 +149,9 @@ class Cdist:
       log.info("Creating clean directory structure")
 
       # Ensure there is no old stuff, neither local nor remote
-   #   run_or_fail(["rm -rf", "$__cdist_local_base_dir"])
-   #
    #   remote_run_or_fail(hostname, ["rm -rf", "${__cdist_remote_base_dir}"])
    #
    #   # Create base directories
-   #   run_or_fail(["mkdir -p", "$__cdist_local_base_dir"])
    #   remote_run_or_fail(hostname,["mkdir -p", "${__cdist_remote_base_dir}"])
    #
    #   # Link configuraion source directory - consistent with remote
