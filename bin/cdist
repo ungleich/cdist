@@ -27,9 +27,37 @@ import shutil
 import logging
 
 
+# Given paths from installation
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+CONF_DIR                   = os.path.join(BASE_DIR, "conf")
+GLOBAL_EXPLORER_DIR        = os.path.join(CONF_DIR, "explorer")
+REMOTE_BASE_DIR            = "/var/lib/cdist"
+REMOTE_CONF_DIR            = os.path.join(REMOTE_BASE_DIR, "conf")
+REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
+
+
+#class Context(object):
+#
+#   def __init__(self, target_host):
+#      self.target_host = target_host
+#
+#   # class variable
+#   user_selber_shuld_wenn_aendert = 'bla'
+#
+#   # read only, aber statisch
+#   @property
+#   def remote_base_directory(self):
+#      return "/var/lib/cdist"
+#   @property.setter
+#
+#   @property
+#   def special_foo(self):
+#      return 'foo/{0}'.format(self.target_host)
+#
+
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
+log = logging.getLogger()
 
 class Cdist:
    """Cdist main class to hold arbitrary data"""
@@ -38,17 +66,14 @@ class Cdist:
    def __init__(self, hostname):
       self.hostname = hostname
 
+      # log.info("foobar")
+
       # Setup directory paths
       self.temp_dir = tempfile.mkdtemp()
-
       self.out_dir = os.path.join(self.temp_dir, "out")
       os.mkdir(self.out_dir)
-
       self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
       os.mkdir(self.global_explorer_out_dir)
-
-      # Given paths from installation
-      self.conf_dir = os.path.join(self.base_dir, "conf")
 
    def cleanup(self):
       # Do not use in __del__:
@@ -56,17 +81,12 @@ class Cdist:
       # "other globals referenced by the __del__() method may already have been deleted 
       # or in the process of being torn down (e.g. the import machinery shutting down)"
       #
-      print(self.tempdir)
-      shutil.rmtree(self.tempdir)
-
-   def logger(self,type, *args):
-      """Ignore type for now, support later"""
-      print(*args)
+      print(self.temp_dir)
+      shutil.rmtree(self.temp_dir)
 
    def exit_error(self,*args):
-      self.logger("error", *args)
+      log.error(args)
       sys.exit(1)
-      
 
    def run_or_fail(self,*args, **kargs):
       # newargs = ["echo"]
@@ -92,42 +112,26 @@ class Cdist:
       self.remove_remote_dir(destination)
       self.run_or_fail(["scp", "-qr", source, "root@" + self.hostname + ":" + destination])
 
-   def remote_base_directory(self):
-      return "/var/lib/cdist"
-
-
-   def remote_conf_directory(self):
-      """Returns path to remote main configuration directory"""
-      return os.path.join(self.remote_base_directory(), "conf")
-
-   def global_explorer_directory(self):
-      """Returns path to directory containing the global explorers"""
-      return os.path.join(self.conf_directory(), "explorer")
-
-   def remote_global_explorer_directory(self):
-      """Returns path to the remote directory containing the global explorers"""
-      return os.path.join(self.remote_conf_directory(), "explorer")
-
-   def remote_global_explorer_path(self,explorer):
-      """Returns path to the remote explorer"""
-      return os.path.join(self.remote_global_explorer_directory(), explorer)
-
    def global_explorer_output_path(self, explorer):
       """Returns path of the output for a global explorer"""
       return os.path.join(self.global_explorer_out_dir, explorer)
 
+   def remote_global_explorer_path(self, explorer):
+      """Returns path to the remote explorer"""
+      return os.path.join(REMOTE_GLOBAL_EXPLORER_DIR, explorer)
+
    def list_global_explorers(self):
       """Return list of available explorers"""
-      return os.listdir(self.global_explorer_directory())
+      return os.listdir(GLOBAL_EXPLORER_DIR)
 
    def transfer_global_explorers(self):
-      self.transfer_dir(self.global_explorer_directory(), self.remote_global_explorer_directory())
+      self.transfer_dir(GLOBAL_EXPLORER_DIR, REMOTE_GLOBAL_EXPLORER_DIR)
 
    def global_explore(self):
       """Run global explorers"""
       explorers = self.list_global_explorers()
       if(len(explorers) == 0):
-         self.exit_error("No explorers found in", self.global_explorer_directory())
+         self.exit_error("No explorers found in", GLOBAL_EXPLORER_DIR)
 
       self.transfer_global_explorers()
       for explorer in explorers:
@@ -138,7 +142,7 @@ class Cdist:
 
 
    def init_deploy(self):
-      self.logger("info", "Creating clean directory structure")
+      log.info("Creating clean directory structure")
 
       # Ensure there is no old stuff, neither local nor remote
    #   run_or_fail(["rm -rf", "$__cdist_local_base_dir"])
@@ -154,14 +158,13 @@ class Cdist:
 
    def deploy_to(self):
       """Mimic the old deploy to: Deploy to one host"""
-      self.logger("info", "Deploying to host", self.hostname)
+      log.info("Deploying to host", self.hostname)
       self.init_deploy()
       self.global_explore()
 
 
 if __name__ == "__main__":
    hostname=sys.argv[1]
-#   logger("info", "cdist", cdist_version, ": Configuring host", hostname)
 
    for host in sys.argv[1:]:
       c = Cdist(host)
