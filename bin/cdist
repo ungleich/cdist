@@ -93,8 +93,8 @@ class Cdist:
       print("I should cleanup " + self.temp_dir)
       # shutil.rmtree(self.temp_dir)
 
-   def exit_error(self,*args):
-      log.error(args)
+   def exit_error(self, *args):
+      log.error(*args)
       sys.exit(1)
 
    def shell_run_or_debug_fail(self, script, *args, **kargs):
