@@ -36,6 +36,7 @@ def exit_error(*args):
 
 def run_or_fail(*args):
    newargs = ["echo"]
+   newargs = []
    newargs.extend(*args)
 
    try:
@@ -49,6 +50,8 @@ def remote_run_or_fail(hostname, *args):
 
    run_or_fail(newargs)
 
+def transfer_dir(hostname, source, destination):
+   run_or_fail(["scp", "-r", source, hostname + ":" + destination])
 
 def base_directory():
    """Returns the directory in which all cdist stuff is based in"""
@@ -64,16 +67,22 @@ def global_explorer_directory():
    """Returns path to directory containing the global explorers"""
    return os.path.join(conf_directory(), "explorer")
 
+def remote_global_explorer_directory():
+   """Returns path to directory containing the global explorers"""
+   return os.path.join(conf_directory(), "explorer")
+
 def list_global_explorers():
    """Return list of available explorers"""
    return os.listdir(global_explorer_directory())
+
+def transfer_global_explorers(hostname):
+   transfer_dir(hostname, global_explorer_directory(), remote_global_explorer_directory())
 
 def global_explore(hostname):
    """Run global explorers"""
    explorer = list_global_explorers()
    if(len(explorer) == 0):
       exit_error("No explorers found in", global_explorer_directory())
-      
 
 def init_deploy(hostname):
    logger("info", "Creating clean directory structure")
