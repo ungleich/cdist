@@ -189,7 +189,13 @@ class Cdist:
 
    def list_type_explorers(self, type):
       """Return list of available explorers for a specific type"""
-      return os.listdir(type_explorer_dir(type))
+      dir = self.type_explorer_dir(type)
+      if os.path.isdir(dir):
+         list = os.listdir(dir)
+      else:
+         list = []
+
+      return list
 
    def list_object_paths(self, starting_point = False):
       """Return list of paths of existing objects"""
@@ -234,7 +240,7 @@ class Cdist:
       """Return directory that holds the explorers of a type"""
       return os.path.join(TYPE_DIR, type, "explorer")
 
-   def remote_type_explorer_dir(type):
+   def remote_type_explorer_dir(self, type):
       """Return remote directory that holds the explorers of a type"""
       return os.path.join(REMOTE_TYPE_DIR, type, "explorer")
 
@@ -246,17 +252,20 @@ class Cdist:
       if type in self.type_explorers_transferred:
          log.debug("Skipping retransfer for %s", type)
          return
+      else:
+         # Do not retransfer
+         self.type_explorers_transferred[type] = 1
 
       src = self.type_explorer_dir(type)
       remote_base = os.path.join(REMOTE_TYPE_DIR, type)
-      dst = self.type_explorer_dir(type)
+      dst = self.remote_type_explorer_dir(type)
 
-      # Ensure the path path exists
-      self.remote_run_or_fail(["mkdir", "-p", remote_base])
-      self.transfer_dir(src, dst)
+      # Only continue, if there is at least the directory
+      if os.path.isdir(src):
+         # Ensure that the path exists
+         self.remote_run_or_fail(["mkdir", "-p", remote_base])
+         self.transfer_dir(src, dst)
 
-      # Do not retransfer
-      self.type_explorers_transferred[type] = 1
 
    def link_type_to_emulator(self):
       """Link type names to cdist-type-emulator"""
@@ -293,12 +302,12 @@ class Cdist:
 
       cmd = []
       cmd.append("__explorer=" + REMOTE_GLOBAL_EXPLORER_DIR)
-      cmd.append("__type_explorer=" + remote_type_explorer_dir(type))
+      cmd.append("__type_explorer=" + self.remote_type_explorer_dir(type))
 
-      explorers = list_type_explorers(type)
+      explorers = self.list_type_explorers(type)
       for explorer in explorers:
          remote_cmd = cmd
-         remote_cmd.append(os.path.join(remote_type_explorer_dir(type), explorer))
+         remote_cmd.append(os.path.join(self.remote_type_explorer_dir(type), explorer))
 
          self.remote_run_or_fail(remote_cmd)
 
