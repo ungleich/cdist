@@ -74,7 +74,6 @@ class Cdist:
       """Run something on the remote side and fail is something breaks"""
       newargs = ["ssh", "root@" + self.hostname]
       newargs.extend(*args)
-      print(newargs, "bbbbb", self.hostname)
       self.run_or_fail(newargs)
 
    def remove_remote_dir(self, destination):
