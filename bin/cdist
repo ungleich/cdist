@@ -19,22 +19,36 @@
 #
 #
 
-import sys # argv
+import sys
 import subprocess # execute stuff
 import os
 import tempfile
 import shutil
+import logging
 
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+
+logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 
 class Cdist:
    """Cdist main class to hold arbitrary data"""
    version="2.0.0"
 
    def __init__(self, hostname):
-      self.tempdir = tempfile.mkdtemp()
       self.hostname = hostname
-      print(self.hostname)
-      print(self.tempdir)
+
+      # Setup directory paths
+      self.temp_dir = tempfile.mkdtemp()
+
+      self.out_dir = os.path.join(self.temp_dir, "out")
+      os.mkdir(self.out_dir)
+
+      self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
+      os.mkdir(self.global_explorer_out_dir)
+
+      # Given paths from installation
+      self.conf_dir = os.path.join(self.base_dir, "conf")
 
    def cleanup(self):
       # Do not use in __del__:
@@ -44,11 +58,6 @@ class Cdist:
       #
       print(self.tempdir)
       shutil.rmtree(self.tempdir)
-
-   def out_dir(self):
-      # FIXME: stopped - probably need static temp know!
-      """Local directory containing output"""
-      return os.path.join(base_directory(), "conf")
 
    def logger(self,type, *args):
       """Ignore type for now, support later"""
@@ -83,18 +92,9 @@ class Cdist:
       self.remove_remote_dir(destination)
       self.run_or_fail(["scp", "-qr", source, "root@" + self.hostname + ":" + destination])
 
-   def base_directory(self):
-      """Returns the directory in which all cdist stuff is based in"""
-      print("Going to", __file__, os.path.join(os.path.dirname(__file__), os.pardir))
-      os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
-      return os.getcwd()
-
    def remote_base_directory(self):
       return "/var/lib/cdist"
 
-   def conf_directory(self):
-      """Returns path to main configuration directory"""
-      return os.path.join(self.base_directory(), "conf")
 
    def remote_conf_directory(self):
       """Returns path to remote main configuration directory"""
@@ -112,6 +112,10 @@ class Cdist:
       """Returns path to the remote explorer"""
       return os.path.join(self.remote_global_explorer_directory(), explorer)
 
+   def global_explorer_output_path(self, explorer):
+      """Returns path of the output for a global explorer"""
+      return os.path.join(self.global_explorer_out_dir, explorer)
+
    def list_global_explorers(self):
       """Return list of available explorers"""
       return os.listdir(self.global_explorer_directory())
@@ -127,7 +131,10 @@ class Cdist:
 
       self.transfer_global_explorers()
       for explorer in explorers:
-         self.remote_run_or_fail([self.remote_global_explorer_path(explorer)])
+         output = self.global_explorer_output_path(explorer)
+         output_fd = open(output, mode='w')
+         self.remote_run_or_fail([self.remote_global_explorer_path(explorer)], stdout=output_fd)
+         output_fd.close()
 
 
    def init_deploy(self):
