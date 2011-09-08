@@ -1,2 +1,4 @@
 - rewrite in python?
 - support non-ssh access?
+
+- Bug: os.path.join() may be wrong for the remote side!

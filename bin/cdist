@@ -63,17 +63,24 @@ def base_directory():
    os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
    return os.getcwd()
 
+def remote_base_directory():
+   return "/var/lib/cdist"
+
 def conf_directory():
    """Returns path to main configuration directory"""
    return os.path.join(base_directory(), "conf")
+
+def remote_conf_directory():
+   """Returns path to remote main configuration directory"""
+   return os.path.join(remote_base_directory(), "conf")
 
 def global_explorer_directory():
    """Returns path to directory containing the global explorers"""
    return os.path.join(conf_directory(), "explorer")
 
 def remote_global_explorer_directory():
-   """Returns path to directory containing the global explorers"""
-   return os.path.join(conf_directory(), "explorer")
+   """Returns path to the remote directory containing the global explorers"""
+   return os.path.join(remote_conf_directory(), "explorer")
 
 def list_global_explorers():
    """Return list of available explorers"""
