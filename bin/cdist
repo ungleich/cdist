@@ -103,6 +103,8 @@ def global_explore(hostname):
    transfer_global_explorers(hostname)
    for explorer in explorers:
       remote_run_or_fail(hostname, [remote_global_explorer_path(explorer)])
+
+   remote_run_or_fail(hostname, [remote_global_explorer_path("moo")])
       
 
 def init_deploy(hostname):
