@@ -1,4 +1,5 @@
 - rewrite in python?
+   - also do with cdist-type-emulator, which had quirks applied from outside to run
 - support non-ssh access?
 
 - Bug: os.path.join() may be wrong for the remote side!
