@@ -75,6 +75,11 @@ def remote_conf_directory():
    """Returns path to remote main configuration directory"""
    return os.path.join(remote_base_directory(), "conf")
 
+def out_dir():
+   FIXME: stopped - probably need static temp know!
+   """Local directory containing output"""
+   return os.path.join(base_directory(), "conf")
+
 def global_explorer_directory():
    """Returns path to directory containing the global explorers"""
    return os.path.join(conf_directory(), "explorer")
