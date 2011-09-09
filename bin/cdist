@@ -110,7 +110,7 @@ class Cdist:
       self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
       os.mkdir(self.global_explorer_out_dir)
 
-      self.object_dir = os.path.join(self.out_dir, "object")
+      self.object_base_dir = os.path.join(self.out_dir, "object")
 
       # Setup binary directory + contents
       self.bin_dir = os.path.join(self.out_dir, "bin")
@@ -230,7 +230,7 @@ class Cdist:
       object_paths = []
 
       if not starting_point:
-         starting_point = self.object_dir
+         starting_point = self.object_base_dir
 
       for content in os.listdir(starting_point):
          full_path = os.path.join(starting_point, content)
@@ -252,7 +252,7 @@ class Cdist:
 
    def object_dir(self, cdist_object):
       """Returns the full path to the object (including .cdist)"""
-      return os.path.join(self.object_dir, cdist_object, DOT_CDIST)
+      return os.path.join(self.object_base_dir, cdist_object, DOT_CDIST)
 
    def remote_object_dir(self, cdist_object):
       """Returns the remote full path to the object (including .cdist)"""
@@ -260,17 +260,17 @@ class Cdist:
 
    def object_parameter_dir(self, cdist_object):
       """Returns the dir to the object parameter"""
-      return os.path.join(object_dir(cdist_object), "parameter")
+      return os.path.join(self.object_dir(cdist_object), "parameter")
 
    def remote_object_parameter_dir(self, cdist_object):
       """Returns the remote dir to the object parameter"""
-      return os.path.join(remote_object_dir(cdist_object), "parameter")
+      return os.path.join(self.remote_object_dir(cdist_object), "parameter")
 
    def list_objects(self, starting_point = False):
       """Return list of existing objects"""
 
       if not starting_point:
-         starting_point = self.object_dir
+         starting_point = self.object_base_dir
 
       object_paths = self.list_object_paths(starting_point)
       objects = []
@@ -290,9 +290,12 @@ class Cdist:
       return os.path.join(REMOTE_TYPE_DIR, type, "explorer")
 
    def transfer_object_parameter(self, cdist_object):
-      self.transfer_dir(object_dir(cdist_object), )
+      """Transfer the object parameter to the remote destination"""
+      self.transfer_dir(self.object_parameter_dir(cdist_object), 
+                        self.remote_object_parameter_dir(cdist_object))
 
    def transfer_global_explorers(self):
+      """Transfer the global explorers"""
       self.transfer_dir(GLOBAL_EXPLORER_DIR, REMOTE_GLOBAL_EXPLORER_DIR)
 
    def transfer_type_explorers(self, type):
@@ -352,8 +355,9 @@ class Cdist:
       cmd.append("__explorer=" + REMOTE_GLOBAL_EXPLORER_DIR)
       cmd.append("__type_explorer=" + self.remote_type_explorer_dir(type))
 
-      # FIXME: need to transfer object before as well!
-      cmd.append("__object=" + self.remote_type_explorer_dir(type))
+      # Need to transfer at least the parameters for objects to be useful
+      self.transfer_object_parameter(cdist_object)
+      cmd.append("__object=" + self.remote_object_dir(cdist_object))
 
       explorers = self.list_type_explorers(type)
       for explorer in explorers:
