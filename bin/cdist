@@ -53,6 +53,7 @@ TYPE_DIR                   = os.path.join(CONF_DIR, "type")
 
 REMOTE_BASE_DIR            = "/var/lib/cdist"
 REMOTE_CONF_DIR            = os.path.join(REMOTE_BASE_DIR, "conf")
+REMOTE_OBJECT_DIR          = os.path.join(REMOTE_BASE_DIR, "object")
 REMOTE_TYPE_DIR            = os.path.join(REMOTE_CONF_DIR, "type")
 REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
 
@@ -99,8 +100,6 @@ class Cdist:
    def __init__(self, target_host, initial_manifest=False):
       self.target_host = target_host
       self.remote_prefix = ["ssh", "root@" + self.target_host]
-
-      # log.info("foobar")
 
       # Setup directory paths
       self.temp_dir = tempfile.mkdtemp()
@@ -192,6 +191,7 @@ class Cdist:
       self.run_or_fail(["rm", "-rf",  destination], remote=True)
 
    def transfer_dir(self, source, destination):
+      """Transfer directory and previously delete the remote destination"""
       self.remove_remote_dir(destination)
       self.run_or_fail(["scp", "-qr", source, "root@" + self.target_host + ":" + destination])
 
@@ -201,7 +201,7 @@ class Cdist:
 
    def type_explorer_output_dir(self, cdist_object):
       """Returns and creates dir of the output for a type explorer"""
-      dir = os.path.join(self.object_full_path(cdist_object), DOT_CDIST, "explorer")
+      dir = os.path.join(self.object_dir(cdist_object), "explorer")
       if not os.path.isdir(dir):
          os.mkdir(dir)
 
@@ -250,9 +250,21 @@ class Cdist:
       """Returns the first part (i.e. type) of an object"""
       return cdist_object.split(os.sep)[0]
 
-   def object_full_path(self, cdist_object):
-      """Returns the full path to the object ("""
-      return os.path.join(self.object_dir, cdist_object)
+   def object_dir(self, cdist_object):
+      """Returns the full path to the object (including .cdist)"""
+      return os.path.join(self.object_dir, cdist_object, DOT_CDIST)
+
+   def remote_object_dir(self, cdist_object):
+      """Returns the remote full path to the object (including .cdist)"""
+      return os.path.join(REMOTE_OBJECT_DIR, cdist_object, DOT_CDIST)
+
+   def object_parameter_dir(self, cdist_object):
+      """Returns the dir to the object parameter"""
+      return os.path.join(object_dir(cdist_object), "parameter")
+
+   def remote_object_parameter_dir(self, cdist_object):
+      """Returns the remote dir to the object parameter"""
+      return os.path.join(remote_object_dir(cdist_object), "parameter")
 
    def list_objects(self, starting_point = False):
       """Return list of existing objects"""
@@ -276,6 +288,9 @@ class Cdist:
    def remote_type_explorer_dir(self, type):
       """Return remote directory that holds the explorers of a type"""
       return os.path.join(REMOTE_TYPE_DIR, type, "explorer")
+
+   def transfer_object_parameter(self, cdist_object):
+      self.transfer_dir(object_dir(cdist_object), )
 
    def transfer_global_explorers(self):
       self.transfer_dir(GLOBAL_EXPLORER_DIR, REMOTE_GLOBAL_EXPLORER_DIR)
