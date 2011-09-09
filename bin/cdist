@@ -155,20 +155,14 @@ class Cdist:
          self.exit_error("Non-Zero exit code exit of " + " ".join(*args))
 
    def run_or_fail(self, *args, **kargs):
-      log.debug("Exec: " + " ".join(*args))
-
       if "remote" in kargs:
          log.debug("Remote found")
          if kargs["remote"]:
-            # Replace the list found in the tuple at position 0
-            cmd = ["ssh", "root@" + self.target_host]
-            cmd.extend(args[0])
-            args[0] = cmd
-            print(newargs)
+            args[0][:0] = ["ssh", "root@" + self.target_host]
 
          del kargs["remote"]
 
-      log.debug(newargs)
+      log.debug("Exec: " + " ".join(*args))
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
