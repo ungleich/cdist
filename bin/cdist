@@ -406,11 +406,11 @@ class Cdist:
                   "__object_fq": cdist_object,
                   "__type": type
                }
-         self.run_manifest(self.initial_manifest, extra_env=env)
+         self.run_manifest(manifest, extra_env=env)
 
    def run_manifest(self, manifest, extra_env=None):
       """Run a manifest"""
-      log.info("Running manifest %s", manifest)
+      log.info("Running manifest %s, env=%s", manifest, extra_env)
       env = os.environ.copy()
       env['PATH'] = self.bin_dir + ":" + env['PATH']
 
