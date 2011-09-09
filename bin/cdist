@@ -139,18 +139,13 @@ class Cdist:
       log.error(*args)
       sys.exit(1)
 
-   def remote_mkdir(directory):
+   def remote_mkdir(self, directory):
       """Create directory on remote side"""
       self.run_or_fail(["mkdir", "-p", directory], remote=True)
 
    def remote_cat(filename):
-      cmd = self.remote_prefix
-      cmd.append("cat")
-      cmd.append(filename)
-      try:
-         subprocess.call(cmd)
-      except subprocess.CalledProcessError:
-         log.error("Remote cat failed")
+      """Use cat on the remote side for output"""
+      self.run_or_fail(["cat", filename], remote=True)
 
    def shell_run_or_debug_fail(self, script, *args, **kargs):
       # Manually execute /bin/sh, because sh -e does what we want
