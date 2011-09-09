@@ -287,6 +287,10 @@ class Cdist:
 
    def transfer_object_parameter(self, cdist_object):
       """Transfer the object parameter to the remote destination"""
+      # Create base path before using mkdir -p
+      self.remote_mkdir(self.remote_object_parameter_dir(cdist_object))
+
+      # Synchronise parameter dir afterwards
       self.transfer_dir(self.object_parameter_dir(cdist_object), 
                         self.remote_object_parameter_dir(cdist_object))
 
@@ -375,8 +379,13 @@ class Cdist:
    #   # Link configuraion source directory - consistent with remote
    #   run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
 
+   # def run_object_manifest(self, cdist_object):
    def run_initial_manifest(self):
       """Run the initial manifest"""
+      self.run_manifest(self.initial_manifest)
+
+   def run_manifest(self, manifest, extra_env=None):
+      """Run a manifest"""
       log.info("Running the initial manifest")
       env = os.environ.copy()
       env['PATH'] = self.bin_dir + ":" + env['PATH']
@@ -390,9 +399,11 @@ class Cdist:
       env['__cdist_local_base_dir'] = self.temp_dir
       env['__cdist_manifest']       = self.initial_manifest
 
-      self.shell_run_or_debug_fail(self.initial_manifest,
-                                  [self.initial_manifest],
-                                  env=env)
+      # Other environment stuff
+      if extra_env:
+         env.update(extra_env)
+
+      self.shell_run_or_debug_fail(manifest, [manifest], env=env)
 
 
    def deploy_to(self):
