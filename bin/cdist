@@ -379,9 +379,12 @@ class Cdist:
    #   # Link configuraion source directory - consistent with remote
    #   run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
 
-   # def run_object_manifest(self, cdist_object):
    def run_initial_manifest(self):
       """Run the initial manifest"""
+      self.run_manifest(self.initial_manifest)
+
+   def run_type_manifest(self, cdist_object):
+      """Run manifest for a specific object"""
       self.run_manifest(self.initial_manifest)
 
    def run_manifest(self, manifest, extra_env=None):
@@ -413,10 +416,18 @@ class Cdist:
       self.run_global_explores()
       self.run_initial_manifest()
       
+      old_objects = []
       objects = self.list_objects()
 
-      for cdist_object in objects:
-         self.run_type_explorer(cdist_object)
+      # Continue process until no new objects are created anymore
+      while not old_objects == objects:
+         old_objects = objects.copy()
+         for cdist_object in objects:
+            self.run_type_explorer(cdist_object)
+            self.run_type_manifest(cdist_object)
+
+         objects = self.list_objects()
+
 
 
 if __name__ == "__main__":
