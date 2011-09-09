@@ -98,6 +98,7 @@ class Cdist:
 
    def __init__(self, target_host, initial_manifest=False):
       self.target_host = target_host
+      self.remote_prefix = ["ssh", "root@" + self.target_host]
 
       # log.info("foobar")
 
@@ -139,26 +140,47 @@ class Cdist:
       log.error(*args)
       sys.exit(1)
 
+   def remote_cat(filename):
+      cmd = self.remote_prefix
+      cmd.append("cat")
+      cmd.append(filename)
+      try:
+         subprocess.call(cmd)
+      except subprocess.CalledProcessError:
+         log.error("Remote cat failed")
+
    def shell_run_or_debug_fail(self, script, *args, **kargs):
       # Manually execute /bin/sh, because sh -e does what we want
       # and sh -c -e does not exit if /bin/false called
-      args[0].insert(0,"/bin/sh")
-      args[0].insert(1,"-e")
-      log.debug("Shell exec: " + " ".join(*args))
+      args[0][:0] = [ "/bin/sh", "-e" ]
 
+      if "remote" in kargs:
+         log.debug("Remote found")
+         if kargs["remote"]:
+            args[0][:0] = self.remote_prefix
+            remote = true
+
+         del kargs["remote"]
+
+      log.debug("Shell exec: " + " ".join(*args))
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
-         script_fd = open(script)
-         log.error("Code that raised the error:\n" + script_fd.read())
-         script_fd.close()
+         log.error("Code that raised the error:\n")
+         if remote:
+            remote_cat(script)
+         else:
+            script_fd = open(script)
+            print(script_fd.read())
+            script_fd.close()
+
          self.exit_error("Non-Zero exit code exit of " + " ".join(*args))
 
    def run_or_fail(self, *args, **kargs):
       if "remote" in kargs:
          log.debug("Remote found")
          if kargs["remote"]:
-            args[0][:0] = ["ssh", "root@" + self.target_host]
+            args[0][:0] = self.remote_prefix
 
          del kargs["remote"]
 
@@ -166,7 +188,7 @@ class Cdist:
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
-         self.exit_error("Command failed: " + " ".join(*newargs))
+         self.exit_error("Command failed: " + " ".join(*args))
 
    def remove_remote_dir(self, destination):
       self.run_or_fail(["rm", "-rf",  destination], remote=True)
@@ -322,6 +344,7 @@ class Cdist:
 
       explorers = self.list_type_explorers(type)
       for explorer in explorers:
+         # THIS IS A BUG, because remote_cmd is NOT a copy
          remote_cmd = cmd
          remote_cmd.append(os.path.join(self.remote_type_explorer_dir(type), explorer))
 
