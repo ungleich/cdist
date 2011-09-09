@@ -344,9 +344,7 @@ class Cdist:
 
       explorers = self.list_type_explorers(type)
       for explorer in explorers:
-         # THIS IS A BUG, because remote_cmd is NOT a copy
-         remote_cmd = cmd
-         remote_cmd.append(os.path.join(self.remote_type_explorer_dir(type), explorer))
+         remote_cmd = cmd + os.path.join(self.remote_type_explorer_dir(type), explorer)
 
          output = os.path.join(self.type_explorer_output_dir(cdist_object), explorer)
          output_fd = open(output, mode='w')
