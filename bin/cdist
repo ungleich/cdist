@@ -179,6 +179,14 @@ class Cdist:
       """Returns path of the output for a global explorer"""
       return os.path.join(self.global_explorer_out_dir, explorer)
 
+   def type_explorer_output_dir(self, cdist_object):
+      """Returns and creates dir of the output for a type explorer"""
+      dir = os.path.join(self.object_full_path(cdist_object), DOT_CDIST, "explorer")
+      if not os.path.isdir(dir):
+         os.mkdir(dir)
+
+      return dir
+
    def remote_global_explorer_path(self, explorer):
       """Returns path to the remote explorer"""
       return os.path.join(REMOTE_GLOBAL_EXPLORER_DIR, explorer)
@@ -219,7 +227,12 @@ class Cdist:
       return object_paths
 
    def get_type_from_object(self, cdist_object):
+      """Returns the first part (i.e. type) of an object"""
       return cdist_object.split(os.sep)[0]
+
+   def object_full_path(self, cdist_object):
+      """Returns the full path to the object ("""
+      return os.path.join(self.object_dir, cdist_object)
 
    def list_objects(self, starting_point = False):
       """Return list of existing objects"""
@@ -304,12 +317,15 @@ class Cdist:
       cmd.append("__explorer=" + REMOTE_GLOBAL_EXPLORER_DIR)
       cmd.append("__type_explorer=" + self.remote_type_explorer_dir(type))
 
+      # FIXME: need to transfer object before as well!
+      cmd.append("__object=" + self.remote_type_explorer_dir(type))
+
       explorers = self.list_type_explorers(type)
       for explorer in explorers:
          remote_cmd = cmd
          remote_cmd.append(os.path.join(self.remote_type_explorer_dir(type), explorer))
 
-         output = self.type_explorer_output_path(cdist_object)
+         output = os.path.join(self.type_explorer_output_dir(cdist_object), explorer)
          output_fd = open(output, mode='w')
 
          self.remote_run_or_fail(remote_cmd, stdout=output_fd)
