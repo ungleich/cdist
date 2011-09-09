@@ -157,19 +157,29 @@ class Cdist:
    def run_or_fail(self, *args, **kargs):
       log.debug("Exec: " + " ".join(*args))
 
+      if "remote" in kargs:
+         log.debug("Remote found")
+         if kargs["remote"]:
+            # Replace the list found in the tuple at position 0
+            cmd = ["ssh", "root@" + self.target_host]
+            cmd.extend(args[0])
+            args[0] = cmd
+            print(newargs)
+
+         del kargs["remote"]
+
+      log.debug(newargs)
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
-         self.exit_error("Command failed: " + " ".join(*args))
+         self.exit_error("Command failed: " + " ".join(*newargs))
 
-   def remote_run_or_fail(self, *args, **kargs):
-      """Run something on the remote side and fail is something breaks"""
-      newargs = ["ssh", "root@" + self.target_host]
-      newargs.extend(*args)
-      self.run_or_fail(newargs, **kargs)
+#   def remote_run_or_fail(self, *args, **kargs):
+#      """Run something on the remote side and fail is something breaks"""
+#      self.run_or_fail(newargs, **kargs)
 
    def remove_remote_dir(self, destination):
-      self.remote_run_or_fail(["rm", "-rf",  destination])
+      self.run_or_fail(["rm", "-rf",  destination], remote=True)
 
    def transfer_dir(self, source, destination):
       self.remove_remote_dir(destination)
