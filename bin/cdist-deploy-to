@@ -43,7 +43,6 @@ __cdist_echo info "cdist $__cdist_version: Configuring $__cdist_target_host "
 # See cdist-stages(7)
 #
 
-cdist-object-all              "$__cdist_target_host" cdist-object-prepare
 cdist-object-all              "$__cdist_target_host" cdist-object-run
 cdist-cache                   "$__cdist_target_host"
 
