@@ -155,7 +155,6 @@ class Cdist:
       args[0][:0] = [ "/bin/sh", "-e" ]
 
       if "remote" in kargs:
-         log.debug("Remote found")
          if kargs["remote"]:
             args[0][:0] = self.remote_prefix
             remote = true
@@ -178,7 +177,6 @@ class Cdist:
 
    def run_or_fail(self, *args, **kargs):
       if "remote" in kargs:
-         log.debug("Remote found")
          if kargs["remote"]:
             args[0][:0] = self.remote_prefix
 
@@ -344,13 +342,10 @@ class Cdist:
 
       explorers = self.list_type_explorers(type)
       for explorer in explorers:
-         remote_cmd = cmd + os.path.join(self.remote_type_explorer_dir(type), explorer)
-
+         remote_cmd = cmd + [os.path.join(self.remote_type_explorer_dir(type), explorer)]
          output = os.path.join(self.type_explorer_output_dir(cdist_object), explorer)
          output_fd = open(output, mode='w')
-
          self.run_or_fail(remote_cmd, stdout=output_fd, remote=True)
-
          output_fd.close()
 
    def init_deploy(self):
