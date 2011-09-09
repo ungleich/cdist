@@ -168,10 +168,6 @@ class Cdist:
       except subprocess.CalledProcessError:
          self.exit_error("Command failed: " + " ".join(*newargs))
 
-#   def remote_run_or_fail(self, *args, **kargs):
-#      """Run something on the remote side and fail is something breaks"""
-#      self.run_or_fail(newargs, **kargs)
-
    def remove_remote_dir(self, destination):
       self.run_or_fail(["rm", "-rf",  destination], remote=True)
 
@@ -280,7 +276,7 @@ class Cdist:
       # Only continue, if there is at least the directory
       if os.path.isdir(src):
          # Ensure that the path exists
-         self.remote_run_or_fail(["mkdir", "-p", remote_base])
+         self.run_or_fail(["mkdir", "-p", remote_base], remote=True)
          self.transfer_dir(src, dst)
 
 
@@ -306,7 +302,7 @@ class Cdist:
          cmd.append("__explorer=" + REMOTE_GLOBAL_EXPLORER_DIR)
          cmd.append(self.remote_global_explorer_path(explorer))
 
-         self.remote_run_or_fail(cmd, stdout=output_fd)
+         self.run_or_fail(cmd, stdout=output_fd, remote=True)
          output_fd.close()
 
    def run_type_explorer(self, cdist_object):
@@ -332,7 +328,7 @@ class Cdist:
          output = os.path.join(self.type_explorer_output_dir(cdist_object), explorer)
          output_fd = open(output, mode='w')
 
-         self.remote_run_or_fail(remote_cmd, stdout=output_fd)
+         self.run_or_fail(remote_cmd, stdout=output_fd, remote=True)
 
          output_fd.close()
 
