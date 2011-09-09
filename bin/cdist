@@ -429,6 +429,23 @@ class Cdist:
 
       self.shell_run_or_debug_fail(manifest, [manifest], env=env)
 
+   def run_object_gencode(self, cdist_object):
+      """Run the gencode scripts for the object"""
+      log.info("Running manifest %s, env=%s", manifest, extra_env)
+      env = os.environ.copy()
+
+      env['__target_host']    = self.target_host
+      env['__global']         = self.out_dir
+
+      # FIXME: if -local, -remote...
+      
+
+      # Other environment stuff
+      if extra_env:
+         env.update(extra_env)
+
+      self.shell_run_or_debug_fail(manifest, [manifest], env=env)
+
 
    def deploy_to(self):
       """Mimic the old deploy to: Deploy to one host"""
@@ -450,6 +467,17 @@ class Cdist:
             self.run_type_manifest(cdist_object)
 
          objects = self.list_objects()
+
+      # Now do the final steps over the existing objects
+      for cdist_object in objects:
+         # FIXME: Check requirements and execute those before
+
+         # FIXME: to be implemented
+         # cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object_self"
+         # cdist-object-code-run      "$__cdist_target_host" "$__cdist_object_self"
+
+         self.run_type_explorer(cdist_object)
+         self.run_type_manifest(cdist_object)
 
 
 
