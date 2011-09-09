@@ -309,7 +309,12 @@ class Cdist:
          remote_cmd = cmd
          remote_cmd.append(os.path.join(self.remote_type_explorer_dir(type), explorer))
 
-         self.remote_run_or_fail(remote_cmd)
+         output = self.type_explorer_output_path(cdist_object)
+         output_fd = open(output, mode='w')
+
+         self.remote_run_or_fail(remote_cmd, stdout=output_fd)
+
+         output_fd.close()
 
    def init_deploy(self):
       log.info("Creating clean directory structure")
