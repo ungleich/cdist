@@ -139,6 +139,10 @@ class Cdist:
       log.error(*args)
       sys.exit(1)
 
+   def remote_mkdir(directory):
+      """Create directory on remote side"""
+      self.run_or_fail(["mkdir", "-p", directory], remote=True)
+
    def remote_cat(filename):
       cmd = self.remote_prefix
       cmd.append("cat")
@@ -234,14 +238,11 @@ class Cdist:
 
       for content in os.listdir(starting_point):
          full_path = os.path.join(starting_point, content)
-         print(full_path)
          if os.path.isdir(full_path):
-            log.debug("Recursing for %s", full_path)
             object_paths.extend(self.list_object_paths(starting_point = full_path))
 
          # Directory contains .cdist -> is an object
          if content == DOT_CDIST:
-            log.debug("Adding Object Path %s", starting_point)
             object_paths.append(starting_point)
 
       return object_paths
@@ -314,7 +315,7 @@ class Cdist:
       # Only continue, if there is at least the directory
       if os.path.isdir(src):
          # Ensure that the path exists
-         self.run_or_fail(["mkdir", "-p", remote_base], remote=True)
+         self.remote_mkdir(remote_base)
          self.transfer_dir(src, dst)
 
 
