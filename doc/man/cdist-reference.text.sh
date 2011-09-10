@@ -164,7 +164,7 @@ __manifest::
    Available for: initial manifest
 __global::
    Directory that contains generic output like explorer.
-   Available for: initial manifest, type manifest, type explorer, type codegen
+   Available for: initial manifest, type manifest, type codegen
 __object::
    Directory that contains the current object.
    Available for: type manifest, type explorer, type codegen
