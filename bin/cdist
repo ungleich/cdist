@@ -268,8 +268,8 @@ class Cdist:
 
    def object_code_paths(self, cdist_object):
       """Return paths to code scripts of object"""
-      return [os.path.join(object_dir(cdist_object), "code-local"),
-              os.path.join(object_dir(cdist_object), "code-remote")]
+      return [os.path.join(self.object_dir(cdist_object), "code-local"),
+              os.path.join(self.object_dir(cdist_object), "code-remote")]
 
    def list_objects(self, starting_point = False):
       """Return list of existing objects"""
@@ -279,7 +279,6 @@ class Cdist:
 
       object_paths = self.list_object_paths(starting_point)
       objects = []
-      log.debug("Paths recieved: %s", object_paths)
 
       for path in object_paths:
          objects.append(os.path.relpath(path, starting_point))
@@ -439,22 +438,23 @@ class Cdist:
 
       self.shell_run_or_debug_fail(manifest, [manifest], env=env)
 
-   def run_object_gencode(self, cdist_object):
-      """Run the gencode scripts for the object"""
-      log.info("Running manifest %s, env=%s", manifest, extra_env)
-      env = os.environ.copy()
+   def list_object_requirements(self, cdist_object):
+      """Return list of requirements for specific object"""
+      file=os.path.join(self.object_dir(cdist_object), "require")
 
-      env['__target_host']    = self.target_host
-      env['__global']         = self.out_dir
+      if os.path.isfile(file):
+         file_fd = open(file, "r")
+         requirements = file_fd.readlines()
+         file_fd.close()
 
-      # FIXME: if -local, -remote...
-      
+         # Remove \n from all lines
+         requirements = map(lambda s: s.strip(), requirements)
 
-      # Other environment stuff
-      if extra_env:
-         env.update(extra_env)
+         log.debug(requirements)
+      else:
+         requirements = []
 
-      self.shell_run_or_debug_fail(manifest, [manifest], env=env)
+      return requirements
 
    def object_run(self, cdist_object, mode):
       """Run gencode or code for an object"""
@@ -470,18 +470,32 @@ class Cdist:
       if mode == "code":
          paths = self.object_code_paths(cdist_object)
 
-      # FIXME: to be implemented
-      # cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object_self"
-      # cdist-object-code-run      "$__cdist_target_host" "$__cdist_object_self"
+      #
+      # Setup env Variable:
+      # 
+      env = os.environ.copy()
+      env['__target_host'] = self.target_host
+      env['__global']      = self.out_dir
+      env["__object"]      = self.object_dir(cdist_object), 
+      env["__object_id"]   = self.get_object_id_from_object(cdist_object),
+      env["__object_fq"]   = cdist_object
 
       for bin in paths:
-         FIXME
+         log.debug("object/bin: %s", bin)
          if os.path.isfile(bin):
+               # FIXME: to be implemented
+               # cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object_self"
             if mode == "gencode":
-               self.shell_run_or_debug_fail(manifest, [manifest], env=env)
+               # __global::__object::__object_id::__self::__target_host::
+               # 
+               self.shell_run_or_debug_fail(bin, [bin], env=env)
             if mode == "code":
-               self.run_or_fail(manifest, [manifest], env=env)
-
+               # FIXME: to be implemented
+               # cdist-object-code-run      "$__cdist_target_host" "$__cdist_object_self"
+               log.debug("ERROR NOT IMPLEMENTED")
+               sys.exit(3)
+               # FIXME: transfer code and add remote path!
+               self.run_or_fail([bin], remote=True)
 
    def deploy_to(self):
       """Mimic the old deploy to: Deploy to one host"""
