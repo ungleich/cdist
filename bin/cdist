@@ -372,13 +372,12 @@ class Cdist:
       cmd = []
       cmd.append("__explorer="      + REMOTE_GLOBAL_EXPLORER_DIR)
       cmd.append("__type_explorer=" + self.remote_type_explorer_dir(type))
-      cmd.append("__global ="       + self.out_dir)
+      cmd.append("__object="        + self.remote_object_dir(cdist_object))
       cmd.append("__object_id="     + self.get_object_id_from_object(cdist_object))
       cmd.append("__object_fq="     + cdist_object)
 
       # Need to transfer at least the parameters for objects to be useful
       self.transfer_object_parameter(cdist_object)
-      cmd.append("__object=" + self.remote_object_dir(cdist_object))
 
       explorers = self.list_type_explorers(type)
       for explorer in explorers:
@@ -459,28 +458,29 @@ class Cdist:
 
    def object_run(self, cdist_object, mode):
       """Run gencode or code for an object"""
-         # FIXME: Check requirements and execute those before
-         requirements = list_object_requirements(cdist_object)
+      # FIXME: Check requirements and execute those before
+      requirements = self.list_object_requirements(cdist_object)
          
-         for requirement in requirements:
-            object_run(requirement, mode=mode)
+      for requirement in requirements:
+         self.object_run(requirement, mode=mode)
 
-         # Find and run all available gencode scripts
-         if mode == "gencode":
-            paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))
-         if mode == "code":
-            paths = self.object_code_paths(cdist_object)
+      # Find and run all available gencode scripts
+      if mode == "gencode":
+         paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))
+      if mode == "code":
+         paths = self.object_code_paths(cdist_object)
 
-         # FIXME: to be implemented
-         # cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object_self"
-         # cdist-object-code-run      "$__cdist_target_host" "$__cdist_object_self"
+      # FIXME: to be implemented
+      # cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object_self"
+      # cdist-object-code-run      "$__cdist_target_host" "$__cdist_object_self"
 
-         for bin in paths:
-            if os.path.isfile(bin):
-               if mode == "gencode":
-                  self.shell_run_or_debug_fail(manifest, [manifest], env=env)
-               if mode == "code":
-                  self.run_or_fail(manifest, [manifest], env=env)
+      for bin in paths:
+         FIXME
+         if os.path.isfile(bin):
+            if mode == "gencode":
+               self.shell_run_or_debug_fail(manifest, [manifest], env=env)
+            if mode == "code":
+               self.run_or_fail(manifest, [manifest], env=env)
 
 
    def deploy_to(self):
@@ -506,11 +506,8 @@ class Cdist:
 
       # Now do the final steps over the existing objects
       for cdist_object in objects:
-         object_run(cdist_object, mode="gencode")
-         object_run(cdist_object, mode="code")
-
-
-
+         self.object_run(cdist_object, mode="gencode")
+         self.object_run(cdist_object, mode="code")
 
 if __name__ == "__main__":
    parser = argparse.ArgumentParser(description='cdist ' + VERSION)
