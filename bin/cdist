@@ -370,9 +370,11 @@ class Cdist:
       self.transfer_type_explorers(type)
 
       cmd = []
-      # FIXME: __global::__object_id::__self::
-      cmd.append("__explorer=" + REMOTE_GLOBAL_EXPLORER_DIR)
+      cmd.append("__explorer="      + REMOTE_GLOBAL_EXPLORER_DIR)
       cmd.append("__type_explorer=" + self.remote_type_explorer_dir(type))
+      cmd.append("__global ="       + self.out_dir)
+      cmd.append("__object_id="     + self.get_object_id_from_object(cdist_object))
+      cmd.append("__object_fq="     + cdist_object)
 
       # Need to transfer at least the parameters for objects to be useful
       self.transfer_object_parameter(cdist_object)
@@ -465,15 +467,20 @@ class Cdist:
 
          # Find and run all available gencode scripts
          if mode == "gencode":
-            base_path = object_dir
+            paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))
          if mode == "code":
+            paths = self.object_code_paths(cdist_object)
 
          # FIXME: to be implemented
          # cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object_self"
          # cdist-object-code-run      "$__cdist_target_host" "$__cdist_object_self"
 
-         self.run_type_explorer(cdist_object)
-         self.run_type_manifest(cdist_object)
+         for bin in paths:
+            if os.path.isfile(bin):
+               if mode == "gencode":
+                  self.shell_run_or_debug_fail(manifest, [manifest], env=env)
+               if mode == "code":
+                  self.run_or_fail(manifest, [manifest], env=env)
 
 
    def deploy_to(self):
