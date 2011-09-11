@@ -618,10 +618,11 @@ if __name__ == "__main__":
    process = {}
    time_start = datetime.datetime.now()
    try:
+      log.info("Deploying to %s hosts", len(args.host))
       for host in args.host:
          c = Cdist(host, initial_manifest=args.manifest, home=args.cdist_home)
          if args.parallel:
-            log.info("Starting child process for %s", host)
+            log.debug("Starting child process for %s", host)
             process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)
             process[host].start()
             log.debug("After process for %s", host)

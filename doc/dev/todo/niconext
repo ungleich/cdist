@@ -1,4 +1,6 @@
 - Remove all FIXME entries
+- Support parallel execution
+   - and maximum number of parallel runs (-p X)
 - Write cdist-manpage
 - Remove obsolete manpages
 - Support different home instead of ../
