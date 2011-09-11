@@ -415,7 +415,7 @@ class Cdist:
          output_fd.close()
 
    def init_deploy(self):
-      log.info("Creating clean directory structure")
+      log.debug("Creating clean directory structure")
 
       # Ensure there is no old stuff, neither local nor remote
    #   remote_run_or_fail(hostname, ["rm -rf", "${__cdist_remote_base_dir}"])
@@ -542,7 +542,7 @@ class Cdist:
             
    def deploy_to(self):
       """Mimic the old deploy to: Deploy to one host"""
-      log.info("Deploying to host " + self.target_host)
+      log.info("Deploying to " + self.target_host)
       self.init_deploy()
       self.run_global_explores()
       self.run_initial_manifest()
