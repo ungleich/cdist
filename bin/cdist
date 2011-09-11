@@ -614,6 +614,7 @@ if __name__ == "__main__":
    
    parser.add_argument('-V', '--version', help='Show version',
        action='version', version='%(prog)s ' + VERSION)
+   arser.add_argument('--foo', nargs=2)
 
    args = parser.parse_args(sys.argv[1:])
    if args.debug:
