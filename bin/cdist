@@ -152,6 +152,7 @@ class Cdist:
    def shell_run_or_debug_fail(self, script, *args, **kargs):
       # Manually execute /bin/sh, because sh -e does what we want
       # and sh -c -e does not exit if /bin/false called
+      print(args)
       args[0][:0] = [ "/bin/sh", "-e" ]
 
       if "remote" in kargs:
@@ -161,6 +162,8 @@ class Cdist:
 
          del kargs["remote"]
 
+      print(args)
+      print(*args)
       log.debug("Shell exec: " + " ".join(*args))
       try:
          subprocess.check_call(*args, **kargs)
@@ -472,7 +475,7 @@ class Cdist:
          # Remove \n from all lines
          requirements = map(lambda s: s.strip(), requirements)
 
-         log.debug(requirements)
+         log.debug("Requirements for %s: %s", cdist_object, requirements)
       else:
          requirements = []
 
@@ -480,17 +483,12 @@ class Cdist:
 
    def object_run(self, cdist_object, mode):
       """Run gencode or code for an object"""
-      # FIXME: Check requirements and execute those before
+      log.debug("Running %s from %s", mode, cdist_object)
       requirements = self.list_object_requirements(cdist_object)
          
       for requirement in requirements:
+         log.debug("Object %s requires %s", cdist_object, requirement)
          self.object_run(requirement, mode=mode)
-
-      # Find and run all available gencode scripts
-      if mode == "gencode":
-         paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))
-      if mode == "code":
-         paths = self.object_code_paths(cdist_object)
 
       #
       # Setup env Variable:
@@ -502,26 +500,26 @@ class Cdist:
       env["__object_id"]   = self.get_object_id_from_object(cdist_object),
       env["__object_fq"]   = cdist_object
 
-      for bin in paths:
-         log.debug("object/bin: %s", bin)
-         if os.path.isfile(bin):
-               # FIXME: to be implemented
-               # cdist-object-gencode-run   "$__cdist_target_host" "$__cdist_object_self"
-            if mode == "gencode":
-               # __global::__object::__object_id::__self::__target_host::
-               # 
+      if mode == "gencode":
+         paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))
+         for bin in paths:
+            if os.path.isfile(bin):
+               print(bin)
                self.shell_run_or_debug_fail(bin, [bin], env=env)
-            if mode == "code":
-               local_dir = object_dir(cdist_object)
-               remote_dir = remote_object_dir(cdist_object)
 
-               # FIXME: to be implemented
-               # cdist-object-code-run      "$__cdist_target_host" "$__cdist_object_self"
-               log.debug("ERROR NOT IMPLEMENTED")
-               sys.exit(3)
-               # FIXME: transfer code and add remote path!
-               self.run_or_fail([bin], remote=True)
+      if mode == "code":
+#         paths = self.object_code_paths(cdist_object)
+         local_dir   = self.object_dir(cdist_object)
+         remote_dir  = self.remote_object_dir(cdist_object)
 
+         bin = os.path.join(local_dir, "code-local")
+         if os.path.isfile(bin):
+            self.run_or_fail([bin], remote=False)
+            
+         if os.path.isfile(os.path.join(local_dir, "code-remote")):
+            remote_code = os.path.join(remote_dir, "code-remote")
+            self.run_or_fail([remote_code], remote=True)
+            
    def deploy_to(self):
       """Mimic the old deploy to: Deploy to one host"""
       log.info("Deploying to host " + self.target_host)
@@ -542,9 +540,11 @@ class Cdist:
             self.run_type_manifest(cdist_object)
 
          objects = self.list_objects()
-
+      
+      log.debug("Actual run objects")
       # Now do the final steps over the existing objects
       for cdist_object in objects:
+         log.debug("Run object: %s", cdist_object)
          self.object_run(cdist_object, mode="gencode")
          self.object_run(cdist_object, mode="code")
 
