@@ -46,13 +46,6 @@ BANNER = """
 """
 
 # Given paths from installation
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-CONF_DIR                   = os.path.join(BASE_DIR, "conf")
-GLOBAL_EXPLORER_DIR        = os.path.join(CONF_DIR, "explorer")
-LIB_DIR                    = os.path.join(BASE_DIR, "lib")
-MANIFEST_DIR               = os.path.join(CONF_DIR, "manifest")
-TYPE_DIR                   = os.path.join(CONF_DIR, "type")
-
 REMOTE_BASE_DIR            = "/var/lib/cdist"
 REMOTE_CONF_DIR            = os.path.join(REMOTE_BASE_DIR, "conf")
 REMOTE_OBJECT_DIR          = os.path.join(REMOTE_BASE_DIR, "object")
@@ -87,10 +80,6 @@ VERSION                    = "2.0.0"
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
 
-# List types
-def list_types():
-   return os.listdir(TYPE_DIR)
-
 def banner():
    """Guess what :-)"""
    print(BANNER)
@@ -105,6 +94,17 @@ class Cdist:
 
       # Setup directory paths
       self.temp_dir = tempfile.mkdtemp()
+
+      
+      if home:
+         self.base_dir = home
+      else:
+         self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+      self.conf_dir              = os.path.join(self.base_dir, "conf")
+      self.global_explorer_dir   = os.path.join(self.conf_dir, "explorer")
+      self.lib_dir               = os.path.join(self.base_dir, "lib")
+      self.manifest_dir          = os.path.join(self.conf_dir, "manifest")
+      self.type_base_dir         = os.path.join(self.conf_dir, "type")
 
       self.out_dir = os.path.join(self.temp_dir, "out")
       os.mkdir(self.out_dir)
@@ -131,7 +131,7 @@ class Cdist:
       if initial_manifest:
          self.initial_manifest = initial_manifest
       else:
-         self.initial_manifest = os.path.join(MANIFEST_DIR, "init")
+         self.initial_manifest = os.path.join(self.manifest_dir, "init")
 
    def cleanup(self):
       # Do not use in __del__:
@@ -231,7 +231,7 @@ class Cdist:
 
    def list_global_explorers(self):
       """Return list of available explorers"""
-      return os.listdir(GLOBAL_EXPLORER_DIR)
+      return os.listdir(self.global_explorer_dir)
 
    def list_type_explorers(self, type):
       """Return list of available explorers for a specific type"""
@@ -244,6 +244,9 @@ class Cdist:
       log.debug("Explorers for %s in %s: %s", type, dir, list)
 
       return list
+
+   def list_types(self):
+      return os.listdir(self.type_base_dir)
 
    def list_object_paths(self, starting_point):
       """Return list of paths of existing objects"""
@@ -303,7 +306,7 @@ class Cdist:
 
    def type_dir(self, type):
       """Return directory the type"""
-      return os.path.join(TYPE_DIR, type)
+      return os.path.join(self.type_base_dir, type)
 
    def type_explorer_dir(self, type):
       """Return directory that holds the explorers of a type"""
@@ -311,12 +314,12 @@ class Cdist:
 
    def type_gencode_paths(self, type):
       """Return paths to gencode scripts of type"""
-      return [os.path.join(TYPE_DIR, type, "gencode-local"),
-              os.path.join(TYPE_DIR, type, "gencode-remote")]
+      return [os.path.join(self.type_base_dir, type, "gencode-local"),
+              os.path.join(self.type_base_dir, type, "gencode-remote")]
 
    def type_manifest_path(self, type):
       """Return path to manifest of type"""
-      return os.path.join(TYPE_DIR, type, "manifest")
+      return os.path.join(self.type_base_dir, type, "manifest")
 
    def remote_type_explorer_dir(self, type):
       """Return remote directory that holds the explorers of a type"""
@@ -343,7 +346,7 @@ class Cdist:
 
    def transfer_global_explorers(self):
       """Transfer the global explorers"""
-      self.transfer_dir(GLOBAL_EXPLORER_DIR, REMOTE_GLOBAL_EXPLORER_DIR)
+      self.transfer_dir(self.global_explorer_dir, REMOTE_GLOBAL_EXPLORER_DIR)
 
    def transfer_type_explorers(self, type):
       """Transfer explorers of a type, but only once"""
@@ -367,8 +370,8 @@ class Cdist:
 
    def link_type_to_emulator(self):
       """Link type names to cdist-type-emulator"""
-      for type in list_types():
-         source = os.path.join(LIB_DIR, "cdist-type-emulator")
+      for type in self.list_types():
+         source = os.path.join(self.lib_dir, "cdist-type-emulator")
          destination = os.path.join(self.bin_dir, type)
          log.debug("Linking %s to %s", source, destination)
          os.symlink(source, destination)
@@ -377,7 +380,7 @@ class Cdist:
       """Run global explorers"""
       explorers = self.list_global_explorers()
       if(len(explorers) == 0):
-         self.exit_error("No explorers found in", GLOBAL_EXPLORER_DIR)
+         self.exit_error("No explorers found in", self.global_explorer_dir)
 
       self.transfer_global_explorers()
       for explorer in explorers:
@@ -433,7 +436,7 @@ class Cdist:
 
    def run_initial_manifest(self):
       """Run the initial manifest"""
-      env = {  "__manifest" : MANIFEST_DIR }
+      env = {  "__manifest" : self.manifest_dir }
       self.run_manifest(self.initial_manifest, extra_env=env)
 
    def run_type_manifest(self, cdist_object):
@@ -461,8 +464,8 @@ class Cdist:
       env['__global']         = self.out_dir
       
       # Legacy stuff to make cdist-type-emulator work
-      env['__cdist_conf_dir']       = CONF_DIR
-      env['__cdist_core_dir']       = os.path.join(BASE_DIR, "core")
+      env['__cdist_conf_dir']       = self.conf_dir
+      env['__cdist_core_dir']       = os.path.join(self.base_dir, "core")
       env['__cdist_local_base_dir'] = self.temp_dir
       env['__cdist_manifest']       = self.initial_manifest
 
