@@ -25,6 +25,7 @@ import logging
 import os
 import subprocess
 import shutil
+import stat
 import sys
 import tempfile
 
@@ -91,7 +92,6 @@ def list_types():
 def banner():
    """Guess what :-)"""
    print(BANNER)
-
 
 
 class Cdist:
@@ -235,6 +235,8 @@ class Cdist:
       else:
          list = []
 
+      log.debug("Explorers for %s in %s: %s", type, dir, list)
+
       return list
 
    def list_object_paths(self, starting_point = False):
@@ -341,7 +343,7 @@ class Cdist:
    def transfer_type_explorers(self, type):
       """Transfer explorers of a type, but only once"""
       if type in self.type_explorers_transferred:
-         log.debug("Skipping retransfer for %s", type)
+         log.debug("Skipping retransfer for explorers of %s", type)
          return
       else:
          # Do not retransfer
@@ -506,7 +508,19 @@ class Cdist:
          paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))
          for bin in paths:
             if os.path.isfile(bin):
-               self.shell_run_or_debug_fail(bin, [bin], env=env)
+               # omit "gen" from gencode and 
+               outfile=os.path.join(self.object_dir(cdist_object), 
+                  os.path.basename(bin)[3:])
+
+               outfile_fd = open(outfile, "w")
+               self.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
+
+               a = outfile_fd
+               b = stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR
+               print(type(a), type(b))
+
+               os.fchmod(outfile_fd, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
+               outfile_fd.close()
 
       if mode == "code":
 #         paths = self.object_code_paths(cdist_object)
