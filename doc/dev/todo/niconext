@@ -4,3 +4,7 @@
 - Support different home instead of ../
 - Bug: os.path.join() may be wrong for the remote side!
    -> does not matter for now!
+
+- Rewrite cdist-type-emulator
+   - Remove legacy code in cdist
+   - Remove cdist-config
