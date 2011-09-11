@@ -155,7 +155,7 @@ class Cdist:
       # and sh -c -e does not exit if /bin/false called
       args[0][:0] = [ "/bin/sh", "-e" ]
 
-      remote = false
+      remote = False
       if "remote" in kargs:
          if kargs["remote"]:
             args[0][:0] = self.remote_prefix
