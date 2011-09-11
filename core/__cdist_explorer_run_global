@@ -17,27 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-# Build pseudo binaries for type emulation
+#
+# Copy & run the global explorers, i.e. not bound to types
 #
 
-. cdist-config
-[ $# -eq 1 ] || __cdist_usage "<out dir>"
-set -eu
+__cdist_explorer_run_global()
+{
+   __cdist_echo info "Running global explorers "
 
-__cdist_output_dir="$1"; shift
-
-__cdist_type_emulator="$__cdist_abs_mydir/cdist-type-emulator"
-
-if [ ! -d "${__cdist_type_dir}" ]; then
-   __cdist_exit_err "$__cdist_type_dir must exist and contain available types"
-fi
-
-# Get Types
-cd "${__cdist_type_dir}"
-ls -1 > "${__cdist_tmp_file}"
-
-# Create binaries
-mkdir -p "${__cdist_output_dir}"
-while read type; do
-   ln -sf "${__cdist_type_emulator}" "${__cdist_output_dir}/${type}"
-done < "${__cdist_tmp_file}"
+   # run the global explorers remotely
+   __cdist_explorer_run global \
+      "$__cdist_explorer_dir" "$__cdist_remote_explorer_dir" \
+      "$__cdist_remote_out_explorer_dir" "$__cdist_out_explorer_dir"
+}

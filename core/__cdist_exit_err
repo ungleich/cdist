@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -17,23 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-# 
-# Let's build a cconfig tree from a configuration
-# And save it into the cache tree
+#
+# Print error and exit (perror() alike)
 #
 
-. cdist-config
-[ $# -eq 1 ] || __cdist_usage "<target host>"
-set -u
-
-__cdist_target_host="$1"; shift
-
-# Create base to move into
-mkdir -p "${__cdist_local_base_cache_dir}"
-
-# Now determine absolute path
-__cdist_ddir="$(__cdist_host_cache_dir "$__cdist_target_host")"
-
-__cdist_echo info "Saving cache to $__cdist_ddir "
-rm -rf "$__cdist_ddir"
-mv "$__cdist_local_base_dir" "$__cdist_ddir"
+__cdist_exit_err()
+{
+   __cdist_echo error "$@"
+   exit 1
+}

@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# Build pseudo binaries for type emulation
+#
+
+__cdist_type_build_emulation()
+{
+   [ $# -eq 0 ] || __cdist_usage "No arguments"
+
+   [ -f "${__cdist_out_type_bin_dir}/.marker" ] && return 0
+
+   __cdist_type_emulator="$__cdist_abs_mydir/cdist-type-emulator"
+
+   if [ ! -d "${__cdist_type_dir}" ]; then
+      __cdist_exit_err "$__cdist_type_dir must exist and contain available types"
+   fi
+
+   # Get Types
+   (
+      cd "${__cdist_type_dir}"
+      ls -1 > "${__cdist_tmp_file}"
+   )
+
+   # Create binaries
+   mkdir -p "${__cdist_out_type_bin_dir}"
+   while read __cdist_type_build_emulation_type; do
+      ln -sf "${__cdist_type_emulator}" \
+         "${__cdist_out_type_bin_dir}/${__cdist_type_build_emulation_type}"
+   done < "${__cdist_tmp_file}"
+
+   touch "${__cdist_out_type_bin_dir}/.marker"
+}
