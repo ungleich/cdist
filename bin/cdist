@@ -514,13 +514,9 @@ class Cdist:
 
                outfile_fd = open(outfile, "w")
                self.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
-
-               a = outfile_fd
-               b = stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR
-               print(type(a), type(b))
-
-               os.fchmod(outfile_fd, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
                outfile_fd.close()
+
+               os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
 
       if mode == "code":
 #         paths = self.object_code_paths(cdist_object)
