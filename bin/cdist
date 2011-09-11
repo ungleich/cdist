@@ -56,27 +56,6 @@ CODE_HEADER                = "#!/bin/sh -e"
 DOT_CDIST                  = ".cdist"
 VERSION                    = "2.0.0"
 
-
-#class Context(object):
-#
-#   def __init__(self, target_host):
-#      self.target_host = target_host
-#
-#   # class variable
-#   user_selber_shuld_wenn_aendert = 'bla'
-#
-#   # read only, aber statisch
-#   @property
-#   def remote_base_directory(self):
-#      return "/var/lib/cdist"
-#   @property.setter
-#
-#   @property
-#   def special_foo(self):
-#      return 'foo/{0}'.format(self.target_host)
-#
-
-
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
 
