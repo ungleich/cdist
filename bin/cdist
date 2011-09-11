@@ -302,9 +302,13 @@ class Cdist:
 
       return objects
 
+   def type_dir(self, type):
+      """Return directory the type"""
+      return os.path.join(TYPE_DIR, type)
+
    def type_explorer_dir(self, type):
       """Return directory that holds the explorers of a type"""
-      return os.path.join(TYPE_DIR, type, "explorer")
+      return os.path.join(self.type_dir(type), "explorer")
 
    def type_gencode_paths(self, type):
       """Return paths to gencode scripts of type"""
@@ -444,7 +448,7 @@ class Cdist:
          env = {  "__object" :   self.object_dir(cdist_object), 
                   "__object_id": self.get_object_id_from_object(cdist_object),
                   "__object_fq": cdist_object,
-                  "__type":      type
+                  "__type":      self.type_dir(type)
                }
          self.run_manifest(manifest, extra_env=env)
 
