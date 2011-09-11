@@ -330,7 +330,7 @@ class Cdist:
       self.remote_mkdir(self.remote_object_parameter_dir(cdist_object))
 
       # Synchronise parameter dir afterwards
-      self.transfer_dir(self.object_parameter_dir(cdist_object), 
+      self.transfer_file(self.object_code_path(cdist_object), 
                         self.remote_object_parameter_dir(cdist_object))
 
    def transfer_global_explorers(self):
@@ -512,6 +512,9 @@ class Cdist:
                # 
                self.shell_run_or_debug_fail(bin, [bin], env=env)
             if mode == "code":
+               local_dir = object_dir(cdist_object)
+               remote_dir = remote_object_dir(cdist_object)
+
                # FIXME: to be implemented
                # cdist-object-code-run      "$__cdist_target_host" "$__cdist_object_self"
                log.debug("ERROR NOT IMPLEMENTED")
