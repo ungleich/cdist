@@ -588,12 +588,12 @@ if __name__ == "__main__":
    parser.add_argument('-i', '--initial-manifest', 
        help='Path to a cdist manifest or - to read from stdin',
        dest='manifest', required=False)
-   parser.add_argument('-p', '--parallel',
-       help='Operate on multiple hosts in parallel',
-       action='store_true', dest='parallel')
-   parser.add_argument('-s', '--sequential',
-       help='Operate on multiple hosts sequentially',
-       action='store_false', dest='parallel')
+#   parser.add_argument('-p', '--parallel',
+#       help='Operate on multiple hosts in parallel',
+#       action='store_true', dest='parallel')
+#   parser.add_argument('-s', '--sequential',
+#       help='Operate on multiple hosts sequentially',
+#       action='store_false', dest='parallel')
    
    args = parser.parse_args(sys.argv[1:])
    if args.debug:
