@@ -99,7 +99,7 @@ def banner():
 class Cdist:
    """Cdist main class to hold arbitrary data"""
 
-   def __init__(self, target_host, initial_manifest=False, remote_user="root"):
+   def __init__(self, target_host, initial_manifest=False, remote_user="root", home=None):
       self.target_host = target_host
       self.remote_prefix = ["ssh", "root@" + self.target_host]
 
@@ -593,6 +593,9 @@ if __name__ == "__main__":
    parser.add_argument('-b', '--banner',
        help='Show cdist banner',
        action='store_true', dest='banner')
+   parser.add_argument('-c', '--cdist-home',
+       help='Change cdist home (default: .. from bin directory)',
+       action='store_true', dest='cdist_home')
    parser.add_argument('-d', '--debug', help='Set log level to debug',
        action='store_true')
    parser.add_argument('-i', '--initial-manifest', 
@@ -617,7 +620,7 @@ if __name__ == "__main__":
       log.debug(args)
 
       for host in args.host:
-         c = Cdist(host, initial_manifest=args.manifest)
+         c = Cdist(host, initial_manifest=args.manifest, home=args.cdist_home)
          c.deploy_to()
          c.cleanup()
    except KeyboardInterrupt:

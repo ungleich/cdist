@@ -44,5 +44,3 @@ DOCUMENTATION
 - asciidoc interprets __, which we use for variables
   names -> seek through docs and replace with \_\_!
 - reference explorers in cdist-reference!
-- compare running times:
-   one, 5, 10, 50, 100, 1000 hosts => how does cdist scale?

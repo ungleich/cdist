@@ -1,2 +1,6 @@
+- Remove all FIXME entries
+- Write cdist-manpage
+- Remove obsolete manpages
+- Support different home instead of ../
 - Bug: os.path.join() may be wrong for the remote side!
    -> does not matter for now!
