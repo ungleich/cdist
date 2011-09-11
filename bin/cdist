@@ -599,7 +599,7 @@ if __name__ == "__main__":
        action='store_true', dest='banner')
    parser.add_argument('-c', '--cdist-home',
        help='Change cdist home (default: .. from bin directory)',
-       action='store_true', dest='cdist_home')
+       action='store')
    parser.add_argument('-d', '--debug', help='Set log level to debug',
        action='store_true')
    parser.add_argument('-i', '--initial-manifest', 
@@ -614,22 +614,17 @@ if __name__ == "__main__":
    
    parser.add_argument('-V', '--version', help='Show version',
        action='version', version='%(prog)s ' + VERSION)
-   arser.add_argument('--foo', nargs=2)
 
    args = parser.parse_args(sys.argv[1:])
+   log.debug(args)
    if args.debug:
        logging.root.setLevel(logging.DEBUG)
-
-   print(args)
-   sys.exit(1)
 
    if args.banner:
       banner()
       sys.exit(0)
    
    try:
-      log.debug(args)
-
       for host in args.host:
          c = Cdist(host, initial_manifest=args.manifest, home=args.cdist_home)
          c.deploy_to()
