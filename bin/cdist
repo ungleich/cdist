@@ -152,7 +152,6 @@ class Cdist:
    def shell_run_or_debug_fail(self, script, *args, **kargs):
       # Manually execute /bin/sh, because sh -e does what we want
       # and sh -c -e does not exit if /bin/false called
-      print(args)
       args[0][:0] = [ "/bin/sh", "-e" ]
 
       if "remote" in kargs:
@@ -162,9 +161,8 @@ class Cdist:
 
          del kargs["remote"]
 
-      print(args)
-      print(*args)
-      log.debug("Shell exec: " + " ".join(*args))
+      log.debug("Shell exec cmd: %s", args)
+      log.debug("Shell exec env: %s", kargs['env'])
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
@@ -496,8 +494,8 @@ class Cdist:
       env = os.environ.copy()
       env['__target_host'] = self.target_host
       env['__global']      = self.out_dir
-      env["__object"]      = self.object_dir(cdist_object), 
-      env["__object_id"]   = self.get_object_id_from_object(cdist_object),
+      env["__object"]      = self.object_dir(cdist_object)
+      env["__object_id"]   = self.get_object_id_from_object(cdist_object)
       env["__object_fq"]   = cdist_object
 
       if mode == "gencode":
