@@ -1,8 +1,13 @@
-- Remove all FIXME entries
+For 2.0.0:
+
+   - Write cdist-manpage
+   - Remove all FIXME entries
+   - Remove obsolete manpages
+
+--------------------------------------------------------------------------------
+
 - Support parallel execution
    - and maximum number of parallel runs (-p X)
-- Write cdist-manpage
-- Remove obsolete manpages
 - Support different home instead of ../
 - Bug: os.path.join() may be wrong for the remote side!
    -> does not matter for now!
