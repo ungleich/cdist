@@ -1,6 +1,7 @@
-next:
+2.0.0:
 	* New Type: __package_rubygem (Chase Allen James)
 	* __self replaced by __object_fq (or so)
+	* Rewrote cdist in Python
 
 1.7.1: 2011-07-26
 	* Documentation: Add explorers to reference
