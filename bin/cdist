@@ -59,6 +59,7 @@ REMOTE_OBJECT_DIR          = os.path.join(REMOTE_BASE_DIR, "object")
 REMOTE_TYPE_DIR            = os.path.join(REMOTE_CONF_DIR, "type")
 REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
 
+CODE_HEADER                = "#!/bin/sh -e"
 DOT_CDIST                  = ".cdist"
 VERSION                    = "2.0.0"
 
@@ -517,15 +518,18 @@ class Cdist:
                   os.path.basename(bin)[3:])
 
                outfile_fd = open(outfile, "w")
+               outfile_fd.write(CODE_HEADER)
+
                self.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
                outfile_fd.close()
 
                status = os.stat(outfile)
 
                # Remove output if empty, else make it executable
-               if status.st_size == 0:
+               if status.st_size == len(CODE_HEADER):
                   os.unlink(outfile)
                else:
+                  # Add header and make executable
                   os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
 
       if mode == "code":
