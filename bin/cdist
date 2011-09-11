@@ -52,7 +52,7 @@ REMOTE_OBJECT_DIR          = os.path.join(REMOTE_BASE_DIR, "object")
 REMOTE_TYPE_DIR            = os.path.join(REMOTE_CONF_DIR, "type")
 REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
 
-CODE_HEADER                = "#!/bin/sh -e"
+CODE_HEADER                = "#!/bin/sh -e\n"
 DOT_CDIST                  = ".cdist"
 VERSION                    = "2.0.0"
 
@@ -501,7 +501,10 @@ class Cdist:
                   os.path.basename(bin)[3:])
 
                outfile_fd = open(outfile, "w")
+
+               # Need to flush to ensure our write is done before stdout write
                outfile_fd.write(CODE_HEADER)
+               outfile_fd.flush()
 
                self.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
                outfile_fd.close()
