@@ -81,7 +81,7 @@ VERSION                    = "2.0.0"
 #
 
 
-logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
 
 # List types
@@ -406,6 +406,9 @@ class Cdist:
          remote_cmd = cmd + [os.path.join(self.remote_type_explorer_dir(type), explorer)]
          output = os.path.join(self.type_explorer_output_dir(cdist_object), explorer)
          output_fd = open(output, mode='w')
+         log.debug("%s exploring %s using %s storing to %s", 
+                  cdist_object, explorer, remote_cmd, output)
+                  
          self.run_or_fail(remote_cmd, stdout=output_fd, remote=True)
          output_fd.close()
 
@@ -431,18 +434,19 @@ class Cdist:
       type = self.get_type_from_object(cdist_object)
       manifest = self.type_manifest_path(type)
       
+      log.debug("%s: Running %s", cdist_object, manifest)
       # FIXME: add more sensible checks for manifest
       if os.path.exists(manifest):
-         env = {  "__object" : self.object_dir(cdist_object), 
+         env = {  "__object" :   self.object_dir(cdist_object), 
                   "__object_id": self.get_object_id_from_object(cdist_object),
                   "__object_fq": cdist_object,
-                  "__type": type
+                  "__type":      type
                }
          self.run_manifest(manifest, extra_env=env)
 
    def run_manifest(self, manifest, extra_env=None):
       """Run a manifest"""
-      log.info("Running manifest %s, env=%s", manifest, extra_env)
+      log.debug("Running manifest %s, env=%s", manifest, extra_env)
       env = os.environ.copy()
       env['PATH'] = self.bin_dir + ":" + env['PATH']
 
@@ -502,7 +506,6 @@ class Cdist:
          paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))
          for bin in paths:
             if os.path.isfile(bin):
-               print(bin)
                self.shell_run_or_debug_fail(bin, [bin], env=env)
 
       if mode == "code":
@@ -545,6 +548,8 @@ class Cdist:
          log.debug("Run object: %s", cdist_object)
          self.object_run(cdist_object, mode="gencode")
          self.object_run(cdist_object, mode="code")
+
+      log.info("Finished run of %s", self.target_host)
 
 if __name__ == "__main__":
    parser = argparse.ArgumentParser(description='cdist ' + VERSION)
