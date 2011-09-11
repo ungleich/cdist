@@ -516,7 +516,13 @@ class Cdist:
                self.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
                outfile_fd.close()
 
-               os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
+               status = os.stat(outfile)
+
+               # Remove output if empty, else make it executable
+               if status.st_size == 0:
+                  os.unlink(outfile)
+               else:
+                  os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
 
       if mode == "code":
 #         paths = self.object_code_paths(cdist_object)
@@ -527,9 +533,12 @@ class Cdist:
          if os.path.isfile(bin):
             self.run_or_fail([bin], remote=False)
             
-         if os.path.isfile(os.path.join(local_dir, "code-remote")):
-            remote_code = os.path.join(remote_dir, "code-remote")
-            self.run_or_fail([remote_code], remote=True)
+
+         local_remote_code = os.path.join(local_dir, "code-remote")
+         remote_remote_code = os.path.join(remote_dir, "code-remote")
+         if os.path.isfile(local_remote_code):
+            self.transfer_file(local_remote_code, remote_remote_code)
+            self.run_or_fail([remote_remote_code], remote=True)
             
    def deploy_to(self):
       """Mimic the old deploy to: Deploy to one host"""
