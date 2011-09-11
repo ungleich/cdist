@@ -121,6 +121,9 @@ class Cdist:
       # List of type explorers transferred
       self.type_explorers_transferred = {}
 
+      # objects
+      self.objects_prepared = []
+
       self.remote_user = remote_user
 
       # Mostly static, but can be overwritten on user demand
@@ -241,12 +244,9 @@ class Cdist:
 
       return list
 
-   def list_object_paths(self, starting_point = False):
+   def list_object_paths(self, starting_point):
       """Return list of paths of existing objects"""
       object_paths = []
-
-      if not starting_point:
-         starting_point = self.object_base_dir
 
       for content in os.listdir(starting_point):
          full_path = os.path.join(starting_point, content)
@@ -288,17 +288,15 @@ class Cdist:
       return [os.path.join(self.object_dir(cdist_object), "code-local"),
               os.path.join(self.object_dir(cdist_object), "code-remote")]
 
-   def list_objects(self, starting_point = False):
+   def list_objects(self):
       """Return list of existing objects"""
 
-      if not starting_point:
-         starting_point = self.object_base_dir
-
-      object_paths = self.list_object_paths(starting_point)
       objects = []
+      if os.path.isdir(self.object_base_dir):
+         object_paths = self.list_object_paths(self.object_base_dir)
 
-      for path in object_paths:
-         objects.append(os.path.relpath(path, starting_point))
+         for path in object_paths:
+            objects.append(os.path.relpath(path, self.object_base_dir))
 
       return objects
 
@@ -561,10 +559,14 @@ class Cdist:
       while old_objects != objects:
          log.debug("Prepare stage")
          old_objects = list(objects)
-         # FIXME: do not rerun existing objects!
          for cdist_object in objects:
-            self.run_type_explorer(cdist_object)
-            self.run_type_manifest(cdist_object)
+            if cdist_object in self.objects_prepared:
+               log.debug("Skipping rerun of object %s", cdist_object)
+               continue
+            else:
+               self.run_type_explorer(cdist_object)
+               self.run_type_manifest(cdist_object)
+               self.objects_prepared.append(cdist_object)
 
          objects = self.list_objects()
       
