@@ -327,6 +327,7 @@ class Cdist:
 
    def transfer_global_explorers(self):
       """Transfer the global explorers"""
+      self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
       self.transfer_dir(self.global_explorer_dir, REMOTE_GLOBAL_EXPLORER_DIR)
 
    def transfer_type_explorers(self, type):
@@ -406,12 +407,9 @@ class Cdist:
    def init_deploy(self):
       log.debug("Creating clean directory structure")
 
-      # Ensure there is no old stuff, neither local nor remote
-   #   remote_run_or_fail(hostname, ["rm -rf", "${__cdist_remote_base_dir}"])
-   #
-   #   # Create base directories
-   #   remote_run_or_fail(hostname,["mkdir -p", "${__cdist_remote_base_dir}"])
-   #
+      self.remove_remote_dir(REMOTE_BASE_DIR)
+      self.remote_mkdir(REMOTE_BASE_DIR)
+
    #   # Link configuraion source directory - consistent with remote
    #   run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
 
