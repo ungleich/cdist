@@ -66,8 +66,12 @@ def banner():
 
 
 class TypeEmulator:
+   def __init__(self, name):
+      self.name = name
+      self.type = os.path.basename(name)
 
-   def type_emulator():
+
+   def type_emulator(self):
       type = basename(sys.argv[0])
 
       type_is_singleton(type)
@@ -96,13 +100,16 @@ class TypeEmulator:
 class Cdist:
    """Cdist main class to hold arbitrary data"""
 
-   def __init__(self, target_host, initial_manifest=False, remote_user="root", home=None):
+   def __init__(self, target_host, 
+               initial_manifest=False, remote_user="root",
+               home=None, debug=False):
       self.target_host = target_host
       self.remote_prefix = ["ssh", "root@" + self.target_host]
 
       # Setup directory paths
       self.temp_dir = tempfile.mkdtemp()
 
+      self.debug = debug
       
       if home:
          self.base_dir = home
@@ -148,8 +155,10 @@ class Cdist:
       # "other globals referenced by the __del__() method may already have been deleted 
       # or in the process of being torn down (e.g. the import machinery shutting down)"
       #
-      print("I should cleanup " + self.temp_dir)
-      # shutil.rmtree(self.temp_dir)
+      if self.debug:
+         log.debug("Skipping removal of " + self.temp_dir)
+      else:
+         shutil.rmtree(self.temp_dir)
 
    def exit_error(self, *args):
       log.error(*args)
@@ -650,7 +659,7 @@ if __name__ == "__main__":
       time_start = datetime.datetime.now()
 
       for host in args.host:
-         c = Cdist(host, initial_manifest=args.manifest, home=args.cdist_home)
+         c = Cdist(host, initial_manifest=args.manifest, home=args.cdist_home, debug=args.debug)
          if args.parallel:
             log.debug("Starting child process for %s", host)
             process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)
