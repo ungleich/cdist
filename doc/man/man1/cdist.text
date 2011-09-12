@@ -23,11 +23,24 @@ OPTIONS
 -h, --help::
    Show the help screen
 
+-b, --banner::
+   Show cdist banner
+
+-c CDIST_HOME, --cdist-home CDIST_HOME::
+   Instead of using the parent of the bin directory as cdist home,
+   use the specified directory
+
 -d, --debug::
    Enable debug output
 
+-i MANIFEST, --initial-manifest MANIFEST::
+   Path to a cdist manifest or - to read from stdin
+
 -p, --parallel::
-   Parallelise backup processes
+   Operate on multiple hosts in parallel
+
+-s, --sequential::
+   Operate on multiple hosts sequentially
 
 -V, --version::
    Show version and exit
@@ -40,15 +53,14 @@ EXAMPLES
 # Configure ikq05.ethz.ch with debug enabled
 cdist -d ikq05.ethz.ch
 
-__motd
+# Configure hosts in parallel and use a different home directory
+cdist -c ~/p/cdist-nutzung -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
+
+# Does not need a comment, plain works
+cdist --banner
+cdist --help
+cdist --version
 --------------------------------------------------------------------------------
-
-In both cases, cdist-type-emulator is called instead of a real type.
-In the first case, the object id "/tmp/linetest" is recorded and the
-parameter "line" stored with the content "test".
-
-In the second case, __motd must be decleared as a singleton, as the
-object id is missing.
 
 
 SEE ALSO

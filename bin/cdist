@@ -601,7 +601,7 @@ if __name__ == "__main__":
        help='Operate on multiple hosts in parallel',
        action='store_true', dest='parallel')
    parser.add_argument('-s', '--sequential',
-       help='Operate on multiple hosts sequentially',
+       help='Operate on multiple hosts sequentially (default)',
        action='store_false', dest='parallel')
    parser.add_argument('-V', '--version', help='Show version',
        action='version', version='%(prog)s ' + VERSION)
