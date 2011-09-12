@@ -8,6 +8,7 @@ For 2.0.0:
 
 - Support parallel execution
    - and maximum number of parallel runs (-p X)
+   - error handling / report failed hosts
 - Support different home instead of ../
 - Bug: os.path.join() may be wrong for the remote side!
    -> does not matter for now!

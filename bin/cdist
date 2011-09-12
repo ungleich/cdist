@@ -616,9 +616,13 @@ if __name__ == "__main__":
       sys.exit(0)
    
    process = {}
-   time_start = datetime.datetime.now()
    try:
-      log.info("Deploying to %s hosts", len(args.host))
+      if len(args.host) == 0:
+         parser.print_help()
+         sys.exit(1)
+
+      time_start = datetime.datetime.now()
+
       for host in args.host:
          c = Cdist(host, initial_manifest=args.manifest, home=args.cdist_home)
          if args.parallel:
@@ -635,7 +639,8 @@ if __name__ == "__main__":
             process[p].join()
 
       time_end = datetime.datetime.now()
-      log.info("Total processing time: %s", (time_end - time_start).total_seconds())
+      log.info("Total processing time for %s host(s): %s", len(args.host),
+               (time_end - time_start).total_seconds())
 
    except KeyboardInterrupt:
        sys.exit(0)
