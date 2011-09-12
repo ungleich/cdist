@@ -1,6 +1,5 @@
 For 2.0.0:
 
-   - Write cdist-manpage
    - Remove all FIXME entries
    - Remove obsolete manpages
 
