@@ -65,6 +65,34 @@ def banner():
    print(BANNER)
 
 
+class TypeEmulator:
+
+   def type_emulator():
+      type = basename(sys.argv[0])
+
+      type_is_singleton(type)
+
+      # Check object id
+
+      # Prevent double slash if id begins with /
+
+      # Record parameter: opt_file="${opt#--}"
+      # [ $# -ge 1 ] || __cdist_usage "Missing value for $opt"
+      # echo "${value}" > "${__cdist_parameter_dir}/${opt_file}"
+
+      # Record requirements
+      # echo $requirement >> "$(__cdist_object_require "$__cdist_object_self")"
+
+      # Ensure required parameters are given
+      # Ensure that only optional or required parameters are given
+      # [ "$is_valid" ] || __cdist_usage "Unknown parameter $parameter"
+
+      # Merge object (creating twice with the same parameter + requirements == allowed)
+
+      # diff -ru "${__cdist_new_object_dir}/${__cdist_name_parameter}
+      # # Add "I was here message"
+      # _cdist_object_source_add "${__cdist_object_dir}"
+
 class Cdist:
    """Cdist main class to hold arbitrary data"""
 
