@@ -1,0 +1,63 @@
+cdist(1)
+========
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist - Configuration management
+
+
+SYNOPSIS
+--------
+cdist [-h] [-b] [-c CDIST_HOME] [-d] [-i MANIFEST] [-p] [-s] [-V] [host [host ...]]
+
+
+DESCRIPTION
+-----------
+cdist is the frontend executable to the cdist configuration management.
+
+
+OPTIONS
+-------
+-h, --help::
+   Show the help screen
+
+-d, --debug::
+   Enable debug output
+
+-p, --parallel::
+   Parallelise backup processes
+
+-V, --version::
+   Show version and exit
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Configure ikq05.ethz.ch with debug enabled
+cdist -d ikq05.ethz.ch
+
+__motd
+--------------------------------------------------------------------------------
+
+In both cases, cdist-type-emulator is called instead of a real type.
+In the first case, the object id "/tmp/linetest" is recorded and the
+parameter "line" stored with the content "test".
+
+In the second case, __motd must be decleared as a singleton, as the
+object id is missing.
+
+
+SEE ALSO
+--------
+- cdist(7)
+- cdist-type-build-emulation(1)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
