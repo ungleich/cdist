@@ -638,16 +638,17 @@ if __name__ == "__main__":
 
    # Main subcommand parser
    parser['main'] = argparse.ArgumentParser(description='cdist ' + VERSION)
-      
    parser['main'].add_argument('-V', '--version',
       help='Show version', action='version',
       version='%(prog)s ' + VERSION)
-   parser['sub'] = parser['main'].add_subparsers()
+   parser['sub'] = parser['main'].add_subparsers(title="Commands")
 
+   # Banner
    parser['banner'] = parser['sub'].add_parser('banner', 
       add_help=False)
    parser['banner'].set_defaults(func=banner)
 
+   # Config
    parser['config'] = parser['sub'].add_parser('config',
       parents=[parser['most']])
    parser['config'].add_argument('host', nargs='+',

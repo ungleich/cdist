@@ -10,21 +10,33 @@ cdist - Configuration management
 
 SYNOPSIS
 --------
-cdist [-h] [-b] [-c CDIST_HOME] [-d] [-i MANIFEST] [-p] [-s] [-V] [host [host ...]]
+cdist [-V|--version]
+cdist banner
+cdist config [-h] [-d] [-V] [-c CDIST_HOME] [-i MANIFEST] [-p] [-s] host [host ...]
+
 
 
 DESCRIPTION
 -----------
 cdist is the frontend executable to the cdist configuration management.
+cdist supports different as explained below. The options to the main
+program are:
+
+-V, --version::
+   Show version and exit
 
 
-OPTIONS
+BANNER
 -------
+Displays the cdist banner.
+
+
+CONFIG
+------
+Configure a system
+
 -h, --help::
    Show the help screen
-
--b, --banner::
-   Show cdist banner
 
 -c CDIST_HOME, --cdist-home CDIST_HOME::
    Instead of using the parent of the bin directory as cdist home,
@@ -42,23 +54,25 @@ OPTIONS
 -s, --sequential::
    Operate on multiple hosts sequentially
 
--V, --version::
-   Show version and exit
-
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
 # Configure ikq05.ethz.ch with debug enabled
-cdist -d ikq05.ethz.ch
+cdist config -d ikq05.ethz.ch
 
 # Configure hosts in parallel and use a different home directory
-cdist -c ~/p/cdist-nutzung -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
+cdist config -c ~/p/cdist-nutzung \
+   -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
 
-# Does not need a comment, plain works
-cdist --banner
+# Display banner
+cdist banner
+
+# Show help
 cdist --help
+
+# Show Version
 cdist --version
 --------------------------------------------------------------------------------
 
