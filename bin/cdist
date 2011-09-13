@@ -451,7 +451,6 @@ class Cdist:
       manifest = self.type_manifest_path(type)
       
       log.debug("%s: Running %s", cdist_object, manifest)
-      # FIXME: add more sensible checks for manifest
       if os.path.exists(manifest):
          env = {  "__object" :   self.object_dir(cdist_object), 
                   "__object_id": self.get_object_id_from_object(cdist_object),

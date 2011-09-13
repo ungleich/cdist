@@ -2,6 +2,8 @@ For 2.0.0:
 
    - Remove all FIXME entries
    - Remove obsolete manpages
+   - support subcommands!
+      deploy? config?
 
 --------------------------------------------------------------------------------
 
@@ -15,3 +17,4 @@ For 2.0.0:
 - Rewrite cdist-type-emulator
    - Remove legacy code in cdist
    - Remove cdist-config
+
