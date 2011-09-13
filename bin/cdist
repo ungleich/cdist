@@ -352,16 +352,6 @@ class Cdist:
       self.transfer_dir(self.object_parameter_dir(cdist_object), 
                         self.remote_object_parameter_dir(cdist_object))
 
-   def transfer_object_code(self, cdist_object):
-      FIXME
-      """Transfer the object code to the remote destination"""
-      # Create base path before using mkdir -p
-      self.remote_mkdir(self.remote_object_parameter_dir(cdist_object))
-
-      # Synchronise parameter dir afterwards
-      self.transfer_file(self.object_code_path(cdist_object), 
-                        self.remote_object_parameter_dir(cdist_object))
-
    def transfer_global_explorers(self):
       """Transfer the global explorers"""
       self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
@@ -555,7 +545,6 @@ class Cdist:
                   os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
 
       if mode == "code":
-#         paths = self.object_code_paths(cdist_object)
          local_dir   = self.object_dir(cdist_object)
          remote_dir  = self.remote_object_dir(cdist_object)
 
