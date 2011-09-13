@@ -632,20 +632,20 @@ if __name__ == "__main__":
    # Construct parser others can reuse
    parser = {}
    # Options _all_ parsers have in common
-   parser['most'] = argparse.ArgumentParser(add_help=False,
-      epilog="Get cdist at http://www.nico.schottelius.org/software/cdist/")
+   parser['most'] = argparse.ArgumentParser(add_help=False)
    parser['most'].add_argument('-d', '--debug',
       help='Set log level to debug', action='store_true')
-   parser['most'].add_argument('-V', '--version',
-      help='Show version', action='version',
-      version='%(prog)s ' + VERSION)
 
    # Main subcommand parser
-   parser['main'] = argparse.ArgumentParser(description='cdist ' + VERSION,
-      parents=[parser['most']])
+   parser['main'] = argparse.ArgumentParser(description='cdist ' + VERSION)
+      
+   parser['main'].add_argument('-V', '--version',
+      help='Show version', action='version',
+      version='%(prog)s ' + VERSION)
    parser['sub'] = parser['main'].add_subparsers()
 
-   parser['banner'] = parser['sub'].add_parser('banner')
+   parser['banner'] = parser['sub'].add_parser('banner', 
+      add_help=False)
    parser['banner'].set_defaults(func=banner)
 
    parser['config'] = parser['sub'].add_parser('config',
@@ -665,6 +665,9 @@ if __name__ == "__main__":
        help='Operate on multiple hosts sequentially (default)',
        action='store_false', dest='parallel')
    parser['config'].set_defaults(func=config)
+
+   for p in parser:
+      parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
 
    args = parser['main'].parse_args(sys.argv[1:])
 
