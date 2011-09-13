@@ -603,10 +603,10 @@ def banner(*args):
    print(BANNER)
    sys.exit(0)
 
-def config(*args, **kargs):
+def config(*args):
    """Configure remote system"""
+   print(*args)
    process = {}
-   try:
       if len(args.host) == 0:
          parser.print_help()
          sys.exit(1)
@@ -632,8 +632,6 @@ def config(*args, **kargs):
       log.info("Total processing time for %s host(s): %s", len(args.host),
                (time_end - time_start).total_seconds())
 
-   except KeyboardInterrupt:
-       sys.exit(0)
 
 if __name__ == "__main__":
    # Construct parser others can reuse
@@ -652,10 +650,7 @@ if __name__ == "__main__":
    parser['main'] = argparse.ArgumentParser(description='cdist ' + VERSION)
    parser['sub'] = parser['main'].add_subparsers()
 
-
    parser['banner'] = parser['sub'].add_parser('banner')
-#   parser['banner'].add_argument('all', nargs='*',
-#       help='Show cdist banner')
    parser['banner'].set_defaults(func=banner)
 
    parser['config'] = parser['sub'].add_parser('config',
@@ -677,7 +672,6 @@ if __name__ == "__main__":
        action='store_false', dest='parallel')
    parser['config'].set_defaults(func=config)
 
-
    args = parser['main'].parse_args(sys.argv[1:])
 
    # Most subcommands to have --debug, so handle it here
@@ -686,4 +680,7 @@ if __name__ == "__main__":
          logging.root.setLevel(logging.DEBUG)
    log.debug(args)
 
-   args.func(args)
+   try:
+      args.func(args)
+   except KeyboardInterrupt:
+       sys.exit(0)
