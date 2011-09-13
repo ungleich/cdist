@@ -157,6 +157,7 @@ working, break your setup or eat the tree in your garden.
 * Ensure python (>= 3.2) is installed on the server
 * Use "cdist config host" instead of "cdist-deploy-to host"
 * Use "cdist config -p host1 host2" instead of "cdist-mass-deploy"
+* Use "cdist banner" for fun
 * Use **\_\_object_fq** instead of **\_\_self** in manifests
 
 ### Upgrading from 1.6 to 1.7
