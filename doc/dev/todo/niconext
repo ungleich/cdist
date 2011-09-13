@@ -1,7 +1,8 @@
 For 2.0.0:
 
    - support subcommands!
-      deploy? config?
+      config  (deploy)
+      install (provision)
 
 --------------------------------------------------------------------------------
 
