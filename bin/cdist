@@ -157,7 +157,7 @@ class Cdist:
       # Remove previous cache
       if os.path.exists(self.cache_dir):
          shutil.rmtree(self.cache_dir)
-      os.rename(self.temp_dir, self.cache_dir)
+      shutil.move(self.temp_dir, self.cache_dir)
 
    def exit_error(self, *args):
       log.error(*args)
