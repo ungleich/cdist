@@ -97,8 +97,7 @@ case "$1" in
    web)
       cp README ${WEBDIR}/${WEBPAGE}
       rm -rf ${WEBDIR}/${WEBBASE}/man 
-      mkdir ${WEBDIR}/${WEBBASE}/man/man1
-      mkdir ${WEBDIR}/${WEBBASE}/man/man7
+      mkdir -p ${WEBDIR}/${WEBBASE}/man/man1 ${WEBDIR}/${WEBBASE}/man/man7
 
       rm -rf ${WEBDIR}/${WEBBASE}/speeches && mkdir ${WEBDIR}/${WEBBASE}/speeches
 
