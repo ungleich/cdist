@@ -113,6 +113,8 @@ class Cdist:
          self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
       self.conf_dir              = os.path.join(self.base_dir, "conf")
+      self.cache_base_dir        = os.path.join(self.base_dir, "cache")
+      self.cache_dir             = os.path.join(self.cache_base_dir, self.target_host)
       self.global_explorer_dir   = os.path.join(self.conf_dir, "explorer")
       self.lib_dir               = os.path.join(self.base_dir, "lib")
       self.manifest_dir          = os.path.join(self.conf_dir, "manifest")
@@ -151,10 +153,11 @@ class Cdist:
       # "other globals referenced by the __del__() method may already have been deleted 
       # or in the process of being torn down (e.g. the import machinery shutting down)"
       #
-      if self.debug:
-         log.debug("Skipping removal of " + self.temp_dir)
-      else:
-         shutil.rmtree(self.temp_dir)
+      log.debug("Saving" + self.temp_dir + "to " + self.cache_dir)
+      # Remove previous cache
+      if os.path.exists(self.cache_dir):
+         shutil.rmtree(self.cache_dir)
+      os.rename(self.temp_dir, self.cache_dir)
 
    def exit_error(self, *args):
       log.error(*args)
