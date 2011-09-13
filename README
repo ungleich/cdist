@@ -154,6 +154,11 @@ working, break your setup or eat the tree in your garden.
 
 ### Upgrading from 1.7 to 2.0
 
+* Ensure python (>= 3.2) is installed on the server
+* Use "cdist config host" instead of "cdist-deploy-to host"
+* Use "cdist config -p host1 host2" instead of "cdist-mass-deploy"
+* Use **\_\_object_fq** instead of **\_\_self** in manifests
+
 ### Upgrading from 1.6 to 1.7
 
 * If you used the global explorer **hardware_type**, you need to change

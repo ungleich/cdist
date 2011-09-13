@@ -171,7 +171,7 @@ __object::
 __object_id::
    The type unique object id.
    Available for: type manifest, type explorer, type gencode
-__self::
+__object_fq::
    The full qualified name of the current object.
    Available for: type manifest, type explorer, type gencode
 __target_host::
