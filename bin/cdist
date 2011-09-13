@@ -598,46 +598,48 @@ class Cdist:
       self.deploy_to()
       self.cleanup()
 
-def banner(*args):
+def banner(args):
    """Guess what :-)"""
    print(BANNER)
    sys.exit(0)
 
-def config(*args):
+def config(args):
    """Configure remote system"""
-   print(*args)
+   print(args)
    process = {}
-      if len(args.host) == 0:
-         parser.print_help()
-         sys.exit(1)
 
-      time_start = datetime.datetime.now()
+   if len(args.host) == 0:
+      parser.print_help()
+      sys.exit(1)
 
-      for host in args.host:
-         c = Cdist(host, initial_manifest=args.manifest, home=args.cdist_home, debug=args.debug)
-         if args.parallel:
-            log.debug("Starting child process for %s", host)
-            process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)
-            process[host].start()
-            log.debug("After process for %s", host)
-         else:
-            c.deploy_and_cleanup()
+   time_start = datetime.datetime.now()
 
+   for host in args.host:
+      c = Cdist(host, initial_manifest=args.manifest, home=args.cdist_home, debug=args.debug)
       if args.parallel:
-         for p in process.keys():
-            log.debug("Joining %s", p)
-            process[p].join()
+         log.debug("Starting child process for %s", host)
+         process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)
+         process[host].start()
+         log.debug("After process for %s", host)
+      else:
+         c.deploy_and_cleanup()
 
-      time_end = datetime.datetime.now()
-      log.info("Total processing time for %s host(s): %s", len(args.host),
-               (time_end - time_start).total_seconds())
+   if args.parallel:
+      for p in process.keys():
+         log.debug("Joining %s", p)
+         process[p].join()
+
+   time_end = datetime.datetime.now()
+   log.info("Total processing time for %s host(s): %s", len(args.host),
+            (time_end - time_start).total_seconds())
 
 
 if __name__ == "__main__":
    # Construct parser others can reuse
    parser = {}
    # Options _all_ parsers have in common
-   parser['most'] = argparse.ArgumentParser(add_help=False)
+   parser['most'] = argparse.ArgumentParser(add_help=False,
+      epilog="Get cdist at http://www.nico.schottelius.org/software/cdist/")
    parser['most'].add_argument('-d', '--debug',
                               help='Set log level to debug',
                               action='store_true')
@@ -645,9 +647,12 @@ if __name__ == "__main__":
                               help='Show version',
                               action='version',
                               version='%(prog)s ' + VERSION)
+                              #version='%(prog)s ' + VERSION)
+
 
    # Main subcommand parser
-   parser['main'] = argparse.ArgumentParser(description='cdist ' + VERSION)
+   parser['main'] = argparse.ArgumentParser(description='cdist ' + VERSION,
+      parents=[parser['most']])
    parser['sub'] = parser['main'].add_subparsers()
 
    parser['banner'] = parser['sub'].add_parser('banner')
@@ -656,7 +661,7 @@ if __name__ == "__main__":
    parser['config'] = parser['sub'].add_parser('config',
                                                 aliases=['deploy'],
                                                 parents=[parser['most']])
-   parser['config'].add_argument('host', nargs='*',
+   parser['config'].add_argument('host', nargs='+',
       help='one or more hosts to operate on')
    parser['config'].add_argument('-c', '--cdist-home',
        help='Change cdist home (default: .. from bin directory)',
