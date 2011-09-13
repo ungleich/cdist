@@ -551,7 +551,7 @@ class Cdist:
                if status.st_size == len(CODE_HEADER):
                   os.unlink(outfile)
                else:
-                  # Add header and make executable
+                  # Add header and make executable - identically to 0o700
                   os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
 
       if mode == "code":
