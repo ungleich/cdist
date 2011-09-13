@@ -1,11 +1,3 @@
-For 2.0.0:
-
-   - support subcommands!
-      config  (deploy)
-      install (provision)
-
---------------------------------------------------------------------------------
-
 - Support parallel execution
    - and maximum number of parallel runs (-p X)
    - error handling / report failed hosts
@@ -19,3 +11,5 @@ For 2.0.0:
    - Remove man1/cdist-type-emulator.text
 
 - Replace bin/cdist-type-template 
+
+- Allow manifest to be read from stdin

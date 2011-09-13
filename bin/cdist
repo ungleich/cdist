@@ -428,13 +428,11 @@ class Cdist:
          output_fd.close()
 
    def init_deploy(self):
+      """Ensure the base directories are cleaned up"""
       log.debug("Creating clean directory structure")
 
       self.remove_remote_dir(REMOTE_BASE_DIR)
       self.remote_mkdir(REMOTE_BASE_DIR)
-
-   #   # Link configuraion source directory - consistent with remote
-   #   run_or_fail(["ln -sf", "$__cdist_conf_dir", "$__cdist_local_base_dir/$__cdist_name_conf_dir"])
 
    def run_initial_manifest(self):
       """Run the initial manifest"""
@@ -605,7 +603,6 @@ def banner(args):
 
 def config(args):
    """Configure remote system"""
-   print(args)
    process = {}
 
    if len(args.host) == 0:
@@ -633,7 +630,6 @@ def config(args):
    log.info("Total processing time for %s host(s): %s", len(args.host),
             (time_end - time_start).total_seconds())
 
-
 if __name__ == "__main__":
    # Construct parser others can reuse
    parser = {}
@@ -641,14 +637,10 @@ if __name__ == "__main__":
    parser['most'] = argparse.ArgumentParser(add_help=False,
       epilog="Get cdist at http://www.nico.schottelius.org/software/cdist/")
    parser['most'].add_argument('-d', '--debug',
-                              help='Set log level to debug',
-                              action='store_true')
+      help='Set log level to debug', action='store_true')
    parser['most'].add_argument('-V', '--version',
-                              help='Show version',
-                              action='version',
-                              version='%(prog)s ' + VERSION)
-                              #version='%(prog)s ' + VERSION)
-
+      help='Show version', action='version',
+      version='%(prog)s ' + VERSION)
 
    # Main subcommand parser
    parser['main'] = argparse.ArgumentParser(description='cdist ' + VERSION,
@@ -659,14 +651,14 @@ if __name__ == "__main__":
    parser['banner'].set_defaults(func=banner)
 
    parser['config'] = parser['sub'].add_parser('config',
-                                                parents=[parser['most']])
+      parents=[parser['most']])
    parser['config'].add_argument('host', nargs='+',
       help='one or more hosts to operate on')
    parser['config'].add_argument('-c', '--cdist-home',
        help='Change cdist home (default: .. from bin directory)',
        action='store')
    parser['config'].add_argument('-i', '--initial-manifest', 
-       help='Path to a cdist manifest or - to read from stdin',
+       help='Path to a cdist manifest',
        dest='manifest', required=False)
    parser['config'].add_argument('-p', '--parallel',
        help='Operate on multiple hosts in parallel',
@@ -678,7 +670,7 @@ if __name__ == "__main__":
 
    args = parser['main'].parse_args(sys.argv[1:])
 
-   # Most subcommands to have --debug, so handle it here
+   # Most subcommands have --debug, so handle it here
    if 'debug' in args:
       if args.debug:
          logging.root.setLevel(logging.DEBUG)
