@@ -9,6 +9,7 @@
    - Remove legacy code in cdist
    - Remove cdist-config
    - Remove man1/cdist-type-emulator.text
+   - Remove the PATH=... part from the README
 
 - Replace bin/cdist-type-template 
 
