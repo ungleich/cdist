@@ -85,7 +85,8 @@ cdist --version
 SEE ALSO
 --------
 - cdist(7)
-- cdist-type-build-emulation(1)
+- cdist-type-emulator(1)
+- cdist-reference(7)
 
 
 COPYING
