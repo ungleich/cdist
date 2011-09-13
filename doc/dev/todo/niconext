@@ -13,3 +13,5 @@
 - Replace bin/cdist-type-template 
 
 - Allow manifest to be read from stdin
+- Create new video for cdist 2.0.0
+   http://www.youtube.com/watch?v=PRMjzy48eTI

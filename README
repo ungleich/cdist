@@ -38,13 +38,13 @@ Design | Define target state, do not focus on methods or scripts
 Design | Push architecture: Instantly apply your changes
 Small core | cdist's core is very small - less code, less bugs
 Fast development | Focus on straightforwardness of type creation is a main development objective
+Modern Programming Language | cdist is written in Python
 Requirements, Scalability | No central server needed, cdist operates in push mode and can be run from any computer
 Requirements, Scalability, Upgrade | cdist only needs to be updated on the master, not on the target hosts
 Requirements, Security | Uses well-know [SSH](http://www.openssh.com/) as transport protocol
 Requirements, Simplicity | Requires only shell and SSH server on the target
 UNIX | Reuse of existing tools like cat, find, mv, ...
 UNIX, familar environment, documentation | Is available as manpages and HTML
-UNIX, simplicity, familar environment | cdist is written in POSIX shell
 UNIX, simplicity, familar environment | cdist is configured in POSIX shell
 """]]
 
@@ -76,6 +76,7 @@ cdist was tested or is know to run on at least
 ### Server
 
  * A posix like shell
+ * Python (>= 3.2 required)
  * SSH-Client
 
 ### Client ("target host")
@@ -110,10 +111,11 @@ how to use cdist.
 There are at least the following branches available:
 
  * Development: master
- * Current Stable: 1.7 (Bugfixes, cleanups, new type and explorer rename)
+ * 2.0: Python rewrite
 
 Old versions:
 
+ * 1.7: Bugfixes, cleanups, new type and explorer rename
  * 1.6: New types, cleaned up \_\_package* types, internal cleanup
  * 1.5: Focus on object orientation instead of global stage orientation
  * 1.4: Support for redefiniton of objects (if equal)
@@ -129,13 +131,12 @@ may vanish at any point. To select a specific branch use
     git checkout -b <name> origin/<name>
     
     # Stay on a specific version
-    version=1.7
+    version=2.0
     git checkout -b $version origin/$version
 
 ### Mirrors
 
  * git://github.com/telmich/cdist.git ([github](https://github.com/telmich/cdist))
- * git://git.sans.ethz.ch/cdist ([sans](http://git.sans.ethz.ch/?p=cdist;a=summary))
 
 ## Update
 
@@ -150,6 +151,8 @@ To upgrade cdist in the current branch use
 If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
 The master branch on the other hand is the development branch and may not be
 working, break your setup or eat the tree in your garden.
+
+### Upgrading from 1.7 to 2.0
 
 ### Upgrading from 1.6 to 1.7
 
