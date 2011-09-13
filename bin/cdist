@@ -608,10 +608,6 @@ def config(args):
    """Configure remote system"""
    process = {}
 
-   if len(args.host) == 0:
-      parser.print_help()
-      sys.exit(1)
-
    time_start = datetime.datetime.now()
 
    for host in args.host:
