@@ -10,8 +10,10 @@ cdist - Configuration management
 
 SYNOPSIS
 --------
-cdist [-V|--version]
+cdist [-h] [-V]
+
 cdist banner
+
 cdist config [-h] [-d] [-V] [-c CDIST_HOME] [-i MANIFEST] [-p] [-s] host [host ...]
 
 
@@ -21,6 +23,9 @@ DESCRIPTION
 cdist is the frontend executable to the cdist configuration management.
 cdist supports different as explained below. The options to the main
 program are:
+
+-h, --help::
+   Show the help screen
 
 -V, --version::
    Show version and exit
