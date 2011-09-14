@@ -197,7 +197,7 @@ class Cdist:
             print(script_fd.read())
             script_fd.close()
 
-         self.exit_error("Non-Zero exit code exit of " + " ".join(*args))
+         self.exit_error("Command failed (shell): " + " ".join(*args))
 
    def run_or_fail(self, *args, **kargs):
       if "remote" in kargs:

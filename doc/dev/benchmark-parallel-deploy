@@ -5,7 +5,7 @@ outfile="$1"; shift
 (
    for host in "$@"; do
       hosts="$hosts $host"
-      cdist config -c ~/p/cdist-nutzung -p $hosts
+      cdist config -c ~/p/cdist-nutzung -p $hosts 2>&1
    done
 ) | tee "$outfile"
 echo "----------"
