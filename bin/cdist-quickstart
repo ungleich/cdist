@@ -249,7 +249,7 @@ fi
 manifestinit="conf/manifest/init"
 cat << eof
 
-I'll know setup $manifestinit, containing the following code:
+I'll now setup $manifestinit, containing the following code:
 
 --------------------------------------------------------------------------------
 # Every machine becomes a marker, so sysadmins know that automatic

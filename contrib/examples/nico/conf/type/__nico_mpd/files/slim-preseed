@@ -1,0 +1,4 @@
+# Use slim, not gdm, if both are available
+# Setup for slim, but value is available for gdm as well:
+# gdm  shared/default-x-display-manager select  slim 
+slim  shared/default-x-display-manager select  slim 

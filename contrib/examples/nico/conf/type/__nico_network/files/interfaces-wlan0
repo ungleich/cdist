@@ -1,0 +1,11 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+auto wlan0
+iface wlan0 inet dhcp
+	wpa-ssid undef
+	wpa-psk rotrussland

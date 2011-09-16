@@ -1,0 +1,13 @@
+#
+# Cdist managed file
+#
+
+# Personal one: nico, shared one: lyni
+User_Alias NICO = nico, lyni
+
+Defaults timestamp_timeout=5
+Defaults !tty_tickets
+
+# Give out permissions
+NICO ALL=(ALL) ALL
+NICO ALL=(ALL) NOPASSWD: /usr/sbin/pm-suspend

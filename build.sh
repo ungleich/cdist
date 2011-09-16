@@ -88,18 +88,21 @@ case "$1" in
    speeches)
       cd "$SPEECHESDIR"
       for speech in *tex; do
-         pdflatex $speech
-         pdflatex $speech
-         pdflatex $speech
+         pdflatex "$speech"
+         pdflatex "$speech"
+         pdflatex "$speech"
       done
    ;;
       
    web)
       cp README ${WEBDIR}/${WEBPAGE}
-      rm -rf ${WEBDIR}/${WEBBASE}/man && mkdir ${WEBDIR}/${WEBBASE}/man
+      rm -rf ${WEBDIR}/${WEBBASE}/man 
+      mkdir -p ${WEBDIR}/${WEBBASE}/man/man1 ${WEBDIR}/${WEBBASE}/man/man7
+
       rm -rf ${WEBDIR}/${WEBBASE}/speeches && mkdir ${WEBDIR}/${WEBBASE}/speeches
 
-      cp ${MAN1DSTDIR}/*.html ${MAN7DSTDIR}/*.html ${WEBDIR}/${WEBBASE}/man
+      cp ${MAN1DSTDIR}/*.html ${WEBDIR}/${WEBBASE}/man/man1
+      cp ${MAN7DSTDIR}/*.html ${WEBDIR}/${WEBBASE}/man/man7
       cp ${SPEECHESDIR}/*.pdf ${WEBDIR}/${WEBBASE}/speeches
       
       git describe > ${WEBDIR}/${WEBBASE}/man/VERSION
@@ -108,7 +111,7 @@ case "$1" in
       cd ${WEBDIR} && make pub
    ;;
 
-   pub)
+   p|pu|pub)
       git push --mirror
       git push --mirror github
    ;;
