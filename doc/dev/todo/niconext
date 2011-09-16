@@ -22,6 +22,14 @@
    - Remove man1/cdist-type-emulator.text
    - Remove the PATH=... part from the README
 
+   - basename(argv0) == type
+      - how to get to type dir?
+         - dependent on -c to cdist!
+            - submit via internal env!
+         - need to build parameter parser
+            - need to read file
+               - refactor list_object_requirements
+
 - Allow manifest to be read from stdin
 - Create new video for cdist 2.0.0
    http://www.youtube.com/watch?v=PRMjzy48eTI

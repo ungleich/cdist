@@ -454,10 +454,12 @@ class Cdist:
       env['__global']         = self.out_dir
       
       # Legacy stuff to make cdist-type-emulator work
-      env['__cdist_conf_dir']       = self.conf_dir
       env['__cdist_core_dir']       = os.path.join(self.base_dir, "core")
       env['__cdist_local_base_dir'] = self.temp_dir
       env['__cdist_manifest']       = self.initial_manifest
+
+      # Submit information to new type emulator
+      env['__cdist_type_base_dir']  = self.type_base_dir
 
       # Other environment stuff
       if extra_env:
@@ -636,16 +638,18 @@ def install(args):
 def emulator():
    """Emulate type commands (i.e. __file and co)"""
    type = os.path.basename(sys.argv[0])
-
+   type_dir = os.environ['__cdist_type_base_dir']
 
    parser = argparse.ArgumentParser(add_help=False)
 
-   print("Oh, noe")
-   sys.exit(1)
-
    # Setup optional parameters
+   if os.path.isfile(os.path.join(type_dir, "parameter", "optional"):
+   __cdist_type_base_dir
    # Setup required parameters
    # Setup positional parameter, if not singleton
+
+   print("Oh, noe")
+   sys.exit(1)
 
 
 
