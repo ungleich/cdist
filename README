@@ -111,7 +111,7 @@ how to use cdist.
 There are at least the following branches available:
 
  * Development: master
- * 2.0: Python rewrite
+ * 2.0: Python rewrite of cdist core
 
 Old versions:
 
