@@ -253,7 +253,7 @@ class Cdist:
 
    def list_type_explorers(self, type):
       """Return list of available explorers for a specific type"""
-      dir = self.type_explorer_dir(type)
+      dir = self.type_attribute_path(type, "explorer")
       if os.path.isdir(dir):
          list = os.listdir(dir)
       else:
@@ -326,10 +326,6 @@ class Cdist:
       """Return directory the type"""
       return os.path.join(self.type_base_dir, type)
 
-   def type_explorer_dir(self, type):
-      """Return directory that holds the explorers of a type"""
-      return os.path.join(self.type_dir(type), "explorer")
-
    def type_gencode_paths(self, type):
       """Return paths to gencode scripts of type"""
       return [os.path.join(self.type_base_dir, type, "gencode-local"),
@@ -366,7 +362,7 @@ class Cdist:
          # Do not retransfer
          self.type_explorers_transferred[type] = 1
 
-      src = self.type_explorer_dir(type)
+      src = self.type_attribute_path(type, attribute)
       remote_base = os.path.join(REMOTE_TYPE_DIR, type)
       dst = self.remote_type_explorer_dir(type)
 
