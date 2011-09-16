@@ -1,6 +1,6 @@
 - Initial install support
-   - setup $__install = "" for
-      manifest(s)
+   - setup $__install = "yes" for
+      manifest(s), gencode-*
 
    - run standard manifest (?)
       - creates initial objects
@@ -11,6 +11,8 @@
    - run all other manifests
       - creates all objects
       - what about type explorer?
+         - do not run, create empty output (types should be able
+            to handle this!)
 
 - Support parallel execution
    - and maximum number of parallel runs (-p X)
