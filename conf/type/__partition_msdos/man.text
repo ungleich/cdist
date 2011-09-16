@@ -1,11 +1,11 @@
-cdist-type__cinst_partition_msdos(7)
-====================================
+cdist-type__partition_msdos(7)
+==============================
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 NAME
 ----
-cdist-type__cinst_partition_msdos - creates msdos partitions
+cdist-type__partition_msdos - creates msdos partitions
 
 
 DESCRIPTION
@@ -24,13 +24,12 @@ OPTIONAL PARAMETERS
 device::
    defaults to object_id
 bootable::
-   mark partition as bootable, true or false
+   mark partition as bootable, true or false, defaults to false
 size::
-   the size of the partition (such as 32MB or 15GB, whole numbers
+   the size of the partition (such as 32M or 15G, whole numbers
    only), '+' for remaining space, or 'n%' for percentage of remaining
    (these should only be used after all specific partition sizes are
-   specified), leave blank if type is "extended".
-   Defaults to +.
+   specified). Defaults to +.
 
 
 EXAMPLES
@@ -38,17 +37,19 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # 128MB linux, bootable
-__cinst_partition_msdos /dev/sda1 --type 83 --size 128M --bootable true
+__partition_msdos /dev/sda1 --type 83 --size 128M --bootable true
 # 512MB swap
-__cinst_partition_msdos /dev/sda2 --type 82 --size 512M
+__partition_msdos /dev/sda2 --type 82 --size 512M
 # extended
-__cinst_partition_msdos /dev/sda3 --type extended
+__partition_msdos /dev/sda3 --type extended --size 100G
 # 10GB, linux
-__cinst_partition_msdos /dev/sda5 --type 82 --size 10G
+__partition_msdos /dev/sda5 --type 83 --size 10G
+# 50% of free space, linux
+__partition_msdos /dev/sda6 --type 83 --size 50%
 # rest of disk, linux
-__cinst_partition_msdos /dev/sda6 --type 82 --size +
+__partition_msdos /dev/sda7 --type 83 --size +
 # same thing as
-__cinst_partition_msdos /dev/sda6 --type 82
+__partition_msdos /dev/sda7 --type 83
 --------------------------------------------------------------------------------
 
 
