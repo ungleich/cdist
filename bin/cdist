@@ -604,6 +604,10 @@ def banner(args):
    print(BANNER)
    sys.exit(0)
 
+def install(args):
+   """Install remote system"""
+   process = {}
+
 def config(args):
    """Configure remote system"""
    process = {}
@@ -648,24 +652,32 @@ if __name__ == "__main__":
       add_help=False)
    parser['banner'].set_defaults(func=banner)
 
-   # Config
-   parser['config'] = parser['sub'].add_parser('config',
-      parents=[parser['most']])
-   parser['config'].add_argument('host', nargs='+',
+   # Config and install (common stuff)
+   parser['configinstall'] = argparse.ArgumentParser(add_help=False)
+   parser['configinstall'].add_argument('host', nargs='+',
       help='one or more hosts to operate on')
-   parser['config'].add_argument('-c', '--cdist-home',
+   parser['configinstall'].add_argument('-c', '--cdist-home',
        help='Change cdist home (default: .. from bin directory)',
        action='store')
-   parser['config'].add_argument('-i', '--initial-manifest', 
+   parser['configinstall'].add_argument('-i', '--initial-manifest', 
        help='Path to a cdist manifest',
        dest='manifest', required=False)
-   parser['config'].add_argument('-p', '--parallel',
+   parser['configinstall'].add_argument('-p', '--parallel',
        help='Operate on multiple hosts in parallel',
        action='store_true', dest='parallel')
-   parser['config'].add_argument('-s', '--sequential',
+   parser['configinstall'].add_argument('-s', '--sequential',
        help='Operate on multiple hosts sequentially (default)',
        action='store_false', dest='parallel')
+
+   # Config
+   parser['config'] = parser['sub'].add_parser('config',
+      parents=[parser['most'], parser['configinstall']])
    parser['config'].set_defaults(func=config)
+
+   # Install
+   parser['install'] = parser['sub'].add_parser('install',
+      parents=[parser['most'], parser['configinstall']])
+   parser['install'].set_defaults(func=install)
 
    for p in parser:
       parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
