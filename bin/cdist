@@ -253,7 +253,7 @@ class Cdist:
 
    def list_type_explorers(self, type):
       """Return list of available explorers for a specific type"""
-      dir = self.type_attribute_path(type, "explorer")
+      dir = self.type_dir(type, "explorer")
       if os.path.isdir(dir):
          list = os.listdir(dir)
       else:
@@ -322,18 +322,9 @@ class Cdist:
 
       return objects
 
-   def type_dir(self, type):
+   def type_dir(self, type, *args):
       """Return directory the type"""
-      return os.path.join(self.type_base_dir, type)
-
-   def type_gencode_paths(self, type):
-      """Return paths to gencode scripts of type"""
-      return [os.path.join(self.type_base_dir, type, "gencode-local"),
-              os.path.join(self.type_base_dir, type, "gencode-remote")]
-
-   def type_attribute_path(self, type, attribute):
-      """Return path of an attribute of a type"""
-      return os.path.join(self.type_base_dir, type, attribute)
+      return os.path.join(self.type_base_dir, type, *args)
 
    def remote_type_explorer_dir(self, type):
       """Return remote directory that holds the explorers of a type"""
@@ -362,7 +353,7 @@ class Cdist:
          # Do not retransfer
          self.type_explorers_transferred[type] = 1
 
-      src = self.type_attribute_path(type, attribute)
+      src = self.type_dir(type, "explorer")
       remote_base = os.path.join(REMOTE_TYPE_DIR, type)
       dst = self.remote_type_explorer_dir(type)
 
@@ -442,7 +433,7 @@ class Cdist:
    def run_type_manifest(self, cdist_object):
       """Run manifest for a specific object"""
       type = self.get_type_from_object(cdist_object)
-      manifest = self.type_attribute_path(type, "manifest")
+      manifest = self.type_dir(type, "manifest")
       
       log.debug("%s: Running %s", cdist_object, manifest)
       if os.path.exists(manifest):
@@ -496,6 +487,7 @@ class Cdist:
       """Run gencode or code for an object"""
       log.debug("Running %s from %s", mode, cdist_object)
       requirements = self.list_object_requirements(cdist_object)
+      type = self.get_type_from_object(cdist_object)
          
       for requirement in requirements:
          log.debug("Object %s requires %s", cdist_object, requirement)
@@ -510,10 +502,13 @@ class Cdist:
       env["__object"]      = self.object_dir(cdist_object)
       env["__object_id"]   = self.get_object_id_from_object(cdist_object)
       env["__object_fq"]   = cdist_object
-      env["__type"]        = self.type_dir(self.get_type_from_object(cdist_object))
+      env["__type"]        = self.type_dir(type)
 
       if mode == "gencode":
-         paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))
+         paths = [
+            self.type_dir(type, "gencode-local"),
+            self.type_dir(type, "gencode-remote")
+         ]
          for bin in paths:
             if os.path.isfile(bin):
                # omit "gen" from gencode and 
