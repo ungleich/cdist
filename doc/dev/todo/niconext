@@ -1,17 +1,26 @@
+- Initial install support
+   - setup $__install = "" for
+      manifest(s)
+
+   - run standard manifest (?)
+      - creates initial objects
+         - only those having the installer flag?
+            - requires changegs to cdist-type-emulator!
+               - Goto Rewrite cdist-type-emulator
+
+   - run all other manifests
+      - creates all objects
+      - what about type explorer?
+
 - Support parallel execution
    - and maximum number of parallel runs (-p X)
    - error handling / report failed hosts
-- Support different home instead of ../
-- Bug: os.path.join() may be wrong for the remote side!
-   -> does not matter for now!
 
 - Rewrite cdist-type-emulator
    - Remove legacy code in cdist
    - Remove cdist-config
    - Remove man1/cdist-type-emulator.text
    - Remove the PATH=... part from the README
-
-- Replace bin/cdist-type-template 
 
 - Allow manifest to be read from stdin
 - Create new video for cdist 2.0.0
