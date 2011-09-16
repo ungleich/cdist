@@ -25,6 +25,7 @@ import datetime
 import logging
 import multiprocessing
 import os
+import re
 import subprocess
 import shutil
 import stat
@@ -55,11 +56,11 @@ REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
 
 CODE_HEADER                = "#!/bin/sh -e\n"
 DOT_CDIST                  = ".cdist"
+TYPE_PREFIX                = "__"
 VERSION                    = "2.0.0"
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
-
 
 class TypeEmulator:
    def __init__(self, name):
@@ -612,10 +613,6 @@ def banner(args):
    print(BANNER)
    sys.exit(0)
 
-def install(args):
-   """Install remote system"""
-   process = {}
-
 def config(args):
    """Configure remote system"""
    process = {}
@@ -640,7 +637,16 @@ def config(args):
    log.info("Total processing time for %s host(s): %s", len(args.host),
             (time_end - time_start).total_seconds())
 
-if __name__ == "__main__":
+def install(args):
+   """Install remote system"""
+   process = {}
+
+def emulator():
+   """Emulate type commands (i.e. __file and co)"""
+   process = {}
+
+def commandline():
+   """Parse command line"""
    # Construct parser others can reuse
    parser = {}
    # Options _all_ parsers have in common
@@ -702,3 +708,9 @@ if __name__ == "__main__":
       args.func(args)
    except KeyboardInterrupt:
        sys.exit(0)
+
+if __name__ == "__main__":
+   if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
+      emulator()
+   else:
+      commandline()
