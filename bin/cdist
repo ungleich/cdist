@@ -335,9 +335,9 @@ class Cdist:
       return [os.path.join(self.type_base_dir, type, "gencode-local"),
               os.path.join(self.type_base_dir, type, "gencode-remote")]
 
-   def type_manifest_path(self, type):
-      """Return path to manifest of type"""
-      return os.path.join(self.type_base_dir, type, "manifest")
+   def type_attribute_path(self, type, attribute):
+      """Return path of an attribute of a type"""
+      return os.path.join(self.type_base_dir, type, attribute)
 
    def remote_type_explorer_dir(self, type):
       """Return remote directory that holds the explorers of a type"""
@@ -446,7 +446,7 @@ class Cdist:
    def run_type_manifest(self, cdist_object):
       """Run manifest for a specific object"""
       type = self.get_type_from_object(cdist_object)
-      manifest = self.type_manifest_path(type)
+      manifest = self.type_attribute_path(type, "manifest")
       
       log.debug("%s: Running %s", cdist_object, manifest)
       if os.path.exists(manifest):
