@@ -555,10 +555,8 @@ class Cdist:
             self.transfer_file(local_remote_code, remote_remote_code)
             self.run_or_fail([remote_remote_code], remote=True)
             
-   def deploy_to(self):
-      """Mimic the old deploy to: Deploy to one host"""
-      log.info("Deploying to " + self.target_host)
-      time_start = datetime.datetime.now()
+   def stage_prepare(self):
+      """Do everything for a deploy, minus the actual code stage"""
       self.init_deploy()
       self.run_global_explores()
       self.run_initial_manifest()
@@ -580,13 +578,23 @@ class Cdist:
                self.objects_prepared.append(cdist_object)
 
          objects = self.list_objects()
-      
+
+   def stage_run(self):
+      """The final (and real) step of deployment"""
       log.debug("Actual run objects")
       # Now do the final steps over the existing objects
-      for cdist_object in objects:
+      for cdist_object in self.list_objects():
          log.debug("Run object: %s", cdist_object)
          self.object_run(cdist_object, mode="gencode")
          self.object_run(cdist_object, mode="code")
+
+   def deploy_to(self):
+      """Mimic the old deploy to: Deploy to one host"""
+      log.info("Deploying to " + self.target_host)
+      time_start = datetime.datetime.now()
+
+      self.stage_prepare()
+      self.stage_run()
 
       time_end = datetime.datetime.now()
       duration = time_end - time_start
