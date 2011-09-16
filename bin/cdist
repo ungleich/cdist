@@ -514,6 +514,7 @@ class Cdist:
       env["__object"]      = self.object_dir(cdist_object)
       env["__object_id"]   = self.get_object_id_from_object(cdist_object)
       env["__object_fq"]   = cdist_object
+      env["__type"]        = self.type_dir(get_type_from_object(cdist_object))
 
       if mode == "gencode":
          paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))

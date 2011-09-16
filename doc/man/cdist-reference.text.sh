@@ -182,7 +182,7 @@ __target_user::
    Currently static in core.
 __type::
    Path to the current type.
-   Available for: type manifest
+   Available for: type manifest, type gencode
 __type_explorer::
    Directory that contains the type explorers.
    Available for: type explorer
