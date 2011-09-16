@@ -367,7 +367,7 @@ class Cdist:
    def link_type_to_emulator(self):
       """Link type names to cdist-type-emulator"""
       for type in self.list_types():
-         source = os.path.join(self.lib_dir, "cdist-type-emulator")
+         source = sys.argv[0]
          destination = os.path.join(self.bin_dir, type)
          log.debug("Linking %s to %s", source, destination)
          os.symlink(source, destination)
@@ -636,6 +636,18 @@ def install(args):
 def emulator():
    """Emulate type commands (i.e. __file and co)"""
    type = os.path.basename(sys.argv[0])
+
+
+   parser = argparse.ArgumentParser(add_help=False)
+
+   print("Oh, noe")
+   sys.exit(1)
+
+   # Setup optional parameters
+   # Setup required parameters
+   # Setup positional parameter, if not singleton
+
+
 
 def commandline():
    """Parse command line"""
