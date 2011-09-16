@@ -24,6 +24,7 @@
       - what about type explorer?
          - do not run, create empty output (types should be able
             to handle this!)
+            via __global/
 
 - Support parallel execution
    - and maximum number of parallel runs (-p X)

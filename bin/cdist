@@ -608,6 +608,7 @@ def emulator():
    type = os.path.basename(sys.argv[0])
    type_dir = os.path.join(os.environ['__cdist_type_base_dir'], type)
    param_dir = os.path.join(type_dir, "parameter")
+   global_dir = os.environ['__global']
 
    parser = argparse.ArgumentParser(add_help=False)
 
@@ -625,23 +626,34 @@ def emulator():
 
    if not os.path.isfile(os.path.join(type_dir, "singleton")):
       parser.add_argument("object_id", nargs=1)
-   else:
-      print("singleton")
 
    # And finally verify parameter
    args = parser.parse_args(sys.argv[1:])
 
-   object_id = args.object_id
+   # Setup object_id
+   if os.path.isfile(os.path.join(type_dir, "singleton")):
+      object_id = "singleton"
+   else:
+      object_id = args.object_id
+      del args.object_id
 
-   del args.object_id
    print(args)
+
+   print(object_id)
+   param_out_dir = os.path.join(global_dir, type,
+                     object_id, DOT_CDIST, "parameter")
 
    # Record parameter
    params = vars(args)
    for param in params:
       value = getattr(args, param)
       if value:
-         print("Writing " + param + " = " + value)
+         file = os.path.join(param_out_dir, param)
+         print(file + "<-" + param + " = " + value)
+         param_fd = open(file)
+         param_fd.writelines(value)
+         param_fd.close()
+
 
 
    # Record requirements
