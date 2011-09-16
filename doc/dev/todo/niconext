@@ -1,1 +1,18 @@
-Catch broken instances in cdist-mass-deploy -p and report broken deployements at the end!
+- Support parallel execution
+   - and maximum number of parallel runs (-p X)
+   - error handling / report failed hosts
+- Support different home instead of ../
+- Bug: os.path.join() may be wrong for the remote side!
+   -> does not matter for now!
+
+- Rewrite cdist-type-emulator
+   - Remove legacy code in cdist
+   - Remove cdist-config
+   - Remove man1/cdist-type-emulator.text
+   - Remove the PATH=... part from the README
+
+- Replace bin/cdist-type-template 
+
+- Allow manifest to be read from stdin
+- Create new video for cdist 2.0.0
+   http://www.youtube.com/watch?v=PRMjzy48eTI

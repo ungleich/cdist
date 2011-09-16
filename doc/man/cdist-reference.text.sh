@@ -164,19 +164,19 @@ __manifest::
    Available for: initial manifest
 __global::
    Directory that contains generic output like explorer.
-   Available for: initial manifest, type manifest, type explorer, type codegen
+   Available for: initial manifest, type manifest, type gencode
 __object::
    Directory that contains the current object.
-   Available for: type manifest, type explorer, type codegen
+   Available for: type manifest, type explorer, type gencode
 __object_id::
    The type unique object id.
-   Available for: type manifest, type explorer, type codegen
-__self::
+   Available for: type manifest, type explorer, type gencode
+__object_fq::
    The full qualified name of the current object.
-   Available for: type manifest, type explorer, type codegen
+   Available for: type manifest, type explorer, type gencode
 __target_host::
    The host we are deploying to.
-   Available for: initial manifest, type manifest, type codegen
+   Available for: initial manifest, type manifest, type gencode
 __target_user::
    User to use for authentication on remote host.
    Currently static in core.
