@@ -434,6 +434,7 @@ class Cdist:
       env = os.environ.copy()
       env['PATH'] = self.bin_dir + ":" + env['PATH']
 
+      # Information required in every manifest
       env['__target_host']    = self.target_host
       env['__global']         = self.out_dir
       
@@ -630,9 +631,18 @@ def emulator():
    # And finally verify parameter
    args = parser.parse_args(sys.argv[1:])
 
-   # Record parameter
-   # wh
+   object_id = args.object_id
+
+   del args.object_id
    print(args)
+
+   # Record parameter
+   params = vars(args)
+   for param in params:
+      value = getattr(args, param)
+      if value:
+         print("Writing " + param + " = " + value)
+
 
    # Record requirements
    if "__require" in os.environ:
