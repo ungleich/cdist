@@ -62,6 +62,21 @@ VERSION                    = "2.0.0"
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
 
+
+def file_to_list(filename):
+   """Return list from \n seperated file"""
+   if os.path.isfile(filename):
+      file_fd = open(filename, "r")
+      lines = file_fd.readlines()
+      file_fd.close()
+
+      # Remove \n from all lines
+      lines = map(lambda s: s.strip(), lines)
+   else:
+      lines = []
+
+   return lines
+
 class TypeEmulator:
    def __init__(self, name):
       self.name = name
@@ -467,28 +482,11 @@ class Cdist:
 
       self.shell_run_or_debug_fail(manifest, [manifest], env=env)
 
-   def list_object_requirements(self, cdist_object):
-      """Return list of requirements for specific object"""
-      file=os.path.join(self.object_dir(cdist_object), "require")
-
-      if os.path.isfile(file):
-         file_fd = open(file, "r")
-         requirements = file_fd.readlines()
-         file_fd.close()
-
-         # Remove \n from all lines
-         requirements = map(lambda s: s.strip(), requirements)
-
-         log.debug("Requirements for %s: %s", cdist_object, requirements)
-      else:
-         requirements = []
-
-      return requirements
-
    def object_run(self, cdist_object, mode):
       """Run gencode or code for an object"""
       log.debug("Running %s from %s", mode, cdist_object)
-      requirements = self.list_object_requirements(cdist_object)
+      file=os.path.join(self.object_dir(cdist_object), "require")
+      requirements = file_to_list(file)
       type = self.get_type_from_object(cdist_object)
          
       for requirement in requirements:
@@ -638,19 +636,30 @@ def install(args):
 def emulator():
    """Emulate type commands (i.e. __file and co)"""
    type = os.path.basename(sys.argv[0])
-   type_dir = os.environ['__cdist_type_base_dir']
+   type_dir = os.path.join(os.environ['__cdist_type_base_dir'], type)
+   param_dir = os.path.join(type_dir, "parameter")
 
    parser = argparse.ArgumentParser(add_help=False)
 
    # Setup optional parameters
-   if os.path.isfile(os.path.join(type_dir, "parameter", "optional"):
-   __cdist_type_base_dir
+   for parameter in file_to_list(os.path.join(param_dir, "optional")):
+      argument = "--" + parameter
+      print("Adding" + argument)
+      parser.add_argument(argument, action='store', required=False)
+
    # Setup required parameters
+   for parameter in file_to_list(os.path.join(param_dir, "required")):
+      argument = "--" + parameter
+      print("Adding" + argument)
+      parser.add_argument(argument, action='store', required=True)
+
    # Setup positional parameter, if not singleton
+
+   # And finally verify parameter
+   args = parser.parse_args(sys.argv[1:])
 
    print("Oh, noe")
    sys.exit(1)
-
 
 
 def commandline():

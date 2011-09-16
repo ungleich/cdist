@@ -27,8 +27,9 @@
          - dependent on -c to cdist!
             - submit via internal env!
          - need to build parameter parser
-            - need to read file
-               - refactor list_object_requirements
+
+   Test:
+   __cdist_type_base_dir=$(pwd -P)/conf/type __file 
 
 - Allow manifest to be read from stdin
 - Create new video for cdist 2.0.0
