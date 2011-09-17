@@ -18,8 +18,24 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-type
+# set defaults
+if [ -f "$__object/parameter/partition" ]; then
+   partition="(cat "$__object/parameter/partition")"
+else
+   partition="/$__object_id"
+   echo "$partition" > "$__object/parameter/partition"
+fi
+device="$(echo "$partition" | sed 's/[0-9]//g')"
+echo "$device" > "$__object/parameter/device"
+minor="$(echo "$partition" | sed 's/[^0-9]//g')"
+echo "$minor" > "$__object/parameter/minor"
 
-device
-bootable
-size
+if [ ! -f "$__object/parameter/bootable" ]; then
+   echo "false" > "$__object/parameter/bootable"
+fi
+if [ ! -f "$__object/parameter/size" ]; then
+   echo "+" > "$__object/parameter/size"
+fi
+
+# pull in the type that actually does something with the above parameters
+require="$__self" __partition_msdos_apply

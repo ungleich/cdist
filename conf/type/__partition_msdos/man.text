@@ -21,7 +21,7 @@ type::
 
 OPTIONAL PARAMETERS
 -------------------
-device::
+partition::
    defaults to object_id
 bootable::
    mark partition as bootable, true or false, defaults to false
