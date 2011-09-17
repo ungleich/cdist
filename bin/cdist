@@ -25,6 +25,7 @@ import datetime
 import logging
 import multiprocessing
 import os
+import re
 import subprocess
 import shutil
 import stat
@@ -55,11 +56,11 @@ REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
 
 CODE_HEADER                = "#!/bin/sh -e\n"
 DOT_CDIST                  = ".cdist"
+TYPE_PREFIX                = "__"
 VERSION                    = "2.0.0"
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
-
 
 class TypeEmulator:
    def __init__(self, name):
@@ -252,7 +253,7 @@ class Cdist:
 
    def list_type_explorers(self, type):
       """Return list of available explorers for a specific type"""
-      dir = self.type_explorer_dir(type)
+      dir = self.type_dir(type, "explorer")
       if os.path.isdir(dir):
          list = os.listdir(dir)
       else:
@@ -321,22 +322,9 @@ class Cdist:
 
       return objects
 
-   def type_dir(self, type):
+   def type_dir(self, type, *args):
       """Return directory the type"""
-      return os.path.join(self.type_base_dir, type)
-
-   def type_explorer_dir(self, type):
-      """Return directory that holds the explorers of a type"""
-      return os.path.join(self.type_dir(type), "explorer")
-
-   def type_gencode_paths(self, type):
-      """Return paths to gencode scripts of type"""
-      return [os.path.join(self.type_base_dir, type, "gencode-local"),
-              os.path.join(self.type_base_dir, type, "gencode-remote")]
-
-   def type_manifest_path(self, type):
-      """Return path to manifest of type"""
-      return os.path.join(self.type_base_dir, type, "manifest")
+      return os.path.join(self.type_base_dir, type, *args)
 
    def remote_type_explorer_dir(self, type):
       """Return remote directory that holds the explorers of a type"""
@@ -365,7 +353,7 @@ class Cdist:
          # Do not retransfer
          self.type_explorers_transferred[type] = 1
 
-      src = self.type_explorer_dir(type)
+      src = self.type_dir(type, "explorer")
       remote_base = os.path.join(REMOTE_TYPE_DIR, type)
       dst = self.remote_type_explorer_dir(type)
 
@@ -445,7 +433,7 @@ class Cdist:
    def run_type_manifest(self, cdist_object):
       """Run manifest for a specific object"""
       type = self.get_type_from_object(cdist_object)
-      manifest = self.type_manifest_path(type)
+      manifest = self.type_dir(type, "manifest")
       
       log.debug("%s: Running %s", cdist_object, manifest)
       if os.path.exists(manifest):
@@ -499,6 +487,7 @@ class Cdist:
       """Run gencode or code for an object"""
       log.debug("Running %s from %s", mode, cdist_object)
       requirements = self.list_object_requirements(cdist_object)
+      type = self.get_type_from_object(cdist_object)
          
       for requirement in requirements:
          log.debug("Object %s requires %s", cdist_object, requirement)
@@ -513,9 +502,13 @@ class Cdist:
       env["__object"]      = self.object_dir(cdist_object)
       env["__object_id"]   = self.get_object_id_from_object(cdist_object)
       env["__object_fq"]   = cdist_object
+      env["__type"]        = self.type_dir(type)
 
       if mode == "gencode":
-         paths = self.type_gencode_paths(self.get_type_from_object(cdist_object))
+         paths = [
+            self.type_dir(type, "gencode-local"),
+            self.type_dir(type, "gencode-remote")
+         ]
          for bin in paths:
             if os.path.isfile(bin):
                # omit "gen" from gencode and 
@@ -555,10 +548,8 @@ class Cdist:
             self.transfer_file(local_remote_code, remote_remote_code)
             self.run_or_fail([remote_remote_code], remote=True)
             
-   def deploy_to(self):
-      """Mimic the old deploy to: Deploy to one host"""
-      log.info("Deploying to " + self.target_host)
-      time_start = datetime.datetime.now()
+   def stage_prepare(self):
+      """Do everything for a deploy, minus the actual code stage"""
       self.init_deploy()
       self.run_global_explores()
       self.run_initial_manifest()
@@ -580,13 +571,23 @@ class Cdist:
                self.objects_prepared.append(cdist_object)
 
          objects = self.list_objects()
-      
+
+   def stage_run(self):
+      """The final (and real) step of deployment"""
       log.debug("Actual run objects")
       # Now do the final steps over the existing objects
-      for cdist_object in objects:
+      for cdist_object in self.list_objects():
          log.debug("Run object: %s", cdist_object)
          self.object_run(cdist_object, mode="gencode")
          self.object_run(cdist_object, mode="code")
+
+   def deploy_to(self):
+      """Mimic the old deploy to: Deploy to one host"""
+      log.info("Deploying to " + self.target_host)
+      time_start = datetime.datetime.now()
+
+      self.stage_prepare()
+      self.stage_run()
 
       time_end = datetime.datetime.now()
       duration = time_end - time_start
@@ -628,7 +629,16 @@ def config(args):
    log.info("Total processing time for %s host(s): %s", len(args.host),
             (time_end - time_start).total_seconds())
 
-if __name__ == "__main__":
+def install(args):
+   """Install remote system"""
+   process = {}
+
+def emulator():
+   """Emulate type commands (i.e. __file and co)"""
+   type = os.path.basename(sys.argv[0])
+
+def commandline():
+   """Parse command line"""
    # Construct parser others can reuse
    parser = {}
    # Options _all_ parsers have in common
@@ -648,24 +658,32 @@ if __name__ == "__main__":
       add_help=False)
    parser['banner'].set_defaults(func=banner)
 
-   # Config
-   parser['config'] = parser['sub'].add_parser('config',
-      parents=[parser['most']])
-   parser['config'].add_argument('host', nargs='+',
+   # Config and install (common stuff)
+   parser['configinstall'] = argparse.ArgumentParser(add_help=False)
+   parser['configinstall'].add_argument('host', nargs='+',
       help='one or more hosts to operate on')
-   parser['config'].add_argument('-c', '--cdist-home',
+   parser['configinstall'].add_argument('-c', '--cdist-home',
        help='Change cdist home (default: .. from bin directory)',
        action='store')
-   parser['config'].add_argument('-i', '--initial-manifest', 
+   parser['configinstall'].add_argument('-i', '--initial-manifest', 
        help='Path to a cdist manifest',
        dest='manifest', required=False)
-   parser['config'].add_argument('-p', '--parallel',
+   parser['configinstall'].add_argument('-p', '--parallel',
        help='Operate on multiple hosts in parallel',
        action='store_true', dest='parallel')
-   parser['config'].add_argument('-s', '--sequential',
+   parser['configinstall'].add_argument('-s', '--sequential',
        help='Operate on multiple hosts sequentially (default)',
        action='store_false', dest='parallel')
+
+   # Config
+   parser['config'] = parser['sub'].add_parser('config',
+      parents=[parser['most'], parser['configinstall']])
    parser['config'].set_defaults(func=config)
+
+   # Install
+   parser['install'] = parser['sub'].add_parser('install',
+      parents=[parser['most'], parser['configinstall']])
+   parser['install'].set_defaults(func=install)
 
    for p in parser:
       parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
@@ -682,3 +700,9 @@ if __name__ == "__main__":
       args.func(args)
    except KeyboardInterrupt:
        sys.exit(0)
+
+if __name__ == "__main__":
+   if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
+      emulator()
+   else:
+      commandline()
