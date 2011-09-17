@@ -11,7 +11,7 @@ fdisk_command() {
    local cmd=$2
 
    debug fdisk_command "running fdisk command '${cmd}' on device ${device}"
-   #echo -en "${cmd}\nw\n" | fdisk -c -u "$device"
+   echo -en "${cmd}\nw\n" | fdisk -c -u "$device"
    return $?
 }
 
