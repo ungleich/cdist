@@ -1,0 +1,99 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+die() {
+   echo "[__partition_msdos_apply] $@" >&2
+   exit 1
+}
+debug() {
+   echo "[__partition_msdos_apply] $@" >&2
+}
+
+# Convert a size specifier 1G 100M or 50% into the corresponding numeric MB.
+size_to_mb() {
+   local size=$1
+   local available_size="$2"
+
+   local number_suffix="$(echo ${size} | sed -e 's:\.[0-9]\+::' -e 's:\([0-9]\+\)\([MmGg%]\)[Bb]\?:\1|\2:')"
+   local number="$(echo ${number_suffix} | cut -d '|' -f1)"
+   local suffix="$(echo ${number_suffix} | cut -d '|' -f2)"
+
+   case "$suffix" in
+      M|m)
+         size="$number"
+         ;;
+      G|g)
+         size="$(( $number * 1024 ))"
+         ;;
+      %)
+         size="$(( $available_size * $number / 100 ))"
+         ;;
+      *)
+         size="-1"
+   esac
+   echo "$size"
+}
+
+# include function library for use on target
+cat "$__type/files/lib.sh"
+
+partitions="$__object/explorer/partitions"
+objects=$(find "$__global/object/__partition_msdos" -path "*.cdist")
+current_device=""
+available_size=
+primary_count=0
+for object in $objects; do
+   device="$(cat "$object/parameter/device")"
+   if [ "$current_device" != "$device" ];
+      echo "create_disklabel $device"
+      current_device="$device"
+      device_name=$(echo ${device} | sed -e 's:^/dev/::;s:/:\\/:g')
+      available_size=$(( $(awk "/${device_name}\$/ { print $3; }" "$partitions") / 1024))
+      # make sure we don't go past the end of the drive
+      available_size=$((device_size - 2))
+      primary_count=0
+   fi
+ 
+   type="$(cat "$object/parameter/type")"
+   partition="$(cat "$object/parameter/partition")"
+   minor="$(cat "$object/parameter/minor")"
+
+   if [ "${minor}" -lt "5" ]; then
+      primary_count=$(( $primary_count + 1 ))
+   fi
+   bootable="$(cat "$object/parameter/bootable")"
+   size="$(cat "$object/parameter/size")"
+   if [ "$size" = "+" ]; then
+      # use rest of device
+      partition_size=""
+      available_size=0
+   else
+      partition_size=$(size_to_mb "$size" "$available_size")
+      available_size="$(( $available_size - $partition_size ))"
+   fi
+
+   [ "$partition_size" = "-1" ] && die "could not translate size '$size' to a usable value"
+   debug "primary_count=$primary_count"
+   debug "available_size=$available_size"
+   debug "current_device=$current_device"
+
+   echo "create_partition $device $minor $partition_size $type $primary_count"
+done
+
