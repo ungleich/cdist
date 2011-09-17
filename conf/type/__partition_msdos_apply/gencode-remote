@@ -61,14 +61,17 @@ available_size=
 primary_count=0
 for object in $objects; do
    device="$(cat "$object/parameter/device")"
-   if [ "$current_device" != "$device" ];
+   if [ "$current_device" != "$device" ]; then
       echo "create_disklabel $device"
       current_device="$device"
       device_name=$(echo ${device} | sed -e 's:^/dev/::;s:/:\\/:g')
-      available_size=$(( $(awk "/${device_name}\$/ { print $3; }" "$partitions") / 1024))
+      available_size=$(( $(awk "/${device_name}\$/ { print \$3; }" "$partitions") / 1024))
       # make sure we don't go past the end of the drive
-      available_size=$((device_size - 2))
+      available_size=$((available_size - 2))
       primary_count=0
+      debug "----- $device"
+      debug "current_device=$current_device"
+      debug "available_size=$available_size"
    fi
  
    type="$(cat "$object/parameter/type")"
@@ -90,9 +93,17 @@ for object in $objects; do
    fi
 
    [ "$partition_size" = "-1" ] && die "could not translate size '$size' to a usable value"
+   debug "----- $partition"
    debug "primary_count=$primary_count"
-   debug "available_size=$available_size"
    debug "current_device=$current_device"
+   debug "device=$device"
+   debug "type=$type"
+   debug "partition=$partition"
+   debug "minor=$minor"
+   debug "bootable=$bootable"
+   debug "size=$size"
+   debug "partition_size=$partition_size"
+   debug "available_size=$available_size"
 
    echo "create_partition $device $minor $partition_size $type $primary_count"
 done
