@@ -647,7 +647,7 @@ def emulator():
 
    log.debug(args)
 
-   object_dir = os.path.join(global_dir, type,
+   object_dir = os.path.join(global_dir, "object", type,
                      object_id, DOT_CDIST)
    param_out_dir = os.path.join(object_dir, "parameter")
 
@@ -676,11 +676,13 @@ def emulator():
       require_fd.writelines(requirements.split(" "))
       require_fd.close()
 
-   # Merge / mv object into tree
+   # FIXME: Merge / mv object into tree
 
    # Record / Append source
    source = os.environ['__cdist_manifest']
-   # write to .source?
+   source_fd = open(os.path.join(object_dir, "source"), "a")
+   source_fd.writelines(source)
+   source_fd.close()
 
    # sys.exit(1)
    print("Finished " + type + "/" + object_id + repr(params))
