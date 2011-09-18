@@ -613,6 +613,7 @@ def emulator():
    type_dir = os.path.join(os.environ['__cdist_type_base_dir'], type)
    param_dir = os.path.join(type_dir, "parameter")
    global_dir = os.environ['__global']
+   object_source = os.environ['__cdist_manifest']
 
    parser = argparse.ArgumentParser(add_help=False)
 
@@ -652,10 +653,20 @@ def emulator():
                      object_id, DOT_CDIST)
    param_out_dir = os.path.join(object_dir, "parameter")
 
-   try:
-      os.makedirs(param_out_dir, exist_ok=True)
-   except OSError as error:
-      exit_error(param_out_dir + ": " + error.args[1])
+   object_source_file = os.path.join(object_dir, "source")
+
+   if os.path.exists(param_out_dir):
+      object_exists = True
+      old_object_source_fd = open(object_source_file, "r")
+      old_object_source = old_object_source_fd.readlines()
+      old_object_source_fd.close()
+
+   else:
+      object_exists = False
+      try:
+         os.makedirs(param_out_dir, exist_ok=True)
+      except OSError as error:
+         exit_error(param_out_dir + ": " + error.args[1])
 
    # Record parameter
    params = vars(args)
@@ -664,10 +675,26 @@ def emulator():
       if value:
          file = os.path.join(param_out_dir, param)
          log.debug(file + "<-" + param + " = " + value)
-         param_fd = open(file, "w")
-         param_fd.writelines(value)
-         param_fd.close()
 
+         # Already exists, verify all parameter are the same
+         if object_exists:
+            if not os.path.isfile(file):
+               print("New parameter + " + param + "specified, aborting")
+               print("Source = " + old_object_source + "new =" + object_source)
+               sys.exit(1)
+            else:
+               param_fd = open(file, "r")
+               param_old = param_fd.realines()
+               param_fd.close()
+               
+               if(param_old != param):
+                  print("Parameter differs: " + param_old + "vs," + param)
+                  print("Source = " + old_object_source + "new =" + object_source)
+                  sys.exit(1)
+         else:
+            param_fd = open(file, "w")
+            param_fd.writelines(value)
+            param_fd.close()
 
    # Record requirements
    if "__require" in os.environ:
@@ -677,12 +704,9 @@ def emulator():
       require_fd.writelines(requirements.split(" "))
       require_fd.close()
 
-   # FIXME: Merge / mv object into tree
-
    # Record / Append source
-   source = os.environ['__cdist_manifest']
    source_fd = open(os.path.join(object_dir, "source"), "a")
-   source_fd.writelines(source)
+   source_fd.writelines(object_source)
    source_fd.close()
 
    # sys.exit(1)
