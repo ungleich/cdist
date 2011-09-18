@@ -77,6 +77,9 @@ def file_to_list(filename):
 
    return lines
 
+def exit_error(*args):
+   log.error(*args)
+   sys.exit(1)
 
 class Cdist:
    """Cdist main class to hold arbitrary data"""
@@ -144,10 +147,6 @@ class Cdist:
          shutil.rmtree(self.cache_dir)
       shutil.move(self.temp_dir, self.cache_dir)
 
-   def exit_error(self, *args):
-      log.error(*args)
-      sys.exit(1)
-
    def remote_mkdir(self, directory):
       """Create directory on remote side"""
       self.run_or_fail(["mkdir", "-p", directory], remote=True)
@@ -182,9 +181,9 @@ class Cdist:
             print(script_fd.read())
             script_fd.close()
 
-         self.exit_error("Command failed (shell): " + " ".join(*args))
+         exit_error("Command failed (shell): " + " ".join(*args))
       except OSError as error:
-         self.exit_error(" ".join(*args) + ": " + error.args[1])
+         exit_error(" ".join(*args) + ": " + error.args[1])
 
    def run_or_fail(self, *args, **kargs):
       if "remote" in kargs:
@@ -197,9 +196,9 @@ class Cdist:
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
-         self.exit_error("Command failed: " + " ".join(*args))
+         exit_error("Command failed: " + " ".join(*args))
       except OSError as error:
-         self.exit_error(" ".join(*args) + ": " + error.args[1])
+         exit_error(" ".join(*args) + ": " + error.args[1])
 
 
    def remove_remote_dir(self, destination):
@@ -365,7 +364,7 @@ class Cdist:
       """Run global explorers"""
       explorers = self.list_global_explorers()
       if(len(explorers) == 0):
-         self.exit_error("No explorers found in", self.global_explorer_dir)
+         exit_error("No explorers found in", self.global_explorer_dir)
 
       self.transfer_global_explorers()
       for explorer in explorers:
@@ -639,14 +638,23 @@ def emulator():
    if os.path.isfile(os.path.join(type_dir, "singleton")):
       object_id = "singleton"
    else:
-      object_id = args.object_id
+      object_id = args.object_id[0]
       del args.object_id
 
-   print(args)
+      # FIXME: / hardcoded - better portable solution available?
+      if object_id[0] == '/':
+         object_id = object_id[1:]
 
-   print(object_id)
-   param_out_dir = os.path.join(global_dir, type,
-                     object_id, DOT_CDIST, "parameter")
+   log.debug(args)
+
+   object_dir = os.path.join(global_dir, type,
+                     object_id, DOT_CDIST)
+   param_out_dir = os.path.join(object_dir, "parameter")
+
+   try:
+      os.makedirs(param_out_dir, exist_ok=True)
+   except OSError as error:
+      exit_error(param_out_dir + ": " + error.args[1])
 
    # Record parameter
    params = vars(args)
@@ -654,16 +662,19 @@ def emulator():
       value = getattr(args, param)
       if value:
          file = os.path.join(param_out_dir, param)
-         print(file + "<-" + param + " = " + value)
-         param_fd = open(file)
+         log.debug(file + "<-" + param + " = " + value)
+         param_fd = open(file, "w")
          param_fd.writelines(value)
          param_fd.close()
-
 
 
    # Record requirements
    if "__require" in os.environ:
       requirements = os.environ['__require']
+      print(object_id + ":Writing requirements: " + requirements)
+      require_fd = open(os.path.join(object_dir, "require"), "a")
+      require_fd.writelines(requirements.split(" "))
+      require_fd.close()
 
    # Merge / mv object into tree
 
@@ -672,6 +683,7 @@ def emulator():
    # write to .source?
 
    # sys.exit(1)
+   print("Finished " + type + "/" + object_id + repr(params))
 
 
 def commandline():
