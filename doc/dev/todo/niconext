@@ -1,3 +1,5 @@
+2.0.1:
+
 - Rewrite cdist-type-emulator
    - Remove legacy code in cdist
    - Remove cdist-config
@@ -8,6 +10,10 @@
 
    Test:
    __cdist_type_base_dir=$(pwd -P)/conf/type __file 
+
+- Fix / rewrite cdist-quickstart
+
+--------------------------------------------------------------------------------
 
 - Initial install support
    - setup $__install = "yes" for
