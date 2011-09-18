@@ -183,6 +183,8 @@ class Cdist:
             script_fd.close()
 
          self.exit_error("Command failed (shell): " + " ".join(*args))
+      except OSError as error:
+         self.exit_error(" ".join(*args) + ": " + error.args[1])
 
    def run_or_fail(self, *args, **kargs):
       if "remote" in kargs:
@@ -196,6 +198,9 @@ class Cdist:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
          self.exit_error("Command failed: " + " ".join(*args))
+      except OSError as error:
+         self.exit_error(" ".join(*args) + ": " + error.args[1])
+
 
    def remove_remote_dir(self, destination):
       self.run_or_fail(["rm", "-rf",  destination], remote=True)
