@@ -645,6 +645,7 @@ def emulator():
       if object_id[0] == '/':
          object_id = object_id[1:]
 
+   # FIXME: verify object id
    log.debug(args)
 
    object_dir = os.path.join(global_dir, "object", type,
