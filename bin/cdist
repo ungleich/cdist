@@ -62,37 +62,24 @@ VERSION                    = "2.0.0"
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
 
-class TypeEmulator:
-   def __init__(self, name):
-      self.name = name
-      self.type = os.path.basename(name)
 
+def file_to_list(filename):
+   """Return list from \n seperated file"""
+   if os.path.isfile(filename):
+      file_fd = open(filename, "r")
+      lines = file_fd.readlines()
+      file_fd.close()
 
-   def type_emulator(self):
-      type = basename(sys.argv[0])
+      # Remove \n from all lines
+      lines = map(lambda s: s.strip(), lines)
+   else:
+      lines = []
 
-      type_is_singleton(type)
+   return lines
 
-      # Check object id
-
-      # Prevent double slash if id begins with /
-
-      # Record parameter: opt_file="${opt#--}"
-      # [ $# -ge 1 ] || __cdist_usage "Missing value for $opt"
-      # echo "${value}" > "${__cdist_parameter_dir}/${opt_file}"
-
-      # Record requirements
-      # echo $requirement >> "$(__cdist_object_require "$__cdist_object_self")"
-
-      # Ensure required parameters are given
-      # Ensure that only optional or required parameters are given
-      # [ "$is_valid" ] || __cdist_usage "Unknown parameter $parameter"
-
-      # Merge object (creating twice with the same parameter + requirements == allowed)
-
-      # diff -ru "${__cdist_new_object_dir}/${__cdist_name_parameter}
-      # # Add "I was here message"
-      # _cdist_object_source_add "${__cdist_object_dir}"
+def exit_error(*args):
+   log.error(*args)
+   sys.exit(1)
 
 class Cdist:
    """Cdist main class to hold arbitrary data"""
@@ -160,10 +147,6 @@ class Cdist:
          shutil.rmtree(self.cache_dir)
       shutil.move(self.temp_dir, self.cache_dir)
 
-   def exit_error(self, *args):
-      log.error(*args)
-      sys.exit(1)
-
    def remote_mkdir(self, directory):
       """Create directory on remote side"""
       self.run_or_fail(["mkdir", "-p", directory], remote=True)
@@ -198,7 +181,9 @@ class Cdist:
             print(script_fd.read())
             script_fd.close()
 
-         self.exit_error("Command failed (shell): " + " ".join(*args))
+         exit_error("Command failed (shell): " + " ".join(*args))
+      except OSError as error:
+         exit_error(" ".join(*args) + ": " + error.args[1])
 
    def run_or_fail(self, *args, **kargs):
       if "remote" in kargs:
@@ -211,7 +196,10 @@ class Cdist:
       try:
          subprocess.check_call(*args, **kargs)
       except subprocess.CalledProcessError:
-         self.exit_error("Command failed: " + " ".join(*args))
+         exit_error("Command failed: " + " ".join(*args))
+      except OSError as error:
+         exit_error(" ".join(*args) + ": " + error.args[1])
+
 
    def remove_remote_dir(self, destination):
       self.run_or_fail(["rm", "-rf",  destination], remote=True)
@@ -366,8 +354,8 @@ class Cdist:
 
    def link_type_to_emulator(self):
       """Link type names to cdist-type-emulator"""
+      source = os.path.abspath(sys.argv[0])
       for type in self.list_types():
-         source = os.path.join(self.lib_dir, "cdist-type-emulator")
          destination = os.path.join(self.bin_dir, type)
          log.debug("Linking %s to %s", source, destination)
          os.symlink(source, destination)
@@ -376,7 +364,7 @@ class Cdist:
       """Run global explorers"""
       explorers = self.list_global_explorers()
       if(len(explorers) == 0):
-         self.exit_error("No explorers found in", self.global_explorer_dir)
+         exit_error("No explorers found in", self.global_explorer_dir)
 
       self.transfer_global_explorers()
       for explorer in explorers:
@@ -450,14 +438,17 @@ class Cdist:
       env = os.environ.copy()
       env['PATH'] = self.bin_dir + ":" + env['PATH']
 
+      # Information required in every manifest
       env['__target_host']    = self.target_host
       env['__global']         = self.out_dir
       
       # Legacy stuff to make cdist-type-emulator work
-      env['__cdist_conf_dir']       = self.conf_dir
       env['__cdist_core_dir']       = os.path.join(self.base_dir, "core")
       env['__cdist_local_base_dir'] = self.temp_dir
-      env['__cdist_manifest']       = self.initial_manifest
+
+      # Submit information to new type emulator
+      env['__cdist_manifest']       = manifest
+      env['__cdist_type_base_dir']  = self.type_base_dir
 
       # Other environment stuff
       if extra_env:
@@ -465,28 +456,11 @@ class Cdist:
 
       self.shell_run_or_debug_fail(manifest, [manifest], env=env)
 
-   def list_object_requirements(self, cdist_object):
-      """Return list of requirements for specific object"""
-      file=os.path.join(self.object_dir(cdist_object), "require")
-
-      if os.path.isfile(file):
-         file_fd = open(file, "r")
-         requirements = file_fd.readlines()
-         file_fd.close()
-
-         # Remove \n from all lines
-         requirements = map(lambda s: s.strip(), requirements)
-
-         log.debug("Requirements for %s: %s", cdist_object, requirements)
-      else:
-         requirements = []
-
-      return requirements
-
    def object_run(self, cdist_object, mode):
       """Run gencode or code for an object"""
       log.debug("Running %s from %s", mode, cdist_object)
-      requirements = self.list_object_requirements(cdist_object)
+      file=os.path.join(self.object_dir(cdist_object), "require")
+      requirements = file_to_list(file)
       type = self.get_type_from_object(cdist_object)
          
       for requirement in requirements:
@@ -636,6 +610,108 @@ def install(args):
 def emulator():
    """Emulate type commands (i.e. __file and co)"""
    type = os.path.basename(sys.argv[0])
+   type_dir = os.path.join(os.environ['__cdist_type_base_dir'], type)
+   param_dir = os.path.join(type_dir, "parameter")
+   global_dir = os.environ['__global']
+   object_source = os.environ['__cdist_manifest']
+
+   parser = argparse.ArgumentParser(add_help=False)
+
+   # Setup optional parameters
+   for parameter in file_to_list(os.path.join(param_dir, "optional")):
+      argument = "--" + parameter
+      parser.add_argument(argument, action='store', required=False)
+
+   # Setup required parameters
+   for parameter in file_to_list(os.path.join(param_dir, "required")):
+      argument = "--" + parameter
+      parser.add_argument(argument, action='store', required=True)
+
+   # Setup positional parameter, if not singleton
+
+   if not os.path.isfile(os.path.join(type_dir, "singleton")):
+      parser.add_argument("object_id", nargs=1)
+
+   # And finally verify parameter
+   args = parser.parse_args(sys.argv[1:])
+
+   # Setup object_id
+   if os.path.isfile(os.path.join(type_dir, "singleton")):
+      object_id = "singleton"
+   else:
+      object_id = args.object_id[0]
+      del args.object_id
+
+      # FIXME: / hardcoded - better portable solution available?
+      if object_id[0] == '/':
+         object_id = object_id[1:]
+
+   # FIXME: verify object id
+   log.debug(args)
+
+   object_dir = os.path.join(global_dir, "object", type,
+                     object_id, DOT_CDIST)
+   param_out_dir = os.path.join(object_dir, "parameter")
+
+   object_source_file = os.path.join(object_dir, "source")
+
+   if os.path.exists(param_out_dir):
+      object_exists = True
+      old_object_source_fd = open(object_source_file, "r")
+      old_object_source = old_object_source_fd.readlines()
+      old_object_source_fd.close()
+
+   else:
+      object_exists = False
+      try:
+         os.makedirs(param_out_dir, exist_ok=True)
+      except OSError as error:
+         exit_error(param_out_dir + ": " + error.args[1])
+
+   # Record parameter
+   params = vars(args)
+   for param in params:
+      value = getattr(args, param)
+      if value:
+         file = os.path.join(param_out_dir, param)
+         log.debug(file + "<-" + param + " = " + value)
+
+         # Already exists, verify all parameter are the same
+         if object_exists:
+            if not os.path.isfile(file):
+               print("New parameter + " + param + "specified, aborting")
+               print("Source = " + old_object_source + "new =" + object_source)
+               sys.exit(1)
+            else:
+               param_fd = open(file, "r")
+               param_old = param_fd.realines()
+               param_fd.close()
+               
+               if(param_old != param):
+                  print("Parameter differs: " + param_old + "vs," + param)
+                  print("Source = " + old_object_source + "new =" + object_source)
+                  sys.exit(1)
+         else:
+            param_fd = open(file, "w")
+            param_fd.writelines(value)
+            param_fd.close()
+
+   # Record requirements
+   if "__require" in os.environ:
+      requirements = os.environ['__require']
+      print(object_id + ":Writing requirements: " + requirements)
+      require_fd = open(os.path.join(object_dir, "require"), "a")
+      require_fd.writelines(requirements.split(" "))
+      require_fd.close()
+
+   # Record / Append source
+   source_fd = open(os.path.join(object_dir, "source"), "a")
+   source_fd.writelines(object_source)
+   source_fd.close()
+
+   # sys.exit(1)
+   print("Finished " + type + "/" + object_id + repr(params))
+
 
 def commandline():
    """Parse command line"""
@@ -696,13 +772,13 @@ def commandline():
          logging.root.setLevel(logging.DEBUG)
    log.debug(args)
 
-   try:
-      args.func(args)
-   except KeyboardInterrupt:
-       sys.exit(0)
+   args.func(args)
 
 if __name__ == "__main__":
-   if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
-      emulator()
-   else:
-      commandline()
+   try:
+      if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
+         emulator()
+      else:
+         commandline()
+   except KeyboardInterrupt:
+       sys.exit(0)

@@ -1,6 +1,23 @@
+2.0.1:
+
+- Rewrite cdist-type-emulator
+   - Remove legacy code in cdist
+   - Remove cdist-config
+   - Remove man1/cdist-type-emulator.text
+   - Remove the PATH=... part from the README
+
+   - how to access output dir?
+
+   Test:
+   __cdist_type_base_dir=$(pwd -P)/conf/type __file 
+
+- Fix / rewrite cdist-quickstart
+
+--------------------------------------------------------------------------------
+
 - Initial install support
-   - setup $__install = "" for
-      manifest(s)
+   - setup $__install = "yes" for
+      manifest(s), gencode-*
 
    - run standard manifest (?)
       - creates initial objects
@@ -11,17 +28,16 @@
    - run all other manifests
       - creates all objects
       - what about type explorer?
+         - do not run, create empty output (types should be able
+            to handle this!)
+            via __global/
 
 - Support parallel execution
    - and maximum number of parallel runs (-p X)
    - error handling / report failed hosts
 
-- Rewrite cdist-type-emulator
-   - Remove legacy code in cdist
-   - Remove cdist-config
-   - Remove man1/cdist-type-emulator.text
-   - Remove the PATH=... part from the README
-
 - Allow manifest to be read from stdin
 - Create new video for cdist 2.0.0
    http://www.youtube.com/watch?v=PRMjzy48eTI
+
+- Setup __debug, if -d is given, so other tools can reuse it

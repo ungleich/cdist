@@ -82,6 +82,14 @@ cdist --version
 --------------------------------------------------------------------------------
 
 
+ENVIRONMENT
+-----------
+TMPDIR, TEMP, TMP::
+   Setup the base directory for the temporary directory.
+   See http://docs.python.org/py3k/library/tempfile.html for
+   more information. This is rather useful, if the standard
+   directory used does not allow executables.
+
 SEE ALSO
 --------
 - cdist(7)
