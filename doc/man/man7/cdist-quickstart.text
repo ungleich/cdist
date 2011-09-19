@@ -1,0 +1,310 @@
+#!/bin/sh
+#
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Give the user an introduction into cdist
+#
+
+. cdist-config
+set -eu
+
+banner="cdist-quickstart>"
+continue="Press enter to continue or ctrl-c to abort."
+create_continue="Press enter to create the described files/directories"
+
+__prompt()
+{
+   echo -n "$banner" "$@"
+   read answer
+}
+
+################################################################################
+# Intro of quickstart
+#
+cat << eof
+$banner cdist version $__cdist_version
+
+Welcome to the interactive guide to cdist!
+This is the interactive tutorial and beginners help for cdist and here's
+our schedule:
+
+   - Stages:   How cdist operates
+   - Explorer: Explore facts of the target host
+   - Manifest: Map configurations to hosts
+   - Types:    Bundled functionality
+   - Deploy a configuration to the local host!
+
+eof
+__prompt "$continue"
+
+################################################################################
+# Stages
+#
+cat << eof
+
+To deploy configurations to a host, you call
+
+   cdist-deploy-to <hostname>
+
+which makes calls to other scripts, which realise the so called "stages".
+Usually you'll not notice this, but in case you want to debug or hack cdist,
+you can run each stage on its own. Besides that, you just need to remember
+that the command cdist-deploy-to is the main cdist command.
+
+See also:
+
+   Source of cdist-deploy-to(1), cdist-stages(7)
+
+eof
+__prompt "$continue"
+
+################################################################################
+# Explorer
+#
+cat << eof
+
+The first thing cdist always does is running different explorers on the
+target host. The explorers can be found in the directory
+
+   ${__cdist_explorer_dir}
+
+An explorer is executed on the target host and its output is saved to a file.
+You can use these files later to decide what or how to configure the host.
+
+For a demonstration, we'll call the OS explorer locally now, but remember:
+This is only for demonstration, normally it is run on the target host.
+The os explorer will which either displays the detected operating system or
+nothing if it does not know your OS.
+
+See also:
+
+   cdist-explorer(7)
+
+eof
+explorer="${__cdist_explorer_dir}/os"
+
+__prompt "Press enter to execute $explorer"
+
+set -x
+"$explorer"
+set +x
+
+################################################################################
+# Manifest
+#
+cat << eof
+
+The initial manifest is the entry point for cdist to find out, what you would
+like to have configured. It is located at
+
+   ${__cdist_manifest_init}
+
+And can be as simple as
+
+--------------------------------------------------------------------------------
+__file /etc/cdist-configured --type file
+--------------------------------------------------------------------------------
+
+See also:
+
+   cdist-manifest(7)
+
+eof
+__prompt "$continue"
+
+cat << eof
+
+Let's take a deeper look at the initial manifest to understand what it means:
+
+   __file /etc/cdist-configured --type file
+      |     |                    |        \\
+      |     |        The parameter type    \\ With the value file
+      |     |
+      |     |
+      |     | This is the object id
+      |
+   __file is a so called "type"
+
+
+This essentially looks like a standard command executed in the shell.
+eof
+__prompt "$continue"
+
+cat << eof
+
+And that's exactly true. Manifests are shell snippets that can use
+types as commands with arguments. cdist prepends a special path
+that contain links to the cdist-type-emulator, to \$PATH, so you
+can use your types as a command.
+
+This is also the reason why types should always be prefixed with
+"__", to prevent collisions with existing binaries.
+
+The object id is unique per type and used to prevent you from creating
+the same object twice.
+
+Parameters are type specific and are always specified as --parameter <value>.
+
+See also:
+
+   cdist-type-build-emulation(1), cdist-type-emulator(1)
+
+eof
+__prompt "$continue"
+
+################################################################################
+# Types
+#
+cat << eof
+
+Types are bundled functionality and are the main component of cdist.
+If you want to have a feature x, you write the type __x. Types are stored in
+
+   ${__cdist_type_dir}
+
+And cdist ships with some types already!
+
+See also:
+
+   cdist-type(7)
+
+eof
+__prompt "Press enter to see available types"
+
+set -x
+ls ${__cdist_type_dir}
+set +x
+
+cat << eof
+
+Types consist of the following parts:
+
+   - ${__cdist_name_parameter} (${__cdist_name_parameter_required}/${__cdist_name_parameter_optional}
+   - ${__cdist_name_manifest}
+   - ${__cdist_name_explorer}
+   - ${__cdist_name_gencode}
+
+eof
+__prompt "$continue"
+
+
+cat << eof
+
+Every type must have a directory named ${__cdist_name_parameter}, which
+contains required or optional parameters (in newline seperated files).
+
+If an object of a specific type was created in the initial manifest,
+the manifest of the type is run and may create other objects.
+
+A type may have ${__cdist_name_explorer}, which are very similar to the
+${__cdist_name_explorer} seen above, but with a different purpose:
+They are specific to the type and are not relevant for other types.
+
+You may use them for instance to find out details on the target host,
+so you can decide what to do on the target host eventually.
+
+After the ${__cdist_name_manifest} and the ${__cdist_name_explorer} of
+a type have been run, ${__cdist_name_gencode} is executed, which creates
+code to be executed on the target on stdout.
+
+eof
+__prompt "$continue"
+
+################################################################################
+# Deployment
+#
+
+cat << eof
+
+Now you've got some basic knowledge about cdist, let's configure your a host!
+
+Ensure that you have a ssh server running on the host and that you can login as root.
+
+eof
+
+__prompt "Enter hostname or press enter for localhost: "
+
+if [ "$answer" ]; then
+   host="$answer"
+else
+   host="localhost"
+fi
+
+manifestinit="conf/manifest/init"
+cat << eof
+
+I'll now setup $manifestinit, containing the following code:
+
+--------------------------------------------------------------------------------
+# Every machine becomes a marker, so sysadmins know that automatic
+# configurations are happening
+__file /etc/cdist-configured
+
+case "\$__target_host" in
+   $host)
+      __link /tmp/cdist-testfile --source /etc/cdist-configured  --type symbolic
+      __addifnosuchline /tmp/cdist-welcome --line "Welcome to cdist"
+   ;;
+esac
+--------------------------------------------------------------------------------
+
+WARNING: This will overwrite ${manifestinit}.
+
+eof
+
+cat > "$__cdist_abs_mydir/../$manifestinit" << eof
+
+# Every machine becomes a marker, so sysadmins know that automatic
+# configurations are happening
+__file /etc/cdist-configured
+
+case "\$__target_host" in
+   $host)
+      __link /tmp/cdist-testfile --source /etc/cdist-configured  --type symbolic
+      __addifnosuchline /tmp/cdist-welcome --line "Welcome to cdist"
+   ;;
+esac
+
+eof
+
+chmod u+x "$__cdist_abs_mydir/../$manifestinit"
+
+cmd="cdist-deploy-to $host"
+
+__prompt "Press enter to run \"$cmd\""
+
+# No quotes, we need field splitting
+$cmd
+
+################################################################################
+# End
+#
+
+cat << eof
+
+
+--------------------------------------------------------------------------------
+That's it, this is the end of the cdist-quickstart.
+
+I hope you've got some impression on how cdist works, here are again some
+pointers on where to continue to read:
+
+cdist(7), cdist-deploy-to(1), cdist-type(7), cdist-stages(7)
+
+eof

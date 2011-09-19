@@ -5,26 +5,13 @@ Feel free to pick one!
 
 CORE
 ----
-- Inconsistent error messages if object is not existing!
-   -> always use "Object undefined"
-- Add echo function / beautify output
-   __cdist_echo [level] [messages...]
-      level := syslog alike:
-         debug, notice, err
-   Include object_self prefixing, if given!
-- Think about moving cdist-type-build-emulation out of cdist-manifest-run to
-   cdist-deploy-to: more dependency of cdist-manifest-run, but a lot of
-   less cycles consumed
-
-- cdist-object-gencode: remove code if output empty?
-   - also take care of that in cdist-code-run!
-- Remove cdist-object-push, covers only one line and is used only once:
-   [20:22] kr:bin% grep cdist-object-push *
-   cdist-object-run:   cdist-object-push          "$__cdist_target_host" "$__cdist_object"
-   [20:22] kr:bin% 
-
 - probably remove or improve cdist-type-template
-- add $__tmp?
+- allow cdist to run without $PATH setup: ./bin/cdist-deploy-to
+- support non-ssh access?
+
+USER INTERFACE
+--------------
+- add support $__tmp?
    - for use in manifest, code, etc.?
       - for creating temporary files, etc.
 
@@ -36,18 +23,11 @@ CORE
       -> for current host
       -> add function to cdist-config, import from cdist-cache
 
-- check all all internal variables are prefixed with __cdist
 - Define / document "this is what should be on host X"
    and have it parsable by different (shinken) tool
    -> given after manifest run already!
 
-- Allow types to have parameters without values (boolean flags).
-   e.g. __chair fancychair --pink --wood
-   would result in:
-      $__object/parameter/
-         pink     # empty file
-         wood     # empty file
-
+- use absent/present for state by default?
 
 TYPES
 ------
@@ -64,5 +44,3 @@ DOCUMENTATION
 - asciidoc interprets __, which we use for variables
   names -> seek through docs and replace with \_\_!
 - reference explorers in cdist-reference!
-- compare running times:
-   one, 5, 10, 50, 100, 1000 hosts => how does cdist scale?

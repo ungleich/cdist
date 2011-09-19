@@ -1,4 +1,12 @@
-1.7.1:
+2.0.1:
+	* Bugfix cdist: Always print source of error in case of exec errors
+
+2.0.0: 2011-09-16
+	* New Type: __package_rubygem (Chase Allen James)
+	* __self replaced by __object_fq
+	* Rewrote cdist in Python
+
+1.7.1: 2011-07-26
 	* Documentation: Add explorers to reference
 	* Documentation: Typo cleanup (Derek Brost)
 	* Type __key_value: Bugfix (Steven Armstrong)

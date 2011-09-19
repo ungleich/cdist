@@ -65,6 +65,11 @@ if [ -f /etc/SuSE-release ]; then
    exit 0
 fi
 
+if [ -f /etc/cdist-preos ]; then
+   echo preos
+   exit 0
+fi
+
 uname_s="$(uname -s)"
 
 # Assume there is no tr on the client -> do lower case ourselves
