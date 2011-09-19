@@ -772,13 +772,13 @@ def commandline():
          logging.root.setLevel(logging.DEBUG)
    log.debug(args)
 
-   try:
-      args.func(args)
-   except KeyboardInterrupt:
-       sys.exit(0)
+   args.func(args)
 
 if __name__ == "__main__":
-   if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
-      emulator()
-   else:
-      commandline()
+   try:
+      if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
+         emulator()
+      else:
+         commandline()
+   except KeyboardInterrupt:
+       sys.exit(0)
