@@ -354,7 +354,7 @@ class Cdist:
 
    def link_type_to_emulator(self):
       """Link type names to cdist-type-emulator"""
-      source = sys.argv[0]
+      source = os.path.abspath(sys.argv[0])
       for type in self.list_types():
          destination = os.path.join(self.bin_dir, type)
          log.debug("Linking %s to %s", source, destination)
