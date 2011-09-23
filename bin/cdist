@@ -48,16 +48,16 @@ BANNER = """
 """
 
 # Given paths from installation
-REMOTE_BASE_DIR                = "/var/lib/cdist"
-REMOTE_CONF_DIR                = os.path.join(REMOTE_BASE_DIR, "conf")
-REMOTE_OBJECT_DIR             = os.path.join(REMOTE_BASE_DIR, "object")
-REMOTE_TYPE_DIR                = os.path.join(REMOTE_CONF_DIR, "type")
-REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
+REMOTE_BASE_DIR                 = "/var/lib/cdist"
+REMOTE_CONF_DIR                 = os.path.join(REMOTE_BASE_DIR, "conf")
+REMOTE_OBJECT_DIR               = os.path.join(REMOTE_BASE_DIR, "object")
+REMOTE_TYPE_DIR                 = os.path.join(REMOTE_CONF_DIR, "type")
+REMOTE_GLOBAL_EXPLORER_DIR      = os.path.join(REMOTE_CONF_DIR, "explorer")
 
 CODE_HEADER                     = "#!/bin/sh -e\n"
-DOT_CDIST                        = ".cdist"
+DOT_CDIST                       = ".cdist"
 TYPE_PREFIX                     = "__"
-VERSION                          = "2.0.1"
+VERSION                         = "2.0.1"
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
@@ -104,13 +104,13 @@ class Cdist:
         else:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
-        self.conf_dir                  = os.path.join(self.base_dir, "conf")
-        self.cache_base_dir          = os.path.join(self.base_dir, "cache")
-        self.cache_dir                 = os.path.join(self.cache_base_dir, self.target_host)
+        self.conf_dir               = os.path.join(self.base_dir, "conf")
+        self.cache_base_dir         = os.path.join(self.base_dir, "cache")
+        self.cache_dir              = os.path.join(self.cache_base_dir, self.target_host)
         self.global_explorer_dir    = os.path.join(self.conf_dir, "explorer")
-        self.lib_dir                    = os.path.join(self.base_dir, "lib")
-        self.manifest_dir             = os.path.join(self.conf_dir, "manifest")
-        self.type_base_dir            = os.path.join(self.conf_dir, "type")
+        self.lib_dir                = os.path.join(self.base_dir, "lib")
+        self.manifest_dir           = os.path.join(self.conf_dir, "manifest")
+        self.type_base_dir          = os.path.join(self.conf_dir, "type")
 
         self.out_dir = os.path.join(self.temp_dir, "out")
         os.mkdir(self.out_dir)
