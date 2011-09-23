@@ -485,7 +485,7 @@ class Cdist:
          ]
          for bin in paths:
             if os.path.isfile(bin):
-               # omit "gen" from gencode and 
+               # omit "gen" from gencode and use it for output base
                outfile=os.path.join(self.object_dir(cdist_object), 
                   os.path.basename(bin)[3:])
 
@@ -506,6 +506,10 @@ class Cdist:
                else:
                   # Add header and make executable - identically to 0o700
                   os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
+
+                  # Mark object as changed
+                  open(os.path.join(self.object_dir(cdist_object), "changed"), "w").close()
+
 
       if mode == "code":
          local_dir   = self.object_dir(cdist_object)
