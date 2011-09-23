@@ -20,6 +20,10 @@
 #
 #
 
+# Add our own library path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+    '../lib/python')))
+
 import argparse
 import datetime
 import logging
@@ -31,6 +35,8 @@ import shutil
 import stat
 import sys
 import tempfile
+
+import cdist.path
 
 BANNER = """
              ..          .       .x+=:.        s
@@ -62,11 +68,6 @@ VERSION                         = "2.0.1"
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
 
-# Begin to split into parts
-sys.path.insert(0, 
-    os.path.abspath(os.path.join(os.path.dirname(__file__),
-        '../lib/python')))
-
 def file_to_list(filename):
     """Return list from \n seperated file"""
     if os.path.isfile(filename):
@@ -93,6 +94,8 @@ class Cdist:
                     home=None, debug=False):
         self.target_host = target_host
         self.remote_prefix = ["ssh", "root@" + self.target_host]
+
+        self.path_info = cdist.path.Path(target_host, home)
 
         # Setup directory paths
         self.temp_dir = tempfile.mkdtemp()
