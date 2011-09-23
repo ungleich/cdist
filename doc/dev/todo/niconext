@@ -13,6 +13,14 @@
 
 - Fix / rewrite cdist-quickstart
 
+- write tutorial!!!!!!!!!
+   - like ccollect!
+      - include ssh control master!
+   - add local/ hint (and add to git)
+   - add hint for ssh StrictHostKeyChecking no
+      - and that ssh will wait for answer of prompt
+         - nasty if used in parallel mode (scroll up!)
+
 --------------------------------------------------------------------------------
 
 - Initial install support
