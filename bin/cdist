@@ -81,9 +81,9 @@ def file_to_list(filename):
 
     return lines
 
-def exit_error(*args):
-    log.error(*args)
-    sys.exit(1)
+class CdistError(Exception):
+    """Base exception class for this project"""
+    pass
 
 class Cdist:
     """Cdist main class to hold arbitrary data"""
@@ -153,7 +153,7 @@ class Cdist:
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
-        self.nun_or_fail(["mkdir", "-p", directory], remote=True)
+        self.run_or_fail(["mkdir", "-p", directory], remote=True)
 
     def remote_cat(filename):
         """Use cat on the remote side for output"""
@@ -181,13 +181,16 @@ class Cdist:
             if remote:
                 remote_cat(script)
             else:
-                script_fd = open(script)
-                print(script_fd.read())
-                script_fd.close()
+                try:
+                    script_fd = open(script)
+                    print(script_fd.read())
+                    script_fd.close()
+                except IOError as error:
+                    raise CdistError(str(error))
 
-            exit_error("Command failed (shell): " + " ".join(*args))
+            raise CdistError("Command failed (shell): " + " ".join(*args))
         except OSError as error:
-            exit_error(" ".join(*args) + ": " + error.args[1])
+            raise CdistError(" ".join(*args) + ": " + error.args[1])
 
     def run_or_fail(self, *args, **kargs):
         if "remote" in kargs:
@@ -200,9 +203,9 @@ class Cdist:
         try:
             subprocess.check_call(*args, **kargs)
         except subprocess.CalledProcessError:
-            exit_error("Command failed: " + " ".join(*args))
+            raise CdistError("Command failed: " + " ".join(*args))
         except OSError as error:
-            exit_error(" ".join(*args) + ": " + error.args[1])
+            raise CdistError(" ".join(*args) + ": " + error.args[1])
 
 
     def remove_remote_dir(self, destination):
@@ -368,7 +371,7 @@ class Cdist:
         """Run global explorers"""
         explorers = self.list_global_explorers()
         if(len(explorers) == 0):
-            exit_error("No explorers found in", self.global_explorer_dir)
+            raise CdistError("No explorers found in", self.global_explorer_dir)
 
         self.transfer_global_explorers()
         for explorer in explorers:
@@ -674,7 +677,7 @@ def emulator():
         try:
             os.makedirs(param_out_dir, exist_ok=True)
         except OSError as error:
-            exit_error(param_out_dir + ": " + error.args[1])
+            raise CdistError(param_out_dir + ": " + error.args[1])
 
     # Record parameter
     params = vars(args)
@@ -789,4 +792,7 @@ if __name__ == "__main__":
         else:
             commandline()
     except KeyboardInterrupt:
-         sys.exit(0)
+        sys.exit(0)
+    except CdistError as e:
+        log.error(e)
+        sys.exit(1)
