@@ -1,4 +1,4 @@
-2.0.1:
+2.0.1: 2011-09-23
 	* Bugfix core: Always print source of error in case of exec errors
 	* Bugfix core: Various smaller bugs in string concatenation
 	* Feature: Add marker "changed" to changed objects
