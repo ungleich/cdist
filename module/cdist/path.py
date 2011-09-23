@@ -1,4 +1,4 @@
-# Given paths from installation
+# Hardcoded paths usually not changable
 REMOTE_BASE_DIR                 = "/var/lib/cdist"
 REMOTE_CONF_DIR                 = os.path.join(REMOTE_BASE_DIR, "conf")
 REMOTE_OBJECT_DIR               = os.path.join(REMOTE_BASE_DIR, "object")
