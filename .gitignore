@@ -15,4 +15,4 @@ doc/man/man*/docbook-xsl.css
 cache/
 
 # Python
-bin/__pycache__/
+*/__pycache__/
