@@ -88,7 +88,6 @@ class Cdist:
                     initial_manifest=False, remote_user="root",
                     home=None, debug=False):
         self.target_host = target_host
-        self.remote_prefix = ["ssh", "root@" + self.target_host]
 
         self.path = cdist.path.Path(target_host, 
                         initial_manifest=initial_manifest,
@@ -98,7 +97,6 @@ class Cdist:
 
         self.debug = debug
         
-        # objects
         self.objects_prepared = []
 
         self.remote_user = remote_user
@@ -108,21 +106,6 @@ class Cdist:
 
     def remove_remote_dir(self, destination):
         self.run_or_fail(["rm", "-rf",  destination], remote=True)
-
-    def transfer_dir(self, source, destination):
-        """Transfer directory and previously delete the remote destination"""
-        self.remove_remote_dir(destination)
-        self.run_or_fail(["scp", "-qr", source, 
-                                self.remote_user + "@" + 
-                                self.target_host + ":" + 
-                                destination])
-
-    def transfer_file(self, source, destination):
-        """Transfer file"""
-        self.run_or_fail(["scp", "-q", source, 
-                                self.remote_user + "@" +
-                                self.target_host + ":" +
-                                destination])
 
     def global_explorer_output_path(self, explorer):
         """Returns path of the output for a global explorer"""

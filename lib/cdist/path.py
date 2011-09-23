@@ -38,6 +38,7 @@ TYPE_PREFIX                     = "__"
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
 
+import cdist.exec
 
 def file_to_list(filename):
     """Return list from \n seperated file"""
@@ -53,9 +54,6 @@ def file_to_list(filename):
 
     return lines
 
-# FIXME: self.run_or_fail needs to be elsewhere!
-# Exec?
-
 class Path:
     """Class that handles path related configurations"""
 
@@ -70,6 +68,10 @@ class Path:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
         self.temp_dir = tempfile.mkdtemp()
+        self.target_host = target_host
+
+        self.remote_user = remote_user
+        self.remote_prefix = ["ssh", self.remote_user + "@" + self.target_host]
 
         self.conf_dir               = os.path.join(self.base_dir, "conf")
         self.cache_base_dir         = os.path.join(self.base_dir, "cache")
@@ -98,8 +100,6 @@ class Path:
         # objects
         self.objects_prepared = []
 
-        self.remote_user = remote_user
-
         # Mostly static, but can be overwritten on user demand
         if initial_manifest:
             self.initial_manifest = initial_manifest
@@ -121,26 +121,26 @@ class Path:
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
-        self.run_or_fail(["mkdir", "-p", directory], remote=True)
+        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote=True)
 
     def remote_cat(filename):
         """Use cat on the remote side for output"""
-        self.run_or_fail(["cat", filename], remote=True)
+        cdist.exec.run_or_fail(["cat", filename], remote=True)
 
     def remove_remote_dir(self, destination):
-        self.run_or_fail(["rm", "-rf",  destination], remote=True)
+        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote=True)
 
     def transfer_dir(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
         self.remove_remote_dir(destination)
-        self.run_or_fail(["scp", "-qr", source, 
+        cdist.exec.run_or_fail(["scp", "-qr", source, 
                                 self.remote_user + "@" + 
                                 self.target_host + ":" + 
                                 destination])
 
     def transfer_file(self, source, destination):
         """Transfer file"""
-        self.run_or_fail(["scp", "-q", source, 
+        cdist.exec.run_or_fail(["scp", "-q", source, 
                                 self.remote_user + "@" +
                                 self.target_host + ":" +
                                 destination])
