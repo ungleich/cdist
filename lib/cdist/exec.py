@@ -19,7 +19,8 @@
 #
 #
 
-def shell_run_or_debug_fail(self, script, *args, **kargs):
+
+def shell_run_or_debug_fail(script, *args, **kargs):
     # Manually execute /bin/sh, because sh -e does what we want
     # and sh -c -e does not exit if /bin/false called
     args[0][:0] = [ "/bin/sh", "-e" ]
@@ -27,10 +28,11 @@ def shell_run_or_debug_fail(self, script, *args, **kargs):
     remote = False
     if "remote" in kargs:
         if kargs["remote"]:
-            args[0][:0] = self.remote_prefix
+            args[0][:0] = kargs["remote_prefix"]
             remote = true
 
         del kargs["remote"]
+        del kargs["remote_prefix"]
 
     log.debug("Shell exec cmd: %s", args)
     log.debug("Shell exec env: %s", kargs['env'])
@@ -56,9 +58,10 @@ def shell_run_or_debug_fail(self, script, *args, **kargs):
 def run_or_fail(self, *args, **kargs):
     if "remote" in kargs:
         if kargs["remote"]:
-            args[0][:0] = self.remote_prefix
+            args[0][:0] = kargs["remote_prefix"]
 
         del kargs["remote"]
+        del kargs["remote_prefix"]
 
     log.debug("Exec: " + " ".join(*args))
     try:
@@ -67,4 +70,3 @@ def run_or_fail(self, *args, **kargs):
         raise CdistError("Command failed: " + " ".join(*args))
     except OSError as error:
         raise CdistError(" ".join(*args) + ": " + error.args[1])
-
