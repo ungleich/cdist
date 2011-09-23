@@ -20,10 +20,6 @@
 #
 #
 
-# Add our own library path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-    '../lib/python')))
-
 import argparse
 import datetime
 import logging
@@ -35,6 +31,10 @@ import shutil
 import stat
 import sys
 import tempfile
+
+# Add our own library path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+    '../lib')))
 
 import cdist.path
 
@@ -95,7 +95,7 @@ class Cdist:
         self.target_host = target_host
         self.remote_prefix = ["ssh", "root@" + self.target_host]
 
-        self.path_info = cdist.path.Path(target_host, home)
+        self.path_info = cdist.path.Path(target_host, base_dir=home)
 
         # Setup directory paths
         self.temp_dir = tempfile.mkdtemp()

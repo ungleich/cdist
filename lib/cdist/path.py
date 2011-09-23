@@ -1,3 +1,7 @@
+import os
+import sys
+import tempfile
+
 # Hardcoded paths usually not changable
 REMOTE_BASE_DIR                 = "/var/lib/cdist"
 REMOTE_CONF_DIR                 = os.path.join(REMOTE_BASE_DIR, "conf")
@@ -31,7 +35,7 @@ class Path:
 
     def __init__(self, target_host, base_dir=None):
         # Base and Temp Base 
-        if home:
+        if base_dir:
             self.base_dir = base_dir
         else:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
