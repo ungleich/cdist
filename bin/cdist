@@ -153,7 +153,7 @@ class Cdist:
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
-        self.nun_or_fail(["mkdir", "-p", directory], remote=True)
+        self.run_or_fail(["mkdir", "-p", directory], remote=True)
 
     def remote_cat(filename):
         """Use cat on the remote side for output"""
