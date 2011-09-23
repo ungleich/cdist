@@ -38,7 +38,7 @@ class Path:
         if base_dir:
             self.base_dir = base_dir
         else:
-            self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+            self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
         self.temp_dir = tempfile.mkdtemp()
 
