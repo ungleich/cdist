@@ -62,6 +62,10 @@ VERSION                    = "2.0.1"
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
 
+# Begin to split into parts
+sys.path.insert(0, 
+   os.path.abspath(os.path.join(os.path.dirname(__file__),
+      '../lib/python')))
 
 def file_to_list(filename):
    """Return list from \n seperated file"""
