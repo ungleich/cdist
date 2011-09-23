@@ -91,52 +91,6 @@ class Path:
         """Use cat on the remote side for output"""
         self.run_or_fail(["cat", filename], remote=True)
 
-    def shell_run_or_debug_fail(self, script, *args, **kargs):
-        # Manually execute /bin/sh, because sh -e does what we want
-        # and sh -c -e does not exit if /bin/false called
-        args[0][:0] = [ "/bin/sh", "-e" ]
-
-        remote = False
-        if "remote" in kargs:
-            if kargs["remote"]:
-                args[0][:0] = self.remote_prefix
-                remote = true
-
-            del kargs["remote"]
-
-        log.debug("Shell exec cmd: %s", args)
-        log.debug("Shell exec env: %s", kargs['env'])
-        try:
-            subprocess.check_call(*args, **kargs)
-        except subprocess.CalledProcessError:
-            log.error("Code that raised the error:\n")
-            if remote:
-                remote_cat(script)
-            else:
-                script_fd = open(script)
-                print(script_fd.read())
-                script_fd.close()
-
-            exit_error("Command failed (shell): " + " ".join(*args))
-        except OSError as error:
-            exit_error(" ".join(*args) + ": " + error.args[1])
-
-    def run_or_fail(self, *args, **kargs):
-        if "remote" in kargs:
-            if kargs["remote"]:
-                args[0][:0] = self.remote_prefix
-
-            del kargs["remote"]
-
-        log.debug("Exec: " + " ".join(*args))
-        try:
-            subprocess.check_call(*args, **kargs)
-        except subprocess.CalledProcessError:
-            exit_error("Command failed: " + " ".join(*args))
-        except OSError as error:
-            exit_error(" ".join(*args) + ": " + error.args[1])
-
-
     def remove_remote_dir(self, destination):
         self.run_or_fail(["rm", "-rf",  destination], remote=True)
 
