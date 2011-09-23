@@ -1,3 +1,25 @@
+# -*- coding: utf-8 -*-
+#
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+import logging
 import os
 import sys
 import tempfile
@@ -12,6 +34,10 @@ REMOTE_GLOBAL_EXPLORER_DIR      = os.path.join(REMOTE_CONF_DIR, "explorer")
 CODE_HEADER                     = "#!/bin/sh -e\n"
 DOT_CDIST                       = ".cdist"
 TYPE_PREFIX                     = "__"
+
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+log = logging.getLogger()
+
 
 def file_to_list(filename):
     """Return list from \n seperated file"""
@@ -33,7 +59,10 @@ def file_to_list(filename):
 class Path:
     """Class that handles path related configurations"""
 
-    def __init__(self, target_host, base_dir=None):
+    def __init__(self, target_host,
+                    initial_manifest=False, remote_user="root",
+                    base_dir=None, debug=False):
+
         # Base and Temp Base 
         if base_dir:
             self.base_dir = base_dir

@@ -32,11 +32,6 @@ import stat
 import sys
 import tempfile
 
-# Add our own library path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-    '../lib')))
-
-import cdist.path
 
 BANNER = """
              ..          .       .x+=:.        s
@@ -788,11 +783,19 @@ def commandline():
 
     args.func(args)
 
+
 if __name__ == "__main__":
     try:
         if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
             emulator()
         else:
+            # Add our own library path
+            sys.path.insert(0, 
+                os.path.abspath(os.path.join(os.path.dirname(__file__),
+                '../lib')))
+
+            import cdist.path
+
             commandline()
     except KeyboardInterrupt:
         sys.exit(0)
