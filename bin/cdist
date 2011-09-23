@@ -181,9 +181,12 @@ class Cdist:
             if remote:
                 remote_cat(script)
             else:
-                script_fd = open(script)
-                print(script_fd.read())
-                script_fd.close()
+                try:
+                    script_fd = open(script)
+                    print(script_fd.read())
+                    script_fd.close()
+                except IOError as error:
+                    raise CdistError(str(error))
 
             raise CdistError("Command failed (shell): " + " ".join(*args))
         except OSError as error:
