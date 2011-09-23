@@ -90,72 +90,21 @@ class Cdist:
         self.target_host = target_host
         self.remote_prefix = ["ssh", "root@" + self.target_host]
 
-        self.path_info = cdist.path.Path(target_host, base_dir=home)
-
-        # Setup directory paths
-        self.temp_dir = tempfile.mkdtemp()
+        self.path = cdist.path.Path(target_host, 
+                        initial_manifest=initial_manifest,
+                        remote_user=remote_user,
+                        base_dir=home,
+                        debug=debug)
 
         self.debug = debug
         
-        if home:
-            self.base_dir = home
-        else:
-            self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-
-        self.conf_dir               = os.path.join(self.base_dir, "conf")
-        self.cache_base_dir         = os.path.join(self.base_dir, "cache")
-        self.cache_dir              = os.path.join(self.cache_base_dir, self.target_host)
-        self.global_explorer_dir    = os.path.join(self.conf_dir, "explorer")
-        self.lib_dir                = os.path.join(self.base_dir, "lib")
-        self.manifest_dir           = os.path.join(self.conf_dir, "manifest")
-        self.type_base_dir          = os.path.join(self.conf_dir, "type")
-
-        self.out_dir = os.path.join(self.temp_dir, "out")
-        os.mkdir(self.out_dir)
-
-        self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
-        os.mkdir(self.global_explorer_out_dir)
-
-        self.object_base_dir = os.path.join(self.out_dir, "object")
-
-        # Setup binary directory + contents
-        self.bin_dir = os.path.join(self.out_dir, "bin")
-        os.mkdir(self.bin_dir)
-        self.link_type_to_emulator()
-
-        # List of type explorers transferred
-        self.type_explorers_transferred = {}
-
         # objects
         self.objects_prepared = []
 
         self.remote_user = remote_user
 
-        # Mostly static, but can be overwritten on user demand
-        if initial_manifest:
-            self.initial_manifest = initial_manifest
-        else:
-            self.initial_manifest = os.path.join(self.manifest_dir, "init")
-
     def cleanup(self):
-        # Do not use in __del__:
-        # http://docs.python.org/reference/datamodel.html#customization
-        # "other globals referenced by the __del__() method may already have been deleted 
-        # or in the process of being torn down (e.g. the import machinery shutting down)"
-        #
-        log.debug("Saving" + self.temp_dir + "to " + self.cache_dir)
-        # Remove previous cache
-        if os.path.exists(self.cache_dir):
-            shutil.rmtree(self.cache_dir)
-        shutil.move(self.temp_dir, self.cache_dir)
-
-    def remote_mkdir(self, directory):
-        """Create directory on remote side"""
-        self.run_or_fail(["mkdir", "-p", directory], remote=True)
-
-    def remote_cat(filename):
-        """Use cat on the remote side for output"""
-        self.run_or_fail(["cat", filename], remote=True)
+        self.path.cleanup()
 
     def shell_run_or_debug_fail(self, script, *args, **kargs):
         # Manually execute /bin/sh, because sh -e does what we want
@@ -415,8 +364,8 @@ class Cdist:
         """Ensure the base directories are cleaned up"""
         log.debug("Creating clean directory structure")
 
-        self.remove_remote_dir(REMOTE_BASE_DIR)
-        self.remote_mkdir(REMOTE_BASE_DIR)
+        self.path.remove_remote_dir(REMOTE_BASE_DIR)
+        self.path.remote_mkdir(REMOTE_BASE_DIR)
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
