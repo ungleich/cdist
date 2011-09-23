@@ -7,8 +7,8 @@ debug() {
 }
 
 fdisk_command() {
-   local device=$1
-   local cmd=$2
+   local device="$1"
+   local cmd="$2"
 
    debug fdisk_command "running fdisk command '${cmd}' on device ${device}"
    echo -en "${cmd}\nw\n" | fdisk -c -u "$device"
@@ -24,11 +24,11 @@ create_disklabel() {
 }
 
 create_partition() {
-  local device=$1
-  local minor=$2
-  local size=$3
-  local type=$4
-  local primary_count=$5
+  local device="$1"
+  local minor="$2"
+  local size="$3"
+  local type="$4"
+  local primary_count="$5"
 
   if [ "$type" = "extended" -o "$type" = "5" ]; then
     # Extended partition
