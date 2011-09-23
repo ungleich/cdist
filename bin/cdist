@@ -57,7 +57,7 @@ REMOTE_GLOBAL_EXPLORER_DIR = os.path.join(REMOTE_CONF_DIR, "explorer")
 CODE_HEADER                = "#!/bin/sh -e\n"
 DOT_CDIST                  = ".cdist"
 TYPE_PREFIX                = "__"
-VERSION                    = "2.0.0"
+VERSION                    = "2.0.1"
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger()
