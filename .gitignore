@@ -14,5 +14,5 @@ doc/man/man*/docbook-xsl.css
 # Ignore cache for version control
 cache/
 
-# Python
-bin/__pycache__/
+# Python / cache
+__pycache__/
