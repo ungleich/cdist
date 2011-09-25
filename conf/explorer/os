@@ -71,7 +71,7 @@ if uname -r | grep -s '.owl' >/dev/null 2>&1; then
 fi
 
 if [ -f /etc/cdist-preos ]; then
-   echo preos
+   echo cdist-preos
    exit 0
 fi
 
