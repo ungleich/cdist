@@ -38,7 +38,10 @@ def shell_run_or_debug_fail(script, *args, **kargs):
         del kargs["remote_prefix"]
 
     log.debug("Shell exec cmd: %s", args)
-    log.debug("Shell exec env: %s", kargs['env'])
+
+    if 'env' in kargs:
+        log.debug("Shell exec env: %s", kargs['env'])
+
     try:
         subprocess.check_call(*args, **kargs)
     except subprocess.CalledProcessError:
