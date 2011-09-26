@@ -23,6 +23,8 @@
 
 import os
 import sys
+import shutil
+import tempfile
 import unittest
 
 sys.path.insert(0, os.path.abspath(
@@ -33,6 +35,38 @@ import cdist.config
 import cdist.exec
 
 class Exec(unittest.TestCase):
+    def setUp(self):
+        """Create shell code and co."""
+
+        self.temp_dir = tempfile.mkdtemp()
+        self.shell_false = os.path.join(self.temp_dir, "shell_false")
+        self.shell_true  = os.path.join(self.temp_dir, "shell_true")
+
+        true_fd = open(self.shell_false, "w")
+        true_fd.writelines(["!/bin/sh", "/bin/true"])
+        true_fd.close()
+        
+        false_fd = open(self.shell_false, "w")
+        false_fd.writelines(["!/bin/sh", "/bin/false"])
+        false_fd.close()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+        
+    def test_local_success_shell(self):
+        try:
+            cdist.shell_run_or_debug_fail(self.shell_true, [self.shell_true])
+        except cdist.Error:
+            failed = True
+        else:
+            failed = False
+
+        self.assertFalse(failed)
+
+    def test_local_fail_shell(self):
+        self.assertRaises(cdist.Error, cdist.exec.shell_run_or_debug_fail,
+            self.shell_false, [self.shell_false])
+
     def test_local_success(self):
         try:
             cdist.exec.run_or_fail(["/bin/true"])
@@ -44,15 +78,7 @@ class Exec(unittest.TestCase):
         self.assertFalse(failed)
 
     def test_local_fail(self):
-        try:
-            cdist.exec.run_or_fail(["/bin/false"])
-        except cdist.Error:
-            failed = True
-        else:
-            failed = False
-
-        self.assertTrue(failed)
-            
+        self.assertRaises(cdist.Error, cdist.exec.run_or_fail, ["/bin/false"])
 
 
 if __name__ == '__main__':
