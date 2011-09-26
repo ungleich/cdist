@@ -21,6 +21,7 @@
 
 import logging
 import os
+import shutil
 import sys
 import tempfile
 
@@ -31,7 +32,6 @@ REMOTE_OBJECT_DIR               = os.path.join(REMOTE_BASE_DIR, "object")
 REMOTE_TYPE_DIR                 = os.path.join(REMOTE_CONF_DIR, "type")
 REMOTE_GLOBAL_EXPLORER_DIR      = os.path.join(REMOTE_CONF_DIR, "explorer")
 
-CODE_HEADER                     = "#!/bin/sh -e\n"
 DOT_CDIST                       = ".cdist"
 
 log = logging.getLogger(__name__)
@@ -55,9 +55,13 @@ def file_to_list(filename):
 class Path:
     """Class that handles path related configurations"""
 
-    def __init__(self, target_host,
-                    initial_manifest=False, remote_user="root",
-                    remote_prefix=False, base_dir=None, debug=False):
+    def __init__(self,
+                target_host,
+                remote_user,
+                remote_prefix,
+                initial_manifest=False,
+                base_dir=None,
+                debug=False):
 
         # Base and Temp Base 
         if base_dir:
@@ -69,10 +73,7 @@ class Path:
         self.target_host = target_host
 
         self.remote_user = remote_user
-        if remote_prefix:
-            self.remote_prefix = remote_prefix
-        else:
-            self.remote_prefix = ["ssh", self.remote_user + "@" + self.target_host]
+        self.remote_prefix = remote_prefix
 
         self.conf_dir               = os.path.join(self.base_dir, "conf")
         self.cache_base_dir         = os.path.join(self.base_dir, "cache")
