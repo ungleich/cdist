@@ -99,7 +99,7 @@ To install cdist, execute the following commands:
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 
-    # If you want the manpages (requires gmake and asciidoc to be installed)
+    # If you want the manpages
     ./build.sh man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
