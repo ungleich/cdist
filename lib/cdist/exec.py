@@ -26,16 +26,13 @@ log = logging.getLogger(__name__)
 
 import cdist
 
-def shell_run_or_debug_fail(script, *args, **kargs):
+def shell_run_or_debug_fail(script, *args, remote_prefix=False, **kargs):
     # Manually execute /bin/sh, because sh -e does what we want
     # and sh -c -e does not exit if /bin/false called
     args[0][:0] = [ "/bin/sh", "-e" ]
 
-    remote = False
-    if "remote_prefix" in kargs:
-        remote = True
-        args[0][:0] = kargs["remote_prefix"]
-        del kargs["remote_prefix"]
+    if remote_prefix:
+        args[0][:0] = remote_prefix
 
     log.debug("Shell exec cmd: %s", args)
 
@@ -46,9 +43,9 @@ def shell_run_or_debug_fail(script, *args, **kargs):
         subprocess.check_call(*args, **kargs)
     except subprocess.CalledProcessError:
         log.error("Code that raised the error:\n")
-        if remote:
-            # FIXME: included in Path!
-            remote_cat(script)
+        if remote_prefix:
+            run_or_fail(["cat", script], remote_prefix=remote_prefix)
+
         else:
             try:
                 script_fd = open(script)
@@ -62,10 +59,9 @@ def shell_run_or_debug_fail(script, *args, **kargs):
         raise cdist.Error(" ".join(*args) + ": " + error.args[1])
 
 
-def run_or_fail(*args, **kargs):
-    if "remote_prefix" in kargs:
-        args[0][:0] = kargs["remote_prefix"]
-        del kargs["remote_prefix"]
+def run_or_fail(*args, remote_prefix=False, **kargs):
+    if remote_prefix:
+        args[0][:0] = remote_prefix
 
     log.debug("Exec: " + " ".join(*args))
     try:
