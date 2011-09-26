@@ -121,14 +121,14 @@ class Path:
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
-        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote=True)
+        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=self.remote_prefix)
 
     def remote_cat(filename):
         """Use cat on the remote side for output"""
-        cdist.exec.run_or_fail(["cat", filename], remote=True)
+        cdist.exec.run_or_fail(["cat", filename], remote_prefix=self.remote_prefix)
 
     def remove_remote_dir(self, destination):
-        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote=True)
+        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=self.remote_prefix)
 
     def transfer_dir(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
