@@ -22,9 +22,7 @@
 import logging
 import subprocess
 
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
-log = logging.getLogger()
-
+log = logging.getLogger(__name__)
 
 def shell_run_or_debug_fail(script, *args, **kargs):
     # Manually execute /bin/sh, because sh -e does what we want

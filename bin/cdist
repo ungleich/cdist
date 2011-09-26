@@ -48,16 +48,6 @@ BANNER = """
    "P'        ""         ""
 """
 
-# Given paths from installation
-REMOTE_BASE_DIR                 = "/var/lib/cdist"
-REMOTE_CONF_DIR                 = os.path.join(REMOTE_BASE_DIR, "conf")
-REMOTE_OBJECT_DIR               = os.path.join(REMOTE_BASE_DIR, "object")
-REMOTE_TYPE_DIR                 = os.path.join(REMOTE_CONF_DIR, "type")
-REMOTE_GLOBAL_EXPLORER_DIR      = os.path.join(REMOTE_CONF_DIR, "explorer")
-
-CODE_HEADER                     = "#!/bin/sh -e\n"
-DOT_CDIST                       = ".cdist"
-TYPE_PREFIX                     = "__"
 VERSION                         = "2.0.1"
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')

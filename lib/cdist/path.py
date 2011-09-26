@@ -35,8 +35,7 @@ CODE_HEADER                     = "#!/bin/sh -e\n"
 DOT_CDIST                       = ".cdist"
 TYPE_PREFIX                     = "__"
 
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 import cdist.exec
 
