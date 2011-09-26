@@ -8,7 +8,9 @@
       - and that ssh will wait for answer of prompt
          - nasty if used in parallel mode (scroll up!)
 
-- rewrite cdist-stages
+- rewrite cdist-stages, remove
+- update man7!
+- exec flag is not true for manifest anymore
 
 SSH HINTS
 ---------
