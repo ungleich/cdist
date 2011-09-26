@@ -34,6 +34,8 @@ import tempfile
 
 log = logging.getLogger(__name__)
 
+TYPE_PREFIX = "__"
+
 class Cdist:
     """Cdist main class to hold arbitrary data"""
 
@@ -482,7 +484,7 @@ if __name__ == "__main__":
             '../lib')))
         import cdist
 
-        if re.match(cdist.TYPE_PREFIX, os.path.basename(sys.argv[0])):
+        if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
             emulator()
         else:
             import cdist.banner

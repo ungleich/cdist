@@ -19,7 +19,6 @@
 #
 #
 
-TYPE_PREFIX = "__"
 VERSION     = "2.0.2"
 
 class Error(Exception):
