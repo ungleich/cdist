@@ -24,6 +24,8 @@ import logging
 import os
 import sys
 
+import cdist.path
+
 log = logging.getLogger(__name__)
 
 def emulator(argv):
@@ -37,12 +39,12 @@ def emulator(argv):
     parser = argparse.ArgumentParser(add_help=False)
 
     # Setup optional parameters
-    for parameter in file_to_list(os.path.join(param_dir, "optional")):
+    for parameter in cdist.path.file_to_list(os.path.join(param_dir, "optional")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=False)
 
     # Setup required parameters
-    for parameter in file_to_list(os.path.join(param_dir, "required")):
+    for parameter in cdist.path.file_to_list(os.path.join(param_dir, "required")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=True)
 
@@ -69,7 +71,7 @@ def emulator(argv):
     log.debug(args)
 
     object_dir = os.path.join(global_dir, "object", type,
-                            object_id, DOT_CDIST)
+                            object_id, cdist.path.DOT_CDIST)
     param_out_dir = os.path.join(object_dir, "parameter")
 
     object_source_file = os.path.join(object_dir, "source")

@@ -29,6 +29,7 @@ def shell_run_or_debug_fail(script, *args, **kargs):
     # and sh -c -e does not exit if /bin/false called
     args[0][:0] = [ "/bin/sh", "-e" ]
 
+    remote = False
     if "remote_prefix" in kargs:
         remote = True
         args[0][:0] = kargs["remote_prefix"]
