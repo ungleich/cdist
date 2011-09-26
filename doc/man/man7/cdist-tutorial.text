@@ -1,40 +1,23 @@
-#!/bin/sh
-#
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
-#
-# This file is part of cdist.
-#
-# cdist is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cdist is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
-#
-#
-# Give the user an introduction into cdist
-#
+cdist-tutorial(7)
+=================
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
-. cdist-config
-set -eu
 
-banner="cdist-quickstart>"
-continue="Press enter to continue or ctrl-c to abort."
-create_continue="Press enter to create the described files/directories"
+NAME
+----
+cdist-tutorial - a guided introduction into cdist
 
-__prompt()
-{
-   echo -n "$banner" "$@"
-   read answer
-}
 
-################################################################################
+INTRODUCTION
+------------
+This tutorial is aimed at people learning cdist and shows
+typical approaches as well as gives an easy start into
+the world of configuration management.
+
+
+NOT MIGRATED
+------------
+
 # Intro of quickstart
 #
 cat << eof
@@ -305,6 +288,10 @@ That's it, this is the end of the cdist-quickstart.
 I hope you've got some impression on how cdist works, here are again some
 pointers on where to continue to read:
 
-cdist(7), cdist-deploy-to(1), cdist-type(7), cdist-stages(7)
 
 eof
+
+SEE ALSO
+--------
+cdist(1), cdist-type(7), cdist-stages(7)
+
