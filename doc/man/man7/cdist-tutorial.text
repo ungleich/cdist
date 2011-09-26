@@ -49,7 +49,7 @@ with public keys:
 ssh-keygen
 
 # Copy pubkey over to target host
-ssh-copy-id root@target_host
+ssh-copy-id root@localhost
 --------------------------------------------------------------------------------
 
 As soon as you are able to login without passwort to the target host,
@@ -75,7 +75,7 @@ ls -l /etc/cdist-configured
 The file 'conf/manifest/init' is usually the entry point for cdist,
 to find out what to configure on which host. All manifests are
 essentially shell scripts. Every manifest can use the types known to
-cdist, which are usually underline prefixed (\_\_).
+cdist, which are usually underline prefixed (__).
 
 
 SEE ALSO
