@@ -14,6 +14,10 @@ This tutorial is aimed at people learning cdist and shows
 typical approaches as well as gives an easy start into
 the world of configuration management.
 
+This tutorial assumes you are configuring **localhost**, because
+it is always available. Just repace **localhost** with your target
+host for real life usage.
+
 
 
 QUICK START
@@ -36,6 +40,19 @@ PermitRootLogin without-password
 # Allow login via password and public key
 PermitRootLogin yes
 --------------------------------------------------------------------------------
+
+As cdist uses ssh intensively, it is recommended to setup authentication
+with public keys:
+
+--------------------------------------------------------------------------------
+# Generate pubkey pair as a normal user
+ssh-keygen
+
+# Copy pubkey over to target host
+ssh-copy-id root@target_host
+--------------------------------------------------------------------------------
+
+As soon as you are able to login to the target host
 
 
 Before you can start using cdist, you need to ensure that
@@ -75,6 +92,9 @@ essentially shell scripts. Every manifest can use the types known to
 cdist, which are usually underline prefixed (\_\_).
 
 
+SSH HINTS
+---------
+Control master, ssh agent
 
 Everything you specify in manifests
 
