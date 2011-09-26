@@ -125,10 +125,6 @@ class Path:
         """Create directory on remote side"""
         cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=self.remote_prefix)
 
-    def remote_cat(filename):
-        """Use cat on the remote side for output"""
-        cdist.exec.run_or_fail(["cat", filename], remote_prefix=self.remote_prefix)
-
     def remove_remote_dir(self, destination):
         cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=self.remote_prefix)
 
