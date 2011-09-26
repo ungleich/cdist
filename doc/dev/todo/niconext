@@ -8,6 +8,7 @@
       - and that ssh will wait for answer of prompt
          - nasty if used in parallel mode (scroll up!)
 
+- rewrite cdist-stages
 
 SSH HINTS
 ---------
