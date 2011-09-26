@@ -42,12 +42,12 @@ class Exec(unittest.TestCase):
         self.shell_false = os.path.join(self.temp_dir, "shell_false")
         self.shell_true  = os.path.join(self.temp_dir, "shell_true")
 
-        true_fd = open(self.shell_false, "w")
-        true_fd.writelines(["!/bin/sh", "/bin/true"])
+        true_fd = open(self.shell_true, "w")
+        true_fd.writelines(["#!/bin/sh", "/bin/true"])
         true_fd.close()
         
         false_fd = open(self.shell_false, "w")
-        false_fd.writelines(["!/bin/sh", "/bin/false"])
+        false_fd.writelines(["#!/bin/sh", "/bin/false"])
         false_fd.close()
 
     def tearDown(self):
@@ -55,7 +55,7 @@ class Exec(unittest.TestCase):
         
     def test_local_success_shell(self):
         try:
-            cdist.shell_run_or_debug_fail(self.shell_true, [self.shell_true])
+            cdist.exec.shell_run_or_debug_fail(self.shell_true, [self.shell_true])
         except cdist.Error:
             failed = True
         else:
@@ -80,6 +80,47 @@ class Exec(unittest.TestCase):
     def test_local_fail(self):
         self.assertRaises(cdist.Error, cdist.exec.run_or_fail, ["/bin/false"])
 
+class Config(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+        self.init_manifest = os.path.join(self.temp_dir, "manifest")
+        self.config = cdist.config.Config("localhost",
+                            initial_manifest=self.init_manifest)
+
+    def test_initial_manifest_different_parameter(self):
+        manifest_fd = open(self.init_manifest, "w")
+        manifest_fd.writelines(["#!/bin/sh",
+            "__file " + self.temp_dir + "--mode 0700",
+            "__file " + self.temp_dir + "--mode 0600",
+            ])
+        manifest_fd.close()
+
+        self.assertRaises(cdist.Error, self.config.run_initial_manifest())
+
+    def test_initial_manifest_parameter_added(self):
+        manifest_fd = open(self.init_manifest, "w")
+        manifest_fd.writelines(["#!/bin/sh",
+            "__file " + self.temp_dir,
+            "__file " + self.temp_dir + "--mode 0600",
+            ])
+        manifest_fd.close()
+
+        self.assertRaises(cdist.Error, self.config.run_initial_manifest())
+
+    def test_initial_manifest_parameter_removed(self):
+        manifest_fd = open(self.init_manifest, "w")
+        manifest_fd.writelines(["#!/bin/sh",
+            "__file " + self.temp_dir + "--mode 0600",
+            "__file " + self.temp_dir,
+            ])
+        manifest_fd.close()
+
+        self.assertRaises(cdist.Error, self.config.run_initial_manifest())
+
+# Todo:
+# fail if parameter in manifest given are different
+# fail if parameter in manifest given are absent once/given once
+# succeed if same parameter is specified twice
 
 if __name__ == '__main__':
     unittest.main()
