@@ -24,6 +24,7 @@ import logging
 import os
 import sys
 
+import cdist
 import cdist.path
 
 log = logging.getLogger(__name__)
@@ -87,7 +88,7 @@ def emulator(argv):
         try:
             os.makedirs(param_out_dir, exist_ok=True)
         except OSError as error:
-            raise CdistError(param_out_dir + ": " + error.args[1])
+            raise cdist.Error(param_out_dir + ": " + error.args[1])
 
     # Record parameter
     params = vars(args)

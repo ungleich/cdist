@@ -58,7 +58,6 @@ def shell_run_or_debug_fail(script, *args, remote_prefix=False, **kargs):
     except OSError as error:
         raise cdist.Error(" ".join(*args) + ": " + error.args[1])
 
-
 def run_or_fail(*args, remote_prefix=False, **kargs):
     if remote_prefix:
         args[0][:0] = remote_prefix
