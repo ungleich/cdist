@@ -24,6 +24,8 @@ import subprocess
 
 log = logging.getLogger(__name__)
 
+import cdist
+
 def shell_run_or_debug_fail(script, *args, **kargs):
     # Manually execute /bin/sh, because sh -e does what we want
     # and sh -c -e does not exit if /bin/false called
@@ -50,11 +52,11 @@ def shell_run_or_debug_fail(script, *args, **kargs):
                 print(script_fd.read())
                 script_fd.close()
             except IOError as error:
-                raise CdistError(str(error))
+                raise cdist.Error(str(error))
 
-        raise CdistError("Command failed (shell): " + " ".join(*args))
+        raise cdist.Error("Command failed (shell): " + " ".join(*args))
     except OSError as error:
-        raise CdistError(" ".join(*args) + ": " + error.args[1])
+        raise cdist.Error(" ".join(*args) + ": " + error.args[1])
 
 
 def run_or_fail(*args, **kargs):
@@ -66,6 +68,6 @@ def run_or_fail(*args, **kargs):
     try:
         subprocess.check_call(*args, **kargs)
     except subprocess.CalledProcessError:
-        raise CdistError("Command failed: " + " ".join(*args))
+        raise cdist.Error("Command failed: " + " ".join(*args))
     except OSError as error:
-        raise CdistError(" ".join(*args) + ": " + error.args[1])
+        raise cdist.Error(" ".join(*args) + ": " + error.args[1])
