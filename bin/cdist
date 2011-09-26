@@ -77,10 +77,6 @@ def file_to_list(filename):
 
     return lines
 
-class CdistError(Exception):
-    """Base exception class for this project"""
-    pass
-
 class Cdist:
     """Cdist main class to hold arbitrary data"""
 
@@ -104,153 +100,9 @@ class Cdist:
     def cleanup(self):
         self.path.cleanup()
 
-    def remove_remote_dir(self, destination):
-        self.run_or_fail(["rm", "-rf",  destination], remote=True)
-
-    def global_explorer_output_path(self, explorer):
-        """Returns path of the output for a global explorer"""
-        return os.path.join(self.global_explorer_out_dir, explorer)
-
-    def type_explorer_output_dir(self, cdist_object):
-        """Returns and creates dir of the output for a type explorer"""
-        dir = os.path.join(self.object_dir(cdist_object), "explorer")
-        if not os.path.isdir(dir):
-            os.mkdir(dir)
-
-        return dir
-
-    def remote_global_explorer_path(self, explorer):
-        """Returns path to the remote explorer"""
-        return os.path.join(REMOTE_GLOBAL_EXPLORER_DIR, explorer)
-
-    def list_global_explorers(self):
-        """Return list of available explorers"""
-        return os.listdir(self.global_explorer_dir)
-
-    def list_type_explorers(self, type):
-        """Return list of available explorers for a specific type"""
-        dir = self.type_dir(type, "explorer")
-        if os.path.isdir(dir):
-            list = os.listdir(dir)
-        else:
-            list = []
-
-        log.debug("Explorers for %s in %s: %s", type, dir, list)
-
-        return list
-
-    def list_types(self):
-        return os.listdir(self.type_base_dir)
-
-    def list_object_paths(self, starting_point):
-        """Return list of paths of existing objects"""
-        object_paths = []
-
-        for content in os.listdir(starting_point):
-            full_path = os.path.join(starting_point, content)
-            if os.path.isdir(full_path):
-                object_paths.extend(self.list_object_paths(starting_point = full_path))
-
-            # Directory contains .cdist -> is an object
-            if content == DOT_CDIST:
-                object_paths.append(starting_point)
-
-        return object_paths
-
-    def get_type_from_object(self, cdist_object):
-        """Returns the first part (i.e. type) of an object"""
-        return cdist_object.split(os.sep)[0]
-
-    def get_object_id_from_object(self, cdist_object):
-        """Returns everything but the first part (i.e. object_id) of an object"""
-        return os.sep.join(cdist_object.split(os.sep)[1:])
-
-    def object_dir(self, cdist_object):
-        """Returns the full path to the object (including .cdist)"""
-        return os.path.join(self.object_base_dir, cdist_object, DOT_CDIST)
-
-    def remote_object_dir(self, cdist_object):
-        """Returns the remote full path to the object (including .cdist)"""
-        return os.path.join(REMOTE_OBJECT_DIR, cdist_object, DOT_CDIST)
-
-    def object_parameter_dir(self, cdist_object):
-        """Returns the dir to the object parameter"""
-        return os.path.join(self.object_dir(cdist_object), "parameter")
-
-    def remote_object_parameter_dir(self, cdist_object):
-        """Returns the remote dir to the object parameter"""
-        return os.path.join(self.remote_object_dir(cdist_object), "parameter")
-
-    def object_code_paths(self, cdist_object):
-        """Return paths to code scripts of object"""
-        return [os.path.join(self.object_dir(cdist_object), "code-local"),
-                  os.path.join(self.object_dir(cdist_object), "code-remote")]
-
-    def list_objects(self):
-        """Return list of existing objects"""
-
-        objects = []
-        if os.path.isdir(self.object_base_dir):
-            object_paths = self.list_object_paths(self.object_base_dir)
-
-            for path in object_paths:
-                objects.append(os.path.relpath(path, self.object_base_dir))
-
-        return objects
-
-    def type_dir(self, type, *args):
-        """Return directory the type"""
-        return os.path.join(self.type_base_dir, type, *args)
-
-    def remote_type_explorer_dir(self, type):
-        """Return remote directory that holds the explorers of a type"""
-        return os.path.join(REMOTE_TYPE_DIR, type, "explorer")
-
-    def transfer_object_parameter(self, cdist_object):
-        """Transfer the object parameter to the remote destination"""
-        # Create base path before using mkdir -p
-        self.remote_mkdir(self.remote_object_parameter_dir(cdist_object))
-
-        # Synchronise parameter dir afterwards
-        self.transfer_dir(self.object_parameter_dir(cdist_object), 
-                                self.remote_object_parameter_dir(cdist_object))
-
-    def transfer_global_explorers(self):
-        """Transfer the global explorers"""
-        self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
-        self.transfer_dir(self.global_explorer_dir, REMOTE_GLOBAL_EXPLORER_DIR)
-
-    def transfer_type_explorers(self, type):
-        """Transfer explorers of a type, but only once"""
-        if type in self.type_explorers_transferred:
-            log.debug("Skipping retransfer for explorers of %s", type)
-            return
-        else:
-            # Do not retransfer
-            self.type_explorers_transferred[type] = 1
-
-        src = self.type_dir(type, "explorer")
-        remote_base = os.path.join(REMOTE_TYPE_DIR, type)
-        dst = self.remote_type_explorer_dir(type)
-
-        # Only continue, if there is at least the directory
-        if os.path.isdir(src):
-            # Ensure that the path exists
-            self.remote_mkdir(remote_base)
-            self.transfer_dir(src, dst)
-
-
-    def link_type_to_emulator(self):
-        """Link type names to cdist-type-emulator"""
-        source = os.path.abspath(sys.argv[0])
-        for type in self.list_types():
-            destination = os.path.join(self.bin_dir, type)
-            log.debug("Linking %s to %s", source, destination)
-            os.symlink(source, destination)
-
     def run_global_explores(self):
         """Run global explorers"""
-        explorers = self.list_global_explorers()
+        explorers = self.path.list_global_explorers()
         if(len(explorers) == 0):
             raise CdistError("No explorers found in", self.global_explorer_dir)
 
