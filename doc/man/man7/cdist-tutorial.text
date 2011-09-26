@@ -15,8 +15,69 @@ typical approaches as well as gives an easy start into
 the world of configuration management.
 
 
-NOT MIGRATED
-------------
+
+QUICK START
+-----------
+For those who just want to configure a system with the
+cdist configuration management and do not need (or want)
+to understand everything.
+
+Cdist uses **ssh** for communication and transportation
+and usually logs into the **target host** as the
+**root** user. So you need to configure the **ssh server**
+of the target host to allow root logins: Edit
+the file **/etc/ssh/sshd_config** and add one of the following
+lines:
+
+--------------------------------------------------------------------------------
+# Allow login only via public key
+PermitRootLogin without-password
+
+# Allow login via password and public key
+PermitRootLogin yes
+--------------------------------------------------------------------------------
+
+
+Before you can start using cdist, you need to ensure that
+you can login 
+sshd config!
+
+
+
+
+
+You can copy and paste the following
+code into your shell to get started and even configure your system.
+
+--------------------------------------------------------------------------------
+# Get cdist
+git clone git://git.schottelius.org/cdist
+
+# Create manifest (maps configuration to host(s)
+cd cdist
+echo '__file /etc/cdist-configured' > conf/manifest/init
+chmod 0700 conf/manifest/init
+
+echo  'Ensure that you can login as root to localhost without password'
+echo '(i.e. via public key) and then press return'
+read tmp
+
+# Configure localhost
+./bin/cdist config localhost
+
+# Find out that cdist created /etc/cdist-configured
+ls -l /etc/cdist-configured
+--------------------------------------------------------------------------------
+
+The file 'conf/manifest/init' is usually the entry point for cdist,
+to find out what to configure on which host. All manifests are
+essentially shell scripts. Every manifest can use the types known to
+cdist, which are usually underline prefixed (\_\_).
+
+
+
+Everything you specify in manifests
+
 
 # Intro of quickstart
 #

@@ -117,10 +117,22 @@ class Config(unittest.TestCase):
 
         self.assertRaises(cdist.Error, self.config.run_initial_manifest())
 
-# Todo:
-# fail if parameter in manifest given are different
-# fail if parameter in manifest given are absent once/given once
-# succeed if same parameter is specified twice
+    def test_initial_manifest_parameter_twice(self):
+        manifest_fd = open(self.init_manifest, "w")
+        manifest_fd.writelines(["#!/bin/sh",
+            "__file " + self.temp_dir + "--mode 0600",
+            "__file " + self.temp_dir + "--mode 0600",
+            ])
+        manifest_fd.close()
+
+        try:
+            self.config.run_initial_manifest()
+        except cdist.Error:
+            failed = True
+        else:
+            failed = False
+
+        self.assertFalse(failed)
 
 if __name__ == '__main__':
     unittest.main()
