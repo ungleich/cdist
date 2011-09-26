@@ -65,8 +65,13 @@ if [ -f /etc/SuSE-release ]; then
    exit 0
 fi
 
+if uname -r | grep -s '.owl' >/dev/null 2>&1; then
+   echo owl
+   exit 0
+fi
+
 if [ -f /etc/cdist-preos ]; then
-   echo preos
+   echo cdist-preos
    exit 0
 fi
 
