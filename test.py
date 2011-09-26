@@ -89,9 +89,9 @@ class Config(unittest.TestCase):
 
     def test_initial_manifest_different_parameter(self):
         manifest_fd = open(self.init_manifest, "w")
-        manifest_fd.writelines(["#!/bin/sh",
-            "__file " + self.temp_dir + "--mode 0700",
-            "__file " + self.temp_dir + "--mode 0600",
+        manifest_fd.writelines(["#!/bin/sh\n",
+            "__file " + self.temp_dir + "--mode 0700\n",
+            "__file " + self.temp_dir + "--mode 0600\n",
             ])
         manifest_fd.close()
 
@@ -99,9 +99,9 @@ class Config(unittest.TestCase):
 
     def test_initial_manifest_parameter_added(self):
         manifest_fd = open(self.init_manifest, "w")
-        manifest_fd.writelines(["#!/bin/sh",
-            "__file " + self.temp_dir,
-            "__file " + self.temp_dir + "--mode 0600",
+        manifest_fd.writelines(["#!/bin/sh\n",
+            "__file " + self.temp_dir + '\n',
+            "__file " + self.temp_dir + "--mode 0600\n",
             ])
         manifest_fd.close()
 
@@ -109,9 +109,9 @@ class Config(unittest.TestCase):
 
     def test_initial_manifest_parameter_removed(self):
         manifest_fd = open(self.init_manifest, "w")
-        manifest_fd.writelines(["#!/bin/sh",
-            "__file " + self.temp_dir + "--mode 0600",
-            "__file " + self.temp_dir,
+        manifest_fd.writelines(["#!/bin/sh\n",
+            "__file " + self.temp_dir + "--mode 0600\n",
+            "__file " + self.temp_dir + "\n",
             ])
         manifest_fd.close()
 
@@ -119,9 +119,9 @@ class Config(unittest.TestCase):
 
     def test_initial_manifest_parameter_twice(self):
         manifest_fd = open(self.init_manifest, "w")
-        manifest_fd.writelines(["#!/bin/sh",
-            "__file " + self.temp_dir + "--mode 0600",
-            "__file " + self.temp_dir + "--mode 0600",
+        manifest_fd.writelines(["#!/bin/sh\n",
+            "__file " + self.temp_dir + "--mode 0600\n",
+            "__file " + self.temp_dir + "--mode 0600\n",
             ])
         manifest_fd.close()
 
