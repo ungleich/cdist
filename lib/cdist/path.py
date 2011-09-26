@@ -33,7 +33,6 @@ REMOTE_GLOBAL_EXPLORER_DIR      = os.path.join(REMOTE_CONF_DIR, "explorer")
 
 CODE_HEADER                     = "#!/bin/sh -e\n"
 DOT_CDIST                       = ".cdist"
-TYPE_PREFIX                     = "__"
 
 log = logging.getLogger(__name__)
 
@@ -58,7 +57,7 @@ class Path:
 
     def __init__(self, target_host,
                     initial_manifest=False, remote_user="root",
-                    base_dir=None, debug=False):
+                    remote_prefix=False, base_dir=None, debug=False):
 
         # Base and Temp Base 
         if base_dir:
@@ -70,7 +69,10 @@ class Path:
         self.target_host = target_host
 
         self.remote_user = remote_user
-        self.remote_prefix = ["ssh", self.remote_user + "@" + self.target_host]
+        if remote_prefix:
+            self.remote_prefix = remote_prefix
+        else:
+            self.remote_prefix = ["ssh", self.remote_user + "@" + self.target_host]
 
         self.conf_dir               = os.path.join(self.base_dir, "conf")
         self.cache_base_dir         = os.path.join(self.base_dir, "cache")
