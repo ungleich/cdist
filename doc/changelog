@@ -1,4 +1,4 @@
-2.0.2:
+2.0.2: 2011-09-27
 	* Add support for detection of OpenWall Linux (Matthias Teege)
 	* Add support for __debug variable in manifests
 	* Bugfix core: Various issues with type emulator
