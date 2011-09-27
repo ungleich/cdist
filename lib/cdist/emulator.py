@@ -24,6 +24,7 @@ import logging
 import os
 import sys
 
+import cdist
 import cdist.path
 
 log = logging.getLogger(__name__)
@@ -87,7 +88,7 @@ def emulator(argv):
         try:
             os.makedirs(param_out_dir, exist_ok=True)
         except OSError as error:
-            raise CdistError(param_out_dir + ": " + error.args[1])
+            raise cdist.Error(param_out_dir + ": " + error.args[1])
 
     # Record parameter
     params = vars(args)
@@ -105,11 +106,11 @@ def emulator(argv):
                     sys.exit(1)
                 else:
                     param_fd = open(file, "r")
-                    param_old = param_fd.readlines()
+                    value_old = param_fd.readlines()
                     param_fd.close()
                     
-                    if(param_old != param):
-                        print("Parameter " + param + " differs: " + " ".join(param_old) + " vs. " + param)
+                    if(value_old != value):
+                        print("Parameter " + param + " differs: " + " ".join(value_old) + " vs. " + value)
                         print("Sources: " + " ".join(old_object_source) + " and " + object_source)
                         sys.exit(1)
             else:
