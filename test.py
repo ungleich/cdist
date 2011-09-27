@@ -46,11 +46,11 @@ class Exec(unittest.TestCase):
         self.shell_true  = os.path.join(self.temp_dir, "shell_true")
 
         true_fd = open(self.shell_true, "w")
-        true_fd.writelines(["#!/bin/sh", "/bin/true"])
+        true_fd.writelines(["#!/bin/sh\n", "/bin/true"])
         true_fd.close()
         
         false_fd = open(self.shell_false, "w")
-        false_fd.writelines(["#!/bin/sh", "/bin/false"])
+        false_fd.writelines(["#!/bin/sh\n", "/bin/false"])
         false_fd.close()
 
     def tearDown(self):
