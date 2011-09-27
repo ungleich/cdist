@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
         if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
             import cdist.emulator
-            cdist.emulator.emulator(sys.argv)
+            cdist.emulator.run(sys.argv)
         else:
             import cdist
             import cdist.banner

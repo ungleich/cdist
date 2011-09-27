@@ -30,6 +30,9 @@ import unittest
 sys.path.insert(0, os.path.abspath(
         os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib')))
 
+cdist_exec_path = os.path.abspath(
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "bin/cdist"))
+
 import cdist
 import cdist.config
 import cdist.exec
@@ -85,13 +88,14 @@ class Config(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp()
         self.init_manifest = os.path.join(self.temp_dir, "manifest")
         self.config = cdist.config.Config("localhost",
-                            initial_manifest=self.init_manifest)
+                            initial_manifest=self.init_manifest,
+                            exec_path=cdist_exec_path)
 
     def test_initial_manifest_different_parameter(self):
         manifest_fd = open(self.init_manifest, "w")
         manifest_fd.writelines(["#!/bin/sh\n",
-            "__file " + self.temp_dir + "--mode 0700\n",
-            "__file " + self.temp_dir + "--mode 0600\n",
+            "__file " + self.temp_dir + " --mode 0700\n",
+            "__file " + self.temp_dir + " --mode 0600\n",
             ])
         manifest_fd.close()
 
@@ -101,7 +105,7 @@ class Config(unittest.TestCase):
         manifest_fd = open(self.init_manifest, "w")
         manifest_fd.writelines(["#!/bin/sh\n",
             "__file " + self.temp_dir + '\n',
-            "__file " + self.temp_dir + "--mode 0600\n",
+            "__file " + self.temp_dir + " --mode 0600\n",
             ])
         manifest_fd.close()
 
@@ -110,7 +114,7 @@ class Config(unittest.TestCase):
     def test_initial_manifest_parameter_removed(self):
         manifest_fd = open(self.init_manifest, "w")
         manifest_fd.writelines(["#!/bin/sh\n",
-            "__file " + self.temp_dir + "--mode 0600\n",
+            "__file " + self.temp_dir + " --mode 0600\n",
             "__file " + self.temp_dir + "\n",
             ])
         manifest_fd.close()
@@ -120,8 +124,8 @@ class Config(unittest.TestCase):
     def test_initial_manifest_parameter_twice(self):
         manifest_fd = open(self.init_manifest, "w")
         manifest_fd.writelines(["#!/bin/sh\n",
-            "__file " + self.temp_dir + "--mode 0600\n",
-            "__file " + self.temp_dir + "--mode 0600\n",
+            "__file " + self.temp_dir + " --mode 0600\n",
+            "__file " + self.temp_dir + " --mode 0600\n",
             ])
         manifest_fd.close()
 
