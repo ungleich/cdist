@@ -24,9 +24,11 @@ import datetime
 import logging
 import os
 import stat
+import sys
 
 log = logging.getLogger(__name__)
 
+import cdist.emulator
 import cdist.path
 
 CODE_HEADER                     = "#!/bin/sh -e\n"
@@ -35,12 +37,18 @@ class Config:
     """Cdist main class to hold arbitrary data"""
 
     def __init__(self, target_host, 
-                    initial_manifest=False, remote_user="root",
-                    home=None, debug=False):
+                    initial_manifest=False,
+                    remote_user="root",
+                    home=None,
+                    exec_path=sys.argv[0],
+                    debug=False):
 
-        self.target_host = target_host
-        self.debug = debug
-        self.remote_user = remote_user
+        self.target_host    = target_host
+        self.debug          = debug
+        self.remote_user    = remote_user
+        self.exec_path      = exec_path
+
+        # FIXME: broken - construct elsewhere!
         self.remote_prefix = ["ssh", self.remote_user + "@" + self.target_host]
 
         self.path = cdist.path.Path(self.target_host, 
@@ -94,7 +102,7 @@ class Config:
             output = os.path.join(self.path.type_explorer_output_dir(cdist_object), explorer)
             output_fd = open(output, mode='w')
             log.debug("%s exploring %s using %s storing to %s", 
-                        cdist_object, explorer, remote_cmd, output)
+                            cdist_object, explorer, remote_cmd, output)
                         
             cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=self.remote_prefix)
             output_fd.close()
@@ -105,6 +113,9 @@ class Config:
 
         self.path.remove_remote_dir(cdist.path.REMOTE_BASE_DIR)
         self.path.remote_mkdir(cdist.path.REMOTE_BASE_DIR)
+
+        cdist.emulator.link(self.exec_path,
+            self.path.bin_dir, self.path.list_types())
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
@@ -299,95 +310,3 @@ def config(args):
     time_end = datetime.datetime.now()
     log.info("Total processing time for %s host(s): %s", len(args.host),
                 (time_end - time_start).total_seconds())
-
-def install(args):
-    """Install remote system"""
-    process = {}
-
-def commandline():
-    """Parse command line"""
-    # Construct parser others can reuse
-    parser = {}
-    # Options _all_ parsers have in common
-    parser['most'] = argparse.ArgumentParser(add_help=False)
-    parser['most'].add_argument('-d', '--debug',
-        help='Set log level to debug', action='store_true')
-
-    # Main subcommand parser
-    parser['main'] = argparse.ArgumentParser(description='cdist ' + cdist.VERSION)
-    parser['main'].add_argument('-V', '--version',
-        help='Show version', action='version',
-        version='%(prog)s ' + cdist.VERSION)
-    parser['sub'] = parser['main'].add_subparsers(title="Commands")
-
-    # Banner
-    parser['banner'] = parser['sub'].add_parser('banner', 
-        add_help=False)
-    parser['banner'].set_defaults(func=cdist.banner.banner)
-
-    # Config and install (common stuff)
-    parser['configinstall'] = argparse.ArgumentParser(add_help=False)
-    parser['configinstall'].add_argument('host', nargs='+',
-        help='one or more hosts to operate on')
-    parser['configinstall'].add_argument('-c', '--cdist-home',
-         help='Change cdist home (default: .. from bin directory)',
-         action='store')
-    parser['configinstall'].add_argument('-i', '--initial-manifest', 
-         help='Path to a cdist manifest',
-         dest='manifest', required=False)
-    parser['configinstall'].add_argument('-p', '--parallel',
-         help='Operate on multiple hosts in parallel',
-         action='store_true', dest='parallel')
-    parser['configinstall'].add_argument('-s', '--sequential',
-         help='Operate on multiple hosts sequentially (default)',
-         action='store_false', dest='parallel')
-
-    # Config
-    parser['config'] = parser['sub'].add_parser('config',
-        parents=[parser['most'], parser['configinstall']])
-    parser['config'].set_defaults(func=config)
-
-    # Install
-    parser['install'] = parser['sub'].add_parser('install',
-        parents=[parser['most'], parser['configinstall']])
-    parser['install'].set_defaults(func=install)
-
-    for p in parser:
-        parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
-
-    args = parser['main'].parse_args(sys.argv[1:])
-
-    # Most subcommands have --debug, so handle it here
-    if 'debug' in args:
-        if args.debug:
-            logging.root.setLevel(logging.DEBUG)
-    log.debug(args)
-
-    args.func(args)
-
-
-if __name__ == "__main__":
-    try:
-        logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
-
-        if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
-            cdist_lib = os.environ["__cdist_python_lib"]
-            sys.path.insert(0, cdist_lib)
-            import cdist.emulator
-            cdist.emulator.emulator(sys.argv)
-        else:
-            cdist_lib = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                '../lib'))
-            sys.path.insert(0, cdist_lib)
-
-            import cdist
-            import cdist.banner
-            import cdist.exec
-            import cdist.path
-
-            commandline()
-    except KeyboardInterrupt:
-        sys.exit(0)
-    except cdist.Error as e:
-        log.error(e)
-        sys.exit(1)

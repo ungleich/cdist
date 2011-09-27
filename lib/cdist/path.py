@@ -94,7 +94,6 @@ class Path:
         # Setup binary directory + contents
         self.bin_dir = os.path.join(self.out_dir, "bin")
         os.mkdir(self.bin_dir)
-        self.link_type_to_emulator()
 
         # List of type explorers transferred
         self.type_explorers_transferred = {}
@@ -275,12 +274,3 @@ class Path:
             # Ensure that the path exists
             self.remote_mkdir(remote_base)
             self.transfer_dir(src, dst)
-
-
-    def link_type_to_emulator(self):
-        """Link type names to cdist-type-emulator"""
-        source = os.path.abspath(sys.argv[0])
-        for type in self.list_types():
-            destination = os.path.join(self.bin_dir, type)
-            log.debug("Linking %s to %s", source, destination)
-            os.symlink(source, destination)

@@ -133,3 +133,12 @@ def emulator(argv):
 
     # sys.exit(1)
     print("Finished " + type + "/" + object_id + repr(params))
+
+
+def link(exec_path, bin_dir, type_list):
+    """Link type names to cdist-type-emulator"""
+    source = os.path.abspath(exec_path)
+    for type in type_list:
+        destination = os.path.join(bin_dir, type)
+        log.debug("Linking %s to %s", source, destination)
+        os.symlink(source, destination)
