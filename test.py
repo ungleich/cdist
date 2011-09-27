@@ -121,6 +121,14 @@ class Config(unittest.TestCase):
 
         self.assertRaises(cdist.Error, self.config.run_initial_manifest)
 
+    def test_initial_manifest_non_existent_command(self):
+        manifest_fd = open(self.init_manifest, "w")
+        manifest_fd.writelines(["#!/bin/sh\n",
+            "thereisdefinitelynosuchcommend"])
+        manifest_fd.close()
+
+        self.assertRaises(cdist.Error, self.config.run_initial_manifest)
+
     def test_initial_manifest_parameter_twice(self):
         manifest_fd = open(self.init_manifest, "w")
         manifest_fd.writelines(["#!/bin/sh\n",
