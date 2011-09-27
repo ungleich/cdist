@@ -38,21 +38,19 @@ def run(argv):
 
     if '__debug' in os.environ:
         logging.root.setLevel(logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser(add_help=False)
 
-    # Setup optional parameters
     for parameter in cdist.path.file_to_list(os.path.join(param_dir, "optional")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=False)
-
-    # Setup required parameters
     for parameter in cdist.path.file_to_list(os.path.join(param_dir, "required")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=True)
 
-    # Setup positional parameter, if not singleton
-
+    # If not singleton support one positional parameter
     if not os.path.isfile(os.path.join(type_dir, "singleton")):
         parser.add_argument("object_id", nargs=1)
 
@@ -69,6 +67,10 @@ def run(argv):
         # FIXME: / hardcoded - better portable solution available?
         if object_id[0] == '/':
             object_id = object_id[1:]
+
+    # Prefix output by object_self
+    logformat = '%(levelname)s: ' + type + '/' + object_id + ': %(message)s'
+    logging.basicConfig(format=logformat)
 
     # FIXME: verify object id
     log.debug(args)

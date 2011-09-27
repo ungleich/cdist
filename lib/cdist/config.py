@@ -150,7 +150,8 @@ class Config:
         env['__global']                 = self.path.out_dir
         
         # Submit debug flag to manifest, can be used by emulator and types
-        env['__debug']                  = "yes"
+        if self.debug:
+            env['__debug']                  = "yes"
 
         # Required for recording source
         env['__cdist_manifest']         = manifest
