@@ -93,6 +93,12 @@ cdist was tested or is know to run on at least
 Ensure you have Python 3.x and the **argparse** module installed on
 the machine you use to **deploy to the targets**.
 
+#### Archlinux
+
+Archlinux already has python >= 3.2, so you only need to do:
+
+    pacman -S python
+
 #### Debian
 
     aptitude install python3 python3-setuptools
