@@ -65,6 +65,7 @@ class Config:
 
     def run_global_explores(self):
         """Run global explorers"""
+        log.info("Running global explorers")
         explorers = self.path.list_global_explorers()
         if(len(explorers) == 0):
             raise CdistError("No explorers found in", self.path.global_explorer_dir)

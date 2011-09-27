@@ -97,7 +97,7 @@ def commandline():
 
 if __name__ == "__main__":
     try:
-        logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+        logging.basicConfig(format='%(levelname)s: %(message)s')
 
         if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
             import cdist.emulator
