@@ -1,5 +1,7 @@
 2.0.2:
 	* Add support for detection of OpenWall Linux (Matthias Teege)
+	* Add support for __debug variable in manifests
+	* Bugfix core: Various issues with type emulator
 
 2.0.1: 2011-09-23
 	* Bugfix core: Always print source of error in case of exec errors
