@@ -34,6 +34,8 @@ USER INTERFACE
    -> given after manifest run already!
 
 - use absent/present for state by default?
+- buggy output with packages that don't exist in archlinux and fedora:
+   python3 vs. python
 
 TYPES
 ------
