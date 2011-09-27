@@ -41,7 +41,11 @@ def commandline():
     # Options _all_ parsers have in common
     parser['most'] = argparse.ArgumentParser(add_help=False)
     parser['most'].add_argument('-d', '--debug',
-        help='Set log level to debug', action='store_true')
+        help='Set log level to debug', action='store_true',
+        default=False)
+    parser['most'].add_argument('-v', '--verbose',
+        help='Set log level to info, is more verbose',
+        action='store_true', default=False)
 
     # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(description='cdist ' + cdist.VERSION)
@@ -87,12 +91,13 @@ def commandline():
 
     args = parser['main'].parse_args(sys.argv[1:])
 
-    # Most subcommands have --debug, so handle it here
-    if 'debug' in args:
-        if args.debug:
-            logging.root.setLevel(logging.DEBUG)
-    log.debug(args)
+    # Loglevels are handled globally in here and debug wins over verbose
+    if args.verbose:
+        logging.root.setLevel(logging.INFO)
+    if args.debug:
+        logging.root.setLevel(logging.DEBUG)
 
+    log.debug(args)
     args.func(args)
 
 if __name__ == "__main__":
