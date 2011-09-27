@@ -36,6 +36,9 @@ def run(argv):
     global_dir      = os.environ['__global']
     object_source   = os.environ['__cdist_manifest']
 
+    if '__debug' in os.environ:
+        logging.root.setLevel(logging.DEBUG)
+
     parser = argparse.ArgumentParser(add_help=False)
 
     # Setup optional parameters
@@ -134,7 +137,7 @@ def run(argv):
     source_fd.writelines(object_source)
     source_fd.close()
 
-    print("Finished " + type + "/" + object_id + repr(params))
+    log.debug("Finished " + type + "/" + object_id + repr(params))
 
 
 def link(exec_path, bin_dir, type_list):

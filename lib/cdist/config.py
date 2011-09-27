@@ -149,10 +149,13 @@ class Config:
         env['__target_host']            = self.target_host
         env['__global']                 = self.path.out_dir
         
+        # Submit debug flag to manifest, can be used by emulator and types
+        env['__debug']                  = "yes"
+
         # Required for recording source
         env['__cdist_manifest']         = manifest
 
-            # Required to find types
+        # Required to find types
         env['__cdist_type_base_dir']    = self.path.type_base_dir
 
         # Other environment stuff
