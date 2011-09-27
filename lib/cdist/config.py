@@ -107,15 +107,18 @@ class Config:
             cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=self.remote_prefix)
             output_fd.close()
 
+    def link_emulator(self):
+        """Link emulator to types"""
+        cdist.emulator.link(self.exec_path,
+            self.path.bin_dir, self.path.list_types())
+
     def init_deploy(self):
         """Ensure the base directories are cleaned up"""
         log.debug("Creating clean directory structure")
 
         self.path.remove_remote_dir(cdist.path.REMOTE_BASE_DIR)
         self.path.remote_mkdir(cdist.path.REMOTE_BASE_DIR)
-
-        cdist.emulator.link(self.exec_path,
-            self.path.bin_dir, self.path.list_types())
+        self.link_emulator()
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
@@ -149,7 +152,7 @@ class Config:
         # Required for recording source
         env['__cdist_manifest']         = manifest
 
-        # Required to find types
+            # Required to find types
         env['__cdist_type_base_dir']    = self.path.type_base_dir
 
         # Other environment stuff
