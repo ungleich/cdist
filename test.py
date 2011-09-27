@@ -139,7 +139,9 @@ class Config(unittest.TestCase):
         manifest_fd.close()
 
         try:
+            print("a")
             self.config.run_initial_manifest()
+            print("b")
         except cdist.Error:
             failed = True
         else:

@@ -110,12 +110,12 @@ def run(argv):
                     value_old = param_fd.readlines()
                     param_fd.close()
                     
-                    if(value_old != value):
-                        raise cdist.Error("Parameter + \"" + param +
+                    if(value_old[0] != value):
+                        raise cdist.Error("Parameter\"" + param +
                             "\" differs: " + " ".join(value_old) + " vs. " +
                             value +
                             "\nSource = " + " ".join(old_object_source)
-                            + " new =" + object_source)
+                            + " new = " + object_source)
             else:
                 param_fd = open(file, "w")
                 param_fd.writelines(value)
