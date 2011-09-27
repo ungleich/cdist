@@ -65,7 +65,7 @@ if [ -f /etc/SuSE-release ]; then
    exit 0
 fi
 
-if uname -r | grep -s '.owl' >/dev/null 2>&1; then
+if [ -f /etc/owl-release ]; then
    echo owl
    exit 0
 fi

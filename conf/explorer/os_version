@@ -42,6 +42,9 @@ case "$($__explorer/os)" in
    *bsd|solaris)
       uname -r
    ;;
+   owl)
+      cat /etc/owl-release
+   ;;
    redhat|centos)
       cat /etc/redhat-release
    ;;
