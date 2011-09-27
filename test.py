@@ -99,7 +99,7 @@ class Config(unittest.TestCase):
             ])
         manifest_fd.close()
 
-        self.assertRaises(cdist.Error, self.config.run_initial_manifest())
+        self.assertRaises(cdist.Error, self.config.run_initial_manifest)
 
     def test_initial_manifest_parameter_added(self):
         manifest_fd = open(self.init_manifest, "w")
@@ -109,7 +109,7 @@ class Config(unittest.TestCase):
             ])
         manifest_fd.close()
 
-        self.assertRaises(cdist.Error, self.config.run_initial_manifest())
+        self.assertRaises(cdist.Error, self.config.run_initial_manifest)
 
     def test_initial_manifest_parameter_removed(self):
         manifest_fd = open(self.init_manifest, "w")
@@ -119,7 +119,7 @@ class Config(unittest.TestCase):
             ])
         manifest_fd.close()
 
-        self.assertRaises(cdist.Error, self.config.run_initial_manifest())
+        self.assertRaises(cdist.Error, self.config.run_initial_manifest)
 
     def test_initial_manifest_parameter_twice(self):
         manifest_fd = open(self.init_manifest, "w")
