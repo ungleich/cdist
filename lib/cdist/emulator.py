@@ -22,7 +22,6 @@
 import argparse
 import logging
 import os
-import sys
 
 import cdist
 import cdist.path
@@ -101,18 +100,22 @@ def run(argv):
             # Already exists, verify all parameter are the same
             if object_exists:
                 if not os.path.isfile(file):
-                    print("New parameter + \"" + param + "\" specified, aborting")
-                    print("Source = " + " ".join(old_object_source) + " new =" + object_source)
-                    sys.exit(1)
+                    raise cdist.Error("New parameter \"" +
+                        param + "\" specified, aborting\n" +
+                        "Source = " +
+                        " ".join(old_object_source)
+                        + " new =" + object_source)
                 else:
                     param_fd = open(file, "r")
                     value_old = param_fd.readlines()
                     param_fd.close()
                     
                     if(value_old != value):
-                        print("Parameter " + param + " differs: " + " ".join(value_old) + " vs. " + value)
-                        print("Sources: " + " ".join(old_object_source) + " and " + object_source)
-                        sys.exit(1)
+                        raise cdist.Error("Parameter + \"" + param +
+                            "\" differs: " + " ".join(value_old) + " vs. " +
+                            value +
+                            "\nSource = " + " ".join(old_object_source)
+                            + " new =" + object_source)
             else:
                 param_fd = open(file, "w")
                 param_fd.writelines(value)
@@ -131,7 +134,6 @@ def run(argv):
     source_fd.writelines(object_source)
     source_fd.close()
 
-    # sys.exit(1)
     print("Finished " + type + "/" + object_id + repr(params))
 
 
