@@ -146,12 +146,6 @@ class Config:
         env['__target_host']            = self.target_host
         env['__global']                 = self.path.out_dir
         
-        # Legacy stuff to make cdist-type-emulator work
-        env['__cdist_core_dir']         = os.path.join(self.path.base_dir, "core")
-        env['__cdist_local_base_dir']   = self.path.temp_dir
-
-        # Submit information to new type emulator
-
         # Required for recording source
         env['__cdist_manifest']         = manifest
 
