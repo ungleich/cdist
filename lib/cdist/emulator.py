@@ -29,7 +29,7 @@ import cdist.path
 
 log = logging.getLogger(__name__)
 
-def emulator(argv):
+def run(argv):
     """Emulate type commands (i.e. __file and co)"""
     type            = os.path.basename(argv[0])
     type_dir        = os.path.join(os.environ['__cdist_type_base_dir'], type)
@@ -101,8 +101,8 @@ def emulator(argv):
             # Already exists, verify all parameter are the same
             if object_exists:
                 if not os.path.isfile(file):
-                    print("New parameter + " + param + "specified, aborting")
-                    print("Source = " + old_object_source + "new =" + object_source)
+                    print("New parameter + \"" + param + "\" specified, aborting")
+                    print("Source = " + " ".join(old_object_source) + " new =" + object_source)
                     sys.exit(1)
                 else:
                     param_fd = open(file, "r")
