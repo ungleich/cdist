@@ -26,7 +26,7 @@ import os
 import re
 import sys
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("cdist")
 
 # Ensure our /lib/ is included into PYTHON_PATH
 sys.path.insert(0, os.path.abspath(
