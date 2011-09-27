@@ -123,6 +123,7 @@ class Config:
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
+        log.info("Running initial manifest %s", self.path.initial_manifest)
         env = {  "__manifest" : self.path.manifest_dir }
         self.run_manifest(self.path.initial_manifest, extra_env=env)
 
@@ -243,12 +244,13 @@ class Config:
         self.run_global_explores()
         self.run_initial_manifest()
         
+        log.info("Running object manifests and type explorers")
+
         old_objects = []
         objects = self.path.list_objects()
 
         # Continue process until no new objects are created anymore
         while old_objects != objects:
-            log.debug("Prepare stage")
             old_objects = list(objects)
             for cdist_object in objects:
                 if cdist_object in self.objects_prepared:
@@ -263,7 +265,7 @@ class Config:
 
     def stage_run(self):
         """The final (and real) step of deployment"""
-        log.debug("Actual run objects")
+        log.info("Generating and executing code")
         # Now do the final steps over the existing objects
         for cdist_object in self.path.list_objects():
             log.debug("Run object: %s", cdist_object)
@@ -306,7 +308,7 @@ def config(args):
 
     if args.parallel:
         for p in process.keys():
-            log.debug("Joining %s", p)
+            log.debug("Joining process %s", p)
             process[p].join()
 
     time_end = datetime.datetime.now()
