@@ -34,6 +34,8 @@ sys.path.insert(0, os.path.abspath(
 cdist_exec_path = os.path.abspath(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), "bin/cdist"))
 
+cdist_commands=["banner", "config", "install"]
+
 import cdist
 import cdist.config
 import cdist.exec
@@ -154,6 +156,10 @@ class Config(unittest.TestCase):
 class UI(unittest.TestCase):
     def test_banner(self):
         self.assertEqual(subprocess.call([cdist_exec_path, "banner"]), 0)
+
+    def test_help(self):
+        for cmd in cdist_commands:
+            self.assertEqual(subprocess.call([cdist_exec_path, cmd, "-h"]), 0)
 
         
 if __name__ == '__main__':
