@@ -39,16 +39,17 @@ def commandline():
     # Construct parser others can reuse
     parser = {}
     # Options _all_ parsers have in common
-    parser['most'] = argparse.ArgumentParser(add_help=False)
-    parser['most'].add_argument('-d', '--debug',
+    parser['loglevel'] = argparse.ArgumentParser(add_help=False)
+    parser['loglevel'].add_argument('-d', '--debug',
         help='Set log level to debug', action='store_true',
         default=False)
-    parser['most'].add_argument('-v', '--verbose',
-        help='Set log level to info, is more verbose',
+    parser['loglevel'].add_argument('-v', '--verbose',
+        help='Set log level to info, be more verbose',
         action='store_true', default=False)
 
     # Main subcommand parser
-    parser['main'] = argparse.ArgumentParser(description='cdist ' + cdist.VERSION)
+    parser['main'] = argparse.ArgumentParser(description='cdist ' + cdist.VERSION,
+        parents=[parser['loglevel']])
     parser['main'].add_argument('-V', '--version',
         help='Show version', action='version',
         version='%(prog)s ' + cdist.VERSION)
@@ -56,7 +57,7 @@ def commandline():
 
     # Banner
     parser['banner'] = parser['sub'].add_parser('banner', 
-        add_help=False)
+        parents=[parser['loglevel']])
     parser['banner'].set_defaults(func=cdist.banner.banner)
 
     # Config and install (common stuff)
@@ -78,12 +79,12 @@ def commandline():
 
     # Config
     parser['config'] = parser['sub'].add_parser('config',
-        parents=[parser['most'], parser['configinstall']])
+        parents=[parser['loglevel'], parser['configinstall']])
     parser['config'].set_defaults(func=cdist.config.config)
 
     # Install
     parser['install'] = parser['sub'].add_parser('install',
-        parents=[parser['most'], parser['configinstall']])
+        parents=[parser['loglevel'], parser['configinstall']])
     parser['install'].set_defaults(func=cdist.install.install)
 
     for p in parser:
