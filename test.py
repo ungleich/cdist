@@ -161,6 +161,11 @@ class UI(unittest.TestCase):
         for cmd in cdist_commands:
             self.assertEqual(subprocess.call([cdist_exec_path, cmd, "-h"]), 0)
 
+    # FIXME: mockup needed
+    def test_config_localhost(self):
+        for cmd in cdist_commands:
+            self.assertEqual(subprocess.call([cdist_exec_path, "config", "localhost"]), 0)
+
         
 if __name__ == '__main__':
     unittest.main()
