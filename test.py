@@ -24,6 +24,7 @@
 import os
 import sys
 import shutil
+import subprocess
 import tempfile
 import unittest
 
@@ -149,5 +150,11 @@ class Config(unittest.TestCase):
 
         self.assertFalse(failed)
 
+
+class UI(unittest.TestCase):
+    def test_banner(self):
+        self.assertEqual(subprocess.call([cdist_exec_path, "banner"]), 0)
+
+        
 if __name__ == '__main__':
     unittest.main()
