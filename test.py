@@ -142,9 +142,7 @@ class Config(unittest.TestCase):
         manifest_fd.close()
 
         try:
-            print("a")
             self.config.run_initial_manifest()
-            print("b")
         except cdist.Error:
             failed = True
         else:
@@ -166,6 +164,30 @@ class UI(unittest.TestCase):
         for cmd in cdist_commands:
             self.assertEqual(subprocess.call([cdist_exec_path, "config", "localhost"]), 0)
 
-        
+
+def almost_all_tests():
+    suite = unittest.TestSuite([
+        unittest.TestLoader().loadTestsFromTestCase(Config),
+        unittest.TestLoader().loadTestsFromTestCase(Exec)])
+
+    return suite
+
+def all_tests():
+    suite = unittest.defaultTestLoader
+    return suite
+
 if __name__ == '__main__':
-    unittest.main()
+    result = unittest.TestResult()
+    # only run some tests, when giving -a -> stuff that usually breaks
+    if len(sys.argv) >= 2:
+        if sys.argv[1] == "-a":
+            suite = all_tests();
+        else:
+            sys.exit(1)
+    else:
+        suite = almost_all_tests();
+
+    # suite.run(result)
+    # unittest.main()
+    # unittest.TextTestRunner().run(suite)
+
