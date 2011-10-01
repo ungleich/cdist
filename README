@@ -120,6 +120,7 @@ If you want to ensure nothing breaks you must set back the python version to wha
 Ensure you have port installed and configured (http://www.macports.org/install.php).
 
     port install python32
+    ln -s /opt/local/bin/python3.2 /opt/local/bin/python3
 
 ### Get cdist
 
