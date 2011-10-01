@@ -105,6 +105,16 @@ Archlinux already has python >= 3.2, so you only need to do:
     easy_install3 argparse
 
 
+#### Gentoo
+
+Gentoo only provides python 3.2 in testing packages (http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=3&chap=3).
+If you want to ensure nothing breaks you must set back the python version to what was default before.
+
+    emerge -av =python-3.2.2 --autounmask-write
+    emerge -av =python-3.2.2
+    eselect python list
+    eselect python list set python3.2
+
 ### Get cdist
 
 You can clone cdist from git, which gives you the advantage of having
