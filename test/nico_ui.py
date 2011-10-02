@@ -21,10 +21,14 @@
 #
 
 
+import os
 import subprocess
+import unittest
+
+cdist_commands=["banner", "config", "install"]
 
 cdist_exec_path = os.path.abspath(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), "bin/cdist"))
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "../bin/cdist"))
 
 class UI(unittest.TestCase):
     def test_banner(self):
