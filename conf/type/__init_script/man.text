@@ -23,8 +23,10 @@ OPTIONAL PARAMETERS
 -------------------
 script::
    If supplied, use this as the init-script.
-   Otherwise the object_id is used. The script will be pretended with '/etc/init.d/'
+   Otherwise the object_id is used.
 
+base_dir::
+   If supplied, this type uses this directory instead of '/etc/init.d'. The parameter will not need an ending slash.
 
 EXAMPLES
 --------

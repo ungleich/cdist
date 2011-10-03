@@ -19,12 +19,20 @@
 #
 #
 
-if [ -f "$__object/parameter/service" ]; then
-   service=$(cat "$__object/parameter/service")
+if [ -f "$__object/parameter/script" ]; then
+   script=$(cat "$__object/parameter/script")
 else
-   service="/$__object_id"
+   script="/$__object_id"
 fi
+
+if [ -f "$__object/parameter/base_dir" ]; then
+   base_dir=$(cat "$__object/parameter/base_dir")
+else
+   base_dir="/etc/init.d"
+fi
+
+
 
 mode=$(cat "$__object/parameter/mode")
 
-echo "/etc/init.d/${service} ${mode}"
+echo "${base_dir}/${script} ${mode}"
