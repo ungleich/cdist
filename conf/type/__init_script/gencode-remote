@@ -28,10 +28,12 @@ fi
 if [ -f "$__object/parameter/base_dir" ]; then
    base_dir=$(cat "$__object/parameter/base_dir")
 else
-   base_dir="/etc/init.d"
+  os="$(cat "$__global/explorer/os")"
+  case "$os" in
+    archlinux) base_dir="/etc/rc.d" ;;
+    *) base_dir="/etc/init.d"
+  esac
 fi
-
-
 
 mode=$(cat "$__object/parameter/mode")
 
