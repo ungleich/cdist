@@ -30,7 +30,7 @@ if [ -f "$__object/parameter/base_dir" ]; then
 else
   os="$(cat "$__global/explorer/os")"
   case "$os" in
-    archlinux) base_dir="/etc/rc.d" ;;
+    archlinux|netbsd|macosx|freebsd|openbsd) base_dir="/etc/rc.d" ;;
     *) base_dir="/etc/init.d"
   esac
 fi
