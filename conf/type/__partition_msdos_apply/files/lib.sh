@@ -3,7 +3,7 @@ die() {
    exit 1
 }
 debug() {
-   echo "[__partition_msdos_apply] $@" >&2
+   #echo "[__partition_msdos_apply] $@" >&2
 }
 
 fdisk_command() {
