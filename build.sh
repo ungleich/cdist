@@ -126,6 +126,14 @@ case "$1" in
       | xargs rm -f
    ;;
 
+   test)
+      python3 -m unittest discover test 'test_*.py' 
+   ;;
+
+   test-all)
+      python3 -m unittest discover test '*.py' 
+   ;;
+
    *)
       echo ''
       echo 'Welcome to cdist!'

@@ -115,6 +115,13 @@ If you want to ensure nothing breaks you must set back the python version to wha
     eselect python list
     eselect python list set python3.2
 
+#### Max OS X
+
+Ensure you have port installed and configured (http://www.macports.org/install.php).
+
+    port install python32
+    ln -s /opt/local/bin/python3.2 /opt/local/bin/python3
+
 ### Get cdist
 
 You can clone cdist from git, which gives you the advantage of having
