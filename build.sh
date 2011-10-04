@@ -41,9 +41,6 @@ MAN1DSTDIR=${MANDIR}/man1
 MAN7DSTDIR=${MANDIR}/man7
 SPEECHESDIR=doc/speeches
 
-# FIXME: make lib for tests!
-# PYTHONPATH=$PYTHONPATH:$(pwd -P)/test/lib
-
 case "$1" in
    man)
       set -e
@@ -131,6 +128,11 @@ case "$1" in
 
    test)
       python3 -m unittest discover lib/cdist/test 'test_*.py' 
+   ;;
+
+   test-install)
+      PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
+         python3 -m unittest cdist.test.test_install
    ;;
 
    test-all)

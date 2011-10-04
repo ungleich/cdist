@@ -43,6 +43,18 @@ class Install(unittest.TestCase):
                             exec_path=cdist_exec_path)
         self.config.link_emulator()
 
+### NEW FOR INSTALL ############################################################
+
+    def test_explorer_ran(self):
+        """Check that all explorers returned a result"""
+        self.config.run_global_explores()
+        explorers = self.config.path.list_global_explorers()
+
+        for explorer in explorers:
+            output = self.path.global_explorer_output_path(explorer)
+            self.assertTrue(os.path.isfile(output))
+
+### OLD FROM CONFIG ############################################################
     def test_initial_manifest_different_parameter(self):
         manifest_fd = open(self.init_manifest, "w")
         manifest_fd.writelines(["#!/bin/sh\n",
