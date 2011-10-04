@@ -1,4 +1,4 @@
-#!/bin/sh
+# -*- coding: utf-8 -*-
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
@@ -18,40 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# All os variables are lower case
-#
-#
 
-case "$($__explorer/os)" in
-   archlinux)
-      # empty, but well...
-      cat /etc/arch-release
-   ;;
-   debian)
-      cat /etc/debian_version
-   ;;
-   fedora)
-      cat /etc/fedora-release
-   ;;
-   gentoo)
-      cat /etc/gentoo-release
-   ;;
-   macosx)
-      sw_vers -productVersion
-   ;;
-   *bsd|solaris)
-      uname -r
-   ;;
-   owl)
-      cat /etc/owl-release
-   ;;
-   redhat|centos)
-      cat /etc/redhat-release
-   ;;
-   suse)
-      cat /etc/SuSE-release
-   ;;
-   ubuntu)
-      lsb_release -sr
-   ;;
-esac
+VERSION     = "2.0.3"
+
+class Error(Exception):
+    """Base exception class for this project"""
+    pass

@@ -15,7 +15,7 @@
        "P'        ""         ""  
      
 
-[[!toc levels=2]]
+[[!toc levels=3]]
 
 ## Introduction
 
@@ -78,6 +78,7 @@ cdist was tested or is know to run on at least
  * A posix like shell
  * Python (>= 3.2 required)
  * SSH-Client
+ * Asciidoc (for building the manpages)
 
 ### Client ("target host")
 
@@ -85,20 +86,46 @@ cdist was tested or is know to run on at least
  * SSH-Server
 
 
-## Getting cdist
+## Installation
+
+### Preperation
+
+Ensure you have Python 3.x and the **argparse** module installed on
+the machine you use to **deploy to the targets**.
+
+#### Archlinux
+
+Archlinux already has python >= 3.2, so you only need to do:
+
+    pacman -S python
+
+#### Debian
+
+    aptitude install python3 python3-setuptools
+    easy_install3 argparse
+
+
+#### Gentoo
+
+Gentoo only provides python 3.2 in testing packages (http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=3&chap=3).
+If you want to ensure nothing breaks you must set back the python version to what was default before.
+
+    emerge -av =python-3.2.2 --autounmask-write
+    emerge -av =python-3.2.2
+    eselect python list
+    eselect python list set python3.2
+
+### Get cdist
 
 You can clone cdist from git, which gives you the advantage of having
 a version control in place for development of your own stuff as well.
-
-### Installation
-
 To install cdist, execute the following commands:
 
     git clone git://git.schottelius.org/cdist
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 
-    # If you want the manpages (requires gmake and asciidoc to be installed)
+    # If you want the manpages
     ./build.sh man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 

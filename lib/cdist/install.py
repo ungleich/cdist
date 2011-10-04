@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,19 +19,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Use stdin as the manifest to deploy on the given host.
-#
 
-. cdist-config
-[ $# -eq 1 ] || __cdist_usage "<target host>"
-set -eu
+import logging
 
-__cdist_target_host="$1"
-shift
+log = logging.getLogger(__name__)
 
-cat >> "$__cdist_tmp_file"
+def install(args):
+    """Install remote system"""
+    process = {}
 
-chmod +x "$__cdist_tmp_file"
-
-export __cdist_manifest_init="$__cdist_tmp_file"
-cdist-deploy-to "$__cdist_target_host"

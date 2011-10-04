@@ -5,7 +5,7 @@ Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 NAME
 ----
-cdist-type__partition_msdos_apply
+cdist-type__partition_msdos_apply - Apply dos partition settings
 
 
 DESCRIPTION

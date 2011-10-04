@@ -9,6 +9,12 @@ CORE
 - allow cdist to run without $PATH setup: ./bin/cdist-deploy-to
 - support non-ssh access?
 
+TESTS
+-----
+- multiple defines of object:
+   - fail if different parameters
+   - succeed if same parameters
+
 USER INTERFACE
 --------------
 - add support $__tmp?
@@ -28,6 +34,8 @@ USER INTERFACE
    -> given after manifest run already!
 
 - use absent/present for state by default?
+- buggy output with packages that don't exist in archlinux and fedora:
+   python3 vs. python
 
 TYPES
 ------

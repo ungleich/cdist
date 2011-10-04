@@ -26,24 +26,10 @@ in the latest version, drop a mail to the cdist mailing list,
 subject prefixed with "[BUG] ".
 
 
-UNDERSTANDING CDIST INTERNALS
------------------------------
-IF you are interested in how cdist internally works, you can open
-bin/cdist-config and bin/cdist-deploy-to in your favorite editor and
-read the scripts bin/cdist-deploy-to calls. The magnificent HACKERS_README
-may be of great help as well.
-
-
 CODING CONVENTIONS (EVERYWHERE)
 -------------------------------
 If something should be better done or needs to fixed, add the word FIXME
 nearby, so grepping for FIXME gives all positions that need to be fixed.
-
-
-CODING CONVENTIONS (CORE)
--------------------------
-- All variables exported by cdist are prefixed with a double underscore (__)
-- All cdist-internal variables are prefixed with __cdist_ and are generally not exported.
 
 
 HOW TO SUBMIT STUFF FOR INCLUSION INTO UPSTREAM CDIST

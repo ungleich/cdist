@@ -154,8 +154,23 @@ done
 cat << eof
 
 
+OBJECTS
+-------
+For object to object communication and tests, the following paths are
+usable within a object directory:
+
+changed::
+   This empty file exists in an object directory, if the object has
+   code to be excuted (either remote or local)
+
+
 ENVIRONMENT VARIABLES
 ---------------------
+__debug::
+   If this variable is setup, cdist runs in debug mode.
+   You can use this information, to only output stuff in debug
+   mode as well.
+   Available for: initial manifest, type manifest
 __explorer::
    Directory that contains all global explorers.
    Available for: explorer

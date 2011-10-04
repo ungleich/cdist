@@ -35,10 +35,6 @@ __file /etc/cdist-configured --type file
 __package tree --state installed
 --------------------------------------------------------------------------------
 
-Internally cdist-type-emulator(1) will be called from cdist-manifest-run(1) to
-save the given parameters into a cconfig database, so they can be accessed by
-the manifest and gencode scripts of the type (see below).
-
 A list of supported types can be found in the cdist-reference(7) manpage.
 
 SINGLETON TYPES
@@ -111,7 +107,7 @@ __package_$type "$@"
 --------------------------------------------------------------------------------
 
 As you can see, the type can reference different environment variables,
-which are documented in cdist-environment-variables(7).
+which are documented in cdist-reference(7).
 
 Always ensure the manifest is executable, otherwise cdist will not be able
 to execute it.

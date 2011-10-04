@@ -32,11 +32,6 @@ explorers. Every existing explorer is run on the target and the output of all
 explorers are copied back into the local cache. The results can be used by 
 manifests and types.
 
-Related documentation:
-   - cdist-explorer-run-global(1)
-   - cdist-remote-explorer-run(1)
-   - cdist-explorer(7)
-
 
 STAGE 2: RUN THE INITIAL MANIFEST
 ---------------------------------
@@ -46,11 +41,6 @@ the objects as defined in the manifest for the specific host. In this stage,
 no conflicts may occur, i.e. no object of the same type with the same id may
 be created.
 
-Related documentation: 
-   - cdist-manifest-run-init(1)
-   - cdist-manifest-run(1)
-   - cdist-manifest(7)
-
 
 STAGE 3: OBJECT INFORMATION RETRIEVAL
 -------------------------------------
@@ -58,12 +48,6 @@ Every object is checked whether its type has explorers and if so, these are
 transfered to the target host and executed. The results are transfered back
 and can be used in the following stages to decide what changes need to be made
 on the target to implement the desired state.
-
-Related documentation:
-   - cdist-object-explorer-run(1)
-   - cdist-remote-explorer-run(1)
-   - cdist-type(7) 
-   - cdist-explorer(7)
 
 
 STAGE 4: RUN THE OBJECT MANIFEST
@@ -79,11 +63,6 @@ The newly created objects are merged back into the existing tree. No conflicts
 may occur during the merge. A conflict would mean that two different objects
 try to create the same object, which indicates a broken configuration.
 
-Related documentation:
-   - cdist-object-manifest-run(1)
-   - cdist-manifest-run(1)
-   - cdist-type(7) 
-
 
 STAGE 5: CODE GENERATION
 ------------------------
@@ -92,28 +71,16 @@ gencode scripts. The gencode scripts generate the code to be executed on the
 target on stdout. If the gencode executables fail, they must print diagnostic 
 messages on stderr and exit non-zero.
 
-Related documentation:
-   - cdist-object-gencode-run(1)
-   - cdist-object-gencode(1)
-   - cdist-type(7) 
-
 
 STAGE 6: CODE EXECUTION
 -----------------------
 For every object the resulting code from the previous stage is transferred to
 the target host and executed there to apply the configuration changes.
 
-Related documentation:
-   - cdist-object-code-run(1)
-   - cdist-code-run(1)
-
 
 STAGE 7: CACHE
 --------------
 The cache stores the information from the current run for later use.
-
-Related documentation:
-   - cdist-cache(1)
 
 
 SUMMARY
@@ -126,8 +93,8 @@ in correct order.
 
 SEE ALSO
 --------
+- cdist(1)
 - cdist(7)
-- cdist-deploy-to(1)
 - cdist-reference(7)
 
 

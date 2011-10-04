@@ -27,8 +27,8 @@
 #set -e
 
 # Manpage and HTML
-A2XM="a2x -f manpage --no-xmllint"
-A2XH="a2x -f xhtml --no-xmllint"
+A2XM="a2x -f manpage --no-xmllint -a encoding=UTF-8"
+A2XH="a2x -f xhtml --no-xmllint -a encoding=UTF-8"
 
 # Developer webbase
 WEBDIR=$HOME/niconetz
