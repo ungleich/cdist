@@ -21,6 +21,7 @@
 #
 
 import os
+import shutil
 import sys
 import tempfile
 import unittest
@@ -32,28 +33,29 @@ class Path(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
         self.init_manifest = os.path.join(self.temp_dir, "manifest")
-        self.path = cdist.config.Path("localhost", "root",
-            "ssh root@localhost",
+        self.path = cdist.path.Path("localhost", "root", "ssh root@localhost",
             initial_manifest=self.init_manifest,
             base_dir=self.temp_dir)
 
+        os.mkdir(self.path.conf_dir)
+        os.mkdir(self.path.type_base_dir)
+
+        # Create install type
+        self.install_type = os.path.join(self.path.type_base_dir, "__install_test")
+        os.mkdir(self.install_type)
+        open(os.path.join(self.install_type, "install"), "w").close()
+
+        # Create config type
+        config_type = os.path.join(self.path.type_base_dir, "__config_test")
+        os.mkdir(config_type)
+
     def tearDown(self):
         self.path.cleanup()
+        shutil.rmtree(self.temp_dir)
 
     def test_type_detection(self):
         """Check that a type is identified as install or configuration correctly"""
 
-        # Create install type
-        install_type = os.path.join(
-        os.mkdir(
-        # Create non-install type
-
-        self.config.run_global_explores()
-        explorers = self.config.path.list_global_explorers()
-
-        for explorer in explorers:
-            output = self.config.path.global_explorer_output_path(explorer)
-            self.assertTrue(os.path.isfile(output))
 
     def test_manifest_uses_install_types_only(self):
         """Check that objects created from manifest are only of install type"""
