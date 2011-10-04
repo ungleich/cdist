@@ -21,16 +21,18 @@
 device="(cat "$__object/parameter/device")"
 type="(cat "$__object/parameter/type")"
 
-command="mkfs -t $type"
-
-if [ -f "$__object/parameter/options" ]; then
-   options="(cat "$__object/parameter/options")"
-   command="$command -o '$options'"
+if [ "$type" = "swap" ]; then
+   echo "mkswap $device"
+else
+   command="mkfs -t $type"
+   if [ -f "$__object/parameter/options" ]; then
+      options="(cat "$__object/parameter/options")"
+      command="$command -o '$options'"
+   fi
+   command="$command $device"
+   if [ -f "$__object/parameter/blocks" ]; then
+      blocks="(cat "$__object/parameter/blocks")"
+      command="$command $blocks"
+   fi
+   echo "$command"
 fi
-command="$command $device"
-if [ -f "$__object/parameter/blocks" ]; then
-   blocks="(cat "$__object/parameter/blocks")"
-   command="$command $blocks"
-fi
-
-echo "$command"
