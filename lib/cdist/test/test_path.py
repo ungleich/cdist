@@ -40,14 +40,17 @@ class Path(unittest.TestCase):
         os.mkdir(self.path.conf_dir)
         os.mkdir(self.path.type_base_dir)
 
+        self.install_type_name = "__install_test"
+        self.config_type_name = "__config_test"
+
         # Create install type
-        self.install_type = os.path.join(self.path.type_base_dir, "__install_test")
+        self.install_type = os.path.join(self.path.type_base_dir, self.install_type_name)
         os.mkdir(self.install_type)
         open(os.path.join(self.install_type, "install"), "w").close()
 
         # Create config type
-        config_type = os.path.join(self.path.type_base_dir, "__config_test")
-        os.mkdir(config_type)
+        self.config_type = os.path.join(self.path.type_base_dir, self.config_type_name)
+        os.mkdir(self.config_type)
 
     def tearDown(self):
         self.path.cleanup()
@@ -55,7 +58,9 @@ class Path(unittest.TestCase):
 
     def test_type_detection(self):
         """Check that a type is identified as install or configuration correctly"""
-
+        
+        self.assertTrue(self.path.is_install_type(self.install_type))
+        self.assertFalse(self.path.is_install_type(self.config_type))
 
     def test_manifest_uses_install_types_only(self):
         """Check that objects created from manifest are only of install type"""
