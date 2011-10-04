@@ -130,11 +130,11 @@ case "$1" in
    ;;
 
    test)
-      python3 -m unittest discover test 'test_*.py' 
+      python3 -m unittest discover lib/cdist/test 'test_*.py' 
    ;;
 
    test-all)
-      python3 -m unittest discover test '*.py' 
+      python3 -m unittest discover lib/cdist/test '*.py' 
    ;;
 
    *)
