@@ -54,6 +54,22 @@ class Install(unittest.TestCase):
             output = self.config.path.global_explorer_output_path(explorer)
             self.assertTrue(os.path.isfile(output))
 
+    def test_manifest_uses_install_types_only(self):
+        """Check that objects created from manifest are only of install type"""
+        manifest_fd = open(self.init_manifest, "w")
+        manifest_fd.writelines(["#!/bin/sh\n",
+            "__file " + self.temp_dir + " --mode 0700\n",
+            "__partition_msdos /dev/null --type 82\n",
+            ])
+        manifest_fd.close()
+
+        self.config.run_initial_manifest()
+
+        # FIXME: check that only __partition_msdos objects are created!
+
+        self.assertFalse(failed)
+
+
 ### OLD FROM CONFIG ############################################################
     def test_initial_manifest_different_parameter(self):
         manifest_fd = open(self.init_manifest, "w")

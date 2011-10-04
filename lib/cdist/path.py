@@ -175,7 +175,13 @@ class Path:
         return list
 
     def list_types(self):
+        """Retuns list of types"""
         return os.listdir(self.type_base_dir)
+
+    def is_install_type(self, type):
+        """Check whether a type is used for installation (if not: for configuration)"""
+        marker = os.path.join(self.type_dir(type), "install")
+        return os.path.isfile(marker)
 
     def list_object_paths(self, starting_point):
         """Return list of paths of existing objects"""
