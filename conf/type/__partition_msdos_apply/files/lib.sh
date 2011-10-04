@@ -12,6 +12,8 @@ fdisk_command() {
 
    debug fdisk_command "running fdisk command '${cmd}' on device ${device}"
    printf "${cmd}\nw\n" | fdisk -c -u "$device"
+   # give disk some time
+   sleep 1
    return $?
 }
 
