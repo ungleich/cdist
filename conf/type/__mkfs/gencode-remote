@@ -27,7 +27,7 @@ else
    command="mkfs -t $type"
    if [ -f "$__object/parameter/options" ]; then
       options="$(cat "$__object/parameter/options")"
-      command="$command -o '$options'"
+      command="$command $options"
    fi
    command="$command $device"
    if [ -f "$__object/parameter/blocks" ]; then
