@@ -65,6 +65,7 @@ class Config:
 
     def run_global_explores(self):
         """Run global explorers"""
+        log.info("Running global explorers")
         explorers = self.path.list_global_explorers()
         if(len(explorers) == 0):
             raise CdistError("No explorers found in", self.path.global_explorer_dir)
@@ -107,18 +108,22 @@ class Config:
             cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=self.remote_prefix)
             output_fd.close()
 
+    def link_emulator(self):
+        """Link emulator to types"""
+        cdist.emulator.link(self.exec_path,
+            self.path.bin_dir, self.path.list_types())
+
     def init_deploy(self):
         """Ensure the base directories are cleaned up"""
         log.debug("Creating clean directory structure")
 
         self.path.remove_remote_dir(cdist.path.REMOTE_BASE_DIR)
         self.path.remote_mkdir(cdist.path.REMOTE_BASE_DIR)
-
-        cdist.emulator.link(self.exec_path,
-            self.path.bin_dir, self.path.list_types())
+        self.link_emulator()
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
+        log.info("Running initial manifest %s", self.path.initial_manifest)
         env = {  "__manifest" : self.path.manifest_dir }
         self.run_manifest(self.path.initial_manifest, extra_env=env)
 
@@ -146,6 +151,10 @@ class Config:
         env['__target_host']            = self.target_host
         env['__global']                 = self.path.out_dir
         
+        # Submit debug flag to manifest, can be used by emulator and types
+        if self.debug:
+            env['__debug']                  = "yes"
+
         # Required for recording source
         env['__cdist_manifest']         = manifest
 
@@ -235,12 +244,13 @@ class Config:
         self.run_global_explores()
         self.run_initial_manifest()
         
+        log.info("Running object manifests and type explorers")
+
         old_objects = []
         objects = self.path.list_objects()
 
         # Continue process until no new objects are created anymore
         while old_objects != objects:
-            log.debug("Prepare stage")
             old_objects = list(objects)
             for cdist_object in objects:
                 if cdist_object in self.objects_prepared:
@@ -255,7 +265,7 @@ class Config:
 
     def stage_run(self):
         """The final (and real) step of deployment"""
-        log.debug("Actual run objects")
+        log.info("Generating and executing code")
         # Now do the final steps over the existing objects
         for cdist_object in self.path.list_objects():
             log.debug("Run object: %s", cdist_object)
@@ -298,7 +308,7 @@ def config(args):
 
     if args.parallel:
         for p in process.keys():
-            log.debug("Joining %s", p)
+            log.debug("Joining process %s", p)
             process[p].join()
 
     time_end = datetime.datetime.now()

@@ -19,7 +19,7 @@
 #
 #
 
-VERSION     = "2.0.2"
+VERSION     = "2.0.3"
 
 class Error(Exception):
     """Base exception class for this project"""

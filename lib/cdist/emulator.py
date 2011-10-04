@@ -36,20 +36,21 @@ def run(argv):
     global_dir      = os.environ['__global']
     object_source   = os.environ['__cdist_manifest']
 
+    if '__debug' in os.environ:
+        logging.root.setLevel(logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
     parser = argparse.ArgumentParser(add_help=False)
 
-    # Setup optional parameters
     for parameter in cdist.path.file_to_list(os.path.join(param_dir, "optional")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=False)
-
-    # Setup required parameters
     for parameter in cdist.path.file_to_list(os.path.join(param_dir, "required")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=True)
 
-    # Setup positional parameter, if not singleton
-
+    # If not singleton support one positional parameter
     if not os.path.isfile(os.path.join(type_dir, "singleton")):
         parser.add_argument("object_id", nargs=1)
 
@@ -66,6 +67,10 @@ def run(argv):
         # FIXME: / hardcoded - better portable solution available?
         if object_id[0] == '/':
             object_id = object_id[1:]
+
+    # Prefix output by object_self
+    logformat = '%(levelname)s: ' + type + '/' + object_id + ': %(message)s'
+    logging.basicConfig(format=logformat)
 
     # FIXME: verify object id
     log.debug(args)
@@ -110,12 +115,12 @@ def run(argv):
                     value_old = param_fd.readlines()
                     param_fd.close()
                     
-                    if(value_old != value):
-                        raise cdist.Error("Parameter + \"" + param +
+                    if(value_old[0] != value):
+                        raise cdist.Error("Parameter\"" + param +
                             "\" differs: " + " ".join(value_old) + " vs. " +
                             value +
                             "\nSource = " + " ".join(old_object_source)
-                            + " new =" + object_source)
+                            + " new = " + object_source)
             else:
                 param_fd = open(file, "w")
                 param_fd.writelines(value)
@@ -124,7 +129,7 @@ def run(argv):
     # Record requirements
     if "__require" in os.environ:
         requirements = os.environ['__require']
-        print(object_id + ":Writing requirements: " + requirements)
+        log.debug(object_id + ":Writing requirements: " + requirements)
         require_fd = open(os.path.join(object_dir, "require"), "a")
         require_fd.writelines(requirements.split(" "))
         require_fd.close()
@@ -134,7 +139,7 @@ def run(argv):
     source_fd.writelines(object_source)
     source_fd.close()
 
-    print("Finished " + type + "/" + object_id + repr(params))
+    log.debug("Finished " + type + "/" + object_id + repr(params))
 
 
 def link(exec_path, bin_dir, type_list):

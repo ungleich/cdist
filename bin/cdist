@@ -26,7 +26,7 @@ import os
 import re
 import sys
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("cdist")
 
 # Ensure our /lib/ is included into PYTHON_PATH
 sys.path.insert(0, os.path.abspath(
@@ -39,12 +39,17 @@ def commandline():
     # Construct parser others can reuse
     parser = {}
     # Options _all_ parsers have in common
-    parser['most'] = argparse.ArgumentParser(add_help=False)
-    parser['most'].add_argument('-d', '--debug',
-        help='Set log level to debug', action='store_true')
+    parser['loglevel'] = argparse.ArgumentParser(add_help=False)
+    parser['loglevel'].add_argument('-d', '--debug',
+        help='Set log level to debug', action='store_true',
+        default=False)
+    parser['loglevel'].add_argument('-v', '--verbose',
+        help='Set log level to info, be more verbose',
+        action='store_true', default=False)
 
     # Main subcommand parser
-    parser['main'] = argparse.ArgumentParser(description='cdist ' + cdist.VERSION)
+    parser['main'] = argparse.ArgumentParser(description='cdist ' + cdist.VERSION,
+        parents=[parser['loglevel']])
     parser['main'].add_argument('-V', '--version',
         help='Show version', action='version',
         version='%(prog)s ' + cdist.VERSION)
@@ -52,7 +57,7 @@ def commandline():
 
     # Banner
     parser['banner'] = parser['sub'].add_parser('banner', 
-        add_help=False)
+        parents=[parser['loglevel']])
     parser['banner'].set_defaults(func=cdist.banner.banner)
 
     # Config and install (common stuff)
@@ -74,12 +79,12 @@ def commandline():
 
     # Config
     parser['config'] = parser['sub'].add_parser('config',
-        parents=[parser['most'], parser['configinstall']])
+        parents=[parser['loglevel'], parser['configinstall']])
     parser['config'].set_defaults(func=cdist.config.config)
 
     # Install
     parser['install'] = parser['sub'].add_parser('install',
-        parents=[parser['most'], parser['configinstall']])
+        parents=[parser['loglevel'], parser['configinstall']])
     parser['install'].set_defaults(func=cdist.install.install)
 
     for p in parser:
@@ -87,17 +92,18 @@ def commandline():
 
     args = parser['main'].parse_args(sys.argv[1:])
 
-    # Most subcommands have --debug, so handle it here
-    if 'debug' in args:
-        if args.debug:
-            logging.root.setLevel(logging.DEBUG)
-    log.debug(args)
+    # Loglevels are handled globally in here and debug wins over verbose
+    if args.verbose:
+        logging.root.setLevel(logging.INFO)
+    if args.debug:
+        logging.root.setLevel(logging.DEBUG)
 
+    log.debug(args)
     args.func(args)
 
 if __name__ == "__main__":
     try:
-        logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+        logging.basicConfig(format='%(levelname)s: %(message)s')
 
         if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
             import cdist.emulator
