@@ -24,7 +24,7 @@ type="$(cat "$__object/parameter/type")"
 if [ "$type" = "swap" ]; then
    echo "mkswap $device"
 else
-   command="mkfs -t $type"
+   command="mkfs -t $type -q"
    if [ -f "$__object/parameter/options" ]; then
       options="$(cat "$__object/parameter/options")"
       command="$command $options"
