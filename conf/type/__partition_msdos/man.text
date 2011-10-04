@@ -36,20 +36,18 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# 128MB linux, bootable
+# 128MB, linux, bootable
 __partition_msdos /dev/sda1 --type 83 --size 128M --bootable true
-# 512MB swap
+# 512MB, swap
 __partition_msdos /dev/sda2 --type 82 --size 512M
-# extended
+# 100GB, extended
 __partition_msdos /dev/sda3 --type extended --size 100G
 # 10GB, linux
 __partition_msdos /dev/sda5 --type 83 --size 10G
-# 50% of free space, linux
+# 50% of the free space of the extended partition, linux
 __partition_msdos /dev/sda6 --type 83 --size 50%
-# rest of disk, linux
+# rest of the extended partition, linux
 __partition_msdos /dev/sda7 --type 83 --size +
-# same thing as
-__partition_msdos /dev/sda7 --type 83
 --------------------------------------------------------------------------------
 
 
