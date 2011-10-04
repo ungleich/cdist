@@ -41,6 +41,9 @@ MAN1DSTDIR=${MANDIR}/man1
 MAN7DSTDIR=${MANDIR}/man7
 SPEECHESDIR=doc/speeches
 
+# FIXME: make lib for tests!
+# PYTHONPATH=$PYTHONPATH:$(pwd -P)/test/lib
+
 case "$1" in
    man)
       set -e
