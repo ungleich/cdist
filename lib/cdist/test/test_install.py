@@ -51,7 +51,7 @@ class Install(unittest.TestCase):
         explorers = self.config.path.list_global_explorers()
 
         for explorer in explorers:
-            output = self.path.global_explorer_output_path(explorer)
+            output = self.config.path.global_explorer_output_path(explorer)
             self.assertTrue(os.path.isfile(output))
 
 ### OLD FROM CONFIG ############################################################
