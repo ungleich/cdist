@@ -21,8 +21,10 @@
 #
 
 
+import os
 import sys
 import cdist.test
+import unittest
 
 #class UI(unittest.TestCase):
 #    def test_banner(self):
@@ -39,3 +41,6 @@ import cdist.test
 
 print(cdist.test.cdist_exec_path)
 print(sys.argv)
+
+suite = unittest.defaultTestLoader.discover(os.path.dirname(__file__))
+unittest.TextTestRunner(verbosity=1).run(suite)
