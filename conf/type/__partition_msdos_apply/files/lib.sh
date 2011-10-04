@@ -52,7 +52,7 @@ create_partition() {
     first_minor="${minor}\n"
     type_minor="${minor}\n"
     primary_extended="l\n"
-    [ "$primary_count" > "3" ] && primary_extended=""
+    [ "$primary_count" -gt "3" ] && primary_extended=""
   fi
   [ -n "${size}" ] && size="+${size}M"
   fdisk_command ${device} "n\n${primary_extended}${first_minor}\n${size}\nt\n${type_minor}${type}\n"
