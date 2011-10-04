@@ -1,5 +1,6 @@
 2.0.3:
 	* Improved logging, added --verbose, by more quiet by default
+	* Bugfix __user: Correct quoting (Steven Armstrong)
 
 2.0.2: 2011-09-27
 	* Add support for detection of OpenWall Linux (Matthias Teege)
