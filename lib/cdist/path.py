@@ -107,6 +107,7 @@ class Path:
         else:
             self.initial_manifest = os.path.join(self.manifest_dir, "init")
 
+    # FIXME: stays
     def cleanup(self):
         # Do not use in __del__:
         # http://docs.python.org/reference/datamodel.html#customization
@@ -120,13 +121,16 @@ class Path:
         shutil.move(self.temp_dir, self.cache_dir)
 
 
+    # FIXME: belongs to here - clearify remote*
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
         cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=self.remote_prefix)
 
+    # FIXME: belongs to here - clearify remote*
     def remove_remote_dir(self, destination):
         cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=self.remote_prefix)
 
+    # FIXME: belongs to here - clearify remote*
     def transfer_dir(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
         self.remove_remote_dir(destination)
@@ -135,6 +139,7 @@ class Path:
                                 self.target_host + ":" + 
                                 destination])
 
+    # FIXME: belongs to here - clearify remote*
     def transfer_file(self, source, destination):
         """Transfer file"""
         cdist.exec.run_or_fail(["scp", "-q", source, 
@@ -142,10 +147,12 @@ class Path:
                                 self.target_host + ":" +
                                 destination])
 
+    # FIXME: Explorer or stays
     def global_explorer_output_path(self, explorer):
         """Returns path of the output for a global explorer"""
         return os.path.join(self.global_explorer_out_dir, explorer)
 
+    # FIXME: object
     def type_explorer_output_dir(self, cdist_object):
         """Returns and creates dir of the output for a type explorer"""
         dir = os.path.join(self.object_dir(cdist_object), "explorer")
@@ -154,14 +161,17 @@ class Path:
 
         return dir
 
+    # FIXME Stays here / Explorer?
     def remote_global_explorer_path(self, explorer):
         """Returns path to the remote explorer"""
         return os.path.join(REMOTE_GLOBAL_EXPLORER_DIR, explorer)
 
+    # FIXME: stays here
     def list_global_explorers(self):
         """Return list of available explorers"""
         return os.listdir(self.global_explorer_dir)
 
+    # FIXME: Type - only needs to know its path
     def list_type_explorers(self, type):
         """Return list of available explorers for a specific type"""
         dir = self.type_dir(type, "explorer")
@@ -174,15 +184,18 @@ class Path:
 
         return list
 
+    # Stays here
     def list_types(self):
         """Retuns list of types"""
         return os.listdir(self.type_base_dir)
 
+    # FIXME: type
     def is_install_type(self, type):
         """Check whether a type is used for installation (if not: for configuration)"""
         marker = os.path.join(self.type_dir(type), "install")
         return os.path.isfile(marker)
 
+    # Stays here
     def list_object_paths(self, starting_point):
         """Return list of paths of existing objects"""
         object_paths = []
@@ -198,36 +211,43 @@ class Path:
 
         return object_paths
 
-    # FIXME
+    # FIXME: Object
     def get_type_from_object(self, cdist_object):
         """Returns the first part (i.e. type) of an object"""
         return cdist_object.split(os.sep)[0]
 
+    # FIXME: Object
     def get_object_id_from_object(self, cdist_object):
         """Returns everything but the first part (i.e. object_id) of an object"""
         return os.sep.join(cdist_object.split(os.sep)[1:])
 
+    # FIXME: Object
     def object_dir(self, cdist_object):
         """Returns the full path to the object (including .cdist)"""
         return os.path.join(self.object_base_dir, cdist_object, DOT_CDIST)
 
+    # FIXME: Object
     def remote_object_dir(self, cdist_object):
         """Returns the remote full path to the object (including .cdist)"""
         return os.path.join(REMOTE_OBJECT_DIR, cdist_object, DOT_CDIST)
 
+    # FIXME: Object
     def object_parameter_dir(self, cdist_object):
         """Returns the dir to the object parameter"""
         return os.path.join(self.object_dir(cdist_object), "parameter")
 
+    # FIXME: object
     def remote_object_parameter_dir(self, cdist_object):
         """Returns the remote dir to the object parameter"""
         return os.path.join(self.remote_object_dir(cdist_object), "parameter")
 
+    # FIXME: object
     def object_code_paths(self, cdist_object):
         """Return paths to code scripts of object"""
         return [os.path.join(self.object_dir(cdist_object), "code-local"),
                   os.path.join(self.object_dir(cdist_object), "code-remote")]
 
+    # Stays here
     def list_objects(self):
         """Return list of existing objects"""
 
@@ -240,14 +260,17 @@ class Path:
 
         return objects
 
+    # FIXME: Type
     def type_dir(self, type, *args):
-        """Return directory the type"""
+        """Return (sub-)directory of a type"""
         return os.path.join(self.type_base_dir, type, *args)
 
+    # FIXME: Type
     def remote_type_explorer_dir(self, type):
         """Return remote directory that holds the explorers of a type"""
         return os.path.join(REMOTE_TYPE_DIR, type, "explorer")
 
+    # Stays here
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
         # Create base path before using mkdir -p
@@ -257,11 +280,13 @@ class Path:
         self.transfer_dir(self.object_parameter_dir(cdist_object), 
                                 self.remote_object_parameter_dir(cdist_object))
 
+    # Stays here
     def transfer_global_explorers(self):
         """Transfer the global explorers"""
         self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
         self.transfer_dir(self.global_explorer_dir, REMOTE_GLOBAL_EXPLORER_DIR)
 
+    # Stays here
     def transfer_type_explorers(self, type):
         """Transfer explorers of a type, but only once"""
         if type in self.type_explorers_transferred:
