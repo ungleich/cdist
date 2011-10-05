@@ -66,12 +66,12 @@ class Path(unittest.TestCase):
         """Check that objects created from manifest are only of install type"""
         manifest_fd = open(self.init_manifest, "w")
         manifest_fd.writelines(["#!/bin/sh\n",
-            "__file " + self.temp_dir + " --mode 0700\n",
-            "__partition_msdos /dev/null --type 82\n",
+            self.install_type_name + "testid\n",
+            self.config_type_name + "testid\n",
             ])
         manifest_fd.close()
 
-        self.config.run_initial_manifest()
+        self.install.run_initial_manifest()
 
         # FIXME: check that only __partition_msdos objects are created!
 

@@ -26,10 +26,10 @@ import os
 import stat
 import sys
 
-log = logging.getLogger(__name__)
-
 import cdist.emulator
 import cdist.path
+
+log = logging.getLogger(__name__)
 
 CODE_HEADER                     = "#!/bin/sh -e\n"
 
@@ -203,6 +203,7 @@ class ConfigInstall:
                     outfile_fd = open(outfile, "w")
 
                     # Need to flush to ensure our write is done before stdout write
+                    # FIXME: CODE_HEADER needed in our sh -e scenario????
                     outfile_fd.write(CODE_HEADER)
                     outfile_fd.flush()
 
