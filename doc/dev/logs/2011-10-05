@@ -110,3 +110,7 @@ Exec
 
       stdin -> muss in tmp-datei, für sh -e?
 - 
+--------------------------------------------------------------------------------
+
+save output of shell in buffer instead of displaying?
+   -> freedom to decide whether to display or not!
