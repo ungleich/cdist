@@ -75,6 +75,7 @@ class Path:
         self.remote_user = remote_user
         self.remote_prefix = remote_prefix
 
+        # Input directories
         self.conf_dir               = os.path.join(self.base_dir, "conf")
         self.cache_base_dir         = os.path.join(self.base_dir, "cache")
         self.cache_dir              = os.path.join(self.cache_base_dir, target_host)
@@ -83,31 +84,27 @@ class Path:
         self.manifest_dir           = os.path.join(self.conf_dir, "manifest")
         self.type_base_dir          = os.path.join(self.conf_dir, "type")
 
-        self.out_dir = os.path.join(self.temp_dir, "out")
-        os.mkdir(self.out_dir)
-
-        self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
-        os.mkdir(self.global_explorer_out_dir)
-
-        self.object_base_dir = os.path.join(self.out_dir, "object")
-
-        # Setup binary directory + contents
-        self.bin_dir = os.path.join(self.out_dir, "bin")
-        os.mkdir(self.bin_dir)
-
-        # List of type explorers transferred
-        self.type_explorers_transferred = {}
-
-        # objects
-        self.objects_prepared = []
-
         # Mostly static, but can be overwritten on user demand
         if initial_manifest:
             self.initial_manifest = initial_manifest
         else:
             self.initial_manifest = os.path.join(self.manifest_dir, "init")
 
-    # FIXME: stays
+        # Output directories
+        self.out_dir = os.path.join(self.temp_dir, "out")
+        self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
+        self.object_base_dir = os.path.join(self.out_dir, "object")
+        self.bin_dir = os.path.join(self.out_dir, "bin")
+
+        # List of type explorers transferred
+        self.type_explorers_transferred = {}
+
+        # objects prepared
+        self.objects_prepared = []
+
+        # Create directories
+        self.__init_out_dirs()
+
     def cleanup(self):
         # Do not use in __del__:
         # http://docs.python.org/reference/datamodel.html#customization
@@ -120,6 +117,20 @@ class Path:
             shutil.rmtree(self.cache_dir)
         shutil.move(self.temp_dir, self.cache_dir)
 
+    
+    def __init_out_dirs(self):
+        """Initialise output directory structure"""
+        os.mkdir(self.out_dir)
+        os.mkdir(self.global_explorer_out_dir)
+        os.mkdir(self.bin_dir)
+
+
+    # Stays here
+    def list_types(self):
+        """Retuns list of types"""
+        return os.listdir(self.type_base_dir)
+
+    ###################################################################### 
 
     # FIXME: belongs to here - clearify remote*
     def remote_mkdir(self, directory):
@@ -170,11 +181,6 @@ class Path:
     def list_global_explorers(self):
         """Return list of available explorers"""
         return os.listdir(self.global_explorer_dir)
-
-    # Stays here
-    def list_types(self):
-        """Retuns list of types"""
-        return os.listdir(self.type_base_dir)
 
     # Stays here
     def list_object_paths(self, starting_point):
