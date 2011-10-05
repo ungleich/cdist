@@ -260,6 +260,17 @@ class ConfigInstall:
                  log.debug("Skipping rerun of object %s", cdist_object)
                  continue
              else:
+                 # FIXME: run_type_explorer:
+                 # object can return type
+                 # type has explorers
+                 # path knows about where to save explorer output
+                 # type = self.path.objects[object].type()
+                 # self.path.types['type'].explorers()
+                 # for explorer in explorers:
+                 #  output = cdist.exec.run_debug_or_fail_shell(explorer) 
+                 #  if output:
+                 #      write_output_to(output, os.path.join(self.path.objects[object].explorer_dir(),explorer) )
+                 # 
                  self.run_type_explorer(cdist_object)
                  self.run_type_manifest(cdist_object)
                  self.objects_prepared.append(cdist_object)
