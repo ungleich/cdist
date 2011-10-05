@@ -63,6 +63,129 @@ In [14]: # removes /home/sar/vcs/cdist/cache/sans-asteven-02.ethz.ch/out/object/
 
 In [15]:
 
+
+-----
+
+In [1]: import oo
+
+In [2]: oo.Type.
+oo.Type.base_dir             oo.Type.is_install           oo.Type.list_type_names      oo.Type.mro                  oo.Type.path                 
+oo.Type.explorers            oo.Type.is_singleton         oo.Type.list_types           oo.Type.optional_parameters  oo.Type.required_parameters  
+
+In [2]: oo.Type.list
+oo.Type.list_type_names  oo.Type.list_types       
+
+In [2]: oo.Type.list_type_names()
+Out[2]: 
+['__addifnosuchline',
+ '__apt_ppa',
+ '__apt_update_index',
+ '__autofs_map',
+ '__autofs_master',
+ '__debconf_set_selections',
+ '__directory',
+ '__file',
+ '__group',
+ '__issue',
+ '__key_value',
+ '__link',
+ '__mkfs',
+ '__motd',
+ '__package',
+ '__package_apt',
+ '__package_pacman',
+ '__package_pkg_openbsd',
+ '__package_rubygem',
+ '__package_yum',
+ '__partition_msdos',
+ '__partition_msdos_apply',
+ '__postgres_database',
+ '__postgres_role',
+ '__process',
+ '__removeline',
+ '__ssh_authorized_key',
+ '__timezone',
+ '__user']
+
+In [3]: list(oo.Type.list_types())
+Out[3]: 
+[<Type name=__addifnosuchline>,
+ <Type name=__apt_ppa>,
+ <Type name=__apt_update_index>,
+ <Type name=__autofs_map>,
+ <Type name=__autofs_master>,
+ <Type name=__debconf_set_selections>,
+ <Type name=__directory>,
+ <Type name=__file>,
+ <Type name=__group>,
+ <Type name=__issue>,
+ <Type name=__key_value>,
+ <Type name=__link>,
+ <Type name=__mkfs>,
+ <Type name=__motd>,
+ <Type name=__package>,
+ <Type name=__package_apt>,
+ <Type name=__package_pacman>,
+ <Type name=__package_pkg_openbsd>,
+ <Type name=__package_rubygem>,
+ <Type name=__package_yum>,
+ <Type name=__partition_msdos>,
+ <Type name=__partition_msdos_apply>,
+ <Type name=__postgres_database>,
+ <Type name=__postgres_role>,
+ <Type name=__process>,
+ <Type name=__removeline>,
+ <Type name=__ssh_authorized_key>,
+ <Type name=__timezone>,
+ <Type name=__user>]
+
+In [4]: 
+
+In [4]: oo.Object.
+oo.Object.base_dir           oo.Object.changed            oo.Object.list_object_names  oo.Object.list_objects       oo.Object.list_type_names    oo.Object.mro                oo.Object.path
+
+In [4]: oo.Object.list
+oo.Object.list_object_names  oo.Object.list_objects       oo.Object.list_type_names    
+
+In [4]: oo.Object.list_ob
+oo.Object.list_object_names  oo.Object.list_objects       
+
+In [4]: oo.Object.list_object_names()
+Out[4]: <generator object list_object_names at 0x1b759b0>
+
+In [5]: list(oo.Object.list_object_names())
+Out[5]: 
+['__mkfs/dev/sda1',
+ '__mkfs/dev/sda2',
+ '__mkfs/dev/sda5',
+ '__mkfs/dev/sda6',
+ '__mkfs/dev/sda7',
+ '__partition_msdos/dev/sda1',
+ '__partition_msdos/dev/sda2',
+ '__partition_msdos/dev/sda3',
+ '__partition_msdos/dev/sda5',
+ '__partition_msdos/dev/sda6',
+ '__partition_msdos/dev/sda7',
+ '__partition_msdos_apply/singleton']
+
+In [6]: list(oo.Object.list_objects())
+Out[6]: 
+[<Object __mkfs/dev/sda1>,
+ <Object __mkfs/dev/sda2>,
+ <Object __mkfs/dev/sda5>,
+ <Object __mkfs/dev/sda6>,
+ <Object __mkfs/dev/sda7>,
+ <Object __partition_msdos/dev/sda1>,
+ <Object __partition_msdos/dev/sda2>,
+ <Object __partition_msdos/dev/sda3>,
+ <Object __partition_msdos/dev/sda5>,
+ <Object __partition_msdos/dev/sda6>,
+ <Object __partition_msdos/dev/sda7>,
+ <Object __partition_msdos_apply/singleton>]
+
+In [7]: 
+
+
 '''
 
 class Type(object):
