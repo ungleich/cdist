@@ -171,29 +171,10 @@ class Path:
         """Return list of available explorers"""
         return os.listdir(self.global_explorer_dir)
 
-    # FIXME: Type - only needs to know its path
-    def list_type_explorers(self, type):
-        """Return list of available explorers for a specific type"""
-        dir = self.type_dir(type, "explorer")
-        if os.path.isdir(dir):
-            list = os.listdir(dir)
-        else:
-            list = []
-
-        log.debug("Explorers for %s in %s: %s", type, dir, list)
-
-        return list
-
     # Stays here
     def list_types(self):
         """Retuns list of types"""
         return os.listdir(self.type_base_dir)
-
-    # FIXME: type
-    def is_install_type(self, type):
-        """Check whether a type is used for installation (if not: for configuration)"""
-        marker = os.path.join(self.type_dir(type), "install")
-        return os.path.isfile(marker)
 
     # Stays here
     def list_object_paths(self, starting_point):
@@ -260,16 +241,6 @@ class Path:
 
         return objects
 
-    # FIXME: Type
-    def type_dir(self, type, *args):
-        """Return (sub-)directory of a type"""
-        return os.path.join(self.type_base_dir, type, *args)
-
-    # FIXME: Type
-    def remote_type_explorer_dir(self, type):
-        """Return remote directory that holds the explorers of a type"""
-        return os.path.join(REMOTE_TYPE_DIR, type, "explorer")
-
     # Stays here
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
@@ -286,7 +257,7 @@ class Path:
         self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
         self.transfer_dir(self.global_explorer_dir, REMOTE_GLOBAL_EXPLORER_DIR)
 
-    # Stays here
+    # Stays here - FIXME: adjust to type code, loop over types!
     def transfer_type_explorers(self, type):
         """Transfer explorers of a type, but only once"""
         if type in self.type_explorers_transferred:

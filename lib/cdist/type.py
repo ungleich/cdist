@@ -46,12 +46,6 @@ class Type(object):
         """Check whether a type is used for installation (if not: for configuration)"""
         return os.path.isfile(os.path.join(self.path, "install"))
 
-    # FIXME: Type
-    def type_dir(self, type, *args):
-        """Return (sub-)directory of a type"""
-        return os.path.join(self.type_base_dir, type, *args)
-
-    # FIXME: Type
-    def remote_type_explorer_dir(self, type):
+    def remote_explorer_dir(self):
         """Return remote directory that holds the explorers of a type"""
-        return os.path.join(REMOTE_TYPE_DIR, type, "explorer")
+        return os.path.join(self.remote_path, "explorer")
