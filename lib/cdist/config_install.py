@@ -29,6 +29,8 @@ import sys
 import cdist.emulator
 import cdist.path
 
+import cdist.core
+
 log = logging.getLogger(__name__)
 
 CODE_HEADER = "#!/bin/sh -e\n"
@@ -107,14 +109,6 @@ class ConfigInstall:
         """Link emulator to types"""
         cdist.emulator.link(self.exec_path,
             self.path.bin_dir, self.path.list_types())
-
-    def init_deploy(self):
-        """Ensure the base directories are cleaned up"""
-        log.debug("Creating clean directory structure")
-
-        self.path.remove_remote_dir(cdist.path.REMOTE_BASE_DIR)
-        self.path.remote_mkdir(cdist.path.REMOTE_BASE_DIR)
-        self.link_emulator()
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
@@ -241,11 +235,11 @@ class ConfigInstall:
         log.info("Running object manifests and type explorers")
 
         old_objects = []
-        objects = self.path.list_objects()
+        objects = cdist.core.Object.list_objects()
 
         # Continue process until no new objects are created anymore
         while old_objects != objects:
-            old_objects = list(objects)
+            old_objects = objects
             for cdist_object in objects:
                 if cdist_object in self.objects_prepared:
                     log.debug("Skipping rerun of object %s", cdist_object)
@@ -255,7 +249,7 @@ class ConfigInstall:
                     self.run_type_manifest(cdist_object)
                     self.objects_prepared.append(cdist_object)
 
-            objects = self.path.list_objects()
+            objects = cdist.core.Object.list_objects()
 
     def stage_run(self):
         """The final (and real) step of deployment"""
@@ -285,3 +279,11 @@ class ConfigInstall:
         self.deploy_to()
         self.cleanup()
 
+    ### Cleaned / check functions: Round 1 :-) #################################
+    def init_deploy(self):
+        """Ensure the base directories are cleaned up"""
+        log.debug("Creating clean directory structure")
+
+        self.path.remove_remote_dir(cdist.path.REMOTE_BASE_DIR)
+        self.path.remote_mkdir(cdist.path.REMOTE_BASE_DIR)
+        self.link_emulator()
