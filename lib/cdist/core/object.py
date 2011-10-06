@@ -22,6 +22,7 @@
 import os
 
 import cdist
+import cdist.path
 
 
 class Object(object):
@@ -72,7 +73,7 @@ class Object(object):
         """Return a list of object names"""
         for path, dirs, files in os.walk(cls.base_dir()):
             # FIXME: use constant instead of string
-            if '.cdist' in dirs:
+            if cdist.path.DOT_CDIST in dirs:
                 yield os.path.relpath(path, cls.base_dir())
 
     def __init__(self, type, object_id=None, parameter=None, requirements=None):
@@ -90,7 +91,7 @@ class Object(object):
         return os.path.join(
             self.base_dir(),
             self.qualified_name,
-            '.cdist'
+            cdist.path.DOT_CDIST
         )
 
     @property
