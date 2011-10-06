@@ -1,3 +1,10 @@
+2.0.3:
+
+- fix emulator
+- introduce tests for $require
+
+--------------------------------------------------------------------------------
+
 - Fix / rewrite cdist-quickstart
 
 - write tutorial!!!!!!!!!
