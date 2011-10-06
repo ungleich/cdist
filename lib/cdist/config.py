@@ -38,23 +38,16 @@ class Config:
 
     def __init__(self, target_host, 
                     initial_manifest=False,
-                    remote_user="root",
                     home=None,
                     exec_path=sys.argv[0],
                     debug=False):
 
         self.target_host    = target_host
         self.debug          = debug
-        self.remote_user    = remote_user
         self.exec_path      = exec_path
-
-        # FIXME: broken - construct elsewhere!
-        self.remote_prefix = ["ssh", self.remote_user + "@" + self.target_host]
 
         self.path = cdist.path.Path(self.target_host, 
                         initial_manifest=initial_manifest,
-                        remote_user=self.remote_user,
-                        remote_prefix=self.remote_prefix,
                         base_dir=home,
                         debug=debug)
         
@@ -78,7 +71,7 @@ class Config:
             cmd.append("__explorer=" + cdist.path.REMOTE_GLOBAL_EXPLORER_DIR)
             cmd.append(self.path.remote_global_explorer_path(explorer))
 
-            cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=self.remote_prefix)
+            cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()
 
     def run_type_explorer(self, cdist_object):
@@ -105,7 +98,7 @@ class Config:
             log.debug("%s exploring %s using %s storing to %s", 
                             cdist_object, explorer, remote_cmd, output)
                         
-            cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=self.remote_prefix)
+            cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()
 
     def link_emulator(self):
@@ -235,8 +228,7 @@ class Config:
             remote_remote_code = os.path.join(remote_dir, "code-remote")
             if os.path.isfile(local_remote_code):
                 self.path.transfer_file(local_remote_code, remote_remote_code)
-                # FIXME: remote_prefix
-                cdist.exec.run_or_fail([remote_remote_code], remote_prefix=self.remote_prefix)
+                cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
                 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
@@ -297,8 +289,8 @@ def config(args):
 
     time_start = datetime.datetime.now()
 
-    os.environ['__remote_exec'] = ["ssh", "-o", "User=root" ]
-    os.environ['__remote_copy'] = ["scp", "-o", "User=root" ]
+    os.environ['__remote_exec'] = "ssh -o User=root"
+    os.environ['__remote_copy'] = "scp -o User=root"
 
     for host in args.host:
         c = Config(host, initial_manifest=args.manifest, home=args.cdist_home, debug=args.debug)
