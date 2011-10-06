@@ -57,8 +57,6 @@ class Path:
 
     def __init__(self,
                 target_host,
-                remote_user,
-                remote_prefix,
                 initial_manifest=False,
                 base_dir=None,
                 debug=False):
@@ -70,10 +68,8 @@ class Path:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
         self.temp_dir = tempfile.mkdtemp()
-        self.target_host = target_host
 
-        self.remote_user = remote_user
-        self.remote_prefix = remote_prefix
+        self.target_host = target_host
 
         # Input directories
         self.conf_dir               = os.path.join(self.base_dir, "conf")
@@ -96,6 +92,8 @@ class Path:
         self.object_base_dir = os.path.join(self.out_dir, "object")
         self.bin_dir = os.path.join(self.out_dir, "bin")
 
+        os.environ['__cdist_out_dir'] = self.out_dir
+
         # List of type explorers transferred
         self.type_explorers_transferred = {}
 
@@ -117,7 +115,7 @@ class Path:
             shutil.rmtree(self.cache_dir)
         shutil.move(self.temp_dir, self.cache_dir)
 
-    
+
     def __init_out_dirs(self):
         """Initialise output directory structure"""
         os.mkdir(self.out_dir)
@@ -135,28 +133,24 @@ class Path:
     # FIXME: belongs to here - clearify remote*
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
-        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=self.remote_prefix)
+        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
 
     # FIXME: belongs to here - clearify remote*
     def remove_remote_dir(self, destination):
-        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=self.remote_prefix)
+        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
 
     # FIXME: belongs to here - clearify remote*
     def transfer_dir(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
         self.remove_remote_dir(destination)
-        cdist.exec.run_or_fail(["scp", "-qr", source, 
-                                self.remote_user + "@" + 
-                                self.target_host + ":" + 
-                                destination])
+        cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
+            ["-r", source, self.target_host + ":" + destination])
 
     # FIXME: belongs to here - clearify remote*
     def transfer_file(self, source, destination):
         """Transfer file"""
-        cdist.exec.run_or_fail(["scp", "-q", source, 
-                                self.remote_user + "@" +
-                                self.target_host + ":" +
-                                destination])
+        cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
+            [source, self.target_host + ":" + destination])
 
     # FIXME: Explorer or stays
     def global_explorer_output_path(self, explorer):
@@ -197,11 +191,6 @@ class Path:
                 object_paths.append(starting_point)
 
         return object_paths
-
-    # FIXME: Object
-    def get_type_from_object(self, cdist_object):
-        """Returns the first part (i.e. type) of an object"""
-        return cdist_object.split(os.sep)[0]
 
     # FIXME: Object
     def get_object_id_from_object(self, cdist_object):
@@ -266,19 +255,19 @@ class Path:
     # Stays here - FIXME: adjust to type code, loop over types!
     def transfer_type_explorers(self, type):
         """Transfer explorers of a type, but only once"""
-        if type in self.type_explorers_transferred:
+        if type.transferred:
             log.debug("Skipping retransfer for explorers of %s", type)
             return
         else:
             # Do not retransfer
-            self.type_explorers_transferred[type] = 1
+            type.transferred = True
 
-        src = self.type_dir(type, "explorer")
-        remote_base = os.path.join(REMOTE_TYPE_DIR, type)
-        dst = self.remote_type_explorer_dir(type)
+        # FIXME: Can be explorer_path or explorer_dir, I don't care.
+        src = type.explorer_path()
+        dst = type.remote_explorer_path()
 
-        # Only continue, if there is at least the directory
-        if os.path.isdir(src):
+        # Transfer if there is at least one explorer
+        if len(type.explorers) > 0:
             # Ensure that the path exists
-            self.remote_mkdir(remote_base)
+            self.remote_mkdir(dst)
             self.transfer_dir(src, dst)

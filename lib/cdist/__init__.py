@@ -33,4 +33,4 @@ class MissingEnvironmentVariableError(Error):
         self.name = name
 
     def __str__(self):
-        return 'Missing required environment variable: {0.name}'.format(o)
+        return 'Missing required environment variable: ' + str(self.name)
