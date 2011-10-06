@@ -89,6 +89,10 @@ class Object(object):
 
         self.__parameters = None
         self.__requirements = None
+
+        # Whether this object was prepared/ran
+        self.prepared = False
+        self.ran = False
         
     def __repr__(self):
         return '<Object %s>' % self.name
