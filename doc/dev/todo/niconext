@@ -10,6 +10,9 @@
    
 --------------------------------------------------------------------------------
 
+- insert prefix into logger to distinguish between modules
+   - in debug/info only?
+
 - Fix / rewrite cdist-quickstart
 
 - write tutorial!!!!!!!!!
