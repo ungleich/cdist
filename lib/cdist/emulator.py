@@ -127,7 +127,7 @@ def run(argv):
                 param_fd.close()
 
     # Record requirements
-    if "__require" in os.environ:
+    if "require" in os.environ:
         requirements = os.environ['__require']
         log.debug(object_id + ":Writing requirements: " + requirements)
         require_fd = open(os.path.join(object_dir, "require"), "a")
