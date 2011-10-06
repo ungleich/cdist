@@ -65,7 +65,7 @@ class ConfigInstall:
         log.info("Running global explorers")
         explorers = self.path.list_global_explorers()
         if(len(explorers) == 0):
-            raise CdistError("No explorers found in", self.path.global_explorer_dir)
+            raise cdist.Error("No explorers found in", self.path.global_explorer_dir)
 
         self.path.transfer_global_explorers()
         for explorer in explorers:
@@ -159,6 +159,8 @@ class ConfigInstall:
     def object_run(self, cdist_object, mode):
         """Run gencode or code for an object"""
         log.debug("Running %s from %s", mode, cdist_object)
+
+        # FIXME: replace with new object interface
         file=os.path.join(self.path.object_dir(cdist_object), "require")
         requirements = cdist.path.file_to_list(file)
         type = self.path.get_type_from_object(cdist_object)
@@ -169,7 +171,7 @@ class ConfigInstall:
 
         #
         # Setup env Variable:
-        # 
+        #
         env = os.environ.copy()
         env['__target_host']    = self.target_host
         env['__global']         = self.path.out_dir
@@ -230,7 +232,7 @@ class ConfigInstall:
         """The final (and real) step of deployment"""
         log.info("Generating and executing code")
         # Now do the final steps over the existing objects
-        for cdist_object in self.path.list_objects():
+        for cdist_object in cdist.core.Object.list_objects():
             log.debug("Run object: %s", cdist_object)
             self.object_run(cdist_object, mode="gencode")
             self.object_run(cdist_object, mode="code")
