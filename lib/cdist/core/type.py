@@ -25,6 +25,13 @@ import cdist
 
 
 class Type(object):
+    """Represents a cdist type.
+
+    All interaction with types in cdist should be done through this class.
+    Directly accessing an type through the file system from python code is 
+    a bug.
+
+    """
 
     @staticmethod
     def base_dir():
