@@ -68,7 +68,6 @@ class Path:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
         self.temp_dir = tempfile.mkdtemp()
-        os.environ['__cdist_out_dir'] = self.temp_dir
 
         self.target_host = target_host
 
@@ -92,6 +91,8 @@ class Path:
         self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
         self.object_base_dir = os.path.join(self.out_dir, "object")
         self.bin_dir = os.path.join(self.out_dir, "bin")
+
+        os.environ['__cdist_out_dir'] = self.out_dir
 
         # List of type explorers transferred
         self.type_explorers_transferred = {}
