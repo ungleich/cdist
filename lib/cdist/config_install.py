@@ -273,7 +273,7 @@ class ConfigInstall:
                     log.debug("Skipping rerun of object %s", cdist_object)
                     continue
                 else:
-                    log.debug("Preparing object: " + cdist_object)
+                    log.debug("Preparing object: " + cdist_object.name)
                     self.run_type_explorer(cdist_object)
                     self.run_type_manifest(cdist_object)
                     cdist_object.prepared = True
