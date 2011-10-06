@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -67,7 +68,7 @@ class Object(object):
         for object_name in cls.list_object_names():
             type_name = object_name.split(os.sep)[0]
             object_id = os.sep.join(object_name.split(os.sep)[1:])
-            yield cls(Type(type_name), object_id=object_id)
+            yield cls(cdist.core.Type(type_name), object_id=object_id)
 
     @classmethod
     def list_type_names(cls):
