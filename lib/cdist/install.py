@@ -27,9 +27,6 @@ import cdist.config_install
 log = logging.getLogger(__name__)
 
 
-Class Install(cdist.config_install.ConfigInstall):
-    pass
-
 def install(args):
     """Install remote system"""
     process = {}

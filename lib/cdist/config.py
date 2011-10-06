@@ -22,12 +22,14 @@
 
 import datetime
 import logging
-log = logging.getLogger(__name__)
+import sys
 
 import cdist.emulator
 import cdist.path
 
 CODE_HEADER                     = "#!/bin/sh -e\n"
+
+log = logging.getLogger(__name__)
 
 class Config:
     """Cdist main class to hold arbitrary data"""
@@ -275,9 +277,6 @@ class Config:
         log.info("Finished run of %s in %s seconds", 
             self.target_host,
             duration.total_seconds())
-
-class Config(cdist.config_install.ConfigInstall):
-    pass
 
 def config(args):
     """Configure remote system"""
