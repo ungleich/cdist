@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -20,17 +19,7 @@
 #
 #
 
-import logging
+__all__ = ['Type', 'Object']
 
-import cdist.config_install
-
-log = logging.getLogger(__name__)
-
-
-Class Install(cdist.config_install.ConfigInstall):
-    pass
-
-def install(args):
-    """Install remote system"""
-    process = {}
-
+from cdist.core.type import Type
+from cdist.core.object import Object

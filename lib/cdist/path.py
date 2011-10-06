@@ -70,6 +70,7 @@ class Path:
         self.temp_dir = tempfile.mkdtemp()
         self.target_host = target_host
 
+        # Input directories
         self.conf_dir               = os.path.join(self.base_dir, "conf")
         self.cache_base_dir         = os.path.join(self.base_dir, "cache")
         self.cache_dir              = os.path.join(self.cache_base_dir, target_host)
@@ -78,29 +79,26 @@ class Path:
         self.manifest_dir           = os.path.join(self.conf_dir, "manifest")
         self.type_base_dir          = os.path.join(self.conf_dir, "type")
 
-        self.out_dir = os.path.join(self.temp_dir, "out")
-        os.mkdir(self.out_dir)
-
-        self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
-        os.mkdir(self.global_explorer_out_dir)
-
-        self.object_base_dir = os.path.join(self.out_dir, "object")
-
-        # Setup binary directory + contents
-        self.bin_dir = os.path.join(self.out_dir, "bin")
-        os.mkdir(self.bin_dir)
-
-        # List of type explorers transferred
-        self.type_explorers_transferred = {}
-
-        # objects
-        self.objects_prepared = []
-
         # Mostly static, but can be overwritten on user demand
         if initial_manifest:
             self.initial_manifest = initial_manifest
         else:
             self.initial_manifest = os.path.join(self.manifest_dir, "init")
+
+        # Output directories
+        self.out_dir = os.path.join(self.temp_dir, "out")
+        self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
+        self.object_base_dir = os.path.join(self.out_dir, "object")
+        self.bin_dir = os.path.join(self.out_dir, "bin")
+
+        # List of type explorers transferred
+        self.type_explorers_transferred = {}
+
+        # objects prepared
+        self.objects_prepared = []
+
+        # Create directories
+        self.__init_out_dirs()
 
     def cleanup(self):
         # Do not use in __del__:
@@ -114,29 +112,49 @@ class Path:
             shutil.rmtree(self.cache_dir)
         shutil.move(self.temp_dir, self.cache_dir)
 
+    
+    def __init_out_dirs(self):
+        """Initialise output directory structure"""
+        os.mkdir(self.out_dir)
+        os.mkdir(self.global_explorer_out_dir)
+        os.mkdir(self.bin_dir)
 
+
+    # Stays here
+    def list_types(self):
+        """Retuns list of types"""
+        return os.listdir(self.type_base_dir)
+
+    ###################################################################### 
+
+    # FIXME: belongs to here - clearify remote*
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
         cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
 
+    # FIXME: belongs to here - clearify remote*
     def remove_remote_dir(self, destination):
         cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
 
+    # FIXME: belongs to here - clearify remote*
     def transfer_dir(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
         self.remove_remote_dir(destination)
         cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
             ["-r", source, self.target_host + ":" + destination])
 
+    # FIXME: belongs to here - clearify remote*
     def transfer_file(self, source, destination):
         """Transfer file"""
         cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
             [source, self.target_host + ":" + destination])
 
+    # FIXME: Explorer or stays
     def global_explorer_output_path(self, explorer):
         """Returns path of the output for a global explorer"""
         return os.path.join(self.global_explorer_out_dir, explorer)
 
+    # FIXME: object
     def type_explorer_output_dir(self, cdist_object):
         """Returns and creates dir of the output for a type explorer"""
         dir = os.path.join(self.object_dir(cdist_object), "explorer")
@@ -145,29 +163,17 @@ class Path:
 
         return dir
 
+    # FIXME Stays here / Explorer?
     def remote_global_explorer_path(self, explorer):
         """Returns path to the remote explorer"""
         return os.path.join(REMOTE_GLOBAL_EXPLORER_DIR, explorer)
 
+    # FIXME: stays here
     def list_global_explorers(self):
         """Return list of available explorers"""
         return os.listdir(self.global_explorer_dir)
 
-    def list_type_explorers(self, type):
-        """Return list of available explorers for a specific type"""
-        dir = self.type_dir(type, "explorer")
-        if os.path.isdir(dir):
-            list = os.listdir(dir)
-        else:
-            list = []
-
-        log.debug("Explorers for %s in %s: %s", type, dir, list)
-
-        return list
-
-    def list_types(self):
-        return os.listdir(self.type_base_dir)
-
+    # Stays here
     def list_object_paths(self, starting_point):
         """Return list of paths of existing objects"""
         object_paths = []
@@ -183,36 +189,43 @@ class Path:
 
         return object_paths
 
-    # FIXME
+    # FIXME: Object
     def get_type_from_object(self, cdist_object):
         """Returns the first part (i.e. type) of an object"""
         return cdist_object.split(os.sep)[0]
 
+    # FIXME: Object
     def get_object_id_from_object(self, cdist_object):
         """Returns everything but the first part (i.e. object_id) of an object"""
         return os.sep.join(cdist_object.split(os.sep)[1:])
 
+    # FIXME: Object
     def object_dir(self, cdist_object):
         """Returns the full path to the object (including .cdist)"""
         return os.path.join(self.object_base_dir, cdist_object, DOT_CDIST)
 
+    # FIXME: Object
     def remote_object_dir(self, cdist_object):
         """Returns the remote full path to the object (including .cdist)"""
         return os.path.join(REMOTE_OBJECT_DIR, cdist_object, DOT_CDIST)
 
+    # FIXME: Object
     def object_parameter_dir(self, cdist_object):
         """Returns the dir to the object parameter"""
         return os.path.join(self.object_dir(cdist_object), "parameter")
 
+    # FIXME: object
     def remote_object_parameter_dir(self, cdist_object):
         """Returns the remote dir to the object parameter"""
         return os.path.join(self.remote_object_dir(cdist_object), "parameter")
 
+    # FIXME: object
     def object_code_paths(self, cdist_object):
         """Return paths to code scripts of object"""
         return [os.path.join(self.object_dir(cdist_object), "code-local"),
                   os.path.join(self.object_dir(cdist_object), "code-remote")]
 
+    # Stays here
     def list_objects(self):
         """Return list of existing objects"""
 
@@ -225,14 +238,7 @@ class Path:
 
         return objects
 
-    def type_dir(self, type, *args):
-        """Return directory the type"""
-        return os.path.join(self.type_base_dir, type, *args)
-
-    def remote_type_explorer_dir(self, type):
-        """Return remote directory that holds the explorers of a type"""
-        return os.path.join(REMOTE_TYPE_DIR, type, "explorer")
-
+    # Stays here
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
         # Create base path before using mkdir -p
@@ -242,11 +248,13 @@ class Path:
         self.transfer_dir(self.object_parameter_dir(cdist_object), 
                                 self.remote_object_parameter_dir(cdist_object))
 
+    # Stays here
     def transfer_global_explorers(self):
         """Transfer the global explorers"""
         self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
         self.transfer_dir(self.global_explorer_dir, REMOTE_GLOBAL_EXPLORER_DIR)
 
+    # Stays here - FIXME: adjust to type code, loop over types!
     def transfer_type_explorers(self, type):
         """Transfer explorers of a type, but only once"""
         if type in self.type_explorers_transferred:

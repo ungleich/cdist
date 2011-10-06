@@ -127,11 +127,18 @@ case "$1" in
    ;;
 
    test)
-      python3 -m unittest discover test 'test_*.py' 
+      PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
+         python3 -m cdist.test
+   ;;
+
+   test-install)
+      PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
+         python3 -m unittest cdist.test.test_install
    ;;
 
    test-all)
-      python3 -m unittest discover test '*.py' 
+      PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
+         python3 -m unittest discover lib/cdist/test '*.py' 
    ;;
 
    *)

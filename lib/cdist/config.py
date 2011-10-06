@@ -22,10 +22,6 @@
 
 import datetime
 import logging
-import os
-import stat
-import sys
-
 log = logging.getLogger(__name__)
 
 import cdist.emulator
@@ -280,10 +276,8 @@ class Config:
             self.target_host,
             duration.total_seconds())
 
-    def deploy_and_cleanup(self):
-        """Do what is most often done: deploy & cleanup"""
-        self.deploy_to()
-        self.cleanup()
+class Config(cdist.config_install.ConfigInstall):
+    pass
 
 def config(args):
     """Configure remote system"""
