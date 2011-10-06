@@ -57,8 +57,6 @@ class Path:
 
     def __init__(self,
                 target_host,
-                remote_user,
-                remote_prefix,
                 initial_manifest=False,
                 base_dir=None,
                 debug=False):
@@ -71,9 +69,6 @@ class Path:
 
         self.temp_dir = tempfile.mkdtemp()
         self.target_host = target_host
-
-        self.remote_user = remote_user
-        self.remote_prefix = remote_prefix
 
         self.conf_dir               = os.path.join(self.base_dir, "conf")
         self.cache_base_dir         = os.path.join(self.base_dir, "cache")
@@ -122,10 +117,10 @@ class Path:
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
-        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=self.remote_prefix)
+        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
 
     def remove_remote_dir(self, destination):
-        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=self.remote_prefix)
+        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
 
     def transfer_dir(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
