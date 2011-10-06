@@ -43,6 +43,8 @@ class Config:
                     debug=False):
 
         self.target_host    = target_host
+        os.environ['target_host'] = target_host
+
         self.debug          = debug
         self.exec_path      = exec_path
 
