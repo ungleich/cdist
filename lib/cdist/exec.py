@@ -45,7 +45,8 @@ def shell_run_or_debug_fail(script, *args, remote_prefix=False, **kargs):
     except subprocess.CalledProcessError:
         log.error("Code that raised the error:\n")
 
-        run_or_fail(["cat", script], remote_prefix=remote_prefix)
+        if remote_prefix:
+            run_or_fail(["cat", script], remote_prefix=remote_prefix)
 
         else:
             try:
