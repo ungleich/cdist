@@ -78,7 +78,7 @@ class ConfigInstall:
     def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""
 
-        type = self.path.get_type_from_object(cdist_object)
+        type = cdist_object.type
         self.path.transfer_type_explorers(type)
 
         cmd = []

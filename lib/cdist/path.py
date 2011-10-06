@@ -193,11 +193,6 @@ class Path:
         return object_paths
 
     # FIXME: Object
-    def get_type_from_object(self, cdist_object):
-        """Returns the first part (i.e. type) of an object"""
-        return cdist_object.split(os.sep)[0]
-
-    # FIXME: Object
     def get_object_id_from_object(self, cdist_object):
         """Returns everything but the first part (i.e. object_id) of an object"""
         return os.sep.join(cdist_object.split(os.sep)[1:])
