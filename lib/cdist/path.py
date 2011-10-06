@@ -125,17 +125,13 @@ class Path:
     def transfer_dir(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
         self.remove_remote_dir(destination)
-        cdist.exec.run_or_fail(["scp", "-qr", source, 
-                                self.remote_user + "@" + 
-                                self.target_host + ":" + 
-                                destination])
+        cdist.exec.run_or_fail([os.environ['__remote_copy'], "-r", source,
+                                self.target_host + ":" + destination])
 
     def transfer_file(self, source, destination):
         """Transfer file"""
-        cdist.exec.run_or_fail(["scp", "-q", source, 
-                                self.remote_user + "@" +
-                                self.target_host + ":" +
-                                destination])
+        cdist.exec.run_or_fail([os.environ['__remote_copy'], source,
+                                self.target_host + ":" + destination])
 
     def global_explorer_output_path(self, explorer):
         """Returns path of the output for a global explorer"""
