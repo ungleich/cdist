@@ -7,6 +7,12 @@ If ! conf/cmd/remote_exec:
 If ! conf/cmd/copy:
    use builtin
 
+--------------------------------------------------------------------------------
+
+--cmd-dir?
+$__cdist_cmd_dir
+
+--------------------------------------------------------------------------------
    -> Depend on session!
 
 Builtin:
@@ -34,12 +40,26 @@ remote_user
 Result:
 
 os.environ['__remote_exec'] = ["ssh", "-l", "root" ]
-os.environ['__remote_copy'] = ["scp", "-o" "User=root" ]
+
+os.environ['__remote_exec'] = ["ssh", "-o", "User=root" ]
+os.environ['__remote_copy'] = ["scp", "-o", "User=root" ]
 
 args for __remote_exec
    $1 = hostname
    $2 - ...  = stuff to be executed in /bin/sh on remote side
+   $2 - $7 = env
+   $7 - 12 = cmd
+
 
 args for __remote_copy
    $1 = file here
    $2 = hostname:destination
+
+--------------------------------------------------------------------------------
+There needs to be an easy way to change those cmds!
+--------------------------------------------------------------------------------
+Env-Passing:
+   _a=b test -> test can access $_a
+   _a=b test $_a -> $1 = "", because _a is *not* set within the shell
+   _a=b; test -> can access $_a
+   _a=b; test $_a -> $1 == "b"
