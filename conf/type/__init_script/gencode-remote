@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# 2010-2011 Daniel Roth (dani-cdist@d-roth.li)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+if [ -f "$__object/parameter/script" ]; then
+   script=$(cat "$__object/parameter/script")
+else
+   script="/$__object_id"
+fi
+
+if [ -f "$__object/parameter/base_dir" ]; then
+   base_dir=$(cat "$__object/parameter/base_dir")
+else
+  os="$(cat "$__global/explorer/os")"
+  case "$os" in
+    archlinux|netbsd|macosx|freebsd|openbsd) base_dir="/etc/rc.d" ;;
+    *) base_dir="/etc/init.d"
+  esac
+fi
+
+mode=$(cat "$__object/parameter/mode")
+
+echo "${base_dir}/${script} ${mode}"
