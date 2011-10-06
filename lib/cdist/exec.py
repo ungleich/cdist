@@ -20,6 +20,7 @@
 #
 
 import logging
+import os
 import subprocess
 
 log = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ def shell_run_or_debug_fail(script, *args, remote_prefix=False, **kargs):
     args[0][:0] = [ "/bin/sh", "-e" ]
 
     if remote_prefix:
-        args[0][:0] = remote_prefix
+        args[0][:0] = os.environ['__remote_exec']
 
     log.debug("Shell exec cmd: %s", args)
 
@@ -43,8 +44,8 @@ def shell_run_or_debug_fail(script, *args, remote_prefix=False, **kargs):
         subprocess.check_call(*args, **kargs)
     except subprocess.CalledProcessError:
         log.error("Code that raised the error:\n")
-        if remote_prefix:
-            run_or_fail(["cat", script], remote_prefix=remote_prefix)
+
+        run_or_fail(["cat", script], remote_prefix=remote_prefix)
 
         else:
             try:
@@ -60,7 +61,7 @@ def shell_run_or_debug_fail(script, *args, remote_prefix=False, **kargs):
 
 def run_or_fail(*args, remote_prefix=False, **kargs):
     if remote_prefix:
-        args[0][:0] = remote_prefix
+        args[0][:0] = os.environ['__remote_exec']
 
     log.debug("Exec: " + " ".join(*args))
     try:
