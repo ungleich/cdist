@@ -57,8 +57,6 @@ class Path:
 
     def __init__(self,
                 target_host,
-                remote_user,
-                remote_prefix,
                 initial_manifest=False,
                 base_dir=None,
                 debug=False):
@@ -71,9 +69,6 @@ class Path:
 
         self.temp_dir = tempfile.mkdtemp()
         self.target_host = target_host
-
-        self.remote_user = remote_user
-        self.remote_prefix = remote_prefix
 
         # Input directories
         self.conf_dir               = os.path.join(self.base_dir, "conf")
@@ -135,28 +130,24 @@ class Path:
     # FIXME: belongs to here - clearify remote*
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
-        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=self.remote_prefix)
+        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
 
     # FIXME: belongs to here - clearify remote*
     def remove_remote_dir(self, destination):
-        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=self.remote_prefix)
+        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
 
     # FIXME: belongs to here - clearify remote*
     def transfer_dir(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
         self.remove_remote_dir(destination)
-        cdist.exec.run_or_fail(["scp", "-qr", source, 
-                                self.remote_user + "@" + 
-                                self.target_host + ":" + 
-                                destination])
+        cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
+            ["-r", source, self.target_host + ":" + destination])
 
     # FIXME: belongs to here - clearify remote*
     def transfer_file(self, source, destination):
         """Transfer file"""
-        cdist.exec.run_or_fail(["scp", "-q", source, 
-                                self.remote_user + "@" +
-                                self.target_host + ":" +
-                                destination])
+        cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
+            [source, self.target_host + ":" + destination])
 
     # FIXME: Explorer or stays
     def global_explorer_output_path(self, explorer):
