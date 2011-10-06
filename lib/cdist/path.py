@@ -112,7 +112,7 @@ class Path:
             shutil.rmtree(self.cache_dir)
         shutil.move(self.temp_dir, self.cache_dir)
 
-    
+
     def __init_out_dirs(self):
         """Initialise output directory structure"""
         os.mkdir(self.out_dir)

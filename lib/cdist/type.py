@@ -46,6 +46,10 @@ class Type(object):
         """Check whether a type is used for installation (if not: for configuration)"""
         return os.path.isfile(os.path.join(self.path, "install"))
 
+    def explorer_dir(self):
+        """Return remote directory that holds the explorers of a type"""
+        return os.path.join(self.remote_path, "explorer")
+
     def remote_explorer_dir(self):
         """Return remote directory that holds the explorers of a type"""
         return os.path.join(self.remote_path, "explorer")
