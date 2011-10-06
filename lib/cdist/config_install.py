@@ -65,7 +65,7 @@ class ConfigInstall:
         log.info("Running global explorers")
         explorers = self.path.list_global_explorers()
         if(len(explorers) == 0):
-            raise cdist.Error("No explorers found in", self.path.global_explorer_dir)
+            raise cdist.Error("No explorers found in " + self.path.global_explorer_dir)
 
         self.path.transfer_global_explorers()
         for explorer in explorers:
@@ -251,12 +251,13 @@ class ConfigInstall:
             self.target_host,
             duration.total_seconds())
 
+
+    ### Cleaned / check functions: Round 1 :-) #################################
     def deploy_and_cleanup(self):
         """Do what is most often done: deploy & cleanup"""
         self.deploy_to()
         self.cleanup()
 
-    ### Cleaned / check functions: Round 1 :-) #################################
     def init_deploy(self):
         """Ensure the base directories are cleaned up"""
         log.debug("Creating clean directory structure")
