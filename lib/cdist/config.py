@@ -289,8 +289,8 @@ def config(args):
 
     time_start = datetime.datetime.now()
 
-    os.environ['__remote_exec'] = "ssh -o User=root"
-    os.environ['__remote_copy'] = "scp -o User=root"
+    os.environ['__remote_exec'] = "ssh -o User=root -q"
+    os.environ['__remote_copy'] = "scp -o User=root -q"
 
     for host in args.host:
         c = Config(host, initial_manifest=args.manifest, home=args.cdist_home, debug=args.debug)
