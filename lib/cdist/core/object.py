@@ -19,12 +19,14 @@
 #
 #
 
+import logging
 import os
 import collections
 
 import cdist
 import cdist.core.property
 
+log = logging.getLogger(__name__)
 
 DOT_CDIST = '.cdist'
 
