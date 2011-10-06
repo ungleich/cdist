@@ -55,12 +55,10 @@ class ConfigInstall:
                         base_dir=home,
                         debug=debug)
         
-        self.objects_prepared = []
-
     def cleanup(self):
         self.path.cleanup()
 
-    def run_global_explores(self):
+    def run_global_explorers(self):
         """Run global explorers"""
         log.info("Running global explorers")
         explorers = self.path.list_global_explorers()
@@ -269,7 +267,7 @@ class ConfigInstall:
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
         self.init_deploy()
-        self.run_global_explores()
+        self.run_global_explorers()
         self.run_initial_manifest()
         
         log.info("Running object manifests and type explorers")
@@ -285,6 +283,5 @@ class ConfigInstall:
                 else:
                     self.run_type_explorer(cdist_object)
                     self.run_type_manifest(cdist_object)
-                    self.objects_prepared.append(cdist_object)
                     cdist_object.prepared = True
                     new_objects_created = True
