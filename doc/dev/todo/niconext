@@ -1,8 +1,12 @@
 2.0.3:
 
 - fix emulator
-- introduce tests for $require
+- introduce tests:
+   - does $require work?
+   - $whatever should fail if there is no global explorer directory
 
+- Create GlobalExplorer
+   
 --------------------------------------------------------------------------------
 
 - Fix / rewrite cdist-quickstart
