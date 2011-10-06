@@ -25,9 +25,6 @@ import collections
 import cdist
 
 
-DOT_CDIST = '.cdist'
-
-
 class FileList(collections.MutableSequence):
     """A list that stores it's state in a file.
 
