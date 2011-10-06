@@ -21,6 +21,7 @@
 #
 
 import argparse
+import datetime
 import logging
 import os
 import re
@@ -105,6 +106,8 @@ if __name__ == "__main__":
     try:
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
+        time_start = datetime.datetime.now()
+
         if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
             import cdist.emulator
             cdist.emulator.run(sys.argv)
@@ -117,6 +120,14 @@ if __name__ == "__main__":
             import cdist.path
 
             commandline()
+
+        time_end = datetime.datetime.now()
+        duration = time_end - time_start
+        # FIXME: move into runner
+        # log.info("Finished run of %s in %s seconds", self.target_host,
+        #     duration.total_seconds())
+        log.info("Finished run in %s seconds", duration.total_seconds())
+
     except KeyboardInterrupt:
         sys.exit(0)
     except cdist.Error as e:

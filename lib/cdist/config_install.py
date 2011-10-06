@@ -234,22 +234,13 @@ class ConfigInstall:
             self.object_run(cdist_object, mode="gencode")
             self.object_run(cdist_object, mode="code")
 
+    ### Cleaned / check functions: Round 1 :-) #################################
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
         log.info("Deploying to " + self.target_host)
-        time_start = datetime.datetime.now()
-
         self.stage_prepare()
         self.stage_run()
 
-        time_end = datetime.datetime.now()
-        duration = time_end - time_start
-        log.info("Finished run of %s in %s seconds", 
-            self.target_host,
-            duration.total_seconds())
-
-
-    ### Cleaned / check functions: Round 1 :-) #################################
     def deploy_and_cleanup(self):
         """Do what is most often done: deploy & cleanup"""
         self.deploy_to()
