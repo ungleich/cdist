@@ -68,6 +68,8 @@ class Path:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
         self.temp_dir = tempfile.mkdtemp()
+        os.environ['__cdist_out_dir'] = self.temp_dir
+
         self.target_host = target_host
 
         # Input directories
