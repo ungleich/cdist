@@ -33,7 +33,9 @@ def shell_run_or_debug_fail(script, *args, remote_prefix=False, **kargs):
     args[0][:0] = [ "/bin/sh", "-e" ]
 
     if remote_prefix:
-        args[0][:0] = os.environ['__remote_exec']
+        remote_prefix = os.environ['__remote_exec'].split()
+        remote_prefix.append(os.environ['target_host'])
+        args[0][:0] = remote_prefix
 
     log.debug("Shell exec cmd: %s", args)
 
@@ -62,7 +64,9 @@ def shell_run_or_debug_fail(script, *args, remote_prefix=False, **kargs):
 
 def run_or_fail(*args, remote_prefix=False, **kargs):
     if remote_prefix:
-        args[0][:0] = os.environ['__remote_exec']
+        remote_prefix = os.environ['__remote_exec'].split()
+        remote_prefix.append(os.environ['target_host'])
+        args[0][:0] = remote_prefix
 
     log.debug("Exec: " + " ".join(*args))
     try:
