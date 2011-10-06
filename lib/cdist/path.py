@@ -262,15 +262,9 @@ class Path:
             # Do not retransfer
             type.transferred = True
 
-        # FIXME: need to get explorer path from type!
+        # FIXME: Can be explorer_path or explorer_dir, I don't care.
         src = type.explorer_path()
         dst = type.remote_explorer_path()
-
-        # FIXME: where to construct remote path? here?
-        # remote_base = os.path.join(REMOTE_TYPE_DIR, type.name)
-        # dst = self.remote_type_explorer_dir(type)
-        # Only continue, if there is at least the directory
-        #if os.path.isdir(src):
 
         # Transfer if there is at least one explorer
         if len(type.explorers) > 0:
