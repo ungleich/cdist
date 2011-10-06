@@ -68,7 +68,7 @@ class ConfigInstall:
      log.info("Running global explorers")
      explorers = self.path.list_global_explorers()
      if(len(explorers) == 0):
-         raise CdistError("No explorers found in", self.path.global_explorer_dir)
+         raise CdistError("No explorers found in ", self.path.global_explorer_dir)
 
      self.path.transfer_global_explorers()
      for explorer in explorers:
