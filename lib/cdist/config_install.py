@@ -225,6 +225,7 @@ class ConfigInstall:
                 self.path.transfer_file(local_remote_code, remote_remote_code)
                 cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
                 
+    ### Cleaned / check functions: Round 1 :-) #################################
     def stage_run(self):
         """The final (and real) step of deployment"""
         log.info("Generating and executing code")
@@ -234,7 +235,6 @@ class ConfigInstall:
             self.object_run(cdist_object, mode="gencode")
             self.object_run(cdist_object, mode="code")
 
-    ### Cleaned / check functions: Round 1 :-) #################################
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
         log.info("Deploying to " + self.target_host)
@@ -271,6 +271,7 @@ class ConfigInstall:
                     log.debug("Skipping rerun of object %s", cdist_object)
                     continue
                 else:
+                    log.debug("Preparing object: " + cdist_object)
                     self.run_type_explorer(cdist_object)
                     self.run_type_manifest(cdist_object)
                     cdist_object.prepared = True
