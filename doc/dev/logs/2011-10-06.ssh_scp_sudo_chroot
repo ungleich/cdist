@@ -44,6 +44,28 @@ os.environ['__remote_exec'] = ["ssh", "-l", "root" ]
 os.environ['__remote_exec'] = ["ssh", "-o", "User=root" ]
 os.environ['__remote_copy'] = ["scp", "-o", "User=root" ]
 
+
+__remote_exec=~/sudossh __remote_copy=... cdist config localhost
+
+~/sudossh hostname $@...
+~/sudocopy a hostname:b
+
+~/chrootssh
+~/chrootcopy
+
+
+
+a)
+   3 cmd verzeichnnise: cdist, sudo, chroot
+   pro aufruf variable ändern
+
+b)
+   1 dir, mit zeug
+   pro aufruf variablen ändern
+
+
+conf/cmd/remote_exec 
+
 args for __remote_exec
    $1 = hostname
    $2 - ...  = stuff to be executed in /bin/sh on remote side
