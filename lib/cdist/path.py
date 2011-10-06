@@ -255,19 +255,25 @@ class Path:
     # Stays here - FIXME: adjust to type code, loop over types!
     def transfer_type_explorers(self, type):
         """Transfer explorers of a type, but only once"""
-        if type in self.type_explorers_transferred:
+        if type.transferred:
             log.debug("Skipping retransfer for explorers of %s", type)
             return
         else:
             # Do not retransfer
-            self.type_explorers_transferred[type] = 1
+            type.transferred = True
 
-        src = self.type_dir(type, "explorer")
-        remote_base = os.path.join(REMOTE_TYPE_DIR, type)
-        dst = self.remote_type_explorer_dir(type)
+        # FIXME: need to get explorer path from type!
+        src = type.explorer_path()
+        dst = type.remote_explorer_path()
 
+        # FIXME: where to construct remote path? here?
+        # remote_base = os.path.join(REMOTE_TYPE_DIR, type.name)
+        # dst = self.remote_type_explorer_dir(type)
         # Only continue, if there is at least the directory
-        if os.path.isdir(src):
+        #if os.path.isdir(src):
+
+        # Transfer if there is at least one explorer
+        if len(type.explorers) > 0:
             # Ensure that the path exists
-            self.remote_mkdir(remote_base)
+            self.remote_mkdir(dst)
             self.transfer_dir(src, dst)
