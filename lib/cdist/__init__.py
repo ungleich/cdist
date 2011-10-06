@@ -29,7 +29,7 @@ class Error(Exception):
 class MissingEnvironmentVariableError(Error):
     """Raised when a required environment variable is not set."""
 
-    def __init__(self, name)
+    def __init__(self, name):
         self.name = name
 
     def __str__(self):
