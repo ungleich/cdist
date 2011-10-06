@@ -226,31 +226,6 @@ class ConfigInstall:
                 self.path.transfer_file(local_remote_code, remote_remote_code)
                 cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
                 
-    def stage_prepare(self):
-        """Do everything for a deploy, minus the actual code stage"""
-        self.init_deploy()
-        self.run_global_explores()
-        self.run_initial_manifest()
-        
-        log.info("Running object manifests and type explorers")
-
-        old_objects = []
-        objects = cdist.core.Object.list_objects()
-
-        # Continue process until no new objects are created anymore
-        while old_objects != objects:
-            old_objects = objects
-            for cdist_object in objects:
-                if cdist_object in self.objects_prepared:
-                    log.debug("Skipping rerun of object %s", cdist_object)
-                    continue
-                else:
-                    self.run_type_explorer(cdist_object)
-                    self.run_type_manifest(cdist_object)
-                    self.objects_prepared.append(cdist_object)
-
-            objects = cdist.core.Object.list_objects()
-
     def stage_run(self):
         """The final (and real) step of deployment"""
         log.info("Generating and executing code")
@@ -287,3 +262,26 @@ class ConfigInstall:
         self.path.remove_remote_dir(cdist.path.REMOTE_BASE_DIR)
         self.path.remote_mkdir(cdist.path.REMOTE_BASE_DIR)
         self.link_emulator()
+    
+    def stage_prepare(self):
+        """Do everything for a deploy, minus the actual code stage"""
+        self.init_deploy()
+        self.run_global_explores()
+        self.run_initial_manifest()
+        
+        log.info("Running object manifests and type explorers")
+
+        # Continue process until no new objects are created anymore
+        new_objects_created = True
+        while new_objects_created:
+            new_objects_created = False
+            for cdist_object in cdist.core.Object.list_objects():
+                if cdist_object.prepared:
+                    log.debug("Skipping rerun of object %s", cdist_object)
+                    continue
+                else:
+                    self.run_type_explorer(cdist_object)
+                    self.run_type_manifest(cdist_object)
+                    self.objects_prepared.append(cdist_object)
+                    cdist_object.prepared = True
+                    new_objects_created = True
