@@ -77,6 +77,8 @@ def run(argv):
 
     object_dir = os.path.join(global_dir, "object", type,
                             object_id, cdist.path.DOT_CDIST)
+    log.debug("Object output dir = " + object_dir)
+
     param_out_dir = os.path.join(object_dir, "parameter")
 
     object_source_file = os.path.join(object_dir, "source")

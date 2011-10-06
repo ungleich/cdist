@@ -262,6 +262,8 @@ class ConfigInstall:
         
         log.info("Running object manifests and type explorers")
 
+        log.debug("Searching for objects in " + cdist.core.Object.base_dir())
+
         # Continue process until no new objects are created anymore
         new_objects_created = True
         while new_objects_created:
