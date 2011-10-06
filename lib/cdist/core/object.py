@@ -20,9 +20,13 @@
 #
 
 import os
+import collections
 
 import cdist
-import cdist.path
+import cdist.core.property
+
+
+DOT_CDIST = '.cdist'
 
 
 class Object(object):
@@ -73,27 +77,64 @@ class Object(object):
         """Return a list of object names"""
         for path, dirs, files in os.walk(cls.base_dir()):
             # FIXME: use constant instead of string
-            if cdist.path.DOT_CDIST in dirs:
+            if DOT_CDIST in dirs:
                 yield os.path.relpath(path, cls.base_dir())
 
-    def __init__(self, type, object_id=None, parameter=None, requirements=None):
+    def __init__(self, type, object_id=None, parameters=None, requirements=None):
         self.type = type # instance of Type
         self.object_id = object_id
-        self.qualified_name = os.path.join(self.type.name, self.object_id)
-        self.parameter = parameter or {}
+        self.name = os.path.join(self.type.name, self.object_id)
+        self.parameters = parameters or {}
         self.requirements = requirements or []
+
+        self.__parameters = None
+        self.__requirements = None
         
     def __repr__(self):
-        return '<Object %s>' % self.qualified_name
+        return '<Object %s>' % self.name
 
     @property
     def path(self):
         return os.path.join(
             self.base_dir(),
-            self.qualified_name,
-            cdist.path.DOT_CDIST
+            self.name,
+            DOT_CDIST
         )
 
+
+    ### requirements
+    @property
+    def requirements(self):
+        if not self.__requirements:
+            self.__requirements = cdist.core.property.FileList(os.path.join(self.path, "require"))
+        return self.__requirements
+
+    @requirements.setter
+    def requirements(self, value):
+        if isinstance(value, cdist.core.property.FileList):
+            self.__requirements = value
+        else:
+            self.__requirements = cdist.core.property.FileList(os.path.join(self.path, "require"), value)
+    ### /requirements
+
+
+    ### parameters
+    @property
+    def parameters(self):
+        if not self.__parameters:
+            self.__parameters = cdist.core.property.DirectoryDict(os.path.join(self.path, "parameter"))
+        return self.__parameters
+
+    @parameters.setter
+    def parameters(self, value):
+        if isinstance(value, cdist.core.property.DirectoryDict):
+            self.__parameters = value
+        else:
+            self.__parameters = cdist.core.property.DirectoryDict(os.path.join(self.path, "parameter"), value)
+    ### /parameters
+
+
+    ### changed
     @property
     def changed(self):
         """Check whether the object has been changed."""
@@ -111,5 +152,6 @@ class Object(object):
             except EnvironmentError:
                 # ignore
                 pass
+    ### /changed
 
     # FIXME: implement other properties/methods
