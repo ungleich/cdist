@@ -24,3 +24,13 @@ VERSION     = "2.0.3"
 class Error(Exception):
     """Base exception class for this project"""
     pass
+
+
+class MissingEnvironmentVariableError(Error):
+    """Raised when a required environment variable is not set."""
+
+    def __init__(self, name)
+        self.name = name
+
+    def __str__(self):
+        return 'Missing required environment variable: {0.name}'.format(o)
