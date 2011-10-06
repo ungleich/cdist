@@ -87,6 +87,22 @@ class FileList(collections.MutableSequence):
         self.__write(lines)
 
 
+class FileListProperty(FileList):
+    # Descriptor Protocol
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self.__class__
+        return self
+
+    def __set__(self, obj, value):
+        os.unlink(self._path)
+        for item in value:
+            self.append(item)
+
+    def __delete__(self, obj):
+        raise AttributeError("can't delete attribute")
+
+
 class DirectoryDict(collections.MutableMapping):
     """A dict that stores it's state in a directory.
 
@@ -120,3 +136,20 @@ class DirectoryDict(collections.MutableMapping):
 
     def __len__(self):
         return len(os.listdir(self._path))
+
+
+class DirectoryDictProperty(DirectoryDict):
+    # Descriptor Protocol
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self.__class__
+        return self
+
+    def __set__(self, obj, value):
+        for name in self.keys():
+            del self[name]
+        if value is not None:
+            self.update(value)
+
+    def __delete__(self, obj):
+        raise AttributeError("can't delete attribute")
