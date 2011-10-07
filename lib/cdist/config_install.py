@@ -291,10 +291,6 @@ class ConfigInstall:
             os.path.join(self.context.remote_object_path,
                 cdist_object.parameter_path)
 
-        # Create base path before using mkdir -p
-        # FIXME: needed?
-        self.remote_mkdir(remote_path)
-
         # Synchronise parameter dir afterwards
         self.transfer_path(local_path, remote_path)
 
