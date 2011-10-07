@@ -1,8 +1,25 @@
 Object:
    code_remote
-   code_local
+   code
    gencode_local
    gencode_remote
 
+   path_remote
+
 Type:
-   explorer_path
+   explorer_dir
+   remote_explorer_dir
+
+   explorer_remote_dir
+
+
+GlobalExplorer:
+   out_path: local path into which the output is written
+
+   cdist.core.GlobalExplorer.base_dir - local directory containing explorers
+   cdist.core.GlobalExplorer.remote_base_dir - remote directory containing explorers
+
+   path: local path to explorer
+   remote_path: remote path to explorer
+
+   See config_install: run_global_explorers()
