@@ -116,6 +116,13 @@ class Object(object):
     def code_remote(self):
         return os.path.join(self.path, "code-remote")
 
+    @property
+    def explorer_out_dir(self):
+        path = os.path.join(self.path, "explorer")
+        if not os.path.isdir(path):
+            os.mkdir(path)
+        return path
+
     ### requirements
     @property
     def requirements(self):
