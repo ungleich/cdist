@@ -69,7 +69,7 @@ class Object(object):
         self.object_id = object_id
         self.name = os.path.join(self.type.name, self.object_id)
         self.path = os.path.join(self.type.path, self.object_id, DOT_CDIST)
-        self.absolute_path = os.path.join(self.base_path, self.path, DOT_CDIST)
+        self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
