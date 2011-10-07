@@ -202,7 +202,7 @@ class ConfigInstall:
     def link_emulator(self):
         """Link emulator to types"""
         src = os.path.abspath(self.exec_path)
-        for type in cdist.core.Type.list_types():
+        for type in cdist.core.Type.list_types(self.context.type_base_path):
             dst = os.path.join(self.context.bin_path, type.name)
             log.debug("Linking emulator: %s to %s", src, dst)
 
@@ -213,9 +213,9 @@ class ConfigInstall:
         """Run global explorers"""
         log.info("Running global explorers")
 
-        src_path = cdist.context.global_explorer_path
-        dst_path = cdist.context.global_explorer_out_path
-        remote_dst_path = cdist.context.remote_global_explorer_path
+        src_path = self.context.global_explorer_path
+        dst_path = self.context.global_explorer_out_path
+        remote_dst_path = self.context.remote_global_explorer_path
 
         self.context.transfer_path(src_path, remote_dst_path)
 

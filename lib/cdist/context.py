@@ -128,3 +128,8 @@ class Context:
     def remove_remote_path(self, destination):
         cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
 
+    def transfer_path(self, source, destination):
+        """Transfer directory and previously delete the remote destination"""
+        self.remove_remote_path(destination)
+        cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
+            ["-r", source, self.target_host + ":" + destination])
