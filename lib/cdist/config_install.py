@@ -47,14 +47,12 @@ class ConfigInstall:
         self.debug          = debug
         self.exec_path      = exec_path
 
-        self.path = cdist.path.Path(self.target_host, 
-                        initial_manifest=initial_manifest,
-                        debug=debug)
+        self.context = cdist.context.Context(self.target_host,
+            initial_manifest=initial_manifest,
+            debug=debug)
         
     def cleanup(self):
         self.path.cleanup()
-
-
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
@@ -64,15 +62,15 @@ class ConfigInstall:
 
     def run_type_manifest(self, cdist_object):
         """Run manifest for a specific object"""
-        type = self.path.get_type_from_object(cdist_object)
-        manifest = self.path.type_dir(type, "manifest")
+        type = cdist_object.type
+        manifest = type.manifest_path
         
-        log.debug("%s: Running %s", cdist_object, manifest)
+        log.debug("%s: Running %s", cdist_object.name, manifest)
         if os.path.exists(manifest):
-            env = { "__object" :    self.path.object_dir(cdist_object), 
-                    "__object_id":  self.path.get_object_id_from_object(cdist_object),
-                    "__object_fq":  cdist_object,
-                    "__type":       self.path.type_dir(type)
+            env = { "__object" :    cdist_object.path,
+                    "__object_id":  cdist_object.object_id,
+                    "__object_fq":  cdist_object.name,
+                    "__type":       type.path,
                     }
             self.run_manifest(manifest, extra_env=env)
 
@@ -80,11 +78,14 @@ class ConfigInstall:
         """Run a manifest"""
         log.debug("Running manifest %s, env=%s", manifest, extra_env)
         env = os.environ.copy()
-        env['PATH'] = self.path.bin_dir + ":" + env['PATH']
+        env['PATH'] = self.context.bin_dir + ":" + env['PATH']
 
         # Information required in every manifest
         env['__target_host']            = self.target_host
-        env['__global']                 = self.path.out_dir
+
+        # FIXME: __global == __cdist_out_dir
+        # FIXME: __global? shouldn't this be $global?
+        env['__global']                 = self.context.out_dir
         
         # Submit debug flag to manifest, can be used by emulator and types
         if self.debug:
@@ -102,6 +103,7 @@ class ConfigInstall:
 
         cdist.exec.shell_run_or_debug_fail(manifest, [manifest], env=env)
 
+################################################################################ 
     def object_run(self, cdist_object, mode):
         """Run gencode or code for an object"""
         log.debug("Running %s from %s", mode, cdist_object)
