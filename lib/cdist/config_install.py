@@ -247,8 +247,8 @@ class ConfigInstall:
         """Ensure the base directories are cleaned up"""
         log.debug("Creating clean directory structure")
 
-        self.path.remove_remote_dir(cdist.path.REMOTE_BASE_DIR)
-        self.path.remote_mkdir(cdist.path.REMOTE_BASE_DIR)
+        self.context.remove_remote_dir(self.context.remote_base_dir)
+        self.context.remote_mkdir(self.context.remote_base_dir)
         self.link_emulator()
     
     def stage_prepare(self):
