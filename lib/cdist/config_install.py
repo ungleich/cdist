@@ -177,8 +177,7 @@ class ConfigInstall:
         """Run type specific explorers for objects"""
 
         type = cdist_object.type
-        # FIXME
-        self.path.transfer_type_explorers(type)
+        self.transfer_type_explorers(type)
 
         cmd = []
         cmd.append("__explorer="        + self.context.remote_global_explorer_path)
@@ -292,13 +291,15 @@ class ConfigInstall:
         self.transfer_path(self.object_parameter_path(cdist_object), 
                                 self.remote_object_parameter_path(cdist_object))
 
-    # FIXME Move into configinstall
+
+####FIXED ######################################################################
+
     def transfer_global_explorers(self):
         """Transfer the global explorers"""
-        self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
-        self.transfer_path(self.global_explorer_path, REMOTE_GLOBAL_EXPLORER_DIR)
+        self.remote_mkdir(self.context.remote_global_explorer_path)
+        self.transfer_path(self.context.global_explorer_path, 
+            self.remote_global_explorer_path)
 
-    # FIXME Move into configinstall
     def transfer_type_explorers(self, type):
         """Transfer explorers of a type, but only once"""
         if type.transferred_explorers:
@@ -308,12 +309,13 @@ class ConfigInstall:
             # Do not retransfer
             type.transferred_explorers = True
 
-        # FIXME: Can be explorer_path or explorer_path, I don't care.
-        src = type.explorer_path()
-        dst = type.remote_explorer_path()
+        explorers = type.explorers()
 
-        # Transfer if there is at least one explorer
-        if len(type.explorers) > 0:
+        if len(explorers) > 0:
+            rel_path = os.path.join(type.explorer_path(), explorer)
+            src = os.path.join(self.context.type_base_path, rel_path)
+            dst = os.path.join(self.context.remote_type_path, rel_path)
+
             # Ensure that the path exists
             self.remote_mkdir(dst)
             self.transfer_path(src, dst)
