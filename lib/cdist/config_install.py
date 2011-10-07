@@ -54,11 +54,14 @@ class ConfigInstall:
     def cleanup(self):
         self.path.cleanup()
 
+    def __init_env(self):
+        """Setup environment"""
+
     def run_initial_manifest(self):
         """Run the initial manifest"""
-        log.info("Running initial manifest %s", self.path.initial_manifest)
-        env = {  "__manifest" : self.path.manifest_dir }
-        self.run_manifest(self.path.initial_manifest, extra_env=env)
+        log.info("Running initial manifest %s", self.context.initial_manifest)
+        env = {  "__manifest" : self.context.manifest_dir }
+        self.run_manifest(self.context.initial_manifest, extra_env=env)
 
     def run_type_manifest(self, cdist_object):
         """Run manifest for a specific object"""
