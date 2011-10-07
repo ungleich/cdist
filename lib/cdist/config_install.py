@@ -232,7 +232,7 @@ class ConfigInstall:
     def stage_run(self):
         """The final (and real) step of deployment"""
         log.info("Generating and executing code")
-        for cdist_object in cdist.core.Object.list_objects():
+        for cdist_object in cdist.core.Object.list_objects(self.context.object_base_path):
             log.debug("Run object: %s", cdist_object)
             self.object_run(cdist_object)
 
@@ -247,8 +247,6 @@ class ConfigInstall:
         self.deploy_to()
         self.cleanup()
 
-####FIXED ######################################################################
-
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
         self.link_emulator()
@@ -261,7 +259,7 @@ class ConfigInstall:
         new_objects_created = True
         while new_objects_created:
             new_objects_created = False
-            for cdist_object in cdist.core.Object.list_objects():
+            for cdist_object in cdist.core.Object.list_objects(self.context.object_base_path):
                 if cdist_object.prepared:
                     log.debug("Skipping rerun of object %s", cdist_object)
                     continue
