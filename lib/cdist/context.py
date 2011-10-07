@@ -48,10 +48,10 @@ class Context:
 
         # Input directories
         self.cache_dir              = os.path.join(self.base_dir, "cache", target_host)
+        self.conf_dir               = os.path.join(self.base_dir, "conf")
         self.manifest_dir           = os.path.join(self.conf_dir, "manifest")
 
         # Probably unused paths
-        # self.conf_dir               = os.path.join(self.base_dir, "conf")
         # self.global_explorer_dir    = os.path.join(self.conf_dir, "explorer")
         # self.lib_dir                = os.path.join(self.base_dir, "lib")
         # self.type_base_dir          = os.path.join(self.conf_dir, "type")
