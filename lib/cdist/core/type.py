@@ -25,6 +25,8 @@ import os
 import cdist
 
 
+# FIXME: i should not have to care about prefix directory, local, remote and such.
+#  I know what my internals look like, the outside is none of my business.
 class Type(object):
     """Represents a cdist type.
 
@@ -50,6 +52,28 @@ class Type(object):
             )
         except KeyError as e:
             raise cdist.MissingEnvironmentVariableError(e.args[0])
+
+    @staticmethod
+    def remote_base_dir():
+        """Return the absolute path to the top level directory where types
+        are kept on the remote/target host.
+
+        Requires the environment variable '__cdist_remote_base_dir' to be set.
+
+        """
+        try:
+            return os.path.join(
+                os.environ['__cdist_remote_base_dir'],
+                'conf',
+                'type'
+            )
+        except KeyError as e:
+            raise cdist.MissingEnvironmentVariableError(e.args[0])
+
+    # FIXME: probably wrong place for this
+    @property
+    def remote_explorer_dir(self):
+        return os.path.join(self.remote_path, "explorer")
 
     @classmethod
     def list_types(cls):
@@ -78,6 +102,13 @@ class Type(object):
     def path(self):
         return os.path.join(
             self.base_dir(),
+            self.name
+        ) 
+    # FIXME: prefix directory should not leak into me
+    @property
+    def remote_path(self):
+        return os.path.join(
+            self.remote_base_dir(),
             self.name
         ) 
 

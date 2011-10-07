@@ -32,6 +32,8 @@ class FileList(collections.MutableSequence):
     def __init__(self, path, initial=None):
         self._path = path
         if initial:
+            # delete existing file
+            os.unlink(self._path)
             for i in initial:
                 self.append(i)
 
@@ -40,7 +42,7 @@ class FileList(collections.MutableSequence):
         try:
             with open(self._path) as fd:
                 for line in fd:
-                    lines.append(line.strip())
+                    lines.append(line.rstrip('\n'))
         except EnvironmentError as e:
             # error ignored
             pass
@@ -50,7 +52,7 @@ class FileList(collections.MutableSequence):
         try:
             with open(self._path, 'w') as fd:
                 for line in lines:
-                    fd.write(line + '\n')
+                    fd.write(str(line) + '\n')
         except EnvironmentError as e:
             # error ignored
             raise
@@ -80,6 +82,26 @@ class FileList(collections.MutableSequence):
         lines.insert(index, value)
         self.__write(lines)
 
+    def sort(self):
+        lines = sorted(self)
+        self.__write(lines)
+
+
+class FileListProperty(FileList):
+    # Descriptor Protocol
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self.__class__
+        return self
+
+    def __set__(self, obj, value):
+        os.unlink(self._path)
+        for item in value:
+            self.append(item)
+
+    def __delete__(self, obj):
+        raise AttributeError("can't delete attribute")
+
 
 class DirectoryDict(collections.MutableMapping):
     """A dict that stores it's state in a directory.
@@ -98,13 +120,13 @@ class DirectoryDict(collections.MutableMapping):
     def __getitem__(self, key):
         try:
             with open(os.path.join(self._path, key), "r") as fd:
-                return fd.read()
+                return fd.read().rstrip('\n')
         except EnvironmentError:
             raise KeyError(key)
 
     def __setitem__(self, key, value):
         with open(os.path.join(self._path, key), "w") as fd:
-            fd.write(value)        
+            fd.write(str(value))        
 
     def __delitem__(self, key):
         os.remove(os.path.join(self._path, key))
@@ -114,3 +136,20 @@ class DirectoryDict(collections.MutableMapping):
 
     def __len__(self):
         return len(os.listdir(self._path))
+
+
+class DirectoryDictProperty(DirectoryDict):
+    # Descriptor Protocol
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self.__class__
+        return self
+
+    def __set__(self, obj, value):
+        for name in self.keys():
+            del self[name]
+        if value is not None:
+            self.update(value)
+
+    def __delete__(self, obj):
+        raise AttributeError("can't delete attribute")

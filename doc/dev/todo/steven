@@ -8,12 +8,8 @@ Object:
 
    explorer_out_dir
 
+
 Type:
-   explorer_dir
-   remote_explorer_dir
-
-   explorer_remote_dir
-
    type.manifest_path
 
 
