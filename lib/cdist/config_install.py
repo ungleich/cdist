@@ -104,16 +104,17 @@ class ConfigInstall:
 
 ################################################################################ 
 
-    def object_run(self, cdist_object, mode):
+    def object_run(self, cdist_object):
         """Run gencode or code for an object"""
         log.debug("Running %s from %s", mode, cdist_object)
 
-        requirements = cdist_object.requirements
+        # Catch requirements, which re-call us
+        if cdist_object.ran:
+            return
+
         type = cdist_object.type
             
-        # FIXME: ensure objects are not run multiple times!
-        # FIXME: probably mark objects!
-        for requirement in requirements:
+        for requirement in cdist_object.requirements:
             log.debug("Object %s requires %s", cdist_object, requirement)
             self.object_run(requirement, mode=mode)
 
@@ -128,56 +129,46 @@ class ConfigInstall:
         env["__object_fq"]      = cdist_object.name
         env["__type"]           = type.name
 
-        if mode == "gencode":
-            paths = [
-                type.gencode
-                type.gencode_remote
-            ]
+        # gencode
+        for cmd in ["local", "remote"]:
+            bin = getattr(type, "gencode_" + cmd)
 
-            for cmd in ["local", "remote"]:
-                bin = getattr(type, "gencode_" + cmd)
-
-                if os.path.isfile(bin):
-                    outfile = getattr(cdist_object, "code_" + cmd)
-
-                    outfile_fd = open(outfile, "w")
-
-                    # Need to flush to ensure our write is done before stdout write
-                    outfile_fd.write(CODE_HEADER)
-                    outfile_fd.flush()
-
-                    cdist.exec.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
-                    outfile_fd.close()
-
-                    status = os.stat(outfile)
-
-                    # Remove output if empty, else make it executable
-                    if status.st_size == len(CODE_HEADER):
-                        os.unlink(outfile)
-                    else:
-                        # Add header and make executable - identically to 0o700
-                        os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
-
-                        # FIXME: use new interface
-                        # Mark object as changed
-                        open(os.path.join(self.path.object_dir(cdist_object), "changed"), "w").close()
-
-
-        if mode == "code":
-            local_dir   = self.path.object_dir(cdist_object)
-            remote_dir  = self.path.remote_object_dir(cdist_object)
-
-            bin = os.path.join(local_dir, "code-local")
             if os.path.isfile(bin):
-                cdist.exec.run_or_fail([bin])
-                
+                outfile = getattr(cdist_object, "code_" + cmd)
 
-            local_remote_code = os.path.join(local_dir, "code-remote")
-            remote_remote_code = os.path.join(remote_dir, "code-remote")
-            if os.path.isfile(local_remote_code):
-                self.path.transfer_file(local_remote_code, remote_remote_code)
-                cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
-                
+                outfile_fd = open(outfile, "w")
+
+                # Need to flush to ensure our write is done before stdout write
+                outfile_fd.write(CODE_HEADER)
+                outfile_fd.flush()
+
+                cdist.exec.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
+                outfile_fd.close()
+
+                status = os.stat(outfile)
+
+                # Remove output if empty, else make it executable
+                if status.st_size == len(CODE_HEADER):
+                    os.unlink(outfile)
+                else:
+                    # Add header and make executable - identically to 0o700
+                    os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
+                    cdist_object.changed=True
+
+        # code local
+        code_local = cdist_object.code_local
+        if os.path.isfile(code_local):
+            cdist.exec.run_or_fail([code_local])
+
+        # code remote
+        local_remote_code   = cdist_object.code_remote
+        remote_remote_code  = cdist_object.code_remote_remote
+        if os.path.isfile(local_remote_code):
+            self.context.transfer_file(local_remote_code, remote_remote_code)
+            cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
+
+        cdist_object.ran = True
+
     ### Cleaned / check functions: Round 1 :-) #################################
     def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""
@@ -239,11 +230,9 @@ class ConfigInstall:
     def stage_run(self):
         """The final (and real) step of deployment"""
         log.info("Generating and executing code")
-        # Now do the final steps over the existing objects
         for cdist_object in cdist.core.Object.list_objects():
             log.debug("Run object: %s", cdist_object)
-            self.object_run(cdist_object, mode="gencode")
-            self.object_run(cdist_object, mode="code")
+            self.object_run(cdist_object)
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
