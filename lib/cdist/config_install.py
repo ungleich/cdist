@@ -57,23 +57,6 @@ class ConfigInstall:
     def cleanup(self):
         self.path.cleanup()
 
-    def run_global_explorers(self):
-        """Run global explorers"""
-        log.info("Running global explorers")
-
-        explorers = cdist.core.GlobalExplorer.list_explorers()
-
-        self.path.transfer_global_explorers()
-        for explorer in explorers:
-            output = self.path.global_explorer_output_path(explorer)
-            output_fd = open(output, mode='w')
-            cmd = []
-            cmd.append("__explorer=" + cdist.path.REMOTE_GLOBAL_EXPLORER_DIR)
-            cmd.append(self.path.remote_global_explorer_path(explorer))
-
-            cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=True)
-            output_fd.close()
-
     def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""
 
@@ -225,6 +208,25 @@ class ConfigInstall:
                 cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
                 
     ### Cleaned / check functions: Round 1 :-) #################################
+    def run_global_explorers(self):
+        """Run global explorers"""
+        log.info("Running global explorers")
+
+        src = cdist.core.GlobalExplorer.base_dir
+        dst = cdist.core.GlobalExplorer.remote_base_dir
+
+        self.context.transfer_dir(src, dst)
+
+        for explorer in cdist.core.GlobalExplorer.list_explorers():
+            output_fd = open(explorer.out_path, mode='w')
+            cmd = []
+            cmd.append("__explorer=" + cdist.core.GlobalExplorer.remote_base_dir)
+            cmd.append(explorer.remote_path)
+
+            cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=True)
+            output_fd.close()
+
+
     def stage_run(self):
         """The final (and real) step of deployment"""
         log.info("Generating and executing code")
