@@ -115,9 +115,7 @@ if __name__ == "__main__":
             import cdist
             import cdist.banner
             import cdist.config
-            import cdist.exec
             import cdist.install
-            import cdist.path
 
             commandline()
 
