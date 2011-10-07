@@ -174,18 +174,22 @@ class ConfigInstall:
     def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""
 
-        type = cdist_object.type
-        self.transfer_type_explorers(type)
+        cdist_type = cdist_object.type
+        self.transfer_type_explorers(cdist_type)
 
         cmd = []
         cmd.append("__explorer="        + self.context.remote_global_explorer_path)
-        cmd.append("__type_explorer="   + type.explorer_remote_path)
-        cmd.append("__object="          + object.path_remote)
-        cmd.append("__object_id="       + object.object_id)
-        cmd.append("__object_fq="       + cdist_object)
+        cmd.append("__type_explorer="   + os.path.join(
+                                            self.context.remote_type_path,
+                                            cdist_type.explorer_path))
+        cmd.append("__object="          + os.path.join(
+                                            self.context.remote_object_path,
+                                            cdist_object.path))
+        cmd.append("__object_id="       + cdist_object.object_id)
+        cmd.append("__object_fq="       + cdist_object.name)
 
         # Need to transfer at least the parameters for objects to be useful
-        self.path.transfer_object_parameter(cdist_object)
+        self.transfer_object_parameter(cdist_object)
 
         explorers = self.path.list_type_explorers(type)
         for explorer in explorers:
@@ -280,7 +284,7 @@ class ConfigInstall:
             cdist_object.parameter_path)
 
         # Synchronise parameter dir afterwards
-        self.transfer_path(local_path, remote_path)
+        self.context.transfer_path(src, dst)
 
     def transfer_global_explorers(self):
         """Transfer the global explorers"""
@@ -303,5 +307,11 @@ class ConfigInstall:
             rel_path = cdist_type.explorer_path
             src = os.path.join(self.context.type_base_path, rel_path)
             dst = os.path.join(self.context.remote_type_path, rel_path)
+
+            # Ensure full path until type exists:
+            # /var/lib/cdist/conf/type/__directory/explorer
+            # /var/lib/cdist/conf/type/__directory may not exist,
+            # but remote_mkdir uses -p to fix this
+            self.context.remote_mkdir(dst)
             self.context.transfer_path(src, dst)
 
