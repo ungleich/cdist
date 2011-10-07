@@ -31,7 +31,8 @@ log = logging.getLogger(__name__)
 
 DOT_CDIST = '.cdist'
 
-
+# FIXME: i should not have to care about prefix directory, local, remote and such.
+#  I know what my internals look like, the outside is none of my business.
 class Object(object):
     """Represents a cdist object.
 
@@ -63,6 +64,21 @@ class Object(object):
         return base_dir
 
     @classmethod
+    def remote_base_dir():
+        """Return the absolute path to the top level directory where objects
+        are kept on the remote/target host.
+
+        Requires the environment variable '__cdist_remote_out_dir' to be set.
+
+        """
+        try:
+            return os.path.join(
+                os.environ['__cdist_remote_out_dir'],
+                'object',
+            )
+        except KeyError as e:
+            raise cdist.MissingEnvironmentVariableError(e.args[0])
+
     def list_objects(cls):
         """Return a list of object instances"""
         for object_name in cls.list_object_names():
@@ -79,7 +95,6 @@ class Object(object):
     def list_object_names(cls):
         """Return a list of object names"""
         for path, dirs, files in os.walk(cls.base_dir()):
-            # FIXME: use constant instead of string
             if DOT_CDIST in dirs:
                 yield os.path.relpath(path, cls.base_dir())
 
@@ -122,6 +137,19 @@ class Object(object):
         if not os.path.isdir(path):
             os.mkdir(path)
         return path
+
+    # FIXME: prefix directory should not leak into me
+    @property
+    def remote_path(self):
+        return os.path.join(
+            self.remote_base_dir(),
+            self.name,
+            DOT_CDIST
+        )
+    @property
+    def remote_code_remote(self):
+        return os.path.join(self.remote_path, "code-remote")
+
 
     ### requirements
     @property
@@ -175,23 +203,7 @@ class Object(object):
                 pass
     ### /changed
 
-    # FIXME: implement other properties/methods 
 
-    # FIXME: check following methods: implement or revoke / delete
-    # FIXME: Object
-    def get_object_id_from_object(self, cdist_object):
-        """Returns everything but the first part (i.e. object_id) of an object"""
-        return os.sep.join(cdist_object.split(os.sep)[1:])
-
-    # FIXME: Object
-    def object_dir(self, cdist_object):
-        """Returns the full path to the object (including .cdist)"""
-        return os.path.join(self.object_base_dir, cdist_object, DOT_CDIST)
-
-    # FIXME: Object
-    def remote_object_dir(self, cdist_object):
-        """Returns the remote full path to the object (including .cdist)"""
-        return os.path.join(REMOTE_OBJECT_DIR, cdist_object, DOT_CDIST)
 
     # FIXME: Object
     def object_parameter_dir(self, cdist_object):
@@ -208,42 +220,4 @@ class Object(object):
         """Return paths to code scripts of object"""
         return [os.path.join(self.object_dir(cdist_object), "code-local"),
                   os.path.join(self.object_dir(cdist_object), "code-remote")]
-
-    # Stays here
-    def list_object_paths(self, starting_point):
-        """Return list of paths of existing objects"""
-        object_paths = []
-        
-        for content in os.listdir(starting_point):
-            full_path = os.path.join(starting_point, content)
-            if os.path.isdir(full_path):
-                object_paths.extend(self.list_object_paths(starting_point = full_path))
-                
-            # Directory contains .cdist -> is an object
-            if content == DOT_CDIST:
-                object_paths.append(starting_point)
-                
-        return object_paths
-
-    # Stays here
-    def list_objects(self):
-        """Return list of existing objects"""
-        
-        objects = []
-        if os.path.isdir(self.object_base_dir):
-            object_paths = self.list_object_paths(self.object_base_dir)
-            
-            for path in object_paths:
-                objects.append(os.path.relpath(path, self.object_base_dir))
-                
-        return objects
-
-    # FIXME: object
-    def type_explorer_output_dir(self, cdist_object):
-        """Returns and creates dir of the output for a type explorer"""
-        dir = os.path.join(self.object_dir(cdist_object), "explorer")
-        if not os.path.isdir(dir):
-            os.mkdir(dir)
-
-        return dir
 
