@@ -31,6 +31,42 @@ fixtures = op.join(my_dir, 'fixtures')
 
 class TypeTestCase(unittest.TestCase):
 
+
+    def test_name(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__name_path')
+        self.assertEqual(cdist_type.name, '__name_path')
+
+    def test_path(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__name_path')
+        self.assertEqual(cdist_type.path, '__name_path')
+
+    def test_absolute_path(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__name_path')
+        self.assertEqual(cdist_type.absolute_path, os.path.join(base_path, '__name_path'))
+
+    def test_manifest_path(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__name_path')
+        self.assertEqual(cdist_type.manifest_path, os.path.join('__name_path', 'manifest'))
+
+    def test_explorer_path(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__name_path')
+        self.assertEqual(cdist_type.explorer_path, os.path.join('__name_path', 'explorer'))
+
+    def test_gencode_local_path(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__name_path')
+        self.assertEqual(cdist_type.gencode_local_path, os.path.join('__name_path', 'gencode-local'))
+
+    def test_gencode_remote_path(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__name_path')
+        self.assertEqual(cdist_type.gencode_remote_path, os.path.join('__name_path', 'gencode-remote'))
+
     def test_singleton_is_singleton(self):
         base_path = fixtures
         cdist_type = cdist.core.Type(base_path, '__singleton')
