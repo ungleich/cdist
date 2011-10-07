@@ -41,21 +41,15 @@ import cdist.exec
 class Path:
     """Class that handles path related configurations"""
 
-    def __init__(self,
-                target_host,
-                initial_manifest=False,
-                base_dir=None,
-                debug=False):
-
-        # Base and Temp Base 
-        if base_dir:
-            self.base_dir = base_dir
-        else:
-            self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
-
-        self.temp_dir = tempfile.mkdtemp()
+    def __init__(self, target_host, initial_manifest=False, debug=False):
 
         self.target_host = target_host
+
+        # Base and Temp Base 
+        if "__cdist_base_dir" in os.environ:
+            self.base_dir = os.environ['__cdist_base_dir']
+        else:
+            self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
         # Input directories
         self.conf_dir               = os.path.join(self.base_dir, "conf")
@@ -73,7 +67,11 @@ class Path:
             self.initial_manifest = os.path.join(self.manifest_dir, "init")
 
         # Output directories
-        self.out_dir = os.path.join(self.temp_dir, "out")
+        if "__cdist_out_dir" in os.environ:
+            self.out_dir = os.environ['__cdist_out_dir']
+        else:
+            self.out_dir = os.path.join(tempfile.mkdtemp(), "out")
+
         self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
         self.object_base_dir = os.path.join(self.out_dir, "object")
         self.bin_dir = os.path.join(self.out_dir, "bin")
@@ -87,12 +85,11 @@ class Path:
         # "other globals referenced by the __del__() method may already have been deleted 
         # or in the process of being torn down (e.g. the import machinery shutting down)"
         #
-        log.debug("Saving" + self.temp_dir + "to " + self.cache_dir)
+        log.debug("Saving" + self.base_dir + "to " + self.cache_dir)
         # Remove previous cache
         if os.path.exists(self.cache_dir):
             shutil.rmtree(self.cache_dir)
-        shutil.move(self.temp_dir, self.cache_dir)
-
+        shutil.move(self.base_dir, self.cache_dir)
 
     def __init_env(self):
         """Setup environment"""
@@ -100,6 +97,11 @@ class Path:
 
     def __init_out_dirs(self):
         """Initialise output directory structure"""
+
+        # Create base dir, if user supplied and not existing
+        if not os.isdir(self.base_dir):
+            os.mkdir(self.base_dir)
+            
         os.mkdir(self.out_dir)
         os.mkdir(self.global_explorer_out_dir)
         os.mkdir(self.bin_dir)
