@@ -42,7 +42,7 @@ def config(args):
     os.environ['__remote_copy'] = "scp -o User=root -q"
 
     for host in args.host:
-        c = Config(host, initial_manifest=args.manifest, base_dir=args.cdist_home, debug=args.debug)
+        c = Config(host, initial_manifest=args.manifest, base_path=args.cdist_home, debug=args.debug)
         if args.parallel:
             log.debug("Creating child process for %s", host)
             process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)

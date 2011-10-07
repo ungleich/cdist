@@ -29,9 +29,9 @@ log = logging.getLogger(__name__)
 
 def run(argv):
     """Emulate type commands (i.e. __file and co)"""
-    type            = os.path.basename(argv[0])
-    type_dir        = os.path.join(os.environ['__cdist_type_base_dir'], type)
-    param_dir       = os.path.join(type_dir, "parameter")
+    cdist_type      = os.path.basename(argv[0])
+    type_path        = os.path.join(os.environ['__cdist_type_base_path'], cdist_type)
+    param_dir       = os.path.join(type_path, "parameter")
     global_dir      = os.environ['__global']
     object_source   = os.environ['__cdist_manifest']
 
@@ -50,14 +50,14 @@ def run(argv):
         parser.add_argument(argument, action='store', required=True)
 
     # If not singleton support one positional parameter
-    if not os.path.isfile(os.path.join(type_dir, "singleton")):
+    if not os.path.isfile(os.path.join(type_path, "singleton")):
         parser.add_argument("object_id", nargs=1)
 
     # And finally verify parameter
     args = parser.parse_args(argv[1:])
 
     # Setup object_id
-    if os.path.isfile(os.path.join(type_dir, "singleton")):
+    if os.path.isfile(os.path.join(type_path, "singleton")):
         object_id = "singleton"
     else:
         object_id = args.object_id[0]
@@ -68,14 +68,14 @@ def run(argv):
             object_id = object_id[1:]
 
     # Prefix output by object_self
-    logformat = '%(levelname)s: ' + type + '/' + object_id + ': %(message)s'
+    logformat = '%(levelname)s: ' + cdist_type + '/' + object_id + ': %(message)s'
     logging.basicConfig(format=logformat)
 
     # FIXME: verify object id
     log.debug(args)
 
-    object_dir = os.path.join(global_dir, "object", type,
-                            object_id, cdist.path.DOT_CDIST)
+    object_dir = os.path.join(global_dir, "object", cdist_type,
+                            object_id, cdist.DOT_CDIST)
     log.debug("Object output dir = " + object_dir)
 
     param_out_dir = os.path.join(object_dir, "parameter")
@@ -132,7 +132,7 @@ def run(argv):
         requirements = os.environ['__require']
         log.debug(object_id + ":Writing requirements: " + requirements)
         require_fd = open(os.path.join(object_dir, "require"), "a")
-        require_fd.writelines(requirements.split(" "))
+        require_fd.write(requirements.replace(" ","\n"))
         require_fd.close()
 
     # Record / Append source
@@ -140,4 +140,4 @@ def run(argv):
     source_fd.writelines(object_source)
     source_fd.close()
 
-    log.debug("Finished " + type + "/" + object_id + repr(params))
+    log.debug("Finished " + cdist_type + "/" + object_id + repr(params))

@@ -47,11 +47,10 @@ class Context:
         if base_path:
             self.base_path = base_path
         else:
-            self.base_path = 
-                os.path.abspath(
-                    os.path.join(os.path.dirname(__file__),
-                        os.pardir,
-                        os.pardir))
+            self.base_path = os.path.abspath(
+                os.path.join(os.path.dirname(__file__),
+                    os.pardir,
+                    os.pardir))
         
 
         # Local input directories
@@ -70,7 +69,7 @@ class Context:
 
         # Local output directories
         if out_path:
-            self.out_path = out_path:
+            self.out_path = out_path
         else:
             self.out_path = os.path.join(tempfile.mkdtemp(), "out")
 
@@ -86,13 +85,13 @@ class Context:
 
         self.remote_conf_path            = os.path.join(self.remote_base_path, "conf")
         self.remote_object_path          = os.path.join(self.remote_base_path, "object")
+
         self.remote_type_path            = os.path.join(self.remote_conf_path, "type")
         self.remote_global_explorer_path = os.path.join(self.remote_conf_path, "explorer")
 
         # Create directories
         self.__init_out_paths()
-
-        self.__init_env()
+        self.__init_remote_paths()
 
     def cleanup(self):
         # Do not use in __del__:
@@ -106,11 +105,6 @@ class Context:
             shutil.rmtree(self.cache_path)
         shutil.move(self.base_path, self.cache_path)
 
-    #def __init_env(self):
-    #    """Setup environment"""
-    #    os.environ['__cdist_out_path']   = self.out_path
-    #    os.environ['__cdist_base_path']  = self.base_path
-
     def __init_out_paths(self):
         """Initialise output directory structure"""
 
@@ -122,6 +116,13 @@ class Context:
         os.mkdir(self.global_explorer_out_path)
         os.mkdir(self.bin_path)
 
+    def __init_remote_paths(self):
+        """Initialise remote directory structure"""
+
+        self.remove_remote_path(self.remote_base_path)
+        self.remote_mkdir(self.remote_base_path)
+        self.remote_mkdir(self.remote_conf_path)
+
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
         cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
@@ -129,3 +130,8 @@ class Context:
     def remove_remote_path(self, destination):
         cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
 
+    def transfer_path(self, source, destination):
+        """Transfer directory and previously delete the remote destination"""
+        self.remove_remote_path(destination)
+        cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
+            ["-r", source, self.target_host + ":" + destination])
