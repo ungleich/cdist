@@ -32,3 +32,4 @@ Tests needed:
    - emulator may only be called with __ as prefix - fail otherwise!
 
    - ensure paths returned by object include dot-cdist
+   - ensure path of explorer of object returns correct path
