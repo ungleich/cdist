@@ -54,33 +54,6 @@ class ConfigInstall:
     def cleanup(self):
         self.path.cleanup()
 
-    def run_type_explorer(self, cdist_object):
-        """Run type specific explorers for objects"""
-
-        type = cdist_object.type
-        self.path.transfer_type_explorers(type)
-
-        cmd = []
-        cmd.append("__explorer="        + cdist.path.REMOTE_GLOBAL_EXPLORER_DIR)
-        cmd.append("__type_explorer="   + self.path.remote_type_explorer_dir(type))
-        cmd.append("__object="          + self.path.remote_object_dir(cdist_object))
-        cmd.append("__object_id="       + self.path.get_object_id_from_object(cdist_object))
-        cmd.append("__object_fq="       + cdist_object)
-
-        # Need to transfer at least the parameters for objects to be useful
-        self.path.transfer_object_parameter(cdist_object)
-
-        explorers = self.path.list_type_explorers(type)
-        for explorer in explorers:
-            remote_cmd = cmd + [os.path.join(self.path.remote_type_explorer_dir(type), explorer)]
-            output = os.path.join(self.path.type_explorer_output_dir(cdist_object), explorer)
-            output_fd = open(output, mode='w')
-            log.debug("%s exploring %s using %s storing to %s", 
-                            cdist_object, explorer, remote_cmd, output)
-                        
-            cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=True)
-            output_fd.close()
-
 
 
     def run_initial_manifest(self):
@@ -202,6 +175,35 @@ class ConfigInstall:
                 cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
                 
     ### Cleaned / check functions: Round 1 :-) #################################
+    def run_type_explorer(self, cdist_object):
+        """Run type specific explorers for objects"""
+
+        type = cdist_object.type
+        # FIXME
+        self.path.transfer_type_explorers(type)
+
+        cmd = []
+        cmd.append("__explorer="        + self.context.remote_global_explorer_dir)
+        cmd.append("__type_explorer="   + type.explorer_remote_dir)
+        cmd.append("__object="          + object.path_remote)
+        cmd.append("__object_id="       + object.object_id)
+        cmd.append("__object_fq="       + cdist_object)
+
+        # Need to transfer at least the parameters for objects to be useful
+        self.path.transfer_object_parameter(cdist_object)
+
+        explorers = self.path.list_type_explorers(type)
+        for explorer in explorers:
+            remote_cmd = cmd + [os.path.join(type.explorer_remote_dir, explorer)]
+            output = os.path.join(cdist_object.explorer_output_dir(), explorer)
+            output_fd = open(output, mode='w')
+            log.debug("%s exploring %s using %s storing to %s", 
+                            cdist_object, explorer, remote_cmd, output)
+                        
+            cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=True)
+            output_fd.close()
+
+
     def link_emulator(self):
         """Link emulator to types"""
         src = os.path.abspath(self.exec_path)
