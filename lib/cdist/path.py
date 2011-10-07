@@ -32,8 +32,6 @@ REMOTE_OBJECT_DIR               = os.path.join(REMOTE_BASE_DIR, "object")
 REMOTE_TYPE_DIR                 = os.path.join(REMOTE_CONF_DIR, "type")
 REMOTE_GLOBAL_EXPLORER_DIR      = os.path.join(REMOTE_CONF_DIR, "explorer")
 
-DOT_CDIST                       = ".cdist"
-
 log = logging.getLogger(__name__)
 
 import cdist.exec

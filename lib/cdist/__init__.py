@@ -20,6 +20,7 @@
 #
 
 VERSION     = "2.0.3"
+DOT_CDIST   = ".cdist"
 
 class Error(Exception):
     """Base exception class for this project"""
