@@ -12,6 +12,15 @@ Tests needed:
    - ensure paths returned by object include dot-cdist
    - ensure path of explorer of object returns correct path
 
+   config_install:
+      run_type_manifest() - same tests as for test_initial_manifest_*?
+      run_manifest() - raise exception if manifest is not existent
+      object_run(): ensure no object is run twice
+      object_run(): ensure requirements are taken into account
+      object_run(): check (from extern?) that all needed variables are setup
+      object_run(): ensure no code-{local, remote} is created, if gencode is not producing code
+      object_run(): ensure no code-{local, remote} contains what gencode created
+
 Code fixes needed:
 
    - shutil, os.mkdir, etc. everywhere: catch/reraise exceptions correctly
