@@ -126,6 +126,12 @@ case "$1" in
       | xargs rm -f
    ;;
 
+   t)
+      shift # skip t
+      PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
+         python3 -m unittest "$@"
+   ;;
+
    test)
       PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
          python3 -m cdist.test
