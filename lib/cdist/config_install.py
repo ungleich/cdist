@@ -101,8 +101,6 @@ class ConfigInstall:
 
         cdist.exec.shell_run_or_debug_fail(manifest, [manifest], env=env)
 
-################################################################################ 
-
     def object_run(self, cdist_object):
         """Run gencode or code for an object"""
         log.debug("Running %s from %s", mode, cdist_object)
@@ -161,7 +159,7 @@ class ConfigInstall:
 
         # code remote
         local_remote_code   = cdist_object.code_remote
-        remote_remote_code  = cdist_object.code_remote_remote
+        remote_remote_code  = cdist_object.remote_code_remote
         if os.path.isfile(local_remote_code):
             self.context.transfer_file(local_remote_code, remote_remote_code)
             cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
