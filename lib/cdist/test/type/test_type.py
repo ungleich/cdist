@@ -32,6 +32,12 @@ fixtures = op.join(my_dir, 'fixtures')
 class TypeTestCase(unittest.TestCase):
 
 
+    def test_only_one_instance(self):
+        base_path = fixtures
+        cdist_type1 = cdist.core.Type(base_path, '__name_path')
+        cdist_type2 = cdist.core.Type(base_path, '__name_path')
+        self.assertEqual(id(cdist_type1), id(cdist_type2))
+
     def test_name(self):
         base_path = fixtures
         cdist_type = cdist.core.Type(base_path, '__name_path')
