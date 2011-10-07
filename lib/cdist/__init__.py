@@ -34,3 +34,17 @@ class MissingEnvironmentVariableError(Error):
 
     def __str__(self):
         return 'Missing required environment variable: ' + str(self.name)
+
+def file_to_list(filename):
+    """Return list from \n seperated file"""
+    if os.path.isfile(filename):
+        file_fd = open(filename, "r")
+        lines = file_fd.readlines()
+        file_fd.close()
+
+        # Remove \n from all lines
+        lines = map(lambda s: s.strip(), lines)
+    else:
+        lines = []
+
+    return lines

@@ -38,20 +38,6 @@ log = logging.getLogger(__name__)
 
 import cdist.exec
 
-def file_to_list(filename):
-    """Return list from \n seperated file"""
-    if os.path.isfile(filename):
-        file_fd = open(filename, "r")
-        lines = file_fd.readlines()
-        file_fd.close()
-
-        # Remove \n from all lines
-        lines = map(lambda s: s.strip(), lines)
-    else:
-        lines = []
-
-    return lines
-
 class Path:
     """Class that handles path related configurations"""
 
@@ -91,13 +77,6 @@ class Path:
         self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
         self.object_base_dir = os.path.join(self.out_dir, "object")
         self.bin_dir = os.path.join(self.out_dir, "bin")
-
-
-        # List of type explorers transferred
-        self.type_explorers_transferred = {}
-
-        # objects prepared
-        self.objects_prepared = []
 
         # Create directories
         self.__init_out_dirs()
