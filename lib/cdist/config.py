@@ -31,30 +31,3 @@ log = logging.getLogger(__name__)
 
 class Config(cdist.config_install.ConfigInstall):
     pass
-
-def config(args):
-    """Configure remote system"""
-    process = {}
-
-    time_start = datetime.datetime.now()
-
-    os.environ['__remote_exec'] = "ssh -o User=root -q"
-    os.environ['__remote_copy'] = "scp -o User=root -q"
-
-    for host in args.host:
-        c = Config(host, initial_manifest=args.manifest, base_path=args.cdist_home, debug=args.debug)
-        if args.parallel:
-            log.debug("Creating child process for %s", host)
-            process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)
-            process[host].start()
-        else:
-            c.deploy_and_cleanup()
-
-    if args.parallel:
-        for p in process.keys():
-            log.debug("Joining process %s", p)
-            process[p].join()
-
-    time_end = datetime.datetime.now()
-    log.info("Total processing time for %s host(s): %s", len(args.host),
-                (time_end - time_start).total_seconds())

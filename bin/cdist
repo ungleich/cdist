@@ -81,12 +81,12 @@ def commandline():
     # Config
     parser['config'] = parser['sub'].add_parser('config',
         parents=[parser['loglevel'], parser['configinstall']])
-    parser['config'].set_defaults(func=cdist.config.config)
+    parser['config'].set_defaults(func=config)
 
     # Install
     parser['install'] = parser['sub'].add_parser('install',
         parents=[parser['loglevel'], parser['configinstall']])
-    parser['install'].set_defaults(func=cdist.install.install)
+    parser['install'].set_defaults(func=install)
 
     for p in parser:
         parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
@@ -101,6 +101,42 @@ def commandline():
 
     log.debug(args)
     args.func(args)
+
+def config(args):
+    configinstall(args, mode=cdist.config.Config)
+
+def install(args):
+    configinstall(args, mode=cdist.install.Install)
+
+def configinstall(args, mode):
+    """Configure or install remote system"""
+    process = {}
+
+    time_start = datetime.datetime.now()
+
+    os.environ['__remote_exec'] = "ssh -o User=root -q"
+    os.environ['__remote_copy'] = "scp -o User=root -q"
+
+    for host in args.host:
+        c = mode(host, initial_manifest=args.manifest, base_path=args.cdist_home, debug=args.debug)
+        if args.parallel:
+            log.debug("Creating child process for %s", host)
+            process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)
+            process[host].start()
+        else:
+            c.deploy_and_cleanup()
+
+    if args.parallel:
+        for p in process.keys():
+            log.debug("Joining process %s", p)
+            process[p].join()
+
+    # FIXME: error handling for parallel mode!
+
+    time_end = datetime.datetime.now()
+    log.info("Total processing time for %s host(s): %s", len(args.host),
+                (time_end - time_start).total_seconds())
+
 
 if __name__ == "__main__":
     try:
