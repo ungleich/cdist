@@ -25,12 +25,6 @@ import shutil
 import sys
 import tempfile
 
-# Hardcoded paths usually not changable
-REMOTE_BASE_DIR                 = "/var/lib/cdist"
-REMOTE_CONF_DIR                 = os.path.join(REMOTE_BASE_DIR, "conf")
-REMOTE_OBJECT_DIR               = os.path.join(REMOTE_BASE_DIR, "object")
-REMOTE_TYPE_DIR                 = os.path.join(REMOTE_CONF_DIR, "type")
-REMOTE_GLOBAL_EXPLORER_DIR      = os.path.join(REMOTE_CONF_DIR, "explorer")
 
 log = logging.getLogger(__name__)
 
@@ -73,6 +67,17 @@ class Path:
         self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
         self.object_base_dir = os.path.join(self.out_dir, "object")
         self.bin_dir = os.path.join(self.out_dir, "bin")
+
+        # Remote directories
+        if "__cdist_remote_base_dir" in os.environ:
+            self.remote_base_dir = os.environ['__cdist_remote_base_dir']
+        else:
+            self.remote_base_dir = "/var/lib/cdist"
+
+        self.remote_conf_dir            = os.path.join(self.remote_base_dir, "conf")
+        self.remote_object_dir          = os.path.join(self.remote_base_dir, "object")
+        self.remote_type_dir            = os.path.join(self.remote_conf_dir, "type")
+        self.remote_global_explorer_dir = os.path.join(self.remote_conf_dir, "explorer")
 
         # Create directories
         self.__init_out_dirs()
