@@ -30,9 +30,9 @@ log = logging.getLogger(__name__)
 def run(argv):
     """Emulate type commands (i.e. __file and co)"""
     cdist_type      = os.path.basename(argv[0])
-    type_path        = os.path.join(os.environ['__cdist_type_base_path'], cdist_type)
-    param_dir       = os.path.join(type_path, "parameter")
-    global_dir      = os.environ['__global']
+    type_path       = os.path.join(os.environ['__cdist_type_base_path'], cdist_type)
+    param_path      = os.path.join(type_path, "parameter")
+    global_path     = os.environ['__global']
     object_source   = os.environ['__cdist_manifest']
 
     if '__debug' in os.environ:
@@ -42,10 +42,10 @@ def run(argv):
 
     parser = argparse.ArgumentParser(add_help=False)
 
-    for parameter in cdist.file_to_list(os.path.join(param_dir, "optional")):
+    for parameter in cdist.file_to_list(os.path.join(param_path, "optional")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=False)
-    for parameter in cdist.file_to_list(os.path.join(param_dir, "required")):
+    for parameter in cdist.file_to_list(os.path.join(param_path, "required")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=True)
 
@@ -74,15 +74,15 @@ def run(argv):
     # FIXME: verify object id
     log.debug(args)
 
-    object_dir = os.path.join(global_dir, "object", cdist_type,
+    object_path = os.path.join(global_path, "object", cdist_type,
                             object_id, cdist.DOT_CDIST)
-    log.debug("Object output dir = " + object_dir)
+    log.debug("Object output dir = " + object_path)
 
-    param_out_dir = os.path.join(object_dir, "parameter")
+    param_out_dir = os.path.join(object_path, "parameter")
 
-    object_source_file = os.path.join(object_dir, "source")
+    object_source_file = os.path.join(object_path, "source")
 
-    if os.path.exists(param_out_dir):
+    if os.path.exists(object_path):
         object_exists = True
         old_object_source_fd = open(object_source_file, "r")
         old_object_source = old_object_source_fd.readlines()
@@ -91,7 +91,9 @@ def run(argv):
     else:
         object_exists = False
         try:
-            os.makedirs(param_out_dir, exist_ok=True)
+            os.makedirs(object_path, exist_ok=False)
+            log.debug("Object param dir = " + param_out_dir)
+            os.makedirs(param_out_dir, exist_ok=False)
         except OSError as error:
             raise cdist.Error(param_out_dir + ": " + error.args[1])
 
@@ -131,12 +133,12 @@ def run(argv):
     if "require" in os.environ:
         requirements = os.environ['__require']
         log.debug(object_id + ":Writing requirements: " + requirements)
-        require_fd = open(os.path.join(object_dir, "require"), "a")
+        require_fd = open(os.path.join(object_path, "require"), "a")
         require_fd.write(requirements.replace(" ","\n"))
         require_fd.close()
 
     # Record / Append source
-    source_fd = open(os.path.join(object_dir, "source"), "a")
+    source_fd = open(os.path.join(object_path, "source"), "a")
     source_fd.writelines(object_source)
     source_fd.close()
 
