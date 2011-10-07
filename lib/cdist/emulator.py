@@ -132,7 +132,7 @@ def run(argv):
         requirements = os.environ['__require']
         log.debug(object_id + ":Writing requirements: " + requirements)
         require_fd = open(os.path.join(object_dir, "require"), "a")
-        require_fd.writelines(requirements.split(" "))
+        require_fd.write(requirements.replace(" ","\n"))
         require_fd.close()
 
     # Record / Append source
