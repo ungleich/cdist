@@ -83,8 +83,7 @@ class ConfigInstall:
         # Information required in every manifest
         env['__target_host']            = self.target_host
 
-        # FIXME: __global == __cdist_out_dir
-        # FIXME: __global? shouldn't this be $global?
+        # FIXME: __global == __cdist_out_dir - duplication
         env['__global']                 = self.context.out_dir
         
         # Submit debug flag to manifest, can be used by emulator and types
@@ -95,7 +94,7 @@ class ConfigInstall:
         env['__cdist_manifest']         = manifest
 
         # Required to find types
-        env['__cdist_type_base_dir']    = self.path.type_base_dir
+        env['__cdist_type_base_dir']    = type.path
 
         # Other environment stuff
         if extra_env:
@@ -104,6 +103,7 @@ class ConfigInstall:
         cdist.exec.shell_run_or_debug_fail(manifest, [manifest], env=env)
 
 ################################################################################ 
+
     def object_run(self, cdist_object, mode):
         """Run gencode or code for an object"""
         log.debug("Running %s from %s", mode, cdist_object)
