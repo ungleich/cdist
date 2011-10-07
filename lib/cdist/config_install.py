@@ -201,8 +201,9 @@ class ConfigInstall:
         """Link emulator to types"""
         src = os.path.abspath(self.exec_path)
         for type in cdist.core.Type.list_types():
-            log.debug("Linking emulator: %s to %s", source, destination)
             dst = os.path.join(self.context.bin_dir, type.name)
+            log.debug("Linking emulator: %s to %s", src, dst)
+
             # FIXME: handle exception / make it more beautiful
             os.symlink(src, dst)
 
