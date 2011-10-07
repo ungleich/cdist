@@ -7,8 +7,6 @@ Object:
 Type:
    type.transferred_explorers
 
-   type.type_explorer_paths() -> relative list of paths of explorer
-
 
 GlobalExplorer:
    out_path: local path into which the output is written
