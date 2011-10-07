@@ -49,6 +49,8 @@ class Type(object):
     def __init__(self, base_path, name):
         self._base_path = base_path
         self.name = name
+        self.path = self.name
+        self.absolute_path = os.path.join(self._base_path, self.path)
         self.manifest_path = os.path.join(self.name, "manifest")
         self.explorer_path = os.path.join(self.name, "explorer")
         self.manifest_path = os.path.join(self.name, "manifest")
@@ -66,22 +68,24 @@ class Type(object):
     def __repr__(self):
         return '<Type %s>' % self.name
 
+    def
+
     @property
     def is_singleton(self):
         """Check whether a type is a singleton."""
-        return os.path.isfile(os.path.join(self.path, "singleton"))
+        return os.path.isfile(os.path.join(self.absolute_path, "singleton"))
 
     @property
     def is_install(self):
         """Check whether a type is used for installation (if not: for configuration)"""
-        return os.path.isfile(os.path.join(self.path, "install"))
+        return os.path.isfile(os.path.join(self.absolute_path, "install"))
 
     @property
     def explorers(self):
         """Return a list of available explorers"""
         if not self.__explorers:
             try:
-                self.__explorers = os.listdir(os.path.join(self.path, "explorer"))
+                self.__explorers = os.listdir(os.path.join(self.absolute_path, "explorer"))
             except EnvironmentError:
                 # error ignored
                 self.__explorers = []
@@ -93,7 +97,7 @@ class Type(object):
         if not self.__required_parameters:
             parameters = []
             try:
-                with open(os.path.join(self.path, "parameter", "required")) as fd:
+                with open(os.path.join(self.absolute_path, "parameter", "required")) as fd:
                     for line in fd:
                         parameters.append(line.strip())
             except EnvironmentError:
@@ -109,7 +113,7 @@ class Type(object):
         if not self.__optional_parameters:
             parameters = []
             try:
-                with open(os.path.join(self.path, "parameter", "optional")) as fd:
+                with open(os.path.join(self.absolute_path, "parameter", "optional")) as fd:
                     for line in fd:
                         parameters.append(line.strip())
             except EnvironmentError:
