@@ -46,6 +46,16 @@ class Type(object):
         return os.listdir(base_path)
 
 
+    _instances = {}
+    def __new__(cls, *args, **kwargs):
+        """only one instance of each named type may exist"""
+        # name is second argument
+        name = args[1]
+        if not name in cls._instances:
+            instance = super(Type, cls).__new__(cls, *args, **kwargs)
+            cls._instances[name] = instance
+        return cls._instances[name]
+
     def __init__(self, base_path, name):
         self._base_path = base_path
         self.name = name
@@ -63,7 +73,6 @@ class Type(object):
         self.__explorers = None
         self.__required_parameters = None
         self.__optional_parameters = None
-
 
     def __repr__(self):
         return '<Type %s>' % self.name
