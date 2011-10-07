@@ -51,7 +51,15 @@ class TypeTestCase(unittest.TestCase):
         cdist_type = cdist.core.Type(base_path, '__not_singleton')
         self.assertFalse(cdist_type.is_singleton)
 
+    def test_install_is_install(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__install')
+        self.assertTrue(cdist_type.is_install)
 
+    def test_not_install_is_install(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__not_install')
+        self.assertFalse(cdist_type.is_install)
 '''
 suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
 
