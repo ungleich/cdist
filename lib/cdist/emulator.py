@@ -43,10 +43,10 @@ def run(argv):
 
     parser = argparse.ArgumentParser(add_help=False)
 
-    for parameter in cdist.path.file_to_list(os.path.join(param_dir, "optional")):
+    for parameter in cdist.file_to_list(os.path.join(param_dir, "optional")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=False)
-    for parameter in cdist.path.file_to_list(os.path.join(param_dir, "required")):
+    for parameter in cdist.file_to_list(os.path.join(param_dir, "required")):
         argument = "--" + parameter
         parser.add_argument(argument, action='store', required=True)
 

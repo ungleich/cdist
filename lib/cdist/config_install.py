@@ -278,3 +278,39 @@ class ConfigInstall:
                     self.run_type_manifest(cdist_object)
                     cdist_object.prepared = True
                     new_objects_created = True
+
+    # FIXME Move into configinstall
+    def transfer_object_parameter(self, cdist_object):
+        """Transfer the object parameter to the remote destination"""
+        # Create base path before using mkdir -p
+        self.remote_mkdir(self.remote_object_parameter_dir(cdist_object))
+
+        # Synchronise parameter dir afterwards
+        self.transfer_dir(self.object_parameter_dir(cdist_object), 
+                                self.remote_object_parameter_dir(cdist_object))
+
+    # FIXME Move into configinstall
+    def transfer_global_explorers(self):
+        """Transfer the global explorers"""
+        self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
+        self.transfer_dir(self.global_explorer_dir, REMOTE_GLOBAL_EXPLORER_DIR)
+
+    # FIXME Move into configinstall
+    def transfer_type_explorers(self, type):
+        """Transfer explorers of a type, but only once"""
+        if type.transferred_explorers:
+            log.debug("Skipping retransfer for explorers of %s", type)
+            return
+        else:
+            # Do not retransfer
+            type.transferred_explorers = True
+
+        # FIXME: Can be explorer_path or explorer_dir, I don't care.
+        src = type.explorer_path()
+        dst = type.remote_explorer_path()
+
+        # Transfer if there is at least one explorer
+        if len(type.explorers) > 0:
+            # Ensure that the path exists
+            self.remote_mkdir(dst)
+            self.transfer_dir(src, dst)

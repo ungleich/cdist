@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -67,6 +68,8 @@ class Type(object):
         self.__explorers = None
         self.__required_parameters = None
         self.__optional_parameters = None
+
+        self.transferred_explorers = False
 
     def __repr__(self):
         return '<Type name=%s>' % self.name
