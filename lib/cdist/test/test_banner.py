@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # 2011 Nico Schottelius (nico-cdist at schottelius.org)
@@ -19,14 +20,23 @@
 #
 #
 
-import logging
+import io
 import sys
+import unittest
 
 import cdist
+import cdist.banner
 
-log = logging.getLogger(__name__)
+class Banner(unittest.TestCase):
+    def setUp(self):
+        self.banner = cdist.BANNER + "\n"
 
+    def test_banner_output(self):
+        """Check that printed banner equals saved banner"""
+        output = io.StringIO()
 
-def banner(args):
-    """Guess what :-)"""
-    print(cdist.BANNER)
+        sys.stdout = output
+
+        cdist.banner.banner(None)
+        
+        self.assertEqual(output.getvalue(), self.banner)

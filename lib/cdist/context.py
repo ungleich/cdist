@@ -99,11 +99,11 @@ class Context:
         # "other globals referenced by the __del__() method may already have been deleted 
         # or in the process of being torn down (e.g. the import machinery shutting down)"
         #
-        log.debug("Saving" + self.base_path + "to " + self.cache_path)
+        log.debug("Saving " + self.out_path + " to " + self.cache_path)
         # Remove previous cache
         if os.path.exists(self.cache_path):
             shutil.rmtree(self.cache_path)
-        shutil.move(self.base_path, self.cache_path)
+        shutil.move(self.out_path, self.cache_path)
 
     def __init_out_paths(self):
         """Initialise output directory structure"""

@@ -53,7 +53,7 @@ class ConfigInstall:
             debug=debug)
 
     def cleanup(self):
-        self.path.cleanup()
+        self.context.cleanup()
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
@@ -163,10 +163,12 @@ class ConfigInstall:
             cdist.exec.run_or_fail([code_local])
 
         # code remote
-        local_remote_code   = cdist_object.code_remote_path
-        remote_remote_code  = cdist_object.remote_code_remote_path
+        local_remote_code   = os.path.join(self.context.object_base_path,
+            cdist_object.code_remote_path)
+        remote_remote_code  = os.path.join(self.context.remote_object_path,
+            cdist_object.code_remote_path)
         if os.path.isfile(local_remote_code):
-            self.context.transfer_file(local_remote_code, remote_remote_code)
+            self.context.transfer_path(local_remote_code, remote_remote_code)
             cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
 
         cdist_object.ran = True

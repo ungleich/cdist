@@ -1,35 +1,3 @@
-Object:
+Code fixes needed:
 
-
-Type:
-   type.transferred_explorers
-
-
-GlobalExplorer:
-   out_path: local path into which the output is written
-
-   cdist.core.GlobalExplorer.base_dir - local directory containing explorers
-   cdist.core.GlobalExplorer.remote_base_dir - remote directory containing explorers
-
-   path: local path to explorer
-   remote_path: remote path to explorer
-
-   See config_install: run_global_explorers()
-
-Object/Type:
-   - rutern relative only
-   - Have accept absulet path on listing
-
-Tests needed:
-
-   - Fail if cache_dir from previous run cannot be deleted
-   - Fail if cache_dir cannot be created from current out_dir
-   - transfer_type_explorers: Explorers are not transferred twice
-   - transfer_type_explorers: No transfer tried if there are no type_explorers
-
-   - does $require work?
-   - $whatever should fail if there is no global explorer directory
-   - emulator may only be called with __ as prefix - fail otherwise!
-
-   - ensure paths returned by object include dot-cdist
-   - ensure path of explorer of object returns correct path
+   - shutil, os.mkdir, etc. everywhere: catch/reraise exceptions correctly
