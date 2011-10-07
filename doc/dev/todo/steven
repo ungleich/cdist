@@ -1,11 +1,4 @@
 Object:
-   cdist_object.code_local_path
-   cdist_object.code_remote_path
-   cdist_object.remote_code_remote_path
-
-   cdist_object.parameter_path
-
-
 
 
 Type:
