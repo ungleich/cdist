@@ -68,8 +68,6 @@ class Type(object):
     def __repr__(self):
         return '<Type %s>' % self.name
 
-    def
-
     @property
     def is_singleton(self):
         """Check whether a type is a singleton."""
