@@ -105,7 +105,7 @@ class ConfigInstall:
         cdist.exec.shell_run_or_debug_fail(manifest_path, [manifest_path], env=env)
 
     def object_run(self, cdist_object):
-        """Run gencode or code for an object"""
+        """Run gencode and code for an object"""
         log.debug("Running object %s", cdist_object)
 
         # Catch requirements, which re-call us
