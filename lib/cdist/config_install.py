@@ -284,12 +284,19 @@ class ConfigInstall:
     # FIXME Move into configinstall
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
+        local_path  = 
+            os.path.join(self.context.object_base_path,
+                cdist_object.parameter_path)
+        remote_path = 
+            os.path.join(self.context.remote_object_path,
+                cdist_object.parameter_path)
+
         # Create base path before using mkdir -p
-        self.remote_mkdir(self.remote_object_parameter_path(cdist_object))
+        # FIXME: needed?
+        self.remote_mkdir(remote_path)
 
         # Synchronise parameter dir afterwards
-        self.transfer_path(self.object_parameter_path(cdist_object), 
-                                self.remote_object_parameter_path(cdist_object))
+        self.transfer_path(local_path, remote_path)
 
 
 ####FIXED ######################################################################
