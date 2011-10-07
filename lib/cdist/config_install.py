@@ -90,13 +90,13 @@ class ConfigInstall:
         
         # Submit debug flag to manifest, can be used by emulator and types
         if self.debug:
-            env['__debug']                  = "yes"
+            env['__debug']              = "yes"
 
         # Required for recording source in emulator
         env['__cdist_manifest']         = manifest_path
 
         # Required to find types in emulator
-        env['__cdist_type_base_path']    = self.context.type_base_path
+        env['__cdist_type_base_path']   = self.context.type_base_path
 
         # Other environment stuff
         if extra_env:
