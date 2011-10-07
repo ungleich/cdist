@@ -27,3 +27,5 @@ Tests needed:
 
    - Fail if cache_dir from previous run cannot be deleted
    - Fail if cache_dir cannot be created from current out_dir
+   - transfer_type_explorers: Explorers are not transferred twice
+   - transfer_type_explorers: No transfer tried if there are no type_explorers
