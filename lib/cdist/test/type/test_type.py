@@ -20,9 +20,7 @@
 #
 
 import os
-import tempfile
 import unittest
-import shutil
 
 import cdist.core
 
@@ -32,14 +30,6 @@ fixtures = op.join(my_dir, 'fixtures')
 
 
 class TypeTestCase(unittest.TestCase):
-    def setUp(self):
-        # FIXME: use defined set of types for testing?
-        # FIXME: generate object tree or use predefined?
-        self.temp_dir = tempfile.mkdtemp()
-        self.object_base_path = op.join(self.temp_dir, '')
-
-    def tearDown(self):
-        shutil.rmtree(self.temp_dir)
 
     def test_singleton_is_singleton(self):
         base_path = fixtures
