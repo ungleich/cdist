@@ -67,7 +67,7 @@ class ConfigInstall:
         manifest_path = os.path.join(self.context.type_base_path,
                             cdist_type.manifest_path)
         
-        log.debug("%s: Running %s", cdist_object.name, manifest)
+        log.debug("%s: Running %s", cdist_object.name, manifest_path)
         if os.path.exists(manifest_path):
             env = { "__object" :    os.path.join(self.context.object_base_path,
                                         cdist_object.path),
