@@ -1,8 +1,10 @@
 Object:
    code_remote
-   code_local
+   code
    gencode_local
    gencode_remote
+
+   path_remote
 
 Type:
    explorer_dir
