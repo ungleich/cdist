@@ -14,3 +14,7 @@ GlobalExplorer:
    remote_path: remote path to explorer
 
    See config_install: run_global_explorers()
+
+Object/Type:
+   - rutern relative only
+   - Have accept absulet path on listing
