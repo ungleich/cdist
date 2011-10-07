@@ -96,7 +96,7 @@ class ConfigInstall:
         env['__cdist_manifest']         = manifest_path
 
         # Required to find types in emulator
-        env['__cdist_type_base_path']    = type.path
+        env['__cdist_type_base_path']    = self.context.type_base_path
 
         # Other environment stuff
         if extra_env:
