@@ -5,7 +5,8 @@ Object:
    gencode_remote
 
 Type:
-   explorer_path
+   explorer_dir
+   remote_explorer_dir
 
 GlobalExplorer:
    out_path: local path into which the output is written
