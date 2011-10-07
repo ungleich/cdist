@@ -63,7 +63,7 @@ class Object(object):
             if DOT_CDIST in dirs:
                 yield os.path.relpath(path, object_base_path)
 
-    def __init__(self, type, base_path, object_id=None)
+    def __init__(self, type, base_path, object_id=None):
         self.type = type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
