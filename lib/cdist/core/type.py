@@ -70,11 +70,6 @@ class Type(object):
         except KeyError as e:
             raise cdist.MissingEnvironmentVariableError(e.args[0])
 
-    # FIXME: probably wrong place for this
-    @property
-    def remote_explorer_dir(self):
-        return os.path.join(self.remote_path, "explorer")
-
     @classmethod
     def list_types(cls):
         """Return a list of type instances"""
@@ -111,6 +106,15 @@ class Type(object):
             self.remote_base_dir(),
             self.name
         ) 
+
+    # FIXME: probably wrong place for this
+    @property
+    def remote_explorer_dir(self):
+        return os.path.join(self.remote_path, "explorer")
+
+    @property
+    def manifest_path(self):
+        return os.path.join(self.path, "manifest")
 
     @property
     def is_singleton(self):
