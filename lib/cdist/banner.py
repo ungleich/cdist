@@ -30,4 +30,3 @@ log = logging.getLogger(__name__)
 def banner(args):
     """Guess what :-)"""
     print(cdist.BANNER)
-    sys.exit(0)
