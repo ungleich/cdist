@@ -291,7 +291,7 @@ class ConfigInstall:
     def transfer_type_explorers(self, cdist_type):
         """Transfer explorers of a type, but only once"""
         if cdist_type.transferred_explorers:
-            log.debug("Skipping retransfer for explorers of %s", type)
+            log.debug("Skipping retransfer for explorers of %s", cdist_type)
             return
         else:
             # Do not retransfer
@@ -300,10 +300,8 @@ class ConfigInstall:
         explorers = cdist_type.explorers
 
         if len(explorers) > 0:
-            rel_path = os.path.join(type.explorer_path(), explorer)
+            rel_path = cdist_type.explorer_path
             src = os.path.join(self.context.type_base_path, rel_path)
             dst = os.path.join(self.context.remote_type_path, rel_path)
+            self.context.transfer_path(src, dst)
 
-            # Ensure that the path exists
-            self.remote_mkdir(dst)
-            self.transfer_path(src, dst)
