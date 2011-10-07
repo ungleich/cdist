@@ -85,6 +85,7 @@ class Context:
 
         self.remote_conf_path            = os.path.join(self.remote_base_path, "conf")
         self.remote_object_path          = os.path.join(self.remote_base_path, "object")
+
         self.remote_type_path            = os.path.join(self.remote_conf_path, "type")
         self.remote_global_explorer_path = os.path.join(self.remote_conf_path, "explorer")
 
@@ -120,6 +121,7 @@ class Context:
 
         self.remove_remote_path(self.remote_base_path)
         self.remote_mkdir(self.remote_base_path)
+        self.remote_mkdir(self.remote_conf_path)
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
