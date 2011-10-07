@@ -232,7 +232,8 @@ class ConfigInstall:
     def stage_run(self):
         """The final (and real) step of deployment"""
         log.info("Generating and executing code")
-        for cdist_object in cdist.core.Object.list_objects(self.context.object_base_path):
+        for cdist_object in cdist.core.Object.list_objects(self.context.object_base_path,
+                                                           self.context.type_base_path):
             log.debug("Run object: %s", cdist_object)
             self.object_run(cdist_object)
 
@@ -259,7 +260,8 @@ class ConfigInstall:
         new_objects_created = True
         while new_objects_created:
             new_objects_created = False
-            for cdist_object in cdist.core.Object.list_objects(self.context.object_base_path):
+            for cdist_object in cdist.core.Object.list_objects(self.context.object_base_path,
+                                                               self.context.type_base_path):
                 if cdist_object.prepared:
                     log.debug("Skipping rerun of object %s", cdist_object)
                     continue
@@ -286,16 +288,16 @@ class ConfigInstall:
         self.transfer_path(self.context.global_explorer_path, 
             self.remote_global_explorer_path)
 
-    def transfer_type_explorers(self, type):
+    def transfer_type_explorers(self, cdist_type):
         """Transfer explorers of a type, but only once"""
-        if type.transferred_explorers:
+        if cdist_type.transferred_explorers:
             log.debug("Skipping retransfer for explorers of %s", type)
             return
         else:
             # Do not retransfer
-            type.transferred_explorers = True
+            cdist_type.transferred_explorers = True
 
-        explorers = type.explorers()
+        explorers = cdist_type.explorers
 
         if len(explorers) > 0:
             rel_path = os.path.join(type.explorer_path(), explorer)
