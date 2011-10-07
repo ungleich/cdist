@@ -61,6 +61,25 @@ class TypeTestCase(unittest.TestCase):
         cdist_type = cdist.core.Type(base_path, '__without_explorers')
         self.assertEqual(cdist_type.explorers, [])
 
+    def test_with_required_parameters(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__with_required_parameters')
+        self.assertEqual(cdist_type.required_parameters, ['required1', 'required2'])
+
+    def test_without_required_parameters(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__without_required_parameters')
+        self.assertEqual(cdist_type.required_parameters, [])
+
+    def test_with_optional_parameters(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__with_optional_parameters')
+        self.assertEqual(cdist_type.optional_parameters, ['optional1', 'optional2'])
+
+    def test_without_optional_parameters(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__without_optional_parameters')
+        self.assertEqual(cdist_type.optional_parameters, [])
 
 '''
 suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
