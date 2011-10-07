@@ -37,9 +37,7 @@ CODE_HEADER = "#!/bin/sh -e\n"
 class ConfigInstall:
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, target_host, 
-                    initial_manifest=False,
-                    home=None,
+    def __init__(self, target_host, initial_manifest=False,
                     exec_path=sys.argv[0],
                     debug=False):
 
@@ -51,7 +49,6 @@ class ConfigInstall:
 
         self.path = cdist.path.Path(self.target_host, 
                         initial_manifest=initial_manifest,
-                        base_dir=home,
                         debug=debug)
         
     def cleanup(self):
@@ -84,10 +81,7 @@ class ConfigInstall:
             cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()
 
-    def link_emulator(self):
-        """Link emulator to types"""
-        cdist.emulator.link(self.exec_path,
-            self.path.bin_dir, self.path.list_types())
+
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
@@ -208,6 +202,15 @@ class ConfigInstall:
                 cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
                 
     ### Cleaned / check functions: Round 1 :-) #################################
+    def link_emulator(self):
+        """Link emulator to types"""
+        src = os.path.abspath(self.exec_path)
+        for type in cdist.core.Type.list_types():
+            log.debug("Linking emulator: %s to %s", source, destination)
+            dst = os.path.join(self.context.bin_dir, type.name)
+            # FIXME: handle exception / make it more beautiful
+            os.symlink(src, dst)
+
     def run_global_explorers(self):
         """Run global explorers"""
         log.info("Running global explorers")
