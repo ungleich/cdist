@@ -33,3 +33,7 @@ Tests needed:
    - Fail if cache_dir cannot be created from current out_dir
    - transfer_type_explorers: Explorers are not transferred twice
    - transfer_type_explorers: No transfer tried if there are no type_explorers
+
+   - does $require work?
+   - $whatever should fail if there is no global explorer directory
+   - emulator may only be called with __ as prefix - fail otherwise!
