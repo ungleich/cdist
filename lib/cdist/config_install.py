@@ -37,8 +37,9 @@ class ConfigInstall:
     """Cdist main class to hold arbitrary data"""
 
     def __init__(self, target_host, initial_manifest=False,
-                    exec_path=sys.argv[0],
-                    debug=False):
+        base_dir=False,
+        exec_path=sys.argv[0],
+        debug=False):
 
         self.target_host    = target_host
         os.environ['target_host'] = target_host
@@ -47,7 +48,7 @@ class ConfigInstall:
         self.exec_path      = exec_path
 
         self.context = cdist.context.Context(self.target_host,
-            initial_manifest=initial_manifest,
+            initial_manifest=initial_manifest, base_dir=base_dir,
             debug=debug)
         
     def cleanup(self):

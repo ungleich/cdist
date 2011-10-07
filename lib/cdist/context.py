@@ -33,12 +33,15 @@ import cdist.exec
 class Context:
     """Storing context dependent information"""
 
-    def __init__(self, target_host, initial_manifest=False, debug=False):
+    def __init__(self, target_host, initial_manifest=False, base_dir=False,
+        debug=False):
 
         self.target_host = target_host
 
         # Base and Temp Base 
-        if "__cdist_base_dir" in os.environ:
+        if base_dir:
+            self.base_dir = base_dir
+        elif "__cdist_base_dir" in os.environ:
             self.base_dir = os.environ['__cdist_base_dir']
         else:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
