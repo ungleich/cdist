@@ -1,10 +1,12 @@
 Object:
    code_remote
    code
-   gencode_local
+   gencode
    gencode_remote
 
    path_remote
+
+   explorer_out_dir
 
 Type:
    explorer_dir
