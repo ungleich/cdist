@@ -161,4 +161,38 @@ class Object(object):
                 pass
     ### /changed
 
-    # FIXME: implement other properties/methods
+    # FIXME: implement other properties/methods 
+
+    # FIXME: check following methods: implement or revoke / delete
+    # FIXME: Object
+    def get_object_id_from_object(self, cdist_object):
+        """Returns everything but the first part (i.e. object_id) of an object"""
+        return os.sep.join(cdist_object.split(os.sep)[1:])
+
+    # FIXME: Object
+    def object_dir(self, cdist_object):
+        """Returns the full path to the object (including .cdist)"""
+        return os.path.join(self.object_base_dir, cdist_object, DOT_CDIST)
+
+    # FIXME: Object
+    def remote_object_dir(self, cdist_object):
+        """Returns the remote full path to the object (including .cdist)"""
+        return os.path.join(REMOTE_OBJECT_DIR, cdist_object, DOT_CDIST)
+
+    # FIXME: Object
+    def object_parameter_dir(self, cdist_object):
+        """Returns the dir to the object parameter"""
+        return os.path.join(self.object_dir(cdist_object), "parameter")
+
+    # FIXME: object
+    def remote_object_parameter_dir(self, cdist_object):
+        """Returns the remote dir to the object parameter"""
+        return os.path.join(self.remote_object_dir(cdist_object), "parameter")
+
+    # FIXME: object
+    def object_code_paths(self, cdist_object):
+        """Return paths to code scripts of object"""
+        return [os.path.join(self.object_dir(cdist_object), "code-local"),
+                  os.path.join(self.object_dir(cdist_object), "code-remote")]
+
+
