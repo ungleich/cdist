@@ -117,7 +117,7 @@ class Type(object):
         return os.path.join(self.path, "manifest")
 
     @property
-    def gencode(self):
+    def gencode_local(self):
         return os.path.join(self.path, "gencode-local")
 
     @property
