@@ -8,6 +8,8 @@
 
 - Create GlobalExplorer
    
+- base_dir passing in config/config_install superseeded by __cdist_base_dir?
+
 --------------------------------------------------------------------------------
 
 - insert prefix into logger to distinguish between modules

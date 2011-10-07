@@ -25,10 +25,9 @@ import os
 import stat
 import sys
 
-import cdist.emulator
-import cdist.path
-
+import cdist.context
 import cdist.core
+import cdist.emulator
 
 log = logging.getLogger(__name__)
 
@@ -38,8 +37,9 @@ class ConfigInstall:
     """Cdist main class to hold arbitrary data"""
 
     def __init__(self, target_host, initial_manifest=False,
-                    exec_path=sys.argv[0],
-                    debug=False):
+        base_dir=False,
+        exec_path=sys.argv[0],
+        debug=False):
 
         self.target_host    = target_host
         os.environ['target_host'] = target_host
@@ -48,7 +48,7 @@ class ConfigInstall:
         self.exec_path      = exec_path
 
         self.context = cdist.context.Context(self.target_host,
-            initial_manifest=initial_manifest,
+            initial_manifest=initial_manifest, base_dir=base_dir,
             debug=debug)
         
     def cleanup(self):
@@ -83,8 +83,7 @@ class ConfigInstall:
         # Information required in every manifest
         env['__target_host']            = self.target_host
 
-        # FIXME: __global == __cdist_out_dir
-        # FIXME: __global? shouldn't this be $global?
+        # FIXME: __global == __cdist_out_dir - duplication
         env['__global']                 = self.context.out_dir
         
         # Submit debug flag to manifest, can be used by emulator and types
@@ -95,7 +94,7 @@ class ConfigInstall:
         env['__cdist_manifest']         = manifest
 
         # Required to find types
-        env['__cdist_type_base_dir']    = self.path.type_base_dir
+        env['__cdist_type_base_dir']    = type.path
 
         # Other environment stuff
         if extra_env:
@@ -103,17 +102,17 @@ class ConfigInstall:
 
         cdist.exec.shell_run_or_debug_fail(manifest, [manifest], env=env)
 
-################################################################################ 
-    def object_run(self, cdist_object, mode):
+    def object_run(self, cdist_object):
         """Run gencode or code for an object"""
         log.debug("Running %s from %s", mode, cdist_object)
 
-        # FIXME: replace with new object interface
-        file=os.path.join(self.path.object_dir(cdist_object), "require")
-        requirements = cdist.path.file_to_list(file)
-        type = self.path.get_type_from_object(cdist_object)
+        # Catch requirements, which re-call us
+        if cdist_object.ran:
+            return
+
+        type = cdist_object.type
             
-        for requirement in requirements:
+        for requirement in cdist_object.requirements:
             log.debug("Object %s requires %s", cdist_object, requirement)
             self.object_run(requirement, mode=mode)
 
@@ -122,60 +121,52 @@ class ConfigInstall:
         #
         env = os.environ.copy()
         env['__target_host']    = self.target_host
-        env['__global']         = self.path.out_dir
-        env["__object"]         = self.path.object_dir(cdist_object)
-        env["__object_id"]      = self.path.get_object_id_from_object(cdist_object)
-        env["__object_fq"]      = cdist_object
-        env["__type"]           = self.path.type_dir(type)
+        env['__global']         = self.context.out_dir
+        env["__object"]         = cdist_object.path
+        env["__object_id"]      = cdist_object.object_id
+        env["__object_fq"]      = cdist_object.name
+        env["__type"]           = type.name
 
-        if mode == "gencode":
-            paths = [
-                self.path.type_dir(type, "gencode-local"),
-                self.path.type_dir(type, "gencode-remote")
-            ]
-            for bin in paths:
-                if os.path.isfile(bin):
-                    # omit "gen" from gencode and use it for output base
-                    outfile=os.path.join(self.path.object_dir(cdist_object), 
-                        os.path.basename(bin)[3:])
+        # gencode
+        for cmd in ["local", "remote"]:
+            bin = getattr(type, "gencode_" + cmd)
 
-                    outfile_fd = open(outfile, "w")
-
-                    # Need to flush to ensure our write is done before stdout write
-                    outfile_fd.write(CODE_HEADER)
-                    outfile_fd.flush()
-
-                    cdist.exec.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
-                    outfile_fd.close()
-
-                    status = os.stat(outfile)
-
-                    # Remove output if empty, else make it executable
-                    if status.st_size == len(CODE_HEADER):
-                        os.unlink(outfile)
-                    else:
-                        # Add header and make executable - identically to 0o700
-                        os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
-
-                        # Mark object as changed
-                        open(os.path.join(self.path.object_dir(cdist_object), "changed"), "w").close()
-
-
-        if mode == "code":
-            local_dir   = self.path.object_dir(cdist_object)
-            remote_dir  = self.path.remote_object_dir(cdist_object)
-
-            bin = os.path.join(local_dir, "code-local")
             if os.path.isfile(bin):
-                cdist.exec.run_or_fail([bin])
-                
+                outfile = getattr(cdist_object, "code_" + cmd)
 
-            local_remote_code = os.path.join(local_dir, "code-remote")
-            remote_remote_code = os.path.join(remote_dir, "code-remote")
-            if os.path.isfile(local_remote_code):
-                self.path.transfer_file(local_remote_code, remote_remote_code)
-                cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
-                
+                outfile_fd = open(outfile, "w")
+
+                # Need to flush to ensure our write is done before stdout write
+                outfile_fd.write(CODE_HEADER)
+                outfile_fd.flush()
+
+                cdist.exec.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
+                outfile_fd.close()
+
+                status = os.stat(outfile)
+
+                # Remove output if empty, else make it executable
+                if status.st_size == len(CODE_HEADER):
+                    os.unlink(outfile)
+                else:
+                    # Add header and make executable - identically to 0o700
+                    os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
+                    cdist_object.changed=True
+
+        # code local
+        code_local = cdist_object.code_local
+        if os.path.isfile(code_local):
+            cdist.exec.run_or_fail([code_local])
+
+        # code remote
+        local_remote_code   = cdist_object.code_remote
+        remote_remote_code  = cdist_object.remote_code_remote
+        if os.path.isfile(local_remote_code):
+            self.context.transfer_file(local_remote_code, remote_remote_code)
+            cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
+
+        cdist_object.ran = True
+
     ### Cleaned / check functions: Round 1 :-) #################################
     def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""
@@ -237,11 +228,9 @@ class ConfigInstall:
     def stage_run(self):
         """The final (and real) step of deployment"""
         log.info("Generating and executing code")
-        # Now do the final steps over the existing objects
         for cdist_object in cdist.core.Object.list_objects():
             log.debug("Run object: %s", cdist_object)
-            self.object_run(cdist_object, mode="gencode")
-            self.object_run(cdist_object, mode="code")
+            self.object_run(cdist_object)
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
@@ -258,8 +247,8 @@ class ConfigInstall:
         """Ensure the base directories are cleaned up"""
         log.debug("Creating clean directory structure")
 
-        self.path.remove_remote_dir(cdist.path.REMOTE_BASE_DIR)
-        self.path.remote_mkdir(cdist.path.REMOTE_BASE_DIR)
+        self.context.remove_remote_dir(self.context.remote_base_dir)
+        self.context.remote_mkdir(self.context.remote_base_dir)
         self.link_emulator()
     
     def stage_prepare(self):

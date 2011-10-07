@@ -33,22 +33,25 @@ import cdist.exec
 class Context:
     """Storing context dependent information"""
 
-    def __init__(self, target_host, initial_manifest=False, debug=False):
+    def __init__(self, target_host, initial_manifest=False, base_dir=False,
+        debug=False):
 
         self.target_host = target_host
 
         # Base and Temp Base 
-        if "__cdist_base_dir" in os.environ:
+        if base_dir:
+            self.base_dir = base_dir
+        elif "__cdist_base_dir" in os.environ:
             self.base_dir = os.environ['__cdist_base_dir']
         else:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
         # Input directories
         self.cache_dir              = os.path.join(self.base_dir, "cache", target_host)
+        self.conf_dir               = os.path.join(self.base_dir, "conf")
         self.manifest_dir           = os.path.join(self.conf_dir, "manifest")
 
         # Probably unused paths
-        # self.conf_dir               = os.path.join(self.base_dir, "conf")
         # self.global_explorer_dir    = os.path.join(self.conf_dir, "explorer")
         # self.lib_dir                = os.path.join(self.base_dir, "lib")
         # self.type_base_dir          = os.path.join(self.conf_dir, "type")
@@ -103,7 +106,7 @@ class Context:
         """Initialise output directory structure"""
 
         # Create base dir, if user supplied and not existing
-        if not os.isdir(self.base_dir):
+        if not os.path.isdir(self.base_dir):
             os.mkdir(self.base_dir)
             
         os.mkdir(self.out_dir)

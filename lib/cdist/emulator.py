@@ -24,7 +24,6 @@ import logging
 import os
 
 import cdist
-import cdist.path
 
 log = logging.getLogger(__name__)
 

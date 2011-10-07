@@ -112,12 +112,9 @@ if __name__ == "__main__":
             import cdist.emulator
             cdist.emulator.run(sys.argv)
         else:
-            import cdist
             import cdist.banner
             import cdist.config
-            import cdist.exec
             import cdist.install
-            import cdist.path
 
             commandline()
 
