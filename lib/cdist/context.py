@@ -106,7 +106,7 @@ class Context:
         """Initialise output directory structure"""
 
         # Create base dir, if user supplied and not existing
-        if not os.isdir(self.base_dir):
+        if not os.path.isdir(self.base_dir):
             os.mkdir(self.base_dir)
             
         os.mkdir(self.out_dir)
