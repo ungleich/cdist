@@ -42,113 +42,52 @@ class Object(object):
 
     """
 
-    @staticmethod
-    def base_dir():
-        """Return the absolute path to the top level directory where objects
-        are defined.
-
-        Requires the environment variable '__cdist_out_dir' to be set.
-
-        """
-        try:
-            base_dir = os.path.join(
-                os.environ['__cdist_out_dir'],
-                'object'
-            )
-        except KeyError as e:
-            raise cdist.MissingEnvironmentVariableError(e.args[0])
-
-        # FIXME: should directory be created elsewhere?
-        if not os.path.isdir(base_dir):
-            os.mkdir(base_dir)
-        return base_dir
-
     @classmethod
-    def remote_base_dir():
-        """Return the absolute path to the top level directory where objects
-        are kept on the remote/target host.
-
-        Requires the environment variable '__cdist_remote_out_dir' to be set.
-
-        """
-        try:
-            return os.path.join(
-                os.environ['__cdist_remote_out_dir'],
-                'object',
-            )
-        except KeyError as e:
-            raise cdist.MissingEnvironmentVariableError(e.args[0])
-
-    def list_objects(cls):
+    def list_objects(cls, object_base_path, type_base_path):
         """Return a list of object instances"""
-        for object_name in cls.list_object_names():
+        for object_name in cls.list_object_names(object_base_path):
             type_name = object_name.split(os.sep)[0]
+            # FIXME: allow object without object_id? e.g. for singleton
             object_id = os.sep.join(object_name.split(os.sep)[1:])
-            yield cls(cdist.core.Type(type_name), object_id=object_id)
+            yield cls(cdist.core.Type(type_base_path, type_name), object_base_path, object_id=object_id)
 
     @classmethod
-    def list_type_names(cls):
+    def list_type_names(cls, object_base_path):
         """Return a list of type names"""
-        return os.listdir(cls.base_dir())
+        return os.listdir(object_base_path)
 
     @classmethod
-    def list_object_names(cls):
+    def list_object_names(cls, object_base_path):
         """Return a list of object names"""
-        for path, dirs, files in os.walk(cls.base_dir()):
+        for path, dirs, files in os.walk(object_base_path):
             if DOT_CDIST in dirs:
-                yield os.path.relpath(path, cls.base_dir())
+                yield os.path.relpath(path, object_base_path)
 
-    def __init__(self, type, object_id=None, parameters=None, requirements=None):
+    def __init__(self, type, base_path, object_id=None)
         self.type = type # instance of Type
+        self.base_path = base_path
         self.object_id = object_id
         self.name = os.path.join(self.type.name, self.object_id)
-        self.parameters = parameters or {}
-        self.requirements = requirements or []
+        self.path = os.path.join(self.type.path, self.object_id)
+        self.absolute_path = os.path.join(self.base_path, self.path)
+        self.code_local_path = os.path.join(self.path, "code-local")
+        self.code_remote_path = os.path.join(self.path, "code-remote")
+        self.parameter_path = os.path.join(self.path, "parameter")
 
         self.__parameters = None
         self.__requirements = None
 
-        # Whether this object was prepared/ran
-        self.prepared = False
-        self.ran = False
-        
     def __repr__(self):
         return '<Object %s>' % self.name
 
     @property
-    def path(self):
-        return os.path.join(
-            self.base_dir(),
-            self.name,
-            DOT_CDIST
-        )
-
-    @property
-    def code_local(self):
-        return os.path.join(self.path, "code-local")
-
-    @property
-    def code_remote(self):
-        return os.path.join(self.path, "code-remote")
-
-    @property
-    def explorer_out_dir(self):
-        path = os.path.join(self.path, "explorer")
+    def explorer_path(self):
+        # create absolute path
+        path = os.path.join(self.absolute_path, "explorer")
         if not os.path.isdir(path):
             os.mkdir(path)
-        return path
-
-    # FIXME: prefix directory should not leak into me
-    @property
-    def remote_path(self):
-        return os.path.join(
-            self.remote_base_dir(),
-            self.name,
-            DOT_CDIST
-        )
-    @property
-    def remote_code_remote(self):
-        return os.path.join(self.remote_path, "code-remote")
+        # return relative path
+        return os.path.join(self.path, "explorer")
 
 
     ### requirements
@@ -204,20 +143,43 @@ class Object(object):
     ### /changed
 
 
+    ### prepared
+    @property
+    def prepared(self):
+        """Check whether the object has been prepared."""
+        return os.path.isfile(os.path.join(self.path, "prepared"))
 
-    # FIXME: Object
-    def object_parameter_dir(self, cdist_object):
-        """Returns the dir to the object parameter"""
-        return os.path.join(self.object_dir(cdist_object), "parameter")
+    @prepared.setter
+    def prepared(self, value):
+        """Change the objects prepared status."""
+        path = os.path.join(self.path, "prepared")
+        if value:
+            open(path, "w").close()
+        else:
+            try:
+                os.remove(path)
+            except EnvironmentError:
+                # ignore
+                pass
+    ### /prepared
 
-    # FIXME: object
-    def remote_object_parameter_dir(self, cdist_object):
-        """Returns the remote dir to the object parameter"""
-        return os.path.join(self.remote_object_dir(cdist_object), "parameter")
 
-    # FIXME: object
-    def object_code_paths(self, cdist_object):
-        """Return paths to code scripts of object"""
-        return [os.path.join(self.object_dir(cdist_object), "code-local"),
-                  os.path.join(self.object_dir(cdist_object), "code-remote")]
+    ### ran
+    @property
+    def ran(self):
+        """Check whether the object has been ran."""
+        return os.path.isfile(os.path.join(self.path, "ran"))
 
+    @ran.setter
+    def ran(self, value):
+        """Change the objects ran status."""
+        path = os.path.join(self.path, "ran")
+        if value:
+            open(path, "w").close()
+        else:
+            try:
+                os.remove(path)
+            except EnvironmentError:
+                # ignore
+                pass
+    ### /ran
