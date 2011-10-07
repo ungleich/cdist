@@ -132,11 +132,11 @@ class ConfigInstall:
         # gencode
         for cmd in ["local", "remote"]:
             bin = os.path.join(self.context.type_base_path,
-                    getattr(cdist_type, "gencode_" + cmd))
+                    getattr(cdist_type, "gencode_" + cmd + "_path"))
 
             if os.path.isfile(bin):
                 outfile = os.path.join(self.context.object_base_path,
-                            getattr(cdist_object, "code_" + cmd))
+                            getattr(cdist_object, "code_" + cmd + "_path"))
 
                 outfile_fd = open(outfile, "w")
 
