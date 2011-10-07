@@ -30,7 +30,7 @@ log = logging.getLogger(__name__)
 def run(argv):
     """Emulate type commands (i.e. __file and co)"""
     type            = os.path.basename(argv[0])
-    type_dir        = os.path.join(os.environ['__cdist_type_base_dir'], type)
+    type_dir        = os.path.join(os.environ['__cdist_type_base_path'], type)
     param_dir       = os.path.join(type_dir, "parameter")
     global_dir      = os.environ['__global']
     object_source   = os.environ['__cdist_manifest']
