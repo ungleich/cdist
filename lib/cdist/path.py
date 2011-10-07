@@ -255,12 +255,12 @@ class Path:
     # Stays here - FIXME: adjust to type code, loop over types!
     def transfer_type_explorers(self, type):
         """Transfer explorers of a type, but only once"""
-        if type.transferred:
+        if type.transferred_explorers:
             log.debug("Skipping retransfer for explorers of %s", type)
             return
         else:
             # Do not retransfer
-            type.transferred = True
+            type.transferred_explorers = True
 
         # FIXME: Can be explorer_path or explorer_dir, I don't care.
         src = type.explorer_path()
