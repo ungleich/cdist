@@ -30,8 +30,8 @@ log = logging.getLogger(__name__)
 
 import cdist.exec
 
-class Path:
-    """Class that handles path related configurations"""
+class Context:
+    """Storing context dependent information"""
 
     def __init__(self, target_host, initial_manifest=False, debug=False):
 
@@ -44,13 +44,14 @@ class Path:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
         # Input directories
-        self.conf_dir               = os.path.join(self.base_dir, "conf")
-        self.cache_base_dir         = os.path.join(self.base_dir, "cache")
-        self.cache_dir              = os.path.join(self.cache_base_dir, target_host)
-        self.global_explorer_dir    = os.path.join(self.conf_dir, "explorer")
-        self.lib_dir                = os.path.join(self.base_dir, "lib")
+        self.cache_dir              = os.path.join(self.base_dir, "cache", target_host)
         self.manifest_dir           = os.path.join(self.conf_dir, "manifest")
-        self.type_base_dir          = os.path.join(self.conf_dir, "type")
+
+        # Probably unused paths
+        # self.conf_dir               = os.path.join(self.base_dir, "conf")
+        # self.global_explorer_dir    = os.path.join(self.conf_dir, "explorer")
+        # self.lib_dir                = os.path.join(self.base_dir, "lib")
+        # self.type_base_dir          = os.path.join(self.conf_dir, "type")
 
         # Mostly static, but can be overwritten on user demand
         if initial_manifest:
