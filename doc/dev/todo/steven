@@ -18,3 +18,8 @@ GlobalExplorer:
 Object/Type:
    - rutern relative only
    - Have accept absulet path on listing
+
+Tests needed:
+
+   - Fail if cache_dir from previous run cannot be deleted
+   - Fail if cache_dir cannot be created from current out_dir
