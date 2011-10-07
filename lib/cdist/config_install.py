@@ -108,11 +108,11 @@ class ConfigInstall:
         """Run gencode or code for an object"""
         log.debug("Running %s from %s", mode, cdist_object)
 
-        # FIXME: replace with new object interface
-        file=os.path.join(self.path.object_dir(cdist_object), "require")
-        requirements = cdist.path.file_to_list(file)
-        type = self.path.get_type_from_object(cdist_object)
+        requirements = cdist_object.requirements
+        type = cdist_object.type
             
+        # FIXME: ensure objects are not run multiple times!
+        # FIXME: probably mark objects!
         for requirement in requirements:
             log.debug("Object %s requires %s", cdist_object, requirement)
             self.object_run(requirement, mode=mode)
@@ -122,22 +122,23 @@ class ConfigInstall:
         #
         env = os.environ.copy()
         env['__target_host']    = self.target_host
-        env['__global']         = self.path.out_dir
-        env["__object"]         = self.path.object_dir(cdist_object)
-        env["__object_id"]      = self.path.get_object_id_from_object(cdist_object)
-        env["__object_fq"]      = cdist_object
-        env["__type"]           = self.path.type_dir(type)
+        env['__global']         = self.context.out_dir
+        env["__object"]         = cdist_object.path
+        env["__object_id"]      = cdist_object.object_id
+        env["__object_fq"]      = cdist_object.name
+        env["__type"]           = type.name
 
         if mode == "gencode":
             paths = [
-                self.path.type_dir(type, "gencode-local"),
-                self.path.type_dir(type, "gencode-remote")
+                type.gencode
+                type.gencode_remote
             ]
-            for bin in paths:
+
+            for cmd in ["local", "remote"]:
+                bin = getattr(type, "gencode_" + cmd)
+
                 if os.path.isfile(bin):
-                    # omit "gen" from gencode and use it for output base
-                    outfile=os.path.join(self.path.object_dir(cdist_object), 
-                        os.path.basename(bin)[3:])
+                    outfile = getattr(cdist_object, "code_" + cmd)
 
                     outfile_fd = open(outfile, "w")
 
@@ -157,6 +158,7 @@ class ConfigInstall:
                         # Add header and make executable - identically to 0o700
                         os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
 
+                        # FIXME: use new interface
                         # Mark object as changed
                         open(os.path.join(self.path.object_dir(cdist_object), "changed"), "w").close()
 
