@@ -31,7 +31,8 @@ log = logging.getLogger(__name__)
 
 DOT_CDIST = '.cdist'
 
-
+# FIXME: i should not have to care about prefix directory, local, remote and such.
+#  I know what my internals look like, the outside is none of my business.
 class Object(object):
     """Represents a cdist object.
 
@@ -63,6 +64,21 @@ class Object(object):
         return base_dir
 
     @classmethod
+    def remote_base_dir():
+        """Return the absolute path to the top level directory where objects
+        are kept on the remote/target host.
+
+        Requires the environment variable '__cdist_remote_out_dir' to be set.
+
+        """
+        try:
+            return os.path.join(
+                os.environ['__cdist_remote_out_dir'],
+                'object',
+            )
+        except KeyError as e:
+            raise cdist.MissingEnvironmentVariableError(e.args[0])
+
     def list_objects(cls):
         """Return a list of object instances"""
         for object_name in cls.list_object_names():
@@ -123,6 +139,19 @@ class Object(object):
             os.mkdir(path)
         return path
 
+    # FIXME: prefix directory should not leak into me
+    @property
+    def remote_path(self):
+        return os.path.join(
+            self.remote_base_dir(),
+            self.name,
+            DOT_CDIST
+        )
+    @property
+    def remote_code_remote(self):
+        return os.path.join(self.remote_path, "code-remote")
+
+
     ### requirements
     @property
     def requirements(self):
@@ -175,18 +204,7 @@ class Object(object):
                 pass
     ### /changed
 
-    # FIXME: implement other properties/methods 
 
-    # FIXME: check following methods: implement or revoke / delete
-    # FIXME: Object
-    def get_object_id_from_object(self, cdist_object):
-        """Returns everything but the first part (i.e. object_id) of an object"""
-        return os.sep.join(cdist_object.split(os.sep)[1:])
-
-    # FIXME: Object
-    def object_dir(self, cdist_object):
-        """Returns the full path to the object (including .cdist)"""
-        return os.path.join(self.object_base_dir, cdist_object, DOT_CDIST)
 
     # FIXME: Object
     def remote_object_dir(self, cdist_object):
