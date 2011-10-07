@@ -6,13 +6,6 @@ Object:
 
    path_remote
 
-Type:
-   explorer_dir
-   remote_explorer_dir
-
-   explorer_remote_dir
-
-
 GlobalExplorer:
    out_path: local path into which the output is written
 
