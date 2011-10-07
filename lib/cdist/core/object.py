@@ -195,4 +195,41 @@ class Object(object):
         return [os.path.join(self.object_dir(cdist_object), "code-local"),
                   os.path.join(self.object_dir(cdist_object), "code-remote")]
 
+    # Stays here
+    def list_object_paths(self, starting_point):
+        """Return list of paths of existing objects"""
+        object_paths = []
+        
+        for content in os.listdir(starting_point):
+            full_path = os.path.join(starting_point, content)
+            if os.path.isdir(full_path):
+                object_paths.extend(self.list_object_paths(starting_point = full_path))
+                
+            # Directory contains .cdist -> is an object
+            if content == DOT_CDIST:
+                object_paths.append(starting_point)
+                
+        return object_paths
+
+    # Stays here
+    def list_objects(self):
+        """Return list of existing objects"""
+        
+        objects = []
+        if os.path.isdir(self.object_base_dir):
+            object_paths = self.list_object_paths(self.object_base_dir)
+            
+            for path in object_paths:
+                objects.append(os.path.relpath(path, self.object_base_dir))
+                
+        return objects
+
+    # FIXME: object
+    def type_explorer_output_dir(self, cdist_object):
+        """Returns and creates dir of the output for a type explorer"""
+        dir = os.path.join(self.object_dir(cdist_object), "explorer")
+        if not os.path.isdir(dir):
+            os.mkdir(dir)
+
+        return dir
 

@@ -106,90 +106,27 @@ class Path:
         os.mkdir(self.global_explorer_out_dir)
         os.mkdir(self.bin_dir)
 
-
-    # Stays here
-    def list_types(self):
-        """Retuns list of types"""
-        return os.listdir(self.type_base_dir)
-
-    ###################################################################### 
-
-    # FIXME: belongs to here - clearify remote*
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
         cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
 
-    # FIXME: belongs to here - clearify remote*
     def remove_remote_dir(self, destination):
         cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
 
-    # FIXME: belongs to here - clearify remote*
+    # FIXME: To Copy
     def transfer_dir(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
         self.remove_remote_dir(destination)
         cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
             ["-r", source, self.target_host + ":" + destination])
 
-    # FIXME: belongs to here - clearify remote*
+    # FIXME: To Copy
     def transfer_file(self, source, destination):
         """Transfer file"""
         cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
             [source, self.target_host + ":" + destination])
 
-    # FIXME: Explorer or stays
-    def global_explorer_output_path(self, explorer):
-        """Returns path of the output for a global explorer"""
-        return os.path.join(self.global_explorer_out_dir, explorer)
-
-    # FIXME: object
-    def type_explorer_output_dir(self, cdist_object):
-        """Returns and creates dir of the output for a type explorer"""
-        dir = os.path.join(self.object_dir(cdist_object), "explorer")
-        if not os.path.isdir(dir):
-            os.mkdir(dir)
-
-        return dir
-
-    # FIXME Stays here / Explorer?
-    def remote_global_explorer_path(self, explorer):
-        """Returns path to the remote explorer"""
-        return os.path.join(REMOTE_GLOBAL_EXPLORER_DIR, explorer)
-
-    # FIXME: stays here
-    def list_global_explorers(self):
-        """Return list of available explorers"""
-        return os.listdir(self.global_explorer_dir)
-
-    # Stays here
-    def list_object_paths(self, starting_point):
-        """Return list of paths of existing objects"""
-        object_paths = []
-
-        for content in os.listdir(starting_point):
-            full_path = os.path.join(starting_point, content)
-            if os.path.isdir(full_path):
-                object_paths.extend(self.list_object_paths(starting_point = full_path))
-
-            # Directory contains .cdist -> is an object
-            if content == DOT_CDIST:
-                object_paths.append(starting_point)
-
-        return object_paths
-
-    # Stays here
-    def list_objects(self):
-        """Return list of existing objects"""
-
-        objects = []
-        if os.path.isdir(self.object_base_dir):
-            object_paths = self.list_object_paths(self.object_base_dir)
-
-            for path in object_paths:
-                objects.append(os.path.relpath(path, self.object_base_dir))
-
-        return objects
-
-    # Stays here
+    # FIXME Move into configinstall
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
         # Create base path before using mkdir -p
@@ -199,13 +136,13 @@ class Path:
         self.transfer_dir(self.object_parameter_dir(cdist_object), 
                                 self.remote_object_parameter_dir(cdist_object))
 
-    # Stays here
+    # FIXME Move into configinstall
     def transfer_global_explorers(self):
         """Transfer the global explorers"""
         self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
         self.transfer_dir(self.global_explorer_dir, REMOTE_GLOBAL_EXPLORER_DIR)
 
-    # Stays here - FIXME: adjust to type code, loop over types!
+    # FIXME Move into configinstall
     def transfer_type_explorers(self, type):
         """Transfer explorers of a type, but only once"""
         if type.transferred_explorers:
