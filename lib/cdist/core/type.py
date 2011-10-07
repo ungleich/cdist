@@ -25,8 +25,6 @@ import os
 import cdist
 
 
-# FIXME: i should not have to care about prefix directory, local, remote and such.
-#  I know what my internals look like, the outside is none of my business.
 class Type(object):
     """Represents a cdist type.
 
@@ -36,93 +34,37 @@ class Type(object):
 
     """
 
-    @staticmethod
-    def base_dir():
-        """Return the absolute path to the top level directory where types
-        are defined.
-
-        Requires the environment variable '__cdist_base_dir' to be set.
-
-        """
-        try:
-            return os.path.join(
-                os.environ['__cdist_base_dir'],
-                'conf',
-                'type'
-            )
-        except KeyError as e:
-            raise cdist.MissingEnvironmentVariableError(e.args[0])
-
-    @staticmethod
-    def remote_base_dir():
-        """Return the absolute path to the top level directory where types
-        are kept on the remote/target host.
-
-        Requires the environment variable '__cdist_remote_base_dir' to be set.
-
-        """
-        try:
-            return os.path.join(
-                os.environ['__cdist_remote_base_dir'],
-                'conf',
-                'type'
-            )
-        except KeyError as e:
-            raise cdist.MissingEnvironmentVariableError(e.args[0])
-
     @classmethod
-    def list_types(cls):
+    def list_types(cls, base_path):
         """Return a list of type instances"""
-        for type_name in cls.list_type_names():
-            yield cls(type_name)
+        for name in cls.list_type_names(base_path):
+            yield cls(base_path, name)
 
     @classmethod
-    def list_type_names(cls):
+    def list_type_names(cls, base_path):
         """Return a list of type names"""
-        return os.listdir(cls.base_dir())
+        return os.listdir(base_path)
 
 
-    def __init__(self, name):
+    def __init__(self, base_path, name):
+        self._base_path = base_path
         self.name = name
+        self.manifest_path = os.path.join(self.name, "manifest")
+        self.explorer_path = os.path.join(self.name, "explorer")
+        self.manifest_path = os.path.join(self.name, "manifest")
+        self.gencode_local_path = os.path.join(self.name, "gencode-local")
+        self.gencode_remote_path = os.path.join(self.name, "gencode-remote")
+        self.manifest_path = os.path.join(self.name, "manifest")
+
+        self.transferred_explorers = False
+
         self.__explorers = None
         self.__required_parameters = None
         self.__optional_parameters = None
 
-        self.transferred_explorers = False
 
     def __repr__(self):
-        return '<Type name=%s>' % self.name
-
-    @property
-    def path(self):
-        return os.path.join(
-            self.base_dir(),
-            self.name
-        ) 
-    # FIXME: prefix directory should not leak into me
-    @property
-    def remote_path(self):
-        return os.path.join(
-            self.remote_base_dir(),
-            self.name
-        ) 
-
-    # FIXME: probably wrong place for this
-    @property
-    def remote_explorer_dir(self):
-        return os.path.join(self.remote_path, "explorer")
-
-    @property
-    def manifest_path(self):
-        return os.path.join(self.path, "manifest")
-
-    @property
-    def gencode_local(self):
-        return os.path.join(self.path, "gencode-local")
-
-    @property
-    def gencode_remote(self):
-        return os.path.join(self.path, "gencode-remote")
+        return '<Type %s>' % self.name
 
     @property
     def is_singleton(self):
@@ -140,7 +82,7 @@ class Type(object):
         if not self.__explorers:
             try:
                 self.__explorers = os.listdir(os.path.join(self.path, "explorer"))
-            except EnvironmentError as e:
+            except EnvironmentError:
                 # error ignored
                 self.__explorers = []
         return self.__explorers
@@ -154,7 +96,7 @@ class Type(object):
                 with open(os.path.join(self.path, "parameter", "required")) as fd:
                     for line in fd:
                         parameters.append(line.strip())
-            except EnvironmentError as e:
+            except EnvironmentError:
                 # error ignored
                 pass
             finally:
@@ -170,7 +112,7 @@ class Type(object):
                 with open(os.path.join(self.path, "parameter", "optional")) as fd:
                     for line in fd:
                         parameters.append(line.strip())
-            except EnvironmentError as e:
+            except EnvironmentError:
                 # error ignored
                 pass
             finally:
