@@ -108,6 +108,13 @@ class Object(object):
             DOT_CDIST
         )
 
+    @property
+    def code(self):
+        return os.path.join(self.path, "code-local")
+
+    @property
+    def code_remote(self):
+        return os.path.join(self.path, "code-remote")
 
     ### requirements
     @property
