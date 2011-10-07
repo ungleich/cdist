@@ -60,6 +60,18 @@ class TypeTestCase(unittest.TestCase):
         base_path = fixtures
         cdist_type = cdist.core.Type(base_path, '__not_install')
         self.assertFalse(cdist_type.is_install)
+
+    def test_with_explorers(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__with_explorers')
+        self.assertEqual(cdist_type.explorers, ['whatever'])
+
+    def test_without_explorers(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__without_explorers')
+        self.assertEqual(cdist_type.explorers, [])
+
+
 '''
 suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
 
