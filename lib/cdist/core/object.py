@@ -109,7 +109,7 @@ class Object(object):
         )
 
     @property
-    def code(self):
+    def code_local(self):
         return os.path.join(self.path, "code-local")
 
     @property
