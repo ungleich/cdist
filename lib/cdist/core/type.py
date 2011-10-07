@@ -117,6 +117,14 @@ class Type(object):
         return os.path.join(self.path, "manifest")
 
     @property
+    def gencode(self):
+        return os.path.join(self.path, "gencode-local")
+
+    @property
+    def gencode_remote(self):
+        return os.path.join(self.path, "gencode-remote")
+
+    @property
     def is_singleton(self):
         """Check whether a type is a singleton."""
         return os.path.isfile(os.path.join(self.path, "singleton"))
