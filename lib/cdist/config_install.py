@@ -53,7 +53,7 @@ class ConfigInstall:
             debug=debug)
 
     def cleanup(self):
-        self.path.cleanup()
+        self.context.cleanup()
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
