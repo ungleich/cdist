@@ -70,45 +70,45 @@ class ConfigInstall:
                             type.manifest_path)
         
         log.debug("%s: Running %s", cdist_object.name, manifest)
-        if os.path.exists(manifest):
-            env = { "__object" :    os.path.join(self.context.cdist_object.path,
+        if os.path.exists(manifest_path):
+            env = { "__object" :    os.path.join(self.context.object_base_path,
+                                        cdist_object.path)
                     "__object_id":  cdist_object.object_id,
                     "__object_fq":  cdist_object.name,
-                    "__type":       type.path,
+                    "__type":       os.path.join(self.context.type_base_path,
+                                        type.path)
                     }
-            self.run_manifest(manifest, extra_env=env)
+            self.run_manifest(manifest_path, extra_env=env)
 
-    def run_manifest(self, manifest, extra_env=None):
+    def run_manifest(self, manifest_path, extra_env=None):
         """Run a manifest"""
-        log.debug("Running manifest %s, env=%s", manifest, extra_env)
+        log.debug("Running manifest %s, env=%s", manifest_path, extra_env)
         env = os.environ.copy()
         env['PATH'] = self.context.bin_path + ":" + env['PATH']
 
         # Information required in every manifest
         env['__target_host']            = self.target_host
-
-        # FIXME: __global == __cdist_out_path - duplication
         env['__global']                 = self.context.out_path
         
         # Submit debug flag to manifest, can be used by emulator and types
         if self.debug:
             env['__debug']                  = "yes"
 
-        # Required for recording source
-        env['__cdist_manifest']         = manifest
+        # Required for recording source in emulator
+        env['__cdist_manifest']         = manifest_path
 
-        # Required to find types
+        # Required to find types in emulator
         env['__cdist_type_base_path']    = type.path
 
         # Other environment stuff
         if extra_env:
             env.update(extra_env)
 
-        cdist.exec.shell_run_or_debug_fail(manifest, [manifest], env=env)
+        cdist.exec.shell_run_or_debug_fail(manifest_path, [manifest_path], env=env)
 
     def object_run(self, cdist_object):
         """Run gencode or code for an object"""
-        log.debug("Running %s from %s", mode, cdist_object)
+        log.debug("Running object %s", cdist_object)
 
         # Catch requirements, which re-call us
         if cdist_object.ran:
@@ -118,7 +118,7 @@ class ConfigInstall:
             
         for requirement in cdist_object.requirements:
             log.debug("Object %s requires %s", cdist_object, requirement)
-            self.object_run(requirement, mode=mode)
+            self.object_run(requirement)
 
         #
         # Setup env Variable:
@@ -126,17 +126,19 @@ class ConfigInstall:
         env = os.environ.copy()
         env['__target_host']    = self.target_host
         env['__global']         = self.context.out_path
-        env["__object"]         = cdist_object.path
+        env["__object"]         = os.path.join(self.context.object_base_path, cdist_object.path)
         env["__object_id"]      = cdist_object.object_id
         env["__object_fq"]      = cdist_object.name
         env["__type"]           = type.name
 
         # gencode
         for cmd in ["local", "remote"]:
-            bin = getattr(type, "gencode_" + cmd)
+            bin = os.path.join(self.context.type_base_path,
+                    getattr(type, "gencode_" + cmd))
 
             if os.path.isfile(bin):
-                outfile = getattr(cdist_object, "code_" + cmd)
+                outfile = os.path.join(self.context.object_base_path,
+                            getattr(cdist_object, "code_" + cmd))
 
                 outfile_fd = open(outfile, "w")
 
@@ -158,20 +160,19 @@ class ConfigInstall:
                     cdist_object.changed=True
 
         # code local
-        code_local = cdist_object.code_local
+        code_local = cdist_object.code_local_path
         if os.path.isfile(code_local):
             cdist.exec.run_or_fail([code_local])
 
         # code remote
-        local_remote_code   = cdist_object.code_remote
-        remote_remote_code  = cdist_object.remote_code_remote
+        local_remote_code   = cdist_object.code_remote_path
+        remote_remote_code  = cdist_object.remote_code_remote_path
         if os.path.isfile(local_remote_code):
             self.context.transfer_file(local_remote_code, remote_remote_code)
             cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
 
         cdist_object.ran = True
 
-    ### Cleaned / check functions: Round 1 :-) #################################
     def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""
 

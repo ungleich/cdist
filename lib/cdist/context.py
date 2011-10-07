@@ -106,10 +106,10 @@ class Context:
             shutil.rmtree(self.cache_path)
         shutil.move(self.base_path, self.cache_path)
 
-    def __init_env(self):
-        """Setup environment"""
-        os.environ['__cdist_out_path']   = self.out_path
-        os.environ['__cdist_base_path']  = self.base_path
+    #def __init_env(self):
+    #    """Setup environment"""
+    #    os.environ['__cdist_out_path']   = self.out_path
+    #    os.environ['__cdist_base_path']  = self.base_path
 
     def __init_out_paths(self):
         """Initialise output directory structure"""
