@@ -92,7 +92,6 @@ class Path:
         self.object_base_dir = os.path.join(self.out_dir, "object")
         self.bin_dir = os.path.join(self.out_dir, "bin")
 
-        os.environ['__cdist_out_dir'] = self.out_dir
 
         # List of type explorers transferred
         self.type_explorers_transferred = {}
@@ -115,6 +114,10 @@ class Path:
             shutil.rmtree(self.cache_dir)
         shutil.move(self.temp_dir, self.cache_dir)
 
+
+    def __init_env(self):
+        """Setup environment"""
+        os.environ['__cdist_out_dir'] = self.out_dir
 
     def __init_out_dirs(self):
         """Initialise output directory structure"""
