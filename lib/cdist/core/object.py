@@ -126,12 +126,12 @@ class Object(object):
     @property
     def changed(self):
         """Check whether the object has been changed."""
-        return os.path.isfile(os.path.join(self.path, "changed"))
+        return os.path.isfile(os.path.join(self.absolute_path, "changed"))
 
     @changed.setter
     def changed(self, value):
         """Change the objects changed status."""
-        path = os.path.join(self.path, "changed")
+        path = os.path.join(self.absolute_path, "changed")
         if value:
             open(path, "w").close()
         else:
@@ -147,12 +147,12 @@ class Object(object):
     @property
     def prepared(self):
         """Check whether the object has been prepared."""
-        return os.path.isfile(os.path.join(self.path, "prepared"))
+        return os.path.isfile(os.path.join(self.absolute_path, "prepared"))
 
     @prepared.setter
     def prepared(self, value):
         """Change the objects prepared status."""
-        path = os.path.join(self.path, "prepared")
+        path = os.path.join(self.absolute_path, "prepared")
         if value:
             open(path, "w").close()
         else:
@@ -168,12 +168,12 @@ class Object(object):
     @property
     def ran(self):
         """Check whether the object has been ran."""
-        return os.path.isfile(os.path.join(self.path, "ran"))
+        return os.path.isfile(os.path.join(self.absolute_path, "ran"))
 
     @ran.setter
     def ran(self, value):
         """Change the objects ran status."""
-        path = os.path.join(self.path, "ran")
+        path = os.path.join(self.absolute_path, "ran")
         if value:
             open(path, "w").close()
         else:
