@@ -1,14 +1,6 @@
 2.0.3:
 
 - fix emulator
-- introduce tests:
-   - does $require work?
-   - $whatever should fail if there is no global explorer directory
-   - emulator may only be called with __ as prefix - fail otherwise!
-
-- Create GlobalExplorer
-   
-- base_dir passing in config/config_install superseeded by __cdist_base_dir?
 
 --------------------------------------------------------------------------------
 
