@@ -52,7 +52,7 @@ class Type(object):
         # name is second argument
         name = args[1]
         if not name in cls._instances:
-            instance = super(Type, cls).__new__(cls, *args, **kwargs)
+            instance = super(Type, cls).__new__(cls)
             cls._instances[name] = instance
         return cls._instances[name]
 
