@@ -14,6 +14,8 @@ Type:
 
    explorer_remote_dir
 
+   type.manifest_path
+
 
 GlobalExplorer:
    out_path: local path into which the output is written
