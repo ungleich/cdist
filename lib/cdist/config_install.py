@@ -70,7 +70,7 @@ class ConfigInstall:
         log.debug("%s: Running %s", cdist_object.name, manifest)
         if os.path.exists(manifest_path):
             env = { "__object" :    os.path.join(self.context.object_base_path,
-                                        cdist_object.path)
+                                        cdist_object.path),
                     "__object_id":  cdist_object.object_id,
                     "__object_fq":  cdist_object.name,
                     "__type":       os.path.join(self.context.type_base_path,
@@ -213,16 +213,17 @@ class ConfigInstall:
         """Run global explorers"""
         log.info("Running global explorers")
 
-        src = cdist.core.GlobalExplorer.base_path
-        dst = cdist.core.GlobalExplorer.remote_base_path
+        src_path = cdist.context.global_explorer_path
+        dst_path = cdist.context.global_explorer_out_path
+        remote_dst_path = cdist.context.remote_global_explorer_path
 
-        self.context.transfer_path(src, dst)
+        self.context.transfer_path(src_path, remote_dst_path)
 
-        for explorer in cdist.core.GlobalExplorer.list_explorers():
-            output_fd = open(explorer.out_path, mode='w')
+        for explorer in os.listdir(src_path):
+            output_fd = open(os.path.join(dst_path, explorer), mode='w')
             cmd = []
-            cmd.append("__explorer=" + cdist.core.GlobalExplorer.remote_base_path)
-            cmd.append(explorer.remote_path)
+            cmd.append("__explorer=" + remote_dst_path)
+            cmd.append(os.path.join(src_path, explorer))
 
             cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()

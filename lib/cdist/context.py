@@ -47,11 +47,10 @@ class Context:
         if base_path:
             self.base_path = base_path
         else:
-            self.base_path = 
-                os.path.abspath(
-                    os.path.join(os.path.dirname(__file__),
-                        os.pardir,
-                        os.pardir))
+            self.base_path = os.path.abspath(
+                os.path.join(os.path.dirname(__file__),
+                    os.pardir,
+                    os.pardir))
         
 
         # Local input directories
@@ -70,7 +69,7 @@ class Context:
 
         # Local output directories
         if out_path:
-            self.out_path = out_path:
+            self.out_path = out_path
         else:
             self.out_path = os.path.join(tempfile.mkdtemp(), "out")
 
@@ -92,7 +91,6 @@ class Context:
         # Create directories
         self.__init_out_paths()
         self.__init_remote_paths()
-        self.__init_env()
 
     def cleanup(self):
         # Do not use in __del__:
@@ -105,11 +103,6 @@ class Context:
         if os.path.exists(self.cache_path):
             shutil.rmtree(self.cache_path)
         shutil.move(self.base_path, self.cache_path)
-
-    #def __init_env(self):
-    #    """Setup environment"""
-    #    os.environ['__cdist_out_path']   = self.out_path
-    #    os.environ['__cdist_base_path']  = self.base_path
 
     def __init_out_paths(self):
         """Initialise output directory structure"""
