@@ -1,7 +1,15 @@
 Object:
+   cdist_object.code_local_path
+   cdist_object.code_remote_path
+   cdist_object.remote_code_remote_path
+
+   cdist_object.parameter_path
+
+
 
 
 Type:
+   type.transferred_explorers
 
 
 GlobalExplorer:
@@ -14,3 +22,14 @@ GlobalExplorer:
    remote_path: remote path to explorer
 
    See config_install: run_global_explorers()
+
+Object/Type:
+   - rutern relative only
+   - Have accept absulet path on listing
+
+Tests needed:
+
+   - Fail if cache_dir from previous run cannot be deleted
+   - Fail if cache_dir cannot be created from current out_dir
+   - transfer_type_explorers: Explorers are not transferred twice
+   - transfer_type_explorers: No transfer tried if there are no type_explorers

@@ -31,60 +31,68 @@ log = logging.getLogger(__name__)
 import cdist.exec
 
 class Context:
-    """Storing context dependent information"""
+    """Storing context information"""
 
-    def __init__(self, target_host, initial_manifest=False, base_dir=False,
+    def __init__(self,
+        target_host,
+        initial_manifest=False,
+        base_path=False,
+        out_path=False,
+        remote_base_path=False,
         debug=False):
 
         self.target_host = target_host
 
         # Base and Temp Base 
-        if base_dir:
-            self.base_dir = base_dir
-        elif "__cdist_base_dir" in os.environ:
-            self.base_dir = os.environ['__cdist_base_dir']
+        if base_path:
+            self.base_path = base_path
         else:
-            self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
+            self.base_path = 
+                os.path.abspath(
+                    os.path.join(os.path.dirname(__file__),
+                        os.pardir,
+                        os.pardir))
+        
 
-        # Input directories
-        self.cache_dir              = os.path.join(self.base_dir, "cache", target_host)
-        self.conf_dir               = os.path.join(self.base_dir, "conf")
-        self.manifest_dir           = os.path.join(self.conf_dir, "manifest")
+        # Local input directories
+        self.cache_path              = os.path.join(self.base_path, "cache", target_host)
+        self.conf_path               = os.path.join(self.base_path, "conf")
 
-        # Probably unused paths
-        # self.global_explorer_dir    = os.path.join(self.conf_dir, "explorer")
-        # self.lib_dir                = os.path.join(self.base_dir, "lib")
-        # self.type_base_dir          = os.path.join(self.conf_dir, "type")
+        self.global_explorer_path    = os.path.join(self.conf_path, "explorer")
+        self.manifest_path           = os.path.join(self.conf_path, "manifest")
+        self.type_base_path          = os.path.join(self.conf_path, "type")
+        self.lib_path                = os.path.join(self.base_path, "lib")
 
-        # Mostly static, but can be overwritten on user demand
         if initial_manifest:
             self.initial_manifest = initial_manifest
         else:
-            self.initial_manifest = os.path.join(self.manifest_dir, "init")
+            self.initial_manifest = os.path.join(self.manifest_path, "init")
 
-        # Output directories
-        if "__cdist_out_dir" in os.environ:
-            self.out_dir = os.environ['__cdist_out_dir']
+        # Local output directories
+        if out_path:
+            self.out_path = out_path:
         else:
-            self.out_dir = os.path.join(tempfile.mkdtemp(), "out")
+            self.out_path = os.path.join(tempfile.mkdtemp(), "out")
 
-        self.global_explorer_out_dir = os.path.join(self.out_dir, "explorer")
-        self.object_base_dir = os.path.join(self.out_dir, "object")
-        self.bin_dir = os.path.join(self.out_dir, "bin")
+        self.bin_path                 = os.path.join(self.out_path, "bin")
+        self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
+        self.object_base_path         = os.path.join(self.out_path, "object")
 
         # Remote directories
-        if "__cdist_remote_base_dir" in os.environ:
-            self.remote_base_dir = os.environ['__cdist_remote_base_dir']
+        if remote_base_path:
+            self.remote_base_path = remote_base_path
         else:
-            self.remote_base_dir = "/var/lib/cdist"
+            self.remote_base_path = "/var/lib/cdist"
 
-        self.remote_conf_dir            = os.path.join(self.remote_base_dir, "conf")
-        self.remote_object_dir          = os.path.join(self.remote_base_dir, "object")
-        self.remote_type_dir            = os.path.join(self.remote_conf_dir, "type")
-        self.remote_global_explorer_dir = os.path.join(self.remote_conf_dir, "explorer")
+        self.remote_conf_path            = os.path.join(self.remote_base_path, "conf")
+        self.remote_object_path          = os.path.join(self.remote_base_path, "object")
+        self.remote_type_path            = os.path.join(self.remote_conf_path, "type")
+        self.remote_global_explorer_path = os.path.join(self.remote_conf_path, "explorer")
 
         # Create directories
-        self.__init_out_dirs()
+        self.__init_out_paths()
+
+        self.__init_env()
 
     def cleanup(self):
         # Do not use in __del__:
@@ -92,31 +100,32 @@ class Context:
         # "other globals referenced by the __del__() method may already have been deleted 
         # or in the process of being torn down (e.g. the import machinery shutting down)"
         #
-        log.debug("Saving" + self.base_dir + "to " + self.cache_dir)
+        log.debug("Saving" + self.base_path + "to " + self.cache_path)
         # Remove previous cache
-        if os.path.exists(self.cache_dir):
-            shutil.rmtree(self.cache_dir)
-        shutil.move(self.base_dir, self.cache_dir)
+        if os.path.exists(self.cache_path):
+            shutil.rmtree(self.cache_path)
+        shutil.move(self.base_path, self.cache_path)
 
-    def __init_env(self):
-        """Setup environment"""
-        os.environ['__cdist_out_dir'] = self.out_dir
+    #def __init_env(self):
+    #    """Setup environment"""
+    #    os.environ['__cdist_out_path']   = self.out_path
+    #    os.environ['__cdist_base_path']  = self.base_path
 
-    def __init_out_dirs(self):
+    def __init_out_paths(self):
         """Initialise output directory structure"""
 
         # Create base dir, if user supplied and not existing
-        if not os.path.isdir(self.base_dir):
-            os.mkdir(self.base_dir)
+        if not os.path.isdir(self.base_path):
+            os.mkdir(self.base_path)
             
-        os.mkdir(self.out_dir)
-        os.mkdir(self.global_explorer_out_dir)
-        os.mkdir(self.bin_dir)
+        os.mkdir(self.out_path)
+        os.mkdir(self.global_explorer_out_path)
+        os.mkdir(self.bin_path)
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
         cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
 
-    def remove_remote_dir(self, destination):
+    def remove_remote_path(self, destination):
         cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
 

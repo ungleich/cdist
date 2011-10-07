@@ -37,7 +37,7 @@ class ConfigInstall:
     """Cdist main class to hold arbitrary data"""
 
     def __init__(self, target_host, initial_manifest=False,
-        base_dir=False,
+        base_path=False,
         exec_path=sys.argv[0],
         debug=False):
 
@@ -48,63 +48,67 @@ class ConfigInstall:
         self.exec_path      = exec_path
 
         self.context = cdist.context.Context(self.target_host,
-            initial_manifest=initial_manifest, base_dir=base_dir,
+            initial_manifest=initial_manifest, base_path=base_path,
             debug=debug)
         
     def cleanup(self):
         self.path.cleanup()
 
+    def __init_env(self):
+        """Setup environment"""
+
     def run_initial_manifest(self):
         """Run the initial manifest"""
-        log.info("Running initial manifest %s", self.path.initial_manifest)
-        env = {  "__manifest" : self.path.manifest_dir }
-        self.run_manifest(self.path.initial_manifest, extra_env=env)
+        log.info("Running initial manifest %s", self.context.initial_manifest)
+        env = {  "__manifest" : self.context.manifest_path }
+        self.run_manifest(self.context.initial_manifest, extra_env=env)
 
     def run_type_manifest(self, cdist_object):
         """Run manifest for a specific object"""
         type = cdist_object.type
-        manifest = type.manifest_path
+        manifest_path = os.path.join(self.context.type_base_path,
+                            type.manifest_path)
         
         log.debug("%s: Running %s", cdist_object.name, manifest)
-        if os.path.exists(manifest):
-            env = { "__object" :    cdist_object.path,
+        if os.path.exists(manifest_path):
+            env = { "__object" :    os.path.join(self.context.object_base_path,
+                                        cdist_object.path)
                     "__object_id":  cdist_object.object_id,
                     "__object_fq":  cdist_object.name,
-                    "__type":       type.path,
+                    "__type":       os.path.join(self.context.type_base_path,
+                                        type.path)
                     }
-            self.run_manifest(manifest, extra_env=env)
+            self.run_manifest(manifest_path, extra_env=env)
 
-    def run_manifest(self, manifest, extra_env=None):
+    def run_manifest(self, manifest_path, extra_env=None):
         """Run a manifest"""
-        log.debug("Running manifest %s, env=%s", manifest, extra_env)
+        log.debug("Running manifest %s, env=%s", manifest_path, extra_env)
         env = os.environ.copy()
-        env['PATH'] = self.context.bin_dir + ":" + env['PATH']
+        env['PATH'] = self.context.bin_path + ":" + env['PATH']
 
         # Information required in every manifest
         env['__target_host']            = self.target_host
-
-        # FIXME: __global == __cdist_out_dir - duplication
-        env['__global']                 = self.context.out_dir
+        env['__global']                 = self.context.out_path
         
         # Submit debug flag to manifest, can be used by emulator and types
         if self.debug:
             env['__debug']                  = "yes"
 
-        # Required for recording source
-        env['__cdist_manifest']         = manifest
+        # Required for recording source in emulator
+        env['__cdist_manifest']         = manifest_path
 
-        # Required to find types
-        env['__cdist_type_base_dir']    = type.path
+        # Required to find types in emulator
+        env['__cdist_type_base_path']    = type.path
 
         # Other environment stuff
         if extra_env:
             env.update(extra_env)
 
-        cdist.exec.shell_run_or_debug_fail(manifest, [manifest], env=env)
+        cdist.exec.shell_run_or_debug_fail(manifest_path, [manifest_path], env=env)
 
     def object_run(self, cdist_object):
         """Run gencode or code for an object"""
-        log.debug("Running %s from %s", mode, cdist_object)
+        log.debug("Running object %s", cdist_object)
 
         # Catch requirements, which re-call us
         if cdist_object.ran:
@@ -114,25 +118,27 @@ class ConfigInstall:
             
         for requirement in cdist_object.requirements:
             log.debug("Object %s requires %s", cdist_object, requirement)
-            self.object_run(requirement, mode=mode)
+            self.object_run(requirement)
 
         #
         # Setup env Variable:
         #
         env = os.environ.copy()
         env['__target_host']    = self.target_host
-        env['__global']         = self.context.out_dir
-        env["__object"]         = cdist_object.path
+        env['__global']         = self.context.out_path
+        env["__object"]         = os.path.join(self.context.object_base_path, cdist_object.path)
         env["__object_id"]      = cdist_object.object_id
         env["__object_fq"]      = cdist_object.name
         env["__type"]           = type.name
 
         # gencode
         for cmd in ["local", "remote"]:
-            bin = getattr(type, "gencode_" + cmd)
+            bin = os.path.join(self.context.type_base_path,
+                    getattr(type, "gencode_" + cmd))
 
             if os.path.isfile(bin):
-                outfile = getattr(cdist_object, "code_" + cmd)
+                outfile = os.path.join(self.context.object_base_path,
+                            getattr(cdist_object, "code_" + cmd))
 
                 outfile_fd = open(outfile, "w")
 
@@ -154,30 +160,28 @@ class ConfigInstall:
                     cdist_object.changed=True
 
         # code local
-        code_local = cdist_object.code_local
+        code_local = cdist_object.code_local_path
         if os.path.isfile(code_local):
             cdist.exec.run_or_fail([code_local])
 
         # code remote
-        local_remote_code   = cdist_object.code_remote
-        remote_remote_code  = cdist_object.remote_code_remote
+        local_remote_code   = cdist_object.code_remote_path
+        remote_remote_code  = cdist_object.remote_code_remote_path
         if os.path.isfile(local_remote_code):
             self.context.transfer_file(local_remote_code, remote_remote_code)
             cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
 
         cdist_object.ran = True
 
-    ### Cleaned / check functions: Round 1 :-) #################################
     def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""
 
         type = cdist_object.type
-        # FIXME
-        self.path.transfer_type_explorers(type)
+        self.transfer_type_explorers(type)
 
         cmd = []
-        cmd.append("__explorer="        + self.context.remote_global_explorer_dir)
-        cmd.append("__type_explorer="   + type.explorer_remote_dir)
+        cmd.append("__explorer="        + self.context.remote_global_explorer_path)
+        cmd.append("__type_explorer="   + type.explorer_remote_path)
         cmd.append("__object="          + object.path_remote)
         cmd.append("__object_id="       + object.object_id)
         cmd.append("__object_fq="       + cdist_object)
@@ -187,8 +191,8 @@ class ConfigInstall:
 
         explorers = self.path.list_type_explorers(type)
         for explorer in explorers:
-            remote_cmd = cmd + [os.path.join(type.explorer_remote_dir, explorer)]
-            output = os.path.join(cdist_object.explorer_output_dir(), explorer)
+            remote_cmd = cmd + [os.path.join(type.explorer_remote_path, explorer)]
+            output = os.path.join(cdist_object.explorer_output_path(), explorer)
             output_fd = open(output, mode='w')
             log.debug("%s exploring %s using %s storing to %s", 
                             cdist_object, explorer, remote_cmd, output)
@@ -201,8 +205,9 @@ class ConfigInstall:
         """Link emulator to types"""
         src = os.path.abspath(self.exec_path)
         for type in cdist.core.Type.list_types():
-            log.debug("Linking emulator: %s to %s", source, destination)
-            dst = os.path.join(self.context.bin_dir, type.name)
+            dst = os.path.join(self.context.bin_path, type.name)
+            log.debug("Linking emulator: %s to %s", src, dst)
+
             # FIXME: handle exception / make it more beautiful
             os.symlink(src, dst)
 
@@ -210,15 +215,15 @@ class ConfigInstall:
         """Run global explorers"""
         log.info("Running global explorers")
 
-        src = cdist.core.GlobalExplorer.base_dir
-        dst = cdist.core.GlobalExplorer.remote_base_dir
+        src = cdist.core.GlobalExplorer.base_path
+        dst = cdist.core.GlobalExplorer.remote_base_path
 
-        self.context.transfer_dir(src, dst)
+        self.context.transfer_path(src, dst)
 
         for explorer in cdist.core.GlobalExplorer.list_explorers():
             output_fd = open(explorer.out_path, mode='w')
             cmd = []
-            cmd.append("__explorer=" + cdist.core.GlobalExplorer.remote_base_dir)
+            cmd.append("__explorer=" + cdist.core.GlobalExplorer.remote_base_path)
             cmd.append(explorer.remote_path)
 
             cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=True)
@@ -247,8 +252,8 @@ class ConfigInstall:
         """Ensure the base directories are cleaned up"""
         log.debug("Creating clean directory structure")
 
-        self.context.remove_remote_dir(self.context.remote_base_dir)
-        self.context.remote_mkdir(self.context.remote_base_dir)
+        self.context.remove_remote_path(self.context.remote_base_path)
+        self.context.remote_mkdir(self.context.remote_base_path)
         self.link_emulator()
     
     def stage_prepare(self):
@@ -259,7 +264,7 @@ class ConfigInstall:
         
         log.info("Running object manifests and type explorers")
 
-        log.debug("Searching for objects in " + cdist.core.Object.base_dir())
+        log.debug("Searching for objects in " + cdist.core.Object.base_path())
 
         # Continue process until no new objects are created anymore
         new_objects_created = True
@@ -279,20 +284,29 @@ class ConfigInstall:
     # FIXME Move into configinstall
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
+        local_path  = 
+            os.path.join(self.context.object_base_path,
+                cdist_object.parameter_path)
+        remote_path = 
+            os.path.join(self.context.remote_object_path,
+                cdist_object.parameter_path)
+
         # Create base path before using mkdir -p
-        self.remote_mkdir(self.remote_object_parameter_dir(cdist_object))
+        # FIXME: needed?
+        self.remote_mkdir(remote_path)
 
         # Synchronise parameter dir afterwards
-        self.transfer_dir(self.object_parameter_dir(cdist_object), 
-                                self.remote_object_parameter_dir(cdist_object))
+        self.transfer_path(local_path, remote_path)
 
-    # FIXME Move into configinstall
+
+####FIXED ######################################################################
+
     def transfer_global_explorers(self):
         """Transfer the global explorers"""
-        self.remote_mkdir(REMOTE_GLOBAL_EXPLORER_DIR)
-        self.transfer_dir(self.global_explorer_dir, REMOTE_GLOBAL_EXPLORER_DIR)
+        self.remote_mkdir(self.context.remote_global_explorer_path)
+        self.transfer_path(self.context.global_explorer_path, 
+            self.remote_global_explorer_path)
 
-    # FIXME Move into configinstall
     def transfer_type_explorers(self, type):
         """Transfer explorers of a type, but only once"""
         if type.transferred_explorers:
@@ -302,12 +316,13 @@ class ConfigInstall:
             # Do not retransfer
             type.transferred_explorers = True
 
-        # FIXME: Can be explorer_path or explorer_dir, I don't care.
-        src = type.explorer_path()
-        dst = type.remote_explorer_path()
+        explorers = type.explorers()
 
-        # Transfer if there is at least one explorer
-        if len(type.explorers) > 0:
+        if len(explorers) > 0:
+            rel_path = os.path.join(type.explorer_path(), explorer)
+            src = os.path.join(self.context.type_base_path, rel_path)
+            dst = os.path.join(self.context.remote_type_path, rel_path)
+
             # Ensure that the path exists
             self.remote_mkdir(dst)
-            self.transfer_dir(src, dst)
+            self.transfer_path(src, dst)
