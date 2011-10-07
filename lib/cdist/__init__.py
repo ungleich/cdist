@@ -22,6 +22,8 @@
 VERSION     = "2.0.3"
 DOT_CDIST   = ".cdist"
 
+import os
+
 class Error(Exception):
     """Base exception class for this project"""
     pass
