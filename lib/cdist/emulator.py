@@ -131,7 +131,7 @@ def run(argv):
 
     # Record requirements
     if "require" in os.environ:
-        requirements = os.environ['__require']
+        requirements = os.environ['require']
         log.debug(object_id + ":Writing requirements: " + requirements)
         require_fd = open(os.path.join(object_path, "require"), "a")
         require_fd.write(requirements.replace(" ","\n"))
