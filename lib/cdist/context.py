@@ -45,6 +45,7 @@ class Context:
             self.base_dir = os.environ['__cdist_base_dir']
         else:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
+        
 
         # Input directories
         self.cache_dir              = os.path.join(self.base_dir, "cache", target_host)
@@ -86,6 +87,8 @@ class Context:
         # Create directories
         self.__init_out_dirs()
 
+        self.__init_env()
+
     def cleanup(self):
         # Do not use in __del__:
         # http://docs.python.org/reference/datamodel.html#customization
@@ -100,7 +103,8 @@ class Context:
 
     def __init_env(self):
         """Setup environment"""
-        os.environ['__cdist_out_dir'] = self.out_dir
+        os.environ['__cdist_out_dir']   = self.out_dir
+        os.environ['__cdist_base_dir']  = self.base_dir
 
     def __init_out_dirs(self):
         """Initialise output directory structure"""
