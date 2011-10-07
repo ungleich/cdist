@@ -30,3 +30,5 @@ Tests needed:
    - does $require work?
    - $whatever should fail if there is no global explorer directory
    - emulator may only be called with __ as prefix - fail otherwise!
+
+   - ensure paths returned by object include dot-cdist
