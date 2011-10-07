@@ -25,10 +25,9 @@ import os
 import stat
 import sys
 
-import cdist.emulator
-import cdist.path
-
+import cdist.context
 import cdist.core
+import cdist.emulator
 
 log = logging.getLogger(__name__)
 
