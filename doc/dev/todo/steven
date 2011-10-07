@@ -1,16 +1,7 @@
 Object:
-   code_remote
-   code
-   gencode
-   gencode_remote
-
-   path_remote
-
-   explorer_out_dir
 
 
 Type:
-   type.manifest_path
 
 
 GlobalExplorer:
