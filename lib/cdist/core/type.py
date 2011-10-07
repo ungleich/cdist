@@ -63,7 +63,6 @@ class Type(object):
         self.absolute_path = os.path.join(self._base_path, self.path)
         self.manifest_path = os.path.join(self.name, "manifest")
         self.explorer_path = os.path.join(self.name, "explorer")
-        self.manifest_path = os.path.join(self.name, "manifest")
         self.gencode_local_path = os.path.join(self.name, "gencode-local")
         self.gencode_remote_path = os.path.join(self.name, "gencode-remote")
         self.manifest_path = os.path.join(self.name, "manifest")
