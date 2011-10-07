@@ -48,14 +48,12 @@ class ConfigInstall:
         self.exec_path      = exec_path
 
         self.context = cdist.context.Context(self.target_host,
-            initial_manifest=initial_manifest, base_path=base_path,
+            initial_manifest=initial_manifest,
+            base_path=base_path,
             debug=debug)
-        
+
     def cleanup(self):
         self.path.cleanup()
-
-    def __init_env(self):
-        """Setup environment"""
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
@@ -248,22 +246,15 @@ class ConfigInstall:
         self.deploy_to()
         self.cleanup()
 
-    def init_deploy(self):
-        """Ensure the base directories are cleaned up"""
-        log.debug("Creating clean directory structure")
+####FIXED ######################################################################
 
-        self.context.remove_remote_path(self.context.remote_base_path)
-        self.context.remote_mkdir(self.context.remote_base_path)
-        self.link_emulator()
-    
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
-        self.init_deploy()
+        self.link_emulator()
         self.run_global_explorers()
         self.run_initial_manifest()
         
         log.info("Running object manifests and type explorers")
-
         log.debug("Searching for objects in " + cdist.core.Object.base_path())
 
         # Continue process until no new objects are created anymore
@@ -281,21 +272,15 @@ class ConfigInstall:
                     cdist_object.prepared = True
                     new_objects_created = True
 
-    # FIXME Move into configinstall
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
-        local_path  = 
-            os.path.join(self.context.object_base_path,
-                cdist_object.parameter_path)
-        remote_path = 
-            os.path.join(self.context.remote_object_path,
-                cdist_object.parameter_path)
+        src  = os.path.join(self.context.object_base_path,
+            cdist_object.parameter_path)
+        dst = os.path.join(self.context.remote_object_path,
+            cdist_object.parameter_path)
 
         # Synchronise parameter dir afterwards
         self.transfer_path(local_path, remote_path)
-
-
-####FIXED ######################################################################
 
     def transfer_global_explorers(self):
         """Transfer the global explorers"""

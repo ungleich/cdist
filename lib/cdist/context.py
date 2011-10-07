@@ -91,7 +91,7 @@ class Context:
 
         # Create directories
         self.__init_out_paths()
-
+        self.__init_remote_paths()
         self.__init_env()
 
     def cleanup(self):
@@ -121,6 +121,12 @@ class Context:
         os.mkdir(self.out_path)
         os.mkdir(self.global_explorer_out_path)
         os.mkdir(self.bin_path)
+
+    def __init_remote_paths(self):
+        """Initialise remote directory structure"""
+
+        self.remove_remote_path(self.remote_base_path)
+        self.remote_mkdir(self.remote_base_path)
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
