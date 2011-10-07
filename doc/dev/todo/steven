@@ -1,0 +1,8 @@
+Object:
+   code_remote
+   code_local
+   gencode_local
+   gencode_remote
+
+Type:
+   explorer_path
