@@ -195,7 +195,7 @@ class ConfigInstall:
         self.transfer_object_parameter(cdist_object)
 
         for explorer in cdist_type.explorers:
-            remote_cmd = cmd + [os.path.join(self.context.type_base_path,
+            remote_cmd = cmd + [os.path.join(self.context.remote_base_path,
                 cdist_type.explorer_path, explorer)]
             output = os.path.join(self.context.object_base_path,
                         cdist_object.explorer_path, explorer)
