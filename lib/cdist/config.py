@@ -20,14 +20,7 @@
 #
 #
 
-import datetime
-import logging
-import os
-import sys
-
 import cdist.config_install
-
-log = logging.getLogger(__name__)
 
 class Config(cdist.config_install.ConfigInstall):
     pass
