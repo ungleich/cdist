@@ -114,11 +114,16 @@ def configinstall(args, mode):
 
     time_start = time.time()
 
+    # FIXME: do not overwrite, if set!
     os.environ['__remote_exec'] = "ssh -o User=root -q"
     os.environ['__remote_copy'] = "scp -o User=root -q"
 
     for host in args.host:
-        c = mode(host, initial_manifest=args.manifest, base_path=args.cdist_home, debug=args.debug)
+        c = mode(host,
+                initial_manifest=args.manifest,
+                base_path=args.cdist_home,
+                debug=args.debug,
+                parallel=True)
         if args.parallel:
             log.debug("Creating child process for %s", host)
             process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)
