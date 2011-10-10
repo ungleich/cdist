@@ -76,4 +76,7 @@ class ObjectTestCase(unittest.TestCase):
     def test_parameter_path(self):
         self.assertEqual(self.cdist_object.parameter_path, '__third/moon/.cdist/parameter')
 
+    def test_explorer_path(self):
+        self.assertEqual(self.cdist_object.explorer_path, '__third/moon/.cdist/explorer')
+
 #suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
