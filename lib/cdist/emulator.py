@@ -34,6 +34,7 @@ def run(argv):
     param_path      = os.path.join(type_path, "parameter")
     global_path     = os.environ['__global']
     object_source   = os.environ['__cdist_manifest']
+    target_host     = os.environ['__target_host']
 
     if '__debug' in os.environ:
         logging.root.setLevel(logging.DEBUG)
@@ -68,7 +69,7 @@ def run(argv):
             object_id = object_id[1:]
 
     # Prefix output by object_self
-    logformat = '%(levelname)s: ' + cdist_type + '/' + object_id + ': %(message)s'
+    logformat = '%(levelname)s: ' + target_host + ": " + cdist_type + '/' + object_id + ': %(message)s'
     logging.basicConfig(format=logformat)
 
     # FIXME: verify object id
@@ -103,7 +104,7 @@ def run(argv):
         value = getattr(args, param)
         if value:
             file = os.path.join(param_out_dir, param)
-            log.debug(file + "<-" + param + " = " + value)
+            log.debug(file + " = " + value)
 
             # Already exists, verify all parameter are the same
             if object_exists:

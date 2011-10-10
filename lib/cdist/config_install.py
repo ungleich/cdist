@@ -150,7 +150,6 @@ class ConfigInstall:
 
         return True
 
-
     def run_initial_manifest(self):
         """Run the initial manifest"""
         log.info("Running initial manifest %s", self.initial_manifest)
