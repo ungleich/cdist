@@ -165,3 +165,50 @@ class DirectoryDictProperty(DirectoryDict):
 
     def __delete__(self, obj):
         raise AttributeError("can't delete attribute")
+
+
+class FileBooleanProperty(object):
+    def __init__(self, path):
+        """
+        :param path: string or callable
+
+        Usage:
+
+        class Foo(object):
+            changed = FileBoolean(lambda obj: os.path.join(obj.absolute_path, 'changed'))
+            other_boolean = FileBoolean('/tmp/other_boolean')
+
+            def __init__(self):
+                self.absolute_path = '/tmp/foo_boolean'
+
+        """
+        self._path = path
+
+    def _get_path(self, *args, **kwargs):
+        path = self._path
+        if callable(path):
+            return path(*args, **kwargs)
+        if not os.path.isabs(path):
+            raise AbsolutePathRequiredError(path)
+        return path
+
+    # Descriptor Protocol
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self.__class__
+        path = self._get_path(obj)
+        return os.path.isfile(path)
+
+    def __set__(self, obj, value):
+        path = self._get_path(obj)
+        if value:
+            open(path, "w").close()
+        else:
+            try:
+                os.remove(path)
+            except EnvironmentError:
+                # ignore
+                pass
+
+    def __delete__(self, obj):
+        raise AttributeError("can't delete attribute")
