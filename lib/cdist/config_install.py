@@ -24,6 +24,7 @@ import logging
 import os
 import stat
 import sys
+import time
 
 import cdist.context
 import cdist.core
@@ -194,7 +195,7 @@ class ConfigInstall:
         self.transfer_object_parameter(cdist_object)
 
         for explorer in cdist_type.explorers:
-            remote_cmd = cmd + [os.path.join(self.context.type_base_path,
+            remote_cmd = cmd + [os.path.join(self.context.remote_base_path,
                 cdist_type.explorer_path, explorer)]
             output = os.path.join(self.context.object_base_path,
                         cdist_object.explorer_path, explorer)
@@ -230,7 +231,7 @@ class ConfigInstall:
             output_fd = open(os.path.join(dst_path, explorer), mode='w')
             cmd = []
             cmd.append("__explorer=" + remote_dst_path)
-            cmd.append(os.path.join(src_path, explorer))
+            cmd.append(os.path.join(remote_dst_path, explorer))
 
             cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()
@@ -252,8 +253,11 @@ class ConfigInstall:
 
     def deploy_and_cleanup(self):
         """Do what is most often done: deploy & cleanup"""
+        start_time = time.time()
         self.deploy_to()
         self.cleanup()
+        log.info("Finished run of %s in %s seconds", 
+            self.target_host, time.time() - start_time)
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""

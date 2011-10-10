@@ -21,11 +21,11 @@
 #
 
 import argparse
-import datetime
 import logging
 import os
 import re
 import sys
+import time
 
 log = logging.getLogger("cdist")
 
@@ -112,7 +112,7 @@ def configinstall(args, mode):
     """Configure or install remote system"""
     process = {}
 
-    time_start = datetime.datetime.now()
+    time_start = time.time()
 
     os.environ['__remote_exec'] = "ssh -o User=root -q"
     os.environ['__remote_copy'] = "scp -o User=root -q"
@@ -133,16 +133,14 @@ def configinstall(args, mode):
 
     # FIXME: error handling for parallel mode!
 
-    time_end = datetime.datetime.now()
+    time_end = time.time()
     log.info("Total processing time for %s host(s): %s", len(args.host),
-                (time_end - time_start).total_seconds())
+                (time_end - time_start))
 
 
 if __name__ == "__main__":
     try:
         logging.basicConfig(format='%(levelname)s: %(message)s')
-
-        time_start = datetime.datetime.now()
 
         if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
             import cdist.emulator
@@ -153,13 +151,6 @@ if __name__ == "__main__":
             import cdist.install
 
             commandline()
-
-        time_end = datetime.datetime.now()
-        duration = time_end - time_start
-        # FIXME: move into runner
-        # log.info("Finished run of %s in %s seconds", self.target_host,
-        #     duration.total_seconds())
-        log.info("Finished run in %s seconds", duration.total_seconds())
 
     except KeyboardInterrupt:
         sys.exit(0)
