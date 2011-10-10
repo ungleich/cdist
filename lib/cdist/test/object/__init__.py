@@ -60,6 +60,7 @@ class ObjectTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.cdist_object.changed = False
+        self.cdist_object.prepared = False
 
     def test_name(self):
         self.assertEqual(self.cdist_object.name, '__third/moon')
@@ -100,4 +101,10 @@ class ObjectTestCase(unittest.TestCase):
         self.cdist_object.changed = True
         self.assertTrue(self.cdist_object.changed)
 
+    def test_prepared(self):
+        self.assertFalse(self.cdist_object.prepared)
+
+    def test_prepared_after_changing(self):
+        self.cdist_object.prepared = True
+        self.assertTrue(self.cdist_object.prepared)
 #suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
