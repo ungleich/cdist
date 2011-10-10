@@ -82,4 +82,8 @@ class ObjectTestCase(unittest.TestCase):
     def test_explorer_path(self):
         self.assertEqual(self.cdist_object.explorer_path, '__third/moon/.cdist/explorer')
 
+    def test_parameters(self):
+        expected_parameters = {'planet': 'Saturn', 'name': 'Prometheus'}
+        self.assertEqual(self.cdist_object.parameters, expected_parameters)
+
 #suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
