@@ -40,17 +40,17 @@ class FileList(collections.MutableSequence):
     def __init__(self, path, initial=None):
         if not os.path.isabs(path):
             raise AbsolutePathRequiredError(path)
-        self._path = path
+        self.path = path
         if initial:
             # delete existing file
-            os.unlink(self._path)
+            os.unlink(self.path)
             for i in initial:
                 self.append(i)
 
     def __read(self):
         lines = []
         try:
-            with open(self._path) as fd:
+            with open(self.path) as fd:
                 for line in fd:
                     lines.append(line.rstrip('\n'))
         except EnvironmentError as e:
@@ -60,7 +60,7 @@ class FileList(collections.MutableSequence):
 
     def __write(self, lines):
         try:
-            with open(self._path, 'w') as fd:
+            with open(self.path, 'w') as fd:
                 for line in lines:
                     fd.write(str(line) + '\n')
         except EnvironmentError as e:
@@ -98,14 +98,43 @@ class FileList(collections.MutableSequence):
 
 
 class FileListProperty(FileList):
+
+    def __init__(self, path):
+        """
+        :param path: string or callable
+
+        Usage:
+
+        class Foo(object):
+            parameters = DirectoryDictProperty(lambda obj: os.path.join(obj.absolute_path, 'parameter'))
+            other_dict = DirectoryDictProperty('/tmp/folder')
+
+            def __init__(self):
+                self.absolute_path = '/tmp/foo'
+
+        """
+        self.path = None
+        self.__path = path
+
+    def _set_path(self, *args, **kwargs):
+        if self.path is None:
+            path = self.__path
+            if callable(path):
+                path = path(*args, **kwargs)
+            if not os.path.isabs(path):
+                raise AbsolutePathRequiredError(path)
+            self.path = path
+
     # Descriptor Protocol
     def __get__(self, obj, objtype=None):
         if obj is None:
             return self.__class__
+        self._set_path(obj)
         return self
 
     def __set__(self, obj, value):
-        os.unlink(self._path)
+        self._set_path(obj)
+        os.unlink(self.path)
         for item in value:
             self.append(item)
 
@@ -117,13 +146,13 @@ class DirectoryDict(collections.MutableMapping):
     """A dict that stores it's state in a directory.
 
     """
-    def __init__(self, path, dict=None, **kwargs):
+    def __init__(self, path, initial=None, **kwargs):
         if not os.path.isabs(path):
             raise AbsolutePathRequiredError(path)
-        self._path = path
-        if dict is not None:
-            self.update(dict)
-        if len(kwargs):
+        self.path = path
+        if initial is not None:
+            self.update(initial)
+        if kwargs:
             self.update(kwargs)
 
     def __repr__(self):
@@ -131,36 +160,65 @@ class DirectoryDict(collections.MutableMapping):
 
     def __getitem__(self, key):
         try:
-            with open(os.path.join(self._path, key), "r") as fd:
+            with open(os.path.join(self.path, key), "r") as fd:
                 return fd.read().rstrip('\n')
         except EnvironmentError:
             raise KeyError(key)
 
     def __setitem__(self, key, value):
-        with open(os.path.join(self._path, key), "w") as fd:
+        with open(os.path.join(self.path, key), "w") as fd:
             fd.write(str(value))        
 
     def __delitem__(self, key):
-        os.remove(os.path.join(self._path, key))
+        os.remove(os.path.join(self.path, key))
 
     def __iter__(self):
-        return iter(os.listdir(self._path))
+        return iter(os.listdir(self.path))
 
     def __len__(self):
-        return len(os.listdir(self._path))
+        return len(os.listdir(self.path))
 
 
 class DirectoryDictProperty(DirectoryDict):
+
+    def __init__(self, path):
+        """
+        :param path: string or callable
+
+        Usage:
+
+        class Foo(object):
+            parameters = DirectoryDictProperty(lambda obj: os.path.join(obj.absolute_path, 'parameter'))
+            other_dict = DirectoryDictProperty('/tmp/folder')
+
+            def __init__(self):
+                self.absolute_path = '/tmp/foo'
+
+        """
+        self.path = None
+        self.__path = path
+
+    def _set_path(self, *args, **kwargs):
+        if self.path is None:
+            path = self.__path
+            if callable(path):
+                path = path(*args, **kwargs)
+            if not os.path.isabs(path):
+                raise AbsolutePathRequiredError(path)
+            self.path = path
+
     # Descriptor Protocol
     def __get__(self, obj, objtype=None):
         if obj is None:
             return self.__class__
+        self._set_path(obj)
         return self
 
     def __set__(self, obj, value):
-        for name in self.keys():
-            del self[name]
+        self._set_path(obj)
         if value is not None:
+            for name in self.keys():
+                del self[name]
             self.update(value)
 
     def __delete__(self, obj):
