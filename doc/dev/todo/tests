@@ -26,3 +26,4 @@ Tests needed:
       run_type_explorer(): ensure environment is setup correctly
 
 
+      all: check that messages of all functions contain target_host in string
