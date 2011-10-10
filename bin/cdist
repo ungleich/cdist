@@ -122,8 +122,7 @@ def configinstall(args, mode):
         c = mode(host,
                 initial_manifest=args.manifest,
                 base_path=args.cdist_home,
-                debug=args.debug,
-                parallel=True)
+                debug=args.debug)
         if args.parallel:
             log.debug("Creating child process for %s", host)
             process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)
