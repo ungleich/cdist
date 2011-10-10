@@ -53,6 +53,9 @@ class ConfigInstall:
         # Required for testing
         self.exec_path      = exec_path
 
+        # Configure logging
+        log.addFilter(self)
+
         # Base and Temp Base 
         if base_path:
             self.base_path = base_path
@@ -106,6 +109,7 @@ class ConfigInstall:
         self.__init_remote_paths()
 
 
+
     def __init_remote_paths(self):
         """Initialise remote directory structure"""
         self.remove_remote_path(self.remote_base_path)
@@ -139,8 +143,13 @@ class ConfigInstall:
             shutil.rmtree(self.cache_path)
         shutil.move(self.out_path, self.cache_path)
 
-    def logfilter(self):
-        """Add hostname to logs"""
+    def filter(self, record):
+        """Add hostname to logs via logging Filter"""
+
+        record.msg = self.target_host + ": " + record.msg
+
+        return True
+
 
     def run_initial_manifest(self):
         """Run the initial manifest"""
