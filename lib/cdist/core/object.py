@@ -98,3 +98,4 @@ class Object(object):
     changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
     prepared = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "prepared"))
     ran = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "ran"))
+    source = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
