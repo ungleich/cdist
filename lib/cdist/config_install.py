@@ -38,13 +38,21 @@ CODE_HEADER = "#!/bin/sh -e\n"
 class ConfigInstall:
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, target_host,
-        initial_manifest=False, base_path=False, debug=False):
+    def __init__(self, 
+        target_host,
+        initial_manifest=False,
+        base_path=False,
+        exec_path=sys.argv[0],
+        debug=False):
 
         self.target_host    = target_host
+        # FIXME: should this be setup here?
+        os.environ['__target_host'] = self.target_host
 
         self.debug          = debug
-        self.exec_path      = sys.argv[0]
+
+        # Required for testing
+        self.exec_path      = exec_path
 
         # Base and Temp Base 
         if base_path:
@@ -54,7 +62,6 @@ class ConfigInstall:
                 os.path.join(os.path.dirname(__file__),
                     os.pardir,
                     os.pardir))
-
 
         # Local input
         self.cache_path             = os.path.join(self.base_path, "cache", 
