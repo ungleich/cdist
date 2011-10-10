@@ -86,4 +86,8 @@ class ObjectTestCase(unittest.TestCase):
         expected_parameters = {'planet': 'Saturn', 'name': 'Prometheus'}
         self.assertEqual(self.cdist_object.parameters, expected_parameters)
 
+    def test_requirements(self):
+        expected = []
+        self.assertEqual(list(self.cdist_object.requirements), expected)
+
 #suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
