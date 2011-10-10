@@ -61,6 +61,9 @@ class ObjectTestCase(unittest.TestCase):
     def test_name(self):
         self.assertEqual(self.cdist_object.name, '__third/moon')
 
+    def test_object_id(self):
+        self.assertEqual(self.cdist_object.object_id, 'moon')
+
     def test_path(self):
         self.assertEqual(self.cdist_object.path, '__third/moon/.cdist')
 
