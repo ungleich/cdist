@@ -80,6 +80,10 @@ class Object(object):
     def __repr__(self):
         return '<Object %s>' % self.name
 
+    def __eq__(self, other):
+        """define equality as 'attributes are the same'"""
+        return self.__dict__ == other.__dict__
+
     @property
     def explorer_path(self):
         # create absolute path
