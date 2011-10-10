@@ -114,7 +114,7 @@ class Object(object):
     @property
     def parameters(self):
         if not self.__parameters:
-            self.__parameters = cdist.core.property.DirectoryDict(os.path.join(self.path, "parameter"))
+            self.__parameters = cdist.core.property.DirectoryDict(os.path.join(self.absolute_path, "parameter"))
         return self.__parameters
 
     @parameters.setter
@@ -122,7 +122,7 @@ class Object(object):
         if isinstance(value, cdist.core.property.DirectoryDict):
             self.__parameters = value
         else:
-            self.__parameters = cdist.core.property.DirectoryDict(os.path.join(self.path, "parameter"), value)
+            self.__parameters = cdist.core.property.DirectoryDict(os.path.join(self.absolute_path, "parameter"), value)
     ### /parameters
 
 
