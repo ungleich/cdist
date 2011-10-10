@@ -25,11 +25,21 @@ import collections
 import cdist
 
 
+class AbsolutePathRequiredError(cdist.Error):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return 'Absolute path required, got: %s' % self.path
+
+
 class FileList(collections.MutableSequence):
     """A list that stores it's state in a file.
 
     """
     def __init__(self, path, initial=None):
+        if not os.path.isabs(path):
+            raise AbsolutePathRequiredError(path)
         self._path = path
         if initial:
             # delete existing file
@@ -108,6 +118,8 @@ class DirectoryDict(collections.MutableMapping):
 
     """
     def __init__(self, path, dict=None, **kwargs):
+        if not os.path.isabs(path):
+            raise AbsolutePathRequiredError(path)
         self._path = path
         if dict is not None:
             self.update(dict)
