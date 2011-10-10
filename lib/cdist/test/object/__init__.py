@@ -58,6 +58,9 @@ class ObjectTestCase(unittest.TestCase):
         self.cdist_type = cdist.core.Type(type_base_path, '__third')
         self.cdist_object = cdist.core.Object(self.cdist_type, object_base_path, 'moon') 
 
+    def tearDown(self):
+        self.cdist_object.changed = False
+
     def test_name(self):
         self.assertEqual(self.cdist_object.name, '__third/moon')
 
@@ -89,5 +92,12 @@ class ObjectTestCase(unittest.TestCase):
     def test_requirements(self):
         expected = []
         self.assertEqual(list(self.cdist_object.requirements), expected)
+
+    def test_changed(self):
+        self.assertFalse(self.cdist_object.changed)
+
+    def test_changed_after_changing(self):
+        self.cdist_object.changed = True
+        self.assertTrue(self.cdist_object.changed)
 
 #suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
