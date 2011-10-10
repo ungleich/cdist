@@ -52,10 +52,28 @@ class ObjectClassTestCase(unittest.TestCase):
         self.assertEqual(objects, objects_expected)
 
 
-'''
-suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
+class ObjectTestCase(unittest.TestCase):
 
-def suite():
-    tests = []
-    return unittest.TestSuite(map(ObjectTestCase, tests))
-'''
+    def setUp(self):
+        self.cdist_type = cdist.core.Type(type_base_path, '__third')
+        self.cdist_object = cdist.core.Object(self.cdist_type, object_base_path, 'moon') 
+
+    def test_name(self):
+        self.assertEqual(self.cdist_object.name, '__third/moon')
+
+    def test_path(self):
+        self.assertEqual(self.cdist_object.path, '__third/moon/.cdist')
+
+    def test_absolute_path(self):
+        self.assertEqual(self.cdist_object.absolute_path, os.path.join(object_base_path, '__third/moon/.cdist'))
+
+    def test_code_local_path(self):
+        self.assertEqual(self.cdist_object.code_local_path, '__third/moon/.cdist/code-local')
+
+    def test_code_remote_path(self):
+        self.assertEqual(self.cdist_object.code_remote_path, '__third/moon/.cdist/code-remote')
+
+    def test_parameter_path(self):
+        self.assertEqual(self.cdist_object.parameter_path, '__third/moon/.cdist/parameter')
+
+#suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
