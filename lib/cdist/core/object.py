@@ -25,14 +25,14 @@ import os
 import collections
 
 import cdist
-import cdist.core.property
+import cdist.core
+from cdist.util import fsproperty
 
 log = logging.getLogger(__name__)
 
 DOT_CDIST = '.cdist'
 
-# FIXME: i should not have to care about prefix directory, local, remote and such.
-#  I know what my internals look like, the outside is none of my business.
+
 class Object(object):
     """Represents a cdist object.
 
@@ -93,97 +93,8 @@ class Object(object):
         # return relative path
         return os.path.join(self.path, "explorer")
 
-
-    ### requirements
-    @property
-    def requirements(self):
-        if not self.__requirements:
-            self.__requirements = cdist.core.property.FileList(os.path.join(self.absolute_path, "require"))
-        return self.__requirements
-
-    @requirements.setter
-    def requirements(self, value):
-        if isinstance(value, cdist.core.property.FileList):
-            self.__requirements = value
-        else:
-            self.__requirements = cdist.core.property.FileList(os.path.join(self.absolute_path, "require"), value)
-    ### /requirements
-
-
-    ### parameters
-    @property
-    def parameters(self):
-        if not self.__parameters:
-            self.__parameters = cdist.core.property.DirectoryDict(os.path.join(self.absolute_path, "parameter"))
-        return self.__parameters
-
-    @parameters.setter
-    def parameters(self, value):
-        if isinstance(value, cdist.core.property.DirectoryDict):
-            self.__parameters = value
-        else:
-            self.__parameters = cdist.core.property.DirectoryDict(os.path.join(self.absolute_path, "parameter"), value)
-    ### /parameters
-
-
-    ### changed
-    @property
-    def changed(self):
-        """Check whether the object has been changed."""
-        return os.path.isfile(os.path.join(self.absolute_path, "changed"))
-
-    @changed.setter
-    def changed(self, value):
-        """Change the objects changed status."""
-        path = os.path.join(self.absolute_path, "changed")
-        if value:
-            open(path, "w").close()
-        else:
-            try:
-                os.remove(path)
-            except EnvironmentError:
-                # ignore
-                pass
-    ### /changed
-
-
-    ### prepared
-    @property
-    def prepared(self):
-        """Check whether the object has been prepared."""
-        return os.path.isfile(os.path.join(self.absolute_path, "prepared"))
-
-    @prepared.setter
-    def prepared(self, value):
-        """Change the objects prepared status."""
-        path = os.path.join(self.absolute_path, "prepared")
-        if value:
-            open(path, "w").close()
-        else:
-            try:
-                os.remove(path)
-            except EnvironmentError:
-                # ignore
-                pass
-    ### /prepared
-
-
-    ### ran
-    @property
-    def ran(self):
-        """Check whether the object has been ran."""
-        return os.path.isfile(os.path.join(self.absolute_path, "ran"))
-
-    @ran.setter
-    def ran(self, value):
-        """Change the objects ran status."""
-        path = os.path.join(self.absolute_path, "ran")
-        if value:
-            open(path, "w").close()
-        else:
-            try:
-                os.remove(path)
-            except EnvironmentError:
-                # ignore
-                pass
-    ### /ran
+    requirements = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'require'))
+    parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.absolute_path, 'parameter'))
+    changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
+    prepared = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "prepared"))
+    ran = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "ran"))
