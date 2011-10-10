@@ -98,7 +98,7 @@ class Object(object):
     @property
     def requirements(self):
         if not self.__requirements:
-            self.__requirements = cdist.core.property.FileList(os.path.join(self.path, "require"))
+            self.__requirements = cdist.core.property.FileList(os.path.join(self.absolute_path, "require"))
         return self.__requirements
 
     @requirements.setter
@@ -106,7 +106,7 @@ class Object(object):
         if isinstance(value, cdist.core.property.FileList):
             self.__requirements = value
         else:
-            self.__requirements = cdist.core.property.FileList(os.path.join(self.path, "require"), value)
+            self.__requirements = cdist.core.property.FileList(os.path.join(self.absolute_path, "require"), value)
     ### /requirements
 
 
