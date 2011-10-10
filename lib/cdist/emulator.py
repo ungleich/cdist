@@ -36,10 +36,28 @@ def run(argv):
     object_source   = os.environ['__cdist_manifest']
     target_host     = os.environ['__target_host']
 
+    # Logsetup - FIXME: add object_fq as soon as setup!
+    #id = target_host + ": " + cdist_type + '/' + object_id 
+    id = target_host + ": "
+    # logformat = '%(levelname)s: ' + target_host + ": " + cdist_type + '/' + object_id + ': %(message)s'
+    logformat = '%(levelname)s: ' + id + ': %(message)s'
+    logging.basicConfig(format=logformat)
+
     if '__debug' in os.environ:
         logging.root.setLevel(logging.DEBUG)
     else:
-        logging.basicConfig(level=logging.INFO)
+        logging.root.setLevel(logging.INFO)
+
+
+    if '__install' in os.environ:
+        install = True
+    else:
+        install = False
+
+    if install:
+        if not os.path.isfile(os.path.join(type_path, "install")):
+            log.debug("Running in install mode, ignoring non install type")
+            return True
 
     parser = argparse.ArgumentParser(add_help=False)
 
@@ -68,9 +86,6 @@ def run(argv):
         if object_id[0] == '/':
             object_id = object_id[1:]
 
-    # Prefix output by object_self
-    logformat = '%(levelname)s: ' + target_host + ": " + cdist_type + '/' + object_id + ': %(message)s'
-    logging.basicConfig(format=logformat)
 
     # FIXME: verify object id
     log.debug(args)
@@ -134,11 +149,13 @@ def run(argv):
     if "require" in os.environ:
         requirements = os.environ['require']
         log.debug(object_id + ":Writing requirements: " + requirements)
+        # FIXME: handle exception
         require_fd = open(os.path.join(object_path, "require"), "a")
         require_fd.write(requirements.replace(" ","\n"))
         require_fd.close()
 
     # Record / Append source
+    # FIXME: handle exception
     source_fd = open(os.path.join(object_path, "source"), "a")
     source_fd.writelines(object_source)
     source_fd.close()
