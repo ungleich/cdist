@@ -23,6 +23,7 @@
 import logging
 import os
 import stat
+import shutil
 import sys
 import tempfile
 import time
@@ -46,8 +47,6 @@ class ConfigInstall:
         debug=False):
 
         self.target_host    = target_host
-        # FIXME: should this be setup here?
-        os.environ['__target_host'] = self.target_host
 
         self.debug          = debug
 
@@ -92,11 +91,15 @@ class ConfigInstall:
             self.remote_base_path = os.environ['__cdist_remote_out_dir']
         else:
             self.remote_base_path = "/var/lib/cdist"
+
         self.remote_conf_path            = os.path.join(self.remote_base_path, "conf")
         self.remote_object_path          = os.path.join(self.remote_base_path, "object")
 
         self.remote_type_path            = os.path.join(self.remote_conf_path, "type")
         self.remote_global_explorer_path = os.path.join(self.remote_conf_path, "explorer")
+
+        # Setup env to be used by others
+        self.__init_env()
 
         # Create directories
         self.__init_local_paths()
@@ -119,6 +122,10 @@ class ConfigInstall:
         os.mkdir(self.out_path)
         os.mkdir(self.global_explorer_out_path)
         os.mkdir(self.bin_path)
+
+    def __init_env(self):
+        """Environment usable for other stuff"""
+        os.environ['__target_host'] = self.target_host
 
     def cleanup(self):
         # Do not use in __del__:
@@ -274,7 +281,7 @@ class ConfigInstall:
         self.transfer_object_parameter(cdist_object)
 
         for explorer in cdist_type.explorers:
-            remote_cmd = cmd + [os.path.join(self.remote_base_path,
+            remote_cmd = cmd + [os.path.join(self.remote_type_path,
                 cdist_type.explorer_path, explorer)]
             output = os.path.join(self.object_base_path,
                         cdist_object.explorer_path, explorer)
@@ -385,6 +392,7 @@ class ConfigInstall:
             log.debug("Skipping retransfer for explorers of %s", cdist_type)
             return
         else:
+            log.debug("Ensure no retransfer for %s", cdist_type)
             # Do not retransfer
             cdist_type.transferred_explorers = True
 
@@ -401,7 +409,6 @@ class ConfigInstall:
             # but remote_mkdir uses -p to fix this
             self.remote_mkdir(dst)
             self.transfer_path(src, dst)
-
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
