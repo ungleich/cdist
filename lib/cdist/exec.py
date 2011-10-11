@@ -23,75 +23,79 @@ import logging
 import os
 import subprocess
 
-log = logging.getLogger(__name__)
-
 import cdist
 
-class ExecWrapper(object):
-    def __init__(self, remote_exec, remote_copy, target_host):
+log = logging.getLogger(__name__)
+
+
+class Wrapper(object):
+    def __init__(self, target_host, remote_exec, remote_copy):
+        self.target_host = target_host
         self.remote_exec = remote_exec
-
-def shell_run_or_debug_fail(script, *args, remote_prefix=False, **kargs):
-    # Manually execute /bin/sh, because sh -e does what we want
-    # and sh -c -e does not exit if /bin/false called
-    args[0][:0] = [ "/bin/sh", "-e" ]
-
-    if remote_prefix:
-        remote_prefix = os.environ['__remote_exec'].split()
-        remote_prefix.append(os.environ['__target_host'])
-        args[0][:0] = remote_prefix
-
-    log.debug("Shell exec cmd: %s", args)
-
-    if 'env' in kargs:
-        log.debug("Shell exec env: %s", kargs['env'])
-
-    try:
-        subprocess.check_call(*args, **kargs)
-    except subprocess.CalledProcessError:
-        log.error("Code that raised the error:\n")
-
-        if remote_prefix:
-            run_or_fail(["cat", script], remote_prefix=remote_prefix)
-
-        else:
-            try:
-                script_fd = open(script)
-                print(script_fd.read())
-                script_fd.close()
-            except IOError as error:
-                raise cdist.Error(str(error))
-
-        raise cdist.Error("Command failed (shell): " + " ".join(*args))
-    except OSError as error:
-        raise cdist.Error(" ".join(*args) + ": " + error.args[1])
-
-def run_or_fail(*args, remote_prefix=False, **kargs):
-    if remote_prefix:
-        remote_prefix = os.environ['__remote_exec'].split()
-        remote_prefix.append(os.environ['__target_host'])
-        args[0][:0] = remote_prefix
-
-    log.debug("Exec: " + " ".join(*args))
-    try:
-        subprocess.check_call(*args, **kargs)
-    except subprocess.CalledProcessError:
-        raise cdist.Error("Command failed: " + " ".join(*args))
-    except OSError as error:
-        raise cdist.Error(" ".join(*args) + ": " + error.args[1])
-
-
+        self.remote_copy = remote_copy
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
-        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
+        self.run_or_fail(["mkdir", "-p", directory], remote=True)
 
     def remove_remote_path(self, destination):
         """Ensure path on remote side vanished"""
-        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
+        self.run_or_fail(["rm", "-rf",  destination], remote=True)
 
     def transfer_path(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
         self.remove_remote_path(destination)
-        cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
+        self.run_or_fail(os.environ['__remote_copy'].split() +
             ["-r", source, self.target_host + ":" + destination])
+
+    def shell_run_or_debug_fail(self, script, *args, remote=False, **kargs):
+        # Manually execute /bin/sh, because sh -e does what we want
+        # and sh -c -e does not exit if /bin/false called
+        args[0][:0] = [ "/bin/sh", "-e" ]
+
+        if remote:
+            remote_prefix = self.remote_exec.split()
+            remote_prefix.append(self.target_host)
+            args[0][:0] = remote_prefix
+
+        log.debug("Shell exec cmd: %s", args)
+
+        if 'env' in kargs:
+            log.debug("Shell exec env: %s", kargs['env'])
+
+        try:
+            subprocess.check_call(*args, **kargs)
+        except subprocess.CalledProcessError:
+            log.error("Code that raised the error:\n")
+
+            if remote:
+                self.run_or_fail(["cat", script], remote=remote)
+
+            else:
+                try:
+                    script_fd = open(script)
+                    print(script_fd.read())
+                    script_fd.close()
+                except IOError as error:
+                    raise cdist.Error(str(error))
+
+            raise cdist.Error("Command failed (shell): " + " ".join(*args))
+        except OSError as error:
+            raise cdist.Error(" ".join(*args) + ": " + error.args[1])
+
+    def run_or_fail(self, *args, remote=False, **kargs):
+        if remote:
+            remote_prefix = self.remote_exec.split()
+            remote_prefix.append(self.target_host)
+            args[0][:0] = remote_prefix
+
+        log.debug("Exec: " + " ".join(*args))
+        try:
+            subprocess.check_call(*args, **kargs)
+        except subprocess.CalledProcessError:
+            raise cdist.Error("Command failed: " + " ".join(*args))
+        except OSError as error:
+            raise cdist.Error(" ".join(*args) + ": " + error.args[1])
+
+
+
