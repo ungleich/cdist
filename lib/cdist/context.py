@@ -47,7 +47,7 @@ class Context:
         self.exec_path      = exec_path
 
         # Context logging
-        self.log = logging.getLogger(__name__)
+        self.log = logging.getLogger(self.target_host)
         self.log.addFilter(self)
 
         # Base and Temp Base 
