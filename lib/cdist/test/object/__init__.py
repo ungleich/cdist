@@ -92,6 +92,19 @@ class ObjectTestCase(unittest.TestCase):
         expected_parameters = {'planet': 'Saturn', 'name': 'Prometheus'}
         self.assertEqual(self.cdist_object.parameters, expected_parameters)
 
+    def test_explorers(self):
+        self.assertEqual(self.cdist_object.explorers, {})
+
+    def test_explorers_after_changing(self):
+        expected = {'first': 'foo', 'second': 'bar'}
+        # when set, written to file
+        self.cdist_object.explorers = expected
+        # when accessed, read from file
+        self.assertEqual(self.cdist_object.explorers, expected)
+        # remove dynamically created folder
+        self.cdist_object.explorers = {}
+        os.rmdir(os.path.join(self.cdist_object.base_path, self.cdist_object.explorer_path))
+
     def test_requirements(self):
         expected = []
         self.assertEqual(list(self.cdist_object.requirements), expected)
