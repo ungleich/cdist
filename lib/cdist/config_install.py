@@ -192,6 +192,13 @@ class ConfigInstall:
 
         cdist.exec.shell_run_or_debug_fail(manifest_path, [manifest_path], env=env)
 
+    def object_prepare(self, cdist_object):
+        """Prepare object: Run type explorer + manifest"""
+        log.debug("Preparing object: " + cdist_object.name)
+        self.run_type_explorer(cdist_object)
+        self.run_type_manifest(cdist_object)
+        cdist_object.prepared = True
+
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
         log.debug("Running object %s", cdist_object)
@@ -294,7 +301,6 @@ class ConfigInstall:
             cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()
 
-
     def link_emulator(self):
         """Link emulator to types"""
         src = os.path.abspath(self.exec_path)
@@ -302,7 +308,7 @@ class ConfigInstall:
             dst = os.path.join(self.bin_path, cdist_type.name)
             log.debug("Linking emulator: %s to %s", src, dst)
 
-            # FIXME: handle exception / make it more beautiful
+            # FIXME: handle exception / make it more beautiful / Steven: raise except :-)
             os.symlink(src, dst)
 
     def run_global_explorers(self):
@@ -323,15 +329,6 @@ class ConfigInstall:
 
             cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()
-
-
-    def stage_run(self):
-        """The final (and real) step of deployment"""
-        log.info("Generating and executing code")
-        for cdist_object in cdist.core.Object.list_objects(self.object_base_path,
-                                                           self.type_base_path):
-            log.debug("Run object: %s", cdist_object)
-            self.object_run(cdist_object)
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
@@ -365,11 +362,16 @@ class ConfigInstall:
                     log.debug("Skipping rerun of object %s", cdist_object)
                     continue
                 else:
-                    log.debug("Preparing object: " + cdist_object.name)
-                    self.run_type_explorer(cdist_object)
-                    self.run_type_manifest(cdist_object)
-                    cdist_object.prepared = True
+                    self.object_prepare(cdist_object)
                     new_objects_created = True
+
+    def stage_run(self):
+        """The final (and real) step of deployment"""
+        log.info("Generating and executing code")
+        for cdist_object in cdist.core.Object.list_objects(self.object_base_path,
+                                                           self.type_base_path):
+            log.debug("Run object: %s", cdist_object)
+            self.object_run(cdist_object)
 
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
