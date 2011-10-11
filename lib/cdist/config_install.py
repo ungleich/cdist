@@ -47,7 +47,7 @@ class ConfigInstall(object):
             remote_copy=self.context.remote_copy)
 
         self.explorer = cdist.explorer.Explorer(self.context)
-        self.manifest = cdist.manifest.Mamifest()
+        #self.manifest = cdist.manifest.Mamifest()
 
         self.log = logging.getLogger(self.context.target_host)
 
@@ -72,20 +72,20 @@ class ConfigInstall(object):
             os.mkdir(self.context.base_path)
             
         # FIXME: raise more beautiful exception / Steven: handle exception
-        os.mkdir(self.out_path)
+        os.mkdir(self.context.out_path)
         os.mkdir(self.global_explorer_out_path)
-        os.mkdir(self.bin_path)
+        os.mkdir(self.context.bin_path)
 
     # FIXME: remove this function, only expose ENV
     # explicitly!
     def __init_env(self):
         """Environment usable for other stuff"""
         os.environ['__target_host'] = self.context.target_host
-        if self.debug:
+        if self.context.debug:
             os.environ['__debug'] = "yes"
 
     def cleanup(self):
-        log.debug("Saving " + self.out_path + " to " + self.cache_path)
+        log.debug("Saving " + self.context.out_path + " to " + self.context.cache_path)
         if os.path.exists(self.context.cache_path):
             shutil.rmtree(self.context.cache_path)
         shutil.move(self.context.out_path, self.context.cache_path)
@@ -116,7 +116,7 @@ class ConfigInstall(object):
         #
         env = os.environ.copy()
         env['__target_host']    = self.context.target_host
-        env['__global']         = self.out_path
+        env['__global']         = self.context.out_path
         env["__object"]         = os.path.join(self.object_base_path, cdist_object.path)
         env["__object_id"]      = cdist_object.object_id
         env["__object_fq"]      = cdist_object.name
@@ -162,16 +162,16 @@ class ConfigInstall(object):
         remote_remote_code  = os.path.join(self.remote_object_path,
             cdist_object.code_remote_path)
         if os.path.isfile(local_remote_code):
-            self.transfer_path(local_remote_code, remote_remote_code)
+            self.context.transfer_path(local_remote_code, remote_remote_code)
             cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
 
         cdist_object.ran = True
 
     def link_emulator(self):
         """Link emulator to types"""
-        src = os.path.abspath(self.exec_path)
+        src = os.path.abspath(self.context.exec_path)
         for cdist_type in cdist.core.Type.list_types(self.type_base_path):
-            dst = os.path.join(self.bin_path, cdist_type.name)
+            dst = os.path.join(self.context.bin_path, cdist_type.name)
             log.debug("Linking emulator: %s to %s", src, dst)
 
             # FIXME: handle exception / make it more beautiful / Steven: raise except :-)
