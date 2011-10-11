@@ -30,7 +30,6 @@ import time
 
 import cdist.core
 import cdist.exec
-import cdist.emulator
 
 log = logging.getLogger(__name__)
 
