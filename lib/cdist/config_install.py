@@ -29,26 +29,15 @@ import tempfile
 import time
 
 import cdist.core
+import cdist.context
 import cdist.exec
 
-CODE_HEADER = "#!/bin/sh -e\n"
-
-class ConfigInstall:
+class ConfigInstall(object):
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, 
-        target_host,
-        initial_manifest=False,
-        base_path=False,
-        exec_path=sys.argv[0],
-        debug=False):
+    def __init__(self, context): 
 
-        self.context = cdist.context.Context(
-            target_host=target_host,
-            initial_manifest=initial_manifest,
-            base_path=base_path,
-            exec_path=sys.argv[0],
-            debug=debug)
+        self.context = context
 
         self.exec_wrapper   = cdist.exec.Wrapper(
             targe_host = self.target_host,
@@ -70,9 +59,9 @@ class ConfigInstall:
 
     def __init_remote_paths(self):
         """Initialise remote directory structure"""
-        self.remove_remote_path(self.context.remote_base_path)
-        self.remote_mkdir(self.context.remote_base_path)
-        self.remote_mkdir(self.context.remote_conf_path)
+        self.exec_wrapper.remove_remote_path(self.context.remote_base_path)
+        self.exec_wrapper.remote_mkdir(self.context.remote_base_path)
+        self.exec_wrapper.remote_mkdir(self.context.remote_conf_path)
 
     def __init_local_paths(self):
         """Initialise local directory structure"""
@@ -95,7 +84,10 @@ class ConfigInstall:
             os.environ['__debug'] = "yes"
 
     def cleanup(self):
-        self.context.cleanup()
+        log.debug("Saving " + self.out_path + " to " + self.cache_path)
+        if os.path.exists(self.context.cache_path):
+            shutil.rmtree(self.context.cache_path)
+        shutil.move(self.context.out_path, self.context.cache_path)
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
