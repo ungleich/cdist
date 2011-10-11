@@ -102,3 +102,13 @@ class Object(object):
     def exists(self):
         """Checks wether this cdist object exists on the file systems."""
         return os.path.exists(self.absolute_path)
+
+    def create(self):
+        """Create this cdist object on the filesystem.
+        """
+        try:
+            os.makedirs(self.absolute_path, exist_ok=False)
+            absolute_parameter_path = os.path.join(self.base_path, self.parameter_path)
+            os.makedirs(absolute_parameter_path, exist_ok=False)
+        except EnvironmentError as error:
+            raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
