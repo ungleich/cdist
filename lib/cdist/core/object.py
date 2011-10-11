@@ -81,6 +81,7 @@ class Object(object):
         """define equality as 'attributes are the same'"""
         return self.__dict__ == other.__dict__
 
+    # FIXME: still needed?
     @property
     def explorer_path(self):
         """Create and return the relative path to this objects explorers"""
@@ -93,6 +94,7 @@ class Object(object):
 
     requirements = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'require'))
     parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.absolute_path, 'parameter'))
+    explorers = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.explorer_path))
     changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
     prepared = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "prepared"))
     ran = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "ran"))
