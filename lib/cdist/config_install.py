@@ -270,6 +270,33 @@ class ConfigInstall:
         cdist_object.ran = True
 
     def run_type_explorer(self, cdist_object):
+
+    def run_type_explorer(self, cdist_object, remote_global_explorer_path, remote_type_path, remote_object_path, scp-hints, ssh-hints, object_base_path):
+
+    def __init__(self, remote_global_explorer_path, remote_type_path, remote_object_path, exec-hint, object_base_path, global_explorer_out_path):
+
+    def __init__(self, remote_global_explorer_path, remote_type_path, remote_object_path, exec-hint):
+
+    def run_type_explorer(self, cdist_object)
+
+        self.value = .,..
+        return value
+
+    def run_global_explorer(self)
+
+    def __init__(self, remote_global_explorer_path, remote_type_path, remote_object_path, exec-hint):
+        == 1x
+
+
+
+
+    run_type_explorer()
+    self.instance.value[obej
+    
+    c = ConfigInstall("foo")
+    c.remote_global_explorer_path = "moo"
+
+    def run_type_explorer(self, cdist_object)
         """Run type specific explorers for objects"""
 
         cdist_type = cdist_object.type
@@ -301,6 +328,8 @@ class ConfigInstall:
             cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()
 
+        return outputs
+
     def link_emulator(self):
         """Link emulator to types"""
         src = os.path.abspath(self.exec_path)
@@ -310,6 +339,8 @@ class ConfigInstall:
 
             # FIXME: handle exception / make it more beautiful / Steven: raise except :-)
             os.symlink(src, dst)
+
+    def run_global_explorers(src_path, dst_path, remote_dst_path):
 
     def run_global_explorers(self):
         """Run global explorers"""
@@ -413,17 +444,3 @@ class ConfigInstall:
             # but remote_mkdir uses -p to fix this
             self.remote_mkdir(dst)
             self.transfer_path(src, dst)
-
-    def remote_mkdir(self, directory):
-        """Create directory on remote side"""
-        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
-
-    def remove_remote_path(self, destination):
-        """Ensure path on remote side vanished"""
-        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
-
-    def transfer_path(self, source, destination):
-        """Transfer directory and previously delete the remote destination"""
-        self.remove_remote_path(destination)
-        cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
-            ["-r", source, self.target_host + ":" + destination])
