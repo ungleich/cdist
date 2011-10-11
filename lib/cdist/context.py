@@ -22,24 +22,24 @@
 
 import logging
 import os
+import sys
+import tempfile
 #import stat
 #import shutil
-#import sys
-#import tempfile
 #import time
 #
 #import cdist.core
 #import cdist.exec
 
-class Context:
+class Context(object):
     """Hold information about current context"""
 
-    def __init__(self, 
+    def __init__(self,
         target_host,
         initial_manifest=False,
         base_path=False,
         exec_path=sys.argv[0],
-        debug):
+        debug=False):
 
         self.target_host    = target_host
 
@@ -52,8 +52,8 @@ class Context:
 
         # Base and Temp Base 
         self.base_path = (base_path or
-            self.base_path = os.path.abspath(os.path.join(
-                os.path.dirname(__file__), os.pardir, os.pardir))
+            os.path.abspath(os.path.join(os.path.dirname(__file__),
+                os.pardir, os.pardir)))
 
         # Local input
         self.cache_path             = os.path.join(self.base_path, "cache", 
@@ -71,8 +71,11 @@ class Context:
         # Local output
         if '__cdist_out_dir' in os.environ:
             self.out_path = os.environ['__cdist_out_dir']
+            self.temp_dir = None
         else:
-            self.out_path = os.path.join(tempfile.mkdtemp(), "out")
+            self.temp_dir = tempfile.mkdtemp()
+            self.out_path = os.path.join(self.temp_dir, "out")
+
         self.bin_path                 = os.path.join(self.out_path, "bin")
         self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
         self.object_base_path         = os.path.join(self.out_path, "object")
@@ -100,17 +103,9 @@ class Context:
             self.remote_copy = "scp -o User=root -q"
 
     def cleanup(self):
-        # Do not use in __del__:
-        # http://docs.python.org/reference/datamodel.html#customization
-        # "other globals referenced by the __del__() method may already have been deleted 
-        # or in the process of being torn down (e.g. the import machinery shutting down)"
-        #
-        log.debug("Saving " + self.out_path + " to " + self.cache_path)
-        # FIXME: raise more beautiful exception / Steven: handle exception
-        # Remove previous cache
-        if os.path.exists(self.cache_path):
-            shutil.rmtree(self.cache_path)
-        shutil.move(self.out_path, self.cache_path)
+        """Remove temp stuff"""
+        if self.temp_dir:
+            shutil.rmtree(self.temp_dir)
 
     def filter(self, record):
         """Add hostname to logs via logging Filter"""
