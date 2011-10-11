@@ -49,20 +49,16 @@ class ConfigInstall:
 
         self.debug          = debug
 
-        # Required for testing
+        # Only required for testing
         self.exec_path      = exec_path
 
         # Configure logging
         log.addFilter(self)
 
         # Base and Temp Base 
-        if base_path:
-            self.base_path = base_path
-        else:
-            self.base_path = os.path.abspath(
-                os.path.join(os.path.dirname(__file__),
-                    os.pardir,
-                    os.pardir))
+        self.base_path = (base_path or
+            self.base_path = os.path.abspath(os.path.join(
+                os.path.dirname(__file__), os.pardir, os.pardir))
 
         # Local input
         self.cache_path             = os.path.join(self.base_path, "cache", 
@@ -74,10 +70,8 @@ class ConfigInstall:
         self.type_base_path         = os.path.join(self.conf_path, "type")
         self.lib_path               = os.path.join(self.base_path, "lib")
 
-        if initial_manifest:
-            self.initial_manifest = initial_manifest
-        else:
-            self.initial_manifest = os.path.join(self.manifest_path, "init")
+        self.initial_manifest = (initial_manifest or
+            os.path.join(self.manifest_path, "init"))
 
         # Local output
         if '__cdist_out_dir' in os.environ:
@@ -108,7 +102,6 @@ class ConfigInstall:
         self.__init_remote_paths()
 
 
-
     def __init_remote_paths(self):
         """Initialise remote directory structure"""
         self.remove_remote_path(self.remote_base_path)
@@ -122,6 +115,7 @@ class ConfigInstall:
         if not os.path.isdir(self.base_path):
             os.mkdir(self.base_path)
             
+        # FIXME: raise more beautiful exception / Steven: handle exception
         os.mkdir(self.out_path)
         os.mkdir(self.global_explorer_out_path)
         os.mkdir(self.bin_path)
@@ -129,6 +123,9 @@ class ConfigInstall:
     def __init_env(self):
         """Environment usable for other stuff"""
         os.environ['__target_host'] = self.target_host
+        if self.debug:
+            os.environ['__debug'] = "yes"
+
 
     def cleanup(self):
         # Do not use in __del__:
@@ -137,6 +134,7 @@ class ConfigInstall:
         # or in the process of being torn down (e.g. the import machinery shutting down)"
         #
         log.debug("Saving " + self.out_path + " to " + self.cache_path)
+        # FIXME: raise more beautiful exception / Steven: handle exception
         # Remove previous cache
         if os.path.exists(self.cache_path):
             shutil.rmtree(self.cache_path)
@@ -182,10 +180,6 @@ class ConfigInstall:
         env['__target_host']            = self.target_host
         env['__global']                 = self.out_path
         
-        # Submit debug flag to manifest, can be used by emulator and types
-        if self.debug:
-            env['__debug']              = "yes"
-
         # Required for recording source in emulator
         env['__cdist_manifest']         = manifest_path
 

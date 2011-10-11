@@ -1,11 +1,43 @@
-Tests needed:
+Tests needed for config_install:
 
-   - Fail if cache_dir from previous run cannot be deleted
-   - Fail if cache_dir cannot be created from current out_dir
-   - transfer_type_explorers: Explorers are not transferred twice
-   - transfer_type_explorers: No transfer tried if there are no type_explorers
+   __init__():
+      - sets up env: __target_host
 
-   - does $require work?
+   cleanup()
+      - Fail if cache_dir from previous run cannot be deleted
+      - Fail if cache_dir cannot be created from current out_dir
+
+   filter()
+      - ensure logformat is changed: target host is prefixed:
+         LOGLEVEL: target_host: MESSAGE
+
+   run_initial_manifest():
+      - parameter is actually used (from __init__)
+      - ensure changing the manifest actually runs a different manifest
+      -> give ConfigInstall Constructor different manifest
+         -> different manifest is executed.
+      - test all submitted (from core to type manifest) variables:
+         - ENVIRONMENT
+         - they are set
+         - they contain the correct values
+
+   run_type_manifest():
+      - test all submitted (from core to type manifest) variables:
+         - ENVIRONMENT
+         - they are set
+         - they contain the correct values
+   run_manifest():
+      - test all submitted variables:
+         - ENVIRONMENT
+            - including __debug, if debug
+         - they are set
+         - they contain the correct values
+      - does $require work?
+
+   transfer_type_explorers():
+      - Explorers are not transferred twice
+      - No transfer tried if there are no type_explorers
+
    - $whatever should fail if there is no global explorer directory
    - emulator may only be called with __ as prefix - fail otherwise!
 
