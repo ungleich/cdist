@@ -29,7 +29,7 @@ import unittest
 import cdist.exec
 
 
-class Exec(unittest.TestCase):
+class ExecTestCase(unittest.TestCase):
     def setUp(self):
         """Create shell code and co."""
 
