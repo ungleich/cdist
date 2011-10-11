@@ -143,7 +143,7 @@ class FileListProperty(FileList):
 
 
 class DirectoryDict(collections.MutableMapping):
-    """A dict that stores it's state in a directory.
+    """A dict that stores it's items as files in a directory.
 
     """
     def __init__(self, path, initial=None, **kwargs):
@@ -267,6 +267,55 @@ class FileBooleanProperty(object):
             except EnvironmentError:
                 # ignore
                 pass
+
+    def __delete__(self, obj):
+        raise AttributeError("can't delete attribute")
+
+# FIXME: should have same anchestor as FileList
+class FileStringProperty(object):
+    """A string property which stores its state in a file.
+    """
+    def __init__(self, path):
+        """
+        :param path: string or callable
+
+        Usage:
+
+        class Foo(object):
+            source = FileStringProperty(lambda obj: os.path.join(obj.absolute_path, 'source'))
+            other = FileStringProperty('/tmp/other')
+
+            def __init__(self):
+                self.absolute_path = '/tmp/foo_boolean'
+
+        """
+        self._path = path
+
+    def _get_path(self, *args, **kwargs):
+        path = self._path
+        if callable(path):
+            return path(*args, **kwargs)
+        if not os.path.isabs(path):
+            raise AbsolutePathRequiredError(path)
+        return path
+
+    # Descriptor Protocol
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self.__class__
+        path = self._get_path(obj)
+        value = ""
+        try:
+            with open(path, "r") as fd:
+                value = fd.read().rstrip('\n')
+        except EnvironmentError:
+            pass
+        return value
+
+    def __set__(self, obj, value):
+        path = self._get_path(obj)
+        with open(path, "w") as fd:
+            fd.write(str(value))
 
     def __delete__(self, obj):
         raise AttributeError("can't delete attribute")
