@@ -50,14 +50,13 @@ class ConfigInstall:
             exec_path=sys.argv[0],
             debug=debug)
 
+
+
         self.exec_wrapper   = cdist.exec.Wrapper(
             targe_host = self.target_host,
             remote_exec=os.environ['__remote_exec'].split(),
             remote_copy=os.environ['__remote_copy'].split()
         )
-
-        self.explorer = cdist.explorer.Explorer()
-        self.manifest = cdist.manifest.Mamifest()
 
         self.log = logging.getLogger(self.context.target_host)
 
@@ -96,6 +95,51 @@ class ConfigInstall:
 
     def cleanup(self):
         self.context.cleanup()
+
+    def run_initial_manifest(self):
+        """Run the initial manifest"""
+        log.info("Running initial manifest %s", self.initial_manifest)
+        env = {  "__manifest" : self.manifest_path }
+        self.run_manifest(self.initial_manifest, extra_env=env)
+
+    def run_type_manifest(self, cdist_object):
+        """Run manifest for a specific object"""
+        cdist_type = cdist_object.type
+        manifest_path = os.path.join(self.type_base_path,
+                            cdist_type.manifest_path)
+        
+        log.debug("%s: Running %s", cdist_object.name, manifest_path)
+        if os.path.exists(manifest_path):
+            env = { "__object" :    os.path.join(self.object_base_path,
+                                        cdist_object.path),
+                    "__object_id":  cdist_object.object_id,
+                    "__object_fq":  cdist_object.name,
+                    "__type":       os.path.join(self.type_base_path,
+                                        cdist_type.path)
+                    }
+            self.run_manifest(manifest_path, extra_env=env)
+
+    def run_manifest(self, manifest_path, extra_env=None):
+        """Run a manifest"""
+        log.debug("Running manifest %s, env=%s", manifest_path, extra_env)
+        env = os.environ.copy()
+        env['PATH'] = self.bin_path + ":" + env['PATH']
+
+        # Information required in every manifest
+        env['__target_host']            = self.target_host
+        env['__global']                 = self.out_path
+        
+        # Required for recording source in emulator
+        env['__cdist_manifest']         = manifest_path
+
+        # Required to find types in emulator
+        env['__cdist_type_base_path']   = self.type_base_path
+
+        # Other environment stuff
+        if extra_env:
+            env.update(extra_env)
+
+        cdist.exec.shell_run_or_debug_fail(manifest_path, [manifest_path], env=env)
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
