@@ -134,7 +134,11 @@ class FileListProperty(FileList):
 
     def __set__(self, obj, value):
         self._set_path(obj)
-        os.unlink(self.path)
+        try:
+            os.unlink(self.path)
+        except EnvironmentError:
+            # ignored
+            pass
         for item in value:
             self.append(item)
 
