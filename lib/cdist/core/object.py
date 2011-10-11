@@ -74,9 +74,6 @@ class Object(object):
         self.code_remote_path = os.path.join(self.path, "code-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
 
-        self.__parameters = None
-        self.__requirements = None
-
     def __repr__(self):
         return '<Object %s>' % self.name
 
@@ -86,6 +83,7 @@ class Object(object):
 
     @property
     def explorer_path(self):
+        """Create and return the relative path to this objects explorers"""
         # create absolute path
         path = os.path.join(self.absolute_path, "explorer")
         if not os.path.isdir(path):
