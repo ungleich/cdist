@@ -93,8 +93,9 @@ class ConfigInstall(object):
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
         log.debug("Preparing object: " + cdist_object.name)
-        self.run_type_explorer(cdist_object)
-        self.run_type_manifest(cdist_object)
+        cdist_object.explorers = 
+            self.explorer.run_type_explorer(cdist_object)
+        self.manifest.run_type_manifest(cdist_object)
         cdist_object.prepared = True
 
     def object_run(self, cdist_object):
