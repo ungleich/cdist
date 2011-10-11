@@ -31,8 +31,6 @@ import os
 #import cdist.core
 #import cdist.exec
 
-log = logging.getLogger(__name__)
-
 class Context:
     """Hold information about current context"""
 
@@ -47,7 +45,9 @@ class Context:
         # Only required for testing
         self.exec_path      = exec_path
 
-        log.addFilter(self)
+        # Context logging
+        self.log = logging.getLogger(__name__)
+        self.log.addFilter(self)
 
         # Base and Temp Base 
         self.base_path = (base_path or
@@ -87,14 +87,6 @@ class Context:
 
         self.remote_type_path            = os.path.join(self.remote_conf_path, "type")
         self.remote_global_explorer_path = os.path.join(self.remote_conf_path, "explorer")
-
-        # Setup env to be used by others
-        self.__init_env()
-
-        # Create directories
-        self.__init_local_paths()
-        self.__init_remote_paths()
-
 
     def cleanup(self):
         # Do not use in __del__:
