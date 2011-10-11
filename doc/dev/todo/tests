@@ -38,20 +38,21 @@ Tests needed for config_install:
       - Explorers are not transferred twice
       - No transfer tried if there are no type_explorers
 
-   - $whatever should fail if there is no global explorer directory
-   - emulator may only be called with __ as prefix - fail otherwise!
+   emulator()
+      may only be called with __ as prefix - fail otherwise!
 
-   - ensure paths returned by object include dot-cdist
-   - ensure path of explorer of object returns correct path
-
-   config_install:
-      run_type_manifest() - same tests as for test_initial_manifest_*?
-      run_manifest() - raise exception if manifest is not existent
-      object_run(): ensure no object is run twice
-      object_run(): ensure requirements are taken into account
-      object_run(): check (from extern?) that all needed variables are setup
-      object_run(): ensure no code-{local, remote} is created, if gencode is not producing code
-      object_run(): ensure no code-{local, remote} contains what gencode created
+   object_run():
+      - ensure no object is run twice
+      - ensure requirements are taken into account?
+         - and order of run is adjusted
+      - check (from extern?) that all needed variables are setup
+      - ensure no code-{local, remote} is created, 
+         if gencode is not producing code
+      - ensure THAT code-{local, remote} contains what gencode created
+      - abort if gencode-* fails
+      - abort if code-* fails
+         - abort == raise(FooException)
+      - gencode-*: ensure ENVIRONMENT is setup correctly
 
       run_type_explorer(): ensure output is saved to correct path
       run_type_explorer(): ensure a type with no explorers works
@@ -59,3 +60,7 @@ Tests needed for config_install:
 
 
       all: check that messages of all functions contain target_host in string
+
+   config_install:
+      run_type_manifest() - same tests as for test_initial_manifest_*?
+      run_manifest() - raise exception if manifest is not existent
