@@ -1,3 +1,63 @@
+tests:
+
+   __init__():
+      - sets up env: __target_host
+
+   run_initial_manifest():
+      - parameter is actually used (from __init__)
+      - ensure changing the manifest actually runs a different manifest
+      -> give ConfigInstall Constructor different manifest
+         -> different manifest is executed.
+      - test all submitted (from core to type manifest) variables:
+         - ENVIRONMENT
+         - they are set
+         - they contain the correct values
+
+   run_type_manifest():
+      - test all submitted (from core to type manifest) variables:
+         - ENVIRONMENT
+         - they are set
+         - they contain the correct values
+      - same tests as for test_initial_manifest_*?
+
+   run_manifest():
+      - test all submitted variables:
+         - ENVIRONMENT
+            - including __debug, if debug
+         - they are set
+         - they contain the correct values
+      - does $require work?
+      - check that exception raised, if manifest is not existent
+
+   object_run():
+      - ensure no object is run twice
+      - ensure requirements are taken into account?
+         - and order of run is adjusted
+      - check (from extern?) that all needed variables are setup
+      - ensure no code-{local, remote} is created, 
+         if gencode is not producing code
+      - ensure THAT code-{local, remote} contains what gencode created
+      - abort if gencode-* fails
+      - abort if code-* fails
+         - abort == raise(FooException)
+      - gencode-*: ensure ENVIRONMENT is setup correctly
+
+   run_type_explorer()
+      - ensure ALL type explores have been run
+      - ensure output is saved to correct path
+      - ensure a type with {0,1,2} explorers works ?
+         - none, one, multiple
+      - ensure ENVIRONMENT is setup correctly
+      - fails if ANY of the given explorer fails
+
+   run_global_explorers():
+      - ensure ALL type explores have been run
+      - ensure output is saved to correct path
+      - ensure a type with {0,1,2} explorers works ?
+         - none, one, multiple
+      - ensure ENVIRONMENT is setup correctly
+      - fails if ANY of the given explorer fails
+      
 Code fixes needed:
 
    - shutil, os.mkdir, etc. everywhere: catch/reraise exceptions correctly
