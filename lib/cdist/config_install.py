@@ -31,6 +31,8 @@ import time
 import cdist.core
 import cdist.context
 import cdist.exec
+import cdist.explorer
+#import cdist.manifest
 
 class ConfigInstall(object):
     """Cdist main class to hold arbitrary data"""
@@ -40,12 +42,11 @@ class ConfigInstall(object):
         self.context = context
 
         self.exec_wrapper   = cdist.exec.Wrapper(
-            targe_host = self.target_host,
-            remote_exec=os.environ['__remote_exec'].split(),
-            remote_copy=os.environ['__remote_copy'].split()
-        )
+            target_host = self.context.target_host,
+            remote_exec=self.context.remote_exec,
+            remote_copy=self.context.remote_copy)
 
-        self.explorer = cdist.explorer.Explorer()
+        self.explorer = cdist.explorer.Explorer(self.context)
         self.manifest = cdist.manifest.Mamifest()
 
         self.log = logging.getLogger(self.context.target_host)
@@ -79,7 +80,7 @@ class ConfigInstall(object):
     # explicitly!
     def __init_env(self):
         """Environment usable for other stuff"""
-        os.environ['__target_host'] = self.target_host
+        os.environ['__target_host'] = self.context.target_host
         if self.debug:
             os.environ['__debug'] = "yes"
 
@@ -114,7 +115,7 @@ class ConfigInstall(object):
         # Setup env Variable:
         #
         env = os.environ.copy()
-        env['__target_host']    = self.target_host
+        env['__target_host']    = self.context.target_host
         env['__global']         = self.out_path
         env["__object"]         = os.path.join(self.object_base_path, cdist_object.path)
         env["__object_id"]      = cdist_object.object_id
@@ -178,7 +179,7 @@ class ConfigInstall(object):
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
-        log.info("Deploying to " + self.target_host)
+        log.info("Deploying to " + self.context.target_host)
         self.stage_prepare()
         self.stage_run()
 
@@ -188,7 +189,7 @@ class ConfigInstall(object):
         self.deploy_to()
         self.cleanup()
         log.info("Finished run of %s in %s seconds", 
-            self.target_host, time.time() - start_time)
+            self.context.target_host, time.time() - start_time)
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""

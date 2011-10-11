@@ -37,21 +37,10 @@ log = logging.getLogger(__name__)
 class Explorer:
     """Execute explorers"""
 
-    def __init__(self,
-        object_base_path,
-        remote_global_explorer_path, 
-        remote_type_path, 
-        remote_object_path, 
-        type_path, 
-        exec_hint):
+    def __init__(self, context):
+        self.context = context
 
-        self.object_base_path               = object_base_path
-        self.remote_global_explorer_path    = remote_global_explorer_path
-        self.remote_type_path               = remote_type_path
-        self.remote_object_path             = remote_object_path
-        self.exec_hint                      = exec_hint
-
-    def run_type_explorer(self, cdist_object)
+    def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""
 
         cdist_type = cdist_object.type
