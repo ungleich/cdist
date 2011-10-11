@@ -22,15 +22,16 @@
 
 import io
 import logging
-#import os
+import os
 #import stat
 #import shutil
 #import sys
 #import tempfile
 #import time
 #
-#import cdist.core
 #import cdist.exec
+
+import cdist
 
 log = logging.getLogger(__name__)
 
@@ -39,6 +40,10 @@ class Explorer:
 
     def __init__(self, context):
         self.context = context
+        try:
+            os.mkdir(self.context.global_explorer_out_path)
+        except OSError as e:
+            raise cdist.Error("Failed to create explorer out path: %s" % e)
 
     def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""

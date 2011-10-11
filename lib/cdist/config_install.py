@@ -73,7 +73,6 @@ class ConfigInstall(object):
             
         # FIXME: raise more beautiful exception / Steven: handle exception
         os.mkdir(self.context.out_path)
-        os.mkdir(self.global_explorer_out_path)
         os.mkdir(self.context.bin_path)
 
     # FIXME: remove this function, only expose ENV
@@ -93,8 +92,7 @@ class ConfigInstall(object):
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
         log.debug("Preparing object: " + cdist_object.name)
-        cdist_object.explorers = 
-            self.explorer.run_type_explorer(cdist_object)
+        cdist_object.explorers = self.explorer.run_type_explorer(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.prepared = True
 
