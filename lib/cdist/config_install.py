@@ -229,6 +229,7 @@ class ConfigInstall:
                 outfile_fd = open(outfile, "w")
 
                 # Need to flush to ensure our write is done before stdout write
+                # FIXME: code header still needed?
                 outfile_fd.write(CODE_HEADER)
                 outfile_fd.flush()
 
