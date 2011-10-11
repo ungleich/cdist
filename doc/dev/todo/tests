@@ -26,6 +26,8 @@ Tests needed for config_install:
          - ENVIRONMENT
          - they are set
          - they contain the correct values
+      - same tests as for test_initial_manifest_*?
+
    run_manifest():
       - test all submitted variables:
          - ENVIRONMENT
@@ -33,13 +35,7 @@ Tests needed for config_install:
          - they are set
          - they contain the correct values
       - does $require work?
-
-   transfer_type_explorers():
-      - Explorers are not transferred twice
-      - No transfer tried if there are no type_explorers
-
-   emulator()
-      may only be called with __ as prefix - fail otherwise!
+      - check that exception raised, if manifest is not existent
 
    object_run():
       - ensure no object is run twice
@@ -54,13 +50,90 @@ Tests needed for config_install:
          - abort == raise(FooException)
       - gencode-*: ensure ENVIRONMENT is setup correctly
 
-      run_type_explorer(): ensure output is saved to correct path
-      run_type_explorer(): ensure a type with no explorers works
-      run_type_explorer(): ensure environment is setup correctly
+   run_type_explorer()
+      - ensure ALL type explores have been run
+      - ensure output is saved to correct path
+      - ensure a type with {0,1,2} explorers works ?
+         - none, one, multiple
+      - ensure ENVIRONMENT is setup correctly
+      - fails if ANY of the given explorer fails
+
+   run_global_explorers():
+      - ensure ALL type explores have been run
+      - ensure output is saved to correct path
+      - ensure a type with {0,1,2} explorers works ?
+         - none, one, multiple
+      - ensure ENVIRONMENT is setup correctly
+      - fails if ANY of the given explorer fails
+      
+   link_emulator():
+      - ensure that links to ALL types are created
+      - ensure that links points to correct executable
+         - i.e. readlink() works
+         - AND target of readlink is the correct executable
+
+   stage_run()
+      - ensure that for every object in
+         cdist.core.Object.list_objects() is passed into
+         self.object_run()
+         - instantiate + overwrite + test
+
+   object_prepare():
+      - calls (in this order):
+         self.run_type_explorer(cdist_object)
+         self.run_type_manifest(cdist_object)
+         cdist_object.prepared = True
+      - object is prepared after function call
 
 
-      all: check that messages of all functions contain target_host in string
+   stage_prepare():
+      - calls (in this order):
+         self.link_emulator()
+         self.run_global_explorers()
+         self.run_initial_manifest()
 
-   config_install:
-      run_type_manifest() - same tests as for test_initial_manifest_*?
-      run_manifest() - raise exception if manifest is not existent
+      - ensure that all objects are created :-)
+         - as defined in inital manifest + type manifests
+         
+   deploy_to()
+      - ensure self.stage_prepare() and self.stage_run() are
+         run. [ORDER]
+         - instantiate + overwrite + test
+
+   deploy_and_cleanup()
+      - ensure self.deploy_to() + self.cleanup() are are run
+         run. [ORDER]
+         - instantiate + overwrite + test
+
+   transfer_object_parameter()
+      - check that object parameters are transferred
+      - paths are setup correctly
+         - test via mock of remote_mkdir and transfer_path
+      - ensure self.remote_mkdir, self.transfer_path are run. [ORDER]
+         - instantiate + overwrite + test
+   
+   transfer_global_explorers()
+      - paths are setup correctly
+         - test via mock of self.remote_mkdir() and self.transfer_path()
+      - ensure self.remote_mkdir, self.transfer_path are run. [ORDER]
+         - instantiate + overwrite + test
+   
+   transfer_type_explorers():
+      - Explorers are not transferred twice
+      - paths are setup correctly
+         - test via mock of self.remote_mkdir() and self.transfer_path()
+      - Explorers are transferred
+         - test via mock of self.remote_mkdir() and self.transfer_path()
+
+   remote_mkdir()
+      - is directory created
+
+   remove_remote_path
+      - is path removed
+
+   transfer_path
+      - is src to dst transferred?
+
+emulator:
+   may only be called with __ as prefix - fail otherwise!
+
