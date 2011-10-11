@@ -29,34 +29,24 @@ import tempfile
 import time
 
 import cdist.core
+import cdist.context
 import cdist.exec
+import cdist.explorer
+#import cdist.manifest
 
-CODE_HEADER = "#!/bin/sh -e\n"
-
-class ConfigInstall:
+class ConfigInstall(object):
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, 
-        target_host,
-        initial_manifest=False,
-        base_path=False,
-        exec_path=sys.argv[0],
-        debug=False):
+    def __init__(self, context): 
 
-        self.context = cdist.context.Context(
-            target_host=target_host,
-            initial_manifest=initial_manifest,
-            base_path=base_path,
-            exec_path=sys.argv[0],
-            debug=debug)
+        self.context = context
 
         self.exec_wrapper   = cdist.exec.Wrapper(
-            targe_host = self.target_host,
-            remote_exec=os.environ['__remote_exec'].split(),
-            remote_copy=os.environ['__remote_copy'].split()
-        )
+            target_host = self.context.target_host,
+            remote_exec=self.context.remote_exec,
+            remote_copy=self.context.remote_copy)
 
-        self.explorer = cdist.explorer.Explorer()
+        self.explorer = cdist.explorer.Explorer(self.context)
         self.manifest = cdist.manifest.Mamifest()
 
         self.log = logging.getLogger(self.context.target_host)
@@ -70,9 +60,9 @@ class ConfigInstall:
 
     def __init_remote_paths(self):
         """Initialise remote directory structure"""
-        self.remove_remote_path(self.context.remote_base_path)
-        self.remote_mkdir(self.context.remote_base_path)
-        self.remote_mkdir(self.context.remote_conf_path)
+        self.exec_wrapper.remove_remote_path(self.context.remote_base_path)
+        self.exec_wrapper.remote_mkdir(self.context.remote_base_path)
+        self.exec_wrapper.remote_mkdir(self.context.remote_conf_path)
 
     def __init_local_paths(self):
         """Initialise local directory structure"""
@@ -90,12 +80,15 @@ class ConfigInstall:
     # explicitly!
     def __init_env(self):
         """Environment usable for other stuff"""
-        os.environ['__target_host'] = self.target_host
+        os.environ['__target_host'] = self.context.target_host
         if self.debug:
             os.environ['__debug'] = "yes"
 
     def cleanup(self):
-        self.context.cleanup()
+        log.debug("Saving " + self.out_path + " to " + self.cache_path)
+        if os.path.exists(self.context.cache_path):
+            shutil.rmtree(self.context.cache_path)
+        shutil.move(self.context.out_path, self.context.cache_path)
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
@@ -122,7 +115,7 @@ class ConfigInstall:
         # Setup env Variable:
         #
         env = os.environ.copy()
-        env['__target_host']    = self.target_host
+        env['__target_host']    = self.context.target_host
         env['__global']         = self.out_path
         env["__object"]         = os.path.join(self.object_base_path, cdist_object.path)
         env["__object_id"]      = cdist_object.object_id
@@ -186,7 +179,7 @@ class ConfigInstall:
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
-        log.info("Deploying to " + self.target_host)
+        log.info("Deploying to " + self.context.target_host)
         self.stage_prepare()
         self.stage_run()
 
@@ -196,7 +189,7 @@ class ConfigInstall:
         self.deploy_to()
         self.cleanup()
         log.info("Finished run of %s in %s seconds", 
-            self.target_host, time.time() - start_time)
+            self.context.target_host, time.time() - start_time)
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
