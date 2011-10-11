@@ -22,18 +22,14 @@
 
 
 import os
-import sys
 import shutil
-import subprocess
 import tempfile
 import unittest
 
-sys.path.insert(0, os.path.abspath(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), '../lib')))
-
 import cdist.exec
 
-class Exec(unittest.TestCase):
+
+class ExecTestCase(unittest.TestCase):
     def setUp(self):
         """Create shell code and co."""
 
@@ -49,32 +45,35 @@ class Exec(unittest.TestCase):
         false_fd.writelines(["#!/bin/sh\n", "/bin/false"])
         false_fd.close()
 
+        target_host = "does.not.exist"
+        remote_exec = "ssh -o User=root -q"
+        remote_copy = "scp -o User=root -q"
+        self.wrapper = cdist.exec.Wrapper(target_host, remote_exec, remote_copy)
+
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
         
     def test_local_success_shell(self):
         try:
-            cdist.exec.shell_run_or_debug_fail(self.shell_true, [self.shell_true])
+            self.wrapper.shell_run_or_debug_fail(self.shell_true, [self.shell_true])
         except cdist.Error:
             failed = True
         else:
             failed = False
-
         self.assertFalse(failed)
 
     def test_local_fail_shell(self):
-        self.assertRaises(cdist.Error, cdist.exec.shell_run_or_debug_fail,
+        self.assertRaises(cdist.Error, self.wrapper.shell_run_or_debug_fail,
             self.shell_false, [self.shell_false])
 
     def test_local_success(self):
         try:
-            cdist.exec.run_or_fail(["/bin/true"])
+            self.wrapper.run_or_fail(["/bin/true"])
         except cdist.Error:
             failed = True
         else:
             failed = False
-
         self.assertFalse(failed)
 
     def test_local_fail(self):
-        self.assertRaises(cdist.Error, cdist.exec.run_or_fail, ["/bin/false"])
+        self.assertRaises(cdist.Error, self.wrapper.run_or_fail, ["/bin/false"])

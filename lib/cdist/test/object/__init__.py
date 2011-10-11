@@ -62,7 +62,7 @@ class ObjectTestCase(unittest.TestCase):
         self.cdist_object.changed = False
         self.cdist_object.prepared = False
         self.cdist_object.ran = False
-        self.cdist_object.source = ""
+        self.cdist_object.source = []
 
     def test_name(self):
         self.assertEqual(self.cdist_object.name, '__third/moon')
@@ -92,6 +92,19 @@ class ObjectTestCase(unittest.TestCase):
         expected_parameters = {'planet': 'Saturn', 'name': 'Prometheus'}
         self.assertEqual(self.cdist_object.parameters, expected_parameters)
 
+    def test_explorers(self):
+        self.assertEqual(self.cdist_object.explorers, {})
+
+    def test_explorers_after_changing(self):
+        expected = {'first': 'foo', 'second': 'bar'}
+        # when set, written to file
+        self.cdist_object.explorers = expected
+        # when accessed, read from file
+        self.assertEqual(self.cdist_object.explorers, expected)
+        # remove dynamically created folder
+        self.cdist_object.explorers = {}
+        os.rmdir(os.path.join(self.cdist_object.base_path, self.cdist_object.explorer_path))
+
     def test_requirements(self):
         expected = []
         self.assertEqual(list(self.cdist_object.requirements), expected)
@@ -118,8 +131,8 @@ class ObjectTestCase(unittest.TestCase):
         self.assertTrue(self.cdist_object.ran)
 
     def test_source(self):
-        self.assertEqual(self.cdist_object.source, '')
+        self.assertEqual(list(self.cdist_object.source), [])
 
     def test_source_after_changing(self):
-        self.cdist_object.source = '/path/to/manifest'
-        self.assertEqual(self.cdist_object.source, '/path/to/manifest')
+        self.cdist_object.source = ['/path/to/manifest']
+        self.assertEqual(list(self.cdist_object.source), ['/path/to/manifest'])
