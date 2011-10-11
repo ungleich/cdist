@@ -25,14 +25,13 @@ import subprocess
 
 import cdist
 
-log = logging.getLogger(__name__)
-
 
 class Wrapper(object):
     def __init__(self, target_host, remote_exec, remote_copy):
         self.target_host = target_host
         self.remote_exec = remote_exec
         self.remote_copy = remote_copy
+        self.log = logging.getLogger(self.target_host)
 
     def remote_mkdir(self, directory):
         """Create directory on remote side"""
@@ -58,15 +57,15 @@ class Wrapper(object):
             remote_prefix.append(self.target_host)
             args[0][:0] = remote_prefix
 
-        log.debug("Shell exec cmd: %s", args)
+        self.log.debug("Shell exec cmd: %s", args)
 
         if 'env' in kargs:
-            log.debug("Shell exec env: %s", kargs['env'])
+            self.log.debug("Shell exec env: %s", kargs['env'])
 
         try:
             subprocess.check_call(*args, **kargs)
         except subprocess.CalledProcessError:
-            log.error("Code that raised the error:\n")
+            self.log.error("Code that raised the error:\n")
 
             if remote:
                 self.run_or_fail(["cat", script], remote=remote)
@@ -89,13 +88,10 @@ class Wrapper(object):
             remote_prefix.append(self.target_host)
             args[0][:0] = remote_prefix
 
-        log.debug("Exec: " + " ".join(*args))
+        self.log.debug("Exec: " + " ".join(*args))
         try:
             subprocess.check_call(*args, **kargs)
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(*args))
         except OSError as error:
             raise cdist.Error(" ".join(*args) + ": " + error.args[1])
-
-
-
