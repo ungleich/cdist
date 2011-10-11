@@ -49,20 +49,16 @@ class ConfigInstall:
 
         self.debug          = debug
 
-        # Required for testing
+        # Only required for testing
         self.exec_path      = exec_path
 
         # Configure logging
         log.addFilter(self)
 
         # Base and Temp Base 
-        if base_path:
-            self.base_path = base_path
-        else:
-            self.base_path = os.path.abspath(
-                os.path.join(os.path.dirname(__file__),
-                    os.pardir,
-                    os.pardir))
+        self.base_path = (base_path or
+            self.base_path = os.path.abspath(os.path.join(
+                os.path.dirname(__file__), os.pardir, os.pardir))
 
         # Local input
         self.cache_path             = os.path.join(self.base_path, "cache", 
@@ -74,10 +70,8 @@ class ConfigInstall:
         self.type_base_path         = os.path.join(self.conf_path, "type")
         self.lib_path               = os.path.join(self.base_path, "lib")
 
-        if initial_manifest:
-            self.initial_manifest = initial_manifest
-        else:
-            self.initial_manifest = os.path.join(self.manifest_path, "init")
+        self.initial_manifest = (initial_manifest or
+            os.path.join(self.manifest_path, "init"))
 
         # Local output
         if '__cdist_out_dir' in os.environ:
@@ -108,7 +102,6 @@ class ConfigInstall:
         self.__init_remote_paths()
 
 
-
     def __init_remote_paths(self):
         """Initialise remote directory structure"""
         self.remove_remote_path(self.remote_base_path)
@@ -122,6 +115,7 @@ class ConfigInstall:
         if not os.path.isdir(self.base_path):
             os.mkdir(self.base_path)
             
+        # FIXME: raise more beautiful exception / Steven: handle exception
         os.mkdir(self.out_path)
         os.mkdir(self.global_explorer_out_path)
         os.mkdir(self.bin_path)
@@ -129,6 +123,9 @@ class ConfigInstall:
     def __init_env(self):
         """Environment usable for other stuff"""
         os.environ['__target_host'] = self.target_host
+        if self.debug:
+            os.environ['__debug'] = "yes"
+
 
     def cleanup(self):
         # Do not use in __del__:
@@ -137,6 +134,7 @@ class ConfigInstall:
         # or in the process of being torn down (e.g. the import machinery shutting down)"
         #
         log.debug("Saving " + self.out_path + " to " + self.cache_path)
+        # FIXME: raise more beautiful exception / Steven: handle exception
         # Remove previous cache
         if os.path.exists(self.cache_path):
             shutil.rmtree(self.cache_path)
@@ -182,10 +180,6 @@ class ConfigInstall:
         env['__target_host']            = self.target_host
         env['__global']                 = self.out_path
         
-        # Submit debug flag to manifest, can be used by emulator and types
-        if self.debug:
-            env['__debug']              = "yes"
-
         # Required for recording source in emulator
         env['__cdist_manifest']         = manifest_path
 
@@ -197,6 +191,13 @@ class ConfigInstall:
             env.update(extra_env)
 
         cdist.exec.shell_run_or_debug_fail(manifest_path, [manifest_path], env=env)
+
+    def object_prepare(self, cdist_object):
+        """Prepare object: Run type explorer + manifest"""
+        log.debug("Preparing object: " + cdist_object.name)
+        self.run_type_explorer(cdist_object)
+        self.run_type_manifest(cdist_object)
+        cdist_object.prepared = True
 
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
@@ -235,6 +236,7 @@ class ConfigInstall:
                 outfile_fd = open(outfile, "w")
 
                 # Need to flush to ensure our write is done before stdout write
+                # FIXME: code header still needed?
                 outfile_fd.write(CODE_HEADER)
                 outfile_fd.flush()
 
@@ -299,7 +301,6 @@ class ConfigInstall:
             cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()
 
-
     def link_emulator(self):
         """Link emulator to types"""
         src = os.path.abspath(self.exec_path)
@@ -307,7 +308,7 @@ class ConfigInstall:
             dst = os.path.join(self.bin_path, cdist_type.name)
             log.debug("Linking emulator: %s to %s", src, dst)
 
-            # FIXME: handle exception / make it more beautiful
+            # FIXME: handle exception / make it more beautiful / Steven: raise except :-)
             os.symlink(src, dst)
 
     def run_global_explorers(self):
@@ -328,15 +329,6 @@ class ConfigInstall:
 
             cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=True)
             output_fd.close()
-
-
-    def stage_run(self):
-        """The final (and real) step of deployment"""
-        log.info("Generating and executing code")
-        for cdist_object in cdist.core.Object.list_objects(self.object_base_path,
-                                                           self.type_base_path):
-            log.debug("Run object: %s", cdist_object)
-            self.object_run(cdist_object)
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
@@ -370,11 +362,16 @@ class ConfigInstall:
                     log.debug("Skipping rerun of object %s", cdist_object)
                     continue
                 else:
-                    log.debug("Preparing object: " + cdist_object.name)
-                    self.run_type_explorer(cdist_object)
-                    self.run_type_manifest(cdist_object)
-                    cdist_object.prepared = True
+                    self.object_prepare(cdist_object)
                     new_objects_created = True
+
+    def stage_run(self):
+        """The final (and real) step of deployment"""
+        log.info("Generating and executing code")
+        for cdist_object in cdist.core.Object.list_objects(self.object_base_path,
+                                                           self.type_base_path):
+            log.debug("Run object: %s", cdist_object)
+            self.object_run(cdist_object)
 
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
