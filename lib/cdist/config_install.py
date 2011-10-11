@@ -31,8 +31,6 @@ import time
 import cdist.core
 import cdist.exec
 
-log = logging.getLogger(__name__)
-
 CODE_HEADER = "#!/bin/sh -e\n"
 
 class ConfigInstall:
@@ -45,152 +43,59 @@ class ConfigInstall:
         exec_path=sys.argv[0],
         debug=False):
 
-        self.target_host    = target_host
+        self.context = cdist.context.Context(
+            target_host=target_host,
+            initial_manifest=initial_manifest,
+            base_path=base_path,
+            exec_path=sys.argv[0],
+            debug=debug)
 
-        self.debug          = debug
+        self.exec_wrapper   = cdist.exec.Wrapper(
+            targe_host = self.target_host,
+            remote_exec=os.environ['__remote_exec'].split(),
+            remote_copy=os.environ['__remote_copy'].split()
+        )
 
-        # Only required for testing
-        self.exec_path      = exec_path
+        self.explorer = cdist.explorer.Explorer()
+        self.manifest = cdist.manifest.Mamifest()
 
-        # Configure logging
-        log.addFilter(self)
+        self.log = logging.getLogger(self.context.target_host)
 
-        # Base and Temp Base 
-        self.base_path = (base_path or
-            self.base_path = os.path.abspath(os.path.join(
-                os.path.dirname(__file__), os.pardir, os.pardir))
-
-        # Local input
-        self.cache_path             = os.path.join(self.base_path, "cache", 
-            self.target_host)
-        self.conf_path              = os.path.join(self.base_path, "conf")
-
-        self.global_explorer_path   = os.path.join(self.conf_path, "explorer")
-        self.manifest_path          = os.path.join(self.conf_path, "manifest")
-        self.type_base_path         = os.path.join(self.conf_path, "type")
-        self.lib_path               = os.path.join(self.base_path, "lib")
-
-        self.initial_manifest = (initial_manifest or
-            os.path.join(self.manifest_path, "init"))
-
-        # Local output
-        if '__cdist_out_dir' in os.environ:
-            self.out_path = os.environ['__cdist_out_dir']
-        else:
-            self.out_path = os.path.join(tempfile.mkdtemp(), "out")
-        self.bin_path                 = os.path.join(self.out_path, "bin")
-        self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
-        self.object_base_path         = os.path.join(self.out_path, "object")
-
-        # Remote directory base
-        if '__cdist_remote_out_dir' in os.environ:
-            self.remote_base_path = os.environ['__cdist_remote_out_dir']
-        else:
-            self.remote_base_path = "/var/lib/cdist"
-
-        self.remote_conf_path            = os.path.join(self.remote_base_path, "conf")
-        self.remote_object_path          = os.path.join(self.remote_base_path, "object")
-
-        self.remote_type_path            = os.path.join(self.remote_conf_path, "type")
-        self.remote_global_explorer_path = os.path.join(self.remote_conf_path, "explorer")
-
-        # Setup env to be used by others
+        # Setup env to be used by others - FIXME
         self.__init_env()
 
         # Create directories
         self.__init_local_paths()
         self.__init_remote_paths()
 
-
     def __init_remote_paths(self):
         """Initialise remote directory structure"""
-        self.remove_remote_path(self.remote_base_path)
-        self.remote_mkdir(self.remote_base_path)
-        self.remote_mkdir(self.remote_conf_path)
+        self.remove_remote_path(self.context.remote_base_path)
+        self.remote_mkdir(self.context.remote_base_path)
+        self.remote_mkdir(self.context.remote_conf_path)
 
     def __init_local_paths(self):
         """Initialise local directory structure"""
 
         # Create base dir, if user supplied and not existing
-        if not os.path.isdir(self.base_path):
-            os.mkdir(self.base_path)
+        if not os.path.isdir(self.context.base_path):
+            os.mkdir(self.context.base_path)
             
         # FIXME: raise more beautiful exception / Steven: handle exception
         os.mkdir(self.out_path)
         os.mkdir(self.global_explorer_out_path)
         os.mkdir(self.bin_path)
 
+    # FIXME: remove this function, only expose ENV
+    # explicitly!
     def __init_env(self):
         """Environment usable for other stuff"""
         os.environ['__target_host'] = self.target_host
         if self.debug:
             os.environ['__debug'] = "yes"
 
-
     def cleanup(self):
-        # Do not use in __del__:
-        # http://docs.python.org/reference/datamodel.html#customization
-        # "other globals referenced by the __del__() method may already have been deleted 
-        # or in the process of being torn down (e.g. the import machinery shutting down)"
-        #
-        log.debug("Saving " + self.out_path + " to " + self.cache_path)
-        # FIXME: raise more beautiful exception / Steven: handle exception
-        # Remove previous cache
-        if os.path.exists(self.cache_path):
-            shutil.rmtree(self.cache_path)
-        shutil.move(self.out_path, self.cache_path)
-
-    def filter(self, record):
-        """Add hostname to logs via logging Filter"""
-
-        record.msg = self.target_host + ": " + record.msg
-
-        return True
-
-    def run_initial_manifest(self):
-        """Run the initial manifest"""
-        log.info("Running initial manifest %s", self.initial_manifest)
-        env = {  "__manifest" : self.manifest_path }
-        self.run_manifest(self.initial_manifest, extra_env=env)
-
-    def run_type_manifest(self, cdist_object):
-        """Run manifest for a specific object"""
-        cdist_type = cdist_object.type
-        manifest_path = os.path.join(self.type_base_path,
-                            cdist_type.manifest_path)
-        
-        log.debug("%s: Running %s", cdist_object.name, manifest_path)
-        if os.path.exists(manifest_path):
-            env = { "__object" :    os.path.join(self.object_base_path,
-                                        cdist_object.path),
-                    "__object_id":  cdist_object.object_id,
-                    "__object_fq":  cdist_object.name,
-                    "__type":       os.path.join(self.type_base_path,
-                                        cdist_type.path)
-                    }
-            self.run_manifest(manifest_path, extra_env=env)
-
-    def run_manifest(self, manifest_path, extra_env=None):
-        """Run a manifest"""
-        log.debug("Running manifest %s, env=%s", manifest_path, extra_env)
-        env = os.environ.copy()
-        env['PATH'] = self.bin_path + ":" + env['PATH']
-
-        # Information required in every manifest
-        env['__target_host']            = self.target_host
-        env['__global']                 = self.out_path
-        
-        # Required for recording source in emulator
-        env['__cdist_manifest']         = manifest_path
-
-        # Required to find types in emulator
-        env['__cdist_type_base_path']   = self.type_base_path
-
-        # Other environment stuff
-        if extra_env:
-            env.update(extra_env)
-
-        cdist.exec.shell_run_or_debug_fail(manifest_path, [manifest_path], env=env)
+        self.context.cleanup()
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
@@ -269,67 +174,6 @@ class ConfigInstall:
 
         cdist_object.ran = True
 
-    def run_type_explorer(self, cdist_object):
-
-    def run_type_explorer(self, cdist_object, remote_global_explorer_path, remote_type_path, remote_object_path, scp-hints, ssh-hints, object_base_path):
-
-    def __init__(self, remote_global_explorer_path, remote_type_path, remote_object_path, exec-hint, object_base_path, global_explorer_out_path):
-
-    def __init__(self, remote_global_explorer_path, remote_type_path, remote_object_path, exec-hint):
-
-    def run_type_explorer(self, cdist_object)
-
-        self.value = .,..
-        return value
-
-    def run_global_explorer(self)
-
-    def __init__(self, remote_global_explorer_path, remote_type_path, remote_object_path, exec-hint):
-        == 1x
-
-
-
-
-    run_type_explorer()
-    self.instance.value[obej
-    
-    c = ConfigInstall("foo")
-    c.remote_global_explorer_path = "moo"
-
-    def run_type_explorer(self, cdist_object)
-        """Run type specific explorers for objects"""
-
-        cdist_type = cdist_object.type
-        self.transfer_type_explorers(cdist_type)
-
-        cmd = []
-        cmd.append("__explorer="        + self.remote_global_explorer_path)
-        cmd.append("__type_explorer="   + os.path.join(
-                                            self.remote_type_path,
-                                            cdist_type.explorer_path))
-        cmd.append("__object="          + os.path.join(
-                                            self.remote_object_path,
-                                            cdist_object.path))
-        cmd.append("__object_id="       + cdist_object.object_id)
-        cmd.append("__object_fq="       + cdist_object.name)
-
-        # Need to transfer at least the parameters for objects to be useful
-        self.transfer_object_parameter(cdist_object)
-
-        for explorer in cdist_type.explorers:
-            remote_cmd = cmd + [os.path.join(self.remote_type_path,
-                cdist_type.explorer_path, explorer)]
-            output = os.path.join(self.object_base_path,
-                        cdist_object.explorer_path, explorer)
-            output_fd = open(output, mode='w')
-            log.debug("%s exploring %s using %s storing to %s", 
-                            cdist_object, explorer, remote_cmd, output)
-                        
-            cdist.exec.run_or_fail(remote_cmd, stdout=output_fd, remote_prefix=True)
-            output_fd.close()
-
-        return outputs
-
     def link_emulator(self):
         """Link emulator to types"""
         src = os.path.abspath(self.exec_path)
@@ -339,27 +183,6 @@ class ConfigInstall:
 
             # FIXME: handle exception / make it more beautiful / Steven: raise except :-)
             os.symlink(src, dst)
-
-    def run_global_explorers(src_path, dst_path, remote_dst_path):
-
-    def run_global_explorers(self):
-        """Run global explorers"""
-        log.info("Running global explorers")
-
-        src_path = self.global_explorer_path
-        dst_path = self.global_explorer_out_path
-        remote_dst_path = self.remote_global_explorer_path
-
-        self.transfer_path(src_path, remote_dst_path)
-
-        for explorer in os.listdir(src_path):
-            output_fd = open(os.path.join(dst_path, explorer), mode='w')
-            cmd = []
-            cmd.append("__explorer=" + remote_dst_path)
-            cmd.append(os.path.join(remote_dst_path, explorer))
-
-            cdist.exec.run_or_fail(cmd, stdout=output_fd, remote_prefix=True)
-            output_fd.close()
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
@@ -403,44 +226,3 @@ class ConfigInstall:
                                                            self.type_base_path):
             log.debug("Run object: %s", cdist_object)
             self.object_run(cdist_object)
-
-    def transfer_object_parameter(self, cdist_object):
-        """Transfer the object parameter to the remote destination"""
-        src  = os.path.join(self.object_base_path,
-            cdist_object.parameter_path)
-        dst = os.path.join(self.remote_object_path,
-            cdist_object.parameter_path)
-
-        # Synchronise parameter dir afterwards
-        self.remote_mkdir(dst)
-        self.transfer_path(src, dst)
-
-    def transfer_global_explorers(self):
-        """Transfer the global explorers"""
-        self.remote_mkdir(self.remote_global_explorer_path)
-        self.transfer_path(self.global_explorer_path, 
-            self.remote_global_explorer_path)
-
-    def transfer_type_explorers(self, cdist_type):
-        """Transfer explorers of a type, but only once"""
-        if cdist_type.transferred_explorers:
-            log.debug("Skipping retransfer for explorers of %s", cdist_type)
-            return
-        else:
-            log.debug("Ensure no retransfer for %s", cdist_type)
-            # Do not retransfer
-            cdist_type.transferred_explorers = True
-
-        explorers = cdist_type.explorers
-
-        if len(explorers) > 0:
-            rel_path = cdist_type.explorer_path
-            src = os.path.join(self.type_base_path, rel_path)
-            dst = os.path.join(self.remote_type_path, rel_path)
-
-            # Ensure full path until type exists:
-            # /var/lib/cdist/conf/type/__directory/explorer
-            # /var/lib/cdist/conf/type/__directory may not exist,
-            # but remote_mkdir uses -p to fix this
-            self.remote_mkdir(dst)
-            self.transfer_path(src, dst)
