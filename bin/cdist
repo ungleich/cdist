@@ -130,6 +130,8 @@ def configinstall(args, mode):
         else:
             c.deploy_and_cleanup()
 
+        context.cleanup()
+
     if args.parallel:
         for p in process.keys():
             log.debug("Joining process %s", p)
