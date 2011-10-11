@@ -126,25 +126,15 @@ case "$1" in
       | xargs rm -f
    ;;
 
-   t)
+   test)
       shift # skip t
+      set -x
+      if [ $# -lt 1 ]; then
+         set -- cdist.test
+      fi
       PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
          python3 -m unittest "$@"
-   ;;
-
-   test)
-      PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
-         python3 -m cdist.test
-   ;;
-
-   test-install)
-      PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
-         python3 -m unittest cdist.test.test_install
-   ;;
-
-   test-all)
-      PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
-         python3 -m unittest discover lib/cdist/test '*.py' 
+      
    ;;
 
    *)

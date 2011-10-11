@@ -30,18 +30,31 @@ log = logging.getLogger(__name__)
 
 def run(argv):
     """Emulate type commands (i.e. __file and co)"""
+    global_path = os.environ['__global']
+    object_source = os.environ['__cdist_manifest']
+    target_host = os.environ['__target_host']
+    type_name = os.path.basename(argv[0])
+
+    # Logsetup - FIXME: add object_fq as soon as setup!
+    #id = target_host + ": " + cdist_type + '/' + object_id 
+    id = target_host + ": "
+    # logformat = '%(levelname)s: ' + target_host + ": " + cdist_type + '/' + object_id + ': %(message)s'
+    logformat = '%(levelname)s: ' + id + ': %(message)s'
+    logging.basicConfig(format=logformat)
+
     if '__debug' in os.environ:
         logging.root.setLevel(logging.DEBUG)
     else:
-        logging.basicConfig(level=logging.INFO)
-
-    global_path = os.environ['__global']
-    object_source = os.environ['__cdist_manifest']
-    type_name = os.path.basename(argv[0])
+        logging.root.setLevel(logging.INFO)
 
     object_base_path = os.path.join(global_path, "object")
     type_base_path = os.environ['__cdist_type_base_path']
     cdist_type = core.Type(type_base_path, type_name)
+
+    if '__install' in os.environ:
+        if not cdist_type.is_install:
+            log.debug("Running in install mode, ignoring non install type")
+            return True
 
     parser = argparse.ArgumentParser(add_help=False)
 
@@ -72,15 +85,15 @@ def run(argv):
     # Instantiate the cdist object whe are defining
     cdist_object = core.Object(cdist_type, object_base_path, object_id)
 
-    # Prefix output by object_self
-    logformat = '%%(levelname)s: %s: %%(message)s' % cdist_object.path
-    logging.basicConfig(format=logformat)
-
     # FIXME: verify object id
-    log.debug(args)
+    log.debug('#### emulator args: %s' % args)
 
     # Create object with given parameters
-    parameters = vars(args)
+    parameters = {}
+    for key,value in vars(args).items():
+        if value is not None:
+            parameters[key] = value
+    
     if cdist_object.exists:
         if cdist_object.parameters != parameters:
             raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
@@ -97,7 +110,6 @@ def run(argv):
         cdist_object.requirements.extend(requirements.split(" "))
 
     # Record / Append source
-    # FIXME: source should be list
     cdist_object.source.append(object_source)
 
     log.debug("Finished %s %s" % (cdist_object.path, parameters))

@@ -20,14 +20,14 @@
 #
 #
 
-import logging
-
+import os
 import cdist.config_install
 
-log = logging.getLogger(__name__)
+class Install(cdist.config_install.ConfigInstall):
+    def __init__(self, *args, **kargs):
+        """Enhance config install with install support"""
 
+        # Setup environ to be used in emulator
+        os.environ['__install'] = "yes"
 
-def install(args):
-    """Install remote system"""
-    process = {}
-
+        super().__init__(*args, **kargs)

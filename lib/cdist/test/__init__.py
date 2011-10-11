@@ -30,9 +30,6 @@ cdist_commands=["banner", "config", "install"]
 cdist_exec_path = os.path.abspath(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../bin/cdist"))
 
-def exec():
-    print(cdist_exec_path)
-
 #class UI(unittest.TestCase):
 #    def test_banner(self):
 #        self.assertEqual(subprocess.call([cdist_exec_path, "banner"]), 0)

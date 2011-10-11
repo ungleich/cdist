@@ -29,19 +29,21 @@ sys.path.insert(0, os.path.abspath(
         os.path.join(os.path.dirname(os.path.realpath(__file__)), '../lib')))
 
 import cdist.config
-
-cdist_exec_path = os.path.abspath(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), "bin/cdist"))
-
+import cdist.test
 
 class Install(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
         self.init_manifest = os.path.join(self.temp_dir, "manifest")
+
+        os.environ['__remote_exec'] = "ssh -o User=root -q"
+        os.environ['__remote_copy'] = "scp -o User=root -q"
+
         self.config = cdist.config.Config("localhost",
                             initial_manifest=self.init_manifest,
-                            exec_path=cdist_exec_path)
+                            exec_path=cdist.test.cdist_exec_path)
         self.config.link_emulator()
+
 
 ### NEW FOR INSTALL ############################################################
 
