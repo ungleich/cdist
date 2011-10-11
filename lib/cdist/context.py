@@ -38,7 +38,8 @@ class Context:
         target_host,
         initial_manifest=False,
         base_path=False,
-        exec_path=sys.argv[0]):
+        exec_path=sys.argv[0],
+        debug):
 
         self.target_host    = target_host
 
@@ -87,6 +88,16 @@ class Context:
 
         self.remote_type_path            = os.path.join(self.remote_conf_path, "type")
         self.remote_global_explorer_path = os.path.join(self.remote_conf_path, "explorer")
+
+        if '__remote_exec' in os.environ:
+            self.remote_exec = os.environ['__remote_exec']
+        else:
+            self.remote_exec = "ssh -o User=root -q"
+
+        if '__remote_copy' in os.environ:
+            self.remote_copy = os.environ['__remote_copy']
+        else:
+            self.remote_copy = "scp -o User=root -q"
 
     def cleanup(self):
         # Do not use in __del__:
