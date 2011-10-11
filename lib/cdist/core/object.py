@@ -97,3 +97,8 @@ class Object(object):
     prepared = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "prepared"))
     ran = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "ran"))
     source = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
+
+    @property
+    def exists(self):
+        """Checks wether this cdist object exists on the file systems."""
+        return os.path.exists(self.absolute_path)
