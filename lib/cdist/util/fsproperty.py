@@ -271,9 +271,9 @@ class FileBooleanProperty(object):
     def __delete__(self, obj):
         raise AttributeError("can't delete attribute")
 
-# FIXME: should have same anchestor as FileList
+
 class FileStringProperty(object):
-    """A string property which stores its state in a file.
+    """A string property which stores its value in a file.
     """
     def __init__(self, path):
         """
@@ -307,15 +307,21 @@ class FileStringProperty(object):
         value = ""
         try:
             with open(path, "r") as fd:
-                value = fd.read().rstrip('\n')
+                value = fd.read()
         except EnvironmentError:
             pass
         return value
 
     def __set__(self, obj, value):
         path = self._get_path(obj)
-        with open(path, "w") as fd:
-            fd.write(str(value))
+        if value:
+            with open(path, "w") as fd:
+                fd.write(str(value))
+        else:
+            try:
+                os.unlink(path)
+            except EnvironmentError:
+                pass
 
     def __delete__(self, obj):
-        raise AttributeError("can't delete attribute")
+        raise AttributeError("Can't delete attribute. Set it's value to an empty string to remove the underlying file.")
