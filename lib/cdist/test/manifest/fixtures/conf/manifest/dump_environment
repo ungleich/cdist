@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "PATH: $PATH"
+echo "__target_host: $__target_host"
+echo "__global: $__global"
+echo "__cdist_type_base_path: $__cdist_type_base_path"
+echo "__manifest: $__manifest"

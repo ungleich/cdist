@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -f "$__object/parameter/name" ]; then
+   name="(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+   echo "$name" > "$__object/parameter/name"
+fi
