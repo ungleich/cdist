@@ -53,6 +53,9 @@ class ConfigInstall(object):
         self.explorer = cdist.explorer.Explorer(self.context)
         #self.manifest = cdist.manifest.Mamifest()
 
+        self.manifest.initial_manifest()
+        self.manifest.type_manifest(cdist_object)
+
         self.log = logging.getLogger(self.context.target_host)
 
         # Setup env to be used by others - FIXME

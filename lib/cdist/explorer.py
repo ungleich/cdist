@@ -40,10 +40,32 @@ class Explorer:
 
     def __init__(self, context):
         self.context = context
+
+        self.global_explorer_path = os.path.join(self.context.conf_path, "explorer")
+
+        self.
+
         try:
             os.mkdir(self.context.global_explorer_out_path)
         except OSError as e:
             raise cdist.Error("Failed to create explorer out path: %s" % e)
+
+    def run_global_explorers(self):
+        """Run global explorers"""
+        log.info("Running global explorers")
+
+        src_path = self.context.global_explorer_path
+        dst_path = self.context.remote_global_explorer_path
+
+        self.exec_wrapper.transfer_path(src_path, dst_path)
+
+        outputs = {}
+        for explorer in os.listdir(src_path):
+            outputs[explorer] = io.StringIO()
+            cmd = []
+            cmd.append("__explorer=" + remote_dst_path)
+            cmd.append(os.path.join(remote_dst_path, explorer))
+            cdist.exec.run_or_fail(cmd, stdout=outputs[explorer], remote_prefix=True)
 
     def run_type_explorer(self, cdist_object):
         """Run type specific explorers for objects"""
@@ -52,12 +74,12 @@ class Explorer:
         self.transfer_type_explorers(cdist_type)
 
         cmd = []
-        cmd.append("__explorer="        + self.remote_global_explorer_path)
+        cmd.append("__explorer="        + self.context.remote_global_explorer_path)
         cmd.append("__type_explorer="   + os.path.join(
-                                            self.remote_type_path,
+                                            self.context.remote_type_path,
                                             cdist_type.explorer_path))
         cmd.append("__object="          + os.path.join(
-                                            self.remote_object_path,
+                                            self.context.remote_object_path,
                                             cdist_object.path))
         cmd.append("__object_id="       + cdist_object.object_id)
         cmd.append("__object_fq="       + cdist_object.name)
@@ -67,7 +89,7 @@ class Explorer:
 
         outputs = {}
         for explorer in cdist_type.explorers:
-            remote_cmd = cmd + [os.path.join(self.remote_type_path,
+            remote_cmd = cmd + [os.path.join(self.context.remote_type_path,
                 cdist_type.explorer_path, explorer)]
             outputs[explorer] = io.StringIO()
             log.debug("%s exploring %s using %s storing to %s", 
@@ -76,23 +98,6 @@ class Explorer:
             cdist.exec.run_or_fail(remote_cmd, stdout=outputs[explorer], remote_prefix=True)
 
         return outputs
-
-    def run_global_explorers(self):
-        """Run global explorers"""
-        log.info("Running global explorers")
-
-        src_path = self.global_explorer_path
-        dst_path = self.remote_global_explorer_path
-
-        self.transfer_path(src_path, dst_path)
-
-        outputs = {}
-        for explorer in os.listdir(src_path):
-            outputs[explorer] = io.StringIO()
-            cmd = []
-            cmd.append("__explorer=" + remote_dst_path)
-            cmd.append(os.path.join(remote_dst_path, explorer))
-            cdist.exec.run_or_fail(cmd, stdout=outputs[explorer], remote_prefix=True)
 
     def transfer_object_parameter(self, cdist_object):
         """Transfer the object parameter to the remote destination"""
