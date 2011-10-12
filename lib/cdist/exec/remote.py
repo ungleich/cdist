@@ -94,7 +94,7 @@ class Remote(object):
         cmd = self._exec.split()
         cmd.append(self.target_host)
         cmd.extend(command)
-        return self.run_command(cmd, env=None)
+        return self.run_command(cmd, env=env)
 
     def run_command(self, command, env=None):
         """Run the given command with the given environment.
