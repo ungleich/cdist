@@ -33,6 +33,7 @@ import os
 
 import cdist
 
+# FIXME: Logging with hostname
 log = logging.getLogger(__name__)
 
 class TypeExplorer(object):
@@ -56,7 +57,7 @@ class TypeExplorer(object):
         cdist_type = cdist_object.type
 
         cmd = []
-        cmd.append("__explorer="        + self.context.remote_global_explorer_path)
+        cmd.append("__explorer="        + self.remote_global_explorer_path)
         cmd.append("__type_explorer="   + os.path.join(
                                             self.remote_type_path,
                                             cdist_type.explorer_path))
@@ -75,7 +76,8 @@ class TypeExplorer(object):
                             cdist_object, explorer, remote_cmd, output)
                         
             # FIXME: change to new style
-            cdist.exec.run_or_fail(remote_cmd, stdout=outputs[explorer], remote_prefix=True)
+            cdist.exec.run_or_fail(remote_cmd, stdout=outputs[explorer],
+	    	remote_prefix=True)
 
         return outputs
 
