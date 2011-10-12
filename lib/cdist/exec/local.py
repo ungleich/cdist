@@ -30,6 +30,7 @@ import shutil
 import logging
 
 import cdist
+from cdist import core
 
 
 class LocalScriptError(cdist.Error):
@@ -118,3 +119,13 @@ class Local(object):
             raise LocalScriptError(script, command, script_content)
         except EnvironmentError as error:
             raise cdist.Error(" ".join(command) + ": " + error.args[1])
+
+    def link_emulator(self, exec_path):
+        """Link emulator to types"""
+        src = os.path.abspath(exec_path)
+        for cdist_type in core.Type.list_types(self.type_base_path):
+            dst = os.path.join(self.bin_path, cdist_type.name)
+            self.log.debug("Linking emulator: %s to %s", src, dst)
+
+            # FIXME: handle exceptions
+            os.symlink(src, dst)
