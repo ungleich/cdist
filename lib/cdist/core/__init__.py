@@ -23,3 +23,4 @@ __all__ = ['Type', 'Object']
 
 from cdist.core.type import Type
 from cdist.core.object import Object
+from cdist.core.global_explorer import GlobalExplorer
