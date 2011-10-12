@@ -50,11 +50,17 @@ class ConfigInstall(object):
         self.__init_local_paths()
         self.__init_remote_paths()
 
+        self.global_explorer = cdist.explorer.GlobalExplorer(self.context.global_in, out)
+        self.type_explorer = cdist.explorer.GlobalExplorer(self.context.global_in, out)
+
         self.explorer = cdist.explorer.Explorer(self.context)
         #self.manifest = cdist.manifest.Mamifest()
 
         self.manifest.initial_manifest()
         self.manifest.type_manifest(cdist_object)
+        self.global_explorer.run()?
+
+        self.type_explorer.run(cdist_object)?
 
         self.log = logging.getLogger(self.context.target_host)
 
