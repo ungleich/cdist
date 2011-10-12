@@ -54,8 +54,7 @@ class LocalTestCase(unittest.TestCase):
         self.local = local.Local(target_host, local_base_path, out_path)
 
     def tearDown(self):
-        #shutil.rmtree(self.temp_dir)
-        pass
+        shutil.rmtree(self.temp_dir)
 
     def test_run_success(self):
         self.local.run(['/bin/true'])
