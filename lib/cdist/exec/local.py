@@ -59,7 +59,7 @@ class Local(object):
         self.conf_path = os.path.join(self.base_path, "conf")
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
         self.manifest_path = os.path.join(self.conf_path, "manifest")
-        self.type_base_path = os.path.join(self.conf_path, "type")
+        self.type_path = os.path.join(self.conf_path, "type")
         # FIXME: should not be needed anywhere
         self.lib_path = os.path.join(self.base_path, "lib")
 
@@ -123,7 +123,7 @@ class Local(object):
     def link_emulator(self, exec_path):
         """Link emulator to types"""
         src = os.path.abspath(exec_path)
-        for cdist_type in core.Type.list_types(self.type_base_path):
+        for cdist_type in core.Type.list_types(self.type_path):
             dst = os.path.join(self.bin_path, cdist_type.name)
             self.log.debug("Linking emulator: %s to %s", src, dst)
 
