@@ -31,7 +31,7 @@ import time
 import cdist.core
 import cdist.context
 import cdist.exec
-import cdist.explorer
+#import cdist.explorer
 #import cdist.manifest
 
 class ConfigInstall(object):
@@ -53,7 +53,7 @@ class ConfigInstall(object):
         self.global_explorer = cdist.explorer.GlobalExplorer(self.context.global_in, out)
         self.type_explorer = cdist.explorer.GlobalExplorer(self.context.global_in, out)
 
-        self.explorer = cdist.explorer.Explorer(self.context)
+        self.global_explorer = cdist.core.GlobalExplorer
         #self.manifest = cdist.manifest.Mamifest()
 
         self.manifest.initial_manifest()
