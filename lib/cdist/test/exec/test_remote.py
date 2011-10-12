@@ -42,14 +42,30 @@ class RemoteTestCase(unittest.TestCase):
     def setUp(self):
         self.temp_dir = self.mkdtemp()
         target_host = 'localhost'
-        remote_base_path = self.temp_dir
+        self.base_path = self.temp_dir
         user = getpass.getuser()
         remote_exec = "ssh -o User=%s -q" % user
         remote_copy = "scp -o User=%s -q" % user
-        self.remote = remote.Remote(target_host, remote_base_path, remote_exec, remote_copy)
+        self.remote = remote.Remote(target_host, self.base_path, remote_exec, remote_copy)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
+
+    ### test api
+
+    def test_conf_path(self):
+        self.assertEqual(self.remote.conf_path, os.path.join(self.base_path, "conf"))
+
+    def test_object_path(self):
+        self.assertEqual(self.remote.object_path, os.path.join(self.base_path, "object"))
+
+    def test_type_path(self):
+        self.assertEqual(self.remote.type_path, os.path.join(self.base_path, "conf", "type"))
+
+    def test_global_explorer_path(self):
+        self.assertEqual(self.remote.global_explorer_path, os.path.join(self.base_path, "conf", "explorer"))
+
+    ### /test api
 
     def test_run_success(self):
         self.remote.run(['/bin/true'])
