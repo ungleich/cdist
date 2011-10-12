@@ -20,6 +20,8 @@
 #
 #
 
+# FIXME: common base class with Local?
+
 import io
 import os
 import sys
