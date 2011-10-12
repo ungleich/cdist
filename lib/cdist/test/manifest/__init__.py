@@ -59,11 +59,9 @@ class ManifestTestCase(unittest.TestCase):
         self.manifest = manifest.Manifest(target_host, self.local)
 
     def tearDown(self):
-        #shutil.rmtree(self.temp_dir)
-        pass
+        shutil.rmtree(self.temp_dir)
 
     def test_initial_manifest_environment(self):
-        #initial_manifest = os.path.join(self.local.manifest_path, "init")
         initial_manifest = os.path.join(self.local.manifest_path, "dump_environment")
         output_string = self.manifest.run_initial_manifest(initial_manifest)
         output_dict = {}
@@ -76,10 +74,6 @@ class ManifestTestCase(unittest.TestCase):
         self.assertEqual(output_dict['__global'], self.local.out_path)
         self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_base_path)
         self.assertEqual(output_dict['__manifest'], self.local.manifest_path)
-        
-        
-#        for line in output.split('\n'):
-#            print(line)
 
     def test_type_manifest_environment(self):
         cdist_type = core.Type(self.local.type_base_path, '__dump_environment')
