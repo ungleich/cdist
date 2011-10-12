@@ -67,7 +67,7 @@ class Local(object):
         self.out_path = out_path
         self.bin_path = os.path.join(self.out_path, "bin")
         self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
-        self.object_base_path = os.path.join(self.out_path, "object")
+        self.object_path = os.path.join(self.out_path, "object")
 
         self.log = logging.getLogger(self.target_host)
     
