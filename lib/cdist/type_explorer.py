@@ -35,7 +35,7 @@ import cdist
 
 log = logging.getLogger(__name__)
 
-class Explorer:
+class TypeExplorer(object):
     """Execute explorers"""
 
     def __init__(self, context):
