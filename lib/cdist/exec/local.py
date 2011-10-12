@@ -20,6 +20,8 @@
 #
 #
 
+# FIXME: common base class with Remote?
+
 import io
 import os
 import sys
