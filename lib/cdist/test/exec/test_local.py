@@ -81,7 +81,7 @@ class LocalTestCase(unittest.TestCase):
         fd = open(script, "w")
         fd.writelines(["#!/bin/sh\n", "echo foobar"])
         fd.close()
-        self.assertEqual(self.local.run_script(script), b"foobar\n")
+        self.assertEqual(self.local.run_script(script), "foobar\n")
 
     def test_mkdir(self):
         temp_dir = self.mkdtemp(dir=self.temp_dir)

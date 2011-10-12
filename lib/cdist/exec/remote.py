@@ -104,7 +104,7 @@ class Remote(object):
         assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
         self.log.debug("Remote run: %s", command)
         try:
-            return subprocess.check_output(command, env=env)
+            return subprocess.check_output(command, env=env).decode()
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
@@ -125,7 +125,7 @@ class Remote(object):
             self.log.debug("Remote run script env: %s", env)
         
         try:
-            return subprocess.check_output(command, env=env)
+            return subprocess.check_output(command, env=env).decode()
         except subprocess.CalledProcessError as error:
             script_content = self.run(["cat", script])
             self.log.error("Code that raised the error:\n%s", script_content)
