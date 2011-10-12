@@ -41,6 +41,8 @@ class Context(object):
         exec_path=sys.argv[0],
         debug=False):
 
+        self.debug      = debug
+
         self.target_host    = target_host
 
         # Only required for testing
