@@ -20,7 +20,6 @@
 #
 
 import logging
-import os
 import subprocess
 
 import cdist
@@ -44,7 +43,7 @@ class Wrapper(object):
     def transfer_path(self, source, destination):
         """Transfer directory and previously delete the remote destination"""
         self.remove_remote_path(destination)
-        self.run_or_fail(os.environ['__remote_copy'].split() +
+        self.run_or_fail(self.remote_copy.split() +
             ["-r", source, self.target_host + ":" + destination])
 
     def shell_run_or_debug_fail(self, script, *args, remote=False, **kargs):
