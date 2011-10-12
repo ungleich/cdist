@@ -28,7 +28,7 @@ import unittest
 cdist_commands=["banner", "config", "install"]
 
 cdist_base_path = os.path.abspath(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../"))
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../../"))
 
 cdist_exec_path = os.path.join(cdist_base_path, "bin/cdist")
 
