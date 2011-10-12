@@ -81,7 +81,21 @@ class ManifestTestCase(unittest.TestCase):
 #        for line in output.split('\n'):
 #            print(line)
 
-#    def test_type_manifest(self):
-#        cdist_type = core.Type(self.local.type_base_path, '__moon')
-#        cdist_object = core.Object(cdist_type, self.local.object_base_path, 'Saturn')
-#        self.manifest.run_type_manifest(cdist_object)
+    def test_type_manifest_environment(self):
+        cdist_type = core.Type(self.local.type_base_path, '__dump_environment')
+        cdist_object = core.Object(cdist_type, self.local.object_base_path, 'whatever')
+        
+        output_string = self.manifest.run_type_manifest(cdist_object)
+        output_dict = {}
+        for line in output_string.split('\n'):
+            if line:
+                key,value = line.split(': ')
+                output_dict[key] = value
+        self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
+        self.assertEqual(output_dict['__target_host'], self.local.target_host)
+        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_base_path)
+        self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
+        self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
+        self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
+        self.assertEqual(output_dict['__object_fq'], cdist_object.path)
