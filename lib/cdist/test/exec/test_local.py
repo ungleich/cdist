@@ -50,11 +50,44 @@ class LocalTestCase(unittest.TestCase):
     def setUp(self):
         self.temp_dir = self.mkdtemp()
         target_host = 'localhost'
-        out_path = self.temp_dir
-        self.local = local.Local(target_host, local_base_path, out_path)
+        self.out_path = self.temp_dir
+        self.base_path = local_base_path
+        self.local = local.Local(target_host, self.base_path, self.out_path)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
+
+    ### test api
+
+    def test_cache_path(self):
+        self.assertEqual(self.local.cache_path, os.path.join(self.base_path, "cache"))
+
+    def test_conf_path(self):
+        self.assertEqual(self.local.conf_path, os.path.join(self.base_path, "conf"))
+
+    def test_global_explorer_path(self):
+        self.assertEqual(self.local.global_explorer_path, os.path.join(self.base_path, "conf", "explorer"))
+
+    def test_manifest_path(self):
+        self.assertEqual(self.local.manifest_path, os.path.join(self.base_path, "conf", "manifest"))
+
+    def test_type_path(self):
+        self.assertEqual(self.local.type_path, os.path.join(self.base_path, "conf", "type"))
+
+    def test_out_path(self):
+        self.assertEqual(self.local.out_path, self.out_path)
+
+    def test_bin_path(self):
+        self.assertEqual(self.local.bin_path, os.path.join(self.out_path, "bin"))
+
+    def test_global_explorer_out_path(self):
+        self.assertEqual(self.local.global_explorer_out_path, os.path.join(self.out_path, "explorer"))
+
+    def test_object_path(self):
+        self.assertEqual(self.local.object_path, os.path.join(self.out_path, "object"))
+
+    ### /test api
+
 
     def test_run_success(self):
         self.local.run(['/bin/true'])
@@ -96,6 +129,5 @@ class LocalTestCase(unittest.TestCase):
 
     def test_create_directories(self):
         self.local.create_directories()
-        print('self.local.bin_path: %s' % self.local.bin_path)
         self.assertTrue(os.path.isdir(self.local.out_path))
         self.assertTrue(os.path.isdir(self.local.bin_path))
