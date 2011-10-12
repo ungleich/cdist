@@ -38,7 +38,7 @@ common:
         __global: full qualified path to the global output dir == local.out_path
         __cdist_manifest: full qualified path of the manifest == script
         __cdist_type_base_path: full qualified path to the directory where types are defined for use in type emulator
-            == local.type_base_path
+            == local.type_path
 
 initial manifest is:
     script: full qualified path to the initial manifest
@@ -72,7 +72,7 @@ class Manifest(object):
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             '__target_host': self.target_host,
             '__global': self.local.out_path,
-            '__cdist_type_base_path': self.local.type_base_path, # for use in type emulator
+            '__cdist_type_base_path': self.local.type_path, # for use in type emulator
         }
 
     def run_initial_manifest(self, script):
@@ -90,5 +90,5 @@ class Manifest(object):
             '__object_fq': cdist_object.path,
             '__type': cdist_object.type.absolute_path,
         })
-        script = os.path.join(self.local.type_base_path, cdist_object.type.manifest_path)
+        script = os.path.join(self.local.type_path, cdist_object.type.manifest_path)
         return self.local.run_script(script, env=env)

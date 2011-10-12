@@ -72,12 +72,12 @@ class ManifestTestCase(unittest.TestCase):
         self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
         self.assertEqual(output_dict['__global'], self.local.out_path)
-        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_base_path)
+        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
         self.assertEqual(output_dict['__manifest'], self.local.manifest_path)
 
     def test_type_manifest_environment(self):
-        cdist_type = core.Type(self.local.type_base_path, '__dump_environment')
-        cdist_object = core.Object(cdist_type, self.local.object_base_path, 'whatever')
+        cdist_type = core.Type(self.local.type_path, '__dump_environment')
+        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
         
         output_string = self.manifest.run_type_manifest(cdist_object)
         output_dict = {}
@@ -88,7 +88,7 @@ class ManifestTestCase(unittest.TestCase):
         self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
         self.assertEqual(output_dict['__global'], self.local.out_path)
-        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_base_path)
+        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
         self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], cdist_object.object_id)

@@ -27,19 +27,11 @@ import shutil
 import string
 import random
 
-#import logging
-#logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
-
 import cdist
-from cdist.exec import local
-
-import os.path as op
-my_dir = op.abspath(op.dirname(__file__))
-fixtures = op.join(my_dir, 'fixtures')
-local_base_path = fixtures
+from cdist.exec import remote
 
 
-class LocalTestCase(unittest.TestCase):
+class RemoteTestCase(unittest.TestCase):
 
     def mkdtemp(self, **kwargs):
         return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)
@@ -50,52 +42,86 @@ class LocalTestCase(unittest.TestCase):
     def setUp(self):
         self.temp_dir = self.mkdtemp()
         target_host = 'localhost'
-        out_path = self.temp_dir
-        self.local = local.Local(target_host, local_base_path, out_path)
+        self.base_path = self.temp_dir
+        user = getpass.getuser()
+        remote_exec = "ssh -o User=%s -q" % user
+        remote_copy = "scp -o User=%s -q" % user
+        self.remote = remote.Remote(target_host, self.base_path, remote_exec, remote_copy)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
 
+    ### test api
+
+    def test_conf_path(self):
+        self.assertEqual(self.remote.conf_path, os.path.join(self.base_path, "conf"))
+
+    def test_object_path(self):
+        self.assertEqual(self.remote.object_path, os.path.join(self.base_path, "object"))
+
+    def test_type_path(self):
+        self.assertEqual(self.remote.type_path, os.path.join(self.base_path, "conf", "type"))
+
+    def test_global_explorer_path(self):
+        self.assertEqual(self.remote.global_explorer_path, os.path.join(self.base_path, "conf", "explorer"))
+
+    ### /test api
+
     def test_run_success(self):
-        self.local.run(['/bin/true'])
+        self.remote.run(['/bin/true'])
 
     def test_run_fail(self):
-        self.assertRaises(cdist.Error, self.local.run, ['/bin/false'])
+        self.assertRaises(cdist.Error, self.remote.run, ['/bin/false'])
 
     def test_run_script_success(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
         fd = open(script, "w")
         fd.writelines(["#!/bin/sh\n", "/bin/true"])
         fd.close()
-        self.local.run_script(script)
+        self.remote.run_script(script)
 
     def test_run_script_fail(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
         fd = open(script, "w")
         fd.writelines(["#!/bin/sh\n", "/bin/false"])
         fd.close()
-        self.assertRaises(local.LocalScriptError, self.local.run_script, script)
+        self.assertRaises(remote.RemoteScriptError, self.remote.run_script, script)
 
     def test_run_script_get_output(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
         fd = open(script, "w")
         fd.writelines(["#!/bin/sh\n", "echo foobar"])
         fd.close()
-        self.assertEqual(self.local.run_script(script), "foobar\n")
+        self.assertEqual(self.remote.run_script(script), "foobar\n")
 
     def test_mkdir(self):
         temp_dir = self.mkdtemp(dir=self.temp_dir)
         os.rmdir(temp_dir)
-        self.local.mkdir(temp_dir)
+        self.remote.mkdir(temp_dir)
         self.assertTrue(os.path.isdir(temp_dir))
 
     def test_rmdir(self):
         temp_dir = self.mkdtemp(dir=self.temp_dir)
-        self.local.rmdir(temp_dir)
+        self.remote.rmdir(temp_dir)
         self.assertFalse(os.path.isdir(temp_dir))
 
+    def test_transfer_file(self):
+        handle, source = self.mkstemp(dir=self.temp_dir)
+        target = self.mkdtemp(dir=self.temp_dir)
+        self.remote.transfer(source, target)
+        self.assertTrue(os.path.isfile(target))
+
+    def test_transfer_dir(self):
+        source = self.mkdtemp(dir=self.temp_dir)
+        # put a file in the directory as payload
+        handle, source_file = self.mkstemp(dir=source)
+        source_file_name = os.path.split(source_file)[-1]
+        target = self.mkdtemp(dir=self.temp_dir)
+        self.remote.transfer(source, target)
+        # test if the payload file is in the target directory
+        self.assertTrue(os.path.isfile(os.path.join(target, source_file_name)))
+
     def test_create_directories(self):
-        self.local.create_directories()
-        print('self.local.bin_path: %s' % self.local.bin_path)
-        self.assertTrue(os.path.isdir(self.local.out_path))
-        self.assertTrue(os.path.isdir(self.local.bin_path))
+        self.remote.create_directories()
+        self.assertTrue(os.path.isdir(self.remote.base_path))
+        self.assertTrue(os.path.isdir(self.remote.conf_path))
