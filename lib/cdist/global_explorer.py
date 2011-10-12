@@ -36,8 +36,6 @@ import cdist
 log = logging.getLogger(__name__)
 
 class GlobalExplorer(object):
-    """Execute explorers"""
-
     def __init__(self, local_path, remote_path):
         self.local_path     = local_path
         self.remote_path    = remote_path
