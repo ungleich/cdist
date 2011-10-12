@@ -36,65 +36,45 @@ import cdist
 log = logging.getLogger(__name__)
 
 class TypeExplorer(object):
-    """Execute explorers"""
+    def __init__(self,
+        remote_global_explorer_path,
+        object_base_path,
+        type_base_path,
+        remote_object_base_path,
+        remote_type_base_path
+        ):
 
-    def __init__(self, context):
-        self.context = context
+        self.object_base_path = object_base_path
+        self.global_explorer_path = global_explorer_path
+        self.type_base_path = type_base_path
+        self.remote_type_base_path = remote_type_base_path
+        self.remote_object_path = remote_object_path
 
-        self.global_explorer_path = os.path.join(self.context.conf_path, "explorer")
-
-        self.
-
-        try:
-            os.mkdir(self.context.global_explorer_out_path)
-        except OSError as e:
-            raise cdist.Error("Failed to create explorer out path: %s" % e)
-
-    def run_global_explorers(self):
-        """Run global explorers"""
-        log.info("Running global explorers")
-
-        src_path = self.context.global_explorer_path
-        dst_path = self.context.remote_global_explorer_path
-
-        self.exec_wrapper.transfer_path(src_path, dst_path)
-
-        outputs = {}
-        for explorer in os.listdir(src_path):
-            outputs[explorer] = io.StringIO()
-            cmd = []
-            cmd.append("__explorer=" + remote_dst_path)
-            cmd.append(os.path.join(remote_dst_path, explorer))
-            cdist.exec.run_or_fail(cmd, stdout=outputs[explorer], remote_prefix=True)
-
-    def run_type_explorer(self, cdist_object):
+    def run(self, cdist_object):
         """Run type specific explorers for objects"""
 
         cdist_type = cdist_object.type
-        self.transfer_type_explorers(cdist_type)
 
         cmd = []
         cmd.append("__explorer="        + self.context.remote_global_explorer_path)
         cmd.append("__type_explorer="   + os.path.join(
-                                            self.context.remote_type_path,
+                                            self.remote_type_path,
                                             cdist_type.explorer_path))
         cmd.append("__object="          + os.path.join(
-                                            self.context.remote_object_path,
+                                            self.remote_object_base_path,
                                             cdist_object.path))
         cmd.append("__object_id="       + cdist_object.object_id)
         cmd.append("__object_fq="       + cdist_object.name)
 
-        # Need to transfer at least the parameters for objects to be useful
-        self.transfer_object_parameter(cdist_object)
-
         outputs = {}
         for explorer in cdist_type.explorers:
-            remote_cmd = cmd + [os.path.join(self.context.remote_type_path,
+            remote_cmd = cmd + [os.path.join(self.remote_type_path,
                 cdist_type.explorer_path, explorer)]
             outputs[explorer] = io.StringIO()
             log.debug("%s exploring %s using %s storing to %s", 
                             cdist_object, explorer, remote_cmd, output)
                         
+            # FIXME: change to new style
             cdist.exec.run_or_fail(remote_cmd, stdout=outputs[explorer], remote_prefix=True)
 
         return outputs
@@ -103,18 +83,13 @@ class TypeExplorer(object):
         """Transfer the object parameter to the remote destination"""
         src  = os.path.join(self.object_base_path,
             cdist_object.parameter_path)
-        dst = os.path.join(self.remote_object_path,
+        dst = os.path.join(self.remote_object_base_path,
             cdist_object.parameter_path)
 
+        # FIXME: new style
         # Synchronise parameter dir afterwards
         self.remote_mkdir(dst)
         self.transfer_path(src, dst)
-
-    def transfer_global_explorers(self):
-        """Transfer the global explorers"""
-        self.remote_mkdir(self.remote_global_explorer_path)
-        self.transfer_path(self.global_explorer_path, 
-            self.remote_global_explorer_path)
 
     def transfer_type_explorers(self, cdist_type):
         """Transfer explorers of a type, but only once"""
@@ -139,17 +114,3 @@ class TypeExplorer(object):
             # but remote_mkdir uses -p to fix this
             self.remote_mkdir(dst)
             self.transfer_path(src, dst)
-
-    def remote_mkdir(self, directory):
-        """Create directory on remote side"""
-        cdist.exec.run_or_fail(["mkdir", "-p", directory], remote_prefix=True)
-
-    def remove_remote_path(self, destination):
-        """Ensure path on remote side vanished"""
-        cdist.exec.run_or_fail(["rm", "-rf",  destination], remote_prefix=True)
-
-    def transfer_path(self, source, destination):
-        """Transfer directory and previously delete the remote destination"""
-        self.remove_remote_path(destination)
-        cdist.exec.run_or_fail(os.environ['__remote_copy'].split() +
-            ["-r", source, self.target_host + ":" + destination])
