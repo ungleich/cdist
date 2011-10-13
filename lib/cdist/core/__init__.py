@@ -19,8 +19,8 @@
 #
 #
 
-__all__ = ['Type', 'Object']
-
 from cdist.core.type import Type
 from cdist.core.object import Object
-from cdist.core.global_explorer import GlobalExplorer
+from cdist.core.explorer import Explorer
+from cdist.core.manifest import Manifest
+from cdist.core.code import Code
