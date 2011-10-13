@@ -97,10 +97,27 @@ class ObjectTestCase(unittest.TestCase):
     def test_explorers(self):
         self.assertEqual(self.cdist_object.explorers, {})
 
-    def test_explorers_after_changing(self):
+    # FIXME: actually testing fsproperty.DirectoryDictProperty here, move to their own test case
+    def test_explorers_assign_dict(self):
         expected = {'first': 'foo', 'second': 'bar'}
         # when set, written to file
         self.cdist_object.explorers = expected
+        object_explorer_path = os.path.join(self.cdist_object.base_path, self.cdist_object.explorer_path)
+        self.assertTrue(os.path.isdir(object_explorer_path))
+        # when accessed, read from file
+        self.assertEqual(self.cdist_object.explorers, expected)
+        # remove dynamically created folder
+        self.cdist_object.explorers = {}
+        os.rmdir(os.path.join(self.cdist_object.base_path, self.cdist_object.explorer_path))
+
+    # FIXME: actually testing fsproperty.DirectoryDictProperty here, move to their own test case
+    def test_explorers_assign_key_value(self):
+        expected = {'first': 'foo', 'second': 'bar'}
+        object_explorer_path = os.path.join(self.cdist_object.base_path, self.cdist_object.explorer_path)
+        for key,value in expected.items():
+            # when set, written to file
+            self.cdist_object.explorers[key] = value
+            self.assertTrue(os.path.isfile(os.path.join(object_explorer_path, key)))
         # when accessed, read from file
         self.assertEqual(self.cdist_object.explorers, expected)
         # remove dynamically created folder
