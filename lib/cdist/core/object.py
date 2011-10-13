@@ -100,6 +100,7 @@ class Object(object):
     ran = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "ran"))
     source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
     code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "code-local"))
+    code_remote = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "code-remote"))
 
     @property
     def exists(self):
