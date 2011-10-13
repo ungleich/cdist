@@ -114,6 +114,8 @@ def configinstall(args, mode):
 
     time_start = time.time()
 
+    import cdist.context
+
     for host in args.host:
         context = cdist.context.Context(
             target_host=host,
