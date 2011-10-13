@@ -24,12 +24,11 @@ import logging
 import os
 import sys
 import tempfile
-#import stat
-#import shutil
-#import time
-#
-#import cdist.core
-#import cdist.exec
+import shutil
+
+from cdist.exec import local
+from cdist.exec import remote
+
 
 class Context(object):
     """Hold information about current context"""
@@ -52,25 +51,13 @@ class Context(object):
         self.log = logging.getLogger(self.target_host)
         self.log.addFilter(self)
 
-        # Base and Temp Base 
+        # Local base directory
         self.base_path = (base_path or
             os.path.abspath(os.path.join(os.path.dirname(__file__),
                 os.pardir, os.pardir)))
 
-        # Local input
-        self.cache_path             = os.path.join(self.base_path, "cache", 
-            self.target_host)
-        self.conf_path              = os.path.join(self.base_path, "conf")
-
-        self.global_explorer_path   = os.path.join(self.conf_path, "explorer")
-        self.manifest_path          = os.path.join(self.conf_path, "manifest")
-        self.type_base_path         = os.path.join(self.conf_path, "type")
-        self.lib_path               = os.path.join(self.base_path, "lib")
-
-        self.initial_manifest = (initial_manifest or
-            os.path.join(self.manifest_path, "init"))
-
-        # Local output
+        # Local temp directory
+        # FIXME: if __cdist_out_dir can be given from the outside, the same directory will be used for all hosts
         if '__cdist_out_dir' in os.environ:
             self.out_path = os.environ['__cdist_out_dir']
             self.temp_dir = None
@@ -78,31 +65,17 @@ class Context(object):
             self.temp_dir = tempfile.mkdtemp()
             self.out_path = os.path.join(self.temp_dir, "out")
 
-        self.bin_path                 = os.path.join(self.out_path, "bin")
-        self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
-        self.object_base_path         = os.path.join(self.out_path, "object")
+        self.local = local.Local(self.target_host, self.base_path, self.out_path)
 
-        # Remote directory base
-        if '__cdist_remote_out_dir' in os.environ:
-            self.remote_base_path = os.environ['__cdist_remote_out_dir']
-        else:
-            self.remote_base_path = "/var/lib/cdist"
+        self.initial_manifest = (initial_manifest or
+            os.path.join(self.local.manifest_path, "init"))
 
-        self.remote_conf_path            = os.path.join(self.remote_base_path, "conf")
-        self.remote_object_path          = os.path.join(self.remote_base_path, "object")
-
-        self.remote_type_path            = os.path.join(self.remote_conf_path, "type")
-        self.remote_global_explorer_path = os.path.join(self.remote_conf_path, "explorer")
-
-        if '__remote_exec' in os.environ:
-            self.remote_exec = os.environ['__remote_exec']
-        else:
-            self.remote_exec = "ssh -o User=root -q"
-
-        if '__remote_copy' in os.environ:
-            self.remote_copy = os.environ['__remote_copy']
-        else:
-            self.remote_copy = "scp -o User=root -q"
+        # Remote
+        self.remote_base_path = os.environ.get('__cdist_remote_out_dir', "/var/lib/cdist")
+        self.remote_exec = os.environ.get('__remote_exec', "ssh -o User=root -q")
+        self.remote_copy = os.environ.get('__remote_copy', "scp -o User=root -q")
+        self.remote = remote.Remote(self.target_host, self.remote_base_path, 
+            self.remote_exec, self.remote_copy)
 
     def cleanup(self):
         """Remove temp stuff"""

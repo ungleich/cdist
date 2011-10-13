@@ -28,11 +28,8 @@ import sys
 import tempfile
 import time
 
-import cdist.core
-import cdist.context
-import cdist.exec
-#import cdist.explorer
-#import cdist.manifest
+from cdist import core
+
 
 class ConfigInstall(object):
     """Cdist main class to hold arbitrary data"""
@@ -41,58 +38,26 @@ class ConfigInstall(object):
 
         self.context = context
         self.log = logging.getLogger(self.context.target_host)
-        self.exec_wrapper   = cdist.exec.Wrapper(
-            target_host = self.context.target_host,
-            remote_exec=self.context.remote_exec,
-            remote_copy=self.context.remote_copy)
 
-        # Create directories other may depend on
-        self.__init_local_paths()
-        self.__init_remote_paths()
+        # For easy access
+        self.local = context.local
+        self.remote = context.remote
 
-        self.global_explorer = cdist.explorer.GlobalExplorer(self.context.global_in, out)
-        self.type_explorer = cdist.explorer.GlobalExplorer(self.context.global_in, out)
+        # Initialise local directory structure
+        self.local.create_directories()
+        # Initialise remote directory structure
+        self.remote.create_directories()
 
-        self.global_explorer = cdist.core.GlobalExplorer
-        #self.manifest = cdist.manifest.Mamifest()
-
-        self.manifest.initial_manifest()
-        self.manifest.type_manifest(cdist_object)
-        self.global_explorer.run()?
-
-        self.type_explorer.run(cdist_object)?
-
-        self.log = logging.getLogger(self.context.target_host)
-
-        # Setup env to be used by others - FIXME
-        self.__init_env()
-
-    def __init_remote_paths(self):
-        """Initialise remote directory structure"""
-        self.exec_wrapper.remove_remote_path(self.context.remote_base_path)
-        self.exec_wrapper.remote_mkdir(self.context.remote_base_path)
-        self.exec_wrapper.remote_mkdir(self.context.remote_conf_path)
-
-    def __init_local_paths(self):
-        """Initialise local directory structure"""
-
-        # Create base dir, if user supplied and not existing
-        if not os.path.isdir(self.context.base_path):
-            os.mkdir(self.context.base_path)
-            
-        # FIXME: raise more beautiful exception / Steven: handle exception
-        os.mkdir(self.context.out_path)
-        os.mkdir(self.context.bin_path)
-
-#        os.environ['__target_host'] = self.context.target_host
-#        if self.context.debug:
-#            os.environ['__debug'] = "yes"
+        self.explorer = core.Explorer(self.context.target_host, self.local, self.remote)
+        self.manifest = core.Manifest(self.context.target_host, self.local)
+        self.code = core.Code(self.context.target_host, self.local, self.remote)
 
     def cleanup(self):
-        self.log.debug("Saving " + self.context.out_path + " to " + self.context.cache_path)
-        if os.path.exists(self.context.cache_path):
-            shutil.rmtree(self.context.cache_path)
-        shutil.move(self.context.out_path, self.context.cache_path)
+        # FIXME: move to local?
+        self.log.debug("Saving " + self.local.out_path + " to " + self.local.cache_path)
+        if os.path.exists(self.local.cache_path):
+            shutil.rmtree(self.local.cache_path)
+        shutil.move(self.local.out_path, self.local.cache_path)
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
@@ -110,9 +75,9 @@ class ConfigInstall(object):
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
-        self.link_emulator()
-        self.global_explorer_run()
-        self.run_initial_manifest()
+        self.local.link_emulator(self.context.exec_path)
+        self.run_global_explorers()
+        self.manifest.run_initial_manifest(self.context.initial_manifest)
 
         self.log.info("Running object manifests and type explorers")
 
@@ -120,8 +85,8 @@ class ConfigInstall(object):
         new_objects_created = True
         while new_objects_created:
             new_objects_created = False
-            for cdist_object in cdist.core.Object.list_objects(self.object_base_path,
-                                                               self.context.type_base_path):
+            for cdist_object in core.Object.list_objects(self.local.object_path,
+                                                         self.local.type_path):
                 if cdist_object.prepared:
                     self.log.debug("Skipping rerun of object %s", cdist_object)
                     continue
@@ -129,22 +94,27 @@ class ConfigInstall(object):
                     self.object_prepare(cdist_object)
                     new_objects_created = True
 
-
-    def self.global_explorer_run()
+    def run_global_explorers(self):
         """Run global explorers and save output"""
+        # FIXME: move to explorer, pass global_explorer_out_path as argument
+        self.explorer.transfer_global_explorers()
+        for explorer in self.explorer.list_global_explorer_names():
+            output = self.explorer.run_global_explorer(explorer)
+            path = os.path.join(self.local.global_explorer_out_path, explorer)
+            with open(path, 'w') as fd:
+                fd.write(output)
 
-        output = self.global_explorer.run()
-
-        for explorer in output:
-            outfile = os.path.join(self.context.global_explorer_out_path,
-                explorer)
-            outfile_fd = open(outfile, "w")
-            outfile_fd.write()
+    def run_type_explorers(self, cdist_object):
+        """Run type explorers and save output in object."""
+        self.explorer.transfer_type_explorers(cdist_object.type)
+        for explorer in self.explorer.list_type_explorer_names(cdist_object.type):
+            output = self.explorer.run_type_explorer(explorer, cdist_object)
+            cdist_object.explorers[explorer] = output
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
         self.log.debug("Preparing object: " + cdist_object.name)
-        cdist_object.explorers = self.explorer.run_type_explorer(cdist_object)
+        self.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.prepared = True
 
@@ -160,78 +130,26 @@ class ConfigInstall(object):
             
         for requirement in cdist_object.requirements:
             self.log.debug("Object %s requires %s", cdist_object, requirement)
+            # FIXME: requirement is a string, need to create object here
             self.object_run(requirement)
 
-        #
-        # Setup env Variable:
-        #
-        env = os.environ.copy()
-        env['__target_host']    = self.context.target_host
-        env['__global']         = self.context.out_path
-        env["__object"]         = os.path.join(self.object_base_path, cdist_object.path)
-        env["__object_id"]      = cdist_object.object_id
-        env["__object_fq"]      = cdist_object.name
-        env["__type"]           = cdist_type.name
+        # Generate
+        cdist_object.code_local = self.code.run_gencode_local(cdist_object)
+        cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
+        if cdist_object.code_local or cdist_object.code_remote:
+            cdist_object.changed = True
 
-        # gencode
-        for cmd in ["local", "remote"]:
-            bin = os.path.join(self.context.type_base_path,
-                    getattr(cdist_type, "gencode_" + cmd + "_path"))
-
-            if os.path.isfile(bin):
-                outfile = os.path.join(self.object_base_path,
-                            getattr(cdist_object, "code_" + cmd + "_path"))
-
-                outfile_fd = open(outfile, "w")
-
-                # Need to flush to ensure our write is done before stdout write
-                # FIXME: code header still needed?
-                outfile_fd.write(CODE_HEADER)
-                outfile_fd.flush()
-
-                cdist.exec.shell_run_or_debug_fail(bin, [bin], env=env, stdout=outfile_fd)
-                outfile_fd.close()
-
-                status = os.stat(outfile)
-
-                # Remove output if empty, else make it executable
-                if status.st_size == len(CODE_HEADER):
-                    os.unlink(outfile)
-                else:
-                    # Add header and make executable - identically to 0o700
-                    os.chmod(outfile, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
-                    cdist_object.changed=True
-
-        # code local
-        code_local = cdist_object.code_local_path
-        if os.path.isfile(code_local):
-            cdist.exec.run_or_fail([code_local])
-
-        # code remote
-        local_remote_code   = os.path.join(self.object_base_path,
-            cdist_object.code_remote_path)
-        remote_remote_code  = os.path.join(self.remote_object_path,
-            cdist_object.code_remote_path)
-        if os.path.isfile(local_remote_code):
-            self.context.transfer_path(local_remote_code, remote_remote_code)
-            cdist.exec.run_or_fail([remote_remote_code], remote_prefix=True)
-
-        cdist_object.ran = True
-
-    def link_emulator(self):
-        """Link emulator to types"""
-        src = os.path.abspath(self.context.exec_path)
-        for cdist_type in cdist.core.Type.list_types(self.context.type_base_path):
-            dst = os.path.join(self.context.bin_path, cdist_type.name)
-            self.log.debug("Linking emulator: %s to %s", src, dst)
-
-            # FIXME: handle exception / make it more beautiful / Steven: raise except :-)
-            os.symlink(src, dst)
+        # Execute
+        if cdist_object.code_local:
+            self.code.run_code_local(cdist_object)
+        if cdist_object.code_remote:
+            self.code.transfer_code_remote(cdist_object)
+            self.code.run_code_remote(cdist_object)
 
     def stage_run(self):
         """The final (and real) step of deployment"""
         self.log.info("Generating and executing code")
-        for cdist_object in cdist.core.Object.list_objects(self.object_base_path,
-                                                           self.context.type_base_path):
+        for cdist_object in core.Object.list_objects(self.local.object_path,
+                                                           self.local.type_path):
             self.log.debug("Run object: %s", cdist_object)
             self.object_run(cdist_object)

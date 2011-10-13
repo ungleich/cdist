@@ -114,8 +114,9 @@ def configinstall(args, mode):
 
     time_start = time.time()
 
+    import cdist.context
+
     for host in args.host:
-        # Setup Local/Remote
         context = cdist.context.Context(
             target_host=host,
             initial_manifest=args.manifest,

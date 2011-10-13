@@ -73,6 +73,7 @@ class Local(object):
     
     def create_directories(self):
         self.mkdir(self.out_path)
+        self.mkdir(self.global_explorer_out_path)
         self.mkdir(self.bin_path)
 
     def rmdir(self, path):
@@ -83,6 +84,7 @@ class Local(object):
     def mkdir(self, path):
         """Create directory on the local side."""
         self.log.debug("Local mkdir: %s", path)
+        # FIXME: dont set mode here, fix unittest mkdtemp instead
         os.makedirs(path, mode=0o700, exist_ok=True)
 
     def run(self, command, env=None):

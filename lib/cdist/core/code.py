@@ -95,15 +95,16 @@ class Code(object):
     def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.type
         script = os.path.join(self.local.type_path, getattr(cdist_type, 'gencode_%s_path' % which))
-        env = os.environ.copy()
-        env.update(self.env)
-        env.update({
-            '__type': cdist_object.type.absolute_path,
-            '__object': cdist_object.absolute_path,
-            '__object_id': cdist_object.object_id,
-            '__object_fq': cdist_object.path,
-        })
-        return self.local.run_script(script, env=env)
+        if os.path.isfile(script):
+            env = os.environ.copy()
+            env.update(self.env)
+            env.update({
+                '__type': cdist_object.type.absolute_path,
+                '__object': cdist_object.absolute_path,
+                '__object_id': cdist_object.object_id,
+                '__object_fq': cdist_object.path,
+            })
+            return self.local.run_script(script, env=env)
 
     def run_gencode_local(self, cdist_object):
         """Run the gencode-local script for the given cdist object."""
@@ -122,7 +123,7 @@ class Code(object):
 
     def _run_code(self, cdist_object, which):
         which_exec = getattr(self, which)
-        script = os.path.join(self.local.object_path, getattr(cdist_object, 'code_%s_path' % which))
+        script = os.path.join(which_exec.object_path, getattr(cdist_object, 'code_%s_path' % which))
         return which_exec.run_script(script)
 
     def run_code_local(self, cdist_object):

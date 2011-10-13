@@ -37,7 +37,7 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 local_base_path = fixtures
 
-class ExplorerClassTestCase(unittest.TestCase):
+class CodeTestCase(unittest.TestCase):
 
     def mkdtemp(self, **kwargs):
         return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)
@@ -134,33 +134,3 @@ class ExplorerClassTestCase(unittest.TestCase):
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
         self.assertEqual(output_dict['__object_fq'], self.cdist_object.path)
-
-'''
-    def test_list_type_explorer_names(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
-        expected = cdist_type.explorers
-        self.assertEqual(self.explorer.list_type_explorer_names(cdist_type), expected)
-
-    def test_transfer_type_explorers(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
-        self.explorer.transfer_type_explorers(cdist_type)
-        source = os.path.join(self.local.type_path, cdist_type.explorer_path)
-        destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
-        self.assertEqual(os.listdir(source), os.listdir(destination))
-
-    def test_transfer_object_parameters(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
-        cdist_object.parameters = {'first': 'first value', 'second': 'second value'}
-        self.explorer.transfer_object_parameters(cdist_object)
-        source = os.path.join(self.local.object_path, cdist_object.parameter_path)
-        destination = os.path.join(self.remote.object_path, cdist_object.parameter_path)
-        self.assertEqual(os.listdir(source), os.listdir(destination))
-
-    def test_run_type_explorer(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
-        self.explorer.transfer_type_explorers(cdist_type)
-        output = self.explorer.run_type_explorer('world', cdist_object)
-        self.assertEqual(output, 'hello\n')
-'''
