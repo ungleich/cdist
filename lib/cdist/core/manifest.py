@@ -84,13 +84,14 @@ class Manifest(object):
 
     def run_type_manifest(self, cdist_object):
         script = os.path.join(self.local.type_path, cdist_object.type.manifest_path)
-        env = os.environ.copy()
-        env.update(self.env)
-        env.update({
-            '__object': cdist_object.absolute_path,
-            '__object_id': cdist_object.object_id,
-            '__object_fq': cdist_object.path,
-            '__type': cdist_object.type.absolute_path,
-            '__cdist_manifest': script,
-        })
-        return self.local.run_script(script, env=env)
+        if os.path.isfile(script):
+            env = os.environ.copy()
+            env.update(self.env)
+            env.update({
+                '__object': cdist_object.absolute_path,
+                '__object_id': cdist_object.object_id,
+                '__object_fq': cdist_object.path,
+                '__type': cdist_object.type.absolute_path,
+                '__cdist_manifest': script,
+            })
+            return self.local.run_script(script, env=env)
