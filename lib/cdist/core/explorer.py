@@ -98,7 +98,7 @@ class Explorer(object):
     def transfer_object_parameters(self, cdist_object):
         """Transfer the parameters for the given object to the remote side."""
         source = os.path.join(self.local.object_path, cdist_object.parameter_path)
-        destination = os.path.join(self.remotei.object_path, cdist_object.parameter_path)
+        destination = os.path.join(self.remote.object_path, cdist_object.parameter_path)
         self.remote.mkdir(destination)
         self.remote.transfer(source, destination)
 
