@@ -76,6 +76,10 @@ class Explorer(object):
 
     ### global
 
+    def list_global_explorer_names(self):
+        """Return a list of global explorer names."""
+        return os.listdir(self.local.global_explorer_path)
+
     def transfer_global_explorers(self):
         """Transfer the global explorers to the remote side."""
         self.remote.mkdir(self.remote.global_explorer_path)
