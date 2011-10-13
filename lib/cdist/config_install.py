@@ -75,7 +75,7 @@ class ConfigInstall(object):
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
-        self.local.link_emulator()
+        self.local.link_emulator(self.context.exec_path)
         self.run_global_explorers()
         self.manifest.run_initial_manifest(self.context.initial_manifest)
 
@@ -104,10 +104,17 @@ class ConfigInstall(object):
             with open(path, 'w') as fd:
                 fd.write(output)
 
+    def run_type_explorers(self, cdist_object):
+        """Run type explorers and save output in object."""
+        self.explorer.transfer_type_explorers(cdist_object.type)
+        for explorer in self.explorer.list_type_explorer_names(cdist_object.type):
+            output = self.explorer.run_type_explorer(explorer, cdist_object)
+            cdist_object.explorers[explorer] = output
+
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
         self.log.debug("Preparing object: " + cdist_object.name)
-        cdist_object.explorers = self.explorer.run_type_explorer(cdist_object)
+        self.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.prepared = True
 
@@ -142,7 +149,7 @@ class ConfigInstall(object):
     def stage_run(self):
         """The final (and real) step of deployment"""
         self.log.info("Generating and executing code")
-        for cdist_object in cdist.core.Object.list_objects(self.local.object_path,
+        for cdist_object in core.Object.list_objects(self.local.object_path,
                                                            self.local.type_path):
             self.log.debug("Run object: %s", cdist_object)
             self.object_run(cdist_object)
