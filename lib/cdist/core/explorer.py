@@ -30,26 +30,25 @@ log = logging.getLogger(__name__)
 
 '''
 common:
-    runs only remotely, needs local and remote
+    runs only remotely, needs local and remote to construct paths
 
     env:
-        __explorer: full qualified path to other global explorers on remote side == remote.global_explorer_path
+        __explorer: full qualified path to other global explorers on remote side
+            -> remote.global_explorer_path
 
-global explorer is:
-    folder full of scripts which have to be:
-        (- copied to remote)
-        - executed one by one on remote
-        - output saved to local files
+a global explorer is:
+    - a script
+    - executed on the remote side
+    - returns its output as a string
 
     env:
 
-    creates: local files with explorer output
+    creates: nothing, returns output
 
 type explorer is:
-    folder full of scripts which have to be:
-        (- copied to remote)
-        - executed one by one on remote for each object instance
-        - output saved into object instance
+    - a script
+    - executed on the remote side for each object instance
+    - returns its output as a string
 
     env:
         __object: full qualified path to the object's remote dir
@@ -57,7 +56,8 @@ type explorer is:
         __object_fq: full qualified object id, iow: $type.name + / + object_id
         __type_explorer: full qualified path to the other type explorers on remote side
 
-    creates: nothing, all output is handled by the object instances
+    creates: nothing, returns output
+
 '''
 
 
@@ -74,6 +74,7 @@ class Explorer(object):
             '__explorer': self.remote.global_explorer_path,
         }
 
+    # FIXME: should i do this?
     def transfer_global_explorers(self):
         """Transfer the global explorers to the remote side."""
         self.remote.mkdir(self.remote.global_explorer_path)
@@ -84,6 +85,7 @@ class Explorer(object):
         script = os.path.join(self.remote.global_explorer_path, explorer)
         return self.remote.run_script(script, env=self.env)
 
+    # FIXME: should i do this?
     def transfer_type_explorers(self, cdist_type):
         """Transfer the type explorers for the given type to the remote side."""
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
