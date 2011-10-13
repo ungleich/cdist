@@ -211,9 +211,11 @@ class DirectoryDictProperty(DirectoryDict):
             path = self.__path
             if callable(path):
                 path = path(*args, **kwargs)
+            print("_set_path: %s" % path)
             if not os.path.isabs(path):
                 raise AbsolutePathRequiredError(path)
             # create directory if it doesn't exist
+            print("os.path.isdir(%s): %s" % (path, os.path.isdir(path)))
             if not os.path.isdir(path):
                 os.mkdir(path)
             self.path = path
