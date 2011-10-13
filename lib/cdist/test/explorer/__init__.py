@@ -79,6 +79,13 @@ class ExplorerClassTestCase(unittest.TestCase):
         cdist_type = core.Type(self.local.type_path, '__test_type')
         self.explorer.transfer_type_explorers(cdist_type)
 
+    def test_transfer_object_parameters(self):
+        # FIXME: test result
+        cdist_type = core.Type(self.local.type_path, '__test_type')
+        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_object.parameters = {'first': 'first value', 'second': 'second value'}
+        self.explorer.transfer_object_parameters(cdist_object)
+
     def test_run_type_explorer(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
         cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
