@@ -99,6 +99,7 @@ class Object(object):
     prepared = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "prepared"))
     ran = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "ran"))
     source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
+    code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "code-local"))
 
     @property
     def exists(self):
