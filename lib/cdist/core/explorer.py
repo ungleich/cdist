@@ -95,14 +95,18 @@ class Explorer(object):
     def list_type_explorer_names(self, cdist_type):
         """Return a list of explorer names for the given type."""
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
-        return os.listdir(source)
+        try:
+            return os.listdir(source)
+        except EnvironmentError:
+            return []
 
     def transfer_type_explorers(self, cdist_type):
         """Transfer the type explorers for the given type to the remote side."""
-        source = os.path.join(self.local.type_path, cdist_type.explorer_path)
-        destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
-        self.remote.mkdir(destination)
-        self.remote.transfer(source, destination)
+        if cdist_type.explorers:
+            source = os.path.join(self.local.type_path, cdist_type.explorer_path)
+            destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
+            self.remote.mkdir(destination)
+            self.remote.transfer(source, destination)
 
     def transfer_object_parameters(self, cdist_object):
         """Transfer the parameters for the given object to the remote side."""
