@@ -122,6 +122,7 @@ class CodeTestCase(unittest.TestCase):
         
     def test_run_code_remote_environment(self):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
+        self.code.transfer_code_remote(self.cdist_object)
         output_string = self.code.run_code_remote(self.cdist_object)
         output_dict = {}
         for line in output_string.split('\n'):
