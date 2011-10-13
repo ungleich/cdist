@@ -61,14 +61,15 @@ class ExplorerClassTestCase(unittest.TestCase):
 
         self.code = code.Code(target_host, self.local, self.remote)
 
+        self.cdist_type = core.Type(self.local.type_path, '__dump_environment')
+        self.cdist_object = core.Object(self.cdist_type, self.local.object_path, 'whatever')
+
     def tearDown(self):
         shutil.rmtree(self.out_path)
         shutil.rmtree(self.remote_base_path)
 
     def test_run_gencode_local_environment(self):
-        cdist_type = core.Type(self.local.type_path, '__dump_environment')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
-        output_string = self.code.run_gencode_local(cdist_object)
+        output_string = self.code.run_gencode_local(self.cdist_object)
         output_dict = {}
         for line in output_string.split('\n'):
             if line:
@@ -77,15 +78,13 @@ class ExplorerClassTestCase(unittest.TestCase):
                 output_dict[key] = value
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
         self.assertEqual(output_dict['__global'], self.local.out_path)
-        self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
-        self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
-        self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
-        self.assertEqual(output_dict['__object_fq'], cdist_object.path)
+        self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
+        self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
+        self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
+        self.assertEqual(output_dict['__object_fq'], self.cdist_object.path)
 
     def test_run_gencode_remote_environment(self):
-        cdist_type = core.Type(self.local.type_path, '__dump_environment')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
-        output_string = self.code.run_gencode_remote(cdist_object)
+        output_string = self.code.run_gencode_remote(self.cdist_object)
         output_dict = {}
         for line in output_string.split('\n'):
             if line:
@@ -94,12 +93,12 @@ class ExplorerClassTestCase(unittest.TestCase):
                 output_dict[key] = value
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
         self.assertEqual(output_dict['__global'], self.local.out_path)
-        self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
-        self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
-        self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
-        self.assertEqual(output_dict['__object_fq'], cdist_object.path)
+        self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
+        self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
+        self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
+        self.assertEqual(output_dict['__object_fq'], self.cdist_object.path)
 
-
+        
 
 '''
     def test_list_type_explorer_names(self):
