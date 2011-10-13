@@ -43,7 +43,11 @@ class FileList(collections.MutableSequence):
         self.path = path
         if initial:
             # delete existing file
-            os.unlink(self.path)
+            try:
+                os.unlink(self.path)
+            except EnvironmentError:
+                # ignored
+                pass
             for i in initial:
                 self.append(i)
 
