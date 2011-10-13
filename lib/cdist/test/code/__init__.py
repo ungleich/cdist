@@ -120,6 +120,20 @@ class ExplorerClassTestCase(unittest.TestCase):
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
         self.assertEqual(output_dict['__object_fq'], self.cdist_object.path)
         
+    def test_run_code_remote_environment(self):
+        self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
+        output_string = self.code.run_code_remote(self.cdist_object)
+        output_dict = {}
+        for line in output_string.split('\n'):
+            if line:
+                key,value = line.split(': ')
+                output_dict[key] = value
+        self.assertEqual(output_dict['__target_host'], self.local.target_host)
+        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
+        self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
+        self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
+        self.assertEqual(output_dict['__object_fq'], self.cdist_object.path)
 
 '''
     def test_list_type_explorer_names(self):
