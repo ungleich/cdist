@@ -92,20 +92,17 @@ class Code(object):
             '__global': self.local.out_path,
         }
 
-    def _get_env_for_object(self, cdist_object):
-        return {
-            '__type': cdist_object.type.absolute_path,
-            '__object': cdist_object.absolute_path,
-            '__object_id': cdist_object.object_id,
-            '__object_fq': cdist_object.path,
-        }
-
     def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.type
         script = os.path.join(self.local.type_path, getattr(cdist_type, 'gencode_%s_path' % which))
         env = os.environ.copy()
         env.update(self.env)
-        env.update(self._get_env_for_object(cdist_object))
+        env.update({
+            '__type': cdist_object.type.absolute_path,
+            '__object': cdist_object.absolute_path,
+            '__object_id': cdist_object.object_id,
+            '__object_fq': cdist_object.path,
+        })
         return self.local.run_script(script, env=env)
 
     def run_gencode_local(self, cdist_object):
