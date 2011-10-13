@@ -155,6 +155,9 @@ class DirectoryDict(collections.MutableMapping):
         if not os.path.isabs(path):
             raise AbsolutePathRequiredError(path)
         self.path = path
+        # create directory if it doesn't exist
+        if not os.path.isdir(self.path):
+            os.mkdir(self.path)
         if initial is not None:
             self.update(initial)
         if kwargs:
@@ -210,6 +213,9 @@ class DirectoryDictProperty(DirectoryDict):
                 path = path(*args, **kwargs)
             if not os.path.isabs(path):
                 raise AbsolutePathRequiredError(path)
+            # create directory if it doesn't exist
+            if not os.path.isdir(path):
+                os.mkdir(path)
             self.path = path
 
     # Descriptor Protocol
@@ -222,8 +228,6 @@ class DirectoryDictProperty(DirectoryDict):
     def __set__(self, obj, value):
         self._set_path(obj)
         if value is not None:
-            # create directory if it doesn't exist
-            os.makedirs(self.path, exist_ok=True)
             for name in self.keys():
                 del self[name]
             self.update(value)
