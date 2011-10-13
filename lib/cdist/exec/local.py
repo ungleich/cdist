@@ -73,6 +73,7 @@ class Local(object):
     
     def create_directories(self):
         self.mkdir(self.out_path)
+        self.mkdir(self.global_explorer_out_path)
         self.mkdir(self.bin_path)
 
     def rmdir(self, path):
