@@ -80,6 +80,11 @@ class ExplorerClassTestCase(unittest.TestCase):
         output = self.explorer.run_global_explorer('global')
         self.assertEqual(output, 'global\n')
 
+    def test_list_type_explorer_names(self):
+        cdist_type = core.Type(self.local.type_path, '__test_type')
+        expected = cdist_type.explorers
+        self.assertEqual(self.explorer.list_type_explorer_names(cdist_type), expected)
+
     def test_transfer_type_explorers(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
         self.explorer.transfer_type_explorers(cdist_type)
