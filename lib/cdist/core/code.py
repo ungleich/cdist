@@ -123,7 +123,7 @@ class Code(object):
 
     def _run_code(self, cdist_object, which):
         which_exec = getattr(self, which)
-        script = os.path.join(self.local.object_path, getattr(cdist_object, 'code_%s_path' % which))
+        script = os.path.join(which_exec.object_path, getattr(cdist_object, 'code_%s_path' % which))
         return which_exec.run_script(script)
 
     def run_code_local(self, cdist_object):
