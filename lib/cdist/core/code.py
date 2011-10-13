@@ -115,3 +115,10 @@ class Code(object):
     def run_gencode_remote(self, cdist_object):
         """Run the gencode-remote script for the given cdist object."""
         return self._run_gencode(cdist_object, 'remote')
+
+    def transfer_code_remote(self, cdist_object):
+        """Transfer the code_remote script for the given object to the remote side."""
+        source = os.path.join(self.local.object_path, cdist_object.code_remote_path)
+        destination = os.path.join(self.remote.object_path, cdist_object.code_remote_path)
+        self.remote.mkdir(destination)
+        self.remote.transfer(source, destination)
