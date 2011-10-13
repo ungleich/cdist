@@ -100,11 +100,18 @@ class Code(object):
             '__object_fq': cdist_object.path,
         }
 
-    def run_gencode_local(self, cdist_object):
+    def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.type
-        script = os.path.join(self.local.type_path, cdist_type.gencode_local_path)
+        script = os.path.join(self.local.type_path, getattr(cdist_type, 'gencode_%s_path' % which))
         env = os.environ.copy()
         env.update(self.env)
         env.update(self._get_env_for_object(cdist_object))
         return self.local.run_script(script, env=env)
 
+    def run_gencode_local(self, cdist_object):
+        """Run the gencode-local script for the given cdist object."""
+        return self._run_gencode(cdist_object, 'local')
+
+    def run_gencode_remote(self, cdist_object):
+        """Run the gencode-remote script for the given cdist object."""
+        return self._run_gencode(cdist_object, 'remote')
