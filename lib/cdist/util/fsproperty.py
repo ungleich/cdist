@@ -49,6 +49,7 @@ class FileList(collections.MutableSequence):
 
     def __read(self):
         lines = []
+        # if file does not exist return empty list
         try:
             with open(self.path) as fd:
                 for line in fd:
@@ -59,13 +60,9 @@ class FileList(collections.MutableSequence):
         return lines
 
     def __write(self, lines):
-        try:
-            with open(self.path, 'w') as fd:
-                for line in lines:
-                    fd.write(str(line) + '\n')
-        except EnvironmentError as e:
-            # error ignored
-            raise
+        with open(self.path, 'w') as fd:
+            for line in lines:
+                fd.write(str(line) + '\n')
 
     def __repr__(self):
         return repr(list(self))
