@@ -75,9 +75,11 @@ class ExplorerClassTestCase(unittest.TestCase):
         self.explorer.run_global_explorer('global')
 
     def test_transfer_type_explorers(self):
-        # FIXME: test result
         cdist_type = core.Type(self.local.type_path, '__test_type')
         self.explorer.transfer_type_explorers(cdist_type)
+        source = os.path.join(self.local.type_path, cdist_type.explorer_path)
+        destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
+        self.assertEqual(os.listdir(source), os.listdir(destination))
 
     def test_transfer_object_parameters(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
