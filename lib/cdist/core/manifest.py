@@ -62,7 +62,7 @@ type manifeste is:
 
 
 class Manifest(object):
-    """Represents a cdist manifest.
+    """Executes cdist manifests.
 
     """
     def __init__(self, target_host, local):
