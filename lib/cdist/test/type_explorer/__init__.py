@@ -35,4 +35,5 @@ class TypeExplorer(unittest.TestCase):
     def setUp(self):
 
     def test_explorer_output(self):
+        """Check for output of type explorer"""
 
