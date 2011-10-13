@@ -24,12 +24,11 @@ import logging
 import os
 import sys
 import tempfile
-#import stat
-#import shutil
-#import time
-#
-#import cdist.core
-#import cdist.exec
+import shutil
+
+from cdist.exec import local
+from cdist.exec import remote
+
 
 class Context(object):
     """Hold information about current context"""
