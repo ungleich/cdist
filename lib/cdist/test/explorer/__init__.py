@@ -65,6 +65,10 @@ class ExplorerClassTestCase(unittest.TestCase):
         shutil.rmtree(self.out_path)
         shutil.rmtree(self.remote_base_path)
 
+    def test_list_global_explorer_names(self):
+        expected = ['global']
+        self.assertEqual(self.explorer.list_global_explorer_names(), expected)
+
     def test_transfer_global_explorers(self):
         self.explorer.transfer_global_explorers()
         source = self.local.global_explorer_path
