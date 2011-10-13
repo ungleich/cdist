@@ -92,6 +92,11 @@ class Explorer(object):
 
     ### type
 
+    def list_type_explorer_names(self, cdist_type):
+        """Return a list of explorer names for the given type."""
+        source = os.path.join(self.local.type_path, cdist_type.explorer_path)
+        return os.listdir(source)
+
     def transfer_type_explorers(self, cdist_type):
         """Transfer the type explorers for the given type to the remote side."""
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
