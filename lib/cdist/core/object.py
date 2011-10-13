@@ -93,12 +93,14 @@ class Object(object):
         return os.path.join(self.path, "explorer")
 
     requirements = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'require'))
-    parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.absolute_path, 'parameter'))
+    parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.parameter_path))
     explorers = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.explorer_path))
     changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
     prepared = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "prepared"))
     ran = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "ran"))
     source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
+    code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_local_path))
+    code_remote = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_remote_path))
 
     @property
     def exists(self):

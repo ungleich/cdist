@@ -221,6 +221,8 @@ class DirectoryDictProperty(DirectoryDict):
     def __set__(self, obj, value):
         self._set_path(obj)
         if value is not None:
+            # create directory if it doesn't exist
+            os.makedirs(self.path, exist_ok=True)
             for name in self.keys():
                 del self[name]
             self.update(value)

@@ -65,23 +65,46 @@ class ExplorerClassTestCase(unittest.TestCase):
         shutil.rmtree(self.out_path)
         shutil.rmtree(self.remote_base_path)
 
+    def test_list_global_explorer_names(self):
+        expected = ['global']
+        self.assertEqual(self.explorer.list_global_explorer_names(), expected)
+
     def test_transfer_global_explorers(self):
-        # FIXME: test result
         self.explorer.transfer_global_explorers()
+        source = self.local.global_explorer_path
+        destination = self.remote.global_explorer_path
+        self.assertEqual(os.listdir(source), os.listdir(destination))
 
     def test_run_global_explorer(self):
-        # FIXME: test result
         self.explorer.transfer_global_explorers()
-        self.explorer.run_global_explorer('global')
+        output = self.explorer.run_global_explorer('global')
+        self.assertEqual(output, 'global\n')
+
+    def test_list_type_explorer_names(self):
+        cdist_type = core.Type(self.local.type_path, '__test_type')
+        expected = cdist_type.explorers
+        self.assertEqual(self.explorer.list_type_explorer_names(cdist_type), expected)
 
     def test_transfer_type_explorers(self):
-        # FIXME: test result
         cdist_type = core.Type(self.local.type_path, '__test_type')
         self.explorer.transfer_type_explorers(cdist_type)
+        source = os.path.join(self.local.type_path, cdist_type.explorer_path)
+        destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
+        self.assertEqual(os.listdir(source), os.listdir(destination))
+
+    def test_transfer_object_parameters(self):
+        cdist_type = core.Type(self.local.type_path, '__test_type')
+        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_object.parameters = {'first': 'first value', 'second': 'second value'}
+        self.explorer.transfer_object_parameters(cdist_object)
+        source = os.path.join(self.local.object_path, cdist_object.parameter_path)
+        destination = os.path.join(self.remote.object_path, cdist_object.parameter_path)
+        self.assertEqual(os.listdir(source), os.listdir(destination))
 
     def test_run_type_explorer(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
         cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
         self.explorer.transfer_type_explorers(cdist_type)
-        self.assertEqual(self.explorer.run_type_explorer('world', cdist_object), 'hello\n')
+        output = self.explorer.run_type_explorer('world', cdist_object)
+        self.assertEqual(output, 'hello\n')
 

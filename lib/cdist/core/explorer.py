@@ -74,7 +74,12 @@ class Explorer(object):
             '__explorer': self.remote.global_explorer_path,
         }
 
-    # FIXME: should i do this?
+    ### global
+
+    def list_global_explorer_names(self):
+        """Return a list of global explorer names."""
+        return os.listdir(self.local.global_explorer_path)
+
     def transfer_global_explorers(self):
         """Transfer the global explorers to the remote side."""
         self.remote.mkdir(self.remote.global_explorer_path)
@@ -85,7 +90,13 @@ class Explorer(object):
         script = os.path.join(self.remote.global_explorer_path, explorer)
         return self.remote.run_script(script, env=self.env)
 
-    # FIXME: should i do this?
+    ### type
+
+    def list_type_explorer_names(self, cdist_type):
+        """Return a list of explorer names for the given type."""
+        source = os.path.join(self.local.type_path, cdist_type.explorer_path)
+        return os.listdir(source)
+
     def transfer_type_explorers(self, cdist_type):
         """Transfer the type explorers for the given type to the remote side."""
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
@@ -93,9 +104,12 @@ class Explorer(object):
         self.remote.mkdir(destination)
         self.remote.transfer(source, destination)
 
-    # FIXME: should i do this? probably not
     def transfer_object_parameters(self, cdist_object):
-        pass
+        """Transfer the parameters for the given object to the remote side."""
+        source = os.path.join(self.local.object_path, cdist_object.parameter_path)
+        destination = os.path.join(self.remote.object_path, cdist_object.parameter_path)
+        self.remote.mkdir(destination)
+        self.remote.transfer(source, destination)
 
     def run_type_explorer(self, explorer, cdist_object):
         """Run the given type explorer for the given object and return it's output."""

@@ -63,6 +63,8 @@ class ObjectTestCase(unittest.TestCase):
         self.cdist_object.prepared = False
         self.cdist_object.ran = False
         self.cdist_object.source = []
+        self.cdist_object.code_local = ''
+        self.cdist_object.code_remote = ''
 
     def test_name(self):
         self.assertEqual(self.cdist_object.name, '__third/moon')
@@ -136,3 +138,17 @@ class ObjectTestCase(unittest.TestCase):
     def test_source_after_changing(self):
         self.cdist_object.source = ['/path/to/manifest']
         self.assertEqual(list(self.cdist_object.source), ['/path/to/manifest'])
+
+    def test_code_local(self):
+        self.assertEqual(self.cdist_object.code_local, '')
+
+    def test_code_local_after_changing(self):
+        self.cdist_object.code_local = 'Hello World'
+        self.assertEqual(self.cdist_object.code_local, 'Hello World')
+
+    def test_code_remote(self):
+        self.assertEqual(self.cdist_object.code_remote, '')
+
+    def test_code_remote_after_changing(self):
+        self.cdist_object.code_remote = 'Hello World'
+        self.assertEqual(self.cdist_object.code_remote, 'Hello World')
