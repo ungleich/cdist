@@ -96,5 +96,6 @@ class ExplorerClassTestCase(unittest.TestCase):
         cdist_type = core.Type(self.local.type_path, '__test_type')
         cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
         self.explorer.transfer_type_explorers(cdist_type)
-        self.assertEqual(self.explorer.run_type_explorer('world', cdist_object), 'hello\n')
+        output = self.explorer.run_type_explorer('world', cdist_object)
+        self.assertEqual(output, 'hello\n')
 
