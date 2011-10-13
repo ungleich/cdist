@@ -95,6 +95,7 @@ class ExplorerClassTestCase(unittest.TestCase):
     def test_transfer_object_parameters(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
         cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_object.create()
         cdist_object.parameters = {'first': 'first value', 'second': 'second value'}
         self.explorer.transfer_object_parameters(cdist_object)
         source = os.path.join(self.local.object_path, cdist_object.parameter_path)
