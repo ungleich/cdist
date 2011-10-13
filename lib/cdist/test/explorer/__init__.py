@@ -72,9 +72,9 @@ class ExplorerClassTestCase(unittest.TestCase):
         self.assertEqual(os.listdir(source), os.listdir(destination))
 
     def test_run_global_explorer(self):
-        # FIXME: test result
         self.explorer.transfer_global_explorers()
-        self.explorer.run_global_explorer('global')
+        output = self.explorer.run_global_explorer('global')
+        self.assertEqual(output, 'global\n')
 
     def test_transfer_type_explorers(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
