@@ -210,6 +210,7 @@ class DirectoryDictProperty(DirectoryDict):
         #print("_set_path: self: %s" % self)
         print("_set_path: args: %s" % args)
         print("_set_path: kwargs: %s" % kwargs)
+        print("_set_path: self.path: %s" % self.path)
         if self.path is None:
             path = self.__path
             if callable(path):
