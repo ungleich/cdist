@@ -116,6 +116,10 @@ class Code(object):
         """Run the gencode-remote script for the given cdist object."""
         return self._run_gencode(cdist_object, 'remote')
 
+    def run_code_local(self, cdist_object):
+        script = os.path.join(self.local.object_path, cdist_object.code_local_path)
+        return self.local.run_script(script)
+
     def transfer_code_remote(self, cdist_object):
         """Transfer the code_remote script for the given object to the remote side."""
         source = os.path.join(self.local.object_path, cdist_object.code_remote_path)
