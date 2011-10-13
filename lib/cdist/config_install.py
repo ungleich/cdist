@@ -52,9 +52,6 @@ class ConfigInstall(object):
         self.manifest = core.Manifest(self.context.target_host, self.local)
         self.code = core.Code(self.context.target_host, self.local, self.remote)
 
-        # Setup env to be used by others - FIXME
-        self.__init_env()
-
     def cleanup(self):
         # FIXME: move to local?
         self.log.debug("Saving " + self.local.out_path + " to " + self.local.cache_path)
