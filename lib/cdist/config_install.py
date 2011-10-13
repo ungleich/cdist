@@ -99,6 +99,53 @@ class ConfigInstall(object):
             shutil.rmtree(self.context.cache_path)
         shutil.move(self.context.out_path, self.context.cache_path)
 
+    def deploy_to(self):
+        """Mimic the old deploy to: Deploy to one host"""
+        self.log.info("Deploying to " + self.context.target_host)
+        self.stage_prepare()
+        self.stage_run()
+
+    def deploy_and_cleanup(self):
+        """Do what is most often done: deploy & cleanup"""
+        start_time = time.time()
+        self.deploy_to()
+        self.cleanup()
+        self.log.info("Finished run of %s in %s seconds", 
+            self.context.target_host, time.time() - start_time)
+
+    def stage_prepare(self):
+        """Do everything for a deploy, minus the actual code stage"""
+        self.link_emulator()
+        self.global_explorer_run()
+        self.run_initial_manifest()
+
+        self.log.info("Running object manifests and type explorers")
+
+        # Continue process until no new objects are created anymore
+        new_objects_created = True
+        while new_objects_created:
+            new_objects_created = False
+            for cdist_object in cdist.core.Object.list_objects(self.object_base_path,
+                                                               self.context.type_base_path):
+                if cdist_object.prepared:
+                    self.log.debug("Skipping rerun of object %s", cdist_object)
+                    continue
+                else:
+                    self.object_prepare(cdist_object)
+                    new_objects_created = True
+
+
+    def self.global_explorer_run()
+        """Run global explorers and save output"""
+
+        output = self.global_explorer.run()
+
+        for explorer in output:
+            outfile = os.path.join(self.context.global_explorer_out_path,
+                explorer)
+            outfile_fd = open(outfile, "w")
+            outfile_fd.write()
+
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
         self.log.debug("Preparing object: " + cdist_object.name)
@@ -185,41 +232,6 @@ class ConfigInstall(object):
 
             # FIXME: handle exception / make it more beautiful / Steven: raise except :-)
             os.symlink(src, dst)
-
-    def deploy_to(self):
-        """Mimic the old deploy to: Deploy to one host"""
-        self.log.info("Deploying to " + self.context.target_host)
-        self.stage_prepare()
-        self.stage_run()
-
-    def deploy_and_cleanup(self):
-        """Do what is most often done: deploy & cleanup"""
-        start_time = time.time()
-        self.deploy_to()
-        self.cleanup()
-        self.log.info("Finished run of %s in %s seconds", 
-            self.context.target_host, time.time() - start_time)
-
-    def stage_prepare(self):
-        """Do everything for a deploy, minus the actual code stage"""
-        self.link_emulator()
-        self.explorer.run_global_explorers()
-        self.run_initial_manifest()
-        
-        self.log.info("Running object manifests and type explorers")
-
-        # Continue process until no new objects are created anymore
-        new_objects_created = True
-        while new_objects_created:
-            new_objects_created = False
-            for cdist_object in cdist.core.Object.list_objects(self.object_base_path,
-                                                               self.context.type_base_path):
-                if cdist_object.prepared:
-                    self.log.debug("Skipping rerun of object %s", cdist_object)
-                    continue
-                else:
-                    self.object_prepare(cdist_object)
-                    new_objects_created = True
 
     def stage_run(self):
         """The final (and real) step of deployment"""
