@@ -79,6 +79,7 @@ class Manifest(object):
         env = os.environ.copy()
         env.update(self.env)
         env['__manifest'] = self.local.manifest_path
+        env['__cdist_manifest'] = script
         return self.local.run_script(script, env=env)
 
     def run_type_manifest(self, cdist_object):
