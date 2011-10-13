@@ -85,13 +85,9 @@ class ConfigInstall(object):
         os.mkdir(self.context.out_path)
         os.mkdir(self.context.bin_path)
 
-    # FIXME: remove this function, only expose ENV
-    # explicitly!
-    def __init_env(self):
-        """Environment usable for other stuff"""
-        os.environ['__target_host'] = self.context.target_host
-        if self.context.debug:
-            os.environ['__debug'] = "yes"
+#        os.environ['__target_host'] = self.context.target_host
+#        if self.context.debug:
+#            os.environ['__debug'] = "yes"
 
     def cleanup(self):
         self.log.debug("Saving " + self.context.out_path + " to " + self.context.cache_path)
