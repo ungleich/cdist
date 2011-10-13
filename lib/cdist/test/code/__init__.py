@@ -63,6 +63,7 @@ class ExplorerClassTestCase(unittest.TestCase):
 
         self.cdist_type = core.Type(self.local.type_path, '__dump_environment')
         self.cdist_object = core.Object(self.cdist_type, self.local.object_path, 'whatever')
+        self.cdist_object.create()
 
     def tearDown(self):
         shutil.rmtree(self.out_path)
@@ -97,6 +98,12 @@ class ExplorerClassTestCase(unittest.TestCase):
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
         self.assertEqual(output_dict['__object_fq'], self.cdist_object.path)
+
+    def test_transfer_code_remote(self):
+        self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
+        self.code.transfer_code_remote(self.cdist_object)
+        destination = os.path.join(self.remote.object_path, self.cdist_object.code_remote_path)
+        self.assertTrue(os.path.isfile(destination))
 
         
 
