@@ -67,7 +67,6 @@ class ConfigInstall(object):
         # Setup env to be used by others - FIXME
         self.__init_env()
 
-
     def __init_remote_paths(self):
         """Initialise remote directory structure"""
         self.exec_wrapper.remove_remote_path(self.context.remote_base_path)
