@@ -136,3 +136,10 @@ class ObjectTestCase(unittest.TestCase):
     def test_source_after_changing(self):
         self.cdist_object.source = ['/path/to/manifest']
         self.assertEqual(list(self.cdist_object.source), ['/path/to/manifest'])
+
+    def test_code_local(self):
+        self.assertEqual(self.cdist_object.code_local, '')
+
+    def test_code_local_after_changing(self):
+        self.cdist_object.code_local = 'Hello World'
+        self.assertEqual(self.cdist_object.code_local, 'Hello World')
