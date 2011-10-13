@@ -107,6 +107,7 @@ class ConfigInstall(object):
     def run_type_explorers(self, cdist_object):
         """Run type explorers and save output in object."""
         self.explorer.transfer_type_explorers(cdist_object.type)
+        self.explorer.transfer_object_parameters(cdist_object)
         for explorer in self.explorer.list_type_explorer_names(cdist_object.type):
             output = self.explorer.run_type_explorer(explorer, cdist_object)
             cdist_object.explorers[explorer] = output
