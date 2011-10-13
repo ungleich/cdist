@@ -98,55 +98,6 @@ class FileList(collections.MutableSequence):
         self.__write(lines)
 
 
-class FileListProperty(FileList):
-
-    def __init__(self, path):
-        """
-        :param path: string or callable
-
-        Usage:
-
-        class Foo(object):
-            parameters = DirectoryDictProperty(lambda obj: os.path.join(obj.absolute_path, 'parameter'))
-            other_dict = DirectoryDictProperty('/tmp/folder')
-
-            def __init__(self):
-                self.absolute_path = '/tmp/foo'
-
-        """
-        self.path = None
-        self.__path = path
-
-    def _set_path(self, *args, **kwargs):
-        if self.path is None:
-            path = self.__path
-            if callable(path):
-                path = path(*args, **kwargs)
-            if not os.path.isabs(path):
-                raise AbsolutePathRequiredError(path)
-            self.path = path
-
-    # Descriptor Protocol
-    def __get__(self, obj, objtype=None):
-        if obj is None:
-            return self.__class__
-        self._set_path(obj)
-        return self
-
-    def __set__(self, obj, value):
-        self._set_path(obj)
-        try:
-            os.unlink(self.path)
-        except EnvironmentError:
-            # ignored
-            pass
-        for item in value:
-            self.append(item)
-
-    def __delete__(self, obj):
-        raise AttributeError("can't delete attribute")
-
-
 class DirectoryDict(collections.MutableMapping):
     """A dict that stores it's items as files in a directory.
 
@@ -178,7 +129,10 @@ class DirectoryDict(collections.MutableMapping):
             fd.write(str(value))        
 
     def __delitem__(self, key):
-        os.remove(os.path.join(self.path, key))
+        try:
+            os.remove(os.path.join(self.path, key))
+        except EnvironmentError:
+            raise KeyError(key)
 
     def __iter__(self):
         return iter(os.listdir(self.path))
@@ -187,95 +141,98 @@ class DirectoryDict(collections.MutableMapping):
         return len(os.listdir(self.path))
 
 
-class DirectoryDictProperty(DirectoryDict):
+class FileBasedProperty(object):
+    attribute_class = None
 
     def __init__(self, path):
         """
         :param path: string or callable
 
-        Usage:
+        Abstract super class. Subclass and set the class member attribute_class accordingly.
+
+        Usage with a sublcass:
 
         class Foo(object):
-            parameters = DirectoryDictProperty(lambda obj: os.path.join(obj.absolute_path, 'parameter'))
-            other_dict = DirectoryDictProperty('/tmp/folder')
+            # note that the actual DirectoryDict is stored as __parameters on the instance
+            parameters = DirectoryDictProperty(lambda instance: os.path.join(instance.absolute_path, 'parameter'))
+            # note that the actual DirectoryDict is stored as __other_dict on the instance
+            other_dict = DirectoryDictProperty('/tmp/other_dict')
 
             def __init__(self):
                 self.absolute_path = '/tmp/foo'
 
         """
-        self.path = None
-        self.__path = path
+        self.path = path
 
-    def _set_path(self, *args, **kwargs):
-        #print("_set_path: self: %s" % self)
-        print("_set_path: args: %s" % args)
-        print("_set_path: kwargs: %s" % kwargs)
-        print("_set_path: self.path: %s" % self.path)
-        if self.path is None:
-            path = self.__path
-            if callable(path):
-                path = path(*args, **kwargs)
-            print("_set_path: %s" % path)
-            if not os.path.isabs(path):
-                raise AbsolutePathRequiredError(path)
-            # create directory if it doesn't exist
-            print("os.path.isdir(%s): %s" % (path, os.path.isdir(path)))
-            if not os.path.isdir(path):
-                os.mkdir(path)
-            self.path = path
+    def _get_path(self, instance):
+        path = self.path
+        if callable(path):
+            path = path(instance)
+        return path
 
-    # Descriptor Protocol
-    def __get__(self, obj, objtype=None):
-        if obj is None:
-            return self.__class__
-        self._set_path(obj)
-        return self
+    def _get_property_name(self, owner):
+        for name, prop in owner.__dict__.items():
+            if self == prop:
+                return name
 
-    def __set__(self, obj, value):
-        self._set_path(obj)
-        if value is not None:
-            for name in self.keys():
-                del self[name]
-            self.update(value)
+    def _get_attribute(self, instance, owner):
+        name = self._get_property_name(owner)
+        attribute_name = '__%s' % name
+        if not hasattr(instance, attribute_name):
+            path = self._get_path(instance)
+            attribute_instance = self.attribute_class(path)
+            setattr(instance, attribute_name, attribute_instance)
+        return getattr(instance, attribute_name)
 
-    def __delete__(self, obj):
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        return self._get_attribute(instance, owner)
+
+    def __delete__(self, instance):
         raise AttributeError("can't delete attribute")
 
 
-class FileBooleanProperty(object):
-    def __init__(self, path):
-        """
-        :param path: string or callable
+class DirectoryDictProperty(FileBasedProperty):
+    attribute_class = DirectoryDict
 
-        Usage:
+    def __set__(self, instance, value):
+        attribute_instance = self._get_attribute(instance, instance.__class__)
+        for name in attribute_instance.keys():
+            del attribute_instance[name]
+        attribute_instance.update(value)
 
-        class Foo(object):
-            changed = FileBoolean(lambda obj: os.path.join(obj.absolute_path, 'changed'))
-            other_boolean = FileBoolean('/tmp/other_boolean')
 
-            def __init__(self):
-                self.absolute_path = '/tmp/foo_boolean'
+class FileListProperty(FileBasedProperty):
+    attribute_class = FileList
 
-        """
-        self._path = path
+    def __set__(self, instance, value):
+        path = self._get_path(instance)
+        try:
+            os.unlink(path)
+        except EnvironmentError:
+            # ignored
+            pass
+        attribute_instance = self._get_attribute(instance, instance.__class__)
+        for item in value:
+            attribute_instance.append(item)
 
-    def _get_path(self, *args, **kwargs):
-        path = self._path
-        if callable(path):
-            return path(*args, **kwargs)
-        if not os.path.isabs(path):
-            raise AbsolutePathRequiredError(path)
-        return path
 
+class FileBooleanProperty(FileBasedProperty):
+    """A boolean property which uses a file to represent its value.
+
+    File exists -> True
+    File does not exists -> False
+    """
     # Descriptor Protocol
-    def __get__(self, obj, objtype=None):
-        if obj is None:
-            return self.__class__
-        path = self._get_path(obj)
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        path = self._get_path(instance)
         return os.path.isfile(path)
 
-    def __set__(self, obj, value):
-        path = self._get_path(obj)
+    def __set__(self, instance, value):
+        path = self._get_path(instance)
         if value:
             open(path, "w").close()
         else:
@@ -285,42 +242,15 @@ class FileBooleanProperty(object):
                 # ignore
                 pass
 
-    def __delete__(self, obj):
-        raise AttributeError("can't delete attribute")
 
-
-class FileStringProperty(object):
+class FileStringProperty(FileBasedProperty):
     """A string property which stores its value in a file.
     """
-    def __init__(self, path):
-        """
-        :param path: string or callable
-
-        Usage:
-
-        class Foo(object):
-            source = FileStringProperty(lambda obj: os.path.join(obj.absolute_path, 'source'))
-            other = FileStringProperty('/tmp/other')
-
-            def __init__(self):
-                self.absolute_path = '/tmp/foo_boolean'
-
-        """
-        self._path = path
-
-    def _get_path(self, *args, **kwargs):
-        path = self._path
-        if callable(path):
-            return path(*args, **kwargs)
-        if not os.path.isabs(path):
-            raise AbsolutePathRequiredError(path)
-        return path
-
     # Descriptor Protocol
-    def __get__(self, obj, objtype=None):
-        if obj is None:
-            return self.__class__
-        path = self._get_path(obj)
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        path = self._get_path(instance)
         value = ""
         try:
             with open(path, "r") as fd:
@@ -329,16 +259,13 @@ class FileStringProperty(object):
             pass
         return value
 
-    def __set__(self, obj, value):
-        path = self._get_path(obj)
+    def __set__(self, instance, value):
+        path = self._get_path(instance)
         if value:
             with open(path, "w") as fd:
                 fd.write(str(value))
         else:
             try:
-                os.unlink(path)
+                os.remove(path)
             except EnvironmentError:
                 pass
-
-    def __delete__(self, obj):
-        raise AttributeError("Can't delete attribute. Set it's value to an empty string to remove the underlying file.")
