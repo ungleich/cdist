@@ -41,6 +41,8 @@ class Context(object):
         debug=False):
 
         self.debug      = debug
+        if self.debug:
+            os.environ['__debug'] = 'yes'
 
         self.target_host    = target_host
 

@@ -63,33 +63,9 @@ class ManifestTestCase(unittest.TestCase):
 
     def test_initial_manifest_environment(self):
         initial_manifest = os.path.join(self.local.manifest_path, "dump_environment")
-        output_string = self.manifest.run_initial_manifest(initial_manifest)
-        output_dict = {}
-        for line in output_string.split('\n'):
-            if line:
-                key,value = line.split(': ')
-                output_dict[key] = value
-        self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
-        self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.out_path)
-        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
-        self.assertEqual(output_dict['__manifest'], self.local.manifest_path)
+        self.manifest.run_initial_manifest(initial_manifest)
 
     def test_type_manifest_environment(self):
         cdist_type = core.Type(self.local.type_path, '__dump_environment')
         cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
-        
-        output_string = self.manifest.run_type_manifest(cdist_object)
-        output_dict = {}
-        for line in output_string.split('\n'):
-            if line:
-                key,value = line.split(': ')
-                output_dict[key] = value
-        self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
-        self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.out_path)
-        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
-        self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
-        self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
-        self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
-        self.assertEqual(output_dict['__object_fq'], cdist_object.path)
+        self.manifest.run_type_manifest(cdist_object)

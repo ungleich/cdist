@@ -52,6 +52,14 @@ class ObjectClassTestCase(unittest.TestCase):
         self.assertEqual(objects, objects_expected)
 
 
+class ObjectIdTestCase(unittest.TestCase):
+    def test_illegal_object_id(self):
+        cdist_type = core.Type(type_base_path, '__third')
+        illegal_object_id = '/object_id/may/not/start/with/slash'
+        with self.assertRaises(core.IllegalObjectIdError):
+            core.Object(cdist_type, object_base_path, illegal_object_id)
+
+
 class ObjectTestCase(unittest.TestCase):
 
     def setUp(self):

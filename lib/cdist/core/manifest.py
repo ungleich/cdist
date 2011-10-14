@@ -80,7 +80,7 @@ class Manifest(object):
         env.update(self.env)
         env['__manifest'] = self.local.manifest_path
         env['__cdist_manifest'] = script
-        return self.local.run_script(script, env=env)
+        self.local.run_script(script, env=env)
 
     def run_type_manifest(self, cdist_object):
         script = os.path.join(self.local.type_path, cdist_object.type.manifest_path)
@@ -94,4 +94,4 @@ class Manifest(object):
                 '__type': cdist_object.type.absolute_path,
                 '__cdist_manifest': script,
             })
-            return self.local.run_script(script, env=env)
+            self.local.run_script(script, env=env)

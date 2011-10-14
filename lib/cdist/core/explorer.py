@@ -88,7 +88,7 @@ class Explorer(object):
     def run_global_explorer(self, explorer):
         """Run the given global explorer and return it's output."""
         script = os.path.join(self.remote.global_explorer_path, explorer)
-        return self.remote.run_script(script, env=self.env)
+        return self.remote.run_script(script, env=self.env, return_output=True)
 
     ### type
 
@@ -126,4 +126,4 @@ class Explorer(object):
             '__type_explorer': os.path.join(self.remote.type_path, cdist_type.explorer_path)
         })
         script = os.path.join(self.remote.type_path, cdist_type.explorer_path, explorer)
-        return self.remote.run_script(script, env=env)
+        return self.remote.run_script(script, env=env, return_output=True)

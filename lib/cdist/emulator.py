@@ -28,6 +28,16 @@ from cdist import core
 
 log = logging.getLogger(__name__)
 
+
+class IllegalRequirementError(cdist.Error):
+    def __init__(self, requirement, message=None):
+        self.requirement = requirement
+        self.message = message or 'Illegal requirement'
+
+    def __str__(self):
+        return '%s: %s' % (self.message, self.requirement)
+
+
 def run(argv):
     """Emulate type commands (i.e. __file and co)"""
     global_path = os.environ['__global']
@@ -106,8 +116,19 @@ def run(argv):
     # Record requirements
     if "require" in os.environ:
         requirements = os.environ['require']
-        log.debug("%s:Writing requirements: %s" % (cdist_object.path, requirements))
-        cdist_object.requirements.extend(requirements.split(" "))
+        for requirement in requirements.split(" "):
+            requirement_parts = requirement.split(os.sep, 1)
+            requirement_parts.reverse()
+            requirement_type_name = requirement_parts.pop()
+            try:
+                requirement_object_id = requirement_parts.pop()
+            except IndexError:
+                # no object id, must be singleton
+                requirement_object_id = 'singleton'
+            if requirement_object_id.startswith('/'):
+                raise IllegalRequirementError(requirement, 'requirements object_id may not start with /')
+            log.debug("Recording requirement: %s -> %s" % (cdist_object.path, requirement))
+            cdist_object.requirements.append(requirement)
 
     # Record / Append source
     cdist_object.source.append(object_source)
