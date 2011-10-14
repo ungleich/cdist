@@ -54,6 +54,7 @@ class Type(object):
         if not name in cls._instances:
             instance = super(Type, cls).__new__(cls)
             cls._instances[name] = instance
+            # return instance so __init__ is called
         return cls._instances[name]
 
     def __init__(self, base_path, name):
@@ -66,8 +67,6 @@ class Type(object):
         self.gencode_local_path = os.path.join(self.name, "gencode-local")
         self.gencode_remote_path = os.path.join(self.name, "gencode-remote")
         self.manifest_path = os.path.join(self.name, "manifest")
-
-        self.explorers_transferred = False
 
         self.__explorers = None
         self.__required_parameters = None

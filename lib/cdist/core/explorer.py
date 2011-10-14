@@ -75,6 +75,7 @@ class Explorer(object):
         }
         if log.getEffectiveLevel() == logging.DEBUG:
             self.env.update({'__debug': "yes" })
+        self._type_explorers_transferred = []
 
     ### global
 
@@ -105,14 +106,14 @@ class Explorer(object):
     def transfer_type_explorers(self, cdist_type):
         """Transfer the type explorers for the given type to the remote side."""
         if cdist_type.explorers:
-            if cdist_type.explorers_transferred:
+            if cdist_type.name in self._type_explorers_transferred:
                 log.debug("Skipping retransfer of type explorers for: %s", cdist_type)
             else:
                 source = os.path.join(self.local.type_path, cdist_type.explorer_path)
                 destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
                 self.remote.mkdir(destination)
                 self.remote.transfer(source, destination)
-                cdist_type.explorers_transferred = True
+                self._type_explorers_transferred.append(cdist_type.name)
 
     def transfer_object_parameters(self, cdist_object):
         """Transfer the parameters for the given object to the remote side."""
