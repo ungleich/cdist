@@ -40,7 +40,8 @@ class LocalScriptError(cdist.Error):
         self.script_content = script_content
 
     def __str__(self):
-        return "Local script execution failed: %s %s" % (self.script, self.command)
+        plain_command = " ".join(self.command)
+        return "Local script execution failed: %s %s" % (self.script, plain_command)
 
 
 class Local(object):
