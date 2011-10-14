@@ -87,7 +87,7 @@ class Local(object):
         # FIXME: dont set mode here, fix unittest mkdtemp instead
         os.makedirs(path, mode=0o700, exist_ok=True)
 
-    def run(self, command, env=None):
+    def run(self, command, env=None, return_output=False):
         """Run the given command with the given environment.
         Return the output as a string.
 
@@ -95,13 +95,16 @@ class Local(object):
         assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
         self.log.debug("Local run: %s", command)
         try:
-            return subprocess.check_output(command, env=env).decode()
+            if return_output:
+                return subprocess.check_output(command, env=env).decode()
+            else:
+                subprocess.check_call(command, env=env)
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
             raise cdist.Error(" ".join(*args) + ": " + error.args[1])
 
-    def run_script(self, script, env=None):
+    def run_script(self, script, env=None, return_output=False):
         """Run the given script with the given environment.
         Return the output as a string.
 
@@ -114,7 +117,10 @@ class Local(object):
             self.log.debug("Local run script env: %s", env)
         
         try:
-            return subprocess.check_output(command, env=env).decode()
+            if return_output:
+                return subprocess.check_output(command, env=env).decode()
+            else:
+                subprocess.check_call(command, env=env)
         except subprocess.CalledProcessError as error:
             script_content = self.run(["cat", script])
             self.log.error("Code that raised the error:\n%s", script_content)
