@@ -25,9 +25,6 @@ import os
 
 import cdist
 
-log = logging.getLogger(__name__)
-
-
 '''
 common:
     runs only locally, does not need remote
@@ -68,13 +65,16 @@ class Manifest(object):
     def __init__(self, target_host, local):
         self.target_host = target_host
         self.local = local
+        
+        self.log = logging.getLogger(self.target_host)
+
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             '__target_host': self.target_host,
             '__global': self.local.out_path,
             '__cdist_type_base_path': self.local.type_path, # for use in type emulator
         }
-        if log.getEffectiveLevel() == logging.DEBUG:
+        if self.log.getEffectiveLevel() == logging.DEBUG:
             self.env.update({'__debug': "yes" })
 
 
@@ -83,7 +83,7 @@ class Manifest(object):
         env.update(self.env)
         env['__manifest'] = self.local.manifest_path
         env['__cdist_manifest'] = script
-        log.info("Running initial manifest " + self.local.manifest_path)
+        self.log.info("Running initial manifest " + self.local.manifest_path)
         self.local.run_script(script, env=env)
 
     def run_type_manifest(self, cdist_object):
