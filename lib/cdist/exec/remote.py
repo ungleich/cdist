@@ -114,9 +114,9 @@ class Remote(object):
         self.log.debug("Remote run: %s", command)
         try:
             if return_output:
-                return subprocess.check_output(command, env=env).decode()
+                return subprocess.check_output(command).decode()
             else:
-                subprocess.check_call(command, env=env)
+                subprocess.check_call(command)
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
@@ -144,9 +144,9 @@ class Remote(object):
         
         try:
             if return_output:
-                return subprocess.check_output(command, env=env).decode()
+                return subprocess.check_output(command).decode()
             else:
-                subprocess.check_call(command, env=env)
+                subprocess.check_call(command)
         except subprocess.CalledProcessError as error:
             script_content = self.run(["cat", script])
             self.log.error("Code that raised the error:\n%s", script_content)
