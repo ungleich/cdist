@@ -28,6 +28,16 @@ from cdist import core
 
 log = logging.getLogger(__name__)
 
+
+class IllegalRequirementError(cdist.Error):
+    def __init__(self, requirement, message=None):
+        self.requirement = requirement
+        self.message = message or 'Illegal requirement'
+
+    def __str__(self):
+        return '%s: %s' % (self.message, self.requirement)
+
+
 def run(argv):
     """Emulate type commands (i.e. __file and co)"""
     global_path = os.environ['__global']
@@ -116,7 +126,7 @@ def run(argv):
                 # no object id, must be singleton
                 requirement_object_id = 'singleton'
             if requirement_object_id.startswith('/'):
-                raise core.IllegalObjectIdError(requirement_object_id, requirement_type_name, 'object_id may not start with /')
+                raise IllegalRequirementError(requirement, 'requirements object_id may not start with /')
             log.debug("Recording requirement: %s -> %s" % (cdist_object.path, requirement))
             cdist_object.requirements.append(requirement)
 
