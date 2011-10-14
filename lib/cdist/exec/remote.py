@@ -38,7 +38,8 @@ class RemoteScriptError(cdist.Error):
         self.script_content = script_content
 
     def __str__(self):
-        return "Remote script execution failed: %s %s" % (self.script, self.command)
+        plain_command = " ".join(self.command)
+        return "Remote script execution failed: %s" % plain_command
 
 class DecodeError(cdist.Error):
     def __init__(self, command):
