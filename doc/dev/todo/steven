@@ -15,6 +15,10 @@ exec local & remote:
    - add new mechanism to capture output explicitly
 
 
+config_install:
+   - move code for running global and type explorer run to cdist.core.explorer
+
+
 tests:
 
    __init__():
