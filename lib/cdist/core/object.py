@@ -34,12 +34,13 @@ DOT_CDIST = '.cdist'
 
 
 class IllegalObjectIdError(cdist.Error):
-    def __init__(self, object_id, message=None):
+    def __init__(self, object_id, type_name, message=None):
         self.object_id = object_id
+        self.type_name = type_name
         self.message = message or 'Illegal object id'
 
     def __str__(self):
-        return '%s: %s' % (self.message, self.object_id)
+        return '%s: %s' % (self.message, os.path.join(self.type_name. self.object_id))
 
 
 class Object(object):
@@ -89,7 +90,7 @@ class Object(object):
 
     def __init__(self, cdist_type, base_path, object_id=None):
         if object_id and object_id.startswith('/'):
-            raise IllegalObjectIdError(object_id, 'object_id may not start with /')
+            raise IllegalObjectIdError(object_id, cdist_type.name, 'object_id may not start with /')
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id

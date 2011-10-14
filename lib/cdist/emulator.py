@@ -116,9 +116,9 @@ def run(argv):
                 # no object id, must be singleton
                 requirement_object_id = 'singleton'
             if requirement_object_id.startswith('/'):
-                raise core.IllegalObjectIdError(requirement_object_id, 'object_id may not start with /')
+                raise core.IllegalObjectIdError(requirement_object_id, requirement_type_name, 'object_id may not start with /')
             log.debug("Recording requirement: %s -> %s" % (cdist_object.path, requirement))
-            cdist_object.requirements.append(rement_object_id)
+            cdist_object.requirements.append(requirement)
 
     # Record / Append source
     cdist_object.source.append(object_source)
