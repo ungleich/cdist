@@ -128,13 +128,13 @@ case "$1" in
 
    test)
       shift # skip t
-      set -x
+      export PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib
+
       if [ $# -lt 1 ]; then
-         set -- cdist.test
-      fi
-      PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib \
+         python3 -m cdist.test
+      else
          python3 -m unittest "$@"
-      
+      fi
    ;;
 
    *)
