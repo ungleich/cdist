@@ -169,3 +169,11 @@ class ObjectTestCase(unittest.TestCase):
     def test_code_remote_after_changing(self):
         self.cdist_object.code_remote = 'Hello World'
         self.assertEqual(self.cdist_object.code_remote, 'Hello World')
+
+    def test_object_from_name(self):
+        self.cdist_object.code_remote = 'Hello World'
+        other_name = '__first/man'
+        other_object = self.cdist_object.object_from_name(other_name)
+        self.assertTrue(isinstance(other_object, core.Object))
+        self.assertEqual(other_object.type.name, '__first')
+        self.assertEqual(other_object.object_id, 'man')
