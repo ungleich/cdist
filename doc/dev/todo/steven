@@ -10,6 +10,10 @@ logging:
          ...
       then one could filter e.g. on explorer.*
 
+exec local & remote:
+   - don't capture output by default
+   - add new mechanism to capture output explicitly
+
 
 tests:
 
