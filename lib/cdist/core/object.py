@@ -63,6 +63,21 @@ class Object(object):
             if DOT_CDIST in dirs:
                 yield os.path.relpath(path, object_base_path)
 
+    def object_from_name(self, object_name):
+        """Convenience method for creating an object instance from an object name.
+
+        Mainly intended to create objects when resolving requirements.
+
+        e.g:
+            <Object __foo/bar>.object_from_name('__other/object') -> <Object __other/object>
+
+        """
+        type_path = self.type.base_path
+        object_path = self.base_path
+        type_name = object_name.split(os.sep)[0]
+        object_id = os.sep.join(object_name.split(os.sep)[1:])
+        return self.__class__(self.type.__class__(type_path, type_name), object_path, object_id=object_id)
+
     def __init__(self, cdist_type, base_path, object_id=None):
         self.type = cdist_type # instance of Type
         self.base_path = base_path
