@@ -113,7 +113,6 @@ class ConfigInstall(object):
         for explorer in self.explorer.list_type_explorer_names(cdist_object.type):
             output = self.explorer.run_type_explorer(explorer, cdist_object)
             self.log.debug("Running type explorer '%s' for object '%s'", explorer, cdist_object.name)
-            print("run_type_explorers: %s = %s" % (explorer, output))
             cdist_object.explorers[explorer] = output
 
     def object_prepare(self, cdist_object):
