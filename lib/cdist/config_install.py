@@ -136,7 +136,8 @@ class ConfigInstall(object):
         for requirement in cdist_object.requirements:
             self.log.debug("Object %s requires %s", cdist_object, requirement)
             # FIXME: requirement is a string, need to create object here
-            self.object_run(requirement)
+            required_object = cdist_object.object_from_name(requirement)
+            self.object_run(required_object)
 
         # Generate
         cdist_object.code_local = self.code.run_gencode_local(cdist_object)
