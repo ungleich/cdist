@@ -62,6 +62,11 @@ class TypeTestCase(unittest.TestCase):
         cdist_type = cdist.core.Type(base_path, '__name_path')
         self.assertEqual(cdist_type.path, '__name_path')
 
+    def test_base_path(self):
+        base_path = fixtures
+        cdist_type = cdist.core.Type(base_path, '__name_path')
+        self.assertEqual(cdist_type.base_path, base_path)
+
     def test_absolute_path(self):
         base_path = fixtures
         cdist_type = cdist.core.Type(base_path, '__name_path')
