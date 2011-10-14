@@ -1,4 +1,3 @@
-#c1406:!/usr/bin/env python3
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
@@ -36,16 +35,14 @@ for possible_test in os.listdir(base_dir):
     if os.path.isfile(mod_path):
         test_modules.append(possible_test)
 
-print(sys.path)
-
 suites = []
-
 for test_module in test_modules:
-    module = imp.find_module(test_module, [base_dir])
-    imp.load_module(test_module, *module)
+    module_parameters = imp.find_module(test_module, [base_dir])
+    module = imp.load_module("cdist.test." + test_module, *module_parameters)
 
-    print(module)
-    # module_name = 
-
-    suite = unittest.defaultTestLoader.loadTestsFromModule("cdist.test." + test_module)
+    suite = unittest.defaultTestLoader.loadTestsFromModule(module)
+    # print("Got suite: " + suite.__str__())
     suites.append(suite)
+
+all_suites = unittest.TestSuite(suites)
+unittest.TextTestRunner(verbosity=2).run(all_suites)
