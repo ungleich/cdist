@@ -26,9 +26,7 @@ import getpass
 import shutil
 import string
 import random
-
-#import logging
-#logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
+import logging
 
 import cdist
 from cdist.exec import local
@@ -51,12 +49,13 @@ class ManifestTestCase(unittest.TestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        target_host = 'localhost'
+        self.target_host = 'localhost'
         out_path = self.temp_dir
-        self.local = local.Local(target_host, local_base_path, out_path)
+        self.local = local.Local(self.target_host, local_base_path, out_path)
         self.local.create_directories()
         self.local.link_emulator(cdist.test.cdist_exec_path)
-        self.manifest = manifest.Manifest(target_host, self.local)
+        self.manifest = manifest.Manifest(self.target_host, self.local)
+        self.log = logging.getLogger("cdist")
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -69,3 +68,8 @@ class ManifestTestCase(unittest.TestCase):
         cdist_type = core.Type(self.local.type_path, '__dump_environment')
         cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
         self.manifest.run_type_manifest(cdist_object)
+
+    def test_debug_env_setup(self):
+        self.log.setLevel(logging.DEBUG)
+        manifest = cdist.core.manifest.Manifest(self.target_host, self.local)
+        self.assertTrue("__debug" in manifest.env)
