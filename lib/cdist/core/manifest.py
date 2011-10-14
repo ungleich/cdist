@@ -83,6 +83,7 @@ class Manifest(object):
         env.update(self.env)
         env['__manifest'] = self.local.manifest_path
         env['__cdist_manifest'] = script
+        log.info("Running initial manifest " + self.local.manifest_path)
         self.local.run_script(script, env=env)
 
     def run_type_manifest(self, cdist_object):
