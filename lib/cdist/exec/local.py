@@ -122,7 +122,7 @@ class Local(object):
             else:
                 subprocess.check_call(command, env=env)
         except subprocess.CalledProcessError as error:
-            script_content = self.run(["cat", script])
+            script_content = self.run(["cat", script], return_output=True)
             self.log.error("Code that raised the error:\n%s", script_content)
             raise LocalScriptError(script, command, script_content)
         except EnvironmentError as error:
