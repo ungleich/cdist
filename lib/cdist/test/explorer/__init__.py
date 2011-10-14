@@ -24,6 +24,7 @@ import tempfile
 import unittest
 import shutil
 import getpass
+import logging
 
 import cdist
 from cdist import core
@@ -46,20 +47,22 @@ class ExplorerClassTestCase(unittest.TestCase):
         return tempfile.mkstemp(prefix='tmp.cdist.test.', **kwargs)
 
     def setUp(self):
-        target_host = 'localhost'
+        self.target_host = 'localhost'
 
         self.local_base_path = local_base_path
         self.out_path = self.mkdtemp()
-        self.local = local.Local(target_host, self.local_base_path, self.out_path)
+        self.local = local.Local(self.target_host, self.local_base_path, self.out_path)
         self.local.create_directories()
 
         self.remote_base_path = self.mkdtemp()
         self.user = getpass.getuser()
         remote_exec = "ssh -o User=%s -q" % self.user
         remote_copy = "scp -o User=%s -q" % self.user
-        self.remote = remote.Remote(target_host, self.remote_base_path, remote_exec, remote_copy)
+        self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
 
-        self.explorer = explorer.Explorer(target_host, self.local, self.remote)
+        self.explorer = explorer.Explorer(self.target_host, self.local, self.remote)
+
+        self.log = logging.getLogger("cdist")
 
     def tearDown(self):
         shutil.rmtree(self.out_path)
@@ -109,3 +112,7 @@ class ExplorerClassTestCase(unittest.TestCase):
         output = self.explorer.run_type_explorer('world', cdist_object)
         self.assertEqual(output, 'hello\n')
 
+    def test_debug_env_setup(self):
+        self.log.setLevel(logging.DEBUG)
+        explorer = cdist.core.explorer.Explorer(self.target_host, self.local, self.remote)
+        self.assertTrue("__debug" in explorer.env)

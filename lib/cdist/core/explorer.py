@@ -73,6 +73,8 @@ class Explorer(object):
             '__target_host': self.target_host,
             '__explorer': self.remote.global_explorer_path,
         }
+        if log.getEffectiveLevel() == logging.DEBUG:
+            self.env.update({'__debug': "yes" })
 
     ### global
 
