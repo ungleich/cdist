@@ -95,6 +95,20 @@ class ExplorerClassTestCase(unittest.TestCase):
         destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
         self.assertEqual(os.listdir(source), os.listdir(destination))
 
+    def test_transfer_type_explorers_only_once(self):
+        cdist_type = core.Type(self.local.type_path, '__test_type')
+        # first transfer
+        self.explorer.transfer_type_explorers(cdist_type)
+        source = os.path.join(self.local.type_path, cdist_type.explorer_path)
+        destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
+        self.assertEqual(os.listdir(source), os.listdir(destination))
+        # nuke destination folder content, but recreate directory
+        shutil.rmtree(destination)
+        os.makedirs(destination)
+        # second transfer, should not happen
+        self.explorer.transfer_type_explorers(cdist_type)
+        self.assertFalse(os.listdir(destination))
+
     def test_transfer_object_parameters(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
         cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
