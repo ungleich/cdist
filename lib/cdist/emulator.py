@@ -125,8 +125,10 @@ def run(argv):
             except IndexError:
                 # no object id, must be singleton
                 requirement_object_id = 'singleton'
+            # strip leading slash from object_id
             if requirement_object_id.startswith('/'):
-                raise IllegalRequirementError(requirement, 'requirements object_id may not start with /')
+                log.debug("Stripping leading slash from requirements object_id: %s", requirement)
+                requirement_object_id = requirement_object_id.lstrip('/')
             log.debug("Recording requirement: %s -> %s" % (cdist_object.path, requirement))
             cdist_object.requirements.append(requirement)
 
