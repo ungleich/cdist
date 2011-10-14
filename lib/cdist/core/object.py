@@ -33,6 +33,14 @@ log = logging.getLogger(__name__)
 DOT_CDIST = '.cdist'
 
 
+class IllegalObjectIdError(cdist.Error):
+    def __init__(self, object_id):
+        self.object_id = object_id
+
+    def __str__(self):
+        return 'Illegal object id: %s' % self.object_id
+
+
 class Object(object):
     """Represents a cdist object.
 
@@ -79,6 +87,8 @@ class Object(object):
         return self.__class__(self.type.__class__(type_path, type_name), object_path, object_id=object_id)
 
     def __init__(self, cdist_type, base_path, object_id=None):
+        if object_id and object_id.startswith('/'):
+            raise IllegalObjectIdError(object_id)
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
