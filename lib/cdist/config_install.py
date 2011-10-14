@@ -97,6 +97,7 @@ class ConfigInstall(object):
     def run_global_explorers(self):
         """Run global explorers and save output"""
         # FIXME: move to explorer, pass global_explorer_out_path as argument
+        self.log.info("Running global explorers")
         self.explorer.transfer_global_explorers()
         for explorer in self.explorer.list_global_explorer_names():
             output = self.explorer.run_global_explorer(explorer)
