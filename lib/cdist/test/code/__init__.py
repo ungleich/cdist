@@ -24,6 +24,7 @@ import tempfile
 import unittest
 import shutil
 import getpass
+import logging
 
 import cdist
 from cdist import core
@@ -46,24 +47,26 @@ class CodeTestCase(unittest.TestCase):
         return tempfile.mkstemp(prefix='tmp.cdist.test.', **kwargs)
 
     def setUp(self):
-        target_host = 'localhost'
+        self.target_host = 'localhost'
 
         self.local_base_path = local_base_path
         self.out_path = self.mkdtemp()
-        self.local = local.Local(target_host, self.local_base_path, self.out_path)
+        self.local = local.Local(self.target_host, self.local_base_path, self.out_path)
         self.local.create_directories()
 
         self.remote_base_path = self.mkdtemp()
         self.user = getpass.getuser()
         remote_exec = "ssh -o User=%s -q" % self.user
         remote_copy = "scp -o User=%s -q" % self.user
-        self.remote = remote.Remote(target_host, self.remote_base_path, remote_exec, remote_copy)
+        self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
 
-        self.code = code.Code(target_host, self.local, self.remote)
+        self.code = code.Code(self.target_host, self.local, self.remote)
 
         self.cdist_type = core.Type(self.local.type_path, '__dump_environment')
         self.cdist_object = core.Object(self.cdist_type, self.local.object_path, 'whatever')
         self.cdist_object.create()
+
+        self.log = logging.getLogger("cdist")
 
     def tearDown(self):
         shutil.rmtree(self.out_path)
@@ -108,8 +111,13 @@ class CodeTestCase(unittest.TestCase):
     def test_run_code_local(self):
         self.cdist_object.code_local = self.code.run_gencode_local(self.cdist_object)
         self.code.run_code_local(self.cdist_object)
-        
+
     def test_run_code_remote_environment(self):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
         self.code.transfer_code_remote(self.cdist_object)
         self.code.run_code_remote(self.cdist_object)
+
+    def test_debug_env_setup(self):
+        self.log.setLevel(logging.DEBUG)
+        code = cdist.core.code.Code(self.target_host, self.local, self.remote)
+        self.assertTrue("__debug" in code.env)
