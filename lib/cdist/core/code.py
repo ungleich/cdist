@@ -92,6 +92,9 @@ class Code(object):
             '__global': self.local.out_path,
         }
 
+        if log.getEffectiveLevel() == logging.DEBUG:
+            self.env.update({'__debug': "yes" })
+
     def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.type
         script = os.path.join(self.local.type_path, getattr(cdist_type, 'gencode_%s_path' % which))
