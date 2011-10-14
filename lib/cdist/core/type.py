@@ -57,10 +57,10 @@ class Type(object):
         return cls._instances[name]
 
     def __init__(self, base_path, name):
-        self._base_path = base_path
+        self.base_path = base_path
         self.name = name
         self.path = self.name
-        self.absolute_path = os.path.join(self._base_path, self.path)
+        self.absolute_path = os.path.join(self.base_path, self.path)
         self.manifest_path = os.path.join(self.name, "manifest")
         self.explorer_path = os.path.join(self.name, "explorer")
         self.gencode_local_path = os.path.join(self.name, "gencode-local")
