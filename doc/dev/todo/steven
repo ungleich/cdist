@@ -1,3 +1,9 @@
+logging:
+   - logging from type emulator without clobbering stdout
+      maybe implement logging server as described here [1]
+   [1] http://docs.python.org/py3k/howto/logging-cookbook.html#configuration-server-example
+
+
 tests:
 
    __init__():
