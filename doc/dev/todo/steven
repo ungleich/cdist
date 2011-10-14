@@ -3,6 +3,13 @@ logging:
       maybe implement logging server as described here [1]
    [1] http://docs.python.org/py3k/howto/logging-cookbook.html#configuration-server-example
 
+   - use different logger to limit output to current area of interest,
+      e.g.
+         explorer.$target_host: explorer related messages for the run for $target_host
+         manifest.$target_host: manifest related messages for the run for $target_host
+         ...
+      then one could filter e.g. on explorer.*
+
 
 tests:
 
