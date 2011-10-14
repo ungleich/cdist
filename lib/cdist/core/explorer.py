@@ -126,7 +126,7 @@ class Explorer(object):
         cdist_type = cdist_object.type
         env = self.env.copy()
         env.update({
-            '__object': cdist_object.absolute_path,
+            '__object': os.path.join(self.remote.object_path, cdist_object.path),
             '__object_id': cdist_object.object_id,
             '__object_fq': cdist_object.path,
             '__type_explorer': os.path.join(self.remote.type_path, cdist_type.explorer_path)
