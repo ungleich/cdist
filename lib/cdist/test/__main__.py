@@ -33,17 +33,19 @@ for possible_test in os.listdir(base_dir):
     filename = "__init__.py"
     mod_path = os.path.join(base_dir, possible_test, filename)
 
-    print(mod_path + "x")
-
     if os.path.isfile(mod_path):
         test_modules.append(possible_test)
 
 print(sys.path)
 
+suites = []
+
 for test_module in test_modules:
     module = imp.find_module(test_module, [base_dir])
     imp.load_module(test_module, *module)
 
-#suite = unittest.defaultTestLoader.loadTestsFromModule(cdist.test.code)
+    print(module)
+    # module_name = 
 
-
+    suite = unittest.defaultTestLoader.loadTestsFromModule("cdist.test." + test_module)
+    suites.append(suite)
