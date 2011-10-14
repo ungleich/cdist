@@ -67,7 +67,7 @@ class Type(object):
         self.gencode_remote_path = os.path.join(self.name, "gencode-remote")
         self.manifest_path = os.path.join(self.name, "manifest")
 
-        self.transferred_explorers = False
+        self.explorers_transferred = False
 
         self.__explorers = None
         self.__required_parameters = None
