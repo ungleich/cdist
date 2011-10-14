@@ -24,7 +24,7 @@ import tempfile
 import unittest
 import shutil
 
-import cdist.core
+from cdist import core
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
@@ -35,19 +35,19 @@ type_base_path = op.join(fixtures, 'type')
 class ObjectClassTestCase(unittest.TestCase):
 
     def test_list_object_names(self):
-        object_names = list(cdist.core.Object.list_object_names(object_base_path))
+        object_names = list(core.Object.list_object_names(object_base_path))
         self.assertEqual(object_names, ['__first/man', '__second/on-the', '__third/moon'])
 
     def test_list_type_names(self):
-        type_names = list(cdist.core.Object.list_type_names(object_base_path))
+        type_names = list(core.Object.list_type_names(object_base_path))
         self.assertEqual(type_names, ['__first', '__second', '__third'])
 
     def test_list_objects(self):
-        objects = list(cdist.core.Object.list_objects(object_base_path, type_base_path))
+        objects = list(core.Object.list_objects(object_base_path, type_base_path))
         objects_expected = [
-            cdist.core.Object(cdist.core.Type(type_base_path, '__first'), object_base_path, 'man'),
-            cdist.core.Object(cdist.core.Type(type_base_path, '__second'), object_base_path, 'on-the'),
-            cdist.core.Object(cdist.core.Type(type_base_path, '__third'), object_base_path, 'moon'),
+            core.Object(core.Type(type_base_path, '__first'), object_base_path, 'man'),
+            core.Object(core.Type(type_base_path, '__second'), object_base_path, 'on-the'),
+            core.Object(core.Type(type_base_path, '__third'), object_base_path, 'moon'),
         ]
         self.assertEqual(objects, objects_expected)
 
@@ -55,8 +55,8 @@ class ObjectClassTestCase(unittest.TestCase):
 class ObjectTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.cdist_type = cdist.core.Type(type_base_path, '__third')
-        self.cdist_object = cdist.core.Object(self.cdist_type, object_base_path, 'moon') 
+        self.cdist_type = core.Type(type_base_path, '__third')
+        self.cdist_object = core.Object(self.cdist_type, object_base_path, 'moon') 
 
     def tearDown(self):
         self.cdist_object.changed = False
