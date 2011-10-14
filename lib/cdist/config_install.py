@@ -62,7 +62,6 @@ class ConfigInstall(object):
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
-        self.log.info("Deploying to " + self.context.target_host)
         self.stage_prepare()
         self.stage_run()
 
