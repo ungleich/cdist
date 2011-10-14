@@ -74,6 +74,9 @@ class Manifest(object):
             '__global': self.local.out_path,
             '__cdist_type_base_path': self.local.type_path, # for use in type emulator
         }
+        if log.getEffectiveLevel() == logging.DEBUG:
+            self.env.update({'__debug': "yes" })
+
 
     def run_initial_manifest(self, script):
         env = os.environ.copy()
