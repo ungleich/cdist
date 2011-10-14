@@ -25,9 +25,6 @@ import os
 
 import cdist
 
-log = logging.getLogger(__name__)
-
-
 '''
 common:
     runs only remotely, needs local and remote to construct paths
@@ -67,13 +64,16 @@ class Explorer(object):
     """
     def __init__(self, target_host, local, remote):
         self.target_host = target_host
+
+        self.log = logging.getLogger(target_host)
+
         self.local = local
         self.remote = remote
         self.env = {
             '__target_host': self.target_host,
             '__explorer': self.remote.global_explorer_path,
         }
-        if log.getEffectiveLevel() == logging.DEBUG:
+        if self.log.getEffectiveLevel() == logging.DEBUG:
             self.env.update({'__debug': "yes" })
 
     ### global
@@ -106,7 +106,7 @@ class Explorer(object):
         """Transfer the type explorers for the given type to the remote side."""
         if cdist_type.explorers:
             if cdist_type.explorers_transferred:
-                log.debug("Skipping retransfer of type explorers for: %s", cdist_type)
+                self.log.debug("Skipping retransfer of type explorers for: %s", cdist_type)
             else:
                 source = os.path.join(self.local.type_path, cdist_type.explorer_path)
                 destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)

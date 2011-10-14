@@ -70,8 +70,8 @@ class ConfigInstall(object):
         start_time = time.time()
         self.deploy_to()
         self.cleanup()
-        self.log.info("Finished run of %s in %s seconds", 
-            self.context.target_host, time.time() - start_time)
+        self.log.info("Finished run in %s seconds", 
+            time.time() - start_time)
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
