@@ -54,10 +54,11 @@ class ConfigInstall(object):
 
     def cleanup(self):
         # FIXME: move to local?
-        self.log.debug("Saving " + self.local.out_path + " to " + self.local.cache_path)
-        if os.path.exists(self.local.cache_path):
-            shutil.rmtree(self.local.cache_path)
-        shutil.move(self.local.out_path, self.local.cache_path)
+        destination = os.path.join(self.local.cache_path, self.context.target_host)
+        self.log.debug("Saving " + self.local.out_path + " to " + destination)
+        if os.path.exists(destination):
+            shutil.rmtree(destination)
+        shutil.move(self.local.out_path, destination)
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
