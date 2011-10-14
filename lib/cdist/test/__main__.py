@@ -1,3 +1,4 @@
+#c1406:!/usr/bin/env python3
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
@@ -20,27 +21,29 @@
 #
 #
 
-
+import imp
 import os
 import sys
-import cdist.test
 import unittest
 
-#class UI(unittest.TestCase):
-#    def test_banner(self):
-#        self.assertEqual(subprocess.call([cdist_exec_path, "banner"]), 0)
-#
-#    def test_help(self):
-#        for cmd in cdist_commands:
-#            self.assertEqual(subprocess.call([cdist_exec_path, cmd, "-h"]), 0)
-#
-#    # FIXME: mockup needed
-#    def test_config_localhost(self):
-#        for cmd in cdist_commands:
-#            self.assertEqual(subprocess.call([cdist_exec_path, "config", "localhost"]), 0)
+base_dir = os.path.dirname(os.path.realpath(__file__))
 
-print(cdist.test.cdist_exec_path)
-print(sys.argv)
+test_modules = []
+for possible_test in os.listdir(base_dir):
+    filename = "__init__.py"
+    mod_path = os.path.join(base_dir, possible_test, filename)
 
-suite = unittest.defaultTestLoader.discover(os.path.dirname(__file__))
-unittest.TextTestRunner(verbosity=1).run(suite)
+    print(mod_path + "x")
+
+    if os.path.isfile(mod_path):
+        test_modules.append(possible_test)
+
+print(sys.path)
+
+for test_module in test_modules:
+    module = imp.find_module(test_module, [base_dir])
+    imp.load_module(test_module, *module)
+
+#suite = unittest.defaultTestLoader.loadTestsFromModule(cdist.test.code)
+
+
