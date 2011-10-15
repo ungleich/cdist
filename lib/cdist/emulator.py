@@ -156,8 +156,8 @@ class Emulator(object):
                 except IndexError:
                     # no object id, must be singleton
                     requirement_object_id = 'singleton'
-                if requirement_object_id.startswith('/'):
-                    raise IllegalRequirementError(requirement, 'requirements object_id may not start with /')
+
+                requirement_object_id = requirement_object_id.lstrip('/')
                 self.log.debug("Recording requirement: %s -> %s" % (self.cdist_object.path, requirement))
                 self.cdist_object.requirements.append(requirement)
 
