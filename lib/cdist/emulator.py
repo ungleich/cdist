@@ -147,21 +147,24 @@ class Emulator(object):
 
         if "require" in os.environ:
             requirements = os.environ['require']
+            self.log.debug("reqs = " + requirements)
             for requirement in requirements.split(" "):
+                # Ignore empty fields - probably the only field anyway
+                if len(requirement) == 0:
+                    continue
+
                 self.log.debug("Recording requirement: " + requirement)
                 requirement_parts = requirement.split(os.sep, 1)
-                requirement_parts.reverse()
-                # FIXME: continue here
-                FAILHERE,PLEASE()[]!
-                print(requirement)
-                print(requirement_parts)
-                requirement_type_name = requirement_parts.pop()
-                try:
-                    requirement_object_id = requirement_parts.pop()
-                except IndexError:
-                    # no object id, must be singleton
-                    requirement_object_id = 'singleton'
+                requirement_type_name = requirement_parts[0]
+                requirement_object_id = requirement_parts[1]
 
+                # FIXME: Add support for omitted object id == singleton
+                #if len(requirement_parts) == 1:
+                #except IndexError:
+                #    # no object id, must be singleton
+                #    requirement_object_id = 'singleton'
+
+                # Remove / if existent in object id
                 requirement_object_id = requirement_object_id.lstrip('/')
                 self.cdist_object.requirements.append(requirement)
 
