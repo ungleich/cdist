@@ -148,8 +148,12 @@ class Emulator(object):
         if "require" in os.environ:
             requirements = os.environ['require']
             for requirement in requirements.split(" "):
+                self.log.debug("Recording requirement: " + requirement)
                 requirement_parts = requirement.split(os.sep, 1)
-                requirement_parts.reverse()
+                # FIXME: continue here
+                FAILHERE,PLEASE()[]!
+                print(requirement)
+                print(requirement_parts)
                 requirement_type_name = requirement_parts.pop()
                 try:
                     requirement_object_id = requirement_parts.pop()
@@ -158,7 +162,6 @@ class Emulator(object):
                     requirement_object_id = 'singleton'
 
                 requirement_object_id = requirement_object_id.lstrip('/')
-                self.log.debug("Recording requirement: %s -> %s" % (self.cdist_object.path, requirement))
                 self.cdist_object.requirements.append(requirement)
 
         # Record / Append source
