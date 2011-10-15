@@ -26,8 +26,6 @@ import os
 import cdist
 from cdist import core
 
-log = logging.getLogger(__name__)
-
 
 class IllegalRequirementError(cdist.Error):
     def __init__(self, requirement, message=None):
@@ -37,100 +35,131 @@ class IllegalRequirementError(cdist.Error):
     def __str__(self):
         return '%s: %s' % (self.message, self.requirement)
 
+class Emulator(object):
+    def __init__(self, argv):
+        self.argv           = argv
+        self.object_id      = False
 
-def run(argv):
-    """Emulate type commands (i.e. __file and co)"""
-    global_path = os.environ['__global']
-    object_source = os.environ['__cdist_manifest']
-    target_host = os.environ['__target_host']
-    type_name = os.path.basename(argv[0])
+        self.global_path    = os.environ['__global']
+        self.object_source  = os.environ['__cdist_manifest']
+        self.target_host    = os.environ['__target_host']
+        self.type_base_path = os.environ['__cdist_type_base_path']
+        
+        self.object_base_path = os.path.join(self.global_path, "object")
 
-    # Logsetup - FIXME: add object_fq as soon as setup!
-    #id = target_host + ": " + cdist_type + '/' + object_id 
-    id = target_host + ": "
-    # logformat = '%(levelname)s: ' + target_host + ": " + cdist_type + '/' + object_id + ': %(message)s'
-    logformat = '%(levelname)s: ' + id + ': %(message)s'
-    logging.basicConfig(format=logformat)
+        self.type_name      = os.path.basename(argv[0])
+        self.cdist_type     = core.Type(self.type_base_path, self.type_name)
 
-    if '__debug' in os.environ:
-        logging.root.setLevel(logging.DEBUG)
-    else:
-        logging.root.setLevel(logging.INFO)
+        self.__init_log()
 
-    object_base_path = os.path.join(global_path, "object")
-    type_base_path = os.environ['__cdist_type_base_path']
-    cdist_type = core.Type(type_base_path, type_name)
+    def filter(self, record):
+        """Add hostname and object to logs via logging Filter"""
 
-    if '__install' in os.environ:
-        if not cdist_type.is_install:
-            log.debug("Running in install mode, ignoring non install type")
-            return True
+        prefix = self.target_host + ": "
 
-    parser = argparse.ArgumentParser(add_help=False)
+        if self.object_id:
+            prefix = prefix + self.type_name + "/" + self.object_id
 
-    for parameter in cdist_type.optional_parameters:
-        argument = "--" + parameter
-        parser.add_argument(argument, action='store', required=False)
-    for parameter in cdist_type.required_parameters:
-        argument = "--" + parameter
-        parser.add_argument(argument, action='store', required=True)
+        record.msg = prefix + ": " + record.msg
 
-    # If not singleton support one positional parameter
-    if not cdist_type.is_singleton:
-        parser.add_argument("object_id", nargs=1)
+        return True
 
-    # And finally verify parameter
-    args = parser.parse_args(argv[1:])
+    def run(self):
+        """Emulate type commands (i.e. __file and co)"""
 
-    # Setup object_id
-    if cdist_type.is_singleton:
-        object_id = "singleton"
-    else:
-        object_id = args.object_id[0]
-        del args.object_id
+        if '__install' in os.environ:
+            if not self.cdist_type.is_install:
+                self.log.debug("Running in install mode, ignoring non install type")
+                return True
 
-        # strip leading slash from object_id
-        object_id = object_id.lstrip('/')
+        self.commandline()
+        self.setup_object()
+        self.record_requirements()
+        self.log.debug("Finished %s %s" % (self.cdist_object.path, self.parameters))
 
-    # Instantiate the cdist object whe are defining
-    cdist_object = core.Object(cdist_type, object_base_path, object_id)
+    def __init_log(self):
+        """Setup logging facility"""
+        logformat = '%(levelname)s: %(message)s'
+        logging.basicConfig(format=logformat)
 
-    # FIXME: verify object id
-    log.debug('#### emulator args: %s' % args)
+        if '__debug' in os.environ:
+            logging.root.setLevel(logging.DEBUG)
+        else:
+            logging.root.setLevel(logging.INFO)
 
-    # Create object with given parameters
-    parameters = {}
-    for key,value in vars(args).items():
-        if value is not None:
-            parameters[key] = value
-    
-    if cdist_object.exists:
-        if cdist_object.parameters != parameters:
-            raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
-                % (cdist_object, " ".join(cdist_object.source), cdist_object.parameters, object_source, parameters)
+        self.log            = logging.getLogger(__name__)
+        self.log.addFilter(self)
+
+    def commandline(self):
+        """Parse command line"""
+
+        parser = argparse.ArgumentParser(add_help=False)
+
+        for parameter in self.cdist_type.optional_parameters:
+            argument = "--" + parameter
+            parser.add_argument(argument, action='store', required=False)
+        for parameter in self.cdist_type.required_parameters:
+            argument = "--" + parameter
+            parser.add_argument(argument, action='store', required=True)
+
+        # If not singleton support one positional parameter
+        if not self.cdist_type.is_singleton:
+            parser.add_argument("object_id", nargs=1)
+
+        # And finally parse/verify parameter
+        self.args = parser.parse_args(self.argv[1:])
+        self.log.debug('Emulator args: %s' % self.args)
+
+
+    def setup_object(self):
+        # FIXME: verify object id
+
+        # Setup object_id
+        if self.cdist_type.is_singleton:
+            self.object_id = "singleton"
+        else:
+            self.object_id = self.args.object_id[0]
+            del self.args.object_id
+
+            # strip leading slash from object_id
+            self.object_id = self.object_id.lstrip('/')
+
+        # Instantiate the cdist object we are defining
+        self.cdist_object = core.Object(self.cdist_type, self.object_base_path, self.object_id)
+
+        # Create object with given parameters
+        self.parameters = {}
+        for key,value in vars(self.args).items():
+            if value is not None:
+                self.parameters[key] = value
+        
+        if self.cdist_object.exists:
+            if cdist_object.parameters != self.parameters:
+                raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
+                    % (self.cdist_object, " ".join(self.cdist_object.source), self.cdist_object.parameters, self.object_source, self.parameters)
             )
-    else:
-        cdist_object.create()
-        cdist_object.parameters = parameters
+        else:
+            self.cdist_object.create()
+            self.cdist_object.parameters = self.parameters
 
-    # Record requirements
-    if "require" in os.environ:
-        requirements = os.environ['require']
-        for requirement in requirements.split(" "):
-            requirement_parts = requirement.split(os.sep, 1)
-            requirement_parts.reverse()
-            requirement_type_name = requirement_parts.pop()
-            try:
-                requirement_object_id = requirement_parts.pop()
-            except IndexError:
-                # no object id, must be singleton
-                requirement_object_id = 'singleton'
-            if requirement_object_id.startswith('/'):
-                raise IllegalRequirementError(requirement, 'requirements object_id may not start with /')
-            log.debug("Recording requirement: %s -> %s" % (cdist_object.path, requirement))
-            cdist_object.requirements.append(requirement)
+    def record_requirements(self):
+        """record requirements"""
 
-    # Record / Append source
-    cdist_object.source.append(object_source)
+        if "require" in os.environ:
+            requirements = os.environ['require']
+            for requirement in requirements.split(" "):
+                requirement_parts = requirement.split(os.sep, 1)
+                requirement_parts.reverse()
+                requirement_type_name = requirement_parts.pop()
+                try:
+                    requirement_object_id = requirement_parts.pop()
+                except IndexError:
+                    # no object id, must be singleton
+                    requirement_object_id = 'singleton'
+                if requirement_object_id.startswith('/'):
+                    raise IllegalRequirementError(requirement, 'requirements object_id may not start with /')
+                self.log.debug("Recording requirement: %s -> %s" % (self.cdist_object.path, requirement))
+                self.cdist_object.requirements.append(requirement)
 
-    log.debug("Finished %s %s" % (cdist_object.path, parameters))
+        # Record / Append source
+        self.cdist_object.source.append(self.object_source)
