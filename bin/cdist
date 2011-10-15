@@ -22,6 +22,7 @@
 
 import argparse
 import logging
+import multiprocessing
 import os
 import re
 import sys
@@ -116,36 +117,43 @@ def configinstall(args, mode):
 
     time_start = time.time()
 
-    import cdist.context
-
     for host in args.host:
-        context = cdist.context.Context(
-            target_host=host,
-            initial_manifest=args.manifest,
-            base_path=args.cdist_home,
-            exec_path=sys.argv[0],
-            debug=args.debug)
-
-        c = mode(context)
         if args.parallel:
             log.debug("Creating child process for %s", host)
-            process[host] = multiprocessing.Process(target=c.deploy_and_cleanup)
+            process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode))
             process[host].start()
         else:
-            c.deploy_and_cleanup()
+            configinstall_onehost(host, args, mode)
 
-        context.cleanup()
-
+    # FIXME: error handling for parallel mode!
     if args.parallel:
         for p in process.keys():
             log.debug("Joining process %s", p)
             process[p].join()
 
-    # FIXME: error handling for parallel mode!
 
     time_end = time.time()
     log.info("Total processing time for %s host(s): %s", len(args.host),
                 (time_end - time_start))
+
+
+def configinstall_onehost(host, args, mode):
+    """Configure or install remote system"""
+    process = {}
+
+    import cdist.context
+
+    context = cdist.context.Context(
+        target_host=host,
+        initial_manifest=args.manifest,
+        base_path=args.cdist_home,
+        exec_path=sys.argv[0],
+        debug=args.debug)
+
+    c = mode(context)
+    c.deploy_and_cleanup()
+    context.cleanup()
+
 
 def emulator():
     """Prepare and run emulator"""
@@ -168,6 +176,7 @@ if __name__ == "__main__":
             commandline()
 
     except KeyboardInterrupt:
+        # FIXME: catch children if in parallel mode
         sys.exit(0)
     except cdist.Error as e:
         log.error(e)
