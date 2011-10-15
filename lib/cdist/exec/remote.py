@@ -38,7 +38,15 @@ class RemoteScriptError(cdist.Error):
         self.script_content = script_content
 
     def __str__(self):
-        return "Remote script execution failed: %s %s" % (self.script, self.command)
+        plain_command = " ".join(self.command)
+        return "Remote script execution failed: %s" % plain_command
+
+class DecodeError(cdist.Error):
+    def __init__(self, command):
+        self.command = command
+
+    def __str__(self):
+        return "Cannot decode output of " + " ".join(self.command)
 
 
 class Remote(object):
@@ -121,6 +129,8 @@ class Remote(object):
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
             raise cdist.Error(" ".join(*args) + ": " + error.args[1])
+        except UnicodeDecodeError:
+            raise DecodeError(command)
 
     def run_script(self, script, env=None, return_output=False):
         """Run the given script with the given environment on the remote side.

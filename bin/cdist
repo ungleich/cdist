@@ -145,6 +145,10 @@ def configinstall(args, mode):
     log.info("Total processing time for %s host(s): %s", len(args.host),
                 (time_end - time_start))
 
+def emulator():
+    """Prepare and run emulator"""
+    emulator = cdist.emulator.Emulator(sys.argv)
+    emulator.run()
 
 if __name__ == "__main__":
     try:
@@ -152,7 +156,8 @@ if __name__ == "__main__":
 
         if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
             import cdist.emulator
-            cdist.emulator.run(sys.argv)
+
+            emulator()
         else:
             import cdist.banner
             import cdist.config
