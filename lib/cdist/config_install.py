@@ -91,7 +91,6 @@ class ConfigInstall(object):
                     self.log.debug("Skipping rerun of object %s", cdist_object)
                     continue
                 else:
-                    self.log.info("Running manifest and explorer for " + cdist_object.name)
                     self.object_prepare(cdist_object)
                     new_objects_created = True
 
@@ -119,14 +118,14 @@ class ConfigInstall(object):
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
-        self.log.debug("Preparing object: " + cdist_object.name)
+        self.log.info("Running manifest and explorers for " + cdist_object.name)
         self.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.prepared = True
 
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
-        self.log.debug("Running object %s", cdist_object)
+        self.log.info("Running gencode and code for " + cdist_object.name)
 
         # Catch requirements, which re-call us
         if cdist_object.ran:
