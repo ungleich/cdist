@@ -107,7 +107,7 @@ class Explorer(object):
         """Transfer the type explorers for the given type to the remote side."""
         if cdist_type.explorers:
             if cdist_type.name in self._type_explorers_transferred:
-                log.debug("Skipping retransfer of type explorers for: %s", cdist_type)
+                self.log.debug("Skipping retransfer of type explorers for: %s", cdist_type)
             else:
                 source = os.path.join(self.local.type_path, cdist_type.explorer_path)
                 destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
