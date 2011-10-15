@@ -128,7 +128,8 @@ def configinstall(args, mode):
                 process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode))
                 process[host].start()
             else:
-                configinstall_onehost(host, args, mode)
+                if not configinstall_onehost(host, args, mode):
+                    failed_hosts.append(host)
 
         if args.parallel:
             for p in process.keys():
@@ -147,20 +148,16 @@ def configinstall(args, mode):
                     (time_end - time_start))
 
     except KeyboardInterrupt:
-        print("handling in config")
         if args.parallel:
             for p in process.keys():
-                log.debug("Terminating process %s", p)
-                # FIXME: check whether alive or just terminate?
+                log.warn("Terminating deploy " + p + "(" + p.pid + ")")
                 process[p].terminate()
 
-        # FIXME: catch children if in parallel mode
         sys.exit(0)
 
 
 def configinstall_onehost(host, args, mode):
-    """Configure or install remote system"""
-    process = {}
+    """Configure or install ONE remote system"""
 
     try:
         import cdist.context
@@ -178,7 +175,9 @@ def configinstall_onehost(host, args, mode):
 
     except cdist.Error as e:
         log.error(e)
-        sys.exit(1)
+        return False
+
+    return True
 
 def emulator():
     """Prepare and run emulator"""
@@ -201,6 +200,6 @@ if __name__ == "__main__":
             commandline()
 
     except KeyboardInterrupt:
-        # FIXME: catch children if in parallel mode
-        print("handling in main")
         sys.exit(0)
+
+    sys.exit(0)
