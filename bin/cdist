@@ -40,6 +40,10 @@ TYPE_PREFIX = "__"
 
 def commandline():
     """Parse command line"""
+    import cdist.banner
+    import cdist.config
+    import cdist.install
+
     # Construct parser others can reuse
     parser = {}
     # Options _all_ parsers have in common
@@ -141,43 +145,44 @@ def configinstall_onehost(host, args, mode):
     """Configure or install remote system"""
     process = {}
 
-    import cdist.context
+    try:
+        import cdist.context
 
-    context = cdist.context.Context(
-        target_host=host,
-        initial_manifest=args.manifest,
-        base_path=args.cdist_home,
-        exec_path=sys.argv[0],
-        debug=args.debug)
+        context = cdist.context.Context(
+            target_host=host,
+            initial_manifest=args.manifest,
+            base_path=args.cdist_home,
+            exec_path=sys.argv[0],
+            debug=args.debug)
 
-    c = mode(context)
-    c.deploy_and_cleanup()
-    context.cleanup()
+        c = mode(context)
+        c.deploy_and_cleanup()
+        context.cleanup()
 
+    except cdist.Error as e:
+        log.error(e)
+        sys.exit(1)
 
 def emulator():
     """Prepare and run emulator"""
-    emulator = cdist.emulator.Emulator(sys.argv)
-    emulator.run()
+    try:
+        import cdist.emulator
+        emulator = cdist.emulator.Emulator(sys.argv)
+        emulator.run()
+
+    except cdist.Error as e:
+        log.error(e)
+        sys.exit(1)
 
 if __name__ == "__main__":
     try:
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
         if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
-            import cdist.emulator
-
             emulator()
         else:
-            import cdist.banner
-            import cdist.config
-            import cdist.install
-
             commandline()
 
     except KeyboardInterrupt:
         # FIXME: catch children if in parallel mode
         sys.exit(0)
-    except cdist.Error as e:
-        log.error(e)
-        sys.exit(1)
