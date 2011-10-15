@@ -55,10 +55,10 @@ class Emulator(object):
     def filter(self, record):
         """Add hostname and object to logs via logging Filter"""
 
-        prefix = self.target_host + ": "
+        prefix = self.target_host + ": (emulator)"
 
         if self.object_id:
-            prefix = prefix + self.type_name + "/" + self.object_id
+            prefix = prefix + " " + self.type_name + "/" + self.object_id
 
         record.msg = prefix + ": " + record.msg
 
@@ -108,7 +108,7 @@ class Emulator(object):
 
         # And finally parse/verify parameter
         self.args = parser.parse_args(self.argv[1:])
-        self.log.debug('Emulator args: %s' % self.args)
+        self.log.debug('Args: %s' % self.args)
 
 
     def setup_object(self):
