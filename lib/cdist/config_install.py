@@ -91,6 +91,7 @@ class ConfigInstall(object):
                     self.log.debug("Skipping rerun of object %s", cdist_object)
                     continue
                 else:
+                    self.log.info("Running manifest and explorer for " + cdist_object.name)
                     self.object_prepare(cdist_object)
                     new_objects_created = True
 
