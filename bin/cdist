@@ -181,6 +181,8 @@ def configinstall_onehost(host, args, mode, parallel):
         # Do not care in sequential mode, catch in parallel mode
         if not parallel:
             raise
+        else:
+            return False
 
     return True
 
