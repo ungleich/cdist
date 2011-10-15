@@ -136,5 +136,7 @@ class Local(object):
             dst = os.path.join(self.bin_path, cdist_type.name)
             self.log.debug("Linking emulator: %s to %s", src, dst)
 
-            # FIXME: handle exceptions
-            os.symlink(src, dst)
+            try:
+                os.symlink(src, dst)
+            except OSError as e:
+                raise cdist.Error("Linking emulator from " + src + " to " + dst + " failed: " + e.__str__())
