@@ -166,6 +166,9 @@ class Emulator(object):
 
                 # Remove / if existent in object id
                 requirement_object_id = requirement_object_id.lstrip('/')
+
+                # Construct cleaned up requirement with only one / :-)
+                requirement = requirement_type_name + '/' + requirement_object_id
                 self.cdist_object.requirements.append(requirement)
 
         # Record / Append source
