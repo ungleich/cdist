@@ -117,28 +117,45 @@ def install(args):
 
 def configinstall(args, mode):
     """Configure or install remote system"""
-    process = {}
+    try:
+        process = {}
+        failed_hosts = []
+        time_start = time.time()
 
-    time_start = time.time()
+        for host in args.host:
+            if args.parallel:
+                log.debug("Creating child process for %s", host)
+                process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode))
+                process[host].start()
+            else:
+                configinstall_onehost(host, args, mode)
 
-    for host in args.host:
         if args.parallel:
-            log.debug("Creating child process for %s", host)
-            process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode))
-            process[host].start()
-        else:
-            configinstall_onehost(host, args, mode)
+            for p in process.keys():
+                log.debug("Joining process %s", p)
+                process[p].join()
 
-    # FIXME: error handling for parallel mode!
-    if args.parallel:
-        for p in process.keys():
-            log.debug("Joining process %s", p)
-            process[p].join()
+                if not process[p].exitcode == 0:
+                    failed_hosts.append(p)
 
+        if len(failed_hosts) > 0:
+            log.warn("Failed to deploy to the following hosts: " + 
+                " ".join(failed_hosts))
 
-    time_end = time.time()
-    log.info("Total processing time for %s host(s): %s", len(args.host),
-                (time_end - time_start))
+        time_end = time.time()
+        log.info("Total processing time for %s host(s): %s", len(args.host),
+                    (time_end - time_start))
+
+    except KeyboardInterrupt:
+        print("handling in config")
+        if args.parallel:
+            for p in process.keys():
+                log.debug("Terminating process %s", p)
+                # FIXME: check whether alive or just terminate?
+                process[p].terminate()
+
+        # FIXME: catch children if in parallel mode
+        sys.exit(0)
 
 
 def configinstall_onehost(host, args, mode):
@@ -185,4 +202,5 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         # FIXME: catch children if in parallel mode
+        print("handling in main")
         sys.exit(0)
