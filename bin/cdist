@@ -125,10 +125,10 @@ def configinstall(args, mode):
         for host in args.host:
             if args.parallel:
                 log.debug("Creating child process for %s", host)
-                process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode))
+                process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode, True))
                 process[host].start()
             else:
-                if not configinstall_onehost(host, args, mode):
+                if not configinstall_onehost(host, args, mode, parallel=False):
                     failed_hosts.append(host)
 
         if args.parallel:
@@ -157,7 +157,7 @@ def configinstall(args, mode):
         sys.exit(0)
 
 
-def configinstall_onehost(host, args, mode):
+def configinstall_onehost(host, args, mode, parallel):
     """Configure or install ONE remote system"""
 
     try:
@@ -177,6 +177,10 @@ def configinstall_onehost(host, args, mode):
     except cdist.Error as e:
         log.error(e)
         return False
+    except KeyboardInterrupt:
+        # Do not care in sequential mode, catch in parallel mode
+        if not parallel:
+            raise
 
     return True
 
