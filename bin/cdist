@@ -150,7 +150,8 @@ def configinstall(args, mode):
     except KeyboardInterrupt:
         if args.parallel:
             for p in process.keys():
-                log.warn("Terminating deploy " + p + "(" + p.pid + ")")
+                pid = process[p].pid.__str__()
+                log.warn("Terminating deploy " + p + " (" + pid + ")")
                 process[p].terminate()
 
         sys.exit(0)
