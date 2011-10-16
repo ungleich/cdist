@@ -121,6 +121,10 @@ class Code(object):
         """Transfer the code_remote script for the given object to the remote side."""
         source = os.path.join(self.local.object_path, cdist_object.code_remote_path)
         destination = os.path.join(self.remote.object_path, cdist_object.code_remote_path)
+        # FIXME: BUG: do not create destination, but top level of destination!
+        # FIXME: BUG2: we are called AFTER the code-remote has been transferred already:
+        # mkdir: cannot create directory `/var/lib/cdist/object/__directory/etc/acpi/actions/.cdist/code-remote': File exists
+        # OR: this is from previous run -> cleanup missing!
         self.remote.mkdir(destination)
         self.remote.transfer(source, destination)
 
