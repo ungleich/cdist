@@ -88,7 +88,7 @@ class ConfigInstall(object):
             for cdist_object in core.Object.list_objects(self.local.object_path,
                                                          self.local.type_path):
                 if cdist_object.prepared:
-                    self.log.debug("Skipping rerun of object %s", cdist_object)
+                    self.log.debug("Skipping re-prepare of object %s", cdist_object)
                     continue
                 else:
                     self.object_prepare(cdist_object)
@@ -128,8 +128,11 @@ class ConfigInstall(object):
         self.log.info("Running gencode and code for " + cdist_object.name)
 
         # Catch requirements, which re-call us
+        # FIXME: change .ran to running
         if cdist_object.ran:
             return
+        else:
+            cdist_object.ran = True
 
         cdist_type = cdist_object.type
             
