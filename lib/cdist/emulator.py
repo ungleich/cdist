@@ -134,7 +134,7 @@ class Emulator(object):
                 self.parameters[key] = value
         
         if self.cdist_object.exists:
-            if cdist_object.parameters != self.parameters:
+            if self.cdist_object.parameters != self.parameters:
                 raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
                     % (self.cdist_object, " ".join(self.cdist_object.source), self.cdist_object.parameters, self.object_source, self.parameters)
             )
