@@ -1,6 +1,7 @@
 2.0.3:
 	* Improved logging, added --verbose, by more quiet by default
 	* Bugfix __user: Correct quoting (Steven Armstrong)
+	* Bugfix __addifnosuchline: Falsely exited
 	* Bugfix requirements: Restore original require="" behaviour
 	* Feature requirements: Check for broken object_ids and abort
 	* Massive refactoring and unittesting introduced (Steven Armstrong)
