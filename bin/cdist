@@ -150,9 +150,12 @@ def configinstall(args, mode):
     except KeyboardInterrupt:
         if args.parallel:
             for p in process.keys():
-                pid = process[p].pid.__str__()
-                log.warn("Terminating deploy " + p + " (" + pid + ")")
-                process[p].terminate()
+                # NOT needed: KeyBoardInterrupet (aka SIGINT)
+                # is forwarded to processes spawned by multiprocess!
+                # pid = process[p].pid.__str__()
+                #log.warn("Terminating deploy " + p + " (" + pid + ")")
+                # process[p].terminate()
+                pass
 
         sys.exit(0)
 
@@ -182,6 +185,7 @@ def configinstall_onehost(host, args, mode, parallel):
         if not parallel:
             raise
         else:
+            # Catch here, above does not need to know about our errors
             return False
 
     return True
