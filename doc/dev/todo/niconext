@@ -1,6 +1,5 @@
 2.0.3:
 
-- fix emulator / require
 - sanity checks: implement tests
 
    stage_run()
