@@ -114,6 +114,7 @@ case "$1" in
    p|pu|pub)
       git push --mirror
       git push --mirror github
+      git push --mirror sf
    ;;
 
    clean)
