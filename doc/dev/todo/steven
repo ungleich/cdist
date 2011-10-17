@@ -1,6 +1,14 @@
 metaparameters:
    - steal the metaparameters from puppet:
 
+   # I have to be there before the other one
+   __directory /etc/ssh \
+      --before __file/etc/ssh/sshd_config
+
+   # the other one has to be there before me
+   __file /etc/ssh/sshd_config \
+      --after __directory/etc/ssh
+
    # if I change, tell the other one about it
    __file /etc/ssh/sshd_config \
       --notify __init_script/etc/rc.d/sshd
