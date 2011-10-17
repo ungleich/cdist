@@ -1,3 +1,18 @@
+metaparameters:
+   - steal the metaparameters from puppet:
+
+   # if I change, tell the other one about it
+   __file /etc/ssh/sshd_config \
+      --notify __init_script/etc/rc.d/sshd
+
+   # whenever the other one changes, I want to know
+   __init_script /etc/rc.d/sshd \
+      --subscribe __file/etc/ssh/sshd_config
+
+   ? how does a type react to a received 'event'
+
+
+
 logging:
    - logging from type emulator without clobbering stdout
       maybe implement logging server as described here [1]
