@@ -14,11 +14,6 @@ logging:
    [2] http://blog.ooz.ie/2011/03/python-logging-extending-standard.html
 
 
-exec local & remote:
-   - don't capture output by default
-   - add new mechanism to capture output explicitly
-
-
 config_install:
    - move code for running global and type explorer run to cdist.core.explorer
 
