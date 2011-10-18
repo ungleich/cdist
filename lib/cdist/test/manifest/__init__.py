@@ -104,7 +104,7 @@ class ManifestTestCase(unittest.TestCase):
         self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
         self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
-        self.assertEqual(output_dict['__self'], cdist_object.path)
+        self.assertEqual(output_dict['__self'], cdist_object.name)
         self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
         self.assertEqual(output_dict['__object_fq'], cdist_object.path)
 
