@@ -158,6 +158,9 @@ class Emulator(object):
                 requirement_type_name = requirement_parts[0]
                 requirement_object_id = requirement_parts[1]
 
+                # Instantiate type which fails if type does not exist
+                requirement_type = core.Type(self.type_base_path, requirement_type_name)
+
                 # FIXME: Add support for omitted object id == singleton
                 #if len(requirement_parts) == 1:
                 #except IndexError:
