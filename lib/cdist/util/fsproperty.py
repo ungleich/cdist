@@ -77,7 +77,7 @@ class FileList(collections.MutableSequence):
 
     def __getitem__(self, index):
         return self.__read()[index]
-        
+
     def __setitem__(self, index, value):
         lines = self.__read()
         lines[index] = value
@@ -134,7 +134,7 @@ class DirectoryDict(collections.MutableMapping):
     def __setitem__(self, key, value):
         try:
             with open(os.path.join(self.path, key), "w") as fd:
-                fd.write(str(value))        
+                fd.write(str(value))
         except EnvironmentError as e:
             raise cdist.Error(str(e))
 
