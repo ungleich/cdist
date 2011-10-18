@@ -158,9 +158,6 @@ class Emulator(object):
                 requirement_type_name = requirement_parts[0]
                 requirement_object_id = requirement_parts[1]
 
-                # Instantiate type which fails if type does not exist
-                requirement_type = core.Type(self.type_base_path, requirement_type_name)
-
                 # FIXME: Add support for omitted object id == singleton
                 #if len(requirement_parts) == 1:
                 #except IndexError:
@@ -169,6 +166,11 @@ class Emulator(object):
 
                 # Remove / if existent in object id
                 requirement_object_id = requirement_object_id.lstrip('/')
+
+                # Instantiate type which fails if type does not exist
+                requirement_type = core.Type(self.type_base_path, requirement_type_name)
+                # Instantiate object which fails if the object_id is illegal
+                requirement_object = core.Object(requirement_type, self.object_base_path, requirement_object_id)
 
                 # Construct cleaned up requirement with only one / :-)
                 requirement = requirement_type_name + '/' + requirement_object_id
