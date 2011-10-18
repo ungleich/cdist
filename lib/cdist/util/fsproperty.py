@@ -64,9 +64,13 @@ class FileList(collections.MutableSequence):
         return lines
 
     def __write(self, lines):
-        with open(self.path, 'w') as fd:
-            for line in lines:
-                fd.write(str(line) + '\n')
+        try:
+            with open(self.path, 'w') as fd:
+                for line in lines:
+                    fd.write(str(line) + '\n')
+        except EnvironmentError as e:
+            # should never happen
+            raise cdist.Error(str(e))
 
     def __repr__(self):
         return repr(list(self))
@@ -106,9 +110,12 @@ class DirectoryDict(collections.MutableMapping):
         if not os.path.isabs(path):
             raise AbsolutePathRequiredError(path)
         self.path = path
-        # create directory if it doesn't exist
-        if not os.path.isdir(self.path):
-            os.mkdir(self.path)
+        try:
+            # create directory if it doesn't exist
+            if not os.path.isdir(self.path):
+                os.mkdir(self.path)
+        except EnvironmentError as e:
+            raise cdist.Error(str(e))
         if initial is not None:
             self.update(initial)
         if kwargs:
@@ -125,8 +132,11 @@ class DirectoryDict(collections.MutableMapping):
             raise KeyError(key)
 
     def __setitem__(self, key, value):
-        with open(os.path.join(self.path, key), "w") as fd:
-            fd.write(str(value))        
+        try:
+            with open(os.path.join(self.path, key), "w") as fd:
+                fd.write(str(value))        
+        except EnvironmentError as e:
+            raise cdist.Error(str(e))
 
     def __delitem__(self, key):
         try:
@@ -135,10 +145,16 @@ class DirectoryDict(collections.MutableMapping):
             raise KeyError(key)
 
     def __iter__(self):
-        return iter(os.listdir(self.path))
+        try:
+            return iter(os.listdir(self.path))
+        except EnvironmentError as e:
+            raise cdist.Error(str(e))
 
     def __len__(self):
-        return len(os.listdir(self.path))
+        try:
+            return len(os.listdir(self.path))
+        except EnvironmentError as e:
+            raise cdist.Error(str(e))
 
 
 class FileBasedProperty(object):
@@ -234,7 +250,10 @@ class FileBooleanProperty(FileBasedProperty):
     def __set__(self, instance, value):
         path = self._get_path(instance)
         if value:
-            open(path, "w").close()
+            try:
+                open(path, "w").close()
+            except EnvironmentError as e:
+                raise cdist.Error(str(e))
         else:
             try:
                 os.remove(path)
@@ -262,8 +281,11 @@ class FileStringProperty(FileBasedProperty):
     def __set__(self, instance, value):
         path = self._get_path(instance)
         if value:
-            with open(path, "w") as fd:
-                fd.write(str(value))
+            try:
+                with open(path, "w") as fd:
+                    fd.write(str(value))
+            except EnvironmentError as e:
+                raise cdist.Error(str(e))
         else:
             try:
                 os.remove(path)
