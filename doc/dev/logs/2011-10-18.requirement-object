@@ -1,0 +1,6 @@
+require="__broken_type/foo" breaks too late
+
+- always catch OSError/IOError: (check all occurences)
+- type __director does not exist, abort in emulator
+   - if called type is not existing
+   - if required type is not existing
