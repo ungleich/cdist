@@ -46,7 +46,7 @@ class Object(object):
     """Represents a cdist object.
 
     All interaction with objects in cdist should be done through this class.
-    Directly accessing an object through the file system from python code is 
+    Directly accessing an object through the file system from python code is
     a bug.
 
     """

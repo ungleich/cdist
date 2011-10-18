@@ -34,7 +34,7 @@ from cdist import core
 class ConfigInstall(object):
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, context): 
+    def __init__(self, context):
 
         self.context = context
         self.log = logging.getLogger(self.context.target_host)
@@ -70,7 +70,7 @@ class ConfigInstall(object):
         start_time = time.time()
         self.deploy_to()
         self.cleanup()
-        self.log.info("Finished run in %s seconds", 
+        self.log.info("Finished run in %s seconds",
             time.time() - start_time)
 
     def stage_prepare(self):
@@ -135,7 +135,7 @@ class ConfigInstall(object):
             cdist_object.ran = True
 
         cdist_type = cdist_object.type
-            
+
         for requirement in cdist_object.requirements:
             self.log.debug("Object %s requires %s", cdist_object, requirement)
             # FIXME: requirement is a string, need to create object here

@@ -71,7 +71,7 @@ class Local(object):
         self.object_path = os.path.join(self.out_path, "object")
 
         self.log = logging.getLogger(self.target_host)
-    
+
     def create_directories(self):
         self.mkdir(self.out_path)
         self.mkdir(self.global_explorer_out_path)
@@ -116,7 +116,7 @@ class Local(object):
         self.log.debug("Local run script: %s", command)
         if env:
             self.log.debug("Local run script env: %s", env)
-        
+
         try:
             if return_output:
                 return subprocess.check_output(command, env=env).decode()

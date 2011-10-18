@@ -65,7 +65,7 @@ class Manifest(object):
     def __init__(self, target_host, local):
         self.target_host = target_host
         self.local = local
-        
+
         self.log = logging.getLogger(self.target_host)
 
         self.env = {

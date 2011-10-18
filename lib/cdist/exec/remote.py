@@ -69,7 +69,7 @@ class Remote(object):
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
 
         self.log = logging.getLogger(self.target_host)
-    
+
     def create_directories(self):
         self.rmdir(self.base_path)
         self.mkdir(self.base_path)
@@ -110,7 +110,7 @@ class Remote(object):
 
         """
         assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
-        
+
         # can't pass environment to remote side, so prepend command with
         # variable declarations
         if env:
@@ -151,7 +151,7 @@ class Remote(object):
         self.log.debug("Remote run script: %s", command)
         if env:
             self.log.debug("Remote run script env: %s", env)
-        
+
         try:
             if return_output:
                 return subprocess.check_output(command).decode()

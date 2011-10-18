@@ -44,7 +44,7 @@ class Emulator(object):
         self.object_source  = os.environ['__cdist_manifest']
         self.target_host    = os.environ['__target_host']
         self.type_base_path = os.environ['__cdist_type_base_path']
-        
+
         self.object_base_path = os.path.join(self.global_path, "object")
 
         self.type_name      = os.path.basename(argv[0])
@@ -132,7 +132,7 @@ class Emulator(object):
         for key,value in vars(self.args).items():
             if value is not None:
                 self.parameters[key] = value
-        
+
         if self.cdist_object.exists:
             if self.cdist_object.parameters != self.parameters:
                 raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
