@@ -144,8 +144,9 @@ case "$1" in
       echo ''
       echo 'Here are the possible targets:'
       echo ''
-      echo '	man: Build manpages (requires Asciidoc)'
       echo '	clean: Remove build stuff'
+      echo '	man: Build manpages (requires Asciidoc)'
+      echo '	test: Run tests'
       echo ''
       echo ''
       echo "Unknown target, \"$1\"" >&2
