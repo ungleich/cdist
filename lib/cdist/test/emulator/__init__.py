@@ -73,3 +73,10 @@ class EmulatorTestCase(unittest.TestCase):
         os.environ['require'] = '__does-not-exist/some-id'
         emu = emulator.Emulator(argv)
         self.assertRaises(core.NoSuchTypeError, emu.run)
+
+    def test_illegal_object_id_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        os.environ.update(self.env)
+        os.environ['require'] = '__file/bad/id/with/.cdist/inside'
+        emu = emulator.Emulator(argv)
+        self.assertRaises(core.IllegalObjectIdError, emu.run)
