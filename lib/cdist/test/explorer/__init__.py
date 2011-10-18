@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -62,7 +63,7 @@ class ExplorerClassTestCase(unittest.TestCase):
 
         self.explorer = explorer.Explorer(self.target_host, self.local, self.remote)
 
-        self.log = logging.getLogger("cdist")
+        self.log = logging.getLogger(self.target_host)
 
     def tearDown(self):
         shutil.rmtree(self.out_path)

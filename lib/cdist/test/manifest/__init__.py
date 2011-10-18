@@ -55,7 +55,7 @@ class ManifestTestCase(unittest.TestCase):
         self.local.create_directories()
         self.local.link_emulator(cdist.test.cdist_exec_path)
         self.manifest = manifest.Manifest(self.target_host, self.local)
-        self.log = logging.getLogger("cdist")
+        self.log = logging.getLogger(self.target_host)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
