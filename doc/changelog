@@ -1,14 +1,10 @@
-2.0.3:
+2.0.3: 2011-10-18
 	* Improved logging, added --verbose, by more quiet by default
 	* Bugfix __user: Correct quoting (Steven Armstrong)
 	* Bugfix __addifnosuchline: Falsely exited
 	* Bugfix requirements: Restore original require="" behaviour
 	* Feature requirements: Check for broken object_ids and abort
 	* Massive refactoring and unittesting introduced (Steven Armstrong)
-
-	* Feature: Initial undocumented support for replacing
-		the remote exec and remote copy commands
-	* Feature: Initial undocumented support for installations in core
 
 2.0.2: 2011-09-27
 	* Add support for detection of OpenWall Linux (Matthias Teege)
