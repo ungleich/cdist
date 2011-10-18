@@ -92,10 +92,10 @@ class Manifest(object):
             env = os.environ.copy()
             env.update(self.env)
             env.update({
-                '__self': cdist_object.path,
+                '__self': cdist_object.name,
                 '__object': cdist_object.absolute_path,
                 '__object_id': cdist_object.object_id,
-                '__object_fq': cdist_object.path,
+                '__object_fq': cdist_object.name,
                 '__type': cdist_object.type.absolute_path,
                 '__cdist_manifest': script,
             })
