@@ -25,6 +25,15 @@ import os
 import cdist
 
 
+class NoSuchTypeError(cdist.Error):
+    def __init__(self, type_path, type_absolute_path):
+        self.type_path = type_path
+        self.type_absolute_path = type_absolute_path
+
+    def __str__(self):
+        return "Type '%' does not exist at %s" % (self.type_path, self.type_absolute_path)
+
+
 class Type(object):
     """Represents a cdist type.
 
@@ -62,6 +71,8 @@ class Type(object):
         self.name = name
         self.path = self.name
         self.absolute_path = os.path.join(self.base_path, self.path)
+        if not os.path.isdir(self.absolute_path):
+            raise NoSuchTypeError(self.path, self.absolute_path)
         self.manifest_path = os.path.join(self.name, "manifest")
         self.explorer_path = os.path.join(self.name, "explorer")
         self.gencode_local_path = os.path.join(self.name, "gencode-local")
