@@ -101,6 +101,9 @@ def install(args):
 
 def configinstall(args, mode):
     """Configure or install remote system"""
+    import multiprocessing
+    import time
+
     try:
         process = {}
         failed_hosts = []
@@ -188,11 +191,9 @@ def emulator():
 if __name__ == "__main__":
     try:
         import logging
-        import multiprocessing
         import os
         import re
         import sys
-        import time
 
         log = logging.getLogger("cdist")
 
