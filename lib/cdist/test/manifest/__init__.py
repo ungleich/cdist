@@ -73,7 +73,6 @@ class ManifestTestCase(unittest.TestCase):
 
         with open(output_file, 'r') as fd:
             output_string = fd.read()
-        print("output_string: %s" % output_string)
         output_dict = {}
         for line in output_string.split('\n'):
             if line:
@@ -94,7 +93,6 @@ class ManifestTestCase(unittest.TestCase):
 
         with open(output_file, 'r') as fd:
             output_string = fd.read()
-        print("output_string: %s" % output_string)
         output_dict = {}
         for line in output_string.split('\n'):
             if line:
