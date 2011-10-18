@@ -4,3 +4,5 @@ require="__broken_type/foo" breaks too late
 - type __director does not exist, abort in emulator
    - if called type is not existing
    - if required type is not existing
+- type constructor fails if type does not exist
+- test type emulator with non existent types -> should raise NoSuchTypeError
