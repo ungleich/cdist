@@ -1,10 +1,13 @@
 #!/bin/sh
 
-echo "PATH: $PATH"
-echo "__target_host: $__target_host"
-echo "__global: $__global"
-echo "__cdist_type_base_path: $__cdist_type_base_path"
-echo "__type: $__type"
-echo "__object: $__object"
-echo "__object_id: $__object_id"
-echo "__object_fq: $__object_fq"
+cat > $__cdist_test_out << DONE
+PATH: $PATH
+__target_host: $__target_host
+__global: $__global
+__cdist_type_base_path: $__cdist_type_base_path
+__type: $__type
+__self: $__self
+__object: $__object
+__object_id: $__object_id
+__object_fq: $__object_fq
+DONE

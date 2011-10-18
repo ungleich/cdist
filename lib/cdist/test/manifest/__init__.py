@@ -27,6 +27,8 @@ import shutil
 import string
 import random
 import logging
+import io
+import sys
 
 import cdist
 from cdist.exec import local
@@ -48,6 +50,8 @@ class ManifestTestCase(unittest.TestCase):
         return tempfile.mkstemp(prefix='tmp.cdist.test.', **kwargs)
 
     def setUp(self):
+        self.orig_environ = os.environ
+        os.environ = os.environ.copy()
         self.temp_dir = self.mkdtemp()
         self.target_host = 'localhost'
         out_path = self.temp_dir
@@ -58,16 +62,53 @@ class ManifestTestCase(unittest.TestCase):
         self.log = logging.getLogger(self.target_host)
 
     def tearDown(self):
+        os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
 
     def test_initial_manifest_environment(self):
         initial_manifest = os.path.join(self.local.manifest_path, "dump_environment")
+        handle, output_file = self.mkstemp(dir=self.temp_dir)
+        os.environ['__cdist_test_out'] = output_file
         self.manifest.run_initial_manifest(initial_manifest)
+
+        with open(output_file, 'r') as fd:
+            output_string = fd.read()
+        print("output_string: %s" % output_string)
+        output_dict = {}
+        for line in output_string.split('\n'):
+            if line:
+                key,value = line.split(': ')
+                output_dict[key] = value
+        self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
+        self.assertEqual(output_dict['__target_host'], self.local.target_host)
+        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
+        self.assertEqual(output_dict['__manifest'], self.local.manifest_path)
 
     def test_type_manifest_environment(self):
         cdist_type = core.Type(self.local.type_path, '__dump_environment')
         cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        handle, output_file = self.mkstemp(dir=self.temp_dir)
+        os.environ['__cdist_test_out'] = output_file
         self.manifest.run_type_manifest(cdist_object)
+
+        with open(output_file, 'r') as fd:
+            output_string = fd.read()
+        print("output_string: %s" % output_string)
+        output_dict = {}
+        for line in output_string.split('\n'):
+            if line:
+                key,value = line.split(': ')
+                output_dict[key] = value
+        self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
+        self.assertEqual(output_dict['__target_host'], self.local.target_host)
+        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
+        self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
+        self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
+        self.assertEqual(output_dict['__self'], cdist_object.path)
+        self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
+        self.assertEqual(output_dict['__object_fq'], cdist_object.path)
 
     def test_debug_env_setup(self):
         self.log.setLevel(logging.DEBUG)

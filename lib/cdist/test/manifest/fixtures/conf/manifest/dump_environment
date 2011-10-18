@@ -1,7 +1,9 @@
 #!/bin/sh
 
-echo "PATH: $PATH"
-echo "__target_host: $__target_host"
-echo "__global: $__global"
-echo "__cdist_type_base_path: $__cdist_type_base_path"
-echo "__manifest: $__manifest"
+cat > $__cdist_test_out << DONE
+PATH: $PATH
+__target_host: $__target_host
+__global: $__global
+__cdist_type_base_path: $__cdist_type_base_path
+__manifest: $__manifest
+DONE
