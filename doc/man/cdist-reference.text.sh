@@ -133,7 +133,6 @@ out/object/<object>/explorers::
 tmp_dir::
    A tempdir and a tempfile is used by cdist internally,
    which will be removed when the scripts end automatically.
-   See cdist-config(1).
 
 TYPES
 -----
@@ -186,6 +185,7 @@ __object::
 __object_id::
    The type unique object id.
    Available for: type manifest, type explorer, type gencode
+__self::
 __object_fq::
    The full qualified name of the current object.
    Available for: type manifest, type explorer, type gencode
