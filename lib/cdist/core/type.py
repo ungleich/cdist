@@ -31,7 +31,7 @@ class NoSuchTypeError(cdist.Error):
         self.type_absolute_path = type_absolute_path
 
     def __str__(self):
-        return "Type '%' does not exist at %s" % (self.type_path, self.type_absolute_path)
+        return "Type '%s' does not exist at %s" % (self.type_path, self.type_absolute_path)
 
 
 class Type(object):
