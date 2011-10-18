@@ -88,8 +88,11 @@ class Object(object):
         return self.__class__(self.type.__class__(type_path, type_name), object_path, object_id=object_id)
 
     def __init__(self, cdist_type, base_path, object_id=None):
-        if object_id and object_id.startswith('/'):
-            raise IllegalObjectIdError(object_id, 'object_id may not start with /')
+        if object_id:
+            if object_id.startswith('/'):
+                raise IllegalObjectIdError(object_id, 'object_id may not start with /')
+            if '.cdist' in object_id:
+                raise IllegalObjectIdError(object_id, 'object_id may not contain \'.cdist\'')
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
