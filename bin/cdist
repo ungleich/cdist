@@ -195,13 +195,15 @@ if __name__ == "__main__":
         import re
         import sys
 
+        # Ensure our /lib/ is included into PYTHON_PATH
+        sys.path.insert(0, os.path.abspath(
+                os.path.join(os.path.dirname(os.path.realpath(__file__)), '../lib')))
+
+        # And now import our stuff
         import cdist
 
         log = logging.getLogger("cdist")
 
-        # Ensure our /lib/ is included into PYTHON_PATH
-        sys.path.insert(0, os.path.abspath(
-                os.path.join(os.path.dirname(os.path.realpath(__file__)), '../lib')))
 
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
