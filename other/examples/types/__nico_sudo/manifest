@@ -18,35 +18,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on Debian and co.
-#
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
-else
-   name="$__object_id"
-fi
+destination=/etc/sudoers.d/nico
+source="$__type/files/sudo-nico"
 
-state="$(cat "$__object/parameter/state")"
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
+__package sudo --state installed
+__directory /etc/sudoers.d --parents yes
 
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
+require="__directory/etc/sudoers.d" \
+   __file "$destination" --source "$source" --mode 0440
 
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo $aptget install \"$name\"
-      fi
-   ;;
-   removed)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo $aptget remove \"$name\"
-      fi
-   ;;
-   *)
-      echo "Unknown state: $state" >&2
-      exit 1
-   ;;
-esac

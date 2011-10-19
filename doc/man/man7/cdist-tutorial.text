@@ -8,6 +8,101 @@ NAME
 cdist-tutorial - a guided introduction into cdist
 
 
+
+YOUR FIRST CONFIGURATION
+------------------------
+
+
+DEFINE STATE IN THE INITAL MANIFEST
+-----------------------------------
+
+The initial manifest is used to map
+configurations to a host.
+
+USING SOME BASIC TYPES
+----------------------
+what is a type, how to use it,
+
+
+CREATING YOUR FIRST OWN TYPE
+----------------------------
+<with object id? or signleton here already>
+
+
+USE A TYPE TO BUNDLE FUNCTIONALITY
+----------------------------------
+
+
+USING EXPLORERS
+---------------
+global, type explorer
+
+
+DEBUGGING YOUR TYPES
+--------------------
+__debug::
+   If this variable is setup, cdist runs in debug mode.
+   You can use this information, to only output stuff in debug
+   mode as well.
+   Available for: initial manifest, type manifest, gencode, code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 INTRODUCTION
 ------------
 This tutorial is aimed at people learning cdist and shows

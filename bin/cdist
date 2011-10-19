@@ -20,26 +20,10 @@
 #
 #
 
-import argparse
-import logging
-import multiprocessing
-import os
-import re
-import sys
-import time
-
-log = logging.getLogger("cdist")
-
-# Ensure our /lib/ is included into PYTHON_PATH
-sys.path.insert(0, os.path.abspath(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), '../lib')))
-
-import cdist
-
-TYPE_PREFIX = "__"
-
 def commandline():
     """Parse command line"""
+    import argparse
+
     import cdist.banner
     import cdist.config
     import cdist.install
@@ -117,6 +101,9 @@ def install(args):
 
 def configinstall(args, mode):
     """Configure or install remote system"""
+    import multiprocessing
+    import time
+
     try:
         process = {}
         failed_hosts = []
@@ -203,9 +190,22 @@ def emulator():
 
 if __name__ == "__main__":
     try:
+        import logging
+        import os
+        import re
+        import sys
+
+        import cdist
+
+        log = logging.getLogger("cdist")
+
+        # Ensure our /lib/ is included into PYTHON_PATH
+        sys.path.insert(0, os.path.abspath(
+                os.path.join(os.path.dirname(os.path.realpath(__file__)), '../lib')))
+
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
-        if re.match(TYPE_PREFIX, os.path.basename(sys.argv[0])):
+        if re.match("__", os.path.basename(sys.argv[0])):
             emulator()
         else:
             commandline()

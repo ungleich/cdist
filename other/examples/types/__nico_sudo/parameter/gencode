@@ -18,35 +18,14 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on Debian and co.
+# USEFUL DESCRIPTION
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
-else
-   name="$__object_id"
-fi
+#
+# This file should generate code on stdout, which will be collected by cdist
+# and run on the target.
+#
+# To tell cdist to make use of it, you need to make it executable (chmod +x)
+#
+#
 
-state="$(cat "$__object/parameter/state")"
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
-
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
-
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo $aptget install \"$name\"
-      fi
-   ;;
-   removed)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo $aptget remove \"$name\"
-      fi
-   ;;
-   *)
-      echo "Unknown state: $state" >&2
-      exit 1
-   ;;
-esac

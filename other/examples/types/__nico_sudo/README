@@ -1,0 +1,2 @@
+Configure sudoers file to be included. Different types may do so,
+this one simply uses the "nico" file to store the configuration.

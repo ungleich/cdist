@@ -1,3 +1,6 @@
+2.0.4:
+	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
+
 2.0.3: 2011-10-18
 	* Improved logging, added --verbose, by more quiet by default
 	* Bugfix __user: Correct quoting (Steven Armstrong)
