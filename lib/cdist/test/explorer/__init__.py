@@ -130,4 +130,4 @@ class ExplorerClassTestCase(unittest.TestCase):
     def test_debug_env_setup(self):
         self.log.setLevel(logging.DEBUG)
         explorer = cdist.core.explorer.Explorer(self.target_host, self.local, self.remote)
-        self.assertTrue("__debug" in explorer.env)
+        self.assertTrue("__cdist_debug" in explorer.env)

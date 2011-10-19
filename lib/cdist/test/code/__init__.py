@@ -120,4 +120,4 @@ class CodeTestCase(unittest.TestCase):
     def test_debug_env_setup(self):
         self.log.setLevel(logging.DEBUG)
         code = cdist.core.code.Code(self.target_host, self.local, self.remote)
-        self.assertTrue("__debug" in code.env)
+        self.assertTrue("__cdist_debug" in code.env)
