@@ -128,6 +128,7 @@ class ConfigInstall(object):
         """Run gencode and code for an object"""
         self.log.info("Starting run of " + cdist_object.name)
         if cdist_object.state == core.Object.STATE_RUNNING:
+            # FIXME: resolve dependency circle
             raise cdist.Error("Detected circular dependency in " + cdist_object.name)
         elif cdist_object.state == core.Object.STATE_DONE:
             self.log.debug("Ignoring run of already finished object %s", cdist_object)
