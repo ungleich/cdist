@@ -150,20 +150,6 @@ class ObjectTestCase(unittest.TestCase):
         self.cdist_object.changed = True
         self.assertTrue(self.cdist_object.changed)
 
-    def test_prepared(self):
-        self.assertFalse(self.cdist_object.prepared)
-
-    def test_prepared_after_changing(self):
-        self.cdist_object.prepared = True
-        self.assertTrue(self.cdist_object.prepared)
-
-    def test_ran(self):
-        self.assertFalse(self.cdist_object.ran)
-
-    def test_ran_after_changing(self):
-        self.cdist_object.ran = True
-        self.assertTrue(self.cdist_object.ran)
-
     def test_state(self):
         self.assertEqual(self.cdist_object.state, '')
 
