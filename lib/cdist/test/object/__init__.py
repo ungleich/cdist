@@ -79,6 +79,7 @@ class ObjectTestCase(unittest.TestCase):
         self.cdist_object.source = []
         self.cdist_object.code_local = ''
         self.cdist_object.code_remote = ''
+        self.cdist_object.state = ''
 
     def test_name(self):
         self.assertEqual(self.cdist_object.name, '__third/moon')
@@ -149,19 +150,20 @@ class ObjectTestCase(unittest.TestCase):
         self.cdist_object.changed = True
         self.assertTrue(self.cdist_object.changed)
 
-    def test_prepared(self):
-        self.assertFalse(self.cdist_object.prepared)
+    def test_state(self):
+        self.assertEqual(self.cdist_object.state, '')
 
-    def test_prepared_after_changing(self):
-        self.cdist_object.prepared = True
-        self.assertTrue(self.cdist_object.prepared)
+    def test_state_prepared(self):
+        self.cdist_object.state = core.Object.STATE_PREPARED
+        self.assertEqual(self.cdist_object.state, core.Object.STATE_PREPARED)
 
-    def test_ran(self):
-        self.assertFalse(self.cdist_object.ran)
+    def test_state_running(self):
+        self.cdist_object.state = core.Object.STATE_RUNNING
+        self.assertEqual(self.cdist_object.state, core.Object.STATE_RUNNING)
 
-    def test_ran_after_changing(self):
-        self.cdist_object.ran = True
-        self.assertTrue(self.cdist_object.ran)
+    def test_state_done(self):
+        self.cdist_object.state = core.Object.STATE_DONE
+        self.assertEqual(self.cdist_object.state, core.Object.STATE_DONE)
 
     def test_source(self):
         self.assertEqual(list(self.cdist_object.source), [])
