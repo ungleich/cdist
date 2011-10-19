@@ -17,7 +17,15 @@ metaparameters:
    __init_script /etc/rc.d/sshd \
       --subscribe __file/etc/ssh/sshd_config
 
-   ? how does a type react to a received 'event'
+   - how does a type react to a received 'event'?
+      - maybe something like:
+         __some_type/
+            manifest
+            ...
+            gencode-refresh
+            ...
+      - gencode-refresh -> code-refresh -> ssh $target sh -e code-refresh
+   
 
 
 
