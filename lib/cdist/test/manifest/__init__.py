@@ -19,9 +19,7 @@
 #
 #
 
-import unittest
 import os
-import tempfile
 import getpass
 import shutil
 import string
@@ -31,6 +29,7 @@ import io
 import sys
 
 import cdist
+from cdist import test
 from cdist.exec import local
 from cdist import core
 from cdist.core import manifest
@@ -41,13 +40,7 @@ fixtures = op.join(my_dir, 'fixtures')
 local_base_path = fixtures
 
 
-class ManifestTestCase(unittest.TestCase):
-
-    def mkdtemp(self, **kwargs):
-        return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)
-
-    def mkstemp(self, **kwargs):
-        return tempfile.mkstemp(prefix='tmp.cdist.test.', **kwargs)
+class ManifestTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.orig_environ = os.environ

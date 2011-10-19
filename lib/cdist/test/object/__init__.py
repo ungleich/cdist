@@ -20,10 +20,9 @@
 #
 
 import os
-import tempfile
-import unittest
 import shutil
 
+from cdist import test
 from cdist import core
 
 import os.path as op
@@ -32,7 +31,7 @@ fixtures = op.join(my_dir, 'fixtures')
 object_base_path = op.join(fixtures, 'object')
 type_base_path = op.join(fixtures, 'type')
 
-class ObjectClassTestCase(unittest.TestCase):
+class ObjectClassTestCase(test.CdistTestCase):
 
     def test_list_object_names(self):
         object_names = list(core.Object.list_object_names(object_base_path))
@@ -52,7 +51,7 @@ class ObjectClassTestCase(unittest.TestCase):
         self.assertEqual(objects, objects_expected)
 
 
-class ObjectIdTestCase(unittest.TestCase):
+class ObjectIdTestCase(test.CdistTestCase):
     def test_object_id_starts_with_slash(self):
         cdist_type = core.Type(type_base_path, '__third')
         illegal_object_id = '/object_id/may/not/start/with/slash'
@@ -66,7 +65,7 @@ class ObjectIdTestCase(unittest.TestCase):
             core.Object(cdist_type, object_base_path, illegal_object_id)
 
 
-class ObjectTestCase(unittest.TestCase):
+class ObjectTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.cdist_type = core.Type(type_base_path, '__third')

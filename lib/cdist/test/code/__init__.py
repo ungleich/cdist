@@ -20,8 +20,6 @@
 #
 
 import os
-import tempfile
-import unittest
 import shutil
 import getpass
 import logging
@@ -38,13 +36,7 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 local_base_path = fixtures
 
-class CodeTestCase(unittest.TestCase):
-
-    def mkdtemp(self, **kwargs):
-        return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)
-
-    def mkstemp(self, **kwargs):
-        return tempfile.mkstemp(prefix='tmp.cdist.test.', **kwargs)
+class CodeTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.target_host = 'localhost'

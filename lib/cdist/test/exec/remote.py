@@ -19,9 +19,7 @@
 #
 #
 
-import unittest
 import os
-import tempfile
 import getpass
 import shutil
 import string
@@ -31,13 +29,7 @@ import cdist
 from cdist.exec import remote
 
 
-class RemoteTestCase(unittest.TestCase):
-
-    def mkdtemp(self, **kwargs):
-        return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)
-
-    def mkstemp(self, **kwargs):
-        return tempfile.mkstemp(prefix='tmp.cdist.test.', **kwargs)
+class RemoteTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()

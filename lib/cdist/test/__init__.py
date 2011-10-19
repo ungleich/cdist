@@ -20,8 +20,19 @@
 #
 
 import os
+import unittest
+import tempfile
 
 cdist_base_path = os.path.abspath(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../../"))
 
 cdist_exec_path = os.path.join(cdist_base_path, "bin/cdist")
+
+
+class CdistTestCase(unittest.TestCase):
+
+    def mkdtemp(self, **kwargs):
+        return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)
+
+    def mkstemp(self, **kwargs):
+        return tempfile.mkstemp(prefix='tmp.cdist.test.', **kwargs)

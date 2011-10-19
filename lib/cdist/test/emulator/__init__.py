@@ -20,8 +20,6 @@
 #
 
 import os
-import tempfile
-import unittest
 import shutil
 
 from cdist import test
@@ -32,13 +30,7 @@ from cdist import core
 local_base_path = test.cdist_base_path
 
 
-class EmulatorTestCase(unittest.TestCase):
-
-    def mkdtemp(self, **kwargs):
-        return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)
-
-    def mkstemp(self, **kwargs):
-        return tempfile.mkstemp(prefix='tmp.cdist.test.', **kwargs)
+class EmulatorTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.orig_environ = os.environ

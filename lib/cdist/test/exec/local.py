@@ -19,9 +19,7 @@
 #
 #
 
-import unittest
 import os
-import tempfile
 import getpass
 import shutil
 import string
@@ -31,6 +29,7 @@ import random
 #logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 
 import cdist
+from cdist import test
 from cdist.exec import local
 
 import os.path as op
@@ -39,13 +38,7 @@ fixtures = op.join(my_dir, 'fixtures')
 local_base_path = fixtures
 
 
-class LocalTestCase(unittest.TestCase):
-
-    def mkdtemp(self, **kwargs):
-        return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)
-
-    def mkstemp(self, **kwargs):
-        return tempfile.mkstemp(prefix='tmp.cdist.test.', **kwargs)
+class LocalTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()

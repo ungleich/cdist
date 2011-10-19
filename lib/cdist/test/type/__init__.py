@@ -20,8 +20,8 @@
 #
 
 import os
-import unittest
 
+from cdist import test
 from cdist import core
 
 import os.path as op
@@ -29,7 +29,7 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 
 
-class TypeTestCase(unittest.TestCase):
+class TypeTestCase(test.CdistTestCase):
 
     def test_list_type_names(self):
         base_path = op.join(fixtures, 'list_types')
@@ -145,11 +145,3 @@ class TypeTestCase(unittest.TestCase):
         base_path = fixtures
         cdist_type = core.Type(base_path, '__without_optional_parameters')
         self.assertEqual(cdist_type.optional_parameters, [])
-
-'''
-suite = unittest.TestLoader().loadTestsFromTestCase(ObjectTestCase)
-
-def suite():
-    tests = []
-    return unittest.TestSuite(map(ObjectTestCase, tests))
-'''
