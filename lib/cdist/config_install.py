@@ -159,6 +159,7 @@ class ConfigInstall(object):
             self.code.run_code_remote(cdist_object)
 
         # Mark this object as done
+        self.log.info("Finishing run of " + cdist_object.name)
         cdist_object.state == core.Object.STATE_DONE
 
     def stage_run(self):
