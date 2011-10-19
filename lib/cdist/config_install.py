@@ -28,6 +28,7 @@ import sys
 import tempfile
 import time
 
+import cdist
 from cdist import core
 
 
