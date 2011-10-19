@@ -125,20 +125,21 @@ class ConfigInstall(object):
 
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
-        self.log.info("" + cdist_object.name)
-        if cdist_object.state == cdist.core.object.STATE_RUNNING:
-            raise cdist.Error("Detected circular dependency in " + cdist_object.__str__())
-        elif cdist_object.state == cdist.core.object.STATE_DONE:
+        self.log.info("Starting run of " + cdist_object.name)
+        if cdist_object.state == core.Object.STATE_RUNNING:
+            raise cdist.Error("Detected circular dependency in " + cdist_object.name)
+        elif cdist_object.state == core.Object.STATE_DONE:
+            self.log.debug("Ignoring run of already finished object %s", cdist_object)
             return
         else:
-            cdist_object.state = cdist.core.object.STATE_RUNNING
+            cdist_object.state = core.Object.STATE_RUNNING
 
         cdist_type = cdist_object.type
 
         for requirement in cdist_object.requirements:
             self.log.debug("Object %s requires %s", cdist_object, requirement)
-            # FIXME: requirement is a string, need to create object here
             required_object = cdist_object.object_from_name(requirement)
+            self.log.info("Resolving dependency %s for %s" % (required_object.name, cdist_object.name))
             self.object_run(required_object)
 
         self.log.info("Running gencode and code for " + cdist_object.name)
@@ -155,6 +156,9 @@ class ConfigInstall(object):
         if cdist_object.code_remote:
             self.code.transfer_code_remote(cdist_object)
             self.code.run_code_remote(cdist_object)
+
+        # Mark this object as done
+        cdist_object.state == core.Object.STATE_DONE
 
     def stage_run(self):
         """The final (and real) step of deployment"""
