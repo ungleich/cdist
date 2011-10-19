@@ -140,8 +140,11 @@ class ConfigInstall(object):
         for requirement in cdist_object.requirements:
             self.log.debug("Object %s requires %s", cdist_object, requirement)
             required_object = cdist_object.object_from_name(requirement)
-            self.log.info("Resolving dependency %s for %s" % (required_object.name, cdist_object.name))
-            self.object_run(required_object)
+            if required_object.state == core.Object.STATE_DONE:
+                self.log.debug("Skipping fulfilled dependency %s for %s", required_object, cdist_object)
+            else:
+                self.log.info("Resolving dependency %s for %s" % (required_object.name, cdist_object.name))
+                self.object_run(required_object)
 
         self.log.info("Running gencode and code for " + cdist_object.name)
 
