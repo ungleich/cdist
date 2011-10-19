@@ -130,8 +130,6 @@ class Object(object):
     parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.parameter_path))
     explorers = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.explorer_path))
     changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
-    prepared = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "prepared"))
-    ran = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "ran"))
     state = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "state"))
     source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
     code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_local_path))
