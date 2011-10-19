@@ -181,7 +181,8 @@ __object_id::
    The type unique object id.
    Available for: type manifest, type explorer, type gencode
 __self::
-__object_fq::
+   DEPRECATED: Same as __object_name, do not use anymore, use __object_name instead.
+__object_name::
    The full qualified name of the current object.
    Available for: type manifest, type explorer, type gencode
 __target_host::
