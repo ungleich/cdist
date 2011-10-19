@@ -165,11 +165,6 @@ changed::
 
 ENVIRONMENT VARIABLES
 ---------------------
-__debug::
-   If this variable is setup, cdist runs in debug mode.
-   You can use this information, to only output stuff in debug
-   mode as well.
-   Available for: initial manifest, type manifest, gencode, code
 __explorer::
    Directory that contains all global explorers.
    Available for: explorer
