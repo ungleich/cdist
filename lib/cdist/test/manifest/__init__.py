@@ -111,4 +111,4 @@ class ManifestTestCase(unittest.TestCase):
     def test_debug_env_setup(self):
         self.log.setLevel(logging.DEBUG)
         manifest = cdist.core.manifest.Manifest(self.target_host, self.local)
-        self.assertTrue("__debug" in manifest.env)
+        self.assertTrue("__cdist_debug" in manifest.env)
