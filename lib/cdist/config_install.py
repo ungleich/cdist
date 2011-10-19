@@ -144,15 +144,15 @@ class ConfigInstall(object):
             self.log.info("Resolving dependency %s for %s" % (required_object.name, cdist_object.name))
             self.object_run(required_object)
 
-        self.log.info("Running gencode and code for " + cdist_object.name)
-
         # Generate
+        self.log.info("Generating code for " + cdist_object.name)
         cdist_object.code_local = self.code.run_gencode_local(cdist_object)
         cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
         if cdist_object.code_local or cdist_object.code_remote:
             cdist_object.changed = True
 
         # Execute
+        self.log.info("Executing code for " + cdist_object.name)
         if cdist_object.code_local:
             self.code.run_code_local(cdist_object)
         if cdist_object.code_remote:
