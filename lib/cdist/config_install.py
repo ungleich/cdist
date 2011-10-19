@@ -125,8 +125,7 @@ class ConfigInstall(object):
 
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
-        self.log.info("Running gencode and code for " + cdist_object.name)
-
+        self.log.info("" + cdist_object.name)
         if cdist_object.state == cdist.core.object.STATE_RUNNING:
             raise cdist.Error("Detected circular dependency in " + cdist_object.__str__())
         elif cdist_object.state == cdist.core.object.STATE_DONE:
@@ -141,6 +140,8 @@ class ConfigInstall(object):
             # FIXME: requirement is a string, need to create object here
             required_object = cdist_object.object_from_name(requirement)
             self.object_run(required_object)
+
+        self.log.info("Running gencode and code for " + cdist_object.name)
 
         # Generate
         cdist_object.code_local = self.code.run_gencode_local(cdist_object)
