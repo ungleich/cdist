@@ -167,17 +167,17 @@ class ObjectTestCase(unittest.TestCase):
     def test_state(self):
         self.assertEqual(self.cdist_object.state, '')
 
-    def test_state_ran(self):
-        self.cdist_object.state = core.Object.STATE_RAN
-        self.assertEqual(self.cdist_object.state, core.Object.STATE_RAN)
+    def test_state_prepared(self):
+        self.cdist_object.state = core.Object.STATE_PREPARED
+        self.assertEqual(self.cdist_object.state, core.Object.STATE_PREPARED)
 
     def test_state_running(self):
         self.cdist_object.state = core.Object.STATE_RUNNING
         self.assertEqual(self.cdist_object.state, core.Object.STATE_RUNNING)
 
-    def test_state_prepared(self):
-        self.cdist_object.state = core.Object.STATE_PREPARED
-        self.assertEqual(self.cdist_object.state, core.Object.STATE_PREPARED)
+    def test_state_done(self):
+        self.cdist_object.state = core.Object.STATE_DONE
+        self.assertEqual(self.cdist_object.state, core.Object.STATE_DONE)
 
     def test_source(self):
         self.assertEqual(list(self.cdist_object.source), [])
