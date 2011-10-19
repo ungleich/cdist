@@ -87,7 +87,7 @@ class ConfigInstall(object):
             new_objects_created = False
             for cdist_object in core.Object.list_objects(self.local.object_path,
                                                          self.local.type_path):
-                if cdist_object.state == cdist.core.object.STATE_PREPARED:
+                if cdist_object.state == core.Object.STATE_PREPARED:
                     self.log.debug("Skipping re-prepare of object %s", cdist_object)
                     continue
                 else:
@@ -121,7 +121,7 @@ class ConfigInstall(object):
         self.log.info("Running manifest and explorers for " + cdist_object.name)
         self.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
-        cdist_object.state = cdist.core.object.STATE_PREPARED
+        cdist_object.state = core.Object.STATE_PREPARED
 
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
