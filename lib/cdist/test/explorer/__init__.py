@@ -126,8 +126,3 @@ class ExplorerClassTestCase(unittest.TestCase):
         self.explorer.transfer_type_explorers(cdist_type)
         output = self.explorer.run_type_explorer('world', cdist_object)
         self.assertEqual(output, 'hello\n')
-
-    def test_debug_env_setup(self):
-        self.log.setLevel(logging.DEBUG)
-        explorer = cdist.core.explorer.Explorer(self.target_host, self.local, self.remote)
-        self.assertTrue("__debug" in explorer.env)

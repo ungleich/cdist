@@ -9,5 +9,5 @@ __type: $__type
 __self: $__self
 __object: $__object
 __object_id: $__object_id
-__object_fq: $__object_fq
+__object_name: $__object_name
 DONE

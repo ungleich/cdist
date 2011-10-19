@@ -104,11 +104,11 @@ class ManifestTestCase(unittest.TestCase):
         self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
         self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
-        self.assertEqual(output_dict['__self'], cdist_object.name)
         self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
-        self.assertEqual(output_dict['__object_fq'], cdist_object.path)
+        self.assertEqual(output_dict['__object_name'], cdist_object.name)
+        self.assertEqual(output_dict['__self'], cdist_object.name)
 
     def test_debug_env_setup(self):
         self.log.setLevel(logging.DEBUG)
         manifest = cdist.core.manifest.Manifest(self.target_host, self.local)
-        self.assertTrue("__debug" in manifest.env)
+        self.assertTrue("__cdist_debug" in manifest.env)

@@ -75,7 +75,7 @@ class Manifest(object):
             '__cdist_type_base_path': self.local.type_path, # for use in type emulator
         }
         if self.log.getEffectiveLevel() == logging.DEBUG:
-            self.env.update({'__debug': "yes" })
+            self.env.update({'__cdist_debug': "yes" })
 
 
     def run_initial_manifest(self, script):
@@ -92,10 +92,10 @@ class Manifest(object):
             env = os.environ.copy()
             env.update(self.env)
             env.update({
-                '__self': cdist_object.name,
                 '__object': cdist_object.absolute_path,
                 '__object_id': cdist_object.object_id,
-                '__object_fq': cdist_object.name,
+                '__object_name': cdist_object.name,
+                '__self': cdist_object.name,
                 '__type': cdist_object.type.absolute_path,
                 '__cdist_manifest': script,
             })

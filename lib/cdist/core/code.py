@@ -105,7 +105,8 @@ class Code(object):
                 '__type': cdist_object.type.absolute_path,
                 '__object': cdist_object.absolute_path,
                 '__object_id': cdist_object.object_id,
-                '__object_fq': cdist_object.path,
+                '__object_name': cdist_object.name,
+                '__self': cdist_object.name,
             })
             return self.local.run_script(script, env=env, return_output=True)
 

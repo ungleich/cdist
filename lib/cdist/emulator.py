@@ -82,7 +82,7 @@ class Emulator(object):
         logformat = '%(levelname)s: %(message)s'
         logging.basicConfig(format=logformat)
 
-        if '__debug' in os.environ:
+        if '__cdist_debug' in os.environ:
             logging.root.setLevel(logging.DEBUG)
         else:
             logging.root.setLevel(logging.INFO)

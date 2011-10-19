@@ -85,7 +85,8 @@ class CodeTestCase(unittest.TestCase):
         self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
-        self.assertEqual(output_dict['__object_fq'], self.cdist_object.path)
+        self.assertEqual(output_dict['__object_name'], self.cdist_object.name)
+        self.assertEqual(output_dict['__self'], self.cdist_object.name)
 
     def test_run_gencode_remote_environment(self):
         output_string = self.code.run_gencode_remote(self.cdist_object)
@@ -100,7 +101,8 @@ class CodeTestCase(unittest.TestCase):
         self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
-        self.assertEqual(output_dict['__object_fq'], self.cdist_object.path)
+        self.assertEqual(output_dict['__object_name'], self.cdist_object.name)
+        self.assertEqual(output_dict['__self'], self.cdist_object.name)
 
     def test_transfer_code_remote(self):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
@@ -116,8 +118,3 @@ class CodeTestCase(unittest.TestCase):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
         self.code.transfer_code_remote(self.cdist_object)
         self.code.run_code_remote(self.cdist_object)
-
-    def test_debug_env_setup(self):
-        self.log.setLevel(logging.DEBUG)
-        code = cdist.core.code.Code(self.target_host, self.local, self.remote)
-        self.assertTrue("__debug" in code.env)
