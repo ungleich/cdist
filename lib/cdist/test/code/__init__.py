@@ -116,8 +116,3 @@ class CodeTestCase(unittest.TestCase):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
         self.code.transfer_code_remote(self.cdist_object)
         self.code.run_code_remote(self.cdist_object)
-
-    def test_debug_env_setup(self):
-        self.log.setLevel(logging.DEBUG)
-        code = cdist.core.code.Code(self.target_host, self.local, self.remote)
-        self.assertTrue("__cdist_debug" in code.env)
