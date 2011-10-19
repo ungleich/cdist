@@ -87,7 +87,7 @@ class ConfigInstall(object):
             new_objects_created = False
             for cdist_object in core.Object.list_objects(self.local.object_path,
                                                          self.local.type_path):
-                if cdist_object.prepared:
+                if cdist_object.state == cdist.core.object.STATE_PREPARED:
                     self.log.debug("Skipping re-prepare of object %s", cdist_object)
                     continue
                 else:
@@ -121,18 +121,18 @@ class ConfigInstall(object):
         self.log.info("Running manifest and explorers for " + cdist_object.name)
         self.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
-        cdist_object.prepared = True
+        cdist_object.state = cdist.core.object.STATE_PREPARED
 
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
         self.log.info("Running gencode and code for " + cdist_object.name)
 
-        # Catch requirements, which re-call us
-        # FIXME: change .ran to running
-        if cdist_object.ran:
+        if cdist_object.state == cdist.core.object.STATE_RUNNING:
+            raise cdist.Error("Detected circular dependency in " + cdist_object.__str__())
+        elif cdist_object.state == cdist.core.object.STATE_DONE:
             return
         else:
-            cdist_object.ran = True
+            cdist_object.state = cdist.core.object.STATE_RUNNING
 
         cdist_type = cdist_object.type
 

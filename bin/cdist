@@ -204,7 +204,6 @@ if __name__ == "__main__":
 
         log = logging.getLogger("cdist")
 
-
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
         if re.match("__", os.path.basename(sys.argv[0])):
