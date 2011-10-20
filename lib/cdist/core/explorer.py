@@ -117,10 +117,11 @@ class Explorer(object):
 
     def transfer_object_parameters(self, cdist_object):
         """Transfer the parameters for the given object to the remote side."""
-        source = os.path.join(self.local.object_path, cdist_object.parameter_path)
-        destination = os.path.join(self.remote.object_path, cdist_object.parameter_path)
-        self.remote.mkdir(destination)
-        self.remote.transfer(source, destination)
+        if cdist_object.parameters:
+            source = os.path.join(self.local.object_path, cdist_object.parameter_path)
+            destination = os.path.join(self.remote.object_path, cdist_object.parameter_path)
+            self.remote.mkdir(destination)
+            self.remote.transfer(source, destination)
 
     def run_type_explorer(self, explorer, cdist_object):
         """Run the given type explorer for the given object and return it's output."""
