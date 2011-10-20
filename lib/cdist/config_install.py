@@ -77,7 +77,7 @@ class ConfigInstall(object):
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
         self.local.link_emulator(self.context.exec_path)
-        self.run_global_explorers()
+        self.explorer.run_global_explorers(self.local.global_explorer_out_path)
         self.manifest.run_initial_manifest(self.context.initial_manifest)
 
         self.log.info("Running object manifests and type explorers")
@@ -95,32 +95,10 @@ class ConfigInstall(object):
                     self.object_prepare(cdist_object)
                     new_objects_created = True
 
-    def run_global_explorers(self):
-        """Run global explorers and save output"""
-        # FIXME: move to explorer, pass global_explorer_out_path as argument
-        self.log.info("Running global explorers")
-        self.explorer.transfer_global_explorers()
-        for explorer in self.explorer.list_global_explorer_names():
-            output = self.explorer.run_global_explorer(explorer)
-            path = os.path.join(self.local.global_explorer_out_path, explorer)
-            with open(path, 'w') as fd:
-                fd.write(output)
-
-    def run_type_explorers(self, cdist_object):
-        """Run type explorers and save output in object."""
-        self.log.debug("Transfering type explorers for type: %s", cdist_object.type)
-        self.explorer.transfer_type_explorers(cdist_object.type)
-        self.log.debug("Transfering object parameters for object: %s", cdist_object.name)
-        self.explorer.transfer_object_parameters(cdist_object)
-        for explorer in self.explorer.list_type_explorer_names(cdist_object.type):
-            output = self.explorer.run_type_explorer(explorer, cdist_object)
-            self.log.debug("Running type explorer '%s' for object '%s'", explorer, cdist_object.name)
-            cdist_object.explorers[explorer] = output
-
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
         self.log.info("Running manifest and explorers for " + cdist_object.name)
-        self.run_type_explorers(cdist_object)
+        self.explorer.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.state = core.Object.STATE_PREPARED
 
