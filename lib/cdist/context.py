@@ -72,8 +72,8 @@ class Context(object):
 
         # Remote
         self.remote_base_path = os.environ.get('__cdist_remote_out_dir', "/var/lib/cdist")
-        self.remote_exec = os.environ.get('__remote_exec', "ssh -o User=root -q")
-        self.remote_copy = os.environ.get('__remote_copy', "scp -o User=root -q")
+        self.remote_exec = os.environ.setdefault('__remote_exec', "ssh -o User=root -q")
+        self.remote_copy = os.environ.setdefault('__remote_copy', "scp -o User=root -q")
         self.remote = remote.Remote(self.target_host, self.remote_base_path,
             self.remote_exec, self.remote_copy)
 
