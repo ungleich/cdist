@@ -111,6 +111,10 @@ class Remote(object):
         """
         assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
 
+        # export target_host for use in __remote_{exec,copy} scripts
+        os_environ = os.environ.copy()
+        os_environ['__target_host'] = self.target_host
+
         # can't pass environment to remote side, so prepend command with
         # variable declarations
         if env:
@@ -122,7 +126,7 @@ class Remote(object):
         self.log.debug("Remote run: %s", command)
         try:
             if return_output:
-                return subprocess.check_output(command).decode()
+                return subprocess.check_output(command, env=os_environ).decode()
             else:
                 subprocess.check_call(command)
         except subprocess.CalledProcessError:
@@ -140,6 +144,10 @@ class Remote(object):
         command = self._exec.split()
         command.append(self.target_host)
 
+        # export target_host for use in __remote_{exec,copy} scripts
+        os_environ = os.environ.copy()
+        os_environ['__target_host'] = self.target_host
+
         # can't pass environment to remote side, so prepend command with
         # variable declarations
         if env:
@@ -154,7 +162,7 @@ class Remote(object):
 
         try:
             if return_output:
-                return subprocess.check_output(command).decode()
+                return subprocess.check_output(command, env=os_environ).decode()
             else:
                 subprocess.check_call(command)
         except subprocess.CalledProcessError as error:
