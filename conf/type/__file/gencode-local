@@ -31,11 +31,7 @@ if [ -f "$__object/parameter/source" ]; then
       remote_cksum="$(cat "$__object/explorer/cksum")"
 
       if [ "$local_cksum" != "$remote_cksum" ]; then
-         # FIXME: The username is ugly and hardcoded, replace after 1.0!
-         # Probably a better aproach is to have the user configured
-         # ~/.ssh/config to contain the right username
-         # Probably describe it in cdist-quickstart...
-         echo scp "$source" "root@${__target_host}:${destination}"
+         echo "$__remote_copy" "$source" "${__target_host}:${destination}"
       fi
    else
       echo "Source \"$source\" does not exist." >&2
