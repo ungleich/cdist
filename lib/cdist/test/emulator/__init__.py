@@ -37,6 +37,7 @@ class EmulatorTestCase(test.CdistTestCase):
         os.environ = os.environ.copy()
         self.temp_dir = self.mkdtemp()
         handle, self.script = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
         self.target_host = 'localhost'
         out_path = self.temp_dir
         self.local = local.Local(self.target_host, local_base_path, out_path)

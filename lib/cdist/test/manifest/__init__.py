@@ -61,6 +61,7 @@ class ManifestTestCase(test.CdistTestCase):
     def test_initial_manifest_environment(self):
         initial_manifest = os.path.join(self.local.manifest_path, "dump_environment")
         handle, output_file = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
         os.environ['__cdist_test_out'] = output_file
         self.manifest.run_initial_manifest(initial_manifest)
 
@@ -81,6 +82,7 @@ class ManifestTestCase(test.CdistTestCase):
         cdist_type = core.Type(self.local.type_path, '__dump_environment')
         cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
         handle, output_file = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
         os.environ['__cdist_test_out'] = output_file
         self.manifest.run_type_manifest(cdist_object)
 

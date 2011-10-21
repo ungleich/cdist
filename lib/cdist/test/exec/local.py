@@ -90,23 +90,20 @@ class LocalTestCase(test.CdistTestCase):
 
     def test_run_script_success(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
-        fd = open(script, "w")
-        fd.writelines(["#!/bin/sh\n", "/bin/true"])
-        fd.close()
+        with os.fdopen(handle, "w") as fd:
+            fd.writelines(["#!/bin/sh\n", "/bin/true"])
         self.local.run_script(script)
 
     def test_run_script_fail(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
-        fd = open(script, "w")
-        fd.writelines(["#!/bin/sh\n", "/bin/false"])
-        fd.close()
+        with os.fdopen(handle, "w") as fd:
+            fd.writelines(["#!/bin/sh\n", "/bin/false"])
         self.assertRaises(local.LocalScriptError, self.local.run_script, script)
 
     def test_run_script_get_output(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
-        fd = open(script, "w")
-        fd.writelines(["#!/bin/sh\n", "echo foobar"])
-        fd.close()
+        with os.fdopen(handle, "w") as fd:
+            fd.writelines(["#!/bin/sh\n", "echo foobar"])
         self.assertEqual(self.local.run_script(script, return_output=True), "foobar\n")
 
     def test_mkdir(self):
