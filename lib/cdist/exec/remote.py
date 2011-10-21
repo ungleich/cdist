@@ -128,7 +128,7 @@ class Remote(object):
             if return_output:
                 return subprocess.check_output(command, env=os_environ).decode()
             else:
-                subprocess.check_call(command)
+                subprocess.check_call(command, env=os_environ)
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
@@ -164,7 +164,7 @@ class Remote(object):
             if return_output:
                 return subprocess.check_output(command, env=os_environ).decode()
             else:
-                subprocess.check_call(command)
+                subprocess.check_call(command, env=os_environ)
         except subprocess.CalledProcessError as error:
             script_content = self.run(["cat", script], return_output=True)
             self.log.error("Code that raised the error:\n%s", script_content)
