@@ -45,13 +45,6 @@ logging:
    [2] http://blog.ooz.ie/2011/03/python-logging-extending-standard.html
 
 
-config_install:
-   - move code for running global and type explorer run to cdist.core.explorer
-
-tests:
-   - aufraeumen
-   - test suite
-
 
 tests:
 

@@ -62,7 +62,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
         shutil.rmtree(self.remote_base_path)
 
     def test_list_global_explorer_names(self):
-        expected = ['global']
+        expected = ['foobar', 'global']
         self.assertEqual(self.explorer.list_global_explorer_names(), expected)
 
     def test_transfer_global_explorers(self):
@@ -75,6 +75,12 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.explorer.transfer_global_explorers()
         output = self.explorer.run_global_explorer('global')
         self.assertEqual(output, 'global\n')
+
+    def test_run_global_explorers(self):
+        out_path = self.mkdtemp()
+        self.explorer.run_global_explorers(out_path)
+        self.assertEqual(os.listdir(out_path), ['foobar', 'global'])
+        shutil.rmtree(out_path)
 
     def test_list_type_explorer_names(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
@@ -118,3 +124,10 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.explorer.transfer_type_explorers(cdist_type)
         output = self.explorer.run_type_explorer('world', cdist_object)
         self.assertEqual(output, 'hello\n')
+
+    def test_run_type_explorers(self):
+        cdist_type = core.Type(self.local.type_path, '__test_type')
+        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_object.create()
+        self.explorer.run_type_explorers(cdist_object)
+        self.assertEqual(cdist_object.explorers, {'world': 'hello'})

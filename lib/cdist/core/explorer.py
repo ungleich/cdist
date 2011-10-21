@@ -83,6 +83,19 @@ class Explorer(object):
         """Return a list of global explorer names."""
         return os.listdir(self.local.global_explorer_path)
 
+    def run_global_explorers(self, out_path):
+        """Run global explorers and save output to files in the given
+        out_path directory.
+
+        """
+        self.log.info("Running global explorers")
+        self.transfer_global_explorers()
+        for explorer in self.list_global_explorer_names():
+            output = self.run_global_explorer(explorer)
+            path = os.path.join(out_path, explorer)
+            with open(path, 'w') as fd:
+                fd.write(output)
+
     def transfer_global_explorers(self):
         """Transfer the global explorers to the remote side."""
         self.remote.mkdir(self.remote.global_explorer_path)
@@ -102,6 +115,20 @@ class Explorer(object):
             return os.listdir(source)
         except EnvironmentError:
             return []
+
+    def run_type_explorers(self, cdist_object):
+        """Run the type explorers for the given object and save their output
+        in the object.
+
+        """
+        self.log.debug("Transfering type explorers for type: %s", cdist_object.type)
+        self.transfer_type_explorers(cdist_object.type)
+        self.log.debug("Transfering object parameters for object: %s", cdist_object.name)
+        self.transfer_object_parameters(cdist_object)
+        for explorer in self.list_type_explorer_names(cdist_object.type):
+            output = self.run_type_explorer(explorer, cdist_object)
+            self.log.debug("Running type explorer '%s' for object '%s'", explorer, cdist_object.name)
+            cdist_object.explorers[explorer] = output
 
     def transfer_type_explorers(self, cdist_type):
         """Transfer the type explorers for the given type to the remote side."""
