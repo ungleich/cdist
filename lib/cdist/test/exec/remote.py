@@ -26,6 +26,7 @@ import string
 import random
 
 import cdist
+from cdist import test
 from cdist.exec import remote
 
 
@@ -33,12 +34,12 @@ class RemoteTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        target_host = 'localhost'
+        self.target_host = 'localhost'
         self.base_path = self.temp_dir
         user = getpass.getuser()
         remote_exec = "ssh -o User=%s -q" % user
         remote_copy = "scp -o User=%s -q" % user
-        self.remote = remote.Remote(target_host, self.base_path, remote_exec, remote_copy)
+        self.remote = remote.Remote(self.target_host, self.base_path, remote_exec, remote_copy)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
