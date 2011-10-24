@@ -24,6 +24,8 @@ import os
 
 import cdist
 
+TYPE_MARKER = '.type'
+
 
 class NoSuchTypeError(cdist.Error):
     def __init__(self, type_path, type_absolute_path):
@@ -52,8 +54,9 @@ class Type(object):
     @classmethod
     def list_type_names(cls, base_path):
         """Return a list of type names"""
-        return os.listdir(base_path)
-
+        for path, dirs, files in os.walk(base_path):
+            if TYPE_MARKER in dirs:
+                yield os.path.relpath(path, base_path)
 
     _instances = {}
     def __new__(cls, *args, **kwargs):

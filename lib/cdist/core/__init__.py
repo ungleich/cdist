@@ -21,6 +21,7 @@
 
 from cdist.core.type import Type
 from cdist.core.type import NoSuchTypeError
+from cdist.core.type import TYPE_MARKER
 from cdist.core.object import Object
 from cdist.core.object import IllegalObjectIdError
 from cdist.core.explorer import Explorer

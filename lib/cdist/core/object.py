@@ -30,7 +30,8 @@ from cdist.util import fsproperty
 
 log = logging.getLogger(__name__)
 
-DOT_CDIST = '.cdist'
+OBJECT_MARKER = '.object'
+OBJECT_TYPE_DELIMITER = '/./'
 
 
 class IllegalObjectIdError(cdist.Error):
@@ -60,22 +61,29 @@ class Object(object):
     def list_objects(cls, object_base_path, type_base_path):
         """Return a list of object instances"""
         for object_name in cls.list_object_names(object_base_path):
-            type_name = object_name.split(os.sep)[0]
-            # FIXME: allow object without object_id? e.g. for singleton
-            object_id = os.sep.join(object_name.split(os.sep)[1:])
+            type_name, object_id = object_name.split(OBJECT_TYPE_DELIMITER)
             yield cls(cdist.core.Type(type_base_path, type_name), object_base_path, object_id=object_id)
 
     @classmethod
     def list_type_names(cls, object_base_path):
         """Return a list of type names"""
-        return os.listdir(object_base_path)
+        for path, dirs, files in os.walk(object_base_path):
+            if cdist.core.TYPE_MARKER in files:
+                yield os.path.relpath(path, object_base_path)
 
     @classmethod
     def list_object_names(cls, object_base_path):
         """Return a list of object names"""
         for path, dirs, files in os.walk(object_base_path):
-            if DOT_CDIST in dirs:
-                yield os.path.relpath(path, object_base_path)
+            if cdist.core.TYPE_MARKER in files:
+                type_name = os.path.relpath(path, object_base_path)
+                type_path = path
+            if OBJECT_MARKER in dirs:
+                # don't visit .object directories
+                dirs.remove(OBJECT_MARKER)
+                object_id = os.path.relpath(path, type_path)
+                object_name = os.path.join(type_name, '.', object_id)
+                yield object_name
 
     def object_from_name(self, object_name):
         """Convenience method for creating an object instance from an object name.
@@ -88,21 +96,20 @@ class Object(object):
         """
         type_path = self.type.base_path
         object_path = self.base_path
-        type_name = object_name.split(os.sep)[0]
-        object_id = os.sep.join(object_name.split(os.sep)[1:])
+        type_name, object_id = object_name.split(OBJECT_TYPE_DELIMITER)
         return self.__class__(self.type.__class__(type_path, type_name), object_path, object_id=object_id)
 
     def __init__(self, cdist_type, base_path, object_id=None):
         if object_id:
             if object_id.startswith('/'):
                 raise IllegalObjectIdError(object_id, 'object_id may not start with /')
-            if '.cdist' in object_id:
-                raise IllegalObjectIdError(object_id, 'object_id may not contain \'.cdist\'')
+            if OBJECT_MARKER in object_id:
+                raise IllegalObjectIdError(object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
         self.name = os.path.join(self.type.name, self.object_id)
-        self.path = os.path.join(self.type.path, self.object_id, DOT_CDIST)
+        self.path = os.path.join(self.type.path, self.object_id, OBJECT_MARKER)
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
