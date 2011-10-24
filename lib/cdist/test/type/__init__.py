@@ -33,7 +33,7 @@ class TypeTestCase(test.CdistTestCase):
 
     def test_list_type_names(self):
         base_path = op.join(fixtures, 'list_types')
-        type_names = core.Type.list_type_names(base_path)
+        type_names = list(core.Type.list_type_names(base_path))
         self.assertEqual(type_names, ['__first', '__second', '__third'])
 
     def test_list_types(self):
