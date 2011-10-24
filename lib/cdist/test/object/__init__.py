@@ -35,7 +35,7 @@ class ObjectClassTestCase(test.CdistTestCase):
 
     def test_list_object_names(self):
         object_names = list(core.Object.list_object_names(object_base_path))
-        self.assertEqual(object_names, ['__first/man', '__second/on-the', '__third/moon'])
+        self.assertEqual(object_names, ['__first/./man', '__second/./on-the', '__third/./moon'])
 
     def test_list_type_names(self):
         type_names = list(core.Object.list_type_names(object_base_path))
@@ -58,9 +58,9 @@ class ObjectIdTestCase(test.CdistTestCase):
         with self.assertRaises(core.IllegalObjectIdError):
             core.Object(cdist_type, object_base_path, illegal_object_id)
 
-    def test_object_id_contains_dotcdist(self):
+    def test_object_id_contains_dotobject(self):
         cdist_type = core.Type(type_base_path, '__third')
-        illegal_object_id = 'object_id/may/not/contain/.cdist/anywhere'
+        illegal_object_id = 'object_id/may/not/contain/.object/anywhere'
         with self.assertRaises(core.IllegalObjectIdError):
             core.Object(cdist_type, object_base_path, illegal_object_id)
 
@@ -87,22 +87,22 @@ class ObjectTestCase(test.CdistTestCase):
         self.assertEqual(self.cdist_object.object_id, 'moon')
 
     def test_path(self):
-        self.assertEqual(self.cdist_object.path, '__third/moon/.cdist')
+        self.assertEqual(self.cdist_object.path, '__third/moon/.object')
 
     def test_absolute_path(self):
-        self.assertEqual(self.cdist_object.absolute_path, os.path.join(object_base_path, '__third/moon/.cdist'))
+        self.assertEqual(self.cdist_object.absolute_path, os.path.join(object_base_path, '__third/moon/.object'))
 
     def test_code_local_path(self):
-        self.assertEqual(self.cdist_object.code_local_path, '__third/moon/.cdist/code-local')
+        self.assertEqual(self.cdist_object.code_local_path, '__third/moon/.object/code-local')
 
     def test_code_remote_path(self):
-        self.assertEqual(self.cdist_object.code_remote_path, '__third/moon/.cdist/code-remote')
+        self.assertEqual(self.cdist_object.code_remote_path, '__third/moon/.object/code-remote')
 
     def test_parameter_path(self):
-        self.assertEqual(self.cdist_object.parameter_path, '__third/moon/.cdist/parameter')
+        self.assertEqual(self.cdist_object.parameter_path, '__third/moon/.object/parameter')
 
     def test_explorer_path(self):
-        self.assertEqual(self.cdist_object.explorer_path, '__third/moon/.cdist/explorer')
+        self.assertEqual(self.cdist_object.explorer_path, '__third/moon/.object/explorer')
 
     def test_parameters(self):
         expected_parameters = {'planet': 'Saturn', 'name': 'Prometheus'}
@@ -187,7 +187,7 @@ class ObjectTestCase(test.CdistTestCase):
 
     def test_object_from_name(self):
         self.cdist_object.code_remote = 'Hello World'
-        other_name = '__first/man'
+        other_name = '__first/./man'
         other_object = self.cdist_object.object_from_name(other_name)
         self.assertTrue(isinstance(other_object, core.Object))
         self.assertEqual(other_object.type.name, '__first')
