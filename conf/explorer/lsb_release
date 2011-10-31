@@ -19,5 +19,7 @@
 #
 #
 
-lsb_release=$(which lsb_release)
-[ -x $lsb_release ] && $lsb_release --short --release
+lsb_release=$(which lsb_release 2>/dev/null)
+if [ -x "$lsb_release" ]; then
+   $lsb_release --short --release
+fi 
