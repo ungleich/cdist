@@ -20,5 +20,4 @@
 #
 
 lsb_release=$(which lsb_release)
-[ -x $lsb_release ] && $lsb_release --short --id \
-|| echo lsb not supported
+[ -x $lsb_release ] && $lsb_release --short --id
