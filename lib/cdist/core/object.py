@@ -122,6 +122,10 @@ class Object(object):
         """define equality as 'attributes are the same'"""
         return self.__dict__ == other.__dict__
 
+    def __lt__(self, other):
+        return isinstance(other, self.__class__) and self.name < other.name
+
+
     # FIXME: still needed?
     @property
     def explorer_path(self):
