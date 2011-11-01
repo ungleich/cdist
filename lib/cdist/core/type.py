@@ -56,7 +56,10 @@ class Type(object):
         """Return a list of type names"""
         for path, dirs, files in os.walk(base_path):
             if TYPE_MARKER in dirs:
-                yield os.path.relpath(path, base_path)
+                #yield os.path.relpath(path, base_path)
+                name = os.path.relpath(path, base_path)
+                name = name.replace(os.sep, '.')
+                yield name
 
     _instances = {}
     def __new__(cls, *args, **kwargs):
@@ -72,7 +75,7 @@ class Type(object):
     def __init__(self, base_path, name):
         self.base_path = base_path
         self.name = name
-        self.path = self.name
+        self.path = self.name.replace('.', os.sep)
         self.absolute_path = os.path.join(self.base_path, self.path)
         if not os.path.isdir(self.absolute_path):
             raise NoSuchTypeError(self.path, self.absolute_path)
