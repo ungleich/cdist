@@ -34,7 +34,8 @@ class TypeTestCase(test.CdistTestCase):
     def test_list_type_names(self):
         base_path = op.join(fixtures, 'list_types')
         type_names = list(core.Type.list_type_names(base_path))
-        self.assertEqual(type_names, ['__first', '__second', '__third'])
+        expected = ['__first', '__second', '__third', '__namespace.some_type', '__namespace.folder.nested_type']
+        self.assertEqual(sorted(type_names), sorted(expected))
 
     def test_list_types(self):
         base_path = op.join(fixtures, 'list_types')
@@ -43,8 +44,10 @@ class TypeTestCase(test.CdistTestCase):
             core.Type(base_path, '__first'),
             core.Type(base_path, '__second'),
             core.Type(base_path, '__third'),
+            core.Type(base_path, '__namespace.some_type'),
+            core.Type(base_path, '__namespace.folder.nested_type'),
         ]
-        self.assertEqual(types, types_expected)
+        self.assertEqual(sorted(types), sorted(types_expected))
 
     def test_only_one_instance(self):
         base_path = fixtures
