@@ -5,9 +5,8 @@ Feel free to pick one!
 
 CORE
 ----
-- probably remove or improve cdist-type-template
-- allow cdist to run without $PATH setup: ./bin/cdist-deploy-to
-- support non-ssh access?
+- Add subcommand to create template of a type with working manpage
+ (cdist type-template or so)
 
 TESTS
 -----

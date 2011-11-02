@@ -9,6 +9,28 @@ cdist-tutorial - a guided introduction into cdist
 
 
 
+PREPARING YOUR MACHINE / SETUP
+------------------------------
+
+- ensure sshd is running on the target host:
+
+ssh target_host
+
+- ensure you can login as root
+
+ssh root@target host
+
+- ensure login as root works without keys
+(see ssh... manpage)
+
+cdist will do a lot of requests to the target
+host, thus you'll have to enter your password
+many times, if you don't do this :-)
+
+- speedup processing with ControlMaster option of
+ssh
+
+
 YOUR FIRST CONFIGURATION
 ------------------------
 
