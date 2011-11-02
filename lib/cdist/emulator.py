@@ -75,6 +75,7 @@ class Emulator(object):
         self.commandline()
         self.setup_object()
         self.record_requirements()
+        self.record_auto_requirements()
         self.log.debug("Finished %s %s" % (self.cdist_object.path, self.parameters))
 
     def __init_log(self):
@@ -178,3 +179,12 @@ class Emulator(object):
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
+
+    def record_auto_requirements(self):
+        """An object shall automatically depend on all objects that it defined in it's type manifest.
+        """
+        # __object_name is the name of the object whose type manifest is currenlty executed
+        __object_name = os.environ.get('__object_name', None)
+        if __object_name:
+            _object = self.cdist_object.object_from_name(__object_name)
+            _object.requirements.append(self.cdist_object.name)
