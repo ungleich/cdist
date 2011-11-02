@@ -60,7 +60,7 @@ def commandline():
          help='Change cdist home (default: .. from bin directory)',
          action='store')
     parser['configinstall'].add_argument('-i', '--initial-manifest', 
-         help='Path to a cdist manifest',
+         help='Path to a cdist manifest or \'-\' to read from stdin.',
          dest='manifest', required=False)
     parser['configinstall'].add_argument('-p', '--parallel',
          help='Operate on multiple hosts in parallel',
@@ -103,6 +103,17 @@ def configinstall(args, mode):
     """Configure or install remote system"""
     import multiprocessing
     import time
+
+    initial_manifest_tempfile = None
+    if args.manifest == '-':
+        # read initial manifest from stdin
+        import tempfile
+        handle, initial_manifest_temp_path = tempfile.mkstemp(prefix='cdist.stdin.')
+        with os.fdopen(handle, 'w') as fd:
+            fd.write(sys.stdin.read())
+        args.manifest = initial_manifest_temp_path
+        import atexit
+        atexit.register(lambda: os.remove(initial_manifest_temp_path))
 
     try:
         process = {}
