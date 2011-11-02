@@ -20,7 +20,7 @@
 
 user="$(cat "$__object/parameter/user")"
 state_should="$(cat "$__object/parameter/state")"
-state_is=$(cmp --quiet "$__object/parameter/entry" "$__object/explorer/entry" \
+state_is=$(diff -q "$__object/parameter/entry" "$__object/explorer/entry" \
    && echo present \
    || echo absent
 )
