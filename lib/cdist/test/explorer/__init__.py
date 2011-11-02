@@ -79,7 +79,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
     def test_run_global_explorers(self):
         out_path = self.mkdtemp()
         self.explorer.run_global_explorers(out_path)
-        self.assertEqual(sorted(os.listdir(out_path)), ['foobar', 'global'])
+        self.assertEqual(sorted(os.listdir(out_path)), sorted(['foobar', 'global']))
         shutil.rmtree(out_path)
 
     def test_list_type_explorer_names(self):
