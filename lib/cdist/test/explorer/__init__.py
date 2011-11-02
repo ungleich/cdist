@@ -69,7 +69,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.explorer.transfer_global_explorers()
         source = self.local.global_explorer_path
         destination = self.remote.global_explorer_path
-        self.assertEqual(os.listdir(source), os.listdir(destination))
+        self.assertEqual(sorted(os.listdir(source)), sorted(os.listdir(destination)))
 
     def test_run_global_explorer(self):
         self.explorer.transfer_global_explorers()
@@ -79,7 +79,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
     def test_run_global_explorers(self):
         out_path = self.mkdtemp()
         self.explorer.run_global_explorers(out_path)
-        self.assertEqual(os.listdir(out_path), ['foobar', 'global'])
+        self.assertEqual(sorted(os.listdir(out_path)), sorted(['foobar', 'global']))
         shutil.rmtree(out_path)
 
     def test_list_type_explorer_names(self):
@@ -116,7 +116,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.explorer.transfer_object_parameters(cdist_object)
         source = os.path.join(self.local.object_path, cdist_object.parameter_path)
         destination = os.path.join(self.remote.object_path, cdist_object.parameter_path)
-        self.assertEqual(os.listdir(source), os.listdir(destination))
+        self.assertEqual(sorted(os.listdir(source)), sorted(os.listdir(destination)))
 
     def test_run_type_explorer(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
