@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+name="$__object_id"
+user="$(cat "$__object/parameter/user")"
+command="$(cat "$__object/parameter/command")"
+
+# set defaults
+if [ ! -f "$__object/parameter/state" ]; then
+   echo "present" > "$__object/parameter/state"
+fi
+if [ -f "$__object/parameter/minute" ]; then
+   minute="$(cat "$__object/parameter/minute")"
+else
+   minute="*"
+   echo "$minute" > "$__object/parameter/minute"
+fi
+if [ -f "$__object/parameter/hour" ]; then
+   hour="$(cat "$__object/parameter/hour")"
+else
+   hour="*"
+   echo "$hour" > "$__object/parameter/hour"
+fi
+if [ -f "$__object/parameter/day_of_month" ]; then
+   day_of_month="$(cat "$__object/parameter/day_of_month")"
+else
+   day_of_month="*"
+   echo "$day_of_month" > "$__object/parameter/day_of_month"
+fi
+if [ -f "$__object/parameter/month" ]; then
+   month="$(cat "$__object/parameter/month")"
+else
+   month="*"
+   echo "$month" > "$__object/parameter/month"
+fi
+if [ -f "$__object/parameter/day_of_week" ]; then
+   day_of_week="$(cat "$__object/parameter/day_of_week")"
+else
+   day_of_week="*"
+   echo "$day_of_week" > "$__object/parameter/day_of_week"
+fi
+
+# NOTE: if changed, also change in explorers
+prefix="#cdist:__cron/$name"
+suffix="#/cdist:__cron/$name"
+echo "$prefix" | tee "$__object/parameter/prefix" > "$__object/parameter/entry"
+echo "$minute $hour $day_of_month $month $day_of_week $command" >> "$__object/parameter/entry"
+echo "$suffix" | tee "$__object/parameter/suffix" >> "$__object/parameter/entry"
+
