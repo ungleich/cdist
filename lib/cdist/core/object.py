@@ -31,7 +31,6 @@ from cdist.util import fsproperty
 log = logging.getLogger(__name__)
 
 OBJECT_MARKER = '.object'
-OBJECT_TYPE_DELIMITER = '/./'
 
 
 class IllegalObjectIdError(cdist.Error):
@@ -69,21 +68,25 @@ class Object(object):
         """Return a list of type names"""
         for path, dirs, files in os.walk(object_base_path):
             if cdist.core.TYPE_MARKER in files:
-                yield os.path.relpath(path, object_base_path)
+                name = cdist.core.Type.name_from_path(
+                    os.path.relpath(path, object_base_path)
+                )
+                yield name
 
     @classmethod
     def list_object_names(cls, object_base_path):
         """Return a list of object names"""
         for path, dirs, files in os.walk(object_base_path):
             if cdist.core.TYPE_MARKER in files:
-                type_name = os.path.relpath(path, object_base_path)
+                type_name = cdist.core.Type.name_from_path(
+                    os.path.relpath(path, object_base_path)
+                )
                 type_path = path
             if OBJECT_MARKER in dirs:
                 # don't visit .object directories
                 dirs.remove(OBJECT_MARKER)
                 object_id = os.path.relpath(path, type_path)
-                object_name = os.path.join(type_name, '.', object_id)
-                yield object_name
+                yield cls.join_name(type_name, object_id)
 
     @staticmethod
     def split_name(object_name):
@@ -97,6 +100,15 @@ class Object(object):
         object_id = os.sep.join(object_name.split(os.sep)[1:])
         return type_name, object_id
 
+    @staticmethod
+    def join_name(type_name, object_id):
+        """join_name('__type_name', 'the/object_id') -> __type_name/the/object_id'
+
+        Join the given type_name and object_id into an object name.
+
+        """
+        return os.path.join(type_name, object_id)
+
     def __init__(self, cdist_type, base_path, object_id=None):
         if object_id:
             if object_id.startswith('/'):
@@ -106,7 +118,7 @@ class Object(object):
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
-        self.name = os.path.join(self.type.name, self.object_id)
+        self.name = self.join_name(self.type.name, self.object_id)
         self.path = os.path.join(self.type.path, self.object_id, OBJECT_MARKER)
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")

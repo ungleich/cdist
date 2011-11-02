@@ -57,9 +57,18 @@ class Type(object):
         for path, dirs, files in os.walk(base_path):
             if TYPE_MARKER in dirs:
                 #yield os.path.relpath(path, base_path)
-                name = os.path.relpath(path, base_path)
-                name = name.replace(os.sep, '.')
-                yield name
+                type_path = os.path.relpath(path, base_path)
+                yield cls.name_from_path(type_path)
+
+    @staticmethod
+    def name_from_path(path):
+        """Given a relative filesystem path return the type name."""
+        return path.replace(os.sep, '.')
+
+    @staticmethod
+    def path_from_name(name):
+        """Given a type name return the relative filesystem path."""
+        return name.replace('.', os.sep)
 
     _instances = {}
     def __new__(cls, *args, **kwargs):

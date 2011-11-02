@@ -35,11 +35,21 @@ class ObjectClassTestCase(test.CdistTestCase):
 
     def test_list_object_names(self):
         object_names = list(core.Object.list_object_names(object_base_path))
-        self.assertEqual(object_names, ['__first/./man', '__second/./on-the', '__third/./moon'])
+        expected = [
+            '__first/man', '__second/on-the', '__third/moon', 
+            '__namespace.folder.nested_type/some/nested/id', 
+            '__namespace.folder.nested_type/some-id', 
+            '__namespace.some_type/some-id'
+        ]
+        self.assertEqual(sorted(object_names), sorted(expected))
 
     def test_list_type_names(self):
         type_names = list(core.Object.list_type_names(object_base_path))
-        self.assertEqual(type_names, ['__first', '__second', '__third'])
+        expected = [
+            '__first', '__second', '__third', 
+            '__namespace.folder.nested_type', '__namespace.some_type'
+        ]
+        self.assertEqual(sorted(type_names), sorted(expected))
 
     def test_list_objects(self):
         objects = list(core.Object.list_objects(object_base_path, type_base_path))
@@ -47,8 +57,11 @@ class ObjectClassTestCase(test.CdistTestCase):
             core.Object(core.Type(type_base_path, '__first'), object_base_path, 'man'),
             core.Object(core.Type(type_base_path, '__second'), object_base_path, 'on-the'),
             core.Object(core.Type(type_base_path, '__third'), object_base_path, 'moon'),
+            core.Object(core.Type(type_base_path, '__namespace.folder.nested_type'), object_base_path, 'some/nested/id'),
+            core.Object(core.Type(type_base_path, '__namespace.folder.nested_type'), object_base_path, 'some-id'),
+            core.Object(core.Type(type_base_path, '__namespace.some_type'), object_base_path, 'some-id'),
         ]
-        self.assertEqual(objects, objects_expected)
+        self.assertEqual(sorted(objects), sorted(objects_expected))
 
 
 class ObjectIdTestCase(test.CdistTestCase):
@@ -187,8 +200,16 @@ class ObjectTestCase(test.CdistTestCase):
 
     def test_object_from_name(self):
         self.cdist_object.code_remote = 'Hello World'
-        other_name = '__first/./man'
+        other_name = '__first/man'
         other_object = self.cdist_object.object_from_name(other_name)
         self.assertTrue(isinstance(other_object, core.Object))
         self.assertEqual(other_object.type.name, '__first')
         self.assertEqual(other_object.object_id, 'man')
+
+    def test_object_from_name_namespace(self):
+        self.cdist_object.code_remote = 'Hello World'
+        other_name = '__namespace.folder.nested_type/some/nested/id'
+        other_object = self.cdist_object.object_from_name(other_name)
+        self.assertTrue(isinstance(other_object, core.Object))
+        self.assertEqual(other_object.type.name, '__namespace.folder.nested_type')
+        self.assertEqual(other_object.object_id, 'some/nested/id')
