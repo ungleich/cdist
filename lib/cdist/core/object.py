@@ -60,9 +60,7 @@ class Object(object):
     def list_objects(cls, object_base_path, type_base_path):
         """Return a list of object instances"""
         for object_name in cls.list_object_names(object_base_path):
-            type_name = object_name.split(os.sep)[0]
-            # FIXME: allow object without object_id? e.g. for singleton
-            object_id = os.sep.join(object_name.split(os.sep)[1:])
+            type_name, object_id = cls.split_name(object_name)
             yield cls(cdist.core.Type(type_base_path, type_name), object_base_path, object_id=object_id)
 
     @classmethod
@@ -77,20 +75,26 @@ class Object(object):
             if DOT_CDIST in dirs:
                 yield os.path.relpath(path, object_base_path)
 
-    def object_from_name(self, object_name):
-        """Convenience method for creating an object instance from an object name.
+    @staticmethod
+    def split_name(object_name):
+        """split_name('__type_name/the/object_id') -> ('__type_name', 'the/object_id')
 
-        Mainly intended to create objects when resolving requirements.
-
-        e.g:
-            <Object __foo/bar>.object_from_name('__other/object') -> <Object __other/object>
+        Split the given object name into it's type and object_id parts.
 
         """
-        type_path = self.type.base_path
-        object_path = self.base_path
         type_name = object_name.split(os.sep)[0]
+        # FIXME: allow object without object_id? e.g. for singleton
         object_id = os.sep.join(object_name.split(os.sep)[1:])
-        return self.__class__(self.type.__class__(type_path, type_name), object_path, object_id=object_id)
+        return type_name, object_id
+
+    @staticmethod
+    def join_name(type_name, object_id):
+        """join_name('__type_name', 'the/object_id') -> __type_name/the/object_id'
+
+        Join the given type_name and object_id into an object name.
+
+        """
+        return os.path.join(type_name, object_id)
 
     def __init__(self, cdist_type, base_path, object_id=None):
         if object_id:
@@ -101,7 +105,7 @@ class Object(object):
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
-        self.name = os.path.join(self.type.name, self.object_id)
+        self.name = self.join_name(self.type.name, self.object_id)
         self.path = os.path.join(self.type.path, self.object_id, DOT_CDIST)
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
@@ -114,6 +118,23 @@ class Object(object):
     def __eq__(self, other):
         """define equality as 'attributes are the same'"""
         return self.__dict__ == other.__dict__
+
+    def __lt__(self, other):
+        return isinstance(other, self.__class__) and self.name < other.name
+
+    def object_from_name(self, object_name):
+        """Convenience method for creating an object instance from an object name.
+
+        Mainly intended to create objects when resolving requirements.
+
+        e.g:
+            <Object __foo/bar>.object_from_name('__other/object') -> <Object __other/object>
+
+        """
+        type_path = self.type.base_path
+        object_path = self.base_path
+        type_name, object_id = self.split_name(object_name)
+        return self.__class__(self.type.__class__(type_path, type_name), object_path, object_id=object_id)
 
     # FIXME: still needed?
     @property
