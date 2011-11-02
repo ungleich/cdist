@@ -1,3 +1,10 @@
+autorequire:
+   - objects defined in type manifests should be automatically prerequisites of the current object
+   - __foo/some-id
+      __other other-id --state present
+      => require="__other/other-id" __foo/some-id
+
+
 metaparameters:
    - steal the metaparameters from puppet:
 
