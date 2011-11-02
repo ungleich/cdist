@@ -87,6 +87,15 @@ class Object(object):
         object_id = os.sep.join(object_name.split(os.sep)[1:])
         return type_name, object_id
 
+    @staticmethod
+    def join_name(type_name, object_id):
+        """join_name('__type_name', 'the/object_id') -> __type_name/the/object_id'
+
+        Join the given type_name and object_id into an object name.
+
+        """
+        return os.path.join(type_name, object_id)
+
     def __init__(self, cdist_type, base_path, object_id=None):
         if object_id:
             if object_id.startswith('/'):
@@ -96,7 +105,7 @@ class Object(object):
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
-        self.name = os.path.join(self.type.name, self.object_id)
+        self.name = self.join_name(self.type.name, self.object_id)
         self.path = os.path.join(self.type.path, self.object_id, DOT_CDIST)
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
