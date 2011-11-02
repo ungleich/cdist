@@ -187,4 +187,6 @@ class Emulator(object):
         __object_name = os.environ.get('__object_name', None)
         if __object_name:
             _object = self.cdist_object.object_from_name(__object_name)
-            _object.requirements.append(self.cdist_object.name)
+            # prevent circular dependencies
+            if not _object.name in self.cdist_object.requirements:
+                _object.requirements.append(self.cdist_object.name)
