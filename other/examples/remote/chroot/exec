@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# __remote_exec script to run cdist against a local chroot instead of via ssh 
+# on a remote target host.
+#
+# Usage:
+#  __remote_exec="/path/to/this/script /path/to/your/chroot" cdist config target-id
+#
+
+log() {
+   #echo "$@" | logger -t "cdist-chroot-exec"
+   :
+}
+
+chroot="$1"; shift
+target_host="$1"; shift
+script=$(mktemp "${chroot}/tmp/chroot-${0##*/}.XXXXXXXXXX")
+trap cleanup INT TERM EXIT
+cleanup() {
+   [ $__cdist_debug ] || rm "$script"
+}
+
+log "$script"
+log "$@"
+echo "#!/bin/sh -l" > "$script"
+echo "$@" >> "$script"
+chmod +x "$script"
+
+relative_script="${script#$chroot}"
+log "relative_script: $relative_script"
+
+# run in chroot
+chroot "$chroot" "$relative_script"
+
+log "-----"

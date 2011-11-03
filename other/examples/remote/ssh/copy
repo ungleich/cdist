@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# same as cdist default
+#
+# Usage:
+#  __remote_copy="/path/to/this/script" cdist config target_host
+#
+
+#echo "$@" | logger -t "cdist-ssh-copy"
+scp -o User=root -q $@

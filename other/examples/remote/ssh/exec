@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# same as cdist default
+#
+# Usage:
+#  __remote_exec="/path/to/this/script" cdist config target_host
+#
+
+#echo "$@" | logger -t "cdist-ssh-exec"
+ssh -o User=root -q $@

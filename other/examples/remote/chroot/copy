@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# __remote_copy script to run cdist against a local chroot instead of via ssh 
+# to a remote target host.
+#
+# Usage:
+#  __remote_copy="/path/to/this/script /path/to/your/chroot" cdist config target-id
+#
+
+log() {
+   #echo "$@" | logger -t "cdist-chroot-copy"
+   :
+}
+
+chroot="$1"; shift
+target_host="$__target_host"
+
+# replace target_host with chroot location
+code="$(echo "$@" | sed "s|$target_host:|$chroot|g")"
+
+log "$@"
+log "target_host: $target_host"
+log "$code"
+
+# copy files into chroot
+cp $code
+
+log "-----"
