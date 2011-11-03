@@ -156,19 +156,22 @@ class Emulator(object):
                 self.log.debug("Recording requirement: " + requirement)
                 requirement_parts = requirement.split(os.sep, 1)
                 requirement_type_name = requirement_parts[0]
-                requirement_object_id = requirement_parts[1]
-
-                # FIXME: Add support for omitted object id == singleton
-                #if len(requirement_parts) == 1:
-                #except IndexError:
-                #    # no object id, must be singleton
-                #    requirement_object_id = 'singleton'
-
-                # Remove / if existent in object id
+                try:
+                    requirement_object_id = requirement_parts[1]
+                except IndexError:
+                    # no object id, assume singleton
+                    requirement_object_id = 'singleton'
+                
+                # Remove leading / from object id
                 requirement_object_id = requirement_object_id.lstrip('/')
 
                 # Instantiate type which fails if type does not exist
                 requirement_type = core.Type(self.type_base_path, requirement_type_name)
+
+                if requirement_object_id == 'singleton' \
+                    and not requirement_type.is_singleton:
+                    raise IllegalRequirementError(requirement, "Missing object_id and type is not a singleton.")
+
                 # Instantiate object which fails if the object_id is illegal
                 requirement_object = core.Object(requirement_type, self.object_base_path, requirement_object_id)
 
