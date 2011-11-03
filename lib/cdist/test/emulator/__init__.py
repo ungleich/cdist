@@ -73,3 +73,18 @@ class EmulatorTestCase(test.CdistTestCase):
         os.environ['require'] = '__file/bad/id/with/.cdist/inside'
         emu = emulator.Emulator(argv)
         self.assertRaises(core.IllegalObjectIdError, emu.run)
+
+    def test_missing_object_id_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        os.environ.update(self.env)
+        os.environ['require'] = '__file'
+        emu = emulator.Emulator(argv)
+        self.assertRaises(emulator.IllegalRequirementError, emu.run)
+
+    def test_singleton_object_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        os.environ.update(self.env)
+        os.environ['require'] = '__issue'
+        emu = emulator.Emulator(argv)
+        emu.run()
+        # if we get here all is fine
