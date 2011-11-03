@@ -3,6 +3,7 @@
 	* Cleanup: __object_fq variable removed (never used)
 	* Cleanup: Environment variable __self DEPRECATED, use __object_name instead
 	* Cleanup: Environment variable __self scheduled for removal in cdist 2.1
+	* New Type: __cron (Steven Armstrong)
 
 2.0.3: 2011-10-18
 	* Improved logging, added --verbose, by more quiet by default
