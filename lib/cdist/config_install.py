@@ -71,7 +71,7 @@ class ConfigInstall(object):
         start_time = time.time()
         self.deploy_to()
         self.cleanup()
-        self.log.info("Finished run in %s seconds",
+        self.log.info("Finished successful run in %s seconds",
             time.time() - start_time)
 
     def stage_prepare(self):
