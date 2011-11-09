@@ -59,6 +59,10 @@ class Type(object):
                 #yield os.path.relpath(path, base_path)
                 type_path = os.path.relpath(path, base_path)
                 yield cls.name_from_path(type_path)
+            elif os.path.basename(path).startswith('__') and files:
+                # assume it's a type without a marker
+                type_path = os.path.relpath(path, base_path)
+                yield cls.name_from_path(type_path)
 
     @staticmethod
     def name_from_path(path):

@@ -78,14 +78,17 @@ class Object(object):
         """Return a list of object names"""
         for path, dirs, files in os.walk(object_base_path):
             if cdist.core.TYPE_MARKER in files:
-                type_name = cdist.core.Type.name_from_path(
-                    os.path.relpath(path, object_base_path)
-                )
+                type_path = path
+            elif os.path.basename(path).startswith('__'):
+                # assume it's a type without a marker
                 type_path = path
             if OBJECT_MARKER in dirs:
-                # don't visit .object directories
+                # don't visit .object sub-directories
                 dirs.remove(OBJECT_MARKER)
                 object_id = os.path.relpath(path, type_path)
+                type_name = cdist.core.Type.name_from_path(
+                    os.path.relpath(type_path, object_base_path)
+                )
                 yield cls.join_name(type_name, object_id)
 
     @staticmethod
