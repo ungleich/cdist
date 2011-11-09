@@ -123,7 +123,7 @@ class ConfigInstall(object):
             # The user may have created dependencies without satisfying them
             if not required_object.exists():
                 raise cdist.Error(cdist_object.name + " requires non-existing " + requirement.name)
-            else
+            else:
                 self.log.debug("Required object %s exists", requirement.name)
 
             self.object_run(required_object)
