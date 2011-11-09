@@ -132,9 +132,9 @@ class Object(object):
 
         """
         type_path = self.type.base_path
-        object_path = self.base_path
+        base_path = self.base_path
         type_name, object_id = self.split_name(object_name)
-        return self.__class__(self.type.__class__(type_path, type_name), object_path, object_id=object_id)
+        return self.__class__(self.type.__class__(type_path, type_name), base_path, object_id=object_id)
 
     # FIXME: still needed?
     @property
