@@ -58,11 +58,17 @@ class ObjectIdTestCase(test.CdistTestCase):
         with self.assertRaises(core.IllegalObjectIdError):
             core.Object(cdist_type, object_base_path, illegal_object_id)
 
-    def test_object_id_contains_dotcdist(self):
+    def test_object_id_contains_object_marker(self):
         cdist_type = core.Type(type_base_path, '__third')
-        illegal_object_id = 'object_id/may/not/contain/.cdist/anywhere'
+        illegal_object_id = 'object_id/may/not/contain/%s/anywhere' % core.OBJECT_MARKER
         with self.assertRaises(core.IllegalObjectIdError):
             core.Object(cdist_type, object_base_path, illegal_object_id)
+
+    def test_object_id_contains_object_marker_string(self):
+        cdist_type = core.Type(type_base_path, '__third')
+        illegal_object_id = 'object_id/may/contain_%s_in_filename' % core.OBJECT_MARKER
+        core.Object(cdist_type, object_base_path, illegal_object_id)
+        # if we get here, the test passed
 
 
 class ObjectTestCase(test.CdistTestCase):
