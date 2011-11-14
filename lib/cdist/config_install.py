@@ -124,7 +124,7 @@ class ConfigInstall(object):
             if not required_object.exists:
                 raise cdist.Error(cdist_object.name + " requires non-existing " + required_object.name)
             else:
-                self.log.debug("Required object %s exists", requirement.name)
+                self.log.debug("Required object %s exists", required_object.name)
 
             self.object_run(required_object)
 
