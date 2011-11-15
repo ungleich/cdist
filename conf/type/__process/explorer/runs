@@ -27,4 +27,4 @@ else
    name="$__object_id"
 fi
 
-pgrep -x "$name" || true
+pgrep -x -f "$name" || true
