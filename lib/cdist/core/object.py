@@ -30,7 +30,7 @@ from cdist.util import fsproperty
 
 log = logging.getLogger(__name__)
 
-DOT_CDIST = '.cdist'
+OBJECT_MARKER = '.cdist'
 
 
 class IllegalObjectIdError(cdist.Error):
@@ -72,7 +72,7 @@ class Object(object):
     def list_object_names(cls, object_base_path):
         """Return a list of object names"""
         for path, dirs, files in os.walk(object_base_path):
-            if DOT_CDIST in dirs:
+            if OBJECT_MARKER in dirs:
                 yield os.path.relpath(path, object_base_path)
 
     @staticmethod
@@ -100,13 +100,13 @@ class Object(object):
         if object_id:
             if object_id.startswith('/'):
                 raise IllegalObjectIdError(object_id, 'object_id may not start with /')
-            if '.cdist' in object_id:
-                raise IllegalObjectIdError(object_id, 'object_id may not contain \'.cdist\'')
+            if OBJECT_MARKER in object_id.split(os.sep):
+                raise IllegalObjectIdError(object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
         self.name = self.join_name(self.type.name, self.object_id)
-        self.path = os.path.join(self.type.path, self.object_id, DOT_CDIST)
+        self.path = os.path.join(self.type.path, self.object_id, OBJECT_MARKER)
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
