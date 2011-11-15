@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -18,13 +18,30 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Check whether a process runs
+# __remote_copy script to run cdist against a local chroot instead of via ssh 
+# to a remote target host.
+#
+# Usage:
+#  __remote_copy="/path/to/this/script /path/to/your/chroot" cdist config target-id
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
-else
-   name="$__object_id"
-fi
+log() {
+   #echo "$@" | logger -t "cdist-chroot-copy"
+   :
+}
 
-pgrep -x -f "$name" || true
+chroot="$1"; shift
+target_host="$__target_host"
+
+# replace target_host with chroot location
+code="$(echo "$@" | sed "s|$target_host:|$chroot|g")"
+
+log "target_host: $target_host"
+log "chroot: $chroot"
+log "$@"
+log "$code"
+
+# copy files into chroot
+cp $code
+
+log "-----"

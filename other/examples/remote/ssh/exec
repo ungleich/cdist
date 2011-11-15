@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -18,13 +18,11 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Check whether a process runs
+# same as cdist default
+#
+# Usage:
+#  __remote_exec="/path/to/this/script" cdist config target_host
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
-else
-   name="$__object_id"
-fi
-
-pgrep -x -f "$name" || true
+#echo "$@" | logger -t "cdist-ssh-exec"
+ssh -o User=root -q $@

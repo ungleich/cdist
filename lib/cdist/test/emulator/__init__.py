@@ -74,6 +74,21 @@ class EmulatorTestCase(test.CdistTestCase):
         emu = emulator.Emulator(argv)
         self.assertRaises(core.IllegalObjectIdError, emu.run)
 
+    def test_missing_object_id_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        os.environ.update(self.env)
+        os.environ['require'] = '__file'
+        emu = emulator.Emulator(argv)
+        self.assertRaises(emulator.IllegalRequirementError, emu.run)
+
+    def test_singleton_object_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        os.environ.update(self.env)
+        os.environ['require'] = '__issue'
+        emu = emulator.Emulator(argv)
+        emu.run()
+        # if we get here all is fine
+
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))

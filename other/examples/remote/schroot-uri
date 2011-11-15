@@ -1,0 +1,132 @@
+#!/bin/sh -e
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# __remote_{exec,copy} script to run cdist against a schroot target uri
+#
+# Usage:
+#  __remote_exec="/path/to/this/script exec" cdist config target_uri
+#  __remote_copy="/path/to/this/script copy" cdist config target_uri
+#
+# # target_uri examples:
+# schroot:///chroot-name
+# schroot://foo.ethz.ch/chroot-name
+# schroot://user-name@foo.ethz.ch/chroot-name
+#
+# # and how to match them in .../manifest/init
+# case "$target_host" in
+#    schroot://*)
+#       # any schroot
+#    ;;
+#    schroot://foo.ethz.ch/*)
+#       # any schroot on specific host
+#    ;;
+#    schroot://foo.ethz.ch/chroot-name)
+#       # specific schroot on specific host
+#    ;;
+#    schroot:///chroot-name)
+#       # specific schroot on localhost
+#    ;;
+# esac
+
+my_name="${0##*/}"
+mode="$1"; shift
+
+log() {
+   #echo "$@" | logger -t "cdist-$my_name-$mode"
+   :
+}
+
+die() {
+   echo "$@" >&2
+   exit 1
+}
+
+
+uri="$__target_host"
+
+scheme="${uri%%:*}"; rest="${uri#$scheme:}"; rest="${rest#//}"
+authority="${rest%%/*}"; rest="${rest#$authority}"
+path="${rest%\?*}"; rest="${rest#$path}"
+schroot_name="${path#/}"
+
+[ "$scheme" = "schroot" ] || die "Failed to parse scheme from __target_host ($__target_host). Expected 'schroot', got '$scheme'"
+[ -n "$schroot_name" ] || die "Failed to parse schroot name from __target_host: $__target_host"
+
+case "$authority" in
+   '')
+      # authority is empty, neither user nor host given
+      user=""
+      host=""
+   ;; 
+   *@*)
+      # authority contains @, take user from authority
+      user="${authority%@*}"
+      host="${authority#*@}"
+   ;; 
+   *) 
+      # no user in authority, default to root
+      user="root"
+      host="$authority"
+   ;;
+esac
+
+log "mode: $mode"
+log "@: $@"
+log "uri: $uri"
+log "scheme: $scheme"
+log "authority: $authority"
+log "user: $user"
+log "host: $host"
+log "path: $path"
+log "schroot_name: $schroot_name"
+
+exec_prefix=""
+copy_prefix=""
+if [ -n "$host" ]; then
+   # we are working on a remote host
+   exec_prefix="ssh -o User=$user -q $host"
+   copy_prefix="scp -o User=$user -q"
+   copy_destination_prefix="$host:"
+else
+   # working on local machine
+   copy_prefix="cp"
+   copy_destination_prefix=""
+fi
+
+case "$mode" in
+   exec)
+      code="$exec_prefix schroot -c $schroot_name -- $@"
+   ;;
+   copy)
+      # get directory for given chroot_name
+      schroot_directory="$($exec_prefix schroot $chroot_name --config | awk -F = '/directory=/ {print $2}')"
+      [ -n "$schroot_directory" ] || die "Failed to retreive schroot directory for schroot: $schroot_name"
+      # prefix destination with chroot
+      code="$copy_prefix $(echo "$@" | sed "s|$uri:|${copy_destination_prefix}${schroot_directory}|g")"
+   ;;
+   *) die "Unknown mode: $mode";;
+esac
+
+log "code: $code"
+
+# Run the code
+$code
+
+log "-----"

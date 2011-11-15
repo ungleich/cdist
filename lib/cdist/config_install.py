@@ -71,7 +71,7 @@ class ConfigInstall(object):
         start_time = time.time()
         self.deploy_to()
         self.cleanup()
-        self.log.info("Finished run in %s seconds",
+        self.log.info("Finished successful run in %s seconds",
             time.time() - start_time)
 
     def stage_prepare(self):
@@ -106,7 +106,7 @@ class ConfigInstall(object):
         """Run gencode and code for an object"""
         self.log.debug("Trying to run object " + cdist_object.name)
         if cdist_object.state == core.Object.STATE_RUNNING:
-            # FIXME: resolve dependency circle
+            # FIXME: resolve dependency circle / show problem source
             raise cdist.Error("Detected circular dependency in " + cdist_object.name)
         elif cdist_object.state == core.Object.STATE_DONE:
             self.log.debug("Ignoring run of already finished object %s", cdist_object)
@@ -119,6 +119,13 @@ class ConfigInstall(object):
         for requirement in cdist_object.requirements:
             self.log.debug("Object %s requires %s", cdist_object, requirement)
             required_object = cdist_object.object_from_name(requirement)
+
+            # The user may have created dependencies without satisfying them
+            if not required_object.exists:
+                raise cdist.Error(cdist_object.name + " requires non-existing " + required_object.name)
+            else:
+                self.log.debug("Required object %s exists", required_object.name)
+
             self.object_run(required_object)
 
         # Generate
