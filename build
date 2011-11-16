@@ -26,13 +26,16 @@
 # exit on any error
 #set -e
 
+version=$(git describe)
+
 # Manpage and HTML
 A2XM="a2x -f manpage --no-xmllint -a encoding=UTF-8"
 A2XH="a2x -f xhtml --no-xmllint -a encoding=UTF-8"
 
 # Developer webbase
 WEBDIR=$HOME/niconetz
-WEBBASE=software/cdist
+WEBBASE=$WEBDIR/software/cdist
+WEBDOCBASE=$WEBBASE/$version
 WEBPAGE=${WEBBASE}.mdwn
 
 # Documentation
