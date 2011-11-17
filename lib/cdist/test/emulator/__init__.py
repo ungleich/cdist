@@ -88,3 +88,42 @@ class EmulatorTestCase(test.CdistTestCase):
         emu = emulator.Emulator(argv)
         emu.run()
         # if we get here all is fine
+
+
+import os.path as op
+my_dir = op.abspath(op.dirname(__file__))
+fixtures = op.join(my_dir, 'fixtures')
+
+class ArgumentsWithDashesTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.temp_dir = self.mkdtemp()
+        self.target_host = 'localhost'
+        out_path = self.temp_dir
+        handle, self.script = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
+        _local_base_path = fixtures
+        self.local = local.Local(self.target_host, _local_base_path, out_path)
+        self.local.create_directories()
+        self.local.link_emulator(test.cdist_exec_path)
+        self.env = {
+            'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
+            '__target_host': self.target_host,
+            '__global': self.local.out_path,
+            '__cdist_type_base_path': self.local.type_path, # for use in type emulator
+            '__manifest': self.local.manifest_path,
+            '__cdist_manifest': self.script,
+        }
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_arguments_with_dashes(self):
+        argv = ['__arguments_with_dashes', 'some-id', '--with-dash', 'some value']
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        cdist_type = core.Type(self.local.type_path, '__arguments_with_dashes')
+        cdist_object = core.Object(cdist_type, self.local.object_path, 'some-id')
+        self.assertTrue('with-dash' in cdist_object.parameters)
