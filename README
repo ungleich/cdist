@@ -131,7 +131,7 @@ To install cdist, execute the following commands:
     export PATH=$PATH:$(pwd -P)/bin
 
     # If you want the manpages
-    ./build.sh man
+    ./build man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 
@@ -178,7 +178,7 @@ To upgrade cdist in the current branch use
     git pull
 
     # Also update the manpages
-    ./build.sh man
+    ./build man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
