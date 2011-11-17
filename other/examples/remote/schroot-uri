@@ -49,7 +49,7 @@ my_name="${0##*/}"
 mode="$1"; shift
 
 log() {
-   #echo "$@" | logger -t "cdist-$my_name-$mode"
+   echo "$@" | logger -t "cdist-$my_name-$mode"
    :
 }
 
@@ -112,7 +112,9 @@ fi
 
 case "$mode" in
    exec)
-      code="$exec_prefix schroot -c $schroot_name -- $@"
+      # In exec mode the first argument is the __target_host which we already got from env. Get rid of it.
+      shift
+      code="$exec_prefix schroot -c $schroot_name -- sh -c '$@'"
    ;;
    copy)
       # get directory for given chroot_name
