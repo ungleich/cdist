@@ -97,10 +97,10 @@ class Emulator(object):
 
         for parameter in self.cdist_type.optional_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, action='store', required=False)
+            parser.add_argument(argument, dest=parameter, action='store', required=False)
         for parameter in self.cdist_type.required_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, action='store', required=True)
+            parser.add_argument(argument, dest=parameter, action='store', required=True)
 
         # If not singleton support one positional parameter
         if not self.cdist_type.is_singleton:
