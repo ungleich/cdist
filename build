@@ -26,13 +26,16 @@
 # exit on any error
 #set -e
 
+version=$(git describe)
+
 # Manpage and HTML
 A2XM="a2x -f manpage --no-xmllint -a encoding=UTF-8"
 A2XH="a2x -f xhtml --no-xmllint -a encoding=UTF-8"
 
 # Developer webbase
 WEBDIR=$HOME/niconetz
-WEBBASE=software/cdist
+WEBBASE=$WEBDIR/software/cdist
+WEBMAN=$WEBBASE/man/$version
 WEBPAGE=${WEBBASE}.mdwn
 
 # Documentation
@@ -95,9 +98,9 @@ case "$1" in
    ;;
       
    web)
-      cp README ${WEBDIR}/${WEBPAGE}
-      rm -rf ${WEBDIR}/${WEBBASE}/man 
-      mkdir -p ${WEBDIR}/${WEBBASE}/man/man1 ${WEBDIR}/${WEBBASE}/man/man7
+      cp README ${WEBPAGE}
+      rm -rf ${WEBMAN}
+      mkdir -p ${WEBMAN}/man1 ${WEBMAN}/man7
 
       rm -rf ${WEBDIR}/${WEBBASE}/speeches && mkdir ${WEBDIR}/${WEBBASE}/speeches
 

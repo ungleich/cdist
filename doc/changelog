@@ -1,8 +1,10 @@
 2.0.4:
 	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
+	* Bugfix core: Accept parameters with - in the name (Steven Armstrong)
 	* Cleanup: __object_fq variable removed (never used)
 	* Cleanup: Environment variable __self DEPRECATED, use __object_name instead
 	* Cleanup: Environment variable __self scheduled for removal in cdist 2.1
+	* Documentation: Many examples for use of __remote_* (Steven Armstrong)
 	* New Type: __cron (Steven Armstrong)
 
 2.0.3: 2011-10-18
