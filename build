@@ -102,13 +102,14 @@ case "$1" in
       rm -rf ${WEBMAN}
       mkdir -p ${WEBMAN}/man1 ${WEBMAN}/man7
 
-      rm -rf ${WEBDIR}/${WEBBASE}/speeches && mkdir ${WEBDIR}/${WEBBASE}/speeches
+      # old stuff
+      # rm -rf ${WEBDIR}/${WEBBASE}/speeches && mkdir ${WEBDIR}/${WEBBASE}/speeches
+      # cp ${SPEECHESDIR}/*.pdf ${WEBDIR}/${WEBBASE}/speeches
+      # git describe > ${WEBDIR}/${WEBBASE}/man/VERSION
 
-      cp ${MAN1DSTDIR}/*.html ${WEBDIR}/${WEBBASE}/man/man1
-      cp ${MAN7DSTDIR}/*.html ${WEBDIR}/${WEBBASE}/man/man7
-      cp ${SPEECHESDIR}/*.pdf ${WEBDIR}/${WEBBASE}/speeches
+      cp ${MAN1DSTDIR}/*.html ${WEBMAN}/man1 
+      cp ${MAN7DSTDIR}/*.html ${WEBMAN}/man7
       
-      git describe > ${WEBDIR}/${WEBBASE}/man/VERSION
       cd ${WEBDIR} && git add ${WEBBASE}
       cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
       cd ${WEBDIR} && make pub
