@@ -38,4 +38,4 @@ if [ ! -f "$__object/parameter/size" ]; then
 fi
 
 # pull in the type that actually does something with the above parameters
-require="$__self" __partition_msdos_apply
+require="$__object_name" __partition_msdos_apply

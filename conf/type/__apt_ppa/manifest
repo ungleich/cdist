@@ -27,4 +27,4 @@ require="__package/python-software-properties" \
    --source "$__type/files/remove-apt-repository" \
    --mode 0755
 
-require="$__self" __apt_update_index
+require="$__object_name" __apt_update_index
