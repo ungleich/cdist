@@ -97,7 +97,7 @@ class Local(object):
         self.log.debug("Local run: %s", command)
 
         if env is None:
-            env = {}
+            env = os.environ.copy()
         # Export __target_host for use in __remote_{copy,exec} scripts
         env['__target_host'] = self.target_host
 
@@ -122,7 +122,7 @@ class Local(object):
         self.log.debug("Local run script: %s", command)
 
         if env is None:
-            env = {}
+            env = os.environ.copy()
         # Export __target_host for use in __remote_{copy,exec} scripts
         env['__target_host'] = self.target_host
 
