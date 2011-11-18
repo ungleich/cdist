@@ -24,7 +24,7 @@ if [ "$lib_version" != "$changelog_version" ]; then
     echo "Messed up versions, not releasing"
     exit 1
 else
-    echo "Version are sane, continuing"
+    echo "Versions are sane, continuing"
 fi
 echo "Press enter to continue"
 read wait
