@@ -1,24 +1,31 @@
-#!/bin/sh -e
+#!/bin/sh
+# Nico Schottelius
 
-files="bin/cdist-config doc/changelog"
+files="doc/changelog lib/cdist/__init__.py"
 
 # Stuff to take care of when doing a release
 echo "Preparing next release"
 
 # Ensure documentation builds cleanly
-./build.sh clean && ./build.sh man
+echo "Testing documentation..."
+./build clean && ./build man || exit 1
+
+echo "Ensure you fixed/prepared version files: $files"
+read wait
 
 # get version
-version=$(awk -F'=' '/^__cdist_version/ { print $2 }' bin/cdist-config | sed 's/"//g')
+lib_version=$(grep ^VERSION lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
+changelog_version=$(head -n1 doc/changelog | sed 's/:.*//')
+git_version=$(git describe)
+
+if [ "$lib_version" != "$changelog_version -o "$changelog_version" != "$git_version" ]; then
+    echo "Messed up versions, not releasing"
+    exit 1
+fi
+version=$git_version
 
 # get target branch
 branch=${version%.?}
-
-# adjust version and release date
-vi $files
-
-# Commit stuff
-git commit $files
 
 # add tag
 printf "Enter description for %s>" "$version"
@@ -31,5 +38,5 @@ git merge master
 git checkout master
 
 # Publish manpages and sourcecode
-./build.sh web
-./build.sh pub
+./build web
+./build pub
