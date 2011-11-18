@@ -10,33 +10,38 @@ echo "Preparing next release"
 echo "Testing documentation..."
 ./build clean && ./build man || exit 1
 
+# get version
+changelog_version=$(head -n1 doc/changelog | sed 's/:.*//')
+#git_version=$(git describe)
+lib_version=$(grep ^VERSION lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
+
 echo "Ensure you fixed/prepared version files: $files"
+echo "changelog: $changelog_version"
+#echo "git: $git_version"
+echo "lib: $lib_version"
 read wait
 
-# get version
-lib_version=$(grep ^VERSION lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
-changelog_version=$(head -n1 doc/changelog | sed 's/:.*//')
-git_version=$(git describe)
-
-if [ "$lib_version" != "$changelog_version -o "$changelog_version" != "$git_version" ]; then
+if [ "$lib_version" != "$changelog_version ]; then
     echo "Messed up versions, not releasing"
     exit 1
 fi
-version=$git_version
+version=$lib_version
 
 # get target branch
 branch=${version%.?}
 
 # add tag
-printf "Enter description for %s>" "$version"
+printf "Enter tag description for %s>" "$version"
 read tagmessage
 git tag "$version" -m "$tagmessage"
 
 # Import into current version branch
+echo "git merge into $branch"
 git checkout $branch
 git merge master
 git checkout master
 
 # Publish manpages and sourcecode
+echo "publising doc/ and code/"
 ./build web
 ./build pub
