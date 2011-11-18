@@ -23,6 +23,8 @@ echo "lib: $lib_version"
 if [ "$lib_version" != "$changelog_version" ]; then
     echo "Messed up versions, not releasing"
     exit 1
+else
+    echo "Version are sane, continuing"
 fi
 echo "Press enter to continue"
 read wait
@@ -32,7 +34,7 @@ version=$lib_version
 branch=${version%.?}
 
 # add tag
-printf "Enter tag description for %s>" "$version"
+printf "Enter tag description for %s> " "$version"
 read tagmessage
 git tag "$version" -m "$tagmessage"
 
