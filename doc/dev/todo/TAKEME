@@ -16,8 +16,6 @@ TESTS
 - verify that all env variables in doc/man/cdist-reference.text.sh
     exist in the right stages
 
-    __target_user - unneeded?
-
 USER INTERFACE
 --------------
 - add support $__tmp?
