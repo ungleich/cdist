@@ -5,6 +5,7 @@
 	* Cleanup: Environment variable __self DEPRECATED, use __object_name instead
 	* Cleanup: Environment variable __self scheduled for removal in cdist 2.1
 	* Documentation: Many examples for use of __remote_* (Steven Armstrong)
+	* Feature: Automatically require all used objects (Steven Armstrong)
 	* New Type: __cron (Steven Armstrong)
 
 2.0.3: 2011-10-18
