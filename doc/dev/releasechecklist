@@ -19,12 +19,13 @@ echo "Ensure you fixed/prepared version files: $files"
 echo "changelog: $changelog_version"
 #echo "git: $git_version"
 echo "lib: $lib_version"
-read wait
 
-if [ "$lib_version" != "$changelog_version ]; then
+if [ "$lib_version" != "$changelog_version" ]; then
     echo "Messed up versions, not releasing"
     exit 1
 fi
+echo "Press enter to continue"
+read wait
 version=$lib_version
 
 # get target branch
