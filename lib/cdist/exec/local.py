@@ -95,6 +95,12 @@ class Local(object):
         """
         assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
         self.log.debug("Local run: %s", command)
+
+        if env is None:
+            env = {}
+        # Export __target_host for use in __remote_{copy,exec} scripts
+        env['__target_host'] = self.target_host
+
         try:
             if return_output:
                 return subprocess.check_output(command, env=env).decode()
@@ -114,8 +120,13 @@ class Local(object):
         command.append(script)
 
         self.log.debug("Local run script: %s", command)
-        if env:
-            self.log.debug("Local run script env: %s", env)
+
+        if env is None:
+            env = {}
+        # Export __target_host for use in __remote_{copy,exec} scripts
+        env['__target_host'] = self.target_host
+
+        self.log.debug("Local run script env: %s", env)
 
         try:
             if return_output:
