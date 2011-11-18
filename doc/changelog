@@ -1,4 +1,4 @@
-2.0.4:
+2.0.4: 2011-11-18
 	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
 	* Bugfix core: Accept parameters with - in the name (Steven Armstrong)
 	* Cleanup: __object_fq variable removed (never used)
