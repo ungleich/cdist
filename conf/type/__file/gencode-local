@@ -31,6 +31,8 @@ if [ -f "$__object/parameter/source" ]; then
       remote_cksum="$(cat "$__object/explorer/cksum")"
 
       if [ "$local_cksum" != "$remote_cksum" ]; then
+         # Export target_host so remote_copy script has access to it
+         echo "export __target_host=\"$__target_host\""
          echo "$__remote_copy" "$source" "${__target_host}:${destination}"
       fi
    else
