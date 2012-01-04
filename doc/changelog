@@ -1,3 +1,6 @@
+2.0.5:
+	* New Type: __package_luarocks (Christian G. Warden)
+
 2.0.4: 2011-11-18
 	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
 	* Bugfix core: Accept parameters with - in the name (Steven Armstrong)
