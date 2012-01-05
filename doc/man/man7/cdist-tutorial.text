@@ -109,7 +109,35 @@ object of the type ***__file*** with the name ***etc/cdist-configured***.
 Cdist searches for the initial manifest at **conf/manifest/init** and
 executes it as a shell script using **/bin/sh -e**.
 
+Within this initial manifest, you define, which objects should be
+created on which host. To distinguish between hosts, you can use the
+environment variable **__target_host**. Let's have a look at a simple
+example:
 
+--------------------------------------------------------------------------------
+__file /etc/cdist-configured
+
+case "$__target_host" in
+   localhost)
+        __directory /home/services/kvm-vm --parents yes
+   ;;
+esac
+--------------------------------------------------------------------------------
+
+This manifest says: Independent of the host, always create the (empty) file
+***/etc/cdist-configured***, but create the directory ***/home/services/kvm-vm***,
+including all parent directories, only on the host ***localhost***.
+
+As you can see, there is no magic involved, the manifest is simple shell code that
+utilises cdist types.
+
+
+PARTS BELOW HERE ARE TO-BE-DONE
+
+
+MORE ABOUT TYPES AND OBJECTS
+----------------------------
+All available types in cdist can be called like normal executables. 
 
 
 USING SOME BASIC TYPES
