@@ -1,0 +1,62 @@
+cdist-type__debootstrap(7)
+==========================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__debootstrap - bootstrap debian based distros
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to, well, bootstrap debian based distros :-)
+
+
+OPTIONAL PARAMETERS
+-------------------
+target::
+   The target directory in which to install the distribution.
+   Defaults to object_id
+
+suite::
+   The suite to install.
+   Defaults to the value of the global explorer lsb_codename
+
+arch::
+   The architecture to install.
+   Defaults to what the debootstrap command prefers.
+
+mirror::
+   The mirror to use for fetching packages.
+   Defaults to what the debootstrap command prefers.
+
+script::
+   Alternative script to run.
+   Defaults to what the debootstrap command prefers.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__debootstrap /path/to/folder
+
+__debootstrap fancy-id --target /path/to/folder \
+   --mirror http://mirror.sans.ethz.ch/ubuntu
+
+__debootstrap /path/to/folder \
+   --mirror http://mirror.sans.ethz.ch/ubuntu \
+   --arch i386
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
