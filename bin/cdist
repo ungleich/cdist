@@ -206,6 +206,12 @@ if __name__ == "__main__":
         import re
         import sys
 
+        cdistpythonversion = '3.2'
+        if sys.version < cdistpythonversion:
+            print('Cdist requires Python >= ' + cdistpythonversion +
+                ' on the source host.')
+            sys.exit(1)
+
         # Ensure our /lib/ is included into PYTHON_PATH
         sys.path.insert(0, os.path.abspath(
                 os.path.join(os.path.dirname(os.path.realpath(__file__)), '../lib')))

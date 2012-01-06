@@ -3,6 +3,7 @@
 	* Feature: __addifnosuchline supports matching on 
 		regular expressions (Daniel Maher)
 	* Documentation: (Re)write of the tutorial
+	* Cleanup: Explicitly require Python >= 3.2 (do not fail implicitly)
 
 2.0.4: 2011-11-18
 	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
