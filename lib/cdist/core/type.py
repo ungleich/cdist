@@ -88,7 +88,7 @@ class Type(object):
     def __init__(self, base_path, name):
         self.base_path = base_path
         self.name = name
-        self.path = self.name.replace('.', os.sep)
+        self.path = self.path_from_name(self.name)
         self.absolute_path = os.path.join(self.base_path, self.path)
         if not os.path.isdir(self.absolute_path):
             raise NoSuchTypeError(self.path, self.absolute_path)
