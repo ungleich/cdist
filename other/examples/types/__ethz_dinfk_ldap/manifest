@@ -17,14 +17,23 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
+# Configure nss_ldap for a machine at DINFK.
+#
 
-name="$__object_id"
+ou="$(cat "$__object/parameter/ou")"
 
-__package python-software-properties --state installed
+ldap_config="/etc/nslcd.conf"
+ldap_package="libnss-ldapd"
 
-require="__package/python-software-properties" \
-   __file /usr/local/bin/remove-apt-repository \
-   --source "$__type/files/remove-apt-repository" \
-   --mode 0755
+# Install required packages
+__package "$ldap_package" --state installed
 
-require="$__object_name" __apt_update_index
+# Generate nss-ldap config file from template
+mkdir "$__object/files"
+. "$__type/files/nslcd.conf.template" > "$__object/files/nslcd.conf"
+__file "$ldap_config" --source "$__object/files/nslcd.conf"
+
+# Configure nsswitch to use ldap
+require="__package/$ldap_package __file/$ldap_config" \
+   __file /etc/nsswitch.conf --source "$__type/files/nsswitch.conf"

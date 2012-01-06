@@ -8,38 +8,137 @@ NAME
 cdist-tutorial - a guided introduction into cdist
 
 
+INTRODUCTION
+------------
+This tutorial is aimed at people learning cdist and shows
+typical approaches as well as gives an easy start into
+the world of configuration management.
 
-PREPARING YOUR MACHINE / SETUP
-------------------------------
-
-- ensure sshd is running on the target host:
-
-ssh target_host
-
-- ensure you can login as root
-
-ssh root@target host
-
-- ensure login as root works without keys
-(see ssh... manpage)
-
-cdist will do a lot of requests to the target
-host, thus you'll have to enter your password
-many times, if you don't do this :-)
-
-- speedup processing with ControlMaster option of
-ssh
+This tutorial assumes you are configuring **localhost**, because
+it is always available. Just replace **localhost** with your target
+host for real life usage.
 
 
-YOUR FIRST CONFIGURATION
-------------------------
+
+QUICK START - GET YOUR HANDS DIRTY NOW
+--------------------------------------
+For those who just want to configure a system with the
+cdist configuration management and do not need (or want)
+to understand everything.
+
+Cdist uses **ssh** for communication and transportation
+and usually logs into the **target host** as the
+**root** user. So you need to configure the **ssh server**
+of the target host to allow root logins: Edit
+the file **/etc/ssh/sshd_config** and add one of the following
+lines:
+
+--------------------------------------------------------------------------------
+# Allow login only via public key
+PermitRootLogin without-password
+
+# Allow login via password and public key
+PermitRootLogin yes
+--------------------------------------------------------------------------------
+
+As cdist uses ssh intensively, it is recommended to setup authentication
+with public keys:
+
+--------------------------------------------------------------------------------
+# Generate pubkey pair as a normal user
+ssh-keygen
+
+# Copy pubkey over to target host
+ssh-copy-id root@localhost
+--------------------------------------------------------------------------------
+
+Have a look at ssh-agent(1) and ssh-add(1) on how to cache the password for
+your public key.  Usually it looks like this:
+
+--------------------------------------------------------------------------------
+# Start agent and export variables
+eval `ssh-agent`
+
+# Add keys (requires password for every identity file)
+ssh-add
+--------------------------------------------------------------------------------
+
+At this point you should be able to ***ssh root@localhost*** without
+re-entering the password. If something failed until here, ensure that
+all steps went successfully and you have read and understood the
+documentation.
+
+As soon as you are able to login without passwort to the target host,
+we can use cdist to configure it. You can copy and paste the following
+code into your shell to get started and configure localhost:
+
+--------------------------------------------------------------------------------
+# Get cdist
+git clone git://git.schottelius.org/cdist
+
+# Create manifest (maps configuration to host(s)
+cd cdist
+echo '__file /etc/cdist-configured' > conf/manifest/init
+
+# Configure localhost in verbose mode
+./bin/cdist config -v localhost
+
+# Find out that cdist created /etc/cdist-configured
+ls -l /etc/cdist-configured
+--------------------------------------------------------------------------------
+
+That's it, you've successfully used cdist to configure your first host!
+Continue reading the next sections, to understand what you did and how
+to create a more sophisticated configuration.
+
+The file 'conf/manifest/init' is usually the entry point for cdist,
+to find out what to configure on which host. All manifests are
+essentially shell scripts. Every manifest can use the types known to
+cdist, which are usually underline prefixed (__).
 
 
-DEFINE STATE IN THE INITAL MANIFEST
------------------------------------
 
-The initial manifest is used to map
-configurations to a host.
+DEFINE STATE IN THE INITIAL MANIFEST
+------------------------------------
+The **initial manifest** is the entry point for cdist to find out, which
+**objects** to configure on the selected host. Objects are instances of
+**types**, like in object orientated programming. An object is represented
+by the type + slash + object name: ***__file/etc/cdist-configured*** is an
+object of the type ***__file*** with the name ***etc/cdist-configured***.
+
+Cdist searches for the initial manifest at **conf/manifest/init** and
+executes it as a shell script using **/bin/sh -e**.
+
+Within this initial manifest, you define, which objects should be
+created on which host. To distinguish between hosts, you can use the
+environment variable **__target_host**. Let's have a look at a simple
+example:
+
+--------------------------------------------------------------------------------
+__file /etc/cdist-configured
+
+case "$__target_host" in
+   localhost)
+        __directory /home/services/kvm-vm --parents yes
+   ;;
+esac
+--------------------------------------------------------------------------------
+
+This manifest says: Independent of the host, always create the (empty) file
+***/etc/cdist-configured***, but create the directory ***/home/services/kvm-vm***,
+including all parent directories, only on the host ***localhost***.
+
+As you can see, there is no magic involved, the manifest is simple shell code that
+utilises cdist types.
+
+
+PARTS BELOW HERE ARE TO-BE-DONE
+
+
+MORE ABOUT TYPES AND OBJECTS
+----------------------------
+All available types in cdist can be called like normal executables. 
+
 
 USING SOME BASIC TYPES
 ----------------------
@@ -71,128 +170,14 @@ __debug::
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-INTRODUCTION
+BRANCHES IN HERE?
 ------------
-This tutorial is aimed at people learning cdist and shows
-typical approaches as well as gives an easy start into
-the world of configuration management.
 
-This tutorial assumes you are configuring **localhost**, because
-it is always available. Just repace **localhost** with your target
-host for real life usage.
+TUNING CDIST
+------------
 
-
-
-QUICK START
------------
-For those who just want to configure a system with the
-cdist configuration management and do not need (or want)
-to understand everything.
-
-Cdist uses **ssh** for communication and transportation
-and usually logs into the **target host** as the
-**root** user. So you need to configure the **ssh server**
-of the target host to allow root logins: Edit
-the file **/etc/ssh/sshd_config** and add one of the following
-lines:
-
---------------------------------------------------------------------------------
-# Allow login only via public key
-PermitRootLogin without-password
-
-# Allow login via password and public key
-PermitRootLogin yes
---------------------------------------------------------------------------------
-
-As cdist uses ssh intensively, it is recommended to setup authentication
-with public keys:
-
---------------------------------------------------------------------------------
-# Generate pubkey pair as a normal user
-ssh-keygen
-
-# Copy pubkey over to target host
-ssh-copy-id root@localhost
---------------------------------------------------------------------------------
-
-As soon as you are able to login without passwort to the target host,
-we can use cdist, to configure it. You can copy and paste the following
-code into your shell to get started and configure localhost:
-
---------------------------------------------------------------------------------
-# Get cdist
-git clone git://git.schottelius.org/cdist
-
-# Create manifest (maps configuration to host(s)
-cd cdist
-echo '__file /etc/cdist-configured' > conf/manifest/init
-chmod 0700 conf/manifest/init
-
-# Configure localhost
-./bin/cdist config localhost
-
-# Find out that cdist created /etc/cdist-configured
-ls -l /etc/cdist-configured
---------------------------------------------------------------------------------
-
-The file 'conf/manifest/init' is usually the entry point for cdist,
-to find out what to configure on which host. All manifests are
-essentially shell scripts. Every manifest can use the types known to
-cdist, which are usually underline prefixed (__).
+- speedup processing with ControlMaster option of
+ssh
 
 
 SEE ALSO

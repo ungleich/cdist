@@ -1,6 +1,7 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 SwellPath, Inc.
+# Christian G. Warden <cwarden@xerus.org>
 #
 # This file is part of cdist.
 #
@@ -18,8 +19,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Check whether a process runs
+# Manage LuaRocks packages
 #
+
 
 if [ -f "$__object/parameter/name" ]; then
    name="$(cat "$__object/parameter/name")"
@@ -27,4 +29,24 @@ else
    name="$__object_id"
 fi
 
-pgrep -x -f "$name" || true
+state="$(cat "$__object/parameter/state")"
+is_installed="$(grep "(installed)" "$__object/explorer/pkg_status" || true)"
+
+case "$state" in
+   installed)
+      # Install only if non-existent
+      if [ -z "$is_installed" ]; then
+         echo luarocks install \"$name\"
+      fi
+   ;;
+   removed)
+      # Remove only if existent
+      if [ -n "$is_installed" ]; then
+         echo luarocks remove \"$name\"
+      fi
+   ;;
+   *)
+      echo "Unknown state: $state" >&2
+      exit 1
+   ;;
+esac

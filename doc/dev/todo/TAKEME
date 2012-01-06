@@ -13,6 +13,10 @@ TESTS
 - multiple defines of object:
    - fail if different parameters
    - succeed if same parameters
+- verify that all env variables in doc/man/cdist-reference.text.sh
+    exist in the right stages
+- test DependencyResolver
+
 
 USER INTERFACE
 --------------

@@ -188,9 +188,6 @@ __object_name::
 __target_host::
    The host we are deploying to.
    Available for: initial manifest, type manifest, type gencode
-__target_user::
-   User to use for authentication on remote host.
-   Currently static in core.
 __type::
    Path to the current type.
    Available for: type manifest, type gencode

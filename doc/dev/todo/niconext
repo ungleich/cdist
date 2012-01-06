@@ -1,6 +1,10 @@
+- check speech publishing
+    - and speeches, which may be outdated as well
+
+- write tutorial
+
 - Fix / rewrite cdist-quickstart
 
-- write tutorial!!!!!!!!!
    - like ccollect!
       - include ssh control master!
    - add local/ hint (and add to git)

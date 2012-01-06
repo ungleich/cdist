@@ -53,8 +53,6 @@ UNIX, simplicity, familar environment | cdist is configured in POSIX shell
 The cdist documentation is included as manpages in the distribution.
 
  * You can [browse the documentation of the latest version online](man) as well.
- * Or you can watch the youtube **video**
-[cdist installation and first usage in less than 60 seconds][http://www.youtube.com/watch?v=PRMjzy48eTI).
  * Have a look at the [given speeches](speeches)
 
 ### OS support
@@ -133,7 +131,7 @@ To install cdist, execute the following commands:
     export PATH=$PATH:$(pwd -P)/bin
 
     # If you want the manpages
-    ./build.sh man
+    ./build man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 
@@ -180,7 +178,7 @@ To upgrade cdist in the current branch use
     git pull
 
     # Also update the manpages
-    ./build.sh man
+    ./build man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
