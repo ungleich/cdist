@@ -1,0 +1,14 @@
+# Provided by cdist __nfsroot_debootstrap
+# Changes will be overwritten.
+
+# static file system information for chroots.
+# Note that the mount point will be prefixed by the chroot path
+# (CHROOT_PATH)
+#
+# <file system>   <mount point>  <type>   <options>   <dump>   <pass>
+proc     /proc    proc  defaults 0  0
+#procbususb      /proc/bus/usb   usbfs   defaults        0       0
+#/dev            /dev            none    rw,bind         0       0
+/dev/pts /dev/pts none  rw,bind     0  0
+/dev/shm /dev/shm none  rw,bind     0  0
+/tmp     /tmp     none  rw,bind     0  0

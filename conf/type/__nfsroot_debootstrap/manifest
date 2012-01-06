@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# required
+name="$__object_id"
+target="$(cat "$__object/parameter/target")"
+
+# optional
+suite="$(cat "$__object/parameter/suite" 2>/dev/null || true)"
+mirror="$(cat "$__object/parameter/mirror" 2>/dev/null || true)"
+arch="$(cat "$__object/parameter/arch" 2>/dev/null || true)"
+
+# variables used in script-config.template
+schroot_file_postfix="nfsroot-debootstrap"
+fstab="mount-$schroot_file_postfix"
+copyfiles="copyfiles-$schroot_file_postfix"
+script_config="script-$schroot_file_postfix"
+
+# install and configure schroot
+__schroot
+
+# config files common to all schroots created by this type
+require="__schroot" __file "/etc/schroot/$fstab" \
+   --source "$__type/files/schroot/mount"
+require="__schroot" __file "/etc/schroot/$copyfiles" \
+   --source "$__type/files/schroot/copyfiles"
+# generate config file from template
+[ -d "$__object/files" ] || mkdir "$__object/files"
+. "$__type/files/schroot/script-config.template" > "$__object/files/script-config"
+require="__schroot" __file "/etc/schroot/$script_config" \
+   --source "$__object/files/script-config"
+
+# create config file for this schroot
+require="__schroot __file/etc/schroot/$fstab __file/etc/schroot/$copyfiles __file/etc/schroot/$script_config" \
+   __schroot_chroot "$name" \
+      --directory "$target" \
+      --script_config "$script_config"
+
+
+__package debootstrap --state installed
+
+# build parameters for __debootstrap
+set -- "$@"
+[ -n "$suite" ] && set -- "$@" "--suite" "$suite"
+[ -n "$mirror" ] && set -- "$@" "--mirror" "$mirror"
+[ -n "$arch" ] && set -- "$@" "--arch" "$arch"
+required="__package/debootstrap" __debootstrap "$target" "$@"

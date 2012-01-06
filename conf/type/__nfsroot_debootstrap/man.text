@@ -1,0 +1,53 @@
+cdist-type__nfsroot_debootstrap(7)
+==================================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__nfsroot_debootstrap - setup nfsroots with debootstrap and schroot
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to, well, setup nfsroots with debootstrap and schroot :-)
+
+
+REQUIRED PARAMETERS
+-------------------
+target::
+   The target directory in which to install.
+
+
+OPTIONAL PARAMETERS
+-------------------
+suite::
+   The suite (distribution codename) to install.
+
+arch::
+   The architecture to install.
+
+mirror::
+   The mirror to use for fetching packages.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__nfsroot_debootstrap some-schroot-name \
+   --target /local/chroot/lucid-amd64 \
+   --suite lucid \
+   --arch x86_64
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
