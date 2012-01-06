@@ -25,4 +25,4 @@ __package nfs-kernel-server --state installed
 require="__package/nfs-kernel-server" \
    __process nfs-kernel-server --state running \
       --start "/etc/init.d/portmap start" \
-      --name rpc.mountd
+      --name ".*rpc.mountd.*"
