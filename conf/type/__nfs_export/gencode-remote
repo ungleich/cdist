@@ -25,13 +25,13 @@ state_is=$(diff -q "$__object/parameter/entry" "$__object/explorer/entry" \
    || echo absent
 )
 
-if [ "$exports_d" != "present" ]; then
-   if [ "$state_is" != "$state_should" ]; then
+if [ "$state_is" != "$state_should" ]; then
+   if [ "$exports_d" != "present" ]; then
       case "$state_should" in
          present)
-         cat << DONE
+            cat << DONE
 cat >> /etc/exports << EOC
-$(cat "$__object/parameter/entry")"
+$(cat "$__object/parameter/entry")
 EOC
 DONE
          ;;
@@ -59,4 +59,6 @@ DONE
          ;;
       esac
    fi
+   # re-export if we changed something
+   echo "exportfs -rf"
 fi
