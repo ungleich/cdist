@@ -181,6 +181,9 @@ class Object(object):
         """Create this cdist object on the filesystem.
         """
         try:
+            # let the type create it's part of our path
+            self.type.create(self)
+            # then create the objects part
             os.makedirs(self.absolute_path, exist_ok=False)
             absolute_parameter_path = os.path.join(self.base_path, self.parameter_path)
             os.makedirs(absolute_parameter_path, exist_ok=False)

@@ -163,3 +163,19 @@ class Type(object):
             finally:
                 self.__optional_parameters = parameters
         return self.__optional_parameters
+
+    def create(self, cdist_object):
+        """Create the folders required for storing the given cdist_object
+        instance in the filesystem.
+        """
+        parent_path = cdist_object.base_path
+        path = os.path.join(parent_path, self.path)
+        marker = os.path.join(path, TYPE_MARKER)
+        if not os.path.isfile(marker):
+            try:
+                # create directories
+                os.makedirs(path, exist_ok=True)
+                # create the file that marks this directory as a type
+                open(marker, "w").close()
+            except EnvironmentError as error:
+                raise cdist.Error('Error creating type directories for cdist object: %s: %s' % (cdist_object, error))
