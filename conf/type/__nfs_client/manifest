@@ -26,4 +26,4 @@ require="__package/nfs-common" \
 require="__package/nfs-common" \
    __process statd --state running \
       --start "/etc/init.d/statd start" \
-      --name rpc.statd
+      --name "rpc.statd.*"
