@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# define variables and set defaulst for use in template
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
+if [ -f "$__object/parameter/arch" ]; then
+   arch="$(cat "$__object/parameter/arch")"
+else
+   arch="$(cat "$__global/explorer/machine")"
+fi
+if [ -f "$__object/parameter/description" ]; then
+   description="$(cat "$__object/parameter/description")"
+fi
+if [ -f "$__object/parameter/script_config" ]; then
+   script_config="$(cat "$__object/parameter/script_config")"
+fi
+
+# only support directory type chroots for now
+type="directory"
+directory="$(cat "$__object/parameter/directory")"
+
+# generate config file from template
+[ -d "$__object/files" ] || mkdir "$__object/files"
+. "$__type/files/schroot.conf.template" > "$__object/files/chroot.conf"
+__file "/etc/schroot/chroot.d/${name}" \
+   --source "$__object/files/chroot.conf" \
+   --owner root --group root --mode 644

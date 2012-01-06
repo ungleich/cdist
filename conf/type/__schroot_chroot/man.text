@@ -1,0 +1,67 @@
+cdist-type__schroot_chroot(7)
+=============================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__schroot_chroot - configures schroot chroots
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to configure chroots using schroot.
+
+
+REQUIRED PARAMETERS
+-------------------
+directory::
+   Full qualified path to the directory containing the chroot.
+
+
+OPTIONAL PARAMETERS
+-------------------
+name::
+   Name for use in schroot's config file.
+   Defaults to object_id.
+
+arch::
+   Architecture of the system in the chroot.
+   Defaults to the host systems architecture.
+
+description::
+   Guess what.
+
+script_config::
+   Name of the script-config file, relative to /etc/schroot. See schroot.conf(5) and schroot-script-config(5)
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__schroot_chroot lucid-amd64 \
+   --directory /local/chroot/lucid-amd64
+
+__schroot_chroot lucid-amd64 \
+   --directory /local/chroot/lucid-amd64 \
+   --arch i386
+
+__schroot_chroot some-id \
+   --name explicit-name \
+   --directory /local/chroot/whatever \
+   --script_config my-fancy-script-config
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- schroot.conf(5)
+- schroot-script-config(5)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

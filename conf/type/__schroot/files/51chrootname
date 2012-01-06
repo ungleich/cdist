@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# rm /etc/debian_chroot when leaving schroot
+if [ $1 = "setup-stop" ]; then
+   [ -f "${CHROOT_PATH}/etc/debian_chroot" ] && rm "${CHROOT_PATH}/etc/debian_chroot"
+fi
+
