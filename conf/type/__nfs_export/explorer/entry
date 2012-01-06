@@ -21,12 +21,11 @@
 export="$(cat "$__object/parameter/export" 2>/dev/null || echo "/$__object_id")"
 
 name="$(echo "${export#/}" | sed 's;/;-;g')"
-prefix="#cdist:__cron/$export"
-suffix="#/cdist:__cron/$export"
-
 if [ -f "/etc/exports.d/$name" ]; then
    cat "/etc/exports.d/$name"
 else
+   prefix="#cdist:__nfs_export${export}"
+   suffix="#/cdist:__nfs_export${export}"
    awk -v prefix="$prefix" -v suffix="$suffix" '{
    if (index($0,prefix)) {
       triggered=1
