@@ -7,6 +7,12 @@ CORE
 ----
 - Add subcommand to create template of a type with working manpage
  (cdist type-template or so)
+- get rid of the singleton object_id
+   - it should be invisible to core aswell as types
+   - it is an implementation/storage detail
+   -> hide it in Object
+   -> deprecate use of __$type/singleton just use __$type instead
+
 
 TESTS
 -----
