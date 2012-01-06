@@ -1,0 +1,43 @@
+cdist-type__apt_noautostart(7)
+==============================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__apt_noautostart - don't start daemons automatically
+
+
+DESCRIPTION
+-----------
+Prevents daemons from being started at install time.
+@see http://people.debian.org/~hmh/invokerc.d-policyrc.d-specification.txt
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+None.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__apt_noautostart
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
