@@ -10,6 +10,28 @@
 __file /etc/cdist-configured
 
 case "$__target_host" in
+
+   nfsserver.example.com)
+      # configure the nfsroot server
+      __nfsroot_debootstrap lucid-amd64 \
+         --target /local/chroot/lucid-amd64 \
+         --suite lucid \
+         --arch x86_64
+
+      __nfs_server
+
+      require="__nfsroot_debootstrap/lucid-amd64 __nfs_server" \
+         __nfs_export /local/chroot/lucid-amd64 \
+            --client "129.168.0.0/24 10.0.0.0/24" \
+            --options "ro,async,no_all_squash,no_root_squash,subtree_check"
+   ;;
+
+   schroot://nfsserver.example.com/lucid-amd64)
+      # configure the nfsroot itself
+      require="__file/etc/cdist-configured" __link /tmp/cdist-configured \
+         --source /etc/cdist-configured --type symbolic
+   ;;
+
    # Everybody has this
    localhost)
       require="__file/etc/cdist-configured" __link /tmp/cdist-testfile \
