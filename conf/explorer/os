@@ -49,7 +49,7 @@ if grep -q ^Fedora /etc/redhat-release 2>/dev/null; then
    exit 0
 fi
 
-# CentOS is also based on Redhat, this return before redhat!
+# CentOS is also based on Redhat, thus return before redhat!
 if grep -q ^CentOS /etc/redhat-release 2>/dev/null; then
     echo centos
     exit 0

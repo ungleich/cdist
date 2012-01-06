@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-# 2010-2011 Daniel Roth (dani-cdist@d-roth.li)
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -19,30 +18,22 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Configure nss_ldap for a machine at DINFK.
+#
 
-if [ -f "$__object/parameter/file" ]; then
-   file=$(cat "$__object/parameter/file")
-else
-   file="/$__object_id"
-fi
+ou="$(cat "$__object/parameter/ou")"
 
-if [ -f "$__object/parameter/regex" ]; then
-    regex=$(cat "$__object/parameter/regex")
-else
-    wrap=$(cat "$__object/parameter/line")
-    regex="^$wrap\$"
-fi
+ldap_config="/etc/nslcd.conf"
+ldap_package="libnss-ldapd"
 
-if [ -f "$file" ]; then
-   # sh -e is our environment, we know what we do,
-   # skip error detection for now
-   set +e
-   grep -q "$regex" "$file"
-   if [ $? -eq 1 ]; then
-      echo "NOTFOUND"
-   else
-      echo "FOUND"
-   fi
-else
-   echo "NOTFOUND"
-fi
+# Install required packages
+__package "$ldap_package" --state installed
+
+# Generate nss-ldap config file from template
+mkdir "$__object/files"
+. "$__type/files/nslcd.conf.template" > "$__object/files/nslcd.conf"
+__file "$ldap_config" --source "$__object/files/nslcd.conf"
+
+# Configure nsswitch to use ldap
+require="__package/$ldap_package __file/$ldap_config" \
+   __file /etc/nsswitch.conf --source "$__type/files/nsswitch.conf"
