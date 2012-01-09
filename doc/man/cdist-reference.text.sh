@@ -45,7 +45,7 @@ cdist-reference - Variable, path and type reference for cdist
 
 EXPLORERS
 ---------
-The following global explores are available:
+The following global explorers are available:
 
 eof
 (
@@ -203,6 +203,6 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
 eof
