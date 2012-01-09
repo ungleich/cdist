@@ -52,4 +52,3 @@ case "$state_should" in
       exit 1
    ;;
 esac
-
