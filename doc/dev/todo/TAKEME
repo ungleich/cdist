@@ -3,10 +3,17 @@ UNASSIGNED TODOS
 The following list of todos has not been assigned to any developer.
 Feel free to pick one!
 
-CORE
+
+BUGS
 ----
-- Add subcommand to create template of a type with working manpage
- (cdist type-template or so)
+
+Stuff that needs to repaired very soon as they may cause frustration...
+
+__process / name bug:
+    __process /usr/lib/postfix/master --start "/etc/rc.d/postfix start" --state running
+    => name="usr/lib/postfix/master"
+    => breaks!
+    => cannot detect if ^/ is needed or not automatically
 
 TESTS
 -----
@@ -20,11 +27,8 @@ TESTS
 
 USER INTERFACE
 --------------
-- add support $__tmp?
-   - for use in manifest, code, etc.?
-      - for creating temporary files, etc.
-
 - How to cleanly implement "restart service if config file changed"
+    -> document
 
 - Cache
    - add example how to use 
@@ -42,12 +46,5 @@ USER INTERFACE
 
 TYPES
 ------
-- __ssh-keys (host/user)
 - __user
    add option to include --create-home
-
-DOCUMENTATION
---------------
-- asciidoc interprets __, which we use for variables
-  names -> seek through docs and replace with \_\_!
-- reference explorers in cdist-reference!

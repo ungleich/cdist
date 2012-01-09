@@ -297,32 +297,5 @@ pointers on where to continue to read:
 eof
 --------------------------------------------------------------------------------
 
-- Initial install support
-   - setup $__install = "yes" for
-      manifest(s), gencode-*
-
-   - run standard manifest (?)
-      - creates initial objects
-         - only those having the installer flag?
-            - requires changegs to cdist-type-emulator!
-               - Goto Rewrite cdist-type-emulator
-
-   - run all other manifests
-      - creates all objects
-      - what about type explorer?
-         - do not run, create empty output (types should be able
-            to handle this!)
-            via __global/
-
-- Support parallel execution
-   - error handling / report failed hosts
-
 - Create new video for cdist 2.0.0
    http://www.youtube.com/watch?v=PRMjzy48eTI
-
-- Setup __debug, if -d is given, so other tools can reuse it
-   - implement everywhere to external!
-
-- remote_prefix:
-   scp vs. ssh issue
-locale_type
