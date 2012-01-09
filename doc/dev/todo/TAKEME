@@ -4,17 +4,6 @@ The following list of todos has not been assigned to any developer.
 Feel free to pick one!
 
 
-BUGS
-----
-
-Stuff that needs to repaired very soon as they may cause frustration...
-
-__process / name bug:
-    __process /usr/lib/postfix/master --start "/etc/rc.d/postfix start" --state running
-    => name="usr/lib/postfix/master"
-    => breaks!
-    => cannot detect if ^/ is needed or not automatically
-
 TESTS
 -----
 - multiple defines of object:
