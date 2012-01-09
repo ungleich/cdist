@@ -127,10 +127,29 @@ is only created on the host ***localhost***.
 
 As you can see, there is no magic involved, the manifest is simple shell code that
 utilises cdist types. Every available type can be executed like a normal 
-command. Use **ls conf/type** to get a list of available types.
-
+command. Use **ls conf/type** to get a list of available types. If you have
+setup the MANPATH correctly as, you can use **man cdist-reference** to access
+the reference with pointers to the manpages.
 
 PARTS BELOW HERE ARE TO-BE-DONE
+
+
+MANAGING YOUR OWN CONFIGURATION
+-------------------------------
+
+CREATING YOUR FIRST OWN TYPE
+----------------------------
+=> short example, reference to cdist-type(7)!
+
+<with object id? or signleton here already>
+
+Debug with var - can be used by yourself
+__debug::
+   If this variable is setup, cdist runs in debug mode.
+   You can use this information, to only output stuff in debug
+   mode as well.
+   Available for: initial manifest, type manifest, gencode, code
+
 
 
 MORE ABOUT TYPES AND OBJECTS
@@ -143,9 +162,6 @@ USING SOME BASIC TYPES
 what is a type, how to use it,
 
 
-CREATING YOUR FIRST OWN TYPE
-----------------------------
-<with object id? or signleton here already>
 
 
 USE A TYPE TO BUNDLE FUNCTIONALITY
@@ -159,17 +175,8 @@ global, type explorer
 
 DEBUGGING YOUR TYPES
 --------------------
-__debug::
-   If this variable is setup, cdist runs in debug mode.
-   You can use this information, to only output stuff in debug
-   mode as well.
-   Available for: initial manifest, type manifest, gencode, code
 
 
-
-
-BRANCHES IN HERE?
-------------
 
 TUNING CDIST
 ------------
