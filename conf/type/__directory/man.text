@@ -49,7 +49,7 @@ EXAMPLES
 __directory /tmp/foobar
 
 # Remove a directory
-__directory /tmp/foobar --ensure absent
+__directory /tmp/foobar --state absent
 
 # Ensure /etc exists correctly
 __directory /etc --owner root --group root --mode 0755
