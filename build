@@ -97,6 +97,12 @@ case "$1" in
       done
    ;;
       
+   webmain)
+      cp README ${WEBPAGE}
+      cd ${WEBDIR} && git commit -m "cdist update" ${WEBPAGE}
+      cd ${WEBDIR} && make pub
+   ;;
+
    web)
       cp README ${WEBPAGE}
       rm -rf ${WEBMAN}

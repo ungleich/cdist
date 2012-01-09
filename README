@@ -61,12 +61,14 @@ cdist was tested or is know to run on at least
 
  * [Archlinux](http://www.archlinux.org/)
  * [Debian](http://www.debian.org/)
+ * [CentOS](http://www.centos.org/)
  * [Fedora](http://fedoraproject.org/)
  * [Gentoo](http://www.gentoo.org/)
  * [Mac OS X](http://www.apple.com/macosx/)
  * [OpenBSD](http://www.openbsd.org)
  * [Redhat](http://www.redhat.com/)
  * [Ubuntu](http://www.ubuntu.com/)
+ * [XenServer](http://www.citrix.com/xenserver/)
 
 
 ## Requirements
@@ -88,8 +90,8 @@ cdist was tested or is know to run on at least
 
 ### Preperation
 
-Ensure you have Python 3.x and the **argparse** module installed on
-the machine you use to **deploy to the targets**.
+Ensure you have Python 3.2 installed on the machine you use to **deploy to the targets**
+(the ***source host***).
 
 #### Archlinux
 
@@ -99,9 +101,27 @@ Archlinux already has python >= 3.2, so you only need to do:
 
 #### Debian
 
-    aptitude install python3 python3-setuptools
-    easy_install3 argparse
+For Debian >= wheezy:
 
+    aptitude install python3
+
+For older Debian versions, installing python 3.2 manually is required.
+
+#### Fedora
+
+For Fedora >= 15:
+
+    yum install python3
+
+#### FreeBSD
+
+For the port:
+
+    cd /usr/ports/lang/python32/ && make install clean
+
+For the package:
+
+    pkg_add -r python32
 
 #### Gentoo
 
