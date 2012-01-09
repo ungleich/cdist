@@ -182,6 +182,7 @@ __object_id::
    Available for: type manifest, type explorer, type gencode
 __self::
    DEPRECATED: Same as __object_name, do not use anymore, use __object_name instead.
+   Will be removed in cdist 3.x.
 __object_name::
    The full qualified name of the current object.
    Available for: type manifest, type explorer, type gencode
