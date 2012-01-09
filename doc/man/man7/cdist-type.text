@@ -192,7 +192,8 @@ HOW TO INCLUDE A TYPE INTO UPSTREAM CDIST
 -----------------------------------------
 If you think your type may be useful for others, ensure it works with the
 current master branch of cdist and submit the git url containing the type for
-inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**.
+inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**
+or open a pull request at http://github.com/telmich/cdist.
 
 Ensure a corresponding manpage named man.text in asciidoc format with
 the manpage-name "cdist-type__NAME" is included in the type directory.
