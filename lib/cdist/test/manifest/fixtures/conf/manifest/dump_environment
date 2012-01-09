@@ -1,0 +1,9 @@
+#!/bin/sh
+
+cat > $__cdist_test_out << DONE
+PATH: $PATH
+__target_host: $__target_host
+__global: $__global
+__cdist_type_base_path: $__cdist_type_base_path
+__manifest: $__manifest
+DONE

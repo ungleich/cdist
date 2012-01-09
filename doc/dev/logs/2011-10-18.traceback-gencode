@@ -1,0 +1,28 @@
+[...]
+INFO: sgv-sysadmin-01: Running gencode and code for __director/home/services/nfs
+Traceback (most recent call last):
+  File "./bin/cdist", line 211, in <module>
+    commandline()
+  File "./bin/cdist", line 110, in commandline
+    args.func(args)
+  File "./bin/cdist", line 113, in config
+    configinstall(args, mode=cdist.config.Config)
+  File "./bin/cdist", line 131, in configinstall
+    if not configinstall_onehost(host, args, mode, parallel=False):
+  File "./bin/cdist", line 177, in configinstall_onehost
+    c.deploy_and_cleanup()
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist-nutzung/lib/cdist/config_install.py", line 71, in deploy_and_cleanup
+    self.deploy_to()
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist-nutzung/lib/cdist/config_install.py", line 66, in deploy_to
+    self.stage_run()
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist-nutzung/lib/cdist/config_install.py", line 164, in stage_run
+    self.object_run(cdist_object)
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist-nutzung/lib/cdist/config_install.py", line 143, in object_run
+    self.object_run(required_object)
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist-nutzung/lib/cdist/config_install.py", line 135, in object_run
+    cdist_object.ran = True
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist-nutzung/lib/cdist/util/fsproperty.py", line 237, in __set__
+    open(path, "w").close()
+IOError: [Errno 2] No such file or directory: '/home/users/nico/.tmp/tmp2gau4p/out/object/__director/home/services/nfs/.cdist/ran'
+[10:43] brief:cdist-nutzung% 
+

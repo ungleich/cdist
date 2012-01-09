@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2010-2011 Daniel Roth (dani-cdist@d-roth.li)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -25,9 +26,18 @@ else
    file="/$__object_id"
 fi
 
-regex=$(cat "$__object/parameter/line")
+if [ -f "$__object/parameter/regex" ]; then
+    regex=$(cat "$__object/parameter/regex")
+else
+    wrap=$(cat "$__object/parameter/line")
+    regex="^$wrap\$"
+fi
+
 if [ -f "$file" ]; then
-   grep -q "^$regex\$" "$file"
+   # sh -e is our environment, we know what we do,
+   # skip error detection for now
+   set +e
+   grep -q "$regex" "$file"
    if [ $? -eq 1 ]; then
       echo "NOTFOUND"
    else

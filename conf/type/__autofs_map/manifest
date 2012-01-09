@@ -38,5 +38,5 @@ if [ -f "$__object/parameter/comment" ]; then
 fi
 echo "$entry" >> "$__object/parameter/entry"
 
-require="$__self" __autofs_master
+require="$__object_name" __autofs_master
 

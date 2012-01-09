@@ -50,6 +50,10 @@ __process /usr/sbin/sshd --state stopped --stop "/etc/rc.d/sshd stop"
 # Ensure cups is running, which runs with -C ...:
 __process cups --start "/etc/rc.d/cups start" --state running \
    --name "/usr/sbin/cupsd -C /etc/cups/cupsd.conf"
+
+# Ensure rpc.statd is running (which usually runs with -L) using a regexp
+__process rpcstatd --state running --start "/etc/init.d/statd start" \
+    --name "rpc.statd.*"
 --------------------------------------------------------------------------------
 
 

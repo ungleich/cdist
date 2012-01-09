@@ -1,4 +1,44 @@
-1.7.1:
+2.0.5:
+	* New Type: __package_luarocks (Christian G. Warden)
+	* Feature: __addifnosuchline supports matching on 
+		regular expressions (Daniel Maher)
+	* Documentation: (Re)write of the tutorial
+	* Cleanup: Explicitly require Python >= 3.2 (do not fail implicitly)
+
+2.0.4: 2011-11-18
+	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
+	* Bugfix core: Accept parameters with - in the name (Steven Armstrong)
+	* Cleanup: __object_fq variable removed (never used)
+	* Cleanup: Environment variable __self DEPRECATED, use __object_name instead
+	* Cleanup: Environment variable __self scheduled for removal in cdist 2.1
+	* Documentation: Many examples for use of __remote_* (Steven Armstrong)
+	* Feature: Automatically require all used objects (Steven Armstrong)
+	* New Type: __cron (Steven Armstrong)
+
+2.0.3: 2011-10-18
+	* Improved logging, added --verbose, by more quiet by default
+	* Bugfix __user: Correct quoting (Steven Armstrong)
+	* Bugfix __addifnosuchline: Falsely exited
+	* Bugfix requirements: Restore original require="" behaviour
+	* Feature requirements: Check for broken object_ids and abort
+	* Massive refactoring and unittesting introduced (Steven Armstrong)
+
+2.0.2: 2011-09-27
+	* Add support for detection of OpenWall Linux (Matthias Teege)
+	* Add support for __debug variable in manifests
+	* Bugfix core: Various issues with type emulator
+
+2.0.1: 2011-09-23
+	* Bugfix core: Always print source of error in case of exec errors
+	* Bugfix core: Various smaller bugs in string concatenation
+	* Feature: Add marker "changed" to changed objects
+
+2.0.0: 2011-09-16
+	* New Type: __package_rubygem (Chase Allen James)
+	* __self replaced by __object_fq
+	* Rewrote cdist in Python
+
+1.7.1: 2011-07-26
 	* Documentation: Add explorers to reference
 	* Documentation: Typo cleanup (Derek Brost)
 	* Type __key_value: Bugfix (Steven Armstrong)

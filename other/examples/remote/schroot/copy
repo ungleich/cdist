@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# __remote_copy script to run cdist against a chroot on the target host over ssh.
+#
+# Usage:
+#  __remote_copy="/path/to/this/script schroot-chroot-name" cdist config target_host
+#
+
+log() {
+   #echo "$@" | logger -t "cdist-schroot-copy"
+   :
+}
+
+chroot_name="$1"; shift
+target_host="$__target_host"
+
+# get directory for given chroot_name
+chroot="$(ssh -o User=root -q $target_host schroot $chroot_name --config | awk -F = '/directory=/ {print $2}')"
+
+# prefix destination with chroot
+code="$(echo "$@" | sed "s|$target_host:|$target_host:$chroot|g")"
+
+log "target_host: $target_host"
+log "chroot_name: $chroot_name"
+log "chroot: $chroot"
+log "@: $@"
+log "code: $code"
+
+# copy files into remote chroot
+scp -o User=root -q $code
+
+log "-----"

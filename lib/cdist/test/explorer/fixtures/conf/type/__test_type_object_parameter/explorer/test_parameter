@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cat "$__object/parameter/test"

@@ -27,13 +27,6 @@ else
    name="$__object_id"
 fi
 
-# Check for preseeding and add preseed as here document
-if [ -f "$__object/parameter/preseed" ]; then
-   echo "debconf-set-selections << __file-eof"
-   cat "$(cat "$__object/parameter/preseed")"
-   echo "__file-eof"
-fi
-
 state="$(cat "$__object/parameter/state")"
 is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
 

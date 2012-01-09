@@ -11,5 +11,8 @@ doc/man/man7/cdist-type__*.text
 doc/man/man7/cdist-reference.text
 doc/man/man*/docbook-xsl.css
 
-# Ignore cache for version control
-cache/
+# Ignore cdist cache for version control
+/cache/
+
+# Python / cache
+__pycache__/
