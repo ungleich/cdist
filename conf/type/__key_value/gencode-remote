@@ -37,7 +37,7 @@ if [ "$value_is" != "$value_should" ]; then
             cat << DONE
 sed -i '/^${key}/d' "$file"
 DONE
-         else 
+         else
             # change value
             cat << DONE
 awk -F "$delimiter" '

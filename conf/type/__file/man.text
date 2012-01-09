@@ -10,7 +10,7 @@ cdist-type__file - Manage files
 
 DESCRIPTION
 -----------
-This cdist type allows you to create files, remove files and set file 
+This cdist type allows you to create files, remove files and set file
 attributes on the target.
 
 

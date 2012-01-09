@@ -33,7 +33,7 @@ case "$state_should" in
             echo touch \"$destination\"
          fi
       fi
-      
+
       # Mode settings
       if [ -f "$__object/parameter/mode" ]; then
          echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
@@ -55,7 +55,7 @@ case "$state_should" in
       if [ "$exists" = "yes" ]; then
          echo rm -f \"$destination\"
       fi
-    
+
    ;;
 
    *)

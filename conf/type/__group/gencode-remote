@@ -47,7 +47,7 @@ if grep -q "^${name}:" "$__object/explorer/group"; then
       echo groupmod "$@" "$name"
    else
       true
-   fi  
+   fi
 else
    for property in $(ls .); do
       new_value="$(cat "$property")"
