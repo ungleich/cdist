@@ -18,8 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/state" ]; then
-   state="$(cat "$__object/parameter/state")"
-else
-   echo "present" > "$__object/parameter/state"
-fi
+# set defaults
+state="$(cat "$__object/parameter/state" 2>/dev/null \
+   || echo "present" | tee "$__object/parameter/state")"
