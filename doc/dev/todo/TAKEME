@@ -43,9 +43,6 @@ USER INTERFACE
 TYPES
 ------
 - __ssh-keys (host/user)
-- __file_edit
-   - regexp replace (can probably cover all?)
-      -> aka sed.
 - __user
    add option to include --create-home
 
