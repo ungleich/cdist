@@ -25,7 +25,8 @@ type::
 
 OPTIONAL PARAMETERS
 -------------------
-None.
+state::
+   'present' or 'absent', defaults to 'present'
 
 
 EXAMPLES

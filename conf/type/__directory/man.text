@@ -5,12 +5,12 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
-cdist-type__directory - Create a directory
+cdist-type__directory - Manage a directory
 
 
 DESCRIPTION
 -----------
-This cdist type allows you to create directories on the target.
+This cdist type allows you to create or remove directories on the target.
 
 
 REQUIRED PARAMETERS
@@ -20,6 +20,9 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
+state::
+   'present' or 'absent', defaults to 'present'
+
 group::
    Group to chgrp to.
 
@@ -44,6 +47,9 @@ EXAMPLES
 --------------------------------------------------------------------------------
 # A silly example
 __directory /tmp/foobar
+
+# Remove a directory
+__directory /tmp/foobar --ensure absent
 
 # Ensure /etc exists correctly
 __directory /etc --owner root --group root --mode 0755

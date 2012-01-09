@@ -22,19 +22,22 @@
 #
 
 destination="/$__object_id"
+state_should="$(cat "$__object/parameter/state")"
 
-if [ -f "$__object/parameter/source" ]; then
-   source="$(cat "$__object/parameter/source")"
+if [ "$state_should" = "present" ]; then
+   if [ -f "$__object/parameter/source" ]; then
+      source="$(cat "$__object/parameter/source")"
 
-   if [ -f "$source" ]; then
-      local_cksum="$(cksum < "$source")"
-      remote_cksum="$(cat "$__object/explorer/cksum")"
+      if [ -f "$source" ]; then
+         local_cksum="$(cksum < "$source")"
+         remote_cksum="$(cat "$__object/explorer/cksum")"
 
-      if [ "$local_cksum" != "$remote_cksum" ]; then
-         echo "$__remote_copy" "$source" "${__target_host}:${destination}"
+         if [ "$local_cksum" != "$remote_cksum" ]; then
+            echo "$__remote_copy" "$source" "${__target_host}:${destination}"
+         fi
+      else
+         echo "Source \"$source\" does not exist." >&2
+         exit 1
       fi
-   else
-      echo "Source \"$source\" does not exist." >&2
-      exit 1
    fi
 fi

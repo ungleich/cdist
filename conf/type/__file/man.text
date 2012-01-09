@@ -5,21 +5,24 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
-cdist-type__file - Create files
+cdist-type__file - Manage files
 
 
 DESCRIPTION
 -----------
-This cdist type allows you to create files on the target.
+This cdist type allows you to create files, remove files and set file 
+attributes on the target.
 
 
 REQUIRED PARAMETERS
 -------------------
 None.
 
-
 OPTIONAL PARAMETERS
 -------------------
+state::
+   'present' or 'absent', defaults to 'present'
+
 group::
    Group to chgrp to.
 
@@ -40,13 +43,18 @@ EXAMPLES
 --------------------------------------------------------------------------------
 # Create  /etc/cdist-configured as an empty file
 __file /etc/cdist-configured
+# The same thing
+__file /etc/cdist-configured --ensure present
+# Delete existing file
+__file /etc/cdist-configured --ensure absent
 
 # Use __file from another type
-__file /etc/issue --source "$__type/files/archlinux"
+__file /etc/issue --source "$__type/files/archlinux" --ensure present
 
 # Supply some more settings
 __file /etc/shadow --source "$__type/files/shadow" \
-   --owner root --group shadow --mode 0640
+   --owner root --group shadow --mode 0640 \
+   --ensure present
 --------------------------------------------------------------------------------
 
 
