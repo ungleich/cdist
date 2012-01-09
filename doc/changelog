@@ -7,6 +7,8 @@
 	* Cleanup: Explicitly require Python >= 3.2 (do not fail implicitly)
 	* Feature: __directory, __file, __link:
 		Add --state parameter (Steven Armstrong)
+	* Bugfix __key_value: Use correct delimiters
+		(Steven Armstrong, Daniel Maher)
 
 2.0.4: 2011-11-18
 	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
