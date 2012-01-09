@@ -62,7 +62,7 @@ case "$state_should" in
    absent)
       # Only delete if it exists
       if [ yes = "$(cat "$__object/explorer/exists")" ]; then
-         echo rm -r \"$destination\"
+         echo rm -rf \"$destination\"
       fi
 
    ;; 
