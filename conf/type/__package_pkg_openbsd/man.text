@@ -5,7 +5,7 @@ Andi Brönnimann <andi-cdist--@--v-net.ch>
 
 NAME
 ----
-cdist-type__package_pkg_openbsd - Manage OpenBSD packages 
+cdist-type__package_pkg_openbsd - Manage OpenBSD packages
 
 
 DESCRIPTION

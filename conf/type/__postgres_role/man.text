@@ -21,7 +21,7 @@ state::
 
 OPTIONAL PARAMETERS
 -------------------
-All optional parameter map directly to the corresponding postgres createrole 
+All optional parameter map directly to the corresponding postgres createrole
 parameters.
 
 password::
@@ -36,7 +36,7 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-__postgres_role myrole --state present 
+__postgres_role myrole --state present
 
 __postgres_role myrole --state present --password 'secret'
 

@@ -68,10 +68,9 @@ re-entering the password. If something failed until here, ensure that
 all steps went successfully and you have read and understood the
 documentation.
 
-As soon as you are able to login without passwort to the target host,
+As soon as you are able to login without password to localhost,
 we can use cdist to configure it. You can copy and paste the following
 code into your shell to get started and configure localhost:
-
 --------------------------------------------------------------------------------
 # Get cdist
 git clone git://git.schottelius.org/cdist
@@ -91,19 +90,15 @@ That's it, you've successfully used cdist to configure your first host!
 Continue reading the next sections, to understand what you did and how
 to create a more sophisticated configuration.
 
-The file 'conf/manifest/init' is usually the entry point for cdist,
-to find out what to configure on which host. All manifests are
-essentially shell scripts. Every manifest can use the types known to
-cdist, which are usually underline prefixed (__).
-
 
 
 DEFINE STATE IN THE INITIAL MANIFEST
 ------------------------------------
 The **initial manifest** is the entry point for cdist to find out, which
 **objects** to configure on the selected host. Objects are instances of
-**types**, like in object orientated programming. An object is represented
-by the type + slash + object name: ***__file/etc/cdist-configured*** is an
+**types**, like in object orientated programming languages.
+An object is represented by the
+type + slash + object name: ***__file/etc/cdist-configured*** is an
 object of the type ***__file*** with the name ***etc/cdist-configured***.
 
 Cdist searches for the initial manifest at **conf/manifest/init** and
@@ -115,7 +110,7 @@ environment variable **__target_host**. Let's have a look at a simple
 example:
 
 --------------------------------------------------------------------------------
-__file /etc/cdist-configured
+__cdistmarker
 
 case "$__target_host" in
    localhost)
@@ -124,12 +119,15 @@ case "$__target_host" in
 esac
 --------------------------------------------------------------------------------
 
-This manifest says: Independent of the host, always create the (empty) file
-***/etc/cdist-configured***, but create the directory ***/home/services/kvm-vm***,
-including all parent directories, only on the host ***localhost***.
+This manifest says: Independent of the host, always use the type 
+***__cdistmarker***, which creates the file **/etc/cdist-configured**,
+with the timestamp as content.
+The directory ***/home/services/kvm-vm***, including all parent directories, 
+is only created on the host ***localhost***.
 
 As you can see, there is no magic involved, the manifest is simple shell code that
-utilises cdist types.
+utilises cdist types. Every available type can be executed like a normal 
+command. Use **ls conf/type** to get a list of available types.
 
 
 PARTS BELOW HERE ARE TO-BE-DONE

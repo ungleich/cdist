@@ -1,8 +1,0 @@
-missing types:
-   __bootloader
-   __taball_get
-   __mount
-   __mount-point-create
-   __fstab
-   - run user postinstall script
-      - for e.g. reboot, chroot && start sshd

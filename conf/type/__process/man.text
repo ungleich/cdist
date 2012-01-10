@@ -24,6 +24,10 @@ OPTIONAL PARAMETERS
 name::
    Process name to match on when using pgrep -f -x.
 
+   This is useful, if the name starts with a "/",
+   because the leading slash is stripped away from
+   the object id by cdist.
+
 stop::
    Executable to use for stopping the process.
 

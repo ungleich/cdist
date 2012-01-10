@@ -17,7 +17,7 @@ REQUIRED PARAMETERS
 -------------------
 state::
    The state the ppa should be in, either "enabled" or "disabled".
-   
+
 
 OPTIONAL PARAMETERS
 -------------------
