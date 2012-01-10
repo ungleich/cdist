@@ -19,7 +19,12 @@
 #
 
 source="$(cat "$__object/parameter/source")"
-destination="$(cat "$__object/parameter/destination")"
+
+if [ -f "$__object/parameter/destination" ]; then
+    destination="$(cat "$__object/parameter/destination")"
+else
+    destination="/$__object_id"
+fi
 
 # The system binary is probably ok, but if not...
 if [ -f "$__object/parameter/rsyncbin" ]; then

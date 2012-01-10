@@ -23,12 +23,13 @@ source::
     The full path of the source from which to copy. This is passed directly
     to rsync.
 
-destination::
-    The full path of the destination. This is passed directly to rsync.
-
 
 OPTIONAL PARAMETERS
 -------------------
+destination::
+    The full path of the destination. This is passed directly to rsync.
+    Default: object_id
+
 delete::
     If true, remove files from destination which are not in source. This is
     effectively the --delete argument of rsync.
@@ -43,6 +44,9 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Basic example
+__rsyncer '/home/foo' --source '/opt/dist/foo'
+
+# Fancier example
 __rsyncer FOO --source '/opt/dist/foo' --destination '/home/foo/' --delete true
 --------------------------------------------------------------------------------
 
