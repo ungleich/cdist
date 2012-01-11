@@ -11,10 +11,13 @@ cdist-tutorial - a guided introduction into cdist
 INTRODUCTION
 ------------
 This document gives you a pointer on what to read in
-which order and is thus more a "guide to the right locations".
+which order and is thus a "guide to the right locations".
+So in case you are just starting, just "begin at the beginning"
+(Brave New World). You can see the target audience in [] brackets
+after the description.
 
 cdist-quickstart::
-    New to cdist? Want to get your hands dirty?  Read this. [beginner]
+    New to cdist? Want to get your hands dirty? Read this. [beginner]
 
 cdist-installation::
     The comprehensive guide to your first cdist installation [beginner]
@@ -92,6 +95,7 @@ SEE ALSO
 - cdist-type(7)
 - cdist-best-practice(7)
 - cdist-stages(7)?
+- Brave New World by Aldous Huxley
 
 COPYING
 -------
