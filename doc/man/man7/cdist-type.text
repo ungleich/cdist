@@ -201,7 +201,7 @@ the manpage-name "cdist-type__NAME" is included in the type directory.
 
 SEE ALSO
 --------
-- cdist-manifest-run(1)
+- cdist-explorer(7)
 - cdist-stages(7)
 
 
