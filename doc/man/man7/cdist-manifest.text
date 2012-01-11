@@ -8,6 +8,46 @@ NAME
 cdist-manifest - Define types to be used
 
 
+DEFINE STATE IN THE INITIAL MANIFEST
+------------------------------------
+The **initial manifest** is the entry point for cdist to find out, which
+**objects** to configure on the selected host. Objects are instances of
+**types**, like in object orientated programming languages.
+An object is represented by the
+type + slash + object name: ***__file/etc/cdist-configured*** is an
+object of the type ***__file*** with the name ***etc/cdist-configured***.
+
+Cdist searches for the initial manifest at **conf/manifest/init** and
+executes it as a shell script using **/bin/sh -e**.
+
+Within this initial manifest, you define, which objects should be
+created on which host. To distinguish between hosts, you can use the
+environment variable **__target_host**. Let's have a look at a simple
+example:
+
+--------------------------------------------------------------------------------
+__cdistmarker
+
+case "$__target_host" in
+   localhost)
+        __directory /home/services/kvm-vm --parents yes
+   ;;
+esac
+--------------------------------------------------------------------------------
+
+This manifest says: Independent of the host, always use the type 
+***__cdistmarker***, which creates the file **/etc/cdist-configured**,
+with the timestamp as content.
+The directory ***/home/services/kvm-vm***, including all parent directories, 
+is only created on the host ***localhost***.
+
+As you can see, there is no magic involved, the manifest is simple shell code that
+utilises cdist types. Every available type can be executed like a normal 
+command. Use **ls conf/type** to get a list of available types. If you have
+setup the MANPATH correctly as, you can use **man cdist-reference** to access
+the reference with pointers to the manpages.
+
+
 DESCRIPTION
 -----------
 Manifests exist to define which configurations should be applied to a specific
@@ -69,12 +109,10 @@ require="__file/etc/cdist-configured __link/tmp/cdist-testfile" \
 
 SEE ALSO
 --------
-- cdist-manifest-run(1)
-- cdist-manifest-run-init(1)
 - cdist-type(7)
 
 
 COPYING
 -------
-Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2010-2012 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
