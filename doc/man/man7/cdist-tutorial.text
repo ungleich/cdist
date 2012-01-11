@@ -133,6 +133,8 @@ the reference with pointers to the manpages.
 
 PARTS BELOW HERE ARE TO-BE-DONE
 
+-> ssh stuff double: cdist-best-practice and here
+
 
 MANAGING YOUR OWN CONFIGURATION
 -------------------------------
@@ -140,6 +142,9 @@ MANAGING YOUR OWN CONFIGURATION
 CREATING YOUR FIRST OWN TYPE
 ----------------------------
 => short example, reference to cdist-type(7)!
+=> motivation
+
+Use a type to bundle functionalitY
 
 <with object id? or signleton here already>
 
@@ -152,25 +157,9 @@ __debug::
 
 
 
-MORE ABOUT TYPES AND OBJECTS
-----------------------------
-All available types in cdist can be called like normal executables. 
-
-
-USING SOME BASIC TYPES
-----------------------
-what is a type, how to use it,
-
-
-
-
-USE A TYPE TO BUNDLE FUNCTIONALITY
-----------------------------------
-
-
 USING EXPLORERS
 ---------------
-global, type explorer
+cdist-explorer.text
 
 
 DEBUGGING YOUR TYPES
@@ -183,8 +172,12 @@ TUNING CDIST
 
 - speedup processing with ControlMaster option of
 ssh
+=> different document
 
 
 SEE ALSO
 --------
-cdist(1), cdist-type(7), cdist-stages(7)
+- cdist(1)
+- cdist-type(7)
+- cdist-best-practice(7)
+- cdist-stages(7)?

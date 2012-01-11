@@ -1,7 +1,21 @@
+- write tutorial
+    - remove cdist(7) reference everywhere
+    - check cross links
+
+- check other docs:
+    - cdist-best-practice.text
+    - cdist-explorer.text
+    - cdist-hacker.text
+    - cdist-manifest.text
+    - cdist-reference.text
+    - cdist-stages.text
+    - cdist-type.text
+
+--------------------------------------------------------------------------------
+
+
 - check speech publishing
     - and speeches, which may be outdated as well
-
-- write tutorial
 
 - Fix / rewrite cdist-quickstart
 
