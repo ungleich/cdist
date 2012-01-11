@@ -25,7 +25,7 @@ else
 fi
 
 # Remove the cruft from the state file; we want to compare apples to apples.
-md5_src="$(cat $source | grep -v "^#" | cut -d '[' -f 1 | sort | md5sum | cut -d ' ' -f 1)"
+md5_src="$(export LC_ALL=C && cat $source | grep -v "^#" | cut -d '[' -f 1 | sort | md5sum | cut -d ' ' -f 1)"
 md5_dst="$(cat "$__object/explorer/md5sum")"
 
 echo "iptables_restore src : $md5_src" >&2
