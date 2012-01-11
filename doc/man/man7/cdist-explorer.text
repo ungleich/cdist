@@ -57,7 +57,7 @@ dpkg -s "$name" 2>/dev/null || exit 0
 
 SEE ALSO
 --------
-- cdist(7)
+- cdist(1)
 - cdist-reference(7)
 - cdist-stages(7)
 
