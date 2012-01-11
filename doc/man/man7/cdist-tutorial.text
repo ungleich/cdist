@@ -136,6 +136,18 @@ PARTS BELOW HERE ARE TO-BE-DONE
 -> ssh stuff double: cdist-best-practice and here
 
 
+CONTINUE READING
+----------------
+So far you have seen how to get cdist up and running and
+how the initial manifest is being used.
+
+own branch => very early [before first change?]
+    => no, first quick intro, then do it right
+It is recommended to 
+- MANAGING YOUR OWN CONFIGURATION
+- write own type
+
+
 MANAGING YOUR OWN CONFIGURATION
 -------------------------------
 
