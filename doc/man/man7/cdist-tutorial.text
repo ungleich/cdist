@@ -14,82 +14,76 @@ This document gives you a pointer on what to read in
 which order and is thus more a "guide to the right locations".
 
 cdist-quickstart::
-    Read this, if you are brand new in the cdist world and just want 
-    to get your hands dirty.
-
-cdist-reference::
-    Know everything about cdist: the types, explorers or environment 
-    variables usable.
-
-PARTS BELOW HERE ARE TO-BE-DONE
+    New to cdist? Want to get your hands dirty?  Read this. [beginner]
 
 cdist-installation::
-    The comprehensive guide to your first cdist installation.
+    The comprehensive guide to your first cdist installation [beginner]
 
-cdist-manifest::
-    initial in here
-
-cdist-best-practice::
-cdist-explorer::
-cdist-hacker::
-
-cdist-stages::
-cdist-type::
-
-
-
--> ssh stuff double: cdist-best-practice and here
-
-
-CONTINUE READING
-----------------
-So far you have seen how to get cdist up and running and
-how the initial manifest is being used.
-
+    - MANAGING YOUR OWN CONFIGURATION
 own branch => very early [before first change?]
     => no, first quick intro, then do it right
-It is recommended to 
-- MANAGING YOUR OWN CONFIGURATION
-- write own type
+
+cdist-initial-manifest::
+    Learn how to define which hosts get which configurations [beginner]
+
+cdist-type::
+    Understand how types are working and created [intermediate]
+
+    CREATING YOUR FIRST OWN TYPE
+    ----------------------------
+    => short example, reference to cdist-type(7)!
+    => motivation
+
+    Use a type to bundle functionalitY
+
+    <with object id? or signleton here already>
+
+    Debug with var - can be used by yourself
+    __debug::
+       If this variable is setup, cdist runs in debug mode.
+       You can use this information, to only output stuff in debug
+       mode as well.
+       Available for: initial manifest, type manifest, gencode, code
 
 
-MANAGING YOUR OWN CONFIGURATION
--------------------------------
+    USING EXPLORERS
+    ---------------
+    cdist-explorer.text
 
-CREATING YOUR FIRST OWN TYPE
-----------------------------
-=> short example, reference to cdist-type(7)!
-=> motivation
-
-Use a type to bundle functionalitY
-
-<with object id? or signleton here already>
-
-Debug with var - can be used by yourself
-__debug::
-   If this variable is setup, cdist runs in debug mode.
-   You can use this information, to only output stuff in debug
-   mode as well.
-   Available for: initial manifest, type manifest, gencode, code
+    DEBUGGING YOUR TYPES
+    --------------------
 
 
+cdist-best-practice::
+    Hints from real life experience to help you to organise cdist [intermediate]
 
-USING EXPLORERS
----------------
-cdist-explorer.text
+cdist-reference::
+    The type, explorers and environment variables reference [intermediate]
+
+cdist-explorer::
+    Interested in getting more information about the target system? [intermediate]
+
+cdist-cache::
+    How to get use information about the hosts we have been working on [advanced]
+
+cdist-scaling-tuning::
+    How to scale out with cdist and which tunings to apply. [advanced]
+
+    TUNING CDIST
+    ------------
+
+    - speedup processing with ControlMaster option of
+    ssh
+    => different document
 
 
-DEBUGGING YOUR TYPES
---------------------
+cdist-stages::
+    Understand the internal workflow of cdist. [advanced]
+
+cdist-hacker::
+    README, if you want to extend or modify cdist. [hacker]
 
 
-
-TUNING CDIST
-------------
-
-- speedup processing with ControlMaster option of
-ssh
-=> different document
 
 
 SEE ALSO
