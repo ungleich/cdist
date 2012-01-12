@@ -18,6 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -e "$tmp_dir/source.iptables" ]; then
-    echo "iptables-restore < $tmp_dir/source.iptables"
+hint="/tmp/$__object_id"
+
+if [ -f "$hint" ]; then
+    echo "iptables-restore < /tmp/source.iptables"
+    rm $hint
 fi
