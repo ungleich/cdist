@@ -10,169 +10,83 @@ cdist-tutorial - a guided introduction into cdist
 
 INTRODUCTION
 ------------
-This tutorial is aimed at people learning cdist and shows
-typical approaches as well as gives an easy start into
-the world of configuration management.
+This document gives you a pointer on what to read in
+which order and is thus a "guide to the right locations".
+So in case you are just starting, just "begin at the beginning"
+(Brave New World). You can see the target audience in [] brackets
+after the description.
 
-This tutorial assumes you are configuring **localhost**, because
-it is always available. Just replace **localhost** with your target
-host for real life usage.
+cdist-quickstart::
+    New to cdist? Want to get your hands dirty? Read this. [beginner]
 
+cdist-installation::
+    The comprehensive guide to your first cdist installation [beginner]
 
+    - MANAGING YOUR OWN CONFIGURATION
+own branch => very early [before first change?]
+    => no, first quick intro, then do it right
 
-QUICK START - GET YOUR HANDS DIRTY NOW
---------------------------------------
-For those who just want to configure a system with the
-cdist configuration management and do not need (or want)
-to understand everything.
+cdist-initial-manifest::
+    Learn how to define which hosts get which configurations [beginner]
 
-Cdist uses **ssh** for communication and transportation
-and usually logs into the **target host** as the
-**root** user. So you need to configure the **ssh server**
-of the target host to allow root logins: Edit
-the file **/etc/ssh/sshd_config** and add one of the following
-lines:
+cdist-type::
+    Understand how types are working and created [intermediate]
 
---------------------------------------------------------------------------------
-# Allow login only via public key
-PermitRootLogin without-password
+    CREATING YOUR FIRST OWN TYPE
+    ----------------------------
+    => short example, reference to cdist-type(7)!
+    => motivation
 
-# Allow login via password and public key
-PermitRootLogin yes
---------------------------------------------------------------------------------
+    Use a type to bundle functionalitY
 
-As cdist uses ssh intensively, it is recommended to setup authentication
-with public keys:
+    <with object id? or signleton here already>
 
---------------------------------------------------------------------------------
-# Generate pubkey pair as a normal user
-ssh-keygen
-
-# Copy pubkey over to target host
-ssh-copy-id root@localhost
---------------------------------------------------------------------------------
-
-Have a look at ssh-agent(1) and ssh-add(1) on how to cache the password for
-your public key.  Usually it looks like this:
-
---------------------------------------------------------------------------------
-# Start agent and export variables
-eval `ssh-agent`
-
-# Add keys (requires password for every identity file)
-ssh-add
---------------------------------------------------------------------------------
-
-At this point you should be able to ***ssh root@localhost*** without
-re-entering the password. If something failed until here, ensure that
-all steps went successfully and you have read and understood the
-documentation.
-
-As soon as you are able to login without password to localhost,
-we can use cdist to configure it. You can copy and paste the following
-code into your shell to get started and configure localhost:
---------------------------------------------------------------------------------
-# Get cdist
-git clone git://git.schottelius.org/cdist
-
-# Create manifest (maps configuration to host(s)
-cd cdist
-echo '__file /etc/cdist-configured' > conf/manifest/init
-
-# Configure localhost in verbose mode
-./bin/cdist config -v localhost
-
-# Find out that cdist created /etc/cdist-configured
-ls -l /etc/cdist-configured
---------------------------------------------------------------------------------
-
-That's it, you've successfully used cdist to configure your first host!
-Continue reading the next sections, to understand what you did and how
-to create a more sophisticated configuration.
+    Debug with var - can be used by yourself
+    __debug::
+       If this variable is setup, cdist runs in debug mode.
+       You can use this information, to only output stuff in debug
+       mode as well.
+       Available for: initial manifest, type manifest, gencode, code
 
 
+    USING EXPLORERS
+    ---------------
+    cdist-explorer.text
 
-DEFINE STATE IN THE INITIAL MANIFEST
-------------------------------------
-The **initial manifest** is the entry point for cdist to find out, which
-**objects** to configure on the selected host. Objects are instances of
-**types**, like in object orientated programming languages.
-An object is represented by the
-type + slash + object name: ***__file/etc/cdist-configured*** is an
-object of the type ***__file*** with the name ***etc/cdist-configured***.
-
-Cdist searches for the initial manifest at **conf/manifest/init** and
-executes it as a shell script using **/bin/sh -e**.
-
-Within this initial manifest, you define, which objects should be
-created on which host. To distinguish between hosts, you can use the
-environment variable **__target_host**. Let's have a look at a simple
-example:
-
---------------------------------------------------------------------------------
-__cdistmarker
-
-case "$__target_host" in
-   localhost)
-        __directory /home/services/kvm-vm --parents yes
-   ;;
-esac
---------------------------------------------------------------------------------
-
-This manifest says: Independent of the host, always use the type 
-***__cdistmarker***, which creates the file **/etc/cdist-configured**,
-with the timestamp as content.
-The directory ***/home/services/kvm-vm***, including all parent directories, 
-is only created on the host ***localhost***.
-
-As you can see, there is no magic involved, the manifest is simple shell code that
-utilises cdist types. Every available type can be executed like a normal 
-command. Use **ls conf/type** to get a list of available types. If you have
-setup the MANPATH correctly as, you can use **man cdist-reference** to access
-the reference with pointers to the manpages.
-
-PARTS BELOW HERE ARE TO-BE-DONE
-
--> ssh stuff double: cdist-best-practice and here
+    DEBUGGING YOUR TYPES
+    --------------------
 
 
-MANAGING YOUR OWN CONFIGURATION
--------------------------------
+cdist-best-practice::
+    Hints from real life experience to help you to organise cdist [intermediate]
 
-CREATING YOUR FIRST OWN TYPE
-----------------------------
-=> short example, reference to cdist-type(7)!
-=> motivation
+cdist-reference::
+    The type, explorers and environment variables reference [intermediate]
 
-Use a type to bundle functionalitY
+cdist-explorer::
+    Interested in getting more information about the target system? [intermediate]
 
-<with object id? or signleton here already>
+cdist-cache::
+    How to get use information about the hosts we have been working on [advanced]
 
-Debug with var - can be used by yourself
-__debug::
-   If this variable is setup, cdist runs in debug mode.
-   You can use this information, to only output stuff in debug
-   mode as well.
-   Available for: initial manifest, type manifest, gencode, code
+cdist-scaling-tuning::
+    How to scale out with cdist and which tunings to apply. [advanced]
 
+    TUNING CDIST
+    ------------
 
-
-USING EXPLORERS
----------------
-cdist-explorer.text
+    - speedup processing with ControlMaster option of
+    ssh
+    => different document
 
 
-DEBUGGING YOUR TYPES
---------------------
+cdist-stages::
+    Understand the internal workflow of cdist. [advanced]
+
+cdist-hacker::
+    README, if you want to extend or modify cdist. [hacker]
 
 
-
-TUNING CDIST
-------------
-
-- speedup processing with ControlMaster option of
-ssh
-=> different document
 
 
 SEE ALSO
@@ -181,3 +95,9 @@ SEE ALSO
 - cdist-type(7)
 - cdist-best-practice(7)
 - cdist-stages(7)?
+- Brave New World by Aldous Huxley
+
+COPYING
+-------
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

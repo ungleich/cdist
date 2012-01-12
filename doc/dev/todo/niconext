@@ -1,4 +1,11 @@
 - write tutorial
+    - containing many links?!
+        - quickstart
+        - cdist-environment/startup/initial-setup (setup env)
+        - cdist-type
+        - ...
+        - cdist-hacker
+
     - remove cdist(7) reference everywhere
     - check cross links
 
@@ -10,6 +17,8 @@
     - cdist-reference.text
     - cdist-stages.text
     - cdist-type.text
+
+ 51 -> ssh stuff double: cdist-best-practice and here
 
 --------------------------------------------------------------------------------
 
