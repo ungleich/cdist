@@ -49,4 +49,4 @@ for property in $(ls .); do
    fi
 done
 
-require="$__object_name" __package_$type "$@"
+__package_$type "$@"
