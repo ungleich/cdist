@@ -1,0 +1,110 @@
+cdist-bootstrap(7)
+==================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-bootstrap - how to setup the cdist environment
+
+
+INTRODUCTION
+------------
+This document describes the usual steps recommended for a new
+cdist setup. It is recommended that you have read and understood
+cdist-quickstart(7) before digging into this.
+
+
+LOCATION
+---------
+First of all, you should think about where to store your configuration
+database and who will be accessing or changing it. Secondly you have to
+think about where to configure your hosts from, which may be a different
+location.
+
+For starters, having cdist (which includes the configuration database) on
+your notebook should be fine.
+Additionally an external copy of the git repository the configuration
+relies in is recommended, for use as backup as well to allow easy collaboration
+with others.
+
+For more sophisticated setups developing cdist configurations with multiple
+people, have a look at cdist-best-practice(7).
+
+
+SETUP WORKING DIRECTORY
+-----------------------
+I assume you have a fresh copy of the cdist tree in ~/cdist, cloned from
+one of the official urls (see cdist-quickstart(7) if you don't).
+Entering the command "git branch" should show you "* master", which indicates
+you are on the **master** branch.
+
+The master branch reflects the latest development of cdist. As this is the
+development branch, it may or may not work. There are also version branches 
+available, which are kept in a stable state. Let's use **git branch -r**
+to list all branches:
+
+--------------------------------------------------------------------------------
+cdist% git branch -r
+  origin/1.0
+  origin/1.1
+  origin/1.2
+  origin/1.3
+  origin/1.4
+  origin/1.5
+  origin/1.6
+  origin/1.7
+  origin/2.0
+  origin/HEAD -> origin/master
+  origin/archive_shell_function_approach
+  origin/master
+--------------------------------------------------------------------------------
+
+So **2.0** is the latest version branch in this example.
+All versions (2.0.x) within one version branch (2.0) are compatible to each
+other and won't break your configuration when updating.
+
+It's up to you decide on which branch you want to base your own work:
+master contains more recent changes, newer types, but may also break.
+The versions branches are stable, but thus may miss the latest features.
+Your decision can be changed later on, but may result in merge conflicts,
+which you'd have to solve.
+
+Let's assume you want latest stuff and select the master branch as base for
+your own work. Now it's time to create your branch, which contains your
+local changes. I usually name it by the company/area I am working for:
+ethz-systems, localch, customerX, ... But this is pretty much up to you.
+
+In this tutorial I use the branch **mycompany**:
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+
+
+
+
+own account  / server, one/multiple users
+
+clone
+update
+branches
+own branch => very early [before first change?]
+=> no, first quick intro, then do it right
+ssh-keys
+
+# Add keys (requires password for every identity file)
+
+
+SEE ALSO
+--------
+- cdist(1)
+- cdist-tutorial(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
