@@ -19,15 +19,13 @@ after the description.
 cdist-quickstart::
     New to cdist? Want to get your hands dirty? Read this. [beginner]
 
-cdist-installation::
+cdist-bootstrap::
     The comprehensive guide to your first cdist installation [beginner]
-
-    - MANAGING YOUR OWN CONFIGURATION
-own branch => very early [before first change?]
-    => no, first quick intro, then do it right
 
 cdist-initial-manifest::
     Learn how to define which hosts get which configurations [beginner]
+
+    MANAGING YOUR OWN CONFIGURATION
 
 cdist-type::
     Understand how types are working and created [intermediate]

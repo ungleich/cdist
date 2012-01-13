@@ -139,9 +139,14 @@ Have a look at git-remote(1) to adjust the remote configuration, which allows
 you to push certain branches to certain remotes.
 
 
+MULTI DEVELOPERS/DIFFERENT TRUST RELATIONSHIP/CENTRAL SERVER APPROACH
+---------------------------------------------------------------------
+FIXME before 2.0.5
+
 SEE ALSO
 --------
 - cdist(1)
+- cdist-tutorial(7)
 
 
 COPYING
