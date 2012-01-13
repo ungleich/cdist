@@ -27,9 +27,9 @@ if su - $user -c "[ ! -d \"\$HOME/.rvm\" ]" ; then
    exit 0
 fi
 if su - $user -c "source \"\$HOME/.rvm/scripts/rvm\"
-rvm list | grep $ruby"; then
+rvm list | grep $ruby > /dev/null"; then
    if su - $user -c "source \"\$HOME/.rvm/scripts/rvm\"
-rvm use $ruby; rvm gemset list | grep $gemsetname > /dev/null"; then
+rvm use $ruby > /dev/null; rvm gemset list | grep $gemsetname > /dev/null"; then
       echo "installed"
       exit 0
   fi
