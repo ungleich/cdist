@@ -32,8 +32,8 @@ For more sophisticated setups developing cdist configurations with multiple
 people, have a look at cdist-best-practice(7).
 
 
-SETUP WORKING DIRECTORY
------------------------
+SETUP WORKING DIRECTORY AND BRANCH
+----------------------------------
 I assume you have a fresh copy of the cdist tree in ~/cdist, cloned from
 one of the official urls (see cdist-quickstart(7) if you don't).
 Entering the command "git branch" should show you "* master", which indicates
@@ -77,11 +77,14 @@ ethz-systems, localch, customerX, ... But this is pretty much up to you.
 
 In this tutorial I use the branch **mycompany**:
 
-
 --------------------------------------------------------------------------------
-
+cdist% git checkout -b mycompany origin/master 
+Branch mycompany set up to track remote branch master from origin.
+Switched to a new branch 'mycompany'
+cdist-user% git branch   
+  master
+* mycompany
 --------------------------------------------------------------------------------
-
 
 
 
