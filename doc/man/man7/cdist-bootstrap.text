@@ -81,24 +81,59 @@ In this tutorial I use the branch **mycompany**:
 cdist% git checkout -b mycompany origin/master 
 Branch mycompany set up to track remote branch master from origin.
 Switched to a new branch 'mycompany'
-cdist-user% git branch   
+cdist-user% git branch
   master
 * mycompany
 --------------------------------------------------------------------------------
 
+From now on, you can use git as usual to commit your changes in your own branch.
 
 
+PUBLISHING THE CONFIGURATION
+----------------------------
+Usually a development machine like a notebook should be considered
+temporary only. For this reason and to enable shareability, the configuration
+should be published to another device as early as possible. The following
+example shows how to publish the configuration to another host that is
+reachable via ssh and has git installed:
 
-own account  / server, one/multiple users
+--------------------------------------------------------------------------------
+# Create bare git repository on the host named "loch"
+cdist% ssh loch "GIT_DIR=/home/nutzer/cdist git init"
+Initialized empty Git repository in /home/nutzer/cdist/
 
-clone
-update
-branches
-own branch => very early [before first change?]
-=> no, first quick intro, then do it right
-ssh-keys
+# Add remote git repo to git config
+cdist% git remote add loch loch:/home/nutzer/cdist 
 
-# Add keys (requires password for every identity file)
+# Configure the mycompany branch to push to loch
+cdist% git config branch.mycompany.remote loch
+
+# Configure mycompany branch to push into remote master branch
+cdist% git config branch.mycompany.merge refs/heads/master
+
+# Push mycompany branch to remote branch master initially
+cdist% git push loch mycompany:refs/heads/master
+--------------------------------------------------------------------------------
+
+Now you have setup the git repository to synchronise the **mycompany**
+branch with the **master** branch on the host **loch**. Thus you can commit
+as usual in your branch and push out changes by entering ***git push***.
+
+
+UPDATING FROM ORIGIN
+--------------------
+Whenever you want to update your cdist installation, you can use git to do so:
+
+--------------------------------------------------------------------------------
+# Update git repository with latest changes from origin
+cdist% git fetch origin
+
+# Update current branch with master branch from origin
+cdist% git merge origin/master
+
+# Alternative: Update current branch with 2.0 branch from origin
+cdist% git merge origin/2.0
+--------------------------------------------------------------------------------
 
 
 SEE ALSO
