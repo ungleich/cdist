@@ -1,7 +1,6 @@
 - write tutorial
     - containing many links?!
-        - quickstart
-        - cdist-environment/startup/initial-setup (setup env)
+        - cdist-manifest
         - cdist-type
         - ...
         - cdist-hacker

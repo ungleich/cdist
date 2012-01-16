@@ -136,7 +136,6 @@ The following **.git/config** is taken from a a real world scenario:
 --------------------------------------------------------------------------------
 
 Have a look at git-remote(1) to adjust the remote configuration, which allows
-you to push certain branches to certain remotes.
 
 
 MULTI DEVELOPERS/DIFFERENT TRUST RELATIONSHIP/CENTRAL SERVER APPROACH

@@ -22,10 +22,8 @@ cdist-quickstart::
 cdist-bootstrap::
     The comprehensive guide to your first cdist installation [beginner]
 
-cdist-initial-manifest::
+cdist-manifest::
     Learn how to define which hosts get which configurations [beginner]
-
-    MANAGING YOUR OWN CONFIGURATION
 
 cdist-type::
     Understand how types are working and created [intermediate]

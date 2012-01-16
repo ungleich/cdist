@@ -5,7 +5,20 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
-cdist-manifest - Define types to be used
+cdist-manifest - Using types
+
+DESCRIPTION
+-----------
+Manifests exist to define which configurations should be applied to a specific
+host as well as to define which configurations should be applied within a
+type. Manifests are executed locally and the resulting objects are stored in
+an internal database.
+
+The same object can be redefined in multiple different manifests as long as
+the parameters are exactly the same.
+
+In general, manifests are used to define which types are used depending
+on given conditions.
 
 
 DEFINE STATE IN THE INITIAL MANIFEST
@@ -47,23 +60,15 @@ command. Use **ls conf/type** to get a list of available types. If you have
 setup the MANPATH correctly as, you can use **man cdist-reference** to access
 the reference with pointers to the manpages.
 
+INITIAL VS. TYPE MANIFEST
+-------------------------
 
-DESCRIPTION
------------
-Manifests exist to define which configurations should be applied to a specific
-host as well as to define which configurations should be applied within a
-type. Manifests are executed locally and the resulting objects are stored in
-an internal database.
-
-The same object can be redefined in multiple different manifests as long as
-the parameters are exactly the same.
-
-In general, manifests are used to define which types are used depending
-on given conditions.
+MANAGING YOUR OWN CONFIGURATION
 
 
-EXAMPLE
--------
+
+EXAMPLES
+--------
 The initial manifest may for instance contain the following code:
 
 --------------------------------------------------------------------------------
@@ -106,10 +111,14 @@ require="__file/etc/cdist-configured __link/tmp/cdist-testfile" \
 
 --------------------------------------------------------------------------------
 
+If you do not specify
+
+FIXME: autorequire
 
 SEE ALSO
 --------
 - cdist-type(7)
+- cdist-tutorial(7)
 
 
 COPYING
