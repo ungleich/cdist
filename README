@@ -77,13 +77,13 @@ cdist was tested or is know to run on at least
 
  * A posix like shell
  * Python (>= 3.2 required)
- * SSH-Client
+ * SSH client
  * Asciidoc (for building the manpages)
 
 ### Client ("target host")
 
  * A posix like shell
- * SSH-Server
+ * SSH server
 
 
 ## Installation
@@ -155,15 +155,12 @@ To install cdist, execute the following commands:
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 
-Afterwards you can run ***cdist-quickstart*** to get an impression on
-how to use cdist.
-
 ### Available versions
 
 There are at least the following branches available:
 
  * Development: master
- * 2.0: Python rewrite of cdist core
+ * 2.0: Python rewrite of cdist core [stable branch]
 
 Old versions:
 

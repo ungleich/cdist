@@ -1,4 +1,4 @@
-2.0.5: [BLOCKED FOR DOCUMENTATION/TUTORIAL]
+2.0.5: 2012-01-18
 	* Bugfix __key_value: Use correct delimiters
 		(Steven Armstrong, Daniel Maher)
 	* Cleanup: Explicitly require Python >= 3.2 (do not fail implicitly)
