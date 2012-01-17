@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -74,7 +74,7 @@ conf/manifest/init::
 conf/manifest/*::
    All other files in this directory are not directly used by cdist, but you
    can seperate configuration mappings, if you have a lot of code in the
-   manifest/init file. This may also be very helpful to have different admins
+   manifest/init file. This may also be helpful to have different admins
    maintain different groups of hosts.
 
 conf/explorer/<name>::
@@ -90,7 +90,7 @@ conf/type/<name>/::
    This directory is referenced by the variable __type (see below).
 
 conf/type/<name>/man.text::
-   Manpage in Asciidoc format (nequired for inclusion into upstream)
+   Manpage in Asciidoc format (required for inclusion into upstream)
 
 conf/type/<name>/manifest::
    Used to generate additional objects from a type.
@@ -199,7 +199,7 @@ __type_explorer::
 
 SEE ALSO
 --------
-- cdist(7)
+- cdist(1)
 
 
 COPYING

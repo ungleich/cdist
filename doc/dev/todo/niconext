@@ -1,23 +1,13 @@
-- write tutorial
-    - containing many links?!
-        - cdist-manifest
-        - cdist-type
-        - ...
-        - cdist-hacker
-
-    - remove cdist(7) reference everywhere
-    - check cross links
-
 - check other docs:
-    - cdist-best-practice.text
-    - cdist-explorer.text
     - cdist-hacker.text
-    - cdist-manifest.text
-    - cdist-reference.text
     - cdist-stages.text
-    - cdist-type.text
 
- 51 -> ssh stuff double: cdist-best-practice and here
+- release 2.0.5
+- cdist-cache::
+    How to get use information about the hosts we have been working on [advanced]
+cdist-scaling-tuning::
+    How to scale out with cdist and which tunings to apply. [advanced] 
+
 
 --------------------------------------------------------------------------------
 

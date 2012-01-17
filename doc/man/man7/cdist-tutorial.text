@@ -37,27 +37,11 @@ cdist-reference::
 cdist-explorer::
     Interested in getting more information about the target system? [intermediate]
 
-cdist-cache::
-    How to get use information about the hosts we have been working on [advanced]
-
-cdist-scaling-tuning::
-    How to scale out with cdist and which tunings to apply. [advanced]
-
-    TUNING CDIST
-    ------------
-
-    - speedup processing with ControlMaster option of
-    ssh
-    => different document
-
-
 cdist-stages::
     Understand the internal workflow of cdist. [advanced]
 
 cdist-hacker::
     README, if you want to extend or modify cdist. [hacker]
-
-
 
 
 SEE ALSO

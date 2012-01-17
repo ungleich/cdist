@@ -39,7 +39,7 @@ A very simple explorer may look like this:
 hostname
 --------------------------------------------------------------------------------
 
-Which is in practise the "hostname" explorer.
+Which is in practise the ***hostname*** explorer.
 
 A type explorer, which could check for the status of a package may look like this:
 
@@ -64,5 +64,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2010-2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2010-2012 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
