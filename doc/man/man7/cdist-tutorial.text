@@ -28,31 +28,6 @@ cdist-manifest::
 cdist-type::
     Understand how types are working and created [intermediate]
 
-    CREATING YOUR FIRST OWN TYPE
-    ----------------------------
-    => short example, reference to cdist-type(7)!
-    => motivation
-
-    Use a type to bundle functionalitY
-
-    <with object id? or signleton here already>
-
-    Debug with var - can be used by yourself
-    __debug::
-       If this variable is setup, cdist runs in debug mode.
-       You can use this information, to only output stuff in debug
-       mode as well.
-       Available for: initial manifest, type manifest, gencode, code
-
-
-    USING EXPLORERS
-    ---------------
-    cdist-explorer.text
-
-    DEBUGGING YOUR TYPES
-    --------------------
-
-
 cdist-best-practice::
     Hints from real life experience to help you to organise cdist [intermediate]
 
