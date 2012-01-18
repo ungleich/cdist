@@ -1,0 +1,9 @@
+maybe something like this would be handy:
+
+cdist type add git@github.com:asteven/cdist__nfs_server.git
+-> adds git submodule to conf/type/__nfs_server
+
+
+together with type namespaces (https://github.com/asteven/cdist/tree/type-namespaces) this could be a nice way to share multitple types as a bundle of functionality.
+
+
