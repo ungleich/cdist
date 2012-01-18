@@ -34,6 +34,10 @@ EXAMPLES
 # Install the rails gem in gemset ruby-1.9.3-p0@myset for user bill
 __rvm_gemset rails --gemset ruby-1.9.3-p0@myset --user bill --state installed
 
+# Do the same and also make ruby-1.9.3-p0@myset the default gemset
+__rvm_gemset rails --gemset ruby-1.9.3-p0@myset --user bill \
+                   --state installed --default yes
+
 # Remove it
 __rvm_ruby rails --gemset ruby-1.9.3-p0@myset --user bill --state removed
 --------------------------------------------------------------------------------
