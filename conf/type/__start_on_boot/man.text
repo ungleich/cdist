@@ -25,6 +25,7 @@ state::
 
 runlevel::
    Specify runlevel(s) to affect. Defaults to default or current runlevel.
+   NOT YET SUPPORTED, ALWAYS USING CURRENT RUNLEVEL.
 
 
 EXAMPLES

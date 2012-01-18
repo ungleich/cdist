@@ -22,6 +22,7 @@
 #
 
 os=$("$__explorer/os")
+runlevel=$("$__explorer/runlevel")
 
 case "$os" in
     debian|ubuntu)
@@ -33,7 +34,8 @@ case "$os" in
     ;;  
 
     centos|fedora|owl|redhat)
-        echo chkconfig \"$name\" on
+        state=$(chkconfig --level "$runlevel" \"$name\" || echo absent)
+        [ "$state" ] || state="present"
     ;;  
 
     *)  
@@ -42,3 +44,4 @@ case "$os" in
     ;;  
 esac
 
+echo $state
