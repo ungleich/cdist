@@ -1,17 +1,17 @@
-cdist-type__file(7)
-===================
+cdist-type__start_on_boot(7)
+============================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-type__file - Manage files
+cdist-type__start_on_boot - Manage stuff to be started at boot
 
 
 DESCRIPTION
 -----------
-This cdist type allows you to create files, remove files and set file
-attributes on the target.
+This cdist type allows you to enable or disable stuff to be started
+at boot of your operating system.
 
 
 REQUIRED PARAMETERS
@@ -23,38 +23,19 @@ OPTIONAL PARAMETERS
 state::
    'present' or 'absent', defaults to 'present'
 
-group::
-   Group to chgrp to.
-
-mode::
-   Unix permissions, suitable for chmod.
-
-owner::
-   User to chown to.
-
-source::
-   If supplied, copy this file from the host running cdist to the target.
-   If not supplied, an empty file or directory will be created.
-
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Create  /etc/cdist-configured as an empty file
-__file /etc/cdist-configured
-# The same thing
-__file /etc/cdist-configured --state present
-# Delete existing file
-__file /etc/cdist-configured --state absent
+# Ensure snmpd is started at boot
+__start_on_boot snmpd
 
-# Use __file from another type
-__file /etc/issue --source "$__type/files/archlinux" --state present
+# Same, but more explicit
+__start_on_boot snmpd --state present
 
-# Supply some more settings
-__file /etc/shadow --source "$__type/files/shadow" \
-   --owner root --group shadow --mode 0640 \
-   --state present
+# Ensure legacy configuration management will not be started
+__start_on_boot puppet --state absent
 --------------------------------------------------------------------------------
 
 
@@ -65,5 +46,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+Copyright \(C) 2012 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
