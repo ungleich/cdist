@@ -39,12 +39,23 @@ read tagmessage
 git tag "$version" -m "$tagmessage"
 
 # Import into current version branch
-echo "git merge into $branch"
+printf "Press enter to git merge into $branch > "
+read prompt
 git checkout $branch
 git merge master
 git checkout master
 
 # Publish manpages and sourcecode
-echo "publising doc/ and code/"
+printf "Press enter to publish doc/ and code/ > "
+read prompt
 ./build web
 ./build pub
+
+cat << notes
+To be done manually...
+
+    - freecode release
+    - blog entry
+    - mailinglist update
+
+notes
