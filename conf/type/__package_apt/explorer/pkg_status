@@ -28,7 +28,7 @@ else
 fi
 
 # Except dpkg failing, if package is not known / installed
-packages="$(apt-cache showpkg "$name" | grep -A 20 "Reverse Provides:" | sed 1d | cut -d ' ' -f 1) $name"
+packages="$(apt-cache showpkg "$name" | sed -e  "1,/Reverse Provides:/d" | cut -d ' ' -f 1) $name"
 for p in $packages; do
     if [ -n "$(dpkg -s "$p" 2>/dev/null | grep "^Status: install ok installed$")" ]; then
        echo "installed $p"
