@@ -1,6 +1,8 @@
 2.0.6:
 	* Bugfix __apt_ppa:
 		Also remove the [ppa-name].list file, if empty. (Tim Kersten)
+	* Feature __package_apt:
+		Initial support for virtual packages (Evax Software)
 
 2.0.5: 2012-01-18
 	* Bugfix __key_value: Use correct delimiters
