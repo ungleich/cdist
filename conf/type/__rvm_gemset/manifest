@@ -29,7 +29,7 @@ else
    default="no"
 fi
 
-__rvm $user --state installed
+__rvm "$user" --state installed
 require="__rvm/$user" \
-   __rvm_ruby $ruby --user $user --state installed --default $default
+   __rvm_ruby $ruby --user "$user" --state installed --default $default
 

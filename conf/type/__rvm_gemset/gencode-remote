@@ -28,7 +28,7 @@ if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
       installed)
          cat << DONE
-su - $user -c "source \"\\\$HOME/.rvm/scripts/rvm\"
+su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
 rvm $gemset --create"
 DONE
          case "$default" in
@@ -36,7 +36,7 @@ DONE
             ;;
             *)
                cat << DONE
-su - $user -c "source \"\\\$HOME/.rvm/scripts/rvm\"
+su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
 rvm use --default $gemset"
 DONE
             ;;
@@ -44,7 +44,7 @@ DONE
       ;;
       removed)
           cat << DONE
-su - $user -c "source \"\\\$HOME/.rvm/scripts/rvm\"
+su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
 rvm use $ruby; rvm --force gemset delete $gemsetname"
 DONE
       ;;
