@@ -43,9 +43,10 @@ case "$state_should" in
                 echo update-rc.d \"$name\" defaults
             ;;
 
-            gentoo)
-                echo rc-update add \"$name\" default
-            ;;
+# Disabled until the explorer is checked
+#            gentoo)
+#                echo rc-update add \"$name\" default
+#            ;;
 
             centos|fedora|owl|redhat)
                 echo chkconfig \"$name\" on
@@ -64,9 +65,10 @@ case "$state_should" in
                 echo update-rc.d -f \"$name\" remove
             ;;
 
-            gentoo)
-                echo rc-update del \"$name\"
-            ;;
+# Disabled until the explorer is checked
+#            gentoo)
+#                echo rc-update del \"$name\"
+#            ;;
 
             centos|fedora|owl|redhat)
                 echo chkconfig \"$name\" off
@@ -79,7 +81,6 @@ case "$state_should" in
         esac
  
     ;;
-
 
     *)
         echo "Unknown state: $state_should" >&2

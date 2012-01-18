@@ -21,9 +21,6 @@
 # Check whether the given name will be started on boot or not
 #
 
-set -x 
-exec >&2
-
 os=$("$__explorer/os")
 runlevel=$("$__explorer/runlevel")
 name="$__object_id"
@@ -34,10 +31,6 @@ state="present"
 case "$os" in
     debian|ubuntu)
         [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
-    ;;  
-
-    gentoo)
-        echo rc-update add \"$name\" default
     ;;  
 
     centos|fedora|owl|redhat)
@@ -52,4 +45,3 @@ case "$os" in
 esac
 
 echo $state
-exit 1
