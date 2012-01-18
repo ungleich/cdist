@@ -7,6 +7,8 @@
 	* New Type: __rvm_gem (Evax Software)
 	* New Type: __rvm_gemset (Evax Software)
 	* New Type: __rvm_ruby (Evax Software)
+	* New Explorer: runlevel
+	* Documentation: Update of reference (environment variables)
 
 2.0.5: 2012-01-18
 	* Bugfix __key_value: Use correct delimiters
