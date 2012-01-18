@@ -27,26 +27,29 @@ else
    name="$__object_id"
 fi
 
-state="$(cat "$__object/parameter/state")"
-is_installed="$(grep "^Status: install ok installed" "$__object/explorer/pkg_status" || true)"
+state_should="$(cat "$__object/parameter/state")"
+state_is="$(cat "$__object/explorer/pkg_status")"
+case "$state_is" in
+    installed*)
+       name="$(echo "$state_is" | cut -d ' ' -f 2)"
+       state_is="installed"
+    ;;
+esac
 
 aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
 
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
+if [ "$state_is" != "$state_should" ]; then
+   case "$state_should" in
+      installed)
          echo $aptget install \"$name\"
-      fi
-   ;;
-   removed)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
+      ;;
+      removed)
          echo $aptget remove \"$name\"
-      fi
-   ;;
-   *)
-      echo "Unknown state: $state" >&2
-      exit 1
-   ;;
-esac
+      ;;
+      *)
+         echo "Unknown state: $state" >&2
+         exit 1
+      ;;
+   esac
+fi
+
