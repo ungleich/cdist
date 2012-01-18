@@ -34,7 +34,7 @@ BANNER = """
    "P'        ""         ""
 """
 DOT_CDIST   = ".cdist"
-VERSION     = "2.0.4"
+VERSION     = "2.0.5"
 
 
 import os
