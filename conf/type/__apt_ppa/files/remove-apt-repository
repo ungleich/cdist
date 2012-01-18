@@ -7,12 +7,18 @@
 #   1: if not
 #   2: on other error
 
-
+import os
 import sys
 from aptsources import distro, sourceslist
 from softwareproperties import ppa
 from softwareproperties.SoftwareProperties import SoftwareProperties
 
+
+def remove_if_empty(file_name):
+    with open(file_name, 'r') as f:
+        if f.read().strip():
+            return
+        os.unlink(file_name)
 
 def remove_repository(repository):
     #print 'repository:', repository
@@ -21,11 +27,18 @@ def remove_repository(repository):
     (line, file) = ppa.expand_ppa_line(repository.strip(), codename)
     #print 'line:', line
     #print 'file:', file
-    source_entry = sourceslist.SourceEntry(line, file)
+    deb_source_entry = sourceslist.SourceEntry(line, file)
+    src_source_entry = sourceslist.SourceEntry('deb-src{}'.format(line[3:]), file)
 
     try:
         sp = SoftwareProperties()
-        sp.remove_source(source_entry)
+        sp.remove_source(deb_source_entry)
+        try:
+            # If there's a deb-src entry, remove that too
+            sp.remove_source(src_source_entry)
+        except:
+            pass
+        remove_if_empty(file)
         return True
     except ValueError:
         print >> sys.stderr, "Error: '%s' doesn't exists in a sourcelist file" % line
