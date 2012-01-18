@@ -1,5 +1,3 @@
-- release 2.0.5
-- go through pull requests / check & include them
 - update/create docs
     - cdist-cache::
         How to get use information about the hosts we have been working on [advanced]
