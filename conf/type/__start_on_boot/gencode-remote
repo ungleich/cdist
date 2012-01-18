@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,49 +18,48 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# __file is a very basic type, which will probably be reused quite often
-#
 
-destination="/$__object_id"
-state_should="$(cat "$__object/parameter/state")"
-exists="$(cat "$__object/explorer/exists")"
+if [ -f "$__object/parameter/state" ]; then
+    state_should="$(cat "$__object/parameter/state")"
+else
+    state_should="present"
+fi
+
+os=$(cat "$__global/explorer/os")
+name="$__object_id"
+
+# Support runlevels later
+#runlevel=$(cat $__global/explorer/runlevel)
 
 case "$state_should" in
-   present)
-      # No source? Create empty file
-      if [ ! -f "$__object/parameter/source" ]; then
-         if [ "$exists" = "no" ]; then
-            echo touch \"$destination\"
-         fi
-      fi
+    present)
+        case "$os" in
+            debian|ubuntu)
+                echo update-rc.d \"$name\" defaults
+            ;;
 
-      # Mode settings
-      if [ -f "$__object/parameter/mode" ]; then
-         echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
-      fi
+            gentoo)
+                echo rc-update add \"$name\" default
+            ;;
 
-      # Group
-      if [ -f "$__object/parameter/group" ]; then
-         echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
-      fi
+            centos|fedora|owl|redhat)
+                echo echo chkconfig \"$name\" on
+            ;;
 
-      # Owner
-      if [ -f "$__object/parameter/owner" ]; then
-         echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
-      fi
-   ;;
+            *)
+               echo "Unsupported os: $os" >&2
+               exit 1
+            ;;
+        esac
+    ;;
 
-   absent)
+    absent)
 
-      if [ "$exists" = "yes" ]; then
-         echo rm -f \"$destination\"
-      fi
+    ;;
 
-   ;;
 
-   *)
-      echo "Unknown state: $state_should" >&2
-      exit 1
-   ;;
-
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
 esac

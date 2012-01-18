@@ -21,7 +21,7 @@
 # Check whether the given name will be started on boot or not
 #
 
-os=$(cat "$__global/explorer/os")
+os=$("$__explorer/os")
 
 case "$os" in
     debian|ubuntu)

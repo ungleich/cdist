@@ -23,6 +23,9 @@ OPTIONAL PARAMETERS
 state::
    'present' or 'absent', defaults to 'present'
 
+runlevel::
+   Specify runlevel(s) to affect. Defaults to default or current runlevel.
+
 
 EXAMPLES
 --------
