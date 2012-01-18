@@ -37,6 +37,3 @@ TYPES
 ------
 - __user
    add option to include --create-home
-- __init_script?
-    to enable/disable startup of init stuff
-    http://linuxhelp.blogspot.com/2006/04/enabling-and-disabling-services-during_01.html

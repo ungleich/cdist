@@ -1,4 +1,9 @@
+- __init_script?
+    to enable/disable startup of init stuff
+    http://linuxhelp.blogspot.com/2006/04/enabling-and-disabling-services-during_01.html
+
 - update/create docs
+    - document __remote_copy and __remote_exec
     - cdist-cache::
         How to get use information about the hosts we have been working on [advanced]
     - cdist-scaling-tuning::
@@ -12,4 +17,3 @@
 
     - exec flag is not true for manifest anymore
     - SSH HINTS - ssh agent
-
