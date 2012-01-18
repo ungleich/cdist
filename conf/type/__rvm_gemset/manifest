@@ -27,6 +27,7 @@ if [ -f "$__object/parameter/default" ]; then
    default="$(cat "$__object/parameter/default")"
 else
    default="no"
+   echo $default > "$__object/parameter/default"
 fi
 
 __rvm "$user" --state installed
