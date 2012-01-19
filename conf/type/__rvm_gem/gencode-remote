@@ -29,13 +29,13 @@ if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
       installed)
          cat << DONE
-su - $user -c "source \"\\\$HOME/.rvm/scripts/rvm\"
+su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
 rvm use $gemset; gem install $gem"
 DONE
       ;;
       removed)
           cat << DONE
-su - $user -c "source \"\\\$HOME/.rvm/scripts/rvm\"
+su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
 rvm use $gemset; gem uninstall $gem"
 DONE
       ;;
