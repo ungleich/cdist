@@ -154,30 +154,18 @@ class Emulator(object):
                 if len(requirement) == 0:
                     continue
 
-                self.log.debug("Recording requirement: " + requirement)
-                requirement_parts = requirement.split(os.sep, 1)
-                requirement_type_name = requirement_parts[0]
-                try:
-                    requirement_object_id = requirement_parts[1]
-                except IndexError:
-                    # no object id, assume singleton
-                    requirement_object_id = 'singleton'
-                
-                # Remove leading / from object id
-                requirement_object_id = requirement_object_id.lstrip('/')
-
+                requirement_type_name, requirement_object_id = core.Object.split_name(requirement)
                 # Instantiate type which fails if type does not exist
                 requirement_type = core.Type(self.type_base_path, requirement_type_name)
 
-                if requirement_object_id == 'singleton' \
-                    and not requirement_type.is_singleton:
+                if requirement_object_id:
+                    # Validate object_id if any
+                    core.Object.validate_object_id(requirement_object_id)
+                elif not requirement_type.is_singleton:
+                    # Only singeltons have no object_id
                     raise IllegalRequirementError(requirement, "Missing object_id and type is not a singleton.")
 
-                # Instantiate object which fails if the object_id is illegal
-                requirement_object = core.Object(requirement_type, self.object_base_path, requirement_object_id)
-
-                # Construct cleaned up requirement with only one / :-)
-                requirement = requirement_type_name + '/' + requirement_object_id
+                self.log.debug("Recording requirement: " + requirement)
                 self.cdist_object.requirements.append(requirement)
 
         # Record / Append source

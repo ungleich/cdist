@@ -89,6 +89,13 @@ class EmulatorTestCase(test.CdistTestCase):
         emu.run()
         # if we get here all is fine
 
+    def test_requirement_pattern(self):
+        argv = ['__file', '/tmp/foobar']
+        os.environ.update(self.env)
+        os.environ['require'] = '__file/etc/*'
+        emu = emulator.Emulator(argv)
+        # if we get here all is fine
+
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
