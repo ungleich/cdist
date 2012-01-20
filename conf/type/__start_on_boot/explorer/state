@@ -25,8 +25,6 @@ os=$("$__explorer/os")
 runlevel=$("$__explorer/runlevel")
 name="$__object_id"
 
-# default
-state="present"
 
 case "$os" in
     archlinux)
@@ -44,21 +42,23 @@ case "$os" in
                 state="absent"
             fi
         done
-    ;;  
+    ;;
 
     debian|ubuntu)
+        state="present"
         [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
-    ;;  
+    ;;
 
     centos|fedora|owl|redhat)
+        state="present"
         state=$(chkconfig --level "$runlevel" \"$name\" || echo absent)
         [ "$state" ] || state="present"
-    ;;  
+    ;;
 
     *)  
        echo "Unsupported os: $os" >&2
        exit 1
-    ;;  
+    ;;
 esac
 
 echo $state
