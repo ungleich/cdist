@@ -37,7 +37,7 @@ case "$state_should" in
     present)
         case "$os" in
             archlinux)
-                echo sed -i /etc/rc.conf \"s/^\\(DAEMONS=.*\\))/\\1 foo)/\"
+                echo sed -i /etc/rc.conf \"s/^\\(DAEMONS=.*\\))/\\1 $name)/\"
             ;;
             debian|ubuntu)
                 # This does not work as expected:
@@ -64,6 +64,9 @@ case "$state_should" in
 
     absent)
         case "$os" in
+            archlinux)
+                echo sed -i /etc/rc.conf -e \"s/ $name / /g\" -e \"s/($name/(/\" -e \"s/ $name)/)/\"
+            ;;
             debian|ubuntu)
                 echo update-rc.d -f \"$name\" remove
             ;;
