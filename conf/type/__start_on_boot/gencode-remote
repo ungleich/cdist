@@ -33,12 +33,12 @@ state_is=$(cat "$__object/explorer/state")
 os=$(cat "$__global/explorer/os")
 name="$__object_id"
 
-# Support runlevels later
-#runlevel=$(cat $__global/explorer/runlevel)
-
 case "$state_should" in
     present)
         case "$os" in
+            archlinux)
+                echo sed -i /etc/rc.conf \"s/^\\(DAEMONS=.*\\))/\\1 foo)/\"
+            ;;
             debian|ubuntu)
                 # This does not work as expected:
                 # insserv: warning: current start runlevel(s) (3 4 5) of script `postfix' overwrites defaults (2 3 4 5).
