@@ -29,7 +29,7 @@ if grep -q "^${name}:" "$__object/explorer/group"; then
    for property in $(ls .); do
       new_value="$(cat "$property")"
 
-      case "$key" in
+      case "$property" in
          password)
             current_value="$(awk -F: '{ print $2 }' < "$__object/explorer/gshadow")"
          ;;
