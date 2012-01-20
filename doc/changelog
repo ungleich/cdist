@@ -1,6 +1,8 @@
 2.0.6:
 	* Bugfix __apt_ppa:
 		Also remove the [ppa-name].list file, if empty. (Tim Kersten)
+	* Bugfix __group:
+		Referenced wrong variable name (Matt Coddington)
 	* Feature __package_apt:
 		Initial support for virtual packages (Evax Software)
 	* New Type: __rvm (Evax Software)
