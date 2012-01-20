@@ -50,10 +50,11 @@ UNIX, simplicity, familar environment | cdist is configured in POSIX shell
 
 ### Documentation
 
-The cdist documentation is included as manpages in the distribution.
+The cdist documentation is included as manpages in the distribution.  
+You can browse the documentation online as well:
 
- * You can [browse the documentation of the latest version online](man) as well.
- * Have a look at the [given speeches](speeches)
+ * [latest version](man/latest)
+ * [all versions (>= 2.0.4)](man)
 
 ### OS support
 
