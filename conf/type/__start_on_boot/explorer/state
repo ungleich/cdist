@@ -29,6 +29,23 @@ name="$__object_id"
 state="present"
 
 case "$os" in
+    archlinux)
+        # convert bash array to shell
+        daemons=$(grep ^DAEMONS /etc/rc.conf | sed -e 's/^.*=(//' -e 's/)$//')
+
+        # absent, as long as not found
+        state="absent"
+
+        # iterate, last one wins.
+        for daemon in $daemons; do
+            if [ "$daemon" = "$name" -o "$daemon" = "@${name}" ]; then
+                state="present"
+            elif [ "$daemon" = "!${name}" ]; then
+                state="absent"
+            fi
+        done
+    ;;  
+
     debian|ubuntu)
         [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
     ;;  
