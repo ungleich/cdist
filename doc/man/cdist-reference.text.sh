@@ -180,6 +180,7 @@ __object::
 __object_id::
    The type unique object id.
    Available for: type manifest, type explorer, type gencode
+   Note: The leading "/" will always be stripped.
 __self::
    DEPRECATED: Same as __object_name, do not use anymore, use __object_name instead.
    Will be removed in cdist 3.x.
