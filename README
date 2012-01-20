@@ -135,7 +135,13 @@ If you want to ensure nothing breaks you must set back the python version to wha
 
 #### Max OS X
 
-Ensure you have port installed and configured (http://www.macports.org/install.php).
+You can choose between Homebrew and Macports, either way works:
+
+[Homebrew](http://mxcl.github.com/homebrew/) variant:
+
+    brew install python3
+
+[Macports](http://www.macports.org/install.php) variant:
 
     port install python32
     ln -s /opt/local/bin/python3.2 /opt/local/bin/python3
