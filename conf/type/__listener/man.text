@@ -10,7 +10,9 @@ cdist-type__listener - Generic notification listener
 
 DESCRIPTION
 -----------
-Thi
+This is a generic listener type for notifications.
+Small code snippets passed in as arguments can be executed on messages
+starting by the trigger string.
 
 
 OPTIONAL PARAMETERS
