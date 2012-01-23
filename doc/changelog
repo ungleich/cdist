@@ -9,6 +9,7 @@
 	* New Type: __rvm_gem (Evax Software)
 	* New Type: __rvm_gemset (Evax Software)
 	* New Type: __rvm_ruby (Evax Software)
+	* New Type: __rsyncer (Daniel Maher)
 	* Feature core: Added new dependency resolver (Steven Armstrong)
 
 2.0.5: 2012-01-18
