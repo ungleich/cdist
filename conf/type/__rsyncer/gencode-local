@@ -33,7 +33,7 @@ else
     rsyncbin=`which rsync`
 fi
 
-args='-a --stats'
+args='-a'
 
 # If the --delete argument should be passed to rsync.
 if [ -f "$__object/parameter/delete" ]; then
