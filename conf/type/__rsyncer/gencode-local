@@ -40,5 +40,9 @@ if [ -f "$__object/parameter/delete" ]; then
     args="$args --delete"
 fi
 
+# FIXME:
+#   - using root@ may break - find a good way to avoid this
+#   - align with __remote_{exec,copy} variables?
+
 # Run rsync (locally).
 echo "$rsyncbin $args $source root@$__target_host:$destination"
