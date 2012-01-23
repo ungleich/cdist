@@ -1,0 +1,15 @@
+#! /bin/sh
+
+if [ -f "$__object/parameter/remote_code" ]; then
+   trigger="$(cat "$__object/parameter/trigger")"
+   remote_code="$(cat "$__object/parameter/remote_code")"
+   cat << DONE
+for __m in \$__messages; do
+   case \$__m in
+      $trigger*)
+         $remote_code
+      ;;
+   esac
+done
+DONE
+fi

@@ -1,0 +1,15 @@
+#! /bin/sh
+
+if [ -f "$__object/parameter/local_code" ]; then
+   trigger="$(cat "$__object/parameter/trigger")"
+   local_code="$(cat "$__object/parameter/local_code")"
+   cat << DONE
+for __m in \$__messages; do
+   case \$__m in
+      $trigger*)
+         $local_code
+      ;;
+   esac
+done
+DONE
+fi

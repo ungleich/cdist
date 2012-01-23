@@ -54,6 +54,7 @@ class Object(object):
     # Constants for use with Object.state
     STATE_PREPARED = "prepared"
     STATE_RUNNING = "running"
+    STATE_LISTENING = "listening"
     STATE_DONE = "done"
 
     @classmethod
@@ -116,6 +117,8 @@ class Object(object):
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
+        self.code_listener_local_path = os.path.join(self.path, "code-listener-local")
+        self.code_listener_remote_path = os.path.join(self.path, "code-listener-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
 
     def __repr__(self):
@@ -163,8 +166,11 @@ class Object(object):
     changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
     state = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "state"))
     source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
+    notifications = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "notifications"))
     code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_local_path))
     code_remote = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_remote_path))
+    code_listener_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_listener_local_path))
+    code_listener_remote = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_listener_remote_path))
 
     @property
     def exists(self):

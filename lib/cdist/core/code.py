@@ -118,10 +118,18 @@ class Code(object):
         """Run the gencode-remote script for the given cdist object."""
         return self._run_gencode(cdist_object, 'remote')
 
-    def transfer_code_remote(self, cdist_object):
+    def run_gencode_listener_local(self, cdist_object):
+        """Run the gencode-listener-local script for the given cdist object."""
+        return self._run_gencode(cdist_object, 'listener_local')
+
+    def run_gencode_listener_remote(self, cdist_object):
+        """Run the gencode-listener-remote script for the given cdist object."""
+        return self._run_gencode(cdist_object, 'listener_remote')
+
+    def transfer_code_remote(self, cdist_object, attribute=('code_remote_path')):
         """Transfer the code_remote script for the given object to the remote side."""
-        source = os.path.join(self.local.object_path, cdist_object.code_remote_path)
-        destination = os.path.join(self.remote.object_path, cdist_object.code_remote_path)
+        source = os.path.join(self.local.object_path, getattr(cdist_object, attribute))
+        destination = os.path.join(self.remote.object_path, getattr(cdist_object, attribute))
         # FIXME: BUG: do not create destination, but top level of destination!
         # FIXME: BUG2: we are called AFTER the code-remote has been transferred already:
         # mkdir: cannot create directory `/var/lib/cdist/object/__directory/etc/acpi/actions/.cdist/code-remote': File exists
@@ -141,3 +149,16 @@ class Code(object):
     def run_code_remote(self, cdist_object):
         """Run the code-remote script for the given cdist object on the remote side."""
         return self._run_code(cdist_object, 'remote')
+
+    def _run_listener_code(self, cdist_object, which, messages):
+        which_exec = getattr(self, which.split("_")[1])
+        script = os.path.join(which_exec.object_path, getattr(cdist_object, 'code_%s_path' % which))
+        return which_exec.run_script(script, env={'__messages': '"'+" ".join(list(messages))+'"'})
+
+    def run_code_listener_local(self, cdist_object, messages):
+        """Run the code-listener-local script for the given cdist object."""
+        return self._run_listener_code(cdist_object, 'listener_local', messages)
+
+    def run_code_listener_remote(self, cdist_object, messages):
+        """Run the code-listener-remote script for the given cdist object on the remote side."""
+        return self._run_listener_code(cdist_object, 'listener_remote', messages)

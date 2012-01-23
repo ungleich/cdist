@@ -1,0 +1,8 @@
+#! /bin/sh
+
+trigger="$__object_id"
+if [ -f "$__object/parameter/trigger" ]; then
+    trigger="$(cat "$__object/parameter/trigger")"
+else
+    echo "$trigger" > "$__object/parameter/trigger"
+fi

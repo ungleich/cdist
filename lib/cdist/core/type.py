@@ -77,6 +77,8 @@ class Type(object):
         self.explorer_path = os.path.join(self.name, "explorer")
         self.gencode_local_path = os.path.join(self.name, "gencode-local")
         self.gencode_remote_path = os.path.join(self.name, "gencode-remote")
+        self.gencode_listener_local_path = os.path.join(self.name, "gencode-listener-local")
+        self.gencode_listener_remote_path = os.path.join(self.name, "gencode-listener-remote")
         self.manifest_path = os.path.join(self.name, "manifest")
 
         self.__explorers = None
