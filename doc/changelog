@@ -1,3 +1,9 @@
+Changelog
+---------
+
+	* Changes are always commented with their author in (braces)
+	* Exception: No braces means author == Nico Schottelius
+
 2.0.6:
 	* Bugfix __apt_ppa:
 		Also remove the [ppa-name].list file, if empty. (Tim Kersten)
@@ -9,7 +15,6 @@
 	* New Type: __rvm_gem (Evax Software)
 	* New Type: __rvm_gemset (Evax Software)
 	* New Type: __rvm_ruby (Evax Software)
-	* New Type: __rsyncer (Daniel Maher)
 	* Feature core: Added new dependency resolver (Steven Armstrong)
 
 2.0.5: 2012-01-18
