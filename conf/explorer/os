@@ -75,6 +75,11 @@ if [ -f /etc/cdist-preos ]; then
    exit 0
 fi
 
+if grep -q ^Amazon /etc/system-release 2>/dev/null; then
+   echo amazon
+   exit 0
+fi
+
 uname_s="$(uname -s)"
 
 # Assume there is no tr on the client -> do lower case ourselves
