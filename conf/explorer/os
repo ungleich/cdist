@@ -18,13 +18,14 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# All os variables are lower case
-#
+# All os variables are lower case.  Keep this file in alphabetical
+# order by os variable except in cases where order otherwise matters,
+# in which case keep the primary os and its derivatives together in
+# a block (see Debian and Redhat examples below).
 #
 
-# Ubuntu is also Debian, thus return if Ubuntu was found
-if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
-   echo ubuntu
+if grep -q ^Amazon /etc/system-release 2>/dev/null; then
+   echo amazon
    exit 0
 fi
 
@@ -33,35 +34,25 @@ if [ -f /etc/arch-release ]; then
    exit 0
 fi
 
+if [ -f /etc/cdist-preos ]; then
+   echo cdist-preos
+   exit 0
+fi
+
+### Debian and derivatives
+if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
+   echo ubuntu
+   exit 0
+fi
+
 if [ -f /etc/debian_version ]; then
    echo debian
    exit 0
 fi
+###
 
 if [ -f /etc/gentoo-release ]; then
    echo gentoo
-   exit 0
-fi
-
-# Fedora is also Redhat, thus return before redhat!
-if grep -q ^Fedora /etc/redhat-release 2>/dev/null; then
-   echo fedora
-   exit 0
-fi
-
-# CentOS is also based on Redhat, thus return before redhat!
-if grep -q ^CentOS /etc/redhat-release 2>/dev/null; then
-    echo centos
-    exit 0
-fi
-
-if [ -f /etc/redhat-release ]; then
-   echo redhat
-   exit 0
-fi
-
-if [ -f /etc/SuSE-release ]; then
-   echo suse
    exit 0
 fi
 
@@ -70,13 +61,25 @@ if [ -f /etc/owl-release ]; then
    exit 0
 fi
 
-if [ -f /etc/cdist-preos ]; then
-   echo cdist-preos
+### Redhat and derivatives
+if grep -q ^CentOS /etc/redhat-release 2>/dev/null; then
+    echo centos
+    exit 0
+fi
+
+if grep -q ^Fedora /etc/redhat-release 2>/dev/null; then
+   echo fedora
    exit 0
 fi
 
-if grep -q ^Amazon /etc/system-release 2>/dev/null; then
-   echo amazon
+if [ -f /etc/redhat-release ]; then
+   echo redhat
+   exit 0
+fi
+###
+
+if [ -f /etc/SuSE-release ]; then
+   echo suse
    exit 0
 fi
 
