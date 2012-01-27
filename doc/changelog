@@ -11,11 +11,12 @@ Changelog
 		Referenced wrong variable name (Matt Coddington)
 	* Feature __package_apt:
 		Initial support for virtual packages (Evax Software)
+	* Feature Core: Added new dependency resolver (Steven Armstrong)
+	* Feature Explorer, __package_yum: Support Amazon Linux (Matt Coddington)
 	* New Type: __rvm (Evax Software)
 	* New Type: __rvm_gem (Evax Software)
 	* New Type: __rvm_gemset (Evax Software)
 	* New Type: __rvm_ruby (Evax Software)
-	* Feature core: Added new dependency resolver (Steven Armstrong)
 
 2.0.5: 2012-01-18
 	* Bugfix __key_value: Use correct delimiters
