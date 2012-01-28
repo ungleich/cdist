@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.0.6:
+2.0.6: 2012-01-28
 	* Bugfix __apt_ppa:
 		Also remove the [ppa-name].list file, if empty. (Tim Kersten)
 	* Bugfix __group:
