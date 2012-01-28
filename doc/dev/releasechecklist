@@ -11,7 +11,7 @@ echo "Testing documentation..."
 ./build clean && ./build man || exit 1
 
 # get version
-changelog_version=$(head -n1 doc/changelog | sed 's/:.*//')
+changelog_version=$(grep '^[[:digit:]]' doc/changelog | head -n1 | sed 's/:.*//')
 #git_version=$(git describe)
 lib_version=$(grep ^VERSION lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
 
