@@ -34,24 +34,62 @@ case "$state_should" in
          fi
       fi
 
-      # Mode settings
+      # Mode
       if [ -f "$__object/parameter/mode" ]; then
-         echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
+         cat << DONE
+new=$(cat "$__object/parameter/mode")
+old=\$(ls -l -- "$destination" | sed 's/.\(.........\).*/\1/
+h;y/rwsxtST-/IIIIIOOO/;x;s/..\(.\)..\(.\)..\(.\)/|\1\2\3/
+y/sStTx-/IIIIOO/;G
+s/\n\(.*\)/\1;OOO0OOI1OIO2OII3IOO4IOI5IIO6III7/;:k
+s/|\(...\)\(.*;.*\1\(.\)\)/\3|\2/;tk
+s/^0*\(..*\)|.*/\1/;q')
+# allow \$new to start with a 0 (when the sed expression above will not)
+if [ \$(echo \$new | cut -c1) -eq 0 ]; then
+   new=\$(echo \$new | cut -c2-)
+fi
+if [ \$new -ne \$old ]; then
+   chmod \$new "$destination"
+fi
+DONE
       fi
 
       # Group
       if [ -f "$__object/parameter/group" ]; then
-         echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
+         cat << DONE
+new=$(cat "$__object/parameter/group")
+if echo \$new | grep -q "^[[:digit:]]\+$"; then
+   # we were given a gid
+   old=\$(ls -n "$destination" | awk '{print \$4}')
+  else
+   # we were given a group name
+   old=\$(ls -l "$destination" | awk '{print \$4}')
+fi
+if [ "\$new" != "\$old" ]; then
+   chgrp \$new "$destination"
+fi
+DONE
       fi
 
       # Owner
       if [ -f "$__object/parameter/owner" ]; then
-         echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
+         cat << DONE
+new=$(cat "$__object/parameter/owner")
+if echo \$new | grep -q "^[[:digit:]]\+$"; then
+   # we were given a uid
+   old=\$(ls -n "$destination" | awk '{print \$3}')
+  else
+   # we were given a user name
+   old=\$(ls -l "$destination" | awk '{print \$3}')
+fi
+if [ "\$new" != "\$old" ]; then
+   chown \$new "$destination"
+fi
+DONE
       fi
    ;;
 
    absent)
-
       if [ "$exists" = "yes" ]; then
          echo rm -f \"$destination\"
       fi
