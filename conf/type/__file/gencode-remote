@@ -27,31 +27,59 @@ exists="$(cat "$__object/explorer/exists")"
 
 case "$state_should" in
    present)
-      # No source? Create empty file
+      # No source? Create empty file and chown/chmod/chgrp appropriately
       if [ ! -f "$__object/parameter/source" ]; then
          if [ "$exists" = "no" ]; then
             echo touch \"$destination\"
+            test -f "$__object/parameter/mode" &&
+               echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
+            test -f "$__object/parameter/group" &&
+               echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
+            test -f "$__object/parameter/owner" &&
+               echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
+            # at this point we don't want to go through the code below
+            # since it will assume the file existed and could need updating
+            exit 0
          fi
-      fi
-
-      # Mode settings
-      if [ -f "$__object/parameter/mode" ]; then
-         echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
       fi
 
       # Group
       if [ -f "$__object/parameter/group" ]; then
-         echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
+         new=$(cat "$__object/parameter/group")
+         oldgid=$(cat "$__object/explorer/stat" | grep ^gid | awk '{print $2}')
+         oldgroup=$(cat "$__object/explorer/stat" | grep ^group | awk '{print $2}')
+         if [ "$new" != "$oldgid" -a "$new" != "$oldgroup" ]; then
+            echo chgrp $new \"$destination\"
+         fi
       fi
 
       # Owner
       if [ -f "$__object/parameter/owner" ]; then
-         echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
+         new=$(cat "$__object/parameter/owner")
+         olduid=$(cat "$__object/explorer/stat" | grep ^uid | awk '{print $2}')
+         oldowner=$(cat "$__object/explorer/stat" | grep ^owner | awk '{print $2}')
+         if [ "$new" != "$olduid" -a "$new" != "$oldowner" ]; then
+            echo chown $new \"$destination\"
+         fi
       fi
+
+      # Mode (needs to happen last as under certain circumstances a
+      # chown/chgrp can alter mode by removing set(g)id bits)
+      if [ -f "$__object/parameter/mode" ]; then 
+         new=$(cat "$__object/parameter/mode")
+         old=$(cat "$__object/explorer/stat" | grep ^mode | awk '{print $2}')
+         # allow $new to start with a 0 (explorer output will not)
+         if [ $(echo $new | cut -c1) -eq 0 ]; then
+            new=$(echo $new | cut -c2-)
+         fi
+         if [ "$new" != "$old" ]; then
+            echo chmod $new \"$destination\"
+         fi
+      fi
+
    ;;
 
    absent)
-
       if [ "$exists" = "yes" ]; then
          echo rm -f \"$destination\"
       fi
