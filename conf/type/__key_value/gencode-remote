@@ -18,32 +18,40 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-value_is="$(cat "$__object/explorer/value")"
-value_should="$(cat "$__object/parameter/value")"
-
 key="$(cat "$__object/parameter/key")"
 file="$(cat "$__object/parameter/file")"
 delimiter="$(cat "$__object/parameter/delimiter")"
+value="$(cat "$__object/parameter/value")"
 
-if [ "$value_is" != "$value_should" ]; then
-   case "$value_is" in
-      __NOTSET__)
-         # add key and value
-         echo "echo \"${key}${delimiter}${value_should}\" >> \"$file\""
-      ;;
-      *)
-         if [ "$value_should" = '__NOTSET__' ]; then
-            # remove key and value
-            cat << DONE
-sed -i '/^${key}/d' "$file"
-DONE
-         else
-            # change value
-            cat << DONE
-sed -i "s|^$key\($delimiter\+\).*|$key\1$value_should|" "$file"
-DONE
-         fi
-      ;;
-   esac
+state_is="$(cat "$__object/explorer/state")"
+state_should="$(cat "$__object/parameter/state")"
+
+if [ "$state_is" = "$state_should" ]; then
+   # nothing to do
+   exit 0
 fi
 
+case "$state_should" in
+   absent)
+      # remove lines starting with key
+      echo "sed -i '/^$key\($delimiter\+\)/d' \"$file\""
+   ;;
+   present)
+      case "$state_is" in
+         absent)
+            # add new key and value
+            echo "echo \"${key}${delimiter}${value}\" >> \"$file\""
+         ;;
+         wrongvalue)
+            # change exisiting value
+            echo "sed -i \"s|^$key\($delimiter\+\).*|$key\1$value|\" \"$file\""
+         ;;
+         *)
+            echo "Unknown explorer state: $state_is" >&2
+            exit 1
+      esac
+   ;;
+   *)
+      echo "Unknown state: $state_should" >&2
+      exit 1
+esac 

@@ -19,5 +19,12 @@
 #
 
 # set defaults
-[ -f "$__object/parameter/key" ] \
-   || echo "$__object_id" > "$__object/parameter/key"
+key="$(cat "$__object/parameter/key" 2>/dev/null \
+   || echo "$__object_id" | tee "$__object/parameter/key")"
+state="$(cat "$__object/parameter/state" 2>/dev/null \
+   || echo "present" | tee "$__object/parameter/state")"
+
+if [ "$state" = "present" -a ! -f "$__object/parameter/value" ]; then
+   echo "Missing required parameter 'value'" >&2
+   exit 1
+fi 

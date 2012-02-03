@@ -17,19 +17,34 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Get the current value of key or __NOTSET__ if the key doesn't exist.
-#
 
 key="$(cat "$__object/parameter/key" 2>/dev/null \
    || echo "$__object_id")"
-
+state="$(cat "$__object/parameter/state" 2>/dev/null \
+   || echo "present")"
 file="$(cat "$__object/parameter/file")"
 delimiter="$(cat "$__object/parameter/delimiter")"
+value="$(cat "$__object/parameter/value" 2>/dev/null \
+   || echo "__CDIST_NOTSET__")"
 
-awk -F "$delimiter" '
-BEGIN { found=0 }
-/^'$key'/ { print $2; found=1 }
-END { if (found) exit 0; else exit 1 }' "$file" \
-|| echo "__NOTSET__"
-
+case "$state" in
+   absent)
+      # if the key exists, with whatever value, we will have to remove it
+      # so report it as present
+      if egrep -q "^$key$delimiter+" "$file"; then
+         echo present
+      fi
+   ;;
+   present)
+      if egrep -q "^$key$delimiter+$value$" "$file"; then
+         # key exists and value is same
+         echo present
+      elif egrep -q "^$key$delimiter+" "$file"; then
+         # key exists, but value is empty or different
+         echo wrongvalue
+      else
+         # key does not exist
+         echo absent
+      fi
+   ;;
+esac
