@@ -18,9 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/key" ]; then
-   key="$(cat "$__object/parameter/key")"
-else
-   echo "$__object_id" > "$__object/parameter/key"
-fi
-
+# set defaults
+[ -f "$__object/parameter/key" ] \
+   || echo "$__object_id" > "$__object/parameter/key"
