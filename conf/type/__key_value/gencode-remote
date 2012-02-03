@@ -40,10 +40,7 @@ DONE
          else
             # change value
             cat << DONE
-awk -F "$delimiter" '
-/${key}${delimiter}*/{gsub("$value_is", "$value_should")};{print}' "$file" > "${file}+" \
-&& mv "${file}+" "$file"
-
+sed -i "s|^$key\($delimiter\+\).*|$key\1$value_should|" "$file"
 DONE
          fi
       ;;
