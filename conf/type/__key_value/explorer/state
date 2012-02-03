@@ -29,10 +29,13 @@ value="$(cat "$__object/parameter/value" 2>/dev/null \
 
 case "$state" in
    absent)
-      # if the key exists, with whatever value, we will have to remove it
-      # so report it as present
       if egrep -q "^$key$delimiter+" "$file"; then
+         # if the key exists, with whatever value, we will have to remove it
+         # so report it as present
          echo present
+      else
+         # key does not exist
+         echo absent
       fi
    ;;
    present)
