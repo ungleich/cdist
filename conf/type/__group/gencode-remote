@@ -23,23 +23,36 @@
 #
 
 name="$__object_id"
+os="$(cat "$__global/explorer/os")"
 
 cd "$__object/parameter"
 if grep -q "^${name}:" "$__object/explorer/group"; then
    for property in $(ls .); do
       new_value="$(cat "$property")"
+      # argument to pass the groupmod command for this property (os-specific
+      # exceptions are listed in the case statement below)
+      proparg="--$property"
 
       case "$property" in
          password)
             current_value="$(awk -F: '{ print $2 }' < "$__object/explorer/gshadow")"
+            case "$os" in
+               centos|fedora|redhat)
+                  echo "group/$name: $os groupmod does not support password modification" >&2
+                  continue
+               ;;
+            esac
          ;;
          gid)
             current_value="$(awk -F: '{ print $3 }' < "$__object/explorer/group")"
+            case "$os" in
+               centos|fedora|redhat) proparg="-g" ;;
+            esac
          ;;
       esac
 
       if [ "$new_value" != "$current_value" ]; then
-         set -- "$@" "--$property" \"$new_value\"
+         set -- "$@" "$proparg" \"$new_value\"
       fi
    done
 
