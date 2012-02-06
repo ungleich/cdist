@@ -1,0 +1,53 @@
+cdist-type__listener(7)
+=======================
+Evax Software <contact@evax.fr>
+
+
+NAME
+----
+cdist-type__listener - Generic notification listener
+
+
+DESCRIPTION
+-----------
+This is a generic listener type for notifications.
+Small code snippets passed in as arguments can be executed on messages
+starting by the trigger string.
+
+
+OPTIONAL PARAMETERS
+-------------------
+trigger::
+   Defaults to the object id, this is the message prefix to match.
+local_code::
+   The code to run locally if the trigger matches.
+remote_code::
+   The code to run remotely if the trigger matches.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Restart nginx when needed
+# To trigger this do
+#   echo "nginx_restart" >> "$__object/notifications"
+# from a type's gencode-remote or gencode-local script.
+__listener nginx_restart --remote_code "/etc/init.d/nginx restart"
+
+# Same thing using trigger as an argument
+__listener nginx_listener --trigger nginx_restart \
+                          --remote_code "/etc/init.d/nginx restart"
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-notifications(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Evax Software. Free use of this software is granted under
+the terms of the GNU General Public License version 3 (GPLv3).

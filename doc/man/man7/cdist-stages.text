@@ -58,6 +58,8 @@ In this stage for every created object its type is checked for executable
 gencode scripts. The gencode scripts generate the code to be executed on the 
 target on stdout. If the gencode executables fail, they must print diagnostic 
 messages on stderr and exit non-zero.
+The gencode scripts can emit notifications by appending elements to the
+"$__object/notifications" file.
 
 
 STAGE 6: CODE EXECUTION
@@ -66,7 +68,14 @@ For every object the resulting code from the previous stage is transferred to
 the target host and executed there to apply the configuration changes.
 
 
-STAGE 7: CACHE
+STAGE 7: NOTIFICATIONS HANDLING
+-------------------------------
+If listeners are provided (gencode-listener-local and gencode-listener-remote),
+they are called with the notification tokens passed in the "$__messages"
+enviroment variable.
+
+
+STAGE 8: CACHE
 --------------
 The cache stores the information from the current run for later use.
 

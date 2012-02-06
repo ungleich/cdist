@@ -118,6 +118,8 @@ class ConfigInstall(object):
         self.log.info("Generating and executing code for " + cdist_object.name)
         cdist_object.code_local = self.code.run_gencode_local(cdist_object)
         cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
+        cdist_object.code_listener_local = self.code.run_gencode_listener_local(cdist_object)
+        cdist_object.code_listener_remote = self.code.run_gencode_listener_remote(cdist_object)
         if cdist_object.code_local or cdist_object.code_remote:
             cdist_object.changed = True
 
@@ -128,9 +130,24 @@ class ConfigInstall(object):
             self.code.transfer_code_remote(cdist_object)
             self.code.run_code_remote(cdist_object)
 
-        # Mark this object as done
-        self.log.debug("Finishing run of " + cdist_object.name)
-        cdist_object.state = core.Object.STATE_DONE
+        if cdist_object.code_listener_remote or cdist_object.code_listener_remote:
+            # There are listeners to run
+            self.log.debug("Switch to listening state " + cdist_object.name)
+            cdist_object.state = core.Object.STATE_LISTENING
+        else:
+            # Mark this object as done
+            self.log.debug("Finishing run of " + cdist_object.name)
+            cdist_object.state = core.Object.STATE_DONE
+        return cdist_object.notifications
+
+    def object_notify(self, cdist_object, messages):
+        if cdist_object.state == core.Object.STATE_LISTENING:
+            if cdist_object.code_listener_local:
+                self.code.run_code_listener_local(cdist_object, messages)
+            if cdist_object.code_listener_remote:
+                self.code.transfer_code_remote(cdist_object,
+                                               'code_listener_remote_path')
+                self.code.run_code_listener_remote(cdist_object, messages)
 
     def stage_run(self):
         """The final (and real) step of deployment"""
@@ -143,6 +160,11 @@ class ConfigInstall(object):
         dependency_resolver = resolver.DependencyResolver(objects)
         self.log.debug(pprint.pformat(dependency_resolver.graph))
 
+        messages = set()
         for cdist_object in dependency_resolver:
             self.log.debug("Run object: %s", cdist_object)
-            self.object_run(cdist_object)
+            messages |= set(self.object_run(cdist_object))
+
+        for cdist_object in dependency_resolver:
+            self.log.debug("Runing notifications: %s", cdist_object)
+            self.object_notify(cdist_object, messages)

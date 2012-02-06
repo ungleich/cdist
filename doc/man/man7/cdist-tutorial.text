@@ -37,6 +37,9 @@ cdist-reference::
 cdist-explorer::
     Interested in getting more information about the target system? [intermediate]
 
+cdist-notifications::
+    Learn more about the notification system [intermediate]
+
 cdist-stages::
     Understand the internal workflow of cdist. [advanced]
 
