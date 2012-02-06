@@ -42,7 +42,7 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
             fi
          ;;
          password)
-            field=3
+            field=2
             file="$__object/explorer/shadow"
          ;;
          comment) field=5 ;;
