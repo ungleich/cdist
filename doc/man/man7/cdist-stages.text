@@ -9,20 +9,8 @@ cdist-stages - Stages used during configuration deployment
 
 DESCRIPTION
 -----------
-Starting the execution of deployment with cdist-deploy-to(1), cdist passes
-through different stages, each can be triggered and debugged on its own.
-Reading the source of the cdist-deploy-to executable shows the scripts 
-responsible for each stage.
-
-
-STAGE 0: INTERNAL PREPERATION
------------------------------
-Before running the user facing stages, cdist prepares the target host
-to contain cdist binaries and creates a clean environment for the
-configuration run.
-
-Related documentation:
-   - Source of cdist-deploy-to
+Starting the execution of deployment with cdist, cdist passes
+through different stages.
 
 
 STAGE 1: TARGET INFORMATION RETRIEVAL
@@ -45,7 +33,7 @@ be created.
 STAGE 3: OBJECT INFORMATION RETRIEVAL
 -------------------------------------
 Every object is checked whether its type has explorers and if so, these are 
-transfered to the target host and executed. The results are transfered back
+executed on the target host. The results are transfered back
 and can be used in the following stages to decide what changes need to be made
 on the target to implement the desired state.
 
@@ -86,19 +74,16 @@ The cache stores the information from the current run for later use.
 SUMMARY
 -------
 If, and only if, all the stages complete without an errors, the configuration
-will be applied to the target. Each stage can also be run individually, though
-dependencies for each stage must be fulfilled and thus the stages must be run
-in correct order.
+will be applied to the target.
 
 
 SEE ALSO
 --------
 - cdist(1)
-- cdist(7)
 - cdist-reference(7)
 
 
 COPYING
 -------
-Copyright \(C) 2010-2011 Nico Schottelius, Steven Armstrong. Free use of this software is
+Copyright \(C) 2010-2012 Nico Schottelius, Steven Armstrong. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

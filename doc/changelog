@@ -1,8 +1,44 @@
-2.0.4:
+Changelog
+---------
+
+	* Changes are always commented with their author in (braces)
+	* Exception: No braces means author == Nico Schottelius
+
+2.0.6: 2012-01-28
+	* Bugfix __apt_ppa:
+		Also remove the [ppa-name].list file, if empty. (Tim Kersten)
+	* Bugfix __group:
+		Referenced wrong variable name (Matt Coddington)
+	* Feature __package_apt:
+		Initial support for virtual packages (Evax Software)
+	* Feature Core: Added new dependency resolver (Steven Armstrong)
+	* Feature Explorer, __package_yum: Support Amazon Linux (Matt Coddington)
+	* New Type: __rvm (Evax Software)
+	* New Type: __rvm_gem (Evax Software)
+	* New Type: __rvm_gemset (Evax Software)
+	* New Type: __rvm_ruby (Evax Software)
+
+2.0.5: 2012-01-18
+	* Bugfix __key_value: Use correct delimiters
+		(Steven Armstrong, Daniel Maher)
+	* Cleanup: Explicitly require Python >= 3.2 (do not fail implicitly)
+	* Documentation: (Re)write of the tutorial
+	* Feature: __addifnosuchline supports matching on 
+		regular expressions (Daniel Maher)
+	* Feature: __directory, __file, __link:
+		Add --state parameter (Steven Armstrong)
+	* New Type: __package_luarocks (Christian G. Warden)
+	* New Type: __cdistmarker (Daniel Maher)
+
+2.0.4: 2011-11-18
 	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
+	* Bugfix core: Accept parameters with - in the name (Steven Armstrong)
 	* Cleanup: __object_fq variable removed (never used)
 	* Cleanup: Environment variable __self DEPRECATED, use __object_name instead
 	* Cleanup: Environment variable __self scheduled for removal in cdist 2.1
+	* Documentation: Many examples for use of __remote_* (Steven Armstrong)
+	* Feature: Automatically require all used objects (Steven Armstrong)
+	* New Type: __cron (Steven Armstrong)
 
 2.0.3: 2011-10-18
 	* Improved logging, added --verbose, by more quiet by default

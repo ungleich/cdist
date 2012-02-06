@@ -37,11 +37,12 @@ __package tree --state installed
 
 A list of supported types can be found in the cdist-reference(7) manpage.
 
+
 SINGLETON TYPES
 ---------------
-If a type is flagged as a singleton, it may me used only once. This
-is useful for types which can be used only once on a system. If a type
-can only be used once, it does not take an 
+If a type is flagged as a singleton, it may be used only 
+once per host. This is useful for types which can be used only once on a
+system. Singleton types do not take an object name as argument.
 
 Example:
 --------------------------------------------------------------------------------
@@ -51,7 +52,6 @@ __issue
 # Probably your own type - singletons may use parameters
 __myfancysingleton --colour green
 --------------------------------------------------------------------------------
-
 
 
 HOW TO WRITE A NEW TYPE
@@ -65,17 +65,16 @@ A type consists of
 - gencode   (optional)
 
 Types are stored below conf/type/. Their name should always be prefixed with
-two underscores (__) to prevent collisions with other binaries in $PATH.
+two underscores (__) to prevent collisions with other executables in $PATH.
 
-To begin a new type from a template, execute "cdist-type-template __NAME"
-and cd conf/type/__NAME.
+To begin a new type, just create the directory **conf/type/__NAME**.
 
 
 DEFINING PARAMETERS
 -------------------
 Every type consists of optional and required parameters, which must
-be created in a newline seperated file in parameters/required and
-parameters/optional. If either or both missing, the type will have
+be created in a newline seperated file in ***parameters/required*** and
+***parameters/optional***. If either or both missing, the type will have
 no required, no optional or no parameters at all.
 
 Example:
@@ -110,21 +109,27 @@ As you can see, the type can reference different environment variables,
 which are documented in cdist-reference(7).
 
 Always ensure the manifest is executable, otherwise cdist will not be able
-to execute it.
+to execute it. For more information about manifests see cdist-manifest(7).
 
 
 SINGLETON - ONLY INSTANCE ONLY
 ------------------------------
 If you want to ensure that a type can only be used once per target, you can
 mark it as a singleton: Just create the (empty) file "singleton" in your type
-directory. This will also change the way your type must be called:
+directory: 
+
+--------------------------------------------------------------------------------
+touch conf/type/__NAME/singleton
+--------------------------------------------------------------------------------
+
+This will also change the way your type must be called:
 
 --------------------------------------------------------------------------------
 __YOURTYPE --parameter value
 --------------------------------------------------------------------------------
 
-As you can see, the ID is omitted, because it does not make any sense, if your
-type can be used only once.
+As you can see, the object ID is omitted, because it does not make any sense, 
+if your type can be used only once.
 
 
 THE TYPE EXPLORERS
@@ -134,7 +139,7 @@ explorers, which will be executed on the target for every created object.
 
 The explorers are stored under the "explorer" directory below the type.
 It could for instance contain code to check the md5sum of a file on the
-client, like this (shortened version from real type __file):
+client, like this (shortened version from the type __file):
 
 --------------------------------------------------------------------------------
 if [ -f "$__object/parameter/destination" ]; then
@@ -151,15 +156,15 @@ fi
 
 WRITING THE GENCODE SCRIPT
 --------------------------
-There are two gencode scripts: gencode-local and gencode-remote.
+There are two gencode scripts: ***gencode-local*** and ***gencode-remote***.
 The output of gencode-local is executed locally, whereas
 the output of gencode-remote is executed on the target.
 
-The gencode script can make use of the parameters, the global explorers
-and the type specific explorers. The output (stdout) of this script is
+The gencode scripts can make use of the parameters, the global explorers
+and the type specific explorers. The output (stdout) of these script is
 saved by cdist and will be executed on the target.
 
-If the gencode script encounters an error, it should print diagnostic
+If the gencode scripts encounter an error, it should print diagnostic
 messages to stderr and exit non-zero. If you need to debug the gencode
 script, you can write to stderr:
 
@@ -181,18 +186,20 @@ type should create an object of the specific type.
 
 If your type wants to save temporary data, that may be used by other types
 later on (for instance __file), you can save them in the subdirectory
-"files" below $__object (but you must create it yourself). cdist will not touch
-this directory.
+"files" below $__object (but you must create it yourself).
+cdist will not touch this directory.
 
 If your type contains static files, it's also recommended to place them in
 a folder named "files" within the type (again, because cdist guarantees to
 never ever touch this folder).
 
+
 HOW TO INCLUDE A TYPE INTO UPSTREAM CDIST
 -----------------------------------------
 If you think your type may be useful for others, ensure it works with the
 current master branch of cdist and submit the git url containing the type for
-inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**.
+inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**
+or open a pull request at http://github.com/telmich/cdist.
 
 Ensure a corresponding manpage named man.text in asciidoc format with
 the manpage-name "cdist-type__NAME" is included in the type directory.
@@ -200,11 +207,12 @@ the manpage-name "cdist-type__NAME" is included in the type directory.
 
 SEE ALSO
 --------
-- cdist-manifest-run(1)
+- cdist-explorer(7)
 - cdist-stages(7)
+- cdist-tutorial(7)
 
 
 COPYING
 -------
-Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

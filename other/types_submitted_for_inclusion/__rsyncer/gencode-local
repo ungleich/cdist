@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# Copyright (C) 2011 Daniel Maher (phrawzty+cdist at gmail.com)
+#
+# This file is part of cdist (https://github.com/telmich/cdist/).
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+source="$(cat "$__object/parameter/source")"
+
+if [ -f "$__object/parameter/destination" ]; then
+    destination="$(cat "$__object/parameter/destination")"
+else
+    destination="/$__object_id"
+fi
+
+# The system binary is probably ok, but if not...
+if [ -f "$__object/parameter/rsyncbin" ]; then
+    rsyncbin="$(cat "$__object/parameter/rsyncbin")"
+else
+    rsyncbin=`which rsync`
+fi
+
+args='-a'
+
+# If the --delete argument should be passed to rsync.
+if [ -f "$__object/parameter/delete" ]; then
+    args="$args --delete"
+fi
+
+# FIXME:
+#   - using root@ may break - find a good way to avoid this
+#   - align with __remote_{exec,copy} variables?
+
+# Run rsync (locally).
+echo "$rsyncbin $args $source root@$__target_host:$destination"

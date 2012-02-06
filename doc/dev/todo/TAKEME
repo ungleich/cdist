@@ -3,25 +3,20 @@ UNASSIGNED TODOS
 The following list of todos has not been assigned to any developer.
 Feel free to pick one!
 
-CORE
-----
-- probably remove or improve cdist-type-template
-- allow cdist to run without $PATH setup: ./bin/cdist-deploy-to
-- support non-ssh access?
-
 TESTS
 -----
 - multiple defines of object:
    - fail if different parameters
    - succeed if same parameters
+- verify that all env variables in doc/man/cdist-reference.text.sh
+    exist in the right stages
+- test DependencyResolver
+
 
 USER INTERFACE
 --------------
-- add support $__tmp?
-   - for use in manifest, code, etc.?
-      - for creating temporary files, etc.
-
 - How to cleanly implement "restart service if config file changed"
+    -> document
 
 - Cache
    - add example how to use 
@@ -39,16 +34,4 @@ USER INTERFACE
 
 TYPES
 ------
-- __ssh-keys (host/user)
-- __file_edit
-   - regexp replace (can probably cover all?)
-      -> aka sed.
-- __cron
-- __user
-   add option to include --create-home
-
-DOCUMENTATION
---------------
-- asciidoc interprets __, which we use for variables
-  names -> seek through docs and replace with \_\_!
-- reference explorers in cdist-reference!
+- Add testing framework (proposed by Evax Software)

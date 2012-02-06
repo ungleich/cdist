@@ -50,12 +50,11 @@ UNIX, simplicity, familar environment | cdist is configured in POSIX shell
 
 ### Documentation
 
-The cdist documentation is included as manpages in the distribution.
+The cdist documentation is included as manpages in the distribution.  
+You can browse the documentation online as well:
 
- * You can [browse the documentation of the latest version online](man) as well.
- * Or you can watch the youtube **video**
-[cdist installation and first usage in less than 60 seconds][http://www.youtube.com/watch?v=PRMjzy48eTI).
- * Have a look at the [given speeches](speeches)
+ * [latest version](man/latest)
+ * [all versions (>= 2.0.4)](man)
 
 ### OS support
 
@@ -63,12 +62,14 @@ cdist was tested or is know to run on at least
 
  * [Archlinux](http://www.archlinux.org/)
  * [Debian](http://www.debian.org/)
+ * [CentOS](http://www.centos.org/)
  * [Fedora](http://fedoraproject.org/)
  * [Gentoo](http://www.gentoo.org/)
  * [Mac OS X](http://www.apple.com/macosx/)
  * [OpenBSD](http://www.openbsd.org)
  * [Redhat](http://www.redhat.com/)
  * [Ubuntu](http://www.ubuntu.com/)
+ * [XenServer](http://www.citrix.com/xenserver/)
 
 
 ## Requirements
@@ -77,21 +78,21 @@ cdist was tested or is know to run on at least
 
  * A posix like shell
  * Python (>= 3.2 required)
- * SSH-Client
+ * SSH client
  * Asciidoc (for building the manpages)
 
 ### Client ("target host")
 
  * A posix like shell
- * SSH-Server
+ * SSH server
 
 
 ## Installation
 
 ### Preperation
 
-Ensure you have Python 3.x and the **argparse** module installed on
-the machine you use to **deploy to the targets**.
+Ensure you have Python 3.2 installed on the machine you use to **deploy to the targets**
+(the ***source host***).
 
 #### Archlinux
 
@@ -101,9 +102,27 @@ Archlinux already has python >= 3.2, so you only need to do:
 
 #### Debian
 
-    aptitude install python3 python3-setuptools
-    easy_install3 argparse
+For Debian >= wheezy:
 
+    aptitude install python3
+
+For older Debian versions, installing python 3.2 manually is required.
+
+#### Fedora
+
+For Fedora >= 15:
+
+    yum install python3
+
+#### FreeBSD
+
+For the port:
+
+    cd /usr/ports/lang/python32/ && make install clean
+
+For the package:
+
+    pkg_add -r python32
 
 #### Gentoo
 
@@ -117,7 +136,13 @@ If you want to ensure nothing breaks you must set back the python version to wha
 
 #### Max OS X
 
-Ensure you have port installed and configured (http://www.macports.org/install.php).
+You can choose between Homebrew and Macports, either way works:
+
+[Homebrew](http://mxcl.github.com/homebrew/) variant:
+
+    brew install python3
+
+[Macports](http://www.macports.org/install.php) variant:
 
     port install python32
     ln -s /opt/local/bin/python3.2 /opt/local/bin/python3
@@ -133,19 +158,16 @@ To install cdist, execute the following commands:
     export PATH=$PATH:$(pwd -P)/bin
 
     # If you want the manpages
-    ./build.sh man
+    ./build man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
-
-Afterwards you can run ***cdist-quickstart*** to get an impression on
-how to use cdist.
 
 ### Available versions
 
 There are at least the following branches available:
 
  * Development: master
- * 2.0: Python rewrite of cdist core
+ * 2.0: Python rewrite of cdist core [stable branch]
 
 Old versions:
 
@@ -180,7 +202,7 @@ To upgrade cdist in the current branch use
     git pull
 
     # Also update the manpages
-    ./build.sh man
+    ./build man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
@@ -242,6 +264,13 @@ You can join the development ***IRC channel***
 
 Bug reports, questions, patches, etc. should be send to the
 [cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
+
+### Linkedin
+
+If you have an account
+at [Linked in](http://www.linkedin.com/),
+you can join the
+[cdist group](http://www.linkedin.com/groups/cdist-configuration-management-3952797).
 
 ### Commercial support
 

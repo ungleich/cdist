@@ -17,47 +17,57 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Handle directories
-#
-#
-# __directory /etc [--mode --owner --group --parents [yes|no] ]
-#
 
 destination="/$__object_id"
+state_should="$(cat "$__object/parameter/state")"
 
-# Include parent directories?
-if [ -f "$__object/parameter/parents" ]; then
-   parents="$(cat "$__object/parameter/parents")"
-   if [ yes = "$parents" ]; then
-      mkdiropt="-p"
-   else
-      mkdiropt=""
-   fi
-fi
+case "$state_should" in
+   present)
+      # Include parent directories?
+      if [ -f "$__object/parameter/parents" ]; then
+         parents="$(cat "$__object/parameter/parents")"
+         if [ yes = "$parents" ]; then
+            mkdiropt="-p"
+         else
+            mkdiropt=""
+         fi
+      fi
 
-if [ -f "$__object/parameter/recursive" ]; then
-   if [ yes = "$(cat "$__object/parameter/recursive")" ]; then
-      recursive="-R"
-   fi
-fi
+      if [ -f "$__object/parameter/recursive" ]; then
+         if [ yes = "$(cat "$__object/parameter/recursive")" ]; then
+            recursive="-R"
+         fi
+      fi
 
-# Only create if not already existent
-if [ no = "$(cat "$__object/explorer/exists")" ]; then
-   echo mkdir $mkdiropt \"$destination\"
-fi
+      # Only create if not already existent
+      if [ no = "$(cat "$__object/explorer/exists")" ]; then
+         echo mkdir $mkdiropt \"$destination\"
+      fi
 
-# Mode settings
-if [ -f "$__object/parameter/mode" ]; then
-   echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
-fi
+      # Mode settings
+      if [ -f "$__object/parameter/mode" ]; then
+         echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
+      fi
 
-# Group
-if [ -f "$__object/parameter/group" ]; then
-   echo chgrp $recursive \"$(cat "$__object/parameter/group")\" \"$destination\"
-fi
+      # Group
+      if [ -f "$__object/parameter/group" ]; then
+         echo chgrp $recursive \"$(cat "$__object/parameter/group")\" \"$destination\"
+      fi
 
-# Owner
-if [ -f "$__object/parameter/owner" ]; then
-   echo chown $recursive \"$(cat "$__object/parameter/owner")\" \"$destination\"
-fi
+      # Owner
+      if [ -f "$__object/parameter/owner" ]; then
+         echo chown $recursive \"$(cat "$__object/parameter/owner")\" \"$destination\"
+      fi
+   ;;
+   absent)
+      # Only delete if it exists
+      if [ yes = "$(cat "$__object/explorer/exists")" ]; then
+         echo rm -rf \"$destination\"
+      fi
+
+   ;;
+   *)
+      echo "Unknown state: $state_should" >&2
+      exit 1
+   ;;
+esac

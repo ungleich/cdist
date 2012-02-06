@@ -18,8 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# __file is a very basic type, which will probably be reused quite often
-#
 
 if [ -f "$__object/parameter/name" ]; then
    name="$(cat "$__object/parameter/name")"
@@ -28,10 +26,10 @@ else
 fi
 
 runs="$(cat "$__object/explorer/runs")"
-state="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
 
-case "$state" in
-   running)
+case "$state_should" in
+   running|present)
       # Does not run, start it!
       if [ -z "$runs" ]; then
          if [ -f "$__object/parameter/start" ]; then
@@ -41,7 +39,7 @@ case "$state" in
          fi
       fi
    ;;
-   stopped)
+   stopped|absent)
       # Runs, kill it!
       if [ "$runs" ]; then
          if [ -f "$__object/parameter/stop" ]; then
@@ -52,7 +50,7 @@ case "$state" in
       fi
    ;;
    *)
-      echo "Unknown state: $state" >&2
+      echo "Unknown state: $state_should" >&2
       exit 1
    ;;
 

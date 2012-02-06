@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -45,7 +45,7 @@ cdist-reference - Variable, path and type reference for cdist
 
 EXPLORERS
 ---------
-The following global explores are available:
+The following global explorers are available:
 
 eof
 (
@@ -74,7 +74,7 @@ conf/manifest/init::
 conf/manifest/*::
    All other files in this directory are not directly used by cdist, but you
    can seperate configuration mappings, if you have a lot of code in the
-   manifest/init file. This may also be very helpful to have different admins
+   manifest/init file. This may also be helpful to have different admins
    maintain different groups of hosts.
 
 conf/explorer/<name>::
@@ -90,7 +90,7 @@ conf/type/<name>/::
    This directory is referenced by the variable __type (see below).
 
 conf/type/<name>/man.text::
-   Manpage in Asciidoc format (nequired for inclusion into upstream)
+   Manpage in Asciidoc format (required for inclusion into upstream)
 
 conf/type/<name>/manifest::
    Used to generate additional objects from a type.
@@ -180,17 +180,16 @@ __object::
 __object_id::
    The type unique object id.
    Available for: type manifest, type explorer, type gencode
+   Note: The leading "/" will always be stripped.
 __self::
    DEPRECATED: Same as __object_name, do not use anymore, use __object_name instead.
+   Will be removed in cdist 3.x.
 __object_name::
    The full qualified name of the current object.
    Available for: type manifest, type explorer, type gencode
 __target_host::
    The host we are deploying to.
    Available for: initial manifest, type manifest, type gencode
-__target_user::
-   User to use for authentication on remote host.
-   Currently static in core.
 __type::
    Path to the current type.
    Available for: type manifest, type gencode
@@ -201,11 +200,11 @@ __type_explorer::
 
 SEE ALSO
 --------
-- cdist(7)
+- cdist(1)
 
 
 COPYING
 -------
-Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
 eof

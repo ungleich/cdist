@@ -26,7 +26,7 @@ name::
    The name of the package to install. Default is to use the object_id as the
    package name.
 version::
-   The version of the package to install. Default is to install the version 
+   The version of the package to install. Default is to install the version
    choosen by the local package manager.
 type::
    The package type to use. Default is determined based on the $os explorer

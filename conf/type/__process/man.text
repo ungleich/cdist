@@ -24,6 +24,10 @@ OPTIONAL PARAMETERS
 name::
    Process name to match on when using pgrep -f -x.
 
+   This is useful, if the name starts with a "/",
+   because the leading slash is stripped away from
+   the object id by cdist.
+
 stop::
    Executable to use for stopping the process.
 
@@ -50,6 +54,10 @@ __process /usr/sbin/sshd --state stopped --stop "/etc/rc.d/sshd stop"
 # Ensure cups is running, which runs with -C ...:
 __process cups --start "/etc/rc.d/cups start" --state running \
    --name "/usr/sbin/cupsd -C /etc/cups/cupsd.conf"
+
+# Ensure rpc.statd is running (which usually runs with -L) using a regexp
+__process rpcstatd --state running --start "/etc/init.d/statd start" \
+    --name "rpc.statd.*"
 --------------------------------------------------------------------------------
 
 

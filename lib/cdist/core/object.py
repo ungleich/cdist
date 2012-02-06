@@ -112,12 +112,18 @@ class Object(object):
         """
         return os.path.join(type_name, object_id)
 
-    def __init__(self, cdist_type, base_path, object_id=None):
+    @staticmethod
+    def validate_object_id(object_id):
+        """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
+        """
         if object_id:
             if object_id.startswith('/'):
                 raise IllegalObjectIdError(object_id, 'object_id may not start with /')
-            if OBJECT_MARKER in object_id:
+            if OBJECT_MARKER in object_id.split(os.sep):
                 raise IllegalObjectIdError(object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
+
+    def __init__(self, cdist_type, base_path, object_id=None):
+        self.validate_object_id(object_id)
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
@@ -132,8 +138,12 @@ class Object(object):
         return '<Object %s>' % self.name
 
     def __eq__(self, other):
-        """define equality as 'attributes are the same'"""
-        return self.__dict__ == other.__dict__
+        """define equality as 'name is the same'"""
+        return self.name == other.name
+    
+    def __hash__(self):
+        return hash(self.name)
+
 
     def __lt__(self, other):
         return isinstance(other, self.__class__) and self.name < other.name
@@ -148,9 +158,9 @@ class Object(object):
 
         """
         type_path = self.type.base_path
-        object_path = self.base_path
+        base_path = self.base_path
         type_name, object_id = self.split_name(object_name)
-        return self.__class__(self.type.__class__(type_path, type_name), object_path, object_id=object_id)
+        return self.__class__(self.type.__class__(type_path, type_name), base_path, object_id=object_id)
 
     # FIXME: still needed?
     @property

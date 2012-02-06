@@ -91,7 +91,7 @@ class Remote(object):
         self.rmdir(destination)
         command = self._copy.split()
         command.extend(["-r", source, self.target_host + ":" + destination])
-        self.run_command(command)
+        self._run_command(command)
 
     def run(self, command, env=None, return_output=False):
         """Run the given command with the given environment on the remote side.
@@ -102,9 +102,9 @@ class Remote(object):
         cmd = self._exec.split()
         cmd.append(self.target_host)
         cmd.extend(command)
-        return self.run_command(cmd, env=env, return_output=return_output)
+        return self._run_command(cmd, env=env, return_output=return_output)
 
-    def run_command(self, command, env=None, return_output=False):
+    def _run_command(self, command, env=None, return_output=False):
         """Run the given command with the given environment.
         Return the output as a string.
 

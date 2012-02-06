@@ -19,6 +19,8 @@
 #
 #
 
+VERSION     = "2.0.6"
+
 BANNER = """
              ..          .       .x+=:.        s
            dF           @88>    z`    ^%      :8
@@ -34,7 +36,6 @@ BANNER = """
    "P'        ""         ""
 """
 DOT_CDIST   = ".cdist"
-VERSION     = "2.0.3"
 
 
 import os

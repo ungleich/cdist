@@ -136,15 +136,30 @@ The following **.git/config** is taken from a a real world scenario:
 --------------------------------------------------------------------------------
 
 Have a look at git-remote(1) to adjust the remote configuration, which allows
-you to push certain branches to certain remotes.
 
+
+MULTIPLE DEVELOPERS WITH DIFFERENT TRUST
+----------------------------------------
+If you are working in an environment that requires different people to
+work on the same configuration, but having different privileges, you can
+implement this scenario with a gateway host and sudo:
+
+- Create a dedicated user (for instance **cdist**)
+- Setup the ssh-pubkey for this user that has the right to configure all hosts
+- Create a wrapper to update the cdist configuration in ~cdist/cdist
+- Allow every developer to execute this script via sudo as the user cdist
+- Allow run of cdist as user cdist on specific hosts on a per user/group base
+    - f.i. nico ALL=(ALL) NOPASSWD: /home/cdist/bin/cdist config hostabc
+
+For more details consult sudoers(5)
 
 SEE ALSO
 --------
-- cdist(7)
+- cdist(1)
+- cdist-tutorial(7)
 
 
 COPYING
 -------
-Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

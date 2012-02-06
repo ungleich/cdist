@@ -23,13 +23,15 @@ REPORTING BUGS
 --------------
 If you believe you've found a bug and verified that it is
 in the latest version, drop a mail to the cdist mailing list,
-subject prefixed with "[BUG] ".
+subject prefixed with "[BUG] " or create an issue on github.
 
 
 CODING CONVENTIONS (EVERYWHERE)
 -------------------------------
 If something should be better done or needs to fixed, add the word FIXME
 nearby, so grepping for FIXME gives all positions that need to be fixed.
+
+Indention is 4 spaces (welcome to the python world).
 
 
 HOW TO SUBMIT STUFF FOR INCLUSION INTO UPSTREAM CDIST
@@ -47,7 +49,7 @@ work nor kill the authors brain:
 - Code to be included should be branched of the upstream "master" branch
    - Exception: Bugfixes to a version branch
 - On a merge request, always name the branch I should pull from
-- Always ensure **all** manpages build: ./build.sh man
+- Always ensure **all** manpages build. Use **./build man** to test.
 - If you developed more than **one** feature, consider submitting them in
   seperate branches. This way one feature can already be included, even if
   the other needs to be improved.
@@ -73,5 +75,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

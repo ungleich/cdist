@@ -75,6 +75,7 @@ class Emulator(object):
         self.commandline()
         self.setup_object()
         self.record_requirements()
+        self.record_auto_requirements()
         self.log.debug("Finished %s %s" % (self.cdist_object.path, self.parameters))
 
     def __init_log(self):
@@ -97,10 +98,10 @@ class Emulator(object):
 
         for parameter in self.cdist_type.optional_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, action='store', required=False)
+            parser.add_argument(argument, dest=parameter, action='store', required=False)
         for parameter in self.cdist_type.required_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, action='store', required=True)
+            parser.add_argument(argument, dest=parameter, action='store', required=True)
 
         # If not singleton support one positional parameter
         if not self.cdist_type.is_singleton:
@@ -153,28 +154,30 @@ class Emulator(object):
                 if len(requirement) == 0:
                     continue
 
-                self.log.debug("Recording requirement: " + requirement)
-                requirement_parts = requirement.split(os.sep, 1)
-                requirement_type_name = requirement_parts[0]
-                requirement_object_id = requirement_parts[1]
-
-                # FIXME: Add support for omitted object id == singleton
-                #if len(requirement_parts) == 1:
-                #except IndexError:
-                #    # no object id, must be singleton
-                #    requirement_object_id = 'singleton'
-
-                # Remove / if existent in object id
-                requirement_object_id = requirement_object_id.lstrip('/')
-
+                requirement_type_name, requirement_object_id = core.Object.split_name(requirement)
                 # Instantiate type which fails if type does not exist
                 requirement_type = core.Type(self.type_base_path, requirement_type_name)
-                # Instantiate object which fails if the object_id is illegal
-                requirement_object = core.Object(requirement_type, self.object_base_path, requirement_object_id)
 
-                # Construct cleaned up requirement with only one / :-)
-                requirement = requirement_type_name + '/' + requirement_object_id
+                if requirement_object_id:
+                    # Validate object_id if any
+                    core.Object.validate_object_id(requirement_object_id)
+                elif not requirement_type.is_singleton:
+                    # Only singeltons have no object_id
+                    raise IllegalRequirementError(requirement, "Missing object_id and type is not a singleton.")
+
+                self.log.debug("Recording requirement: " + requirement)
                 self.cdist_object.requirements.append(requirement)
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
+
+    def record_auto_requirements(self):
+        """An object shall automatically depend on all objects that it defined in it's type manifest.
+        """
+        # __object_name is the name of the object whose type manifest is currenlty executed
+        __object_name = os.environ.get('__object_name', None)
+        if __object_name:
+            _object = self.cdist_object.object_from_name(__object_name)
+            # prevent circular dependencies
+            if not _object.name in self.cdist_object.requirements:
+                _object.requirements.append(self.cdist_object.name)

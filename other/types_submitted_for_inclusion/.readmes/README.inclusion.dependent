@@ -1,0 +1,15 @@
+Description:
+
+    Type that depends on other types to be included.
+
+Problem:
+
+    Does not make much sense on its own.
+
+Solutions:
+
+    - Make dependent types includable.
+
+    or
+
+    - Modify for yourself and use it

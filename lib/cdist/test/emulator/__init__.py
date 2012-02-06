@@ -22,13 +22,13 @@
 import os
 import shutil
 
+import cdist
 from cdist import test
 from cdist.exec import local
 from cdist import emulator
 from cdist import core
 
 local_base_path = test.cdist_base_path
-
 
 class EmulatorTestCase(test.CdistTestCase):
 
@@ -73,3 +73,89 @@ class EmulatorTestCase(test.CdistTestCase):
         os.environ['require'] = '__file/bad/id/with/.object/inside'
         emu = emulator.Emulator(argv)
         self.assertRaises(core.IllegalObjectIdError, emu.run)
+
+    def test_missing_object_id_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        os.environ.update(self.env)
+        os.environ['require'] = '__file'
+        emu = emulator.Emulator(argv)
+        self.assertRaises(emulator.IllegalRequirementError, emu.run)
+
+    def test_singleton_object_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        os.environ.update(self.env)
+        os.environ['require'] = '__issue'
+        emu = emulator.Emulator(argv)
+        emu.run()
+        # if we get here all is fine
+
+    def test_requirement_pattern(self):
+        argv = ['__file', '/tmp/foobar']
+        os.environ.update(self.env)
+        os.environ['require'] = '__file/etc/*'
+        emu = emulator.Emulator(argv)
+        # if we get here all is fine
+
+
+import os.path as op
+my_dir = op.abspath(op.dirname(__file__))
+fixtures = op.join(my_dir, 'fixtures')
+
+class AutoRequireEmulatorTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.temp_dir = self.mkdtemp()
+        self.target_host = 'localhost'
+        out_path = self.temp_dir
+        _local_base_path = fixtures
+        self.local = local.Local(self.target_host, _local_base_path, out_path)
+        self.local.create_directories()
+        self.local.link_emulator(cdist.test.cdist_exec_path)
+        self.manifest = core.Manifest(self.target_host, self.local)
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_autorequire(self):
+        initial_manifest = os.path.join(self.local.manifest_path, "init")
+        self.manifest.run_initial_manifest(initial_manifest)
+        cdist_type = core.Type(self.local.type_path, '__saturn')
+        cdist_object = core.Object(cdist_type, self.local.object_path, 'singleton')
+        self.manifest.run_type_manifest(cdist_object)
+        expected = ['__planet/Saturn', '__moon/Prometheus']
+        self.assertEqual(sorted(cdist_object.requirements), sorted(expected))
+
+
+class ArgumentsWithDashesTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.temp_dir = self.mkdtemp()
+        self.target_host = 'localhost'
+        out_path = self.temp_dir
+        handle, self.script = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
+        _local_base_path = fixtures
+        self.local = local.Local(self.target_host, _local_base_path, out_path)
+        self.local.create_directories()
+        self.local.link_emulator(test.cdist_exec_path)
+        self.env = {
+            'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
+            '__target_host': self.target_host,
+            '__global': self.local.out_path,
+            '__cdist_type_base_path': self.local.type_path, # for use in type emulator
+            '__manifest': self.local.manifest_path,
+            '__cdist_manifest': self.script,
+        }
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_arguments_with_dashes(self):
+        argv = ['__arguments_with_dashes', 'some-id', '--with-dash', 'some value']
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        cdist_type = core.Type(self.local.type_path, '__arguments_with_dashes')
+        cdist_object = core.Object(cdist_type, self.local.object_path, 'some-id')
+        self.assertTrue('with-dash' in cdist_object.parameters)

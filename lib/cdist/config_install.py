@@ -27,9 +27,12 @@ import shutil
 import sys
 import tempfile
 import time
+import itertools
+import pprint
 
 import cdist
 from cdist import core
+from cdist import resolver
 
 
 class ConfigInstall(object):
@@ -71,7 +74,7 @@ class ConfigInstall(object):
         start_time = time.time()
         self.deploy_to()
         self.cleanup()
-        self.log.info("Finished run in %s seconds",
+        self.log.info("Finished successful run in %s seconds",
             time.time() - start_time)
 
     def stage_prepare(self):
@@ -105,21 +108,11 @@ class ConfigInstall(object):
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
         self.log.debug("Trying to run object " + cdist_object.name)
-        if cdist_object.state == core.Object.STATE_RUNNING:
-            # FIXME: resolve dependency circle
-            raise cdist.Error("Detected circular dependency in " + cdist_object.name)
-        elif cdist_object.state == core.Object.STATE_DONE:
-            self.log.debug("Ignoring run of already finished object %s", cdist_object)
-            return
-        else:
-            cdist_object.state = core.Object.STATE_RUNNING
+        if cdist_object.state == core.Object.STATE_DONE:
+            # TODO: remove once we are sure that this really never happens.
+            raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
 
         cdist_type = cdist_object.type
-
-        for requirement in cdist_object.requirements:
-            self.log.debug("Object %s requires %s", cdist_object, requirement)
-            required_object = cdist_object.object_from_name(requirement)
-            self.object_run(required_object)
 
         # Generate
         self.log.info("Generating and executing code for " + cdist_object.name)
@@ -142,7 +135,14 @@ class ConfigInstall(object):
     def stage_run(self):
         """The final (and real) step of deployment"""
         self.log.info("Generating and executing code")
-        for cdist_object in core.Object.list_objects(self.local.object_path,
-                                                           self.local.type_path):
+
+        objects = core.Object.list_objects(
+            self.local.object_path,
+            self.local.type_path)
+
+        dependency_resolver = resolver.DependencyResolver(objects)
+        self.log.debug(pprint.pformat(dependency_resolver.graph))
+
+        for cdist_object in dependency_resolver:
             self.log.debug("Run object: %s", cdist_object)
             self.object_run(cdist_object)

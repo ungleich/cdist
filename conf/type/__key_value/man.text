@@ -35,7 +35,7 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Set the maximum system user id 
+# Set the maximum system user id
 __key_value SYS_UID_MAX --file /etc/login.defs --value 666 --delimiter ' '
 
 # Same with fancy id

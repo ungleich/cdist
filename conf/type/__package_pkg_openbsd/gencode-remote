@@ -78,7 +78,7 @@ eof
 eof
       fi
    ;;
-   *)  
+   *)
 		echo "Unknown state: $state" >&2
 		exit 1
    ;;

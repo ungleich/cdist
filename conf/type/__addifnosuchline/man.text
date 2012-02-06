@@ -25,7 +25,9 @@ OPTIONAL PARAMETERS
 file::
    If supplied, use this as the destination file.
    Otherwise the object_id is used.
-
+regex::
+   If supplied, search for this regex.
+   Otherwise entire line must be matched.
 
 EXAMPLES
 --------

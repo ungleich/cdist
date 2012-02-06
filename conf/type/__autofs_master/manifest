@@ -24,7 +24,7 @@ if [ ! -f "$__object/parameter/header" ]; then
 fi
 
 [ -d "$__object/files" ] || mkdir "$__object/files"
-require="$__self" __file /etc/auto.master --source "$__object/files/auto.master" \
+require="$__object_name" __file /etc/auto.master --source "$__object/files/auto.master" \
    --mode 644 \
    --owner root \
    --group root

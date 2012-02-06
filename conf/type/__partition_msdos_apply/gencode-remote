@@ -77,7 +77,7 @@ for object in $objects; do
       debug "current_device=$current_device"
       debug "available_device_size=$available_device_size"
    fi
- 
+
    type="$(cat "$object/parameter/type")"
    partition="$(cat "$object/parameter/partition")"
    minor="$(cat "$object/parameter/minor")"

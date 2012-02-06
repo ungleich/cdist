@@ -1,0 +1,22 @@
+Description:
+
+    Type that supports transfer of huge data, which is a general problem in
+    configuration management systems.
+
+    Good solution using standardised rsync approach.
+
+Problem:
+
+    Uses root@$__target_host:$destination notation for transfer.
+    This breaks the concept of being able to replace __remote_exec and
+    __remote_copy and then doing chroot or different stuff.
+
+    This breaks for instance, if __remote_copy = cp and the destination is
+    a local chroot.
+
+Solutions:
+
+    - Have cdist provide support for rsync syntax?
+    - Integrate __rsyncer more in line with philosohpy of other components
+    - Think about the general way of __rsyncer and what cdist would need
+      to provide for general solution.
