@@ -1,3 +1,6 @@
+- __file/foo/bar//bar
+    - fails later
+
 - __user
    add option to include --create-home
 - ensure that all types, which support --state support
