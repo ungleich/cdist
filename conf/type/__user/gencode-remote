@@ -28,6 +28,7 @@ cd "$__object/parameter"
 if grep -q "^${name}:" "$__object/explorer/passwd"; then
    for property in $(ls .); do
       new_value="$(cat "$property")"
+      unset current_value
 
       file="$__object/explorer/passwd"
 
@@ -36,9 +37,15 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
             if $(echo "$new_value" | grep -q '^[0-9][0-9]*$'); then
                field=4
             else
-               # group name
-               file="$__object/explorer/group"
-               field=1
+               # we were passed a group name.  compare to current gid and
+               # set $current_value to $oldgid if it needs changing.
+               newgid=$(awk -F: '{ print $3 }' "$__object/explorer/group")
+               oldgid=$(awk -F: '{ print $4 }' "$file")
+               if [ "$newgid" != "$oldgid" ]; then
+                  current_value="$oldgid"
+               else
+                  current_value=$new_value
+               fi
             fi
          ;;
          password)
@@ -51,8 +58,10 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
          uid)     field=3 ;;
       esac
 
-      export field
-      current_value="$(awk -F: '{ print $ENVIRON["field"] }' < "$file")"
+      if [ -z "$current_value" ]; then
+         export field
+         current_value="$(awk -F: '{ print $ENVIRON["field"] }' < "$file")"
+      fi
 
       if [ "$new_value" != "$current_value" ]; then
          set -- "$@" "--$property" \'$new_value\'
