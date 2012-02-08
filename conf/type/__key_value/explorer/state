@@ -29,7 +29,7 @@ value="$(cat "$__object/parameter/value" 2>/dev/null \
 
 case "$state" in
    absent)
-      if egrep -q "^$key$delimiter+" "$file"; then
+      if grep -q -E "^$key$delimiter+" "$file"; then
          # if the key exists, with whatever value, we will have to remove it
          # so report it as present
          echo present
@@ -39,10 +39,10 @@ case "$state" in
       fi
    ;;
    present)
-      if egrep -q "^$key$delimiter+$value$" "$file"; then
+      if grep -q -E "^$key$delimiter+$value$" "$file"; then
          # key exists and value is same
          echo present
-      elif egrep -q "^$key$delimiter+" "$file"; then
+      elif grep -q -E "^$key$delimiter+" "$file"; then
          # key exists, but value is empty or different
          echo wrongvalue
       else
