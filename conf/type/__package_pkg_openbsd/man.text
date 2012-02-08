@@ -16,16 +16,17 @@ This type is usually used on OpenBSD to manage packages.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "installed" or "removed".
+    The state the package should be in, either "present" or "absent"
+    (the old values "installed" or "removed" will be removed in cdist 2.1).
 
 
 OPTIONAL PARAMETERS
 -------------------
 name::
-   If supplied, use the name and not the object id as the package name.
+    If supplied, use the name and not the object id as the package name.
 
 flavor::
-   If supplied, use to avoid ambiguity.
+    If supplied, use to avoid ambiguity.
 
 
 EXAMPLES
