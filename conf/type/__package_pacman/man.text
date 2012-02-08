@@ -32,13 +32,13 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Ensure zsh in installed
-__package_pacman zsh --state installed
+__package_pacman zsh --state present
 
 # If you don't want to follow pythonX packages, but always use python
-__package_pacman python --state installed --name python2
+__package_pacman python --state present --name python2
 
 # Remove obsolete package
-__package_pacman puppet --state removed
+__package_pacman puppet --state absent
 --------------------------------------------------------------------------------
 
 

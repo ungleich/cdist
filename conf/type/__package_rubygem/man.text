@@ -31,10 +31,10 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Ensure sinatra is installed
-__package_rubygem sinatra --state installed
+__package_rubygem sinatra --state present
 
 # Remove package
-__package_rubygem rails --state removed
+__package_rubygem rails --state absent
 --------------------------------------------------------------------------------
 
 
