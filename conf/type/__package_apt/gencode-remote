@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -28,11 +28,18 @@ else
 fi
 
 state_should="$(cat "$__object/parameter/state")"
+
+# Correct pre 2.1 naming - FIXME in 2.1
+case "$state_should" in
+    installed) state_should="present" ;;
+    removed) state_should="absent" ;;
+esac
+
 state_is="$(cat "$__object/explorer/pkg_status")"
 case "$state_is" in
-    installed*)
+    present*)
        name="$(echo "$state_is" | cut -d ' ' -f 2)"
-       state_is="installed"
+       state_is="present"
     ;;
 esac
 
@@ -40,10 +47,10 @@ aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
 
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
-      installed)
+      present)
          echo $aptget install \"$name\"
       ;;
-      removed)
+      absent)
          echo $aptget remove \"$name\"
       ;;
       *)
@@ -52,4 +59,3 @@ if [ "$state_is" != "$state_should" ]; then
       ;;
    esac
 fi
-

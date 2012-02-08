@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -28,11 +28,11 @@ else
 fi
 
 # Except dpkg failing, if package is not known / installed
-packages="$(apt-cache showpkg "$name" | sed -e  "1,/Reverse Provides:/d" | cut -d ' ' -f 1) $name"
+packages="$(apt-cache showpkg "$name" | sed -e "1,/Reverse Provides:/d" | cut -d ' ' -f 1) $name"
 for p in $packages; do
     if [ -n "$(dpkg -s "$p" 2>/dev/null | grep "^Status: install ok installed$")" ]; then
-       echo "installed $p"
+       echo "present $p"
        exit 0
     fi
 done
-echo "removed"
+echo absent
