@@ -29,7 +29,7 @@ else
    name="$__object_id"
 fi
 
-state="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
 is_installed="$(grep "(installed)" "$__object/explorer/pkg_status" || true)"
 
 case "$state" in

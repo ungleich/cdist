@@ -31,7 +31,6 @@ state_should="$(cat "$__object/parameter/state")"
 
 # Correct pre 2.1 naming - FIXME in 2.1
 case "$state_should" in
-    # FIXME: print warning to stderr!
     installed)
         echo "WARNING: $state_should is deprecated, please change to present/absent (will be removed in cdist 2.1)" >&2
         state_should="present"
