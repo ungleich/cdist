@@ -35,14 +35,14 @@ else
     pip="pip"
 fi
 
-# which is not posix, but command is :-)
+# If there is no pip, it may get created from somebody else.
+# If it will be created, there is probably no package installed.
 if ! command -v "$pip" >/dev/null 2>&1; then
-    echo "No usable pip found at path \"$pip\"" >&2
-    exit 1
-fi
-
-if "$pip" freeze | grep -i -q "^$name=="; then
-    echo present
-else
     echo absent
+else
+    if "$pip" freeze | grep -i -q "^$name=="; then
+        echo present
+    else
+        echo absent
+    fi
 fi
