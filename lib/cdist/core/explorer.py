@@ -130,6 +130,19 @@ class Explorer(object):
             self.log.debug("Running type explorer '%s' for object '%s'", explorer, cdist_object.name)
             cdist_object.explorers[explorer] = output
 
+    def run_type_explorer(self, explorer, cdist_object):
+        """Run the given type explorer for the given object and return it's output."""
+        cdist_type = cdist_object.type
+        env = self.env.copy()
+        env.update({
+            '__object': os.path.join(self.remote.object_path, cdist_object.path),
+            '__object_id': cdist_object.object_id,
+            '__object_fq': cdist_object.path,
+            '__type_explorer': os.path.join(self.remote.type_path, cdist_type.explorer_path)
+        })
+        script = os.path.join(self.remote.type_path, cdist_type.explorer_path, explorer)
+        return self.remote.run_script(script, env=env, return_output=True)
+
     def transfer_type_explorers(self, cdist_type):
         """Transfer the type explorers for the given type to the remote side."""
         if cdist_type.explorers:
@@ -149,16 +162,3 @@ class Explorer(object):
             destination = os.path.join(self.remote.object_path, cdist_object.parameter_path)
             self.remote.mkdir(destination)
             self.remote.transfer(source, destination)
-
-    def run_type_explorer(self, explorer, cdist_object):
-        """Run the given type explorer for the given object and return it's output."""
-        cdist_type = cdist_object.type
-        env = self.env.copy()
-        env.update({
-            '__object': os.path.join(self.remote.object_path, cdist_object.path),
-            '__object_id': cdist_object.object_id,
-            '__object_fq': cdist_object.path,
-            '__type_explorer': os.path.join(self.remote.type_path, cdist_type.explorer_path)
-        })
-        script = os.path.join(self.remote.type_path, cdist_type.explorer_path, explorer)
-        return self.remote.run_script(script, env=env, return_output=True)
