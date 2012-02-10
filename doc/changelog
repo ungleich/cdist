@@ -8,6 +8,7 @@ Changelog
 	* Bugfix __file: Use chmod after chown/chgrp (Matt Coddington)
 	* Bugfix __user: Correct shadow field in explorer (Matt Coddington)
 	* Bugfix __link: Properly handle existing links (Steven Armstrong)
+	* Bugfix __key_value: More robust implementation (Steven Armstrong)
 	* New Type: __package_pip
 
 2.0.6: 2012-01-28

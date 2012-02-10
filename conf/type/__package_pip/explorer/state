@@ -40,6 +40,7 @@ fi
 if ! command -v "$pip" >/dev/null 2>&1; then
     echo absent
 else
+
     if "$pip" freeze | grep -i -q "^$name=="; then
         echo present
     else
