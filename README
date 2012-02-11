@@ -89,7 +89,7 @@ cdist was tested or is know to run on at least
 
 ## Installation
 
-### Preperation
+### Preparation
 
 Ensure you have Python 3.2 installed on the machine you use to **deploy to the targets**
 (the ***source host***).
