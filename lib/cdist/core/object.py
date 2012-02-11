@@ -105,12 +105,17 @@ class Object(object):
                 raise IllegalObjectIdError(object_id, 'object_id may not start with /')
             if OBJECT_MARKER in object_id.split(os.sep):
                 raise IllegalObjectIdError(object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
+            if '//' in object_id:
+                raise IllegalObjectIdError(object_id, 'object_id may not contain //')
 
     def __init__(self, cdist_type, base_path, object_id=None):
-        self.validate_object_id(object_id)
         self.type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
+
+        self.sanitise_object_id()
+        self.validate_object_id(object_id)
+
         self.name = self.join_name(self.type.name, self.object_id)
         self.path = os.path.join(self.type.path, self.object_id, OBJECT_MARKER)
         self.absolute_path = os.path.join(self.base_path, self.path)
@@ -128,7 +133,6 @@ class Object(object):
     def __hash__(self):
         return hash(self.name)
 
-
     def __lt__(self, other):
         return isinstance(other, self.__class__) and self.name < other.name
 
@@ -145,6 +149,21 @@ class Object(object):
         base_path = self.base_path
         type_name, object_id = self.split_name(object_name)
         return self.__class__(self.type.__class__(type_path, type_name), base_path, object_id=object_id)
+
+    def sanitise_object_id(self):
+        """
+        Remove leading and trailing slash (one only)
+        """
+
+        print(self.__repr__())
+
+        # Remove leading slash
+        if self.object_id[0] == '/':
+            self.object_id = self.object_id[1:]
+
+        # Remove trailing slash
+        if self.object_id[-1] == '/':
+            self.object_id = self.object_id[:-1]
 
     # FIXME: still needed?
     @property
