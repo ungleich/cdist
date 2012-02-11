@@ -80,7 +80,7 @@ class ManifestTestCase(test.CdistTestCase):
 
     def test_type_manifest_environment(self):
         cdist_type = core.Type(self.local.type_path, '__dump_environment')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'whatever')
         handle, output_file = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
         os.environ['__cdist_test_out'] = output_file

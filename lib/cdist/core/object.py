@@ -42,7 +42,7 @@ class IllegalObjectIdError(cdist.Error):
         return '%s: %s' % (self.message, self.object_id)
 
 
-class Object(object):
+class CdistObject(object):
     """Represents a cdist object.
 
     All interaction with objects in cdist should be done through this class.
@@ -124,7 +124,7 @@ class Object(object):
         self.parameter_path = os.path.join(self.path, "parameter")
 
     def __repr__(self):
-        return '<Object %s>' % self.name
+        return '<CdistObject %s>' % self.name
 
     def __eq__(self, other):
         """define equality as 'name is the same'"""
@@ -142,7 +142,7 @@ class Object(object):
         Mainly intended to create objects when resolving requirements.
 
         e.g:
-            <Object __foo/bar>.object_from_name('__other/object') -> <Object __other/object>
+            <CdistObject __foo/bar>.object_from_name('__other/object') -> <CdistObject __other/object>
 
         """
         type_path = self.type.base_path
@@ -154,8 +154,6 @@ class Object(object):
         """
         Remove leading and trailing slash (one only)
         """
-
-        print(self.__repr__())
 
         # Remove leading slash
         if self.object_id[0] == '/':

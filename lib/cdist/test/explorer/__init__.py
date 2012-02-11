@@ -110,7 +110,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
 
     def test_transfer_object_parameters(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'whatever')
         cdist_object.create()
         cdist_object.parameters = {'first': 'first value', 'second': 'second value'}
         self.explorer.transfer_object_parameters(cdist_object)
@@ -120,14 +120,14 @@ class ExplorerClassTestCase(test.CdistTestCase):
 
     def test_run_type_explorer(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'whatever')
         self.explorer.transfer_type_explorers(cdist_type)
         output = self.explorer.run_type_explorer('world', cdist_object)
         self.assertEqual(output, 'hello\n')
 
     def test_run_type_explorers(self):
         cdist_type = core.Type(self.local.type_path, '__test_type')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'whatever')
         cdist_object.create()
         self.explorer.run_type_explorers(cdist_object)
         self.assertEqual(cdist_object.explorers, {'world': 'hello'})

@@ -37,7 +37,7 @@ type_base_path = op.join(fixtures, 'type')
 class ResolverTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.objects = list(core.Object.list_objects(object_base_path, type_base_path))
+        self.objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
         self.object_index = dict((o.name, o) for o in self.objects)
         self.dependency_resolver = resolver.DependencyResolver(self.objects)
 
