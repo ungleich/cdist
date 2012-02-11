@@ -1,5 +1,14 @@
-- __file/foo/bar//bar
-    - fails later
+- cleanup object_id handling
+    - problems
+        - __file/foo/bar//bar
+            - fails later
+        - right strip __foo/bar/ last slash
+    - only emulator creates objects
+        - strip slashes in object creation?
+    
+
+
+--------------------------------------------------------------------------------
 
 - __user
    add option to include --create-home
