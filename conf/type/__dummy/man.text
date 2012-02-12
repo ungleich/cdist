@@ -1,0 +1,69 @@
+cdist-type__dummy(7)
+====================
+Benedikt Koeppel <code--@--benediktkoeppel.ch>
+
+
+NAME
+----
+cdist-type__dummy - Dummy type that does nothing
+
+
+DESCRIPTION
+-----------
+This cdist type doesn't do anything. It is still useful if you want to group
+multiple requirements that you'd otherwise need for multiple other objects.
+
+
+REQUIRED PARAMETERS
+-------------------
+
+
+OPTIONAL PARAMETERS
+-------------------
+
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Let's say you have a couple of objects
+__file /etc/app.cfg
+__file /usr/bin/app
+
+# Now you want to define a few other objects, that all depend on above objects.
+# Without the __dummy type, you'd have to write:
+require="__file/etc/app.cfg __file/usr/bin/app" __other_type somethingElse
+require="__file/etc/app.cfg __file/usr/bin/app" __more_things oneMore
+require="__file/etc/app.cfg __file/usr/bin/app" __last_one thatsIt
+
+# You see that this is not very useful and makes it difficult if your app.cfg
+# changes and should now be app.conf instead
+
+# Let's introduce the dummy type:
+# With a dummy type, you can group multiple requirements
+require="__file/etc/app.cfg __file/usr/bin/app" __dummy AppRequirements
+
+# Now instead of including /etc/app.cfg and /usr/bin/app in each require 
+# directive for all types, simply specify AppRequirements in require:
+require="__dummy/AppRequirements" __other_type somethingElse
+require="__dummy/AppRequirements" __more_things oneMore
+require="__dummy/AppRequirements" __last_one thatsIt
+
+# This works because __dummy/AppRequirements itself already depends on
+# /etc/app.cfg and /usr/bin/app. Now everything that specifies AppRequirements
+# as requirement also depends on app.cfg and app.
+
+
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Benedikt Koeppel. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
