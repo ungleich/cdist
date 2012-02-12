@@ -44,28 +44,28 @@ class ObjectClassTestCase(test.CdistTestCase):
     def test_list_objects(self):
         objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
         objects_expected = [
-            core.CdistObject(core.Type(type_base_path, '__first'), object_base_path, 'man'),
-            core.CdistObject(core.Type(type_base_path, '__second'), object_base_path, 'on-the'),
-            core.CdistObject(core.Type(type_base_path, '__third'), object_base_path, 'moon'),
+            core.CdistObject(core.CdistType(type_base_path, '__first'), object_base_path, 'man'),
+            core.CdistObject(core.CdistType(type_base_path, '__second'), object_base_path, 'on-the'),
+            core.CdistObject(core.CdistType(type_base_path, '__third'), object_base_path, 'moon'),
         ]
         self.assertEqual(objects, objects_expected)
 
 
 class ObjectIdTestCase(test.CdistTestCase):
     def test_object_id_starts_with_slash(self):
-        cdist_type = core.Type(type_base_path, '__third')
+        cdist_type = core.CdistType(type_base_path, '__third')
         illegal_object_id = '/object_id/may/not/start/with/slash'
         with self.assertRaises(core.IllegalObjectIdError):
             core.CdistObject(cdist_type, object_base_path, illegal_object_id)
 
     def test_object_id_contains_object_marker(self):
-        cdist_type = core.Type(type_base_path, '__third')
+        cdist_type = core.CdistType(type_base_path, '__third')
         illegal_object_id = 'object_id/may/not/contain/%s/anywhere' % core.OBJECT_MARKER
         with self.assertRaises(core.IllegalObjectIdError):
             core.CdistObject(cdist_type, object_base_path, illegal_object_id)
 
     def test_object_id_contains_object_marker_string(self):
-        cdist_type = core.Type(type_base_path, '__third')
+        cdist_type = core.CdistType(type_base_path, '__third')
         illegal_object_id = 'object_id/may/contain_%s_in_filename' % core.OBJECT_MARKER
         core.CdistObject(cdist_type, object_base_path, illegal_object_id)
         # if we get here, the test passed
@@ -74,7 +74,7 @@ class ObjectIdTestCase(test.CdistTestCase):
 class ObjectTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.cdist_type = core.Type(type_base_path, '__third')
+        self.cdist_type = core.CdistType(type_base_path, '__third')
         self.cdist_object = core.CdistObject(self.cdist_type, object_base_path, 'moon') 
 
     def tearDown(self):

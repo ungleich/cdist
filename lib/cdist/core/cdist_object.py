@@ -61,7 +61,7 @@ class CdistObject(object):
         """Return a list of object instances"""
         for object_name in cls.list_object_names(object_base_path):
             type_name, object_id = cls.split_name(object_name)
-            yield cls(cdist.core.Type(type_base_path, type_name), object_base_path, object_id=object_id)
+            yield cls(cdist.core.CdistType(type_base_path, type_name), object_base_path, object_id=object_id)
 
     @classmethod
     def list_type_names(cls, object_base_path):

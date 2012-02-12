@@ -79,7 +79,7 @@ class ManifestTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__manifest'], self.local.manifest_path)
 
     def test_type_manifest_environment(self):
-        cdist_type = core.Type(self.local.type_path, '__dump_environment')
+        cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
         cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'whatever')
         handle, output_file = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
