@@ -41,14 +41,16 @@ class Emulator(object):
         self.object_id      = False
 
         self.global_path    = os.environ['__global']
-        self.object_source  = os.environ['__cdist_manifest']
         self.target_host    = os.environ['__target_host']
+
+        # Internally only
+        self.object_source  = os.environ['__cdist_manifest']
         self.type_base_path = os.environ['__cdist_type_base_path']
 
         self.object_base_path = os.path.join(self.global_path, "object")
 
         self.type_name      = os.path.basename(argv[0])
-        self.cdist_type     = core.Type(self.type_base_path, self.type_name)
+        self.cdist_type     = core.CdistType(self.type_base_path, self.type_name)
 
         self.__init_log()
 
@@ -156,7 +158,7 @@ class Emulator(object):
 
                 requirement_type_name, requirement_object_id = core.CdistObject.split_name(requirement)
                 # Instantiate type which fails if type does not exist
-                requirement_type = core.Type(self.type_base_path, requirement_type_name)
+                requirement_type = core.CdistType(self.type_base_path, requirement_type_name)
 
                 if requirement_object_id:
                     # Validate object_id if any

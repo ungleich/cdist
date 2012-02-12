@@ -48,8 +48,8 @@ class CodeTestCase(test.CdistTestCase):
 
         self.remote_base_path = self.mkdtemp()
         self.user = getpass.getuser()
-        remote_exec = "ssh -o User=%s -q" % "root" # self.user
-        remote_copy = "scp -o User=%s -q" % "root" # self.user
+        remote_exec = "ssh -o User=%s -q" % self.user
+        remote_copy = "scp -o User=%s -q" % self.user
         self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
 
         self.code = code.Code(self.target_host, self.local, self.remote)

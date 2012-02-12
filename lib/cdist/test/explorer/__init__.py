@@ -49,10 +49,8 @@ class ExplorerClassTestCase(test.CdistTestCase):
 
         self.remote_base_path = self.mkdtemp()
         self.user = getpass.getuser()
-        #remote_exec = "ssh -o User=%s -q" % self.user
-        #remote_copy = "scp -o User=%s -q" % self.user
-        remote_exec = "ssh -o User=%s -q" % "root"
-        remote_copy = "scp -o User=%s -q" % "root"
+        remote_exec = "ssh -o User=%s -q" % self.user
+        remote_copy = "scp -o User=%s -q" % self.user
         self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
 
         self.explorer = explorer.Explorer(self.target_host, self.local, self.remote)

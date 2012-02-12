@@ -25,6 +25,8 @@ import shutil
 from cdist import test
 from cdist import core
 
+import cdist
+
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
