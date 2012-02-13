@@ -121,18 +121,18 @@ class Explorer(object):
         in the object.
 
         """
-        self.log.debug("Transfering type explorers for type: %s", cdist_object.type)
-        self.transfer_type_explorers(cdist_object.type)
+        self.log.debug("Transfering type explorers for type: %s", cdist_object.cdist_type)
+        self.transfer_type_explorers(cdist_object.cdist_type)
         self.log.debug("Transfering object parameters for object: %s", cdist_object.name)
         self.transfer_object_parameters(cdist_object)
-        for explorer in self.list_type_explorer_names(cdist_object.type):
+        for explorer in self.list_type_explorer_names(cdist_object.cdist_type):
             output = self.run_type_explorer(explorer, cdist_object)
             self.log.debug("Running type explorer '%s' for object '%s'", explorer, cdist_object.name)
             cdist_object.explorers[explorer] = output
 
     def run_type_explorer(self, explorer, cdist_object):
         """Run the given type explorer for the given object and return it's output."""
-        cdist_type = cdist_object.type
+        cdist_type = cdist_object.cdist_type
         env = self.env.copy()
         env.update({
             '__object': os.path.join(self.remote.object_path, cdist_object.path),
