@@ -9,7 +9,10 @@ Changelog
 	* Bugfix __user: Correct shadow field in explorer (Matt Coddington)
 	* Bugfix __link: Properly handle existing links (Steven Armstrong)
 	* Bugfix __key_value: More robust implementation (Steven Armstrong)
+	* Bugfix __user: Fix for changing a user's group by name (Matt Coddington)
 	* New Type: __package_pip
+	* Bugfix/Cleanup: Correctly allow Object ID to start and end with /, but
+		not contain //.
 
 2.0.6: 2012-01-28
 	* Bugfix __apt_ppa:
