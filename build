@@ -85,7 +85,7 @@ case "$1" in
    ;;
 
    release)
-      "$0" clean && "$0" man && "$0" web
+        ./doc/dev/releasechecklist && "$0" clean && "$0" man && "$0" web
    ;;
 
    speeches)
