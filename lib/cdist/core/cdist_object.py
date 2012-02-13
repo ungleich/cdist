@@ -110,20 +110,20 @@ class CdistObject(object):
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain //')
 
         # If no object_id and type is not singleton => error out
-        if not self.object_id and not self.type.is_singleton:
+        if not self.object_id and not self.cdist_type.is_singleton:
             raise IllegalObjectIdError(self.object_id,
                 "Missing object_id and type is not a singleton.")
 
     def __init__(self, cdist_type, base_path, object_id=None):
-        self.type = cdist_type # instance of Type
+        self.cdist_type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
 
         self.sanitise_object_id()
         self.validate_object_id()
 
-        self.name = self.join_name(self.type.name, self.object_id)
-        self.path = os.path.join(self.type.path, self.object_id, OBJECT_MARKER)
+        self.name = self.join_name(self.cdist_type.name, self.object_id)
+        self.path = os.path.join(self.cdist_type.path, self.object_id, OBJECT_MARKER)
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
@@ -138,10 +138,10 @@ class CdistObject(object):
             <CdistObject __foo/bar>.object_from_name('__other/object') -> <CdistObject __other/object>
 
         """
-        type_path = self.type.base_path
+        type_path = self.cdist_type.base_path
         base_path = self.base_path
         type_name, object_id = self.split_name(object_name)
-        return self.__class__(self.type.__class__(type_path, type_name), base_path, object_id=object_id)
+        return self.__class__(self.cdist_type.__class__(type_path, type_name), base_path, object_id=object_id)
 
      def __repr__(self):
         return '<CdistObject %s>' % self.name
