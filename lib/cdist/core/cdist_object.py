@@ -97,19 +97,21 @@ class CdistObject(object):
         return os.path.join(type_name, object_id)
 
     def validate_object_id(self):
+        # FIXME: also check that there is no object ID when type is singleton?
+
         """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
         """
-        if object_id:
+        if self.object_id:
             if self.object_id.startswith('/'):
-                raise IllegalObjectIdError(object_id, 'object_id may not start with /')
+                raise IllegalObjectIdError(self.object_id, 'object_id may not start with /')
             if OBJECT_MARKER in self.object_id.split(os.sep):
-                raise IllegalObjectIdError(object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
+                raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
             if '//' in self.object_id:
-                raise IllegalObjectIdError(object_id, 'object_id may not contain //')
+                raise IllegalObjectIdError(self.object_id, 'object_id may not contain //')
 
         # If no object_id and type is not singleton => error out
-        if not object_id and not self.type.is_singleton:
-            raise IllegalObjectIdError(object_id,
+        if not self.object_id and not self.type.is_singleton:
+            raise IllegalObjectIdError(self.object_id,
                 "Missing object_id and type is not a singleton.")
 
     def __init__(self, cdist_type, base_path, object_id=None):
@@ -127,19 +129,6 @@ class CdistObject(object):
         self.code_remote_path = os.path.join(self.path, "code-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
 
-    def __repr__(self):
-        return '<CdistObject %s>' % self.name
-
-    def __eq__(self, other):
-        """define equality as 'name is the same'"""
-        return self.name == other.name
-    
-    def __hash__(self):
-        return hash(self.name)
-
-    def __lt__(self, other):
-        return isinstance(other, self.__class__) and self.name < other.name
-
     def object_from_name(self, object_name):
         """Convenience method for creating an object instance from an object name.
 
@@ -154,7 +143,20 @@ class CdistObject(object):
         type_name, object_id = self.split_name(object_name)
         return self.__class__(self.type.__class__(type_path, type_name), base_path, object_id=object_id)
 
-    def sanitise_object_id(self):
+     def __repr__(self):
+        return '<CdistObject %s>' % self.name
+
+    def __eq__(self, other):
+        """define equality as 'name is the same'"""
+        return self.name == other.name
+    
+    def __hash__(self):
+        return hash(self.name)
+
+    def __lt__(self, other):
+        return isinstance(other, self.__class__) and self.name < other.name
+
+   def sanitise_object_id(self):
         """
         Remove leading and trailing slash (one only)
         """
