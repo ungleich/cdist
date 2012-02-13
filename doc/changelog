@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.0.7:
+2.0.7: 2012-02-13
 	* Bugfix __file: Use chmod after chown/chgrp (Matt Coddington)
 	* Bugfix __user: Correct shadow field in explorer (Matt Coddington)
 	* Bugfix __link: Properly handle existing links (Steven Armstrong)
