@@ -148,7 +148,7 @@ class CdistObject(object):
 
         return self.__class__(cdist_type, base_path, object_id=object_id)
 
-     def __repr__(self):
+    def __repr__(self):
         return '<CdistObject %s>' % self.name
 
     def __eq__(self, other):
@@ -161,7 +161,7 @@ class CdistObject(object):
     def __lt__(self, other):
         return isinstance(other, self.__class__) and self.name < other.name
 
-   def sanitise_object_id(self):
+    def sanitise_object_id(self):
         """
         Remove leading and trailing slash (one only)
         """
