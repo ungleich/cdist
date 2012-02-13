@@ -44,6 +44,18 @@ class Error(Exception):
     """Base exception class for this project"""
     pass
 
+class CdistObjectError(Error):
+    """Something went wrong with an object"""
+    
+    def __init__(self, cdist_object, message):
+        self.name = cdist_object.name
+        self.source = " ".join(cdist_object.source)
+        self.message = message
+
+
+    def __str__(self):
+        return '%s: %s (defined at %s)' % (self.name, self.message, self.source)
+
 def file_to_list(filename):
     """Return list from \n seperated file"""
     if os.path.isfile(filename):

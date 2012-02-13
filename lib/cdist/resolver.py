@@ -125,7 +125,7 @@ class DependencyResolver(object):
             resolved.append(cdist_object)
             unresolved.remove(cdist_object)
         except RequirementNotFoundError as e:
-            raise cdist.Error(cdist_object.name + " requires non-existing " + e.requirement)
+            raise cdist.CdistObjectError(cdist_object, "requires non-existing " + e.requirement)
 
     def __iter__(self):
         """Iterate over all unique objects while resolving dependencies.
