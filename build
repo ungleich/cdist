@@ -123,7 +123,7 @@ case "$1" in
       # Fix ikiwiki, which does not like symlinks for pseudo security
       ssh tee.schottelius.org \
         "cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man &&
-            ln -sf "$version" latest"
+            rm -f latest && ln -sf "$version" latest"
    ;;
 
    p|pu|pub)
