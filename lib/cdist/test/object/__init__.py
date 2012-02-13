@@ -54,9 +54,9 @@ class ObjectClassTestCase(test.CdistTestCase):
 
 
 class ObjectIdTestCase(test.CdistTestCase):
-    def test_object_id_starts_with_slash(self):
+    def test_object_id_contains_double_slash(self):
         cdist_type = core.CdistType(type_base_path, '__third')
-        illegal_object_id = '/object_id/may/not/start/with/slash'
+        illegal_object_id = '/object_id//may/not/contain/double/slash'
         with self.assertRaises(core.IllegalObjectIdError):
             core.CdistObject(cdist_type, object_base_path, illegal_object_id)
 
