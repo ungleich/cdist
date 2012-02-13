@@ -6,6 +6,8 @@ Changelog
 
 2.0.8:
 	* Cleanup: Better hint to source of error
+	* Cleanup: Remove support for __debug variable in manifests (Type != Core
+		debugging)
 
 2.0.7: 2012-02-13
 	* Bugfix __file: Use chmod after chown/chgrp (Matt Coddington)
