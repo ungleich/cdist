@@ -166,13 +166,15 @@ class CdistObject(object):
         Remove leading and trailing slash (one only)
         """
 
-        # Remove leading slash
-        if self.object_id[0] == '/':
-            self.object_id = self.object_id[1:]
+        # Allow empty object id for singletons
+        if self.object_id:
+            # Remove leading slash
+            if self.object_id[0] == '/':
+                self.object_id = self.object_id[1:]
 
-        # Remove trailing slash
-        if self.object_id[-1] == '/':
-            self.object_id = self.object_id[:-1]
+            # Remove trailing slash
+            if self.object_id[-1] == '/':
+                self.object_id = self.object_id[:-1]
 
     # FIXME: still needed?
     @property
