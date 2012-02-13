@@ -112,7 +112,7 @@ class ConfigInstall(object):
             # TODO: remove once we are sure that this really never happens.
             raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
 
-        cdist_type = cdist_object.type
+        cdist_type = cdist_object.cdist_type
 
         # Generate
         self.log.info("Generating and executing code for " + cdist_object.name)
