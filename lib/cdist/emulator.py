@@ -154,15 +154,7 @@ class Emulator(object):
                 if len(requirement) == 0:
                     continue
 
-                requirement_type_name, requirement_object_id = core.CdistObject.split_name(requirement)
-                # Instantiate type which fails if type does not exist
-                requirement_type = core.CdistType(self.type_base_path,
-                    requirement_type_name)
-
-                # Instantiate object, which fails if object id is broken
-                requirement_object = core.CdistObject(requirement_type,
-                    self.object_base_path, requirement_object_id)
-
+                self.cdist_object.object_from_name(requirement)
                 self.log.debug("Recording requirement: " + requirement)
                 self.cdist_object.requirements.append(requirement)
 
