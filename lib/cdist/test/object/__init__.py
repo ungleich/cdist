@@ -198,5 +198,5 @@ class ObjectTestCase(test.CdistTestCase):
         other_name = '__first/man'
         other_object = self.cdist_object.object_from_name(other_name)
         self.assertTrue(isinstance(other_object, core.CdistObject))
-        self.assertEqual(other_object.type.name, '__first')
+        self.assertEqual(other_object.cdist_type.name, '__first')
         self.assertEqual(other_object.object_id, 'man')

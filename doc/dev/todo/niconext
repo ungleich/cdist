@@ -3,6 +3,9 @@
     - double check verification
     - adjust tests
 
+- remove useless
+    ERROR: monitoring02: Code that raised the error:
+
 --------------------------------------------------------------------------------
 
 - __user
