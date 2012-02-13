@@ -26,15 +26,6 @@ import os
 import cdist
 from cdist import core
 
-
-class IllegalRequirementError(cdist.Error):
-    def __init__(self, requirement, message=None):
-        self.requirement = requirement
-        self.message = message or 'Illegal requirement'
-
-    def __str__(self):
-        return '%s: %s' % (self.message, self.requirement)
-
 class Emulator(object):
     def __init__(self, argv):
         self.argv           = argv
@@ -155,6 +146,7 @@ class Emulator(object):
 
                 # Raises an error, if object cannot be created
                 self.cdist_object.object_from_name(requirement)
+
                 self.log.debug("Recording requirement: " + requirement)
                 self.cdist_object.requirements.append(requirement)
 
