@@ -1,15 +1,15 @@
+2.0.8 features / cleanups:
+
 - cleanup object_id handling
     - have a look at singletons
 
 - remove useless
     ERROR: monitoring02: Code that raised the error:
 
---------------------------------------------------------------------------------
-
-- __user
-   add option to include --create-home
 - ensure that all types, which support --state support
     present and absent (consistent look and feel)
+
+--------------------------------------------------------------------------------
 
 - update/create docs
     - cdist-cache::
