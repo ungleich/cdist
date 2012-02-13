@@ -1,12 +1,8 @@
 - cleanup object_id handling
-    - problems
-        - __file/foo/bar//bar
-            - fails later
-        - right strip __foo/bar/ last slash
-    - only emulator creates objects
-        - strip slashes in object creation?
-    
-
+    - have a look at singletons
+    - double check verification
+    - cleanup emulator to create object
+    - adjust tests
 
 --------------------------------------------------------------------------------
 

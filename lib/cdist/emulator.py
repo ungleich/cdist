@@ -115,17 +115,12 @@ class Emulator(object):
 
 
     def setup_object(self):
-        # FIXME: verify object id
-
-        # Setup object_id
+        # Setup object_id - FIXME: unset / do not setup anymore!
         if self.cdist_type.is_singleton:
             self.object_id = "singleton"
         else:
             self.object_id = self.args.object_id[0]
             del self.args.object_id
-
-            # strip leading slash from object_id
-            self.object_id = self.object_id.lstrip('/')
 
         # Instantiate the cdist object we are defining
         self.cdist_object = core.CdistObject(self.cdist_type, self.object_base_path, self.object_id)
@@ -160,13 +155,9 @@ class Emulator(object):
                 # Instantiate type which fails if type does not exist
                 requirement_type = core.CdistType(self.type_base_path, requirement_type_name)
 
-                if requirement_object_id:
-                    # Validate object_id if any
-                    core.CdistObject.validate_object_id(requirement_object_id)
-                elif not requirement_type.is_singleton:
-                    # Only singeltons have no object_id
-                    raise IllegalRequirementError(requirement, "Missing object_id and type is not a singleton.")
-
+                # FIXME: need try/catch here or pass exception from core.CdistObject?
+                # Instantiate object, which fails if object id is broken
+                requirement_object = core.CdistObject(requirement_type, self.object_base_path, requirement_object_id)
                 self.log.debug("Recording requirement: " + requirement)
                 self.cdist_object.requirements.append(requirement)
 
