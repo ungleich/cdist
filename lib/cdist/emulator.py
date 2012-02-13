@@ -151,9 +151,9 @@ class Emulator(object):
             self.log.debug("reqs = " + requirements)
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
-                if len(requirement) == 0:
-                    continue
+                if len(requirement) == 0: continue
 
+                # Raises an error, if object cannot be created
                 self.cdist_object.object_from_name(requirement)
                 self.log.debug("Recording requirement: " + requirement)
                 self.cdist_object.requirements.append(requirement)
