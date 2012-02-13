@@ -140,6 +140,9 @@ class Emulator(object):
             self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
 
+        # Record / Append source
+        self.cdist_object.source.append(self.object_source)
+
     def record_requirements(self):
         """record requirements"""
 
@@ -153,16 +156,15 @@ class Emulator(object):
 
                 requirement_type_name, requirement_object_id = core.CdistObject.split_name(requirement)
                 # Instantiate type which fails if type does not exist
-                requirement_type = core.CdistType(self.type_base_path, requirement_type_name)
+                requirement_type = core.CdistType(self.type_base_path,
+                    requirement_type_name)
 
-                # FIXME: need try/catch here or pass exception from core.CdistObject?
                 # Instantiate object, which fails if object id is broken
-                requirement_object = core.CdistObject(requirement_type, self.object_base_path, requirement_object_id)
+                requirement_object = core.CdistObject(requirement_type,
+                    self.object_base_path, requirement_object_id)
+
                 self.log.debug("Recording requirement: " + requirement)
                 self.cdist_object.requirements.append(requirement)
-
-        # Record / Append source
-        self.cdist_object.source.append(self.object_source)
 
     def record_auto_requirements(self):
         """An object shall automatically depend on all objects that it defined in it's type manifest.
