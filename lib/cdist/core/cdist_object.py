@@ -96,17 +96,21 @@ class CdistObject(object):
         """
         return os.path.join(type_name, object_id)
 
-    @staticmethod
-    def validate_object_id(object_id):
+    def validate_object_id(self):
         """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
         """
         if object_id:
-            if object_id.startswith('/'):
+            if self.object_id.startswith('/'):
                 raise IllegalObjectIdError(object_id, 'object_id may not start with /')
-            if OBJECT_MARKER in object_id.split(os.sep):
+            if OBJECT_MARKER in self.object_id.split(os.sep):
                 raise IllegalObjectIdError(object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
-            if '//' in object_id:
+            if '//' in self.object_id:
                 raise IllegalObjectIdError(object_id, 'object_id may not contain //')
+
+        # If no object_id and type is not singleton => error out
+        if not object_id and not self.type.is_singleton:
+            raise IllegalObjectIdError(object_id,
+                "Missing object_id and type is not a singleton.")
 
     def __init__(self, cdist_type, base_path, object_id=None):
         self.type = cdist_type # instance of Type
@@ -114,7 +118,7 @@ class CdistObject(object):
         self.object_id = object_id
 
         self.sanitise_object_id()
-        self.validate_object_id(object_id)
+        self.validate_object_id()
 
         self.name = self.join_name(self.type.name, self.object_id)
         self.path = os.path.join(self.type.path, self.object_id, OBJECT_MARKER)
