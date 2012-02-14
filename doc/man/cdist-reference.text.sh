@@ -167,7 +167,7 @@ ENVIRONMENT VARIABLES
 ---------------------
 __explorer::
     Directory that contains all global explorers.
-    Available for: explorer
+    Available for: explorer, type explorer
 __manifest::
     Directory that contains the initial manifest.
     Available for: initial manifest
@@ -193,7 +193,7 @@ __object_name::
     Available for: type manifest, type explorer, type gencode
 __target_host::
     The host we are deploying to.
-    Available for: initial manifest, type manifest, type gencode
+    Available for: explorer, initial manifest, type explorer, type manifest, type gencode
 __type::
     Path to the current type.
     Available for: type manifest, type gencode
