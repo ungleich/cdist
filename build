@@ -85,7 +85,7 @@ case "$1" in
    ;;
 
    release)
-      "$0" clean && "$0" man && "$0" web
+        ./doc/dev/releasechecklist
    ;;
 
    speeches)
@@ -99,7 +99,7 @@ case "$1" in
       
    webmain)
       cp README ${WEBPAGE}
-      cd ${WEBDIR} && git commit -m "cdist update" ${WEBPAGE}
+      cd ${WEBDIR} && git commit -m "cdist main update" ${WEBPAGE}
       cd ${WEBDIR} && make pub
    ;;
 
@@ -119,6 +119,11 @@ case "$1" in
       cd ${WEBDIR} && git add ${WEBBASE}
       cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
       cd ${WEBDIR} && make pub
+
+      # Fix ikiwiki, which does not like symlinks for pseudo security
+      ssh tee.schottelius.org \
+        "cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man &&
+            rm -f latest && ln -sf "$version" latest"
    ;;
 
    p|pu|pub)

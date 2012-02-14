@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -42,7 +42,7 @@ class IllegalObjectIdError(cdist.Error):
         return '%s: %s' % (self.message, self.object_id)
 
 
-class Object(object):
+class CdistObject(object):
     """Represents a cdist object.
 
     All interaction with objects in cdist should be done through this class.
@@ -61,7 +61,7 @@ class Object(object):
         """Return a list of object instances"""
         for object_name in cls.list_object_names(object_base_path):
             type_name, object_id = cls.split_name(object_name)
-            yield cls(cdist.core.Type(type_base_path, type_name), object_base_path, object_id=object_id)
+            yield cls(cdist.core.CdistType(type_base_path, type_name), object_base_path, object_id=object_id)
 
     @classmethod
     def list_type_names(cls, object_base_path):
@@ -96,30 +96,58 @@ class Object(object):
         """
         return os.path.join(type_name, object_id)
 
-    @staticmethod
-    def validate_object_id(object_id):
+    def validate_object_id(self):
+        # FIXME: also check that there is no object ID when type is singleton?
+
         """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
         """
-        if object_id:
-            if object_id.startswith('/'):
-                raise IllegalObjectIdError(object_id, 'object_id may not start with /')
-            if OBJECT_MARKER in object_id.split(os.sep):
-                raise IllegalObjectIdError(object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
+        if self.object_id:
+            if OBJECT_MARKER in self.object_id.split(os.sep):
+                raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
+            if '//' in self.object_id:
+                raise IllegalObjectIdError(self.object_id, 'object_id may not contain //')
+
+        # If no object_id and type is not singleton => error out
+        if not self.object_id and not self.cdist_type.is_singleton:
+            raise IllegalObjectIdError(self.object_id,
+                "Missing object_id and type is not a singleton.")
 
     def __init__(self, cdist_type, base_path, object_id=None):
-        self.validate_object_id(object_id)
-        self.type = cdist_type # instance of Type
+        self.cdist_type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
-        self.name = self.join_name(self.type.name, self.object_id)
-        self.path = os.path.join(self.type.path, self.object_id, OBJECT_MARKER)
+
+        self.validate_object_id()
+        self.sanitise_object_id()
+
+        self.name = self.join_name(self.cdist_type.name, self.object_id)
+        self.path = os.path.join(self.cdist_type.path, self.object_id, OBJECT_MARKER)
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
 
+    def object_from_name(self, object_name):
+        """Convenience method for creating an object instance from an object name.
+
+        Mainly intended to create objects when resolving requirements.
+
+        e.g:
+            <CdistObject __foo/bar>.object_from_name('__other/object') -> <CdistObject __other/object>
+
+        """
+
+        base_path = self.base_path
+        type_path = self.cdist_type.base_path
+
+        type_name, object_id = self.split_name(object_name)
+
+        cdist_type = self.cdist_type.__class__(type_path, type_name)
+
+        return self.__class__(cdist_type, base_path, object_id=object_id)
+
     def __repr__(self):
-        return '<Object %s>' % self.name
+        return '<CdistObject %s>' % self.name
 
     def __eq__(self, other):
         """define equality as 'name is the same'"""
@@ -128,23 +156,23 @@ class Object(object):
     def __hash__(self):
         return hash(self.name)
 
-
     def __lt__(self, other):
         return isinstance(other, self.__class__) and self.name < other.name
 
-    def object_from_name(self, object_name):
-        """Convenience method for creating an object instance from an object name.
-
-        Mainly intended to create objects when resolving requirements.
-
-        e.g:
-            <Object __foo/bar>.object_from_name('__other/object') -> <Object __other/object>
-
+    def sanitise_object_id(self):
         """
-        type_path = self.type.base_path
-        base_path = self.base_path
-        type_name, object_id = self.split_name(object_name)
-        return self.__class__(self.type.__class__(type_path, type_name), base_path, object_id=object_id)
+        Remove leading and trailing slash (one only)
+        """
+
+        # Allow empty object id for singletons
+        if self.object_id:
+            # Remove leading slash
+            if self.object_id[0] == '/':
+                self.object_id = self.object_id[1:]
+
+            # Remove trailing slash
+            if self.object_id[-1] == '/':
+                self.object_id = self.object_id[:-1]
 
     # FIXME: still needed?
     @property

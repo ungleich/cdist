@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -17,14 +17,34 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
+# Development supported by Local AG (www.local.ch)
+#
 
-# set defaults
-key="$(cat "$__object/parameter/key" 2>/dev/null \
-   || echo "$__object_id" | tee "$__object/parameter/key")"
-state="$(cat "$__object/parameter/state" 2>/dev/null \
-   || echo "present" | tee "$__object/parameter/state")"
+state_is=$(cat "$__object/explorer/state")
+state_should=$(cat "$__object/parameter/state")
 
-if [ "$state" = "present" -a ! -f "$__object/parameter/value" ]; then
-   echo "Missing required parameter 'value'" >&2
-   exit 1
-fi 
+[ "$state_is" = "$state_should" ] && exit 0
+
+nameparam="$__object/parameter/name"
+if [ -f "$nameparam" ]; then
+    name=$(cat "$nameparam")
+else
+    name="$__object_id"
+fi
+
+pipparam="$__object/parameter/pip"
+if [ -f "$pipparam" ]; then
+    pip=$(cat "$pipparam")
+else
+    pip="pip"
+fi
+
+case "$state_should" in
+    present)
+        echo $pip install -q pyro
+    ;;
+    absent)
+        echo $pip uninstall -q -y pyro
+    ;;
+esac

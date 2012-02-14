@@ -89,9 +89,9 @@ class ConfigInstall(object):
         new_objects_created = True
         while new_objects_created:
             new_objects_created = False
-            for cdist_object in core.Object.list_objects(self.local.object_path,
+            for cdist_object in core.CdistObject.list_objects(self.local.object_path,
                                                          self.local.type_path):
-                if cdist_object.state == core.Object.STATE_PREPARED:
+                if cdist_object.state == core.CdistObject.STATE_PREPARED:
                     self.log.debug("Skipping re-prepare of object %s", cdist_object)
                     continue
                 else:
@@ -103,16 +103,16 @@ class ConfigInstall(object):
         self.log.info("Running manifest and explorers for " + cdist_object.name)
         self.explorer.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
-        cdist_object.state = core.Object.STATE_PREPARED
+        cdist_object.state = core.CdistObject.STATE_PREPARED
 
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
         self.log.debug("Trying to run object " + cdist_object.name)
-        if cdist_object.state == core.Object.STATE_DONE:
+        if cdist_object.state == core.CdistObject.STATE_DONE:
             # TODO: remove once we are sure that this really never happens.
             raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
 
-        cdist_type = cdist_object.type
+        cdist_type = cdist_object.cdist_type
 
         # Generate
         self.log.info("Generating and executing code for " + cdist_object.name)
@@ -130,13 +130,13 @@ class ConfigInstall(object):
 
         # Mark this object as done
         self.log.debug("Finishing run of " + cdist_object.name)
-        cdist_object.state = core.Object.STATE_DONE
+        cdist_object.state = core.CdistObject.STATE_DONE
 
     def stage_run(self):
         """The final (and real) step of deployment"""
         self.log.info("Generating and executing code")
 
-        objects = core.Object.list_objects(
+        objects = core.CdistObject.list_objects(
             self.local.object_path,
             self.local.type_path)
 

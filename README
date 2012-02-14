@@ -50,10 +50,11 @@ UNIX, simplicity, familar environment | cdist is configured in POSIX shell
 
 ### Documentation
 
-The cdist documentation is included as manpages in the distribution.
+The cdist documentation is included as manpages in the distribution.  
+You can browse the documentation online as well:
 
- * You can [browse the documentation of the latest version online](man) as well.
- * Have a look at the [given speeches](speeches)
+ * [latest version](man/latest)
+ * [all versions (>= 2.0.4)](man)
 
 ### OS support
 
@@ -88,7 +89,7 @@ cdist was tested or is know to run on at least
 
 ## Installation
 
-### Preperation
+### Preparation
 
 Ensure you have Python 3.2 installed on the machine you use to **deploy to the targets**
 (the ***source host***).
@@ -135,7 +136,13 @@ If you want to ensure nothing breaks you must set back the python version to wha
 
 #### Max OS X
 
-Ensure you have port installed and configured (http://www.macports.org/install.php).
+You can choose between Homebrew and Macports, either way works:
+
+[Homebrew](http://mxcl.github.com/homebrew/) variant:
+
+    brew install python3
+
+[Macports](http://www.macports.org/install.php) variant:
 
     port install python32
     ln -s /opt/local/bin/python3.2 /opt/local/bin/python3

@@ -79,7 +79,7 @@ class EmulatorTestCase(test.CdistTestCase):
         os.environ.update(self.env)
         os.environ['require'] = '__file'
         emu = emulator.Emulator(argv)
-        self.assertRaises(emulator.IllegalRequirementError, emu.run)
+        self.assertRaises(core.IllegalObjectIdError, emu.run)
 
     def test_singleton_object_requirement(self):
         argv = ['__file', '/tmp/foobar']
@@ -119,8 +119,8 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
     def test_autorequire(self):
         initial_manifest = os.path.join(self.local.manifest_path, "init")
         self.manifest.run_initial_manifest(initial_manifest)
-        cdist_type = core.Type(self.local.type_path, '__saturn')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'singleton')
+        cdist_type = core.CdistType(self.local.type_path, '__saturn')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'singleton')
         self.manifest.run_type_manifest(cdist_object)
         expected = ['__planet/Saturn', '__moon/Prometheus']
         self.assertEqual(sorted(cdist_object.requirements), sorted(expected))
@@ -156,6 +156,6 @@ class ArgumentsWithDashesTestCase(test.CdistTestCase):
         emu = emulator.Emulator(argv)
         emu.run()
 
-        cdist_type = core.Type(self.local.type_path, '__arguments_with_dashes')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'some-id')
+        cdist_type = core.CdistType(self.local.type_path, '__arguments_with_dashes')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'some-id')
         self.assertTrue('with-dash' in cdist_object.parameters)

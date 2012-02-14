@@ -11,14 +11,24 @@ echo "Testing documentation..."
 ./build clean && ./build man || exit 1
 
 # get version
-changelog_version=$(head -n1 doc/changelog | sed 's/:.*//')
+changelog_version=$(grep '^[[:digit:]]' doc/changelog | head -n1 | sed 's/:.*//')
 #git_version=$(git describe)
 lib_version=$(grep ^VERSION lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
+
+# get date
+date_today="$(date +%Y-%m-%d)"
+date_changelog=$(grep '^[[:digit:]]' doc/changelog | head -n1 | sed 's/.*: //')
 
 echo "Ensure you fixed/prepared version files: $files"
 echo "changelog: $changelog_version"
 #echo "git: $git_version"
 echo "lib: $lib_version"
+
+if [ "$date_today" != "$date_changelog" ]; then
+    echo "Messed up date, not releasing:"
+    echo "Changelog: $date_changelog"
+    exit 1
+fi
 
 if [ "$lib_version" != "$changelog_version" ]; then
     echo "Messed up versions, not releasing"

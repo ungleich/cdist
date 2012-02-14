@@ -34,7 +34,6 @@ USER INTERFACE
 
 TYPES
 ------
+- Add testing framework (proposed by Evax Software)
 - __user
    add option to include --create-home
-- ensure that all types, which support --state support
-    present and absent (consistent look and feel)

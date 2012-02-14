@@ -34,11 +34,6 @@ case "$state_should" in
          fi
       fi
 
-      # Mode settings
-      if [ -f "$__object/parameter/mode" ]; then
-         echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
-      fi
-
       # Group
       if [ -f "$__object/parameter/group" ]; then
          echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
@@ -47,6 +42,12 @@ case "$state_should" in
       # Owner
       if [ -f "$__object/parameter/owner" ]; then
          echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
+      fi
+
+      # Mode - needs to happen last as a chown/chgrp can alter mode by
+      # clearing S_ISUID and S_ISGID bits (see chown(2))
+      if [ -f "$__object/parameter/mode" ]; then
+         echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
       fi
    ;;
 

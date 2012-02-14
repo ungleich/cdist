@@ -1,9 +1,17 @@
-- __init_script?
-    to enable/disable startup of init stuff
-    http://linuxhelp.blogspot.com/2006/04/enabling-and-disabling-services-during_01.html
+2.0.8 features / cleanups:
+
+- cleanup object_id handling
+    - have a look at singletons
+
+- remove useless
+    ERROR: monitoring02: Code that raised the error:
+
+- ensure that all types, which support --state support
+    present and absent (consistent look and feel)
+
+--------------------------------------------------------------------------------
 
 - update/create docs
-    - document __remote_copy and __remote_exec
     - cdist-cache::
         How to get use information about the hosts we have been working on [advanced]
     - cdist-scaling-tuning::
@@ -17,3 +25,4 @@
 
     - exec flag is not true for manifest anymore
     - SSH HINTS - ssh agent
+

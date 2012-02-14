@@ -20,8 +20,6 @@
 #
 #
 
-# FIXME: common base class with Local?
-
 import io
 import os
 import sys
@@ -148,17 +146,16 @@ class Remote(object):
         os_environ = os.environ.copy()
         os_environ['__target_host'] = self.target_host
 
+        self.log.debug("Remote run script: %s", command)
+
         # can't pass environment to remote side, so prepend command with
         # variable declarations
         if env:
+            self.log.debug("Remote run script env: %s", env)
             command.extend(["%s=%s" % item for item in env.items()])
 
         command.extend(["/bin/sh", "-e"])
         command.append(script)
-
-        self.log.debug("Remote run script: %s", command)
-        if env:
-            self.log.debug("Remote run script env: %s", env)
 
         try:
             if return_output:

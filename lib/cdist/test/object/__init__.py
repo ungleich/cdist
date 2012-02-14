@@ -25,6 +25,8 @@ import shutil
 from cdist import test
 from cdist import core
 
+import cdist
+
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
@@ -34,48 +36,48 @@ type_base_path = op.join(fixtures, 'type')
 class ObjectClassTestCase(test.CdistTestCase):
 
     def test_list_object_names(self):
-        object_names = list(core.Object.list_object_names(object_base_path))
+        object_names = list(core.CdistObject.list_object_names(object_base_path))
         self.assertEqual(object_names, ['__first/man', '__second/on-the', '__third/moon'])
 
     def test_list_type_names(self):
-        type_names = list(core.Object.list_type_names(object_base_path))
+        type_names = list(cdist.core.CdistObject.list_type_names(object_base_path))
         self.assertEqual(type_names, ['__first', '__second', '__third'])
 
     def test_list_objects(self):
-        objects = list(core.Object.list_objects(object_base_path, type_base_path))
+        objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
         objects_expected = [
-            core.Object(core.Type(type_base_path, '__first'), object_base_path, 'man'),
-            core.Object(core.Type(type_base_path, '__second'), object_base_path, 'on-the'),
-            core.Object(core.Type(type_base_path, '__third'), object_base_path, 'moon'),
+            core.CdistObject(core.CdistType(type_base_path, '__first'), object_base_path, 'man'),
+            core.CdistObject(core.CdistType(type_base_path, '__second'), object_base_path, 'on-the'),
+            core.CdistObject(core.CdistType(type_base_path, '__third'), object_base_path, 'moon'),
         ]
         self.assertEqual(objects, objects_expected)
 
 
 class ObjectIdTestCase(test.CdistTestCase):
-    def test_object_id_starts_with_slash(self):
-        cdist_type = core.Type(type_base_path, '__third')
-        illegal_object_id = '/object_id/may/not/start/with/slash'
+    def test_object_id_contains_double_slash(self):
+        cdist_type = core.CdistType(type_base_path, '__third')
+        illegal_object_id = '/object_id//may/not/contain/double/slash'
         with self.assertRaises(core.IllegalObjectIdError):
-            core.Object(cdist_type, object_base_path, illegal_object_id)
+            core.CdistObject(cdist_type, object_base_path, illegal_object_id)
 
     def test_object_id_contains_object_marker(self):
-        cdist_type = core.Type(type_base_path, '__third')
+        cdist_type = core.CdistType(type_base_path, '__third')
         illegal_object_id = 'object_id/may/not/contain/%s/anywhere' % core.OBJECT_MARKER
         with self.assertRaises(core.IllegalObjectIdError):
-            core.Object(cdist_type, object_base_path, illegal_object_id)
+            core.CdistObject(cdist_type, object_base_path, illegal_object_id)
 
     def test_object_id_contains_object_marker_string(self):
-        cdist_type = core.Type(type_base_path, '__third')
+        cdist_type = core.CdistType(type_base_path, '__third')
         illegal_object_id = 'object_id/may/contain_%s_in_filename' % core.OBJECT_MARKER
-        core.Object(cdist_type, object_base_path, illegal_object_id)
+        core.CdistObject(cdist_type, object_base_path, illegal_object_id)
         # if we get here, the test passed
 
 
 class ObjectTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.cdist_type = core.Type(type_base_path, '__third')
-        self.cdist_object = core.Object(self.cdist_type, object_base_path, 'moon') 
+        self.cdist_type = core.CdistType(type_base_path, '__third')
+        self.cdist_object = core.CdistObject(self.cdist_type, object_base_path, 'moon') 
 
     def tearDown(self):
         self.cdist_object.changed = False
@@ -159,16 +161,16 @@ class ObjectTestCase(test.CdistTestCase):
         self.assertEqual(self.cdist_object.state, '')
 
     def test_state_prepared(self):
-        self.cdist_object.state = core.Object.STATE_PREPARED
-        self.assertEqual(self.cdist_object.state, core.Object.STATE_PREPARED)
+        self.cdist_object.state = core.CdistObject.STATE_PREPARED
+        self.assertEqual(self.cdist_object.state, core.CdistObject.STATE_PREPARED)
 
     def test_state_running(self):
-        self.cdist_object.state = core.Object.STATE_RUNNING
-        self.assertEqual(self.cdist_object.state, core.Object.STATE_RUNNING)
+        self.cdist_object.state = core.CdistObject.STATE_RUNNING
+        self.assertEqual(self.cdist_object.state, core.CdistObject.STATE_RUNNING)
 
     def test_state_done(self):
-        self.cdist_object.state = core.Object.STATE_DONE
-        self.assertEqual(self.cdist_object.state, core.Object.STATE_DONE)
+        self.cdist_object.state = core.CdistObject.STATE_DONE
+        self.assertEqual(self.cdist_object.state, core.CdistObject.STATE_DONE)
 
     def test_source(self):
         self.assertEqual(list(self.cdist_object.source), [])
@@ -195,6 +197,6 @@ class ObjectTestCase(test.CdistTestCase):
         self.cdist_object.code_remote = 'Hello World'
         other_name = '__first/man'
         other_object = self.cdist_object.object_from_name(other_name)
-        self.assertTrue(isinstance(other_object, core.Object))
-        self.assertEqual(other_object.type.name, '__first')
+        self.assertTrue(isinstance(other_object, core.CdistObject))
+        self.assertEqual(other_object.cdist_type.name, '__first')
         self.assertEqual(other_object.object_id, 'man')

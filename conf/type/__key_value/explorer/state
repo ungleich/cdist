@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+key="$(cat "$__object/parameter/key" 2>/dev/null \
+   || echo "$__object_id")"
+state="$(cat "$__object/parameter/state" 2>/dev/null \
+   || echo "present")"
+file="$(cat "$__object/parameter/file")"
+delimiter="$(cat "$__object/parameter/delimiter")"
+value="$(cat "$__object/parameter/value" 2>/dev/null \
+   || echo "__CDIST_NOTSET__")"
+
+case "$state" in
+   absent)
+      if grep -q -E "^$key$delimiter+" "$file"; then
+         # if the key exists, with whatever value, we will have to remove it
+         # so report it as present
+         echo present
+      else
+         # key does not exist
+         echo absent
+      fi
+   ;;
+   present)
+      if grep -q -E "^$key$delimiter+$value$" "$file"; then
+         # key exists and value is same
+         echo present
+      elif grep -q -E "^$key$delimiter+" "$file"; then
+         # key exists, but value is empty or different
+         echo wrongvalue
+      else
+         # key does not exist
+         echo absent
+      fi
+   ;;
+esac

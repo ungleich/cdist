@@ -143,7 +143,7 @@ class Local(object):
     def link_emulator(self, exec_path):
         """Link emulator to types"""
         src = os.path.abspath(exec_path)
-        for cdist_type in core.Type.list_types(self.type_path):
+        for cdist_type in core.CdistType.list_types(self.type_path):
             dst = os.path.join(self.bin_path, cdist_type.name)
             self.log.debug("Linking emulator: %s to %s", src, dst)
 

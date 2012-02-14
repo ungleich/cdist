@@ -23,6 +23,9 @@
 #
 
 case "$($__explorer/os)" in
+   amazon)
+      cat /etc/system-release
+   ;;
    archlinux)
       # empty, but well...
       cat /etc/arch-release
