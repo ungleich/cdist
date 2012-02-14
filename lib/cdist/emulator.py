@@ -145,10 +145,14 @@ class Emulator(object):
                 if len(requirement) == 0: continue
 
                 # Raises an error, if object cannot be created
-                self.cdist_object.object_from_name(requirement)
+                cdist_object = self.cdist_object.object_from_name(requirement)
 
                 self.log.debug("Recording requirement: " + requirement)
-                self.cdist_object.requirements.append(requirement)
+
+                # Save the sanitised version, not the user supplied one
+                # (__file//bar => __file/bar)
+                # This ensures pattern matching is done against sanitised list
+                self.cdist_object.requirements.append(cdist_object.name)
 
     def record_auto_requirements(self):
         """An object shall automatically depend on all objects that it defined in it's type manifest.
