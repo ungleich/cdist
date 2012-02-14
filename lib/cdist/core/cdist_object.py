@@ -102,8 +102,6 @@ class CdistObject(object):
         """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
         """
         if self.object_id:
-            if self.object_id.startswith('/'):
-                raise IllegalObjectIdError(self.object_id, 'object_id may not start with /')
             if OBJECT_MARKER in self.object_id.split(os.sep):
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
             if '//' in self.object_id:
@@ -119,8 +117,8 @@ class CdistObject(object):
         self.base_path = base_path
         self.object_id = object_id
 
-        self.sanitise_object_id()
         self.validate_object_id()
+        self.sanitise_object_id()
 
         self.name = self.join_name(self.cdist_type.name, self.object_id)
         self.path = os.path.join(self.cdist_type.path, self.object_id, OBJECT_MARKER)
