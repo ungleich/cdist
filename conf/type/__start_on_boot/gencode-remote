@@ -35,13 +35,13 @@ case "$state_should" in
                 echo sed -i /etc/rc.conf \'s/^\\(DAEMONS=.*\\))/\\1 $name)/\'
             ;;
             debian|ubuntu)
-                # This does not work as expected:
+                # FIXME: This does not work as expected:
                 # insserv: warning: current start runlevel(s) (3 4 5) of script `postfix' overwrites defaults (2 3 4 5).
                 #echo update-rc.d \"$name\" defaults
                 echo update-rc.d \"$name\" defaults
             ;;
 
-# Disabled until the explorer is checked
+#           FIXME: Disabled until the explorer is checked
 #            gentoo)
 #                echo rc-update add \"$name\" default
 #            ;;
@@ -60,13 +60,14 @@ case "$state_should" in
     absent)
         case "$os" in
             archlinux)
-                echo sed -i /etc/rc.conf -e \"s/ $name / /g\" -e \"s/($name/(/\" -e \"s/ $name)/)/\"
+                # Replace a) at the beginning b) in the middle c) end d) only
+                echo "sed -i /etc/rc.conf -e 's/^\(DAEMONS=(\)$name /\1/' -e 's/^\(DAEMONS=(.* \)$name \(.*\)/\1\2/' -e 's/^\(DAEMONS=(.*\) $name)/\1)/' -e 's/^\(DAEMONS=(\)$name)/\1)/'"
             ;;
             debian|ubuntu)
                 echo update-rc.d -f \"$name\" remove
             ;;
 
-# Disabled until the explorer is checked
+# FIXME: Disabled until the explorer is checked
 #            gentoo)
 #                echo rc-update del \"$name\"
 #            ;;
