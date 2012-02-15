@@ -6,6 +6,7 @@ Changelog
 
 2.0.8:
 	* Cleanup: Better hint to source of error
+	* Cleanup: Do not output failing script, but path to script only
 	* Cleanup: Remove support for __debug variable in manifests (Type != Core
 		debugging)
 
