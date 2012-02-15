@@ -58,7 +58,8 @@ case "$state_should" in
         case "$os" in
             archlinux)
                 # Replace a) at the beginning b) in the middle c) end d) only
-                echo "sed -i /etc/rc.conf -e 's/^\\(DAEMONS=(\\)$name /\\1/' -e 's/^\\(DAEMONS=(.* \\)$name \\(.*\\)/\\1\\2/' -e 's/^\\(DAEMONS=(.*\\) $name)/\\1)/' -e 's/^\\(DAEMONS=(\\)$name)/\\1)/'"
+                # Support @name as well...makes it more ugly, but well...
+                echo "sed -i /etc/rc.conf -e 's/^\\(DAEMONS=(\\)@\\{0,1\\}$name /\\1/' -e 's/^\\(DAEMONS=(.* \\)@\\{0,1\\}$name \\(.*\\)/\\1\\2/' -e 's/^\\(DAEMONS=(.*\\) @\\{0,1\\}$name)/\\1)/' -e 's/^\\(DAEMONS=(\\)@\\{0,1\\}$name)/\\1)/'"
             ;;
             debian|ubuntu)
                 echo update-rc.d -f \"$name\" remove

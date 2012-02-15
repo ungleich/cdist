@@ -1,4 +1,4 @@
-2.0.8 features / cleanups:
+- introduce default parameters
 
 - cleanup object_id handling
     - have a look at singletons
