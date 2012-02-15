@@ -126,7 +126,7 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         self.assertEqual(sorted(cdist_object.requirements), sorted(expected))
 
 
-class ArgumentsWithDashesTestCase(test.CdistTestCase):
+class ArgumentsTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
@@ -159,3 +159,59 @@ class ArgumentsWithDashesTestCase(test.CdistTestCase):
         cdist_type = core.CdistType(self.local.type_path, '__arguments_with_dashes')
         cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'some-id')
         self.assertTrue('with-dash' in cdist_object.parameters)
+
+    def test_boolean(self):
+        type_name = '__arguments_boolean'
+        object_id = 'some-id'
+        argv = [type_name, object_id, '--boolean1']
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        cdist_type = core.CdistType(self.local.type_path, type_name)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        self.assertTrue('boolean1' in cdist_object.parameters)
+        self.assertFalse('boolean2' in cdist_object.parameters)
+        # empty file -> True
+        self.assertTrue(cdist_object.parameters['boolean1'] == '')
+
+    def test_required(self):
+        type_name = '__arguments_required'
+        object_id = 'some-id'
+        value = 'some value'
+        argv = [type_name, object_id, '--required1', value, '--required2', value]
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        cdist_type = core.CdistType(self.local.type_path, type_name)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        self.assertTrue('required1' in cdist_object.parameters)
+        self.assertTrue('required2' in cdist_object.parameters)
+        self.assertEqual(cdist_object.parameters['required1'], value)
+        self.assertEqual(cdist_object.parameters['required2'], value)
+
+#    def test_required_missing(self):
+#        type_name = '__arguments_required'
+#        object_id = 'some-id'
+#        value = 'some value'
+#        argv = [type_name, object_id, '--required1', value]
+#        os.environ.update(self.env)
+#        emu = emulator.Emulator(argv)
+#        
+#        self.assertRaises(SystemExit, emu.run)
+
+    def test_optional(self):
+        type_name = '__arguments_optional'
+        object_id = 'some-id'
+        value = 'some value'
+        argv = [type_name, object_id, '--optional1', value]
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        cdist_type = core.CdistType(self.local.type_path, type_name)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        self.assertTrue('optional1' in cdist_object.parameters)
+        self.assertFalse('optional2' in cdist_object.parameters)
+        self.assertEqual(cdist_object.parameters['optional1'], value)

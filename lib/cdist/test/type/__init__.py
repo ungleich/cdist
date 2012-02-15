@@ -145,3 +145,14 @@ class TypeTestCase(test.CdistTestCase):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__without_optional_parameters')
         self.assertEqual(cdist_type.optional_parameters, [])
+
+    def test_with_boolean_parameters(self):
+        base_path = fixtures
+        cdist_type = core.CdistType(base_path, '__with_boolean_parameters')
+        self.assertEqual(cdist_type.boolean_parameters, ['boolean1', 'boolean2'])
+
+    def test_without_boolean_parameters(self):
+        base_path = fixtures
+        cdist_type = core.CdistType(base_path, '__without_boolean_parameters')
+        self.assertEqual(cdist_type.boolean_parameters, [])
+

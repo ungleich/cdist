@@ -87,7 +87,7 @@ class Emulator(object):
     def commandline(self):
         """Parse command line"""
 
-        parser = argparse.ArgumentParser(add_help=False)
+        parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS)
 
         for parameter in self.cdist_type.optional_parameters:
             argument = "--" + parameter
@@ -95,6 +95,9 @@ class Emulator(object):
         for parameter in self.cdist_type.required_parameters:
             argument = "--" + parameter
             parser.add_argument(argument, dest=parameter, action='store', required=True)
+        for parameter in self.cdist_type.boolean_parameters:
+            argument = "--" + parameter
+            parser.add_argument(argument, dest=parameter, action='store_const', const='')
 
         # If not singleton support one positional parameter
         if not self.cdist_type.is_singleton:
