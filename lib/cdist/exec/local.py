@@ -32,18 +32,6 @@ import logging
 import cdist
 from cdist import core
 
-
-class LocalScriptError(cdist.Error):
-    def __init__(self, script, command, script_content):
-        self.script = script
-        self.command = command
-        self.script_content = script_content
-
-    def __str__(self):
-        plain_command = " ".join(self.command)
-        return "Local script execution failed: %s" % plain_command
-
-
 class Local(object):
     """Execute commands locally.
 
@@ -131,4 +119,4 @@ class Local(object):
             try:
                 os.symlink(src, dst)
             except OSError as e:
-                raise cdist.Error("Linking emulator from " + src + " to " + dst + " failed: " + e.__str__())
+                raise cdist.Error("Linking emulator from %s to %s failed: %s" % (src, dst, e.__str__()))
