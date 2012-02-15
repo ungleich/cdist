@@ -28,17 +28,6 @@ import logging
 
 import cdist
 
-
-class RemoteScriptError(cdist.Error):
-    def __init__(self, script, command, script_content):
-        self.script = script
-        self.command = command
-        self.script_content = script_content
-
-    def __str__(self):
-        plain_command = " ".join(self.command)
-        return "Remote script execution failed: %s" % plain_command
-
 class DecodeError(cdist.Error):
     def __init__(self, command):
         self.command = command
@@ -91,6 +80,17 @@ class Remote(object):
         command.extend(["-r", source, self.target_host + ":" + destination])
         self._run_command(command)
 
+    def run_script(self, script, env=None, return_output=False):
+        """Run the given script with the given environment on the remote side.
+        Return the output as a string.
+
+        """
+
+        command = ["/bin/sh", "-e"]
+        command.append(script)
+
+        return self.run(command, env, return_output)
+
     def run(self, command, env=None, return_output=False):
         """Run the given command with the given environment on the remote side.
         Return the output as a string.
@@ -99,7 +99,15 @@ class Remote(object):
         # prefix given command with remote_exec
         cmd = self._exec.split()
         cmd.append(self.target_host)
+
+        # can't pass environment to remote side, so prepend command with
+        # variable declarations
+        if env:
+            remote_env = ["%s=%s" % item for item in env.items()]
+            cmd.append(remote_env)
+
         cmd.extend(command)
+
         return self._run_command(cmd, env=env, return_output=return_output)
 
     def _run_command(self, command, env=None, return_output=False):
@@ -113,14 +121,6 @@ class Remote(object):
         os_environ = os.environ.copy()
         os_environ['__target_host'] = self.target_host
 
-        # can't pass environment to remote side, so prepend command with
-        # variable declarations
-        if env:
-            cmd = ["%s=%s" % item for item in env.items()]
-            cmd.extend(command)
-        else:
-            cmd = command
-
         self.log.debug("Remote run: %s", command)
         try:
             if return_output:
@@ -133,14 +133,3 @@ class Remote(object):
             raise cdist.Error(" ".join(*args) + ": " + error.args[1])
         except UnicodeDecodeError:
             raise DecodeError(command)
-
-    def run_script(self, script, env=None, return_output=False):
-        """Run the given script with the given environment on the remote side.
-        Return the output as a string.
-
-        """
-
-        command = ["/bin/sh", "-e"]
-        command.append(script)
-
-        return self.run(command, env, return_output)
