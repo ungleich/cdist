@@ -104,7 +104,7 @@ class Remote(object):
         # variable declarations
         if env:
             remote_env = ["%s=%s" % item for item in env.items()]
-            cmd.append(remote_env)
+            cmd.extend(remote_env)
 
         cmd.extend(command)
 
