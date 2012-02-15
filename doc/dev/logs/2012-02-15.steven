@@ -1,4 +1,7 @@
 - parameter/setting default from manifest
+    ==> BRANCH[feature_default_parameters],
+    ==> PERSON[Steven or Nico]
+    ==> PROPOSAL(1)
     - current bug
     - proposal 1: parameter/default/$name (for optional ones)
         - new way
@@ -58,6 +61,9 @@ __foo bar == emulator
 ! automagic / filesystem
     ! fsproperty:
         - kill, write explicitly to disk
+    ==> BRANCH[cleanup_fsproperty]
+    ==> PERSON[Steven]
+    ==> PROPOSAL(just cleanup)
 
     - implicit/automatic writes/read to fs
         - explicit interfaces are better then implicit
@@ -99,6 +105,8 @@ __foo bar == emulator
                 - nico: to fancy probably
 
 ! boolean implementation
+    ==> BRANCH[feature_boolean_parameter]
+    ==> PERSON[Steven]
     - nico: 
         - parameters/boolean: document
         - argparse changes (consider parameters/boolean)
@@ -113,7 +121,11 @@ __foo bar == emulator
     - dependency on filesystem: good (nico) | bad (steven)
 
 - singleton / support without object_id
+    - not discussed
 
+- __apt_ppa:
+    ==> BRANCH[bugfix_do_not_change_state_in_manifest]
+    ==> PERSON[Nico]
 
 - logging divergent between emulator / core
     - no problem (nico)
