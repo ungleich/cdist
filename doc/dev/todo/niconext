@@ -3,9 +3,6 @@
 - cleanup object_id handling
     - have a look at singletons
 
-- remove useless
-    ERROR: monitoring02: Code that raised the error:
-
 - ensure that all types, which support --state support
     present and absent (consistent look and feel)
 

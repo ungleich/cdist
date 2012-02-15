@@ -139,32 +139,8 @@ class Remote(object):
         Return the output as a string.
 
         """
-        command = self._exec.split()
-        command.append(self.target_host)
 
-        # export target_host for use in __remote_{exec,copy} scripts
-        os_environ = os.environ.copy()
-        os_environ['__target_host'] = self.target_host
-
-        self.log.debug("Remote run script: %s", command)
-
-        # can't pass environment to remote side, so prepend command with
-        # variable declarations
-        if env:
-            self.log.debug("Remote run script env: %s", env)
-            command.extend(["%s=%s" % item for item in env.items()])
-
-        command.extend(["/bin/sh", "-e"])
+        command = ["/bin/sh", "-e"]
         command.append(script)
 
-        try:
-            if return_output:
-                return subprocess.check_output(command, env=os_environ).decode()
-            else:
-                subprocess.check_call(command, env=os_environ)
-        except subprocess.CalledProcessError as error:
-            script_content = self.run(["cat", script], return_output=True)
-            self.log.error("Code that raised the error:\n%s", script_content)
-            raise RemoteScriptError(script, command, script_content)
-        except EnvironmentError as error:
-            raise cdist.Error(" ".join(command) + ": " + error.args[1])
+        self.run(command, env, return_output)
