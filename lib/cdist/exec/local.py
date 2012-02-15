@@ -119,7 +119,7 @@ class Local(object):
         command = ["/bin/sh", "-e"]
         command.append(script)
 
-        self.run(command, env, return_output)
+        return self.run(command, env, return_output)
 
     def link_emulator(self, exec_path):
         """Link emulator to types"""
