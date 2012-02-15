@@ -1,0 +1,71 @@
+#!/bin/sh
+#
+# Copyright (C) 2011 Daniel Maher (phrawzty+cdist at gmail.com)
+# Parts copyright (C) 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist (https://github.com/telmich/cdist/).
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Debug
+#exec >&2
+#set -x
+
+source="$(cat "$__object/parameter/source")"
+
+if [ -f "$__object/parameter/destination" ]; then
+	destination="$(cat "$__object/parameter/destination")"
+else
+	destination="/$__object_id"
+fi
+
+# The system binary is probably ok, but if not...
+if [ -f "$__object/parameter/rsyncbin" ]; then
+	rsyncbin="$(cat "$__object/parameter/rsyncbin")"
+else
+	rsyncbin=`which rsync`
+fi
+
+# Turned this into an array so that we can use the "-e" argument to get the
+#    "root@" stuff fixed and so that "ssh -l root" is a single arg (as rsync
+#    wants it to be).
+args=('-a' '-e' '"ssh -l root"')
+
+# If the --delete argument should be passed to rsync.
+if [ -f "$__object/parameter/delete" ]; then
+# This is from having args defined as an array previously. ${#args[@]}
+#    is the number of indices in args, and args[${#args[@]}]=... creates a
+#    new index of args, which is then filled with "--delete."
+	args[${#args[@]}]="--delete"
+fi
+
+cmd="${rsyncbin} ${args[@]} \"${source}\""
+
+# If the --chroot argument was given
+if [ -f "$__object/parameter/chroot" ]; then
+	chroot=$(cat $__object/parameter/chroot)
+	cmd="${cmd} \"$chroot/$destination\""
+else
+	cmd="${cmd} \"$__target_host:$destination\""
+fi
+
+# FIXME:
+# - align with __remote_{exec,copy} variables? -- done
+
+# Run rsync (locally).
+echo "${cmd}"
+
+#set +x
+

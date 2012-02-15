@@ -1,0 +1,56 @@
+cdist-type__build(7)
+===================
+Jake Guffey <jake.guffey--@--eprotex.com>
+
+
+NAME
+----
+cdist-type__build - Manage software build operations
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to build software on the target.
+It dispatches the actual work to the build-dependant types.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+OPTIONAL PARAMETERS
+-------------------
+name::
+   The name of the software to build. Default is to use the object_id.
+type::
+   The build type to use. Default is to build a port for direct installation
+   on the target host.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Build and install a port
+__build vim
+
+# Build and install a port explicitly defining to use ports
+__build vim --type port_freebsd
+
+# Build a package to install via __package on another machine
+__build vim --type pkg_freebsd
+
+# Force use of a specific package type
+__build nanobsd --name nanobsd-internaluse-9.0 --type nanobsd
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Jake Guffey. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
