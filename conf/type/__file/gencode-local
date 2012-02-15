@@ -22,7 +22,12 @@
 #
 
 destination="/$__object_id"
-state_should="$(cat "$__object/parameter/state")"
+
+if [ -f "$__object/parameter/state" ]; then
+    state_should="$(cat "$__object/parameter/state")"
+else
+    state_should="present"
+fi
 
 if [ "$state_should" = "present" ]; then
    if [ -f "$__object/parameter/source" ]; then

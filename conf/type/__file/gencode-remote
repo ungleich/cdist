@@ -22,8 +22,13 @@
 #
 
 destination="/$__object_id"
-state_should="$(cat "$__object/parameter/state")"
 exists="$(cat "$__object/explorer/exists")"
+
+if [ -f "$__object/parameter/state" ]; then
+    state_should="$(cat "$__object/parameter/state")"
+else
+    state_should="present"
+fi
 
 case "$state_should" in
    present)
