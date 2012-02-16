@@ -42,7 +42,12 @@ case "$state_should" in
     ;;
 esac
 
-is_installed="$(grep "(installed)" "$__object/explorer/pkg_status" || true)"
+
+if grep -q "(installed)" "$__object/explorer/pkg_status"; then
+    state_is="present"
+else
+    state_is="absent"
+fi
 
 case "$state" in
    installed)
