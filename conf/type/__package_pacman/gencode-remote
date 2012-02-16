@@ -53,7 +53,7 @@ else
 fi
 
 # Exit if nothing is needed to be done
-[ "$state_is" = "$state_should ] && exit 0
+[ "$state_is" = "$state_should" ] && exit 0
 
 case "$state_should" in
    present)

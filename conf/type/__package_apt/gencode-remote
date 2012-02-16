@@ -52,17 +52,17 @@ esac
 
 aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
 
-if [ "$state_is" != "$state_should" ]; then
-   case "$state_should" in
-      present)
-         echo $aptget install \"$name\"
-      ;;
-      absent)
-         echo $aptget remove \"$name\"
-      ;;
-      *)
-         echo "Unknown state: $state_should" >&2
-         exit 1
-      ;;
-   esac
-fi
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        echo $aptget install \"$name\"
+    ;;
+    absent)
+        echo $aptget remove \"$name\"
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac
