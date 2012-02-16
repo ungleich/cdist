@@ -24,9 +24,9 @@
 
 
 if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+    name="$(cat "$__object/parameter/name")"
 else
-   name="$__object_id"
+    name="$__object_id"
 fi
 
 state_should="$(cat "$__object/parameter/state")"
@@ -49,21 +49,18 @@ else
     state_is="absent"
 fi
 
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo luarocks install \"$name\"
-      fi
-   ;;
-   removed)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo luarocks remove \"$name\"
-      fi
-   ;;
-   *)
-      echo "Unknown state: $state" >&2
-      exit 1
-   ;;
+# Leave if nothing is to be done
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        echo luarocks install \"$name\"
+    ;;
+    absent)
+        echo luarocks remove \"$name\"
+    ;;
+    *)
+        echo "Unknown state: $state" >&2
+        exit 1
+    ;;
 esac
