@@ -29,7 +29,6 @@
 os_version="$(cat "$__global/explorer/os_version")"
 machine="$(cat "$__global/explorer/machine")"
 
-
 if [ -f "$__object/parameter/flavor" ]; then
 	flavor="$(cat "$__object/parameter/flavor")"
 fi
