@@ -82,6 +82,7 @@ class CdistType(object):
         self.__explorers = None
         self.__required_parameters = None
         self.__optional_parameters = None
+        self.__boolean_parameters = None
 
     def __repr__(self):
         return '<CdistType %s>' % self.name
@@ -144,3 +145,19 @@ class CdistType(object):
             finally:
                 self.__optional_parameters = parameters
         return self.__optional_parameters
+
+    @property
+    def boolean_parameters(self):
+        """Return a list of boolean parameters"""
+        if not self.__boolean_parameters:
+            parameters = []
+            try:
+                with open(os.path.join(self.absolute_path, "parameter", "boolean")) as fd:
+                    for line in fd:
+                        parameters.append(line.strip())
+            except EnvironmentError:
+                # error ignored
+                pass
+            finally:
+                self.__boolean_parameters = parameters
+        return self.__boolean_parameters
