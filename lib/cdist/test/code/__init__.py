@@ -54,8 +54,8 @@ class CodeTestCase(test.CdistTestCase):
 
         self.code = code.Code(self.target_host, self.local, self.remote)
 
-        self.cdist_type = core.Type(self.local.type_path, '__dump_environment')
-        self.cdist_object = core.Object(self.cdist_type, self.local.object_path, 'whatever')
+        self.cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
+        self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path, 'whatever')
         self.cdist_object.create()
 
         self.log = logging.getLogger("cdist")

@@ -19,7 +19,7 @@
 #
 #
 
-VERSION     = "2.0.6"
+VERSION     = "2.0.7"
 
 BANNER = """
              ..          .       .x+=:.        s
@@ -44,15 +44,17 @@ class Error(Exception):
     """Base exception class for this project"""
     pass
 
+class CdistObjectError(Error):
+    """Something went wrong with an object"""
+    
+    def __init__(self, cdist_object, message):
+        self.name = cdist_object.name
+        self.source = " ".join(cdist_object.source)
+        self.message = message
 
-class MissingEnvironmentVariableError(Error):
-    """Raised when a required environment variable is not set."""
-
-    def __init__(self, name):
-        self.name = name
 
     def __str__(self):
-        return 'Missing required environment variable: ' + str(self.name)
+        return '%s: %s (defined at %s)' % (self.name, self.message, self.source)
 
 def file_to_list(filename):
     """Return list from \n seperated file"""

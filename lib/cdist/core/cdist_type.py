@@ -34,7 +34,7 @@ class NoSuchTypeError(cdist.Error):
         return "Type '%s' does not exist at %s" % (self.type_path, self.type_absolute_path)
 
 
-class Type(object):
+class CdistType(object):
     """Represents a cdist type.
 
     All interaction with types in cdist should be done through this class.
@@ -61,7 +61,7 @@ class Type(object):
         # name is second argument
         name = args[1]
         if not name in cls._instances:
-            instance = super(Type, cls).__new__(cls)
+            instance = super(CdistType, cls).__new__(cls)
             cls._instances[name] = instance
             # return instance so __init__ is called
         return cls._instances[name]
@@ -82,9 +82,10 @@ class Type(object):
         self.__explorers = None
         self.__required_parameters = None
         self.__optional_parameters = None
+        self.__boolean_parameters = None
 
     def __repr__(self):
-        return '<Type %s>' % self.name
+        return '<CdistType %s>' % self.name
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.name == other.name
@@ -144,3 +145,19 @@ class Type(object):
             finally:
                 self.__optional_parameters = parameters
         return self.__optional_parameters
+
+    @property
+    def boolean_parameters(self):
+        """Return a list of boolean parameters"""
+        if not self.__boolean_parameters:
+            parameters = []
+            try:
+                with open(os.path.join(self.absolute_path, "parameter", "boolean")) as fd:
+                    for line in fd:
+                        parameters.append(line.strip())
+            except EnvironmentError:
+                # error ignored
+                pass
+            finally:
+                self.__boolean_parameters = parameters
+        return self.__boolean_parameters

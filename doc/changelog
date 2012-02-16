@@ -4,11 +4,22 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.0.7:
+2.0.8:
+	* Cleanup: Better hint to source of error
+	* Cleanup: Do not output failing script, but path to script only
+	* Cleanup: Remove support for __debug variable in manifests (Type != Core
+		debugging)
+	* Feature Core: Support boolean parameters (Steven Armstrong)
+
+2.0.7: 2012-02-13
 	* Bugfix __file: Use chmod after chown/chgrp (Matt Coddington)
 	* Bugfix __user: Correct shadow field in explorer (Matt Coddington)
 	* Bugfix __link: Properly handle existing links (Steven Armstrong)
+	* Bugfix __key_value: More robust implementation (Steven Armstrong)
+	* Bugfix __user: Fix for changing a user's group by name (Matt Coddington)
 	* New Type: __package_pip
+	* Bugfix/Cleanup: Correctly allow Object ID to start and end with /, but
+		not contain //.
 
 2.0.6: 2012-01-28
 	* Bugfix __apt_ppa:

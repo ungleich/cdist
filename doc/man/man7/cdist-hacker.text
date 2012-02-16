@@ -61,11 +61,18 @@ including it.
 
 HOW TO SUBMIT A NEW TYPE
 ------------------------
+For detailled information about types, see cdist-type(7).
+
 Submitting a type works as described above, with the additional requirement
 that a corresponding manpage named man.text in asciidoc format with
 the manpage-name "cdist-type__NAME" is included in the type directory
 AND asciidoc is able to compile it (i.e. do NOT have to many "=" in the second
 line).
+
+Warning: Submitting "exec" or "run" types that simply echo their parameter in
+gencode* will not be accepted, because they are of no use. Every type can output
+code and thus such a type introduces redundant functionality that is given by
+core cdist already.
 
 
 SEE ALSO

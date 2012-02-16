@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -26,29 +26,22 @@ import os
 import cdist
 from cdist import core
 
-
-class IllegalRequirementError(cdist.Error):
-    def __init__(self, requirement, message=None):
-        self.requirement = requirement
-        self.message = message or 'Illegal requirement'
-
-    def __str__(self):
-        return '%s: %s' % (self.message, self.requirement)
-
 class Emulator(object):
     def __init__(self, argv):
         self.argv           = argv
         self.object_id      = False
 
         self.global_path    = os.environ['__global']
-        self.object_source  = os.environ['__cdist_manifest']
         self.target_host    = os.environ['__target_host']
+
+        # Internally only
+        self.object_source  = os.environ['__cdist_manifest']
         self.type_base_path = os.environ['__cdist_type_base_path']
 
         self.object_base_path = os.path.join(self.global_path, "object")
 
         self.type_name      = os.path.basename(argv[0])
-        self.cdist_type     = core.Type(self.type_base_path, self.type_name)
+        self.cdist_type     = core.CdistType(self.type_base_path, self.type_name)
 
         self.__init_log()
 
@@ -94,7 +87,7 @@ class Emulator(object):
     def commandline(self):
         """Parse command line"""
 
-        parser = argparse.ArgumentParser(add_help=False)
+        parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS)
 
         for parameter in self.cdist_type.optional_parameters:
             argument = "--" + parameter
@@ -102,6 +95,9 @@ class Emulator(object):
         for parameter in self.cdist_type.required_parameters:
             argument = "--" + parameter
             parser.add_argument(argument, dest=parameter, action='store', required=True)
+        for parameter in self.cdist_type.boolean_parameters:
+            argument = "--" + parameter
+            parser.add_argument(argument, dest=parameter, action='store_const', const='')
 
         # If not singleton support one positional parameter
         if not self.cdist_type.is_singleton:
@@ -113,20 +109,15 @@ class Emulator(object):
 
 
     def setup_object(self):
-        # FIXME: verify object id
-
-        # Setup object_id
+        # Setup object_id - FIXME: unset / do not setup anymore!
         if self.cdist_type.is_singleton:
             self.object_id = "singleton"
         else:
             self.object_id = self.args.object_id[0]
             del self.args.object_id
 
-            # strip leading slash from object_id
-            self.object_id = self.object_id.lstrip('/')
-
         # Instantiate the cdist object we are defining
-        self.cdist_object = core.Object(self.cdist_type, self.object_base_path, self.object_id)
+        self.cdist_object = core.CdistObject(self.cdist_type, self.object_base_path, self.object_id)
 
         # Create object with given parameters
         self.parameters = {}
@@ -137,11 +128,14 @@ class Emulator(object):
         if self.cdist_object.exists:
             if self.cdist_object.parameters != self.parameters:
                 raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
-                    % (self.cdist_object, " ".join(self.cdist_object.source), self.cdist_object.parameters, self.object_source, self.parameters)
+                    % (self.cdist_object.name, " ".join(self.cdist_object.source), self.cdist_object.parameters, self.object_source, self.parameters)
             )
         else:
             self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
+
+        # Record / Append source
+        self.cdist_object.source.append(self.object_source)
 
     def record_requirements(self):
         """record requirements"""
@@ -151,25 +145,17 @@ class Emulator(object):
             self.log.debug("reqs = " + requirements)
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
-                if len(requirement) == 0:
-                    continue
+                if len(requirement) == 0: continue
 
-                requirement_type_name, requirement_object_id = core.Object.split_name(requirement)
-                # Instantiate type which fails if type does not exist
-                requirement_type = core.Type(self.type_base_path, requirement_type_name)
-
-                if requirement_object_id:
-                    # Validate object_id if any
-                    core.Object.validate_object_id(requirement_object_id)
-                elif not requirement_type.is_singleton:
-                    # Only singeltons have no object_id
-                    raise IllegalRequirementError(requirement, "Missing object_id and type is not a singleton.")
+                # Raises an error, if object cannot be created
+                cdist_object = self.cdist_object.object_from_name(requirement)
 
                 self.log.debug("Recording requirement: " + requirement)
-                self.cdist_object.requirements.append(requirement)
 
-        # Record / Append source
-        self.cdist_object.source.append(self.object_source)
+                # Save the sanitised version, not the user supplied one
+                # (__file//bar => __file/bar)
+                # This ensures pattern matching is done against sanitised list
+                self.cdist_object.requirements.append(cdist_object.name)
 
     def record_auto_requirements(self):
         """An object shall automatically depend on all objects that it defined in it's type manifest.

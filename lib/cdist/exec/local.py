@@ -32,18 +32,6 @@ import logging
 import cdist
 from cdist import core
 
-
-class LocalScriptError(cdist.Error):
-    def __init__(self, script, command, script_content):
-        self.script = script
-        self.command = command
-        self.script_content = script_content
-
-    def __str__(self):
-        plain_command = " ".join(self.command)
-        return "Local script execution failed: %s" % plain_command
-
-
 class Local(object):
     """Execute commands locally.
 
@@ -119,35 +107,16 @@ class Local(object):
         command = ["/bin/sh", "-e"]
         command.append(script)
 
-        self.log.debug("Local run script: %s", command)
-
-        if env is None:
-            env = os.environ.copy()
-        # Export __target_host for use in __remote_{copy,exec} scripts
-        env['__target_host'] = self.target_host
-
-        self.log.debug("Local run script env: %s", env)
-
-        try:
-            if return_output:
-                return subprocess.check_output(command, env=env).decode()
-            else:
-                subprocess.check_call(command, env=env)
-        except subprocess.CalledProcessError as error:
-            script_content = self.run(["cat", script], return_output=True)
-            self.log.error("Code that raised the error:\n%s", script_content)
-            raise LocalScriptError(script, command, script_content)
-        except EnvironmentError as error:
-            raise cdist.Error(" ".join(command) + ": " + error.args[1])
+        return self.run(command, env, return_output)
 
     def link_emulator(self, exec_path):
         """Link emulator to types"""
         src = os.path.abspath(exec_path)
-        for cdist_type in core.Type.list_types(self.type_path):
+        for cdist_type in core.CdistType.list_types(self.type_path):
             dst = os.path.join(self.bin_path, cdist_type.name)
             self.log.debug("Linking emulator: %s to %s", src, dst)
 
             try:
                 os.symlink(src, dst)
             except OSError as e:
-                raise cdist.Error("Linking emulator from " + src + " to " + dst + " failed: " + e.__str__())
+                raise cdist.Error("Linking emulator from %s to %s failed: %s" % (src, dst, e.__str__()))

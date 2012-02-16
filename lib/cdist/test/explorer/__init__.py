@@ -83,19 +83,19 @@ class ExplorerClassTestCase(test.CdistTestCase):
         shutil.rmtree(out_path)
 
     def test_list_type_explorer_names(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
+        cdist_type = core.CdistType(self.local.type_path, '__test_type')
         expected = cdist_type.explorers
         self.assertEqual(self.explorer.list_type_explorer_names(cdist_type), expected)
 
     def test_transfer_type_explorers(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
+        cdist_type = core.CdistType(self.local.type_path, '__test_type')
         self.explorer.transfer_type_explorers(cdist_type)
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
         destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
         self.assertEqual(os.listdir(source), os.listdir(destination))
 
     def test_transfer_type_explorers_only_once(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
+        cdist_type = core.CdistType(self.local.type_path, '__test_type')
         # first transfer
         self.explorer.transfer_type_explorers(cdist_type)
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
@@ -109,8 +109,8 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.assertFalse(os.listdir(destination))
 
     def test_transfer_object_parameters(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_type = core.CdistType(self.local.type_path, '__test_type')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'whatever')
         cdist_object.create()
         cdist_object.parameters = {'first': 'first value', 'second': 'second value'}
         self.explorer.transfer_object_parameters(cdist_object)
@@ -119,15 +119,15 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.assertEqual(sorted(os.listdir(source)), sorted(os.listdir(destination)))
 
     def test_run_type_explorer(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_type = core.CdistType(self.local.type_path, '__test_type')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'whatever')
         self.explorer.transfer_type_explorers(cdist_type)
         output = self.explorer.run_type_explorer('world', cdist_object)
         self.assertEqual(output, 'hello\n')
 
     def test_run_type_explorers(self):
-        cdist_type = core.Type(self.local.type_path, '__test_type')
-        cdist_object = core.Object(cdist_type, self.local.object_path, 'whatever')
+        cdist_type = core.CdistType(self.local.type_path, '__test_type')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'whatever')
         cdist_object.create()
         self.explorer.run_type_explorers(cdist_object)
         self.assertEqual(cdist_object.explorers, {'world': 'hello'})
