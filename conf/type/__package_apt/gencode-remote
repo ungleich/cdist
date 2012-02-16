@@ -61,7 +61,7 @@ if [ "$state_is" != "$state_should" ]; then
          echo $aptget remove \"$name\"
       ;;
       *)
-         echo "Unknown state: $state" >&2
+         echo "Unknown state: $state_should" >&2
          exit 1
       ;;
    esac

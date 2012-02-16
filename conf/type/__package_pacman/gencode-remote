@@ -63,7 +63,7 @@ case "$state_should" in
          echo pacman "$pacopts" -R \"$name\"
    ;;
    *)
-      echo "Unknown state: $state" >&2
+      echo "Unknown state: $state_should" >&2
       exit 1
    ;;
 esac
