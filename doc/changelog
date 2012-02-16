@@ -9,6 +9,7 @@ Changelog
 	* Cleanup: Do not output failing script, but path to script only
 	* Cleanup: Remove support for __debug variable in manifests (Type != Core
 		debugging)
+	* Feature Core: Support boolean parameters (Steven Armstrong)
 
 2.0.7: 2012-02-13
 	* Bugfix __file: Use chmod after chown/chgrp (Matt Coddington)
