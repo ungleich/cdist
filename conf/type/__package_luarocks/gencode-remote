@@ -24,29 +24,43 @@
 
 
 if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+    name="$(cat "$__object/parameter/name")"
 else
-   name="$__object_id"
+    name="$__object_id"
 fi
 
-state="$(cat "$__object/parameter/state")"
-is_installed="$(grep "(installed)" "$__object/explorer/pkg_status" || true)"
+state_should="$(cat "$__object/parameter/state")"
+# Correct pre 2.1 naming - FIXME in 2.1
+case "$state_should" in
+    installed)
+        echo "WARNING: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2
+        state_should="present"
+    ;;
+    removed)
+        echo "WARNING: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2
+        state_should="absent"
+    ;;
+esac
 
-case "$state" in
-   installed)
-      # Install only if non-existent
-      if [ -z "$is_installed" ]; then
-         echo luarocks install \"$name\"
-      fi
-   ;;
-   removed)
-      # Remove only if existent
-      if [ -n "$is_installed" ]; then
-         echo luarocks remove \"$name\"
-      fi
-   ;;
-   *)
-      echo "Unknown state: $state" >&2
-      exit 1
-   ;;
+
+if grep -q "(installed)" "$__object/explorer/pkg_status"; then
+    state_is="present"
+else
+    state_is="absent"
+fi
+
+# Leave if nothing is to be done
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        echo luarocks install \"$name\"
+    ;;
+    absent)
+        echo luarocks remove \"$name\"
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
 esac

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -33,24 +33,37 @@ else
    name="$__object_id"
 fi
 
-state="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
+case "$state_should" in
+    installed)
+        echo "WARNING: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2       
+        state_should="present"
+    ;;  
+    removed)
+        echo "WARNING: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2       
+        state_should="absent"
+    ;;  
+esac
+
 pkg_version="$(cat "$__object/explorer/pkg_version")"
+if [ -z "$pkg_version" ]; then
+    state_is="absent"
+else
+    state_is="present"
+fi
 
-case "$state" in
-   installed)
+# Exit if nothing is needed to be done
+[ "$state_is" = "$state_should" ] && exit 0
 
-      # Empty? Not installed.
-      if [ -z "$pkg_version" ]; then
+case "$state_should" in
+   present)
          echo pacman "$pacopts" -S \"$name\"
-      fi
    ;;
-   removed)
-      if [ "$pkg_version" ]; then
+   absent)
          echo pacman "$pacopts" -R \"$name\"
-      fi
    ;;
    *)
-      echo "Unknown state: $state" >&2
+      echo "Unknown state: $state_should" >&2
       exit 1
    ;;
 esac

@@ -23,10 +23,10 @@ state::
 OPTIONAL PARAMETERS
 -------------------
 name::
-   If supplied, use the name and not the object id as the package name.
+    If supplied, use the name and not the object id as the package name.
 
 pip::
-   Instead of using pip from PATH, use the specific pip path.
+    Instead of using pip from PATH, use the specific pip path.
 
 
 EXAMPLES
