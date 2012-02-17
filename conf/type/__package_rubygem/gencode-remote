@@ -46,7 +46,7 @@ else
     state_is="absent"
 fi
 
-[ "$state_is" = "$state_should ] && exit 0
+[ "$state_is" = "$state_should" ] && exit 0
 
 case "$state_should" in
     present)
