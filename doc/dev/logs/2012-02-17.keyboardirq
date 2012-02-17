@@ -24,3 +24,25 @@ Traceback (most recent call last):
     """
 KeyboardInterrupt
 ^C%                                                                                                                   [12:19] brief:cdist%
+
+
+--------------------------------------------------------------------------------
+[13:50] brief:cdist% ./bin/cdist config -vp monitoring02        
+INFO: monitoring02: Running global explorers
+INFO: monitoring02: Running initial manifest /home/users/nico/privat/firmen/local.ch/vcs/cdist/conf/manifest
+INFO: monitoring02: Running object manifests and type explorers
+INFO: monitoring02: Running manifest and explorers for __localch_shinken/singleton
+^CTraceback (most recent call last):
+  File "/usr/lib/python3.2/site.py", line 58, in <module>
+    import traceback
+  File "/usr/lib/python3.2/traceback.py", line 3, in <module>
+    import linecache
+  File "/usr/lib/python3.2/linecache.py", line 10, in <module>
+    import tokenize
+  File "/usr/lib/python3.2/tokenize.py", line 49, in <module>
+    class TokenInfo(collections.namedtuple('TokenInfo', 'type string start end line')):
+  File "/usr/lib/python3.2/collections.py", line 363, in namedtuple
+    exec(class_definition, namespace)
+  File "<string>", line 1, in <module>
+KeyboardInterrupt
+
