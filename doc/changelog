@@ -5,6 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 2.0.8:
+	* Bugfix core: Remove another nasty traceback when sending SIGINT (aka Ctrl-C)
 	* Cleanup: Better hint to source of error
 	* Cleanup: Do not output failing script, but path to script only
 	* Cleanup: Remove support for __debug variable in manifests (Type != Core
