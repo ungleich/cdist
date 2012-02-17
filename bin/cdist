@@ -228,7 +228,7 @@ if __name__ == "__main__":
         else:
             commandline()
 
-    except KeyboardInterrupt:
         sys.exit(0)
 
-    sys.exit(0)
+    except KeyboardInterrupt:
+        sys.exit(0)
