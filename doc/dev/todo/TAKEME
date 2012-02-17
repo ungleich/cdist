@@ -37,3 +37,4 @@ TYPES
 - Add testing framework (proposed by Evax Software)
 - __user
    add option to include --create-home
+- Merge __addifnosuchline and __removeline into __line + --state present|absent
