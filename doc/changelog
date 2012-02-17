@@ -11,6 +11,8 @@ Changelog
 		debugging)
 	* Cleanup: Change __package_* to support absent/present (default state
 		name now). The values removed/installed will be removed in cdist 2.1.
+	* Cleanup: Change __process to support absent/present (default state
+		name now). The values running/stopped will be removed in cdist 2.1.
 	* Feature Core: Support boolean parameters (Steven Armstrong)
 
 2.0.7: 2012-02-13
