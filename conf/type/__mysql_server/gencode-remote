@@ -19,12 +19,17 @@
 #
 #
 
-# store the root password in /root/.my.cnf so that processes can connect
 # to the database without requiring a passwort input
 rootpassword="$(cat "$__object/parameter/password")"
 
 # set root password
 mysqladmin -u root password $rootpassword
+
+# store the root password in /root/.my.cnf so that processes can connect
+cat <<-EOF > /root/.my.cnf
+	[client]
+	password=$rootpassword
+EOF
 
 # remove anonymous users
 mysql -u root -p <<-EOF
