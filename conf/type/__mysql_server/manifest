@@ -24,7 +24,4 @@ __package mysql-server --state installed
 
 # store the root password in /root/.my.cnf so that processes can connect
 # to the database without requiring a passwort input
-rootpassword="$(cat "$__object/parameter/password")"
-__file "/root/.my.cnf" --group root --owner root --mode 600 --source "$__type/files/my.cnf"
-require="__file/root/.my.cnf" \
-	__addifnosuchline "/root/.my.cnf" --line "password=$rootpassword"
+__file "/root/.my.cnf" --group root --owner root --mode 600
