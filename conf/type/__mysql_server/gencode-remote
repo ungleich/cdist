@@ -23,34 +23,46 @@
 rootpassword="$(cat "$__object/parameter/password")"
 
 # set root password
-mysqladmin -u root password $rootpassword
+echo "mysqladmin -u root password $rootpassword"
 
 # store the root password in /root/.my.cnf so that processes can connect
+cat <<-EOFF
 cat <<-EOF > /root/.my.cnf
 	[client]
 	password=$rootpassword
 EOF
+EOFF
 
 # remove anonymous users
-mysql -u root -p <<-EOF
+cat <<-EOFF
+mysql -u root <<-EOF
 	DELETE FROM mysql.user WHERE User='';
 EOF
+EOFF
 
 # remove remote-access for root
-mysql -u root -p <<-EOF
+cat <<-EOFF
+mysql -u root <<-EOF
 	DELETE FROM mysql.user WHERE User='root' AND Host!='localhost';
 EOF
+EOFF
 
 # remove test database
-mysql -u root -p <<-EOF
-	DROP DATABASE test;
+cat <<-EOFF
+mysql -u root <<-EOF
+	DROP DATABASE IF EXISTS test;
 EOF
-mysql -u root -p <<-EOF
+EOFF
+cat <<-EOFF
+mysql -u root <<-EOF
 	DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'
 EOF
+EOFF
 
 # flush privileges
-mysql -u root -p <<-EOF
+cat <<-EOFF
+mysql -u root <<-EOF
 	FLUSH PRIVILEGES;
 EOF
+EOFF
 
