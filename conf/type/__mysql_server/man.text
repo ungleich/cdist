@@ -1,0 +1,43 @@
+cdist-type__issue(7)
+====================
+Benedikt Koeppel <code@benediktkoeppel.ch>
+
+
+NAME
+----
+cdist-type__mysql_server - Manage a MySQL server
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to install a MySQL database server.
+
+
+REQUIRED PARAMETERS
+-------------------
+password::
+   The root password to set.
+
+
+OPTIONAL PARAMETERS
+-------------------
+None.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__mysql_server "mysql-server" --password "Uu9jooKe"
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Benedikt Koeppel. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

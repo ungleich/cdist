@@ -1,0 +1,57 @@
+#!/bin/sh
+#
+# 2012 Benedikt Koeppel (code@benediktkoeppel.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+# install mysql-server
+__package mysql-server --state installed
+
+# store the root password in /root/.my.cnf so that processes can connect
+# to the database without requiring a passwort input
+rootpassword="$(cat "$__object/parameter/password")"
+__file "/root/.my.cnf" --group root --user root --mode 600 --source "$__type/files/my.cnf"
+require="__file/root/.my.cnf" \
+	__addifnosuchline "/root/.my.cnf" --line "password=$rootpassword"
+
+# set root password
+mysqladmin -u root password $rootpassword
+
+# remove anonymous users
+mysql -u root -p <<-EOF
+	DELETE FROM mysql.user WHERE User='';
+EOF
+
+# remove remote-access for root
+mysql -u root -p <<-EOF
+	DELETE FROM mysql.user WHERE User='root' AND Host!='localhost';
+EOF
+
+# remove test database
+mysql -u root -p <<-EOF
+	DROP DATABASE test;
+EOF
+mysql -u root -p <<-EOF
+	DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'
+EOF
+
+# flush privileges
+mysql -u root -p <<-EOF
+	FLUSH PRIVILEGES;
+EOF
+
