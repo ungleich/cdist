@@ -22,23 +22,10 @@
 #  virtual machines.
 #
 
-jaildir="/usr/jail"
-present="$(cat "$__object/explorer/present")"
-status="$(cat "$__object/explorer/status")"
-state="$(cat "$__object/parameter/state")"
-name="$__object_id"
+#FIXME: /usr/jail should never be hardcoded in this type
+#FIXME: jailbase.tgz should not be hardcoded in this file
 
-if [ -f "$__object/parameter/started" ]; then
-	started="$(cat "$__object/parameter/started")"
-fi
+jailbase="/usr/jail/jailbase.tgz"
 
-#
-
-if [ "$present" = "EXISTS" ]; then
-# blah
-fi
-
-if [ "$status" = "STARTED" ]; then
-# blah
-fi
+__rsyncer "$jailbase" --source "$__object/files/jailbase.tgz"
 

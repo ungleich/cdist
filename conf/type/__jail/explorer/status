@@ -18,27 +18,11 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# The __jail type creates, configures, and deletes FreeBSD jails for use as
-#  virtual machines.
+# See if the requested jail is started
 #
 
-jaildir="/usr/jail"
-present="$(cat "$__object/explorer/present")"
-status="$(cat "$__object/explorer/status")"
-state="$(cat "$__object/parameter/state")"
-name="$__object_id"
+name=$__object_id
 
-if [ -f "$__object/parameter/started" ]; then
-	started="$(cat "$__object/parameter/started")"
-fi
-
-#
-
-if [ "$present" = "EXISTS" ]; then
-# blah
-fi
-
-if [ "$status" = "STARTED" ]; then
-# blah
-fi
+jls_output=$(jls | grep "[ 	]\/usr\/jail\/$name\$")
+[ -n "$jls_output" ] && echo "STARTED"
 

@@ -1,0 +1,54 @@
+cdist-type__jail(7)
+==========================
+Jake Guffey <jake.guffey--@--eprotex.com>
+
+
+NAME
+----
+cdist-type__jail - Manage FreeBSD jails
+
+
+DESCRIPTION
+-----------
+This type is used on FreeBSD to manage jails.
+
+
+REQUIRED PARAMETERS
+-------------------
+state::
+   Either "present" or "absent."
+
+
+OPTIONAL PARAMETERS
+-------------------
+started::
+   Either "true" or "false."
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Create a jail called www
+__jail www --state present
+
+# Remove the jail called www
+__jail www --state absent
+
+# Ensure that the jail called www is started
+__jail www --state present --started true
+
+# Use the name variable explicitly
+__jail thisjail --state present --name www
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Jake Guffey. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
