@@ -16,14 +16,16 @@ manage packages.
 
 REQUIRED PARAMETERS
 -------------------
-state::
-   Either "installed" or "removed".
+None.
 
 
 OPTIONAL PARAMETERS
 -------------------
 name::
    If supplied, use the name and not the object id as the package name.
+state::
+   The state the package should be in, either "installed" or "removed". If no
+   state is specified, "installed" is assumed.
 
 
 EXAMPLES

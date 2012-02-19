@@ -16,8 +16,7 @@ It dispatches the actual work to the package system dependant types.
 
 REQUIRED PARAMETERS
 -------------------
-state::
-   The state the package should be in, either "installed" or "removed"
+None.
 
 
 OPTIONAL PARAMETERS
@@ -33,6 +32,9 @@ type::
    variable.
    e.g. __package_apt for Debian
         __package_emerge for Gentoo
+state::
+   The state the package should be in, either "installed" or "removed". If no
+   state is specified, "installed" is assumed.
 
 
 EXAMPLES
@@ -41,6 +43,9 @@ EXAMPLES
 --------------------------------------------------------------------------------
 # Install the package vim on the target
 __package vim --state installed
+# or
+__package vim
+
 
 # Same but install specific version
 __package vim --state installed --version 7.3.50

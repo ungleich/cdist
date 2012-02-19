@@ -16,14 +16,15 @@ packages.
 
 REQUIRED PARAMETERS
 -------------------
-state::
-   Either "installed" or "removed".
+None.
 
 
 OPTIONAL PARAMETERS
 -------------------
 name::
    If supplied, use the name and not the object id as the package name.
+state::
+   Either "installed" or "removed".
 
 
 EXAMPLES
