@@ -24,6 +24,11 @@
 destination="/$__object_id"
 state_should="$(cat "$__object/parameter/state")"
 exists="$(cat "$__object/explorer/exists")"
+if [ -f "$__object/parameter/skip_if_present" ]; then
+   skip_if_present="$(cat "$__object/parameter/skip_if_present")"
+else
+   skip_if_present="false"
+fi
 
 case "$state_should" in
    present)
@@ -35,17 +40,17 @@ case "$state_should" in
       fi
 
       # Mode settings
-      if [ -f "$__object/parameter/mode" ]; then
+      if [ -f "$__object/parameter/mode" -a "$skip_if_present" != "true" ]; then
          echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
       fi
 
       # Group
-      if [ -f "$__object/parameter/group" ]; then
+      if [ -f "$__object/parameter/group" -a "$skip_if_present" != "true" ]; then
          echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
       fi
 
       # Owner
-      if [ -f "$__object/parameter/owner" ]; then
+      if [ -f "$__object/parameter/owner" -a "$skip_if_present" != "true" ]; then
          echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
       fi
    ;;

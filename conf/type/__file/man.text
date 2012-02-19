@@ -36,6 +36,14 @@ source::
    If supplied, copy this file from the host running cdist to the target.
    If not supplied, an empty file or directory will be created.
 
+skip_if_present::
+   'true' or 'false', defaults to 'false'
+   Skip the distribution of the file/folder if the target already exists 
+   and state is "present".
+   Please note, skip_if_present doesn't have any effect if state is "absent".
+   This is useful to distribute a template of a file or folder, that will
+   then be modified on the target by something/someone else.
+
 
 EXAMPLES
 --------
@@ -55,6 +63,9 @@ __file /etc/issue --source "$__type/files/archlinux" --state present
 __file /etc/shadow --source "$__type/files/shadow" \
    --owner root --group shadow --mode 0640 \
    --state present
+
+# Create the directory, if it doesn't already exist
+__file /var/www --skip_if_present="true"
 --------------------------------------------------------------------------------
 
 
