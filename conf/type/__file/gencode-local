@@ -25,6 +25,9 @@ destination="/$__object_id"
 state_should="$(cat "$__object/parameter/state")"
 if [ -f "$__object/parameter/skip_if_present" ]; then
    skip_if_present="$(cat "$__object/parameter/skip_if_present")"
+   if [ "$skip_if_present" == "" ]; then
+      skip_if_present="true"
+   fi
 else
    skip_if_present="false"
 fi
