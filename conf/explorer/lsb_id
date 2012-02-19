@@ -20,7 +20,14 @@
 #
 
 set +e
-lsb_release=$(which lsb_release 2>/dev/null)
-if [ -x "$lsb_release" ]; then
-   $lsb_release --short --id
-fi
+case "$($__explorer/os)" in
+   openwrt)
+      (. /etc/openwrt_release && echo "$DISTRIB_ID")
+   ;;
+   *)
+      lsb_release=$(which lsb_release 2>/dev/null)
+      if [ -x "$lsb_release" ]; then
+         $lsb_release --short --id
+      fi
+   ;;
+esac
