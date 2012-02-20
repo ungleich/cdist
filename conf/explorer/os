@@ -56,6 +56,11 @@ if [ -f /etc/gentoo-release ]; then
    exit 0
 fi
 
+if [ -f /etc/openwrt_version ]; then
+    echo openwrt
+    exit 0
+fi
+
 if [ -f /etc/owl-release ]; then
    echo owl
    exit 0
