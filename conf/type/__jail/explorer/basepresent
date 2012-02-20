@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# See if the jailbase.tgz or /usr/jail/base dir exists
+#
+
+name="base:jailbase.tgz"
+exists=0
+
+save_IFS="$IFS"
+IFS=":"
+for cur in $name; do
+    if [ -e "/usr/jail/$cur" ]; then
+        echo -n "$cur:"
+        let exists="$exists+1" 2>&1 >&-
+    fi
+done
+IFS="$save_IFS"
+
+if [ "$exists" -eq "0" ]; then
+    echo "NONE"
+else
+    echo "$exists"
+fi
+
