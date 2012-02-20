@@ -90,7 +90,7 @@ execcmd(){
 }
 
 if [ -n "$curr_version" ]; then	# PKG *is* installed
-	if [ "$state" = "removed" ]; then	# Shouldn't be installed
+	if [ "$state" = "absent" ]; then	# Shouldn't be installed
 		if [ -n "$flavor" ]; then
 			cmd="${rm_cmd} ${name}-${flavor}-${curr_version}"
 		else
@@ -115,9 +115,9 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
 		fi
 	fi
 else	# PKG *isn't* installed
-	if [ "$state" = "removed" ]; then	# Shouldn't be installed
+	if [ "$state" = "absent" ]; then	# Shouldn't be installed
 		exit 0
-	elif [ "$state" = "installed" ]; then	# Is not currently installed, should be
+	elif [ "$state" = "present" ]; then	# Is not currently installed, should be
 		if [ -n "$flavor" ]; then
 			cmd="${add_cmd} -r ${name}-${flavor}"
 		else

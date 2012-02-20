@@ -16,7 +16,7 @@ This type is usually used on FreeBSD to manage packages.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "installed" or "removed".
+   Either "present" or "absent".
 
 
 OPTIONAL PARAMETERS
