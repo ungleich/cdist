@@ -1,0 +1,6 @@
+This type is not much of use, as any type can issue code to be executed. 
+Thus you can implement the code directly in the calling type.
+ Or if you need to reuse it, create a type on its own.
+
+Because this seems to be a common misunderstanding when people come from "non managed areas",
+ where script iexecution is the main focus, I documented this in cdist-hacker to clearify.

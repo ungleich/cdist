@@ -101,11 +101,14 @@ conf/type/<name>/gencode-local::
 conf/type/<name>/gencode-remote::
     Used to generate code to be executed on the client.
 
-conf/type/<name>/parameters/required::
+conf/type/<name>/parameter/required::
     Parameters required by type, \n seperated list.
 
-conf/type/<name>/parameters/optional::
+conf/type/<name>/parameter/optional::
     Parameters optionally accepted by type, \n seperated list.
+
+conf/type/<name>/parameter/boolean::
+   Boolean parameters accepted by type, \n seperated list.
 
 conf/type/<name>/explorer::
     Location of the type specific explorers.
