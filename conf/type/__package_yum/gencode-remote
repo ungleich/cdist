@@ -27,7 +27,17 @@ else
    name="$__object_id"
 fi
 
-state="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
+case "$state_should" in
+    installed)
+        echo "WARNING:  ${__object_name}: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2       
+        state_should="present"
+    ;;
+    removed)
+        echo "WARNING:  ${__object_name}: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2       
+        state_should="absent"
+    ;;
+esac
 
 if grep -q -E "(centos|redhat|amazon)" "$__global/explorer/os"; then
     opts="-y --quiet"
@@ -37,19 +47,23 @@ fi
 
 not_installed="^no package provides"
 
-case "$state" in
-   installed)
-      if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-         echo yum $opts install \"$name\"
-      fi
-   ;;
-   removed)
-      if ! grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-         echo yum $opts remove \"$name\"
-      fi
-   ;;
-   *)
-      echo "Unknown state: $state" >&2
-      exit 1
-   ;;
+if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
+    state_is="absent"
+else
+    state_is="present"
+fi
+
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        echo yum $opts install \"$name\"
+    ;;
+    absent)
+        echo yum $opts remove \"$name\"
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
 esac
