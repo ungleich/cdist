@@ -130,6 +130,7 @@ case "$1" in
       git push --mirror
       git push --mirror github
       git push --mirror sf
+      git push --mirror ethz
    ;;
 
    clean)

@@ -40,7 +40,7 @@ A list of supported types can be found in the cdist-reference(7) manpage.
 
 SINGLETON TYPES
 ---------------
-If a type is flagged as a singleton, it may be used only 
+If a type is flagged as a singleton, it may be used only
 once per host. This is useful for types which can be used only once on a
 system. Singleton types do not take an object name as argument.
 
@@ -72,15 +72,42 @@ To begin a new type, just create the directory **conf/type/__NAME**.
 
 DEFINING PARAMETERS
 -------------------
-Every type consists of optional and required parameters, which must
-be created in a newline seperated file in ***parameters/required*** and
-***parameters/optional***. If either or both missing, the type will have
-no required, no optional or no parameters at all.
+Every type consists of required, optional and boolean parameters, which must
+be created in a newline seperated file in ***parameter/required***,
+***parameter/optional*** and ***parameter/boolean***. If either is missing,
+the type will have no required, no optional, no boolean or no parameters at
+all.
 
 Example:
 --------------------------------------------------------------------------------
 echo servername >> conf/type/__nginx_vhost/parameter/required
 echo logdirectory >> conf/type/__nginx_vhost/parameter/optional
+echo use_ssl >> conf/type/__nginx_vhost/parameter/boolean
+--------------------------------------------------------------------------------
+
+
+USING PARAMETERS
+----------------
+The parameters given to a type can be accessed and used in all type scripts
+(e.g manifest, gencode-*, explorer/*). Note that boolean parameters are
+represented by file existence. File exists -> True,
+file does not exist -> False
+
+Example: (e.g. in conf/type/__nginx_vhost/manifest)
+--------------------------------------------------------------------------------
+# required parameter
+servername="$(cat "$__object/parameter/servername")"
+
+# optional parameter
+if [ -f "$__object/parameter/logdirectory" ]; then
+   logdirectory="$(cat "$__object/parameter/logdirectory")"
+fi
+
+# boolean parameter
+if [ -f "$__object/parameter/use_ssl" ]; then
+   # file exists -> True
+   # do some fancy ssl stuff
+fi
 --------------------------------------------------------------------------------
 
 
@@ -116,7 +143,7 @@ SINGLETON - ONLY INSTANCE ONLY
 ------------------------------
 If you want to ensure that a type can only be used once per target, you can
 mark it as a singleton: Just create the (empty) file "singleton" in your type
-directory: 
+directory:
 
 --------------------------------------------------------------------------------
 touch conf/type/__NAME/singleton
@@ -128,7 +155,7 @@ This will also change the way your type must be called:
 __YOURTYPE --parameter value
 --------------------------------------------------------------------------------
 
-As you can see, the object ID is omitted, because it does not make any sense, 
+As you can see, the object ID is omitted, because it does not make any sense,
 if your type can be used only once.
 
 

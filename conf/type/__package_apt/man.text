@@ -17,7 +17,8 @@ manage packages.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "installed" or "removed".
+    The state the package should be in, either "present" or "absent"
+    (the old values "installed" or "removed" will be removed in cdist 2.1).
 
 
 OPTIONAL PARAMETERS
@@ -31,13 +32,13 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Ensure zsh in installed
-__package_apt zsh --state installed
+__package_apt zsh --state present
 
 # In case you only want *a* webserver, but don't care which one
-__package_apt webserver --state installed --name nginx
+__package_apt webserver --state present --name nginx
 
 # Remove obsolete package
-__package_apt puppet --state removed
+__package_apt puppet --state absent
 --------------------------------------------------------------------------------
 
 
