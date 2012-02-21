@@ -1,6 +1,7 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 Giel van Schijndel (giel plus cdist at mortis dot eu)
 #
 # This file is part of cdist.
 #
@@ -18,16 +19,21 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Retrieve the status of a package - parsed opkg output
+#
 
-set +e
-case "$($__explorer/os)" in
-   openwrt)
-      (. /etc/openwrt_release && echo "$DISTRIB_ID")
-   ;;
-   *)
-      lsb_release=$(which lsb_release 2>/dev/null)
-      if [ -x "$lsb_release" ]; then
-         $lsb_release --short --id
-      fi
-   ;;
-esac
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
+
+# Except dpkg failing, if package is not known / installed
+if opkg status "$name" 2>/dev/null | grep -q "^Status: install user installed$"; then
+   echo "present"
+   exit 0
+elif [ "$(opkg info "$name" 2> /dev/null | wc -l)" -eq 0 ]; then
+   echo "absent notpresent"
+   exit 0
+fi
+echo "absent"
