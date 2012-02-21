@@ -4,6 +4,10 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+2.0.9:
+	* New Type: __package_opkg (Giel van Schijndel)
+	* Feature __package: Support OpenWRT (Giel van Schijndel)
+
 2.0.8: 2012-02-20
 	* Bugfix core: Remove another nasty traceback when sending SIGINT (aka Ctrl-C)
 	* Cleanup: Better hint to source of error
