@@ -188,6 +188,7 @@ __object_id::
     the filesystem database and ensured by the core).
 
     Note: Double slashes ("//") will not be fixed and result in an error.
+
 __self::
     DEPRECATED: Same as __object_name, do not use anymore, use __object_name instead.
     Will be removed in cdist 3.x.

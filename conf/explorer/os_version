@@ -45,6 +45,9 @@ case "$($__explorer/os)" in
    *bsd|solaris)
       uname -r
    ;;
+   openwrt)
+      cat /etc/openwrt_version
+   ;;
    owl)
       cat /etc/owl-release
    ;;
