@@ -47,6 +47,13 @@ case "$state_should" in
                 echo chkconfig \"$name\" on
             ;;
 
+            openwrt)
+                # 'enable' can be successful and still return a non-zero exit
+                # code, deal with it by checking for success ourselves in that
+                # case (the || ... part).
+                echo "/etc/init.d/\"$name\" enable || [ -f /etc/rc.d/S??\"$name\" ]"
+            ;;
+
             *)
                echo "Unsupported os: $os" >&2
                exit 1
@@ -72,6 +79,10 @@ case "$state_should" in
 
             centos|fedora|owl|redhat)
                 echo chkconfig \"$name\" off
+            ;;
+
+            openwrt)
+                echo "\"/etc/init.d/$name\" disable"
             ;;
 
             *)
