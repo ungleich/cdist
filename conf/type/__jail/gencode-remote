@@ -22,23 +22,121 @@
 #  virtual machines.
 #
 
+# Debug
+#exec >&2
+#set -x
+
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
+
+state="$(cat "$__object/parameter/state")"
+
+if [ -f "$__object/parameter/started" ]; then
+   started="$(cat "$__object/parameter/started")"
+else
+   started="true"
+fi
+
+if [ -f "$__object/parameter/ip" ]; then
+   ip="$(cat "$__object/parameter/ip")"
+else
+# IP is an optional param when $state=absent, but
+#    when $state=present, it's required. Enforce this.
+   if [ "$state" = "present" ]; then
+      exec >&2
+      echo "If --state is 'present,' --ip must be given\!"
+      exit 1
+   fi
+fi
+
+if [ -f "$__object/parameter/hostname" ]; then
+   hostname="$(cat "$__object/parameter/hostname")"
+else
+   hostname="$name"
+fi
+
+if [ -f "$__object/parameter/interface" ]; then
+   interface="$(cat "$__object/parameter/interface")"
+fi
+
+if [ -f "$__object/parameter/devfs-enable" ]; then
+   devfsenable="$(cat "$__object/parameter/devfs-enable")"
+else
+   devfsenable="true"
+fi
+
+if [ -f "$__object/parameter/devfs-ruleset" ]; then
+   devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
+else
+   devfsruleset="jailrules"
+fi
+
+# devfs_ruleset being defined without devfs_enable being true
+#     is pointless. Treat this as an error.
+if [ -n "$devfsrules" -a "$devfsenable" = "false" ]; then
+   exec >&2
+   echo "Can't have --devfs-ruleset defined without --devfs-enable true."
+   exit 1
+fi
+
+if [ -f "$__object/parameter/onboot" ]; then
+   onboot="$(cat "$__object/parameter/onboot")"
+fi
+
 jaildir="/usr/jail"
 present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
-state="$(cat "$__object/parameter/state")"
-name="$__object_id"
 
-if [ -f "$__object/parameter/started" ]; then
-	started="$(cat "$__object/parameter/started")"
+# Defining a jail as absent and started at the same time
+#    makes no sense. Treat this as an error.
+if [ "$started" = "true" -a "$state" = "absent" ]; then
+   exec >&2
+   echo "Can't have --state absent and --started true together\!"
+   exit 1
 fi
 
-#
+stopJail() {
+# Check $status before issuing command
+   [ "$status" = "STARTED" ] && echo "/etc/rc.d/jail stop ${name}"
+}
 
-if [ "$present" = "EXISTS" ]; then
-# blah
+startJail() {
+# Check $status before issuing command
+   [ ! "$status" = "STARTED" ] && echo "/etc/rc.d/jail start ${name}"
+}
+
+deleteJail() {
+}
+
+createJail() {
+}
+
+if [ "$present" = "EXISTS" ]; then   # The jail currently exists
+   if [ "$state" = "present" ]; then   # The jail is supposed to exist
+      if [ "$started" = "true" ]; then   # The jail is supposed to be started
+         startJail
+      else   # The jail is not supposed to be started
+         stopJail
+      fi
+      exit 0
+   else   # The jail is not supposed to exist
+      stopJail
+      deleteJail
+      exit 0
+   fi
+else   # The jail does not currently exist
+   if [ "$state" = "absent" ]; then   # The jail is not supposed to be present
+      exit 0
+   else   # The jail is supposed to exist
+      createJail
+      [ "$started" = "true" ] && startJail
+      exit 0
+   fi
 fi
 
-if [ "$status" = "STARTED" ]; then
-# blah
-fi
+# Debug
+#set +x
 

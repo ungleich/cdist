@@ -29,6 +29,6 @@ jailbase="/usr/jail/jailbase.tgz"
 basepresent="$(cat "$__object/explorer/basepresent")"
 
 if [ "$basepresent" = "NONE" ]; then
-    __file "$jailbase" --source "$__object/files/jailbase.tgz"
+    echo "$__remote_copy" "$__object/files/jailbase.tgz" "${target_host}:${jailbase}"
 fi
 
