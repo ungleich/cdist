@@ -76,7 +76,7 @@ fi
 
 # devfs_ruleset being defined without devfs_enable being true
 #     is pointless. Treat this as an error.
-if [ -n "$devfsrules" -a "$devfsenable" = "false" ]; then
+if [ -n "$devfsruleset" -a "$devfsenable" = "false" ]; then
    exec >&2
    echo "Can't have --devfs-ruleset defined without --devfs-enable true."
    exit 1
@@ -109,9 +109,102 @@ startJail() {
 }
 
 deleteJail() {
+# If the jail's mountpoints are mounted, unmount them
+# Remove the jail's rw mountpoints
+# Remove the jail's ro mountpoint
+# Remove the jail directory
+# If the jail's devfs rules are custom (!="jailrules"), remove them
+# Remove jail_$name_* lines from rc.conf
+# Remove " $name " from jail_list if it's there
 }
 
 createJail() {
+# Create the jail directory
+echo <<-EOF
+   mkdir -p ${jaildir}/${name}
+   if [ ! -d "${jaildir}/base" ]; then
+      mkdir "${jaildir}/base"
+      tar -xzf "${jaildir}/jailbase.tgz" -C "${jaildir}/base"
+      if [ ! -d "${jaildir}/base/usr/local" ]; then
+         mkdir -p "${jaildir}/base/usr/local"
+      fi
+      if [ ! -d "${jaildir}/base/usr/home" ]; then
+         mkdir -p "${jaildir}/base/usr/home"
+      fi
+   fi
+   if [ ! -d "${jaildir}/rw" ]; then
+      mkdir "${jaildir}/rw"
+   fi
+   mkdir -p "${jaildir}/rw/${name}/etc"
+   cp -r ${jaildir}/base/etc/* "${jaildir}/rw/${name}/etc/"
+   mkdir "${jaildir}/rw/${name}/local"
+   mkdir "${jaildir}/rw/${name}/db"
+   if [ -d "${jaildir}/base/var/db" ]; then
+      cp -r ${jaildir}/base/var/db/* "${jaildir}/rw/${name}/db/"
+   fi
+   mkdir "${jaildir}/rw/${name}/home"
+   if [ -d "${jaildir}/base/usr/home" ]; then
+      cp -r ${jaildir}/base/usr/home/* "${jaildir}/rw/${name}/home/"
+   fi
+   mkdir "${jaildir}/rw/${name}/tmp"
+EOF
+
+# Create the ro+rw mountpoint entries in fstab
+echo <<-EOF
+	echo >/etc/fstab.${name} <<-END
+		/usr/jail/base			/usr/jail/${name}		nullfs	ro	0 0
+		/usr/jail/rw/${name}/etc	/usr/jail/${name}/etc		nullfs	rw	0 0
+		/usr/jail/rw/${name}/local	/usr/jail/${name}/usr/local	nullfs	rw	0 0
+		/usr/jail/rw/${name}/db		/usr/jail/${name}/var/db	nullfs	rw	0 0
+		/usr/jail/rw/${name}/home	/usr/jail/${name}/usr/home	nullfs	rw	0 0
+		/usr/jail/rw/${name}/tmp	/usr/jail/${name}/var/tmp	nullfs	rw	0 0
+	END
+EOF
+
+# Add the jail_$name_* lines to rc.conf
+echo <<-EOF
+	echo >>/etc/rc.conf <<-END
+		jail_${name}_rootdir="${jaildir}/${name}"
+		jail_${name}_hostname="${hostname}"
+		jail_${name}_ip="${ip}"
+		jail_${name}_devfs_enable="${devfsenable}"
+		jail_${name}_mount_enable="YES"
+		jail_${name}_fstab="/etc/fstab.$name"
+	END
+EOF
+
+if [ -n "$interface" ]; then
+   echo <<-EOF
+	echo >>/etc/rc.conf <<-END
+		jail_${name}_interface="${interface}"
+	END
+EOF
+fi
+
+if [ "$devfsenable" = "true" ]; then
+   echo <<-EOF
+	echo >>/etc/rc.conf <<-END
+		jail_${name}_devfs_ruleset="$devfsruleset"
+	END
+EOF
+fi
+
+# Add $name to jail_list if $onboot=true
+if [ "$onboot" = "true" ]; then
+   echo <<-EOF
+      eval $(grep '^jail_list=' /etc/rc.conf)
+      jail_list="${jail_list} ${name}"
+      sed -i "s/^jail_list=\".*\"/jail_list=\"${jail_list}\"/" /etc/rc.conf
+      unset jail_list
+EOF
+fi
+
+# Add the normal entries into the jail's rc.conf
+echo "echo hostname=\"${hostname}\"" >>"${jaildir}/rw/${name}/etc/rc.conf"
+echo 'echo sendmail_enable=\"NONE\"' >>"${jaildir}/rw/${name}/etc/rc.conf"
+echo 'echo syslogd_enable=\"YES\"' >>"${jaildir}/rw/${name}/etc/rc.conf"
+echo 'echo syslogd_flags=\"-ss\"' >>"${jaildir}/rw/${name}/etc/rc.conf"
+
 }
 
 if [ "$present" = "EXISTS" ]; then   # The jail currently exists
