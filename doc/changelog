@@ -6,6 +6,7 @@ Changelog
 
 2.0.9:
 	* New Type: __package_opkg (Giel van Schijndel)
+	* New Type: __package_pkg_freebsd (Jake Guffey)
 	* Feature __package: Support OpenWRT (Giel van Schijndel)
 
 2.0.8: 2012-02-20
