@@ -44,7 +44,7 @@ case "$os" in
         done
     ;;
 
-    debian|ubuntu)
+    debian|ubuntu|openwrt)
         state="present"
         [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
     ;;
