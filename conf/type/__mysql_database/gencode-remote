@@ -20,8 +20,8 @@
 #
 
 # if --database was specified
-if [ -f "$__object/parameter/database" ]; then
-   database="$(cat "$__object/parameter/database")"
+if [ -f "$__object/parameter/name" ]; then
+   database="$(cat "$__object/parameter/name")"
 else # otherwise use the object id as database name
    database="$__object_id"
 fi

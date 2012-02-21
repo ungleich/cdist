@@ -19,7 +19,7 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-database::
+name::
    The name of the database to install
    defaults to the object id
 
@@ -34,7 +34,7 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-__mysql_database "cdist" --database "cdist" --user "myuser" --password "mypwd"
+__mysql_database "cdist" --name "cdist" --user "myuser" --password "mypwd"
 --------------------------------------------------------------------------------
 
 
