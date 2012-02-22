@@ -9,7 +9,8 @@ Changelog
 		displayed (Giel van Schijndel)
 	* New Type: __package_opkg (Giel van Schijndel)
 	* New Type: __package_pkg_freebsd (Jake Guffey)
-	* Feature __package: Support OpenWRT (Giel van Schijndel)
+	* Feature __package: Support for OpenWRT (Giel van Schijndel)
+	* Feature __start_on_boot: Support for OpenWRT (Giel van Schijndel)
 
 2.0.8: 2012-02-20
 	* Bugfix core: Remove another nasty traceback when sending SIGINT (aka Ctrl-C)
