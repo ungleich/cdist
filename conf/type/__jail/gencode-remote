@@ -109,13 +109,31 @@ startJail() {
 }
 
 deleteJail() {
-# If the jail's mountpoints are mounted, unmount them
 # Remove the jail's rw mountpoints
-# Remove the jail's ro mountpoint
+   echo "rm -rf /usr/jail/rw/${name}"
+# Remove the jail's fstab
+   echo "rm -f /etc/fstab.${name}"
 # Remove the jail directory
-# If the jail's devfs rules are custom (!="jailrules"), remove them
+   echo "rm -rf /usr/jail/${name}"
 # Remove jail_$name_* lines from rc.conf
+   echo <<-EOF
+      sed -i '.bak' "/^jail_${name}_/d" /etc/rc.conf
+EOF
 # Remove " $name " from jail_list if it's there
+   echo <<-EOF
+      eval $(grep '^jail_list=' /etc/rc.conf)
+
+      for JAIL in ${jail_list}; do
+         if [ ! "${JAIL}" = "${name}" ]; then
+            new_list="${new_list} ${JAIL}"
+         fi
+      done
+      jail_list="${new_list}"
+      
+      sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"${jail_list}\"/" /etc/rc.conf
+      unset jail_list
+      rm -f /etc/rc.conf.bak
+EOF
 }
 
 createJail() {
@@ -194,8 +212,9 @@ if [ "$onboot" = "true" ]; then
    echo <<-EOF
       eval $(grep '^jail_list=' /etc/rc.conf)
       jail_list="${jail_list} ${name}"
-      sed -i "s/^jail_list=\".*\"/jail_list=\"${jail_list}\"/" /etc/rc.conf
+      sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"${jail_list}\"/" /etc/rc.conf
       unset jail_list
+      rm -f /etc/rc.conf.bak
 EOF
 fi
 
