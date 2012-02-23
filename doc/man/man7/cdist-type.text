@@ -204,6 +204,23 @@ echo "touch /etc/cdist-configured"
 --------------------------------------------------------------------------------
 
 
+RETURNING STATUS FROM GENCODE SCRIPTS
+-------------------------------------
+Scripts have the option of returning information on any changes they make.
+
+This information can be used in manifests to add tags that enable user-defined,
+multi-tier dependencies. Scripts can define any phrase (no whitespace allowed),
+which should be written to $__object/notifications:
+
+--------------------------------------------------------------------------------
+# Set a changed notification if the script changes a file
+echo "changed" >> "$__object/notifications"
+
+# Set an installed notification if a package has been successfully installed
+echo "installed" >> "$__object/notifications"
+--------------------------------------------------------------------------------
+
+
 HINTS FOR TYPEWRITERS
 ----------------------
 It must be assumed that the target is pretty dumb and thus does not have high

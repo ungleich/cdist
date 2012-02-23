@@ -191,6 +191,7 @@ class CdistObject(object):
     changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
     state = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "state"))
     source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
+    notifications = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "notifications"))
     code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_local_path))
     code_remote = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_remote_path))
 

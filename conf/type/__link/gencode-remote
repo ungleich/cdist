@@ -39,6 +39,23 @@ case "$type" in
    ;;
 esac
 
+#############
+# MPC todo: use readlink to find current state and only execute if changed
+# i.e.
+# if [ -L "$destination" ]; then
+#  old=\$(readlink $destination)
+#  if [ "$source" != "\$old" ]; then
+#    echo "AUDIT: $__target_host: moving symlink $destination to $source (was pointing to \$old)"
+#    (we also want to use the strategy of rm/ln to avoid ln -f being "smart" and not changing a relative to an absolute if they point the same place
+#    rm "$destination"
+#    ln ${lnopt} "$source" "$destination"
+#  fi
+# else
+#  echo "AUDIT: $__target_host: creating symlink $destination -> $source"
+#  ln ${lnopt} -f "$source" "$destination"
+# fi
+#############
+
 state_is="$(cat "$__object/explorer/state")"
 state_should="$(cat "$__object/parameter/state")"
 

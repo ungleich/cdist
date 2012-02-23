@@ -129,6 +129,27 @@ from the type that is calling them. This is called "autorequirement" in
 cdist jargon.
 
 
+RUNTIME DEPENDENCIES
+--------------------
+For gencode scripts that return status information for actual changes,
+dependencies can be created to only execute actions under certain conditions.
+If a required tag does not get set, that action will not be performed.
+
+Tag-based dependencies should not be mixed with static dependencies.
+
+--add_tags <status1:tag1,status2:tag2,...> is used to add one or more tags 
+  based on status returned
+--require_tags <tag1,tag2,...> is used to prevent something from running until 
+  all tags have been set
+
+--------------------------------------------------------------------------------
+__file /etc/nginx/nginx.conf --source "$__type/files/nginx.conf" \
+  --add_tags changed:nginx_conf_change
+__process /usr/sbin/nginx --state restart --restart "/etc/rc.d/nginx reload" \
+  --require_tags nginx_conf_change
+--------------------------------------------------------------------------------
+
+
 EXAMPLES
 --------
 The initial manifest may for instance contain the following code:

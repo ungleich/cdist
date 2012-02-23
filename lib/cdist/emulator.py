@@ -103,6 +103,10 @@ class Emulator(object):
         if not self.cdist_type.is_singleton:
             parser.add_argument("object_id", nargs=1)
 
+        # Generic optional parameter for tag dependency
+        parser.add_argument('--add_tags', dest='add_tags', action='store', required=False)
+        parser.add_argument('--require_tags', dest='require_tags', action='store', required=False)
+
         # And finally parse/verify parameter
         self.args = parser.parse_args(self.argv[1:])
         self.log.debug('Args: %s' % self.args)

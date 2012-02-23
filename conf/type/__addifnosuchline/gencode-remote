@@ -28,6 +28,8 @@ fi
 result=$(cat "$__object/explorer/findline")
 
 if [ "$result" = "NOTFOUND" ]; then
-  line=$(cat "$__object/parameter/line")
-  echo "echo $line >> $file"
+   line=$(cat "$__object/parameter/line")
+   echo "echo $line >> $file"
+   echo "AUDIT:added line to $file" >> "$__object/notifications"
+   echo "changed" >> "$__object/notifications"
 fi

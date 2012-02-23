@@ -5,7 +5,7 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
-cdist-type__process - Start or stop process
+cdist-type__process - Start, stop, or restart a process
 
 
 DESCRIPTION
@@ -35,6 +35,9 @@ stop::
 
 start::
    Executable to use for starting the process.
+
+restart::
+   Executable to use for restarting the process.
 
 
 EXAMPLES

@@ -34,6 +34,8 @@ if [ "$state_should" = "present" ]; then
 
          if [ "$local_cksum" != "$remote_cksum" ]; then
             echo "$__remote_copy" "$source" "${__target_host}:${destination}"
+            echo "AUDIT:copied master $source -> $destination" >> "$__object/notifications"
+            echo "changed" >> "$__object/notifications"
          fi
       else
          echo "Source \"$source\" does not exist." >&2

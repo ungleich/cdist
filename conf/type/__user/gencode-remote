@@ -59,14 +59,13 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
          uid)     field=3 ;;
       esac
 
-      # If we haven't already set $current_value above, pull it from the
-      # appropriate file/field.
       if [ -z "$current_value" ]; then
          export field
          current_value="$(awk -F: '{ print $ENVIRON["field"] }' < "$file")"
       fi
 
       if [ "$new_value" != "$current_value" ]; then
+         echo "AUDIT: changing user $name/$property $current_value -> $new_value" >> "$__object/notifications"
          set -- "$@" "--$property" \'$new_value\'
       fi
    done
@@ -82,5 +81,6 @@ else
       set -- "$@" "--$property" \'$new_value\'
    done
 
+   echo "AUDIT:added user $name: $@" >> "$__object/notifications"
    echo useradd "$@" "$name"
 fi
