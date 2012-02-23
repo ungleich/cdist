@@ -21,11 +21,17 @@
 # See if the requested jail exists
 #
 
+# Debug
+#exec >&2
+#set -x
+
 if [ -f "$__object/parameter/name" ]; then
    name="$(cat "$__object/parameter/name")"
 else
    name=$__object_id
 fi
 
-[ -d "/usr/jail/$name" ] && echo "EXISTS"
+[ -d "/usr/jail/$name" ] && echo "EXISTS" || echo "NOTEXIST"
+
+#set +x
 

@@ -21,12 +21,24 @@
 # See if the requested jail is started
 #
 
+# Debug
+#exec >&2
+#set -x
+
 if [ -f "$__object/parameter/name" ]; then
    name="$(cat "$__object/parameter/name")"
 else
-   name=$__object_id
+   name="$__object_id"
 fi
 
-jls_output=$(jls | grep "[ 	]\/usr\/jail\/$name\$")
-[ -n "$jls_output" ] && echo "STARTED"
+jls_output="$(jls | grep "[ ^I]\/usr\/jail\/${name}\$")" || true
+
+if [ -n "${jls_output}" ]; then
+   echo "STARTED"
+else
+   echo "NOTSTART"
+fi
+
+# Debug
+#set +x
 

@@ -21,22 +21,28 @@
 # See if the jailbase.tgz or /usr/jail/base dir exists
 #
 
+# Debug
+#exec >&2
+#set -x
+
 name="base:jailbase.tgz"
-exists=0
+out=""
 
 save_IFS="$IFS"
 IFS=":"
 for cur in $name; do
     if [ -e "/usr/jail/$cur" ]; then
-        echo -n "$cur:"
-        let exists="$exists+1" 2>&1 >&-
+        out="${out}:${cur}"
     fi
 done
 IFS="$save_IFS"
 
-if [ "$exists" -eq "0" ]; then
+if [ -z "$out" ]; then
     echo "NONE"
 else
-    echo "$exists"
+    echo "${out}"
 fi
+
+# Debug
+#set +x
 
