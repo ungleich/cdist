@@ -28,7 +28,7 @@ source="$(cat "$__object/parameter/source")"
 
 case "$type" in
    symbolic)
-      lnopt="-s"
+      lnopt="-s -h"
    ;;
    hard)
       lnopt=""
