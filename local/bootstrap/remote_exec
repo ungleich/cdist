@@ -1,0 +1,34 @@
+#!/bin/bash
+
+echo "setting up /etc/ssh/sshd_config_cdist"
+
+PUBKEY=$(cat /root/.ssh/cdist.pub)
+
+cat << EOF > /etc/ssh/sshd_config_cdist
+Port 222
+Protocol 2
+SyslogFacility AUTHPRIV
+PermitRootLogin yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+UsePAM yes
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+X11Forwarding no
+PrintMotd no
+EOF
+
+echo "creating the cdist authorized keys file"
+
+mkdir -p /root/.ssh
+chmod 700 /root/.ssh
+cat << EOF > /root/.ssh/authorized_keys
+$PUBKEY
+EOF
+chmod 600 /root/.ssh/authorized_keys
+
+echo "starting up cdist sshd"
+/usr/sbin/sshd -f /etc/ssh/sshd_config_cdist
+

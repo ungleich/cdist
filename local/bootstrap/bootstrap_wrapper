@@ -1,0 +1,28 @@
+#!/bin/bash
+# bootstrap a new client
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 <client>"
+  exit 2
+fi
+
+local=/cdist/cdist/local
+C=$1
+DH=/deploy/ops/scripts/deployHelper.pl
+
+$DH --sysinfo=$C > /dev/null
+if [ $? -ne 0 ]; then
+  echo "ERROR: client $C is unknown, please choose from the following"
+  echo
+  $DH --allsystems
+  exit 1
+fi
+
+$local/bootstrap/bootstrap_cdist.sh $C
+if [ $? -ne 0 ]; then
+  echo "Error bootstrapping... bailing"
+  exit 2
+fi
+
+$local/cdist_wrapper -v $C
+

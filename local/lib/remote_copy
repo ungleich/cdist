@@ -1,0 +1,3 @@
+#!/bin/sh
+#scp -P 222 -i /root/.ssh/cdist -o User=root -q $@
+/deploy/software/czopenssh-5.9p1/bin/scp -P 222 -i /root/.ssh/cdist -o User=root -q $@

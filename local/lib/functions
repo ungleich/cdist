@@ -1,0 +1,27 @@
+#
+# functions and variables shared by the cdist manifests
+#
+
+if [ -z "$CDIST_HOME" ]; then
+  export CDIST_HOME=/rbi/cdist
+fi
+
+export DH=/deploy/ops/scripts/deployHelper.pl
+export __files=${CDIST_HOME}/local/conf/files
+
+function e {
+  if [[ "$1" == "-l" ]]; then
+    level=$2
+    shift; shift
+   else
+    level=INFO
+  fi
+  if [[ -z "$VERBOSE" || "$VERBOSE" == "0" ]]; then
+    # return without logging if we are "INFO" level
+    if [[ $level == "INFO" || $level == "DEBUG" ]]; then
+      return 0
+    fi
+  fi
+  echo "$level: $__target_host: $@"
+}
+

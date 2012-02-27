@@ -1,0 +1,101 @@
+#!/bin/bash
+
+export CDIST_HOME=/cdist
+export PATH=/deploy/software/python/bin:${CDIST_HOME}/cdist/bin:${PATH}
+export TEST_MODE=0
+export __local=${CDIST_HOME}/cdist/local
+export __conf=${CDIST_HOME}/conf
+
+DH=/deploy/ops/scripts/deployHelper.pl
+
+if [[ "$1" = "-h" || -z "$1" ]]; then
+  echo "Usage: $0 [-h] [-t] [-v] [-stack=<stack>] <SYSTEMS>"
+  echo "  -t: test mode (include test config instead of standard confs)"
+  echo "  -v: verbose mode"
+  echo "  -stack: run against all systems in stack, additional SYSTEM arguments are ignored"
+  echo "  Any other arguments are passed directly to cdist (for example system names, -d for debug output, -p for parallel etc)"
+  exit 2
+fi
+
+while [[ "$1" =~ ^- ]]; do
+  case $1 in
+    -v) export VERBOSE=1 ;;
+    -t) TEST_MODE=1 ;;
+    -stack)
+        SYSTEMS=$($DH --stack=$2)
+        shift
+        ;;
+    *) ARGS="$ARGS $1" ;;
+  esac
+  shift
+done
+
+if [ -z "$SYSTEMS" ]; then
+  SYSTEMS=$@
+fi
+
+if [ -z "$SYSTEMS" ]; then
+  echo "ERROR: no systems passed, please choose from:"
+  echo
+  $DH --allsystems
+  exit 2
+fi
+
+for s in $SYSTEMS; do
+  $DH --sysinfo=$s > /dev/null
+  if [ $? -ne 0 ]; then
+    echo "ERROR: $s is not a recognized system, please choose from:"
+    echo
+    $DH --allsystems
+    exit 2
+  fi
+done
+
+# set up appropriate remote exec and copy scripts (we change the defaults
+# in that we use specific keys and an ssh daemon running on a differend
+# port)
+export __remote_exec=${__local}/lib/remote_exec
+export __remote_copy=${__local}/lib/remote_copy
+
+LOG=${CDIST_HOME}/logs/cdistrun.log
+echo "$0: logging to $LOG"
+
+# send all output to $LOG as well as the screen
+exec > >(tee -a $LOG) 2>&1
+
+echo "== Started cdist run: $(date) ==" >> $LOG
+echo "NOTICE: cdist config $ARGS $SYSTEMS"
+cdist config $ARGS $SYSTEMS
+# cdist currently doesn't exit nonzero target failure.  hmph, maybe it should?
+#cdist_exit=$?
+#if [ $cdist_exit -ne 0 ]; then
+#  failed_hosts=$(grep "WARNING: failed to deploy to the following hosts:" $LOG | tail -1 | awk -F: '{print $3}')
+#fi
+
+# so, we have to find $failed_host in a more hacky way
+last_start=$(grep -b '== Started' $LOG | tail -1 | awk -F: '{print $1}')
+last_fail=$(grep -b 'WARNING: Failed to deploy' $LOG | tail -1 | awk -F: '{print $1}')
+if [ -n "$last_fail" ]; then
+  if [ $last_fail -gt $last_start ]; then
+    failed_hosts=$(grep "WARNING: Failed to deploy" $LOG | tail -1 | awk -F: '{print $3}')
+  fi
+fi
+
+# check audit logs
+for s in $SYSTEMS; do
+  echo "==== Changes made on $s ===="
+  object_dir=$CDIST_HOME/cdist/cache/${s}/object
+  for f in $failed_hosts; do
+    object_dir=$(grep "NOTICE: ${f}: tmpdir" $LOG | tail -1 | awk '{print $5}')
+  done
+  echo "Checking for changes in $object_dir"
+  for n in $(find $object_dir -name notifications); do
+    grep ^AUDIT $n | while read l; do
+      echo $l | sed -e 's/^AUDIT://'
+      echo ${s}:${l} >> $LOG
+    done
+  done
+done
+
+echo "== Finished cdist run: $(date) ==" >> $LOG
+
