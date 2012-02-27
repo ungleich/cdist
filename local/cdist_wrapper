@@ -6,7 +6,7 @@ export TEST_MODE=0
 export __local=${CDIST_HOME}/cdist/local
 export __conf=${CDIST_HOME}/conf
 
-DH=/deploy/ops/scripts/deployHelper.pl
+DH=/deploy/scripts/deployHelper.pl
 
 if [[ "$1" = "-h" || -z "$1" ]]; then
   echo "Usage: $0 [-h] [-t] [-v] [-stack=<stack>] <SYSTEMS>"

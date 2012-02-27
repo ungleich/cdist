@@ -6,7 +6,7 @@ if [ -z "$CDIST_HOME" ]; then
   export CDIST_HOME=/rbi/cdist
 fi
 
-export DH=/deploy/ops/scripts/deployHelper.pl
+export DH=/deploy/scripts/deployHelper.pl
 export __files=${CDIST_HOME}/local/conf/files
 
 function e {

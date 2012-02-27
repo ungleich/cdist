@@ -8,7 +8,7 @@ fi
 
 local=/cdist/cdist/local
 C=$1
-DH=/deploy/ops/scripts/deployHelper.pl
+DH=/deploy/scripts/deployHelper.pl
 
 $DH --sysinfo=$C > /dev/null
 if [ $? -ne 0 ]; then
