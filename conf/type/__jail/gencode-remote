@@ -265,10 +265,11 @@ EOF
 fi
 
 # Add the normal entries into the jail's rc.conf
-echo "echo hostname=\"${hostname}\" >>\"${jaildir}/rw/${name}/etc/rc.conf\""
-echo "echo sendmail_enable=\"NONE\" >>\"${jaildir}/rw/${name}/etc/rc.conf\""
-echo "echo syslogd_enable=\"YES\" >>\"${jaildir}/rw/${name}/etc/rc.conf\""
-echo "echo syslogd_flags=\"-ss\" >>\"${jaildir}/rw/${name}/etc/rc.conf\""
+echo "echo hostname=\\\"${hostname}\\\" >\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
+echo "echo sshd_enable=\\\"YES\\\" >>\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
+echo "echo sendmail_enable=\\\"NONE\\\" >>\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
+echo "echo syslogd_enable=\\\"YES\\\" >>\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
+echo "echo syslogd_flags=\\\"-ss\\\" >>\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
 }
 
 if [ "$present" = "EXISTS" ]; then   # The jail currently exists
