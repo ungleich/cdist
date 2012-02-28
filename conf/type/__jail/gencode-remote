@@ -185,16 +185,18 @@ cat <<EOF
    fi
    mkdir -p "${jaildir}/rw/${name}/etc"
    cp -r ${jaildir}/base/etc/* "${jaildir}/rw/${name}/etc/"
+   if [ ! -f "${jaildir}/rw/${name}/etc/resolv.conf" ]; then
+      cp /etc/resolv.conf "${jaildir}/rw/${name}/etc/"
+   fi
    mkdir "${jaildir}/rw/${name}/local"
-   mkdir "${jaildir}/rw/${name}/db"
-   if [ -n "\$(ls ${jaildir}/base/var/db)" ]; then
-      cp -r ${jaildir}/base/var/db/* "${jaildir}/rw/${name}/db/"
+   mkdir "${jaildir}/rw/${name}/var"
+   if [ -n "\$(ls ${jaildir}/base/var)" ]; then
+      cp -r ${jaildir}/base/var/* "${jaildir}/rw/${name}/var/"
    fi
    mkdir "${jaildir}/rw/${name}/home"
    if [ -n "\$(ls ${jaildir}/base/usr/home)" ]; then
       cp -r ${jaildir}/base/usr/home/* "${jaildir}/rw/${name}/home/"
    fi
-   mkdir "${jaildir}/rw/${name}/tmp"
 EOF
 
 # Create the ro+rw mountpoint entries in fstab
@@ -203,9 +205,8 @@ cat <<EOF
 /usr/jail/base			/usr/jail/${name}		nullfs	ro	0 0
 /usr/jail/rw/${name}/etc	/usr/jail/${name}/etc		nullfs	rw	0 0
 /usr/jail/rw/${name}/local	/usr/jail/${name}/usr/local	nullfs	rw	0 0
-/usr/jail/rw/${name}/db		/usr/jail/${name}/var/db	nullfs	rw	0 0
+/usr/jail/rw/${name}/var		/usr/jail/${name}/var	nullfs	rw	0 0
 /usr/jail/rw/${name}/home	/usr/jail/${name}/usr/home	nullfs	rw	0 0
-/usr/jail/rw/${name}/tmp	/usr/jail/${name}/var/tmp	nullfs	rw	0 0
 END
 EOF
 
@@ -225,6 +226,13 @@ if [ -n "$interface" ]; then
    cat <<EOF
    cat >>/etc/rc.conf <<END
 jail_${name}_interface="${interface}"
+END
+EOF
+else
+   cat <<EOF
+   interface=\$(ifconfig -l | cut '-d ' -f1)
+   cat >>/etc/rc.conf <<END
+jail_${name}_interface="\${interface}"
 END
 EOF
 fi
@@ -265,11 +273,19 @@ EOF
 fi
 
 # Add the normal entries into the jail's rc.conf
-echo "echo hostname=\\\"${hostname}\\\" >\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
-echo "echo sshd_enable=\\\"YES\\\" >>\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
-echo "echo sendmail_enable=\\\"NONE\\\" >>\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
-echo "echo syslogd_enable=\\\"YES\\\" >>\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
-echo "echo syslogd_flags=\\\"-ss\\\" >>\\\"${jaildir}/rw/${name}/etc/rc.conf\\\""
+cat <<EOF
+echo hostname=\"${hostname}\" >"${jaildir}/rw/${name}/etc/rc.conf"
+echo sshd_enable=\"YES\" >>"${jaildir}/rw/${name}/etc/rc.conf"
+echo sendmail_enable=\"NONE\" >>"${jaildir}/rw/${name}/etc/rc.conf"
+echo syslogd_enable=\"YES\" >>"${jaildir}/rw/${name}/etc/rc.conf"
+echo syslogd_flags=\"-ss\" >>"${jaildir}/rw/${name}/etc/rc.conf"
+
+EOF
+# Configure SSHd's listening address
+cat <<EOF
+ip=\$(echo "${ip}" | cut '-d ' -f1)
+sed -i '.bak' "s/#ListenAddress 0.0.0.0/ListenAddress \${ip}/" "${jaildir}/rw/${name}/etc/ssh/sshd_config"
+EOF
 }
 
 if [ "$present" = "EXISTS" ]; then   # The jail currently exists

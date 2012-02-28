@@ -36,6 +36,7 @@ hostname::
 
 interface::
    The name of the physical interface on the jail server to bind the jail to.
+   Defaults to the first interface found in the output of ifconfig -l.
 
 devfs-enable::
    Whether to allow devfs mounting within the jail. Must be "true" or "false."
@@ -64,7 +65,7 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Create a jail called www
-__jail www --state present --ip "192.168.1.2 netmask 255.255.255.0"
+__jail www --state present --ip "192.168.1.2"
 
 # Remove the jail called www
 __jail www --state absent
@@ -75,7 +76,7 @@ __jail www --state present --started true \
 
 # Use the name variable explicitly
 __jail thisjail --state present --name www \
-   --ip "192.168.1.2 netmask 255.255.255.0"
+   --ip "192.168.1.2"
 
 # Go nuts
 __jail lotsofoptions --state present --name testjail --started true \
