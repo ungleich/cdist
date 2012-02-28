@@ -20,8 +20,9 @@ K=/home/czdeploy/.ssh/czdeploy.util1_relKey
 # TODO: need to scp this somewhere that we know exists and that czdeploy
 # can sudo, but it also needs to be a standard location across waltham,
 # rackspace, and intl
-scp -i $K /cdist/local/bootstrap/remote_exec czdeploy@$B:/deploy/ops/scripts/bootstrap_cdist
-ssh -ti $K czdeploy@$B sudo /deploy/ops/scripts/bootstrap_cdist
+scp -i $K /cdist/cdist/local/bootstrap/remote_exec czdeploy@$B:/deploy/scripts/bootstrap_cdist
+scp -i $K /root/.ssh/cdist.pub czdeploy@$B:/tmp/cdist.pub
+ssh -ti $K czdeploy@$B sudo /deploy/scripts/bootstrap_cdist
 
 nc -z $B 222
 if [ $? -ne 0 ]; then

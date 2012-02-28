@@ -3,11 +3,11 @@
 #
 
 if [ -z "$CDIST_HOME" ]; then
-  export CDIST_HOME=/rbi/cdist
+  export CDIST_HOME=/cdist
 fi
 
 export DH=/deploy/scripts/deployHelper.pl
-export __files=${CDIST_HOME}/local/conf/files
+export __files=${CDIST_HOME}/conf/files
 
 function e {
   if [[ "$1" == "-l" ]]; then

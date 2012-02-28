@@ -12,10 +12,15 @@ DH=/deploy/scripts/deployHelper.pl
 
 $DH --sysinfo=$C > /dev/null
 if [ $? -ne 0 ]; then
-  echo "ERROR: client $C is unknown, please choose from the following"
-  echo
-  $DH --allsystems
-  exit 1
+  # it's not in any stacks, maybe it's independent and just in groups?
+  ${local}/lib/getGroups.pl $C > /dev/null
+  if [ $? -ne 0 ]; then
+    echo "ERROR: $C is not a recognized system.  I know about these:"
+    stacksys=$($DH --allsystems)
+    groupsys=$(${local}/lib/getGroups.pl --listall)
+    echo $stacksys $groupsys | sed -e 's/ /\n/g' | sort -u
+    exit 1
+  fi
 fi
 
 $local/bootstrap/bootstrap_cdist.sh $C

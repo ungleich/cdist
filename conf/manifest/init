@@ -3,8 +3,10 @@
 
 # find our stacks and envs
 export __stacks=$($DH --sysinfo=$__target_host --var=stacks | sed -e 's/,/ /g')
+if [[ $__stacks =~ ERROR ]]; then __stacks=""; fi
 e -l NOTICE "stacks -> $__stacks"
 export __envs=$($DH --sysinfo=$__target_host --var=envs | sed -e 's/,/ /g')
+if [[ $__envs =~ ERROR ]]; then __envs=""; fi
 e -l NOTICE "envs -> $__envs"
 
 # find our groups
@@ -12,17 +14,22 @@ export __groups=$($__local/lib/getGroups.pl $__target_host)
 e -l NOTICE "groups -> $__groups"
 e -l NOTICE "tmpdir -> $__global"
 
+# tags are the list of dirs we'll search thru to find configs.  note
+# that $__stacks are not included here... they are used as conditionals
+# within the config files themselves.
+tags="$__envs $__groups $__target_host common"
+
 if [ $TEST_MODE -eq 1 ]; then
   # in test mode we just run the one conf/test manifest
   e "test mode enabled, sourcing test config"
   . $__conf/test
  else
   # we split config into per-env and common dirs (stacks are called out
-  # within the configs themselves, usually in case statements)
-  for e in $__envs $__groups $__target_host common; do
-    if [ -d "$__conf/$e" ]; then
-      for f in $(ls -1 $__conf/$e); do
-        c=$__conf/$e/$f
+  # within the configs themselves)
+  for t in $tags; do
+    if [ -d "$__conf/$t" ]; then
+      for f in $(ls -1 $__conf/$t); do
+        c=$__conf/$t/$f
         e "sourcing config $c"
         . $c
       done

@@ -2,7 +2,7 @@
 
 echo "setting up /etc/ssh/sshd_config_cdist"
 
-PUBKEY=$(cat /root/.ssh/cdist.pub)
+PUBKEY=$(cat /tmp/cdist.pub)
 
 cat << EOF > /etc/ssh/sshd_config_cdist
 Port 222
