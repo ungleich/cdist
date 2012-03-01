@@ -12,6 +12,7 @@ if [[ "$1" = "-h" || -z "$1" ]]; then
   echo "Usage: $0 [-h] [-t] [-v] [-stack=<stack>] <SYSTEMS>"
   echo "  -t: test mode (include test config instead of standard confs)"
   echo "  -v: verbose mode"
+  echo "  -nbt: no branch test - execute even if the conf repo is not using master (when you're testing your own branch before merging it back to master)"
   echo "  -stack: run against all systems in stack, additional SYSTEM arguments are ignored"
   echo "  Any other arguments are passed directly to cdist (for example system names, -d for debug output, -p for parallel etc)"
   exit 2
@@ -21,6 +22,7 @@ while [[ "$1" =~ ^- ]]; do
   case $1 in
     -v) export VERBOSE=1 ;;
     -t) TEST_MODE=1 ;;
+    -nbt) NO_BRANCH_TEST=1 ;;
     -stack)
         SYSTEMS=$($DH --stack=$2)
         shift
@@ -58,10 +60,37 @@ for s in $SYSTEMS; do
 done
 
 # set up appropriate remote exec and copy scripts (we change the defaults
-# in that we use specific keys and an ssh daemon running on a differend
+# in that we use specific keys and an ssh daemon running on a different
 # port)
 export __remote_exec=${__local}/lib/remote_exec
 export __remote_copy=${__local}/lib/remote_copy
+
+# check to make sure no one is working on a different branch (unless
+# we were executed with the -nbt flag to skip this check)
+if [ "$NO_BRANCH_TEST" != "1" ]; then
+  cd ${__conf}
+  git branch | grep '^* master$' > /dev/null
+  if [ $? -ne 0 ]; then
+    echo "ERROR: master is not the current branch in ${__conf}.  Current branches:"
+    git branch
+    echo "Is someone else working on something in there?  Maybe you're be testing your work and forgot to pass the -nbt flag?"
+    exit 2
+  fi
+fi
+
+# check to make sure no one is making changes in $__conf directly in
+# the master branch (bad bad!).  again, ignore this check if -nbt is
+# passed since we may have uncommitted changes in our test branches.
+if [ "$NO_BRANCH_TEST" != "1" ]; then
+  cd ${__conf}
+  statlines=$(git status --porcelain | grep -v '^\?? test$'|wc -l)
+  if [ $statlines -gt 0 ]; then
+    echo "There are uncommited changes in the master branch of $__conf."
+    echo "Someone must have been editing it by hand!  Bad bad bad!"
+    echo "cd $__conf and run 'git status' for more details"
+    exit 2
+  fi
+fi
 
 LOG=${CDIST_HOME}/logs/cdistrun.log
 echo "$0: logging to $LOG"
