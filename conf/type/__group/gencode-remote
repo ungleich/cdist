@@ -52,7 +52,7 @@ if grep -q "^${name}:" "$__object/explorer/group"; then
       esac
 
       if [ "$new_value" != "$current_value" ]; then
-         echo "AUDIT: changing group $name/$property $current_value -> $new_value" >> "$__object/notifications"
+         echo "AUDIT: changing group $name/$property $current_value -> $new_value" >> "$__object/audit"
          set -- "$@" "$proparg" \"$new_value\"
       fi
    done
@@ -68,6 +68,6 @@ else
       set -- "$@" "--$property" \"$new_value\"
    done
 
-   echo "AUDIT:added group $name: $@" >> "$__object/notifications"
+   echo "AUDIT:added group $name: $@" >> "$__object/audit"
    echo groupadd "$@" "$name"
 fi

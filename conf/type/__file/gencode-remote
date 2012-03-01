@@ -39,7 +39,7 @@ case "$state_should" in
       if [ ! -f "$__object/parameter/source" ]; then
          if [ "$exists" = "no" ]; then
             echo touch \"$destination\"
-            echo "AUDIT:touched new file $destination" >> "$__object/notifications"
+            echo "AUDIT:touched new file $destination" >> "$__object/audit"
          fi
       fi
 
@@ -51,7 +51,7 @@ case "$state_should" in
          oldgid=$(cat "$__object/explorer/stat" | grep ^gid | awk '{print $2}')
          oldgroup=$(cat "$__object/explorer/stat" | grep ^group | awk '{print $2}')
          if [ "$new" != "$oldgid" -a "$new" != "$oldgroup" ]; then
-            echo "AUDIT:chgrp $destination $old -> $new" >> "$__object/notifications"
+            echo "AUDIT:chgrp $destination $old -> $new" >> "$__object/audit"
          fi
          # target check/change if necessary
          cat << DONE
@@ -71,7 +71,7 @@ DONE
          olduid=$(cat "$__object/explorer/stat" | grep ^uid | awk '{print $2}')
          oldowner=$(cat "$__object/explorer/stat" | grep ^owner | awk '{print $2}')
          if [ "$new" != "$olduid" -a "$new" != "$oldowner" ]; then
-            echo "AUDIT:chown $destination $old -> $new" >> "$__object/notifications"
+            echo "AUDIT:chown $destination $old -> $new" >> "$__object/audit"
          fi
          # target check/change if necessary
          cat << DONE
@@ -128,7 +128,7 @@ DONE
    absent)
       if [ "$exists" = "yes" ]; then
          echo rm -f \"$destination\"
-         echo "AUDIT:rm $destination" >> "$__object/notifications"
+         echo "AUDIT:rm $destination" >> "$__object/audit"
       fi
    ;;
 

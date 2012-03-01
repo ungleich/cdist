@@ -65,7 +65,7 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
       fi
 
       if [ "$new_value" != "$current_value" ]; then
-         echo "AUDIT: changing user $name/$property $current_value -> $new_value" >> "$__object/notifications"
+         echo "AUDIT: changing user $name/$property $current_value -> $new_value" >> "$__object/audit"
          set -- "$@" "--$property" \'$new_value\'
       fi
    done
@@ -81,6 +81,6 @@ else
       set -- "$@" "--$property" \'$new_value\'
    done
 
-   echo "AUDIT:added user $name: $@" >> "$__object/notifications"
+   echo "AUDIT:added user $name: $@" >> "$__object/audit"
    echo useradd "$@" "$name"
 fi

@@ -28,6 +28,7 @@ state_is=$(cat "$__object/explorer/state")
 os=$(cat "$__global/explorer/os")
 name="$__object_id"
 
+echo "AUDIT:start_on_boot set to $state_should for $name" >> "$__object/audit"
 case "$state_should" in
     present)
         case "$os" in

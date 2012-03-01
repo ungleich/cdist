@@ -58,12 +58,12 @@ fi
 case "$state_should" in
     present)
         echo yum $opts install \"$name\"
-        echo "AUDIT:installed package $name" >> "$__object/notifications"
+        echo "AUDIT:installed package $name" >> "$__object/audit"
         echo "installed" >> "$__object/notifications"
     ;;
     absent)
         echo yum $opts remove \"$name\"
-        echo "AUDIT:removed package $name" >> "$__object/notifications"
+        echo "AUDIT:removed package $name" >> "$__object/audit"
         echo "removed" >> "$__object/notifications"
     ;;
     *)

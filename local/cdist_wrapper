@@ -124,7 +124,7 @@ for s in $SYSTEMS; do
     object_dir=$(grep "NOTICE: ${f}: tmpdir" $LOG | tail -1 | awk '{print $5}')
   done
   echo "Checking for changes in $object_dir"
-  for n in $(find $object_dir -name notifications); do
+  for n in $(find $object_dir -type f -name audit); do
     grep ^AUDIT $n | while read l; do
       echo $l | sed -e 's/^AUDIT://'
       echo ${s}:${l} >> $LOG
