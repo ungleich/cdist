@@ -65,31 +65,40 @@ done
 export __remote_exec=${__local}/lib/remote_exec
 export __remote_copy=${__local}/lib/remote_copy
 
-# check to make sure no one is working on a different branch (unless
-# we were executed with the -nbt flag to skip this check)
-if [ "$NO_BRANCH_TEST" != "1" ]; then
-  cd ${__conf}
-  git branch | grep '^* master$' > /dev/null
-  if [ $? -ne 0 ]; then
-    echo "ERROR: master is not the current branch in ${__conf}.  Current branches:"
-    git branch
-    echo "Is someone else working on something in there?  Maybe you're be testing your work and forgot to pass the -nbt flag?"
+# check to make sure no one is working on a different branch or has
+# made uncommitted changes to master (unless we were executed with the
+# -nbt flag to skip this check)
+cd ${__conf}
+currbranch=$(git branch | grep ^\*|awk '{print $2}')
+statlines=$(git status --porcelain | grep -v '^\?? test$'|wc -l)
+if [ $currbranch != "master" ]; then
+  if [ "$NO_BRANCH_TEST" != "1" ]; then
+    echo "******* ERROR: current branch is $currbranch, not master *******"
+    echo "Is someone else working on something in there?"
+    echo "Maybe you're be testing your work and forgot to pass the -nbt flag?"
     exit 2
+   else
+    echo "******* NOTICE: running against branch $currbranch *******"
   fi
-fi
-
-# check to make sure no one is making changes in $__conf directly in
-# the master branch (bad bad!).  again, ignore this check if -nbt is
-# passed since we may have uncommitted changes in our test branches.
-if [ "$NO_BRANCH_TEST" != "1" ]; then
-  cd ${__conf}
-  statlines=$(git status --porcelain | grep -v '^\?? test$'|wc -l)
-  if [ $statlines -gt 0 ]; then
-    echo "There are uncommited changes in the master branch of $__conf."
+ elif [ $statlines -gt 0 ]; then
+  if [ "$NO_BRANCH_TEST" != "1" ]; then
+    echo "******* ERROR: uncommited changes in the master branch *******"
     echo "Someone must have been editing it by hand!  Bad bad bad!"
     echo "cd $__conf and run 'git status' for more details"
     exit 2
+   else
+    echo "******* NOTICE: running against master with uncommitted changes *******"
   fi
+fi
+
+LOCKFILE=/tmp/cdist_wrapper.lock
+if [ -f $LOCKFILE ]; then
+  mtime=$(stat -c '%y' $LOCKFILE)
+  oldpid=$(cat $LOCKFILE)
+  echo "******* ERROR: $LOCKFILE already exists from $mtime with PID $oldpid *******"
+  exit 1
+ else
+  echo $$ > $LOCKFILE
 fi
 
 LOG=${CDIST_HOME}/logs/cdistrun.log
@@ -132,5 +141,17 @@ for s in $SYSTEMS; do
   done
 done
 
+if [ -f $LOCKFILE ]; then
+  rm $LOCKFILE
+  if [ $? -ne 0 ]; then
+    echo "******* ERROR: failed to remove $LOCKFILE after run *******"
+    exit 1
+  fi
+ else
+  echo "******* ERROR: $LOCKFILE is missing after run, weird *******"
+  exit 1
+fi
+
 echo "== Finished cdist run: $(date) ==" >> $LOG
 
+exit 0
