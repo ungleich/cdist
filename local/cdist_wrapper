@@ -8,6 +8,27 @@ export __conf=${CDIST_HOME}/conf
 
 DH=/deploy/scripts/deployHelper.pl
 
+# print a list of all valid systems we can pass to cdist as arguments
+# to deploy to
+function printKnownSystems {
+  local sysarg=$1
+  local stacksys=$($DH --allsystems)
+  local groupsys=$(${__local}/lib/getGroups.pl --listall)
+  local syslist=$(echo $stacksys $groupsys | sed -e 's/ /\n/g' | sort -u)
+  if [ -n "$sysarg" ]; then
+    for s in $syslist; do
+      if [[ $s =~ $sysarg ]]; then
+        matches="$matches $s"
+      fi
+    done
+    if [ -n "$matches" ]; then
+      echo "Did you mean one of these: $matches"
+      return
+    fi
+  fi
+  echo "Try one of: $syslist"
+}
+
 if [[ "$1" = "-h" || -z "$1" ]]; then
   echo "Usage: $0 [-h] [-t] [-v] [-stack=<stack>] <SYSTEMS>"
   echo "  -t: test mode (include test config instead of standard confs)"
@@ -37,10 +58,8 @@ if [ -z "$SYSTEMS" ]; then
 fi
 
 if [ -z "$SYSTEMS" ]; then
-  echo "ERROR: no systems passed.  I know about these:"
-  stacksys=$($DH --allsystems)
-  groupsys=$(${__local}/lib/getGroups.pl --listall)
-  echo $stacksys $groupsys | sed -e 's/ /\n/g' | sort -u
+  echo "ERROR: no systems passed."
+  printKnownSystems
   exit 2
 fi
 
@@ -50,10 +69,8 @@ for s in $SYSTEMS; do
     # it's not in any stacks, maybe it's independent and just in groups?
     ${__local}/lib/getGroups.pl $s > /dev/null
     if [ $? -ne 0 ]; then
-      echo "ERROR: $s is not a recognized system.  I know about these:"
-      stacksys=$($DH --allsystems)
-      groupsys=$(${__local}/lib/getGroups.pl --listall)
-      echo $stacksys $groupsys | sed -e 's/ /\n/g' | sort -u
+      echo "ERROR: $s is not a recognized system."
+      printKnownSystems $s
       exit 2
     fi
   fi
