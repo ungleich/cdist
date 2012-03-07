@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -91,13 +91,13 @@ def commandline():
         logging.root.setLevel(logging.DEBUG)
 
     log.debug(args)
-    return args.func(args)
+    args.func(args)
 
 def config(args):
-    return configinstall(args, mode=cdist.config.Config)
+    configinstall(args, mode=cdist.config.Config)
 
 def install(args):
-    return configinstall(args, mode=cdist.install.Install)
+    configinstall(args, mode=cdist.install.Install)
 
 def configinstall(args, mode):
     """Configure or install remote system"""
@@ -108,9 +108,13 @@ def configinstall(args, mode):
     if args.manifest == '-':
         # read initial manifest from stdin
         import tempfile
-        handle, initial_manifest_temp_path = tempfile.mkstemp(prefix='cdist.stdin.')
-        with os.fdopen(handle, 'w') as fd:
-            fd.write(sys.stdin.read())
+        try:
+            handle, initial_manifest_temp_path = tempfile.mkstemp(prefix='cdist.stdin.')
+            with os.fdopen(handle, 'w') as fd:
+                fd.write(sys.stdin.read())
+        except (IOError, OSError) as e:
+            raise cdist.Error("Creating tempfile for stdin data failed: %s" % e)
+
         args.manifest = initial_manifest_temp_path
         import atexit
         atexit.register(lambda: os.remove(initial_manifest_temp_path))
@@ -139,12 +143,15 @@ def configinstall(args, mode):
     if len(failed_hosts) > 0:
         log.warn("Failed to deploy to the following hosts: " + 
             " ".join(failed_hosts))
-        exit_code = 1
 
     time_end = time.time()
     log.info("Total processing time for %s host(s): %s", len(args.host),
                 (time_end - time_start))
 
+    if len(failed_hosts) > 0:
+        return False
+    else:
+        return True
 
 def configinstall_onehost(host, args, mode, parallel):
     """Configure or install ONE remote system"""
@@ -212,9 +219,9 @@ if __name__ == "__main__":
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
         if re.match("__", os.path.basename(sys.argv[0])):
-            run = emulator()
+            emulator()
         else:
-            run = commandline()
+            commandline()
 
     except KeyboardInterrupt:
         pass
@@ -224,7 +231,5 @@ if __name__ == "__main__":
         exit_code = 1
 
     # Determine exit code by return value of function
-    if not run:
-        exit_code = 1
 
     sys.exit(exit_code)
