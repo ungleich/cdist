@@ -129,29 +129,29 @@ def configinstall(args, mode):
             process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode, True))
             process[host].start()
         else:
-            if not configinstall_onehost(host, args, mode, parallel=False):
+            try:
+                configinstall_onehost(host, args, mode, parallel=False)
+            except cdist.Error as e:
+                # FIXME: save the error and display at the end?
+                # Would be non-consistent to parallel mode
                 failed_hosts.append(host)
 
+    # Catch errors in parallel mode when joining
     if args.parallel:
-        for p in process.keys():
-            log.debug("Joining process %s", p)
-            process[p].join()
+        for host in process.keys():
+            log.debug("Joining process %s", host)
+            process[host].join()
 
-            if not process[p].exitcode == 0:
-                failed_hosts.append(p)
-
-    if len(failed_hosts) > 0:
-        log.warn("Failed to deploy to the following hosts: " + 
-            " ".join(failed_hosts))
+            if not process[host].exitcode == 0:
+                failed_hosts.append(host)
 
     time_end = time.time()
     log.info("Total processing time for %s host(s): %s", len(args.host),
                 (time_end - time_start))
 
     if len(failed_hosts) > 0:
-        return False
-    else:
-        return True
+        raise cdist.Error("Failed to deploy to the following hosts: " + 
+            " ".join(failed_hosts))
 
 def configinstall_onehost(host, args, mode, parallel):
     """Configure or install ONE remote system"""
