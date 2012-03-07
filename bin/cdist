@@ -115,48 +115,35 @@ def configinstall(args, mode):
         import atexit
         atexit.register(lambda: os.remove(initial_manifest_temp_path))
 
-    try:
-        process = {}
-        failed_hosts = []
-        time_start = time.time()
+    process = {}
+    failed_hosts = []
+    time_start = time.time()
 
-        for host in args.host:
-            if args.parallel:
-                log.debug("Creating child process for %s", host)
-                process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode, True))
-                process[host].start()
-            else:
-                if not configinstall_onehost(host, args, mode, parallel=False):
-                    failed_hosts.append(host)
-
+    for host in args.host:
         if args.parallel:
-            for p in process.keys():
-                log.debug("Joining process %s", p)
-                process[p].join()
+            log.debug("Creating child process for %s", host)
+            process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode, True))
+            process[host].start()
+        else:
+            if not configinstall_onehost(host, args, mode, parallel=False):
+                failed_hosts.append(host)
 
-                if not process[p].exitcode == 0:
-                    failed_hosts.append(p)
+    if args.parallel:
+        for p in process.keys():
+            log.debug("Joining process %s", p)
+            process[p].join()
 
-        if len(failed_hosts) > 0:
-            log.warn("Failed to deploy to the following hosts: " + 
-                " ".join(failed_hosts))
-            exit_code = 1
+            if not process[p].exitcode == 0:
+                failed_hosts.append(p)
 
-        time_end = time.time()
-        log.info("Total processing time for %s host(s): %s", len(args.host),
-                    (time_end - time_start))
+    if len(failed_hosts) > 0:
+        log.warn("Failed to deploy to the following hosts: " + 
+            " ".join(failed_hosts))
+        exit_code = 1
 
-    except KeyboardInterrupt:
-        if args.parallel:
-            for p in process.keys():
-                # NOT needed: KeyBoardInterrupet (aka SIGINT)
-                # is forwarded to processes spawned by multiprocess!
-                # pid = process[p].pid.__str__()
-                #log.warn("Terminating deploy " + p + " (" + pid + ")")
-                # process[p].terminate()
-                pass
-
-        sys.exit(0)
+    time_end = time.time()
+    log.info("Total processing time for %s host(s): %s", len(args.host),
+                (time_end - time_start))
 
 
 def configinstall_onehost(host, args, mode, parallel):
