@@ -8,6 +8,8 @@ fi
 
 export DH=/deploy/scripts/deployHelper.pl
 export __files=${CDIST_HOME}/conf/files
+export __local=${CDIST_HOME}/cdist/local
+export __conf=${CDIST_HOME}/conf
 
 function e {
   if [[ "$1" == "-l" ]]; then
@@ -23,5 +25,26 @@ function e {
     fi
   fi
   echo "$level: $__target_host: $@"
+}
+
+# print a list of all valid systems we can pass to cdist as arguments
+# to deploy to
+function printKnownSystems {
+  local sysarg=$1
+  local stacksys=$($DH --allsystems)
+  local groupsys=$(${__local}/lib/getGroups.pl --listall)
+  local syslist=$(echo $stacksys $groupsys | sed -e 's/ /\n/g' | sort -u)
+  if [ -n "$sysarg" ]; then
+    for s in $syslist; do
+      if [[ $s =~ $sysarg ]]; then
+        matches="$matches $s"
+      fi
+    done
+    if [ -n "$matches" ]; then
+      echo "Did you mean one of these: $matches"
+      return
+    fi
+  fi
+  echo "Try one of: $syslist"
 }
 

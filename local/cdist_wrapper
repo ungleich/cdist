@@ -3,31 +3,8 @@
 export CDIST_HOME=/cdist
 export PATH=/deploy/software/python/bin:${CDIST_HOME}/cdist/bin:${PATH}
 export TEST_MODE=0
-export __local=${CDIST_HOME}/cdist/local
-export __conf=${CDIST_HOME}/conf
 
-DH=/deploy/scripts/deployHelper.pl
-
-# print a list of all valid systems we can pass to cdist as arguments
-# to deploy to
-function printKnownSystems {
-  local sysarg=$1
-  local stacksys=$($DH --allsystems)
-  local groupsys=$(${__local}/lib/getGroups.pl --listall)
-  local syslist=$(echo $stacksys $groupsys | sed -e 's/ /\n/g' | sort -u)
-  if [ -n "$sysarg" ]; then
-    for s in $syslist; do
-      if [[ $s =~ $sysarg ]]; then
-        matches="$matches $s"
-      fi
-    done
-    if [ -n "$matches" ]; then
-      echo "Did you mean one of these: $matches"
-      return
-    fi
-  fi
-  echo "Try one of: $syslist"
-}
+. ${CDIST_HOME}/cdist/local/lib/functions
 
 if [[ "$1" = "-h" || -z "$1" ]]; then
   echo "Usage: $0 [-h] [-t] [-v] [-stack=<stack>] <SYSTEMS>"
@@ -63,6 +40,7 @@ if [ -z "$SYSTEMS" ]; then
   exit 2
 fi
 
+error=0
 for s in $SYSTEMS; do
   $DH --sysinfo=$s > /dev/null
   if [ $? -ne 0 ]; then
@@ -71,10 +49,21 @@ for s in $SYSTEMS; do
     if [ $? -ne 0 ]; then
       echo "ERROR: $s is not a recognized system."
       printKnownSystems $s
-      exit 2
+      error=1
+    fi
+   else
+    nc -z $s 222 > /dev/null
+    if [ $? -ne 0 ]; then
+      echo "ERROR: $s:222 inaccessible, maybe you need to run ${__local}/bootstrap/bootstrap_cdist.sh $s"
+      error=1
     fi
   fi
 done
+
+# if anything cause problems above, exit
+if [ $error -eq 1 ]; then
+  exit 2
+fi
 
 # set up appropriate remote exec and copy scripts (we change the defaults
 # in that we use specific keys and an ssh daemon running on a different
