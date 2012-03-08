@@ -1,0 +1,4 @@
+#!/bin/sh
+# lists the lxc containers on the machine
+lxc-ls -1
+

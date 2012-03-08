@@ -1,0 +1,6 @@
+#!/bin/sh
+if which ruby gem rails rake irb 2>/dev/null; then
+  echo "yes"
+else
+  echo "no"
+fi

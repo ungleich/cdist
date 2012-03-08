@@ -16,3 +16,8 @@ doc/man/man*/docbook-xsl.css
 
 # Python / cache
 __pycache__/
+# Ignore cache for version control
+cache/
+conf/manifest/init*
+setenv-cdist.sh
+conf/type/__ssh_authorized_key/publickeys/*

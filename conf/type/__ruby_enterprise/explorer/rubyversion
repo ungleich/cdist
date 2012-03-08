@@ -1,0 +1,4 @@
+#!/bin/sh
+if which ruby 2>/dev/null; then
+	echo `ruby -v|sed 's/^ruby \(.*\) (.*/\1/g'`
+fi

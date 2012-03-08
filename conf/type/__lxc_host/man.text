@@ -1,0 +1,44 @@
+cdist-type__lxc_host(7)
+======================
+Aurélien Bondis - aurelien.bondis AT gmail DOT com
+
+
+NAME
+----
+cdist-type__lxc_host - adds necessary packages and deploy vm's conf on the container
+
+
+DESCRIPTION
+-----------
+The machine will be a linux container, and will have guest's configuration deployed
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+brname:: the bridge interface to create (default is br0)
+ifname:: the interface to bridge (default is eth0)
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# declare the host as a linux container (bridge will be br0 + eth0)
+__lxc_host lxc_id
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
