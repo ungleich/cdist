@@ -18,13 +18,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Use rsync to copy files.  This particular invocation of rsync makes
-# a backup of the file before overwriting it.  For example, if cdist
-# overwrites /etc/passwd then you'll end up with the old copy at
-# /etc/passwd~cdist
+# Use rsync over ssh to copy files.  This particular invocation of
+# rsync makes a backup of the file before overwriting it.  For example,
+# if cdist overwrites /etc/passwd then you'll end up with the old copy
+# at /etc/passwd~cdist.
 #
 # Usage:
 #  __remote_copy="/path/to/this/script" cdist config target_host
 #
 
-rsync --backup --suffix=~cdist -e 'ssh -i /root/.ssh/cdist -o User=root' $@
+rsync --backup --suffix=~cdist -e 'ssh -o User=root' $@
