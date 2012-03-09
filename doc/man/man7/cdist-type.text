@@ -222,17 +222,13 @@ never ever touch this folder).
 HOW TO INCLUDE A TYPE INTO UPSTREAM CDIST
 -----------------------------------------
 If you think your type may be useful for others, ensure it works with the
-current master branch of cdist and submit the git url containing the type for
-inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**
-or open a pull request at http://github.com/telmich/cdist.
-
-Ensure a corresponding manpage named man.text in asciidoc format with
-the manpage-name "cdist-type__NAME" is included in the type directory.
-
+current master branch of cdist and have a look at cdist-hacker(7) on
+how to submit it.
 
 SEE ALSO
 --------
 - cdist-explorer(7)
+- cdist-hacker(7)
 - cdist-stages(7)
 - cdist-tutorial(7)
 
