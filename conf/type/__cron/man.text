@@ -35,14 +35,22 @@ month::
    See crontab(5). Defaults to *
 day_of_week::
    See crontab(5). Defaults to *
+special::
+   See EXTENSIONS in crontab(5). e.g. reboot, yearly, monthly
+   If given all other time and date fields are ignored.
 
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# add cronjob
-__cron some-id --user root --command "/path/to/script"
+# run Monday to Saturday at 23:15
+__cron some-id --user root --command "/path/to/script" \
+   --hour 23 --minute 15 --day_of_week 1-6
+
+# run on reboot
+__cron some-id --user root --command "/path/to/script" \
+   --special reboot
 
 # remove cronjob
 __cron some-id --user root --command "/path/to/script" --state absent
