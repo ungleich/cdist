@@ -7,6 +7,7 @@ Changelog
 2.0.9:
 	* Cleanup documentation: Fix environment variable list to be properly 
 		displayed (Giel van Schijndel)
+	* Cleanup documentation: Some minor corrections
 	* New Type: __package_opkg (Giel van Schijndel)
 	* New Type: __package_pkg_freebsd (Jake Guffey)
 	* Feature __package: Support for OpenWRT (Giel van Schijndel)
