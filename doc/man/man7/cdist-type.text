@@ -139,8 +139,8 @@ Always ensure the manifest is executable, otherwise cdist will not be able
 to execute it. For more information about manifests see cdist-manifest(7).
 
 
-SINGLETON - ONLY INSTANCE ONLY
-------------------------------
+SINGLETON - ONE INSTANCE ONLY
+-----------------------------
 If you want to ensure that a type can only be used once per target, you can
 mark it as a singleton: Just create the (empty) file "singleton" in your type
 directory:
