@@ -186,10 +186,8 @@ WRITING THE GENCODE SCRIPT
 There are two gencode scripts: ***gencode-local*** and ***gencode-remote***.
 The output of gencode-local is executed locally, whereas
 the output of gencode-remote is executed on the target.
-
 The gencode scripts can make use of the parameters, the global explorers
-and the type specific explorers. The output (stdout) of these script is
-saved by cdist and will be executed on the target.
+and the type specific explorers.
 
 If the gencode scripts encounter an error, it should print diagnostic
 messages to stderr and exit non-zero. If you need to debug the gencode
