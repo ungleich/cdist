@@ -23,44 +23,23 @@ user="$(cat "$__object/parameter/user")"
 command="$(cat "$__object/parameter/command")"
 
 # set defaults
-if [ ! -f "$__object/parameter/state" ]; then
-   echo "present" > "$__object/parameter/state"
-fi
-if [ -f "$__object/parameter/minute" ]; then
-   minute="$(cat "$__object/parameter/minute")"
+test -f "$__object/parameter/state" || echo "present" > "$__object/parameter/state"
+
+if [ -f "$__object/parameter/raw" ]; then
+   raw="$(cat "$__object/parameter/raw")"
+   entry="$raw $command"
 else
-   minute="*"
-   echo "$minute" > "$__object/parameter/minute"
-fi
-if [ -f "$__object/parameter/hour" ]; then
-   hour="$(cat "$__object/parameter/hour")"
-else
-   hour="*"
-   echo "$hour" > "$__object/parameter/hour"
-fi
-if [ -f "$__object/parameter/day_of_month" ]; then
-   day_of_month="$(cat "$__object/parameter/day_of_month")"
-else
-   day_of_month="*"
-   echo "$day_of_month" > "$__object/parameter/day_of_month"
-fi
-if [ -f "$__object/parameter/month" ]; then
-   month="$(cat "$__object/parameter/month")"
-else
-   month="*"
-   echo "$month" > "$__object/parameter/month"
-fi
-if [ -f "$__object/parameter/day_of_week" ]; then
-   day_of_week="$(cat "$__object/parameter/day_of_week")"
-else
-   day_of_week="*"
-   echo "$day_of_week" > "$__object/parameter/day_of_week"
+   minute="$(cat "$__object/parameter/minute" 2>/dev/null || echo "*")"
+   hour="$(cat "$__object/parameter/hour" 2>/dev/null || echo "*")"
+   day_of_month="$(cat "$__object/parameter/day_of_month" 2>/dev/null || echo "*")"
+   month="$(cat "$__object/parameter/month" 2>/dev/null || echo "*")"
+   day_of_week="$(cat "$__object/parameter/day_of_week" 2>/dev/null || echo "*")"
+   entry="$minute $hour $day_of_month $month $day_of_week $command"
 fi
 
 # NOTE: if changed, also change in explorers
 prefix="#cdist:__cron/$name"
 suffix="#/cdist:__cron/$name"
 echo "$prefix" | tee "$__object/parameter/prefix" > "$__object/parameter/entry"
-echo "$minute $hour $day_of_month $month $day_of_week $command" >> "$__object/parameter/entry"
+echo "$entry" >> "$__object/parameter/entry"
 echo "$suffix" | tee "$__object/parameter/suffix" >> "$__object/parameter/entry"
-
