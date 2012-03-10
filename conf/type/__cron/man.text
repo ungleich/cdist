@@ -35,9 +35,10 @@ month::
    See crontab(5). Defaults to *
 day_of_week::
    See crontab(5). Defaults to *
-special::
-   See EXTENSIONS in crontab(5). e.g. reboot, yearly, monthly
-   If given all other time and date fields are ignored.
+raw::
+   Take whatever the user has given instead of time and date fields.
+   If given, all other time and date fields are ignored.
+   Can for example be used to specify cron EXTENSIONS like reboot, yearly etc.
 
 
 EXAMPLES
@@ -50,7 +51,7 @@ __cron some-id --user root --command "/path/to/script" \
 
 # run on reboot
 __cron some-id --user root --command "/path/to/script" \
-   --special reboot
+   --raw @reboot
 
 # remove cronjob
 __cron some-id --user root --command "/path/to/script" --state absent

@@ -25,9 +25,9 @@ command="$(cat "$__object/parameter/command")"
 # set defaults
 test -f "$__object/parameter/state" || echo "present" > "$__object/parameter/state"
 
-if [ -f "$__object/parameter/special" ]; then
-   special="$(cat "$__object/parameter/special")"
-   entry="@$special $command"
+if [ -f "$__object/parameter/raw" ]; then
+   raw="$(cat "$__object/parameter/raw")"
+   entry="$raw $command"
 else
    minute="$(cat "$__object/parameter/minute" 2>/dev/null || echo "*")"
    hour="$(cat "$__object/parameter/hour" 2>/dev/null || echo "*")"
