@@ -1,0 +1,100 @@
+#!/bin/sh
+#
+# 2011 Aurélien Bondis (aurelien.bondis AT gmail DOT com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# USEFUL DESCRIPTION
+#
+# set documentroot value
+# function to prepare variables regarding parameters
+# takes variable's name, parameter's name and default value
+prepare() {
+set -x
+if [ ! "$3" ]; then
+  echo "We need a default value"
+  exit 1
+fi
+
+if [ -f "$__object/parameter/$2" ]; then
+  eval $1=`cat $__object/parameter/$2`
+else
+  eval $1=$3
+fi
+set +x
+}
+
+prepare  "ROOT" "root" "/var/www/$__object_id"
+
+if [ -f "$__object/parameter/template" ] && [ -f "$__object/parameter/source" ]; then
+  echo "Please use either a source or a template"
+  exit 1;
+fi
+#FIXME: need to find a place for full configurations
+prepare "tpl" "template" "basic"
+if [ ! -f "$__type/templates/$tpl.tpl" ]; then
+  echo "Missing template $tpl"
+  exit 1
+fi
+
+prepare  "SERVERNAME" "servername" "$__object_id"
+prepare  "LOCATION" "location" "/"
+prepare  "INDEX" "index" "index.php"
+
+prepare	"state"	"state"	"disabled"
+
+# export variables used by template
+export ROOT
+export SERVERNAME
+export LOCATION
+export INDEX
+
+# render the template
+mkdir -p "$__object/files"
+"$__type/templates/$tpl.tpl" > "$__object/files/$tpl.tpl"
+
+# send the rendered template
+require="__package/nginx" __file /etc/nginx/sites-available/$SERVERNAME --state present   --source "$__object/files/$tpl.tpl"
+
+# send the file
+__package nginx --state present
+
+
+case $state in
+	enabled)
+		__link /etc/nginx/sites-enabled/$servername.conf   \
+		      --source ../sites-available/$servername.conf \
+		      --type symbolic
+	;;
+	disabled)
+		__link /etc/nginx/sites-enabled/$servername.conf   \
+		      --source /dev/null \
+		      --type symbolic
+	;;
+	*)
+		echo "unknown state"
+	;;
+esac
+
+#
+# This is the manifest, which can be used to create other objects like this:
+# __file /path/to/destination --source /from/where/ --type file
+#
+# To tell cdist to make use of it, you need to make it executable (chmod +x)
+#
+#
+

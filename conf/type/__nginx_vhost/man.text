@@ -1,0 +1,53 @@
+cdist-type__nginx_vhost(7)
+==========================
+Aurélien Bondis - aurelien.bondis AT gmail DOT com
+
+
+NAME
+----
+cdist-type__nginx_vhost - Configures an nginx vhost
+
+
+DESCRIPTION
+-----------
+Sends a vhost's conf based on a full conf '--source' or a template '--template'
+Templates are a bunch of sed
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+source:: the source configuration
+template:: the template to use
+root:: the documents root
+index:: index file of the location
+location:: the location parameter to pass the template
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# add a simple vhost configuration
+__nginx_vhost myhost
+# add a drupal vhost using fastcgi
+__nginx_vhost mydrupal --template drupal --root /srv/www/mydrupal
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+TODO
+----
+- add possibility to add many locations based on templates ( type __nginx_location or many --location arguments ? )
+
+
+COPYING
+-------
+Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
