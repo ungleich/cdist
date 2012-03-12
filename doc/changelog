@@ -10,6 +10,7 @@ Changelog
 	* Cleanup documentation: Some minor corrections
 	* New Type: __package_opkg (Giel van Schijndel)
 	* New Type: __package_pkg_freebsd (Jake Guffey)
+	* New Type: __mysql_database (Benedikt Koeppel)
 	* Feature __package: Support for OpenWRT (Giel van Schijndel)
 	* Feature __start_on_boot: Support for OpenWRT (Giel van Schijndel)
 	* Feature __start_on_boot: Support for Amazon Linux (Matt Coddington)
