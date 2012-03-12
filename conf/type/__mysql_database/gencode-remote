@@ -35,7 +35,7 @@ EOFF
 # if --user was specified
 if [ -f "$__object/parameter/user" ]; then
    user="$(cat "$__object/parameter/user")"
-   
+
    # if --password was specified
    if [ -f "$__object/parameter/password" ]; then
       password="$(cat "$__object/parameter/password")"
