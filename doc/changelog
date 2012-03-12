@@ -14,6 +14,8 @@ Changelog
 	* Feature __start_on_boot: Support for OpenWRT (Giel van Schijndel)
 	* Feature __start_on_boot: Support for Amazon Linux (Matt Coddington)
 	* New Example: Use rsync to backup files (Matt Coddington) 
+	* Feature core: Exit non-zero, if configuration failed
+	* Documentation: Describe how to do templating (Aurélien Bondis)
 
 2.0.8: 2012-02-20
 	* Bugfix core: Remove another nasty traceback when sending SIGINT (aka Ctrl-C)
