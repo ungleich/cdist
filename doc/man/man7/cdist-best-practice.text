@@ -182,9 +182,9 @@ EOF
   export ROOT='/var/www/test'
 # render the template
   mkdir -p "$__object/files"
-  "$__type/templates/collectd.conf" > "$__object/files/collectd.conf"
+  "$__type/templates/basic.conf.sh" > "$__object/files/basic.conf"
 # send the rendered template 
-  __file /etc/collectd.conf  --state present   --source "$__object/files/collectd.conf"
+  __file /etc/nginx/sites-available/test.conf  --state present   --source "$__object/files/basic.conf"
 --------------------------------------------------------------------------------------
 
 SEE ALSO
