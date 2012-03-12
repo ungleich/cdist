@@ -159,7 +159,7 @@ TEMPLATING
 * create the template as an executable file like templates/basic.conf.sh, it will output text using shell variables for the values
 
 --------------------------------------------------------------------------------------
-#!/bin/bash
+#!/bin/sh
 # in the template, use cat << eof (here document) to output the text
 # and use standard shell variables in the template
 # output everything in the template script to stdout
