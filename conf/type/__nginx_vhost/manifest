@@ -54,6 +54,7 @@ fi
 prepare  "SERVERNAME" "servername" "$__object_id"
 prepare  "LOCATION" "location" "/"
 prepare  "INDEX" "index" "index.php"
+prepare  "PROXY_URI" "proxy-uri" "http://localhost:8080"
 
 prepare	"state"	"state"	"disabled"
 
@@ -62,6 +63,7 @@ export ROOT
 export SERVERNAME
 export LOCATION
 export INDEX
+export PROXY_URI
 
 # render the template
 mkdir -p "$__object/files"

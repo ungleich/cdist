@@ -2,3 +2,4 @@ template
 root
 servername
 state
+proxy-uri
