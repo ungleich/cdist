@@ -1,0 +1,17 @@
+#!/bin/sh
+apt="php5 php5-fpm php5-mcrypt php5-geoip php5-mysql php-apc php5-memcache php5-memcached php5-gd"
+
+os="$(cat "$__global/explorer/os")"
+case "$os" in
+ archlinux) type="pacman" ;;
+ debian|ubuntu) type="apt" ;;
+ gentoo) type="emerge" ;;
+ fedora|redhat|centos) type="yum" ;;
+ *);;
+esac
+deps=$(echo $apt)
+for p in $deps
+do
+  __package_$type $p --state present
+done
+
