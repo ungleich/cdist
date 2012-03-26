@@ -44,3 +44,6 @@ TYPES
 - Merge __addifnosuchline and __removeline into __line + --state present|absent
 - __cron: Support --file to be used instead of user cron (probably direct support
     of /etc/cron.d)
+
+- Support uci from openwrt?
+    - http://wiki.openwrt.org/doc/uci
