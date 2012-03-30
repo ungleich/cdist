@@ -43,7 +43,7 @@ case "$state_should" in
 #                echo rc-update add \"$name\" default
 #            ;;
 
-            centos|fedora|owl|redhat)
+            amazon|centos|fedora|owl|redhat)
                 echo chkconfig \"$name\" on
             ;;
 
