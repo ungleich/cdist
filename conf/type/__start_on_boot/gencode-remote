@@ -32,7 +32,7 @@ case "$state_should" in
     present)
         case "$os" in
             archlinux)
-                echo "sed -i /etc/rc.conf \'s/^\\(DAEMONS=.*\\))/\\1 $name)/\'"
+                echo "sed -i /etc/rc.conf 's/^\\(DAEMONS=.*\\))/\\1 $name)/'"
             ;;
             debian|ubuntu)
                 echo "update-rc.d \"$name\" defaults >/dev/null"
