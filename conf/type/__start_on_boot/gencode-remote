@@ -43,8 +43,15 @@ case "$state_should" in
 #                echo rc-update add \"$name\" default
 #            ;;
 
-            centos|fedora|owl|redhat)
+            amazon|centos|fedora|owl|redhat)
                 echo chkconfig \"$name\" on
+            ;;
+
+            openwrt)
+                # 'enable' can be successful and still return a non-zero exit
+                # code, deal with it by checking for success ourselves in that
+                # case (the || ... part).
+                echo "/etc/init.d/\"$name\" enable || [ -f /etc/rc.d/S??\"$name\" ]"
             ;;
 
             *)
@@ -72,6 +79,10 @@ case "$state_should" in
 
             centos|fedora|owl|redhat)
                 echo chkconfig \"$name\" off
+            ;;
+
+            openwrt)
+                echo "\"/etc/init.d/$name\" disable"
             ;;
 
             *)

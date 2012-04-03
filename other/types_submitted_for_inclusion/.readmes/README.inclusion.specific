@@ -2,6 +2,7 @@ Description:
 
     Type that will probably only work in a very specific environnment
     (like a specific distribution only).
+    or has custom code that may not satisfy the "usual" or generic use case.
 
 Problem:
 
