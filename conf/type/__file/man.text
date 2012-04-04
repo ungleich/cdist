@@ -21,7 +21,11 @@ None.
 OPTIONAL PARAMETERS
 -------------------
 state::
-   'present' or 'absent', defaults to 'present'
+   'present', 'absent' or 'exists', defaults to 'present'
+   where:
+      present: the file is exactly the one from source
+      absent: the file does not exist
+      exists: the file from source but only if it doesn't already exist
 
 group::
    Group to chgrp to.
