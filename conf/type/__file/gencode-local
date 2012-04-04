@@ -23,6 +23,9 @@
 
 destination="/$__object_id"
 state_should="$(cat "$__object/parameter/state")"
+exists="$(cat "$__object/explorer/exists")"
+
+[ "$state_should" = "exists" -a "$exists" = "yes" ] && exit 0 # nothing to do
 
 if [ "$state_should" = "present" ]; then
    if [ -f "$__object/parameter/source" ]; then
