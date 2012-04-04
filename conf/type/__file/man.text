@@ -59,6 +59,11 @@ __file /etc/issue --source "$__type/files/archlinux" --state present
 __file /etc/shadow --source "$__type/files/shadow" \
    --owner root --group shadow --mode 0640 \
    --state present
+
+# Provide a default file, but let the user change it
+__file /home/frodo/.bashrc --source "/etc/skel/.bashrc" \
+   --state exists \
+   --owner frodo --mode 0600
 --------------------------------------------------------------------------------
 
 
