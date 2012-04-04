@@ -8,6 +8,7 @@ Changelog
 	* Cleanup __group: No getent gshadow in old Redhat, use groupmod -g
 		(Matt Coddington)
 	* Bugfix __package_yum: Missing cat
+	* Bugfix __start_on_boot: Correctly use sed and quotes (Steven Armstrong)
 	* Feature __file: Support for --state exists (Steven Armstrong)
 
 2.0.9: 2012-03-12
