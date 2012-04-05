@@ -33,7 +33,7 @@ case "$state_should" in
         case "$os" in
             archlinux)
                 echo "sed -i cdist-backup 's/^\\(DAEMONS=.*\\))/\\1 $name)/' /etc/rc.conf"
-		echo "rm -f /etc/rc.conf.cdist-backup"
+                echo "rm -f /etc/rc.conf.cdist-backup"
             ;;
             debian|ubuntu)
                 echo "update-rc.d \"$name\" defaults >/dev/null"
@@ -68,7 +68,7 @@ case "$state_should" in
                 # Replace a) at the beginning b) in the middle c) end d) only
                 # Support @name as well...makes it more ugly, but well...
                 echo "sed -i cdist-backup /etc/rc.conf -e 's/^\\(DAEMONS=(\\)@\\{0,1\\}$name /\\1/' -e 's/^\\(DAEMONS=(.* \\)@\\{0,1\\}$name \\(.*\\)/\\1\\2/' -e 's/^\\(DAEMONS=(.*\\) @\\{0,1\\}$name)/\\1)/' -e 's/^\\(DAEMONS=(\\)@\\{0,1\\}$name)/\\1)/'"
-		echo "rm -f /etc/rc.conf.cdist-backup"
+                echo "rm -f /etc/rc.conf.cdist-backup"
             ;;
             debian|ubuntu)
                 echo update-rc.d -f \"$name\" remove
