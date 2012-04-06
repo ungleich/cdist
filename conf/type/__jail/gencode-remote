@@ -266,7 +266,12 @@ if [ "$onboot" = "true" ]; then
    cat <<EOF
       eval \$(grep '^jail_list=' /etc/rc.conf)
       jail_list="\${jail_list} ${name}"
-      sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+      grep -q '^jail_list=' /etc/rc.conf
+      if [ "\$?" -eq "0" ]; then
+         sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+      else
+         echo jail_list=\"\${jail_list}\" >>/etc/rc.conf
+      fi
       unset jail_list
       rm -f /etc/rc.conf.bak
 EOF
