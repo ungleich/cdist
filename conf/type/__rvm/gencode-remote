@@ -32,8 +32,7 @@ DONE
       removed)
          cat << DONE
 su - $user -c "rm -Rf \"\\\$HOME/.rvm\";
-sed -i cdist-backup '/rvm\/scripts\/rvm/d' \"\\\$HOME/.bashrc\""
-rm -f \"\\\$HOME/.bashrc.cdist-backup\""
+sed '/rvm\/scripts\/rvm/d' \"\\\$HOME/.bashrc\" | tee \"\\\$HOME/.bashrc\" > /dev/null"
 DONE
       ;;
    esac

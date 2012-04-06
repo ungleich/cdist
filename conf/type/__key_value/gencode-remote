@@ -34,8 +34,7 @@ fi
 case "$state_should" in
    absent)
       # remove lines starting with key
-      echo "sed -i cdist-backup '/^$key\($delimiter\+\)/d' \"$file\""
-      echo "rm -f \"$file.cdist-backup\""
+      echo "sed '/^$key\($delimiter\+\)/d' \"$file\" | tee \"$file\" > /dev/null"
    ;;
    present)
       case "$state_is" in
@@ -45,8 +44,7 @@ case "$state_should" in
          ;;
          wrongvalue)
             # change exisiting value
-            echo "sed -i cdist-backup \"s|^$key\($delimiter\+\).*|$key\1$value|\" \"$file\""
-            echo "rm -f \"$file.cdist-backup\""
+            echo "sed \"s|^$key\($delimiter\+\).*|$key\1$value|\" \"$file\" | tee \"$file\" > /dev/null"
          ;;
          *)
             echo "Unknown explorer state: $state_is" >&2
