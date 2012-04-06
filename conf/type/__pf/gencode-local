@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage pf(4) on *BSD
+#
+
+# Debug
+#exec >&2
+#set -x
+
+# Send files to $__target_host via $__remtoe_copy
+# wait 15 seconds and $__remote_exec $__target_host touch /tmp/pf_test
+
+state="$(cat "$__object/parameter/state")"
+
+if [ "$state" = "disabled" ]; then	# Nothing more for this script to do
+	exit 0
+fi
+
+if [ -f "$__object/parameter/ruleset" ]; then
+	ruleset="$(cat "$__object/parameter/ruleset")"
+fi
+
+if [ -f "$__object/parameter/testscript" ]; then
+	testscript="$(cat "$__object/parameter/testscript")"
+fi
+
+rcvar="$(cat "$__object/explorer/rcvar")"
+cksum="$(cat "$__object/explorer/cksum")"
+
+cat >&2 <<EOF
+if [ ! "${cksum}" = "NOTEXIST" ]; then
+	currentSum="$(sha256 ${ruleset} | cut -d= -f2 | sed 's/ //g')"
+	if [ ! "\${currentSum}" -eq "${cksum}" ]; then
+		$__remote_copy "${ruleset}" "$__target_host:${rcvar}.new"
+	fi
+else	# File just doesn't even exist yet
+	$__remote_copy "${ruleset}" "$__target_host:${rcvar}.new"
+fi
+if [ -n "${testscript}" ]; then
+	$__remote_copy "${testscript}" "$__target_host:${rcvar}.tests"
+fi
+sleep 15
+$__remote_exec $__target_host touch /tmp/test
+EOF
+
+# Debug
+#set +x
+
