@@ -38,19 +38,32 @@ fi
 rcvar="$(cat "$__object/explorer/rcvar")"
 cksum="$(cat "$__object/explorer/cksum")"
 
-cat >&2 <<EOF
+cat <<EOF
+exec >&2
+set -x
 # This file is used as a canary later, make sure we don't get a false positive
 rm -f /tmp/test
+
+if [ "$state" = "enabled" ]; then
+	pfctl -e || true
+else
+	pfctl -d || true
+	exit 0
+fi
 
 revert() {
 	pfctl -f "${rcvar}"
 	echo "Test(s) failed after applying new ruleset." >&2
 	echo "Reverting back to previous ruleset." >&2
-	exit -1
+	exit 255
 }
 
-pfctl -f "${rcvar}.new"
-${rcvar}.tests
+if [ -f "${rcvar}.new" ]; then
+	pfctl -f "${rcvar}.new"
+fi
+if [ -f "${rcvar}.tests" ]; then
+	sh ${rcvar}.tests
+fi
 if [ ! "\$?" -eq "0" ]; then	# error occurred
 	revert
 else	# test(s) succeeded
@@ -63,6 +76,7 @@ else	# test(s) succeeded
 		exit 0
 	fi
 fi
+set +x
 EOF
 
 # Debug
