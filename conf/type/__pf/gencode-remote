@@ -48,24 +48,27 @@ currentstate="\$(pfctl -si 2>&1 | grep Status: | sed 's/^Status: \(.*\) for.*$/\
 
 if [ "$state" = "enabled" ]; then
 	if [ ! "\$currentstate" = "Enabled" ]; then
-		pfctl -e 2>&1 >&-
+		pfctl -e 2>&- >&-
 	fi
 else
 	if [ ! "\$currentstate" = "Disabled" ]; then
-		pfctl -d 2>&1 >&-
+		pfctl -d 2>&- >&-
 		exit 0
 	fi
 fi
 
 revert() {
-	pfctl -f "${rcvar}" 2>&1 >&-
+	pfctl -f "${rcvar}" 2>&- >&-
 	echo "Test(s) failed after applying new ruleset." >&2
 	echo "Reverting back to previous ruleset." >&2
 	exit 255
 }
 
 if [ -f "${rcvar}.new" ]; then
-	pfctl -f "${rcvar}.new" 2>&1 >&-
+	# need to flush the state table first in case ssh is blocked by the new ruleset, don't want
+	#  a false negative
+	pfctl -F state 2>&- >&-
+	pfctl -f "${rcvar}.new" 2>&- >&-
 	pfstatus="\$?"
 fi
 if [ -f "${rcvar}.tests" ]; then

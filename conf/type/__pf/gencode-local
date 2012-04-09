@@ -58,7 +58,8 @@ case \${UNAME} in
 		currentSum="\$(sha256 ${ruleset} | cut -d= -f2 | sed 's/ //g')"
 		;;
 	* )
-		exit -1
+		echo "Sorry, I do not know how to find a sha256sum on ${UNAME}." >&2
+		exit 255
 		;;
 esac
 
