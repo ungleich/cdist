@@ -46,9 +46,26 @@ else
    sshpath="/root/.ssh"
 fi
 rsa=`cat $srcrsa`
-__directory $sshpath
-# the file authorized_keys depends on the .ssh folder
-require="__directory${sshpath}" __file "$sshpath/authorized_keys" --mode 640
+
+# if a destination user is defined, create the .ssh directory with
+# that user's ownership credentials
+if [ "$dstuser" ]; then
+  __directory $sshpath --owner $dstuser --group $dstuser --mode 700
+# if no destination user is defined, create the .ssh directory as root
+else
+  __directory $sshpath
+fi
+
+# if a destination user is defined, create the authorized_keys, giving
+# that user ownership
+if [ "$dstuser" ]; then
+  require="__directory${sshpath}" __file "$sshpath/authorized_keys" \
+    --owner $dstuser --group $dstuser --mode 640
+# if no destination user is defined, create the authorized_keys file as root
+else
+  require="__directory${sshpath}" __file "$sshpath/authorized_keys" --mode 640
+fi
+  
 # the line added depends on authorized_keys existence
 require="__file${sshpath}/authorized_keys" __addifnosuchline sshkey --file \
  "$sshpath/authorized_keys" --line "$rsa"
