@@ -28,11 +28,11 @@
 state="$(cat "$__object/parameter/state")"
 
 if [ -f "$__object/parameter/ruleset" ]; then
-	ruleset="$(cat "$__object/parameter/ruleset")"
+   ruleset="$(cat "$__object/parameter/ruleset")"
 fi
 
 if [ -f "$__object/parameter/testscript" ]; then
-	testscript="$(cat "$__object/parameter/testscript")"
+   testscript="$(cat "$__object/parameter/testscript")"
 fi
 
 rcvar="$(cat "$__object/explorer/rcvar")"
@@ -41,61 +41,59 @@ cksum="$(cat "$__object/explorer/cksum")"
 cat <<EOF
 # This file is used as a canary later, make sure we don't get a false positive
 if [ -f /tmp/pf_test.$__target_host ]; then
-	rm -f /tmp/pf_test.$__target_host
+   rm -f /tmp/pf_test.$__target_host
 fi
 
 currentstate="\$(pfctl -si 2>&1 | grep Status: | sed 's/^Status: \(.*\) for.*$/\1/g')"
 
 if [ "$state" = "enabled" ]; then
-	if [ ! "\$currentstate" = "Enabled" ]; then
-		pfctl -e 2>&- >&-
-	fi
+   if [ ! "\$currentstate" = "Enabled" ]; then
+      pfctl -e 2>&- >&-
+   fi
 else
-	if [ ! "\$currentstate" = "Disabled" ]; then
-		pfctl -d 2>&- >&-
-		exit 0
-	fi
+   if [ ! "\$currentstate" = "Disabled" ]; then
+      pfctl -d 2>&- >&-
+      exit 0
+   fi
 fi
 
 revert() {
-	pfctl -f "${rcvar}" 2>&- >&-
-	echo "Test(s) failed after applying new ruleset." >&2
-	echo "Reverting back to previous ruleset." >&2
-	exit 255
+   pfctl -f "${rcvar}" 2>&- >&-
+   echo "Test(s) failed after applying new ruleset." >&2
+   echo "Reverting back to previous ruleset." >&2
+   exit 255
 }
 
 if [ -f "${rcvar}.new" ]; then
-	# need to flush the state table first in case ssh is blocked by the new ruleset, don't want
-	#  a false negative
-	pfctl -F state 2>&- >&-
-	pfctl -f "${rcvar}.new" 2>&- >&-
-	pfstatus="\$?"
+   pfctl -f "${rcvar}.new" 2>&- >&-
+   pfstatus="\$?"
 fi
 if [ -f "${rcvar}.tests" ]; then
-	sh ${rcvar}.tests
-	teststatus="\$?"
+   sh ${rcvar}.tests
+   teststatus="\$?"
 fi
 
 if [ -z "\$teststatus" ]; then	# no tests executed
 elif [ ! "\$teststatus" -eq "0" ]; then	# tests failed
-	revert
+   revert
 fi
 if [ -z "\$pfstatus" ]; then	# pfctl wasn't called -- ruleset unchanged
-	exit 0
+   exit 0
 elif [ ! "\$pfstatus" -eq "0" ]; then	# pfctl call failed
-	revert
+   revert
 else	# pfctl call succeeded
-	sleep 10
-	if [ ! -f /tmp/pf_test.$__target_host ]; then	# Apparently the upstream cdist server can't get back to us
-		revert
-	else
-		if [ -f "${rcvar}.tests" ]; then
-			rm -f "${rcvar}" "${rcvar}.tests"
-		fi
-		if [ -f "${rcvar}.new" ]; then
-			mv "${rcvar}.new" "${rcvar}"
-		fi
-	fi
+   sleep 10
+   if [ ! -f /tmp/pf_test.$__target_host ]; then
+      # Apparently the upstream cdist server can't get back to us
+      revert
+   else
+      if [ -f "${rcvar}.tests" ]; then
+         rm -f "${rcvar}" "${rcvar}.tests"
+      fi
+      if [ -f "${rcvar}.new" ]; then
+         mv "${rcvar}.new" "${rcvar}"
+      fi
+   fi
 fi
 EOF
 
