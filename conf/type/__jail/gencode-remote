@@ -212,6 +212,16 @@ EOF
 
 # Add the jail_$name_* lines to rc.conf
 cat <<EOF
+   # first check to see whether jail_enable="YES" exists in rc.conf or not and add it
+   #   if necessary
+
+   jail_enable="\$(grep '^jail_enable=' /etc/rc.conf | cut -d= -f2)"
+   if [ -z "\$jail_enable" ]; then	# no jail_enable line in rc.conf at all
+      echo "jail_enable=\"YES\"" >>/etc/rc.conf
+   elif [ ! "\$(echo \$jail_enable | tr '[a-z]' '[A-Z]')" = "YES" ]; then	# jail_enable="NO"
+      sed -i '.bak' 's/^jail_enable=.*$/jail_enable="YES"/g' /etc/rc.conf	# fix this -^
+      rm -f /etc/rc.conf.bak
+   fi
    cat >>/etc/rc.conf <<END
 jail_${name}_rootdir="${jaildir}/${name}"
 jail_${name}_hostname="${hostname}"
@@ -243,6 +253,9 @@ if [ "$devfsenable" = "true" ]; then
 jail_${name}_devfs_ruleset="${devfsruleset}"
 END
    if [ "${devfsruleset}" = "jailrules" ]; then   # The default ruleset is to be used
+      if [ ! -f /etc/devfs.rules ]; then
+         touch /etc/devfs.rules
+      fi
       if [ -z "\$(grep '\[jailrules=' /etc/devfs.rules)" ]; then   # The default ruleset doesn't exist
          # Get the highest-numbered ruleset
 	 highest="\$(sed -n 's/\[.*=\([0-9]*\)\]/\1/pg' /etc/devfs.rules | sort -u | tail -n 1)" || true
@@ -263,17 +276,20 @@ fi
 
 # Add $name to jail_list if $onboot=true
 if [ "$onboot" = "true" ]; then
+
+   # first check to see whether jail_enable="YES" exists in rc.conf or not and add it
+   #   if necessary
+
    cat <<EOF
-      eval \$(grep '^jail_list=' /etc/rc.conf)
-      jail_list="\${jail_list} ${name}"
-      grep -q '^jail_list=' /etc/rc.conf
-      if [ "\$?" -eq "0" ]; then
-         sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+      jail_list="\$(grep '^jail_enable=' /etc/rc.conf | cut -d= -f2)"
+      if [ -z "\$jail_list" ]; then	# no jail_list line in rc.conf at all
+         echo "jail_list=\"${name}\"" >>/etc/rc.conf
       else
-         echo jail_list=\"\${jail_list}\" >>/etc/rc.conf
+         jail_list="\${jail_list} ${name}"
+         sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+         rm -f /etc/rc.conf.bak
       fi
       unset jail_list
-      rm -f /etc/rc.conf.bak
 EOF
 fi
 

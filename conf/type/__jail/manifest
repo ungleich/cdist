@@ -22,13 +22,14 @@
 #  virtual machines.
 #
 
-#FIXME: /usr/jail should never be hardcoded in this type
-#FIXME: jailbase.tgz should not be hardcoded in this file
+# Debug
+#exec >&2
+#set -x
 
-jailbase="/usr/jail/jailbase.tgz"
-basepresent="$(cat "$__object/explorer/basepresent")"
+jaildir="/usr/jail"
 
-if [ "$basepresent" = "NONE" ]; then
-    echo "$__remote_copy" "$__type/files/jailbase.tgz" "$__target_host:${jailbase}"
-fi
+__directory ${jaildir} --parents yes
+
+# Debug
+#set +x
 
