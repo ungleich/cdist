@@ -30,6 +30,11 @@ fi
 if [ -f "$__object/parameter/dstuser" ]; then
    dstuser=`cat "$__object/parameter/dstuser"`
 fi
+# Get option dstgroup if defined
+if [ -f "$__object/parameter/dstgroup" ]; then
+   dstgroup=`cat "$__object/parameter/dstgroup"`
+fi
+
 
 # if a source user is defined, use it's public key
 if [ "$srcuser" ]; then
@@ -41,14 +46,26 @@ fi
 # if a destination user is defined, insert in it's authorized_keys
 if [ "$dstuser" ]; then
    sshpath="/home/$dstuser/.ssh"
+   if [ ! "$dstgroup" ]; then
+       dstgroup=${dstuser}
+   fi
 # if no destination user is defined we use root's home
 else
    sshpath="/root/.ssh"
+   dstuser="root"
+   dstgroup="root"
 fi
 rsa=`cat $srcrsa`
-__directory $sshpath
+__directory $sshpath \
+    --owner $dstuser \
+    --group $dstgroup \
+    --mode 700
 # the file authorized_keys depends on the .ssh folder
-require="__directory${sshpath}" __file "$sshpath/authorized_keys" --mode 640
+require="__directory${sshpath}" \
+    __file "$sshpath/authorized_keys" \
+    --mode 640 \
+    --owner $dstuser \
+    --group $dstgroup
 # the line added depends on authorized_keys existence
 require="__file${sshpath}/authorized_keys" __addifnosuchline sshkey --file \
  "$sshpath/authorized_keys" --line "$rsa"

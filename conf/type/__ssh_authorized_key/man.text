@@ -22,6 +22,8 @@ OPTIONAL PARAMETERS
 -------------------
 srcuser:: the user to take the rsa public key from
 dstuser:: the user to give the rsa public key to
+dstgroup:: the group to assign ownership of the authorized_keys file to.
+defaults to dstuser
 
 
 EXAMPLES
@@ -32,6 +34,11 @@ EXAMPLES
 __ssh_authorized_key admin
 #deploy bob's public key to alice's authorized_keys
 __ssh_authorized_key --srcuser bob --dstuser alice
+#deploy bob's key to a alice in group users
+__ssh_authorized_key otherkey \
+    --srcuser bob \
+    --dstuser alice \
+    --dstgroup users
 --------------------------------------------------------------------------------
 
 
