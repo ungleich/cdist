@@ -4,12 +4,27 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.0.9:
+2.0.10:
+	* Cleanup __group: No getent gshadow in old Redhat, use groupmod -g
+		(Matt Coddington)
+	* Bugfix __package_yum: Missing cat
+	* Bugfix __start_on_boot: Correctly use sed and quotes (Steven Armstrong)
+	* Feature __file: Support for --state exists (Steven Armstrong)
+	* Feature core: Make variable __manifest available to type manifests
+
+2.0.9: 2012-03-12
 	* Cleanup documentation: Fix environment variable list to be properly 
 		displayed (Giel van Schijndel)
+	* Cleanup documentation: Some minor corrections
 	* New Type: __package_opkg (Giel van Schijndel)
 	* New Type: __package_pkg_freebsd (Jake Guffey)
-	* Feature __package: Support OpenWRT (Giel van Schijndel)
+	* New Type: __mysql_database (Benedikt Koeppel)
+	* Feature __package: Support for OpenWRT (Giel van Schijndel)
+	* Feature __start_on_boot: Support for OpenWRT (Giel van Schijndel)
+	* Feature __start_on_boot: Support for Amazon Linux (Matt Coddington)
+	* New Example: Use rsync to backup files (Matt Coddington) 
+	* Feature core: Exit non-zero, if configuration failed
+	* Documentation: Describe how to do templating (Aurélien Bondis)
 
 2.0.8: 2012-02-20
 	* Bugfix core: Remove another nasty traceback when sending SIGINT (aka Ctrl-C)

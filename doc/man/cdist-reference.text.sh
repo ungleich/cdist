@@ -173,7 +173,7 @@ __explorer::
     Available for: explorer, type explorer
 __manifest::
     Directory that contains the initial manifest.
-    Available for: initial manifest
+    Available for: initial manifest, type manifest
 __global::
     Directory that contains generic output like explorer.
     Available for: initial manifest, type manifest, type gencode

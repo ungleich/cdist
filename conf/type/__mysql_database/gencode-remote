@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# 2012 Benedikt Koeppel (code@benediktkoeppel.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+# if --database was specified
+if [ -f "$__object/parameter/name" ]; then
+   database="$(cat "$__object/parameter/name")"
+else # otherwise use the object id as database name
+   database="$__object_id"
+fi
+
+cat <<-EOFF
+mysql -u root <<-EOF
+	CREATE DATABASE IF NOT EXISTS $database
+EOF
+EOFF
+
+# if --user was specified
+if [ -f "$__object/parameter/user" ]; then
+   user="$(cat "$__object/parameter/user")"
+
+   # if --password was specified
+   if [ -f "$__object/parameter/password" ]; then
+      password="$(cat "$__object/parameter/password")"
+      cat <<-EOFF
+      mysql -u root <<-EOF
+      	GRANT ALL PRIVILEGES ON $database.* to '$user'@'localhost' IDENTIFIED BY '$password';
+EOF
+EOFF
+   else
+      password=""
+      cat <<-EOFF
+      mysql -u root <<-EOF
+      	GRANT ALL PRIVILEGES ON $database.* to '$user'@'localhost';
+EOF
+EOFF
+   fi
+fi
