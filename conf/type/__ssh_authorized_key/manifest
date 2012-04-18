@@ -22,51 +22,31 @@
 # authorized_keys of another
 #
 #require="__package openssh-server --state installed"
-# Get option srcuser if defined
+
+# If a source user was given, use its public key,
+# otherwise default to using root's public key.
 if [ -f "$__object/parameter/srcuser" ]; then
-   srcuser=`cat "$__object/parameter/srcuser"`
+  srcuser="$(cat "$__object/parameter/srcuser")"
+  pubkey="$(cat "/home/${srcuser}/.ssh/id_rsa.pub")"
+else
+  pubkey="$(cat /root/.ssh/id_rsa.pub)"
 fi
-# Get option dstuser if defined
+
+# Set the destination user and remote ssh directory.
+# Default to root if no destination user was given.
 if [ -f "$__object/parameter/dstuser" ]; then
-   dstuser=`cat "$__object/parameter/dstuser"`
+  dstuser="$(cat "$__object/parameter/dstuser")"
+  sshdir="/home/${dstuser}/.ssh"
+else
+  dstuser="root"
+  sshdir="/root/.ssh"
 fi
 
-# if a source user is defined, use it's public key
-if [ "$srcuser" ]; then
-   srcrsa="/home/${srcuser}/.ssh/id_rsa.pub"
-# if no source user is defined we use root's public key
-else
-   srcrsa="/root/.ssh/id_rsa.pub"
-fi
-# if a destination user is defined, insert in it's authorized_keys
-if [ "$dstuser" ]; then
-   sshpath="/home/$dstuser/.ssh"
-# if no destination user is defined we use root's home
-else
-   sshpath="/root/.ssh"
-fi
-rsa=`cat $srcrsa`
-
-# if a destination user is defined, create the .ssh directory with
-# that user's ownership credentials
-if [ "$dstuser" ]; then
-  __directory $sshpath --owner $dstuser --group $dstuser --mode 700
-# if no destination user is defined, create the .ssh directory as root
-else
-  __directory $sshpath
-fi
-
-# if a destination user is defined, create the authorized_keys, giving
-# that user ownership
-if [ "$dstuser" ]; then
-  require="__directory${sshpath}" __file "$sshpath/authorized_keys" \
-    --owner $dstuser --group $dstuser --mode 640
-# if no destination user is defined, create the authorized_keys file as root
-else
-  require="__directory${sshpath}" __file "$sshpath/authorized_keys" --mode 640
-fi
+# Set up the remote ssh directory with correct permissions
+__directory $sshdir --owner $dstuser --mode 700
+require="__directory${sshdir}" __file "${sshdir}/authorized_keys" \
+  --owner $dstuser --mode 640
   
-# the line added depends on authorized_keys existence
-require="__file${sshpath}/authorized_keys" __addifnosuchline sshkey --file \
- "$sshpath/authorized_keys" --line "$rsa"
-
+# Add the pubkey to the destination user's authorized_keys file
+require="__file${sshdir}/authorized_keys" __addifnosuchline sshkey --file \
+ "${sshdir}/authorized_keys" --line "${pubkey}"
