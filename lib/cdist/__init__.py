@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -19,7 +19,7 @@
 #
 #
 
-VERSION     = "2.0.8"
+VERSION     = "2.0.9"
 
 BANNER = """
              ..          .       .x+=:.        s
