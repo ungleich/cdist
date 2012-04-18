@@ -1,0 +1,93 @@
+#!/bin/sh
+#
+# 2012 Benedikt Koeppel (code@benediktkoeppel.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+if [ -f "$__object/parameter/no_my_cnf" ]; then
+   no_my_cnf="$(cat "$__object/parameter/no_my_cnf")"
+else
+   no_my_cnf="false"
+fi
+
+if [ -f "$__object/parameter/password" ]; then
+   rootpassword="$(cat "$__object/parameter/password")"
+else
+   rootpassword=""
+fi
+
+
+if [ "$rootpassword" != "" ]; then
+   # to the database without requiring a passwort input
+   # set root password
+   echo "mysqladmin -u root password $rootpassword"
+
+   # if we don't want to overwrite the .my.cnf, then take a backup now
+   if [ "$no_my_cnf" == "true" ]; then
+      mv /root/.my.cnf /root/.my.cnf.cdist.bkp
+   fi
+   
+   # store the root password in /root/.my.cnf so that processes can connect
+   cat <<-EOFF
+   cat <<-EOF > /root/.my.cnf
+      [client]
+      password=$rootpassword
+EOF
+EOFF
+
+
+
+   # remove anonymous users
+   cat <<-EOFF
+   mysql -u root <<-EOF
+   	DELETE FROM mysql.user WHERE User='';
+EOF
+EOFF
+   
+   # remove remote-access for root
+   cat <<-EOFF
+   mysql -u root <<-EOF
+   	DELETE FROM mysql.user WHERE User='root' AND Host!='localhost';
+EOF
+EOFF
+   
+   # remove test database
+   cat <<-EOFF
+   mysql -u root <<-EOF
+   	DROP DATABASE IF EXISTS test;
+EOF
+EOFF
+   cat <<-EOFF
+   mysql -u root <<-EOF
+   	DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'
+EOF
+EOFF
+   
+   # flush privileges
+   cat <<-EOFF
+   mysql -u root <<-EOF
+   	FLUSH PRIVILEGES;
+EOF
+EOFF
+
+   # if we don't want to overwrite the .my.cnf, then restore the backup now
+   if [ "$no_my_cnf" == "true" ]; then
+      mv /root/.my.cnf.cdist.bkp /root/.my.cnf 
+   fi
+
+fi

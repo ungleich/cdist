@@ -21,7 +21,11 @@ None.
 OPTIONAL PARAMETERS
 -------------------
 state::
-   'present' or 'absent', defaults to 'present'
+   'present', 'absent' or 'exists', defaults to 'present'
+   where:
+      present: the file is exactly the one from source
+      absent: the file does not exist
+      exists: the file from source but only if it doesn't already exist
 
 group::
    Group to chgrp to.
@@ -55,6 +59,11 @@ __file /etc/issue --source "$__type/files/archlinux" --state present
 __file /etc/shadow --source "$__type/files/shadow" \
    --owner root --group shadow --mode 0640 \
    --state present
+
+# Provide a default file, but let the user change it
+__file /home/frodo/.bashrc --source "/etc/skel/.bashrc" \
+   --state exists \
+   --owner frodo --mode 0600
 --------------------------------------------------------------------------------
 
 

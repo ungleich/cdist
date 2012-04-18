@@ -44,14 +44,13 @@ case "$os" in
         done
     ;;
 
-    debian|ubuntu)
+    debian|ubuntu|openwrt)
         state="present"
         [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
     ;;
 
-    centos|fedora|owl|redhat)
-        state="present"
-        state=$(chkconfig --level "$runlevel" \"$name\" || echo absent)
+    amazon|centos|fedora|owl|redhat)
+        state=$(chkconfig --level "$runlevel" "$name" || echo absent)
         [ "$state" ] || state="present"
     ;;
 
