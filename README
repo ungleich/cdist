@@ -38,6 +38,7 @@ Design | Define target state, do not focus on methods or scripts
 Design | Push architecture: Instantly apply your changes
 Small core | cdist's core is very small - less code, less bugs
 Fast development | Focus on straightforwardness of type creation is a main development objective
+Fast development | Batteries included: A lot of requirements can be solved using standard types
 Modern Programming Language | cdist is written in Python
 Requirements, Scalability | No central server needed, cdist operates in push mode and can be run from any computer
 Requirements, Scalability, Upgrade | cdist only needs to be updated on the master, not on the target hosts

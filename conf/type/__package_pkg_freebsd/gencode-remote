@@ -107,7 +107,7 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
 				assert "! ${version} = ${curr_version}" $LINENO
 				cmd="${rm_cmd} ${name}-${curr_version}"
 				execcmd "remove" "${cmd}"
-				cmd="${add_cmd} ${name}-${version}"
+				cmd="${add_cmd} -r ${name}-${version}"
 				execcmd "add" "${cmd}"
 			fi
 		else	# Don't care what version to use

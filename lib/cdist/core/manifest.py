@@ -92,6 +92,7 @@ class Manifest(object):
             env = os.environ.copy()
             env.update(self.env)
             env.update({
+                '__manifest': self.local.manifest_path,
                 '__object': cdist_object.absolute_path,
                 '__object_id': cdist_object.object_id,
                 '__object_name': cdist_object.name,
