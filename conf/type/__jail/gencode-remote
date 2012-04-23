@@ -198,8 +198,8 @@ cat <<EOF
       cp -r ${jaildir}/base/usr/home/* "${jaildir}/rw/${name}/home/"
    fi
    mkdir "${jaildir}/rw/${name}/root"
-   if [ -n "\$(ls ${jaildir}/base/root)" ]; then
-      cp -r ${jaildir}/base/root/* "${jaildir}/rw/${name}/root/"
+   if [ -n "\$(ls -A ${jaildir}/base/root)" ]; then
+      cp -r ${jaildir}/base/root/ "${jaildir}/rw/${name}/root/"
    fi
 
 EOF
@@ -234,7 +234,8 @@ jail_${name}_hostname="${hostname}"
 jail_${name}_ip="${ip}"
 jail_${name}_devfs_enable="${devfsenable}"
 jail_${name}_mount_enable="YES"
-jail_${name}_fstab="/etc/fstab.$name"
+jail_${name}_fstab="/etc/fstab.${name}"
+jail_${name}_flags="-n ${name} \\\${jail_flags}"
 END
 EOF
 
