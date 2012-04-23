@@ -197,6 +197,11 @@ cat <<EOF
    if [ -n "\$(ls ${jaildir}/base/usr/home)" ]; then
       cp -r ${jaildir}/base/usr/home/* "${jaildir}/rw/${name}/home/"
    fi
+   mkdir "${jaildir}/rw/${name}/root"
+   if [ -n "\$(ls ${jaildir}/base/root)" ]; then
+      cp -r ${jaildir}/base/root/* "${jaildir}/rw/${name}/root/"
+   fi
+
 EOF
 
 # Create the ro+rw mountpoint entries in fstab
@@ -207,6 +212,7 @@ cat <<EOF
 /usr/jail/rw/${name}/local	/usr/jail/${name}/usr/local	nullfs	rw	0 0
 /usr/jail/rw/${name}/var		/usr/jail/${name}/var	nullfs	rw	0 0
 /usr/jail/rw/${name}/home	/usr/jail/${name}/usr/home	nullfs	rw	0 0
+/usr/jail/rw/${name}/root	/usr/jail/${name}/root		nullfs	rw	0 0
 END
 EOF
 
