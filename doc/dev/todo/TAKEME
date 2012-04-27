@@ -6,6 +6,8 @@ Feel free to pick one!
 CORE
 ----
 - support default parameter
+- document and add paremeters for remote-copy and remote-exec!
+    - remove hack, make a feature of it
 
 TESTS
 -----
