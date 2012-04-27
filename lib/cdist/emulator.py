@@ -160,10 +160,19 @@ class Emulator(object):
     def record_auto_requirements(self):
         """An object shall automatically depend on all objects that it defined in it's type manifest.
         """
-        # __object_name is the name of the object whose type manifest is currenlty executed
+        # __object_name is the name of the object whose type manifest is currently executed
         __object_name = os.environ.get('__object_name', None)
         if __object_name:
-            _object = self.cdist_object.object_from_name(__object_name)
-            # prevent circular dependencies
-            if not _object.name in self.cdist_object.requirements:
-                _object.requirements.append(self.cdist_object.name)
+            # The object whose type manifest is currently run
+            parent = self.cdist_object.object_from_name(__object_name)
+            # The object currently being defined
+            current_object = self.cdist_object
+            # current_object shall have all dependencies that it's parent has
+            for req in parent.requirements:
+                if req not in current_object.requirements:
+                    current_object.requirements.append(req)
+            # As parent defined current_object it shall automatically depend on it.
+            # But only if the user hasn't said otherwise.
+            # Must prevent circular dependencies.
+            if not parent.name in current_object.requirements:
+                parent.requirements.append(current_object.name)
