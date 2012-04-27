@@ -44,6 +44,7 @@ class Error(Exception):
     """Base exception class for this project"""
     pass
 
+
 class CdistObjectError(Error):
     """Something went wrong with an object"""
     
@@ -52,9 +53,23 @@ class CdistObjectError(Error):
         self.source = " ".join(cdist_object.source)
         self.message = message
 
-
     def __str__(self):
         return '%s: %s (defined at %s)' % (self.name, self.message, self.source)
+
+
+class DeploymentFailedError(Error):
+    def __init__(self, failed_hosts):
+        self.failed_hosts = failed_hosts
+
+    def __str__(self):
+        msg = ['Failed to deploy to the following hosts:']
+        for host,reason in self.failed_hosts:
+            if reason is not None:
+                msg.append('  %s: %s' % (host, reason))
+            else:
+                msg.append(  '%s' % host)
+        return '\n'.join(msg)
+
 
 def file_to_list(filename):
     """Return list from \n seperated file"""

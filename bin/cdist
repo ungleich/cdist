@@ -132,7 +132,10 @@ def configinstall(args, mode):
             try:
                 configinstall_onehost(host, args, mode, parallel=False)
             except cdist.Error as e:
-                failed_hosts.append(host)
+                # Show error right away
+                log.error(e)
+                # Also remember error to show again at the end of this run
+                failed_hosts.append((host, e))
 
     # Catch errors in parallel mode when joining
     if args.parallel:
@@ -141,15 +144,16 @@ def configinstall(args, mode):
             process[host].join()
 
             if not process[host].exitcode == 0:
-                failed_hosts.append(host)
+                # FIXME: is it possible to get the error message here somehow?
+                failed_hosts.append((host, None))
 
     time_end = time.time()
     log.info("Total processing time for %s host(s): %s", len(args.host),
                 (time_end - time_start))
 
     if len(failed_hosts) > 0:
-        raise cdist.Error("Failed to deploy to the following hosts: " + 
-            " ".join(failed_hosts))
+        raise cdist.DeploymentFailedError(failed_hosts)
+
 
 def configinstall_onehost(host, args, mode, parallel):
     """Configure or install ONE remote system"""
