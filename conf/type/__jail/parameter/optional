@@ -6,3 +6,4 @@ interface
 devfs-enable
 devfs-ruleset
 onboot
+jaildir

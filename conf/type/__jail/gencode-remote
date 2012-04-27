@@ -90,7 +90,12 @@ if [ -f "$__object/parameter/onboot" ]; then
    onboot="$(cat "$__object/parameter/onboot")"
 fi
 
-jaildir="/usr/jail"
+if [ -f "$__object/parameter/jaildir" ]; then
+   jaildir="$(cat "$__object/parameter/name")"
+else
+   jaildir="/usr/jail"
+fi
+
 present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
 
@@ -135,9 +140,9 @@ deleteJail() {
       fi
 EOF
 # Remove the jail's rw mountpoints
-   echo "rm -rf \"/usr/jail/rw/${name}\""
+   echo "rm -rf \"${jailbase}/rw/${name}\""
 # Remove the jail directory
-   echo "rm -rf \"/usr/jail/${name}\""
+   echo "rm -rf \"${jailbase}/${name}\""
 # Remove the jail's fstab
    echo "rm -f \"/etc/fstab.${name}\""
 # Remove jail_$name_* lines from rc.conf
@@ -207,12 +212,12 @@ EOF
 # Create the ro+rw mountpoint entries in fstab
 cat <<EOF
    cat >/etc/fstab.${name} <<END
-/usr/jail/base			/usr/jail/${name}		nullfs	ro	0 0
-/usr/jail/rw/${name}/etc	/usr/jail/${name}/etc		nullfs	rw	0 0
-/usr/jail/rw/${name}/local	/usr/jail/${name}/usr/local	nullfs	rw	0 0
-/usr/jail/rw/${name}/var		/usr/jail/${name}/var	nullfs	rw	0 0
-/usr/jail/rw/${name}/home	/usr/jail/${name}/usr/home	nullfs	rw	0 0
-/usr/jail/rw/${name}/root	/usr/jail/${name}/root		nullfs	rw	0 0
+${jailbase}/base			${jailbase}/${name}		nullfs	ro	0 0
+${jailbase}/rw/${name}/etc	${jailbase}/${name}/etc		nullfs	rw	0 0
+${jailbase}/rw/${name}/local	${jailbase}/${name}/usr/local	nullfs	rw	0 0
+${jailbase}/rw/${name}/var		${jailbase}/${name}/var	nullfs	rw	0 0
+${jailbase}/rw/${name}/home	${jailbase}/${name}/usr/home	nullfs	rw	0 0
+${jailbase}/rw/${name}/root	${jailbase}/${name}/root		nullfs	rw	0 0
 END
 EOF
 

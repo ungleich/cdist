@@ -18,12 +18,18 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# See if the jailbase.tgz or /usr/jail/base dir exists
+# See if the jailbase.tgz or $jaildir/base dir exists
 #
 
 # Debug
 #exec >&2
 #set -x
+
+if [ -f "$__object/parameter/jaildir" ]; then
+   jaildir="$(cat "$__object/parameter/name")"
+else
+   jaildir="/usr/jail"
+fi
 
 name="base:jailbase.tgz"
 out=""
@@ -31,7 +37,7 @@ out=""
 save_IFS="$IFS"
 IFS=":"
 for cur in $name; do
-    if [ -e "/usr/jail/$cur" ]; then
+    if [ -e "${jaildir}/$cur" ]; then
         out="${out}:${cur}"
     fi
 done

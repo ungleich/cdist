@@ -18,6 +18,9 @@ REQUIRED PARAMETERS
 state::
    Either "present" or "absent."
 
+jailbase::
+   The location of the .tgz archive containing the base fs for your jails.
+
 
 OPTIONAL PARAMETERS
 -------------------
@@ -51,6 +54,10 @@ onboot::
    Whether to add the jail to rc.conf's jail_list variable. Must be either
    "true" or "false." Defaults to false.
 
+jaildir::
+   The location on the remote server to use for hosting jail filesystems.
+   Defaults to /usr/jail.
+
 
 CAVEATS
 -------
@@ -65,24 +72,26 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Create a jail called www
-__jail www --state present --ip "192.168.1.2"
+__jail www --state present --ip "192.168.1.2" --jailbase /my/jail/base.tgz
 
 # Remove the jail called www
-__jail www --state absent
+__jail www --state absent --jailbase /my/jail/base.tgz
 
 # Ensure that the jail called www is started
 __jail www --state present --started true \
-   --ip "192.168.1.2 netmask 255.255.255.0"
+   --ip "192.168.1.2 netmask 255.255.255.0" \
+   --jailbase /my/jail/base.tgz
 
 # Use the name variable explicitly
 __jail thisjail --state present --name www \
-   --ip "192.168.1.2"
+   --ip "192.168.1.2" \
+   --jailbase /my/jail/base.tgz
 
 # Go nuts
 __jail lotsofoptions --state present --name testjail --started true \
    --ip "192.168.1.100 netmask 255.255.255.0" \
    --hostname "testjail.example.com" --interface "em0" \
-   --onboot yes
+   --onboot yes --jailbase /my/jail/base.tgz --jaildir /jails
 --------------------------------------------------------------------------------
 
 

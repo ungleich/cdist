@@ -31,7 +31,13 @@ else
    name=$__object_id
 fi
 
-[ -d "/usr/jail/$name" ] && echo "EXISTS" || echo "NOTEXIST"
+if [ -f "$__object/parameter/jaildir" ]; then
+   jaildir="$(cat "$__object/parameter/name")"
+else
+   jaildir="/usr/jail"
+fi
+
+[ -d "${jaildir}/$name" ] && echo "EXISTS" || echo "NOTEXIST"
 
 #set +x
 
