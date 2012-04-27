@@ -34,7 +34,8 @@ fi
 case "$state_should" in
    absent)
       # remove lines starting with key
-      echo "sed -i '/^$key\($delimiter\+\)/d' \"$file\""
+      echo "sed '/^$key\($delimiter\+\)/d' \"$file\" > \"$file.cdist-tmp\""
+      echo "mv \"$file.cdist-tmp\" \"$file\""
    ;;
    present)
       case "$state_is" in
@@ -44,7 +45,8 @@ case "$state_should" in
          ;;
          wrongvalue)
             # change exisiting value
-            echo "sed -i \"s|^$key\($delimiter\+\).*|$key\1$value|\" \"$file\""
+            echo "sed \"s|^$key\($delimiter\+\).*|$key\1$value|\" \"$file\" > \"$file.cdist-tmp\""
+            echo "mv \"$file.cdist-tmp\" \"$file\""
          ;;
          *)
             echo "Unknown explorer state: $state_is" >&2
