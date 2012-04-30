@@ -140,9 +140,9 @@ deleteJail() {
       fi
 EOF
 # Remove the jail's rw mountpoints
-   echo "rm -rf \"${jailbase}/rw/${name}\""
+   echo "rm -rf \"${jaildir}/rw/${name}\""
 # Remove the jail directory
-   echo "rm -rf \"${jailbase}/${name}\""
+   echo "rm -rf \"${jaildir}/${name}\""
 # Remove the jail's fstab
    echo "rm -f \"/etc/fstab.${name}\""
 # Remove jail_$name_* lines from rc.conf
@@ -212,12 +212,12 @@ EOF
 # Create the ro+rw mountpoint entries in fstab
 cat <<EOF
    cat >/etc/fstab.${name} <<END
-${jailbase}/base			${jailbase}/${name}		nullfs	ro	0 0
-${jailbase}/rw/${name}/etc	${jailbase}/${name}/etc		nullfs	rw	0 0
-${jailbase}/rw/${name}/local	${jailbase}/${name}/usr/local	nullfs	rw	0 0
-${jailbase}/rw/${name}/var		${jailbase}/${name}/var	nullfs	rw	0 0
-${jailbase}/rw/${name}/home	${jailbase}/${name}/usr/home	nullfs	rw	0 0
-${jailbase}/rw/${name}/root	${jailbase}/${name}/root		nullfs	rw	0 0
+${jaildir}/base			${jaildir}/${name}		nullfs	ro	0 0
+${jaildir}/rw/${name}/etc	${jaildir}/${name}/etc		nullfs	rw	0 0
+${jaildir}/rw/${name}/local	${jaildir}/${name}/usr/local	nullfs	rw	0 0
+${jaildir}/rw/${name}/var		${jaildir}/${name}/var	nullfs	rw	0 0
+${jaildir}/rw/${name}/home	${jaildir}/${name}/usr/home	nullfs	rw	0 0
+${jaildir}/rw/${name}/root	${jaildir}/${name}/root		nullfs	rw	0 0
 END
 EOF
 
