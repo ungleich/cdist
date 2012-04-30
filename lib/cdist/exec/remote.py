@@ -59,7 +59,7 @@ class Remote(object):
 
     def create_directories(self):
         self.rmdir(self.base_path)
-        self.mkdir(self.base_path)
+        self.mkdir(self.base_path, mode=0o700)
         self.mkdir(self.conf_path)
 
     def rmdir(self, path):
@@ -67,10 +67,11 @@ class Remote(object):
         self.log.debug("Remote rmdir: %s", path)
         self.run(["rm", "-rf",  path])
 
-    def mkdir(self, path):
+    def mkdir(self, path, mode=0o755):
         """Create directory on the remote side."""
         self.log.debug("Remote mkdir: %s", path)
         self.run(["mkdir", "-p", path])
+        self.run(["chmod", "%o" % mode, path])
 
     def transfer(self, source, destination):
         """Transfer a file or directory to the remote side."""
