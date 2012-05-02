@@ -167,12 +167,8 @@ class Emulator(object):
             parent = self.cdist_object.object_from_name(__object_name)
             # The object currently being defined
             current_object = self.cdist_object
-            # current_object shall have all dependencies that it's parent has
-            for req in parent.requirements:
-                if req not in current_object.requirements:
-                    current_object.requirements.append(req)
             # As parent defined current_object it shall automatically depend on it.
             # But only if the user hasn't said otherwise.
             # Must prevent circular dependencies.
             if not parent.name in current_object.requirements:
-                parent.requirements.append(current_object.name)
+                parent.autorequire.append(current_object.name)
