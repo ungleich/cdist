@@ -1,0 +1,3 @@
+# this creates implicit dependencies through autorequire.
+# this failed because autorequired dependencies where not aware of their anchestors dependencies
+__top test

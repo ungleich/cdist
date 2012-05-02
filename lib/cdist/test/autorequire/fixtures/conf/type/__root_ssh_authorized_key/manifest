@@ -1,0 +1,4 @@
+user="$__object_id"
+__directory /root/.ssh
+require="__directory/root/.ssh" \
+   __addifnosuchline "ssh-root-$user"

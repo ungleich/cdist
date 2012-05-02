@@ -73,6 +73,7 @@ class DependencyResolver(object):
         """
         if self._graph is None:
             graph = {}
+            self.preprocess_requirements()
             for o in self.objects:
                 resolved = []
                 unresolved = []
@@ -80,6 +81,19 @@ class DependencyResolver(object):
                 graph[o.name] = resolved
             self._graph = graph
         return self._graph
+
+    def preprocess_requirements(self):
+        """Find all autorequire dependencies and convert them to be just requirements.
+        """
+        for cdist_object in self.objects:
+            if cdist_object.autorequire:
+                # objects which this cdist_object (parent) defined in it's type manifest,
+                # and therefor have an implicit automatic dependency,
+                # shall inherit all requirements that it's parent has
+                for auto_requirement in self.find_requirements_by_name(cdist_object.autorequire):
+                    for requirement in cdist_object.requirements:
+                        if requirement not in auto_requirement.requirements:
+                            auto_requirement.requirements.append(requirement)
 
     def find_requirements_by_name(self, requirements):
         """Takes a list of requirement patterns and returns a list of matching object instances.
