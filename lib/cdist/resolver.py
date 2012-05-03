@@ -50,36 +50,41 @@ class DependencyResolver(object):
     """Cdist's dependency resolver.
 
     Usage:
-    resolver = DependencyResolver(list_of_objects)
-    from pprint import pprint
-    pprint(resolver.graph)
-
-    for cdist_object in resolver:
-        do_something_with(cdist_object)
-
+    >> resolver = DependencyResolver(list_of_objects)
+    # Easy access to the objects we are working with
+    >> resolver.objects['__some_type/object_id']
+    <CdistObject __some_type/object_id>
+    # Easy access to a specific objects dependencies
+    >> resolver.dependencies['__some_type/object_id']
+    [<CdistObject __other_type/dependency>, <CdistObject __some_type/object_id>]
+    # Pretty print the dependency graph
+    >> from pprint import pprint
+    >> pprint(resolver.dependencies)
+    # Iterate over all existing objects in the correct order
+    >> for cdist_object in resolver:
+    >>     do_something_with(cdist_object)
     """
     def __init__(self, objects, logger=None):
-        self.objects = list(objects) # make sure we store as list, not generator
-        self._object_index = dict((o.name, o) for o in self.objects)
-        self._graph = None
+        self.objects = dict((o.name, o) for o in objects)
+        self._dependencies = None
         self.log = logger or log
 
     @property
-    def graph(self):
+    def dependencies(self):
         """Build the dependency graph.
 
         Returns a dict where the keys are the object names and the values are
         lists of all dependencies including the key object itself.
         """
-        if self._graph is None:
-            graph = {}
-            for o in self.objects:
+        if self._dependencies is None:
+            self._dependencies = d = {}
+            self._preprocess_requirements()
+            for name,cdist_object in self.objects.items():
                 resolved = []
                 unresolved = []
-                self.resolve_object_dependencies(o, resolved, unresolved)
-                graph[o.name] = resolved
-            self._graph = graph
-        return self._graph
+                self._resolve_object_dependencies(cdist_object, resolved, unresolved)
+                d[name] = resolved
+        return self._dependencies
 
     def find_requirements_by_name(self, requirements):
         """Takes a list of requirement patterns and returns a list of matching object instances.
@@ -89,21 +94,44 @@ class DependencyResolver(object):
         find_requirements_by_name(['__type/object_id', '__other_type/*']) -> 
             [<Object __type/object_id>, <Object __other_type/any>, <Object __other_type/match>]
         """
-        object_names = self._object_index.keys()
+        object_names = self.objects.keys()
         for pattern in requirements:
             found = False
             for requirement in fnmatch.filter(object_names, pattern):
                 found = True
-                yield self._object_index[requirement]
+                yield self.objects[requirement]
             if not found:
                 # FIXME: get rid of the singleton object_id, it should be invisible to the code -> hide it in Object
                 singleton = os.path.join(pattern, 'singleton')
-                if singleton in self._object_index:
-                    yield self._object_index[singleton]
+                if singleton in self.objects:
+                    yield self.objects[singleton]
                 else:
                     raise RequirementNotFoundError(pattern)
 
-    def resolve_object_dependencies(self, cdist_object, resolved, unresolved):
+    def _preprocess_requirements(self):
+        """Find all autorequire dependencies and merge them to be just requirements
+        for further processing.
+        """
+        for cdist_object in self.objects.values():
+            if cdist_object.autorequire:
+                # The objects (children) that this cdist_object (parent) defined
+                # in it's type manifest shall inherit all explicit requirements 
+                # that the parent has so that user defined requirements are 
+                # fullfilled and processed in the expected order.
+                for auto_requirement in self.find_requirements_by_name(cdist_object.autorequire):
+                    for requirement in cdist_object.requirements:
+                        if requirement not in auto_requirement.requirements:
+                            auto_requirement.requirements.append(requirement)
+                # On the other hand the parent shall depend on all the children
+                # it created so that the user can setup dependencies on it as a 
+                # whole without having to know anything about the parents 
+                # internals.
+                cdist_object.requirements.extend(cdist_object.autorequire)
+                # As we changed the object on disc, we have to ensure it is not 
+                # preprocessed again if someone would call us multiple times.
+                cdist_object.autorequire = []
+
+    def _resolve_object_dependencies(self, cdist_object, resolved, unresolved):
         """Resolve all dependencies for the given cdist_object and store them
         in the list which is passed as the 'resolved' arguments.
 
@@ -121,16 +149,16 @@ class DependencyResolver(object):
                 if required_object not in resolved:
                     if required_object in unresolved:
                         raise CircularReferenceError(cdist_object, required_object)
-                    self.resolve_object_dependencies(required_object, resolved, unresolved)
+                    self._resolve_object_dependencies(required_object, resolved, unresolved)
             resolved.append(cdist_object)
             unresolved.remove(cdist_object)
         except RequirementNotFoundError as e:
             raise cdist.CdistObjectError(cdist_object, "requires non-existing " + e.requirement)
 
     def __iter__(self):
-        """Iterate over all unique objects while resolving dependencies.
+        """Iterate over all unique objects and yield them in the correct order.
         """
-        iterable = itertools.chain(*self.graph.values())
+        iterable = itertools.chain(*self.dependencies.values())
         # Keep record of objects that have already been seen
         seen = set()
         seen_add = seen.add
