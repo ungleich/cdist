@@ -20,8 +20,6 @@
 #
 #
 
-# FIXME: common base class with Local?
-
 import io
 import os
 import sys
@@ -29,17 +27,6 @@ import subprocess
 import logging
 
 import cdist
-
-
-class RemoteScriptError(cdist.Error):
-    def __init__(self, script, command, script_content):
-        self.script = script
-        self.command = command
-        self.script_content = script_content
-
-    def __str__(self):
-        plain_command = " ".join(self.command)
-        return "Remote script execution failed: %s" % plain_command
 
 class DecodeError(cdist.Error):
     def __init__(self, command):
@@ -90,8 +77,24 @@ class Remote(object):
         self.log.debug("Remote transfer: %s -> %s", source, destination)
         self.rmdir(destination)
         command = self._copy.split()
-        command.extend(["-r", source, self.target_host + ":" + destination])
+        # support rsync by appending a "/" to the source if it's a directory
+        if os.path.isdir(source):
+           command.extend(["-r", source + "/", self.target_host + ":" + destination])
+        else:
+           command.extend(["-r", source, self.target_host + ":" + destination])
+
         self._run_command(command)
+
+    def run_script(self, script, env=None, return_output=False):
+        """Run the given script with the given environment on the remote side.
+        Return the output as a string.
+
+        """
+
+        command = ["/bin/sh", "-e"]
+        command.append(script)
+
+        return self.run(command, env, return_output)
 
     def run(self, command, env=None, return_output=False):
         """Run the given command with the given environment on the remote side.
@@ -101,7 +104,15 @@ class Remote(object):
         # prefix given command with remote_exec
         cmd = self._exec.split()
         cmd.append(self.target_host)
+
+        # can't pass environment to remote side, so prepend command with
+        # variable declarations
+        if env:
+            remote_env = ["%s=%s" % item for item in env.items()]
+            cmd.extend(remote_env)
+
         cmd.extend(command)
+
         return self._run_command(cmd, env=env, return_output=return_output)
 
     def _run_command(self, command, env=None, return_output=False):
@@ -115,14 +126,6 @@ class Remote(object):
         os_environ = os.environ.copy()
         os_environ['__target_host'] = self.target_host
 
-        # can't pass environment to remote side, so prepend command with
-        # variable declarations
-        if env:
-            cmd = ["%s=%s" % item for item in env.items()]
-            cmd.extend(command)
-        else:
-            cmd = command
-
         self.log.debug("Remote run: %s", command)
         try:
             if return_output:
@@ -135,39 +138,3 @@ class Remote(object):
             raise cdist.Error(" ".join(*args) + ": " + error.args[1])
         except UnicodeDecodeError:
             raise DecodeError(command)
-
-    def run_script(self, script, env=None, return_output=False):
-        """Run the given script with the given environment on the remote side.
-        Return the output as a string.
-
-        """
-        command = self._exec.split()
-        command.append(self.target_host)
-
-        # export target_host for use in __remote_{exec,copy} scripts
-        os_environ = os.environ.copy()
-        os_environ['__target_host'] = self.target_host
-
-        # can't pass environment to remote side, so prepend command with
-        # variable declarations
-        if env:
-            command.extend(["%s=%s" % item for item in env.items()])
-
-        command.extend(["/bin/sh", "-e"])
-        command.append(script)
-
-        self.log.debug("Remote run script: %s", command)
-        if env:
-            self.log.debug("Remote run script env: %s", env)
-
-        try:
-            if return_output:
-                return subprocess.check_output(command, env=os_environ).decode()
-            else:
-                subprocess.check_call(command, env=os_environ)
-        except subprocess.CalledProcessError as error:
-            script_content = self.run(["cat", script], return_output=True)
-            self.log.error("Code that raised the error:\n%s", script_content)
-            raise RemoteScriptError(script, command, script_content)
-        except EnvironmentError as error:
-            raise cdist.Error(" ".join(command) + ": " + error.args[1])

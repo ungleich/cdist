@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# 2012 Matt Coddington (mcoddington at gmail.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Use rsync over ssh to copy files.  This particular invocation of
+# rsync makes a backup of the file before overwriting it.  For example,
+# if cdist overwrites /etc/passwd then you'll end up with the old copy
+# at /etc/passwd~cdist.
+#
+# Usage:
+#  __remote_copy="/path/to/this/script" cdist config target_host
+#
+
+rsync --backup --suffix=~cdist -e 'ssh -o User=root' $@

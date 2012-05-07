@@ -40,7 +40,7 @@ A list of supported types can be found in the cdist-reference(7) manpage.
 
 SINGLETON TYPES
 ---------------
-If a type is flagged as a singleton, it may be used only 
+If a type is flagged as a singleton, it may be used only
 once per host. This is useful for types which can be used only once on a
 system. Singleton types do not take an object name as argument.
 
@@ -72,15 +72,42 @@ To begin a new type, just create the directory **conf/type/__NAME**.
 
 DEFINING PARAMETERS
 -------------------
-Every type consists of optional and required parameters, which must
-be created in a newline seperated file in ***parameters/required*** and
-***parameters/optional***. If either or both missing, the type will have
-no required, no optional or no parameters at all.
+Every type consists of required, optional and boolean parameters, which must
+be created in a newline seperated file in ***parameter/required***,
+***parameter/optional*** and ***parameter/boolean***. If either is missing,
+the type will have no required, no optional, no boolean or no parameters at
+all.
 
 Example:
 --------------------------------------------------------------------------------
 echo servername >> conf/type/__nginx_vhost/parameter/required
 echo logdirectory >> conf/type/__nginx_vhost/parameter/optional
+echo use_ssl >> conf/type/__nginx_vhost/parameter/boolean
+--------------------------------------------------------------------------------
+
+
+USING PARAMETERS
+----------------
+The parameters given to a type can be accessed and used in all type scripts
+(e.g manifest, gencode-*, explorer/*). Note that boolean parameters are
+represented by file existence. File exists -> True,
+file does not exist -> False
+
+Example: (e.g. in conf/type/__nginx_vhost/manifest)
+--------------------------------------------------------------------------------
+# required parameter
+servername="$(cat "$__object/parameter/servername")"
+
+# optional parameter
+if [ -f "$__object/parameter/logdirectory" ]; then
+   logdirectory="$(cat "$__object/parameter/logdirectory")"
+fi
+
+# boolean parameter
+if [ -f "$__object/parameter/use_ssl" ]; then
+   # file exists -> True
+   # do some fancy ssl stuff
+fi
 --------------------------------------------------------------------------------
 
 
@@ -112,11 +139,11 @@ Always ensure the manifest is executable, otherwise cdist will not be able
 to execute it. For more information about manifests see cdist-manifest(7).
 
 
-SINGLETON - ONLY INSTANCE ONLY
-------------------------------
+SINGLETON - ONE INSTANCE ONLY
+-----------------------------
 If you want to ensure that a type can only be used once per target, you can
 mark it as a singleton: Just create the (empty) file "singleton" in your type
-directory: 
+directory:
 
 --------------------------------------------------------------------------------
 touch conf/type/__NAME/singleton
@@ -128,7 +155,7 @@ This will also change the way your type must be called:
 __YOURTYPE --parameter value
 --------------------------------------------------------------------------------
 
-As you can see, the object ID is omitted, because it does not make any sense, 
+As you can see, the object ID is omitted, because it does not make any sense,
 if your type can be used only once.
 
 
@@ -159,10 +186,8 @@ WRITING THE GENCODE SCRIPT
 There are two gencode scripts: ***gencode-local*** and ***gencode-remote***.
 The output of gencode-local is executed locally, whereas
 the output of gencode-remote is executed on the target.
-
 The gencode scripts can make use of the parameters, the global explorers
-and the type specific explorers. The output (stdout) of these script is
-saved by cdist and will be executed on the target.
+and the type specific explorers.
 
 If the gencode scripts encounter an error, it should print diagnostic
 messages to stderr and exit non-zero. If you need to debug the gencode
@@ -197,17 +222,13 @@ never ever touch this folder).
 HOW TO INCLUDE A TYPE INTO UPSTREAM CDIST
 -----------------------------------------
 If you think your type may be useful for others, ensure it works with the
-current master branch of cdist and submit the git url containing the type for
-inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**
-or open a pull request at http://github.com/telmich/cdist.
-
-Ensure a corresponding manpage named man.text in asciidoc format with
-the manpage-name "cdist-type__NAME" is included in the type directory.
-
+current master branch of cdist and have a look at cdist-hacker(7) on
+how to submit it.
 
 SEE ALSO
 --------
 - cdist-explorer(7)
+- cdist-hacker(7)
 - cdist-stages(7)
 - cdist-tutorial(7)
 

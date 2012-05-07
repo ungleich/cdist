@@ -3,6 +3,12 @@ UNASSIGNED TODOS
 The following list of todos has not been assigned to any developer.
 Feel free to pick one!
 
+CORE
+----
+- support default parameter
+- document and add paremeters for remote-copy and remote-exec!
+    - remove hack, make a feature of it
+
 TESTS
 -----
 - multiple defines of object:
@@ -35,3 +41,11 @@ USER INTERFACE
 TYPES
 ------
 - Add testing framework (proposed by Evax Software)
+- __user
+   add option to include --create-home
+- Merge __addifnosuchline and __removeline into __line + --state present|absent
+- __cron: Support --file to be used instead of user cron (probably direct support
+    of /etc/cron.d)
+
+- Support uci from openwrt?
+    - http://wiki.openwrt.org/doc/uci

@@ -90,10 +90,20 @@ TMPDIR, TEMP, TMP::
    more information. This is rather useful, if the standard
    directory used does not allow executables.
 
+
+EXIT STATUS
+-----------
+The following exit values shall be returned:
+
+0::
+    Successful completion
+1::
+    One or more host configuration failed.
+
+
 SEE ALSO
 --------
 - cdist(7)
-- cdist-type-emulator(1)
 - cdist-reference(7)
 
 

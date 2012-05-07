@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
 #
 # This file is part of cdist.
 #
@@ -27,12 +27,13 @@ else
    name="$__object_id"
 fi
 
-# Except dpkg failing, if package is not known / installed
-packages="$(apt-cache showpkg "$name" | sed -e  "1,/Reverse Provides:/d" | cut -d ' ' -f 1) $name"
-for p in $packages; do
-    if [ -n "$(dpkg -s "$p" 2>/dev/null | grep "^Status: install ok installed$")" ]; then
-       echo "installed $p"
-       exit 0
-    fi
-done
-echo "removed"
+# Don't produce "no pkgs installed" output -- breaks things
+PKG_OUTPUT=$(pkg_info 2>&1)
+if [ ! "$PKG_OUTPUT" = "pkg_info: no packages installed" ]; then
+	echo -n "$(echo "$PKG_OUTPUT" \
+		| awk '{print $1}' \
+		| sed 's/^\(.*\)-\([^-]*\)$/name:\1 ver:\2/g' \
+		| grep "name:$name ver:" \
+		| sed 's/^.*ver:\(.*\)/\1/g')"
+fi
+

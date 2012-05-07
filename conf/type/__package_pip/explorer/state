@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Development supported by Local AG (www.local.ch)
+#
+
+nameparam="$__object/parameter/name"
+if [ -f "$nameparam" ]; then
+    name=$(cat "$nameparam")
+else
+    name="$__object_id"
+fi
+
+pipparam="$__object/parameter/pip"
+if [ -f "$pipparam" ]; then
+    pip=$(cat "$pipparam")
+else
+    pip="pip"
+fi
+
+# If there is no pip, it may get created from somebody else.
+# If it will be created, there is probably no package installed.
+if ! command -v "$pip" >/dev/null 2>&1; then
+    echo absent
+else
+
+    if "$pip" freeze | grep -i -q "^$name=="; then
+        echo present
+    else
+        echo absent
+    fi
+fi

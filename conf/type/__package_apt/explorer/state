@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,20 +18,21 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Get the current value of key or __NOTSET__ if the key doesn't exist.
+# Retrieve the status of a package - parsed dpkg output
 #
 
-if [ -f "$__object/parameter/key" ]; then
-   key="$(cat "$__object/parameter/key")"
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
 else
-   key="$__object_id"
+   name="$__object_id"
 fi
-file="$(cat "$__object/parameter/file")"
-delimiter="$(cat "$__object/parameter/delimiter")"
 
-awk -F "$delimiter" '
-BEGIN { found=0 }
-/^'$key'/ { print $2; found=1 }
-END { if (found) exit 0; else exit 1 }' "$file" \
-|| echo "__NOTSET__"
-
+# Except dpkg failing, if package is not known / installed
+packages="$(apt-cache showpkg "$name" | sed -e "1,/Reverse Provides:/d" | cut -d ' ' -f 1) $name"
+for p in $packages; do
+    if [ -n "$(dpkg -s "$p" 2>/dev/null | grep "^Status: install ok installed$")" ]; then
+       echo "present $p"
+       exit 0
+    fi
+done
+echo absent

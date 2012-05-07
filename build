@@ -85,7 +85,7 @@ case "$1" in
    ;;
 
    release)
-      "$0" clean && "$0" man && "$0" web
+        ./doc/dev/releasechecklist
    ;;
 
    speeches)
@@ -113,8 +113,8 @@ case "$1" in
       # cp ${SPEECHESDIR}/*.pdf ${WEBDIR}/${WEBBASE}/speeches
       # git describe > ${WEBDIR}/${WEBBASE}/man/VERSION
 
-      cp ${MAN1DSTDIR}/*.html ${WEBMAN}/man1 
-      cp ${MAN7DSTDIR}/*.html ${WEBMAN}/man7
+      cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
+      cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
       
       cd ${WEBDIR} && git add ${WEBBASE}
       cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
@@ -123,13 +123,14 @@ case "$1" in
       # Fix ikiwiki, which does not like symlinks for pseudo security
       ssh tee.schottelius.org \
         "cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man &&
-            ln -sf "$version" latest"
+            rm -f latest && ln -sf "$version" latest"
    ;;
 
    p|pu|pub)
       git push --mirror
       git push --mirror github
       git push --mirror sf
+      git push --mirror ethz
    ;;
 
    clean)

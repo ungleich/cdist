@@ -1,7 +1,12 @@
-- __user
-   add option to include --create-home
-- ensure that all types, which support --state support
-    present and absent (consistent look and feel)
+- introduce default parameters
+    - valid for optional parameters only
+    - stored in parameter/default/$name
+
+    - when/where to save? in emulator?
+        - read vi fsproperty?
+
+- cleanup object_id handling
+    - have a look at singletons
 
 - update/create docs
     - cdist-cache::

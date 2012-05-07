@@ -16,9 +16,6 @@ file.
 
 REQUIRED PARAMETERS
 -------------------
-value::
-   The value for the key. Setting the value to `__NOTSET__` will remove the key
-   from the file.
 file::
    The file to operate on.
 delimiter::
@@ -27,8 +24,13 @@ delimiter::
 
 OPTIONAL PARAMETERS
 -------------------
+state::
+   present or absent, defaults to present. If present, sets the key to value,
+   if absent, removes the key from the file.
 key::
    The key to change. Defaults to object_id.
+value::
+   The value for the key. Optional if state=absent, required otherwise.
 
 
 EXAMPLES
@@ -45,6 +47,9 @@ __key_value my-fancy-id --file /etc/login.defs --key SYS_UID_MAX --value 666 \
 # Enable packet forwarding
 __key_value net.ipv4.ip_forward --file /etc/sysctl.conf --value 1 \
    --delimiter '='
+
+# Remove existing key/value
+__key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '=' 
 --------------------------------------------------------------------------------
 
 

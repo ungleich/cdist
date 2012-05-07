@@ -38,6 +38,7 @@ Design | Define target state, do not focus on methods or scripts
 Design | Push architecture: Instantly apply your changes
 Small core | cdist's core is very small - less code, less bugs
 Fast development | Focus on straightforwardness of type creation is a main development objective
+Fast development | Batteries included: A lot of requirements can be solved using standard types
 Modern Programming Language | cdist is written in Python
 Requirements, Scalability | No central server needed, cdist operates in push mode and can be run from any computer
 Requirements, Scalability, Upgrade | cdist only needs to be updated on the master, not on the target hosts
@@ -89,7 +90,7 @@ cdist was tested or is know to run on at least
 
 ## Installation
 
-### Preperation
+### Preparation
 
 Ensure you have Python 3.2 installed on the machine you use to **deploy to the targets**
 (the ***source host***).
@@ -287,7 +288,7 @@ Interesting information are for instance
  * What are the pros/cons you see in cdist?
  * General comments/critics
 
-### Nico Schottelius, Systems Group ETH Zurich and privately
+### Nico Schottelius, Systems Group ETH Zurich, local.ch and privately
 
 Yes, I'm actually eating my own dogfood and currently managing
 
