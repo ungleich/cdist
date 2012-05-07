@@ -56,12 +56,12 @@ class ObjectClassTestCase(test.CdistTestCase):
     def test_list_objects(self):
         objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
         objects_expected = [
-            core.Object(core.CdistType(type_base_path, '__first'), object_base_path, 'man'),
-            core.Object(core.CdistType(type_base_path, '__second'), object_base_path, 'on-the'),
-            core.Object(core.CdistType(type_base_path, '__third'), object_base_path, 'moon'),
-            core.Object(core.CdistType(type_base_path, '__namespace.folder.nested_type'), object_base_path, 'some/nested/id'),
-            core.Object(core.CdistType(type_base_path, '__namespace.folder.nested_type'), object_base_path, 'some-id'),
-            core.Object(core.CdistType(type_base_path, '__namespace.some_type'), object_base_path, 'some-id'),
+            core.CdistObject(core.CdistType(type_base_path, '__first'), object_base_path, 'man'),
+            core.CdistObject(core.CdistType(type_base_path, '__second'), object_base_path, 'on-the'),
+            core.CdistObject(core.CdistType(type_base_path, '__third'), object_base_path, 'moon'),
+            core.CdistObject(core.CdistType(type_base_path, '__namespace.folder.nested_type'), object_base_path, 'some/nested/id'),
+            core.CdistObject(core.CdistType(type_base_path, '__namespace.folder.nested_type'), object_base_path, 'some-id'),
+            core.CdistObject(core.CdistType(type_base_path, '__namespace.some_type'), object_base_path, 'some-id'),
         ]
         self.assertEqual(sorted(objects), sorted(objects_expected))
 
@@ -218,6 +218,6 @@ class ObjectTestCase(test.CdistTestCase):
         self.cdist_object.code_remote = 'Hello World'
         other_name = '__namespace.folder.nested_type/some/nested/id'
         other_object = self.cdist_object.object_from_name(other_name)
-        self.assertTrue(isinstance(other_object, core.Object))
-        self.assertEqual(other_object.type.name, '__namespace.folder.nested_type')
+        self.assertTrue(isinstance(other_object, core.CdistObject))
+        self.assertEqual(other_object.cdist_type.name, '__namespace.folder.nested_type')
         self.assertEqual(other_object.object_id, 'some/nested/id')
