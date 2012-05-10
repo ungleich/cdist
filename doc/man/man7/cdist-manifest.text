@@ -47,7 +47,7 @@ on given conditions.
 
 INITIAL AND TYPE MANIFESTS
 --------------------------
-Cdist nows about two types of manifests: The initial manifest and type
+Cdist knows about two types of manifests: The initial manifest and type
 manifests. The initial manifest is used to define, which configurations
 to apply to which hosts. The type manifests are used to create objects
 from types. More about manifests in types can be found in cdist-type(7).
