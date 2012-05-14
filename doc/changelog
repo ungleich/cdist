@@ -14,6 +14,7 @@ Changelog
 	* Feature core: Correct parent dependency handling (Steven Armstrong)
 	* Bugfix several types: Fix sed for FreeBSD (Istvan Beregszaszi)
 	* New Type: __jail (Jake Guffey)
+	* Various smaller bugfixes (Chris Lamb)
 
 2.0.9: 2012-03-12
 	* Cleanup documentation: Fix environment variable list to be properly 
