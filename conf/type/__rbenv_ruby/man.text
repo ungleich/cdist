@@ -1,0 +1,48 @@
+cdist-type__rbenv_ruby(7)
+=======================
+Chase Allen James <contact@evax.fr>
+
+
+NAME
+----
+cdist-type__rbenv_ruby - Manage ruby installations through rbenv
+
+
+DESCRIPTION
+-----------
+rbenv is simple version management for the Ruby programming language.
+
+
+REQUIRED PARAMETERS
+-------------------
+state::
+   Either "installed" or "removed".
+
+OPTIONAL PARAMETERS
+-------------------
+global:
+   If the global parameter is used, the Ruby version will be available as a global default
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Install ruby 1.9.3 through rbenv
+__rbenv_ruby ruby-1.9.3-p0
+
+# Install ruby 1.9.3 through rbenv and make it the default
+__rbenv_ruby ruby-1.9.3-p0 --global
+
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__rbenv(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Chase Allen James. Free use of this software is granted under
+the terms of the GNU General Public License version 3 (GPLv3).
