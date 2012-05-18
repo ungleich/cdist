@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.0.10:
+2.0.10: 2012-05-18
 	* Cleanup __group: No getent gshadow in old Redhat, use groupmod -g
 		(Matt Coddington)
 	* Bugfix __package_yum: Missing cat
