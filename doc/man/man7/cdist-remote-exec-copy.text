@@ -1,0 +1,35 @@
+cdist-remote-exec-copy(7)
+=========================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+STEVEN HERE
+
+
+NAME
+----
+cdist-remote-exec-copy - How to get use remote exec and copy
+
+
+INTRO
+-------
+What it is, how it works
+
+
+EXAMPLES
+--------------
+nfsroot, sudo (?), what exists
+
+
+HACKER INFORMATION
+------------------
+Not sure if needed, but may be helpful to explain how it
+works internally
+
+SEE ALSO
+--------
+- cdist(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
