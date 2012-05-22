@@ -68,6 +68,12 @@ def commandline():
     parser['configinstall'].add_argument('-s', '--sequential',
          help='Operate on multiple hosts sequentially (default)',
          action='store_false', dest='parallel')
+    parser['configinstall'].add_argument('--remote-exec',
+         help='Command to use for remote execution (should behave like ssh)',
+         action='store_true', dest='remote_exec')
+    parser['configinstall'].add_argument('--remote-copy',
+         help='Command to use for remote copy (should behave like scp)',
+         action='store_true', dest='remote_copy')
 
     # Config
     parser['config'] = parser['sub'].add_parser('config',
