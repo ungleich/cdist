@@ -61,7 +61,7 @@ class Local(object):
         self.log = logging.getLogger(self.target_host)
 
         # Setup file permissions using umask
-        os.umask(0o700)
+        os.umask(0o077)
 
     def create_directories(self):
         self.mkdir(self.out_path)

@@ -108,6 +108,7 @@ class Remote(object):
         # Always call umask before actual call to ensure proper file permissions
         cmd.append("umask 077;")
 
+        # FIXME: replace this by -o SendEnv name -o SendEnv name ... to ssh?
         # can't pass environment to remote side, so prepend command with
         # variable declarations
         if env:
