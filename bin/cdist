@@ -68,12 +68,15 @@ def commandline():
     parser['configinstall'].add_argument('-s', '--sequential',
          help='Operate on multiple hosts sequentially (default)',
          action='store_false', dest='parallel')
-    parser['configinstall'].add_argument('--remote-exec',
-         help='Command to use for remote execution (should behave like ssh)',
-         action='store_true', dest='remote_exec')
+
     parser['configinstall'].add_argument('--remote-copy',
          help='Command to use for remote copy (should behave like scp)',
-         action='store_true', dest='remote_copy')
+         action='store', dest='remote_copy',
+         default="scp -o User=root -q")
+    parser['configinstall'].add_argument('--remote-exec',
+         help='Command to use for remote execution (should behave like ssh)',
+         action='store', dest='remote_exec',
+         default="ssh -o User=root -q")
 
     # Config
     parser['config'] = parser['sub'].add_parser('config',
@@ -165,6 +168,8 @@ def configinstall_onehost(host, args, mode, parallel):
 
         context = cdist.context.Context(
             target_host=host,
+            remote_copy=args.remote_copy,
+            remote_exec=args.remote_exec,
             initial_manifest=args.manifest,
             base_path=args.cdist_home,
             exec_path=sys.argv[0],
