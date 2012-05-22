@@ -105,6 +105,9 @@ class Remote(object):
         cmd = self._exec.split()
         cmd.append(self.target_host)
 
+        # Always call umask before actual call to ensure proper file permissions
+        cmd.append("umask 077;")
+
         # can't pass environment to remote side, so prepend command with
         # variable declarations
         if env:
