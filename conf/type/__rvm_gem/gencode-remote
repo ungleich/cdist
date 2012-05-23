@@ -27,13 +27,13 @@ user="$(cat "$__object/parameter/user")"
 state_should="$(cat "$__object/parameter/state")"
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
-      installed)
+      present)
          cat << DONE
 su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
 rvm use $gemset; gem install $gem"
 DONE
       ;;
-      removed)
+      absent)
           cat << DONE
 su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
 rvm use $gemset; gem uninstall $gem"
