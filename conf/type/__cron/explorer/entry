@@ -36,4 +36,4 @@ crontab -u $user -l 2>/dev/null | awk -v prefix="$prefix" -v suffix="$suffix" '
       print
    }
 }
-'
+' || true
