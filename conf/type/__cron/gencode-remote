@@ -34,13 +34,7 @@ state_is=$(diff -q "$entryfile" "$__object/explorer/entry" \
 case "$state_should" in
     present)
         cat << eof
-tmp=\$(mktemp)
-crontab -u $user -l > \$tmp 2>/dev/null || true
-cat >> \$tmp << EOC
-$(cat "$entryfile")"
-EOC
-crontab -u \"$user\" \$tmp
-rm \$tmp
+( crontab -u $user -l > \$tmp 2>/dev/null || true ; cat "$entryfile" ) | crontab -u \"$user\" -
 eof
     ;;
 
