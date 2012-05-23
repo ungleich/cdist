@@ -9,6 +9,8 @@ CORE
 - document and add paremeters for remote-copy and remote-exec!
     - remove hack, make a feature of it
 
+- remove var=foo calls on remote side. Use -o SendEnv (yeah, see ssh_config(5))
+
 TESTS
 -----
 - multiple defines of object:

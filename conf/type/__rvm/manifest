@@ -19,7 +19,7 @@
 #
 
 # rvm core dependencies
-__package bash --state installed
-__package curl --state installed
-__package git-core --state installed
-__package patch --state installed
+__package bash --state present
+__package curl --state present
+__package git-core --state present
+__package patch --state present
