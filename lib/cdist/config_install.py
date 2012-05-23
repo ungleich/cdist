@@ -141,7 +141,7 @@ class ConfigInstall(object):
             self.local.type_path)
 
         dependency_resolver = resolver.DependencyResolver(objects)
-        self.log.debug(pprint.pformat(dependency_resolver.graph))
+        self.log.debug(pprint.pformat(dependency_resolver.dependencies))
 
         for cdist_object in dependency_resolver:
             self.log.debug("Run object: %s", cdist_object)

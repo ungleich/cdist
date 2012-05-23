@@ -24,7 +24,7 @@ user="$(cat "$__object/parameter/user")"
 prefix="#cdist:__cron/$name"
 suffix="#/cdist:__cron/$name"
 
-crontab -u $user -l | awk -v prefix="$prefix" -v suffix="$suffix" '
+crontab -u $user -l 2>/dev/null | awk -v prefix="$prefix" -v suffix="$suffix" '
 {
    if (index($0,prefix)) {
       triggered=1
