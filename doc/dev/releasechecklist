@@ -13,7 +13,7 @@ echo "Testing documentation..."
 # get version
 changelog_version=$(grep '^[[:digit:]]' doc/changelog | head -n1 | sed 's/:.*//')
 #git_version=$(git describe)
-lib_version=$(grep ^    VERSION lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
+lib_version=$(grep "^    VERSION" lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
 
 # get date
 date_today="$(date +%Y-%m-%d)"
