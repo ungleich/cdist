@@ -22,9 +22,6 @@ name="$__object_id"
 user="$(cat "$__object/parameter/user")"
 command="$(cat "$__object/parameter/command")"
 
-# set defaults
-test -f "$__object/parameter/state" || echo "present" > "$__object/parameter/state"
-
 if [ -f "$__object/parameter/raw" ]; then
    raw="$(cat "$__object/parameter/raw")"
    entry="$raw $command"
@@ -40,6 +37,11 @@ fi
 # NOTE: if changed, also change in explorers
 prefix="#cdist:__cron/$name"
 suffix="#/cdist:__cron/$name"
-echo "$prefix" | tee "$__object/parameter/prefix" > "$__object/parameter/entry"
-echo "$entry" >> "$__object/parameter/entry"
-echo "$suffix" | tee "$__object/parameter/suffix" >> "$__object/parameter/entry"
+
+mkdir -p "$__object/files"
+entryfile="$__object/files/entry"
+cat << eof > "$entryfile"
+$prefix
+$entry
+$suffix
+eof

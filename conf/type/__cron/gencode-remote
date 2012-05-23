@@ -18,12 +18,14 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+name="$__object_id"
 user="$(cat "$__object/parameter/user")"
-state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state" 2>/dev/null || echo present)"
 state_is=$(diff -q "$__object/parameter/entry" "$__object/explorer/entry" \
    && echo present \
    || echo absent
 )
+entryfile="$__object/files/entry"
 
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
@@ -40,8 +42,8 @@ DONE
       ;;
       absent)
          # defined in type manifest
-         prefix="$(cat "$__object/parameter/prefix")"
-         suffix="$(cat "$__object/parameter/suffix")"
+         prefix="#cdist:__cron/$name"
+         suffix="#/cdist:__cron/$name"
          cat << DONE
 crontab -u $user -l | awk -v prefix="$prefix" -v suffix="$suffix" '
 {
