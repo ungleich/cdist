@@ -18,7 +18,7 @@ REQUIRED PARAMETERS
 user::
    The remote user account to use
 state::
-   Either "installed" or "removed".
+   Either "present" or "absent".
 
 OPTIONAL PARAMETERS
 -------------------
@@ -30,13 +30,13 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Install ruby 1.9.3 through rvm for user thelonious
-__rvm_ruby ruby-1.9.3-p0 --user thelonious --state installed
+__rvm_ruby ruby-1.9.3-p0 --user thelonious --state present
 
 # Install ruby 1.9.3 through rvm for user ornette and make it the default
-__rvm_ruby ruby-1.9.3-p0 --user ornette --state installed --default yes
+__rvm_ruby ruby-1.9.3-p0 --user ornette --state present --default yes
 
 # Remove ruby 1.9.3 for user john
-__rvm_ruby ruby-1.9.3-p0 --user john --state removed
+__rvm_ruby ruby-1.9.3-p0 --user john --state absent
 --------------------------------------------------------------------------------
 
 

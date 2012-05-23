@@ -60,6 +60,9 @@ class Local(object):
 
         self.log = logging.getLogger(self.target_host)
 
+        # Setup file permissions using umask
+        os.umask(0o077)
+
     def create_directories(self):
         self.mkdir(self.out_path)
         self.mkdir(self.global_explorer_out_path)
@@ -73,8 +76,7 @@ class Local(object):
     def mkdir(self, path):
         """Create directory on the local side."""
         self.log.debug("Local mkdir: %s", path)
-        # FIXME: dont set mode here, fix unittest mkdtemp instead
-        os.makedirs(path, mode=0o700, exist_ok=True)
+        os.makedirs(path, exist_ok=True)
 
     def run(self, command, env=None, return_output=False):
         """Run the given command with the given environment.

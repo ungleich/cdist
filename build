@@ -126,11 +126,11 @@ case "$1" in
             rm -f latest && ln -sf "$version" latest"
    ;;
 
-   p|pu|pub)
-      git push --mirror
-      git push --mirror github
-      git push --mirror sf
-      git push --mirror ethz
+    p|pu|pub)
+        for remote in "" github sf ethz; do
+            echo "Pushing to $remote"
+            git push --mirror $remote
+        done
    ;;
 
    clean)

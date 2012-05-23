@@ -27,7 +27,7 @@ default="$(cat "$__object/parameter/default")"
 state_should="$(cat "$__object/parameter/state")"
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
-      installed)
+      present)
          cat << DONE
 su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
 rvm $gemset --create"
@@ -43,7 +43,7 @@ DONE
             ;;
          esac
       ;;
-      removed)
+      absent)
           cat << DONE
 su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
 rvm use $ruby; rvm --force gemset delete $gemsetname"

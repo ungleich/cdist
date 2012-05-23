@@ -78,6 +78,6 @@ case "$ruby" in
  ;;
 esac
 deps=$(eval echo \$$deps_list)
-for p in $deps; do __package_${type} $p --state installed; done
+for p in $deps; do __package_${type} $p --state present; done
 
-__rvm "$user" --state installed
+__rvm "$user" --state present

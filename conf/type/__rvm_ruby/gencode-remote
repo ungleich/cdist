@@ -25,7 +25,7 @@ default="$(cat "$__object/parameter/default")"
 state_should="$(cat "$__object/parameter/state")"
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
-      installed)
+      present)
          echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
               "rvm install $ruby\""
          case "$default" in
@@ -37,7 +37,7 @@ if [ "$state_is" != "$state_should" ]; then
             ;;
           esac
       ;;
-      removed)
+      absent)
          echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
               "rvm remove $ruby\""
       ;;
