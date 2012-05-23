@@ -28,24 +28,27 @@ state_is=$(diff -q "$entryfile" "$__object/explorer/entry" \
    || echo absent
 )
 
-if [ "$state_is" != "$state_should" ]; then
-   case "$state_should" in
-      present)
-         cat << DONE
+# Short circuit - no need to change something
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        cat << eof
 tmp=\$(mktemp)
-crontab -u $user -l > \$tmp
+crontab -u $user -l > \$tmp 2>/dev/null || true
 cat >> \$tmp << EOC
-$(cat "$__object/parameter/entry")"
+$(cat "$entryfile")"
 EOC
-crontab -u $user \$tmp
+crontab -u \"$user\" \$tmp
 rm \$tmp
-DONE
-      ;;
-      absent)
-         # defined in type manifest
-         prefix="#cdist:__cron/$name"
-         suffix="#/cdist:__cron/$name"
-         cat << DONE
+eof
+    ;;
+
+    absent)
+        # defined in type manifest
+        prefix="#cdist:__cron/$name"
+        suffix="#/cdist:__cron/$name"
+        cat << eof
 crontab -u $user -l | awk -v prefix="$prefix" -v suffix="$suffix" '
 {
    if (index(\$0,prefix)) {
@@ -60,7 +63,6 @@ crontab -u $user -l | awk -v prefix="$prefix" -v suffix="$suffix" '
    }
 }
 ' | crontab -u $user -
-DONE
-      ;;
-   esac
-fi
+eof
+    ;;
+esac
