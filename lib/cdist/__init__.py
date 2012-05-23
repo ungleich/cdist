@@ -29,7 +29,7 @@ try:
                     'cd "%s" && git describe' % here,
                     stderr=devnull, shell=True).decode('utf-8')
 except:
-    VERSION     = "2.0.10"
+    VERSION     = "2.0.11"
 
 BANNER = """
              ..          .       .x+=:.        s
