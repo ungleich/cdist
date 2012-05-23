@@ -69,7 +69,7 @@ class ResolverTestCase(test.CdistTestCase):
         first_man.requirements = [second_on_the.name]
         second_on_the.requirements = [third_moon.name]
         self.assertEqual(
-            self.dependency_resolver.graph['__first/man'],
+            self.dependency_resolver.dependencies['__first/man'],
             [third_moon, second_on_the, first_man]
         )
 
@@ -79,10 +79,10 @@ class ResolverTestCase(test.CdistTestCase):
         first_man.requirements = [first_woman.name]
         first_woman.requirements = [first_man.name]
         with self.assertRaises(resolver.CircularReferenceError):
-            self.dependency_resolver.graph
+            self.dependency_resolver.dependencies
 
     def test_requirement_not_found(self):
         first_man = self.object_index['__first/man']
         first_man.requirements = ['__does/not/exist']
         with self.assertRaises(cdist.Error):
-            self.dependency_resolver.graph
+            self.dependency_resolver.dependencies

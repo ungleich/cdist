@@ -18,7 +18,7 @@ REQUIRED PARAMETERS
 user::
    The remote user account to use
 state::
-   Either "installed" or "removed".
+   Either "present" or "absent".
 
 OPTIONAL PARAMETERS
 -------------------
@@ -30,13 +30,13 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Install the gemset @myset for user charles on based on ruby-1.9.3-0
-__rvm_gemset ruby-1.9.3-p0@myset --user charles --state installed
+__rvm_gemset ruby-1.9.3-p0@myset --user charles --state present
 
 # Do the same and make ruby-1.9.3-p0@myset the default gemset
-__rvm_gemset ruby-1.9.3-p0@myset --user charles --state installed --default yes
+__rvm_gemset ruby-1.9.3-p0@myset --user charles --state present --default yes
 
 # Remove the gemset @myset for user john
-__rvm_ruby ruby-1.9.3-p0@myset --user john --state removed
+__rvm_ruby ruby-1.9.3-p0@myset --user john --state absent
 --------------------------------------------------------------------------------
 
 

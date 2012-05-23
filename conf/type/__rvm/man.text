@@ -16,7 +16,7 @@ RVM is the Ruby enVironment Manager for the Ruby programming language.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "installed" or "removed".
+   Either "present" or "absent".
 
 
 EXAMPLES
@@ -24,10 +24,10 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Install rvm for user billie
-__rvm billie --state installed
+__rvm billie --state present
 
 # Remove rvm
-__rvm billie --state removed
+__rvm billie --state absent
 --------------------------------------------------------------------------------
 
 

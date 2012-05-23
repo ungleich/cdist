@@ -13,7 +13,7 @@ echo "Testing documentation..."
 # get version
 changelog_version=$(grep '^[[:digit:]]' doc/changelog | head -n1 | sed 's/:.*//')
 #git_version=$(git describe)
-lib_version=$(grep ^VERSION lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
+lib_version=$(grep "^    VERSION" lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
 
 # get date
 date_today="$(date +%Y-%m-%d)"
@@ -41,7 +41,7 @@ read wait
 version=$lib_version
 
 # get target branch
-branch=${version%.?}
+branch=${version%\.*}
 
 # add tag
 printf "Enter tag description for %s> " "$version"
@@ -49,7 +49,7 @@ read tagmessage
 git tag "$version" -m "$tagmessage"
 
 # Import into current version branch
-printf "Press enter to git merge into $branch > "
+printf "Press enter to git merge into branch \"$branch\" > "
 read prompt
 git checkout $branch
 git merge master

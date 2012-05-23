@@ -31,8 +31,8 @@ else
    echo $default > "$__object/parameter/default"
 fi
 
-__rvm "$user" --state installed
+__rvm "$user" --state present
 require="__rvm/$user" \
-   __rvm_ruby $ruby --user "$user" --state installed --default $default
+   __rvm_ruby $ruby --user "$user" --state present --default $default
 require="__rvm_ruby/$ruby" \
-   __rvm_gemset $gemset --user "$user" --state installed --default $default
+   __rvm_gemset $gemset --user "$user" --state present --default $default

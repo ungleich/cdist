@@ -114,7 +114,8 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         self.manifest = core.Manifest(self.target_host, self.local)
 
     def tearDown(self):
-        shutil.rmtree(self.temp_dir)
+        pass
+        #shutil.rmtree(self.temp_dir)
 
     def test_autorequire(self):
         initial_manifest = os.path.join(self.local.manifest_path, "init")
@@ -123,7 +124,7 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'singleton')
         self.manifest.run_type_manifest(cdist_object)
         expected = ['__planet/Saturn', '__moon/Prometheus']
-        self.assertEqual(sorted(cdist_object.requirements), sorted(expected))
+        self.assertEqual(sorted(cdist_object.autorequire), sorted(expected))
 
 
 class ArgumentsTestCase(test.CdistTestCase):
