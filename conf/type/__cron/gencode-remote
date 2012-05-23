@@ -34,7 +34,14 @@ state_is=$(diff -q "$entryfile" "$__object/explorer/entry" \
 case "$state_should" in
     present)
         cat << eof
-( crontab -u $user -l > \$tmp 2>/dev/null || true ; cat "$entryfile" ) | crontab -u \"$user\" -
+( 
+    crontab -u $user -l > \$tmp 2>/dev/null || true
+    cat << remote-eof 
+eof
+        cat "$entryfile"
+        cat << eof
+remote-eof
+) | crontab -u "$user" -
 eof
     ;;
 
