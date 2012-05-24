@@ -112,6 +112,21 @@ For Debian >= wheezy:
 
 For older Debian versions, installing python 3.2 manually is required.
 
+On squeeze you can add following line in **/etc/apt/sources.list**
+
+  deb http://ftp.debian.org/debian wheezy main
+
+And don't forget the pinning entry in **/etc/apt/preferences.d/wheezy**:
+
+  Package: *
+  Pin: release n=wheezy
+  Pin-Priority: 1
+
+Please be aware that both **openssh-server** and **openssh-client** might be
+removed on **pyhton3.2** installation. You surely want to reinstall them:
+
+  apt-get install -t wheezy openssh-server openssh-client
+
 #### Fedora
 
 For Fedora >= 15:
