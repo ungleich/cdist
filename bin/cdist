@@ -75,9 +75,10 @@ def commandline():
     parser['config'].set_defaults(func=config)
 
     # Install
-    parser['install'] = parser['sub'].add_parser('install',
-        parents=[parser['loglevel'], parser['configinstall']])
-    parser['install'].set_defaults(func=install)
+    # 20120525/sar: commented until it actually does something
+    #parser['install'] = parser['sub'].add_parser('install',
+    #    parents=[parser['loglevel'], parser['configinstall']])
+    #parser['install'].set_defaults(func=install)
 
     for p in parser:
         parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
