@@ -40,6 +40,10 @@ source::
    If supplied, copy this file from the host running cdist to the target.
    If not supplied, an empty file or directory will be created.
 
+var::
+   If supplied, turns the **source** file into a template. It can be
+   specified many times. Each declaration consists of a template variable
+   definition.
 
 EXAMPLES
 --------
@@ -64,6 +68,28 @@ __file /etc/shadow --source "$__type/files/shadow" \
 __file /home/frodo/.bashrc --source "/etc/skel/.bashrc" \
    --state exists \
    --owner frodo --mode 0600
+--------------------------------------------------------------------------------
+
+Example using a template:
+
+--------------------------------------------------------------------------------
+# content of __manifest/templates/nginx/basic.conf
+server {
+  listen                          80;
+  server_name                     $SERVERNAME;
+  root                            $ROOT;
+
+  access_log /var/log/nginx/$SERVERNAME_access.log
+  error_log /var/log/nginx/$SERVERNAME_error.log
+}
+--------------------------------------------------------------------------------
+
+In the manifest:
+
+--------------------------------------------------------------------------------
+__file /etc/nginx/sites-available/test-template.conf \
+       --source "$__manifest/templates/nginx/basic.conf" \
+       --var SERVERNAME=test --var ROOT=/var/www/test
 --------------------------------------------------------------------------------
 
 
