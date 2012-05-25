@@ -1,0 +1,51 @@
+Source: cdist
+Section: admin 
+Priority: extra
+Maintainer: Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org> 
+Build-Depends: debhelper (>= 7.0.50), quilt (>=0.46-7), python3, asciidoc, xmlto
+X-Python3-Version: >= 3.2 
+Standards-Version: 3.8.0
+Homepage: http://www.nico.schottelius.org/software/cdist/ 
+
+Package: cdist
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python3:Depends}
+Description: usable configuration management system
+ cdist is a usable configuration management system. It adheres to
+ the KISS principle and is being used in small up to enterprise grade
+ environments. cdist is an alternative to other configuration
+ management systems like cfengine, bcfg2, chef and puppet. But cdist
+ ticks differently.
+ .
+ Simplicity:
+ * There is only one type to extend cdist called type
+ .
+ Design:
+ * Type and core cleanly seperated
+ * Sticks completly to the KISS (keep it simple and stupid) paradigma
+ * Meaningful error messages - do not lose time debugging error messages
+ * Consistency in behaviour, naming and documentation
+ * No surprise factor: Only do what is obviously clear, no magic
+ * Define target state, do not focus on methods or scripts
+ * Push architecture: Instantly apply your changes
+ .
+ Small core:
+ * cdist's core is very small - less code, less bugs
+ .
+ Fast development:
+ * Focus on straightforwardness of type creation is a main development objective
+ * Batteries included: A lot of requirements can be solved using standard types
+ .
+ Modern Programming Language:
+ * cdist is written in Python
+ .
+ Requirements:
+ * Scalability: No central server needed, cdist operates in push mode and can be run from any computer
+ * Update: cdist only needs to be updated on the master, not on the target hosts
+ * Security: Uses well-know SSH as transport protocol
+ * Simplicity: Requires only shell and SSH server on the target
+ .
+ UNIX familar environment:
+ * Reuse of existing tools like cat, find, mv, ...
+ * documentation: Is available as manpages and HTML
+ * simplicity: cdist is configured in POSIX shell

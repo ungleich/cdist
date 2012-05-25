@@ -1,0 +1,42 @@
+diff --git a/bin/cdist b/bin/cdist
+index 8d0dfc7..8e70a63 100755
+--- a/bin/cdist
++++ b/bin/cdist
+@@ -57,7 +57,7 @@ def commandline():
+     parser['configinstall'].add_argument('host', nargs='+',
+         help='one or more hosts to operate on')
+     parser['configinstall'].add_argument('-c', '--cdist-home',
+-         help='Change cdist home (default: .. from bin directory)',
++         help='Change cdist home (default: /etc/cdist)',
+          action='store')
+     parser['configinstall'].add_argument('-i', '--initial-manifest', 
+          help='Path to a cdist manifest or \'-\' to read from stdin.',
+diff --git a/doc/man/man1/cdist.text b/doc/man/man1/cdist.text
+index e46e84a..f92b09d 100644
+--- a/doc/man/man1/cdist.text
++++ b/doc/man/man1/cdist.text
+@@ -44,8 +44,7 @@ Configure a system
+    Show the help screen
+ 
+ -c CDIST_HOME, --cdist-home CDIST_HOME::
+-   Instead of using the parent of the bin directory as cdist home,
+-   use the specified directory
++   Instead of using /etc/cdist as cdist home, use the specified directory
+ 
+ -d, --debug::
+    Enable debug output
+diff --git a/lib/cdist/context.py b/lib/cdist/context.py
+index ab8677a..9240d7c 100644
+--- a/lib/cdist/context.py
++++ b/lib/cdist/context.py
+@@ -52,9 +52,7 @@ class Context(object):
+         self.log.addFilter(self)
+ 
+         # Local base directory
+-        self.base_path = (base_path or
+-            os.path.abspath(os.path.join(os.path.dirname(__file__),
+-                os.pardir, os.pardir)))
++        self.base_path = (base_path or "/etc/cdist")
+ 
+         # Local temp directory
+         # FIXME: if __cdist_out_dir can be given from the outside, the same directory will be used for all hosts

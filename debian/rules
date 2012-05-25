@@ -1,0 +1,32 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+DEB_COMPRESS_EXCLUDE := .py
+DEB_BUILD_OPTIONS := -I .git
+DEB_PYTHON_SYSTEM = pycentral
+
+
+%:
+	dh  --with quilt $*
+
+
+override_dh_installdirs:
+	dh_installdirs
+	#python3 setup.py install --install-purelib=/usr/lib/python3.2 --install-layout=deb --root=debian/cdist
+	find debian/cdist -type f -name '*.pyc' -print0 | xargs -0 rm -f
+
+override_dh_auto_configure:
+	dh_auto_configure
+	if test -f build; then mv build build.sh; fi
+
+override_dh_installman:
+	./build.sh man
+	dh_installman
+
+override_dh_clean:
+	dh_clean
+	if test -d build; then rm -rf build; fi
+	if test -f build.sh; then ./build.sh clean; mv build.sh build; fi
