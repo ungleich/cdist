@@ -2,6 +2,12 @@ cdist (2:2.0.11+git.8-1) unstable; urgency=low
 
   * New automated build from: 2.0.11 - b92621c
 
+ -- Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>  Fri, 25 May 2012 13:58:25 +0000
+
+cdist (2:2.0.11+git.8-1) unstable; urgency=low
+
+  * New automated build from: 2.0.11 - b92621c
+
  -- Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>  Fri, 25 May 2012 13:57:07 +0000
 
 cdist (2:2.0.11+git.8-1) unstable; urgency=low
