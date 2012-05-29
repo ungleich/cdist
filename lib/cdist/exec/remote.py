@@ -77,12 +77,7 @@ class Remote(object):
         self.log.debug("Remote transfer: %s -> %s", source, destination)
         self.rmdir(destination)
         command = self._copy.split()
-        # support rsync by appending a "/" to the source if it's a directory
-        if os.path.isdir(source):
-           command.extend(["-r", source + "/", self.target_host + ":" + destination])
-        else:
-           command.extend(["-r", source, self.target_host + ":" + destination])
-
+        command.extend(["-r", source, self.target_host + ":" + destination])
         self._run_command(command)
 
     def run_script(self, script, env=None, return_output=False):

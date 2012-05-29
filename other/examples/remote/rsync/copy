@@ -24,7 +24,24 @@
 # at /etc/passwd~cdist.
 #
 # Usage:
-#  __remote_copy="/path/to/this/script" cdist config target_host
+#  cdist config --remote-copy /path/to/this/script target_host
 #
+
+# second last argument is the source
+source_index=$(($#-1))
+index=0
+for arg in $@; do
+   if [ $index -eq 0 ]; then
+      # reset $@
+      set -- 
+   fi
+   index=$((index+=1))
+   if [ $index -eq $source_index -a -d "$arg" ]; then
+      echo "directory: $arg" | logger
+      # if the source is a directory, it has to end with "/" for rsync to do the right thing
+      arg="${arg%/}/"
+   fi
+   set -- "$@" "$arg"
+done
 
 rsync --backup --suffix=~cdist -e 'ssh -o User=root' $@
