@@ -72,7 +72,7 @@ class Context(object):
         self.initial_manifest = (initial_manifest or
             os.path.join(self.local.manifest_path, "init"))
 
-        _init_remote(remote_copy, remote_exec)
+        self._init_remote(remote_copy, remote_exec)
 
     # Remote stuff
     def _init_remote(self, remote_copy, remote_exec):
