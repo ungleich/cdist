@@ -33,7 +33,7 @@ chroot_name="$1"; shift
 target_host="$__target_host"
 
 # get directory for given chroot_name
-chroot="$(ssh -o User=root -q $target_host schroot $chroot_name --config | awk -F = '/directory=/ {print $2}')"
+chroot="$(ssh -o User=root -q $target_host schroot -c $chroot_name --config | awk -F = '/directory=/ {print $2}')"
 
 # prefix destination with chroot
 code="$(echo "$@" | sed "s|$target_host:|$target_host:$chroot|g")"
