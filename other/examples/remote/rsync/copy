@@ -33,11 +33,10 @@ index=0
 for arg in $@; do
    if [ $index -eq 0 ]; then
       # reset $@
-      set -- 
+      set --
    fi
    index=$((index+=1))
    if [ $index -eq $source_index -a -d "$arg" ]; then
-      echo "directory: $arg" | logger
       # if the source is a directory, it has to end with "/" for rsync to do the right thing
       arg="${arg%/}/"
    fi
