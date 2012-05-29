@@ -21,8 +21,10 @@
 # __remote_{exec,copy} script to run cdist against a schroot target uri
 #
 # Usage:
-#  __remote_exec="/path/to/this/script exec" cdist config target_uri
-#  __remote_copy="/path/to/this/script copy" cdist config target_uri
+#  cdist config \
+#     --remote-exec "/path/to/this/script exec" \
+#     --remote-copy "/path/to/this/script copy" \
+#     target_uri
 #
 # # target_uri examples:
 # schroot:///chroot-name
