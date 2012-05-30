@@ -25,7 +25,7 @@ remove_user() {
 remove_perms() {
     for d in /var/lib/cdist; do
         dpkg-statoverride --list $d > /dev/null || \
-            dpkg-statoverride --update --remove cdist cdist 700 $d
+            dpkg-statoverride --update --remove $d
     done
 }
 
@@ -33,6 +33,7 @@ case "$1" in
     purge)
 	remove_perms
 	remove_user
+	rm -rf /usr/lib/python3.2/cdist /var/lib/cdist
 	;;
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
     ;;
