@@ -1,0 +1,177 @@
+Here are some "ifconfig -a" outputs that help for the explorer/ifaces parser.
+
+The current regexp is 's/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
+
+
+You should get the interface list when you run:
+
+  ifconfig -a | sed -n -r 's/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
+
+If you don't maybe try to replace the sed -r option by -E (works on Darwin).
+
+
+If you still don't get any output, the regexp might be wrong.
+
+
+
+On Archlinux:
+--8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 16436  metric 1
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 0  (Local Loopback)
+        RX packets 300081  bytes 49637437 (47.3 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 300081  bytes 49637437 (47.3 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500  metric 1
+        inet 192.168.1.38  netmask 255.255.255.0  broadcast 192.168.1.255
+        inet6 fe80::ba8d:12ff:fe15:fdfa  prefixlen 64  scopeid 0x20<link>
+        ether b8:8d:12:15:fd:fa  txqueuelen 1000  (Ethernet)
+        RX packets 421381  bytes 442228597 (421.7 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 319266  bytes 41111233 (39.2 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+--8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+
+On Debian Linux:
+--8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+eth0      Link encap:Ethernet  HWaddr 00:16:17:55:2d:00  
+          inet addr:172.16.5.2  Bcast:172.16.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::216:17ff:fe55:2d00/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:2854022168 errors:5 dropped:0 overruns:0 frame:4
+          TX packets:2200088072 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:2708386800354 (2.4 TiB)  TX bytes:531552070314 (495.0 GiB)
+          Base address:0x3000 Memory:d0120000-d0140000 
+
+eth0:1    Link encap:Ethernet  HWaddr 00:16:17:55:2d:00  
+          inet addr:172.16.5.1  Bcast:172.16.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          Base address:0x3000 Memory:d0120000-d0140000 
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:36487087 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:36487087 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:3388870184 (3.1 GiB)  TX bytes:3388870184 (3.1 GiB)
+
+sit0      Link encap:IPv6-in-IPv4  
+          NOARP  MTU:1480  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+tap0      Link encap:Ethernet  HWaddr 16:db:17:fb:a1:4a  
+          inet addr:10.254.0.1  Bcast:10.254.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::14db:17ff:fefb:a14a/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:6 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:100 
+          RX bytes:0 (0.0 B)  TX bytes:468 (468.0 B)
+
+bond0     Link encap:Ethernet  HWaddr 00:13:72:3c:bf:57
+          inet6 addr: fe80::213:72ff:fe3c:bf57/64 Scope:Link
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+          RX packets:6930494799 errors:0 dropped:38584515 overruns:0 frame:17
+          TX packets:1678579772 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:10006832472618 (9.1 TiB)  TX bytes:168031719693 (156.4 GiB)
+
+bond0.123 Link encap:Ethernet  HWaddr 00:13:72:3c:bf:57  
+          inet addr:10.73.38.250  Bcast:10.73.38.255  Mask:255.255.255.0
+          inet6 addr: fe80::213:72ff:fe3c:bf57/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:12382478 errors:0 dropped:5777 overruns:0 frame:0
+          TX packets:564 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:586071334 (558.9 MiB)  TX bytes:64180 (62.6 KiB)
+
+tun0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  
+          inet addr:172.31.255.9  P-t-P:172.31.255.10  Mask:255.255.255.255
+          UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1
+          RX packets:9655 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:15118 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:100 
+          RX bytes:1760236 (1.6 MiB)  TX bytes:14929984 (14.2 MiB)
+--8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+
+On OpenBSD:
+--8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+lo0: flags=8049<UP,LOOPBACK,RUNNING,MULTICAST> mtu 33160
+        priority: 0
+        groups: lo
+        inet6 ::1 prefixlen 128
+        inet6 fe80::1%lo0 prefixlen 64 scopeid 0x3
+        inet 127.0.0.1 netmask 0xff000000
+em0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+        lladdr 00:50:56:b3:00:15
+        priority: 0
+        groups: egress
+        media: Ethernet autoselect (1000baseT full-duplex,master)
+        status: active
+        inet6 XXXX::XXX:XXXX:XXXX:XX%em0 prefixlen 64 scopeid 0x1
+        inet6 XXXX:XXX:XXX:XX::XXX prefixlen 64
+        inet XXX.XXX.XXX.XXX netmask 0xffffffc0 broadcast XXX.XXX.XXX.XXX
+enc0: flags=0<>
+        priority: 0
+        groups: enc
+        status: active
+pflog0: flags=141<UP,RUNNING,PROMISC> mtu 33160
+        priority: 0
+        groups: pflog
+tun1: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1500
+        priority: 0
+        groups: tun
+        status: active
+        inet 172.31.255.13 --> 172.31.255.14 netmask 0xffffffff
+tun2: flags=8011<UP,POINTOPOINT,MULTICAST> mtu 1500
+        priority: 0
+        groups: tun
+        status: down
+        inet 172.31.253.1 --> 172.31.253.2 netmask 0xffffffff
+tun0: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1500
+        priority: 0
+        groups: tun
+        status: active
+        inet 172.31.254.1 --> 172.31.254.2 netmask 0xffffffff
+--8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+
+On Darwin:
+--8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+lo0: flags=8049<UP,LOOPBACK,RUNNING,MULTICAST> mtu 16384
+	inet6 ::1 prefixlen 128 
+	inet6 fe80::1%lo0 prefixlen 64 scopeid 0x1 
+	inet 127.0.0.1 netmask 0xff000000 
+gif0: flags=8010<POINTOPOINT,MULTICAST> mtu 1280
+stf0: flags=0<> mtu 1280
+en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	ether 34:15:9e:2e:8b:aa 
+	inet6 fe80::3615:9eff:fe2e:8baa%en0 prefixlen 64 scopeid 0x4 
+	inet 192.168.1.102 netmask 0xffffff00 broadcast 192.168.1.255
+	media: autoselect (100baseTX <full-duplex,flow-control>)
+	status: active
+en1: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	ether 7c:6d:62:a3:6f:57 
+	inet6 fe80::7e6d:62ff:fea3:6f57%en1 prefixlen 64 scopeid 0x5 
+	inet 192.168.2.105 netmask 0xffffff00 broadcast 192.168.2.255
+	media: autoselect
+	status: active
+fw0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 4078
+	lladdr 34:15:9e:ff:fe:2e:8b:aa 
+	media: autoselect <full-duplex>
+	status: inactive
+tun0: flags=8851<UP,POINTOPOINT,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	inet 172.31.255.29 --> 172.31.255.30 netmask 0xffffffff 
+	open (pid 24727)
+tun1: flags=8851<UP,POINTOPOINT,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	inet 172.31.254.25 --> 172.31.254.26 netmask 0xffffffff 
+	open (pid 24757)
+--8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
