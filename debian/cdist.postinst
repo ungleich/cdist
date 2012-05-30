@@ -24,7 +24,7 @@ add_user() {
 }
 
 fixperms() {
-    for d in /var/lib/cdist /var/log/cdist; do
+    for d in /var/lib/cdist; do
 	dpkg-statoverride --list $d > /dev/null || \
 	    dpkg-statoverride --update --add cdist cdist 700 $d
     done

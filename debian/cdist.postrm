@@ -22,9 +22,17 @@ remove_user() {
     deluser --system --quiet --remove-home cdist || true
 }
 
+remove_perms() {
+    for d in /var/lib/cdist; do
+        dpkg-statoverride --list $d > /dev/null || \
+            dpkg-statoverride --update --remove cdist cdist 700 $d
+    done
+}
+
 case "$1" in
     purge)
 	remove_user
+	remove_perms
 	;;
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
     ;;
