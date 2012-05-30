@@ -6,6 +6,7 @@ Changelog
 
 2.0.13:
 	* Bugfix __addifnosuchline: Fixed quotes/interpolation bug ("a  b" became "a b")
+	* New Explorer: interfaces (Sébastien Gross)
 
 2.0.12: 2012-05-29
 	* Core: Correctly raise error on Python < 3.2 (Steven Armtrong)
