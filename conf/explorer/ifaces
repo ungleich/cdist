@@ -20,19 +20,22 @@
 #
 # List all network interfaces in explorer/ifaces. One interface per line.
 #
+# If your OS is not supported please provide a ifconfig output
+#
 
 uname_s="$(uname -s)"
 
-case "$uname_s" in
-   Linux)
-      ifconfig  | sed -n 's/^\([^[:space:]]\+\)[[:space:]].*/\1/p' 
-      exit 0
-   ;;
-   Darwin|*BSD)
-      ifconfig | sed -n 's/^\([^:]*\): flags.*/\1/p'
-      exit 0
-   ;;
-esac
+REGEXP='s/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
 
-echo "Unknown OS" >&2
-exit 1
+case "$uname_s" in
+    Darwin)
+	ifconfig -a | sed -n -E "$REGEXP"
+	;;
+    Linux|*BSD)
+	ifconfig -a | sed -n -r "$REGEXP"
+	;;
+    *)
+	echo "Unsupported ifconfig output for $uname_s" >&2
+	exit 1
+	;;
+esac
