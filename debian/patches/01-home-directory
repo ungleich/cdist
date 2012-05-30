@@ -12,24 +12,24 @@ index 8d0dfc7..8e70a63 100755
      parser['configinstall'].add_argument('-i', '--initial-manifest', 
           help='Path to a cdist manifest or \'-\' to read from stdin.',
 diff --git a/doc/man/man1/cdist.text b/doc/man/man1/cdist.text
-index e46e84a..f92b09d 100644
+index b92fba1..104e6bf 100644
 --- a/doc/man/man1/cdist.text
 +++ b/doc/man/man1/cdist.text
 @@ -44,8 +44,7 @@ Configure a system
-    Show the help screen
+     Show the help screen
  
  -c CDIST_HOME, --cdist-home CDIST_HOME::
--   Instead of using the parent of the bin directory as cdist home,
--   use the specified directory
-+   Instead of using /etc/cdist as cdist home, use the specified directory
+-    Instead of using the parent of the bin directory as cdist home,
+-    use the specified directory
++    Instead of using /var/lib/cdist as cdist home, use the specified directory
  
  -d, --debug::
-    Enable debug output
+     Enable debug output
 diff --git a/lib/cdist/context.py b/lib/cdist/context.py
-index ab8677a..9240d7c 100644
+index 8b46873..cb9af6b 100644
 --- a/lib/cdist/context.py
 +++ b/lib/cdist/context.py
-@@ -52,9 +52,7 @@ class Context(object):
+@@ -54,9 +54,7 @@ class Context(object):
          self.log.addFilter(self)
  
          # Local base directory
