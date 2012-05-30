@@ -1,5 +1,4 @@
 usr/bin
 usr/sbin
-etc/cdist
 usr/lib/python3.2
 var/lib/cdist
