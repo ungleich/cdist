@@ -16,4 +16,8 @@ removed on **python3.2** installation. You surely want to reinstall them:
 
   apt-get install -t wheezy openssh-server openssh-client
 
+A sample configuration is available in /usr/share/doc/cdist/example. For a
+quick start copy the conf directory to /usr/lib/cdist. Please not that for
+convenience a symlink is done in /etc/cdist.
+
  -- Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>  Fri, 25 May 2012 07:37:14 +0000

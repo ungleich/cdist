@@ -7,7 +7,7 @@ index 8d0dfc7..8e70a63 100755
          help='one or more hosts to operate on')
      parser['configinstall'].add_argument('-c', '--cdist-home',
 -         help='Change cdist home (default: .. from bin directory)',
-+         help='Change cdist home (default: /etc/cdist)',
++         help='Change cdist home (default: /var/lib/cdist)',
           action='store')
      parser['configinstall'].add_argument('-i', '--initial-manifest', 
           help='Path to a cdist manifest or \'-\' to read from stdin.',
@@ -36,7 +36,7 @@ index ab8677a..9240d7c 100644
 -        self.base_path = (base_path or
 -            os.path.abspath(os.path.join(os.path.dirname(__file__),
 -                os.pardir, os.pardir)))
-+        self.base_path = (base_path or "/etc/cdist")
++        self.base_path = (base_path or "/var/lib/cdist")
  
          # Local temp directory
          # FIXME: if __cdist_out_dir can be given from the outside, the same directory will be used for all hosts
