@@ -24,8 +24,8 @@ remove_user() {
 
 remove_perms() {
     for d in /var/lib/cdist; do
-        dpkg-statoverride --list $d > /dev/null || \
-            dpkg-statoverride --update --remove $d
+        dpkg-statoverride --list $d > /dev/null && \
+            dpkg-statoverride --remove $d
     done
 }
 

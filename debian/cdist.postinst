@@ -33,7 +33,7 @@ fixperms() {
 case "$1" in
     configure)
 	add_user
-#	fixperms
+	fixperms
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
