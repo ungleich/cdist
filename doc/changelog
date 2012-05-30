@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+2.0.13:
+	* Bugfix __addifnosuchline: Fixed quotes/interpolation bug ("a  b" became "a b")
+
 2.0.12: 2012-05-29
 	* Core: Correctly raise error on Python < 3.2 (Steven Armtrong)
 	* Core: Add support for --remote-exec and --remote-copy parameters
