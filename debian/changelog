@@ -1,3 +1,9 @@
+cdist (2:2.0.11+git.40-1) unstable; urgency=low
+
+  * New automated build from: 2.0.11 - ccfbb1d
+
+ -- Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>  Thu, 31 May 2012 08:54:01 +0000
+
 cdist (2:2.0.11+git.38-1) unstable; urgency=low
 
   * New automated build from: 2.0.11 - fc6a54b
