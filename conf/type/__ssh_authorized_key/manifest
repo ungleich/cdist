@@ -32,6 +32,11 @@ if [ -f "$__object/parameter/dstuser" ]; then
 else
    dstuser="root"
 fi
+# Get option dstgroup if defined
+if [ -f "$__object/parameter/dstgroup" ]; then
+   dstgroup=`cat "$__object/parameter/dstgroup"`
+fi
+
 
 # retrieve destination group
 dstgroup=$(cat "$__object/explorer/dstuser_group")
@@ -46,9 +51,14 @@ fi
 # if a destination user is defined, insert in it's authorized_keys
 if [ "$dstuser" ]; then
    sshpath="/home/$dstuser/.ssh"
+   if [ ! "$dstgroup" ]; then
+       dstgroup=${dstuser}
+   fi
 # if no destination user is defined we use root's home
 else
    sshpath="/root/.ssh"
+   dstuser="root"
+   dstgroup="root"
 fi
 rsa=`cat $srcrsa`
 __directory $sshpath \
