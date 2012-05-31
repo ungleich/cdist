@@ -1,0 +1,10 @@
+If root's shell is csh or other non-sh compatible, we have problems.
+See https://github.com/telmich/cdist/issues/54.
+
+Stuff to try out:
+
+    - "-o SendEnv name" [may break remote exec/copy]
+    - cat * | /bin/sh -s could also work, needs testing though
+
+Somebody who is affected should give this a try, especially the 2nd
+variant.
