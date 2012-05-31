@@ -23,8 +23,14 @@
 # If your OS is not supported please provide a ifconfig output
 #
 
-uname_s="$(uname -s)"
+# On some system iproute is a replacement for ifconfig
+IP=$(wich ip)
+if [ -n $IP ]; then
+    $IP -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
+    exit 0
+fi
 
+uname_s="$(uname -s)"
 REGEXP='s/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
 
 case "$uname_s" in
