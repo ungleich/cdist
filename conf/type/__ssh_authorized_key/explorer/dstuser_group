@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Get option dstuser if defined
+if [ -f "$__object/parameter/dstuser" ]; then
+   dstuser=`cat "$__object/parameter/dstuser"`
+else
+   dstuser="root"
+fi
+
+if id $dstuser >/dev/null 2>&1 ; then
+    id -ng $dstuser
+else
+   echo "$__object_id: Destination user $dstuser does not exist" >&2
+   exit 1
+fi
