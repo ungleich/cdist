@@ -1,0 +1,13 @@
+diff --git a/lib/cdist/exec/local.py b/lib/cdist/exec/local.py
+index e510a8f..e4d1b2b 100644
+--- a/lib/cdist/exec/local.py
++++ b/lib/cdist/exec/local.py
+@@ -44,7 +44,7 @@ class Local(object):
+         self.base_path = local_base_path
+ 
+         # Local input
+-        self.cache_path = os.path.join(self.base_path, "cache")
++        self.cache_path = os.path.sep + os.path.join("var", "cache", "cdist") 
+         self.conf_path = os.path.join(self.base_path, "conf")
+         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
+         self.manifest_path = os.path.join(self.conf_path, "manifest")
