@@ -30,3 +30,4 @@ override_dh_clean:
 	dh_clean
 	if test -d build; then rm -rf build; fi
 	if test -f build.sh; then ./build.sh clean; mv build.sh build; fi
+	rm -f doc/man/man*/*.css
