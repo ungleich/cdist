@@ -5,6 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 2.0.13:
+	* Bugfix __ssh_authorized_key: Ensure it sets proper group (contradict)
 	* Bugfix __addifnosuchline: Fixed quotes/interpolation bug ("a  b" became "a b")
 	* New Explorer: interfaces (Sébastien Gross)
 
