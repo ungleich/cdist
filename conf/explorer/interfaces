@@ -23,8 +23,13 @@
 # If your OS is not supported please provide a ifconfig output
 #
 
-uname_s="$(uname -s)"
+# Use ip, if available
+if which ip >/dev/null 2>&1; then
+    ip -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
+    exit 0
+fi
 
+uname_s="$(uname -s)"
 REGEXP='s/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
 
 case "$uname_s" in
