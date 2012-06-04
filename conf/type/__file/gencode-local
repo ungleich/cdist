@@ -38,8 +38,23 @@ if [ "$state_should" = "present" ]; then
          local_cksum="$(cksum < "$source")"
          remote_cksum="$(cat "$__object/explorer/cksum")"
 
-         if [ "$local_cksum" != "$remote_cksum" ]; then
-            echo "$__remote_copy" "$source" "${__target_host}:${destination}"
+         if [ ! -e "$__object/parameter/var" ]; then
+             if [ "$local_cksum" != "$remote_cksum" ]; then
+		 echo "$__remote_copy" "$source" "${__target_host}:${destination}"
+             fi
+         else
+             content=$(cat "$source")
+             cat <<-EOFF | sh > "$__object/expended"
+if [ -e $__object/parameter/var ]; then
+     . $__object/parameter/var
+fi
+cat <<-EOF
+$content
+EOF
+
+EOFF
+             echo "$__remote_copy" "$__object/expended" "${__target_host}:${destination}"
+
          fi
       else
          echo "Source \"$source\" does not exist." >&2

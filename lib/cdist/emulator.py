@@ -92,6 +92,9 @@ class Emulator(object):
 
         parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS)
 
+        for parameter in self.cdist_type.optional_multiple_parameters:
+            argument = "--" + parameter
+            parser.add_argument(argument, dest=parameter, action='append', required=False)
         for parameter in self.cdist_type.optional_parameters:
             argument = "--" + parameter
             parser.add_argument(argument, dest=parameter, action='store', required=False)
