@@ -21,12 +21,17 @@
 
 import os
 import shutil
+import string
+import filecmp
+import random
 
 import cdist
 from cdist import test
 from cdist.exec import local
 from cdist import emulator
 from cdist import core
+from cdist import config
+import cdist.context
 
 local_base_path = test.cdist_base_path
 
@@ -114,8 +119,7 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         self.manifest = core.Manifest(self.target_host, self.local)
 
     def tearDown(self):
-        pass
-        #shutil.rmtree(self.temp_dir)
+        shutil.rmtree(self.temp_dir)
 
     def test_autorequire(self):
         initial_manifest = os.path.join(self.local.manifest_path, "init")
@@ -216,3 +220,47 @@ class ArgumentsTestCase(test.CdistTestCase):
         self.assertTrue('optional1' in cdist_object.parameters)
         self.assertFalse('optional2' in cdist_object.parameters)
         self.assertEqual(cdist_object.parameters['optional1'], value)
+
+
+class StdinTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.orig_environ = os.environ
+        os.environ = os.environ.copy()
+        self.target_host = 'localhost'
+        self.temp_dir = self.mkdtemp()
+        os.environ['__cdist_out_dir'] = self.temp_dir
+        local_base_path = fixtures
+
+        self.context = cdist.context.Context(
+            target_host=self.target_host,
+            remote_copy='scp -o User=root -q',
+            remote_exec='ssh -o User=root -q',
+            base_path=local_base_path,
+            exec_path=test.cdist_exec_path,
+            debug=False)
+        self.config = config.Config(self.context)
+
+    def tearDown(self):
+        os.environ = self.orig_environ
+        shutil.rmtree(self.temp_dir)
+
+    def test_file_from_stdin(self):
+        handle, destination = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
+        source_handle, source = self.mkstemp(dir=self.temp_dir)
+        candidates = string.ascii_letters+string.digits
+        with os.fdopen(source_handle, 'w') as fd:
+            for x in range(100):
+                fd.write(''.join(random.sample(candidates, len(candidates))))
+
+        handle, initial_manifest = self.mkstemp(dir=self.temp_dir)
+        with os.fdopen(handle, 'w') as fd:
+            fd.write('__file_from_stdin %s --source %s\n' % (destination, source))
+        self.context.initial_manifest = initial_manifest
+        self.config.stage_prepare()
+
+        cdist_type = core.CdistType(self.config.local.type_path, '__file')
+        cdist_object = core.CdistObject(cdist_type, self.config.local.object_path, destination)
+        # Test weither stdin has been stored correctly
+        self.assertTrue(filecmp.cmp(source, os.path.join(cdist_object.absolute_path, 'stdin')))

@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -21,8 +21,10 @@
 # __remote_{exec,copy} script to run cdist against a schroot target uri
 #
 # Usage:
-#  __remote_exec="/path/to/this/script exec" cdist config target_uri
-#  __remote_copy="/path/to/this/script copy" cdist config target_uri
+#  cdist config \
+#     --remote-exec "/path/to/this/script exec" \
+#     --remote-copy "/path/to/this/script copy" \
+#     target_uri
 #
 # # target_uri examples:
 # schroot:///chroot-name
@@ -49,7 +51,8 @@ my_name="${0##*/}"
 mode="$1"; shift
 
 log() {
-   echo "$@" | logger -t "cdist-$my_name-$mode"
+   # uncomment me for debugging
+   #echo "$@" | logger -t "cdist-$my_name-$mode"
    :
 }
 
@@ -109,6 +112,9 @@ else
    copy_prefix="cp"
    copy_destination_prefix=""
 fi
+log "exec_prefix: $exec_prefix"
+log "copy_prefix: $copy_prefix"
+log "copy_destination_prefix: $copy_destination_prefix"
 
 case "$mode" in
    exec)
@@ -118,8 +124,9 @@ case "$mode" in
    ;;
    copy)
       # get directory for given chroot_name
-      schroot_directory="$($exec_prefix schroot $chroot_name --config | awk -F = '/directory=/ {print $2}')"
+      schroot_directory="$($exec_prefix schroot -c $schroot_name --config | awk -F = '/directory=/ {print $2}')"
       [ -n "$schroot_directory" ] || die "Failed to retreive schroot directory for schroot: $schroot_name"
+      log "schroot_directory: $schroot_directory"
       # prefix destination with chroot
       code="$copy_prefix $(echo "$@" | sed "s|$uri:|${copy_destination_prefix}${schroot_directory}|g")"
    ;;

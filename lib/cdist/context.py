@@ -35,6 +35,8 @@ class Context(object):
 
     def __init__(self,
         target_host,
+        remote_copy,
+        remote_exec,
         initial_manifest=False,
         base_path=False,
         exec_path=sys.argv[0],
@@ -70,10 +72,18 @@ class Context(object):
         self.initial_manifest = (initial_manifest or
             os.path.join(self.local.manifest_path, "init"))
 
-        # Remote
+        self._init_remote(remote_copy, remote_exec)
+
+    # Remote stuff
+    def _init_remote(self, remote_copy, remote_exec):
+
         self.remote_base_path = os.environ.get('__cdist_remote_out_dir', "/var/lib/cdist")
-        self.remote_exec = os.environ.setdefault('__remote_exec', "ssh -o User=root -q")
-        self.remote_copy = os.environ.setdefault('__remote_copy', "scp -o User=root -q")
+        self.remote_copy = remote_copy
+        self.remote_exec = remote_exec
+
+        os.environ['__remote_copy'] = self.remote_copy
+        os.environ['__remote_exec'] = self.remote_exec
+
         self.remote = remote.Remote(self.target_host, self.remote_base_path,
             self.remote_exec, self.remote_copy)
 
