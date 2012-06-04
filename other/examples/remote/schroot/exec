@@ -21,7 +21,7 @@
 # __remote_exec script to run cdist against a chroot on the target host over ssh.
 #
 # Usage:
-#  __remote_exec="/path/to/this/script schroot-chroot-name" cdist config target_host
+#  cdist config --remote-exec "/path/to/this/script schroot-chroot-name" target_host
 #
 
 log() {

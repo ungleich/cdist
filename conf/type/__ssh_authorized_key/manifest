@@ -29,7 +29,12 @@ fi
 # Get option dstuser if defined
 if [ -f "$__object/parameter/dstuser" ]; then
    dstuser=`cat "$__object/parameter/dstuser"`
+else
+   dstuser="root"
 fi
+
+# retrieve destination group
+dstgroup=$(cat "$__object/explorer/dstuser_group")
 
 # if a source user is defined, use it's public key
 if [ "$srcuser" ]; then
@@ -46,9 +51,16 @@ else
    sshpath="/root/.ssh"
 fi
 rsa=`cat $srcrsa`
-__directory $sshpath
+__directory $sshpath \
+    --owner $dstuser \
+    --group $dstgroup \
+    --mode 700
 # the file authorized_keys depends on the .ssh folder
-require="__directory${sshpath}" __file "$sshpath/authorized_keys" --mode 640
+require="__directory${sshpath}" \
+    __file "$sshpath/authorized_keys" \
+    --mode 640 \
+    --owner $dstuser \
+    --group $dstgroup
 # the line added depends on authorized_keys existence
 require="__file${sshpath}/authorized_keys" __addifnosuchline sshkey --file \
  "$sshpath/authorized_keys" --line "$rsa"

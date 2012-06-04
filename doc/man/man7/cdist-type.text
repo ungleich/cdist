@@ -111,6 +111,33 @@ fi
 --------------------------------------------------------------------------------
 
 
+INPUT FROM STDIN
+-----------------
+Every type can access what has been written on stdin when it has been called.
+The result is saved into the ***stdin*** file in the object directory.
+
+Example use of a type: (e.g. in conf/type/__archlinux_hostname)
+--------------------------------------------------------------------------------
+__file /etc/rc.conf --source - << eof
+...
+HOSTNAME="$__target_host"
+...
+eof
+--------------------------------------------------------------------------------
+If you have not seen this syntax (<< eof) before, it may help you to read
+about "here documents".
+
+In the __file type, stdin is used as source for the file, if - is used for source:
+--------------------------------------------------------------------------------
+    if [ -f "$__object/parameter/source" ]; then
+        source="$(cat "$__object/parameter/source")"
+        if [ "$source" = "-" ]; then
+            source="$__object/stdin"
+        fi  
+    ....
+--------------------------------------------------------------------------------
+
+
 WRITING THE MANIFEST
 --------------------
 In the manifest of a type you can use other types, so your type extends

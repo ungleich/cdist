@@ -22,7 +22,7 @@
 # on a remote target host.
 #
 # Usage:
-#  __remote_exec="/path/to/this/script /path/to/your/chroot" cdist config target-id
+#  cdist config --remote-exec "/path/to/this/script /path/to/your/chroot" target-id
 #
 
 log() {
