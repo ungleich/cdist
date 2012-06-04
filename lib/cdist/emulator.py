@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -22,6 +23,7 @@
 import argparse
 import logging
 import os
+import sys
 
 import cdist
 from cdist import core
@@ -67,6 +69,7 @@ class Emulator(object):
 
         self.commandline()
         self.setup_object()
+        self.save_stdin()
         self.record_requirements()
         self.record_auto_requirements()
         self.log.debug("Finished %s %s" % (self.cdist_object.path, self.parameters))
@@ -136,6 +139,27 @@ class Emulator(object):
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
+
+    chunk_size = 8192
+    def _read_stdin(self):
+        return sys.stdin.buffer.read(self.chunk_size)
+    def save_stdin(self):
+        """If something is written to stdin, save it in the object as
+        $__object/stdin so it can be accessed in manifest and gencode-*
+        scripts.
+        """
+        if not sys.stdin.isatty():
+            try:
+                # go directly to file instead of using CdistObject's api
+                # as that does not support streaming
+                path = os.path.join(self.cdist_object.absolute_path, 'stdin')
+                with open(path, 'wb') as fd:
+                    chunk = self._read_stdin()
+                    while chunk:
+                        fd.write(chunk)
+                        chunk = self._read_stdin()
+            except EnvironmentError as e:
+                raise cdist.Error('Failed to read from stdin: %s' % e)
 
     def record_requirements(self):
         """record requirements"""
