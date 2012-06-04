@@ -41,23 +41,29 @@ CONFIG
 Configure a system
 
 -h, --help::
-   Show the help screen
+    Show the help screen
 
 -c CDIST_HOME, --cdist-home CDIST_HOME::
-   Instead of using the parent of the bin directory as cdist home,
-   use the specified directory
+    Instead of using the parent of the bin directory as cdist home,
+    use the specified directory
 
 -d, --debug::
-   Enable debug output
+    Enable debug output
 
 -i MANIFEST, --initial-manifest MANIFEST::
-   Path to a cdist manifest or - to read from stdin
+    Path to a cdist manifest or - to read from stdin
 
 -p, --parallel::
-   Operate on multiple hosts in parallel
+    Operate on multiple hosts in parallel
 
 -s, --sequential::
-   Operate on multiple hosts sequentially
+    Operate on multiple hosts sequentially
+
+--remote-copy REMOTE_COPY:
+    Command to use for remote copy (should behave like scp)
+
+--remote-exec REMOTE_EXEC:
+    Command to use for remote execution (should behave like ssh)
 
 
 EXAMPLES
@@ -69,7 +75,12 @@ cdist config -d ikq05.ethz.ch
 
 # Configure hosts in parallel and use a different home directory
 cdist config -c ~/p/cdist-nutzung \
-   -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
+    -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
+
+# Use custom remote exec / copy commands
+cdist config --remote-exec /path/to/my/remote/exec \
+    --remote-copy /path/to/my/remote/copy \
+    -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
 
 # Display banner
 cdist banner
@@ -98,7 +109,7 @@ The following exit values shall be returned:
 0::
     Successful completion
 1::
-    One or more host configuration failed.
+    One or more host configurations failed
 
 
 SEE ALSO

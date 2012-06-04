@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2011 Daniel Roth (dani-cdist@d-roth.li)
+# 2012 Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 #
 # This file is part of cdist.
 #
@@ -18,16 +18,29 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# List all network interfaces in explorer/ifaces. One interface per line.
+#
+# If your OS is not supported please provide a ifconfig output
+#
 
-if [ -f "$__object/parameter/file" ]; then
-   file=$(cat "$__object/parameter/file")
-else
-   file="/$__object_id"
+# Use ip, if available
+if which ip >/dev/null 2>&1; then
+    ip -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
+    exit 0
 fi
 
-result=$(cat "$__object/explorer/findline")
+uname_s="$(uname -s)"
+REGEXP='s/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
 
-if [ "$result" = "NOTFOUND" ]; then
-  line=$(cat "$__object/parameter/line")
-  echo "echo \"$line\" >> $file"
-fi
+case "$uname_s" in
+    Darwin)
+	ifconfig -a | sed -n -E "$REGEXP"
+	;;
+    Linux|*BSD)
+	ifconfig -a | sed -n -r "$REGEXP"
+	;;
+    *)
+	echo "Unsupported ifconfig output for $uname_s" >&2
+	exit 1
+	;;
+esac

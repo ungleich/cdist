@@ -1,0 +1,4 @@
+#!/bin/sh
+
+source="$(cat "$__object/parameter/source")"
+cat "$source" | __file "/$__object_id" --source /dev/null
