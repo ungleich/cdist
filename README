@@ -19,6 +19,9 @@
 
 ## Introduction
 
+cdist is a usable configuration management system. It adheres to
+the KISS principle and is being used in small up to enterprise grade
+environments.
 cdist is an alternative to other configuration management systems like
 [cfengine](http://www.cfengine.org/),
 [bcfg2](http://trac.mcs.anl.gov/projects/bcfg2),
@@ -107,7 +110,23 @@ For Debian >= wheezy:
 
     aptitude install python3
 
+On squeeze you can add following line in **/etc/apt/sources.list**
+
+  deb http://ftp.debian.org/debian wheezy main
+
+And add pinning entry in **/etc/apt/preferences.d/wheezy**:
+
+  Package: *
+  Pin: release n=wheezy
+  Pin-Priority: 1
+
+Please be aware that both **openssh-server** and **openssh-client** might be
+removed on **python3.2** installation. You surely want to reinstall them:
+
+  apt-get install -t wheezy openssh-server openssh-client
+
 For older Debian versions, installing python 3.2 manually is required.
+
 
 #### Fedora
 

@@ -21,7 +21,7 @@
 # __remote_copy script to run cdist against a chroot on the target host over ssh.
 #
 # Usage:
-#  __remote_copy="/path/to/this/script schroot-chroot-name" cdist config target_host
+#  cdist config --remote-copy "/path/to/this/script schroot-chroot-name" target_host
 #
 
 log() {
@@ -33,7 +33,7 @@ chroot_name="$1"; shift
 target_host="$__target_host"
 
 # get directory for given chroot_name
-chroot="$(ssh -o User=root -q $target_host schroot $chroot_name --config | awk -F = '/directory=/ {print $2}')"
+chroot="$(ssh -o User=root -q $target_host schroot -c $chroot_name --config | awk -F = '/directory=/ {print $2}')"
 
 # prefix destination with chroot
 code="$(echo "$@" | sed "s|$target_host:|$target_host:$chroot|g")"
