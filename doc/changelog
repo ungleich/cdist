@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.0.13:
+2.0.13: 2012-06-05
 	* Bugfix __ssh_authorized_key: Ensure it sets proper group (contradict)
 	* Bugfix __addifnosuchline: Fixed quotes/interpolation bug ("a  b" became "a b")
 	* New Explorer: interfaces (Sébastien Gross)
