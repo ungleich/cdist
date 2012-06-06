@@ -1,0 +1,99 @@
+{{Infobox software
+|name                   = cdist
+|logo                   =
+|screenshot             = 
+|caption                = 
+|collapsible            = 
+|author                 = Nico Schottelius, Steven Armstrong
+|developer              = 
+|released               = 2010
+|latest release version = 2.0.13
+|latest release date    = 05-Jun-2012
+|frequently updated     = 
+|programming language   = [[Python_(programming_language)|Python]], [[Bourne shell]]
+|operating system       = [[GNU/Linux]], [[Unix-like]]
+|platform               = 
+|size                   = 
+|language               = 
+|status                 = 
+|genre                  = [[Configuration management]]
+|license                = [[GPLv3]].
+|website                = http://www.nico.schottelius.org/software/cdist/
+}}
+
+'''cdist''' is a usable configuration management system. It adheres to the KISS principle and is being used in small up to enterprise grade environments. cdist is an alternative to other configuration management systems like cfengine, bcfg2, chef and puppet.
+
+Its core is written in [[Python (programming language)|Python]] and the types are
+written in [[Bourne Shell]]. Cdist is released under the [[GNU General Public License|GPL]].
+cdist has been a no. 1 topic on Hackernews for some time.<ref>cdist on hackernews https://news.ycombinator.com/item?id=3422678</ref>
+
+cdist is actively being developed in Switzerland by the two main developer Nico Schottelius and Steven Armstrong.
+
+
+==Architecture==
+
+cdist is being used to configure small to a large number of hosts in a scalable manner.
+In cdist the user describes at a central position (the **initial manifest**),
+what the target state of a system should be. So called **types** are being used to realise
+the appropriate functionality on hosts.
+
+In comparison to other configuration management software, cdist
+
+* does not have any requirements on the target host besides SSH and a bourne shell
+* operates in push based approach (a server pushes to the clients, clients usually do not poll)
+* is highly scalable by design
+** If configuring more hosts in parallel than possible on one host is needed, adding more CPUs or more configurations servers to scale out is supported.
+
+
+== Configuration DSL ==
+
+All user configurable parts are contained in manifests or gencode-scripts, which are shell scripts.
+The idea behind shell scripts is to give the System Administrators a simple way DSL, that is known to them.
+Although the core is written in Python, a user does not need to know any Python at all.
+
+When using the types in cdist, they are called like normal programs in manifests and can make use of
+advanced parameter parsing as well as reading from stdin:
+
+<pre>
+# Provide a default file, but let the user change it
+__file /home/frodo/.bashrc --source "/etc/skel/.bashrc" \
+   --state exists \
+   --owner frodo --mode 0600
+
+# Take file content from stdin
+__file /tmp/whatever --owner root --group root --mode 644 --source - << DONE
+Here goes the content for /tmp/whatever
+DONE
+</pre>
+
+Access to paths and files within types is given by environment variables like $__object.
+
+==Platform support==
+
+cdist is known to be running on a variety of Unix flavors, but can in theory also run on Windows. This has not been tested though.
+
+
+==Users==
+
+cdist is being used at various companies in Switzerland (for instance at [[ETH Zurich]]), the USA, Germany and France.
+cdist is being watched on github by more than 100 people and has more than 30 forks.<ref>Github project page https://github.com/telmich/cdist</ref>
+
+
+== See also ==
+{{Portal|Free software}}
+* [[Comparison of open source configuration management software]]
+
+== References ==
+{{reflist}}
+
+== External links ==
+* [http://www.nico.schottelius.org/software/cdist/ cdist Website]
+* [https://github.com/telmich/cdist Github home]
+* [http://l.schottelius.org/mailman/listinfo/cdist cdist mailinglist]
+* [https://freecode.com/projects/cdist cdist on freencode]
+
+
+[[Category:Configuration management]]
+[[Category:Free software programmed in Python]]
+[[Category:2010 software]]
+
