@@ -293,7 +293,7 @@ if [ "$onboot" = "true" ]; then
    #   if necessary
 
    cat <<EOF
-      jail_list="\$(grep '^jail_enable=' /etc/rc.conf | cut -d= -f2)"
+      jail_list="\$(grep '^jail_list=' /etc/rc.conf | cut -d= -f2)"
       if [ -z "\$jail_list" ]; then	# no jail_list line in rc.conf at all
          echo "jail_list=\"${name}\"" >>/etc/rc.conf
       else
