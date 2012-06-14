@@ -134,7 +134,11 @@ class DirectoryDict(collections.MutableMapping):
     def __setitem__(self, key, value):
         try:
             with open(os.path.join(self.path, key), "w") as fd:
-                fd.write(str(value))
+                if type(value) == type([]):
+                    for v in value:
+                        fd.write(str(v) + '\n')
+                else:
+                    fd.write(str(value))
         except EnvironmentError as e:
             raise cdist.Error(str(e))
 
