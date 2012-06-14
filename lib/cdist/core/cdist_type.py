@@ -81,7 +81,9 @@ class CdistType(object):
 
         self.__explorers = None
         self.__required_parameters = None
+        self.__required_multiple_parameters = None
         self.__optional_parameters = None
+        self.__optional_multiple_parameters = None
         self.__boolean_parameters = None
 
     def __repr__(self):
@@ -131,6 +133,22 @@ class CdistType(object):
         return self.__required_parameters
 
     @property
+    def required_multiple_parameters(self):
+        """Return a list of required multiple parameters"""
+        if not self.__required_multiple_parameters:
+            parameters = []
+            try:
+                with open(os.path.join(self.absolute_path, "parameter", "required_multiple")) as fd:
+                    for line in fd:
+                        parameters.append(line.strip())
+            except EnvironmentError:
+                # error ignored
+                pass
+            finally:
+                self.__required_multiple_parameters = parameters
+        return self.__required_multiple_parameters
+
+    @property
     def optional_parameters(self):
         """Return a list of optional parameters"""
         if not self.__optional_parameters:
@@ -145,6 +163,22 @@ class CdistType(object):
             finally:
                 self.__optional_parameters = parameters
         return self.__optional_parameters
+
+    @property
+    def optional_multiple_parameters(self):
+        """Return a list of optional multiple parameters"""
+        if not self.__optional_multiple_parameters:
+            parameters = []
+            try:
+                with open(os.path.join(self.absolute_path, "parameter", "optional_multiple")) as fd:
+                    for line in fd:
+                        parameters.append(line.strip())
+            except EnvironmentError:
+                # error ignored
+                pass
+            finally:
+                self.__optional_multiple_parameters = parameters
+        return self.__optional_multiple_parameters
 
     @property
     def boolean_parameters(self):
