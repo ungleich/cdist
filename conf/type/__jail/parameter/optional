@@ -7,3 +7,4 @@ devfs-enable
 devfs-ruleset
 onboot
 jaildir
+jailbase
