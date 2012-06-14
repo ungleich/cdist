@@ -187,7 +187,7 @@ cat <<EOF
       fi
       if [ ! -d "${jaildir}/home" ]; then
           SAVE=\$PWD; cd ${jaildir}/base
-          ln -s "home" "usr/home"
+          ln -s usr/home home
           cd \$SAVE; unset SAVE
       fi
    fi
