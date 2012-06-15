@@ -1,0 +1,134 @@
+{{db-spam}}
+{{Infobox software
+|name                   = cdist
+|logo                   =
+|screenshot             = 
+|caption                = 
+|collapsible            = 
+|author                 = Nico Schottelius, Steven Armstrong
+|developer              = 
+|released               = 2010
+|latest release version = 2.0.13
+|latest release date    = 05-Jun-2012
+|frequently updated     = 
+|programming language   = [[Python_(programming_language)|Python]], [[Bourne shell]]
+|operating system       = [[GNU/Linux]], [[Unix-like]]
+|platform               = 
+|size                   = 
+|language               = 
+|status                 = 
+|genre                  = [[Configuration management]]
+|license                = [[GPLv3]].
+|website                = http://www.nico.schottelius.org/software/cdist/
+}}
+
+'''cdist''' is a configuration management system, which adheres to the [[KISS_principle]]. It is being used in small up to enterprise grade environments.
+cdist is an alternative to other configuration management systems [[CFEngine]], [[Bcfg2]], [[Chef (software)|Chef]] and [[Puppet (software)|Puppet]].
+cdist development started in 2010 at [[ETH Zurich]] and is actively being developed by a lot of [[FOSS]] contributors
+and maintained by the two main developers Nico Schottelius and
+Steven Armstrong. cdist is being watched on github by more than 100 people and has more than 30 forks.<ref>cdist development at https://github.com/telmich/cdist</ref>
+The major part of the discussion about cdist happens on the mailinglist<ref>cdist mailinglist http://l.schottelius.org/mailman/listinfo/cdist</ref>
+and on the IRC channel #cstar in the [[Freenode]] network. cdist is being used at various companies in Switzerland (for instance at [[ETH Zurich]]), the USA, Germany and France.
+
+
+Its core is written in [[Python (programming language)|Python]] and the types are
+written in [[Bourne Shell]]. Cdist is released under the [[GNU General Public License|GPL]].
+cdist has been a no. 1 topic on [[Hacker News]] for some time.<ref>cdist on [[Hacker News]] https://news.ycombinator.com/item?id=3422678</ref> 
+
+
+== Architecture ==
+
+cdist is split into two components:
+
+* The core
+* The configuration
+
+=== Core ===
+
+The core of cdist is implemented in Python 3 and provides the executables to configure target hosts. The core operates in a push model: It connects
+from the source host '''to''' the target hosts and configures the machines. For communication and file transfer [[SSH]] is being used.
+To allow parallel configuration of hosts, the core supports a parallel mode in which it creates a child process for every connection.
+This model allows cdist to scale horizontally with the available computing resources: If at a certain limit is reached and the capacity of the
+available CPUs has been used, adding another CPU or distributing cdist to multiple hosts allows to configure more hosts in parallel.
+
+=== Configuration ===
+
+The configuration is written in [[Bourne Shell]] and consists of
+
+* The initial manifest (which defines which host is assigned which types)
+* Global Explorers (to gain information about the target system)
+* Types (which provide all functionality and consist of a manifest, type explorers and gencode scripts)
+
+Although all of these are written in Shell script, the order of execution in the manifests does not matter: cdist employs a idempotent
+configuration.
+
+=== Comparison ===
+
+In comparison to most other configuration management software, cdist does not have any requirements on the target host besides SSH and a bourne shell.
+It requires Python 3.2 on the source host, though.<ref>Why cdist requires Python 3.2 on the source host - http://www.nico.schottelius.org/blog/cdist-python-3.2-requirement/</ref>
+cdist operates in push based approach, in which a server pushes configurations to the client and the clients do not poll for updates.
+
+== Configuration DSL ==
+
+All user configurable parts are contained in manifests or gencode-scripts, which are shell scripts.
+Shell scripts were chosen, because Unix System Administrators are usually profound in reading
+and writing shell scripts.
+
+cdist reads its configuration from the initial manifest ('''conf/manifest/init'''), in which hosts are mapped to
+types:
+
+<pre>
+case "$__target_host" in
+    myhostname)
+        __package zsh --state present
+        __addifnosuchline /tmp/cdist-welcome --line "Welcome to cdist"
+    ;;
+esac
+</pre>
+
+When using the types in cdist, they are called like normal programs in manifests and can make use of
+advanced parameter parsing as well as reading from stdin:
+
+<pre>
+# Provide a default file, but let the user change it
+__file /home/frodo/.bashrc --source "/etc/skel/.bashrc" \
+   --state exists \
+   --owner frodo --mode 0600
+
+# Take file content from stdin
+__file /tmp/whatever --owner root --group root --mode 644 --source - << DONE
+Here goes the content for /tmp/whatever
+DONE
+</pre>
+
+Dependencies are expressed by setting up the '''require''' environment variable:
+<pre>
+      __directory /tmp/foobar
+      require="__directory//tmp/foobar" __file /tmp/foobar/baz
+</pre>
+
+Access to paths and files within types is given by environment variables like $__object.
+
+
+== See also ==
+{{Portal|Free software}}
+* [[Comparison of open source configuration management software]]
+
+== References ==
+{{reflist}}
+
+== External links ==
+* [http://www.nico.schottelius.org/software/cdist/ cdist Website]
+* [https://github.com/telmich/cdist Github home]
+* [http://l.schottelius.org/mailman/listinfo/cdist cdist mailinglist]
+* [https://freecode.com/projects/cdist cdist on freecode]
+
+
+[[Category:Configuration management]]
+[[Category:Free software programmed in Python]]
+[[Category:2010 software]]
+[[Category:Linux configuration utilities]]
+[[Category:Mac OS X]]
+[[Category:Linux package management-related software]]
+[[Category:Unix package management-related software]]
+
