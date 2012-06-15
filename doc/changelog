@@ -7,6 +7,7 @@ Changelog
 2.0.14:
 	* Bugfix Type: __jail: Use correct variable (Jake Guffey)
 	* Change Type: __jail: Parameter jailbase now optional (Jake Guffey)
+	* Bugfix Type: __start_on_boot: Do not change parameters
 	
 2.0.13: 2012-06-05
 	* Bugfix __ssh_authorized_key: Ensure it sets proper group (contradict)
