@@ -44,7 +44,7 @@ case "$state_should" in
 #                echo rc-update add \"$name\" default
 #            ;;
 
-            amazon|centos|fedora|owl|redhat)
+            amazon|centos|fedora|owl|redhat|suse)
                 echo chkconfig \"$name\" on
             ;;
 
@@ -79,7 +79,7 @@ case "$state_should" in
 #                echo rc-update del \"$name\"
 #            ;;
 
-            centos|fedora|owl|redhat)
+            centos|fedora|owl|redhat|suse)
                 echo chkconfig \"$name\" off
             ;;
 
