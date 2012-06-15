@@ -49,7 +49,7 @@ case "$os" in
         [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
     ;;
 
-    amazon|centos|fedora|owl|redhat)
+    amazon|centos|fedora|owl|redhat|suse)
         state=$(chkconfig --level "$runlevel" "$name" || echo absent)
         [ "$state" ] || state="present"
     ;;

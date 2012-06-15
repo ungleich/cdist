@@ -28,12 +28,26 @@ else
    jaildir="/usr/jail"
 fi
 
-jailbase="$(cat "$__object/parameter/jailbase")"
+if [ -f "$__object/parameter/jailbase" ]; then
+   jailbase="$(cat "$__object/parameter/jailbase")"
+else
+   jailbase=""
+fi
+
+state="$(cat "$__object/parameter/state")"
+
+if [ "$state" = "present" ] && [ -z "$jailbase" ]; then
+   exec >&2
+   echo "jailbase is a REQUIRED parameter when state=present!"
+   exit 1
+fi
 
 remotebase="${jaildir}/jailbase.tgz"
 basepresent="$(cat "$__object/explorer/basepresent")"
 
-if [ "$basepresent" = "NONE" ]; then
-    echo "$__remote_copy" "${jailbase}" "$__target_host:${remotebase}"
-fi
+if [ "$state" = "present" ]; then
+   if [ "$basepresent" = "NONE" ]; then
+      echo "$__remote_copy" "${jailbase}" "$__target_host:${remotebase}"
+   fi   # basepresent=NONE
+fi   # state=present
 
