@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,13 +18,35 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the status of a package - parsed dpkg output
+# Manage packages with Zypper (mostly suse)
 #
 
+# Debug
+# exec >&2
+# set -x
+
+globalopts="--quiet --non-interactive"
+
 if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+   name="$__object/parameter/name"
 else
    name="$__object_id"
 fi
 
-rpm -q --whatprovides "$name" 2>/dev/null || true
+state_should="$(cat "$__object/parameter/state")"
+
+# Exit if nothing is needed to be done
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+   present)
+         echo zypper "$globalopts" install --auto-agree-with-licenses \"$name\"
+   ;;
+   absent)
+         echo pacman "$globalopts" remove \"$name\"
+   ;;
+   *)
+      echo "Unknown state: $state_should" >&2
+      exit 1
+   ;;
+esac
