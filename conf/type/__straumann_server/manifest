@@ -1,0 +1,11 @@
+
+__package websphere-as_ce --state present
+require="__package/websphere-as_ce" __start_on_boot websphere --state present
+
+__package mysql --state present
+require="__package/mysql" __start_on_boot mysql --state present
+
+require="__package/mysql" __file /etc/my.cnf \
+    --source "$__type/files/my.cnf" \
+    --mode 0644 --owner mysql --group mysql
+

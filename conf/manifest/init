@@ -1,0 +1,9 @@
+#
+# Panters cdist configuration
+#
+
+case "$__target_host" in
+    straumann-prod|straumann-test)
+        __straumann_server
+    ;;
+esac
