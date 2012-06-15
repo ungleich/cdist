@@ -8,6 +8,8 @@ Changelog
 	* Bugfix Type: __jail: Use correct variable (Jake Guffey)
 	* Change Type: __jail: Parameter jailbase now optional (Jake Guffey)
 	* Bugfix Type: __start_on_boot: Do not change parameters
+	* New Type: __package_zypper
+	* Feature Types: Initial Support for SuSE Linux
 	
 2.0.13: 2012-06-05
 	* Bugfix __ssh_authorized_key: Ensure it sets proper group (contradict)
