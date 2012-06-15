@@ -19,10 +19,10 @@
 #
 #
 
-state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state" 2>/dev/null || echo present)"
 state_is=$(cat "$__object/explorer/state")
 
-# Nothing todo, go away
+# Short circuit if nothing is to be done
 [ "$state_should" = "$state_is" ] && exit 0
 
 os=$(cat "$__global/explorer/os")
