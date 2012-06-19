@@ -28,7 +28,7 @@ name="$__object_id"
 # systems (such as *BSD, Darwin) those commands do not handle GNU style long
 # options.
 shorten_property() {
-    local ret=""
+    unset ret
     case "$1" in
 	comment) ret="-c";;
 	home) ret="-d";;
@@ -84,8 +84,7 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
       fi
 
       if [ "$new_value" != "$current_value" ]; then
-	  local option=$(shorten_property $property)
-          set -- "$@" "$option" \'$new_value\'
+          set -- "$@" "$(shorten_property $property)" \'$new_value\'
       fi
    done
 
@@ -97,8 +96,7 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
 else
    for property in $(ls .); do
       new_value="$(cat "$property")"
-      local option=$(shorten_property $property)
-      set -- "$@" "$option" \'$new_value\'
+      set -- "$@" "$(shorten_property $property)" \'$new_value\'
    done
 
    echo useradd "$@" "$name"
