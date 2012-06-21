@@ -7,7 +7,7 @@ index 8b46873..7aba903 100644
      def _init_remote(self, remote_copy, remote_exec):
  
 -        self.remote_base_path = os.environ.get('__cdist_remote_out_dir', "/var/lib/cdist")
-+        self.remote_base_path = os.environ.get('__cdist_remote_out_dir', "/var/tmp/cdist")
++        self.remote_base_path = os.environ.get('__cdist_remote_out_dir', "/var/lib/cdist-out")
          self.remote_copy = remote_copy
          self.remote_exec = remote_exec
  
