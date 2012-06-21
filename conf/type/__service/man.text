@@ -16,7 +16,7 @@ This cdist type allows you to control the state of a service (daemon).
 REQUIRED PARAMETERS
 -------------------
 state::
-   State of the service: Either stopped or running.
+   State of the service: Either absent or present.
 
 
 OPTIONAL PARAMETERS
@@ -29,10 +29,10 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Start if not running
-__service syslog-ng --state running
+__service syslog-ng --state present
 
 # Stop the process if it is running
-__service sshd --state stopped
+__service sshd --state absent
 
 --------------------------------------------------------------------------------
 
