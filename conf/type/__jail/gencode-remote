@@ -185,10 +185,12 @@ cat <<EOF
       if [ ! -d "${jaildir}/base/usr/home" ]; then
          mkdir -p "${jaildir}/base/usr/home"
       fi
-      if [ ! -d "${jaildir}/home" ]; then
-          SAVE=\$PWD; cd ${jaildir}/base
-          ln -s usr/home home
-          cd \$SAVE; unset SAVE
+      if [ ! -d "${jaildir}/base/home" ]; then
+          if [ ! -L "${jaildir}/base/home" ]; then
+             SAVE=\$PWD; cd ${jaildir}/base
+             ln -s usr/home home
+             cd \$SAVE; unset SAVE
+          fi
       fi
    fi
    if [ ! -d "${jaildir}/rw" ]; then
