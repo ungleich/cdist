@@ -88,9 +88,10 @@ else	# pfctl call succeeded
       revert
    else
       if [ -f "${rcvar}.tests" ]; then
-         rm -f "${rcvar}" "${rcvar}.tests"
+         rm -f "${rcvar}.tests"
       fi
       if [ -f "${rcvar}.new" ]; then
+         rm -f "${rcvar}"
          mv "${rcvar}.new" "${rcvar}"
       fi
    fi
