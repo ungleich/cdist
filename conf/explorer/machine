@@ -22,4 +22,6 @@
 #
 #
 
-uname -m
+if which uname >/dev/null 2>&1; then
+   uname -m
+fi

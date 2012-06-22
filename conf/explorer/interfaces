@@ -29,6 +29,11 @@ if which ip >/dev/null 2>&1; then
     exit 0
 fi
 
+if ! which ifconfig >/dev/null 2>&1; then
+   # no ifconfig, nothing we could do
+   exit 0
+fi
+
 uname_s="$(uname -s)"
 REGEXP='s/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
 
