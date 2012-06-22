@@ -25,8 +25,6 @@
 # exec >&2
 # set -x
 
-pacopts="--needed --noconfirm --noprogressbar"
-
 if [ -f "$__object/parameter/name" ]; then
    name="$__object/parameter/name"
 else
@@ -57,10 +55,10 @@ fi
 
 case "$state_should" in
    present)
-         echo pacman "$pacopts" -S \"$name\"
+         echo pacman --needed --noconfirm --noprogressbar -S \"$name\"
    ;;
    absent)
-         echo pacman "$pacopts" -R \"$name\"
+         echo pacman --noconfirm --noprogressbar -R \"$name\"
    ;;
    *)
       echo "Unknown state: $state_should" >&2
