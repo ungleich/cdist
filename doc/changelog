@@ -7,6 +7,7 @@ Changelog
 2.0.14:
 	* Bugfix Type: __jail: Use correct variable (Jake Guffey)
 	* Change Type: __jail: Parameter jailbase now optional (Jake Guffey)
+	* Bugfix Type: __user: Use passwd database on FreeBSD (Jake Guffey)
 	* Bugfix Type: __start_on_boot: Do not change parameters
 	* Feature __user: Added support for BSDs (Sébastien Gross)
 	* New Type: __package_zypper
