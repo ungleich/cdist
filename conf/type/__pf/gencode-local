@@ -25,12 +25,12 @@
 #exec >&2
 #set -x
 
-# Send files to $__target_host via $__remtoe_copy
+# Send files to $__target_host via $__remote_copy
 # wait 5 seconds and $__remote_exec $__target_host touch /tmp/pf_test.$__target_host
 
 state="$(cat "$__object/parameter/state")"
 
-if [ "$state" = "disabled" ]; then	# Nothing more for this script to do
+if [ "$state" = "absent" ]; then	# Nothing more for this script to do
    exit 0
 fi
 
@@ -59,7 +59,7 @@ case \${UNAME} in
       ;;
    * )
       echo "Sorry, I do not know how to find a sha256sum on ${UNAME}." >&2
-      exit 255
+      exit 1
       ;;
 esac
 

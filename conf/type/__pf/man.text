@@ -16,7 +16,7 @@ This type is usually used on *BSD systems to manage the pf firewall.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "enabled" or "disabled".
+   Either "present" or "absent".
 
 
 OPTIONAL PARAMETERS
@@ -37,13 +37,13 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Disable the firewall (for some reason... ;)
-__pf --state disabled
+__pf --state absent
 
 # Enable the firewall with the ruleset defined in $__manifest/files/pf.conf
-__pf --state enabled --ruleset $__manifest/files/pf.conf
+__pf --state present --ruleset $__manifest/files/pf.conf
 
 # Enable the firewall and make sure you can still talk to it
-__pf --state enabled --ruleset $__manifest/files/pf.conf \
+__pf --state present --ruleset $__manifest/files/pf.conf \
    --testscript $__manifest/files/do_tests.sh
 --------------------------------------------------------------------------------
 

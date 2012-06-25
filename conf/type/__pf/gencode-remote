@@ -46,7 +46,7 @@ fi
 
 currentstate="\$(pfctl -si 2>&1 | grep Status: | sed 's/^Status: \(.*\) for.*$/\1/g')"
 
-if [ "$state" = "enabled" ]; then
+if [ "$state" = "present" ]; then
    if [ ! "\$currentstate" = "Enabled" ]; then
       pfctl -e 2>&- >&-
    fi
