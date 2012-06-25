@@ -79,8 +79,14 @@ else
             gid)
                proparg="-g"
                ;;
+            password)
+               echo "group/$name: FreeBSD doesn't support password setting" >&2
+               exit 1
+               ;;
             *)
-               echo "Unknown property: $property" >&2
+               # The type has been updated to support more properties than it knows how to handle for FreeBSD
+               # tell the user about this.
+               echo "Currently unknown property: $property" >&2
                exit 1
                ;;
          esac
