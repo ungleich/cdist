@@ -36,7 +36,6 @@ if grep -q "^${name}:" "$__object/explorer/group"; then
 
       case "$property" in
          password)
-            current_value="$(awk -F: '{ print $2 }' < "$__object/explorer/gshadow")"
             if [ "$os" = "freebsd" ]; then
                echo "group/$name: FreeBSD doesn't support password modification" >&2
                exit 1
@@ -48,6 +47,7 @@ if grep -q "^${name}:" "$__object/explorer/group"; then
                   exit 1
                ;;
             esac
+            current_value="$(awk -F: '{ print $2 }' < "$__object/explorer/gshadow")"
          ;;
          gid)
             # set to -g to support older redhat/centos
