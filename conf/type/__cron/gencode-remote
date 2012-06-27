@@ -36,35 +36,34 @@ fi
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
       present)
+         if [ "$user" = "global" ]; then # global crontab
+            cat <<DONE
+tmp=\$($mktemp)
+cat /etc/crontab > \$tmp
+cat >> \$tmp <<EOC
+$(cat "$__object/parameter/entry")
+EOC
+cat \$tmp > /etc/crontab
+rm \$tmp
+DONE
+         else
          cat << DONE
 tmp=\$($mktemp)
 crontab -u $user -l > \$tmp
 cat >> \$tmp << EOC
-$(cat "$__object/parameter/entry")"
+$(cat "$__object/parameter/entry")
 EOC
 crontab -u $user \$tmp
 rm \$tmp
 DONE
+         fi
       ;;
       absent)
-         # defined in type manifest
-         prefix="$(cat "$__object/parameter/prefix")"
-         suffix="$(cat "$__object/parameter/suffix")"
+         # defined in type manifest, Escape forward slashes for sed
+         prefix="$(cat "$__object/parameter/prefix" | sed 's/\//\\\//g')"
+         suffix="$(cat "$__object/parameter/suffix" | sed 's/\//\\\//g')"
          cat << DONE
-crontab -u $user -l | awk -v prefix="$prefix" -v suffix="$suffix" '
-{
-   if (index(\$0,prefix)) {
-      triggered=1
-   }
-   if (triggered) {
-      if (index(\$0,suffix)) {
-            triggered=0
-      }
-   } else {
-      print
-   }
-}
-' | crontab -u $user -
+crontab -u $user -l | sed '/$prefix/,/$suffix/d' | crontab -u $user -
 DONE
       ;;
    esac
