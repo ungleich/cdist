@@ -18,6 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+os="$(cat "$__global/explorer/os")"
 user="$(cat "$__object/parameter/user")"
 state_should="$(cat "$__object/parameter/state")"
 state_is=$(diff -q "$__object/parameter/entry" "$__object/explorer/entry" \
@@ -25,11 +26,18 @@ state_is=$(diff -q "$__object/parameter/entry" "$__object/explorer/entry" \
    || echo absent
 )
 
+# FreeBSD mktemp doesn't allow execution without at least one param
+if [ "$os" = "freebsd" ]; then
+   mktemp="mktemp -t tmp"
+else
+   mktemp="mktemp"
+fi
+
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
       present)
          cat << DONE
-tmp=\$(mktemp)
+tmp=\$($mktemp)
 crontab -u $user -l > \$tmp
 cat >> \$tmp << EOC
 $(cat "$__object/parameter/entry")"
