@@ -24,6 +24,7 @@
 
 name="$__object_id"
 os_version="$(cat "$__global/explorer/os_version")"
+os="$(cat "$__global/explorer/os")"
 
 cd "$__object/parameter"
 if grep -q "^${name}:" "$__object/explorer/group"; then
@@ -35,7 +36,10 @@ if grep -q "^${name}:" "$__object/explorer/group"; then
 
       case "$property" in
          password)
-            current_value="$(awk -F: '{ print $2 }' < "$__object/explorer/gshadow")"
+            if [ "$os" = "freebsd" ]; then
+               echo "group/$name: FreeBSD doesn't support password modification" >&2
+               exit 1
+            fi
             case "$os_version" in
                "Red Hat Enterprise Linux Server release "[45]*|"CentOS release "[45]*)
                   # TODO: Use gpasswd?  Need to fix gshadow explorer first.
@@ -43,6 +47,7 @@ if grep -q "^${name}:" "$__object/explorer/group"; then
                   exit 1
                ;;
             esac
+            current_value="$(awk -F: '{ print $2 }' < "$__object/explorer/gshadow")"
          ;;
          gid)
             # set to -g to support older redhat/centos
@@ -57,15 +62,48 @@ if grep -q "^${name}:" "$__object/explorer/group"; then
    done
 
    if [ $# -gt 0 ]; then
-      echo groupmod "$@" "$name"
-   else
-      true
+      case $os in
+         freebsd)
+            echo pw group mod "$@" "$name"
+            ;;
+         *)
+            echo groupmod "$@" "$name"
+            ;;
+      esac
    fi
 else
    for property in $(ls .); do
       new_value="$(cat "$property")"
-      set -- "$@" "--$property" \"$new_value\"
+      if [ "$os" = "freebsd" ]; then
+         case $property in
+            gid)
+               proparg="-g"
+               ;;
+            password)
+               echo "group/$name: FreeBSD doesn't support password setting" >&2
+               exit 1
+               ;;
+            *)
+               # The type has been updated to support more properties than it knows how to handle for FreeBSD
+               # tell the user about this.
+               echo "Currently unknown property: $property" >&2
+               exit 1
+               ;;
+         esac
+      else
+         proparg="--$property"
+      fi
+
+      set -- "$@" "$proparg" \"$new_value\"
    done
 
-   echo groupadd "$@" "$name"
+   case $os in
+      freebsd)
+         echo pw group add "$@" "$name"
+         ;;
+      *)
+         echo groupadd "$@" "$name"
+         ;;
+   esac
 fi
+
