@@ -104,6 +104,10 @@ Archlinux already has python >= 3.2, so you only need to do:
 
     pacman -S python
 
+#### CentOS
+
+See the "From source" section
+
 #### Debian
 
 For Debian >= wheezy:
@@ -166,6 +170,22 @@ You can choose between Homebrew and Macports, either way works:
 
     port install python32
     ln -s /opt/local/bin/python3.2 /opt/local/bin/python3
+
+#### From Source
+
+For those operating systems not yet support Python 3.2:
+
+    pyversion=3.2.3
+    wget http://www.python.org/ftp/python/$pyversion/Python-${pyversion}.tar.bz2
+    tar xvfj Python-${pyversion}.tar.bz2
+    cd Python-${pyversion}
+    ./configure
+    make
+    sudo make install
+
+This installs python 3.2 to /usr/local/bin. Ensure this directory is in
+your PATH environment variable.
+
 
 ### Get cdist
 
