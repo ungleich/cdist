@@ -10,6 +10,7 @@ Changelog
 	* Bugfix Type: __user: Use passwd database on FreeBSD (Jake Guffey)
 	* Bugfix Type: __start_on_boot: Do not change parameters
 	* Feature __user: Added support for BSDs (Sébastien Gross)
+	* Feature __group: Added support for FreeBSD (Jake Guffey)
 	* New Type: __package_zypper
 	* Feature Types: Initial Support for SuSE Linux
 	
