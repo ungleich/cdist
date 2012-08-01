@@ -32,8 +32,8 @@ RC="/etc/rc.conf"
 TMP="$(grep '^pf_rules=' ${RC} | cut -d= -f2 | sed 's/"//g')"
 PFCONF="${TMP:-"/etc/pf.conf"}"
 
-if [ -f "${PFCONF}" ]; then	# The pf config file exists, find its sha256sum.
-	sha256 ${PFCONF} | cut -d= -f2 | sed 's/ //g'
+if [ -f "${PFCONF}" ]; then	# The pf config file exists, find its cksum.
+	cksum -o 1 ${PFCONF} | cut -d= -f2 | sed 's/ //g'
 else	# the pf config file doesn't exist
 	echo NOTEXIST
 fi

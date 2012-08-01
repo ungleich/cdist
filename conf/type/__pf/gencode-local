@@ -49,16 +49,16 @@ cat <<EOF
 UNAME="$(uname)"
 case \${UNAME} in
    Darwin )
-      currentSum="\$(shasum -a 256 ${ruleset} | cut '-d ' -f1)"
+      currentSum="\$(cksum -o 1 ${ruleset} | cut '-d ' -f1)"
       ;;
    Linux )
-      currentSum="\$(sha256sum ${ruleset} | cut '-d ' -f1)"
+      currentSum="\$(cksum ${ruleset} | cut '-d ' -f1)"
       ;;
    FreeBSD )
-      currentSum="\$(sha256 ${ruleset} | cut -d= -f2 | sed 's/ //g')"
+      currentSum="\$(cksum -o 1 ${ruleset} | cut -d= -f2 | sed 's/ //g')"
       ;;
    * )
-      echo "Sorry, I do not know how to find a sha256sum on ${UNAME}." >&2
+      echo "Sorry, I do not know how to find a cksum on ${UNAME}." >&2
       exit 1
       ;;
 esac
