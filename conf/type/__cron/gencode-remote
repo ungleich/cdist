@@ -25,6 +25,7 @@ state_is=$(diff -q "$__object/parameter/entry" "$__object/explorer/entry" \
    && echo present \
    || echo absent
 )
+file="$(cat "$__object/parameter/file")"
 
 # FreeBSD mktemp doesn't allow execution without at least one param
 if [ "$os" = "freebsd" ]; then
@@ -36,14 +37,14 @@ fi
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
       present)
-         if [ "$user" = "global" ]; then # global crontab
+         if [ -n "$file" ]; then # global crontab
             cat <<DONE
 tmp=\$($mktemp)
-cat /etc/crontab > \$tmp
+cat $file > \$tmp
 cat >> \$tmp <<EOC
 $(cat "$__object/parameter/entry")
 EOC
-cat \$tmp > /etc/crontab
+cat \$tmp > $file
 rm \$tmp
 DONE
          else
@@ -60,8 +61,8 @@ DONE
       ;;
       absent)
          # defined in type manifest, Escape forward slashes for sed
-         prefix="$(cat "$__object/parameter/prefix" | sed 's/\//\\\//g')"
-         suffix="$(cat "$__object/parameter/suffix" | sed 's/\//\\\//g')"
+         prefix="$(cat "$__object/parameter/prefix" | sed 's%\/%\\\/%g')"
+         suffix="$(cat "$__object/parameter/suffix" | sed 's%\/%\\\/%g')"
          cat << DONE
 crontab -u $user -l | sed '/$prefix/,/$suffix/d' | crontab -u $user -
 DONE

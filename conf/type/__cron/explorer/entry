@@ -24,14 +24,18 @@ user="$(cat "$__object/parameter/user")"
 prefix="#cdist:__cron/$name"
 suffix="#/cdist:__cron/$name"
 
-if [ "$user" = "global" ]; then
-   source="$(cat /etc/crontab)"
+if [ -f "$__object/parameter/file" ]; then
+   file="$(cat $__object/parameter/file)"
+fi
+
+if [ -n "$file" ]; then
+   source="$(cat ${file:-/etc/crontab})"
 else
    source="$(crontab -u $user -l 2>&-)"
 fi
 
 # Escape forward slashes for sed
-prefix="$(echo "$prefix" | sed 's/\//\\\//g')"
-suffix="$(echo "$suffix" | sed 's/\//\\\//g')"
+prefix="$(echo "$prefix" | sed 's%/%\/%g')"
+suffix="$(echo "$suffix" | sed 's%/%\/%g')"
 echo "$source" | sed -n '/$prefix/,/$suffix/p'
 
