@@ -20,7 +20,7 @@
 #
 
 set +e
-executable=$(which runlevel 2>/dev/null)
+executable=$(command -v runlevel)
 if [ -x "$executable" ]; then
    "$executable" | awk '{ print $2 }'
 fi
