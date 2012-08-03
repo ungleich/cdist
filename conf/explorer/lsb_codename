@@ -25,7 +25,7 @@ case "$($__explorer/os)" in
       (. /etc/openwrt_release && echo "$DISTRIB_CODENAME")
    ;;
    *)
-      lsb_release=$(which lsb_release 2>/dev/null)
+      lsb_release=$(command -v lsb_release)
       if [ -x "$lsb_release" ]; then
          $lsb_release --short --codename
       fi

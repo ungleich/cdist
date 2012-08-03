@@ -22,4 +22,6 @@
 #
 #
 
-uname -m
+if command -v uname; then
+   uname -m
+fi
