@@ -135,6 +135,7 @@ class Explorer(object):
         env.update({
             '__object': os.path.join(self.remote.object_path, cdist_object.path),
             '__object_id': cdist_object.object_id,
+            '__object_name': cdist_object.name,
             '__object_fq': cdist_object.path,
             '__type_explorer': os.path.join(self.remote.type_path, cdist_type.explorer_path)
         })
