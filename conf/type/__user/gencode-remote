@@ -24,6 +24,8 @@
 
 name="$__object_id"
 
+os="$(cat "$__global/explorer/os")"
+
 # We need to shorten options for both usermod and useradd since on some
 # systems (such as *BSD, Darwin) those commands do not handle GNU style long
 # options.
@@ -89,7 +91,11 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
    done
 
    if [ $# -gt 0 ]; then
-      echo usermod "$@" "$name"
+      if [ "$os" = "freebsd" ]; then
+         echo pw usermod "$@" "$name"
+      else
+         echo usermod "$@" "$name"
+      fi
    else
       true
    fi
@@ -99,5 +105,9 @@ else
       set -- "$@" "$(shorten_property $property)" \'$new_value\'
    done
 
-   echo useradd "$@" "$name"
+   if [ "$os" = "freebsd" ]; then
+      echo pw useradd "$@" "$name"
+   else
+      echo useradd "$@" "$name"
+   fi
 fi
