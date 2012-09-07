@@ -300,8 +300,8 @@ END
 EOF
 fi
 
-# Add $name to jail_list if $onboot=true
-if [ "$onboot" = "true" ]; then
+# Add $name to jail_list if $onboot=yes
+if [ "$onboot" = "yes" ]; then
 
    # first check to see whether jail_enable="YES" exists in rc.conf or not and add it
    #   if necessary
