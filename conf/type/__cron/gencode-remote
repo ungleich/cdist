@@ -18,45 +18,53 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+os="$(cat "$__global/explorer/os")"
 user="$(cat "$__object/parameter/user")"
 state_should="$(cat "$__object/parameter/state")"
 state_is=$(diff -q "$__object/parameter/entry" "$__object/explorer/entry" \
    && echo present \
    || echo absent
 )
+file="$(cat "$__object/parameter/file")"
+
+# FreeBSD mktemp doesn't allow execution without at least one param
+if [ "$os" = "freebsd" ]; then
+   mktemp="mktemp -t tmp"
+else
+   mktemp="mktemp"
+fi
 
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
       present)
+         if [ -n "$file" ]; then # global crontab
+            cat <<DONE
+tmp=\$($mktemp)
+cat $file > \$tmp
+cat >> \$tmp <<EOC
+$(cat "$__object/parameter/entry")
+EOC
+cat \$tmp > $file
+rm \$tmp
+DONE
+         else
          cat << DONE
-tmp=\$(mktemp)
+tmp=\$($mktemp)
 crontab -u $user -l > \$tmp
 cat >> \$tmp << EOC
-$(cat "$__object/parameter/entry")"
+$(cat "$__object/parameter/entry")
 EOC
 crontab -u $user \$tmp
 rm \$tmp
 DONE
+         fi
       ;;
       absent)
-         # defined in type manifest
-         prefix="$(cat "$__object/parameter/prefix")"
-         suffix="$(cat "$__object/parameter/suffix")"
+         # defined in type manifest, Escape forward slashes for sed
+         prefix="$(cat "$__object/parameter/prefix" | sed 's%\/%\\\/%g')"
+         suffix="$(cat "$__object/parameter/suffix" | sed 's%\/%\\\/%g')"
          cat << DONE
-crontab -u $user -l | awk -v prefix="$prefix" -v suffix="$suffix" '
-{
-   if (index(\$0,prefix)) {
-      triggered=1
-   }
-   if (triggered) {
-      if (index(\$0,suffix)) {
-            triggered=0
-      }
-   } else {
-      print
-   }
-}
-' | crontab -u $user -
+crontab -u $user -l | sed '/$prefix/,/$suffix/d' | crontab -u $user -
 DONE
       ;;
    esac
