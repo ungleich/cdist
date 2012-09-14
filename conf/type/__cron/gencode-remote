@@ -39,7 +39,7 @@ if [ "$state_is" != "$state_should" ]; then
       present)
          if [ -n "$file" ]; then # global crontab
             cat <<DONE
-tmp=\$(mktemp)
+tmp=\$($mktemp)
 cat $file > \$tmp
 cat >> \$tmp <<EOC
 $(cat "$__object/parameter/entry")
