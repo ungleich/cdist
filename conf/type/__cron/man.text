@@ -51,6 +51,10 @@ EXAMPLES
 __cron some-id --user root --command "/path/to/script" \
    --hour 23 --minute 15 --day_of_week 1-6
 
+# run Monday to Saturday at 23:15 (global crontab)
+__cron some-id --file /etc/crontab --command "/path/to/script" \
+   --hour 23 --minute 15 --day_of_week 1-6
+
 # run on reboot
 __cron some-id --user root --command "/path/to/script" \
    --raw @reboot
