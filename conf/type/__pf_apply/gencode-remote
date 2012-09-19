@@ -29,6 +29,8 @@ rcvar=$(cat "$__object/explorer/rcvar")
 
 cat <<EOF
 if [ -f "${rcvar}.old" ]; then # rcvar.old exists, we must need to disable pf
+   # Disable pf
+   # If it already is disabled, pfctl -d returns 1, go on with life
    pfctl -d
    # Cleanup
    rm -f "${rcvar}.old
@@ -36,7 +38,8 @@ if [ -f "${rcvar}.old" ]; then # rcvar.old exists, we must need to disable pf
    [ -f "${rcvar}" ] && rm -f "${rcvar}"
 elif [ -f "${rcvar}.new" ]; then # rcvar.new exists, we must need to apply it
    # Ensure that pf is enabled in the first place
-   pfctl -e
+   # If it already is enabled, pfctl -e returns 1, go on with life
+   pfctl -e || true
    pfctl -f "${rcvar}"
    ret="$?"
    # Cleanup
