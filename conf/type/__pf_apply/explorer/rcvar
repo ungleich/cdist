@@ -18,36 +18,18 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Apply pf(4) ruleset on *BSD
+# Get the location of the pf ruleset on the target host.
 #
 
 # Debug
 #exec >&2
 #set -x
 
-rcvar=$(cat "$__object/explorer/rcvar")
+# Check /etc/rc.conf for pf's configuration file name. Default to /etc/pf.conf
 
-cat <<EOF
-if [ -f "${rcvar}.old" ]; then # rcvar.old exists, we must need to disable pf
-   pfctl -d
-   # Cleanup
-   rm -f "${rcvar}.old
-   # This file shouldn't exist, but just in case...
-   [ -f "${rcvar}" ] && rm -f "${rcvar}"
-elif [ -f "${rcvar}.new" ]; then # rcvar.new exists, we must need to apply it
-   # Ensure that pf is enabled in the first place
-   pfctl -e
-   pfctl -f "${rcvar}"
-   ret="$?"
-   # Cleanup
-   rm -f "${rcvar}.old
-   # This file shouldn't exist, but just in case...
-   [ -f "${rcvar}" ] && rm -f "${rcvar}"
-   if [ "$ret" -ne "0" ]; then # failed to configure new ruleset
-      echo "Failed to configure the new ruleset on ${__target_host}\!" >&2
-   fi
-fi
-EOF
+RC="/etc/rc.conf"
+PFCONF="$(grep '^pf_rules=' ${RC} | cut -d= -f2 | sed 's/"//g')"
+echo ${PFCONF:-"/etc/pf.conf"}
 
 # Debug
 #set +x
