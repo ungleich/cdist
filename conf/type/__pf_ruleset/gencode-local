@@ -45,13 +45,13 @@ cksum=$(cat "$__object/explorer/cksum")
 cat <<EOF
 case $uname in
    Darwin)
-      currentSum=$(cksum -o 1 ${source} | cut '-d ' -f1)
+      currentSum=\$(cksum -o 1 ${source} | cut '-d ' -f1)
       ;;
    Linux)
-      currentSum=$(cksum ${source} | cut '-d ' -f1)
+      currentSum=\$(cksum ${source} | cut '-d ' -f1)
       ;;
    FreeBSD)
-      currentSum=$(cksum -o 1 ${source} | cut -d= -f2 | sed 's/ //g')
+      currentSum=\$(cksum -o 1 ${source} | cut -d= -f2 | sed 's/ //g')
       ;;
    *)
       echo "Sorry, I do not know how to find a cksum on ${UNAME}." >&2
@@ -66,9 +66,8 @@ if [ ! "${cksum}" = "NOTEXIST" ]; then
 else # File just doesn't exist yet
    $__remote_copy "${source}" "$__target_host:${rcvar}.new"
 fi
-
-if [ -n "${testscript}" ]; then
-   $__remote_copy "${testscript}" "$__target_host:${rcvar}.test"
-fi
 EOF
+
+# Debug
+#exec +x
 
