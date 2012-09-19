@@ -37,5 +37,5 @@ rcvar=$(cat "$__object/explorer/rcvar")
 
 # --state absent, so ensure that .new doesn't exist and that conf is renamed to .old
 echo rm \"${rcvar}.new\"
-echo mv \"${rcvar}\" \"${rcvar.old}\"
+echo mv \"${rcvar}\" \"${rcvar}.old\"
 
