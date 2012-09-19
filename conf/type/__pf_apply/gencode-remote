@@ -47,12 +47,9 @@ elif [ -f "${rcvar}.new" ]; then # rcvar.new exists, we must need to apply it
    # Cleanup
    # This file shouldn't exist, but just in case
    rm -f "${rcvar}.old"
-   if [ "$ret" -ne "0" ]; then # failed to configure new ruleset
+   if [ "\$ret" -ne "0" ]; then # failed to configure new ruleset
       echo "Failed to configure the new ruleset on ${__target_host}!" >&2
    fi
-else # neither ${rcvar}.old nor ${rcvar}.new exist? error.
-   echo "Neither ${rcvar}.old nor ${rcvar}.new exist! Something is wrong." >&2
-   exit 1
 fi
 EOF
 
