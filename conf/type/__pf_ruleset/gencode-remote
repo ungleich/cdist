@@ -36,6 +36,12 @@ fi
 rcvar=$(cat "$__object/explorer/rcvar")
 
 # --state absent, so ensure that .new doesn't exist and that conf is renamed to .old
-echo "[ -f \"${rcvar}.new\" ] && rm \"${rcvar}.new\""
-echo "[ -f \"${rcvar}\" ] && mv \"${rcvar}\" \"${rcvar}.old\""
+cat <<EOF
+if [ -f "${rcvar}.new" ]; then
+   rm "${rcvar}.new"
+fi
+if [ -f "${rcvar}" ]; then
+   mv "${rcvar}" "${rcvar}.old"
+fi
+EOF
 
