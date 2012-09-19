@@ -31,7 +31,7 @@ cat <<EOF
 if [ -f "${rcvar}.old" ]; then # rcvar.old exists, we must need to disable pf
    # Disable pf
    # If it already is disabled, pfctl -d returns 1, go on with life
-   pfctl -d
+   pfctl -d || true
    # Cleanup
    rm -f "${rcvar}.old"
    # This file shouldn't exist, but just in case...
