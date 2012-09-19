@@ -41,7 +41,7 @@ if [ -f "${rcvar}.old" ]; then # rcvar.old exists, we must need to disable pf
 elif [ -f "${rcvar}.new" ]; then # rcvar.new exists, we must need to apply it
    # Ensure that pf is enabled in the first place
    # If it already is enabled, pfctl -e returns 1, go on with life
-   if [ -f "${rcvar}" ];
+   if [ -f "${rcvar}" ]; then
       rm -f "${rcvar}"
    fi
    mv "${rcvar}.new" "${rcvar}"
