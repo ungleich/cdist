@@ -33,7 +33,7 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Creates or appends the line specifiend in "include_www" to the file "lighttpd.conf"
+# Creates or appends the line specified in "include_www" to the file "lighttpd.conf"
 __addifnosuchline www --file /etc/lighttpd.conf --line include_www
 
 # Adds the line "include_git" to the file "lighttpd.conf"

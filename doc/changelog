@@ -4,7 +4,36 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.0.10:
+2.0.15:
+	* Core: Make variable __object_name available in type explorers (Steven Armtrong)
+
+2.0.14: 2012-09-07
+	* Bugfix Type: __jail: Use correct variable (Jake Guffey)
+	* Change Type: __jail: Parameter jailbase now optional (Jake Guffey)
+	* Bugfix Type: __user: Use passwd database on FreeBSD (Jake Guffey)
+	* Bugfix Type: __start_on_boot: Do not change parameters
+	* Feature __user: Added support for BSDs (Sébastien Gross)
+	* Feature __group: Added support for FreeBSD (Jake Guffey)
+	* New Type: __package_zypper
+	* Feature Types: Initial Support for SuSE Linux
+	
+2.0.13: 2012-06-05
+	* Bugfix __ssh_authorized_key: Ensure it sets proper group (contradict)
+	* Bugfix __addifnosuchline: Fixed quotes/interpolation bug ("a  b" became "a b")
+	* New Explorer: interfaces (Sébastien Gross)
+	* Feature core: Support reading from stdin in types (Steven Armstrong)
+	* Feature core: Support multiple parameters for types (Steven Armstrong)
+	* Feature __file: Support reading from stdin with - syntax (Steven Armstrong)
+
+2.0.12: 2012-05-29
+	* Core: Correctly raise error on Python < 3.2 (Steven Armtrong)
+	* Core: Add support for --remote-exec and --remote-copy parameters
+	* Documentation: Debian Squeeze hints (Sébastien Gross)
+
+2.0.11: 2012-05-23
+	* Fix insecure file/directory creation: Use umask 077
+
+2.0.10: 2012-05-18
 	* Cleanup __group: No getent gshadow in old Redhat, use groupmod -g
 		(Matt Coddington)
 	* Bugfix __package_yum: Missing cat
@@ -14,6 +43,9 @@ Changelog
 	* Feature core: Correct parent dependency handling (Steven Armstrong)
 	* Bugfix several types: Fix sed for FreeBSD (Istvan Beregszaszi)
 	* New Type: __jail (Jake Guffey)
+	* Change Type: __rvm*: --state present/absent not installed/remvoed (Evax Software)
+	* Bugfix Type: __cron: Hide error output from crontab
+	* Various smaller bugfixes (Chris Lamb)
 
 2.0.9: 2012-03-12
 	* Cleanup documentation: Fix environment variable list to be properly 

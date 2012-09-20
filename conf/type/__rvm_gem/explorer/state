@@ -24,7 +24,7 @@ ruby="$(echo "$gemset" | cut -d '@' -f 1)"
 gemsetname="$(echo "$gemset" | cut -d '@' -f2)"
 user="$(cat "$__object/parameter/user")"
 if su - "$user" -c "[ ! -d \"\$HOME/.rvm\" ]" ; then
-   echo "removed"
+   echo "absent"
    exit 0
 fi
 if su - "$user" -c "source \"\$HOME/.rvm/scripts/rvm\"
@@ -32,8 +32,8 @@ rvm list | grep -q $ruby"; then
    if su - "$user" -c "source \"\$HOME/.rvm/scripts/rvm\"
 rvm use $ruby > /dev/null; rvm gemset list | grep -q $gemsetname &&
 rvm use $gemset > /dev/null && gem list | grep -q $gem"; then
-      echo "installed"
+      echo "present"
       exit 0
   fi
 fi
-echo "removed"
+echo "absent"

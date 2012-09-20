@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 #
 # This file is part of cdist.
 #
@@ -18,34 +18,34 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages with yum (mostly Fedora)
+# List all network interfaces in explorer/ifaces. One interface per line.
+#
+# If your OS is not supported please provide a ifconfig output
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$__object/parameter/name"
-else
-   name="$__object_id"
+# Use ip, if available
+if command -v ip; then
+    ip -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
+    exit 0
 fi
 
-state="$(cat "$__object/parameter/state")"
+if ! command -v ifconfig; then
+   # no ifconfig, nothing we could do
+   exit 0
+fi
 
-opts="-n -q"
+uname_s="$(uname -s)"
+REGEXP='s/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
 
-not_installed="^no package provides"
-
-case "$state" in
-   installed)
-      if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-         echo zypper $opts install \"$name\"
-      fi
-   ;;
-   removed)
-      if ! grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-         echo zypper $opts remove \"$name\"
-      fi
-   ;;
-   *)
-      echo "Unknown state: $state" >&2
-      exit 1
-   ;;
+case "$uname_s" in
+    Darwin)
+	ifconfig -a | sed -n -E "$REGEXP"
+	;;
+    Linux|*BSD)
+	ifconfig -a | sed -n -r "$REGEXP"
+	;;
+    *)
+	echo "Unsupported ifconfig output for $uname_s" >&2
+	exit 1
+	;;
 esac

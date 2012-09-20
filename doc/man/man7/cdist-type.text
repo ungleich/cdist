@@ -74,14 +74,19 @@ DEFINING PARAMETERS
 -------------------
 Every type consists of required, optional and boolean parameters, which must
 be created in a newline seperated file in ***parameter/required***,
-***parameter/optional*** and ***parameter/boolean***. If either is missing,
-the type will have no required, no optional, no boolean or no parameters at
-all.
+***parameter/required_multiple***, ***parameter/optional***, 
+***parameter/optional_multiple*** and ***parameter/boolean***.
+Parameters which are allowed multiple times should be listed in
+required_multiple or optional_multiple respectively. For all other parameters
+the standard unix behaviour of the last given wins is applied.
+If either is missing, the type will have no required, no optional, no boolean
+or no parameters at all. 
 
 Example:
 --------------------------------------------------------------------------------
 echo servername >> conf/type/__nginx_vhost/parameter/required
 echo logdirectory >> conf/type/__nginx_vhost/parameter/optional
+echo server_alias >> conf/type/__nginx_vhost/parameter/optional_multiple
 echo use_ssl >> conf/type/__nginx_vhost/parameter/boolean
 --------------------------------------------------------------------------------
 
@@ -108,6 +113,41 @@ if [ -f "$__object/parameter/use_ssl" ]; then
    # file exists -> True
    # do some fancy ssl stuff
 fi
+
+# parameter with multiple values
+if [ -f "$__object/parameter/server_alias" ]; then
+   for alias in $(cat "$__object/parameter/server_alias"); do
+      echo $alias > /some/where/usefull
+   done
+fi
+
+--------------------------------------------------------------------------------
+
+
+INPUT FROM STDIN
+-----------------
+Every type can access what has been written on stdin when it has been called.
+The result is saved into the ***stdin*** file in the object directory.
+
+Example use of a type: (e.g. in conf/type/__archlinux_hostname)
+--------------------------------------------------------------------------------
+__file /etc/rc.conf --source - << eof
+...
+HOSTNAME="$__target_host"
+...
+eof
+--------------------------------------------------------------------------------
+If you have not seen this syntax (<< eof) before, it may help you to read
+about "here documents".
+
+In the __file type, stdin is used as source for the file, if - is used for source:
+--------------------------------------------------------------------------------
+    if [ -f "$__object/parameter/source" ]; then
+        source="$(cat "$__object/parameter/source")"
+        if [ "$source" = "-" ]; then
+            source="$__object/stdin"
+        fi  
+    ....
 --------------------------------------------------------------------------------
 
 

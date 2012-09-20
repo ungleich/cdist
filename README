@@ -19,6 +19,9 @@
 
 ## Introduction
 
+cdist is a usable configuration management system. It adheres to
+the KISS principle and is being used in small up to enterprise grade
+environments.
 cdist is an alternative to other configuration management systems like
 [cfengine](http://www.cfengine.org/),
 [bcfg2](http://trac.mcs.anl.gov/projects/bcfg2),
@@ -101,13 +104,33 @@ Archlinux already has python >= 3.2, so you only need to do:
 
     pacman -S python
 
+#### CentOS
+
+See the "From source" section
+
 #### Debian
 
 For Debian >= wheezy:
 
     aptitude install python3
 
+On squeeze you can add following line in **/etc/apt/sources.list**
+
+  deb http://ftp.debian.org/debian wheezy main
+
+And add pinning entry in **/etc/apt/preferences.d/wheezy**:
+
+  Package: *
+  Pin: release n=wheezy
+  Pin-Priority: 1
+
+Please be aware that both **openssh-server** and **openssh-client** might be
+removed on **python3.2** installation. You surely want to reinstall them:
+
+  apt-get install -t wheezy openssh-server openssh-client
+
 For older Debian versions, installing python 3.2 manually is required.
+
 
 #### Fedora
 
@@ -147,6 +170,22 @@ You can choose between Homebrew and Macports, either way works:
 
     port install python32
     ln -s /opt/local/bin/python3.2 /opt/local/bin/python3
+
+#### From Source
+
+For those operating systems not yet support Python 3.2:
+
+    pyversion=3.2.3
+    wget http://www.python.org/ftp/python/$pyversion/Python-${pyversion}.tar.bz2
+    tar xvfj Python-${pyversion}.tar.bz2
+    cd Python-${pyversion}
+    ./configure
+    make
+    sudo make install
+
+This installs python 3.2 to /usr/local/bin. Ensure this directory is in
+your PATH environment variable.
+
 
 ### Get cdist
 
@@ -259,7 +298,7 @@ need to replace **\_\_file** calls in your manifests:
 ### IRC
 
 You can join the development ***IRC channel***
-[#cstar on irc.freenode.org](irc://irc.freenode.org/#cstar).
+[#cstar on irc.freenode.net](irc://irc.freenode.org/#cstar).
 
 ### Mailing list
 

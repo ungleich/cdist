@@ -35,6 +35,7 @@ else
          debian|ubuntu) type="apt" ;;
          freebsd) type="pkg_freebsd" ;;
          gentoo) type="emerge" ;;
+         suse) type="zypper" ;;
          openwrt) type="opkg" ;;
          *)
             echo "Don't know how to manage packages on: $os" >&2

@@ -24,6 +24,25 @@
 
 name="$__object_id"
 
+os="$(cat "$__global/explorer/os")"
+
+# We need to shorten options for both usermod and useradd since on some
+# systems (such as *BSD, Darwin) those commands do not handle GNU style long
+# options.
+shorten_property() {
+    unset ret
+    case "$1" in
+	comment) ret="-c";;
+	home) ret="-d";;
+	gid) ret="-g";;
+	groups) ret="-G";;
+	password) ret="-p";;
+	shell) ret="-s";;
+	uid) ret="-u";;
+    esac
+    echo "$ret"
+}
+
 cd "$__object/parameter"
 if grep -q "^${name}:" "$__object/explorer/passwd"; then
    for property in $(ls .); do
@@ -67,20 +86,28 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
       fi
 
       if [ "$new_value" != "$current_value" ]; then
-         set -- "$@" "--$property" \'$new_value\'
+          set -- "$@" "$(shorten_property $property)" \'$new_value\'
       fi
    done
 
    if [ $# -gt 0 ]; then
-      echo usermod "$@" "$name"
+      if [ "$os" = "freebsd" ]; then
+         echo pw usermod "$@" "$name"
+      else
+         echo usermod "$@" "$name"
+      fi
    else
       true
    fi
 else
    for property in $(ls .); do
       new_value="$(cat "$property")"
-      set -- "$@" "--$property" \'$new_value\'
+      set -- "$@" "$(shorten_property $property)" \'$new_value\'
    done
 
-   echo useradd "$@" "$name"
+   if [ "$os" = "freebsd" ]; then
+      echo pw useradd "$@" "$name"
+   else
+      echo useradd "$@" "$name"
+   fi
 fi

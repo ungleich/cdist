@@ -29,5 +29,5 @@ result=$(cat "$__object/explorer/findline")
 
 if [ "$result" = "NOTFOUND" ]; then
   line=$(cat "$__object/parameter/line")
-  echo "echo $line >> $file"
+  echo "echo \"$line\" >> $file"
 fi

@@ -30,6 +30,9 @@ exists="$(cat "$__object/explorer/exists")"
 if [ "$state_should" = "present" ]; then
    if [ -f "$__object/parameter/source" ]; then
       source="$(cat "$__object/parameter/source")"
+      if [ "$source" = "-" ]; then
+         source="$__object/stdin"
+      fi
 
       if [ -f "$source" ]; then
          local_cksum="$(cksum < "$source")"
