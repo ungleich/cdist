@@ -1,1 +1,1 @@
-echo "Type __addifnosuchline is deprecated and will be removed in cdist 2.1. Please use __line instead" >&2
+echo "WARNING: Type __addifnosuchline is deprecated and will be removed in cdist 2.1. Please use __line instead" >&2
