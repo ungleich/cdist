@@ -23,11 +23,20 @@ state::
 
 line::
     Specifies the line which should be absent or present
+
     Must be present, if state is present.
+    Must not be combined with regex, if state is absent.
 
 regex::
-    If supplied, search for this regex.
-    Otherwise entire line must be matched.
+    If state is present, search for this pattern and add
+    given line, if the given regular expression does not match.
+
+    In case of absent, ensure all lines matching the
+    regular expression are absent (cannot be combined with
+    the line parameter, if state is absent).
+
+    If the regular expression contains / (slashes), they need
+    to be escaped with \ (backslash): / becomes \/.
 
 file::
     If supplied, use this as the destination file.

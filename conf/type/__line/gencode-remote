@@ -20,8 +20,10 @@
 #
 
 file="/$__object_id"
+regex=""
 state_should="present"
-[ -f "$__object/parameter/file" ] && file=$(cat "$__object/parameter/file")
+[ -f "$__object/parameter/file" ]  && file=$(cat "$__object/parameter/file")
+[ -f "$__object/parameter/regex" ] && regex=$(cat "$__object/parameter/regex")
 [ -f "$__object/parameter/state" ] && state_should=$(cat "$__object/parameter/state")
 
 state_is="$(cat "$__object/explorer/state")"
@@ -41,7 +43,18 @@ case "$state_should" in
 
     ;;
     absent)
-        echo "echo q | ex -c \"/${line}/d|w|q\" \"${file}\""
+        if [ "$regex" -a "$line" ]; then
+            echo "Mutally exclusive parameters regex and line given for state absent" >&2
+            exit 1
+        fi
+
+        [ "$line" ] && regex="^$line\$"
+
+        cat << eof
+tmp=\$(mktemp)
+sed '/$regex/d' "$file" > \$tmp && cat "\$tmp" > "$file" && rm -f "\$tmp"
+eof
+        #echo "echo q | ex -c \"/${line}/d|w|q\" \"${file}\""
     ;;
     *)
        echo "Unknown state: $state_should" >&2
