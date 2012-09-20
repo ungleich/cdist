@@ -23,7 +23,7 @@ state::
 
 line::
     Specifies the line which should be absent or present
-    
+    Must be present, if state is present.
 
 regex::
     If supplied, search for this regex.
