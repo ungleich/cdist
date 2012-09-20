@@ -25,6 +25,7 @@ state_should="present"
 [ -f "$__object/parameter/file" ]  && file=$(cat "$__object/parameter/file")
 [ -f "$__object/parameter/regex" ] && regex=$(cat "$__object/parameter/regex")
 [ -f "$__object/parameter/state" ] && state_should=$(cat "$__object/parameter/state")
+[ -f "$__object/parameter/line" ]  && line=$(cat "$__object/parameter/line")
 
 state_is="$(cat "$__object/explorer/state")"
 
@@ -32,11 +33,9 @@ state_is="$(cat "$__object/explorer/state")"
 
 case "$state_should" in
     present)
-        if [ ! -f "$__object/parameter/line" ]; then
+        if [ ! "$line" ]; then
             echo "Required parameter \"line\" is missing" >&2
             exit 1
-        else
-            line=$(cat "$__object/parameter/line")
         fi
 
         echo "echo \"$line\" >> $file"
