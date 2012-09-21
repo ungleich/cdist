@@ -24,7 +24,7 @@
 destination="/$__object_id"
 
 if [ -e "$destination" ]; then
-   echo yes
+   echo present
 else
-   echo no
+   echo absent
 fi
