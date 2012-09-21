@@ -34,8 +34,6 @@ PFCONF="${TMP:-"/etc/pf.conf"}"
 
 if [ -f "${PFCONF}" ]; then	# The pf config file exists, find its cksum.
 	cksum -o 1 ${PFCONF} | cut -d= -f2 | awk '{print $1}'
-else	# the pf config file doesn't exist
-	echo NOTEXIST
 fi
 
 # Debug

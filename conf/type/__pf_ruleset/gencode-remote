@@ -28,20 +28,22 @@
 # Remove ${rcvar} in the case of --state absent
 
 state=$(cat "$__object/parameter/state")
-
-if [ ! "$state" = "absent" ]; then   # There is nothing more for a *remote* script to do
-   exit 0
-fi
-
 rcvar=$(cat "$__object/explorer/rcvar")
 
-# --state absent, so ensure that .new doesn't exist and that conf is renamed to .old
-cat <<EOF
-if [ -f "${rcvar}.new" ]; then
-   rm "${rcvar}.new"
-fi
-if [ -f "${rcvar}" ]; then
-   mv "${rcvar}" "${rcvar}.old"
-fi
+if [ "$state" = "present" ]; then   # There is nothing more for a *remote* script to do
+   exit 0
+elif [ "$state" = "absent" ]; then
+   # --state absent, so ensure that .new doesn't exist and that conf is renamed to .old
+   cat <<EOF
+   if [ -f "${rcvar}.new" ]; then
+      rm "${rcvar}.new"
+   fi
+   if [ -f "${rcvar}" ]; then
+      mv "${rcvar}" "${rcvar}.old"
+   fi
 EOF
+else
+   echo "Unknown state ${state}!" >&2
+   exit 1
+fi
 
