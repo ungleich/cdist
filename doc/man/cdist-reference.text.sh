@@ -133,10 +133,6 @@ out/object/<object>::
 out/object/<object>/explorers::
     Output of type specific explorers, per object.
 
-tmp_dir::
-    A tempdir and a tempfile is used by cdist internally,
-    which will be removed when the scripts end automatically.
-
 TYPES
 -----
 The following types are available:
