@@ -8,3 +8,7 @@ Changelog (v2.1 specific)
 	* Removed type __addifnosuchline (replaced by __line)
 	* Removed type __removeline (replaced by __line)
 	* Type __directory: Parameter --parents and --recursive are now boolean
+	* Type __package_apt, __package_luarocks, __package_opkg,
+		__package_pacman, __package_pkg_freebsd, __package_pkg_openbsd,
+		__package_rubygem, __package_yum, __process:
+			Parameter state accepts only "present" and "absent"
