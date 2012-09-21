@@ -33,14 +33,15 @@ owner::
    User to chown to.
 
 
-OPTIONAL BOOLEAN PARAMETERS
----------------------------
+BOOLEAN PARAMETERS
+------------------
 parents::
    Whether to create parents as well (mkdir -p behaviour)
 
 recursive::
    If supplied the chgrp and chown call will run recursively.
    This does *not* influence the behaviour of chmod.
+
 
 EXAMPLES
 --------
@@ -56,13 +57,18 @@ __directory /tmp/foobar --state absent
 __directory /etc --owner root --group root --mode 0755
 
 # Create nfs service directory, including parents
-__directory /home/services/nfs --parents yes
+__directory /home/services/nfs --parents
 
 # Change permissions recursively
-__directory /home/services --recursive yes --owner root --group root
+__directory /home/services --recursive --owner root --group root
 
 # Setup a temp directory
 __directory /local --mode 1777
+
+# Take it all
+__directory /home/services/kvm --recursive --parents \
+    --owner root --group root --mode 0755 --state present
+
 --------------------------------------------------------------------------------
 
 
