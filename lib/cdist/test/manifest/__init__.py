@@ -101,7 +101,6 @@ class ManifestTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
         self.assertEqual(output_dict['__object_name'], cdist_object.name)
-        self.assertEqual(output_dict['__self'], cdist_object.name)
 
     def test_debug_env_setup(self):
         self.log.setLevel(logging.DEBUG)

@@ -96,7 +96,6 @@ class Manifest(object):
                 '__object': cdist_object.absolute_path,
                 '__object_id': cdist_object.object_id,
                 '__object_name': cdist_object.name,
-                '__self': cdist_object.name,
                 '__type': cdist_object.cdist_type.absolute_path,
                 '__cdist_manifest': script,
             })
