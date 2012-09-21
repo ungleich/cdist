@@ -34,24 +34,13 @@ if [ -f "${rcvar}.old" ]; then # rcvar.old exists, we must need to disable pf
    pfctl -d || true
    # Cleanup
    rm -f "${rcvar}.old"
-   # This file shouldn't exist, but just in case...
-   if [ -f "${rcvar}" ]; then
-      rm -f "${rcvar}"
-   fi
 elif [ -f "${rcvar}.new" ]; then # rcvar.new exists, we must need to apply it
    # Ensure that pf is enabled in the first place
    # If it already is enabled, pfctl -e returns 1, go on with life
-   if [ -f "${rcvar}" ]; then
-      rm -f "${rcvar}"
-   fi
    mv "${rcvar}.new" "${rcvar}"
    pfctl -e || true
    pfctl -f "${rcvar}"
-   ret="$?"
-   # Cleanup
-   # This file shouldn't exist, but just in case
-   rm -f "${rcvar}.old"
-   if [ "\$ret" -ne "0" ]; then # failed to configure new ruleset
+   if [ "\$?" -ne "0" ]; then # failed to configure new ruleset
       echo "Failed to configure the new ruleset on ${__target_host}!" >&2
    fi
 fi
