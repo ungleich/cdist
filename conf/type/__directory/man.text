@@ -32,14 +32,15 @@ mode::
 owner::
    User to chown to.
 
+
+OPTIONAL BOOLEAN PARAMETERS
+---------------------------
 parents::
-   Whether to create parents as well (mkdir -p behaviour). Must be yes or no.
+   Whether to create parents as well (mkdir -p behaviour)
 
 recursive::
    If supplied the chgrp and chown call will run recursively.
    This does *not* influence the behaviour of chmod.
-   Must be yes or no.
-
 
 EXAMPLES
 --------
