@@ -18,7 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Check state and exit if nothing needs to be done
 state_should="present"
 [ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/state")"
@@ -27,9 +26,9 @@ state_is="$(cat "$__object/explorer/state")"
 destination="/$__object_id"
 
 mkdiropt=""
-grep yes "$__object/parameter/parents" >/dev/null 2>&1 && mkdiropt="-p"
+[ -f "$__object/parameter/parents" ] && mkdiropt="-p"
 recursive=""
-grep yes "$__object/parameter/recursive" >/dev/null 2>&1 && recursive="-R"
+[ -f "$__object/parameter/recursive" ] && recursive="-R"
 
 case "$state_should" in
     present)
