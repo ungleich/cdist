@@ -18,11 +18,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-destination="/$__object_id"
-state_should="$(cat "$__object/parameter/state")"
+# Check state and exit if nothing needs to be done
+state_should="present"
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/state")"
-
 [ "$state_should" = "$state_is" ] && exit 0
+
+destination="/$__object_id"
 
 mkdiropt=""
 grep yes "$__object/parameter/parents" >/dev/null 2>&1 && mkdiropt="-p"
