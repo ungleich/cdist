@@ -18,7 +18,6 @@ REQUIRED PARAMETERS
 -------------------
 state::
     The state the package should be in, either "present" or "absent"
-    (the old values "installed" or "removed" will be removed in cdist 2.1).
 
 
 OPTIONAL PARAMETERS

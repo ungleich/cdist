@@ -39,16 +39,16 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Ensure zsh is installed
-__package_pkg_freebsd zsh --state installed
+__package_pkg_freebsd zsh --state present
 
 # Ensure vim is installed, use flavor no_x11
-__package_pkg_freebsd vim --state installed --flavor no_x11
+__package_pkg_freebsd vim --state present --flavor no_x11
 
 # If you don't want to follow pythonX packages, but always use python
-__package_pkg_freebsd python --state installed --name python2
+__package_pkg_freebsd python --state present --name python2
 
 # Remove obsolete package
-__package_pkg_freebsd puppet --state removed
+__package_pkg_freebsd puppet --state absent
 --------------------------------------------------------------------------------
 
 

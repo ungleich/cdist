@@ -54,4 +54,3 @@ if [ "$state_is" != "$state_should" ]; then
       ;;
    esac
 fi
-
