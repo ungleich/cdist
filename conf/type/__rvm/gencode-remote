@@ -25,7 +25,7 @@ if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
       present)
          cat << DONE
-su - $user -c "curl -L get.rvm.io | bash -s stable"
+su - $user -c "unset rvm_path; unset rvm_bin_path; unset rvm_prefix; unset rvm_version; curl -L get.rvm.io | bash -s stable"
 DONE
       ;;
       absent)
