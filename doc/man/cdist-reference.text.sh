@@ -65,16 +65,16 @@ conf/::
     Contains the (static) configuration like manifests, types and explorers.  
 
 conf/manifest/init::
-    This is the central entry point used by cdist-manifest-init(1).
+    This is the central entry point.
     It is an executable (+x bit set) shell script that can use
     values from the explorers to decide which configuration to create
     for the specified target host.
-    It should be primary used to define mapping from configurations to hosts.
+    Its intent is to used to define mapping from configurations to hosts.
 
 conf/manifest/*::
     All other files in this directory are not directly used by cdist, but you
     can seperate configuration mappings, if you have a lot of code in the
-    manifest/init file. This may also be helpful to have different admins
+    conf/manifest/init file. This may also be helpful to have different admins
     maintain different groups of hosts.
 
 conf/explorer/<name>::
@@ -96,10 +96,10 @@ conf/type/<name>/manifest::
     Used to generate additional objects from a type.
 
 conf/type/<name>/gencode-local::
-    Used to generate code to be executed on the server.
+    Used to generate code to be executed on the source host
 
 conf/type/<name>/gencode-remote::
-    Used to generate code to be executed on the client.
+    Used to generate code to be executed on the target host
 
 conf/type/<name>/parameter/required::
     Parameters required by type, \n seperated list.
@@ -132,10 +132,6 @@ out/object/<object>::
 
 out/object/<object>/explorers::
     Output of type specific explorers, per object.
-
-tmp_dir::
-    A tempdir and a tempfile is used by cdist internally,
-    which will be removed when the scripts end automatically.
 
 TYPES
 -----
@@ -188,10 +184,9 @@ __object_id::
     the filesystem database and ensured by the core).
 
     Note: Double slashes ("//") will not be fixed and result in an error.
-
 __self::
     DEPRECATED: Same as __object_name, do not use anymore, use __object_name instead.
-    Will be removed in cdist 3.x.
+    Will be removed in cdist 2.1.
 __object_name::
     The full qualified name of the current object.
     Available for: type manifest, type explorer, type gencode

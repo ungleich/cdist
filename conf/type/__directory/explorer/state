@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Evax Software <contact@evax.fr>
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -17,24 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
+# Check whether file exists or not
+#
 
-user="$__object_id"
-state_is="$(cat "$__object/explorer/state")"
-state_should="$(cat "$__object/parameter/state")"
-if [ "$state_is" != "$state_should" ]; then
-   case "$state_should" in
-      present)
-         cat << DONE
-su - $user -c "unset rvm_path; unset rvm_bin_path; unset rvm_prefix; unset rvm_version; curl -L get.rvm.io | bash -s stable"
-DONE
-      ;;
-      absent)
-         cat << DONE
-su - $user -c "rm -Rf \"\\\$HOME/.rvm\";
-sed '/rvm\/scripts\/rvm/d' \"\\\$HOME/.bashrc\" > \"\\\$HOME/.bashrc.cdist-tmp\"
-mv \"\\\$HOME/.bashrc.cdist-tmp\" \"\\\$HOME/.bashrc\""
+destination="/$__object_id"
 
-DONE
-      ;;
-   esac
+if [ -e "$destination" ]; then
+   echo present
+else
+   echo absent
 fi

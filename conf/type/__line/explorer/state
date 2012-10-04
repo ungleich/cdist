@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Evax Software <contact@evax.fr>
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -17,24 +17,24 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
 
-user="$__object_id"
-state_is="$(cat "$__object/explorer/state")"
-state_should="$(cat "$__object/parameter/state")"
-if [ "$state_is" != "$state_should" ]; then
-   case "$state_should" in
-      present)
-         cat << DONE
-su - $user -c "unset rvm_path; unset rvm_bin_path; unset rvm_prefix; unset rvm_version; curl -L get.rvm.io | bash -s stable"
-DONE
-      ;;
-      absent)
-         cat << DONE
-su - $user -c "rm -Rf \"\\\$HOME/.rvm\";
-sed '/rvm\/scripts\/rvm/d' \"\\\$HOME/.bashrc\" > \"\\\$HOME/.bashrc.cdist-tmp\"
-mv \"\\\$HOME/.bashrc.cdist-tmp\" \"\\\$HOME/.bashrc\""
+file="/$__object_id"
+[ -f "$__object/parameter/file" ] && file=$(cat "$__object/parameter/file")
 
-DONE
-      ;;
-   esac
+if [ -f "$__object/parameter/regex" ]; then
+    regex=$(cat "$__object/parameter/regex")
+else
+    if [ ! -f "$__object/parameter/line" ]; then
+        echo "Parameter line and regex missing - cannot explore" >&2
+        exit 1
+    fi
+    regex="^$(cat "$__object/parameter/line")\$"
+fi
+
+# Allow missing file - thus 2>/dev/null
+if grep -q "$regex" "$file" 2>/dev/null; then
+    echo present
+else
+    echo absent
 fi

@@ -1,0 +1,4 @@
+Known bug rediscovered:
+    Explorer for __start_on_boot mysql runs before __package mysql was finished.
+
+Requires two runs to actually finish the task.
