@@ -32,16 +32,6 @@ else
 fi
 
 state_should="$(cat "$__object/parameter/state")"
-case "$state_should" in
-    installed)
-        echo "WARNING:  ${__object_name}: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2       
-        state_should="present"
-    ;;  
-    removed)
-        echo "WARNING:  ${__object_name}: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2       
-        state_should="absent"
-    ;;  
-esac
 
 pkg_version="$(cat "$__object/explorer/pkg_version")"
 if [ -z "$pkg_version" ]; then
