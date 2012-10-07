@@ -27,7 +27,11 @@ else
    name="$__object_id"
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+if [ -f "$__object/parameter/state" ]; then
+   state_should="$(cat "$__object/parameter/state")"
+else
+   state_should="present"
+fi
 case "$state_should" in
     installed)
         echo "WARNING:  ${__object_name}: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2       

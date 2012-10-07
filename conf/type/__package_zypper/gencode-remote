@@ -33,7 +33,11 @@ else
    name="$__object_id"
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+if [ -f "$__object/parameter/state" ]; then
+   state_should="$(cat "$__object/parameter/state")"
+else
+   state_should="present"
+fi
 
 # Exit if nothing is needed to be done
 [ "$state_is" = "$state_should" ] && exit 0
