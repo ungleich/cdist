@@ -16,9 +16,7 @@ It dispatches the actual work to the package system dependant types.
 
 REQUIRED PARAMETERS
 -------------------
-state::
-    The state the package should be in, either "present" or "absent"
-    (the old values "installed" or "removed" will be removed in cdist 2.1).
+None
 
 
 OPTIONAL PARAMETERS
@@ -34,6 +32,10 @@ type::
     variable.
     e.g. __package_apt for Debian
          __package_emerge for Gentoo
+
+state::
+    The state the package should be in, either "present" or "absent"
+    (the old values "installed" or "removed" will be removed in cdist 2.1).
 
 
 EXAMPLES

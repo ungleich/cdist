@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
 #
 # This file is part of cdist.
 #
@@ -17,7 +17,20 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
+# Get the location of the pf ruleset on the target host.
+#
 
-# set defaults
-state="$(cat "$__object/parameter/state" 2>/dev/null \
-   || echo "present" | tee "$__object/parameter/state")"
+# Debug
+#exec >&2
+#set -x
+
+# Check /etc/rc.conf for pf's configuration file name. Default to /etc/pf.conf
+
+RC="/etc/rc.conf"
+PFCONF="$(grep '^pf_rules=' ${RC} | cut -d= -f2 | sed 's/"//g')"
+echo ${PFCONF:-"/etc/pf.conf"}
+
+# Debug
+#set +x
+

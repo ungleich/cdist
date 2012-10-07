@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage pf(4) on *BSD
+#
+
+# Debug
+#exec >&2
+#set -x
+
+# Send files to $__target_host via $__remote_copy
+
+uname=$(uname)   # Need to know what the cdist host is running so we know how to compute the ruleset's checksum
+state=$(cat "$__object/parameter/state")
+
+if [ "$state" = "absent" ]; then   # There is nothing more for a *local* script to do
+   exit 0
+fi
+
+if [ -f "$__object/parameter/source" ]; then
+   source=$(cat "$__object/parameter/source")
+fi
+
+rcvar=$(cat "$__object/explorer/rcvar")
+cksum=$(cat "$__object/explorer/cksum")
+
+
+cat <<EOF
+case $uname in
+   Darwin)
+      currentSum=\$(cksum -o 1 ${source} | cut '-d ' -f1)
+      ;;
+   Linux)
+      currentSum=\$(cksum ${source} | cut '-d ' -f1)
+      ;;
+   FreeBSD)
+      currentSum=\$(cksum -o 1 ${source} | cut -d= -f2 | sed 's/ //g')
+      ;;
+   *)
+      echo "Sorry, I do not know how to find a cksum on ${UNAME}." >&2
+      exit 1
+      ;;
+esac
+
+if [ -n "${cksum}" ]; then
+   if [ ! "\${currentSum}" = "${cksum}" ]; then
+      $__remote_copy "${source}" "$__target_host:${rcvar}.new"
+   fi
+else # File just doesn't exist yet
+   $__remote_copy "${source}" "$__target_host:${rcvar}.new"
+fi
+EOF
+
+# Debug
+#exec +x
+

@@ -27,7 +27,11 @@ else
    name="$__object_id"
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+if [ -f "$__object/parameter/state" ]; then
+   state_should="$(cat "$__object/parameter/state")"
+else
+   state_should="present"
+fi
 
 if grep -q -E "(centos|redhat|amazon)" "$__global/explorer/os"; then
     opts="-y --quiet"

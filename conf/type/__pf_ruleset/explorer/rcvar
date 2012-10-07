@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
 #
 # This file is part of cdist.
 #
@@ -18,13 +18,19 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Check whether file exists or not
+# Get the location of the pf ruleset on the target host.
 #
 
-destination="/$__object_id"
+# Debug
+#exec >&2
+#set -x
 
-if [ -e "$destination" ]; then
-   echo yes
-else
-   echo no
-fi
+# Check /etc/rc.conf for pf's configuration file name. Default to /etc/pf.conf
+
+RC="/etc/rc.conf"
+PFCONF="$(grep '^pf_rules=' ${RC} | cut -d= -f2 | sed 's/"//g')"
+echo ${PFCONF:-"/etc/pf.conf"}
+
+# Debug
+#set +x
+
