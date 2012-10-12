@@ -350,4 +350,4 @@ with cdist on more than **60** production machines of the
 
 The CBRG is managing most of their compute clusters with cdist.
 
-
+[[!tag cdist unix]]
