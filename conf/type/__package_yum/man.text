@@ -17,14 +17,17 @@ slightly confusing error message "Error: Nothing to do".
 
 REQUIRED PARAMETERS
 -------------------
-state::
-    The state the package should be in, either "present" or "absent"
+None
 
 
 OPTIONAL PARAMETERS
 -------------------
 name::
     If supplied, use the name and not the object id as the package name.
+
+state::
+    The state the package should be in, either "present" or "absent"
+    (the old values "installed" or "removed" will be removed in cdist 2.1).
 
 
 EXAMPLES

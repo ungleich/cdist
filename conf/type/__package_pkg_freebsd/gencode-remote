@@ -63,7 +63,11 @@ if [ -f "$__object/parameter/pkgsite" ]; then
 	pkgsite="$(cat "$__object/parameter/pkgsite")"
 fi
 
-state="$(cat "$__object/parameter/state")"
+if [ -f "$__object/parameter/state" ]; then
+   state="$(cat "$__object/parameter/state")"
+else
+   state="present"
+fi
 curr_version="$(cat "$__object/explorer/pkg_version")"
 add_cmd="pkg_add"
 rm_cmd="pkg_delete"

@@ -16,8 +16,7 @@ It is also included in the python virtualenv environment.
 
 REQUIRED PARAMETERS
 -------------------
-state::
-   Either "present" or "absent".
+None
 
 
 OPTIONAL PARAMETERS
@@ -27,6 +26,9 @@ name::
 
 pip::
     Instead of using pip from PATH, use the specific pip path.
+
+state::
+   Either "present" or "absent".
 
 
 EXAMPLES

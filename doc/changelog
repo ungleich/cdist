@@ -8,6 +8,9 @@ Changelog
 	* Core: Make variable __object_name available in type explorers (Steven Armtrong)
 	* New Type: __qemu_img
 	* New Type: __line
+	* New Type: __pf_apply (Jake Guffey)
+	* New Type: __pf_ruleset (Jake Guffey)
+	* Bugfix Type: __rvm: Make type work if rvm is already installed
 
 2.0.14: 2012-09-07
 	* Bugfix Type: __jail: Use correct variable (Jake Guffey)

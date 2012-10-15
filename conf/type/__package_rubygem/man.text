@@ -15,14 +15,16 @@ Rubygems is the default package management system for the Ruby programming langu
 
 REQUIRED PARAMETERS
 -------------------
-state::
-    The state the package should be in, either "present" or "absent"
+None
 
 
 OPTIONAL PARAMETERS
 -------------------
 name::
     If supplied, use the name and not the object id as the package name.
+
+state::
+    The state the package should be in, either "present" or "absent"
 
 
 EXAMPLES
