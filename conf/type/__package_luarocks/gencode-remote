@@ -34,17 +34,6 @@ if [ -f "$__object/parameter/state" ]; then
 else
    state_should="present"
 fi
-# Correct pre 2.1 naming - FIXME in 2.1
-case "$state_should" in
-    installed)
-        echo "WARNING:  ${__object_name}: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2
-        state_should="present"
-    ;;
-    removed)
-        echo "WARNING:  ${__object_name}: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2
-        state_should="absent"
-    ;;
-esac
 
 
 if grep -q "(installed)" "$__object/explorer/pkg_status"; then

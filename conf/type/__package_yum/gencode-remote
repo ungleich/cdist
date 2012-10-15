@@ -32,16 +32,6 @@ if [ -f "$__object/parameter/state" ]; then
 else
    state_should="present"
 fi
-case "$state_should" in
-    installed)
-        echo "WARNING:  ${__object_name}: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2       
-        state_should="present"
-    ;;
-    removed)
-        echo "WARNING:  ${__object_name}: $state_should is deprecated and will be removed in cdist 2.1. Please change to present/absent." >&2       
-        state_should="absent"
-    ;;
-esac
 
 if grep -q -E "(centos|redhat|amazon)" "$__global/explorer/os"; then
     opts="-y --quiet"
