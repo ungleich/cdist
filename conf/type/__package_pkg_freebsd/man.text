@@ -15,8 +15,7 @@ This type is usually used on FreeBSD to manage packages.
 
 REQUIRED PARAMETERS
 -------------------
-state::
-   Either "present" or "absent".
+None
 
 
 OPTIONAL PARAMETERS
@@ -32,6 +31,9 @@ version::
 
 pkgsite::
    If supplied, use to install from a specific package repository.
+
+state::
+   Either "present" or "absent".
 
 
 EXAMPLES

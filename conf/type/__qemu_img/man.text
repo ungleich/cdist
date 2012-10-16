@@ -32,7 +32,7 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Ensure zsh in installed
+# Create a 50G size image
 __qemu_img /home/services/kvm/vm/myvmname/system-disk --size 50G
 
 # Remove image
