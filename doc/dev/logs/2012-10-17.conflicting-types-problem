@@ -17,3 +17,11 @@ __directory/var/named explorer detects that the directory is missing
 __package/named gencode-remote installs package, which creates directory
 __directory/var/named gencode-remote outputs mkdir
 
+Solutions:
+
+    - don't use __directory, because __package does already the job (clean solution)
+    - re-run explorer before gencode-* stage
+        - gencode-remote would have caught that
+
+Not sure yet - although the latter feature has been requested, the first
+solution looks better (more clean) to this problem.
