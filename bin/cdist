@@ -39,15 +39,12 @@ def commandline():
         help='Set log level to info, be more verbose',
         action='store_true', default=False)
 
-    # Main parser
+    # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(description='cdist ' + cdist.VERSION,
         parents=[parser['loglevel']])
     parser['main'].add_argument('-V', '--version',
         help='Show version', action='version',
         version='%(prog)s ' + cdist.VERSION)
-    #parser['main'].set_defaults(func=commandline_main)
-
-    # Subcommand shell
     parser['sub'] = parser['main'].add_subparsers(title="Commands")
 
     # Banner
@@ -105,9 +102,6 @@ def commandline():
 
     log.debug(args)
     args.func(args)
-
-def commandline_main(args):
-    pass
 
 def config(args):
     configinstall(args, mode=cdist.config.Config)
