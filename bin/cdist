@@ -45,7 +45,7 @@ def commandline():
     parser['main'].add_argument('-V', '--version',
         help='Show version', action='version',
         version='%(prog)s ' + cdist.VERSION)
-    parser['main'].set_defaults(func=commandline_main)
+    #parser['main'].set_defaults(func=commandline_main)
 
     # Subcommand shell
     parser['sub'] = parser['main'].add_subparsers(title="Commands")
