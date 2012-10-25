@@ -89,8 +89,13 @@ case "$1" in
     ;;
 
     pypi)
-        $0 very-clean
-        $0 man
+        #$0 very-clean
+        #$0 man
+        $0 version-dist
+        $0 sdist
+        $0 version-dynamic
+    ;;
+    sdist)
         python3 setup.py sdist
     ;;
 
@@ -159,13 +164,24 @@ case "$1" in
 
     test)
         shift # skip t
-        export PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib
 
         if [ $# -lt 1 ]; then
             python3 -m cdist.test
         else
             python3 -m unittest "$@"
         fi
+    ;;
+
+    version-dynamic)
+        cd cdist/
+        ln -sf version_dynamic.py version.py
+    ;;
+
+    version-dist)
+        version=$(cat .version)
+        cd cdist/
+        echo "VERSION=\"$version\"" > version_static.py
+        ln -sf version_static.py version.py
     ;;
 
     *)
@@ -183,15 +199,4 @@ case "$1" in
         exit 1
     ;;
 
-    version-dynamic)
-        cd lib/cdist/
-        ln -sf version_dynamic.py version.py
-    ;;
-
-    version-dist)
-        version=$(cat .version)
-        cd lib/cdist/
-        echo "VERSION=\"$version\"" > version_static.py
-        ln -sf version_static.py version.py
-    ;;
 esac

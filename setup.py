@@ -1,9 +1,14 @@
 from distutils.core import setup
 
+package_dir = {'': 'lib'}
+
+import cdist
+
 setup(
     name = "cdist",
-    packages = ["cdist"],
-    version = "2.1.0",
+    packages = ["cdist", "cdist.core", "cdist.exec", "cdist.util" ],
+    scripts = ["cdist.py"],
+    version = cdist.version.VERSION,
     description = "Usable configuration management system",
     author = "Nico Schottelius",
     author_email = "nico-cdist-pypi@schottelius.org",
