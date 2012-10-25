@@ -1,3 +1,0 @@
-include docs/changelog docs/changelog-2.1
-recursive-include docs/gfx
-recursive-include docs *.mdwn

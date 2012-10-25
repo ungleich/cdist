@@ -14,5 +14,6 @@ docs/man/man*/docbook-xsl.css
 # Ignore cdist cache for version control
 /cache/
 
-# Python / cache
+# Python: cache, distutils
 __pycache__/
+MANIFEST

@@ -45,12 +45,37 @@ MAN7DSTDIR=${MANDIR}/man7
 SPEECHESDIR=docs/speeches
 
 case "$1" in
-   man)
-      set -e
-      "$0" mangen
-      "$0" mantype
-      "$0" manbuild
-   ;;
+    man)
+        set -e
+        "$0" mangen
+        "$0" mantype
+        "$0" manbuild
+    ;;
+
+    pypi-manifest)
+        : > MANIFEST
+        # bin
+        echo bin/cdist >> MANIFEST
+        
+        # conf
+        find conf >> MANIFEST
+
+        # docs
+        ls docs/changelog* >> MANIFEST
+        find docs/gfx >> MANIFEST
+        find docs/man/ -name \*.text >> MANIFEST
+        find docs/man/ -name \*.text.sh >> MANIFEST
+
+        # other
+        find other/ >> MANIFEST
+
+
+    ;;
+
+    pypi)
+        $0 pypi-manifest
+        python3 setup.py sdist
+    ;;
 
    manbuild)
       trap abort INT
@@ -133,15 +158,17 @@ case "$1" in
         done
    ;;
 
-   clean)
-      rm -f ${MAN7DSTDIR}/cdist-reference.text
-      find "${MANDIR}" -mindepth 2 -type l \
-         -o -name "*.1" \
-         -o -name "*.7" \
-         -o -name "*.html" \
-         -o -name "*.xml" \
-      | xargs rm -f
-   ;;
+    clean)
+        rm -f ${MAN7DSTDIR}/cdist-reference.text
+        find "${MANDIR}" -mindepth 2 -type l \
+            -o -name "*.1" \
+            -o -name "*.7" \
+            -o -name "*.html" \
+            -o -name "*.xml" \
+        | xargs rm -f
+        
+        find * -name __pycache__  | xargs rm -rf
+    ;;
 
    test)
       shift # skip t
