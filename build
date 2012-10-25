@@ -73,6 +73,7 @@ case "$1" in
     ;;
 
     pypi)
+        $0 clean
         $0 pypi-manifest
         python3 setup.py sdist
     ;;
@@ -168,6 +169,8 @@ case "$1" in
         | xargs rm -f
         
         find * -name __pycache__  | xargs rm -rf
+
+        rm -f MANIFEST
     ;;
 
    test)
