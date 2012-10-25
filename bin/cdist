@@ -22,4 +22,5 @@
 
 # Wrapper for real script to allow execution from checkout
 dir=${0%/*}
+"$dir/../build" version
 "$dir/../cdist.py" "$@"

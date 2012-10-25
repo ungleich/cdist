@@ -172,16 +172,8 @@ case "$1" in
         fi
     ;;
 
-    version-dynamic)
-        cd cdist/
-        ln -sf version_dynamic.py version.py
-    ;;
-
-    version-dist)
-        version=$(cat .version)
-        cd cdist/
-        echo "VERSION=\"$version\"" > version_static.py
-        ln -sf version_static.py version.py
+    version)
+        echo "VERSION=\"$version\"" > cdist/version.py
     ;;
 
     *)
