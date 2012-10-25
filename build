@@ -45,43 +45,12 @@ MAN7DSTDIR=${MANDIR}/man7
 SPEECHESDIR=docs/speeches
 
 case "$1" in
-     man)
-          set -e
-          "$0" mangen
-          "$0" mantype
-          "$0" manbuild
-     ;;
-
-     pypi-manifest)
-          # init MANIFEST
-          echo README > MANIFEST
-
-          # bin
-          echo bin/cdist >> MANIFEST
-          
-          # main source
-          find cdist -type f >> MANIFEST
-
-          # conf
-          find conf -type f >> MANIFEST
-
-          # docs
-          ls docs/changelog* >> MANIFEST
-          find docs/gfx  -type f >> MANIFEST
-          find docs/man/ -type f -name \*.text >> MANIFEST
-          find docs/man/ -type f -name \*.text.sh >> MANIFEST
-
-          # other
-          find other/ -type f >> MANIFEST
-
-
-     ;;
-
-     pypi)
-          $0 clean
-          $0 pypi-manifest
-          python3 setup.py sdist
-     ;;
+    man)
+        set -e
+        "$0" mangen
+        "$0" mantype
+        "$0" manbuild
+    ;;
 
     manbuild)
         trap abort INT
@@ -117,6 +86,12 @@ case "$1" in
 
     release)
           ./docs/dev/releasechecklist
+    ;;
+
+    pypi)
+        $0 very-clean
+        $0 man
+        python3 setup.py sdist
     ;;
 
     speeches)
@@ -164,19 +139,23 @@ case "$1" in
           done
     ;;
 
-     clean)
-          rm -f ${MAN7DSTDIR}/cdist-reference.text
-          find "${MANDIR}" -mindepth 2 -type l \
-                -o -name "*.1" \
-                -o -name "*.7" \
-                -o -name "*.html" \
-                -o -name "*.xml" \
-          | xargs rm -f
-          
-          find * -name __pycache__  | xargs rm -rf
+    clean)
+        rm -f ${MAN7DSTDIR}/cdist-reference.text
+        find "${MANDIR}" -mindepth 2 -type l \
+            -o -name "*.1" \
+            -o -name "*.7" \
+            -o -name "*.html" \
+            -o -name "*.xml" \
+        | xargs rm -f
 
-          rm -f MANIFEST
-     ;;
+        find * -name __pycache__  | xargs rm -rf
+
+        rm -f MANIFEST
+    ;;
+    very-clean)
+        $0 clean
+        rm -rf cache/
+    ;;
 
     test)
         shift # skip t

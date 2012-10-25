@@ -17,3 +17,4 @@ docs/man/man*/docbook-xsl.css
 # Python: cache, distutils
 __pycache__/
 MANIFEST
+dist/
