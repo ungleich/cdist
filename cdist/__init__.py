@@ -22,14 +22,9 @@
 import os
 import subprocess
 
-try:
-    with open(os.devnull, 'w') as devnull:
-        here = os.path.dirname(os.path.realpath(__file__))
-        VERSION = subprocess.check_output(
-                    'cd "%s" && git describe' % here,
-                    stderr=devnull, shell=True).decode('utf-8')
-except:
-    VERSION     = "2.0.14"
+import cdist.version
+
+VERSION = cdist.version.VERSION
 
 BANNER = """
              ..          .       .x+=:.        s

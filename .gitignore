@@ -7,14 +7,15 @@ docs/man/man1/*.1
 docs/man/man7/*.7
 docs/man/man*/*.html
 docs/man/man*/*.xml
+docs/man/man*/docbook-xsl.css
 docs/man/man7/cdist-type__*.text
 docs/man/man7/cdist-reference.text
-docs/man/man*/docbook-xsl.css
 
 # Ignore cdist cache for version control
 /cache/
 
-# Python: cache, distutils
+# Python: cache, distutils, distribution in general
 __pycache__/
 MANIFEST
 dist/
+lib/cdist/version_static.py
