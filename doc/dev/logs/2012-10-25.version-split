@@ -1,0 +1,3 @@
+- store version in .version
+- when distributed / packaged, include .version into sourcecode
+- when in git checkout, use dynamic versioning
