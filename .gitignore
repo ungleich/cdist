@@ -18,4 +18,4 @@ docs/man/man7/cdist-reference.text
 __pycache__/
 MANIFEST
 dist/
-lib/cdist/version_static.py
+cdist/version_static.py
