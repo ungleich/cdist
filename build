@@ -45,157 +45,162 @@ MAN7DSTDIR=${MANDIR}/man7
 SPEECHESDIR=docs/speeches
 
 case "$1" in
-    man)
-        set -e
-        "$0" mangen
-        "$0" mantype
-        "$0" manbuild
-    ;;
+     man)
+          set -e
+          "$0" mangen
+          "$0" mantype
+          "$0" manbuild
+     ;;
 
-    pypi-manifest)
-        : > MANIFEST
-        # bin
-        echo bin/cdist >> MANIFEST
-        
-        # conf
-        find conf >> MANIFEST
+     pypi-manifest)
+          # init MANIFEST
+          echo README > MANIFEST
 
-        # docs
-        ls docs/changelog* >> MANIFEST
-        find docs/gfx >> MANIFEST
-        find docs/man/ -name \*.text >> MANIFEST
-        find docs/man/ -name \*.text.sh >> MANIFEST
+          # bin
+          echo bin/cdist >> MANIFEST
+          
+          # main source
+          find cdist -type f >> MANIFEST
 
-        # other
-        find other/ >> MANIFEST
+          # conf
+          find conf -type f >> MANIFEST
+
+          # docs
+          ls docs/changelog* >> MANIFEST
+          find docs/gfx  -type f >> MANIFEST
+          find docs/man/ -type f -name \*.text >> MANIFEST
+          find docs/man/ -type f -name \*.text.sh >> MANIFEST
+
+          # other
+          find other/ -type f >> MANIFEST
 
 
-    ;;
+     ;;
 
-    pypi)
-        $0 clean
-        $0 pypi-manifest
-        python3 setup.py sdist
-    ;;
+     pypi)
+          $0 clean
+          $0 pypi-manifest
+          python3 setup.py sdist
+     ;;
 
-   manbuild)
-      trap abort INT
-      abort() {
-         kill 0
-      }
-      for section in 1 7; do
-         for src in ${MANDIR}/man${section}/*.text; do
-            manpage="${src%.text}.$section"
-            if [ ! -f "$manpage" -o "$manpage" -ot "$src" ]; then
-               echo "Compiling man page for $src"
-               $A2XM "$src"
-            fi
-            htmlpage="${src%.text}.html"
-            if [ ! -f "$htmlpage" -o "$htmlpage" -ot "$src" ]; then
-               echo "Compiling html page for $src"
-               $A2XH "$src"
-            fi
-         done
-      done
-   ;;
-
-   mantype)
-	   for mansrc in conf/type/*/man.text; do
-         dst="$(echo $mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;docs/man/man7/;')"
-         ln -sf "../../../$mansrc" "$dst"
-      done
-   ;;
-
-   mangen)
-      ${MANDIR}/cdist-reference.text.sh
-   ;;
-
-   release)
-        ./docs/dev/releasechecklist
-   ;;
-
-   speeches)
-      cd "$SPEECHESDIR"
-      for speech in *tex; do
-         pdflatex "$speech"
-         pdflatex "$speech"
-         pdflatex "$speech"
-      done
-   ;;
-      
-   webmain)
-      cp README ${WEBPAGE}
-      cd ${WEBDIR} && git commit -m "cdist main update" ${WEBPAGE}
-      cd ${WEBDIR} && make pub
-   ;;
-
-   web)
-      cp README ${WEBPAGE}
-      rm -rf ${WEBMAN}
-      mkdir -p ${WEBMAN}/man1 ${WEBMAN}/man7
-
-      # old stuff
-      # rm -rf ${WEBDIR}/${WEBBASE}/speeches && mkdir ${WEBDIR}/${WEBBASE}/speeches
-      # cp ${SPEECHESDIR}/*.pdf ${WEBDIR}/${WEBBASE}/speeches
-      # git describe > ${WEBDIR}/${WEBBASE}/man/VERSION
-
-      cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
-      cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
-      
-      cd ${WEBDIR} && git add ${WEBBASE}
-      cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
-      cd ${WEBDIR} && make pub
-
-      # Fix ikiwiki, which does not like symlinks for pseudo security
-      ssh tee.schottelius.org \
-        "cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man &&
-            rm -f latest && ln -sf "$version" latest"
-   ;;
-
-    p|pu|pub)
-        for remote in "" github sf ethz; do
-            echo "Pushing to $remote"
-            git push --mirror $remote
+    manbuild)
+        trap abort INT
+        abort() {
+            kill 0
+        }
+        for section in 1 7; do
+            for src in ${MANDIR}/man${section}/*.text; do
+                manpage="${src%.text}.$section"
+                if [ ! -f "$manpage" -o "$manpage" -ot "$src" ]; then
+                    echo "Compiling man page for $src"
+                    $A2XM "$src"
+                fi
+                htmlpage="${src%.text}.html"
+                if [ ! -f "$htmlpage" -o "$htmlpage" -ot "$src" ]; then
+                    echo "Compiling html page for $src"
+                    $A2XH "$src"
+                fi
+            done
         done
-   ;;
-
-    clean)
-        rm -f ${MAN7DSTDIR}/cdist-reference.text
-        find "${MANDIR}" -mindepth 2 -type l \
-            -o -name "*.1" \
-            -o -name "*.7" \
-            -o -name "*.html" \
-            -o -name "*.xml" \
-        | xargs rm -f
-        
-        find * -name __pycache__  | xargs rm -rf
-
-        rm -f MANIFEST
     ;;
 
-   test)
-      shift # skip t
-      export PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib
+    mantype)
+	    for mansrc in conf/type/*/man.text; do
+            dst="$(echo $mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;docs/man/man7/;')"
+            ln -sf "../../../$mansrc" "$dst"
+        done
+    ;;
 
-      if [ $# -lt 1 ]; then
-         python3 -m cdist.test
-      else
-         python3 -m unittest "$@"
-      fi
-   ;;
+    mangen)
+        ${MANDIR}/cdist-reference.text.sh
+    ;;
 
-   *)
-      echo ''
-      echo 'Welcome to cdist!'
-      echo ''
-      echo 'Here are the possible targets:'
-      echo ''
-      echo '	clean: Remove build stuff'
-      echo '	man: Build manpages (requires Asciidoc)'
-      echo '	test: Run tests'
-      echo ''
-      echo ''
-      echo "Unknown target, \"$1\"" >&2
-      exit 1
-   ;;
+    release)
+          ./docs/dev/releasechecklist
+    ;;
+
+    speeches)
+        cd "$SPEECHESDIR"
+        for speech in *tex; do
+            pdflatex "$speech"
+            pdflatex "$speech"
+            pdflatex "$speech"
+        done
+    ;;
+        
+    webmain)
+        cp README ${WEBPAGE}
+        cd ${WEBDIR} && git commit -m "cdist main update" ${WEBPAGE}
+        cd ${WEBDIR} && make pub
+    ;;
+
+    web)
+        cp README ${WEBPAGE}
+        rm -rf ${WEBMAN}
+        mkdir -p ${WEBMAN}/man1 ${WEBMAN}/man7
+
+        # old stuff
+        # rm -rf ${WEBDIR}/${WEBBASE}/speeches && mkdir ${WEBDIR}/${WEBBASE}/speeches
+        # cp ${SPEECHESDIR}/*.pdf ${WEBDIR}/${WEBBASE}/speeches
+        # git describe > ${WEBDIR}/${WEBBASE}/man/VERSION
+
+        cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
+        cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
+        
+        cd ${WEBDIR} && git add ${WEBBASE}
+        cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
+        cd ${WEBDIR} && make pub
+
+        # Fix ikiwiki, which does not like symlinks for pseudo security
+        ssh tee.schottelius.org \
+          "cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man &&
+                rm -f latest && ln -sf "$version" latest"
+    ;;
+
+     p|pu|pub)
+          for remote in "" github sf ethz; do
+                echo "Pushing to $remote"
+                git push --mirror $remote
+          done
+    ;;
+
+     clean)
+          rm -f ${MAN7DSTDIR}/cdist-reference.text
+          find "${MANDIR}" -mindepth 2 -type l \
+                -o -name "*.1" \
+                -o -name "*.7" \
+                -o -name "*.html" \
+                -o -name "*.xml" \
+          | xargs rm -f
+          
+          find * -name __pycache__  | xargs rm -rf
+
+          rm -f MANIFEST
+     ;;
+
+    test)
+        shift # skip t
+        export PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib
+
+        if [ $# -lt 1 ]; then
+            python3 -m cdist.test
+        else
+            python3 -m unittest "$@"
+        fi
+    ;;
+
+    *)
+        echo ''
+        echo 'Welcome to cdist!'
+        echo ''
+        echo 'Here are the possible targets:'
+        echo ''
+        echo '	clean: Remove build stuff'
+        echo '	man: Build manpages (requires Asciidoc)'
+        echo '	test: Run tests'
+        echo ''
+        echo ''
+        echo "Unknown target, \"$1\"" >&2
+        exit 1
+    ;;
 esac
