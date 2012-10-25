@@ -39,10 +39,10 @@ WEBMAN=$WEBBASE/man/$version
 WEBPAGE=${WEBBASE}.mdwn
 
 # Documentation
-MANDIR=doc/man
+MANDIR=docs/man
 MAN1DSTDIR=${MANDIR}/man1
 MAN7DSTDIR=${MANDIR}/man7
-SPEECHESDIR=doc/speeches
+SPEECHESDIR=docs/speeches
 
 case "$1" in
    man)
@@ -75,7 +75,7 @@ case "$1" in
 
    mantype)
 	   for mansrc in conf/type/*/man.text; do
-         dst="$(echo $mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;doc/man/man7/;')"
+         dst="$(echo $mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;docs/man/man7/;')"
          ln -sf "../../../$mansrc" "$dst"
       done
    ;;
@@ -85,7 +85,7 @@ case "$1" in
    ;;
 
    release)
-        ./doc/dev/releasechecklist
+        ./docs/dev/releasechecklist
    ;;
 
    speeches)
