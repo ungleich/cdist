@@ -1,3 +1,4 @@
-- store version in .version
-- when distributed / packaged, include .version into sourcecode
-- when in git checkout, use dynamic versioning
+x store version in .version
+x when distributed / packaged, include .version into sourcecode
+    split into two files
+x when in git checkout, use dynamic versioning
