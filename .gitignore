@@ -16,3 +16,6 @@ doc/man/man*/docbook-xsl.css
 
 # Python / cache
 __pycache__/
+
+# Is static and will never be included
+lib/cdist/version_static.py
