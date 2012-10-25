@@ -1,7 +1,5 @@
 from distutils.core import setup
 
-package_dir = {'': 'lib'}
-
 import cdist
 
 setup(
