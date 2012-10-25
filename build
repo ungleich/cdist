@@ -146,6 +146,9 @@ case "$1" in
 
     clean)
         rm -f ${MAN7DSTDIR}/cdist-reference.text
+        rm -f cdist/version.py
+        rm -f MANIFEST
+
         find "${MANDIR}" -mindepth 2 -type l \
             -o -name "*.1" \
             -o -name "*.7" \
@@ -154,8 +157,6 @@ case "$1" in
         | xargs rm -f
 
         find * -name __pycache__  | xargs rm -rf
-
-        rm -f MANIFEST
     ;;
     very-clean)
         $0 clean
