@@ -97,6 +97,7 @@ case "$1" in
         $0 dist-tag
         $0 dist-branch-merge
 
+        # Pypi first - is the base for others
         $0 dist-pypi
         
         # Archlinux depends on successful pypi ;-)
