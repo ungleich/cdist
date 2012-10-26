@@ -89,7 +89,7 @@ case "$1" in
     ;;
 
     release)
-          ./docs/dev/releasechecklist
+          ./docs/dev/releasehelper
     ;;
 
     pypi)
