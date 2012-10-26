@@ -30,10 +30,10 @@ read wait
 version=$changelog_version
 
 # get target branch
-branch=${version%\.*}
+target_branch=${version%\.*}
+current_branch=$(git rev-parse --abbrev-ref HEAD)
 
-echo "Selecting branch $branch for merging"
-exit 0
+echo "Selected branch $target_branch for merging $current_branch"
 
 # add tag
 printf "Enter tag description for %s> " "$version"
@@ -41,14 +41,14 @@ read tagmessage
 git tag "$version" -m "$tagmessage"
 
 # Import into current version branch
-printf "Press enter to git merge into branch \"$branch\" > "
+printf "Press enter to git merge into branch \"$target_branch\" > "
 read prompt
-git checkout $branch
-git merge master
-git checkout master
+git checkout "$target_branch"
+git merge "$current_branch"
+git checkout "$current_branch"
 
 # Publish manpages and sourcecode
-printf "Press enter to publish doc/ and code/ > "
+printf "Press enter to publish doc/ code/ pypi for $version > "
 read prompt
 ./build web
 ./build pub

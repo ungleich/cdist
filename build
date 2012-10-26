@@ -122,11 +122,6 @@ case "$1" in
         rm -rf ${WEBMAN}
         mkdir -p ${WEBMAN}/man1 ${WEBMAN}/man7
 
-        # old stuff
-        # rm -rf ${WEBDIR}/${WEBBASE}/speeches && mkdir ${WEBDIR}/${WEBBASE}/speeches
-        # cp ${SPEECHESDIR}/*.pdf ${WEBDIR}/${WEBBASE}/speeches
-        # git describe > ${WEBDIR}/${WEBBASE}/man/VERSION
-
         cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
         cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
         
