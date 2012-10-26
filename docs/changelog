@@ -5,6 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+2.1.0pre2:
+	* PyPi: Add conf/ directory to distribution
+
 2.1.0pre1: 2012-10-26
 	* Core: Removed obsolete variable __self
 	* Removed type __addifnosuchline (replaced by __line)
