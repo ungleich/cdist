@@ -6,7 +6,8 @@ Changelog
 
 
 2.1.0pre2:
-	* PyPi: Add conf/ directory to distribution
+	* Dist: PyPi: Add conf/ directory to distribution
+	* Dist: Initial support for archlinux packaging
 
 2.1.0pre1: 2012-10-26
 	* Core: Removed obsolete variable __self
@@ -17,7 +18,7 @@ Changelog
 		__package_pacman, __package_pkg_freebsd, __package_pkg_openbsd,
 		__package_rubygem, __package_yum, __process:
 			Parameter state accepts only "present" and "absent"
-	* Initial support for pypi packaging
+	* Dist: Initial support for pypi packaging
 
 2.0.15:
 	* Core: Make variable __object_name available in type explorers (Steven Armtrong)
