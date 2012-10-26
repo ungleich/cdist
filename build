@@ -116,17 +116,18 @@ case "$1" in
     ;;
 
     dist-check)
+        set -e
         echo "Verifying documentation building works ..."
-        $0 clean && $0 man
+        $0 clean 
+        $0 man
 
         changelog_version=$($0 changelog-version)
+        echo "Target version from changelog: $changelog_version"
 
         if git show --quiet $changelog_version >/dev/null 2>&1; then
             echo "Version $changelog_version already exists, aborting."
             exit 1
         fi
-
-        echo "Target version from changelog: $changelog_version"
 
         # verify date in changelog
         date_today="$(date +%Y-%m-%d)"
