@@ -89,34 +89,98 @@ case "$1" in
     ;;
 
     dist)
+        set -e
+        # Do the checks
+        $0 dist-check
+
+        # Git changes - everything depends on this
+        $0 dist-tag
+        $0 dist-branch-merge
+
         $0 dist-pypi
         
         # Archlinux depends on successful pypi ;-)
         $0 dist-archlinux
 
+        # Update website (includes documentation)
+        $0 web
+
+        $0 pub
+
         $0 dist-post
     ;;
 
-    dist-prepare)
-          ./docs/dev/releasehelper
+    changelog-version)
+        # get version from changelog and ensure it's not already present
+        grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/:.*//'
+    ;;
+
+    dist-check)
+        echo "Verifying documentation building works ..."
+        $0 clean && $0 man
+
+        changelog_version=$($0 changelog-version)
+
+        if git show --quiet $changelog_version >/dev/null 2>&1; then
+            echo "Version $changelog_version already exists, aborting."
+            exit 1
+        fi
+
+        echo "Target version from changelog: $changelog_version"
+
+        # verify date in changelog
+        date_today="$(date +%Y-%m-%d)"
+        date_changelog=$(grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/.*: //')
+
+        if [ "$date_today" != "$date_changelog" ]; then
+            echo "Date in changelog is not today"
+            echo "Changelog: $date_changelog"
+            exit 1
+        fi
+
     ;;
 
     dist-post)
+        cat << notes
 
+    To be done manually...
+    
+        - freecode release
+        - blog entry
+        - linkedin entry
+        - mailinglist update
+notes
+
+    ;;
+
+    dist-tag)
+        version=$($0 changelog-version)
+        # add tag
+        printf "Enter tag description for %s> " "$version"
+        read tagmessage
+        git tag "$version" -m "$tagmessage"
+    ;;
+
+    dist-branch-merge)
+        version=$($0 changelog-version)
+        target_branch=${version%\.*}
+        current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+        printf "Press enter to git merge $current_branch into \"$target_branch\" > "
+        read prompt
+        git checkout "$target_branch"
+        git merge "$current_branch"
+        git checkout "$current_branch"
     ;;
 
     dist-archlinux)
         ./PKGBUILD.in
         makepkg -c
     ;;
-
     dist-pypi)
         $0 man
         $0 version
-        $0 sdist
-    ;;
-    sdist)
-        python3 setup.py sdist
+        python3 setup.py sdist update
     ;;
 
     speeches)
@@ -215,69 +279,3 @@ case "$1" in
     ;;
 
 esac
-
-
-#!/bin/sh
-# Nico Schottelius
-
-# Ensure documentation builds cleanly
-echo "Verifying documentation building works ..."
-## ./build clean && ./build man || exit 1
-
-# get version from changelog and ensure it's not already present
-changelog_version=$(grep '^[[:digit:]]' docs/changelog | head -n1 | sed 's/:.*//')
-
-if git show --quiet $changelog_version >/dev/null 2>&1; then
-    echo "Version $changelog_version already exists, aborting."
-    exit 1
-fi
-
-echo "Target version from changelog: $changelog_version"
-
-# verify date in changelog
-date_today="$(date +%Y-%m-%d)"
-date_changelog=$(grep '^[[:digit:]]' docs/changelog | head -n1 | sed 's/.*: //')
-
-if [ "$date_today" != "$date_changelog" ]; then
-    echo "Date in changelog is not today"
-    echo "Changelog: $date_changelog"
-    exit 1
-fi
-
-echo "Press enter to continue"
-read wait
-version=$changelog_version
-
-# get target branch
-target_branch=${version%\.*}
-current_branch=$(git rev-parse --abbrev-ref HEAD)
-
-echo "Selected branch $target_branch for merging $current_branch"
-
-# add tag
-printf "Enter tag description for %s> " "$version"
-read tagmessage
-git tag "$version" -m "$tagmessage"
-
-# Import into current version branch
-printf "Press enter to git merge into branch \"$target_branch\" > "
-read prompt
-git checkout "$target_branch"
-git merge "$current_branch"
-git checkout "$current_branch"
-
-# Publish manpages and sourcecode
-printf "Press enter to publish doc/ code/ pypi for $version > "
-read prompt
-./build web
-./build pub
-
-cat << notes
-To be done manually...
-
-    - freecode release
-    - blog entry
-    - linkedin entry
-    - mailinglist update
-
-notes
