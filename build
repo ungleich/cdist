@@ -93,7 +93,6 @@ case "$1" in
     ;;
 
     pypi)
-        #$0 very-clean
         #$0 man
         $0 version
         $0 sdist
