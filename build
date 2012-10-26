@@ -178,11 +178,12 @@ notes
     dist-archlinux)
         ./PKGBUILD.in
         makepkg -c
+        makepkg -c --source
     ;;
     dist-pypi)
         $0 man
         $0 version
-        python3 setup.py sdist update
+        python3 setup.py sdist upload
     ;;
 
     speeches)
