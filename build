@@ -95,9 +95,8 @@ case "$1" in
     pypi)
         #$0 very-clean
         #$0 man
-        $0 version-dist
+        $0 version
         $0 sdist
-        $0 version-dynamic
     ;;
     sdist)
         python3 setup.py sdist
@@ -150,8 +149,6 @@ case "$1" in
 
     clean)
         rm -f ${MAN7DSTDIR}/cdist-reference.text
-        rm -f cdist/version.py
-        rm -f MANIFEST
 
         find "${MANDIR}" -mindepth 2 -type l \
             -o -name "*.1" \
@@ -162,9 +159,14 @@ case "$1" in
 
         find * -name __pycache__  | xargs rm -rf
     ;;
+    clean-dist)
+        rm -f cdist/version.py MANIFEST
+        rm -rf cache/ dist/
+    ;;
+
     very-clean)
         $0 clean
-        rm -rf cache/
+        $0 clean-dist
     ;;
 
     test)
