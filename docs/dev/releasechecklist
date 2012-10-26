@@ -1,47 +1,39 @@
 #!/bin/sh
 # Nico Schottelius
 
-files="doc/changelog lib/cdist/__init__.py"
-
-# Stuff to take care of when doing a release
-echo "Preparing next release"
-
 # Ensure documentation builds cleanly
-echo "Testing documentation..."
-./build clean && ./build man || exit 1
+echo "Verifying documentation building works ..."
+## ./build clean && ./build man || exit 1
 
-# get version
-changelog_version=$(grep '^[[:digit:]]' doc/changelog | head -n1 | sed 's/:.*//')
-#git_version=$(git describe)
-lib_version=$(grep "^    VERSION" lib/cdist/__init__.py | sed -e 's/.*= //' -e 's/"//g')
+# get version from changelog and ensure it's not already present
+changelog_version=$(grep '^[[:digit:]]' docs/changelog | head -n1 | sed 's/:.*//')
 
-# get date
+if git show --quiet $changelog_version >/dev/null 2>&1; then
+    echo "Version $changelog_version already exists, aborting."
+    exit 1
+fi
+
+echo "Target version from changelog: $changelog_version"
+
+# verify date in changelog
 date_today="$(date +%Y-%m-%d)"
-date_changelog=$(grep '^[[:digit:]]' doc/changelog | head -n1 | sed 's/.*: //')
-
-echo "Ensure you fixed/prepared version files: $files"
-echo "changelog: $changelog_version"
-#echo "git: $git_version"
-echo "lib: $lib_version"
+date_changelog=$(grep '^[[:digit:]]' docs/changelog | head -n1 | sed 's/.*: //')
 
 if [ "$date_today" != "$date_changelog" ]; then
-    echo "Messed up date, not releasing:"
+    echo "Date in changelog is not today"
     echo "Changelog: $date_changelog"
     exit 1
 fi
 
-if [ "$lib_version" != "$changelog_version" ]; then
-    echo "Messed up versions, not releasing"
-    exit 1
-else
-    echo "Versions are sane, continuing"
-fi
 echo "Press enter to continue"
 read wait
-version=$lib_version
+version=$changelog_version
 
 # get target branch
 branch=${version%\.*}
+
+echo "Selecting branch $branch for merging"
+exit 0
 
 # add tag
 printf "Enter tag description for %s> " "$version"
