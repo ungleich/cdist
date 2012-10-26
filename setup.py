@@ -7,7 +7,7 @@ setup(
     packages = ["cdist", "cdist.core", "cdist.exec", "cdist.util" ],
     scripts = ["cdist.py"],
     version = cdist.version.VERSION,
-    description = "Usable configuration management system",
+    description = "A Usable Configuration Management System",
     author = "Nico Schottelius",
     author_email = "nico-cdist-pypi@schottelius.org",
     url = "http://www.nico.schottelius.org/software/cdist/",

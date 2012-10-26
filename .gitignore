@@ -22,3 +22,7 @@ cdist/version.py
 
 # Packaging: Archlinux
 /PKGBUILD
+/cdist-*.pkg.tar.xz
+/cdist-*.tar.gz
+/pkg
+/src

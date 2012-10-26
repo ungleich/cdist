@@ -1,8 +1,6 @@
 #!/bin/sh
 
 version=$(git describe)
-version=2.1.0pre1
-
 outfile=${0%.in}
 
 cat << eof > "${outfile}"
@@ -13,14 +11,16 @@ pkgdesc='A Usable Configuration Management System"'
 arch=('any')
 url='http://www.nico.schottelius.org/software/cdist/'
 license=('GPL3')
-depends=('python3>=3.2.0')
+depends=('python>=3.2.0')
 source=("http://pypi.python.org/packages/source/c/cdist/cdist-\${pkgver}.tar.gz")
 
 package() {
-    python3 setup.py build install --root="${pkgdir}"
+    cd cdist-\${pkgver}
+    python3 setup.py build install --root="\${pkgdir}"
+    mv "\${pkgdir}"/usr/bin/cdist.py "\${pkgdir}"/usr/bin/cdist
 
-    #install -Dm644 offlineimap.1 "${pkgdir}"/usr/share/man/man1/offlineimap.1
-    #install -Dm644 offlineimap.conf "${pkgdir}"/usr/share/offlineimap/offlineimap.conf
-    #install -Dm644 offlineimap.conf.minimal "${pkgdir}"/usr/share/offlineimap/offlineimap.conf.minimal
+    #install -Dm644 offlineimap.1 "\${pkgdir}"/usr/share/man/man1/offlineimap.1
 }
 eof
+
+makepkg -g >> "${outfile}"
