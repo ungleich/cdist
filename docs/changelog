@@ -5,7 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-2.1.0pre2:
+2.1.0pre2: 2012-10-26
 	* Dist: PyPi: Add conf/ directory to distribution
 	* Dist: Initial support for archlinux packaging
 
