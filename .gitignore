@@ -19,3 +19,6 @@ __pycache__/
 MANIFEST
 dist/
 cdist/version.py
+
+# Packaging: Archlinux
+/PKGBUILD
