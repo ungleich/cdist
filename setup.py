@@ -32,6 +32,7 @@ setup(
     long_description = '''
         cdist is a usable configuration management system.
         It adheres to the KISS principle and is being used in small up to enterprise grade environments.
-        cdist is an alternative to other configuration management systems like cfengine, bcfg2, chef and puppet.
+        cdist is an alternative to other configuration management systems like 
+        cfengine, bcfg2, chef and puppet.
     '''
 )
