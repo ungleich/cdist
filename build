@@ -26,6 +26,7 @@
 # exit on any error
 #set -e
 
+basedir=${0%/*}
 version=$(git describe)
 
 # Manpage and HTML
@@ -43,6 +44,9 @@ MANDIR=docs/man
 MAN1DSTDIR=${MANDIR}/man1
 MAN7DSTDIR=${MANDIR}/man7
 SPEECHESDIR=docs/speeches
+
+# Change to checkout directory
+cd "$basedir"
 
 case "$1" in
     man)
