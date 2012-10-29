@@ -1,9 +1,5 @@
 from distutils.core import setup
-
-#data_files=[('/usr/share/cdist', 'conf')],
-    # data_files=[('/tmp/cdist', ['conf'])],
 import cdist
-
 import os
 
 def data_finder(data_dir):
@@ -11,7 +7,6 @@ def data_finder(data_dir):
     for name in os.listdir(data_dir):
         entry = os.path.join(data_dir, name)
         if os.path.isdir(entry):
-            entries.append(entry)
             entries.extend(data_finder(entry))
         else:
             entries.append(entry)
@@ -21,10 +16,7 @@ def data_finder(data_dir):
 cur = os.getcwd()
 os.chdir("cdist")
 package_data = data_finder("conf")
-    # package_dir={'cdist': 'src/mypkg'},
 os.chdir(cur)
-
-print(package_data)
 
 setup(
     name = "cdist",
