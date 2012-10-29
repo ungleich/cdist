@@ -49,7 +49,7 @@ The following global explorers are available:
 
 eof
 (
-    cd ../../conf/explorer
+    cd ../../cdist/conf/explorer
     for explorer in *; do
        echo "- $explorer"
     done
