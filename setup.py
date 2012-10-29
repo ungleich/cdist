@@ -1,10 +1,31 @@
 from distutils.core import setup
 
+#data_files=[('/usr/share/cdist', 'conf')],
+    # data_files=[('/tmp/cdist', ['conf'])],
 import cdist
+
+import os
+
+def data_finder(data_dir):
+    entries = []
+    for name in os.listdir(data_dir):
+        entry = os.path.join(data_dir, name)
+        if os.path.isdir(entry):
+            entries.extend(data_finder(entry))
+        else:
+            entries.append(entry)
+
+    return entries
+
+package_data = data_finder("conf")
+
+
+print(package_data)
 
 setup(
     name = "cdist",
     packages = ["cdist", "cdist.core", "cdist.exec", "cdist.util" ],
+    package_data={'cdist': package_data},
     scripts = ["cdist.py"],
     version = cdist.version.VERSION,
     description = "A Usable Configuration Management System",
