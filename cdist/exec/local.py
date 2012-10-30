@@ -162,6 +162,7 @@ class Local(object):
 
         # Iterate over all directories and link the to the output dir
         for conf_dir in self.conf_dirs:
+            self.log.debug("Checking conf_dir %s ..." % (conf_dir))
             for sub_dir in [ "explorer", "manifest", "type" ]:
                 current_dir = os.path.join(conf_dir, sub_dir)
 
