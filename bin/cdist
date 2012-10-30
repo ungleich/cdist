@@ -22,5 +22,8 @@
 
 # Wrapper for real script to allow execution from checkout
 dir=${0%/*}
+
+# Ensure version is present - the bundled/shipped version contains a static version,
+# the git version contains a dynamic version
 "$dir/../build" version
-"$dir/../cdist.py" "$@"
+PYTHONPATH="${dir}/../" "$dir/../scripts/cdist" "$@"
