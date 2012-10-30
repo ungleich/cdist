@@ -14,6 +14,8 @@ User paths: (read after, overwrite)?
 
     /manifest
 
+    /cache
+
 Additional paths:
 
     CDIST_EXPLORER_EXTRA_PATH=...
