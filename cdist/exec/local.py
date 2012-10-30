@@ -37,7 +37,7 @@ class Local(object):
     Directly accessing the local side from python code is a bug.
 
     """
-    def __init__(self, target_host, conf_dirs, out_path, cache_dir):
+    def __init__(self, target_host, conf_dirs, out_path, cache_dir=None):
 
         self.target_host = target_host
         self.add_conf_dirs = conf_dirs
@@ -47,7 +47,7 @@ class Local(object):
         self._init_permissions()
         self._init_home_dir()
         self._init_paths()
-        self._init_cache_dir()
+        self._init_cache_dir(cache_dir)
         self._init_conf_dirs()
 
     def _init_home_dir(self):
@@ -88,7 +88,8 @@ class Local(object):
             self.conf_dirs.append(user_conf_dir)
 
         # Add user supplied directories
-        self.conf_dirs.extend(self.add_conf_dirs)
+        if self.add_conf_dirs:
+            self.conf_dirs.extend(self.add_conf_dirs)
 
     def _init_cache_dir(self, cache_dir):
         if cache_dir:
@@ -166,12 +167,12 @@ class Local(object):
 
                 for entry in os.listdir(current_dir):
                     rel_entry_path = os.path.join(sub_dir, entry)
-                    src = os.path.join(self.conf_path, entry)
-                    dst = os.path.join(conf_dir, sub_dir, entry)
+                    src = os.path.join(conf_dir, sub_dir, entry)
+                    dst = os.path.join(self.conf_path, entry)
 
                     # Already exists? remove and link
                     if os.path.exists(dst):
-                        os.ulink(dst)
+                        os.unlink(dst)
 
                     try:
                         os.symlink(src, dst)

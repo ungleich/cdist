@@ -59,7 +59,7 @@ class Context(object):
             self.temp_dir = tempfile.mkdtemp()
             self.out_path = os.path.join(self.temp_dir, "out")
 
-        self.local = local.Local(self.target_host, self.conf_dirs, self.out_path)
+        self.local = local.Local(self.target_host, conf_dirs, self.out_path)
 
         self.initial_manifest = (initial_manifest or
             os.path.join(self.local.manifest_path, "init"))
