@@ -37,32 +37,67 @@ class Local(object):
     Directly accessing the local side from python code is a bug.
 
     """
-    def __init__(self, target_host, local_base_path, out_path):
-        self.target_host = target_host
-        self.base_path = local_base_path
+    def __init__(self, target_host, conf_dirs, out_path, cache_dir):
 
-        # Local input
-        self.cache_path = os.path.join(self.base_path, "cache")
-        self.conf_path = os.path.join(self.base_path, "conf")
+        self.target_host = target_host
+        self.add_conf_dirs = conf_dirs
+        self.out_path = out_path
+
+        self._init_log()
+        self._init_permissions()
+        self._init_home_dir()
+        self._init_paths()
+        self._init_cache_dir()
+        self._init_conf_dirs()
+
+    def _init_home_dir(self):
+        if 'HOME' in os.environ:
+            self.home_dir = os.environ['HOME']
+        else:
+            self.home_dir = None
+
+    def _init_log(self):
+        self.log = logging.getLogger(self.target_host)
+
+    def _init_permissions(self):
+        # Setup file permissions using umask
+        os.umask(0o077)
+
+    def _init_paths(self):
+        # Depending on out_path
+        self.bin_path = os.path.join(self.out_path, "bin")
+        self.conf_path = os.path.join(self.out_path, "conf")
+        self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
+        self.object_path = os.path.join(self.out_path, "object")
+
+        # Depending on conf_path
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
         self.manifest_path = os.path.join(self.conf_path, "manifest")
         self.type_path = os.path.join(self.conf_path, "type")
 
-        # Local output
-        self.out_path = out_path
-        self.bin_path = os.path.join(self.out_path, "bin")
-        self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
-        self.object_path = os.path.join(self.out_path, "object")
+    def _init_conf_dirs(self):
+        self.conf_dirs = []
 
-        self.log = logging.getLogger(self.target_host)
+        # Comes with the distribution
+        system_conf_dir = os.path.join(os.path.dirname(cdist.__file__), "conf")
+        self.conf_dirs.append(system_conf_dir)
 
-        # Setup file permissions using umask
-        os.umask(0o077)
+        # Is the default place for user created explorer, type and manifest
+        if self.home_dir:
+            user_conf_dir = os.path.join(self.home_dir, ".cdist")
+            self.conf_dirs.append(user_conf_dir)
 
-    def create_directories(self):
-        self.mkdir(self.out_path)
-        self.mkdir(self.global_explorer_out_path)
-        self.mkdir(self.bin_path)
+        # Add user supplied directories
+        self.conf_dirs.extend(self.add_conf_dirs)
+
+    def _init_cache_dir(self, cache_dir):
+        if cache_dir:
+            self.cache_path = cache_dir
+        else:
+            if self.home_dir:
+                self.cache_path = os.path.join(self.home_dir, "cache")
+            else:
+                raise cdist.Error("No homedir setup and no cache dir location given")
 
     def rmdir(self, path):
         """Remove directory on the local side."""
@@ -106,6 +141,42 @@ class Local(object):
         command.append(script)
 
         return self.run(command, env, return_output)
+
+    def create_context_files_dirs(self):
+        self._create_context_dirs()
+        self._create_conf_path_and_link_conf_dirs()
+
+    def _create_context_dirs(self):
+        self.mkdir(self.out_path)
+        self.mkdir(self.conf_path)
+        self.mkdir(self.global_explorer_out_path)
+        self.mkdir(self.bin_path)
+
+    def _create_conf_path_and_link_conf_dirs(self):
+        self.mkdir(self.conf_path)
+
+        # Link destination directories
+        for sub_dir in [ "explorer", "manifest", "type" ]:
+            self.mkdir(os.path.join(self.conf_path, sub_dir))
+
+        # Iterate over all directories and link the to the output dir
+        for conf_dir in self.conf_dirs:
+            for sub_dir in [ "explorer", "manifest", "type" ]:
+                current_dir = os.path.join(conf_dir, sub_dir)
+
+                for entry in os.listdir(current_dir):
+                    rel_entry_path = os.path.join(sub_dir, entry)
+                    src = os.path.join(self.conf_path, entry)
+                    dst = os.path.join(conf_dir, sub_dir, entry)
+
+                    # Already exists? remove and link
+                    if os.path.exists(dst):
+                        os.ulink(dst)
+
+                    try:
+                        os.symlink(src, dst)
+                    except OSError as e:
+                        raise cdist.Error("Linking %s %s to %s failed: %s" % (sub_dir, src, dst, e.__str__()))
 
     def link_emulator(self, exec_path):
         """Link emulator to types"""
