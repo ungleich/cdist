@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -19,8 +19,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-
-# FIXME: common base class with Remote?
 
 import io
 import os
@@ -49,8 +47,6 @@ class Local(object):
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
         self.manifest_path = os.path.join(self.conf_path, "manifest")
         self.type_path = os.path.join(self.conf_path, "type")
-        # FIXME: should not be needed anywhere
-        self.lib_path = os.path.join(self.base_path, "lib")
 
         # Local output
         self.out_path = out_path
