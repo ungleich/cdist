@@ -57,7 +57,7 @@ class Remote(object):
 
         self.log = logging.getLogger(self.target_host)
 
-    def create_directories(self):
+    def create_files_dirs(self):
         self.rmdir(self.base_path)
         self.mkdir(self.base_path)
         self.mkdir(self.conf_path)

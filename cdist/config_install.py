@@ -50,7 +50,7 @@ class ConfigInstall(object):
         # Initialise local directory structure
         self.local.create_files_dirs()
         # Initialise remote directory structure
-        self.remote.create_directories()
+        self.remote.create_files_dirs()
 
         self.explorer = core.Explorer(self.context.target_host, self.local, self.remote)
         self.manifest = core.Manifest(self.context.target_host, self.local)
