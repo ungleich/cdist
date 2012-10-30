@@ -56,9 +56,9 @@ def commandline():
     parser['configinstall'] = argparse.ArgumentParser(add_help=False)
     parser['configinstall'].add_argument('host', nargs='+',
         help='one or more hosts to operate on')
-    parser['configinstall'].add_argument('-c', '--cdist-home',
-         help='Change cdist home (default: .. from bin directory)',
-         action='store')
+    parser['configinstall'].add_argument('-c', '--conf-dir',
+         help='Add configuration directory (can be repeated, last one wins)',
+         action='append')
     parser['configinstall'].add_argument('-i', '--initial-manifest', 
          help='Path to a cdist manifest or \'-\' to read from stdin.',
          dest='manifest', required=False)
@@ -172,7 +172,7 @@ def configinstall_onehost(host, args, mode, parallel):
             remote_copy=args.remote_copy,
             remote_exec=args.remote_exec,
             initial_manifest=args.manifest,
-            base_path=args.cdist_home,
+            conf_dirs=args.conf_dir,
             exec_path=sys.argv[0],
             debug=args.debug)
 
