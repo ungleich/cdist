@@ -142,7 +142,7 @@ class Local(object):
 
         return self.run(command, env, return_output)
 
-    def create_context_files_dirs(self):
+    def create_files_dirs(self):
         self._create_context_dirs()
         self._create_conf_path_and_link_conf_dirs()
 

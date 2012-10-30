@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -48,7 +48,7 @@ class ConfigInstall(object):
         self.remote = context.remote
 
         # Initialise local directory structure
-        self.local.create_directories()
+        self.local.create_files_dirs()
         # Initialise remote directory structure
         self.remote.create_directories()
 
