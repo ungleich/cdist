@@ -78,8 +78,8 @@ case "$1" in
     ;;
 
     mantype)
-        for mansrc in conf/type/*/man.text; do
-            dst="$(echo $mansrc | sed -e 's;conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;docs/man/man7/;')"
+        for mansrc in cdist/conf/type/*/man.text; do
+            dst="$(echo $mansrc | sed -e 's;cdist/conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;docs/man/man7/;')"
             ln -sf "../../../$mansrc" "$dst"
         done
     ;;
