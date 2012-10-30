@@ -5,7 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-2.1.0pre3: 2012-10-29
+2.1.0pre3: 2012-10-30
 	* Dist: PyPi: Types and explorer included as package data
 
 2.1.0pre2: 2012-10-26
