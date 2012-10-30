@@ -7,7 +7,7 @@ Changelog
 
 2.1.0pre4:
 	* Dist: PyPi: Move cdist.py to script/cdist to avoid double import
-	* Added internal support for multiple configuration directories
+	* Added support for multiple configuration directories (no documentation)
 
 2.1.0pre3: 2012-10-30
 	* Dist: PyPi: Types and explorer included as package data
