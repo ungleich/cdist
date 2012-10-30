@@ -165,15 +165,20 @@ class Local(object):
             for sub_dir in [ "explorer", "manifest", "type" ]:
                 current_dir = os.path.join(conf_dir, sub_dir)
 
+                # Allow conf dirs to contain only partial content
+                if not os.path.exists(current_dir):
+                    continue
+
                 for entry in os.listdir(current_dir):
                     rel_entry_path = os.path.join(sub_dir, entry)
                     src = os.path.join(conf_dir, sub_dir, entry)
-                    dst = os.path.join(self.conf_path, entry)
+                    dst = os.path.join(self.conf_path, sub_dir, entry)
 
                     # Already exists? remove and link
                     if os.path.exists(dst):
                         os.unlink(dst)
-
+                    
+                    self.log.debug("Linking %s to %s ..." % (src, dst))
                     try:
                         os.symlink(src, dst)
                     except OSError as e:
