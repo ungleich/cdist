@@ -38,25 +38,17 @@ class Context(object):
         remote_copy,
         remote_exec,
         initial_manifest=False,
-        base_path=False,
+        conf_dirs=[],
         exec_path=sys.argv[0],
         debug=False):
 
-        self.debug      = debug
-
+        self.debug          = debug
         self.target_host    = target_host
-
-        # Only required for testing
         self.exec_path      = exec_path
 
         # Context logging
         self.log = logging.getLogger(self.target_host)
         self.log.addFilter(self)
-
-        # Local base directory
-        self.base_path = (base_path or
-            os.path.abspath(os.path.join(os.path.dirname(__file__),
-                os.pardir, os.pardir)))
 
         # Local temp directory
         # FIXME: if __cdist_out_dir can be given from the outside, the same directory will be used for all hosts
@@ -67,7 +59,7 @@ class Context(object):
             self.temp_dir = tempfile.mkdtemp()
             self.out_path = os.path.join(self.temp_dir, "out")
 
-        self.local = local.Local(self.target_host, self.base_path, self.out_path)
+        self.local = local.Local(self.target_host, self.conf_dirs, self.out_path)
 
         self.initial_manifest = (initial_manifest or
             os.path.join(self.local.manifest_path, "init"))
