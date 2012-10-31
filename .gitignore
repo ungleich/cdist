@@ -26,4 +26,3 @@ cdist/version.py
 /cdist-*.tar.gz
 /pkg
 /src
-freecode-release
