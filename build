@@ -168,12 +168,16 @@ notes
         target_branch=${version%\.*}
         current_branch=$(git rev-parse --abbrev-ref HEAD)
 
-        printf "Press enter to git merge $current_branch into \"$target_branch\" > "
-        read prompt
-        git checkout "$target_branch"
-        git merge "$current_branch"
-        git checkout "$current_branch"
-    ;;
+        if [ "$target_branch" = "$current_branch" ]; then
+            echo "Skipping merge, already on destination branch"
+        else
+            printf "Press enter to git merge $current_branch into \"$target_branch\" > "
+            read prompt
+            git checkout "$target_branch"
+            git merge "$current_branch"
+            git checkout "$current_branch"
+        fi
+   ;;
 
     dist-archlinux)
         ./PKGBUILD.in
