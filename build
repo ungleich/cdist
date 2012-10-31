@@ -214,7 +214,7 @@ eof
         printf "Press enter to submit to freecode> "
         read dummy
 
-        cat << eof | cfreecode-api cdist
+        cat << eof | cfreecode-api release cdist
         {
             "auth_code": "$api_token",
             "release": {
