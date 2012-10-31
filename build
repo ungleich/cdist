@@ -180,10 +180,21 @@ notes
    ;;
 
     dist-archlinux)
+        $0 dist-archlinux-makepkg
+        $0 dist-archlinux-aur-upload
+    ;;
+
+    dist-archlinux-makepkg)
         ./PKGBUILD.in
-        makepkg -c
         makepkg -c --source
     ;;
+
+    dist-archlinux-aur-upload)
+        version=$($0 changelog-version)
+        tar=cdist-${version}-1.src.tar.gz
+        burp -c system "$tar"
+    ;;
+
     dist-pypi)
         $0 man
         $0 version
