@@ -49,8 +49,7 @@ class ManifestTestCase(test.CdistTestCase):
         self.target_host = 'localhost'
         out_path = self.temp_dir
         self.local = local.Local(self.target_host, local_base_path, out_path)
-        self.local.create_directories()
-        self.local.link_emulator(cdist.test.cdist_exec_path)
+        self.local.create_files_dirs()
         self.manifest = manifest.Manifest(self.target_host, self.local)
         self.log = logging.getLogger(self.target_host)
 
