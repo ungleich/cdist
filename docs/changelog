@@ -5,6 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+2.1.0pre6:
+	* New Example: Turn remote calls into local calls (used for unittesting)
+
 2.1.0pre5: 2012-11-01
 	* Core: First round of tests updated to work with multiple configuration directories
 
