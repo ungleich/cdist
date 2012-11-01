@@ -108,6 +108,8 @@ case "$1" in
 
         $0 pub
 
+        $0 dist-freecode
+
         $0 dist-post
     ;;
 
@@ -214,7 +216,7 @@ eof
         printf "Press enter to submit to freecode> "
         read dummy
 
-        cat << eof | cfreecode-api release cdist
+        cat << eof | cfreecode-api release-add cdist
         {
             "auth_code": "$api_token",
             "release": {
