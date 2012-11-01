@@ -172,7 +172,7 @@ def configinstall_onehost(host, args, mode, parallel):
             remote_copy=args.remote_copy,
             remote_exec=args.remote_exec,
             initial_manifest=args.manifest,
-            conf_dirs=args.conf_dir,
+            add_conf_dirs=args.conf_dir,
             exec_path=sys.argv[0],
             debug=args.debug)
 

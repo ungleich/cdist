@@ -38,7 +38,7 @@ class Context(object):
         remote_copy,
         remote_exec,
         initial_manifest=False,
-        conf_dirs=[],
+        add_conf_dirs=[],
         exec_path=sys.argv[0],
         debug=False):
 
@@ -59,7 +59,7 @@ class Context(object):
             self.temp_dir = tempfile.mkdtemp()
             self.out_path = os.path.join(self.temp_dir, "out")
 
-        self.local = local.Local(self.target_host, conf_dirs, self.out_path, self.exec_path)
+        self.local = local.Local(self.target_host, self.out_path, self.exec_path, add_conf_dirs=add_conf_dirs)
 
         self.initial_manifest = (initial_manifest or
             os.path.join(self.local.manifest_path, "init"))
