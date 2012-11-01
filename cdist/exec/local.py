@@ -37,11 +37,13 @@ class Local(object):
     Directly accessing the local side from python code is a bug.
 
     """
-    def __init__(self, target_host, conf_dirs, out_path, cache_dir=None):
+    def __init__(self, target_host, conf_dirs, out_path, exec_path, cache_dir=None):
 
         self.target_host = target_host
-        self.add_conf_dirs = conf_dirs
         self.out_path = out_path
+        self.exec_path = exec_path
+
+        self._add_conf_dirs = conf_dirs
 
         self._init_log()
         self._init_permissions()
@@ -88,8 +90,8 @@ class Local(object):
             self.conf_dirs.append(user_conf_dir)
 
         # Add user supplied directories
-        if self.add_conf_dirs:
-            self.conf_dirs.extend(self.add_conf_dirs)
+        if self._add_conf_dirs:
+            self.conf_dirs.extend(self._add_conf_dirs)
 
     def _init_cache_dir(self, cache_dir):
         if cache_dir:
@@ -146,6 +148,7 @@ class Local(object):
     def create_files_dirs(self):
         self._create_context_dirs()
         self._create_conf_path_and_link_conf_dirs()
+        self._link_types_for_emulator()
 
     def _create_context_dirs(self):
         self.mkdir(self.out_path)
@@ -185,9 +188,9 @@ class Local(object):
                     except OSError as e:
                         raise cdist.Error("Linking %s %s to %s failed: %s" % (sub_dir, src, dst, e.__str__()))
 
-    def link_emulator(self, exec_path):
+    def _link_types_for_emulator(self):
         """Link emulator to types"""
-        src = os.path.abspath(exec_path)
+        src = os.path.abspath(self.exec_path)
         for cdist_type in core.CdistType.list_types(self.type_path):
             dst = os.path.join(self.bin_path, cdist_type.name)
             self.log.debug("Linking emulator: %s to %s", src, dst)

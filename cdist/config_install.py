@@ -79,7 +79,6 @@ class ConfigInstall(object):
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
-        self.local.link_emulator(self.context.exec_path)
         self.explorer.run_global_explorers(self.local.global_explorer_out_path)
         self.manifest.run_initial_manifest(self.context.initial_manifest)
 
