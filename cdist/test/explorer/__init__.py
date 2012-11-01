@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -35,35 +35,45 @@ from cdist.core import explorer
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-local_base_path = fixtures
+conf_dir = op.join(fixtures, "conf")
 
 class ExplorerClassTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.target_host = 'localhost'
 
-        self.local_base_path = local_base_path
-        self.out_path = self.mkdtemp()
-        self.local = local.Local(self.target_host, self.local_base_path, self.out_path)
+        self.temp_dir = self.mkdtemp()
+        self.out_path = os.path.join(self.temp_dir, "out")
+        self.remote_base_path = os.path.join(self.temp_dir, "remote")
+
+        self.local = local.Local(
+            target_host=self.target_host,
+            out_path=self.out_path,
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
+
         self.local.create_files_dirs()
 
-        self.remote_base_path = self.mkdtemp()
-        self.user = getpass.getuser()
-        remote_exec = "ssh -o User=%s -q" % self.user
-        remote_copy = "scp -o User=%s -q" % self.user
-        self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
+        self.remote = remote.Remote(
+            self.target_host, 
+            self.remote_base_path,
+            self.remote_exec,
+            self.remote_copy)
 
-        self.explorer = explorer.Explorer(self.target_host, self.local, self.remote)
+        self.explorer = explorer.Explorer(
+            self.target_host, 
+            self.local, 
+            self.remote)
 
         self.log = logging.getLogger(self.target_host)
 
     def tearDown(self):
-        shutil.rmtree(self.out_path)
-        shutil.rmtree(self.remote_base_path)
+        shutil.rmtree(self.temp_dir)
 
     def test_list_global_explorer_names(self):
-        expected = ['foobar', 'global']
-        self.assertEqual(self.explorer.list_global_explorer_names(), expected)
+        names = self.explorer.list_global_explorer_names()
+        self.assertIn("foobar", names)
+        self.assertIn("global", names)
 
     def test_transfer_global_explorers(self):
         self.explorer.transfer_global_explorers()
