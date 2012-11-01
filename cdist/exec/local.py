@@ -54,7 +54,7 @@ class Local(object):
 
     def _init_home_dir(self):
         if 'HOME' in os.environ:
-            self.home_dir = os.environ['HOME']
+            self.home_dir = os.path.join(os.environ['HOME'], ".cdist")
         else:
             self.home_dir = None
 

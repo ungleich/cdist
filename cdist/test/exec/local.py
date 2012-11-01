@@ -58,14 +58,8 @@ class LocalTestCase(test.CdistTestCase):
     def test_cache_path(self):
         self.assertEqual(self.local.cache_path, os.path.join(self.home_dir, "cache"))
 
-    def test_global_explorer_path(self):
-        self.assertEqual(self.local.global_explorer_path, os.path.join(self.base_path, "conf", "explorer"))
-
-    def test_manifest_path(self):
-        self.assertEqual(self.local.manifest_path, os.path.join(self.base_path, "conf", "manifest"))
-
-    def test_type_path(self):
-        self.assertEqual(self.local.type_path, os.path.join(self.base_path, "conf", "type"))
+    def test_conf_path(self):
+        self.assertEqual(self.local.conf_path, os.path.join(self.out_path, "conf"))
 
     def test_out_path(self):
         self.assertEqual(self.local.out_path, self.out_path)
@@ -81,6 +75,18 @@ class LocalTestCase(test.CdistTestCase):
 
     ### /test api
 
+    ### test internal implementation
+
+    def test_global_explorer_path(self):
+        self.assertEqual(self.local.global_explorer_path, os.path.join(self.out_path, "conf", "explorer"))
+
+    def test_manifest_path(self):
+        self.assertEqual(self.local.manifest_path, os.path.join(self.out_path, "conf", "manifest"))
+
+    def test_type_path(self):
+        self.assertEqual(self.local.type_path, os.path.join(self.out_path, "conf", "type"))
+
+    ### other tests
 
     def test_run_success(self):
         self.local.run(['/bin/true'])
@@ -98,7 +104,7 @@ class LocalTestCase(test.CdistTestCase):
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", "/bin/false"])
-        self.assertRaises(local.LocalScriptError, self.local.run_script, script)
+        self.assertRaises(cdist.Error, self.local.run_script, script)
 
     def test_run_script_get_output(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
