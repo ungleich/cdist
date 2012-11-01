@@ -34,7 +34,7 @@ import cdist.context
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-local_base_path = fixtures
+add_conf_dir = op.join(fixtures, 'conf')
 
 
 class AutorequireTestCase(test.CdistTestCase):
@@ -48,7 +48,9 @@ class AutorequireTestCase(test.CdistTestCase):
 
         self.context = cdist.context.Context(
             target_host=self.target_host,
-            base_path=local_base_path,
+            remote_copy='/bin/true',
+            remote_exec='/bin/true',
+            add_conf_dirs=add_conf_dir,
             exec_path=test.cdist_exec_path,
             debug=False)
         self.config = config.Config(self.context)

@@ -44,7 +44,7 @@ class CodeTestCase(test.CdistTestCase):
         self.local_base_path = local_base_path
         self.out_path = self.mkdtemp()
         self.local = local.Local(self.target_host, self.local_base_path, self.out_path)
-        self.local.create_directories()
+        self.local.create_files_dirs()
 
         self.remote_base_path = self.mkdtemp()
         self.user = getpass.getuser()

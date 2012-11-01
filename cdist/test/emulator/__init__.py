@@ -33,8 +33,6 @@ from cdist import core
 from cdist import config
 import cdist.context
 
-local_base_path = test.cdist_base_path
-
 class EmulatorTestCase(test.CdistTestCase):
 
     def setUp(self):
@@ -45,7 +43,10 @@ class EmulatorTestCase(test.CdistTestCase):
         os.close(handle)
         self.target_host = 'localhost'
         out_path = self.temp_dir
-        self.local = local.Local(self.target_host, local_base_path, out_path, test.cdist_exec_path)
+        self.local = local.Local(
+            target_host=self.target_host,
+            out_path=out_path,
+            exec_path=test.cdist_exec_path)
         self.local.create_files_dirs()
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
@@ -112,8 +113,10 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
         self.target_host = 'localhost'
         out_path = self.temp_dir
-        _local_base_path = fixtures
-        self.local = local.Local(self.target_host, _local_base_path, out_path, test.cdist_exec_path)
+        self.local = local.Local(
+            target_host=self.target_host,
+            out_path=out_path,
+            exec_path=test.cdist_exec_path)
         self.local.create_files_dirs()
         self.manifest = core.Manifest(self.target_host, self.local)
 
@@ -138,9 +141,13 @@ class ArgumentsTestCase(test.CdistTestCase):
         out_path = self.temp_dir
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
-        _local_base_path = fixtures
-        self.local = local.Local(self.target_host, _local_base_path, out_path, test.cdist_exec_path)
+
+        self.local = local.Local(
+            target_host=self.target_host,
+            out_path=out_path,
+            exec_path=test.cdist_exec_path)
         self.local.create_files_dirs()
+
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             '__target_host': self.target_host,
@@ -228,13 +235,11 @@ class StdinTestCase(test.CdistTestCase):
         self.target_host = 'localhost'
         self.temp_dir = self.mkdtemp()
         os.environ['__cdist_out_dir'] = self.temp_dir
-        local_base_path = fixtures
 
         self.context = cdist.context.Context(
             target_host=self.target_host,
             remote_copy='scp -o User=root -q',
             remote_exec='ssh -o User=root -q',
-            base_path=local_base_path,
             exec_path=test.cdist_exec_path,
             debug=False)
         self.config = config.Config(self.context)

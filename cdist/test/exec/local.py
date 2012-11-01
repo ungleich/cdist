@@ -33,6 +33,7 @@ from cdist.exec import local
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
+conf_dir = op.join(fixtures, "conf")
 
 class LocalTestCase(test.CdistTestCase):
 
@@ -85,6 +86,41 @@ class LocalTestCase(test.CdistTestCase):
 
     def test_type_path(self):
         self.assertEqual(self.local.type_path, os.path.join(self.out_path, "conf", "type"))
+
+    def test_dist_conf_dir_linking(self):
+        """Ensure that links are correctly created for types included in distribution"""
+
+        test_type="__file"
+
+        link_test_local = local.Local(
+            target_host='localhost',
+            out_path=self.out_path,
+            exec_path=test.cdist_exec_path,
+        )
+
+        link_test_local._create_conf_path_and_link_conf_dirs()
+
+        our_type_dir = os.path.join(link_test_local.type_path, test_type)
+
+        self.assertTrue(os.path.isdir(our_type_dir))
+
+    def test_added_conf_dir_linking(self):
+        """Ensure that links are correctly created for types in added conf directories"""
+
+        test_type="__cdist_test_type"
+
+        link_test_local = local.Local(
+            target_host='localhost',
+            out_path=self.out_path,
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir]
+        )
+
+        link_test_local._create_conf_path_and_link_conf_dirs()
+
+        our_type_dir = os.path.join(link_test_local.type_path, test_type)
+
+        self.assertTrue(os.path.isdir(our_type_dir))
 
     ### other tests
 

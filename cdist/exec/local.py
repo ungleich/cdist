@@ -60,7 +60,7 @@ class Local(object):
         if 'HOME' in os.environ:
             return os.path.join(os.environ['HOME'], ".cdist")
         else:
-            return = None
+            return None
 
     def _init_log(self):
         self.log = logging.getLogger(self.target_host)
