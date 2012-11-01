@@ -302,6 +302,7 @@ eof
 
     test)
         shift # skip t
+        export PYTHONPATH="$(pwd -P)"
 
         if [ $# -lt 1 ]; then
             python3 -m cdist.test
