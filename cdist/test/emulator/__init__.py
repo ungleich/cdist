@@ -45,8 +45,8 @@ class EmulatorTestCase(test.CdistTestCase):
         os.close(handle)
         self.target_host = 'localhost'
         out_path = self.temp_dir
-        self.local = local.Local(self.target_host, local_base_path, out_path)
-        self.local.create_directories()
+        self.local = local.Local(self.target_host, local_base_path, out_path, test.cdist_exec_path)
+        self.local.create_files_dirs()
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             '__target_host': self.target_host,
@@ -113,9 +113,8 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         self.target_host = 'localhost'
         out_path = self.temp_dir
         _local_base_path = fixtures
-        self.local = local.Local(self.target_host, _local_base_path, out_path)
-        self.local.create_directories()
-        self.local.link_emulator(cdist.test.cdist_exec_path)
+        self.local = local.Local(self.target_host, _local_base_path, out_path, test.cdist_exec_path)
+        self.local.create_files_dirs()
         self.manifest = core.Manifest(self.target_host, self.local)
 
     def tearDown(self):
@@ -140,9 +139,8 @@ class ArgumentsTestCase(test.CdistTestCase):
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
         _local_base_path = fixtures
-        self.local = local.Local(self.target_host, _local_base_path, out_path)
-        self.local.create_directories()
-        self.local.link_emulator(test.cdist_exec_path)
+        self.local = local.Local(self.target_host, _local_base_path, out_path, test.cdist_exec_path)
+        self.local.create_files_dirs()
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             '__target_host': self.target_host,
