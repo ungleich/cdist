@@ -47,16 +47,20 @@ class Local(object):
 
         self._init_log()
         self._init_permissions()
-        self._init_home_dir()
         self._init_paths()
         self._init_cache_dir(cache_dir)
         self._init_conf_dirs()
 
-    def _init_home_dir(self):
+    @property
+    def dist_conf_dir(self):
+        return os.path.abspath(os.path.join(os.path.dirname(cdist.__file__), "conf"))
+
+    @property
+    def home_dir(self):
         if 'HOME' in os.environ:
-            self.home_dir = os.path.join(os.environ['HOME'], ".cdist")
+            return os.path.join(os.environ['HOME'], ".cdist")
         else:
-            self.home_dir = None
+            return = None
 
     def _init_log(self):
         self.log = logging.getLogger(self.target_host)
@@ -81,13 +85,12 @@ class Local(object):
         self.conf_dirs = []
 
         # Comes with the distribution
-        system_conf_dir = os.path.join(os.path.dirname(cdist.__file__), "conf")
+        system_conf_dir = os.path.abspath(os.path.join(os.path.dirname(cdist.__file__), "conf"))
         self.conf_dirs.append(system_conf_dir)
 
         # Is the default place for user created explorer, type and manifest
         if self.home_dir:
-            user_conf_dir = os.path.join(self.home_dir, ".cdist")
-            self.conf_dirs.append(user_conf_dir)
+            self.conf_dirs.append(self.home_dir)
 
         # Add user supplied directories
         if self._add_conf_dirs:
@@ -152,13 +155,12 @@ class Local(object):
 
     def _create_context_dirs(self):
         self.mkdir(self.out_path)
+
         self.mkdir(self.conf_path)
         self.mkdir(self.global_explorer_out_path)
         self.mkdir(self.bin_path)
 
     def _create_conf_path_and_link_conf_dirs(self):
-        self.mkdir(self.conf_path)
-
         # Link destination directories
         for sub_dir in [ "explorer", "manifest", "type" ]:
             self.mkdir(os.path.join(self.conf_path, sub_dir))
