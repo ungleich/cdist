@@ -1,0 +1,353 @@
+[[!meta title="cdist - usable configuration management"]]
+
+     
+                 ..          .       .x+=:.        s   
+               dF           @88>    z`    ^%      :8  
+              '88bu.        %8P        .   <k    .88 
+          .   '*88888bu      .       .@8Ned8"   :888ooo
+     .udR88N    ^"*8888N   .@88u   .@^%8888"  -*8888888
+    <888'888k  beWE "888L ''888E` x88:  `)8b.   8888
+    9888 'Y"   888E  888E   888E  8888N=*8888   8888
+    9888       888E  888E   888E   %8"    R88   8888
+    9888       888E  888F   888E    @8Wou 9%   .8888Lu=
+    ?8888u../ .888N..888    888&  .888888P`    ^%888*
+     "8888P'   `"888*""     R888" `   ^"F        'Y" 
+       "P'        ""         ""  
+     
+
+[[!toc levels=3]]
+
+## Introduction
+
+cdist is a usable configuration management system. It adheres to
+the KISS principle and is being used in small up to enterprise grade
+environments.
+cdist is an alternative to other configuration management systems like
+[cfengine](http://www.cfengine.org/),
+[bcfg2](http://trac.mcs.anl.gov/projects/bcfg2),
+[chef](http://wiki.opscode.com/display/chef/)
+and [puppet](http://www.puppetlabs.com/).
+But cdist ticks differently, here is the feature set that makes it unique: 
+
+[[!table  data="""
+Keywords | Description
+Simplicity | There is only one type to extend cdist called ***type***
+Design | Type and core cleanly seperated
+Design | Sticks completly to the KISS (keep it simple and stupid) paradigma
+Design | Meaningful error messages - do not lose time debugging error messages
+Design | Consistency in behaviour, naming and documentation
+Design | No surprise factor: Only do what is obviously clear, no magic
+Design | Define target state, do not focus on methods or scripts
+Design | Push architecture: Instantly apply your changes
+Small core | cdist's core is very small - less code, less bugs
+Fast development | Focus on straightforwardness of type creation is a main development objective
+Fast development | Batteries included: A lot of requirements can be solved using standard types
+Modern Programming Language | cdist is written in Python
+Requirements, Scalability | No central server needed, cdist operates in push mode and can be run from any computer
+Requirements, Scalability, Upgrade | cdist only needs to be updated on the master, not on the target hosts
+Requirements, Security | Uses well-know [SSH](http://www.openssh.com/) as transport protocol
+Requirements, Simplicity | Requires only shell and SSH server on the target
+UNIX | Reuse of existing tools like cat, find, mv, ...
+UNIX, familar environment, documentation | Is available as manpages and HTML
+UNIX, simplicity, familar environment | cdist is configured in POSIX shell
+"""]]
+
+### Documentation
+
+The cdist documentation is included as manpages in the distribution.  
+You can browse the documentation online as well:
+
+ * [latest version](man/latest)
+ * [all versions (>= 2.0.4)](man)
+
+### OS support
+
+cdist was tested or is know to run on at least
+
+ * [Archlinux](http://www.archlinux.org/)
+ * [Debian](http://www.debian.org/)
+ * [CentOS](http://www.centos.org/)
+ * [Fedora](http://fedoraproject.org/)
+ * [Gentoo](http://www.gentoo.org/)
+ * [Mac OS X](http://www.apple.com/macosx/)
+ * [OpenBSD](http://www.openbsd.org)
+ * [Redhat](http://www.redhat.com/)
+ * [Ubuntu](http://www.ubuntu.com/)
+ * [XenServer](http://www.citrix.com/xenserver/)
+
+
+## Requirements
+
+### Server
+
+ * A posix like shell
+ * Python (>= 3.2 required)
+ * SSH client
+ * Asciidoc (for building the manpages)
+
+### Client ("target host")
+
+ * A posix like shell
+ * SSH server
+
+
+## Installation
+
+### Preparation
+
+Ensure you have Python 3.2 installed on the machine you use to **deploy to the targets**
+(the ***source host***).
+
+#### Archlinux
+
+Archlinux already has python >= 3.2, so you only need to do:
+
+    pacman -S python
+
+#### CentOS
+
+See the "From source" section
+
+#### Debian
+
+For Debian >= wheezy:
+
+    aptitude install python3
+
+On squeeze you can add following line in **/etc/apt/sources.list**
+
+  deb http://ftp.debian.org/debian wheezy main
+
+And add pinning entry in **/etc/apt/preferences.d/wheezy**:
+
+  Package: *
+  Pin: release n=wheezy
+  Pin-Priority: 1
+
+Please be aware that both **openssh-server** and **openssh-client** might be
+removed on **python3.2** installation. You surely want to reinstall them:
+
+  apt-get install -t wheezy openssh-server openssh-client
+
+For older Debian versions, installing python 3.2 manually is required.
+
+
+#### Fedora
+
+For Fedora >= 15:
+
+    yum install python3
+
+#### FreeBSD
+
+For the port:
+
+    cd /usr/ports/lang/python32/ && make install clean
+
+For the package:
+
+    pkg_add -r python32
+
+#### Gentoo
+
+Gentoo only provides python 3.2 in testing packages (http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=3&chap=3).
+If you want to ensure nothing breaks you must set back the python version to what was default before.
+
+    emerge -av =python-3.2.2 --autounmask-write
+    emerge -av =python-3.2.2
+    eselect python list
+    eselect python list set python3.2
+
+#### Max OS X
+
+You can choose between Homebrew and Macports, either way works:
+
+[Homebrew](http://mxcl.github.com/homebrew/) variant:
+
+    brew install python3
+
+[Macports](http://www.macports.org/install.php) variant:
+
+    port install python32
+    ln -s /opt/local/bin/python3.2 /opt/local/bin/python3
+
+#### From Source
+
+For those operating systems not yet support Python 3.2:
+
+    pyversion=3.2.3
+    wget http://www.python.org/ftp/python/$pyversion/Python-${pyversion}.tar.bz2
+    tar xvfj Python-${pyversion}.tar.bz2
+    cd Python-${pyversion}
+    ./configure
+    make
+    sudo make install
+
+This installs python 3.2 to /usr/local/bin. Ensure this directory is in
+your PATH environment variable.
+
+
+### Get cdist
+
+You can clone cdist from git, which gives you the advantage of having
+a version control in place for development of your own stuff as well.
+To install cdist, execute the following commands:
+
+    git clone git://git.schottelius.org/cdist
+    cd cdist
+    export PATH=$PATH:$(pwd -P)/bin
+
+    # If you want the manpages
+    ./build man
+    export MANPATH=$MANPATH:$(pwd -P)/doc/man
+
+
+### Available versions
+
+There are at least the following branches available:
+
+ * Development: master
+ * 2.0: Python rewrite of cdist core [stable branch]
+
+Old versions:
+
+ * 1.7: Bugfixes, cleanups, new type and explorer rename
+ * 1.6: New types, cleaned up \_\_package* types, internal cleanup
+ * 1.5: Focus on object orientation instead of global stage orientation
+ * 1.4: Support for redefiniton of objects (if equal)
+ * 1.3: Support for local and remote code execution (current stable)
+ * 1.2: Dependencies supported
+ * 1.1: \_\_file to \_\_file, \_\_directory, \_\_link migration
+ * 1.0: First official release
+
+Other branches may be available for features or bugfixes, but they
+may vanish at any point. To select a specific branch use
+
+    # Generic code
+    git checkout -b <name> origin/<name>
+    
+    # Stay on a specific version
+    version=2.0
+    git checkout -b $version origin/$version
+
+### Mirrors
+
+ * git://github.com/telmich/cdist.git ([github](https://github.com/telmich/cdist))
+ * git://git.code.sf.net/p/cdist/code ([sourceforge](https://sourceforge.net/p/cdist/code))
+
+## Update
+
+To upgrade cdist in the current branch use
+
+    git pull
+
+    # Also update the manpages
+    ./build man
+    export MANPATH=$MANPATH:$(pwd -P)/doc/man
+
+If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
+The master branch on the other hand is the development branch and may not be
+working, break your setup or eat the tree in your garden.
+
+### Upgrading from 1.7 to 2.0
+
+* Ensure python (>= 3.2) is installed on the server
+* Use "cdist config host" instead of "cdist-deploy-to host"
+* Use "cdist config -p host1 host2" instead of "cdist-mass-deploy"
+* Use "cdist banner" for fun
+* Use **\_\_object_fq** instead of **\_\_self** in manifests
+
+### Upgrading from 1.6 to 1.7
+
+* If you used the global explorer **hardware_type**, you need to change
+  your code to use **machine** instead.
+
+### Upgrading from 1.5 to 1.6
+
+* If you used **\_\_package_apt --preseed**, you need to use the new
+  type **\_\_debconf_set_selections** instead.
+* The **\_\_package** types accepted either --state deinstalled or
+  --state uninstaaled. Starting with 1.6, it was made consistently
+  to --state removed.
+
+### Upgrading from 1.3 to 1.5
+
+No incompatiblities.
+
+### Upgrading from 1.2 to 1.3
+
+Rename **gencode** of every type to **gencode-remote**.
+
+### Upgrading from 1.1 to 1.2
+
+No incompatiblities.
+
+### Upgrading from 1.0 to 1.1
+
+In 1.1 the type **\_\_file** was split into **\_\_directory**, **\_\_file** and
+**\_\_link**. The parameter **--type** was removed from **\_\_file**. Thus you
+need to replace **\_\_file** calls in your manifests:
+
+ * Remove --type from all \_\_file calls
+ * If type was symlink, use \_\_link and --type symbolic
+ * If type was directory, use \_\_directory
+
+
+## Support
+
+### IRC
+
+You can join the development ***IRC channel***
+[#cstar on irc.freenode.net](irc://irc.freenode.org/#cstar).
+
+### Mailing list
+
+Bug reports, questions, patches, etc. should be send to the
+[cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
+
+### Linkedin
+
+If you have an account
+at [Linked in](http://www.linkedin.com/),
+you can join the
+[cdist group](http://www.linkedin.com/groups/cdist-configuration-management-3952797).
+
+### Commercial support
+
+You can request commercial support for cdist from
+[my company](http://firma.schottelius.org/english/).
+
+## Used by
+
+If you're using cdist, feel free to send a report to the mailing list.
+Interesting information are for instance
+
+ * Which services do you manage?
+ * How many machines do you manage?
+ * What are the pros/cons you see in cdist?
+ * General comments/critics
+
+### Nico Schottelius, Systems Group ETH Zurich, local.ch and privately
+
+Yes, I'm actually eating my own dogfood and currently managing
+
+ * [plone](http://plone.org/) (cms)
+ * [moinmoin](http://moinmo.in/) (wiki)
+ * [apache](http://httpd.apache.org/) (webserver)
+ * [kerberos (mit)](http://web.mit.edu/kerberos/) (authentication)
+ * [nss-pam-ldapd](http://arthurdejong.org/nss-pam-ldapd/) (authentication)
+ * [ircd-hybrid](http://www.ircd-hybrid.org/) (chat)
+ * [stunnel](http://stunnel.mirt.net/) (SSL tunnel)
+ * [mercurial-server](http://www.lshift.net/mercurial-server.html) (version control)
+ * [xfce](http://www.xfce.org/) (lightweight desktop environment)
+ * [slim](http://slim.berlios.de/) (graphical login manager for X11)
+
+with cdist on more than **60** production machines of the
+[Systems Group](http://www.systems.ethz.ch) at the
+[ETH Zurich](http://www.ethz.ch) as well at home.
+
+### Steven Armstrong, CBRG ETH Zurich
+
+The CBRG is managing most of their compute clusters with cdist.
+
+[[!tag cdist unix]]
