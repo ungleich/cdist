@@ -37,13 +37,13 @@ class Local(object):
     Directly accessing the local side from python code is a bug.
 
     """
-    def __init__(self, target_host, conf_dirs, out_path, exec_path, cache_dir=None):
+    def __init__(self, target_host, out_path, exec_path, add_conf_dirs=[], cache_dir=None):
 
         self.target_host = target_host
         self.out_path = out_path
         self.exec_path = exec_path
 
-        self._add_conf_dirs = conf_dirs
+        self._add_conf_dirs = add_conf_dirs
 
         self._init_log()
         self._init_permissions()
