@@ -220,9 +220,9 @@ eof
         {
             "auth_code": "$api_token",
             "release": {
-                "tag_list": "REPLACEME",
+                "tag_list": "$taglist",
                 "version": "$version",
-                "changelog": "REPLACEMETOO",
+                "changelog": "$changelog",
                 "hidden_from_frontpage": false
             }
         }
