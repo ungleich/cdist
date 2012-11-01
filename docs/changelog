@@ -5,6 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+2.1.0pre5: 2012-11-01
+	* Core: First round of tests updated to work with multiple configuration directories
+
 2.1.0pre4: 2012-10-31
 	* Dist: PyPi: Moved cdist.py to script/cdist to avoid double import
 	* Core: Added support for multiple configuration directories (no documentation)
