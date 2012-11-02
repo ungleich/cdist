@@ -7,6 +7,7 @@ Changelog
 2.1.0pre6:
 	* New Example: Turn remote calls into local calls (used for unittesting)
 	* Core: Export PYTHONPATH, it's also needed by emulator
+	* Type __rvm_ruby: Add clean package dependencies
 
 2.1.0pre5: 2012-11-01
 	* Core: First round of tests updated to work with multiple configuration directories

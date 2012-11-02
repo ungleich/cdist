@@ -20,6 +20,6 @@
 #
 
 # Required packages for building ruby
-for package in bzip2; do
+for package in bzip2 gcc make; do
     __package --state present
 done
