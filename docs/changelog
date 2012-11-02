@@ -14,6 +14,7 @@ Changelog
 	* Cleanup Type __postgres_database,  __postgres_role: Reference each other
 		in documentation
 	* Cleanp Type __postgres_role: Use boolean parameters where appropriate
+	* Cleanp Type __postgres_role: Use shortcut version
 
 2.1.0pre5: 2012-11-01
 	* Core: First round of tests updated to work with multiple configuration directories
