@@ -22,14 +22,14 @@ gemset="$__object_id"
 ruby="$(echo "$gemset" | cut -d '@' -f 1)"
 gemsetname="$(echo "$gemset" | cut -d '@' -f2)"
 user="$(cat "$__object/parameter/user")"
-if su - "$user" -c "[ ! -d ~/.rvm ]" ; then
+
+if [ ! -e "~$user/.rvm/scripts/rvm" ] ; then
    echo "absent"
    exit 0
 fi
-if su - "$user" -c "source ~/.rvm/scripts/rvm
-rvm list | grep -q $ruby"; then
-   if su - "$user" -c "source ~/.rvm/scripts/rvm
-rvm use $ruby > /dev/null; rvm gemset list | grep -q $gemsetname"; then
+
+if su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm list strings | grep -q "^$ruby\$"'; then
+    if su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm use "$ruby" > /dev/null; rvm gemset list strings | cut -f 1 -d " " | grep -q "^$gemsetname\$"'; then
       echo "present"
       exit 0
   fi
