@@ -9,6 +9,7 @@ Changelog
 	* Core: Export PYTHONPATH, it's also needed by emulator
 	* Bugfix Type __rvm_ruby: Add clean package dependencies
 	* Bugfix Type __rvm_gem: Run rvm as user, not as root
+	* Cleanup Type __rvm: Use shortcut version
 
 2.1.0pre5: 2012-11-01
 	* Core: First round of tests updated to work with multiple configuration directories
