@@ -45,6 +45,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
         self.out_path = os.path.join(self.temp_dir, "out")
         self.remote_base_path = os.path.join(self.temp_dir, "remote")
+        os.makedirs(self.remote_base_path)
 
         self.local = local.Local(
             target_host=self.target_host,
