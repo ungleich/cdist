@@ -1,5 +1,4 @@
-#!/bin/sh
-#
+#!/bin/sh #
 # 2012 Evax Software <contact@evax.fr>
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
@@ -32,12 +31,12 @@ state_should="$(cat "$__object/parameter/state")"
 case "$state_should" in
     present)
         cat << DONE
-su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm; rvm use $gemset; gem install $gem"\"
+su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm use "$gemset"; gem install "$gem"'
 DONE
     ;;
     absent)
         cat << DONE
-su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm; rvm use $gemset; gem uninstall $gem"\"
+su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm use "$gemset"; gem uninstall "$gem"'
 DONE
     ;;
 esac
