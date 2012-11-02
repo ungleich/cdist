@@ -32,14 +32,12 @@ state_should="$(cat "$__object/parameter/state")"
 case "$state_should" in
     present)
         cat << DONE
-su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
-rvm use $gemset; gem install $gem"
+su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm; rvm use $gemset; gem install $gem"\"
 DONE
     ;;
     absent)
         cat << DONE
-su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm\"
-rvm use $gemset; gem uninstall $gem"
+su - "$user" -c "source \"\\\$HOME/.rvm/scripts/rvm; rvm use $gemset; gem uninstall $gem"\"
 DONE
     ;;
 esac
