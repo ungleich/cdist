@@ -49,6 +49,7 @@ __postgres_role dbcustomer --state present --password 'bla' --createdb true
 SEE ALSO
 --------
 - cdist-type(7)
+- cdist-type__postgres_database(7)
 - http://www.postgresql.org/docs/current/static/sql-createrole.html
 
 
