@@ -10,6 +10,10 @@ Changelog
 	* Bugfix Type __rvm_ruby: Add clean package dependencies
 	* Bugfix Type __rvm_gem: Run rvm as user, not as root
 	* Cleanup Type __rvm, __rvm_gemset: Use shortcut version
+	* Bugfix __rvm_gemset: Correctly check for gemsets
+	* Cleanup Type __postgres_database,  __postgres_role: Reference each other
+		in documentation
+	* Cleanp Type __postgres_role: Use boolean parameters where appropriate
 
 2.1.0pre5: 2012-11-01
 	* Core: First round of tests updated to work with multiple configuration directories
