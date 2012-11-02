@@ -36,6 +36,7 @@ __postgres_database mydbname --state present --owner mydbusername
 SEE ALSO
 --------
 - cdist-type(7)
+- cdist-type__postgres_role(7)
 
 
 COPYING
