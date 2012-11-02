@@ -1,0 +1,307 @@
+Changelog
+---------
+
+	* Changes are always commented with their author in (braces)
+	* Exception: No braces means author == Nico Schottelius
+
+2.1.0pre6:
+	* New Example: Turn remote calls into local calls (used for unittesting)
+
+2.1.0pre5: 2012-11-01
+	* Core: First round of tests updated to work with multiple configuration directories
+
+2.1.0pre4: 2012-10-31
+	* Dist: PyPi: Moved cdist.py to script/cdist to avoid double import
+	* Core: Added support for multiple configuration directories (no documentation)
+
+2.1.0pre3: 2012-10-30
+	* Dist: PyPi: Types and explorer included as package data
+
+2.1.0pre2: 2012-10-26
+	* Dist: PyPi: Add conf/ directory to distribution
+	* Dist: Initial support for archlinux packaging
+
+2.1.0pre1: 2012-10-26
+	* Core: Removed obsolete variable __self
+	* Removed type __addifnosuchline (replaced by __line)
+	* Removed type __removeline (replaced by __line)
+	* Type __directory: Parameter --parents and --recursive are now boolean
+	* Type __package_apt, __package_luarocks, __package_opkg,
+		__package_pacman, __package_pkg_freebsd, __package_pkg_openbsd,
+		__package_rubygem, __package_yum, __process:
+			Parameter state accepts only "present" and "absent"
+	* Dist: Initial support for pypi packaging
+
+2.0.15: 2012-11-02
+	* Core: Make variable __object_name available in type explorers (Steven Armtrong)
+	* New Type: __qemu_img
+	* New Type: __line
+	* New Type: __pf_apply (Jake Guffey)
+	* New Type: __pf_ruleset (Jake Guffey)
+	* Bugfix Type: __rvm: Make type work if rvm is already installed
+
+2.0.14: 2012-09-07
+	* Bugfix Type: __jail: Use correct variable (Jake Guffey)
+	* Change Type: __jail: Parameter jailbase now optional (Jake Guffey)
+	* Bugfix Type: __user: Use passwd database on FreeBSD (Jake Guffey)
+	* Bugfix Type: __start_on_boot: Do not change parameters
+	* Feature __user: Added support for BSDs (Sébastien Gross)
+	* Feature __group: Added support for FreeBSD (Jake Guffey)
+	* New Type: __package_zypper
+	* Feature Types: Initial Support for SuSE Linux
+	
+2.0.13: 2012-06-05
+	* Bugfix __ssh_authorized_key: Ensure it sets proper group (contradict)
+	* Bugfix __addifnosuchline: Fixed quotes/interpolation bug ("a  b" became "a b")
+	* New Explorer: interfaces (Sébastien Gross)
+	* Feature core: Support reading from stdin in types (Steven Armstrong)
+	* Feature core: Support multiple parameters for types (Steven Armstrong)
+	* Feature __file: Support reading from stdin with - syntax (Steven Armstrong)
+
+2.0.12: 2012-05-29
+	* Core: Correctly raise error on Python < 3.2 (Steven Armtrong)
+	* Core: Add support for --remote-exec and --remote-copy parameters
+	* Documentation: Debian Squeeze hints (Sébastien Gross)
+
+2.0.11: 2012-05-23
+	* Fix insecure file/directory creation: Use umask 077
+
+2.0.10: 2012-05-18
+	* Cleanup __group: No getent gshadow in old Redhat, use groupmod -g
+		(Matt Coddington)
+	* Bugfix __package_yum: Missing cat
+	* Bugfix __start_on_boot: Correctly use sed and quotes (Steven Armstrong)
+	* Feature __file: Support for --state exists (Steven Armstrong)
+	* Feature core: Make variable __manifest available to type manifests
+	* Feature core: Correct parent dependency handling (Steven Armstrong)
+	* Bugfix several types: Fix sed for FreeBSD (Istvan Beregszaszi)
+	* New Type: __jail (Jake Guffey)
+	* Change Type: __rvm*: --state present/absent not installed/remvoed (Evax Software)
+	* Bugfix Type: __cron: Hide error output from crontab
+	* Various smaller bugfixes (Chris Lamb)
+
+2.0.9: 2012-03-12
+	* Cleanup documentation: Fix environment variable list to be properly 
+		displayed (Giel van Schijndel)
+	* Cleanup documentation: Some minor corrections
+	* New Type: __package_opkg (Giel van Schijndel)
+	* New Type: __package_pkg_freebsd (Jake Guffey)
+	* New Type: __mysql_database (Benedikt Koeppel)
+	* Feature __package: Support for OpenWRT (Giel van Schijndel)
+	* Feature __start_on_boot: Support for OpenWRT (Giel van Schijndel)
+	* Feature __start_on_boot: Support for Amazon Linux (Matt Coddington)
+	* New Example: Use rsync to backup files (Matt Coddington) 
+	* Feature core: Exit non-zero, if configuration failed
+	* Documentation: Describe how to do templating (Aurélien Bondis)
+
+2.0.8: 2012-02-20
+	* Bugfix core: Remove another nasty traceback when sending SIGINT (aka Ctrl-C)
+	* Cleanup: Better hint to source of error
+	* Cleanup: Do not output failing script, but path to script only
+	* Cleanup: Remove support for __debug variable in manifests (Type != Core
+		debugging)
+	* Cleanup: Change __package_* to support absent/present (default state
+		name now). The values removed/installed will be removed in cdist 2.1.
+	* Cleanup: Change __process to support absent/present (default state
+		name now). The values running/stopped will be removed in cdist 2.1.
+	* Feature Core: Support boolean parameters (Steven Armstrong)
+
+2.0.7: 2012-02-13
+	* Bugfix __file: Use chmod after chown/chgrp (Matt Coddington)
+	* Bugfix __user: Correct shadow field in explorer (Matt Coddington)
+	* Bugfix __link: Properly handle existing links (Steven Armstrong)
+	* Bugfix __key_value: More robust implementation (Steven Armstrong)
+	* Bugfix __user: Fix for changing a user's group by name (Matt Coddington)
+	* New Type: __package_pip
+	* Bugfix/Cleanup: Correctly allow Object ID to start and end with /, but
+		not contain //.
+
+2.0.6: 2012-01-28
+	* Bugfix __apt_ppa:
+		Also remove the [ppa-name].list file, if empty. (Tim Kersten)
+	* Bugfix __group:
+		Referenced wrong variable name (Matt Coddington)
+	* Feature __package_apt:
+		Initial support for virtual packages (Evax Software)
+	* Feature Core: Added new dependency resolver (Steven Armstrong)
+	* Feature Explorer, __package_yum: Support Amazon Linux (Matt Coddington)
+	* New Type: __rvm (Evax Software)
+	* New Type: __rvm_gem (Evax Software)
+	* New Type: __rvm_gemset (Evax Software)
+	* New Type: __rvm_ruby (Evax Software)
+
+2.0.5: 2012-01-18
+	* Bugfix __key_value: Use correct delimiters
+		(Steven Armstrong, Daniel Maher)
+	* Cleanup: Explicitly require Python >= 3.2 (do not fail implicitly)
+	* Documentation: (Re)write of the tutorial
+	* Feature: __addifnosuchline supports matching on 
+		regular expressions (Daniel Maher)
+	* Feature: __directory, __file, __link:
+		Add --state parameter (Steven Armstrong)
+	* New Type: __package_luarocks (Christian G. Warden)
+	* New Type: __cdistmarker (Daniel Maher)
+
+2.0.4: 2011-11-18
+	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
+	* Bugfix core: Accept parameters with - in the name (Steven Armstrong)
+	* Cleanup: __object_fq variable removed (never used)
+	* Cleanup: Environment variable __self DEPRECATED, use __object_name instead
+	* Cleanup: Environment variable __self scheduled for removal in cdist 2.1
+	* Documentation: Many examples for use of __remote_* (Steven Armstrong)
+	* Feature: Automatically require all used objects (Steven Armstrong)
+	* New Type: __cron (Steven Armstrong)
+
+2.0.3: 2011-10-18
+	* Improved logging, added --verbose, by more quiet by default
+	* Bugfix __user: Correct quoting (Steven Armstrong)
+	* Bugfix __addifnosuchline: Falsely exited
+	* Bugfix requirements: Restore original require="" behaviour
+	* Feature requirements: Check for broken object_ids and abort
+	* Massive refactoring and unittesting introduced (Steven Armstrong)
+
+2.0.2: 2011-09-27
+	* Add support for detection of OpenWall Linux (Matthias Teege)
+	* Add support for __debug variable in manifests
+	* Bugfix core: Various issues with type emulator
+
+2.0.1: 2011-09-23
+	* Bugfix core: Always print source of error in case of exec errors
+	* Bugfix core: Various smaller bugs in string concatenation
+	* Feature: Add marker "changed" to changed objects
+
+2.0.0: 2011-09-16
+	* New Type: __package_rubygem (Chase Allen James)
+	* __self replaced by __object_fq
+	* Rewrote cdist in Python
+
+1.7.1: 2011-07-26
+	* Documentation: Add explorers to reference
+	* Documentation: Typo cleanup (Derek Brost)
+	* Type __key_value: Bugfix (Steven Armstrong)
+	* New Type: __postgres_role (Steven Armstrong)
+	* New Type: __postgres_database (Steven Armstrong)
+
+1.7.0: 2011-05-10
+	* Bugfix type __package_yum: Fix redhat support (Ramon Salvadó)
+	* Improved type __package_yum: Add centos support (Ramon Salvadó)
+	* New Type: __timezone (Ramon Salvadó)
+	* Renamed explorer: hardware_type to machine
+	* Core: Do not execute empty code fragments
+
+1.6.2: 2011-04-19
+	* Core: Introduce __cdist_tmp_base_dir
+	* Core: Cleanup and enhance cdist-type-template
+	* Core: cdist-mass-deploy: Report failed cdist-deploy-to instances
+	* New Type: __ssh_authorized_key (Aurélien Bondis)
+
+1.6.1: 2011-04-07
+	* Improved logging: Show code responsible for abort
+	* Improved logging: Consistently prefix with current object or core
+	* Bugfix: Type __debconf_set_selections used wrong contens for selection
+	* Bugfix: Don't fail, if cache directory is not existing
+	* Bugfix: __user and __group exited non-zero if no change was necessary
+	* New Explorer: hardware_type
+	* New Type: __package_pkg_openbsd (Andi Brönnimann)
+	* New Type: __autofs_map (Steven Armstrong)
+	* New Type: __autofs_master (Steven Armstrong)
+
+1.6.0: 2011-04-06
+	* New Type: __package_yum
+	* New type: __debconf_set_selections
+	* New explorer: os_version
+	* Bugfix: Type __group failed in case of __group NAME syntax
+	* Bugfix: __package* types: consistently name --state removed instead of
+		uninstalled or deinstalled
+	* Type __package: Added Fedora support
+	* Type __package_apt: Removed --preseed support
+	* Explorer os gained Fedora support
+	* Simplified types __user and __group
+	* New helper binary: cdist-mass-deploy
+
+1.5.0: 2011-04-01
+	* Add basic cache functionality
+	* New type: __process
+	* Restructured execution: (Steven Armstrong)
+		Orientate processing on objects, resolve dependencies and
+		ensure correct execution order.
+	* Documentation: Rewrite stages docs (Steven Armstrong)
+	* Documentation: Remove legacy man pages (Steven Armstrong)
+
+1.4.1: 2011-03-25
+	* New type: __key_value (Steven Armstrong)
+	* New type: __apt_ppa (Steven Armstrong)
+	* Documentation: Manpage generation cleanup
+	* Documentation: Manpage fix for __apt_ppa
+
+1.4.0: 2011-03-24
+	* Add --recursive to __directory
+	* Move cdist generated stuff to .cdist of an object
+	* Allow objects to be redefined
+
+1.3.2: 2011-03-21
+	* Add --source to __motd
+	* Add --preseed to __package_apt
+	* Include HTML documentation of manpages and publish them
+
+1.3.1: 2011-03-21
+	* Document: cdist-type-build-emulation
+	* Document: cdist-type-emulator
+	* Document: cdist-remote-explorer-run
+	* Fix dependencies in cdist-code-run
+	* Fix dependencies in cdist-manifest-run-all
+	* Add --source to __issue and fix os check
+
+1.3.0: 2011-03-20
+	* Add support for local and remote code generation and execution
+	* Bugfix: Remove obsolete $@ call in cdist-remote-explorer-run
+	* Bugfix: Correct manpage for __removeline (broke manpage generation)
+
+1.2.0: 2011-03-19
+	* Added dependencies (see cdist-type(7))
+	* New type: __removeline (Daniel Roth)
+	* New type: __group (Steven Armstrong)
+	* New type: __user (Steven Armstrong)
+	* Documentation: cdist-run-remote
+	* Documentation: cdist-code-run-all
+	* Documentation: cdist-object-gencode
+	* Documentation: cdist-explorer-run-global
+	* Documentation: cdist-manifest-run-init
+	* Documentation: cdist-manifest-run-all
+	* Documentation: cdist-object-gencode-all
+	* Documentation: cdist-manifest-run
+
+1.1.0: 2011-03-16
+	* Replace type __file with __file, __directory, __link
+	* Documentation: cdist-env
+	* Documentation: cdist-config
+	* Documentation: cdist-dir
+	* Documentation: cdist-quickstart
+
+1.0.4: 2011-03-15
+	* New type: __motd
+	* New type: __addifnosuchline (Daniel Roth)
+	* New type: __user
+	* Document type: __issue
+	* Document type: __package
+	* Document type: __package_pacman
+	* Document type: __package_apt
+	* New parameter for __file: --owner and --group
+
+1.0.3: 2011-03-11
+	* Update regexp used for sane characters
+	* Allow types without parameters
+	* Allow type to be singleton
+	* Type __file learned --type symlink
+
+1.0.2: 2011-03-09
+	* Add manpages: cdist-type, cdist-type__file, cdist-reference, cdist-explorer
+	* Make doc/man/ usable as MANPATH entry
+
+1.0.1: 2011-03-08
+	* Added cdist-type-template including manpage
+	* Fix manpage building
+	* Add new manpages: cdist-stages, cdist-bin-transfer
+
+1.0.0: 2011-03-07
+	* Initial release

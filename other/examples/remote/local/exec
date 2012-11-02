@@ -1,7 +1,6 @@
 #!/bin/sh
-# -*- coding: utf-8 -*-
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 Nico Schottelius (nico-cdist schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -19,11 +18,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# same as cdist default
+#
+# Usage:
+#  cdist config --remote-exec "/path/to/this/script" target_host
+#
 
-# Wrapper for real script to allow execution from checkout
-dir=${0%/*}
-
-# Ensure version is present - the bundled/shipped version contains a static version,
-# the git version contains a dynamic version
-"$dir/../build" version
-PYTHONPATH="${dir}/../" "$dir/../scripts/cdist" "$@"
+target_host=$1; shift
+# echo "Executing $@ (for $target_host)"
+/bin/sh -c "$@"

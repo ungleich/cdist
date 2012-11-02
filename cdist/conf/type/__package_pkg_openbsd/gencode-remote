@@ -1,0 +1,94 @@
+#!/bin/sh
+#
+# 2011 Andi Brönnimann (andi-cdist at v-net.ch)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage packages with pkg on OpenBSD
+#
+
+# Debug
+# exec >&2
+# set -x
+
+os_version="$(cat "$__global/explorer/os_version")"
+machine="$(cat "$__global/explorer/machine")"
+
+if [ -f "$__object/parameter/flavor" ]; then
+	flavor="$(cat "$__object/parameter/flavor")"
+fi
+
+# do not show progress bar
+pkgopts="-x"
+
+if [ -f "$__object/parameter/name" ]; then
+   name="$__object/parameter/name"
+else
+   name="$__object_id"
+fi
+
+if [ -f "$__object/parameter/state" ]; then
+   state_should="$(cat "$__object/parameter/state")"
+else
+   state_should="present"
+fi
+
+pkg_version="$(cat "$__object/explorer/pkg_version")"
+
+# TODO: Shouldn't be hardcoded
+echo export PKG_PATH=ftp://ftp.openbsd.org/pub/OpenBSD/$os_version/packages/$machine/
+
+if [ "$pkg_version" ]; then
+    state_is="present"
+else
+    state_is="absent"
+fi
+
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        # use this because pkg_add doesn't properly handle errors
+        cat << eof
+status=\$(pkg_add "$pkgopts" "$name--$flavor")
+
+# no error
+if [ -n "\$status" ]; then
+    echo "Error: \$status"
+	exit 1
+fi
+eof
+    ;;
+
+    absent)
+        # use this because pkg_add doesn't properly handle errors
+        cat << eof
+status=\$(pkg_delete "$pkgopts" "$name--$flavor")
+
+# no error
+if [ -n "\$status" ]; then
+    echo "Error: \$status"
+    exit 1
+fi
+eof
+   ;;
+   *)
+		echo "Unknown state: $state_should" >&2
+		exit 1
+   ;;
+esac

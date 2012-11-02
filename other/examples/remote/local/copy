@@ -1,7 +1,6 @@
 #!/bin/sh
-# -*- coding: utf-8 -*-
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012 Nico Schottelius (nico-cdist schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -20,10 +19,10 @@
 #
 #
 
-# Wrapper for real script to allow execution from checkout
-dir=${0%/*}
+recursive=$1; shift
+src=$1; shift
+dst=$1; shift
 
-# Ensure version is present - the bundled/shipped version contains a static version,
-# the git version contains a dynamic version
-"$dir/../build" version
-PYTHONPATH="${dir}/../" "$dir/../scripts/cdist" "$@"
+dst=$(echo $dst | sed "s/^${__target_host}://")
+
+cp "$recursive" "$src" "$dst"
