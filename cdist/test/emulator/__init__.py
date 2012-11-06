@@ -39,6 +39,7 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, 'conf')
 
+import logging
 class EmulatorTestCase(test.CdistTestCase):
 
     def setUp(self):
@@ -48,20 +49,17 @@ class EmulatorTestCase(test.CdistTestCase):
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
         out_path = self.temp_dir
+
         self.local = local.Local(
             target_host=self.target_host,
             out_path=out_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
+        logging.root.setLevel(logging.DEBUG)
         self.local.create_files_dirs()
-        self.env = {
-            'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
-            '__target_host': self.target_host,
-            '__global': self.local.out_path,
-            '__cdist_type_base_path': self.local.type_path, # for use in type emulator
-            '__manifest': self.local.manifest_path,
-            '__cdist_manifest': self.script,
-        }
+
+        self.manifest = core.Manifest(self.target_host, self.local)
+        self.env = self.manifest.env_initial_manifest(self.script)
 
     def tearDown(self):
         os.environ = self.orig_environ
