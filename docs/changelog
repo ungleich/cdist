@@ -5,7 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 2.1.0pre7:
-	* Core: Tests for "cdist.code" work again
+	* Core: Tests for "test.code", "test.manifest" work again
 
 2.1.0pre6: 2012-11-05
 	* New Example: Turn remote calls into local calls (used for unittesting)
