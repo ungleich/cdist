@@ -39,7 +39,6 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, 'conf')
 
-
 class EmulatorTestCase(test.CdistTestCase):
 
     def setUp(self):
@@ -48,7 +47,6 @@ class EmulatorTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
-        self.target_host = 'localhost'
         out_path = self.temp_dir
         self.local = local.Local(
             target_host=self.target_host,
