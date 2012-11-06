@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -33,6 +34,12 @@ from cdist import core
 from cdist import config
 import cdist.context
 
+import os.path as op
+my_dir = op.abspath(op.dirname(__file__))
+fixtures = op.join(my_dir, 'fixtures')
+conf_dir = op.join(fixtures, 'conf')
+
+
 class EmulatorTestCase(test.CdistTestCase):
 
     def setUp(self):
@@ -46,7 +53,8 @@ class EmulatorTestCase(test.CdistTestCase):
         self.local = local.Local(
             target_host=self.target_host,
             out_path=out_path,
-            exec_path=test.cdist_exec_path)
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
