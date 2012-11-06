@@ -34,23 +34,27 @@ from cdist.core import code
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-local_base_path = fixtures
+conf_dir = op.join(fixtures, 'conf')
 
 class CodeTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.target_host = 'localhost'
 
-        self.local_base_path = local_base_path
         self.out_path = self.mkdtemp()
-        self.local = local.Local(self.target_host, self.local_base_path, self.out_path)
+
+        self.local = local.Local(
+            target_host=self.target_host, 
+            out_path = self.out_path,
+            exec_path = cdist.test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
 
         self.remote_base_path = self.mkdtemp()
-        self.user = getpass.getuser()
-        remote_exec = "ssh -o User=%s -q" % self.user
-        remote_copy = "scp -o User=%s -q" % self.user
+        remote_exec = self.remote_exec
+        remote_copy = self.remote_copy
         self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
+        self.remote.create_files_dirs()
 
         self.code = code.Code(self.target_host, self.local, self.remote)
 
