@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -24,6 +24,20 @@ import logging
 import os
 
 import cdist
+
+class NoInitialManifestError(cdist.Error):
+    """
+    Display missing initial manifest
+    """
+
+    def __init__(self, manifest_path):
+        if os.path.islink(manifest_path):
+            self.message = "%s -> %s" (manifest_path, os.path.realpath(manifest_path))
+        else:
+            self.message = manifest_path
+
+    def __str__(self):
+        return "Initial manifest missing: %s" % self.message
 
 '''
 common:
@@ -84,6 +98,11 @@ class Manifest(object):
         env['__manifest'] = self.local.manifest_path
         env['__cdist_manifest'] = script
         self.log.info("Running initial manifest " + self.local.manifest_path)
+
+        if not os.path.isfile(self.local.manifest_path):
+            print("fooooobar")
+            raise NoInitialManifestError(self.local.manifest_path)
+
         self.local.run_script(script, env=env)
 
     def run_type_manifest(self, cdist_object):
