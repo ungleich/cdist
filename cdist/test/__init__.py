@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -24,7 +24,7 @@ import unittest
 import tempfile
 
 cdist_base_path = os.path.abspath(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../../../"))
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../"))
 
 cdist_exec_path = os.path.join(cdist_base_path, "scripts/cdist")
 
