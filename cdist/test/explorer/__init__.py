@@ -60,6 +60,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
             self.remote_base_path,
             self.remote_exec,
             self.remote_copy)
+        self.remote.create_files_dirs()
 
         self.explorer = explorer.Explorer(
             self.target_host, 
@@ -83,14 +84,20 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.assertEqual(sorted(os.listdir(source)), sorted(os.listdir(destination)))
 
     def test_run_global_explorer(self):
+        """Checkt that running ONE global explorer works"""
         self.explorer.transfer_global_explorers()
         output = self.explorer.run_global_explorer('global')
         self.assertEqual(output, 'global\n')
 
     def test_run_global_explorers(self):
+        """Ensure output is created for every global explorer"""
         out_path = self.mkdtemp()
+
         self.explorer.run_global_explorers(out_path)
-        self.assertEqual(sorted(os.listdir(out_path)), sorted(['foobar', 'global']))
+        names = sorted(self.explorer.list_global_explorer_names())
+        output = sorted(os.listdir(out_path))
+
+        self.assertEqual(names, output)
         shutil.rmtree(out_path)
 
     def test_list_type_explorer_names(self):
