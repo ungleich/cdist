@@ -87,6 +87,6 @@ class Context(object):
     def filter(self, record):
         """Add hostname to logs via logging Filter"""
 
-        record.msg = self.target_host + ": " + record.msg
+        record.msg = self.target_host + ": " + str(record.msg)
 
         return True

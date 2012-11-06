@@ -25,20 +25,6 @@ import os
 
 import cdist
 
-class NoInitialManifestError(cdist.Error):
-    """
-    Display missing initial manifest
-    """
-
-    def __init__(self, manifest_path):
-        if os.path.islink(manifest_path):
-            self.message = "%s -> %s" (manifest_path, os.path.realpath(manifest_path))
-        else:
-            self.message = manifest_path
-
-    def __str__(self):
-        return "Initial manifest missing: %s" % self.message
-
 '''
 common:
     runs only locally, does not need remote
@@ -100,8 +86,7 @@ class Manifest(object):
         self.log.info("Running initial manifest " + self.local.manifest_path)
 
         if not os.path.isfile(self.local.manifest_path):
-            print("fooooobar")
-            raise NoInitialManifestError(self.local.manifest_path)
+            raise cdist.Error("Initial manifest is missing")
 
         self.local.run_script(script, env=env)
 
