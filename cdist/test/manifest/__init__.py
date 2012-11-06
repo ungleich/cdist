@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -37,8 +38,7 @@ from cdist.core import manifest
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-local_base_path = fixtures
-
+conf_dir = op.join(fixtures, 'conf')
 
 class ManifestTestCase(test.CdistTestCase):
 
@@ -48,8 +48,13 @@ class ManifestTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
         self.target_host = 'localhost'
         out_path = self.temp_dir
-        self.local = local.Local(self.target_host, local_base_path, out_path)
+        self.local = local.Local(
+            target_host=self.target_host,
+            out_path=out_path,
+            exec_path = cdist.test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
+
         self.manifest = manifest.Manifest(self.target_host, self.local)
         self.log = logging.getLogger(self.target_host)
 
