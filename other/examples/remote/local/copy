@@ -24,5 +24,4 @@ src=$1; shift
 dst=$1; shift
 
 dst=$(echo $dst | sed "s/^${__target_host}://")
-
 cp "$recursive" "$src" "$dst"

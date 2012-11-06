@@ -18,12 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# same as cdist default
-#
-# Usage:
-#  cdist config --remote-exec "/path/to/this/script" target_host
-#
 
 target_host=$1; shift
-# echo "Executing $@ (for $target_host)"
-/bin/sh -c "$@"
+echo "$@" | /bin/sh 
