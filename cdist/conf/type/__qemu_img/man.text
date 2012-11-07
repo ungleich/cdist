@@ -24,8 +24,7 @@ size::
 OPTIONAL PARAMETERS
 -------------------
 state::
-    The state of the image file: either "present" or "absent".
-    Defaults to "present".
+    Either "present" or "absent", defaults to "present"
 
 
 EXAMPLES

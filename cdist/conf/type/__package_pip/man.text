@@ -28,7 +28,7 @@ pip::
     Instead of using pip from PATH, use the specific pip path.
 
 state::
-    Either "present" or "absent", defaults to "present"
+    Either "present" or "absent", defaults to "present" 
 
 
 EXAMPLES

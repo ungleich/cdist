@@ -16,23 +16,23 @@ This cdist type allows you to define the state of a process.
 REQUIRED PARAMETERS
 -------------------
 state::
-   State of the process: Either present or absent
+    Either "present" or "absent", defaults to "present"
 
 
 OPTIONAL PARAMETERS
 -------------------
 name::
-   Process name to match on when using pgrep -f -x.
+    Process name to match on when using pgrep -f -x.
 
-   This is useful, if the name starts with a "/",
-   because the leading slash is stripped away from
-   the object id by cdist.
+    This is useful, if the name starts with a "/",
+    because the leading slash is stripped away from
+    the object id by cdist.
 
 stop::
-   Executable to use for stopping the process.
+    Executable to use for stopping the process.
 
 start::
-   Executable to use for starting the process.
+    Executable to use for starting the process.
 
 
 EXAMPLES

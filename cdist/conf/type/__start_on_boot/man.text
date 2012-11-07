@@ -24,7 +24,7 @@ None.
 OPTIONAL PARAMETERS
 -------------------
 state::
-   'present' or 'absent', defaults to 'present'
+    Either "present" or "absent", defaults to "present"
 
 
 EXAMPLES

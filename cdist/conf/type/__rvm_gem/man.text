@@ -16,16 +16,16 @@ RVM is the Ruby enVironment Manager for the Ruby programming language.
 REQUIRED PARAMETERS
 -------------------
 user::
-   The remote user account to use
+    The remote user account to use
 gemset::
-   The gemset to use
+    The gemset to use
 state::
-   Either "present" or "absent".
+    Either "present" or "absent"
 
 OPTIONAL PARAMETERS
 -------------------
 default::
-   Make the selected gemset the default
+    Make the selected gemset the default
 
 EXAMPLES
 --------

@@ -16,7 +16,7 @@ This cdist type allows you to create or drop postgres roles.
 REQUIRED PARAMETERS
 -------------------
 state::
-   either 'present' or 'absent'
+    Either "present" or "absent", defaults to "present"
 
 
 OPTIONAL PARAMETERS
