@@ -20,6 +20,7 @@
 #
 #
 
+import io
 import os
 import shutil
 import string
@@ -141,7 +142,6 @@ class ArgumentsTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        self.target_host = 'localhost'
         out_path = self.temp_dir
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
@@ -236,38 +236,59 @@ class StdinTestCase(test.CdistTestCase):
     def setUp(self):
         self.orig_environ = os.environ
         os.environ = os.environ.copy()
-        self.target_host = 'localhost'
+
         self.temp_dir = self.mkdtemp()
-        os.environ['__cdist_out_dir'] = self.temp_dir
+        out_path = os.path.join(self.temp_dir, "out")
 
-        self.context = cdist.context.Context(
+        self.local = local.Local(
             target_host=self.target_host,
-            remote_copy='scp -o User=root -q',
-            remote_exec='ssh -o User=root -q',
+            out_path=out_path,
             exec_path=test.cdist_exec_path,
-            debug=False)
-        self.config = config.Config(self.context)
+            add_conf_dirs=[conf_dir])
 
+        self.local.create_files_dirs()
+
+        self.manifest = core.Manifest(
+            target_host=self.target_host,
+            local = self.local)
+ 
     def tearDown(self):
         os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
 
     def test_file_from_stdin(self):
-        handle, destination = self.mkstemp(dir=self.temp_dir)
-        os.close(handle)
-        source_handle, source = self.mkstemp(dir=self.temp_dir)
-        candidates = string.ascii_letters+string.digits
-        with os.fdopen(source_handle, 'w') as fd:
-            for x in range(100):
-                fd.write(''.join(random.sample(candidates, len(candidates))))
+        """
+        Test whether reading from stdin works
+        """
 
-        handle, initial_manifest = self.mkstemp(dir=self.temp_dir)
-        with os.fdopen(handle, 'w') as fd:
-            fd.write('__file_from_stdin %s --source %s\n' % (destination, source))
-        self.context.initial_manifest = initial_manifest
-        self.config.stage_prepare()
+        ######################################################################
+        # Create string with random content
+        random_string = str(random.sample(range(1000), 800))
+        random_buffer = io.BytesIO(bytes(random_string, 'utf-8'))
 
-        cdist_type = core.CdistType(self.config.local.type_path, '__file')
-        cdist_object = core.CdistObject(cdist_type, self.config.local.object_path, destination)
-        # Test weither stdin has been stored correctly
-        self.assertTrue(filecmp.cmp(source, os.path.join(cdist_object.absolute_path, 'stdin')))
+        ######################################################################
+        # Prepare required args and environment for emulator
+        type_name = '__file'
+        object_id = "cdist-test-id"
+        argv = [type_name, object_id]
+
+        initial_manifest_path = "/cdist-test/path/that/does/not/exist"
+        env = self.manifest.env_initial_manifest(initial_manifest_path)
+
+        ######################################################################
+        # Create path where stdin should reside at
+        cdist_type = core.CdistType(self.local.type_path, type_name)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        stdin_out_path = os.path.join(cdist_object.absolute_path, 'stdin')
+
+        ######################################################################
+        # Run emulator
+        emu = emulator.Emulator(argv, stdin=random_buffer, env=env)
+        emu.run()
+
+        ######################################################################
+        # Read where emulator should have placed stdin
+        with open(stdin_out_path, 'r') as fd:
+            stdin_saved_by_emulator = fd.read()
+
+        self.assertEqual(random_string, stdin_saved_by_emulator)

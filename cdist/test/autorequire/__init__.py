@@ -42,7 +42,6 @@ class AutorequireTestCase(test.CdistTestCase):
     def setUp(self):
         self.orig_environ = os.environ
         os.environ = os.environ.copy()
-        self.target_host = 'localhost'
         self.temp_dir = self.mkdtemp()
 
         self.out_dir = os.path.join(self.temp_dir, "out")
