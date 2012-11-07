@@ -212,7 +212,7 @@ class ArgumentsTestCase(test.CdistTestCase):
 #        argv = [type_name, object_id, '--required1', value]
 #        os.environ.update(self.env)
 #        emu = emulator.Emulator(argv)
-#        
+#
 #        self.assertRaises(SystemExit, emu.run)
 
     def test_optional(self):
@@ -251,7 +251,7 @@ class StdinTestCase(test.CdistTestCase):
         self.manifest = core.Manifest(
             target_host=self.target_host,
             local = self.local)
- 
+
     def tearDown(self):
         os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
