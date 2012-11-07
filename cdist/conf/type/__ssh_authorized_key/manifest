@@ -21,7 +21,7 @@
 # This type allows to send a public ssh key from a user to the
 # authorized_keys of another
 #
-#require="__package openssh-server --state installed"
+#require="__package openssh-server --state present"
 # Get option srcuser if defined
 if [ -f "$__object/parameter/srcuser" ]; then
    srcuser=`cat "$__object/parameter/srcuser"`
