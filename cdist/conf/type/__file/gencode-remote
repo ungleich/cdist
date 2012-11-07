@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -22,7 +22,8 @@
 #
 
 destination="/$__object_id"
-state_should="$(cat "$__object/parameter/state")"
+state_should=present
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 exists="$(cat "$__object/explorer/exists")"
 
 case "$state_should" in
