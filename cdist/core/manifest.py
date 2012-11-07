@@ -71,11 +71,11 @@ class NoInitialManifestError(cdist.Error):
 
         if user_supplied:
             if os.path.islink(manifest_path):
-                self.message = "%s: %s -> %s" (msg_header, manifest_path, os.path.realpath(manifest_path))
+                self.message = "%s: %s -> %s" % (msg_header, manifest_path, os.path.realpath(manifest_path))
             else:
-                self.message = "%s: %s" (msg_header, manifest_path)
+                self.message = "%s: %s" % (msg_header, manifest_path)
         else:
-            self.message = "%s" (msg_header)
+            self.message = "%s" % (msg_header)
 
     def __str__(self):
         return repr(self.message)
