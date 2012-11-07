@@ -23,7 +23,6 @@
 import os
 import shutil
 import getpass
-import logging
 
 import cdist
 from cdist import core
@@ -66,8 +65,6 @@ class ExplorerClassTestCase(test.CdistTestCase):
             self.target_host, 
             self.local, 
             self.remote)
-
-        self.log = logging.getLogger(self.target_host)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)

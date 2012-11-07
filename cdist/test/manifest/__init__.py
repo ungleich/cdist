@@ -107,6 +107,8 @@ class ManifestTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__object_name'], cdist_object.name)
 
     def test_debug_env_setup(self):
+        current_level = self.log.getEffectiveLevel()
         self.log.setLevel(logging.DEBUG)
         manifest = cdist.core.manifest.Manifest(self.target_host, self.local)
         self.assertTrue("__cdist_debug" in manifest.env)
+        self.log.setLevel(current_level)

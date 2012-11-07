@@ -20,10 +20,9 @@
 #
 #
 
+import getpass
 import os
 import shutil
-import getpass
-import logging
 
 import cdist
 from cdist import core
@@ -62,8 +61,6 @@ class CodeTestCase(test.CdistTestCase):
         self.cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
         self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path, 'whatever')
         self.cdist_object.create()
-
-        self.log = logging.getLogger("cdist")
 
     def tearDown(self):
         shutil.rmtree(self.out_path)
