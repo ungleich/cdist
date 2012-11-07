@@ -40,12 +40,9 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, 'conf')
 
-import logging
 class EmulatorTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.orig_environ = os.environ
-        os.environ = os.environ.copy()
         self.temp_dir = self.mkdtemp()
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
@@ -56,72 +53,61 @@ class EmulatorTestCase(test.CdistTestCase):
             out_path=out_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
-        logging.root.setLevel(logging.DEBUG)
         self.local.create_files_dirs()
 
         self.manifest = core.Manifest(self.target_host, self.local)
         self.env = self.manifest.env_initial_manifest(self.script)
 
     def tearDown(self):
-        os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
 
     def test_nonexistent_type_exec(self):
         argv = ['__does-not-exist']
-        os.environ.update(self.env)
-        self.assertRaises(core.NoSuchTypeError, emulator.Emulator, argv)
+        self.assertRaises(core.NoSuchTypeError, emulator.Emulator, argv, env=self.env)
 
     def test_nonexistent_type_requirement(self):
         argv = ['__file', '/tmp/foobar']
-        os.environ.update(self.env)
-        os.environ['require'] = '__does-not-exist/some-id'
-        emu = emulator.Emulator(argv)
+        self.env['require'] = '__does-not-exist/some-id'
+        emu = emulator.Emulator(argv, env=self.env)
         self.assertRaises(core.NoSuchTypeError, emu.run)
 
     def test_illegal_object_id_requirement(self):
         argv = ['__file', '/tmp/foobar']
-        os.environ.update(self.env)
-        os.environ['require'] = '__file/bad/id/with/.cdist/inside'
-        emu = emulator.Emulator(argv)
+        self.env['require'] = '__file/bad/id/with/.cdist/inside'
+        emu = emulator.Emulator(argv, env=self.env)
         self.assertRaises(core.IllegalObjectIdError, emu.run)
 
     def test_missing_object_id_requirement(self):
         argv = ['__file', '/tmp/foobar']
-        os.environ.update(self.env)
-        os.environ['require'] = '__file'
-        emu = emulator.Emulator(argv)
+        self.env['require'] = '__file'
+        emu = emulator.Emulator(argv, env=self.env)
         self.assertRaises(core.IllegalObjectIdError, emu.run)
 
     def test_singleton_object_requirement(self):
         argv = ['__file', '/tmp/foobar']
-        os.environ.update(self.env)
-        os.environ['require'] = '__issue'
-        emu = emulator.Emulator(argv)
+        self.env['require'] = '__issue'
+        emu = emulator.Emulator(argv, env=self.env)
         emu.run()
         # if we get here all is fine
 
     def test_requirement_pattern(self):
         argv = ['__file', '/tmp/foobar']
-        os.environ.update(self.env)
-        os.environ['require'] = '__file/etc/*'
-        emu = emulator.Emulator(argv)
+        self.env['require'] = '__file/etc/*'
+        emu = emulator.Emulator(argv, env=self.env)
         # if we get here all is fine
 
-
-import os.path as op
-my_dir = op.abspath(op.dirname(__file__))
-fixtures = op.join(my_dir, 'fixtures')
 
 class AutoRequireEmulatorTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        self.target_host = 'localhost'
-        out_path = self.temp_dir
+        out_path = os.path.join(self.temp_dir, "out")
+
         self.local = local.Local(
             target_host=self.target_host,
             out_path=out_path,
-            exec_path=test.cdist_exec_path)
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
         self.manifest = core.Manifest(self.target_host, self.local)
 
@@ -149,17 +135,12 @@ class ArgumentsTestCase(test.CdistTestCase):
         self.local = local.Local(
             target_host=self.target_host,
             out_path=out_path,
-            exec_path=test.cdist_exec_path)
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
 
-        self.env = {
-            'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
-            '__target_host': self.target_host,
-            '__global': self.local.out_path,
-            '__cdist_type_base_path': self.local.type_path, # for use in type emulator
-            '__manifest': self.local.manifest_path,
-            '__cdist_manifest': self.script,
-        }
+        self.manifest = core.Manifest(self.target_host, self.local)
+        self.env = self.manifest.env_initial_manifest(self.script)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
