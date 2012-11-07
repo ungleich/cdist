@@ -17,8 +17,6 @@ REQUIRED PARAMETERS
 -------------------
 state::
    State of the process: Either present or absent
-   (old values "stopped" and "running" are deprecated and will be removed in
-   cdist 2.1).
 
 
 OPTIONAL PARAMETERS
@@ -66,6 +64,7 @@ __process rpcstatd --state present --start "/etc/init.d/statd start" \
 SEE ALSO
 --------
 - cdist-type(7)
+- cdist-type__start_on_boot(7)
 
 
 COPYING

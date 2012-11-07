@@ -45,6 +45,7 @@ __start_on_boot puppet --state absent
 SEE ALSO
 --------
 - cdist-type(7)
+- cdist-type__process(7)
 
 
 COPYING
