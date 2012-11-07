@@ -32,6 +32,8 @@ class Emulator(object):
     def __init__(self, argv, stdin=sys.stdin, env=os.environ):
         self.argv           = argv
         self.stdin          = stdin
+        self.env            = env
+
         self.object_id      = False
 
         self.global_path    = self.env['__global']
@@ -147,9 +149,8 @@ class Emulator(object):
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
 
-    chunk_size = 8192
     def _read_stdin(self):
-        return self.stdin.buffer.read(self.chunk_size)
+        return self.stdin.read()
     def save_stdin(self):
         """If something is written to stdin, save it in the object as
         $__object/stdin so it can be accessed in manifest and gencode-*
