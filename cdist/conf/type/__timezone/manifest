@@ -2,6 +2,7 @@
 #
 # 2011 Ramon Salvadó (rsalvado at gnuine dot com)
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -22,26 +23,16 @@
 # This type allows to configure the desired localtime timezone.
 
 timezone="$__object_id"
-
 os=$(cat "$__global/explorer/os")
         
-not_supported() {
-   echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
-   echo "Please contribute an implementation for it if you can." >&2
-   exit 1
-}   
-    
 case "$os" in
-   ubuntu|debian|archlinux)
-      :
-   ;;
-   *)
-      not_supported
-   ;;
+    archlinux|debian|ubuntu)
+        __package tzdata --state present
+        require="__package/tzdata" __link /etc/localtime    \
+            --source "/usr/share/zoneinfo/${timezone}"      \
+            --type symbolic
+    ;;
+    *)
+        echo "Unsupported OS $os" >&2
+    ;;
 esac
-
-# same for all supported os's
-__package tzdata --state present
-require="__package/tzdata" __link /etc/localtime   \
-   --source "/usr/share/zoneinfo/${timezone}"      \
-   --type symbolic
