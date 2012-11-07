@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -22,9 +22,9 @@
 #
 
 if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+    name="$(cat "$__object/parameter/name")"
 else
-   name="$__object_id"
+    name="$__object_id"
 fi
 
 pgrep -x -f "$name" || true

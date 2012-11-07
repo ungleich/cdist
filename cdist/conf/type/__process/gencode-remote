@@ -20,9 +20,9 @@
 #
 
 if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+    name="$(cat "$__object/parameter/name")"
 else
-   name="$__object_id"
+    name="$__object_id"
 fi
 
 state_should="$(cat "$__object/parameter/state")"
