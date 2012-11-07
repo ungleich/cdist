@@ -4,8 +4,8 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.1.0pre7:
-	* Core: Tests for autorequire, code, manifest work again
+2.1.0pre7: 2012-11-07
+	* Core: All unit tests restored back to working
 	* Core: Print error message on missing initial manifest
 
 2.1.0pre6: 2012-11-05
