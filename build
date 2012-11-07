@@ -35,6 +35,7 @@ A2XH="a2x -f xhtml --no-xmllint -a encoding=UTF-8"
 
 # Developer webbase
 WEBDIR=$HOME/niconetz
+WEBBLOG=$WEBDIR/blog
 WEBBASE=$WEBDIR/software/cdist
 WEBMAN=$WEBBASE/man/$version
 WEBPAGE=${WEBBASE}.mdwn
@@ -108,9 +109,14 @@ case "$1" in
 
         $0 pub
 
+        $0 dist-blog
         $0 dist-freecode
+        $0 dist-ml
+        $0 dist-manual
+    ;;
 
-        $0 dist-post
+    changelog-changes)
+        awk -F: 'BEGIN { start=0 } { if ($0 ~ /^[[:digit:]]/) { if(start == 0) {start = 1 } else { exit } } else { if(start==1) {print $0 }}  }' "$basedir/docs/changelog"
     ;;
 
     changelog-version)
@@ -144,15 +150,78 @@ case "$1" in
 
     ;;
 
-    dist-post)
+    blog)
+        version=$($0 changelog-version)
+        blogfile=$WEBBLOG/cdist-${version}-released.mdwn
+        cat << eof > "$blogfile"
+[[!meta title="Cdist $version released"]]
+
+Here's a short overview about the changes found in this release:
+
+eof
+
+        $0 changelog-changes >> "$blogfile"
+
+        cat << eof >> "$blogfile"
+For more information visit the [[cdist homepage|software/cdist]].
+
+[[!tag cdist config unix]]
+eof
+    ;;
+
+    dist-blog)
+        $0 blog
+        version=$($0 changelog-version)
+        file=cdist-${version}-released.mdwn
+        cd $WEBBBLOG
+        git add "$file"
+        git commit -m "New cdist version (blogentry): $version" "$file"
+        git push
+    ;;
+
+    dist-ml)
+        $0 blog
+        version=$($0 changelog-version)
+        to_a=cdist
+        to_d=l.schottelius.org
+        to=${to_a}@${to_d}
+
+        from_a=nico-cdist
+        from_d=schottelius.org
+        from=${from_a}@${from_d}
+
+        ( 
+        cat << eof
+From: Nico -telmich- Schottelius <$from>
+To: cdist mailing list <$to>
+Subject: [cdist] cdist $version released
+
+Hello .*,
+
+cdist $version has been released with the following changes:
+
+eof
+
+        "$0" changelog-changes
+        cat << eof
+
+Cheers,
+
+Nico
+
+-- 
+Automatisation at its best level. With cdist.
+eof
+        ) | /usr/sbin/sendmail -f "$from" "$to"
+    ;;
+
+
+    dist-manual)
         cat << notes
 
     To be done manually...
     
-        - freecode release
-        - blog entry
         - linkedin entry
-        - mailinglist update
 notes
 
     ;;
