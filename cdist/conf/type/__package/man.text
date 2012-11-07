@@ -34,7 +34,7 @@ type::
          __package_emerge for Gentoo
 
 state::
-    The state the package should be in, either "present" or "absent"
+    either "present" or "absent", defaults to "present"
 
 
 EXAMPLES

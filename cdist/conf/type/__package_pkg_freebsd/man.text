@@ -21,19 +21,19 @@ None
 OPTIONAL PARAMETERS
 -------------------
 name::
-   If supplied, use the name and not the object id as the package name.
+    If supplied, use the name and not the object id as the package name.
 
 flavor::
-   If supplied, use to avoid ambiguity.
+    If supplied, use to avoid ambiguity.
 
 version::
-   If supplied, use to install a specific version of the package named.
+    If supplied, use to install a specific version of the package named.
 
 pkgsite::
-   If supplied, use to install from a specific package repository.
+    If supplied, use to install from a specific package repository.
 
 state::
-   Either "present" or "absent".
+    Either "present" or "absent", defaults to "present"
 
 
 EXAMPLES
