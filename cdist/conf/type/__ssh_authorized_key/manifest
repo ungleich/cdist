@@ -64,4 +64,3 @@ require="__directory${sshpath}" \
 # the line added depends on authorized_keys existence
 require="__file${sshpath}/authorized_keys" __addifnosuchline sshkey --file \
  "$sshpath/authorized_keys" --line "$rsa"
-
