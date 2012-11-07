@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -24,7 +24,7 @@
 destination="/$__object_id"
 
 if [ -e "$destination" ]; then
-   echo yes
+    echo yes
 else
-   echo no
+    echo no
 fi
