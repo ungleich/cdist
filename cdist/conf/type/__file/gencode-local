@@ -27,7 +27,7 @@ exists="$(cat "$__object/explorer/exists")"
 
 [ "$state_should" = "exists" -a "$exists" = "yes" ] && exit 0 # nothing to do
 
-if [ "$state_should" = "present" ]; then
+if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
    if [ -f "$__object/parameter/source" ]; then
       source="$(cat "$__object/parameter/source")"
       if [ "$source" = "-" ]; then

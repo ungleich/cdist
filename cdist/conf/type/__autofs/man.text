@@ -1,21 +1,21 @@
-cdist-type__partition_msdos_apply(7)
-====================================
+cdist-type__autofs(7)
+=====================
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 NAME
 ----
-cdist-type__partition_msdos_apply - Apply dos partition settings
+cdist-type__autofs - install and start autofs
 
 
 DESCRIPTION
 -----------
-Create the partitions defined with __partition_msdos
+This space intentionally left blank.
 
 
 REQUIRED PARAMETERS
 -------------------
-None
+None.
 
 
 OPTIONAL PARAMETERS
@@ -27,16 +27,16 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-__partition_msdos_apply
+__autofs
 --------------------------------------------------------------------------------
 
 
 SEE ALSO
 --------
 - cdist-type(7)
-- cdist-type__partition_msdos_apply(7)
+
 
 COPYING
 -------
-Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+Copyright \(C) 2012 Steven Armstrong. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
