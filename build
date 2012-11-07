@@ -173,7 +173,7 @@ eof
         $0 blog
         version=$($0 changelog-version)
         file=cdist-${version}-released.mdwn
-        cd $WEBBBLOG
+        cd "$WEBBLOG"
         git add "$file"
         git commit -m "New cdist version (blogentry): $version" "$file"
         git push
