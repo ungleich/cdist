@@ -29,17 +29,17 @@ import cdist
 from cdist import core
 
 class Emulator(object):
-    def __init__(self, argv, stdin=sys.stdin):
+    def __init__(self, argv, stdin=sys.stdin, env=os.environ):
         self.argv           = argv
         self.stdin          = stdin
         self.object_id      = False
 
-        self.global_path    = os.environ['__global']
-        self.target_host    = os.environ['__target_host']
+        self.global_path    = self.env['__global']
+        self.target_host    = self.env['__target_host']
 
         # Internally only
-        self.object_source  = os.environ['__cdist_manifest']
-        self.type_base_path = os.environ['__cdist_type_base_path']
+        self.object_source  = self.env['__cdist_manifest']
+        self.type_base_path = self.env['__cdist_type_base_path']
 
         self.object_base_path = os.path.join(self.global_path, "object")
 
@@ -63,7 +63,7 @@ class Emulator(object):
     def run(self):
         """Emulate type commands (i.e. __file and co)"""
 
-        if '__install' in os.environ:
+        if '__install' in self.env:
             if not self.cdist_type.is_install:
                 self.log.debug("Running in install mode, ignoring non install type")
                 return True
@@ -80,7 +80,7 @@ class Emulator(object):
         logformat = '%(levelname)s: %(message)s'
         logging.basicConfig(format=logformat)
 
-        if '__cdist_debug' in os.environ:
+        if '__cdist_debug' in self.env:
             logging.root.setLevel(logging.DEBUG)
         else:
             logging.root.setLevel(logging.INFO)
@@ -171,8 +171,8 @@ class Emulator(object):
     def record_requirements(self):
         """record requirements"""
 
-        if "require" in os.environ:
-            requirements = os.environ['require']
+        if "require" in self.env:
+            requirements = self.env['require']
             self.log.debug("reqs = " + requirements)
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
@@ -192,7 +192,7 @@ class Emulator(object):
         """An object shall automatically depend on all objects that it defined in it's type manifest.
         """
         # __object_name is the name of the object whose type manifest is currently executed
-        __object_name = os.environ.get('__object_name', None)
+        __object_name = self.env.get('__object_name', None)
         if __object_name:
             # The object whose type manifest is currently run
             parent = self.cdist_object.object_from_name(__object_name)
