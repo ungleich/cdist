@@ -86,15 +86,19 @@ class Manifest(object):
 
         return env
 
-    def run_initial_manifest(self, script):
-        self.log.info("Running initial manifest " + self.local.manifest_path)
+    def run_initial_manifest(self, initial_manifest=None):
+        if not initial_manifest:
+            initial_manifest = self.local.initial_manifest
 
-        if not os.path.isfile(self.local.manifest_path):
-            raise cdist.Error("Initial manifest is missing")
+        self.log.info("Running initial manifest " + initial_manifest)
 
-        self.local.run_script(script, env=self.env_initial_manifest(script))
+        if not os.path.isfile(initial_manifest):
+            raise cdist.Error("Initial manifest is missing: %s" % initial_manifest)
+
+        self.local.run_script(script, env=self.env_initial_manifest(initial_manifest))
 
     def env_type_manifest(self, cdist_object):
+        type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
         env = os.environ.copy()
         env.update(self.env)
         env.update({
@@ -103,12 +107,12 @@ class Manifest(object):
             '__object_id': cdist_object.object_id,
             '__object_name': cdist_object.name,
             '__type': cdist_object.cdist_type.absolute_path,
-            '__cdist_manifest': script,
+            '__cdist_manifest': type_manifest,
         })
 
         return env
 
     def run_type_manifest(self, cdist_object):
-        script = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
-        if os.path.isfile(script):
-           self.local.run_script(script, env=self.env_type_manifest(cdist_object))
+        type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
+        if os.path.isfile(type_manifest):
+           self.local.run_script(type_manifest, env=self.env_type_manifest(cdist_object))
