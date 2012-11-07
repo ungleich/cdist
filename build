@@ -194,7 +194,7 @@ eof
         cat << eof
 From: Nico -telmich- Schottelius <$from>
 To: cdist mailing list <$to>
-Subject: [cdist] cdist $version released
+Subject: cdist $version released
 
 Hello .*,
 
