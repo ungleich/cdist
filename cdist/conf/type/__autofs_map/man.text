@@ -36,25 +36,35 @@ comment::
    auto.master.
 
 
+BOOLEAN PARAMETERS
+------------------
+noreload::
+   don't reload autofs after the entry has been changed
+
+
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Add auto mounter at /net
+# Add auto mounter at /net and reload
 __autofs_map /net --map /etc/auto.net --type program
 
-# Add auto mounter at /pub
-__autofs_map /pub --map /etc/auto.pub \
-   --type file --options nosuid,rw,bg,hard,intr --ghost
+# Add auto mounter at /pub and don't reload
+__autofs_map /pub \
+   --map /etc/auto.pub \
+   --type file \
+   --options "nosuid,rw,bg,hard,intr --ghost" \
+   --noreload
 --------------------------------------------------------------------------------
 
 
 SEE ALSO
 --------
 - cdist-type(7)
+- cdist-type__autofs_reload(7)
 
 
 COPYING
 -------
-Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+Copyright \(C) 2012 Steven Armstrong. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
