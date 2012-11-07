@@ -23,7 +23,7 @@ state::
 BOOLEAN PARAMETERS
 ------------------
 default:
-    If set to anything but "no" (the default), set the given version as default
+    Set the given version as default
 
 EXAMPLES
 --------
@@ -33,7 +33,7 @@ EXAMPLES
 __rvm_ruby ruby-1.9.3-p0 --user thelonious --state present
 
 # Install ruby 1.9.3 through rvm for user ornette and make it the default
-__rvm_ruby ruby-1.9.3-p0 --user ornette --state present --default yes
+__rvm_ruby ruby-1.9.3-p0 --user ornette --state present --default
 
 # Remove ruby 1.9.3 for user john
 __rvm_ruby ruby-1.9.3-p0 --user john --state absent

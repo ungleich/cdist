@@ -24,23 +24,24 @@ user="$(cat "$__object/parameter/user")"
 default="$(cat "$__object/parameter/default" 2>/dev/null || true)"
 state_should="$(cat "$__object/parameter/state")"
 
-if [ "$state_is" != "$state_should" ]; then
-   case "$state_should" in
-      present)
-         echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
-              "rvm install $ruby\""
-         case "$default" in
-            no)
-            ;;
-            *)
-               echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
-                    "rvm use --default $ruby\""
-            ;;
-          esac
-      ;;
-      absent)
-         echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
-              "rvm remove $ruby\""
-      ;;
-   esac
-fi
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
+            "rvm install $ruby\""
+        if [ -f "$__object/parameter/default" ]; then
+            echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
+                "rvm use --default $ruby\""
+        fi
+    ;;
+    absent)
+        echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
+            "rvm remove $ruby\""
+    ;;
+
+    *)
+        echo "Unknown state $state_should" >&2
+        exit 1
+    ;;
+esac
