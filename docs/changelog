@@ -9,7 +9,7 @@ Changelog
 		__ssh_authorized_key, __timezone, all install types (Steven Armstrong)
 	* Types: Remove all parameter changing code
 	* Type __rvm_ruby: Change parameter "default" to be boolean
-	* Documentation: Web documentation cleaned up
+	* Documentation: Web documentation clean up
 
 2.1.0pre7: 2012-11-07
 	* Core: All unit tests restored back to working
