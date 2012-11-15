@@ -172,5 +172,8 @@ Cdist is available as a python package at
 
     pip install cdist
 
+## Use cdist
+
+[[Dig into the documentation|documentation]] to get started with cdist!
 
 [[!tag cdist unix]]
