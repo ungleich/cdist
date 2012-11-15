@@ -135,6 +135,8 @@ class Emulator(object):
         self.parameters = {}
         for key,value in vars(self.args).items():
             if value is not None:
+                if isinstance(value, list):
+                    value = '\n'.join(value)
                 self.parameters[key] = value
 
         if self.cdist_object.exists:
