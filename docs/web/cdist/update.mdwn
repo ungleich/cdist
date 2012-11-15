@@ -24,18 +24,20 @@ To upgrade to the lastet version do
 
 ### Updating from 2.0 to 2.1
 
- * Type __package* and __process use --state **present** or **absent**.
+ * Type **\_\_package* and \_\_process** use --state **present** or **absent**.
    The states **removed/installed** and **stopped/running** have been removed.
    Support for the new states is already present in 2.0.
- * Type __directory: Parameter --parents and --recursive are now boolean
-   and the old "yes/no" values need to be removed
- * Type **__addifnosuchline** and **__removeline** have been replaced by **__line**
+ * Type **\_\_directory**: Parameter --parents and --recursive are now boolean
+   The old "yes/no" values need to be removed.
+ * Type **\_\_rvm_ruby**: Parameter --default is now boolean
+   The old "yes/no" values need to be removed.
+ * Type **\_\_addifnosuchline** and **\_\_removeline** have been replaced by **\_\_line**
  * The **conf** directory is now located at **cdist/conf**.
    You need to migrate your types, explorers and manifests
    manually to the new location.
- * Replace the variable **__self** by **__object_name**
-   Support for the variable **__object_name** is already present in 2.0.
- * The types __autofs, __autofs_map and __autofs_reload have been removed
+ * Replace the variable **\_\_self** by **\_\_object_name**
+   Support for the variable **\_\_object_name** is already present in 2.0.
+ * The types **\_\_autofs**, **\_\_autofs_map** and **\_\_autofs_reload** have been removed
    (no maintainer, no users)
 
 

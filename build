@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -34,9 +34,10 @@ A2XM="a2x -f manpage --no-xmllint -a encoding=UTF-8"
 A2XH="a2x -f xhtml --no-xmllint -a encoding=UTF-8"
 
 # Developer webbase
-WEBDIR=$HOME/niconetz
+WEBDIR=$HOME/www.nico.schottelius.org
 WEBBLOG=$WEBDIR/blog
-WEBBASE=$WEBDIR/software/cdist
+WEBTOPDIR=$WEBDIR/software
+WEBBASE=$WEBTOPDIR/cdist
 WEBMAN=$WEBBASE/man/$version
 WEBPAGE=${WEBBASE}.mdwn
 
@@ -87,6 +88,13 @@ case "$1" in
 
     mangen)
         ${MANDIR}/cdist-reference.text.sh
+    ;;
+
+    man-pub)
+        rm -rf "${WEBMAN}"
+        mkdir -p "${WEBMAN}/man1" "${WEBMAN}/man7"
+        cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
+        cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
     ;;
 
     dist)
@@ -314,23 +322,15 @@ eof
         done
     ;;
         
-    webmain)
-        cp README ${WEBPAGE}
-        cd ${WEBDIR} && git commit -m "cdist main update" ${WEBPAGE}
-        cd ${WEBDIR} && make pub
-    ;;
-
     web)
-        cp README ${WEBPAGE}
-        rm -rf ${WEBMAN}
-        mkdir -p ${WEBMAN}/man1 ${WEBMAN}/man7
+        set -e
+        rsync -av "${basedir}/docs/web/" "${WEBTOPDIR}"
 
-        cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
-        cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
-        
-        cd ${WEBDIR} && git add ${WEBBASE}
-        cd ${WEBDIR} && git commit -m "cdist update" ${WEBBASE} ${WEBPAGE}
-        cd ${WEBDIR} && make pub
+        $0 man-pub
+
+        cd "${WEBDIR}" && git add "${WEBBASE}"
+        cd "${WEBDIR}" && git commit -m "cdist update" "${WEBBASE}" "${WEBPAGE}"
+        cd "${WEBDIR}" && make pub
 
         # Fix ikiwiki, which does not like symlinks for pseudo security
         ssh tee.schottelius.org \
