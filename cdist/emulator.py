@@ -158,7 +158,7 @@ class Emulator(object):
             try:
                 # go directly to file instead of using CdistObject's api
                 # as that does not support streaming
-                # FIXME: no streaming needed anymore
+                # FIXME: no streaming needed anymore - use a raw file (not yet there?)
                 path = os.path.join(self.cdist_object.absolute_path, 'stdin')
                 with open(path, 'w') as fd:
                     fd.write(self.stdin.read())
