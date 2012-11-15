@@ -26,6 +26,7 @@ source::
    Note that this type is almost useless without a ruleset defined, but it's technically not
    needed, e.g. for the case of disabling the firewall temporarily.
 
+
 EXAMPLES
 --------
 

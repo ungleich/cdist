@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -34,23 +35,29 @@ import cdist.context
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-local_base_path = fixtures
-
+add_conf_dir = op.join(fixtures, 'conf')
 
 class AutorequireTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.orig_environ = os.environ
         os.environ = os.environ.copy()
-        self.target_host = 'localhost'
         self.temp_dir = self.mkdtemp()
-        os.environ['__cdist_out_dir'] = self.temp_dir
+
+        self.out_dir = os.path.join(self.temp_dir, "out")
+        self.remote_out_dir = os.path.join(self.temp_dir, "remote")
+
+        os.environ['__cdist_out_dir'] = self.out_dir
+        os.environ['__cdist_remote_out_dir'] = self.remote_out_dir
 
         self.context = cdist.context.Context(
             target_host=self.target_host,
-            base_path=local_base_path,
+            remote_copy=self.remote_copy,
+            remote_exec=self.remote_exec,
+            add_conf_dirs=[add_conf_dir],
             exec_path=test.cdist_exec_path,
             debug=False)
+
         self.config = config.Config(self.context)
 
     def tearDown(self):

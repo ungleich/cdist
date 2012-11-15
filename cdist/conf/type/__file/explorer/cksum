@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -24,11 +24,11 @@
 destination="/$__object_id"
 
 if [ -e "$destination" ]; then
-   if [ -f  "$destination" ]; then
-      cksum < "$destination"
-   else
-      echo "NO REGULAR FILE"
-   fi
+    if [ -f  "$destination" ]; then
+        cksum < "$destination"
+    else
+        echo "NO REGULAR FILE"
+    fi
 else
-   echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
+    echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
 fi

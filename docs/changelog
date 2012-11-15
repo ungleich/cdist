@@ -4,6 +4,30 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+2.1.0pre8:
+	* Type cleanup: __apt_ppa, __apt_ppa_update_index, __file, 
+		__ssh_authorized_key, __timezone, all install types (Steven Armstrong)
+	* Types: Remove all parameter changing code
+	* Type __rvm_ruby: Change parameter "default" to be boolean
+
+2.1.0pre7: 2012-11-07
+	* Core: All unit tests restored back to working
+	* Core: Print error message on missing initial manifest
+
+2.1.0pre6: 2012-11-05
+	* New Example: Turn remote calls into local calls (used for unittesting)
+	* Core: Export PYTHONPATH, it's also needed by emulator
+	* Bugfix Type __rvm_ruby: Add clean package dependencies
+	* Bugfix Type __rvm_gem: Run rvm as user, not as root
+	* Cleanup Type __rvm, __rvm_gemset: Use shortcut version
+	* Bugfix __rvm_gemset: Correctly check for gemsets
+	* Cleanup Type __postgres_database,  __postgres_role: Reference each other
+		in documentation
+	* Cleanp Type __postgres_role: Use boolean parameters where appropriate
+	* Cleanp Type __postgres_role: Use shortcut version
+
+2.1.0pre5: 2012-11-01
+	* Core: First round of tests updated to work with multiple configuration directories
 
 2.1.0pre4: 2012-10-31
 	* Dist: PyPi: Moved cdist.py to script/cdist to avoid double import
@@ -27,7 +51,7 @@ Changelog
 			Parameter state accepts only "present" and "absent"
 	* Dist: Initial support for pypi packaging
 
-2.0.15:
+2.0.15: 2012-11-02
 	* Core: Make variable __object_name available in type explorers (Steven Armtrong)
 	* New Type: __qemu_img
 	* New Type: __line

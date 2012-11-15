@@ -20,7 +20,7 @@
 
 name="$__object_id"
 
-__package python-software-properties --state installed
+__package python-software-properties --state present
 
 require="__package/python-software-properties" \
    __file /usr/local/bin/remove-apt-repository \

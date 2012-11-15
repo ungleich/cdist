@@ -77,7 +77,7 @@ git clone git://git.schottelius.org/cdist
 
 # Create manifest (maps configuration to host(s)
 cd cdist
-echo '__file /etc/cdist-configured' > conf/manifest/init
+echo '__file /etc/cdist-configured' > cdist/conf/manifest/init
 
 # Configure localhost in verbose mode
 ./bin/cdist config -v localhost

@@ -1,6 +1,8 @@
 #!/bin/sh
 #
 # 2011 Ramon Salvadó (rsalvado at gnuine dot com)
+# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -21,8 +23,17 @@
 # This type allows to configure the desired localtime timezone.
 
 timezone="$__object_id"
-
-__package tzdata --state installed
-require="__package/tzdata" __link /etc/localtime   \
-   --source "/usr/share/zoneinfo/${timezone}"      \
-   --type symbolic
+os=$(cat "$__global/explorer/os")
+        
+case "$os" in
+    archlinux|debian|ubuntu)
+        __package tzdata --state present
+        require="__package/tzdata" __link /etc/localtime    \
+            --source "/usr/share/zoneinfo/${timezone}"      \
+            --type symbolic
+    ;;
+    *)
+        echo "Unsupported OS $os" >&2
+        exit 1
+    ;;
+esac

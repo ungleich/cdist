@@ -24,7 +24,6 @@ import os
 
 import cdist
 
-
 class NoSuchTypeError(cdist.Error):
     def __init__(self, type_path, type_absolute_path):
         self.type_path = type_path

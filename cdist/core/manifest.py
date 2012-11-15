@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -57,6 +57,29 @@ type manifeste is:
     creates: new objects through type emulator
 '''
 
+class NoInitialManifestError(cdist.Error):
+    """
+    Display missing initial manifest:
+        - Display path if user given
+            - try to resolve link if it is a link
+        - Omit path if default (is a linked path in temp directory without
+            much help)
+    """
+
+    def __init__(self, manifest_path, user_supplied):
+        msg_header = "Initial manifest missing"
+
+        if user_supplied:
+            if os.path.islink(manifest_path):
+                self.message = "%s: %s -> %s" % (msg_header, manifest_path, os.path.realpath(manifest_path))
+            else:
+                self.message = "%s: %s" % (msg_header, manifest_path)
+        else:
+            self.message = "%s" % (msg_header)
+
+    def __str__(self):
+        return repr(self.message)
+
 
 class Manifest(object):
     """Executes cdist manifests.
@@ -70,33 +93,52 @@ class Manifest(object):
 
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
-            '__target_host': self.target_host,
-            '__global': self.local.out_path,
             '__cdist_type_base_path': self.local.type_path, # for use in type emulator
+            '__global': self.local.out_path,
+            '__target_host': self.target_host,
         }
         if self.log.getEffectiveLevel() == logging.DEBUG:
             self.env.update({'__cdist_debug': "yes" })
 
 
-    def run_initial_manifest(self, script):
+    def env_initial_manifest(self, initial_manifest):
         env = os.environ.copy()
         env.update(self.env)
+        env['__cdist_manifest'] = initial_manifest
         env['__manifest'] = self.local.manifest_path
-        env['__cdist_manifest'] = script
-        self.log.info("Running initial manifest " + self.local.manifest_path)
-        self.local.run_script(script, env=env)
+
+        return env
+
+    def run_initial_manifest(self, initial_manifest=None):
+        if not initial_manifest:
+            initial_manifest = self.local.initial_manifest
+            user_supplied = False
+        else:
+            user_supplied = True
+
+        self.log.info("Running initial manifest " + initial_manifest)
+
+        if not os.path.isfile(initial_manifest):
+            raise NoInitialManifestError(initial_manifest, user_supplied)
+
+        self.local.run_script(initial_manifest, env=self.env_initial_manifest(initial_manifest))
+
+    def env_type_manifest(self, cdist_object):
+        type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
+        env = os.environ.copy()
+        env.update(self.env)
+        env.update({
+            '__cdist_manifest': type_manifest,
+            '__manifest': self.local.manifest_path,
+            '__object': cdist_object.absolute_path,
+            '__object_id': cdist_object.object_id,
+            '__object_name': cdist_object.name,
+            '__type': cdist_object.cdist_type.absolute_path,
+        })
+
+        return env
 
     def run_type_manifest(self, cdist_object):
-        script = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
-        if os.path.isfile(script):
-            env = os.environ.copy()
-            env.update(self.env)
-            env.update({
-                '__manifest': self.local.manifest_path,
-                '__object': cdist_object.absolute_path,
-                '__object_id': cdist_object.object_id,
-                '__object_name': cdist_object.name,
-                '__type': cdist_object.cdist_type.absolute_path,
-                '__cdist_manifest': script,
-            })
-            self.local.run_script(script, env=env)
+        type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
+        if os.path.isfile(type_manifest):
+           self.local.run_script(type_manifest, env=self.env_type_manifest(cdist_object))

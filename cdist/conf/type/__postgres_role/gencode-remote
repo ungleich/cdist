@@ -22,33 +22,28 @@ name="$__object_id"
 state_is="$(cat "$__object/explorer/state")"
 state_should="$(cat "$__object/parameter/state")"
 
-if [ "$state_is" != "$state_should" ]; then
-   case "$state_should" in
-      present)
-         optional="password
-         login
-         createdb
-         createrole
-         superuser"
-         for parameter in $optional; do
-            if [ -f "$__object/parameter/$parameter" ]; then
-               value="$(cat "$__object/parameter/$parameter")"
-               eval $parameter=$value
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        if [ -f "$__object/parameter/password" ]; then
+            password="$(cat "$__object/parameter/$parameter")"
+        fi
+        booleans=""
+        for boolean in login createdb createrole superuser; do
+            if [ ! -f "$__object/parameter/$boolean" ]; then
+                boolean="no${boolean}"
             fi
-         done
+            upper=$(echo $boolean | tr '[a-z]' '[A-Z]')
+            booleans="$booleans $upper"
+        done
 
          [ -n "$password" ] && password="PASSWORD '$password'"
-         [ "$login" = "true" ] && login="LOGIN" || login="NOLOGIN"
-         [ "$createdb" = "true" ] && createdb="CREATEDB" || createdb="NOCREATEDB"
-         [ "$createrole" = "true" ] && createrole="CREATEROLE" || createrole="NOCREATEROLE"
-         [ "$superuser" = "true" ] && superuser="SUPERUSER" || superuser="NOSUPERUSER"
-         [ "$inherit" = "true" ] && inherit="INHERIT" || inherit="NOINHERIT"
 
-         cmd="CREATE ROLE $name WITH $password $login $createdb $createrole $superuser $inherit"
+         cmd="CREATE ROLE $name WITH $password $booleans"
          echo "su - postgres -c \"psql -c \\\"$cmd\\\"\""
-      ;;
-      absent)
-         echo "su - postgres -c \"dropuser \\\"$name\\\"\""
-      ;;
-   esac
-fi
+    ;;
+    absent)
+        echo "su - postgres -c \"dropuser \\\"$name\\\"\""
+    ;;
+esac

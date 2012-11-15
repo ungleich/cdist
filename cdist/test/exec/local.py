@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -25,9 +26,6 @@ import shutil
 import string
 import random
 
-#import logging
-#logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
-
 import cdist
 from cdist import test
 from cdist.exec import local
@@ -35,17 +33,23 @@ from cdist.exec import local
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-local_base_path = fixtures
-
+conf_dir = op.join(fixtures, "conf")
 
 class LocalTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.temp_dir = self.mkdtemp()
+
         target_host = 'localhost'
+        self.temp_dir = self.mkdtemp()
         self.out_path = self.temp_dir
-        self.base_path = local_base_path
-        self.local = local.Local(target_host, self.base_path, self.out_path)
+
+        self.local = local.Local(
+            target_host=target_host,
+            out_path=self.out_path,
+            exec_path=test.cdist_exec_path
+        )
+
+        self.home_dir = os.path.join(os.environ['HOME'], ".cdist")
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -53,19 +57,10 @@ class LocalTestCase(test.CdistTestCase):
     ### test api
 
     def test_cache_path(self):
-        self.assertEqual(self.local.cache_path, os.path.join(self.base_path, "cache"))
+        self.assertEqual(self.local.cache_path, os.path.join(self.home_dir, "cache"))
 
     def test_conf_path(self):
-        self.assertEqual(self.local.conf_path, os.path.join(self.base_path, "conf"))
-
-    def test_global_explorer_path(self):
-        self.assertEqual(self.local.global_explorer_path, os.path.join(self.base_path, "conf", "explorer"))
-
-    def test_manifest_path(self):
-        self.assertEqual(self.local.manifest_path, os.path.join(self.base_path, "conf", "manifest"))
-
-    def test_type_path(self):
-        self.assertEqual(self.local.type_path, os.path.join(self.base_path, "conf", "type"))
+        self.assertEqual(self.local.conf_path, os.path.join(self.out_path, "conf"))
 
     def test_out_path(self):
         self.assertEqual(self.local.out_path, self.out_path)
@@ -81,6 +76,53 @@ class LocalTestCase(test.CdistTestCase):
 
     ### /test api
 
+    ### test internal implementation
+
+    def test_global_explorer_path(self):
+        self.assertEqual(self.local.global_explorer_path, os.path.join(self.out_path, "conf", "explorer"))
+
+    def test_manifest_path(self):
+        self.assertEqual(self.local.manifest_path, os.path.join(self.out_path, "conf", "manifest"))
+
+    def test_type_path(self):
+        self.assertEqual(self.local.type_path, os.path.join(self.out_path, "conf", "type"))
+
+    def test_dist_conf_dir_linking(self):
+        """Ensure that links are correctly created for types included in distribution"""
+
+        test_type="__file"
+
+        link_test_local = local.Local(
+            target_host='localhost',
+            out_path=self.out_path,
+            exec_path=test.cdist_exec_path,
+        )
+
+        link_test_local._create_conf_path_and_link_conf_dirs()
+
+        our_type_dir = os.path.join(link_test_local.type_path, test_type)
+
+        self.assertTrue(os.path.isdir(our_type_dir))
+
+    def test_added_conf_dir_linking(self):
+        """Ensure that links are correctly created for types in added conf directories"""
+
+        test_type="__cdist_test_type"
+
+        link_test_local = local.Local(
+            target_host='localhost',
+            out_path=self.out_path,
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir]
+        )
+
+        link_test_local._create_conf_path_and_link_conf_dirs()
+
+        our_type_dir = os.path.join(link_test_local.type_path, test_type)
+
+        self.assertTrue(os.path.isdir(our_type_dir))
+
+    ### other tests
 
     def test_run_success(self):
         self.local.run(['/bin/true'])
@@ -98,7 +140,7 @@ class LocalTestCase(test.CdistTestCase):
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", "/bin/false"])
-        self.assertRaises(local.LocalScriptError, self.local.run_script, script)
+        self.assertRaises(cdist.Error, self.local.run_script, script)
 
     def test_run_script_get_output(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
@@ -117,7 +159,8 @@ class LocalTestCase(test.CdistTestCase):
         self.local.rmdir(temp_dir)
         self.assertFalse(os.path.isdir(temp_dir))
 
-    def test_create_directories(self):
-        self.local.create_directories()
+    def test_create_files_dirs(self):
+        self.local.create_files_dirs()
         self.assertTrue(os.path.isdir(self.local.out_path))
         self.assertTrue(os.path.isdir(self.local.bin_path))
+        self.assertTrue(os.path.isdir(self.local.conf_path))

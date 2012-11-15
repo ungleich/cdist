@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -23,7 +23,6 @@
 import os
 import shutil
 import getpass
-import logging
 
 import cdist
 from cdist import core
@@ -35,35 +34,45 @@ from cdist.core import explorer
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-local_base_path = fixtures
+conf_dir = op.join(fixtures, "conf")
 
 class ExplorerClassTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.target_host = 'localhost'
 
-        self.local_base_path = local_base_path
-        self.out_path = self.mkdtemp()
-        self.local = local.Local(self.target_host, self.local_base_path, self.out_path)
-        self.local.create_directories()
+        self.temp_dir = self.mkdtemp()
+        self.out_path = os.path.join(self.temp_dir, "out")
+        self.remote_base_path = os.path.join(self.temp_dir, "remote")
+        os.makedirs(self.remote_base_path)
 
-        self.remote_base_path = self.mkdtemp()
-        self.user = getpass.getuser()
-        remote_exec = "ssh -o User=%s -q" % self.user
-        remote_copy = "scp -o User=%s -q" % self.user
-        self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
+        self.local = local.Local(
+            target_host=self.target_host,
+            out_path=self.out_path,
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
 
-        self.explorer = explorer.Explorer(self.target_host, self.local, self.remote)
+        self.local.create_files_dirs()
 
-        self.log = logging.getLogger(self.target_host)
+        self.remote = remote.Remote(
+            self.target_host, 
+            self.remote_base_path,
+            self.remote_exec,
+            self.remote_copy)
+        self.remote.create_files_dirs()
+
+        self.explorer = explorer.Explorer(
+            self.target_host, 
+            self.local, 
+            self.remote)
 
     def tearDown(self):
-        shutil.rmtree(self.out_path)
-        shutil.rmtree(self.remote_base_path)
+        shutil.rmtree(self.temp_dir)
 
     def test_list_global_explorer_names(self):
-        expected = ['foobar', 'global']
-        self.assertEqual(self.explorer.list_global_explorer_names(), expected)
+        names = self.explorer.list_global_explorer_names()
+        self.assertIn("foobar", names)
+        self.assertIn("global", names)
 
     def test_transfer_global_explorers(self):
         self.explorer.transfer_global_explorers()
@@ -72,14 +81,20 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.assertEqual(sorted(os.listdir(source)), sorted(os.listdir(destination)))
 
     def test_run_global_explorer(self):
+        """Checkt that running ONE global explorer works"""
         self.explorer.transfer_global_explorers()
         output = self.explorer.run_global_explorer('global')
         self.assertEqual(output, 'global\n')
 
     def test_run_global_explorers(self):
+        """Ensure output is created for every global explorer"""
         out_path = self.mkdtemp()
+
         self.explorer.run_global_explorers(out_path)
-        self.assertEqual(sorted(os.listdir(out_path)), sorted(['foobar', 'global']))
+        names = sorted(self.explorer.list_global_explorer_names())
+        output = sorted(os.listdir(out_path))
+
+        self.assertEqual(names, output)
         shutil.rmtree(out_path)
 
     def test_list_type_explorer_names(self):

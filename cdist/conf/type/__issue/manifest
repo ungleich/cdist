@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -24,17 +24,16 @@ destination=/etc/issue
 os="$(cat "$__global/explorer/os")"
 
 if [ -f "$__object/parameter/source" ]; then
-   source="$(cat "$__object/parameter/source")"
-   echo using $source
+    source="$(cat "$__object/parameter/source")"
 else
-   case "$os" in
-      archlinux|redhat)
-         source="$__type/files/$os"
-      ;;
-      *)
-         source="$__type/files/default"
-      ;;
-   esac
+    case "$os" in
+        archlinux|redhat)
+            source="$__type/files/$os"
+        ;;
+        *)
+            source="$__type/files/default"
+        ;;
+    esac
 fi
 
 __file "$destination" --source "$source"

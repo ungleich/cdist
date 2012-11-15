@@ -24,7 +24,7 @@ name::
     If supplied, use the name and not the object id as the package name.
 
 state::
-    The state the package should be in, either "present" or "absent"
+    Either "present" or "absent", defaults to "present"
 
 
 EXAMPLES

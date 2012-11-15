@@ -37,24 +37,30 @@ class Local(object):
     Directly accessing the local side from python code is a bug.
 
     """
-    def __init__(self, target_host, conf_dirs, out_path, cache_dir=None):
+    def __init__(self, target_host, out_path, exec_path, add_conf_dirs=[], cache_dir=None):
 
         self.target_host = target_host
-        self.add_conf_dirs = conf_dirs
         self.out_path = out_path
+        self.exec_path = exec_path
+
+        self._add_conf_dirs = add_conf_dirs
 
         self._init_log()
         self._init_permissions()
-        self._init_home_dir()
         self._init_paths()
         self._init_cache_dir(cache_dir)
         self._init_conf_dirs()
 
-    def _init_home_dir(self):
+    @property
+    def dist_conf_dir(self):
+        return os.path.abspath(os.path.join(os.path.dirname(cdist.__file__), "conf"))
+
+    @property
+    def home_dir(self):
         if 'HOME' in os.environ:
-            self.home_dir = os.environ['HOME']
+            return os.path.join(os.environ['HOME'], ".cdist")
         else:
-            self.home_dir = None
+            return None
 
     def _init_log(self):
         self.log = logging.getLogger(self.target_host)
@@ -79,17 +85,16 @@ class Local(object):
         self.conf_dirs = []
 
         # Comes with the distribution
-        system_conf_dir = os.path.join(os.path.dirname(cdist.__file__), "conf")
+        system_conf_dir = os.path.abspath(os.path.join(os.path.dirname(cdist.__file__), "conf"))
         self.conf_dirs.append(system_conf_dir)
 
         # Is the default place for user created explorer, type and manifest
         if self.home_dir:
-            user_conf_dir = os.path.join(self.home_dir, ".cdist")
-            self.conf_dirs.append(user_conf_dir)
+            self.conf_dirs.append(self.home_dir)
 
         # Add user supplied directories
-        if self.add_conf_dirs:
-            self.conf_dirs.extend(self.add_conf_dirs)
+        if self._add_conf_dirs:
+            self.conf_dirs.extend(self._add_conf_dirs)
 
     def _init_cache_dir(self, cache_dir):
         if cache_dir:
@@ -146,16 +151,16 @@ class Local(object):
     def create_files_dirs(self):
         self._create_context_dirs()
         self._create_conf_path_and_link_conf_dirs()
+        self._link_types_for_emulator()
 
     def _create_context_dirs(self):
         self.mkdir(self.out_path)
+
         self.mkdir(self.conf_path)
         self.mkdir(self.global_explorer_out_path)
         self.mkdir(self.bin_path)
 
     def _create_conf_path_and_link_conf_dirs(self):
-        self.mkdir(self.conf_path)
-
         # Link destination directories
         for sub_dir in [ "explorer", "manifest", "type" ]:
             self.mkdir(os.path.join(self.conf_path, sub_dir))
@@ -185,9 +190,9 @@ class Local(object):
                     except OSError as e:
                         raise cdist.Error("Linking %s %s to %s failed: %s" % (sub_dir, src, dst, e.__str__()))
 
-    def link_emulator(self, exec_path):
+    def _link_types_for_emulator(self):
         """Link emulator to types"""
-        src = os.path.abspath(exec_path)
+        src = os.path.abspath(self.exec_path)
         for cdist_type in core.CdistType.list_types(self.type_path):
             dst = os.path.join(self.bin_path, cdist_type.name)
             self.log.debug("Linking emulator: %s to %s", src, dst)
