@@ -152,15 +152,25 @@ Other branches may be available for features or bugfixes, but they
 may vanish at any point. To select a specific branch use
 
     # Generic code
-    git checkout -b <name> origin/<name>
-    
-    # Stay on a specific version
-    version=2.0
-    git checkout -b $version origin/$version
+    git checkout -b <localbranchname> origin/<branchname>
 
-### Mirrors
+So for instance if you want to use and stay with version 2.0, you can use
+
+    git checkout -b 2.0 origin/2.0
+
+#### Git Mirrors
+
+If the main site is down, you can acquire cdist from one of the following sites:
 
  * git://github.com/telmich/cdist.git ([github](https://github.com/telmich/cdist))
  * git://git.code.sf.net/p/cdist/code ([sourceforge](https://sourceforge.net/p/cdist/code))
+
+### Python Package
+
+Cdist is available as a python package at
+[PyPi](http://pypi.python.org/pypi/cdist/). You can install it using
+
+    pip install cdist
+
 
 [[!tag cdist unix]]
