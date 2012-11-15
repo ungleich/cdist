@@ -20,10 +20,11 @@ user::
 state::
     Either "present" or "absent".
 
-OPTIONAL PARAMETERS
+BOOLEAN PARAMETERS
 -------------------
 default::
-    If set to anything but "no" (the default), set the given gemset as default.
+    If present, set the given gemset as default.
+
 
 EXAMPLES
 --------
@@ -33,7 +34,7 @@ EXAMPLES
 __rvm_gemset ruby-1.9.3-p0@myset --user charles --state present
 
 # Do the same and make ruby-1.9.3-p0@myset the default gemset
-__rvm_gemset ruby-1.9.3-p0@myset --user charles --state present --default yes
+__rvm_gemset ruby-1.9.3-p0@myset --user charles --state present --default
 
 # Remove the gemset @myset for user john
 __rvm_ruby ruby-1.9.3-p0@myset --user john --state absent

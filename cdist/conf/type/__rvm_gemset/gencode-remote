@@ -24,7 +24,6 @@ ruby="$(echo "$gemset" | cut -d '@' -f 1)"
 gemsetname="$(echo "$gemset" | cut -d '@' -f 2)"
 state_is="$(cat "$__object/explorer/state")"
 user="$(cat "$__object/parameter/user")"
-default="$(cat "$__object/parameter/default" 2>/dev/null || true)"
 state_should="$(cat "$__object/parameter/state")"
 
 [ "$state_is" = "$state_should" ] && exit 0
@@ -34,15 +33,12 @@ case "$state_should" in
         cat << DONE
 su - "$user" -c "source ~/.rvm/scripts/rvm; rvm $gemset --create"
 DONE
-        case "$default" in
-            no)
-            ;;
-            *)
-                cat << DONE
+        if -f "$__object/parameter/default"; then
+            cat << DONE
 su - "$user" -c "source ~/.rvm/scripts/rvm; rvm use --default $gemset"
 DONE
-            ;;
-        esac
+        fi
+
     ;;
     absent)
         cat << DONE
