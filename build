@@ -93,10 +93,13 @@ case "$1" in
     man-pub)
         $0 man
 
+        version=$($0 changelog-version)
+
         rm -rf "${WEBMAN}"
         mkdir -p "${WEBMAN}/man1" "${WEBMAN}/man7"
         cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
         cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
+        cd ${WEBMAN} && git add . && git commit -m "Cdist Manpage update: $version"
     ;;
 
     dist)
