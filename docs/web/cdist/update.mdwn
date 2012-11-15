@@ -20,7 +20,7 @@ To upgrade to the lastet version do
 
     pip install --upgrade cdist
 
-## Update Instructions / Hints
+## Update Instructions
 
 ### Updating from 2.0 to 2.1
 
@@ -43,7 +43,7 @@ To upgrade to the lastet version do
 * Use "cdist config host" instead of "cdist-deploy-to host"
 * Use "cdist config -p host1 host2" instead of "cdist-mass-deploy"
 * Use "cdist banner" for fun
-* Use **\_\_object_fq** instead of **\_\_self** in manifests
+* Use **\_\_object_name** instead of **\_\_self** in manifests
 
 ### Updating from 1.6 to 1.7
 
