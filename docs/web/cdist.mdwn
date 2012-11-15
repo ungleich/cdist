@@ -30,38 +30,4 @@ cdist was tested or is know to run on at least
  * [Ubuntu](http://www.ubuntu.com/)
  * [XenServer](http://www.citrix.com/xenserver/)
 
-
-## Used by
-
-If you're using cdist, feel free to send a report to the mailing list.
-Interesting information are for instance
-
- * Which services do you manage?
- * How many machines do you manage?
- * What are the pros/cons you see in cdist?
- * General comments/critics
-
-### Nico Schottelius, Systems Group ETH Zurich, local.ch and privately
-
-Yes, I'm actually eating my own dogfood and currently managing
-
- * [plone](http://plone.org/) (cms)
- * [moinmoin](http://moinmo.in/) (wiki)
- * [apache](http://httpd.apache.org/) (webserver)
- * [kerberos (mit)](http://web.mit.edu/kerberos/) (authentication)
- * [nss-pam-ldapd](http://arthurdejong.org/nss-pam-ldapd/) (authentication)
- * [ircd-hybrid](http://www.ircd-hybrid.org/) (chat)
- * [stunnel](http://stunnel.mirt.net/) (SSL tunnel)
- * [mercurial-server](http://www.lshift.net/mercurial-server.html) (version control)
- * [xfce](http://www.xfce.org/) (lightweight desktop environment)
- * [slim](http://slim.berlios.de/) (graphical login manager for X11)
-
-with cdist on more than **60** production machines of the
-[Systems Group](http://www.systems.ethz.ch) at the
-[ETH Zurich](http://www.ethz.ch) as well at home.
-
-### Steven Armstrong, CBRG ETH Zurich
-
-The CBRG is managing most of their compute clusters with cdist.
-
 [[!tag cdist unix]]

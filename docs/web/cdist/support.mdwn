@@ -21,3 +21,5 @@ you can join the
 
 You can request commercial support for cdist from
 [my company](http://firma.schottelius.org/english/).
+
+[[!tag cdist unix]]

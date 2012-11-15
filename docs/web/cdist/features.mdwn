@@ -22,3 +22,5 @@ UNIX | Reuse of existing tools like cat, find, mv, ...
 UNIX, familar environment, documentation | Is available as manpages and HTML
 UNIX, simplicity, familar environment | cdist is configured in POSIX shell
 """]]
+
+[[!tag cdist unix]]
