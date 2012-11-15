@@ -31,6 +31,8 @@ To upgrade to the lastet version do
    The old "yes/no" values need to be removed.
  * Type **\_\_rvm_ruby**: Parameter --default is now boolean
    The old "yes/no" values need to be removed.
+ * Type **\_\_rvm_gemset**: Parameter --default is now boolean
+   The old "yes/no" values need to be removed.
  * Type **\_\_addifnosuchline** and **\_\_removeline** have been replaced by **\_\_line**
  * The **conf** directory is now located at **cdist/conf**.
    You need to migrate your types, explorers and manifests
