@@ -17,9 +17,6 @@ source=("http://pypi.python.org/packages/source/c/cdist/cdist-\${pkgver}.tar.gz"
 package() {
     cd cdist-\${pkgver}
     python3 setup.py build install --root="\${pkgdir}"
-    mv "\${pkgdir}"/usr/bin/cdist.py "\${pkgdir}"/usr/bin/cdist
-
-    #install -Dm644 offlineimap.1 "\${pkgdir}"/usr/share/man/man1/offlineimap.1
 }
 eof
 
