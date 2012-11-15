@@ -40,7 +40,6 @@ To upgrade to the lastet version do
  * The types **\_\_autofs**, **\_\_autofs_map** and **\_\_autofs_reload** have been removed
    (no maintainer, no users)
 
-
 ### Updating from 1.7 to 2.0
 
 * Ensure python (>= 3.2) is installed on the source host
