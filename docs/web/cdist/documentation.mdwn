@@ -1,0 +1,5 @@
+
+* [Latest documentation](man/latest)
+* [All versions](man)
+
+[[!tag cdist unix]]
