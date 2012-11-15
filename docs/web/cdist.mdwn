@@ -7,8 +7,8 @@ It adheres to the KISS principle and
 is being used in small up to enterprise grade environments.
 cdist is an alternative to other configuration management systems like
 [bcfg2](http://trac.mcs.anl.gov/projects/bcfg2),
-[chef](http://wiki.opscode.com/display/chef/)
-[cfengine](http://www.cfengine.org/),
+[chef](http://wiki.opscode.com/display/chef/),
+[cfengine](http://www.cfengine.org/)
 and [puppet](http://www.puppetlabs.com/).
 
  * [[Documentation|documentation]]
