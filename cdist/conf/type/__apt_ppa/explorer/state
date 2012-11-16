@@ -29,5 +29,5 @@ repo_name="${name#ppa:}"
 repo_file_name="$(echo "$repo_name" | sed "s:\/:\-:")-${DISTRIB_CODENAME}.list"
 
 [ -s "/etc/apt/sources.list.d/${repo_file_name}" ] \
-   && echo enabled || echo disabled
+   && echo present || echo absent
 
