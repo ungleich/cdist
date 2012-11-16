@@ -16,7 +16,7 @@ This cdist type allows manage ubuntu ppa repositories.
 REQUIRED PARAMETERS
 -------------------
 state::
-   The state the ppa should be in, either "enabled" or "disabled".
+   The state the ppa should be in, either "present" or "absent".
 
 
 OPTIONAL PARAMETERS
@@ -29,10 +29,10 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Enable a ppa repository
-__apt_ppa ppa:sans-intern/missing-bits --state enabled
+__apt_ppa ppa:sans-intern/missing-bits --state present
 
 # Disable a ppa repository
-__apt_ppa ppa:sans-intern/missing-bits --state disabled
+__apt_ppa ppa:sans-intern/missing-bits --state absent
 --------------------------------------------------------------------------------
 
 
