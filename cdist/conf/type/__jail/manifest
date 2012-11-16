@@ -39,7 +39,7 @@ else
    jaildir="/usr/jail"
 fi
 
-__directory ${jaildir} --parents yes
+__directory ${jaildir} --parents
 
 # Debug
 #set +x
