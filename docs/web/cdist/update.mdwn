@@ -41,6 +41,7 @@ To upgrade to the lastet version do
    Support for the variable **\_\_object_name** is already present in 2.0.
  * The types **\_\_autofs**, **\_\_autofs_map** and **\_\_autofs_reload** have been removed
    (no maintainer, no users)
+ * Type **\_\_user**: Parameter --groups removed (use the new \_\_user_groups type)
 
 ### Updating from 1.7 to 2.0
 
