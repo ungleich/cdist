@@ -87,6 +87,7 @@ class ObjectTestCase(test.CdistTestCase):
         self.cdist_object.code_local = ''
         self.cdist_object.code_remote = ''
         self.cdist_object.state = ''
+        self.cdist_object.requirements = []
 
     def test_name(self):
         self.assertEqual(self.cdist_object.name, '__third/moon')

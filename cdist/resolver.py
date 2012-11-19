@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2012 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -109,10 +109,21 @@ class DependencyResolver(object):
                     raise RequirementNotFoundError(pattern)
 
     def _preprocess_requirements(self):
-        """Find all autorequire dependencies and merge them to be just requirements
-        for further processing.
+        """Find all before, after and autorequire dependencies and merge them
+        to be just requirements for further processing.
         """
         for cdist_object in self.objects.values():
+            if cdist_object.after:
+                cdist_object.requirements.extend(cdist_object.after)
+                # As we changed the object on disc, we have to ensure it is not 
+                # preprocessed again if someone would call us multiple times.
+                cdist_object.after = []
+            if cdist_object.before:
+                for other_object in self.find_requirements_by_name(cdist_object.before):
+                    other_object.requirements.append(cdist_object.name)
+                # As we changed the object on disc, we have to ensure it is not 
+                # preprocessed again if someone would call us multiple times.
+                cdist_object.before = []
             if cdist_object.autorequire:
                 # The objects (children) that this cdist_object (parent) defined
                 # in it's type manifest shall inherit all explicit requirements 

@@ -23,6 +23,7 @@
 import argparse
 import logging
 import os
+import warnings
 import sys
 
 import cdist
@@ -92,8 +93,12 @@ class Emulator(object):
 
     def commandline(self):
         """Parse command line"""
+        self.meta_parameters = dict.fromkeys(('after', 'before'))
+        meta_parser = argparse.ArgumentParser(add_help=False)
+        for meta_parameter in self.meta_parameters.keys():
+            meta_parser.add_argument('--%s' % meta_parameter, action='append', required=False)
 
-        parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS)
+        parser = argparse.ArgumentParser(add_help=False, parents=[meta_parser], argument_default=argparse.SUPPRESS)
 
         for parameter in self.cdist_type.required_parameters:
             argument = "--" + parameter
@@ -119,6 +124,11 @@ class Emulator(object):
         self.args = parser.parse_args(self.argv[1:])
         self.log.debug('Args: %s' % self.args)
 
+        # Handle meta parameters
+        for meta_parameter in self.meta_parameters.keys():
+            if meta_parameter in self.args:
+                self.meta_parameters[meta_parameter] = getattr(self.args, meta_parameter)
+                delattr(self.args, meta_parameter)
 
     def setup_object(self):
         # Setup object_id - FIXME: unset / do not setup anymore!
@@ -175,10 +185,18 @@ class Emulator(object):
 
     def record_requirements(self):
         """record requirements"""
+        for key in ('before', 'after'):
+            if key in self.meta_parameters and self.meta_parameters[key]:
+                for value in self.meta_parameters[key]:
+                    self.log.debug("Recording requirement: %s %s %s", self.cdist_object.name, key, value)
+                    dependency_list = getattr(self.cdist_object, key)
+                    # append to the object.after or object.before lists
+                    dependency_list.append(value)
 
         if "require" in self.env:
+            warnings.warn("The 'require' envrionment variable is deprecated. Use the --before and --after meta parameters to define dependencies.", category=PendingDeprecationWarning, stacklevel=2)
+
             requirements = self.env['require']
-            self.log.debug("reqs = " + requirements)
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0: continue
@@ -187,11 +205,10 @@ class Emulator(object):
                 cdist_object = self.cdist_object.object_from_name(requirement)
 
                 self.log.debug("Recording requirement: " + requirement)
-
                 # Save the sanitised version, not the user supplied one
                 # (__file//bar => __file/bar)
                 # This ensures pattern matching is done against sanitised list
-                self.cdist_object.requirements.append(cdist_object.name)
+                self.cdist_object.after.append(cdist_object.name)
 
     def record_auto_requirements(self):
         """An object shall automatically depend on all objects that it defined in it's type manifest.
