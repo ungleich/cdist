@@ -42,6 +42,7 @@ To upgrade to the lastet version do
  * The types **\_\_autofs**, **\_\_autofs_map** and **\_\_autofs_reload** have been removed
    (no maintainer, no users)
  * Type **\_\_user**: Parameter --groups removed (use the new \_\_user_groups type)
+ * require="" is deprecated: Use --after and --before as parameters instead
 
 ### Updating from 1.7 to 2.0
 

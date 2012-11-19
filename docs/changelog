@@ -9,6 +9,7 @@ next:
 	* Type __rvm_gemset: Change parameter "default" to be boolean
 	* New Type: __user_groups (Steven Armstrong)
 	* Type __user: Remove --groups support (now provided by __user_groups)
+	* Type __apt_ppa: Bugfix: Installeded ppa detection (Steven Armstrong)
 	* Core: Support for --after and --before parameters
 
 2.1.0pre8: 2012-11-15
