@@ -186,8 +186,6 @@ class CdistObject(object):
         return os.path.join(self.path, "explorer")
 
     requirements = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'require'))
-    before = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'before'))
-    after = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'after'))
     autorequire = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'autorequire'))
     parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.parameter_path))
     explorers = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.explorer_path))
