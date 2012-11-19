@@ -29,7 +29,7 @@ import cdist
 from cdist import core
 
 class Emulator(object):
-    def __init__(self, argv, stdin=sys.stdin, env=os.environ):
+    def __init__(self, argv, stdin=sys.stdin.buffer, env=os.environ):
         self.argv           = argv
         self.stdin          = stdin
         self.env            = env
@@ -151,6 +151,10 @@ class Emulator(object):
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
 
+    chunk_size = 65536
+    def _read_stdin(self):
+        return self.stdin.read(self.chunk_size)
+
     def save_stdin(self):
         """If something is written to stdin, save it in the object as
         $__object/stdin so it can be accessed in manifest and gencode-*
@@ -160,10 +164,12 @@ class Emulator(object):
             try:
                 # go directly to file instead of using CdistObject's api
                 # as that does not support streaming
-                # FIXME: no streaming needed anymore - use a raw file (not yet there?)
                 path = os.path.join(self.cdist_object.absolute_path, 'stdin')
-                with open(path, 'w') as fd:
-                    fd.write(self.stdin.read())
+                with open(path, 'wb') as fd:
+                    chunk = self._read_stdin()
+                    while chunk:
+                        fd.write(chunk)
+                        chunk = self._read_stdin()
             except EnvironmentError as e:
                 raise cdist.Error('Failed to read from stdin: %s' % e)
 
