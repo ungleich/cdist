@@ -1,10 +1,7 @@
 name
-started
 ip
 hostname
 interface
-devfs-enable
 devfs-ruleset
-onboot
 jaildir
 jailbase
