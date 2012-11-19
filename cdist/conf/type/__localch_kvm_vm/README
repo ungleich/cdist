@@ -1,0 +1,10 @@
+To be executed on the Xen Host.
+Using "xe" tool from Citrix Xen.
+
+Todo:
+
+    - Setup DNS -> bind 
+        - via puppet
+        - move away from puppet to cdist (intrusive)
+    - Boot VM
+    - Kickstart

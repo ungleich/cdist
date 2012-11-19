@@ -1,0 +1,72 @@
+################################################################################
+# Default VM parameters
+#
+cores=4
+memory=$((8*1024*1024*1024))
+system_disk_size=$((50*1024*1024*1024))
+
+[ -f "$__object/parameter/memory" ] && memory="$(cat "$__object/parameter/memory")"
+[ -f "$__object/parameter/cores" ] && cores="$(cat "$__object/parameter/cores")"
+[ -f "$__object/parameter/system-disk-size" ] && system_disk_size="$(cat "$__object/parameter/system-disk-size")"
+
+# Convert memory to MiB (kvm/qemu requirement)
+memory_mebibytes=$(($memory/(1024*1024)))
+
+################################################################################
+# Required VM parameters
+#
+nic_pz="$(cat "$__object/parameter/nic-pz")"
+nic_fz="$(cat "$__object/parameter/nic-fz")"
+vm=$__object_id
+
+basedir=/opt/local.ch/sys/kvm/vm/$vm
+system_disk=$basedir/system-disk
+start_on_boot=$basedir/start-on-boot
+vnc_socket=unix:$basedir/vnc
+pidfile=$basedir/pid
+monitor=$basedir/monitor
+
+mkdir -p "$__object/files"
+start_file_source=$__object/files/start
+start_file_destination=$basedir/start
+
+#Base VM directory
+__directory $basedir --parents yes \
+    --owner root --group root
+
+cat << eof > "$start_file_source"
+#!/bin/sh
+# Generated shell script - do not modify
+#
+
+/usr/libexec/qemu-kvm \\
+    -name $vm \\
+    -enable-kvm \\
+    -m $memory_mebibytes \\
+    -drive file=${system_disk},if=virtio \\
+    -vnc $vnc_socket \\
+    -cpu host \\
+    -boot order=nc \\
+    -pidfile "$pidfile" \\
+    -monitor "unix:$monitor,server,nowait" \\
+    -net nic,macaddr=$nic_pz,model=virtio,vlan=200 \\
+        -net tap,script=/opt/local.ch/sys/kvm/bin/ifup-pz,downscript=/opt/local.ch/sys/kvm/bin/ifdown,vlan=200 \\
+    -net nic,macaddr=$nic_fz,model=virtio,vlan=300 \\
+        -net tap,script=/opt/local.ch/sys/kvm/bin/ifup-fz,downscript=/opt/local.ch/sys/kvm/bin/ifdown,vlan=300 \\
+    -smp $cores
+eof
+
+require="__directory/$basedir" __file $start_file_destination \
+    --source $start_file_source --mode 0755 --owner root --group root
+
+require="__directory/$basedir" __qemu_img "$system_disk" \
+    --size "$system_disk_size"
+
+# Normally, create a flag to start a VM on boot (if not
+# explicitly told we should not)
+if [ ! -f "$__object/parameter/do-not-start-on-boot" ]; then
+    require="__directory/$basedir" __file "$start_on_boot" \
+        --mode 0600 --owner root --group root
+else
+    __file "$start_on_boot" --state absent
+fi
