@@ -1,0 +1,68 @@
+cdist-type__git(7)
+==================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__git - Get and or keep git repositories up-to-date
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to clone and keep git repositories
+up-to-date.
+
+
+REQUIRED PARAMETERS
+-------------------
+source::
+    Specifies the git remote to clone from
+
+
+OPTIONAL PARAMETERS
+-------------------
+name::
+    If supplied, use the name and not the object id as the package name.
+
+state::
+    Either "present" or "absent", defaults to "present"
+
+branch::
+    The remote branch to check out
+
+BOOLEAN PARAMETERS
+------------------
+up-to-date::
+    Whether to git merge on each run
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Create hard git of /etc/shadow
+__git /home/services/dokuwiki --source /etc/shadow --type hard
+
+# Relative symbolic git
+__git /etc/apache2/sites-enabled/www.test.ch   \
+   --source ../sites-available/www.test.ch      \
+   --type symbolic
+
+# Absolute symbolic git
+__git /opt/plone --source /home/services/plone --type symbolic
+
+# Remove git
+__git /opt/plone --state absent
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
