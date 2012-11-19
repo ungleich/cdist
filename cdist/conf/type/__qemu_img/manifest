@@ -1,0 +1,15 @@
+################################################################################
+# Default settings
+#
+
+format=qcow2
+state=present
+[ -f "$__object/parameter/format" ] && format="$(cat "$__object/parameter/format")"
+[ -f "$__object/parameter/state" ] && state="$(cat "$__object/parameter/state")"
+
+diskimage="/$__object_id"
+
+# Absent is ensured by __file, present by gencode-remote
+if [ "$state" = "absent" ]; then
+    __file "$diskimage" --state absent
+fi

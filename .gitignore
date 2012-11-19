@@ -2,17 +2,27 @@
 .*.swp
 
 # Ignore generated manpages
-doc/man/.marker
-doc/man/man1/*.1
-doc/man/man7/*.7
-doc/man/man*/*.html
-doc/man/man*/*.xml
-doc/man/man7/cdist-type__*.text
-doc/man/man7/cdist-reference.text
-doc/man/man*/docbook-xsl.css
+docs/man/.marker
+docs/man/man1/*.1
+docs/man/man7/*.7
+docs/man/man*/*.html
+docs/man/man*/*.xml
+docs/man/man*/docbook-xsl.css
+docs/man/man7/cdist-type__*.text
+docs/man/man7/cdist-reference.text
 
 # Ignore cdist cache for version control
 /cache/
 
-# Python / cache
+# Python: cache, distutils, distribution in general
 __pycache__/
+MANIFEST
+dist/
+cdist/version.py
+
+# Packaging: Archlinux
+/PKGBUILD
+/cdist-*.pkg.tar.xz
+/cdist-*.tar.gz
+/pkg
+/src

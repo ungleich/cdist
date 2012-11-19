@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage pf(4) on *BSD
+#
+
+# Debug
+#exec >&2
+#set -x
+
+# Remove ${rcvar} in the case of --state absent
+
+state=$(cat "$__object/parameter/state")
+rcvar=$(cat "$__object/explorer/rcvar")
+
+if [ "$state" = "present" ]; then   # There is nothing more for a *remote* script to do
+   exit 0
+elif [ "$state" = "absent" ]; then
+   # --state absent, so ensure that .new doesn't exist and that conf is renamed to .old
+   cat <<EOF
+   if [ -f "${rcvar}.new" ]; then
+      rm "${rcvar}.new"
+   fi
+   if [ -f "${rcvar}" ]; then
+      mv "${rcvar}" "${rcvar}.old"
+   fi
+EOF
+else
+   echo "Unknown state ${state}!" >&2
+   exit 1
+fi
+

@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# 2011 Chase Allen James <nx-cdist@nu-ex.com>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage Rubygem packages
+#
+
+if [ -f "$__object/parameter/name" ]; then
+    name="$(cat "$__object/parameter/name")"
+else
+    name="$__object_id"
+fi
+
+if [ -f "$__object/parameter/state" ]; then
+   state_should="$(cat "$__object/parameter/state")"
+else
+   state_should="present"
+fi
+
+if grep -q true "$__object/explorer/pkg_status"; then
+    state_is="present"
+else
+    state_is="absent"
+fi
+
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        echo gem install \"$name\" --no-ri --no-rdoc
+    ;;
+    absent)
+        echo gem uninstall \"$name\"
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac

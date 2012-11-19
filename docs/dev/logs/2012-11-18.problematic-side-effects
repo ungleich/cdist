@@ -1,0 +1,22 @@
+- Problem: Installing xbmc package creates user xbmc.
+As xbmc is the first user, it gets the uid 1000.
+
+Later on trying to create the user "nutzer" with uid 1000 fails, because
+xbmc already has that uid.
+
+
+INFO: matte: Generating and executing code for __package/upower
+INFO: matte: Generating and executing code for __nico_managed_desktop/singleton
+ln -s '/usr/lib/systemd/system/slim.service' '/etc/systemd/system/display-manager.service'
+INFO: matte: Generating and executing code for __directory/etc/sudoers.d
+INFO: matte: Generating and executing code for __file/etc/sudoers.d/nico
+INFO: matte: Generating and executing code for __cdistmarker/singleton
+INFO: matte: Generating and executing code for __package_pacman/sudo
+INFO: matte: Generating and executing code for __package/sudo
+INFO: matte: Generating and executing code for __package_pacman/xf86-video-intel
+INFO: matte: Generating and executing code for __user/nutzer
+useradd: UID 1000 is not unique
+ERROR: matte: Command failed: ssh -o User=root -q matte umask 077; /bin/sh -e /var/lib/cdist/object/__user/nutzer/.cdist/code-remote
+INFO: Total processing time for 1 host(s): 3512.761916399002
+ERROR: Failed to deploy to the following hosts: matte
+[17:40] brief:nico% ./bin/cdist config -v matte

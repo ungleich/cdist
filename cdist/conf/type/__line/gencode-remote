@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+file="/$__object_id"
+regex=""
+state_should="present"
+[ -f "$__object/parameter/file" ]  && file=$(cat "$__object/parameter/file")
+[ -f "$__object/parameter/regex" ] && regex=$(cat "$__object/parameter/regex")
+[ -f "$__object/parameter/state" ] && state_should=$(cat "$__object/parameter/state")
+[ -f "$__object/parameter/line" ]  && line=$(cat "$__object/parameter/line")
+
+state_is="$(cat "$__object/explorer/state")"
+
+[ "$state_should" = "$state_is" ] && exit 0
+
+case "$state_should" in
+    present)
+        if [ ! "$line" ]; then
+            echo "Required parameter \"line\" is missing" >&2
+            exit 1
+        fi
+
+        echo "echo \"$line\" >> $file"
+
+    ;;
+    absent)
+        if [ "$regex" -a "$line" ]; then
+            echo "Mutally exclusive parameters regex and line given for state absent" >&2
+            exit 1
+        fi
+
+        [ "$line" ] && regex="^$line\$"
+
+        cat << eof
+tmp=\$(mktemp)
+sed '/$regex/d' "$file" > \$tmp && cat "\$tmp" > "$file" && rm -f "\$tmp"
+eof
+        #echo "echo q | ex -c \"/${line}/d|w|q\" \"${file}\""
+    ;;
+    *)
+       echo "Unknown state: $state_should" >&2
+       exit 1
+    ;;
+esac

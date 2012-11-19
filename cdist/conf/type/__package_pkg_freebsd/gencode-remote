@@ -1,0 +1,139 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage packages with pkg on FreeBSD
+#
+
+assert ()                 #  If condition false,
+{                         #+ exit from script with error message.
+	E_PARAM_ERR=98
+	E_ASSERT_FAILED=99
+
+	if [ -z "$2" ]          # Not enough parameters passed.
+	then
+		return $E_PARAM_ERR   # No damage done.
+	fi
+
+	lineno=$2
+
+	if [ ! $1 ] 
+	then
+		echo "Assertion failed:  \"$1\""
+		echo "File \"$0\", line $lineno, called by $(caller 0)"
+		exit $E_ASSERT_FAILED
+	fi  
+}
+
+# Debug
+#exec >&2
+#set -x
+
+if [ -f "$__object/parameter/name" ]; then
+	name="$(cat "$__object/parameter/name")"
+else
+	name="$__object_id"
+fi
+
+if [ -f "$__object/parameter/flavor" ]; then
+	flavor="$(cat "$__object/parameter/flavor")"
+fi
+
+if [ -f "$__object/parameter/version" ]; then
+	version="$(cat "$__object/parameter/version")"
+fi
+
+if [ -f "$__object/parameter/pkgsite" ]; then
+	pkgsite="$(cat "$__object/parameter/pkgsite")"
+fi
+
+if [ -f "$__object/parameter/state" ]; then
+   state="$(cat "$__object/parameter/state")"
+else
+   state="present"
+fi
+curr_version="$(cat "$__object/explorer/pkg_version")"
+add_cmd="pkg_add"
+rm_cmd="pkg_delete"
+cmd=""
+
+# Print the command to be executed
+#	Parms:	$1 -- mode, "remove" or "add"
+#		$2 -- the command to be echoed
+# FIXME: This is ugly.
+execcmd(){
+	# Set the PACKAGESITE if we're ADDing a new package
+	if [ "$1" = "add" -a -n "$pkgsite" ]; then
+		# Use http.../All/ if we know the exact version we want, use .../Latest/ otherwise
+		pkgsite="export PACKAGESITE=${pkgsite}"
+		[ -n "$version" ] && pkgsite="${pkgsite}/All/" || pkgsite="${pkgsite}/Latest/"
+		echo "${pkgsite}"
+	fi
+	echo "${2} 2>&- >&-"	# Silence the output of the command
+	echo "status=\$?"
+	echo "if [ \"\$status\" -ne \"0\" ]; then"
+	echo "	echo \"Error: ${cmd} exited nonzero with \$status\"'!' >&2"
+	echo "	exit 1"
+	echo "fi"
+}
+
+if [ -n "$curr_version" ]; then	# PKG *is* installed
+	if [ "$state" = "absent" ]; then	# Shouldn't be installed
+		if [ -n "$flavor" ]; then
+			cmd="${rm_cmd} ${name}-${flavor}-${curr_version}"
+		else
+			cmd="${rm_cmd} ${name}-${curr_version}"
+		fi
+		execcmd "remove" "${cmd}"
+		exit 0
+	else	# Should be installed
+		if [ -n "$version" ]; then	# Want a specific version
+			if [ "$version" = "$curr_version" ]; then	# Current version is correct
+				exit 0
+			else	# Current version is wrong, fix
+				#updatepkg "$name" "$version"
+				assert "! ${version} = ${curr_version}" $LINENO
+				cmd="${rm_cmd} ${name}-${curr_version}"
+				execcmd "remove" "${cmd}"
+				cmd="${add_cmd} -r ${name}-${version}"
+				execcmd "add" "${cmd}"
+			fi
+		else	# Don't care what version to use
+			exit 0
+		fi
+	fi
+else	# PKG *isn't* installed
+	if [ "$state" = "absent" ]; then	# Shouldn't be installed
+		exit 0
+	elif [ "$state" = "present" ]; then	# Is not currently installed, should be
+		if [ -n "$flavor" ]; then
+			cmd="${add_cmd} -r ${name}-${flavor}"
+		else
+			cmd="${add_cmd} -r ${name}"
+		fi
+		if [ -n "$version" ]; then
+			cmd="${cmd}-${version}"
+		fi
+		execcmd "add" "${cmd}"
+		exit 0
+	fi
+fi
+
+# Debug
+#set +x

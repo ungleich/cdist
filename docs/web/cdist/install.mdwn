@@ -1,0 +1,179 @@
+[[!meta title="How to install cdist"]]
+[[!toc levels=3]]
+
+## Requirements
+
+### Source Host
+
+This is the machine you use to configure the target hosts.
+
+ * /bin/sh: A posix like shell (for instance bash, dash, zsh)
+ * Python >= 3.2
+ * SSH client
+ * Asciidoc (for building the manpages)
+
+### Target Hosts
+
+ * /bin/sh: A posix like shell (for instance bash, dash, zsh)
+ * SSH server
+
+## Requirement Installation: Python >= 3.2
+
+Ensure you have at least Python 3.2 or newer installed on 
+the **source host**.
+You can check this by running **python -V**:
+
+    % python -V
+    Python 3.3.0
+
+### Archlinux
+
+Archlinux includes a recent python in the extra repository. 
+You can install it using
+
+    pacman -S python
+
+### CentOS
+
+See the "From source" section
+
+### Debian
+
+For Debian **wheezy** or newer:
+
+    aptitude install python3
+
+On **squeeze** you can add following line in **/etc/apt/sources.list**
+
+  deb http://ftp.debian.org/debian wheezy main
+
+And add pinning entry in **/etc/apt/preferences.d/wheezy**:
+
+  Package: *
+  Pin: release n=wheezy
+  Pin-Priority: 1
+
+Please be aware that both **openssh-server** and **openssh-client** might be
+removed on **python3.2** installation. You surely want to reinstall them:
+
+  apt-get install -t wheezy openssh-server openssh-client
+
+For older Debian versions, installing python 3.2 from source is required.
+
+### Fedora
+
+Fedora 15 and newer includes a recent python.
+You can install it using
+
+    yum install python3
+
+### FreeBSD
+
+For the port:
+
+    cd /usr/ports/lang/python32/ && make install clean
+
+For the package:
+
+    pkg_add -r python32
+
+You can also use any newer version, but at least python 3.2 is required.
+
+### Gentoo
+
+Gentoo only provides python 3.2 in testing packages (http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=3&chap=3).
+If you want to ensure nothing breaks you must set back the python version to what was default before.
+
+    emerge -av =python-3.2.2 --autounmask-write
+    emerge -av =python-3.2.2
+    eselect python list
+    eselect python list set python3.2
+
+### Max OS X
+
+You can choose between Homebrew and Macports, either way works:
+
+[Homebrew](http://mxcl.github.com/homebrew/) variant:
+
+    brew install python3
+
+[Macports](http://www.macports.org/install.php) variant:
+
+    port install python32
+    ln -s /opt/local/bin/python3.2 /opt/local/bin/python3
+
+### Redhat
+
+See the "From source" section
+
+### From Source
+
+For those operating systems not yet supporting Python 3.2:
+
+    pyversion=3.2.3
+    wget http://www.python.org/ftp/python/$pyversion/Python-${pyversion}.tar.bz2
+    tar xvfj Python-${pyversion}.tar.bz2
+    cd Python-${pyversion}
+    ./configure
+    make
+    sudo make install
+
+This installs python 3.2 to /usr/local/bin. 
+Ensure this directory is in your PATH environment variable.
+
+## Install cdist
+
+You can install cdist either from git or as a python package.
+
+### From git
+
+Cloning cdist from git gives you the advantage of having
+a version control in place for development of your own stuff
+immediately.
+
+To install cdist, execute the following commands:
+
+    git clone git://git.schottelius.org/cdist
+    cd cdist
+    export PATH=$PATH:$(pwd -P)/bin
+
+If you want to build and use the manpages, run:
+
+    ./build man
+    export MANPATH=$MANPATH:$(pwd -P)/doc/man
+
+#### Available versions in git
+
+ * The active development takes place in the **master** branch
+ * The current stable version can be found in the **2.0** branch
+ * The upcoming stable version can be found in the **2.1** branch
+
+Other branches may be available for features or bugfixes, but they
+may vanish at any point. To select a specific branch use
+
+    # Generic code
+    git checkout -b <localbranchname> origin/<branchname>
+
+So for instance if you want to use and stay with version 2.0, you can use
+
+    git checkout -b 2.0 origin/2.0
+
+#### Git Mirrors
+
+If the main site is down, you can acquire cdist from one of the following sites:
+
+ * git://github.com/telmich/cdist.git ([github](https://github.com/telmich/cdist))
+ * git://git.code.sf.net/p/cdist/code ([sourceforge](https://sourceforge.net/p/cdist/code))
+
+### Python Package
+
+Cdist is available as a python package at
+[PyPi](http://pypi.python.org/pypi/cdist/). You can install it using
+
+    pip install cdist
+
+## Use cdist
+
+[[Dig into the documentation|documentation]] to get started with cdist!
+
+[[!tag cdist unix]]

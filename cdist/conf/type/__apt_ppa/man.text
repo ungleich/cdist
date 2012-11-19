@@ -1,0 +1,47 @@
+cdist-type__apt_ppa(7)
+======================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__apt_ppa - Manage ppa repositories
+
+
+DESCRIPTION
+-----------
+This cdist type allows manage ubuntu ppa repositories.
+
+
+REQUIRED PARAMETERS
+-------------------
+state::
+   The state the ppa should be in, either "present" or "absent".
+
+
+OPTIONAL PARAMETERS
+-------------------
+None.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Enable a ppa repository
+__apt_ppa ppa:sans-intern/missing-bits --state present
+
+# Disable a ppa repository
+__apt_ppa ppa:sans-intern/missing-bits --state absent
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# 2012 Evax Software <contact@evax.fr>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+ruby="$__object_id"
+state_is="$(cat "$__object/explorer/state")"
+user="$(cat "$__object/parameter/user")"
+default="$(cat "$__object/parameter/default" 2>/dev/null || true)"
+state_should="$(cat "$__object/parameter/state")"
+
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
+            "rvm install $ruby\""
+        if [ -f "$__object/parameter/default" ]; then
+            echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
+                "rvm use --default $ruby\""
+        fi
+    ;;
+    absent)
+        echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
+            "rvm remove $ruby\""
+    ;;
+
+    *)
+        echo "Unknown state $state_should" >&2
+        exit 1
+    ;;
+esac
