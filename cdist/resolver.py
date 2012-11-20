@@ -77,6 +77,7 @@ class DependencyResolver(object):
         lists of all dependencies including the key object itself.
         """
         if self._dependencies is None:
+            log.info("Resolving dependencies...")
             self._dependencies = d = {}
             self._preprocess_requirements()
             for name,cdist_object in self.objects.items():
