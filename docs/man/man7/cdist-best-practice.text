@@ -30,6 +30,15 @@ Host *
   ControlPersist 10
 --------------------------------------------------------------------------------
 
+SPEEDING UP SHELL EXECUTION
+----------------------------
+On the source host, ensure that /bin/sh is *not* bash: bash is quite slow for
+script execution. Instead, you could use dash after installing it:
+
+--------------------------------------------------------------------------------
+ln -sf /bin/dash /bin/sh
+--------------------------------------------------------------------------------
+
 
 MULTI MASTER OR ENVIRONMENT SETUPS
 ----------------------------------
