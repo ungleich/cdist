@@ -65,7 +65,4 @@ a single source host, you can simply add more resources: Either
 add more cores to one host or add hosts.
 Cdist will utilise the given resources in parallel.
 
-## Integration into inventory management
-
-
 [[!tag cdist unix]]
