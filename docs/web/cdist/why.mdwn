@@ -1,0 +1,37 @@
+[[!meta title="Why should I use cdist?"]]
+
+There are several motivations to use cdist, these
+are probably the most popular ones.
+
+## Known language
+
+Cdist is being configured in
+[shell script](https://en.wikipedia.org/wiki/Shell_script).
+Shell script is used by UNIX system engineers for decades.
+So when cdist is introduced, your staff does not need to learn a new
+[DSL](https://en.wikipedia.org/wiki/Domain-specific_language)
+or programming language.
+
+## Powerful language
+
+Not only is shell scripting widely known by system engineers,
+but it is also a very powerful language. Here are some features
+which make daily work easy:
+
+ * Configuration can react dynamicly on explored values
+ * High level string manipulation (using sed, awk, grep)
+ * Conditional support (**if, case**)
+ * Loop support (**for, while**)
+ * Support for dependencies between cdist types
+
+## More than shell scripting
+
+If you compare regular shell scripting with cdist, there is one major
+difference: When using cdist types,
+the results are 
+[idempotent](https://en.wikipedia.org/wiki/Idempotence). 
+In practise, that means it does not matter in which order you 
+call cdist types, the result is always the same.
+
+
+[[!tag cdist unix]]
