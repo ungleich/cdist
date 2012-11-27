@@ -49,8 +49,8 @@ jaildir::
 
 BOOLEAN PARAMETERS
 ------------------
-started::
-   Whether to start jail
+stopped::
+   Do not start the jail
 
 devfs-disable::
    Whether to disallow devfs mounting within the jail

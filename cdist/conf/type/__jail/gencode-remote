@@ -34,8 +34,8 @@ fi
 
 state="$(cat "$__object/parameter/state")"
 
-started="false"
-[ -f "$__object/parameter/started" -a "$state" = "present" ] && started="true"
+started="true"
+[ -f "$__object/parameter/stopped" ] && started="false"
 
 if [ -f "$__object/parameter/ip" ]; then
    ip="$(cat "$__object/parameter/ip")"
@@ -75,7 +75,7 @@ fi
 #     is pointless. Treat this as an error.
 if [ -n "$devfsruleset" -a "$devfsenable" = "false" ]; then
    exec >&2
-   echo "Can't have --devfs-ruleset defined without --devfs-disable"
+   echo "Can't have --devfs-ruleset defined with --devfs-disable"
    exit 1
 fi
 
