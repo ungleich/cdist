@@ -122,6 +122,25 @@ class LocalTestCase(test.CdistTestCase):
 
         self.assertTrue(os.path.isdir(our_type_dir))
 
+    def test_conf_dir_from_path_linking(self):
+        """Ensure that links are correctly created for types in conf directories which are defined in CDIST_PATH"""
+
+        test_type="__cdist_test_type"
+
+        os.environ['CDIST_PATH'] = conf_dir
+
+        link_test_local = local.Local(
+            target_host='localhost',
+            out_path=self.out_path,
+            exec_path=test.cdist_exec_path,
+        )
+
+        link_test_local._create_conf_path_and_link_conf_dirs()
+
+        our_type_dir = os.path.join(link_test_local.type_path, test_type)
+
+        self.assertTrue(os.path.isdir(our_type_dir))
+
     ### other tests
 
     def test_run_success(self):
