@@ -11,6 +11,7 @@ cdist is an alternative to other configuration management systems like
 [cfengine](http://www.cfengine.org/)
 and [puppet](http://www.puppetlabs.com/).
 
+ * [[Why should I use cdist?|why]]
  * [[Documentation|documentation]]
  * [[Supported Operating Systems|os]]
  * [[Installation|install]]
