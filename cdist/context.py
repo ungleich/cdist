@@ -38,7 +38,7 @@ class Context(object):
         remote_copy,
         remote_exec,
         initial_manifest=False,
-        add_conf_dirs=[],
+        add_conf_dirs=None,
         exec_path=sys.argv[0],
         debug=False):
 
