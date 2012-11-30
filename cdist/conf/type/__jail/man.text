@@ -77,8 +77,8 @@ __jail www --state present --ip "192.168.1.2" --jailbase /my/jail/base.tgz
 # Remove the jail called www
 __jail www --state absent --jailbase /my/jail/base.tgz
 
-# Ensure that the jail called www is started
-__jail www --state present --started \
+# The jail www should not be started
+__jail www --state present --stopped \
    --ip "192.168.1.2 netmask 255.255.255.0" \
    --jailbase /my/jail/base.tgz
 
@@ -88,7 +88,7 @@ __jail thisjail --state present --name www \
    --jailbase /my/jail/base.tgz
 
 # Go nuts
-__jail lotsofoptions --state present --name testjail --started \
+__jail lotsofoptions --state present --name testjail \
    --ip "192.168.1.100 netmask 255.255.255.0" \
    --hostname "testjail.example.com" --interface "em0" \
    --onboot --jailbase /my/jail/base.tgz --jaildir /jails
