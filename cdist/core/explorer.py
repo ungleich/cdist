@@ -153,7 +153,7 @@ class Explorer(object):
                 destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
                 self.remote.mkdir(destination)
                 self.remote.transfer(source, destination)
-                self.remote.run(["chmod", "0700", "%s" % (destination)])
+                self.remote.run(["chmod", "0700", "%s/*" % (destination)])
                 self._type_explorers_transferred.append(cdist_type.name)
 
     def transfer_object_parameters(self, cdist_object):
