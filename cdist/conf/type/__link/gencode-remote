@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Mostly a wrapper for ln
+#
+
+destination="/$__object_id"
+
+type="$(cat "$__object/parameter/type")"
+source="$(cat "$__object/parameter/source")"
+
+case "$type" in
+    symbolic)
+        lnopt="-s"
+    ;;
+    hard)
+        lnopt=""
+    ;;
+    *)
+        echo "Unknown link type: $type" >&2
+        exit 1
+    ;;
+esac
+
+state_is="$(cat "$__object/explorer/state")"
+state_should=present
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+
+[ "$state_should" = "$state_is" ] && exit 0
+
+case "$state_should" in
+    present)
+        echo ln ${lnopt} -f \"$source\" \"$destination\"
+    ;;
+    absent)
+        echo rm -f \"$destination\"
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac

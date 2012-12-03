@@ -1,0 +1,55 @@
+cdist-type__package_apt(7)
+==========================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__package_apt - Manage packages with apt-get
+
+
+DESCRIPTION
+-----------
+apt-get is usually used on Debian and variants (like Ubuntu) to
+manage packages.
+
+
+REQUIRED PARAMETERS
+-------------------
+None
+
+
+OPTIONAL PARAMETERS
+-------------------
+name::
+   If supplied, use the name and not the object id as the package name.
+
+state::
+    Either "present" or "absent", defaults to "present"
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Ensure zsh in installed
+__package_apt zsh --state present
+
+# In case you only want *a* webserver, but don't care which one
+__package_apt webserver --state present --name nginx
+
+# Remove obsolete package
+__package_apt puppet --state absent
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__package(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

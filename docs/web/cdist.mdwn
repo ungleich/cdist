@@ -1,0 +1,21 @@
+[[!meta title="cdist - usable configuration management"]]
+
+![cdist-logo](cdist-logo.png "cdist logo")
+
+cdist is a usable configuration management system.
+It adheres to the KISS principle and 
+is being used in small up to enterprise grade environments.
+cdist is an alternative to other configuration management systems like
+[bcfg2](http://trac.mcs.anl.gov/projects/bcfg2),
+[chef](http://wiki.opscode.com/display/chef/),
+[cfengine](http://www.cfengine.org/)
+and [puppet](http://www.puppetlabs.com/).
+
+ * [[Why should I use cdist?|why]]
+ * [[Documentation|documentation]]
+ * [[Supported Operating Systems|os]]
+ * [[Installation|install]]
+ * [[Update|update]]
+ * [[Support|support]]
+
+[[!tag cdist unix]]

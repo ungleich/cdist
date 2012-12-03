@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# __file is a very basic type, which will probably be reused quite often
+#
+
+destination="/$__object_id"
+state_should=present
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+exists="$(cat "$__object/explorer/exists")"
+
+[ "$state_should" = "exists" -a "$exists" = "yes" ] && exit 0 # nothing to do
+
+if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
+   if [ -f "$__object/parameter/source" ]; then
+      source="$(cat "$__object/parameter/source")"
+      if [ "$source" = "-" ]; then
+         source="$__object/stdin"
+      fi
+
+      if [ -f "$source" ]; then
+         local_cksum="$(cksum < "$source")"
+         remote_cksum="$(cat "$__object/explorer/cksum")"
+
+         if [ "$local_cksum" != "$remote_cksum" ]; then
+            echo "$__remote_copy" "$source" "${__target_host}:${destination}"
+         fi
+      else
+         echo "Source \"$source\" does not exist." >&2
+         exit 1
+      fi
+   fi
+fi

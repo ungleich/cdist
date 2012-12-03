@@ -1,0 +1,60 @@
+cdist-type__package_pkg(7)
+==========================
+Andi Brönnimann <andi-cdist--@--v-net.ch>
+
+
+NAME
+----
+cdist-type__package_pkg_openbsd - Manage OpenBSD packages
+
+
+DESCRIPTION
+-----------
+This type is usually used on OpenBSD to manage packages.
+
+
+REQUIRED PARAMETERS
+-------------------
+None
+
+
+OPTIONAL PARAMETERS
+-------------------
+name::
+    If supplied, use the name and not the object id as the package name.
+
+flavor::
+    If supplied, use to avoid ambiguity.
+
+state::
+    Either "present" or "absent", defaults to "present"
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Ensure zsh is installed
+__package_pkg_openbsd zsh --state present
+
+# Ensure vim is installed, use flavor no_x11
+__package_pkg_openbsd vim --state present --flavor no_x11
+
+# If you don't want to follow pythonX packages, but always use python
+__package_pkg_openbsd python --state present --name python2
+
+# Remove obsolete package
+__package_pkg_openbsd puppet --state absent
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__package(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Andi Brönnimann. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

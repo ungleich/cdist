@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+state_should="present"
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+state_is="$(cat "$__object/explorer/state")"
+[ "$state_should" = "$state_is" ] && exit 0
+
+destination="/$__object_id"
+
+mkdiropt=""
+[ -f "$__object/parameter/parents" ] && mkdiropt="-p"
+recursive=""
+[ -f "$__object/parameter/recursive" ] && recursive="-R"
+
+case "$state_should" in
+    present)
+        echo mkdir $mkdiropt \"$destination\"
+
+        # Mode settings
+        if [ -f "$__object/parameter/mode" ]; then
+            echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
+        fi
+
+        # Group
+        if [ -f "$__object/parameter/group" ]; then
+            echo chgrp $recursive \"$(cat "$__object/parameter/group")\" \"$destination\"
+        fi
+
+        # Owner
+        if [ -f "$__object/parameter/owner" ]; then
+            echo chown $recursive \"$(cat "$__object/parameter/owner")\" \"$destination\"
+        fi
+    ;;
+    absent)
+        echo rm -rf \"$destination\"
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac

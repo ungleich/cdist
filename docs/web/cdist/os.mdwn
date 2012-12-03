@@ -1,0 +1,17 @@
+[[!meta title="Supported Operating Systems"]]
+
+cdist was tested or is know to run on at least
+
+ * [Archlinux](http://www.archlinux.org/)
+ * [Debian](http://www.debian.org/)
+ * [CentOS](http://www.centos.org/)
+ * [Fedora](http://fedoraproject.org/)
+ * [FreeBSD](http://www.freebsd.org)
+ * [Gentoo](http://www.gentoo.org/)
+ * [Mac OS X](http://www.apple.com/macosx/)
+ * [OpenBSD](http://www.openbsd.org)
+ * [Redhat](http://www.redhat.com/)
+ * [Ubuntu](http://www.ubuntu.com/)
+ * [XenServer](http://www.citrix.com/xenserver/)
+
+[[!tag cdist unix]]

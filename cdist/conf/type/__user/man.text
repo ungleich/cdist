@@ -1,0 +1,61 @@
+cdist-type__user(7)
+===================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__user - Manage users
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to create or modify users on the target.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+comment::
+   see usermod(8)
+home::
+   see above
+gid::
+   see above
+password::
+   see above
+shell::
+   see above
+uid::
+   see above
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Create user account for foobar with operating system default settings
+__user foobar
+
+# Same but with a different shell
+__user foobar --shell /bin/zsh
+
+# Set explicit uid and home
+__user foobar --uid 1001 --shell /bin/zsh --home /home/foobar
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- usermod(8) or pw(8)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
