@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.0.15:
+2.0.15: 2012-11-02
 	* Core: Make variable __object_name available in type explorers (Steven Armtrong)
 	* New Type: __qemu_img
 	* New Type: __line

@@ -134,7 +134,7 @@ case "$1" in
    ;;
 
    clean)
-      rm -f ${MAN7DSTDIR}/cdist-reference.text
+      rm -f ${MAN7DSTDIR}/cdist-reference.text lib/cdist/version.py
       find "${MANDIR}" -mindepth 2 -type l \
          -o -name "*.1" \
          -o -name "*.7" \
@@ -154,7 +154,19 @@ case "$1" in
       fi
    ;;
 
-   *)
+    version-dynamic)
+        cd lib/cdist/
+        ln -sf version_dynamic.py version.py
+    ;;
+
+    version-dist)
+        version=$(cat .version)
+        cd lib/cdist/
+        echo "VERSION=\"$version\"" > version_static.py
+        ln -sf version_static.py version.py
+    ;;
+
+    *)
       echo ''
       echo 'Welcome to cdist!'
       echo ''
