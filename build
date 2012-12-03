@@ -27,7 +27,7 @@
 #set -e
 
 basedir=${0%/*}
-version=$(git describe)
+version=$(cd "$basedir" && git describe)
 
 # Manpage and HTML
 A2XM="a2x -f manpage --no-xmllint -a encoding=UTF-8"
