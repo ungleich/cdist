@@ -34,15 +34,8 @@ fi
 
 state="$(cat "$__object/parameter/state")"
 
-if [ -f "$__object/parameter/started" ]; then
-   started="$(cat "$__object/parameter/started")"
-else
-   if [ ! "$state" = "present" ]; then
-      started="false"
-   else
-      started="true"
-   fi
-fi
+started="true"
+[ -f "$__object/parameter/stopped" ] && started="false"
 
 if [ -f "$__object/parameter/ip" ]; then
    ip="$(cat "$__object/parameter/ip")"
@@ -66,8 +59,8 @@ if [ -f "$__object/parameter/interface" ]; then
    interface="$(cat "$__object/parameter/interface")"
 fi
 
-if [ -f "$__object/parameter/devfs-enable" ]; then
-   devfsenable="$(cat "$__object/parameter/devfs-enable")"
+if [ -f "$__object/parameter/devfs-disable" ]; then
+   devfsenable="false"
 else
    devfsenable="true"
 fi
@@ -82,12 +75,12 @@ fi
 #     is pointless. Treat this as an error.
 if [ -n "$devfsruleset" -a "$devfsenable" = "false" ]; then
    exec >&2
-   echo "Can't have --devfs-ruleset defined without --devfs-enable true."
+   echo "Can't have --devfs-ruleset defined with --devfs-disable"
    exit 1
 fi
 
 if [ -f "$__object/parameter/onboot" ]; then
-   onboot="$(cat "$__object/parameter/onboot")"
+   onboot="true"
 fi
 
 if [ -f "$__object/parameter/jaildir" ]; then
@@ -357,7 +350,3 @@ else   # The jail does not currently exist
       exit 0
    fi
 fi
-
-# Debug
-#set +x
-

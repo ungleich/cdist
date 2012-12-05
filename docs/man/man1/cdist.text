@@ -14,7 +14,7 @@ cdist [-h] [-V]
 
 cdist banner
 
-cdist config [-h] [-d] [-V] [-c CDIST_HOME] [-i MANIFEST] [-p] [-s] host [host ...]
+cdist config [-h] [-d] [-V] [-c CONF_DIR] [-i MANIFEST] [-p] [-s] host [host ...]
 
 
 
@@ -43,9 +43,14 @@ Configure a system
 -h, --help::
     Show the help screen
 
--c CDIST_HOME, --cdist-home CDIST_HOME::
-    Instead of using the parent of the bin directory as cdist home,
-    use the specified directory
+-c CONF_DIR, --conf-dir CONF_DIR::
+    Add a configuration directory. Can be specified multiple times.
+    If configuration directories contain conflicting types, explorers or
+    manifests, then the last one found is used. Additionally this can also
+    be configured by setting the CDIST_PATH environment variable to a colon
+    delimited list of config directories. Directories given with the
+    --conf-dir argument have higher precedence over those set through the
+    environment variable.
 
 -d, --debug::
     Enable debug output

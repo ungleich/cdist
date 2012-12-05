@@ -23,6 +23,7 @@
 import io
 import os
 import sys
+import re
 import subprocess
 import shutil
 import logging
@@ -37,7 +38,7 @@ class Local(object):
     Directly accessing the local side from python code is a bug.
 
     """
-    def __init__(self, target_host, out_path, exec_path, add_conf_dirs=[], cache_dir=None):
+    def __init__(self, target_host, out_path, exec_path, add_conf_dirs=None, cache_dir=None):
 
         self.target_host = target_host
         self.out_path = out_path
@@ -91,6 +92,12 @@ class Local(object):
         # Is the default place for user created explorer, type and manifest
         if self.home_dir:
             self.conf_dirs.append(self.home_dir)
+
+        # Add directories defined in the CDIST_PATH environment variable
+        if 'CDIST_PATH' in os.environ:
+            cdist_path_dirs = re.split(r'(?<!\\):', os.environ['CDIST_PATH'])
+            cdist_path_dirs.reverse()
+            self.conf_dirs.extend(cdist_path_dirs)
 
         # Add user supplied directories
         if self._add_conf_dirs:

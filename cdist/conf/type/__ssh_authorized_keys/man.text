@@ -1,0 +1,101 @@
+cdist-type__ssh_authorized_keys(7)
+==================================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__ssh_authorized_keys - manage ssh authorized_keys files
+
+
+DESCRIPTION
+-----------
+Adds or removes ssh keys from a authorized_keys file.
+
+This type also manages the directory containing the authorized_keys
+file and sets strict ownership and permissions. You can disable this feature
+with the --noparent boolean parameter.
+
+The existence, ownership and permissions of the authorized_keys file itself are
+also managed. This can be disabled with the --nofile boolean parameter. It is
+then left to the user to ensure that the file exists and that ownership and 
+permissions work with ssh.
+
+
+REQUIRED PARAMETERS
+-------------------
+key::
+   the ssh key which shall be added to this authorized_keys file.
+   Must be a string and can be specified multiple times.
+
+
+OPTIONAL PARAMETERS
+-------------------
+owner::
+   the user owning the authorized_keys file, defaults to object_id.
+
+state::
+   if the given keys should be 'present' or 'absent', defaults to 'present'.
+
+file::
+   an alternative destination file, defaults to ~$owner/.ssh/authorized_keys
+
+comment::
+   an optional comment
+
+
+BOOLEAN PARAMETERS
+------------------
+noparent::
+   don't create or change ownership and permissions of the directory containing
+   the authorized_keys file
+
+nofile::
+   don't manage existence, ownership and permissions of the the authorized_keys
+   file
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# add your ssh key to remote root's authorized_keys file
+__ssh_authorized_keys root \
+   --key "$(cat ~/.ssh/id_rsa.pub)"
+
+# allow key to login as user-name
+__ssh_authorized_keys user-name \
+   --key "ssh-rsa AXYZAAB3NzaC1yc2..."
+
+# same as above, but with explicit owner, two keys and a comment
+__ssh_authorized_keys some-fancy-id \
+   --owner user-name \
+   --key "ssh-rsa AXYZAAB3NzaC1yc2..." \
+   --key "ssh-rsa AZXYAAB3NzaC1yc2..." \
+   --comment "allow the members of project foo to login"
+
+# same as above, but authorized_keys file in non standard location
+__ssh_authorized_keys some-fancy-id \
+   --file /etc/ssh/keys/user-name/authorized_keys \
+   --owner user-name \
+   --key "ssh-rsa AXYZAAB3NzaC1yc2..."
+
+# same as above, but directory and authorized_keys file is created elswhere
+__ssh_authorized_keys some-fancy-id \
+   --file /etc/ssh/keys/user-name/authorized_keys \
+   --owner user-name \
+   --noparent \
+   --nofile \
+   --key "ssh-rsa AXYZAAB3NzaC1yc2..."
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

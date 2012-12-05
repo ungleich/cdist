@@ -27,9 +27,6 @@ OPTIONAL PARAMETERS
 name::
    The name of the jail. Default is to use the object_id as the jail name.
 
-started::
-   Either "true" or "false." Defaults to true.
-
 ip::
    The ifconfig style IP/netmask combination to use for the jail guest. If
    the state parameter is "present," this parameter is required.
@@ -41,22 +38,25 @@ interface::
    The name of the physical interface on the jail server to bind the jail to.
    Defaults to the first interface found in the output of ifconfig -l.
 
-devfs-enable::
-   Whether to allow devfs mounting within the jail. Must be "true" or "false."
-   Defaults to true.
-
 devfs-ruleset::
    The name of the devfs ruleset to associate with the jail. Defaults to
    "jailrules." This ruleset must be copied to the server via another type.
    To use this option, devfs-enable must be "true."
 
-onboot::
-   Whether to add the jail to rc.conf's jail_list variable. Must be either
-   "true" or "false." Defaults to false.
-
 jaildir::
    The location on the remote server to use for hosting jail filesystems.
    Defaults to /usr/jail.
+
+BOOLEAN PARAMETERS
+------------------
+stopped::
+   Do not start the jail
+
+devfs-disable::
+   Whether to disallow devfs mounting within the jail
+
+onboot::
+   Whether to add the jail to rc.conf's jail_list variable. 
 
 
 CAVEATS
@@ -77,8 +77,8 @@ __jail www --state present --ip "192.168.1.2" --jailbase /my/jail/base.tgz
 # Remove the jail called www
 __jail www --state absent --jailbase /my/jail/base.tgz
 
-# Ensure that the jail called www is started
-__jail www --state present --started true \
+# The jail www should not be started
+__jail www --state present --stopped \
    --ip "192.168.1.2 netmask 255.255.255.0" \
    --jailbase /my/jail/base.tgz
 
@@ -88,10 +88,10 @@ __jail thisjail --state present --name www \
    --jailbase /my/jail/base.tgz
 
 # Go nuts
-__jail lotsofoptions --state present --name testjail --started true \
+__jail lotsofoptions --state present --name testjail \
    --ip "192.168.1.100 netmask 255.255.255.0" \
    --hostname "testjail.example.com" --interface "em0" \
-   --onboot yes --jailbase /my/jail/base.tgz --jaildir /jails
+   --onboot --jailbase /my/jail/base.tgz --jaildir /jails
 --------------------------------------------------------------------------------
 
 

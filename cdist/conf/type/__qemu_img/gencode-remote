@@ -3,7 +3,7 @@
 # not existing and state != absent
 #
 state="present"
-[ -f "$__object/parameter/state" ] state="$(cat "$__object/parameter/state")"
+[ -f "$__object/parameter/state" ] && state="$(cat "$__object/parameter/state")"
 [ "$state" = "absent" ] && exit 0
 
 exists="$(cat "$__object/explorer/exists")"
