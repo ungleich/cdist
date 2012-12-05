@@ -26,9 +26,13 @@ state_should=present
 rbenvdir="$homedir/.rbenv"
 rubybuilddir="$rbenvdir/plugins/ruby-build"
 
-__git "$rbenvdir" --source git://github.com/sstephenson/rbenv.git \
+__git "$rbenvdir" \
+    --source git://github.com/sstephenson/rbenv.git \
+    --owner "$__object_id" \
     --state "$state_should"
 
-require="__git/$rbendir" __git "$rubybuilddir" \
+#__git "$rubybuilddir" \
+require="__git/$rbenvdir" __git "$rubybuilddir" \
     --source git://github.com/sstephenson/ruby-build.git \
+    --owner "$__object_id" \
     --state "$state_should"
