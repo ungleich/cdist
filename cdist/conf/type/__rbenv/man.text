@@ -1,0 +1,43 @@
+cdist-type__rbenv(7)
+====================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__rbenv - Manage rbenv installation
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to manage rbenv installations.
+It also installs ruby-build.
+
+
+OPTIONAL PARAMETERS
+-------------------
+state::
+    Either "present" or "absent", defaults to "present"
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Install rbenv including ruby-build for nico
+__rbenv nico
+
+# Bastian does not need rbenv anymore, he began to code C99
+__rbenv bastian --state absent
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
