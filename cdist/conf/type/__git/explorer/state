@@ -18,30 +18,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Check whether repository exists
+#
 
-state_is="$(cat "$__object/explorer/state")"
-state_should=present
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+destination="/$__object_id/.git"
 
-branch=master
-[ -f "$__object/parameter/branch" ] && branch="$(cat "$__object/parameter/branch")"
-
-source="$(cat "$__object/parameter/source")"
-
-destination="/$__object_id"
-
-[ "$state_should" = "$state_is" ] && exit 0
-
-case $state_should in
-    present)
-        echo git clone --quiet --branch "$branch" "$source" "$destination"
-    ;;
-    # Handled in manifest
-    absent)
-    ;;
-
-    *)
-        echo "Unknown state: $state_should" >&2
-        exit 1
-    ;;
-esac
+if [ -d "$destination" ]; then
+   echo present
+else
+   echo absent
+fi
