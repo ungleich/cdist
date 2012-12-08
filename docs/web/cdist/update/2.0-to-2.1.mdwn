@@ -111,7 +111,7 @@ state using the following commands:
 Afther these commands, your previous main branch is accessible at
 **archive_my_own_tree** and your branch is now tracking upstream.
 
-## Questions? Critics? Hint??
+## Questions? Critics? Hints?
 
 If you think this manual helped or misses some information, do not 
 hesitate to contact us on any of the usual ways (irc, mailinglist,
