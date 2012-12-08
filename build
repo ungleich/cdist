@@ -341,7 +341,7 @@ eof
 
     web)
         set -e
-        $0 web-doc
+        "$0" web-doc
         # Fix ikiwiki, which does not like symlinks for pseudo security
         ssh tee.schottelius.org \
           "cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man &&
