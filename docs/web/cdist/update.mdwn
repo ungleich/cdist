@@ -24,7 +24,7 @@ To upgrade to the lastet version do
 
 ### Updating from 2.0 to 2.1
 
-Have a look at the upgrade guide for [[2.0 to 2.1|2.0-to-2.1]].
+Have a look at the update guide for [[2.0 to 2.1|2.0-to-2.1]].
 
  * Type **\_\_package* and \_\_process** use --state **present** or **absent**.
    The states **removed/installed** and **stopped/running** have been removed.
