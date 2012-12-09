@@ -96,7 +96,6 @@ confdir/type/::
 
 confdir/type/<name>/::
     Home of the type <name>.
-
     This directory is referenced by the variable __type (see below).
 
 confdir/type/<name>/man.text::
