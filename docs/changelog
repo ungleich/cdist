@@ -16,6 +16,7 @@ Changelog
 	* Type __jail: Change optional parameter "started" to boolean "stopped" parameter,
 		change optional parameter "devfs-enable" to boolean "devfs-disable" parameter and
 		change optional parameter "onboot" to boolean.
+	* Type __package_pip: Bugfix: Installeded the package, not pyro
 	* Remove Type __ssh_authorized_key: Superseeded by __ssh_authorized_keys
 	* Support for CDIST_PATH (Steven Armstrong)
 
