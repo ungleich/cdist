@@ -46,10 +46,10 @@ fi
 
 case "$state_should" in
     present)
-        echo $pip install -q pyro
+        echo $pip install -q "$name"
     ;;
     absent)
-        echo $pip uninstall -q -y pyro
+        echo $pip uninstall -q -y "$name"
     ;;
     *)
         echo "Unknown state: $state_should" >&2
