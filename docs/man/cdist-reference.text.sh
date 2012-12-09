@@ -59,7 +59,7 @@ cat << eof
 
 PATHS
 -----
-$HOME/.cdist::
+\$HOME/.cdist::
     The standard cdist configuration directory relative to your home directory
     This is usually the place you want to store your site specific configuration
 
@@ -72,7 +72,7 @@ confdir::
     a temporary confdir containing links to the real configuration directories.
     This way it is possible to merge configuration directories.
 
-    By default it consists of everything in $HOME/.cdist and cdist/conf/.
+    By default it consists of everything in \$HOME/.cdist and cdist/conf/.
 
     For more details see cdist(1)
 

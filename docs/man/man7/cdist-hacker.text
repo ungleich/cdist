@@ -44,7 +44,7 @@ work nor kill the authors brain:
 
 - All files should contain the usual header (Author, Copying, etc.)
 - Code submission must be done via git
-- Do not add conf/manifest/init - This file should only be touched in your
+- Do not add cdist/conf/manifest/init - This file should only be touched in your
   private branch!
 - Code to be included should be branched of the upstream "master" branch
    - Exception: Bugfixes to a version branch
