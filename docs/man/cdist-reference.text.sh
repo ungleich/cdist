@@ -71,9 +71,7 @@ confdir::
     Cdist will use all available configuration directories and create
     a temporary confdir containing links to the real configuration directories.
     This way it is possible to merge configuration directories.
-
     By default it consists of everything in \$HOME/.cdist and cdist/conf/.
-
     For more details see cdist(1)
 
 confdir/manifest/init::
