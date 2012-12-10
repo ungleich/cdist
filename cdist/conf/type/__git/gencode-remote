@@ -18,39 +18,28 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Development supported by Local AG (www.local.ch)
-#
 
-state_is=$(cat "$__object/explorer/state")
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
-else
-   state_should="present"
-fi
+state_is="$(cat "$__object/explorer/state")"
+state_should=present
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 
-[ "$state_is" = "$state_should" ] && exit 0
+branch=master
+[ -f "$__object/parameter/branch" ] && branch="$(cat "$__object/parameter/branch")"
 
-nameparam="$__object/parameter/name"
-if [ -f "$nameparam" ]; then
-    name=$(cat "$nameparam")
-else
-    name="$__object_id"
-fi
+source="$(cat "$__object/parameter/source")"
 
-pipparam="$__object/parameter/pip"
-if [ -f "$pipparam" ]; then
-    pip=$(cat "$pipparam")
-else
-    pip="pip"
-fi
+destination="/$__object_id"
 
-case "$state_should" in
+[ "$state_should" = "$state_is" ] && exit 0
+
+case $state_should in
     present)
-        echo $pip install -q "$name"
+        echo git clone --quiet --branch "$branch" "$source" "$destination"
     ;;
+    # Handled in manifest
     absent)
-        echo $pip uninstall -q -y "$name"
     ;;
+
     *)
         echo "Unknown state: $state_should" >&2
         exit 1

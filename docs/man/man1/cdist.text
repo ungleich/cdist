@@ -78,7 +78,7 @@ EXAMPLES
 # Configure ikq05.ethz.ch with debug enabled
 cdist config -d ikq05.ethz.ch
 
-# Configure hosts in parallel and use a different home directory
+# Configure hosts in parallel and use a different configuration directory
 cdist config -c ~/p/cdist-nutzung \
     -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
 

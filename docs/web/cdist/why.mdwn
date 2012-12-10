@@ -41,7 +41,7 @@ Cdist requires very litte on a target system. Even better,
 in almost all cases all dependencies are usually fulfilled.
 Cdist does not require an agent or a high level programming
 languages on the target host: it will run on any host that
-has an **ssh server running** and a posix compatible shell
+has a **ssh server running** and a posix compatible shell
 (**/bin/sh**).
 
 ## Push based distribution

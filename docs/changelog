@@ -4,17 +4,19 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.1.0:
+2.1.0: 2012-12-09
 	* Core: Ensure global explorers are executable
 	* Core: Ensure type explorers are executable (Steven Armstrong)
-	* Type __rvm_gemset: Change parameter "default" to be boolean
+	* New Type: __git
+	* New Type: __ssh_authorized_keys (Steven Armstrong)
 	* New Type: __user_groups (Steven Armstrong)
+	* Type __rvm_gemset: Change parameter "default" to be boolean
 	* Type __user: Remove --groups support (now provided by __user_groups)
 	* Type __apt_ppa: Bugfix: Installeded ppa detection (Steven Armstrong)
 	* Type __jail: Change optional parameter "started" to boolean "stopped" parameter,
 		change optional parameter "devfs-enable" to boolean "devfs-disable" parameter and
 		change optional parameter "onboot" to boolean.
-	* New Type: __ssh_authorized_keys (Steven Armstrong)
+	* Type __package_pip: Bugfix: Installeded the package, not pyro
 	* Remove Type __ssh_authorized_key: Superseeded by __ssh_authorized_keys
 	* Support for CDIST_PATH (Steven Armstrong)
 

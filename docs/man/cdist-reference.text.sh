@@ -59,61 +59,74 @@ cat << eof
 
 PATHS
 -----
-If not specified otherwise, all paths are relative to the checkout directory.
+\$HOME/.cdist::
+    The standard cdist configuration directory relative to your home directory
+    This is usually the place you want to store your site specific configuration
 
-conf/::
-    Contains the (static) configuration like manifests, types and explorers.  
+cdist/conf/::
+    The distribution configuration directory
+    This contains types and explorers to be used
 
-conf/manifest/init::
+confdir::
+    Cdist will use all available configuration directories and create
+    a temporary confdir containing links to the real configuration directories.
+    This way it is possible to merge configuration directories.
+    By default it consists of everything in \$HOME/.cdist and cdist/conf/.
+    For more details see cdist(1)
+
+confdir/manifest/init::
     This is the central entry point.
     It is an executable (+x bit set) shell script that can use
     values from the explorers to decide which configuration to create
     for the specified target host.
     Its intent is to used to define mapping from configurations to hosts.
 
-conf/manifest/*::
+confdir/manifest/*::
     All other files in this directory are not directly used by cdist, but you
     can seperate configuration mappings, if you have a lot of code in the
     conf/manifest/init file. This may also be helpful to have different admins
     maintain different groups of hosts.
 
-conf/explorer/<name>::
+confdir/explorer/<name>::
     Contains explorers to be run on the target hosts, see cdist-explorer(7).
 
-conf/type/::
+confdir/type/::
     Contains all available types, which are used to provide
     some kind of functionality. See cdist-type(7).
 
-conf/type/<name>/::
+confdir/type/<name>/::
     Home of the type <name>.
-
     This directory is referenced by the variable __type (see below).
 
-conf/type/<name>/man.text::
+confdir/type/<name>/man.text::
     Manpage in Asciidoc format (required for inclusion into upstream)
 
-conf/type/<name>/manifest::
+confdir/type/<name>/manifest::
     Used to generate additional objects from a type.
 
-conf/type/<name>/gencode-local::
+confdir/type/<name>/gencode-local::
     Used to generate code to be executed on the source host
 
-conf/type/<name>/gencode-remote::
+confdir/type/<name>/gencode-remote::
     Used to generate code to be executed on the target host
 
-conf/type/<name>/parameter/required::
+confdir/type/<name>/parameter/required::
     Parameters required by type, \n seperated list.
 
-conf/type/<name>/parameter/optional::
+confdir/type/<name>/parameter/optional::
     Parameters optionally accepted by type, \n seperated list.
 
-conf/type/<name>/parameter/boolean::
+confdir/type/<name>/parameter/boolean::
    Boolean parameters accepted by type, \n seperated list.
 
-conf/type/<name>/explorer::
+confdir/type/<name>/explorer::
     Location of the type specific explorers.
     This directory is referenced by the variable __type_explorer (see below).
     See cdist-explorer(7).
+
+confdir/type/<name>/files::
+    This directory is reserved for user data and will not be used
+    by cdist at any time
 
 out/::
     This directory contains output of cdist and is usually located
@@ -179,10 +192,8 @@ __object::
 __object_id::
     The type unique object id.
     Available for: type manifest, type explorer, type gencode
-
     Note: The leading and the trailing "/" will always be stripped (caused by
     the filesystem database and ensured by the core).
-
     Note: Double slashes ("//") will not be fixed and result in an error.
 __object_name::
     The full qualified name of the current object.

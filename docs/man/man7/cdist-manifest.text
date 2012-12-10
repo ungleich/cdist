@@ -16,8 +16,8 @@ An object is represented by the combination of
 **type + slash + object name**: **__file/etc/cdist-configured** is an
 object of the type ***__file*** with the name ***etc/cdist-configured***.
 
-All available types can be found in the **conf/type/** directory,
-use **ls conf/type** to get the list of available types. If you have
+All available types can be found in the **cdist/conf/type/** directory,
+use **ls cdist/conf/type** to get the list of available types. If you have
 setup the MANPATH correctly, you can use **man cdist-reference** to access
 the reference with pointers to the manpages.
 
@@ -57,7 +57,7 @@ DEFINE STATE IN THE INITIAL MANIFEST
 ------------------------------------
 The **initial manifest** is the entry point for cdist to find out, which
 **objects** to configure on the selected host.
-Cdist searches for the initial manifest at **conf/manifest/init**.
+Cdist searches for the initial manifest at **cdist/conf/manifest/init**.
 
 Within this initial manifest, you define, which objects should be
 created on which host. To distinguish between hosts, you can use the
@@ -88,7 +88,7 @@ command.
 SPLITTING UP THE INITIAL MANIFEST
 ---------------------------------
 If you want to split up your initial manifest, you can create other shell
-scripts in **conf/manifest/** and include them in **conf/manifest/init**.
+scripts in **cdist/conf/manifest/** and include them in **cdist/conf/manifest/init**.
 Cdist provides the environment variable ***__manifest*** to reference to
 the directory containing the initial manifest (see cdist-reference(7)).
 

@@ -18,39 +18,28 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Development supported by Local AG (www.local.ch)
+# Ensure git is present
 #
 
-state_is=$(cat "$__object/explorer/state")
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
-else
-   state_should="present"
-fi
+__package git --state present
 
-[ "$state_is" = "$state_should" ] && exit 0
+state_should=present
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 
-nameparam="$__object/parameter/name"
-if [ -f "$nameparam" ]; then
-    name=$(cat "$nameparam")
-else
-    name="$__object_id"
-fi
+[ -f "$__object/parameter/owner" ] && dirparams="$dirparams --owner $(cat "$__object/parameter/owner")"
+[ -f "$__object/parameter/group" ] && dirparams="$dirparams --group $(cat "$__object/parameter/group")"
 
-pipparam="$__object/parameter/pip"
-if [ -f "$pipparam" ]; then
-    pip=$(cat "$pipparam")
-else
-    pip="pip"
-fi
+# Let __directory handle removal of git repos
 
 case "$state_should" in
     present)
-        echo $pip install -q "$name"
+        __directory "$__object_id" --state present $dirparams --recursive
     ;;
+
     absent)
-        echo $pip uninstall -q -y "$name"
+        __directory "$__object_id" --state absent
     ;;
+
     *)
         echo "Unknown state: $state_should" >&2
         exit 1

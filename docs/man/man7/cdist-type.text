@@ -64,10 +64,10 @@ A type consists of
 - explorer  (optional)
 - gencode   (optional)
 
-Types are stored below conf/type/. Their name should always be prefixed with
+Types are stored below cdist/conf/type/. Their name should always be prefixed with
 two underscores (__) to prevent collisions with other executables in $PATH.
 
-To begin a new type, just create the directory **conf/type/__NAME**.
+To begin a new type, just create the directory **cdist/conf/type/__NAME**.
 
 
 DEFINING PARAMETERS
@@ -84,10 +84,10 @@ or no parameters at all.
 
 Example:
 --------------------------------------------------------------------------------
-echo servername >> conf/type/__nginx_vhost/parameter/required
-echo logdirectory >> conf/type/__nginx_vhost/parameter/optional
-echo server_alias >> conf/type/__nginx_vhost/parameter/optional_multiple
-echo use_ssl >> conf/type/__nginx_vhost/parameter/boolean
+echo servername >> cdist/conf/type/__nginx_vhost/parameter/required
+echo logdirectory >> cdist/conf/type/__nginx_vhost/parameter/optional
+echo server_alias >> cdist/conf/type/__nginx_vhost/parameter/optional_multiple
+echo use_ssl >> cdist/conf/type/__nginx_vhost/parameter/boolean
 --------------------------------------------------------------------------------
 
 
@@ -98,7 +98,7 @@ The parameters given to a type can be accessed and used in all type scripts
 represented by file existence. File exists -> True,
 file does not exist -> False
 
-Example: (e.g. in conf/type/__nginx_vhost/manifest)
+Example: (e.g. in cdist/conf/type/__nginx_vhost/manifest)
 --------------------------------------------------------------------------------
 # required parameter
 servername="$(cat "$__object/parameter/servername")"
@@ -129,7 +129,7 @@ INPUT FROM STDIN
 Every type can access what has been written on stdin when it has been called.
 The result is saved into the ***stdin*** file in the object directory.
 
-Example use of a type: (e.g. in conf/type/__archlinux_hostname)
+Example use of a type: (e.g. in cdist/conf/type/__archlinux_hostname)
 --------------------------------------------------------------------------------
 __file /etc/rc.conf --source - << eof
 ...
@@ -186,7 +186,7 @@ mark it as a singleton: Just create the (empty) file "singleton" in your type
 directory:
 
 --------------------------------------------------------------------------------
-touch conf/type/__NAME/singleton
+touch cdist/conf/type/__NAME/singleton
 --------------------------------------------------------------------------------
 
 This will also change the way your type must be called:
