@@ -139,6 +139,18 @@ class ConfigInstall(object):
             self.local.object_path,
             self.local.type_path)
 
+        all_resolved = False
+        while not all_resolved:
+            all_resolved = True
+            for cdist_object in objects:
+                if not cdist_object.state == cdist_object.STATE_DONE:
+                    all_resolved = False
+                    if cdist_object.satisfied_requirements:
+                        self.object_run(cdist_object)
+
+
+        return
+
         dependency_resolver = resolver.DependencyResolver(objects)
         self.log.debug(pprint.pformat(dependency_resolver.dependencies))
 
