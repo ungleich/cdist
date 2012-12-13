@@ -139,6 +139,9 @@ class ConfigInstall(object):
             self.local.object_path,
             self.local.type_path)
 
+        # FIXME:
+        # - think about parallel execution (same for stage_prepare)
+        # - catch unresolvable trees
         all_resolved = False
         while not all_resolved:
             all_resolved = True
