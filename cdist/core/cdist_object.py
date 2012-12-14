@@ -209,3 +209,7 @@ class CdistObject(object):
             os.makedirs(absolute_parameter_path, exist_ok=False)
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
+
+    def satisfied_requirements(self):
+
+

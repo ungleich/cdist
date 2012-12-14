@@ -143,6 +143,7 @@ class ConfigInstall(object):
         # - think about parallel execution (same for stage_prepare)
         # - catch unresolvable trees
         all_resolved = False
+        objects_changed = False
         while not all_resolved:
             all_resolved = True
             for cdist_object in objects:
@@ -150,6 +151,23 @@ class ConfigInstall(object):
                     all_resolved = False
                     if cdist_object.satisfied_requirements:
                         self.object_run(cdist_object)
+                        objects_changed = True
+
+            # Reran, but no object was solved
+            if not objects_changed:
+                # Create list of unfinished objects + their requirements for print
+
+                evil_objects = []
+                for cdist_object in objects:
+                    if not cdist_object.state == cdist_object.STATE_DONE:
+#                        evil_objects.append({ name: cdist_object.name, 
+#                            requirements: cdist_object.requirements,
+#                            autorequire: cdist_object.autorequire })
+                        evil_objects.append("%s (required: %s, autorequired: %s" %
+                            (cdist_object.name, cdist_object.requirements, cdist_object.autorequire))
+
+                raise cdist.Error("Cannot solve requirements for the following objects: %s" %
+                    (",".join(evil_objects)))
 
 
         return
