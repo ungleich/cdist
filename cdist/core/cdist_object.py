@@ -211,25 +211,17 @@ class CdistObject(object):
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 
     def satisfied_requirements(self):
+        """Return state whether all of our dependencies have been resolved already"""
 
+        satisfied = True
 
-    @property
-    def dependencies(self):
-        """Build the dependency graph.
+        for requirement in self.all_requirements():
+            if not requirement.state == self.STATE_DONE:
+                satisfied = False
+                break
 
-        Returns a dict where the keys are the object names and the values are
-        lists of all dependencies including the key object itself.
-        """
-        if self._dependencies is None:
-            log.info("Resolving dependencies...")
-            self._dependencies = d = {}
-            self._preprocess_requirements()
-            for name,cdist_object in self.objects.items():
-                resolved = []
-                unresolved = []
-                self._resolve_object_dependencies(cdist_object, resolved, unresolved)
-                d[name] = resolved
-        return self._dependencies
+        return satisfied
+
 
     def find_requirements_by_name(self, requirements):
         """Takes a list of requirement patterns and returns a list of matching object instances.
@@ -239,7 +231,8 @@ class CdistObject(object):
         find_requirements_by_name(['__type/object_id', '__other_type/*']) -> 
             [<Object __type/object_id>, <Object __other_type/any>, <Object __other_type/match>]
         """
-        object_names = self.objects.keys()
+
+        object_names = self.list_object_namess(self.base_path)
         for pattern in requirements:
             found = False
             for requirement in fnmatch.filter(object_names, pattern):
@@ -253,28 +246,17 @@ class CdistObject(object):
                 else:
                     raise RequirementNotFoundError(pattern)
 
-    def _preprocess_requirements(self):
-        """Find all autorequire dependencies and merge them to be just requirements
-        for further processing.
+    def all_requirements(self):
         """
-        for cdist_object in self.objects.values():
-            if cdist_object.autorequire:
-                # The objects (children) that this cdist_object (parent) defined
-                # in it's type manifest shall inherit all explicit requirements 
-                # that the parent has so that user defined requirements are 
-                # fullfilled and processed in the expected order.
-                for auto_requirement in self.find_requirements_by_name(cdist_object.autorequire):
-                    for requirement in cdist_object.requirements:
-                        if requirement not in auto_requirement.requirements:
-                            auto_requirement.requirements.append(requirement)
-                # On the other hand the parent shall depend on all the children
-                # it created so that the user can setup dependencies on it as a 
-                # whole without having to know anything about the parents 
-                # internals.
-                cdist_object.requirements.extend(cdist_object.autorequire)
-                # As we changed the object on disc, we have to ensure it is not 
-                # preprocessed again if someone would call us multiple times.
-                cdist_object.autorequire = []
+        Return resolved autorequirements and requirements so that
+        a complete list of requirements is returned
+        """
+
+        all_requirements = []
+        all_requirements.extend(self.find_requirements_by_name(self.requirements))
+        all_requirements.extend(self.find_requirements_by_name(self.autorequire))
+
+        return unique(all_requirements)
 
 
 class CircularReferenceError(cdist.Error):

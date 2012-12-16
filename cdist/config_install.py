@@ -160,9 +160,6 @@ class ConfigInstall(object):
                 evil_objects = []
                 for cdist_object in objects:
                     if not cdist_object.state == cdist_object.STATE_DONE:
-#                        evil_objects.append({ name: cdist_object.name, 
-#                            requirements: cdist_object.requirements,
-#                            autorequire: cdist_object.autorequire })
                         evil_objects.append("%s (required: %s, autorequired: %s" %
                             (cdist_object.name, cdist_object.requirements, cdist_object.autorequire))
 
