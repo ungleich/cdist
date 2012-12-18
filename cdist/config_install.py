@@ -145,6 +145,10 @@ class ConfigInstall(object):
         all_resolved = False
         objects_changed = False
         while not all_resolved:
+
+            object_state_list=' '.join('%s:%s:%s' % (o, o.state, o.all_requirements()) for o in objects)
+            self.log.debug("Object state (name:state:requirements): %s" % object_state_list)
+
             all_resolved = True
             for cdist_object in objects:
                 if not cdist_object.state == cdist_object.STATE_DONE:
@@ -165,13 +169,3 @@ class ConfigInstall(object):
 
                 raise cdist.Error("Cannot solve requirements for the following objects: %s" %
                     (",".join(evil_objects)))
-
-
-        return
-
-        dependency_resolver = resolver.DependencyResolver(objects)
-        self.log.debug(pprint.pformat(dependency_resolver.dependencies))
-
-        for cdist_object in dependency_resolver:
-            self.log.debug("Run object: %s", cdist_object)
-            self.object_run(cdist_object)
