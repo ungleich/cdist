@@ -37,8 +37,16 @@ type_base_path = op.join(fixtures, 'type')
 class ObjectClassTestCase(test.CdistTestCase):
 
     def test_list_object_names(self):
-        object_names = list(core.CdistObject.list_object_names(object_base_path))
-        self.assertEqual(object_names, ['__first/man', '__second/on-the', '__third/moon'])
+        found_object_names = sorted(list(core.CdistObject.list_object_names(object_base_path)))
+        expected_object_names = sorted([
+            '__first/child',
+            '__first/dog',
+            '__first/man',
+            '__first/woman',
+            '__second/on-the',
+            '__second/under-the',
+            '__third/moon'])
+        self.assertEqual(found_object_names, expected_object_names)
 
     def test_list_type_names(self):
         type_names = list(cdist.core.CdistObject.list_type_names(object_base_path))
@@ -209,6 +217,9 @@ class ObjectResolveRequirementsTestCase(test.CdistTestCase):
     def setUp(self):
         self.objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
         self.object_index = dict((o.name, o) for o in self.objects)
+        self.object_names = [o.name for o in self.objects]
+
+        print(self.objects)
 
         self.cdist_type = core.CdistType(type_base_path, '__third')
         self.cdist_object = core.CdistObject(self.cdist_type, object_base_path, 'moon') 
@@ -218,23 +229,28 @@ class ObjectResolveRequirementsTestCase(test.CdistTestCase):
             o.requirements = []
 
     def test_find_requirements_by_name_string(self):
-        """Check that resolving requirements by name works"""
-        requirements = ['__first/man', '__second/on-the', '__third/moon']
+        """Check that resolving requirements by name works (require all objects)"""
+        requirements = self.object_names
 
-        required_objects = [self.object_index[name] for name in requirements]
-        self.assertEqual(sorted(list(self.dependency_resolver.find_requirements_by_name(requirements))),
-            sorted(required_objects))
+        self.cdist_object.requirements = requirements
+
+        found_requirements = sorted(self.cdist_object.find_requirements_by_name(self.cdist_object.requirements))
+        expected_requirements = sorted(self.objects)
+
+        self.assertEqual(found_requirements, expected_requirements)
 
     def test_find_requirements_by_name_pattern(self):
+        """Test whether pattern matching on requirements works"""
+
+        # Matches all objects in the end
         requirements = ['__first/*', '__second/*-the', '__third/moon']
-        requirements_expanded = [
-            '__first/child', '__first/dog', '__first/man', '__first/woman',
-            '__second/on-the', '__second/under-the',
-            '__third/moon'
-        ]
-        required_objects = [self.object_index[name] for name in requirements_expanded]
-        self.assertEqual(sorted(list(self.dependency_resolver.find_requirements_by_name(requirements))),
-            sorted(required_objects))
+
+        self.cdist_object.requirements = requirements
+
+        expected_requirements = sorted(self.objects)
+        found_requirements = sorted(self.cdist_object.find_requirements_by_name(self.cdist_object.requirements))
+
+        self.assertEqual(expected_requirements, found_requirements)
 
     def test_dependency_resolution(self):
         first_man = self.object_index['__first/man']
@@ -242,10 +258,13 @@ class ObjectResolveRequirementsTestCase(test.CdistTestCase):
         third_moon = self.object_index['__third/moon']
         first_man.requirements = [second_on_the.name]
         second_on_the.requirements = [third_moon.name]
-        self.assertEqual(
-            self.dependency_resolver.dependencies['__first/man'],
-            [third_moon, second_on_the, first_man]
-        )
+
+        # FIXME :-)
+        self.assertTrue(False)
+#        self.assertEqual(
+#            self.dependency_resolver.dependencies['__first/man'],
+#            [third_moon, second_on_the, first_man]
+#        )
 
     def test_requirement_not_found(self):
         first_man = self.object_index['__first/man']

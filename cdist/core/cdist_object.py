@@ -20,6 +20,7 @@
 #
 #
 
+import fnmatch
 import logging
 import os
 import collections
@@ -232,11 +233,19 @@ class CdistObject(object):
             [<Object __type/object_id>, <Object __other_type/any>, <Object __other_type/match>]
         """
 
-        object_names = self.list_object_names(self.base_path)
+
+        # FIXME: think about where to store this - probably not here
+        self.objects = dict((o.name, o) for o in self.list_objects(self.base_path, self.cdist_type.base_path))
+        object_names = self.objects.keys()
+
+        print("a:%s" % self.objects)
+        print("b:%s" % object_names)
+
         for pattern in requirements:
             found = False
             for requirement in fnmatch.filter(object_names, pattern):
                 found = True
+                print("c:%s" % self.objects[requirement])
                 yield self.objects[requirement]
             if not found:
                 # FIXME: get rid of the singleton object_id, it should be invisible to the code -> hide it in Object
@@ -252,11 +261,11 @@ class CdistObject(object):
         a complete list of requirements is returned
         """
 
-        all_requirements = []
-        all_requirements.extend(self.find_requirements_by_name(self.requirements))
-        all_requirements.extend(self.find_requirements_by_name(self.autorequire))
+        all_reqs= []
+        all_reqs.extend(self.find_requirements_by_name(self.requirements))
+        all_reqs.extend(self.find_requirements_by_name(self.autorequire))
 
-        return unique(all_requirements)
+        return set(all_reqs)
 
 
 class CircularReferenceError(cdist.Error):
