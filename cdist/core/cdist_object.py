@@ -56,6 +56,21 @@ class CdistObject(object):
     STATE_RUNNING = "running"
     STATE_DONE = "done"
 
+    def __init__(self, cdist_type, base_path, object_id=None):
+        self.cdist_type = cdist_type # instance of Type
+        self.base_path = base_path
+        self.object_id = object_id
+
+        self.validate_object_id()
+        self.sanitise_object_id()
+
+        self.name = self.join_name(self.cdist_type.name, self.object_id)
+        self.path = os.path.join(self.cdist_type.path, self.object_id, OBJECT_MARKER)
+        self.absolute_path = os.path.join(self.base_path, self.path)
+        self.code_local_path = os.path.join(self.path, "code-local")
+        self.code_remote_path = os.path.join(self.path, "code-remote")
+        self.parameter_path = os.path.join(self.path, "parameter")
+
     @classmethod
     def list_objects(cls, object_base_path, type_base_path):
         """Return a list of object instances"""
@@ -111,21 +126,6 @@ class CdistObject(object):
         if not self.object_id and not self.cdist_type.is_singleton:
             raise IllegalObjectIdError(self.object_id,
                 "Missing object_id and type is not a singleton.")
-
-    def __init__(self, cdist_type, base_path, object_id=None):
-        self.cdist_type = cdist_type # instance of Type
-        self.base_path = base_path
-        self.object_id = object_id
-
-        self.validate_object_id()
-        self.sanitise_object_id()
-
-        self.name = self.join_name(self.cdist_type.name, self.object_id)
-        self.path = os.path.join(self.cdist_type.path, self.object_id, OBJECT_MARKER)
-        self.absolute_path = os.path.join(self.base_path, self.path)
-        self.code_local_path = os.path.join(self.path, "code-local")
-        self.code_remote_path = os.path.join(self.path, "code-remote")
-        self.parameter_path = os.path.join(self.path, "parameter")
 
     def object_from_name(self, object_name):
         """Convenience method for creating an object instance from an object name.
@@ -232,7 +232,7 @@ class CdistObject(object):
             [<Object __type/object_id>, <Object __other_type/any>, <Object __other_type/match>]
         """
 
-        object_names = self.list_object_namess(self.base_path)
+        object_names = self.list_object_names(self.base_path)
         for pattern in requirements:
             found = False
             for requirement in fnmatch.filter(object_names, pattern):
@@ -274,6 +274,3 @@ class RequirementNotFoundError(cdist.Error):
 
     def __str__(self):
         return 'Requirement could not be found: %s' % self.requirement
-
-
-
