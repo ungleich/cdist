@@ -6,6 +6,7 @@ Changelog
 
 next:
 	* Type __jail: State absent should implies stopped (Jake Guffey)
+	* Core: Use dynamic dependency resolver to allow indirect self dependencies
 
 2.1.0: 2012-12-09
 	* Core: Ensure global explorers are executable
