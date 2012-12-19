@@ -349,7 +349,7 @@ eof
     ;;
 
      p|pu|pub)
-          for remote in "" github sf ethz; do
+          for remote in "" github sf; do
                 echo "Pushing to $remote"
                 git push --mirror $remote
           done
