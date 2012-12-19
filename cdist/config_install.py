@@ -104,11 +104,10 @@ class ConfigInstall(object):
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.state = core.CdistObject.STATE_PREPARED
 
-    def object_run(self, cdist_object):
+    def object_run(self, cdist_object, dry_run=False):
         """Run gencode and code for an object"""
         self.log.debug("Trying to run object " + cdist_object.name)
         if cdist_object.state == core.CdistObject.STATE_DONE:
-            # TODO: remove once we are sure that this really never happens.
             raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
 
         cdist_type = cdist_object.cdist_type
@@ -121,51 +120,74 @@ class ConfigInstall(object):
             cdist_object.changed = True
 
         # Execute
-        if cdist_object.code_local:
-            self.code.run_code_local(cdist_object)
-        if cdist_object.code_remote:
-            self.code.transfer_code_remote(cdist_object)
-            self.code.run_code_remote(cdist_object)
+        if not dry_run:
+            if cdist_object.code_local:
+                self.code.run_code_local(cdist_object)
+            if cdist_object.code_remote:
+                self.code.transfer_code_remote(cdist_object)
+                self.code.run_code_remote(cdist_object)
 
         # Mark this object as done
         self.log.debug("Finishing run of " + cdist_object.name)
         cdist_object.state = core.CdistObject.STATE_DONE
 
+    def stage_run_prepare(self):
+        """Prepare the run stage"""
+
+        self.objects = core.CdistObject.list_objects(
+            self.local.object_path,
+            self.local.type_path)
+
+        self.all_resolved = False
+        self.objects_changed = False
+
+        print("srp: %s - %s objects: %s" % (self.local.object_path, self.local.type_path, list(self.objects)))
+
     def stage_run(self):
         """The final (and real) step of deployment"""
         self.log.info("Generating and executing code")
-
-        objects = core.CdistObject.list_objects(
-            self.local.object_path,
-            self.local.type_path)
+        self.stage_run_prepare()
 
         # FIXME:
         # - think about parallel execution (same for stage_prepare)
         # - catch unresolvable trees
-        all_resolved = False
-        objects_changed = False
-        while not all_resolved:
+        while not self.all_resolved:
+            self.stage_run_iterate()
 
-            object_state_list=' '.join('%s:%s:%s' % (o, o.state, o.all_requirements()) for o in objects)
-            self.log.debug("Object state (name:state:requirements): %s" % object_state_list)
+    def stage_run_iterate(self):
+        logging.root.setLevel(logging.DEBUG)
+        """
+        Run one iteration of the run
 
-            all_resolved = True
-            for cdist_object in objects:
+        To be repeated until all objects are done
+        """
+
+        object_state_list=' '.join('%s:%s:%s' % (o, o.state, o.all_requirements()) for o in self.objects)
+        self.log.debug("Object state (name:state:requirements): %s" % object_state_list)
+        print("Object state (name:state:requirements): %s" % object_state_list)
+
+        self.all_resolved = True
+        for cdist_object in self.objects:
+            if not cdist_object.state == cdist_object.STATE_DONE:
+                self.all_resolved = False
+                if cdist_object.satisfied_requirements:
+                    self.object_run(cdist_object)
+                    self.objects_changed = True
+
+        # Not all are resolved, but nothing has been changed => bad dependencies!
+        if not self.objects_changed and not self.all_resolved:
+            # Create list of unfinished objects + their requirements for print
+
+            evil_objects = []
+            good_objects = []
+            for cdist_object in self.objects:
                 if not cdist_object.state == cdist_object.STATE_DONE:
-                    all_resolved = False
-                    if cdist_object.satisfied_requirements:
-                        self.object_run(cdist_object)
-                        objects_changed = True
+                    evil_objects.append("%s: required: %s, autorequired: %s" %
+                        (cdist_object.name, cdist_object.requirements, cdist_object.autorequire))
+                else:
+                    evil_objects.append("%s (%s): required: %s, autorequired: %s" %
+                        (cdist_object.state, cdist_object.name, 
+                        cdist_object.requirements, cdist_object.autorequire))
 
-            # Reran, but no object was solved
-            if not objects_changed:
-                # Create list of unfinished objects + their requirements for print
-
-                evil_objects = []
-                for cdist_object in objects:
-                    if not cdist_object.state == cdist_object.STATE_DONE:
-                        evil_objects.append("%s (required: %s, autorequired: %s" %
-                            (cdist_object.name, cdist_object.requirements, cdist_object.autorequire))
-
-                raise cdist.Error("Cannot solve requirements for the following objects: %s" %
-                    (",".join(evil_objects)))
+            errormessage = "Cannot solve requirements for the following objects: %s - solved: %s" % (",".join(evil_objects), ",".join(good_objects))
+            raise cdist.Error(errormessage)
