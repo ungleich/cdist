@@ -36,9 +36,8 @@ type_base_path = op.join(fixtures, 'type')
 
 class ObjectClassTestCase(test.CdistTestCase):
 
-    def test_list_object_names(self):
-        found_object_names = sorted(list(core.CdistObject.list_object_names(object_base_path)))
-        expected_object_names = sorted([
+    def setUp(self):
+        self.expected_object_names = sorted([
             '__first/child',
             '__first/dog',
             '__first/man',
@@ -46,20 +45,24 @@ class ObjectClassTestCase(test.CdistTestCase):
             '__second/on-the',
             '__second/under-the',
             '__third/moon'])
-        self.assertEqual(found_object_names, expected_object_names)
+
+        self.expected_objects = []
+        for cdist_object_name in self.expected_object_names:
+            cdist_type, cdist_object_id = cdist_object_name.split("/", maxsplit=1)
+            cdist_object = core.CdistObject(core.CdistType(type_base_path, cdist_type), object_base_path, cdist_object_id)
+            self.expected_objects.append(cdist_object)
+ 
+    def test_list_object_names(self):
+       found_object_names = sorted(list(core.CdistObject.list_object_names(object_base_path)))
+       self.assertEqual(found_object_names, self.expected_object_names)
 
     def test_list_type_names(self):
         type_names = list(cdist.core.CdistObject.list_type_names(object_base_path))
         self.assertEqual(type_names, ['__first', '__second', '__third'])
 
     def test_list_objects(self):
-        objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
-        objects_expected = [
-            core.CdistObject(core.CdistType(type_base_path, '__first'), object_base_path, 'man'),
-            core.CdistObject(core.CdistType(type_base_path, '__second'), object_base_path, 'on-the'),
-            core.CdistObject(core.CdistType(type_base_path, '__third'), object_base_path, 'moon'),
-        ]
-        self.assertEqual(objects, objects_expected)
+        found_objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
+        self.assertEqual(found_objects, self.expected_objects)
 
 
 class ObjectIdTestCase(test.CdistTestCase):

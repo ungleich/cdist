@@ -211,15 +211,18 @@ class CdistObject(object):
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 
+    @property
     def satisfied_requirements(self):
         """Return state whether all of our dependencies have been resolved already"""
 
         satisfied = True
 
-        for requirement in self.all_requirements():
+        for requirement in self.all_requirements:
+            log.debug("%s: Checking requirement %s (%s) .." % (self.name, requirement.name, requirement.state))
             if not requirement.state == self.STATE_DONE:
                 satisfied = False
                 break
+        log.debug("%s is satisfied: %s" % (self.name, satisfied))
 
         return satisfied
 
@@ -251,6 +254,7 @@ class CdistObject(object):
                 else:
                     raise RequirementNotFoundError(pattern)
 
+    @property
     def all_requirements(self):
         """
         Return resolved autorequirements and requirements so that

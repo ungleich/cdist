@@ -43,29 +43,25 @@ class ConfigInstall(object):
         self.context = context
         self.log = logging.getLogger(self.context.target_host)
 
-        # For easy access
-        self.local = context.local
-        self.remote = context.remote
-
         # Initialise local directory structure
-        self.local.create_files_dirs()
+        self.context.local.create_files_dirs()
         # Initialise remote directory structure
-        self.remote.create_files_dirs()
+        self.context.remote.create_files_dirs()
 
-        self.explorer = core.Explorer(self.context.target_host, self.local, self.remote)
-        self.manifest = core.Manifest(self.context.target_host, self.local)
-        self.code = core.Code(self.context.target_host, self.local, self.remote)
+        self.explorer = core.Explorer(self.context.target_host, self.context.local, self.context.remote)
+        self.manifest = core.Manifest(self.context.target_host, self.context.local)
+        self.code = core.Code(self.context.target_host, self.context.local, self.context.remote)
 
         # Add switch to disable code execution
         self.dry_run = False
 
     def cleanup(self):
         # FIXME: move to local?
-        destination = os.path.join(self.local.cache_path, self.context.target_host)
-        self.log.debug("Saving " + self.local.out_path + " to " + destination)
+        destination = os.path.join(self.context.local.cache_path, self.context.target_host)
+        self.log.debug("Saving " + self.context.local.out_path + " to " + destination)
         if os.path.exists(destination):
             shutil.rmtree(destination)
-        shutil.move(self.local.out_path, destination)
+        shutil.move(self.context.local.out_path, destination)
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
@@ -82,7 +78,7 @@ class ConfigInstall(object):
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
-        self.explorer.run_global_explorers(self.local.global_explorer_out_path)
+        self.explorer.run_global_explorers(self.context.local.global_explorer_out_path)
         self.manifest.run_initial_manifest(self.context.initial_manifest)
 
         self.log.info("Running object manifests and type explorers")
@@ -91,8 +87,8 @@ class ConfigInstall(object):
         new_objects_created = True
         while new_objects_created:
             new_objects_created = False
-            for cdist_object in core.CdistObject.list_objects(self.local.object_path,
-                                                         self.local.type_path):
+            for cdist_object in core.CdistObject.list_objects(self.context.local.object_path,
+                                                         self.context.local.type_path):
                 if cdist_object.state == core.CdistObject.STATE_PREPARED:
                     self.log.debug("Skipping re-prepare of object %s", cdist_object)
                     continue
@@ -134,56 +130,46 @@ class ConfigInstall(object):
         self.log.debug("Finishing run of " + cdist_object.name)
         cdist_object.state = core.CdistObject.STATE_DONE
 
-    def stage_run_prepare(self):
-        """Prepare the run stage"""
-
-        self.objects = core.CdistObject.list_objects(
-            self.local.object_path,
-            self.local.type_path)
-
-        self.all_resolved = False
-        self.objects_changed = False
-
-        print("srp: %s - %s objects: %s" % (self.local.object_path, self.local.type_path, list(self.objects)))
-
     def stage_run(self):
         """The final (and real) step of deployment"""
         self.log.info("Generating and executing code")
-        self.stage_run_prepare()
 
-        # FIXME:
-        # - think about parallel execution (same for stage_prepare)
-        # - catch unresolvable trees
+        # FIXME: think about parallel execution (same for stage_prepare)
+        self.all_resolved = False
         while not self.all_resolved:
             self.stage_run_iterate()
 
     def stage_run_iterate(self):
-        logging.root.setLevel(logging.DEBUG)
         """
         Run one iteration of the run
 
         To be repeated until all objects are done
         """
+        objects = list(core.CdistObject.list_objects(self.context.local.object_path, self.context.local.type_path))
+        object_state_list=' '.join('%s:%s:%s:%s' % (o, o.state, o.all_requirements, o.satisfied_requirements) for o in objects)
 
-        object_state_list=' '.join('%s:%s:%s' % (o, o.state, o.all_requirements()) for o in self.objects)
-        self.log.debug("Object state (name:state:requirements): %s" % object_state_list)
-        print("Object state (name:state:requirements): %s" % object_state_list)
+        self.log.debug("Object state (name:state:requirements:satisfied): %s" % object_state_list)
 
+        objects_changed = False
         self.all_resolved = True
-        for cdist_object in self.objects:
+        for cdist_object in objects:
             if not cdist_object.state == cdist_object.STATE_DONE:
                 self.all_resolved = False
+                self.log.debug("Object %s not done" % cdist_object.name)
                 if cdist_object.satisfied_requirements:
+                    self.log.debug("Running object %s with satisfied requirements" % cdist_object.name)
                     self.object_run(cdist_object, self.dry_run)
-                    self.objects_changed = True
+                    objects_changed = True
+
+        self.log.debug("All resolved: %s Objects changed: %s" % (self.all_resolved, objects_changed))
 
         # Not all are resolved, but nothing has been changed => bad dependencies!
-        if not self.objects_changed and not self.all_resolved:
+        if not objects_changed and not self.all_resolved:
             # Create list of unfinished objects + their requirements for print
 
             evil_objects = []
             good_objects = []
-            for cdist_object in self.objects:
+            for cdist_object in objects:
                 if not cdist_object.state == cdist_object.STATE_DONE:
                     evil_objects.append("%s: required: %s, autorequired: %s" %
                         (cdist_object.name, cdist_object.requirements, cdist_object.autorequire))

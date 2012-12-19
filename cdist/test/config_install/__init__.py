@@ -28,6 +28,7 @@ from cdist import core
 
 import cdist
 import cdist.context
+import cdist.config
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
@@ -40,30 +41,40 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
 
     def setUp(self):
 
+        # Change env for context
+        self.orig_environ = os.environ
+        os.environ = os.environ.copy()
+        self.temp_dir = self.mkdtemp()
+
+        self.out_dir = os.path.join(self.temp_dir, "out")
+        self.remote_out_dir = os.path.join(self.temp_dir, "remote")
+
+        os.environ['__cdist_out_dir'] = self.out_dir
+        os.environ['__cdist_remote_out_dir'] = self.remote_out_dir
+
         self.context = cdist.context.Context(
             target_host=self.target_host,
             remote_copy=self.remote_copy,
             remote_exec=self.remote_exec,
-            initial_manifest=args.manifest,
-            add_conf_dirs=add_conf_dir,
             exec_path=test.cdist_exec_path,
-            debug=False)
+            debug=True)
 
-        self.config = config.Config(self.context)
+        self.context.local.object_path = object_base_path
+        self.context.local.type_path = type_base_path
 
-    def setUp(self):
+        self.config = cdist.config.Config(self.context)
+
         self.objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
         self.object_index = dict((o.name, o) for o in self.objects)
         self.object_names = [o.name for o in self.objects]
 
-        print(self.objects)
-
-        self.cdist_type = core.CdistType(type_base_path, '__third')
-        self.cdist_object = core.CdistObject(self.cdist_type, object_base_path, 'moon') 
-
     def tearDown(self):
         for o in self.objects:
             o.requirements = []
+            o.state = ""
+
+        os.environ = self.orig_environ
+        shutil.rmtree(self.temp_dir)
 
     def test_dependency_resolution(self):
         first   = self.object_index['__first/man']
@@ -73,21 +84,50 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
         first.requirements = [second.name]
         second.requirements = [third.name]
 
-        self.config.stage_run_prepare()
-
         # First run: 
         # solves first and maybe second (depending on the order in the set)
         self.config.stage_run_iterate()
+        self.assertTrue(third.state == third.STATE_DONE)
 
-        # FIXME :-)
-        self.assertTrue(False)
-#        self.assertEqual(
-#            self.dependency_resolver.dependencies['__first/man'],
-#            [third_moon, second_on_the, first_man]
-#        )
+        self.config.stage_run_iterate()
+        self.assertTrue(second.state == second.STATE_DONE)
+
+
+        try:
+            self.config.stage_run_iterate()
+        except cdist.Error:
+            # Allow failing, because the third run may or may not be unecessary already,
+            # depending on the order of the objects
+            pass
+        self.assertTrue(first.state == first.STATE_DONE)
+
+
+    def test_non_empty_object_list(self):
+        """Ensure the object list returned is not empty"""
+        pass
 
     def test_requirement_not_found(self):
-        first_man = self.object_index['__first/man']
-        first_man.requirements = ['__does/not/exist']
+        """Ensure an exception is thrown for missing depedencies"""
+        cdist_object = self.object_index['__first/man']
+        cdist_object.requirements = ['__does/not/exist']
+
         with self.assertRaises(core.cdist_object.RequirementNotFoundError):
-            first_man.find_requirements_by_name(first_man.requirements)
+            # Use list, as generator does not (yet) raise the error
+            list(cdist_object.find_requirements_by_name(cdist_object.requirements))
+
+    def test_unresolvable_requirements(self):
+        """Ensure an exception is thrown for unresolvable depedencies"""
+
+        # Create to objects depending on each other - no solution possible
+        first   = self.object_index['__first/man']
+        second  = self.object_index['__second/on-the']
+
+        first.requirements = [second.name]
+        second.requirements = [first.name]
+
+        # First round solves __third/moon
+        self.config.stage_run_iterate()
+
+        # Second round detects it cannot solve the rest
+        with self.assertRaises(cdist.Error):
+            self.config.stage_run_iterate()
