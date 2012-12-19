@@ -255,23 +255,11 @@ class ObjectResolveRequirementsTestCase(test.CdistTestCase):
 
         self.assertEqual(expected_requirements, found_requirements)
 
-    def test_dependency_resolution(self):
-        first_man = self.object_index['__first/man']
-        second_on_the = self.object_index['__second/on-the']
-        third_moon = self.object_index['__third/moon']
-        first_man.requirements = [second_on_the.name]
-        second_on_the.requirements = [third_moon.name]
-
-        # FIXME :-)
-        self.assertTrue(False)
-#        self.assertEqual(
-#            self.dependency_resolver.dependencies['__first/man'],
-#            [third_moon, second_on_the, first_man]
-#        )
-
     def test_requirement_not_found(self):
-        first_man = self.object_index['__first/man']
-        first_man.requirements = ['__does/not/exist']
-        with self.assertRaises(core.cdist_object.RequirementNotFoundError):
-            first_man.find_requirements_by_name(first_man.requirements)
+        """Ensure an exception is thrown for missing depedencies"""
+        cdist_object = self.object_index['__first/man']
+        cdist_object.requirements = ['__does/not/exist']
 
+        with self.assertRaises(core.cdist_object.RequirementNotFoundError):
+            # Use list, as generator does not (yet) raise the error
+            list(cdist_object.find_requirements_by_name(cdist_object.requirements))

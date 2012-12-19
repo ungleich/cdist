@@ -101,20 +101,6 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
             pass
         self.assertTrue(first.state == first.STATE_DONE)
 
-
-    def test_non_empty_object_list(self):
-        """Ensure the object list returned is not empty"""
-        pass
-
-    def test_requirement_not_found(self):
-        """Ensure an exception is thrown for missing depedencies"""
-        cdist_object = self.object_index['__first/man']
-        cdist_object.requirements = ['__does/not/exist']
-
-        with self.assertRaises(core.cdist_object.RequirementNotFoundError):
-            # Use list, as generator does not (yet) raise the error
-            list(cdist_object.find_requirements_by_name(cdist_object.requirements))
-
     def test_unresolvable_requirements(self):
         """Ensure an exception is thrown for unresolvable depedencies"""
 
