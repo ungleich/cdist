@@ -234,18 +234,14 @@ class CdistObject(object):
         """
 
 
-        # FIXME: think about where to store this - probably not here
+        # FIXME: think about where/when to store this - probably not here
         self.objects = dict((o.name, o) for o in self.list_objects(self.base_path, self.cdist_type.base_path))
         object_names = self.objects.keys()
-
-        print("a:%s" % self.objects)
-        print("b:%s" % object_names)
 
         for pattern in requirements:
             found = False
             for requirement in fnmatch.filter(object_names, pattern):
                 found = True
-                print("c:%s" % self.objects[requirement])
                 yield self.objects[requirement]
             if not found:
                 # FIXME: get rid of the singleton object_id, it should be invisible to the code -> hide it in Object
@@ -266,15 +262,6 @@ class CdistObject(object):
         all_reqs.extend(self.find_requirements_by_name(self.autorequire))
 
         return set(all_reqs)
-
-
-class CircularReferenceError(cdist.Error):
-    def __init__(self, cdist_object, required_object):
-        self.cdist_object = cdist_object
-        self.required_object = required_object
-
-    def __str__(self):
-        return 'Circular reference detected: %s -> %s' % (self.cdist_object.name, self.required_object.name)
 
 
 class RequirementNotFoundError(cdist.Error):
