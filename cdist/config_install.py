@@ -56,6 +56,9 @@ class ConfigInstall(object):
         self.manifest = core.Manifest(self.context.target_host, self.local)
         self.code = core.Code(self.context.target_host, self.local, self.remote)
 
+        # Add switch to disable code execution
+        self.dry_run = False
+
     def cleanup(self):
         # FIXME: move to local?
         destination = os.path.join(self.local.cache_path, self.context.target_host)
@@ -171,7 +174,7 @@ class ConfigInstall(object):
             if not cdist_object.state == cdist_object.STATE_DONE:
                 self.all_resolved = False
                 if cdist_object.satisfied_requirements:
-                    self.object_run(cdist_object)
+                    self.object_run(cdist_object, self.dry_run)
                     self.objects_changed = True
 
         # Not all are resolved, but nothing has been changed => bad dependencies!
