@@ -43,26 +43,25 @@ class ConfigInstall(object):
         self.context = context
         self.log = logging.getLogger(self.context.target_host)
 
-        # For easy access
-        self.local = context.local
-        self.remote = context.remote
-
         # Initialise local directory structure
-        self.local.create_files_dirs()
+        self.context.local.create_files_dirs()
         # Initialise remote directory structure
-        self.remote.create_files_dirs()
+        self.context.remote.create_files_dirs()
 
-        self.explorer = core.Explorer(self.context.target_host, self.local, self.remote)
-        self.manifest = core.Manifest(self.context.target_host, self.local)
-        self.code = core.Code(self.context.target_host, self.local, self.remote)
+        self.explorer = core.Explorer(self.context.target_host, self.context.local, self.context.remote)
+        self.manifest = core.Manifest(self.context.target_host, self.context.local)
+        self.code = core.Code(self.context.target_host, self.context.local, self.context.remote)
+
+        # Add switch to disable code execution
+        self.dry_run = False
 
     def cleanup(self):
         # FIXME: move to local?
-        destination = os.path.join(self.local.cache_path, self.context.target_host)
-        self.log.debug("Saving " + self.local.out_path + " to " + destination)
+        destination = os.path.join(self.context.local.cache_path, self.context.target_host)
+        self.log.debug("Saving " + self.context.local.out_path + " to " + destination)
         if os.path.exists(destination):
             shutil.rmtree(destination)
-        shutil.move(self.local.out_path, destination)
+        shutil.move(self.context.local.out_path, destination)
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
@@ -79,7 +78,7 @@ class ConfigInstall(object):
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
-        self.explorer.run_global_explorers(self.local.global_explorer_out_path)
+        self.explorer.run_global_explorers(self.context.local.global_explorer_out_path)
         self.manifest.run_initial_manifest(self.context.initial_manifest)
 
         self.log.info("Running object manifests and type explorers")
@@ -88,8 +87,8 @@ class ConfigInstall(object):
         new_objects_created = True
         while new_objects_created:
             new_objects_created = False
-            for cdist_object in core.CdistObject.list_objects(self.local.object_path,
-                                                         self.local.type_path):
+            for cdist_object in core.CdistObject.list_objects(self.context.local.object_path,
+                                                         self.context.local.type_path):
                 if cdist_object.state == core.CdistObject.STATE_PREPARED:
                     self.log.debug("Skipping re-prepare of object %s", cdist_object)
                     continue
@@ -104,11 +103,10 @@ class ConfigInstall(object):
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.state = core.CdistObject.STATE_PREPARED
 
-    def object_run(self, cdist_object):
+    def object_run(self, cdist_object, dry_run=False):
         """Run gencode and code for an object"""
         self.log.debug("Trying to run object " + cdist_object.name)
         if cdist_object.state == core.CdistObject.STATE_DONE:
-            # TODO: remove once we are sure that this really never happens.
             raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
 
         cdist_type = cdist_object.cdist_type
@@ -121,11 +119,12 @@ class ConfigInstall(object):
             cdist_object.changed = True
 
         # Execute
-        if cdist_object.code_local:
-            self.code.run_code_local(cdist_object)
-        if cdist_object.code_remote:
-            self.code.transfer_code_remote(cdist_object)
-            self.code.run_code_remote(cdist_object)
+        if not dry_run:
+            if cdist_object.code_local:
+                self.code.run_code_local(cdist_object)
+            if cdist_object.code_remote:
+                self.code.transfer_code_remote(cdist_object)
+                self.code.run_code_remote(cdist_object)
 
         # Mark this object as done
         self.log.debug("Finishing run of " + cdist_object.name)
@@ -135,13 +134,49 @@ class ConfigInstall(object):
         """The final (and real) step of deployment"""
         self.log.info("Generating and executing code")
 
-        objects = core.CdistObject.list_objects(
-            self.local.object_path,
-            self.local.type_path)
+        # FIXME: think about parallel execution (same for stage_prepare)
+        self.all_resolved = False
+        while not self.all_resolved:
+            self.stage_run_iterate()
 
-        dependency_resolver = resolver.DependencyResolver(objects)
-        self.log.debug(pprint.pformat(dependency_resolver.dependencies))
+    def stage_run_iterate(self):
+        """
+        Run one iteration of the run
 
-        for cdist_object in dependency_resolver:
-            self.log.debug("Run object: %s", cdist_object)
-            self.object_run(cdist_object)
+        To be repeated until all objects are done
+        """
+        objects = list(core.CdistObject.list_objects(self.context.local.object_path, self.context.local.type_path))
+        object_state_list=' '.join('%s:%s:%s:%s' % (o, o.state, o.all_requirements, o.satisfied_requirements) for o in objects)
+
+        self.log.debug("Object state (name:state:requirements:satisfied): %s" % object_state_list)
+
+        objects_changed = False
+        self.all_resolved = True
+        for cdist_object in objects:
+            if not cdist_object.state == cdist_object.STATE_DONE:
+                self.all_resolved = False
+                self.log.debug("Object %s not done" % cdist_object.name)
+                if cdist_object.satisfied_requirements:
+                    self.log.debug("Running object %s with satisfied requirements" % cdist_object.name)
+                    self.object_run(cdist_object, self.dry_run)
+                    objects_changed = True
+
+        self.log.debug("All resolved: %s Objects changed: %s" % (self.all_resolved, objects_changed))
+
+        # Not all are resolved, but nothing has been changed => bad dependencies!
+        if not objects_changed and not self.all_resolved:
+            # Create list of unfinished objects + their requirements for print
+
+            evil_objects = []
+            good_objects = []
+            for cdist_object in objects:
+                if not cdist_object.state == cdist_object.STATE_DONE:
+                    evil_objects.append("%s: required: %s, autorequired: %s" %
+                        (cdist_object.name, cdist_object.requirements, cdist_object.autorequire))
+                else:
+                    evil_objects.append("%s (%s): required: %s, autorequired: %s" %
+                        (cdist_object.state, cdist_object.name, 
+                        cdist_object.requirements, cdist_object.autorequire))
+
+            errormessage = "Cannot solve requirements for the following objects: %s - solved: %s" % (",".join(evil_objects), ",".join(good_objects))
+            raise cdist.Error(errormessage)

@@ -20,6 +20,7 @@
 #
 #
 
+import fnmatch
 import logging
 import os
 import collections
@@ -55,6 +56,21 @@ class CdistObject(object):
     STATE_PREPARED = "prepared"
     STATE_RUNNING = "running"
     STATE_DONE = "done"
+
+    def __init__(self, cdist_type, base_path, object_id=None):
+        self.cdist_type = cdist_type # instance of Type
+        self.base_path = base_path
+        self.object_id = object_id
+
+        self.validate_object_id()
+        self.sanitise_object_id()
+
+        self.name = self.join_name(self.cdist_type.name, self.object_id)
+        self.path = os.path.join(self.cdist_type.path, self.object_id, OBJECT_MARKER)
+        self.absolute_path = os.path.join(self.base_path, self.path)
+        self.code_local_path = os.path.join(self.path, "code-local")
+        self.code_remote_path = os.path.join(self.path, "code-remote")
+        self.parameter_path = os.path.join(self.path, "parameter")
 
     @classmethod
     def list_objects(cls, object_base_path, type_base_path):
@@ -111,21 +127,6 @@ class CdistObject(object):
         if not self.object_id and not self.cdist_type.is_singleton:
             raise IllegalObjectIdError(self.object_id,
                 "Missing object_id and type is not a singleton.")
-
-    def __init__(self, cdist_type, base_path, object_id=None):
-        self.cdist_type = cdist_type # instance of Type
-        self.base_path = base_path
-        self.object_id = object_id
-
-        self.validate_object_id()
-        self.sanitise_object_id()
-
-        self.name = self.join_name(self.cdist_type.name, self.object_id)
-        self.path = os.path.join(self.cdist_type.path, self.object_id, OBJECT_MARKER)
-        self.absolute_path = os.path.join(self.base_path, self.path)
-        self.code_local_path = os.path.join(self.path, "code-local")
-        self.code_remote_path = os.path.join(self.path, "code-remote")
-        self.parameter_path = os.path.join(self.path, "parameter")
 
     def object_from_name(self, object_name):
         """Convenience method for creating an object instance from an object name.
@@ -209,3 +210,67 @@ class CdistObject(object):
             os.makedirs(absolute_parameter_path, exist_ok=False)
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
+
+    @property
+    def satisfied_requirements(self):
+        """Return state whether all of our dependencies have been resolved already"""
+
+        satisfied = True
+
+        for requirement in self.all_requirements:
+            log.debug("%s: Checking requirement %s (%s) .." % (self.name, requirement.name, requirement.state))
+            if not requirement.state == self.STATE_DONE:
+                satisfied = False
+                break
+        log.debug("%s is satisfied: %s" % (self.name, satisfied))
+
+        return satisfied
+
+
+    def find_requirements_by_name(self, requirements):
+        """Takes a list of requirement patterns and returns a list of matching object instances.
+
+        Patterns are expected to be Unix shell-style wildcards for use with fnmatch.filter.
+
+        find_requirements_by_name(['__type/object_id', '__other_type/*']) -> 
+            [<Object __type/object_id>, <Object __other_type/any>, <Object __other_type/match>]
+        """
+
+
+        # FIXME: think about where/when to store this - probably not here
+        self.objects = dict((o.name, o) for o in self.list_objects(self.base_path, self.cdist_type.base_path))
+        object_names = self.objects.keys()
+
+        for pattern in requirements:
+            found = False
+            for requirement in fnmatch.filter(object_names, pattern):
+                found = True
+                yield self.objects[requirement]
+            if not found:
+                # FIXME: get rid of the singleton object_id, it should be invisible to the code -> hide it in Object
+                singleton = os.path.join(pattern, 'singleton')
+                if singleton in self.objects:
+                    yield self.objects[singleton]
+                else:
+                    raise RequirementNotFoundError(pattern)
+
+    @property
+    def all_requirements(self):
+        """
+        Return resolved autorequirements and requirements so that
+        a complete list of requirements is returned
+        """
+
+        all_reqs= []
+        all_reqs.extend(self.find_requirements_by_name(self.requirements))
+        all_reqs.extend(self.find_requirements_by_name(self.autorequire))
+
+        return set(all_reqs)
+
+
+class RequirementNotFoundError(cdist.Error):
+    def __init__(self, requirement):
+        self.requirement = requirement
+
+    def __str__(self):
+        return 'Requirement could not be found: %s' % self.requirement

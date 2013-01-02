@@ -1,0 +1,72 @@
+2.1.0 behaviour:
+
+
+__git foo
+    __package git --state present
+
+__git bar
+    __package git --state present
+
+
+require="__git/foo" git bar:
+
+    __git bar
+        __git foo
+            __package git --state present
+        __package git --state present
+            __git foo
+                __package git --state present
+
+    -> detects circular dependency
+
+
+--------------------------------------------------------------------------------
+
+__package abc
+    __package_apt abc
+
+__sometype def
+    __package abc
+        __package_apt abc
+
+
+--------------------------------------------------------------------------------
+
+Change proposal:
+
+Each object only depends on the objects it directly requires, tree build to
+ensure correct running behaviour:
+
+
+__git bar
+    __git foo
+    __package git --state present
+
+__git foo
+    __package git --state present
+
+Order:
+
+1)
+    __package/git (leaf node!)
+
+2)
+    __git/foo (new leaf node!)
+
+3)
+    __git/bar (new leaf node!)
+
+
+For __package:
+
+__sometype def
+    __package abc
+
+__package abc
+    __package_apt abc
+
+1) __package_apt/abc (leaf node)
+
+2) __package/abc (new leaf node)
+
+3) __sometype/def (new leaf node)

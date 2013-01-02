@@ -35,7 +35,8 @@ fi
 state="$(cat "$__object/parameter/state")"
 
 started="true"
-[ -f "$__object/parameter/stopped" ] && started="false"
+# If the user wants the jail gone, it implies it shouldn't be started.
+[ -f "$__object/parameter/stopped" -o "$state" = "absent" ] && started="false"
 
 if [ -f "$__object/parameter/ip" ]; then
    ip="$(cat "$__object/parameter/ip")"
@@ -91,14 +92,6 @@ fi
 
 present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
-
-# Defining a jail as absent and started at the same time
-#    makes no sense. Treat this as an error.
-if [ "$started" = "true" -a "$state" = "absent" ]; then
-   exec >&2
-   echo "Can't have --state absent and --started true together\!"
-   exit 1
-fi
 
 stopJail() {
 # Check $status before issuing command
