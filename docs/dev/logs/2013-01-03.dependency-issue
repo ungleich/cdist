@@ -1,0 +1,27 @@
+
+Problem shown by using __rbenv:
+
+__rbenv/nicotest
+    __git /home/nico/.rbenv
+        __package git
+        __directory /home/nico/.rbenv
+
+    require="__git/home/nico/.rbenv" 
+        __git /home/nico/.rbenv/plugins/ruby-build
+            __package git
+            __directory /home/nico/.rbenv/plugins/ruby-build
+
+
+1) if children do NOT automatically depend on their parents requiremnts
+
+    __directory /home/nico/.rbenv/plugins/ruby-build fails:
+        because __directory /home/nico/.rbenv/plugins is created by
+        __git /home/nico/.rbenv, but __directory /home/nico/.rbenv/plugins/ruby-build
+        does not depend on __git /home/nico/.rbenv
+
+2) if children DO automatically depend on their parents requiremnts
+    __package git from __git /home/nico/.rbenv/plugins/ruby-build depends on __git /home/nico/.rbenv.
+
+    __git  /home/nico/.rbenv depends on __package git (via autorequire)
+
+    => circular dependency, they depend on each other
