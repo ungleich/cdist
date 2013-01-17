@@ -21,8 +21,6 @@
 state_should="present"
 [ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/state")"
-[ "$state_should" = "$state_is" ] && exit 0
-
 destination="/$__object_id"
 
 mkdiropt=""
@@ -32,7 +30,9 @@ recursive=""
 
 case "$state_should" in
     present)
-        echo mkdir $mkdiropt \"$destination\"
+        if [ "$state_is" != "present" ]; then
+          echo mkdir $mkdiropt \"$destination\"
+        fi
 
         # Mode settings
         if [ -f "$__object/parameter/mode" ]; then
@@ -50,7 +50,9 @@ case "$state_should" in
         fi
     ;;
     absent)
-        echo rm -rf \"$destination\"
+        if [ "$state_is" != "absent" ]; then
+          echo rm -rf \"$destination\"
+        fi
     ;;
     *)
         echo "Unknown state: $state_should" >&2
