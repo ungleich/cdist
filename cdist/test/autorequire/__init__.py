@@ -83,3 +83,9 @@ class AutorequireTestCase(test.CdistTestCase):
         self.config.stage_prepare()
         # raises CircularDependecyError
         self.config.stage_run()
+
+    def test_recursive_type(self):
+        self.context.initial_manifest = os.path.join(self.config.local.manifest_path, 'recursive_type')
+        self.config.stage_prepare()
+        # raises CircularDependecyError
+        self.config.stage_run()
