@@ -44,6 +44,13 @@ possible solutions:
     - define non inheritent dependencies (?)
         - because __git bar really depends only on __git foo
         - proposal: introduce require_non_recursive and require_recursive (previously: require)
+    - recording the source of the dependency and use it to assist resolving (?)
+        __package git: 
+            inherited require: __git foo von __git bar
+        __git foo:
+            inherited autorequire: __package git durch Nutzung
+    - break out circular references (?)
+        - if either of both parties is only locked by the other, allow execution of this one?
 
 --------------------------------------------------------------------------------
 
