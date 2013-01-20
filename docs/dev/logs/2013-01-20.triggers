@@ -1,0 +1,49 @@
+An alternative / complementary approach to notifications: triggers (or actions?)
+
+A type may support various actions by creating files in its subdirectory
+"actions". Other types can trigger an action of a different type or object
+by calling them (indirectly?):
+
+
+if grep "__file/etc/nginx/conf.d/.*:copy" "$__notifications"; then
+
+    # Call action from a type
+    cdist trigger __nginx/reload
+fi
+
+
+Not sure whether this approach (calling "actions" of other types) is sane,
+as nginx should probably better know if it should be restarted "itself".
+
+
+--------------------------------------------------------------------------------
+
+Alternate approach:
+
+__nginx_vhost www.some-domain.ch --custom << eof
+some custom code for __nginx_vhost inclusion
+eof
+
+__nginx_vhost:
+
+    manifest:
+        # __nginx_vhost requires __nginx: creates directories
+
+        require"$__object_name" __nginx --require-only
+        
+        # Do WE or __file ... depend on nginx?
+        cdist require __nginx
+
+        # Create file that contains the giving code
+        __file /etc/nginx/conf.d/www.some-domain.ch
+
+        require="__nginx" __file /etc/nginx/conf.d/www.some-domain.ch
+
+__nginx:
+    manifest:
+        __package nginx --state present
+
+        __file some-custom-files
+
+    gencode-remote:
+        if first_install or file changed:
