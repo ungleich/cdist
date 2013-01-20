@@ -33,7 +33,7 @@ state_should=present
 
 case "$state_should" in
     present)
-        __directory "$__object_id" --state present $dirparams --recursive
+        :
     ;;
 
     absent)
