@@ -54,6 +54,9 @@ case "$($__explorer/os)" in
    redhat|centos)
       cat /etc/redhat-release
    ;;
+   slackware)
+      cat /etc/slackware-version
+   ;;
    suse)
       cat /etc/SuSE-release
    ;;
