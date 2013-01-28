@@ -27,10 +27,15 @@ mode_is="$(cat "$__object/explorer/mode")"
 
 state_should="present"
 [ -f "$__object/parameter/state" ]     && state_should="$(cat "$__object/parameter/state")"
+mode=""
 [ -f "$__object/parameter/mode" ]      && mode="$(cat "$__object/parameter/mode")"
+owner=""
 [ -f "$__object/parameter/owner" ]     && owner="$(cat "$__object/parameter/owner")"
+group=""
 [ -f "$__object/parameter/group" ]     && group="$(cat "$__object/parameter/group")"
+mkdiropt=""
 [ -f "$__object/parameter/parents" ]   && mkdiropt="-p"
+recursive=""
 [ -f "$__object/parameter/recursive" ] && recursive="-R"
 
 case "$state_should" in
