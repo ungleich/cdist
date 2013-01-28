@@ -20,6 +20,9 @@
 #
 
 state_is="$(cat "$__object/explorer/state")"
+owner_is="$(cat "$__object/explorer/owner")"
+group_is="$(cat "$__object/explorer/group")"
+
 state_should=present
 [ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 
@@ -30,11 +33,31 @@ source="$(cat "$__object/parameter/source")"
 
 destination="/$__object_id"
 
-[ "$state_should" = "$state_is" ] && exit 0
+owner=""
+[ -f "$__object/parameter/owner" ] && owner="$(cat "$__object/parameter/owner")"
+group=""
+[ -f "$__object/parameter/group" ] && group="$(cat "$__object/parameter/group")"
+mode=""
+[ -f "$__object/parameter/mode" ] && mode="$(cat "$__object/parameter/mode")"
+
+[  "$state_should" = "$state_is" -a \
+   "$owner" = "$owner_is" -a \
+   "$group" = "$group_is" -a \
+   -n "$mode" ] && exit 0
 
 case $state_should in
     present)
-        echo git clone --quiet --branch "$branch" "$source" "$destination"
+
+        if [ "$state_should" != "$state_is" ]; then
+            echo git clone --quiet --branch "$branch" "$source" "$destination"
+        fi
+        if [ \( -n ${owner} -a "$owner_is" != "$owner" \) -o \
+             \( -n ${group} -a "$group_is" != "$group" \) ]; then
+            echo chown -R ${owner}:${group} ${destination}
+        fi
+        if [ -n ${mode} ]; then
+            echo chmod -R ${mode} ${destination}
+        fi
     ;;
     # Handled in manifest
     absent)
