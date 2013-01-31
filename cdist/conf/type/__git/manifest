@@ -26,9 +26,6 @@ __package git --state present
 state_should=present
 [ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 
-[ -f "$__object/parameter/owner" ] && dirparams="$dirparams --owner $(cat "$__object/parameter/owner")"
-[ -f "$__object/parameter/group" ] && dirparams="$dirparams --group $(cat "$__object/parameter/group")"
-
 # Let __directory handle removal of git repos
 
 case "$state_should" in
