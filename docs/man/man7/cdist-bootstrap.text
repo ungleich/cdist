@@ -98,7 +98,7 @@ example shows how to publish the configuration to another host that is
 reachable via ssh and has git installed:
 
 --------------------------------------------------------------------------------
-# Create bare git repository on the host named "loch"
+# Create new git repository on the host named "loch"
 cdist% ssh loch "GIT_DIR=/home/nutzer/cdist git init"
 Initialized empty Git repository in /home/nutzer/cdist/
 
