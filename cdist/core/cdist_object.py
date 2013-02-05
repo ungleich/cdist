@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -41,6 +41,14 @@ class IllegalObjectIdError(cdist.Error):
 
     def __str__(self):
         return '%s: %s' % (self.message, self.object_id)
+
+class MissingObjectIdError(cdist.Error):
+    def __init__(self, type_name):
+        self.type_name = type_name
+        self.message = "Type %s requires object id (is not a singleton type)" % self.type_name
+
+    def __str__(self):
+        return '%s' % (self.message)
 
 
 class CdistObject(object):
@@ -125,8 +133,12 @@ class CdistObject(object):
 
         # If no object_id and type is not singleton => error out
         if not self.object_id and not self.cdist_type.is_singleton:
-            raise IllegalObjectIdError(self.object_id,
-                "Missing object_id and type is not a singleton.")
+            raise MissingObjectIdError(self.cdist_type.name)
+
+                # Does not work: AttributeError: 'CdistObject' object has no attribute 'parameter_path'
+
+                #"Type %s is not a singleton type - missing object id (parameters: %s)" % 
+                #    (self.cdist_type.name, self.parameters))
 
     def object_from_name(self, object_name):
         """Convenience method for creating an object instance from an object name.
