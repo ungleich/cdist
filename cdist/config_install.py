@@ -135,8 +135,8 @@ class ConfigInstall(object):
         self.log.info("Generating and executing code")
 
         objects = core.CdistObject.list_objects(
-            self.local.object_path,
-            self.local.type_path)
+            self.context.local.object_path,
+            self.context.local.type_path)
 
         dependency_resolver = resolver.DependencyResolver(objects)
         self.log.debug(pprint.pformat(dependency_resolver.dependencies))
