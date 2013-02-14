@@ -134,49 +134,13 @@ class ConfigInstall(object):
         """The final (and real) step of deployment"""
         self.log.info("Generating and executing code")
 
-        # FIXME: think about parallel execution (same for stage_prepare)
-        self.all_resolved = False
-        while not self.all_resolved:
-            self.stage_run_iterate()
+        objects = core.CdistObject.list_objects(
+            self.local.object_path,
+            self.local.type_path)
 
-    def stage_run_iterate(self):
-        """
-        Run one iteration of the run
+        dependency_resolver = resolver.DependencyResolver(objects)
+        self.log.debug(pprint.pformat(dependency_resolver.dependencies))
 
-        To be repeated until all objects are done
-        """
-        objects = list(core.CdistObject.list_objects(self.context.local.object_path, self.context.local.type_path))
-        object_state_list=' '.join('%s:%s:%s:%s' % (o, o.state, o.all_requirements, o.satisfied_requirements) for o in objects)
-
-        self.log.debug("Object state (name:state:requirements:satisfied): %s" % object_state_list)
-
-        objects_changed = False
-        self.all_resolved = True
-        for cdist_object in objects:
-            if not cdist_object.state == cdist_object.STATE_DONE:
-                self.all_resolved = False
-                self.log.debug("Object %s not done" % cdist_object.name)
-                if cdist_object.satisfied_requirements:
-                    self.log.debug("Running object %s with satisfied requirements" % cdist_object.name)
-                    self.object_run(cdist_object, self.dry_run)
-                    objects_changed = True
-
-        self.log.debug("All resolved: %s Objects changed: %s" % (self.all_resolved, objects_changed))
-
-        # Not all are resolved, but nothing has been changed => bad dependencies!
-        if not objects_changed and not self.all_resolved:
-            # Create list of unfinished objects + their requirements for print
-
-            evil_objects = []
-            good_objects = []
-            for cdist_object in objects:
-                if not cdist_object.state == cdist_object.STATE_DONE:
-                    evil_objects.append("%s: required: %s, autorequired: %s" %
-                        (cdist_object.name, cdist_object.requirements, cdist_object.autorequire))
-                else:
-                    evil_objects.append("%s (%s): required: %s, autorequired: %s" %
-                        (cdist_object.state, cdist_object.name, 
-                        cdist_object.requirements, cdist_object.autorequire))
-
-            errormessage = "Cannot solve requirements for the following objects: %s - solved: %s" % (",".join(evil_objects), ",".join(good_objects))
-            raise cdist.Error(errormessage)
+        for cdist_object in dependency_resolver:
+            self.log.debug("Run object: %s", cdist_object)
+            self.object_run(cdist_object)
