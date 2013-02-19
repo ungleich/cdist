@@ -92,6 +92,20 @@ fi
 
 present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
+# Handle ip="iface|addr, iface|addr" format
+if [ $(expr "${ip}" : ".*|.*") -gt "0" ]; then
+   # If we have multiple IPs defined, $interface doesn't make sense because ip="iface|addr, iface|addr" implies it
+   interface=""
+   SAVE_IFS="$IFS"
+   IFS=", "
+   for cur_ip in ${ip}; do
+      # Just get the last IP address for SSH to listen on
+      mgmt_ip=$(echo "${ip}" | sed -E -e 's/^.*\|(.*)\/[0-9]+$/\1/')
+   done
+   IFS="$SAVE_IFS"
+else
+   mgmt_ip=$(echo "${ip}" | cut '-d ' -f1)
+fi
 
 stopJail() {
 # Check $status before issuing command
@@ -160,10 +174,10 @@ EOF
 createJail() {
 # Create the jail directory
 cat <<EOF
+   umask 022
    mkdir -p ${jaildir}/${name}
    if [ ! -d "${jaildir}/base" ]; then
       mkdir "${jaildir}/base"
-      chmod 755 "${jaildir}/base"
       tar -xzf "${jaildir}/jailbase.tgz" -C "${jaildir}/base"
       if [ ! -d "${jaildir}/base/usr/local" ]; then
          mkdir -p "${jaildir}/base/usr/local"
@@ -250,7 +264,7 @@ if [ -n "$interface" ]; then
 jail_${name}_interface="${interface}"
 END
 EOF
-else
+elif [ "$(expr "${ip}" : ".*|.*")" -eq "0" ]; then
    cat <<EOF
    interface=\$(ifconfig -l | cut '-d ' -f1)
    cat >>/etc/rc.conf <<END
@@ -316,8 +330,7 @@ echo syslogd_flags=\"-ss\" >>"${jaildir}/rw/${name}/etc/rc.conf"
 EOF
 # Configure SSHd's listening address
 cat <<EOF
-ip=\$(echo "${ip}" | cut '-d ' -f1)
-sed -i '.bak' "s/#ListenAddress 0.0.0.0/ListenAddress \${ip}/" "${jaildir}/rw/${name}/etc/ssh/sshd_config"
+sed -E -i '.bak' -e "s/#?ListenAddress 0.0.0.0/ListenAddress ${mgmt_ip}/" "${jaildir}/rw/${name}/etc/ssh/sshd_config"
 EOF
 }
 
