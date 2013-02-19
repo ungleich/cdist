@@ -22,7 +22,19 @@
 #
 
 destination="/$__object_id"
+# Since $__global isn't available, use uname directly, uname and tr are both part of POSIX
+os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+
+case "$os" in
+   "freebsd")
+      cmd="stat -f %Sg"
+      ;;
+   *)
+      cmd="stat -c %G"
+      ;;
+esac
 
 if [ -e "$destination" ]; then
-  stat -c "%G" "$destination"
+  $cmd "$destination"
 fi
+
