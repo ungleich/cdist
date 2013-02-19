@@ -22,8 +22,7 @@
 #
 
 destination="/$__object_id"
-# Since $__global isn't available, use uname directly, uname and tr are both part of POSIX
-os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+os=$("$__explorer/os")
 
 case "$os" in
    "freebsd")
