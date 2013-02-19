@@ -160,10 +160,10 @@ EOF
 createJail() {
 # Create the jail directory
 cat <<EOF
+   umask 022
    mkdir -p ${jaildir}/${name}
    if [ ! -d "${jaildir}/base" ]; then
       mkdir "${jaildir}/base"
-      chmod 755 "${jaildir}/base"
       tar -xzf "${jaildir}/jailbase.tgz" -C "${jaildir}/base"
       if [ ! -d "${jaildir}/base/usr/local" ]; then
          mkdir -p "${jaildir}/base/usr/local"
