@@ -22,7 +22,18 @@
 #
 
 destination="/$__object_id"
+os=$("$__explorer/os")
+
+case "$os" in
+   "freebsd")
+      cmd="stat -f %Sg"
+      ;;
+   *)
+      cmd="stat -c %G"
+      ;;
+esac
 
 if [ -e "$destination" ]; then
-  stat -c "%G" "$destination"
+  $cmd "$destination"
 fi
+
