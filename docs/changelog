@@ -4,6 +4,12 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+next:
+	* Core: Use dynamic dependency resolver to allow indirect self dependencies
+	* Type __git: Support mode and fix owner/group settings (contradict)
+	* Type __jail: State absent should implies stopped (Jake Guffey)
+	* Explorer os: Added Slackware support (Eivind Uggedal)
+
 2.1.0: 2012-12-09
 	* Core: Ensure global explorers are executable
 	* Core: Ensure type explorers are executable (Steven Armstrong)

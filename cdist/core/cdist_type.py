@@ -42,6 +42,26 @@ class CdistType(object):
 
     """
 
+    def __init__(self, base_path, name):
+        self.base_path = base_path
+        self.name = name
+        self.path = self.name
+        self.absolute_path = os.path.join(self.base_path, self.path)
+        if not os.path.isdir(self.absolute_path):
+            raise NoSuchTypeError(self.path, self.absolute_path)
+        self.manifest_path = os.path.join(self.name, "manifest")
+        self.explorer_path = os.path.join(self.name, "explorer")
+        self.gencode_local_path = os.path.join(self.name, "gencode-local")
+        self.gencode_remote_path = os.path.join(self.name, "gencode-remote")
+        self.manifest_path = os.path.join(self.name, "manifest")
+
+        self.__explorers = None
+        self.__required_parameters = None
+        self.__required_multiple_parameters = None
+        self.__optional_parameters = None
+        self.__optional_multiple_parameters = None
+        self.__boolean_parameters = None
+
     @classmethod
     def list_types(cls, base_path):
         """Return a list of type instances"""
@@ -64,26 +84,6 @@ class CdistType(object):
             cls._instances[name] = instance
             # return instance so __init__ is called
         return cls._instances[name]
-
-    def __init__(self, base_path, name):
-        self.base_path = base_path
-        self.name = name
-        self.path = self.name
-        self.absolute_path = os.path.join(self.base_path, self.path)
-        if not os.path.isdir(self.absolute_path):
-            raise NoSuchTypeError(self.path, self.absolute_path)
-        self.manifest_path = os.path.join(self.name, "manifest")
-        self.explorer_path = os.path.join(self.name, "explorer")
-        self.gencode_local_path = os.path.join(self.name, "gencode-local")
-        self.gencode_remote_path = os.path.join(self.name, "gencode-remote")
-        self.manifest_path = os.path.join(self.name, "manifest")
-
-        self.__explorers = None
-        self.__required_parameters = None
-        self.__required_multiple_parameters = None
-        self.__optional_parameters = None
-        self.__optional_multiple_parameters = None
-        self.__boolean_parameters = None
 
     def __repr__(self):
         return '<CdistType %s>' % self.name

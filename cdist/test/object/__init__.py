@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -35,22 +36,33 @@ type_base_path = op.join(fixtures, 'type')
 
 class ObjectClassTestCase(test.CdistTestCase):
 
+    def setUp(self):
+        self.expected_object_names = sorted([
+            '__first/child',
+            '__first/dog',
+            '__first/man',
+            '__first/woman',
+            '__second/on-the',
+            '__second/under-the',
+            '__third/moon'])
+
+        self.expected_objects = []
+        for cdist_object_name in self.expected_object_names:
+            cdist_type, cdist_object_id = cdist_object_name.split("/", maxsplit=1)
+            cdist_object = core.CdistObject(core.CdistType(type_base_path, cdist_type), object_base_path, cdist_object_id)
+            self.expected_objects.append(cdist_object)
+ 
     def test_list_object_names(self):
-        object_names = list(core.CdistObject.list_object_names(object_base_path))
-        self.assertEqual(object_names, ['__first/man', '__second/on-the', '__third/moon'])
+       found_object_names = sorted(list(core.CdistObject.list_object_names(object_base_path)))
+       self.assertEqual(found_object_names, self.expected_object_names)
 
     def test_list_type_names(self):
         type_names = list(cdist.core.CdistObject.list_type_names(object_base_path))
         self.assertEqual(type_names, ['__first', '__second', '__third'])
 
     def test_list_objects(self):
-        objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
-        objects_expected = [
-            core.CdistObject(core.CdistType(type_base_path, '__first'), object_base_path, 'man'),
-            core.CdistObject(core.CdistType(type_base_path, '__second'), object_base_path, 'on-the'),
-            core.CdistObject(core.CdistType(type_base_path, '__third'), object_base_path, 'moon'),
-        ]
-        self.assertEqual(objects, objects_expected)
+        found_objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
+        self.assertEqual(found_objects, self.expected_objects)
 
 
 class ObjectIdTestCase(test.CdistTestCase):
@@ -200,3 +212,54 @@ class ObjectTestCase(test.CdistTestCase):
         self.assertTrue(isinstance(other_object, core.CdistObject))
         self.assertEqual(other_object.cdist_type.name, '__first')
         self.assertEqual(other_object.object_id, 'man')
+
+
+
+class ObjectResolveRequirementsTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
+        self.object_index = dict((o.name, o) for o in self.objects)
+        self.object_names = [o.name for o in self.objects]
+
+        print(self.objects)
+
+        self.cdist_type = core.CdistType(type_base_path, '__third')
+        self.cdist_object = core.CdistObject(self.cdist_type, object_base_path, 'moon') 
+
+    def tearDown(self):
+        for o in self.objects:
+            o.requirements = []
+
+    def test_find_requirements_by_name_string(self):
+        """Check that resolving requirements by name works (require all objects)"""
+        requirements = self.object_names
+
+        self.cdist_object.requirements = requirements
+
+        found_requirements = sorted(self.cdist_object.find_requirements_by_name(self.cdist_object.requirements))
+        expected_requirements = sorted(self.objects)
+
+        self.assertEqual(found_requirements, expected_requirements)
+
+    def test_find_requirements_by_name_pattern(self):
+        """Test whether pattern matching on requirements works"""
+
+        # Matches all objects in the end
+        requirements = ['__first/*', '__second/*-the', '__third/moon']
+
+        self.cdist_object.requirements = requirements
+
+        expected_requirements = sorted(self.objects)
+        found_requirements = sorted(self.cdist_object.find_requirements_by_name(self.cdist_object.requirements))
+
+        self.assertEqual(expected_requirements, found_requirements)
+
+    def test_requirement_not_found(self):
+        """Ensure an exception is thrown for missing depedencies"""
+        cdist_object = self.object_index['__first/man']
+        cdist_object.requirements = ['__does/not/exist']
+
+        with self.assertRaises(core.cdist_object.RequirementNotFoundError):
+            # Use list, as generator does not (yet) raise the error
+            list(cdist_object.find_requirements_by_name(cdist_object.requirements))

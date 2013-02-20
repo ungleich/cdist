@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,27 +18,11 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Ensure git is present
+# Check whether file exists or not
 #
 
-__package git --state present
+destination="/$__object_id"
 
-state_should=present
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
-
-# Let __directory handle removal of git repos
-
-case "$state_should" in
-    present)
-        :
-    ;;
-
-    absent)
-        __directory "$__object_id" --state absent
-    ;;
-
-    *)
-        echo "Unknown state: $state_should" >&2
-        exit 1
-    ;;
-esac
+if [ -e "$destination" ]; then
+  stat -c "%G" "$destination"
+fi
