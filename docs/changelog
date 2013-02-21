@@ -9,6 +9,7 @@ next:
 	* Type __git: Support mode and fix owner/group settings (contradict)
 	* Type __jail: State absent should implies stopped (Jake Guffey)
 	* Explorer os: Added Slackware support (Eivind Uggedal)
+	* Type __directory: Make stat call compatible with FreeBSD (Jake Guffey)
 
 2.1.0: 2012-12-09
 	* Core: Ensure global explorers are executable
