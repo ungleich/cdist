@@ -23,6 +23,7 @@ import logging
 import os
 import itertools
 import fnmatch
+import pprint
 
 import cdist
 
@@ -77,14 +78,15 @@ class DependencyResolver(object):
         lists of all dependencies including the key object itself.
         """
         if self._dependencies is None:
-            log.info("Resolving dependencies...")
-            self._dependencies = d = {}
+            self.log.info("Resolving dependencies...")
+            self._dependencies = {}
             self._preprocess_requirements()
             for name,cdist_object in self.objects.items():
                 resolved = []
                 unresolved = []
                 self._resolve_object_dependencies(cdist_object, resolved, unresolved)
-                d[name] = resolved
+                self._dependencies[name] = resolved
+            self.log.debug(self._dependencies)
         return self._dependencies
 
     def find_requirements_by_name(self, requirements):
@@ -120,9 +122,12 @@ class DependencyResolver(object):
                 # that the parent has so that user defined requirements are 
                 # fullfilled and processed in the expected order.
                 for auto_requirement in self.find_requirements_by_name(cdist_object.autorequire):
-                    for requirement in cdist_object.requirements:
-                        if requirement not in auto_requirement.requirements:
-                            auto_requirement.requirements.append(requirement)
+                    for requirement in self.find_requirements_by_name(cdist_object.requirements):
+                        requirement_object_all_requirements = list(requirement.requirements) + list(requirement.autorequire)
+                        if (requirement.name not in auto_requirement.requirements
+                            and auto_requirement.name not in requirement_object_all_requirements):
+                            self.log.debug('Adding %s to %s.requirements', requirement.name, auto_requirement)
+                            auto_requirement.requirements.append(requirement.name)
                 # On the other hand the parent shall depend on all the children
                 # it created so that the user can setup dependencies on it as a 
                 # whole without having to know anything about the parents 
@@ -149,7 +154,9 @@ class DependencyResolver(object):
                 self.log.debug("Object %s requires %s", cdist_object, required_object)
                 if required_object not in resolved:
                     if required_object in unresolved:
-                        raise CircularReferenceError(cdist_object, required_object)
+                        error = CircularReferenceError(cdist_object, required_object)
+                        self.log.error('%s: %s', error, pprint.pformat(self._dependencies))
+                        raise error
                     self._resolve_object_dependencies(required_object, resolved, unresolved)
             resolved.append(cdist_object)
             unresolved.remove(cdist_object)

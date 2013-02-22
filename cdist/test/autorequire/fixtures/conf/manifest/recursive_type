@@ -1,0 +1,2 @@
+__git foo
+require="__git/foo" __git bar
