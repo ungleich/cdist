@@ -32,6 +32,7 @@ import pprint
 
 import cdist
 from cdist import core
+from cdist.resolver import CircularReferenceError
 
 
 class ConfigInstall(object):
@@ -96,7 +97,7 @@ class ConfigInstall(object):
             if unmet_reqs:
                 seen_reqs = [req for req in unmet_reqs if req in seen_objs]
                 if seen_reqs:
-                    raise Exception("CircularDependency detected between %s and requires: %s"%(obj.name,str(seen_reqs)))
+                    raise CircularReferenceError(obj,obj.object_from_name(seen_reqs[0]))
                 deps.extend(obj.find_requirements_by_name(unmet_reqs))
                 continue
             if obj.state != core.CdistObject.STATE_PREPARED:
@@ -106,7 +107,7 @@ class ConfigInstall(object):
             if unmet_autoreqs:
                 seen_reqs = [req for req in unmet_autoreqs if req in seen_objs]
                 if seen_reqs:
-                    raise Exception("CircularDependency detected between %s and autorequires %s"%(obj.name,str(seen_reqs)))
+                    raise CircularReferenceError(obj,obj.object_from_name(seen_reqs[0]))
                 deps.extend(obj.find_requirements_by_name(unmet_autoreqs))
                 continue
 

@@ -66,7 +66,6 @@ class AutorequireTestCase(test.CdistTestCase):
 
     def test_implicit_dependencies(self):
         self.context.initial_manifest = os.path.join(self.context.local.manifest_path, 'implicit_dependencies')
-        self.config.stage_prepare()
 
         objects = core.CdistObject.list_objects(self.context.local.object_path, self.context.local.type_path)
         dependency_resolver = resolver.DependencyResolver(objects)
@@ -80,12 +79,10 @@ class AutorequireTestCase(test.CdistTestCase):
 
     def test_circular_dependency(self):
         self.context.initial_manifest = os.path.join(self.context.local.manifest_path, 'circular_dependency')
-        self.config.stage_prepare()
+        self.config.tree_deploy()
         # raises CircularDependecyError
-        self.config.stage_run()
 
     def test_recursive_type(self):
-        self.context.initial_manifest = os.path.join(self.config.local.manifest_path, 'recursive_type')
-        self.config.stage_prepare()
+        self.context.initial_manifest = os.path.join(self.config.context.local.manifest_path, 'recursive_type')
+        self.config.tree_deploy()
         # raises CircularDependecyError
-        self.config.stage_run()
