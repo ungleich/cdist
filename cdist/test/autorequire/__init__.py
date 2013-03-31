@@ -64,18 +64,6 @@ class AutorequireTestCase(test.CdistTestCase):
         os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
 
-    def test_implicit_dependencies(self):
-        self.context.initial_manifest = os.path.join(self.context.local.manifest_path, 'implicit_dependencies')
-
-        objects = core.CdistObject.list_objects(self.context.local.object_path, self.context.local.type_path)
-        dependency_resolver = resolver.DependencyResolver(objects)
-        expected_dependencies = [
-            dependency_resolver.objects['__package_special/b'],
-            dependency_resolver.objects['__package/b'],
-            dependency_resolver.objects['__package_special/a']
-        ]
-        resolved_dependencies = dependency_resolver.dependencies['__package_special/a']
-        self.assertEqual(resolved_dependencies, expected_dependencies)
 
     def test_circular_dependency(self):
         self.context.initial_manifest = os.path.join(self.context.local.manifest_path, 'circular_dependency')
