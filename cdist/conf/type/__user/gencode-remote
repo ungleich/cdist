@@ -104,7 +104,7 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
 else
    for property in $(ls .); do
       new_value="$(cat "$property")"
-      if [ -z $new_value ];then       # Boolean values have no value
+      if [ -z "$new_value" ];then       # Boolean values have no value
           set -- "$@" "$(shorten_property $property)"
       else
           set -- "$@" "$(shorten_property $property)" \'$new_value\'
