@@ -38,7 +38,7 @@ if [ "$state_is" != "$state_should" ]; then
       present)
          cat << DONE
 tmp=\$($mktemp)
-crontab -u $user -l > \$tmp
+crontab -u $user -l > \$tmp || true
 cat >> \$tmp << EOC
 $(cat "$__object/parameter/entry")
 EOC
