@@ -36,7 +36,11 @@ owner::
 BOOLEAN PARAMETERS
 ------------------
 parents::
-   Whether to create parents as well (mkdir -p behaviour)
+   Whether to create parents as well (mkdir -p behaviour).
+   Warning: all intermediate directory permissions default
+   to whatever mkdir -p does. 
+
+   Usually this means root:root, 0700.
 
 recursive::
    If supplied the chgrp and chown call will run recursively.
