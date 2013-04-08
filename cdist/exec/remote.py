@@ -60,7 +60,7 @@ class Remote(object):
     def create_files_dirs(self):
         self.rmdir(self.base_path)
         self.mkdir(self.base_path)
-        self.run(["/bin/chmod", "700", self.base_path])
+        self.run(["chmod", "0700", self.base_path])
         self.mkdir(self.conf_path)
 
     def rmdir(self, path):
