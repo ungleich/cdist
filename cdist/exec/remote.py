@@ -60,6 +60,7 @@ class Remote(object):
     def create_files_dirs(self):
         self.rmdir(self.base_path)
         self.mkdir(self.base_path)
+        self.run(["/bin/chmod", "700", self.base_path])
         self.mkdir(self.conf_path)
 
     def rmdir(self, path):
@@ -99,9 +100,6 @@ class Remote(object):
         # prefix given command with remote_exec
         cmd = self._exec.split()
         cmd.append(self.target_host)
-
-        # Always call umask before actual call to ensure proper file permissions
-        cmd.append("umask 077;")
 
         # FIXME: replace this by -o SendEnv name -o SendEnv name ... to ssh?
         # can't pass environment to remote side, so prepend command with
