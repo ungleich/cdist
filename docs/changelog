@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+next:
+	* Core: Make global explorers available to initial manifest (Arkaitz Jimenez)
+
 2.1.1: 2013-04-08
 	* Core: Use dynamic dependency resolver to allow indirect self dependencies
 	* Core: Remove umask call - protect /var/lib/cdist only (Arkaitz Jimenez)
