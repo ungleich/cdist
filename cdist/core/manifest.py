@@ -106,6 +106,7 @@ class Manifest(object):
         env.update(self.env)
         env['__cdist_manifest'] = initial_manifest
         env['__manifest'] = self.local.manifest_path
+        env['__explorer'] = self.local.global_explorer_out_path
 
         return env
 
