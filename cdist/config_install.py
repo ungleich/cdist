@@ -32,7 +32,7 @@ import pprint
 
 import cdist
 from cdist import core
-from cdist import resolver
+from cdist.resolver import CircularReferenceError
 
 
 class ConfigInstall(object):
@@ -65,8 +65,7 @@ class ConfigInstall(object):
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
-        self.stage_prepare()
-        self.stage_run()
+        self.tree_deploy()
 
     def deploy_and_cleanup(self):
         """Do what is most often done: deploy & cleanup"""
@@ -76,25 +75,47 @@ class ConfigInstall(object):
         self.log.info("Finished successful run in %s seconds",
             time.time() - start_time)
 
-    def stage_prepare(self):
-        """Do everything for a deploy, minus the actual code stage"""
+    def tree_deploy(self):
+        """ Walks the dependency tree executing manifests and object code in strict dependency order
+        waiting to execute manifests/resolvers till the dependencies object code has been executed
+        """
         self.explorer.run_global_explorers(self.context.local.global_explorer_out_path)
         self.manifest.run_initial_manifest(self.context.initial_manifest)
 
         self.log.info("Running object manifests and type explorers")
 
-        # Continue process until no new objects are created anymore
-        new_objects_created = True
-        while new_objects_created:
-            new_objects_created = False
-            for cdist_object in core.CdistObject.list_objects(self.context.local.object_path,
-                                                         self.context.local.type_path):
-                if cdist_object.state == core.CdistObject.STATE_PREPARED:
-                    self.log.debug("Skipping re-prepare of object %s", cdist_object)
-                    continue
-                else:
-                    self.object_prepare(cdist_object)
-                    new_objects_created = True
+        deps = list(core.CdistObject.list_objects(self.context.local.object_path,self.context.local.type_path))
+        ready_objects = {}
+        seen_objs = set()
+        while deps:
+            obj = deps[-1]
+            if obj.name in ready_objects:
+                deps.pop()
+                continue
+            seen_objs.add(obj.name)
+            unmet_reqs = [ req for req in obj.requirements if req not in ready_objects ]
+            if unmet_reqs:
+                seen_reqs = [req for req in unmet_reqs if req in seen_objs]
+                if seen_reqs:
+                    raise CircularReferenceError(obj,obj.object_from_name(seen_reqs[0]))
+                deps.extend(obj.find_requirements_by_name(unmet_reqs))
+                continue
+            if obj.state != core.CdistObject.STATE_PREPARED:
+                self.object_prepare(obj)
+
+            unmet_autoreqs = [ req for req in obj.autorequire if req not in ready_objects]
+            if unmet_autoreqs:
+                seen_reqs = [req for req in unmet_autoreqs if req in seen_objs]
+                if seen_reqs:
+                    raise CircularReferenceError(obj,obj.object_from_name(seen_reqs[0]))
+                deps.extend(obj.find_requirements_by_name(unmet_autoreqs))
+                continue
+
+            self.object_run(obj)
+            seen_objs.remove(obj.name)
+            ready_objects[obj.name] = obj
+            deps.pop()
+
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
@@ -109,7 +130,6 @@ class ConfigInstall(object):
         if cdist_object.state == core.CdistObject.STATE_DONE:
             raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
 
-        cdist_type = cdist_object.cdist_type
 
         # Generate
         self.log.info("Generating and executing code for " + cdist_object.name)
@@ -129,18 +149,3 @@ class ConfigInstall(object):
         # Mark this object as done
         self.log.debug("Finishing run of " + cdist_object.name)
         cdist_object.state = core.CdistObject.STATE_DONE
-
-    def stage_run(self):
-        """The final (and real) step of deployment"""
-        self.log.info("Generating and executing code")
-
-        objects = core.CdistObject.list_objects(
-            self.context.local.object_path,
-            self.context.local.type_path)
-
-        dependency_resolver = resolver.DependencyResolver(objects)
-        self.log.debug(pprint.pformat(dependency_resolver.dependencies))
-
-        for cdist_object in dependency_resolver:
-            self.log.debug("Run object: %s", cdist_object)
-            self.object_run(cdist_object)
