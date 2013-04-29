@@ -20,6 +20,6 @@
 #
 #
 
-if command -v hostname; then
-   hostname
+if command -v hostname >/dev/null; then
+   hostname -f
 fi

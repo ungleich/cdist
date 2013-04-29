@@ -179,7 +179,7 @@ ENVIRONMENT VARIABLES
 ---------------------
 __explorer::
     Directory that contains all global explorers.
-    Available for: explorer, type explorer
+    Available for: initial manifest, explorer, type explorer
 __manifest::
     Directory that contains the initial manifest.
     Available for: initial manifest, type manifest

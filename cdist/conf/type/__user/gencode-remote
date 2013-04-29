@@ -39,6 +39,7 @@ shorten_property() {
 	password) ret="-p";;
 	shell) ret="-s";;
 	uid) ret="-u";;
+    create-home) ret="-m";;
     esac
     echo "$ret"
 }
@@ -76,6 +77,7 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
          home)    field=6 ;;
          shell)   field=7 ;;
          uid)     field=3 ;;
+         create-home) continue;; # Does not apply to user modification
       esac
 
       # If we haven't already set $current_value above, pull it from the
@@ -102,7 +104,11 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
 else
    for property in $(ls .); do
       new_value="$(cat "$property")"
-      set -- "$@" "$(shorten_property $property)" \'$new_value\'
+      if [ -z "$new_value" ];then       # Boolean values have no value
+          set -- "$@" "$(shorten_property $property)"
+      else
+          set -- "$@" "$(shorten_property $property)" \'$new_value\'
+      fi
    done
 
    if [ "$os" = "freebsd" ]; then

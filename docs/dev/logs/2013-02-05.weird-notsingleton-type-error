@@ -1,0 +1,15 @@
+
+Hard to find the source bug/problem:
+
+DEBUG: solr.petspremium.de: (emulator) __file//etc/solr/solr.xml: Finished __file/etc/solr/solr.xml/.cdist {'mode': '0644', 'source': '/home/users/nico/.tmp/tmpn27s24/out/conf/type/__petspremium_solr/files/solr/solr.xml'}
++ for file in '$(find . -type f | sed '\''s,^./,,'\'')'
++ dfile=/etc/solr/web.xml
++ reqdir=/etc/solr
++ require=__directory/etc/solr
++ __file /etc/solr/web.xml --source /home/users/nico/.tmp/tmpn27s24/out/conf/type/__petspremium_solr/files/solr/web.xml --mode 0644
+DEBUG: solr.petspremium.de: (emulator): /home/users/nico/.tmp/tmpn27s24/out/bin/__file: Namespace(mode='0644', object_id=['/etc/solr/web.xml'], source='/home/users/nico/.tmp/tmpn27s24/out/conf/type/__petspremium_solr/files/solr/web.xml')
+DEBUG: solr.petspremium.de: (emulator) __file//etc/solr/web.xml: Recording requirement: __directory/etc/solr
+DEBUG: solr.petspremium.de: (emulator) __file//etc/solr/web.xml: Finished __file/etc/solr/web.xml/.cdist {'source': '/home/users/nico/.tmp/tmpn27s24/out/conf/type/__petspremium_solr/files/solr/web.xml', 'mode': '0644'}
+ERROR: solr.petspremium.de: Type __directory requires object id (is not a singleton type)
+INFO: Total processing time for 1 host(s): 9.756716251373291
+ERROR: Failed to deploy to the following hosts: solr.petspremium.de
