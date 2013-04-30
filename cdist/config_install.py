@@ -63,20 +63,16 @@ class ConfigInstall(object):
             shutil.rmtree(destination)
         shutil.move(self.context.local.out_path, destination)
 
-    def deploy_to(self):
-        """Mimic the old deploy to: Deploy to one host"""
+    def deploy_and_cleanup(self):
+        """Do what is most often done: deploy & cleanup"""
+        start_time = time.time()
 
         # Old Code
-        # self.stage_prepare()
-        # self.stage_run()
+        #self.deploy_to()
 
         # New Code
         self.run()
 
-    def deploy_and_cleanup(self):
-        """Do what is most often done: deploy & cleanup"""
-        start_time = time.time()
-        self.deploy_to()
         self.cleanup()
         self.log.info("Finished successful run in %s seconds",
             time.time() - start_time)
@@ -152,8 +148,46 @@ class ConfigInstall(object):
                 ("; ".join(info_string)))
 
     ###################################################################### 
+    # Code required by both methods (which will stay)
+    #
+
+    def object_run(self, cdist_object, dry_run=False):
+        """Run gencode and code for an object"""
+        self.log.debug("Trying to run object " + cdist_object.name)
+        if cdist_object.state == core.CdistObject.STATE_DONE:
+            raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
+
+        cdist_type = cdist_object.cdist_type
+
+        # Generate
+        self.log.info("Generating and executing code for " + cdist_object.name)
+        cdist_object.code_local = self.code.run_gencode_local(cdist_object)
+        cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
+        if cdist_object.code_local or cdist_object.code_remote:
+            cdist_object.changed = True
+
+        # Execute
+        if not dry_run:
+            if cdist_object.code_local:
+                self.code.run_code_local(cdist_object)
+            if cdist_object.code_remote:
+                self.code.transfer_code_remote(cdist_object)
+                self.code.run_code_remote(cdist_object)
+
+        # Mark this object as done
+        self.log.debug("Finishing run of " + cdist_object.name)
+        cdist_object.state = core.CdistObject.STATE_DONE
+
+
+    ###################################################################### 
     # Stages based code
     #
+
+    def deploy_to(self):
+        """Mimic the old deploy to: Deploy to one host"""
+        self.stage_prepare()
+        self.stage_run()
+
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
@@ -182,33 +216,6 @@ class ConfigInstall(object):
         self.explorer.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.state = core.CdistObject.STATE_PREPARED
-
-    def object_run(self, cdist_object, dry_run=False):
-        """Run gencode and code for an object"""
-        self.log.debug("Trying to run object " + cdist_object.name)
-        if cdist_object.state == core.CdistObject.STATE_DONE:
-            raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
-
-        cdist_type = cdist_object.cdist_type
-
-        # Generate
-        self.log.info("Generating and executing code for " + cdist_object.name)
-        cdist_object.code_local = self.code.run_gencode_local(cdist_object)
-        cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
-        if cdist_object.code_local or cdist_object.code_remote:
-            cdist_object.changed = True
-
-        # Execute
-        if not dry_run:
-            if cdist_object.code_local:
-                self.code.run_code_local(cdist_object)
-            if cdist_object.code_remote:
-                self.code.transfer_code_remote(cdist_object)
-                self.code.run_code_remote(cdist_object)
-
-        # Mark this object as done
-        self.log.debug("Finishing run of " + cdist_object.name)
-        cdist_object.state = core.CdistObject.STATE_DONE
 
     def stage_run(self):
         """The final (and real) step of deployment"""
