@@ -127,11 +127,11 @@ class ConfigInstall(object):
         unfinished_object_names = []
         for cdist_object in self.object_list():
             if not cdist_object.state == cdist_object.STATE_DONE:
-            unfinished_object_names.append(cdist_object.name)
+                unfinished_object_names.append(cdist_object.name)
 
         if unfinished_object_names:
             raise cdist.Error("The following objects could not be resolved: %s" %
-                (" ".join(unfinished_object_names))
+                (" ".join(unfinished_object_names)))
 
     ###################################################################### 
     # Stages based code

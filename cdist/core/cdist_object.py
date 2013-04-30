@@ -224,13 +224,12 @@ class CdistObject(object):
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 
-    @property
-    def requirements_satisfied(self):
+    def requirements_satisfied(self, requirements):
         """Return state whether normal depedencies are satisfied"""
 
         satisfied = True
 
-        for requirement in self.requirements:
+        for requirement in requirements:
             cdist_object = self.object_from_name(requirement)
 
             if not cdist_object.state == self.STATE_DONE:
@@ -240,49 +239,6 @@ class CdistObject(object):
         log.debug("%s is satisfied: %s" % (self.name, satisfied))
 
         return satisfied
-
-    @property
-    def satisfied_requirements(self):
-        """Return state whether all of our dependencies have been resolved already"""
-
-        satisfied = True
-
-        for requirement in self.all_requirements:
-            log.debug("%s: Checking requirement %s (%s) .." % (self.name, requirement.name, requirement.state))
-            if not requirement.state == self.STATE_DONE:
-                satisfied = False
-                break
-        log.debug("%s is satisfied: %s" % (self.name, satisfied))
-
-        return satisfied
-
-
-    def find_requirements_by_name(self, requirements):
-        """Takes a list of requirement patterns and returns a list of matching object instances.
-
-        Patterns are expected to be Unix shell-style wildcards for use with fnmatch.filter.
-
-        find_requirements_by_name(['__type/object_id', '__other_type/*']) -> 
-            [<Object __type/object_id>, <Object __other_type/any>, <Object __other_type/match>]
-        """
-
-
-        # FIXME: think about where/when to store this - probably not here
-        self.objects = dict((o.name, o) for o in self.list_objects(self.base_path, self.cdist_type.base_path))
-        object_names = self.objects.keys()
-
-        for pattern in requirements:
-            found = False
-            for requirement in fnmatch.filter(object_names, pattern):
-                found = True
-                yield self.objects[requirement]
-            if not found:
-                # FIXME: get rid of the singleton object_id, it should be invisible to the code -> hide it in Object
-                singleton = os.path.join(pattern, 'singleton')
-                if singleton in self.objects:
-                    yield self.objects[singleton]
-                else:
-                    raise RequirementNotFoundError(pattern)
 
     @property
     def all_requirements(self):
