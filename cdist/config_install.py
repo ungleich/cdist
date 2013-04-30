@@ -106,7 +106,7 @@ class ConfigInstall(object):
             objects_changed  = False
 
             for cdist_object in self.object_list():
-                if not cdist_object.requirements_satisfied(cdist_object.requirements):
+                if cdist_object.requirements_unfinished(cdist_object.requirements):
                     """We cannot do anything for this poor object"""
                     continue
 
@@ -116,22 +116,40 @@ class ConfigInstall(object):
                     self.object_prepare(cdist_object)
                     objects_changed = True
 
-                if not cdist_object.requirements_satisfied(cdist_object.autorequire):
+                if cdist_object.requirements_unfinished(cdist_object.autorequire):
                     """The previous step created objects we depend on - wait for them"""
                     continue
 
                 if cdist_object.state == core.CdistObject.STATE_PREPARED:
                     self.object_run(cdist_object)
+                    objects_changed = True
 
         # Check whether all objects have been finished
-        unfinished_object_names = []
+        unfinished_objects = []
         for cdist_object in self.object_list():
             if not cdist_object.state == cdist_object.STATE_DONE:
-                unfinished_object_names.append(cdist_object.name)
+                unfinished_objects.append(cdist_object)
 
-        if unfinished_object_names:
+        if unfinished_objects:
+            info_string = []
+
+            for cdist_object in unfinished_objects:
+
+                requirement_names = []
+                autorequire_names = []
+
+                for requirement in cdist_object.requirements_unfinished(cdist_object.requirements):
+                    requirement_names.append(requirement.name)
+
+                for requirement in cdist_object.requirements_unfinished(cdist_object.autorequire):
+                    autorequire_names.append(requirement.name)
+
+                requirements = ", ".join(requirement_names)
+                autorequire  = ", ".join(autorequire_names)
+                info_string.append("%s requires: %s autorequires: %s" % (cdist_object.name, requirements, autorequire))
+
             raise cdist.Error("The following objects could not be resolved: %s" %
-                (" ".join(unfinished_object_names)))
+                ("; ".join(info_string)))
 
     ###################################################################### 
     # Stages based code
