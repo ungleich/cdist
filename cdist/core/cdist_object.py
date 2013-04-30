@@ -61,6 +61,7 @@ class CdistObject(object):
     """
 
     # Constants for use with Object.state
+    STATE_UNDEF = ""
     STATE_PREPARED = "prepared"
     STATE_RUNNING = "running"
     STATE_DONE = "done"
@@ -222,6 +223,23 @@ class CdistObject(object):
             os.makedirs(absolute_parameter_path, exist_ok=False)
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
+
+    @property
+    def requirements_satisfied(self):
+        """Return state whether normal depedencies are satisfied"""
+
+        satisfied = True
+
+        for requirement in self.requirements:
+            cdist_object = self.object_from_name(requirement)
+
+            if not cdist_object.state == self.STATE_DONE:
+                satisfied = False
+                break
+
+        log.debug("%s is satisfied: %s" % (self.name, satisfied))
+
+        return satisfied
 
     @property
     def satisfied_requirements(self):

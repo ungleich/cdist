@@ -1,0 +1,39 @@
+Old:
+
+- global explores (all)
+- initial manifest
+- for each object
+    execute type explorers
+    execute manifest
+
+    continue until all objects (including newly created)
+    have their type explorers/manifests run
+- build dependency tree
+- for each object
+    execute gencode-*
+    execute code-*
+
+New:
+- run all global explorers
+- run initial manifest
+    creates zero or more cdist_objects
+- for each cdist_object
+    if not cdist_object.has_unfullfilled_requirements:
+        execute type explorers
+        execute manifest
+            may create new objects, resulting in autorequirements
+
+            # Gained requirements during manifest run
+            if object.has_auto_requirements():
+                continue
+
+    cdist_object.execute gencode-*
+    cdist_object.execute code-*
+
+
+Requirements / Test cases for requirments / resolver:
+
+    - omnipotence
+    - 
+
+Test

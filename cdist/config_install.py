@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -65,8 +65,13 @@ class ConfigInstall(object):
 
     def deploy_to(self):
         """Mimic the old deploy to: Deploy to one host"""
-        self.stage_prepare()
-        self.stage_run()
+
+        # Old Code
+        # self.stage_prepare()
+        # self.stage_run()
+
+        # New Code
+        self.run()
 
     def deploy_and_cleanup(self):
         """Do what is most often done: deploy & cleanup"""
@@ -75,6 +80,62 @@ class ConfigInstall(object):
         self.cleanup()
         self.log.info("Finished successful run in %s seconds",
             time.time() - start_time)
+
+    ###################################################################### 
+    # New code for running on object priority (not stage priority)
+    #
+
+    def run(self):
+        """The main runner"""
+        self.explorer.run_global_explorers(self.context.local.global_explorer_out_path)
+        self.manifest.run_initial_manifest(self.context.initial_manifest)
+        self.iterate_until_finished()
+
+    def object_list(self):
+        """Short name for object list retrieval"""
+        for cdist_object in core.CdistObject.list_objects(self.context.local.object_path,
+                                                         self.context.local.type_path):
+            yield cdist_object
+
+    def iterate_until_finished(self):
+        # Continue process until no new objects are created anymore
+
+        objects_changed = True
+
+        while objects_changed:
+            objects_changed  = False
+
+            for cdist_object in self.object_list():
+                if not cdist_object.requirements_satisfied(cdist_object.requirements):
+                    """We cannot do anything for this poor object"""
+                    continue
+
+                if cdist_object.state == core.CdistObject.STATE_UNDEF:
+                    """Prepare the virgin object"""
+
+                    self.object_prepare(cdist_object)
+                    objects_changed = True
+
+                if not cdist_object.requirements_satisfied(cdist_object.autorequire):
+                    """The previous step created objects we depend on - wait for them"""
+                    continue
+
+                if cdist_object.state == core.CdistObject.STATE_PREPARED:
+                    self.object_run(cdist_object)
+
+        # Check whether all objects have been finished
+        unfinished_object_names = []
+        for cdist_object in self.object_list():
+            if not cdist_object.state == cdist_object.STATE_DONE:
+            unfinished_object_names.append(cdist_object.name)
+
+        if unfinished_object_names:
+            raise cdist.Error("The following objects could not be resolved: %s" %
+                (" ".join(unfinished_object_names))
+
+    ###################################################################### 
+    # Stages based code
+    #
 
     def stage_prepare(self):
         """Do everything for a deploy, minus the actual code stage"""
@@ -89,6 +150,7 @@ class ConfigInstall(object):
             new_objects_created = False
             for cdist_object in core.CdistObject.list_objects(self.context.local.object_path,
                                                          self.context.local.type_path):
+
                 if cdist_object.state == core.CdistObject.STATE_PREPARED:
                     self.log.debug("Skipping re-prepare of object %s", cdist_object)
                     continue
