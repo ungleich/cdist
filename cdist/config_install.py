@@ -22,12 +22,8 @@
 
 import logging
 import os
-import stat
 import shutil
-import sys
-import tempfile
 import time
-import itertools
 import pprint
 
 import cdist
