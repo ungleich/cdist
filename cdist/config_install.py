@@ -148,7 +148,7 @@ class ConfigInstall(object):
                 autorequire  = ", ".join(autorequire_names)
                 info_string.append("%s requires: %s autorequires: %s" % (cdist_object.name, requirements, autorequire))
 
-            raise cdist.Error("The following objects could not be resolved: %s" %
+            raise cdist.Error("The requirements of the following objects could not be resolved: %s" %
                 ("; ".join(info_string)))
 
     ###################################################################### 
