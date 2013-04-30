@@ -32,8 +32,6 @@ import pprint
 
 import cdist
 from cdist import core
-from cdist import resolver
-
 
 class ConfigInstall(object):
     """Cdist main class to hold arbitrary data"""
