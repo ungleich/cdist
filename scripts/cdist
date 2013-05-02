@@ -62,6 +62,8 @@ def commandline():
     parser['configinstall'].add_argument('-i', '--initial-manifest', 
          help='Path to a cdist manifest or \'-\' to read from stdin.',
          dest='manifest', required=False)
+    parser['configinstall'].add_argument('-n', '--dry-run',
+         help='Do not execute code', action='store_true')
     parser['configinstall'].add_argument('-p', '--parallel',
          help='Operate on multiple hosts in parallel',
          action='store_true', dest='parallel')

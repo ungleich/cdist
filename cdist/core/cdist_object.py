@@ -50,7 +50,6 @@ class MissingObjectIdError(cdist.Error):
     def __str__(self):
         return '%s' % (self.message)
 
-
 class CdistObject(object):
     """Represents a cdist object.
 
