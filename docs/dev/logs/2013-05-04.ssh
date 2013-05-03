@@ -1,0 +1,5 @@
+- analysis of ssh connections for callback
+    SSH_CLIENT='::1 38502 22'
+    SSH_CONNECTION='::1 38502 ::1 22'
+
+    -> callback possible to source host
