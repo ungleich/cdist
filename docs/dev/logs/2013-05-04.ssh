@@ -3,3 +3,59 @@
     SSH_CONNECTION='::1 38502 ::1 22'
 
     -> callback possible to source host
+
+
+
+[ target host ]  <--------------|
+    |                           |
+    |                           |
+    |                           |
+    | trigger                   |   configuration
+    |                           |
+    v                           |
+[ configuration host ]      ----|
+
+
+- dynamic port allocation for tunneling
+
+    [1:37] bento:~% ssh -R  0:localhost:22 localhost
+    Warning: Permanently added 'localhost' (ECDSA) to the list of known hosts.
+    Allocated port 53161 for remote forward to localhost:22
+
+    SSH_AUTH_SOCK=/tmp/ssh-zDCWbUVcUK/agent.30749
+    SSH_CLIENT='::1 38587 22'
+    SSH_CONNECTION='::1 38587 ::1 22'
+    SSH_TTY=/dev/pts/21
+
+
+- ssh_config:
+    DynamicForward
+    LocalForward
+    RemoteForward
+
+- testing
+
+[1:52] bento:cdist% netstat -anp | grep 56844
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 127.0.0.1:56844         0.0.0.0:*               LISTEN      -                   
+tcp6       0      0 ::1:56844               :::*                    LISTEN      -                   
+[1:53] bento:cdist% 
+
+
+[1:48] bento:~% ssh -R  0:localhost:22  localhost       
+Allocated port 56844 for remote forward to localhost:22
+...
+
+- chatting
+
+01:42 -!- Irssi: Join to #openssh was synced in 0 secs
+01:42 < telmich> good evening
+01:43 < telmich> I am trying to make use of remote port forwarding using dynamic port 
+                 allocation (port=0) -- I am wondering if there is an easy way to 
+                 access the port number on the remote side easily?
+01:44 < telmich> background for this question is: I'd like to allow various clients to 
+                 login to a configuration server, which then configures the clients by 
+                 using the tunnel the client provides for the server to ssh back into
+02:07 < BasketCase> telmich: afaik you need to use a tool like ss/netstat/lsof to see what port it has open
+

@@ -24,3 +24,5 @@ import os
 
 # SSH_CLIENT and SSH_CONNECTION available
 src_ip = os.environ['SSH_CLIENT'].split()[0]
+
+print("Plain version: Connecting back to %s" % src_ip)
