@@ -18,38 +18,29 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os="$(cat "$__global/explorer/os")"
 user="$(cat "$__object/parameter/user")"
-state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state" 2>/dev/null || echo "present")"
 state_is=$(diff -q "$__object/parameter/entry" "$__object/explorer/entry" \
    && echo present \
    || echo absent
 )
 
-# FreeBSD mktemp doesn't allow execution without at least one param
-if [ "$os" = "freebsd" ]; then
-   mktemp="mktemp -t tmp"
-else
-   mktemp="mktemp"
-fi
-
 if [ "$state_is" != "$state_should" ]; then
    case "$state_should" in
       present)
          cat << DONE
-tmp=\$($mktemp)
-crontab -u $user -l > \$tmp || true
-cat >> \$tmp << EOC
+(
+crontab -u $user -l || true
+cat << EOC
 $(cat "$__object/parameter/entry")
 EOC
-crontab -u $user \$tmp
-rm \$tmp
+) | crontab -u $user -
 DONE
       ;;
       absent)
-         # defined in type manifest
-         prefix="$(cat "$__object/parameter/prefix")"
-         suffix="$(cat "$__object/parameter/suffix")"
+         # NOTE: keep variables in sync in manifest/explorer/gencode-*
+         prefix="#cdist:__cron/$name"
+         suffix="#/cdist:__cron/$name"
          cat << DONE
 crontab -u $user -l | awk -v prefix="$prefix" -v suffix="$suffix" '
 {

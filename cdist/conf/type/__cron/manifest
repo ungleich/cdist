@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -21,9 +21,7 @@
 name="$__object_id"
 user="$(cat "$__object/parameter/user")"
 command="$(cat "$__object/parameter/command")"
-
-# set defaults
-test -f "$__object/parameter/state" || echo "present" > "$__object/parameter/state"
+state="$(cat "$__object/parameter/state" 2>/dev/null || echo "present")"
 
 if [ -f "$__object/parameter/raw" ]; then
    raw="$(cat "$__object/parameter/raw")"
@@ -37,9 +35,11 @@ else
    entry="$minute $hour $day_of_month $month $day_of_week $command"
 fi
 
-# NOTE: if changed, also change in explorers
+# NOTE: keep variables in sync in manifest/explorer/gencode-*
 prefix="#cdist:__cron/$name"
 suffix="#/cdist:__cron/$name"
-echo "$prefix" | tee "$__object/parameter/prefix" > "$__object/parameter/entry"
-echo "$entry" >> "$__object/parameter/entry"
-echo "$suffix" | tee "$__object/parameter/suffix" >> "$__object/parameter/entry"
+cat >> "$__object/parameter/entry" << DONE
+"$prefix"
+"$entry"
+"$suffix"
+DONE
