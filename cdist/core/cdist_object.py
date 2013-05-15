@@ -225,7 +225,7 @@ class CdistObject(object):
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 
     def requirements_unfinished(self, requirements):
-        """Return state whether normal depedencies are satisfied"""
+        """Return state whether requirements are satisfied"""
 
         object_list = []
 
