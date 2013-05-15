@@ -129,6 +129,13 @@ class ConfigInstall(object):
             raise cdist.Error("The requirements of the following objects could not be resolved: %s" %
                 ("; ".join(info_string)))
 
+    def object_prepare(self, cdist_object):
+        """Prepare object: Run type explorer + manifest"""
+        self.log.info("Running manifest and explorers for " + cdist_object.name)
+        self.explorer.run_type_explorers(cdist_object)
+        self.manifest.run_type_manifest(cdist_object)
+        cdist_object.state = core.CdistObject.STATE_PREPARED
+
     def object_run(self, cdist_object, dry_run=False):
         """Run gencode and code for an object"""
         self.log.debug("Trying to run object " + cdist_object.name)

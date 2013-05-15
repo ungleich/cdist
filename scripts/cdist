@@ -160,7 +160,7 @@ def configinstall(args, mode):
                 (time_end - time_start))
 
     if len(failed_hosts) > 0:
-        raise cdist.Error("Failed to deploy to the following hosts: " + 
+        raise cdist.Error("Failed to configure the following hosts: " + 
             " ".join(failed_hosts))
 
 def configinstall_onehost(host, args, mode, parallel):
@@ -179,7 +179,7 @@ def configinstall_onehost(host, args, mode, parallel):
             debug=args.debug)
 
         c = mode(context)
-        c.deploy_and_cleanup()
+        c.run()
         context.cleanup()
 
     except cdist.Error as e:
