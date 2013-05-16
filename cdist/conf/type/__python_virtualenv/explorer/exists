@@ -1,0 +1,7 @@
+testfile="/$__object_id/bin/activate"
+
+if [ -f "$testfile" ]; then
+    echo yes
+else
+    echo no
+fi

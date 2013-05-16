@@ -1,0 +1,7 @@
+exists=$(cat "$__object/explorer/exists")
+#source=$(cat "$__object/parameter/source")
+dir="/$__object_id"
+
+if [ "$exists" = no ]; then
+    echo virtualenv -q "$dir"
+fi

@@ -1,0 +1,5 @@
+dir="/$__object_id"
+
+__directory "$dir"
+
+__package python-virtualenv --state installed
