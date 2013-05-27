@@ -184,7 +184,12 @@ class Emulator(object):
                 if len(requirement) == 0: continue
 
                 # Raises an error, if object cannot be created
-                cdist_object = self.cdist_object.object_from_name(requirement)
+                try:
+                    cdist_object = self.cdist_object.object_from_name(requirement)
+                except core.cdist_type.NoSuchTypeError:
+                    self.log.error("%s requires object %s with non-existing type at %s"  % (self.cdist_object.name, requirement, self.object_source))
+                    raise
+
 
                 self.log.debug("Recording requirement: " + requirement)
 
