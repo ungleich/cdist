@@ -1,0 +1,85 @@
+cdist-type__ssh_known_hosts(7)
+==============================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__ssh_known_hosts - manage ssh known_hosts files
+
+
+DESCRIPTION
+-----------
+Adds or removes ssh keys from a known_hosts file.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+owner::
+   the user owning the known_hosts file, defaults to object_id.
+   If the special owner __system__ is given, manages the system wide 
+   known hosts file at /etc/ssh/ssh_known_hosts
+
+state::
+   if the given keys should be 'present' or 'absent', defaults to 'present'.
+
+file::
+   an alternative destination file, defaults to ~$owner/.ssh/known_hosts
+   or /etc/ssh/ssh_known_hosts if owner == __system__
+
+comment::
+   an optional comment
+
+key::
+   the ssh key which shall be added to the known_hosts file.
+   Must be a string and can be specified multiple times.
+   Is optional if the from-cache parameter is given, required otherwise.
+
+
+BOOLEAN PARAMETERS
+------------------
+from-cache::
+   scan the cache dir for collected ssh host keys and add them to the 
+   known_hosts file.
+
+noparent::
+   don't create or change ownership and permissions of the directory containing
+   the known_hosts file
+
+nofile::
+   don't manage existence, ownership and permissions of the the known_hosts
+   file
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# TODOC
+__ssh_known_hosts __system__ --from-cache
+
+__ssh_known_hosts fred --from-cache
+
+__ssh_known_hosts some-fancy-id \
+   --owner fred \
+   --key "<host>,[ip] ssh-rsa AXYZAAB3NzaC1yc2..." \
+   --key "<host>,[ip] ssh-rsa AXYZAAB3NzaC1yc2..." \
+   --comment "machines from project x should know each other"
+
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

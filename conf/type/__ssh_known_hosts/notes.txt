@@ -1,0 +1,23 @@
+== goal ==
+- handle both system wide /etc/ssh/ssh_known_hosts and user ~/.ssh/known_hosts
+- add known hosts manually
+- automatically add known hosts from cache
+
+
+== todo ==
+x explorer that collects keys from all hosts
+   - key types:
+      ecdsa-sha2-nistp256
+      ssh-dss
+      ssh-rsa
+x parameters:
+   --key 'ssh-rsa ...' # key to add manually
+   --from-cache # boolean, get keys from cache
+   --owner #
+- generate /etc/ssh/ssh_known_hosts from collected keys in cache
+
+
+== problems ==
+- no offical/supported api/path to interacct with cache
+- how to deal with HashKnownHosts?
+- which key to add if a host has multiple types? or add multiple entries, one for each key type?

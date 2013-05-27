@@ -1,0 +1,99 @@
+#!/bin/sh
+#
+# 2013 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+owner="$(cat "$__object/parameter/owner" 2>/dev/null || echo "$__object_id")"
+state="$(cat "$__object/parameter/present" 2>/dev/null || echo "present")"
+
+system_wide=0
+if [ "$owner" = "__system__" ]; then
+   system_wide=1
+   owner="root"
+fi
+
+if [ -f "$__object/parameter/file" ]; then
+   file="$(cat "$__object/parameter/file")"
+else
+   if [ "$system_wide" ]; then
+      file="/etc/ssh/ssh_known_hosts"
+   else
+      home="$(cut -d':' -f 6 "$__object/explorer/passwd")"
+      if [ -z "$home" ]; then
+         echo "Failed to get home directory from explorer." >&2
+         exit 1
+      fi
+      file="$home/.ssh/known_hosts"
+   fi
+fi
+
+if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ]; then
+   if [ "$system_wide" ]; then
+      group="root"
+   else
+      group="$(cut -d':' -f 4 "$__object/explorer/passwd")"
+      if [ -z "$group" ]; then
+         echo "Failed to get owners group from explorer." >&2
+         exit 1
+      fi
+   fi
+
+   if [ ! -f "$__object/parameter/noparent" ]; then
+      # Ensure that the directory in which the known_hosts shall be exists and 
+      # has the right permissions.
+      if [ "$system_wide" ]; then
+         mode="0755"
+      else
+         mode="0700"
+      fi
+      
+      ssh_directory="${file%/*}"
+      __directory "$ssh_directory" --state present --parents \
+         --owner "$owner" --group "$group" --mode "$mode"
+      export require="__directory/$ssh_directory"
+   fi
+   if [ ! -f "$__object/parameter/nofile" ]; then
+      # Ensure that known_hosts file exists and has the right permissions.
+      __file "$file" \
+         --owner "$owner" \
+         --group "$group" \
+         --mode 0644 \
+         --state exists
+   fi
+fi
+
+# NOTE: keep variables in sync in manifest/explorer/gencode-*
+prefix="#cdist:$__object_name"
+suffix="#/cdist:$__object_name"
+
+mkdir "$__object/files"
+
+# Generate entry for inclusion in known_hosts file
+entry="$__object/files/entry"
+echo "$prefix" > "$entry"
+if [ -f "$__object/parameter/comment" ]; then
+   echo "# $(cat "$__object/parameter/comment")" >> "$entry"
+fi
+cat "$__object/parameter/key" >> "$entry"
+# ensure we have a newline after keys
+echo >> "$entry"
+if [ -f "$__object/parameter/from-cache" ]; then
+   # TODO: add keys from cache
+   :
+fi
+echo "$suffix" >> "$entry"
