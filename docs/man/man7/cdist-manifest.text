@@ -107,7 +107,7 @@ DEPENDENCIES
 ------------
 If you want to describe that something requires something else, just
 setup the variable "require" to contain the requirements. Multiple
-requirements can be added white space seperated.
+requirements can be added white space separated.
 
 --------------------------------------------------------------------------------
 # No dependency

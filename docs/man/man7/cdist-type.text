@@ -73,7 +73,7 @@ To begin a new type, just create the directory **cdist/conf/type/__NAME**.
 DEFINING PARAMETERS
 -------------------
 Every type consists of required, optional and boolean parameters, which must
-be created in a newline seperated file in ***parameter/required***,
+be created in a newline separated file in ***parameter/required***,
 ***parameter/required_multiple***, ***parameter/optional***, 
 ***parameter/optional_multiple*** and ***parameter/boolean***.
 Parameters which are allowed multiple times should be listed in

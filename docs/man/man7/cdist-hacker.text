@@ -51,7 +51,7 @@ work nor kill the authors brain:
 - On a merge request, always name the branch I should pull from
 - Always ensure **all** manpages build. Use **./build man** to test.
 - If you developed more than **one** feature, consider submitting them in
-  seperate branches. This way one feature can already be included, even if
+  separate branches. This way one feature can already be included, even if
   the other needs to be improved.
 
 As soon as your work meets these requirements, write a mail
