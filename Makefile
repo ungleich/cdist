@@ -18,35 +18,78 @@
 #
 #
 
-DIST=dist-tag dist-branch-merge dist-pypi dist-archlinux-makepkg
-RELEASE=web release-man pub 
-RELEASE+=release-blog release-ml
-RELEASE+=dist-freecode dist-manual dist-archlinux-aur-upload
+MANDIR=docs/man
+MAN1DSTDIR=$(MANDIR)/man1
+MAN7DSTDIR=$(MANDIR)/man7
+MANREF=$(MAN7DSTDIR)/cdist-reference.text
+MANREFSH=$(MANDIR)/cdist-reference.text.sh
 
-version:
+CHECKS=check-version check-date
+
+DIST=dist-tag dist-branch-merge 
+
+RELEASE=release-web release-man release-pypi release-archlinux-makepkg
+RELEASE+=release-blog release-ml
+RELEASE+=release-freecode release-archlinux-aur-upload
+
+helper=./build-helper
+version=`git describe`
+versionchangelog=`$(helper) changelog-version`
+versionfile=cdist/version.py
+
+archlinuxtar=cdist-${versionchangelog}-1.src.tar.gz
+
+$(versionfile):
+	echo $(version) > $@
+
 
 $(DIST): dist-check
-$(RELEASE): $(DIST)
+$(RELEASE): $(DIST) $(CHECKS)
 
-man: mangen mantype manbuild
+man: $(MANREF) mantype manbuild
+
+$(MANREF): $(MANREFSH)
+	$(MANREFSH)
+
+################################################################################
+# generic code
+#
+
+
+################################################################################
+# dist code
+#
+dist-check: man
 
 dist: $(DIST)
 	echo "Run \"make release\" to release to the public"
 
-release: $(RELEASE)
+dist-pypi: man version
+	python3 setup.py sdist upload
 
-dist-archlinux: dist-pypi
-
-dist-check: clean man
-
-dist-archlinux-makepkg: PKGBUILD
+$(archlinuxtar): PKGBUILD dist-pypi
 	makepkg -c --source
 
+################################################################################
+# release code
+#
+release: pub $(RELEASE)
+	echo "Don't forget...: linkedin"
+
+
+release-archlinux: $(archlinuxtar)
+	burp -c system $^
+	
+release-blog: blog
+release-ml: release-blog
 release-pub: man
+
+release-web: web-doc
 
 PKGBUILD: PKGBUILD.in
 	./PKGBUILD.in
 
+################################################################################
+# generic call
 %:
-	./build-helper $@
-
+	$(helper) $@

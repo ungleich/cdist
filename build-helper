@@ -18,13 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Push a directory to a target, both sides have the same name (i.e. explorers)
-# or
-# Pull a directory from a target, both sides have the same name (i.e. explorers)
+# This file contains the heavy lifting found usually in the Makefile
 #
-
-# exit on any error
-#set -e
 
 basedir=${0%/*}
 version=$(cd "$basedir" && git describe)
@@ -51,13 +46,6 @@ SPEECHESDIR=docs/speeches
 cd "$basedir"
 
 case "$1" in
-    man)
-        set -e
-        "$0" mangen
-        "$0" mantype
-        "$0" manbuild
-    ;;
-
     manbuild)
         trap abort INT
         abort() {
@@ -86,13 +74,7 @@ case "$1" in
         done
     ;;
 
-    mangen)
-        ${MANDIR}/cdist-reference.text.sh
-    ;;
-
-    man-pub)
-        $0 man
-
+    release-man)
         version=$($0 changelog-version)
 
         rm -rf "${WEBMAN}"
@@ -100,36 +82,6 @@ case "$1" in
         cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
         cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
         cd ${WEBMAN} && git add . && git commit -m "Cdist Manpage update: $version"
-    ;;
-
-    dist)
-        set -e
-        # Do the checks
-        $0 dist-check
-
-        # Git changes - everything depends on this
-        $0 dist-tag
-        $0 dist-branch-merge
-
-        # Pypi first - is the base for others
-        $0 dist-pypi
-        
-        # Archlinux depends on successful pypi ;-)
-        $0 dist-archlinux
-
-        # Update website (includes documentation)
-        $0 web
-
-        # Update manpages on website
-        $0 man-pub
-
-        # update git repos
-        $0 pub
-
-        $0 dist-blog
-        $0 dist-freecode
-        $0 dist-ml
-        $0 dist-manual
     ;;
 
     changelog-changes)
@@ -141,12 +93,7 @@ case "$1" in
         grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/:.*//'
     ;;
 
-    dist-check)
-        set -e
-        echo "Verifying documentation building works ..."
-        $0 clean 
-        $0 man
-
+    check-version)
         changelog_version=$($0 changelog-version)
         echo "Target version from changelog: $changelog_version"
 
@@ -154,7 +101,9 @@ case "$1" in
             echo "Version $changelog_version already exists, aborting."
             exit 1
         fi
+    ;;
 
+    check-date)
         # verify date in changelog
         date_today="$(date +%Y-%m-%d)"
         date_changelog=$(grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/.*: //')
@@ -164,7 +113,6 @@ case "$1" in
             echo "Changelog: $date_changelog"
             exit 1
         fi
-
     ;;
 
     blog)
@@ -186,8 +134,7 @@ For more information visit the [[cdist homepage|software/cdist]].
 eof
     ;;
 
-    dist-blog)
-        $0 blog
+    release-blog)
         version=$($0 changelog-version)
         file=cdist-${version}-released.mdwn
         cd "$WEBBLOG"
@@ -196,8 +143,7 @@ eof
         git push
     ;;
 
-    dist-ml)
-        $0 blog
+    release-ml)
         version=$($0 changelog-version)
         to_a=cdist
         to_d=l.schottelius.org
@@ -233,16 +179,6 @@ eof
     ;;
 
 
-    dist-manual)
-        cat << notes
-
-    To be done manually...
-    
-        - linkedin entry
-notes
-
-    ;;
-
     dist-tag)
         version=$($0 changelog-version)
         # add tag
@@ -267,23 +203,7 @@ notes
         fi
    ;;
 
-    dist-archlinux)
-        $0 dist-archlinux-makepkg
-        $0 dist-archlinux-aur-upload
-    ;;
-
-    dist-archlinux-makepkg)
-        ./PKGBUILD.in
-        makepkg -c --source
-    ;;
-
-    dist-archlinux-aur-upload)
-        version=$($0 changelog-version)
-        tar=cdist-${version}-1.src.tar.gz
-        burp -c system "$tar"
-    ;;
-
-    dist-freecode)
+    release-freecode)
         version=$($0 changelog-version)
         api_token=$(awk '/machine freecode login/ { print $8 }' ~/.netrc)
 
@@ -316,13 +236,7 @@ eof
 
     ;;
 
-    dist-pypi)
-        $0 man
-        $0 version
-        python3 setup.py sdist upload
-    ;;
-
-    speeches)
+    dist-speeches)
         cd "$SPEECHESDIR"
         for speech in *tex; do
             pdflatex "$speech"
@@ -339,16 +253,15 @@ eof
         cd "${WEBDIR}" && make pub
     ;;
 
-    web)
+    release-web)
         set -e
-        "$0" web-doc
         # Fix ikiwiki, which does not like symlinks for pseudo security
         ssh tee.schottelius.org \
           "cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man &&
                 rm -f latest && ln -sf "$version" latest"
     ;;
 
-     p|pu|pub)
+     pub)
           for remote in "" github sf; do
                 echo "Pushing to $remote"
                 git push --mirror $remote
@@ -376,11 +289,6 @@ eof
         rm -rf pkg/ src/
     ;;
 
-    very-clean)
-        $0 clean
-        $0 clean-dist
-    ;;
-
     test)
         shift # skip t
         export PYTHONPATH="$(pwd -P)"
@@ -392,22 +300,8 @@ eof
         fi
     ;;
 
-    version)
-        echo "VERSION=\"$version\"" > cdist/version.py
-    ;;
-
     *)
-        echo ''
-        echo 'Welcome to cdist!'
-        echo ''
-        echo 'Here are the possible targets:'
-        echo ''
-        echo '    clean: Remove build stuff'
-        echo '    man: Build manpages (requires Asciidoc)'
-        echo '    test: Run tests'
-        echo ''
-        echo ''
-        echo "Unknown target, \"$1\"" >&2
+        echo "Unknown target $@ - aborting"
         exit 1
     ;;
 
