@@ -19,27 +19,30 @@
 #
 
 DIST=dist-tag dist-branch-merge dist-pypi dist-archlinux-makepkg
-RELEASE=web release-man pub release-blog dist-freecode dist-ml dist-manual dist-archlinux-aur-upload
+RELEASE=web release-man pub 
+RELEASE+=release-blog release-ml
+RELEASE+=dist-freecode dist-manual dist-archlinux-aur-upload
 
 version:
 
 $(DIST): dist-check
 $(RELEASE): $(DIST)
 
+man: mangen mantype manbuild
 
 dist: $(DIST)
 	echo "Run \"make release\" to release to the public"
 
 release: $(RELEASE)
 
-man: mangen mantype manbuild
-
-man-pub: man
-
 dist-archlinux: dist-pypi
+
+dist-check: clean man
 
 dist-archlinux-makepkg: PKGBUILD
 	makepkg -c --source
+
+release-pub: man
 
 PKGBUILD: PKGBUILD.in
 	./PKGBUILD.in
