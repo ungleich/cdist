@@ -1,0 +1,18 @@
+Source: cdist
+Maintainer: Nico Schottelius <nico-debian-cdist@schottelius.org>
+Section: admin
+Priority: optional
+Build-Depends: debhelper (>= 7.4.3), python3-all
+Standards-Version: 3.9.3
+X-Python3-Version: >= 3.2.2
+Homepage: http://www.nico.schottelius.org/software/cdist/
+
+Package: cdist
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}, ${python3:Depends}
+Description: Usable Configuration Management System
+ cdist is a usable configuration management system.
+ It adheres to the KISS principle and is being used in
+ small up to enterprise grade environments.
+ cdist is an alternative to other configuration management systems 
+ like cfengine, bcfg2, chef and puppet.

@@ -1,0 +1,5 @@
+cdist (2.1.0~pre8-1) unstable; urgency=low
+
+  * source package automatically created by stdeb 0.6.0+git
+
+ -- Nico Schottelius <nico-debian-cdist@schottelius.org>  Mon, 19 Nov 2012 18:22:48 +0100
