@@ -367,7 +367,7 @@ eof
 
         find * -name __pycache__  | xargs rm -rf
     ;;
-    clean-dist)
+    distclean)
         rm -f cdist/version.py MANIFEST PKGBUILD
         rm -rf cache/ dist/
 
