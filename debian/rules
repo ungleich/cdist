@@ -15,11 +15,10 @@ override_dh_auto_install:
 	find debian/cdist -name .*.swp -exec rm '{}' +
 	find debian/cdist -name .gitignore -exec rm '{}' +
 
-override_dh_install_man:
-	dh_installman `find docs/man/ -name \*.1 -o -name \*.7 > debian/manpages`
-
 override_dh_clean:
 	rm -rf build/
 	dh_clean
 
 override_dh_auto_build:
+	$(MAKE) man
+	find docs/man/ -name \*.1 -o -name \*.7 > debian/manpages
