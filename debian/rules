@@ -12,7 +12,7 @@ override_dh_auto_configure:
 override_dh_auto_install:
 	#python3 setup.py install --root=debian/cdist --install-layout=deb --install-lib=/usr/share/cdist --install-scripts=/usr/share/cdist
 	python3 setup.py install --root=debian/cdist --install-layout=deb
-	find debian/cdist -name .gitignore -exec rm '{}' +
+	find debian/cdist -name .gitignore -delete
 
 override_dh_clean:
 	rm -rf build/
