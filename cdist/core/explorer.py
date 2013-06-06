@@ -98,7 +98,7 @@ class Explorer(object):
         """Transfer the global explorers to the remote side."""
         self.remote.mkdir(self.remote.global_explorer_path)
         self.remote.transfer(self.local.global_explorer_path, self.remote.global_explorer_path)
-        self.remote.run(["chmod", "0700", "%s/*" % (self.remote.global_explorer_path)])
+        self.remote.run(["find", self.remote.global_explorer_path, "-type", "f", "-exec", "chmod", "0700", "{}", "+"])
 
     def run_global_explorer(self, explorer):
         """Run the given global explorer and return it's output."""
@@ -153,7 +153,7 @@ class Explorer(object):
                 destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
                 self.remote.mkdir(destination)
                 self.remote.transfer(source, destination)
-                self.remote.run(["chmod", "0700", "%s/*" % (destination)])
+                self.remote.run(["find", destination, "-type", "f", "-exec" "chmod", "0700", "{} +"])
                 self._type_explorers_transferred.append(cdist_type.name)
 
     def transfer_object_parameters(self, cdist_object):
