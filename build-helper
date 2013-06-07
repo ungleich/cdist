@@ -299,6 +299,9 @@ eof
             python3 -m unittest "$@"
         fi
     ;;
+    version)
+        git describe > cdist/version.py
+    ;;
 
     *)
         echo "Unknown target $@ - aborting"

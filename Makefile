@@ -18,6 +18,10 @@
 #
 #
 
+A2XM=a2x -f manpage --no-xmllint -a encoding=UTF-8
+A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
+helper=./build-helper
+
 MANDIR=docs/man
 MAN1DSTDIR=$(MANDIR)/man1
 MAN7DSTDIR=$(MANDIR)/man7
@@ -32,7 +36,6 @@ RELEASE=release-web release-man release-pypi release-archlinux-makepkg
 RELEASE+=release-blog release-ml
 RELEASE+=release-freecode release-archlinux-aur-upload
 
-helper=./build-helper
 version=`git describe`
 versionchangelog=`$(helper) changelog-version`
 versionfile=cdist/version.py
@@ -40,13 +43,19 @@ versionfile=cdist/version.py
 archlinuxtar=cdist-${versionchangelog}-1.src.tar.gz
 
 $(versionfile):
-	echo $(version) > $@
+	$(helper) version
 
 
 $(DIST): dist-check
 $(RELEASE): $(DIST) $(CHECKS)
 
 man: $(MANREF) mantype manbuild
+
+$(MAN7DSTDIR)/cdist-type__motd.7: $(MAN7DSTDIR)/cdist-type__motd.text 
+	$(A2XM) $^
+
+$(MAN7DSTDIR)/cdist-type__motd.text: cdist/conf/type/__motd/man.text
+	echo ln -sf $@ $^
 
 $(MANREF): $(MANREFSH)
 	$(MANREFSH)
