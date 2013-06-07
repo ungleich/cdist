@@ -103,7 +103,14 @@ def commandline():
         logging.root.setLevel(logging.DEBUG)
 
     log.debug(args)
-    args.func(args)
+
+    # Work around python 3.3 bug:
+    # http://bugs.python.org/issue16308
+    # http://bugs.python.org/issue9253
+    try:
+        args.func(args)
+    except AttributeError:
+        parser['main'].print_help()
 
 def config(args):
     configinstall(args, mode=cdist.config.Config)
