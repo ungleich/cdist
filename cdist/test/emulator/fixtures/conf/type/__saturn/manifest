@@ -1,0 +1,4 @@
+#!/bin/sh
+
+__planet Saturn
+require="__planet/Saturn" __moon Prometheus --planet Saturn

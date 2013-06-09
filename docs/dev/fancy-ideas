@@ -1,0 +1,7 @@
+== types with namespaces ==
+- allow types to have namespaces, e.g.
+   __path/my/type
+implemented as a proof of concept at:
+https://github.com/asteven/cdist/tree/type-namespaces
+
+

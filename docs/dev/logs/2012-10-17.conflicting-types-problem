@@ -1,0 +1,27 @@
+Seen error:
+
+INFO: dns-vm-inx01: Generating and executing code for __package/bind-chroot
+INFO: dns-vm-inx01: Generating and executing code for __directory/var/named
+INFO: dns-vm-snr01: Running manifest and explorers for __directory/opt/local.ch/sys/icinga/conf.d
+INFO: dns-vm-inx02: Running manifest and explorers for __directory/opt/local.ch/sys
+mkdir: cannot create directory `/var/named': File exists
+ERROR: Command failed: ssh -o User=root -q dns-vm-inx01 umask 077; /bin/sh -e /var/lib/cdist/object/__directory/var/named/.cdist/code-remote
+INFO: dns-vm-snr01: Running manifest and explorers for __directory/opt/local.ch/web
+INFO: dns-vm-inx02: Running manifest and explorers for __directory/opt/local.ch/sys/bin
+INFO: dns-vm-snr02: Running manifest and explorers for __directory/opt/local.ch/web
+
+
+Problem source:
+
+__directory/var/named explorer detects that the directory is missing
+__package/named gencode-remote installs package, which creates directory
+__directory/var/named gencode-remote outputs mkdir
+
+Solutions:
+
+    - don't use __directory, because __package does already the job (clean solution)
+    - re-run explorer before gencode-* stage
+        - gencode-remote would have caught that
+
+Not sure yet - although the latter feature has been requested, the first
+solution looks better (more clean) to this problem.

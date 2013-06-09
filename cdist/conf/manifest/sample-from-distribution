@@ -1,0 +1,62 @@
+## #
+## # Sample manifest from cdist distribution
+## #
+## 
+## # Every machine becomes a marker, so sysadmins know that automatic
+## # configurations are happening
+## __file /etc/cdist-configured
+## __cdistmarker
+## 
+## case "$__target_host" in
+##    # Everybody has this
+##    localhost)
+##       require="__file/etc/cdist-configured" __link /tmp/cdist-testfile \
+##          --source /etc/cdist-configured  --type symbolic
+##       require="__directory/tmp/cdist-test-dir" __file /tmp/cdist-test-dir/test-file \
+##          --mode 0750 --owner nobody --group root
+##       __directory /tmp/cdist-test-dir --mode 4777
+## 
+##       require="__file/etc/cdist-configured __link/tmp/cdist-testfile" \
+##          __file /tmp/cdist-another-testfile
+## 
+##    ;;
+## 
+##    #
+##    # Use an alias in /etc/hosts for localhost to use these hosts:
+##    # 
+##    # 127.0.0.1    localhost.localdomain   localhost cdist-archlinux
+##    #
+##    cdist-archlinux)
+##       # This is the specific package type for pacman
+##       __package_pacman zsh --state installed
+##       
+##       # The __package type autoselect the right type based on the os
+##       __package vim --state installed
+## 
+##       # If the type is a singleton, it does not take an object id
+##       __issue
+##    ;;
+##    # This is how it would look like on gentoo
+##    cdist-gentoo)
+##       # Same stuff for gentoo
+##       __package tree --state installed
+##    ;;
+## 
+##    cdist-debian)
+##       __package_apt atop --state installed
+##       __package apache2 --state removed
+##    ;;
+## 
+##    cdist-redhat)
+##       __issue
+##       __motd
+##    ;;
+## 
+##    # Real machines may be used with their hostname or fqdn,
+##    # depending on how you call cdist
+##    # ...
+##    # ;;
+##    # machine.example.org)
+##    # ...
+##    # ;;
+## esac

@@ -1,0 +1,51 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Apply pf(4) ruleset on *BSD
+#
+
+# Debug
+#exec >&2
+#set -x
+
+rcvar=$(cat "$__object/explorer/rcvar")
+
+cat <<EOF
+if [ -f "${rcvar}.old" ]; then # rcvar.old exists, we must need to disable pf
+   # Disable pf
+   # If it already is disabled, pfctl -d returns 1, go on with life
+   pfctl -d || true
+   # Cleanup
+   rm -f "${rcvar}.old"
+elif [ -f "${rcvar}.new" ]; then # rcvar.new exists, we must need to apply it
+   # Ensure that pf is enabled in the first place
+   # If it already is enabled, pfctl -e returns 1, go on with life
+   mv "${rcvar}.new" "${rcvar}"
+   pfctl -e || true
+   pfctl -f "${rcvar}"
+   if [ "\$?" -ne "0" ]; then # failed to configure new ruleset
+      echo "Failed to configure the new ruleset on ${__target_host}!" >&2
+   fi
+fi
+EOF
+
+# Debug
+#set +x
+

@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# 2012 Evax Software <contact@evax.fr>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+gemset="$__object_id"
+ruby="$(echo "$gemset" | cut -d '@' -f 1)"
+gemsetname="$(echo "$gemset" | cut -d '@' -f2)"
+user="$(cat "$__object/parameter/user")"
+
+if [ ! -e "~$user/.rvm/scripts/rvm" ] ; then
+   echo "absent"
+   exit 0
+fi
+
+if su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm list strings | grep -q "^$ruby\$"'; then
+    if su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm use "$ruby" > /dev/null; rvm gemset list strings | cut -f 1 -d " " | grep -q "^$gemsetname\$"'; then
+      echo "present"
+      exit 0
+  fi
+fi
+echo "absent"

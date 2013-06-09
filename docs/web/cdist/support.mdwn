@@ -1,0 +1,25 @@
+## Support
+
+### IRC
+
+You can join the development ***IRC channel***
+[#cstar on irc.freenode.net](irc://irc.freenode.org/#cstar).
+
+### Mailing list
+
+Bug reports, questions, patches, etc. should be send to the
+[cdist mailing list](http://l.schottelius.org/mailman/listinfo/cdist).
+
+### Linkedin
+
+If you have an account
+at [Linked in](http://www.linkedin.com/),
+you can join the
+[cdist group](http://www.linkedin.com/groups/cdist-configuration-management-3952797).
+
+### Commercial support
+
+You can request commercial support for cdist from
+[my company](http://firma.schottelius.org/english/).
+
+[[!tag cdist unix]]

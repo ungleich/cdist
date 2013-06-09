@@ -1,0 +1,64 @@
+cdist-type__key_value(7)
+========================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__key_value - Change property values in files
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to change values in a key value based config
+file.
+
+
+REQUIRED PARAMETERS
+-------------------
+file::
+   The file to operate on.
+delimiter::
+   The delimiter which seperates the key from the value.
+
+
+OPTIONAL PARAMETERS
+-------------------
+state::
+   present or absent, defaults to present. If present, sets the key to value,
+   if absent, removes the key from the file.
+key::
+   The key to change. Defaults to object_id.
+value::
+   The value for the key. Optional if state=absent, required otherwise.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Set the maximum system user id
+__key_value SYS_UID_MAX --file /etc/login.defs --value 666 --delimiter ' '
+
+# Same with fancy id
+__key_value my-fancy-id --file /etc/login.defs --key SYS_UID_MAX --value 666 \
+   --delimiter ' '
+
+# Enable packet forwarding
+__key_value net.ipv4.ip_forward --file /etc/sysctl.conf --value 1 \
+   --delimiter '='
+
+# Remove existing key/value
+__key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '=' 
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

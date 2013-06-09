@@ -1,0 +1,77 @@
+Steven, Nico (ETH office)
+
+- Try out patch for dependency resolver changing from [nico]
+    - Add tests
+    - Cleanup code:
+        - remove all old resolver parts (including tests!)
+        - remve wildcard matching pattern code
+
+- Cache: [nobody]
+    - Should cache be usable by types?
+    - Should all run outputs be stored?
+    - Different caches for install and config
+
+- Replace fsproperties with cconfig [steven]
+
+- Maybe support "rerun from previous version (cache)"? [nobody]
+    - need to include initial manifest(s!)
+    - copy/link types
+    - save remote-{exec,copy} parameters (copy or save argument list)
+
+    - cdist replay / oldconfig ?
+
+- Support diffing two configurations [nobody]
+    - cdist diff ?
+
+- Nested Types [both]
+    - Motivation:
+        - Put everything related into one directory
+    - Have a look at it when Arkaitz pushes out pull request
+    - Implementations:
+        
+        1) Arkaitz
+
+        Folder structure                    Call                        Object
+        __package/                          __package abc               __package/abc
+        __package/type/pkg                  __package.pkg abc           __package.pkg/abc
+        __package/type/pkg/type/green       __package.pkg.green abc     __package.pkg.green/abc
+
+        ...
+
+        __package.pkg                       __package.pkg abc           __package.pkg/abc 
+
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+        => Need to forbid types with "." in the name!
+
+        2) Steven (earlier version)
+
+        Folder structure                    Call                        Object
+        __package/.type                     __package abc               __package/abc
+        __package/pkg/.type                 __package.pkg abc           __package.pkg/abc
+        __package/pkg/green/.type           __package.pkg.green abc     __package.pkg.green/abc
+
+    - Clashes:
+        - if __<type>.<name> and __<type> and subtype <name> exist both (in both implementations)
+
+- Install [nobody]
+    - Merge into master?
+    - Needs some cleanups
+
+- PreOS [nobody]
+    - cdist preos / preos-generate
+        --output=<dir-or-filename>
+        --arch=[i386|amd64|arm??]
+        --type=[usb, cdrom/iso, floppy, pxe]
+        --other-params (?)
+
+    - Maybe implement using cdist config indirectly and a type __preos
+
+    - Can be:
+        - Internally only (devs)
+        - Usable by end users
+
+    - Requirements:
+        - git
+        - buildchain
+        - toolchain for target arch
+        - ...

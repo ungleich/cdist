@@ -1,0 +1,2 @@
+Some examples of using alternative __remote_copy and __remote_exec prefixes.
+This allows you to change how cdist interacts with the target host (or directory, or whatever :-)

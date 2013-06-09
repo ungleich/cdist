@@ -1,0 +1,3 @@
+This type is used on notebooks to ensure they suspend when the lid is closed.
+
+It is tested on Archlinux.

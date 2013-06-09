@@ -1,0 +1,8 @@
+- Allow list of base directories, which may contain explorer/ or type/ subdirectories
+    - can use the existing -c parameter, only allow it to be specified multiple times
+- for each directory, link the given explorer and types to a temporary conf/ directory
+    similar to bin/
+- last one wins strategy
+    - what is expected by the user
+
+

@@ -1,0 +1,19 @@
+Description:
+
+    Type that will probably only work in a very specific environnment
+    (like a specific distribution only).
+    or has custom code that may not satisfy the "usual" or generic use case.
+
+Problem:
+
+    If included into core/ directory, many users would be disappointed,
+    because it does not work for them out of the box.
+
+Solutions:
+
+    - Make visible for others (done: by integrating into other/types_submitted_for_inclusion)
+    - Improve: make usable for at least 80% of the standard cases
+
+    or
+
+    - Modify for yourself and use it

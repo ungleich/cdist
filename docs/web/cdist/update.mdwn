@@ -1,0 +1,95 @@
+[[!meta title="How to update cdist"]]
+
+## Update The Git Installation
+
+To upgrade cdist in the current branch use
+
+    git pull
+
+    # Also update the manpages
+    ./build man
+    export MANPATH=$MANPATH:$(pwd -P)/doc/man
+
+If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
+The master branch on the other hand is the development branch and may not be
+working, break your setup or eat the tree in your garden.
+
+## Update The Python Package
+
+To upgrade to the lastet version do
+
+    pip install --upgrade cdist
+
+## Update Instructions
+
+### Updating from 2.0 to 2.1
+
+Have a look at the update guide for [[2.0 to 2.1|2.0-to-2.1]].
+
+ * Type **\_\_package* and \_\_process** use --state **present** or **absent**.
+   The states **removed/installed** and **stopped/running** have been removed.
+   Support for the new states is already present in 2.0.
+ * Type **\_\_directory**: Parameter --parents and --recursive are now boolean
+   The old "yes/no" values need to be removed.
+ * Type **\_\_rvm_ruby**: Parameter --default is now boolean
+   The old "yes/no" values need to be removed.
+ * Type **\_\_rvm_gemset**: Parameter --default is now boolean
+   The old "yes/no" values need to be removed.
+ * Type **\_\_addifnosuchline** and **\_\_removeline** have been replaced by **\_\_line**
+ * The **conf** directory is now located at **cdist/conf**.
+   You need to migrate your types, explorers and manifests
+   manually to the new location.
+ * Replace the variable **\_\_self** by **\_\_object_name**
+   Support for the variable **\_\_object_name** is already present in 2.0.
+ * The types **\_\_autofs**, **\_\_autofs_map** and **\_\_autofs_reload** have been removed
+   (no maintainer, no users)
+ * Type **\_\_user**: Parameter --groups removed (use the new \_\_user_groups type)
+ * Type **\_\_ssh_authorized_key** has been replaced by more flexible type 
+    **\_\_ssh_authorized_keys**
+ * require="" is deprecated: Use --after and --before as parameters instead
+
+### Updating from 1.7 to 2.0
+
+* Ensure python (>= 3.2) is installed on the source host
+* Use "cdist config host" instead of "cdist-deploy-to host"
+* Use "cdist config -p host1 host2" instead of "cdist-mass-deploy"
+* Use "cdist banner" for fun
+* Use **\_\_object_name** instead of **\_\_self** in manifests
+
+### Updating from 1.6 to 1.7
+
+* If you used the global explorer **hardware_type**, you need to change
+  your code to use **machine** instead.
+
+### Updating from 1.5 to 1.6
+
+* If you used **\_\_package_apt --preseed**, you need to use the new
+  type **\_\_debconf_set_selections** instead.
+* The **\_\_package** types accepted either --state deinstalled or
+  --state uninstaaled. Starting with 1.6, it was made consistently
+  to --state removed.
+
+### Updating from 1.3 to 1.5
+
+No incompatiblities.
+
+### Updating from 1.2 to 1.3
+
+Rename **gencode** of every type to **gencode-remote**.
+
+### Updating from 1.1 to 1.2
+
+No incompatiblities.
+
+### Updating from 1.0 to 1.1
+
+In 1.1 the type **\_\_file** was split into **\_\_directory**, **\_\_file** and
+**\_\_link**. The parameter **--type** was removed from **\_\_file**. Thus you
+need to replace **\_\_file** calls in your manifests:
+
+ * Remove --type from all \_\_file calls
+ * If type was symlink, use \_\_link and --type symbolic
+ * If type was directory, use \_\_directory
+
+
+[[!tag cdist unix]]

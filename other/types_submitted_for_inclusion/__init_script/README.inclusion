@@ -1,0 +1,4 @@
+Moved out of conf/type/ to think about whether this type makes sense or not.
+
+Cdist describes the state and using an init_script may be useful, but
+should only be used conditionally.

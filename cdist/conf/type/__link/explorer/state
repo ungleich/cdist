@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+destination="/$__object_id"
+type="$(cat "$__object/parameter/type")"
+source="$(cat "$__object/parameter/source")"
+
+# no destination? -> state is absent
+if [ ! -e "$destination" ]; then
+   echo absent
+   exit 0
+fi
+
+destination_dir="${destination%/*}"
+
+case "$type" in
+   symbolic)
+      cd "$destination_dir"
+      source_is=$(ls -l "$destination" | sed 's/.*-> //g')
+      if [ -h "$destination" -a "$source_is" = "$source" ]; then
+         echo present
+      else
+         echo absent
+      fi
+   ;;
+   hard)
+      cd "$destination_dir"
+      # check source relative to destination_dir
+      if [ ! -e "$source" ]; then
+         echo sourcemissing
+         exit 0
+      fi
+      destination_inode=$(ls -i "$destination" | awk '{print $1}')
+      source_inode=$(ls -i "$source" | awk '{print $1}')
+      if [ "$destination_inode" -eq "$source_inode" ]; then
+         echo present
+      else
+         echo absent
+      fi
+   ;;
+   *)
+      echo "Unknown type: $type" >&2
+      exit 1
+   ;;
+esac

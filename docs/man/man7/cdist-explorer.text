@@ -1,0 +1,68 @@
+cdist-explorer(7)
+=================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-explorer - Explore the target systems
+
+
+DESCRIPTION
+-----------
+Explorer are small shell scripts, which will be executed on the target
+host. The aim of the explorer is to give hints to types on how to act on the
+target system. An explorer outputs the result to stdout, which is usually
+a one liner, but may be empty or multi line especially in the case of
+type explorers.
+
+There are general explorers, which are run in an early stage, and
+type explorers. Both work almost exactly the same way, with the difference
+that the values of the general explorers are stored in a general location and
+the type specific below the object.
+
+Explorers can reuse other explorers on the target system by calling 
+$__explorer/<explorer_name> (general and type explorer) or
+$__type_explorer/<explorer name> (type explorer).
+
+In case of significant errors, the explorer may exit non-zero and return an
+error message on stderr, which will cause cdist to abort.
+
+You can also use stderr for debugging purposes while developing a new
+explorer.
+
+EXAMPLES
+--------
+A very simple explorer may look like this:
+
+--------------------------------------------------------------------------------
+hostname
+--------------------------------------------------------------------------------
+
+Which is in practise the ***hostname*** explorer.
+
+A type explorer, which could check for the status of a package may look like this:
+
+--------------------------------------------------------------------------------
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
+
+# Except dpkg failing, if package is not known / installed
+dpkg -s "$name" 2>/dev/null || exit 0
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist(1)
+- cdist-reference(7)
+- cdist-stages(7)
+
+
+COPYING
+-------
+Copyright \(C) 2010-2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

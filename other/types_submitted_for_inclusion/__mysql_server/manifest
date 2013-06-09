@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# 2012 Benedikt Koeppel (code@benediktkoeppel.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+# install mysql-server
+__package mysql-server --state installed
+
+if [ -f "$__object/parameter/no_my_cnf" ]; then
+   no_my_cnf="$(cat "$__object/parameter/no_my_cnf")"
+else
+   no_my_cnf="false"
+fi
+
+if [ -f "$__object/parameter/password" ]; then
+   rootpassword="$(cat "$__object/parameter/password")"
+else
+   rootpassword=""
+fi
+
+if [ "$no_my_cnf" != "true" -a "$rootpassword" != "" ]; then
+   # store the root password in /root/.my.cnf so that processes can connect
+   # to the database without requiring a passwort input
+   __file "/root/.my.cnf" --group root --owner root --mode 600
+fi

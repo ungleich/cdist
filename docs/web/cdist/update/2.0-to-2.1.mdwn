@@ -1,0 +1,118 @@
+[[!meta title="Update Guide for 2.0 to 2.1"]]
+
+## Introduction
+
+When changing your installation from 2.0 to 2.1, there are
+a lot of changes coming up. 2.1 is mainly a cleanup release,
+which removes long time deprecated behaviour, but also makes
+a lot of things more consistent and allows you to split off your types,
+explorers and manifest to custom directories.
+
+This document will guide you to a successful update.
+
+## Preperation
+
+As for every software and system you use in production, you should first of 
+all make a backup of your data. To prevent any breakage, it is
+recommended to create a new git branch to do the update on:
+
+    % git checkout -b update_to_2.1
+
+This also ensure that whenever you need to do a change in your
+2.0 based tree, you can simply go back to that branch, apply the change
+and configure your systems - independently of your update progress!
+
+Next fetch the latest upstream changes, I assume that
+origin refers to one of the upstream mirrors (change origin if you use
+another remote name for upstream cdist):
+
+    % git fetch -v origin
+
+## Merge the changes
+
+Now try to merge upstream into the new branch.
+
+    % git merge origin/2.1
+
+Fix any conflicts that may have been occurred due to local changes
+and then **git add** and *git commit** those changes. This should seldomly
+occur and if, it's mostly for people hacking on the cdist core.
+
+## Move "conf" directory
+
+One of the biggest changes in cdist 2.1 is that you can have multiple
+**conf** directories: Indeed, the new default behaviour of cdist is to
+search for conf directories
+
+ * below the python module (cdist/conf in the source tree or in the installed location)
+ * at ~/.cdist/ (on conf suffix there)
+
+So you can now choose, where to store your types.
+
+### Integrate your conf/ back into the tree
+
+If you choose to store your types together with the upstream types,
+you can just move all your stuff below **cdist/conf**:
+
+    % git mv conf/type/* cdist/conf/type
+    % git mv conf/manifest/* cdist/conf/manifest
+    % git mv conf/explorer/* cdist/conf/explorer
+    % git commit -m "Re-Integrate my conf directory into cdist 2.1 tree"
+
+### Move your conf/ directory to ~/.cdist
+
+If you want to store your site specific
+configuration outside of the cdist tree, you
+can move your conf/ directory to your homedirectory ($HOME) under ~/.cdist:
+
+    % mv conf ~/.cdist
+    % git rm -r conf
+    % git commit -m "Move my conf directory to ~/.cdist"
+
+It it still recommended to use a version control system like git in it:
+
+    % cd ~/.cdist
+    % git init
+    % git add .
+    % git commit -m "Create new git repository containing my cdist configuration"
+
+## Test the migration
+
+Some of the types shipped with upstream were changed, so you may want to test 
+the result by running cdist on one of your staging target hosts:
+
+    % ./bin/cdist config -v staging-host
+
+All incompatibilities are listed on the [[cdist update page|software/cdist/update]],
+so you can browse through the list and update your configuration.
+
+## Final Cleanups
+
+When everything is tested, there are some cleanups to be done to finalise the update.
+
+### When continuing to keep conf/ in the tree
+
+You can then merge back your changes into the master tree and continue to work
+as normal.
+
+### When using ~/.cdist
+
+If you decided to move your site specific code to ~/.cdist, you can now switch your
+**master** branch or version branch to upstream directly. Assumnig you are in the
+cdist directory, having your previous branch checked out, you can create a clean
+state using the following commands:
+
+    % upstream_branch=2.1
+    % current_branch=$(git rev-parse --abbrev-ref HEAD)
+    % git checkout -b archive_my_own_tree
+    % git branch -D "$current_branch"
+    % git checkout -b "$current_branch" "origin/$upstream_branch"
+
+Afther these commands, your previous main branch is accessible at
+**archive_my_own_tree** and your branch is now tracking upstream.
+
+## Questions? Critics? Hints?
+
+If you think this manual helped or misses some information, do not 
+hesitate to contact us on any of the usual ways (irc, mailinglist,
+github issue tracker, ...).

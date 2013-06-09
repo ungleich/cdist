@@ -1,0 +1,47 @@
+create a new branch to ensure nothing breaks
+
+    % git checkout -b 2.1_merge
+
+fetch latest upstream changes (change origin if you use another
+remote name for upstream cdist)
+
+    % git fetch -v origin
+
+Now try to merge upstream into the new branch.
+
+
+    % git merge origin/2.1
+
+fix any conflicts that may have been occurred due to local changes
+and then **git add** and *git commit** those changes.
+
+As the types have a new location, **cdist/conf/** now, you have to move
+your own types there as well:
+
+    % git mv conf/type/* cdist/conf/
+
+The manifest location also changed, so move this one as well:
+
+    % git mv conf/manifest/* cdist/conf/manifest/
+
+Use **git status** to review the changes and ensure they
+are in the git database:
+
+    % git commit -m "Move types and manifests for 2.1 migration"
+
+This should be everything necessary for a 2.1 migration. Test the result
+by running cdist on one of your staging hosts:
+
+    % ./bin/cdist config -v staging-host
+
+
+You can now cleanup the empty conf/ directory:
+
+    %  rmdir conf/* && rmdir conf
+
+
+
+--------------------------------------------------------------------------------
+
+Boolean parameter introduced:
+    __directory /path/to --parents yes => __directory /path/to --parents

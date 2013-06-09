@@ -1,0 +1,208 @@
+cdist-best-practice(7)
+======================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+NAME
+----
+cdist-best-practice - Practices used in real environments
+
+
+PASSWORDLESS CONNECTIONS
+------------------------
+It is recommended to run cdist with public key authentication.
+This requires a private/public key pair and the entry
+"PermitRootLogin without-password" in the sshd server.
+See sshd_config(5) and ssh-keygen(1).
+
+
+SPEEDING UP SSH CONNECTIONS
+---------------------------
+When connecting to a new host, the initial delay with ssh connections
+is pretty big. You can work around this by
+"sharing of multiple sessions over a single network connection"
+(quote from ssh_config(5)). The following code is suitable for
+inclusion into your ~/.ssh/config:
+
+--------------------------------------------------------------------------------
+Host *
+  ControlPath ~/.ssh/master-%l-%r@%h:%p
+  ControlMaster auto
+  ControlPersist 10
+--------------------------------------------------------------------------------
+
+SPEEDING UP SHELL EXECUTION
+----------------------------
+On the source host, ensure that /bin/sh is *not* bash: bash is quite slow for
+script execution. Instead, you could use dash after installing it:
+
+--------------------------------------------------------------------------------
+ln -sf /bin/dash /bin/sh
+--------------------------------------------------------------------------------
+
+
+MULTI MASTER OR ENVIRONMENT SETUPS
+----------------------------------
+If you plan to distribute cdist among servers or use different
+environments, you can do so easily with the included version
+control git. For instance if you plan to use the typical three
+environments production, integration and development, you can
+realise this with git branches:
+
+--------------------------------------------------------------------------------
+# Go to cdist checkout
+cd /path/to/cdist
+
+# Create branches
+git branch development
+git branch integration
+git branch production
+
+# Make use of a branch, for instance production
+git checkout production
+--------------------------------------------------------------------------------
+
+Similar if you want to have cdist checked out at multiple machines,
+you can clone it multiple times:
+
+--------------------------------------------------------------------------------
+machine-a % git clone git://your-git-server/cdist
+machine-b % git clone git://your-git-server/cdist
+--------------------------------------------------------------------------------
+
+SEPERATING WORK BY GROUPS
+-------------------------
+If you are working with different groups on one cdist-configuration,
+you can delegate to other manifests and have the groups edit only
+their manifests. You can use the following snippet in
+**conf/manifests/init**:
+
+--------------------------------------------------------------------------------
+# Include other groups
+sh -e "$__manifest/systems"
+
+sh -e "$__manifest/cbrg"
+--------------------------------------------------------------------------------
+
+
+MAINTAINING MULTIPLE CONFIGURATIONS
+-----------------------------------
+When you need to manage multiple sites with cdist, like company_a, company_b
+and private for instance, you can easily use git for this purpose.
+Including a possible common base that is reused accross the different sites:
+
+--------------------------------------------------------------------------------
+# create branches
+git branch company_a company_b common private
+
+# make stuff for company a
+git checkout company_a
+# work, commit, etc.
+
+# make stuff for company b
+git checkout company_b
+# work, commit, etc.
+
+# make stuff relevant for all sites
+git checkout common
+# work, commit, etc.
+
+# change to private and include latest common stuff
+git checkout private
+git merge common
+--------------------------------------------------------------------------------
+
+The following **.git/config** is taken from a a real world scenario:
+--------------------------------------------------------------------------------
+# Track upstream, merge from time to time
+[remote "upstream"]
+   url = git://git.schottelius.org/cdist
+   fetch = +refs/heads/*:refs/remotes/upstream/*
+
+# Same as upstream, but works when being offline 
+[remote "local"]
+   fetch = +refs/heads/*:refs/remotes/local/*
+   url = /home/users/nico/p/cdist
+
+# Remote containing various ETH internal branches
+[remote "eth"]
+   url = sans.ethz.ch:/home/services/sans/git/cdist-eth
+   fetch = +refs/heads/*:refs/remotes/eth/*
+
+# Public remote that contains my private changes to cdist upstream
+[remote "nico"]
+   url = git.schottelius.org:/home/services/git/cdist-nico
+   fetch = +refs/heads/*:refs/remotes/nico/*
+
+# The "nico" branch will be synced with the remote nico, branch master
+[branch "nico"]
+   remote = nico
+   merge = refs/heads/master
+
+# ETH stable contains rock solid configurations used in various places
+[branch "eth-stable"]
+   remote = eth
+   merge = refs/heads/stable
+--------------------------------------------------------------------------------
+
+Have a look at git-remote(1) to adjust the remote configuration, which allows
+
+
+MULTIPLE DEVELOPERS WITH DIFFERENT TRUST
+----------------------------------------
+If you are working in an environment that requires different people to
+work on the same configuration, but having different privileges, you can
+implement this scenario with a gateway host and sudo:
+
+- Create a dedicated user (for instance **cdist**)
+- Setup the ssh-pubkey for this user that has the right to configure all hosts
+- Create a wrapper to update the cdist configuration in ~cdist/cdist
+- Allow every developer to execute this script via sudo as the user cdist
+- Allow run of cdist as user cdist on specific hosts on a per user/group base
+    - f.i. nico ALL=(ALL) NOPASSWD: /home/cdist/bin/cdist config hostabc
+
+For more details consult sudoers(5)
+
+TEMPLATING
+----------
+* create directory templates/ in your type (convention)
+* create the template as an executable file like templates/basic.conf.sh, it will output text using shell variables for the values
+
+--------------------------------------------------------------------------------------
+#!/bin/sh
+# in the template, use cat << eof (here document) to output the text
+# and use standard shell variables in the template
+# output everything in the template script to stdout
+cat << EOF
+server {
+  listen                          80;
+  server_name                     $SERVERNAME;
+  root                            $ROOT;
+
+  access_log /var/log/nginx/$SERVERNAME_access.log
+  error_log /var/log/nginx/$SERVERNAME_error.log
+}
+EOF
+--------------------------------------------------------------------------------------
+
+* in the manifest, export the relevant variables and add the following lines in your manifest:
+--------------------------------------------------------------------------------------
+# export variables needed for the template
+  export SERVERNAME='test"
+  export ROOT='/var/www/test'
+# render the template
+  mkdir -p "$__object/files"
+  "$__type/templates/basic.conf.sh" > "$__object/files/basic.conf"
+# send the rendered template 
+  __file /etc/nginx/sites-available/test.conf  --state present   --source "$__object/files/basic.conf"
+--------------------------------------------------------------------------------------
+
+SEE ALSO
+--------
+- cdist(1)
+- cdist-tutorial(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

@@ -1,0 +1,71 @@
+#!/bin/sh
+#
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+destination="/$__object_id"
+
+state_is="$(cat "$__object/explorer/state")"
+owner_is="$(cat "$__object/explorer/owner")"
+group_is="$(cat "$__object/explorer/group")"
+mode_is="$(cat "$__object/explorer/mode")"
+
+state_should="present"
+[ -f "$__object/parameter/state" ]     && state_should="$(cat "$__object/parameter/state")"
+mode=""
+[ -f "$__object/parameter/mode" ]      && mode="$(cat "$__object/parameter/mode")"
+owner=""
+[ -f "$__object/parameter/owner" ]     && owner="$(cat "$__object/parameter/owner")"
+group=""
+[ -f "$__object/parameter/group" ]     && group="$(cat "$__object/parameter/group")"
+mkdiropt=""
+[ -f "$__object/parameter/parents" ]   && mkdiropt="-p"
+recursive=""
+[ -f "$__object/parameter/recursive" ] && recursive="-R"
+
+case "$state_should" in
+    present)
+        if [ "$state_is" != "present" ]; then
+            echo mkdir $mkdiropt \"$destination\"
+        fi
+
+        # Mode settings
+        if [ "$mode" ] && [ "$mode_is" != "$mode" -o -n "$recursive" ]; then
+            echo chmod $recursive \"$mode\" \"$destination\"
+        fi
+
+        # Group
+        if [ "$group" ] && [ "$group_is" != "$group" -o -n "$recursive" ]; then
+            echo chgrp $recursive \"$group\" \"$destination\"
+        fi
+
+        # Owner
+        if [ "$owner" ] && [ "$owner_is" != "$owner" -o -n "$recursive" ]; then
+            echo chown $recursive \"$owner\" \"$destination\"
+        fi
+    ;;
+    absent)
+        if [ "$state_is" != "absent" ]; then
+          echo rm -rf \"$destination\"
+        fi
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac
