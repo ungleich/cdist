@@ -1,37 +1,32 @@
 cdist-type__rbenv_ruby(7)
-=======================
-Chase Allen James <contact@evax.fr>
+=========================
+Chase Allen James <nx-cdist at nu-ex.com>
 
 
 NAME
 ----
-cdist-type__rbenv_ruby - Manage ruby installations through rbenv
+cdist-type__rbenv_ruby - Manage ruby installations through ruby-build rbenv plugin
 
 
 DESCRIPTION
 -----------
-rbenv is simple version management for the Ruby programming language.
+This type allows you to manage ruby versions installed by ruby-build
 
-
-REQUIRED PARAMETERS
--------------------
-state::
-   Either "installed" or "removed".
 
 OPTIONAL PARAMETERS
 -------------------
-global:
-   If the global parameter is used, the Ruby version will be available as a global default
+state::
+   Either "present" or "absent". Defaults to "present".
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
 # Install ruby 1.9.3 through rbenv
-__rbenv_ruby ruby-1.9.3-p0
+__rbenv_ruby 1.9.3-p0
 
-# Install ruby 1.9.3 through rbenv and make it the default
-__rbenv_ruby ruby-1.9.3-p0 --global
+# Remove ruby 1.9.3 because its actually pretty old now.
+__rbenv_ruby 1.9.3-p0 --state absent
 
 --------------------------------------------------------------------------------
 
@@ -39,10 +34,9 @@ __rbenv_ruby ruby-1.9.3-p0 --global
 SEE ALSO
 --------
 - cdist-type(7)
-- cdist-type__rbenv(7)
 
 
 COPYING
 -------
-Copyright \(C) 2012 Chase Allen James. Free use of this software is granted under
+Copyright \(C) 2013 Chase Allen James. Free use of this software is granted under
 the terms of the GNU General Public License version 3 (GPLv3).
