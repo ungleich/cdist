@@ -27,4 +27,4 @@
 #
 
 host="$1"; shift
-ssh -q "$host" sudo "$@"
+ssh -q "$host" sudo sh -c \""$@"\"
