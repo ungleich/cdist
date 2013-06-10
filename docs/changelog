@@ -5,11 +5,12 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 next:
-	* Core: Make global explorers available to initial manifest (Arkaitz Jimenez)
 	* Build: Change clean-dist target to "distclean"
-	* Change execution order to run object as one unit
+	* Core: Make global explorers available to initial manifest (Arkaitz Jimenez)
+	* Core: Change execution order to run object as one unit
+	* New Remote Example: Add support for sudo operations (James Chase)
 	* Type __apt_ppa: Fix comparison operator (Tyler Akins)
-	* Type __start_on_boot: Archlinux changed to use systemd - adapt
+	* Type __start_on_boot: Archlinux changed to use systemd - adapt type
 
 2.1.1: 2013-04-08
 	* Core: Use dynamic dependency resolver to allow indirect self dependencies
