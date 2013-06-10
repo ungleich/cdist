@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Chase Allen James (nx-cdist@nu-ex.com)
+# 2013 Chase Allen James (nx-cdist@nu-ex.com)
 #
 # This file is part of cdist.
 #
@@ -27,5 +27,11 @@ else
    name="$__object_id"
 fi
 
-# Except dpkg failing, if package is not known / installed
-dpkg -s "$name" 2>/dev/null || exit 0
+# Check if the package is installed via dpkg
+present="$(dpkg -s "$name" 2>/dev/null | grep "^Status: install ok installed")"
+
+if [ "$present" ]; then
+  echo "present"
+else
+  echo "absent"
+fi
