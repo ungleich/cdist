@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+name="$__object_id"
+state_is="$(cat "$__object/explorer/state")"
+state_should="$(cat "$__object/parameter/state")"
+
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        if [ -f "$__object/parameter/password" ]; then
+            password="$(cat "$__object/parameter/$parameter")"
+        fi
+        booleans=""
+        for boolean in login createdb createrole superuser; do
+            if [ ! -f "$__object/parameter/$boolean" ]; then
+                boolean="no${boolean}"
+            fi
+            upper=$(echo $boolean | tr '[a-z]' '[A-Z]')
+            booleans="$booleans $upper"
+        done
+
+         [ -n "$password" ] && password="PASSWORD '$password'"
+
+         cmd="CREATE ROLE $name WITH $password $booleans"
+         echo "su - postgres -c \"psql -c \\\"$cmd\\\"\""
+    ;;
+    absent)
+        echo "su - postgres -c \"dropuser \\\"$name\\\"\""
+    ;;
+esac

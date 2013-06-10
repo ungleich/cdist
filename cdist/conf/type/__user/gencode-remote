@@ -1,0 +1,119 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage users.
+#
+
+name="$__object_id"
+
+os="$(cat "$__global/explorer/os")"
+
+# We need to shorten options for both usermod and useradd since on some
+# systems (such as *BSD, Darwin) those commands do not handle GNU style long
+# options.
+shorten_property() {
+    unset ret
+    case "$1" in
+	comment) ret="-c";;
+	home) ret="-d";;
+	gid) ret="-g";;
+	groups) ret="-G";;
+	password) ret="-p";;
+	shell) ret="-s";;
+	uid) ret="-u";;
+    create-home) ret="-m";;
+    esac
+    echo "$ret"
+}
+
+cd "$__object/parameter"
+if grep -q "^${name}:" "$__object/explorer/passwd"; then
+   for property in $(ls .); do
+      new_value="$(cat "$property")"
+      unset current_value
+
+      file="$__object/explorer/passwd"
+
+      case "$property" in
+         gid)
+            if $(echo "$new_value" | grep -q '^[0-9][0-9]*$'); then
+               field=4
+            else
+               # We were passed a group name.  Compare the gid in
+               # the user's /etc/passwd entry with the gid of the
+               # group returned by the group explorer.
+               gid_from_group=$(awk -F: '{ print $3 }' "$__object/explorer/group")
+               gid_from_passwd=$(awk -F: '{ print $4 }' "$file")
+               if [ "$gid_from_group" != "$gid_from_passwd" ]; then
+                  current_value="$gid_from_passwd"
+               else
+                  current_value="$new_value"
+               fi
+            fi
+         ;;
+         password)
+            field=2
+            file="$__object/explorer/shadow"
+         ;;
+         comment) field=5 ;;
+         home)    field=6 ;;
+         shell)   field=7 ;;
+         uid)     field=3 ;;
+         create-home) continue;; # Does not apply to user modification
+      esac
+
+      # If we haven't already set $current_value above, pull it from the
+      # appropriate file/field.
+      if [ -z "$current_value" ]; then
+         export field
+         current_value="$(awk -F: '{ print $ENVIRON["field"] }' < "$file")"
+      fi
+
+      if [ "$new_value" != "$current_value" ]; then
+          set -- "$@" "$(shorten_property $property)" \'$new_value\'
+      fi
+   done
+
+   if [ $# -gt 0 ]; then
+      if [ "$os" = "freebsd" ]; then
+         echo pw usermod "$@" "$name"
+      else
+         echo usermod "$@" "$name"
+      fi
+   else
+      true
+   fi
+else
+   for property in $(ls .); do
+      new_value="$(cat "$property")"
+      if [ -z "$new_value" ];then       # Boolean values have no value
+          set -- "$@" "$(shorten_property $property)"
+      else
+          set -- "$@" "$(shorten_property $property)" \'$new_value\'
+      fi
+   done
+
+   if [ "$os" = "freebsd" ]; then
+      echo pw useradd "$@" "$name"
+   else
+      echo useradd "$@" "$name"
+   fi
+fi

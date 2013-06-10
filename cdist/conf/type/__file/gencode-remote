@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# __file is a very basic type, which will probably be reused quite often
+#
+
+destination="/$__object_id"
+state_should=present
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+exists="$(cat "$__object/explorer/exists")"
+
+case "$state_should" in
+   present|exists)
+      # No source? Create empty file
+      if [ ! -f "$__object/parameter/source" ]; then
+         if [ "$exists" = "no" ]; then
+            echo touch \"$destination\"
+         fi
+      fi
+
+      # Group
+      if [ -f "$__object/parameter/group" ]; then
+         echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
+      fi
+
+      # Owner
+      if [ -f "$__object/parameter/owner" ]; then
+         echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
+      fi
+
+      # Mode - needs to happen last as a chown/chgrp can alter mode by
+      # clearing S_ISUID and S_ISGID bits (see chown(2))
+      if [ -f "$__object/parameter/mode" ]; then
+         echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
+      fi
+   ;;
+
+   absent)
+
+      if [ "$exists" = "yes" ]; then
+         echo rm -f \"$destination\"
+      fi
+
+   ;;
+
+   *)
+      echo "Unknown state: $state_should" >&2
+      exit 1
+   ;;
+
+esac

@@ -1,0 +1,98 @@
+#!/bin/sh
+#
+# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+state_should="$(cat "$__object/parameter/state" 2>/dev/null || echo present)"
+state_is=$(cat "$__object/explorer/state")
+
+# Short circuit if nothing is to be done
+[ "$state_should" = "$state_is" ] && exit 0
+
+os=$(cat "$__global/explorer/os")
+name="$__object_id"
+
+case "$state_should" in
+    present)
+        case "$os" in
+            archlinux)
+                echo "systemctl enable \"$name\""
+            ;;
+            debian|ubuntu)
+                echo "update-rc.d \"$name\" defaults >/dev/null"
+            ;;
+
+#           FIXME: Disabled until the explorer is checked
+#            gentoo)
+#                echo rc-update add \"$name\" default
+#            ;;
+
+            amazon|centos|fedora|owl|redhat|suse)
+                echo chkconfig \"$name\" on
+            ;;
+
+            openwrt)
+                # 'enable' can be successful and still return a non-zero exit
+                # code, deal with it by checking for success ourselves in that
+                # case (the || ... part).
+                echo "/etc/init.d/\"$name\" enable || [ -f /etc/rc.d/S??\"$name\" ]"
+            ;;
+
+            *)
+               echo "Unsupported os: $os" >&2
+               exit 1
+            ;;
+        esac
+    ;;
+
+    absent)
+        case "$os" in
+            archlinux)
+                echo "systemctl disable \"$name\""
+            ;;
+            debian|ubuntu)
+                echo update-rc.d -f \"$name\" remove
+            ;;
+
+# FIXME: Disabled until the explorer is checked
+#            gentoo)
+#                echo rc-update del \"$name\"
+#            ;;
+
+            centos|fedora|owl|redhat|suse)
+                echo chkconfig \"$name\" off
+            ;;
+
+            openwrt)
+                echo "\"/etc/init.d/$name\" disable"
+            ;;
+
+            *)
+               echo "Unsupported os: $os" >&2
+               exit 1
+            ;;
+        esac
+ 
+    ;;
+
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac

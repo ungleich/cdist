@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# __package is an abstract type which dispatches to the lower level
+# __package_$name types which do the actual interaction with the packaging
+# system.
+#
+
+type="$__object/parameter/type"
+if [ -f "$type" ]; then
+   type="$(cat "$type")"
+else
+   # By default determine package manager based on operating system
+   os="$(cat "$__global/explorer/os")"
+   case "$os" in
+         amazon|centos|fedora|redhat) type="yum" ;;
+         archlinux) type="pacman" ;;
+         debian|ubuntu) type="apt" ;;
+         freebsd) type="pkg_freebsd" ;;
+         gentoo) type="emerge" ;;
+         suse) type="zypper" ;;
+         openwrt) type="opkg" ;;
+         *)
+            echo "Don't know how to manage packages on: $os" >&2
+            exit 1
+         ;;
+   esac
+fi
+
+set -- "$@" "$__object_id"
+cd "$__object/parameter"
+for property in $(ls .); do
+   if [ "$property" != "type" ]; then
+      set -- "$@" "--$property" "$(cat "$property")"
+   fi
+done
+
+__package_$type "$@"

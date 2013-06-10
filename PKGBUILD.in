@@ -1,0 +1,23 @@
+#!/bin/sh
+
+version=$(git describe)
+outfile=${0%.in}
+
+cat << eof > "${outfile}"
+pkgname=cdist
+pkgver=$version
+pkgrel=1
+pkgdesc='A Usable Configuration Management System"'
+arch=('any')
+url='http://www.nico.schottelius.org/software/cdist/'
+license=('GPL3')
+depends=('python>=3.2.0')
+source=("http://pypi.python.org/packages/source/c/cdist/cdist-\${pkgver}.tar.gz")
+
+package() {
+    cd cdist-\${pkgver}
+    python3 setup.py build install --root="\${pkgdir}"
+}
+eof
+
+makepkg -g >> "${outfile}"

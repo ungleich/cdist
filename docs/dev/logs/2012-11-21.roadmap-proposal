@@ -1,0 +1,6 @@
+Target version      proposed date       features
+2.1.                2012-12-01          initial support for before/after requirements
+2.2.                2013-03-01          initial notifications support,
+                                        replace require="" with before/after
+2.3.                2013-06-01          installation support: pre-os and install types
+2.4.                2013-09-01          performance speedup via parallelisation

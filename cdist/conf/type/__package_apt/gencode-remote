@@ -1,0 +1,60 @@
+#!/bin/sh
+#
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage packages on Debian and co.
+#
+
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
+
+if [ -f "$__object/parameter/state" ]; then
+   state_should="$(cat "$__object/parameter/state")"
+else
+   state_should="present"
+fi
+
+# FIXME: use grep directly, state is a list, not a line!
+state_is="$(cat "$__object/explorer/state")"
+case "$state_is" in
+    present*)
+       name="$(echo "$state_is" | cut -d ' ' -f 2)"
+       state_is="present"
+    ;;
+esac
+
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
+
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        echo $aptget install \"$name\"
+    ;;
+    absent)
+        echo $aptget remove \"$name\"
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac

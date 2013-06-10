@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# 2011 - 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+name="/$__object_id"
+map="$(cat "$__object/parameter/map")"
+type="$(cat "$__object/parameter/type" 2>/dev/null || echo "file")"
+options="$(cat "$__object/parameter/options" 2>/dev/null || true)"
+
+# NOTE: keep variables in sync in manifest/explorer/gencode-*
+prefix="#cdist:$__object_name"
+suffix="#/cdist:$__object_name"
+
+mkdir "$__object/files"
+
+# Generate entry for inclusion in auto.master
+entry="$__object/files/entry"
+echo "$prefix" > "$entry"
+if [ -f "$__object/parameter/comment" ]; then
+   echo "# $(cat "$__object/parameter/comment")" >> "$entry"
+fi
+echo "$name $type:$map $options" >> $entry
+echo "$suffix" >> "$entry"
+
+# Reload autofs after changes if the user wishes this
+if [ ! -f "$__object/parameter/noreload" ]; then
+   state_should="$(cat "$__object/parameter/state" 2>/dev/null || echo present)"
+   if [ ! -s "$__object/explorer/entry" ]; then
+      state_is='absent'
+   else
+      state_is=$(diff -q "$entry" "$__object/explorer/entry" >/dev/null \
+         && echo present \
+         || echo changed
+      )
+   fi
+   if [ "$state_is" != "$state_should" ]; then
+      require="$__object_name" __autofs_reload
+   fi
+fi

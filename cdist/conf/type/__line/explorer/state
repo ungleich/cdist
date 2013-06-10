@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+file="/$__object_id"
+[ -f "$__object/parameter/file" ] && file=$(cat "$__object/parameter/file")
+
+if [ -f "$__object/parameter/regex" ]; then
+    regex=$(cat "$__object/parameter/regex")
+else
+    if [ ! -f "$__object/parameter/line" ]; then
+        echo "Parameter line and regex missing - cannot explore" >&2
+        exit 1
+    fi
+    regex="^$(cat "$__object/parameter/line")\$"
+fi
+
+# Allow missing file - thus 2>/dev/null
+if grep -q "$regex" "$file" 2>/dev/null; then
+    echo present
+else
+    echo absent
+fi

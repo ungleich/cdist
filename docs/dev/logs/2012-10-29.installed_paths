@@ -1,0 +1,34 @@
+
+Installed paths: (read first)
+    os.path.dirname(cdist.__file__)
+
+    /conf/explorer
+    /conf/type
+
+User paths: (read after, overwrite)?
+
+    $HOME/.cdist
+
+    /explorer
+    /type
+
+    /manifest
+
+    /cache
+
+Additional paths:
+
+    CDIST_EXPLORER_EXTRA_PATH=...
+    CDIST_TYPE_EXTRA_PATH=...
+
+    or
+
+    -c dir -c dir2 -c ... => 
+        add types and explorer from those directories
+        last one wins?
+            because they can only be appended to existing "$PATH"
+
+Open questions:
+
+    - How to tell types to use global explorer?
+    - How to tell types to find other types?

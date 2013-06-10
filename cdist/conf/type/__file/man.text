@@ -1,0 +1,85 @@
+cdist-type__file(7)
+===================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__file - Manage files
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to create files, remove files and set file
+attributes on the target.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+OPTIONAL PARAMETERS
+-------------------
+state::
+   'present', 'absent' or 'exists', defaults to 'present'
+   where:
+      present: the file is exactly the one from source
+      absent: the file does not exist
+      exists: the file from source but only if it doesn't already exist
+
+group::
+   Group to chgrp to.
+
+mode::
+   Unix permissions, suitable for chmod.
+
+owner::
+   User to chown to.
+
+source::
+   If supplied, copy this file from the host running cdist to the target.
+   If not supplied, an empty file or directory will be created.
+   If source is '-' (dash), take what was written to stdin as the file content.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Create  /etc/cdist-configured as an empty file
+__file /etc/cdist-configured
+# The same thing
+__file /etc/cdist-configured --state present
+# Delete existing file
+__file /etc/cdist-configured --state absent
+
+# Use __file from another type
+__file /etc/issue --source "$__type/files/archlinux" --state present
+
+# Supply some more settings
+__file /etc/shadow --source "$__type/files/shadow" \
+   --owner root --group shadow --mode 0640 \
+   --state present
+
+# Provide a default file, but let the user change it
+__file /home/frodo/.bashrc --source "/etc/skel/.bashrc" \
+   --state exists \
+   --owner frodo --mode 0600
+
+# Take file content from stdin
+__file /tmp/whatever --owner root --group root --mode 644 --source - << DONE
+Here goes the content for /tmp/whatever
+DONE
+
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

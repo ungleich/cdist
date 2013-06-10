@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2012 Matt Coddington (mcoddington at gmail.com)
+# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -24,7 +25,25 @@
 # at /etc/passwd~cdist.
 #
 # Usage:
-#  __remote_copy="/path/to/this/script" cdist config target_host
+#  cdist config --remote-copy /path/to/this/script target_host
 #
+
+# For rsync to do the right thing, the source has to end with "/" if it is
+# a directory. The below preprocessor loop takes care of that.
+
+# second last argument is the source
+source_index=$(($#-1))
+index=0
+for arg in $@; do
+   if [ $index -eq 0 ]; then
+      # reset $@
+      set --
+   fi
+   index=$((index+=1))
+   if [ $index -eq $source_index -a -d "$arg" ]; then
+      arg="${arg%/}/"
+   fi
+   set -- "$@" "$arg"
+done
 
 rsync --backup --suffix=~cdist -e 'ssh -o User=root' $@

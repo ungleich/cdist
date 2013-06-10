@@ -1,0 +1,57 @@
+#!/bin/sh
+#
+# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Check whether the given name will be started on boot or not
+#
+
+os=$("$__explorer/os")
+runlevel=$("$__explorer/runlevel")
+name="$__object_id"
+
+
+case "$os" in
+    archlinux)
+        # convert bash array to shell
+        systemctl is-enabled "$name" >/dev/null 2>&1; ret=$?
+
+        if [ "$ret" = 0 ]; then
+            state="present"
+        else
+            state="absent"
+        fi
+    ;;
+
+    debian|ubuntu|openwrt)
+        state="present"
+        [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
+    ;;
+
+    amazon|centos|fedora|owl|redhat|suse)
+        state=$(chkconfig --level "$runlevel" "$name" || echo absent)
+        [ "$state" ] || state="present"
+    ;;
+
+    *)  
+       echo "Unsupported os: $os" >&2
+       exit 1
+    ;;
+esac
+
+echo $state
