@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Chase Allen James <nx-cdist@nu-ex.com>
+# 2013 Chase Allen James <nx-cdist@nu-ex.com>
 #
 # This file is part of cdist.
 #
@@ -17,8 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-ruby="$__object_id"
-if [ -n "$(rbenv versions | grep "${ruby}\$\|${ruby} ")" ]; then
+version="$__object_id"
+if [ -n "$(rbenv versions | grep "${version}\$\|${version} ")" ]; then
   echo "present"
 else
   echo "absent"
