@@ -22,7 +22,7 @@ name="$__object_id"
 state_should=present
 [ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 
-source="$__object/paramter/source"
+source="$(cat "$__object/parameter/source")"
 file="${source##*/}"
 
 destination_directory="/tmp"

@@ -20,18 +20,12 @@
 #
 # Check the status of a package
 #
-
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
-else
-   name="$__object_id"
-fi
+name="$__object_id"
+[ -f "$__object/parameter/name" ] && name="$(cat "$__object/parameter/name")"
 
 # Check if the package is installed via dpkg
-present="$(dpkg -s "$name" 2>/dev/null | grep "^Status: install ok installed")"
-
-if [ "$present" ]; then
-  echo "present"
+if [ -n "$(dpkg -s "$name" 2>/dev/null | grep "^Status: install ok installed$")" ]; then
+  echo present
 else
-  echo "absent"
+  echo absent
 fi

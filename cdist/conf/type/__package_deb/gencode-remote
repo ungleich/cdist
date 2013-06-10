@@ -24,6 +24,7 @@
 name="$__object_id"
 [ -f "$__object/parameter/name" ] && name="$(cat "$__object/parameter/name")"
 
+source="$(cat "$__object/parameter/source")"
 file="${source##*/}"
 directory="/tmp"
 if [ -f "$__object/parameter/destination_directory" ]; then
