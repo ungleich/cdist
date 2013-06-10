@@ -8,7 +8,7 @@ next:
 	* Build: Change clean-dist target to "distclean"
 	* Core: Make global explorers available to initial manifest (Arkaitz Jimenez)
 	* Core: Change execution order to run object as one unit
-	* New Remote Example: Add support for sudo operations (James Chase)
+	* New Remote Example: Add support for sudo operations (Chase James)
 	* Type __apt_ppa: Fix comparison operator (Tyler Akins)
 	* Type __start_on_boot: Archlinux changed to use systemd - adapt type
 
