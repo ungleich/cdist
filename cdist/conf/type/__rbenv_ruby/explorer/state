@@ -18,8 +18,5 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 version="$__object_id"
-if [ -n "$(rbenv versions | grep "${version}\$\|${version} ")" ]; then
-  echo "present"
-else
-  echo "absent"
-fi
+is_present="$(/bin/bash -lc "rbenv versions | grep \"${version}$\"")"
+[ "$is_present" ] && { echo "present"; } || { echo "absent"; }

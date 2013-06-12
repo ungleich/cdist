@@ -26,14 +26,14 @@ state_should="present"
 case "$state_is" in
   present)
     if [ "$state_should" = "absent" ]; then
-      echo "rbenv uninstall $version"
-      echo "rbenv rehash"
+      echo /bin/bash -lc "\"rbenv uninstall $version\""
+      echo /bin/bash -lc "\"rbenv rehash\""
     fi
   ;;
   absent)
     if [ "$state_should" = "present" ]; then
-      echo "rbenv install $version"
-      echo "rbenv rehash"
+      echo /bin/bash -lc "\"rbenv install $version\""
+      echo /bin/bash -lc "\"rbenv rehash\""
     fi
   ;;
   *)
