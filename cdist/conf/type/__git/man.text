@@ -27,6 +27,15 @@ state::
 branch::
     Create this branch by checking out the remote branch of this name
 
+group::
+   Group to chgrp to.
+
+mode::
+   Unix permissions, suitable for chmod.
+
+owner::
+   User to chown to.
+
 
 EXAMPLES
 --------
