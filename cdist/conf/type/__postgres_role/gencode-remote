@@ -20,14 +20,15 @@
 
 name="$__object_id"
 state_is="$(cat "$__object/explorer/state")"
-state_should="$(cat "$__object/parameter/state")"
+state_should="present"
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
 
 [ "$state_is" = "$state_should" ] && exit 0
 
 case "$state_should" in
     present)
         if [ -f "$__object/parameter/password" ]; then
-            password="$(cat "$__object/parameter/$parameter")"
+            password="$(cat "$__object/parameter/password")"
         fi
         booleans=""
         for boolean in login createdb createrole superuser; do
