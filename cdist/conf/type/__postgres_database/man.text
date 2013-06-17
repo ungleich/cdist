@@ -13,14 +13,11 @@ DESCRIPTION
 This cdist type allows you to create or drop postgres databases.
 
 
-REQUIRED PARAMETERS
+OPTIONAL PARAMETERS
 -------------------
 state::
    either 'present' or 'absent'
 
-
-OPTIONAL PARAMETERS
--------------------
 owner::
    the role owning this database
 
@@ -29,7 +26,7 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-__postgres_database mydbname --state present --owner mydbusername
+__postgres_database mydbname --owner mydbusername
 --------------------------------------------------------------------------------
 
 
