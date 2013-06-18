@@ -13,6 +13,7 @@ next:
 	* Type __start_on_boot: Archlinux changed to use systemd - adapt type
 	* Type __git: Missing quotes added (Chase James)
 	* Type __postgres_database: Make state parameter optional (Chase James)
+	* Type __postgres_role: Make state parameter optional, fix password bug (Chase James)
 
 2.1.1: 2013-04-08
 	* Core: Use dynamic dependency resolver to allow indirect self dependencies
