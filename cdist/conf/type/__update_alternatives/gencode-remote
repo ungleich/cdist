@@ -23,4 +23,4 @@
 
 path="$(cat "$__object/parameter/path")"
 name="$__object_id"
-echo "update-alternatives --set '$name' '$path'"
+echo "update-alternatives --quiet --set '$name' '$path'"
