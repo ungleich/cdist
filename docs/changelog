@@ -14,6 +14,7 @@ next:
 	* Type __git: Missing quotes added (Chase James)
 	* Type __postgres_database: Make state parameter optional (Chase James)
 	* Type __postgres_role: Make state parameter optional, fix password bug (Chase James)
+	* Type __process: Make state parameter optional
 
 2.1.1: 2013-04-08
 	* Core: Use dynamic dependency resolver to allow indirect self dependencies
