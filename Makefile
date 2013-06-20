@@ -20,7 +20,7 @@
 
 A2XM=a2x -f manpage --no-xmllint -a encoding=UTF-8
 A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
-helper=./build-helper
+helper=./bin/build-helper
 
 MANDIR=docs/man
 MAN1DSTDIR=$(MANDIR)/man1
