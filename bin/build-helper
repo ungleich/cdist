@@ -21,8 +21,11 @@
 # This file contains the heavy lifting found usually in the Makefile
 #
 
-basedir=${0%/*}
-version=$(cd "$basedir" && git describe)
+basedir=${0%/*}/../
+# Change to checkout directory
+cd "$basedir"
+
+version=$(git describe)
 
 # Manpage and HTML
 A2XM="a2x -f manpage --no-xmllint -a encoding=UTF-8"
@@ -41,9 +44,6 @@ MANDIR=docs/man
 MAN1DSTDIR=${MANDIR}/man1
 MAN7DSTDIR=${MANDIR}/man7
 SPEECHESDIR=docs/speeches
-
-# Change to checkout directory
-cd "$basedir"
 
 case "$1" in
     manbuild)
