@@ -75,32 +75,45 @@ class ConfigInstall(object):
                                                          self.context.local.type_path):
             yield cdist_object
 
+    def iterate_once(self):
+        """
+            Iterate over the objects once - helper method for 
+            iterate_until_finished
+        """
+        objects_changed  = False
+
+        for cdist_object in self.object_list():
+            if cdist_object.requirements_unfinished(cdist_object.requirements):
+                """We cannot do anything for this poor object"""
+                continue
+        
+            if cdist_object.state == core.CdistObject.STATE_UNDEF:
+                """Prepare the virgin object"""
+        
+                self.object_prepare(cdist_object)
+                objects_changed = True
+        
+            if cdist_object.requirements_unfinished(cdist_object.autorequire):
+                """The previous step created objects we depend on - wait for them"""
+                continue
+        
+            if cdist_object.state == core.CdistObject.STATE_PREPARED:
+                self.object_run(cdist_object)
+                objects_changed = True
+
+        return objects_changed
+
+
     def iterate_until_finished(self):
-        # Continue process until no new objects are created anymore
+        """
+            Go through all objects and solve them
+            one after another
+        """
 
         objects_changed = True
 
         while objects_changed:
-            objects_changed  = False
-
-            for cdist_object in self.object_list():
-                if cdist_object.requirements_unfinished(cdist_object.requirements):
-                    """We cannot do anything for this poor object"""
-                    continue
-
-                if cdist_object.state == core.CdistObject.STATE_UNDEF:
-                    """Prepare the virgin object"""
-
-                    self.object_prepare(cdist_object)
-                    objects_changed = True
-
-                if cdist_object.requirements_unfinished(cdist_object.autorequire):
-                    """The previous step created objects we depend on - wait for them"""
-                    continue
-
-                if cdist_object.state == core.CdistObject.STATE_PREPARED:
-                    self.object_run(cdist_object)
-                    objects_changed = True
+            objects_changed = self.iterate_once()
 
         # Check whether all objects have been finished
         unfinished_objects = []
