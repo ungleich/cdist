@@ -31,7 +31,6 @@ from cdist.exec import local
 from cdist.core import manifest
 import cdist.context
 
-
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
@@ -49,25 +48,6 @@ class ResolverTestCase(test.CdistTestCase):
     def tearDown(self):
         for o in self.objects:
             o.requirements = []
-
-    def test_find_requirements_by_name_string(self):
-        requirements = ['__first/man', '__second/on-the', '__third/moon']
-        required_objects = [self.object_index[name] for name in requirements]
-        # self.assertEqual(sorted(list(self.dependency_resolver.find_requirements_by_name(requirements))),
-        #     sorted(required_objects))
-        self.assertTrue(False)
-
-    def test_find_requirements_by_name_pattern(self):
-        requirements = ['__first/*', '__second/*-the', '__third/moon']
-        requirements_expanded = [
-            '__first/child', '__first/dog', '__first/man', '__first/woman',
-            '__second/on-the', '__second/under-the',
-            '__third/moon'
-        ]
-        required_objects = [self.object_index[name] for name in requirements_expanded]
-        self.assertEqual(sorted(list(self.dependency_resolver.find_requirements_by_name(requirements))),
-            sorted(required_objects))
-        self.assertTrue(False)
 
     def test_dependency_resolution(self):
         first_man = self.object_index['__first/man']
