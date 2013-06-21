@@ -37,11 +37,6 @@ class ConfigInstall(object):
         self.context = context
         self.log = logging.getLogger(self.context.target_host)
 
-        # Initialise local directory structure
-        self.context.local.create_files_dirs()
-        # Initialise remote directory structure
-        self.context.remote.create_files_dirs()
-
         self.explorer = core.Explorer(self.context.target_host, self.context.local, self.context.remote)
         self.manifest = core.Manifest(self.context.target_host, self.context.local)
         self.code = core.Code(self.context.target_host, self.context.local, self.context.remote)
@@ -57,9 +52,16 @@ class ConfigInstall(object):
             shutil.rmtree(destination)
         shutil.move(self.context.local.out_path, destination)
 
+    def _init_files_dirs(self):
+        """Prepare files and directories for the run"""
+        self.context.local.create_files_dirs()
+        self.context.remote.create_files_dirs()
+
     def run(self):
         """Do what is most often done: deploy & cleanup"""
         start_time = time.time()
+
+        self._init_files_dirs()
 
         self.explorer.run_global_explorers(self.context.local.global_explorer_out_path)
         self.manifest.run_initial_manifest(self.context.initial_manifest)
