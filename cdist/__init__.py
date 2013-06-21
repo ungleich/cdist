@@ -47,6 +47,10 @@ class Error(Exception):
     """Base exception class for this project"""
     pass
 
+class UnresolvableRequirementsError(cdist.Error):
+    """Resolving requirements failed"""
+    pass
+
 class CdistObjectError(Error):
     """Something went wrong with an object"""
     

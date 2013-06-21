@@ -235,10 +235,3 @@ class CdistObject(object):
                 object_list.append(cdist_object)
 
         return object_list
-
-class RequirementNotFoundError(cdist.Error):
-    def __init__(self, requirement):
-        self.requirement = requirement
-
-    def __str__(self):
-        return 'Requirement could not be found: %s' % self.requirement

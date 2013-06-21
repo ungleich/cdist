@@ -29,6 +29,8 @@ from cdist import core
 import cdist
 import cdist.context
 import cdist.config
+import cdist.core.cdist_type
+import cdist.core.cdist_object
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
@@ -111,11 +113,37 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
         first.requirements = [second.name]
         second.requirements = [first.name]
 
-        with self.assertRaises(cdist.Error):
+        with self.assertRaises(cdist.UnresolvableRequirementsError):
             self.config.iterate_until_finished()
 
     def test_missing_requirements(self):
+        """Throw an error if requiring something non-existing"""
         first = self.object_index['__first/man']
-        first.requirements = ['__does/not/exist']
-        with self.assertRaises(cdist.Error):
+        first.requirements = ['__first/not/exist']
+        with self.assertRaises(cdist.UnresolvableRequirementsError):
             self.config.iterate_until_finished()
+
+    def test_requirement_broken_type(self):
+        """Unknown type should be detected in the resolving process"""
+        first = self.object_index['__first/man']
+        first.requirements = ['__nosuchtype/not/exist']
+        with self.assertRaises(cdist.core.cdist_type.NoSuchTypeError):
+            self.config.iterate_until_finished()
+
+    def test_requirement_singleton_where_no_singleton(self):
+        """Missing object id should be detected in the resolving process"""
+        first = self.object_index['__first/man']
+        first.requirements = ['__first']
+        with self.assertRaises(cdist.core.cdist_object.MissingObjectIdError):
+            self.config.iterate_until_finished()
+
+# Currently the resolving code will simply detect that this object does
+# not exist. It should probably check if the type is a singleton as well
+# - but maybe only in the emulator - to be discussed.
+#
+#    def test_requirement_no_singleton_where_singleton(self):
+#        """Missing object id should be detected in the resolving process"""
+#        first = self.object_index['__first/man']
+#        first.requirements = ['__singleton_test/foo']
+#        with self.assertRaises(cdist.core.?????):
+#            self.config.iterate_until_finished()
