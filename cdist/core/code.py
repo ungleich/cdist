@@ -83,18 +83,31 @@ class Code(object):
     """Generates and executes cdist code scripts.
 
     """
-    def __init__(self, target_host, local, remote):
+    def __init__(self, 
+        target_host,
+        local_object_path,
+        local_type_path,
+        local_out_path,
+        local_run_script,
+        remote_object_path):
+
         self.target_host = target_host
-        self.local = local
-        self.remote = remote
+
+        self.local_object_path = local_object_path
+        self.local_type_path = local_type_path
+        self.local_out_path = local_out_path
+        self.local_run_script = local_run_script
+
+        self.remote_object_path = remote_object_path
+
         self.env = {
             '__target_host': self.target_host,
-            '__global': self.local.out_path,
+            '__global': self.local_out_path,
         }
 
     def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.cdist_type
-        script = os.path.join(self.local.type_path, getattr(cdist_type, 'gencode_%s_path' % which))
+        script = os.path.join(self.local_type_path, getattr(cdist_type, 'gencode_%s_path' % which))
         if os.path.isfile(script):
             env = os.environ.copy()
             env.update(self.env)
@@ -104,7 +117,7 @@ class Code(object):
                 '__object_id': cdist_object.object_id,
                 '__object_name': cdist_object.name,
             })
-            return self.local.run_script(script, env=env, return_output=True)
+            return self.local_run_script(script, env=env, return_output=True)
 
     def run_gencode_local(self, cdist_object):
         """Run the gencode-local script for the given cdist object."""
@@ -116,8 +129,8 @@ class Code(object):
 
     def transfer_code_remote(self, cdist_object):
         """Transfer the code_remote script for the given object to the remote side."""
-        source = os.path.join(self.local.object_path, cdist_object.code_remote_path)
-        destination = os.path.join(self.remote.object_path, cdist_object.code_remote_path)
+        source = os.path.join(self.local_object_path, cdist_object.code_remote_path)
+        destination = os.path.join(self.remote_object_path, cdist_object.code_remote_path)
         # FIXME: BUG: do not create destination, but top level of destination!
         # FIXME: BUG2: we are called AFTER the code-remote has been transferred already:
         # mkdir: cannot create directory `/var/lib/cdist/object/__directory/etc/acpi/actions/.cdist/code-remote': File exists
