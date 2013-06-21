@@ -160,6 +160,14 @@ class Local(object):
         self._create_conf_path_and_link_conf_dirs()
         self._link_types_for_emulator()
 
+    def save_cache(self):
+        destination = os.path.join(self.local.cache_path, self.target_host)
+        self.log.debug("Saving " + self.out_path + " to " + destination)
+        if os.path.exists(destination):
+            shutil.rmtree(destination)
+        shutil.move(self.out_path, destination)
+
+
     def _create_context_dirs(self):
         self.mkdir(self.out_path)
 

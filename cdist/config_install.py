@@ -44,8 +44,7 @@ class ConfigInstall(object):
         # Add switch to disable code execution
         self.dry_run = False
 
-    def cleanup(self):
-        # FIXME: move to local?
+    def save_cache(self):
         destination = os.path.join(self.context.local.cache_path, self.context.target_host)
         self.log.debug("Saving " + self.context.local.out_path + " to " + destination)
         if os.path.exists(destination):
@@ -67,7 +66,7 @@ class ConfigInstall(object):
         self.manifest.run_initial_manifest(self.context.initial_manifest)
         self.iterate_until_finished()
 
-        self.cleanup()
+        self.context.local.save_cache()
         self.log.info("Finished successful run in %s seconds", time.time() - start_time)
 
 
