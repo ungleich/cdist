@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -56,7 +56,14 @@ class CodeTestCase(test.CdistTestCase):
         self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
         self.remote.create_files_dirs()
 
-        self.code = code.Code(self.target_host, self.local, self.remote)
+        # self.code = code.Code(self.target_host, self.local, self.remote)
+        self.code = code.Code(self.target_host, 
+            self.local.object_path,
+            self.local.type_path,
+            self.local.out_path,
+            self.local.run_script,
+            self.remote.object_path,
+            self.remote.run_script)
 
         self.cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
         self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path, 'whatever')

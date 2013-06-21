@@ -89,16 +89,18 @@ class Code(object):
         local_type_path,
         local_out_path,
         local_run_script,
-        remote_object_path):
+        remote_object_path,
+        remote_run_script):
 
-        self.target_host = target_host
+        self.target_host        = target_host
 
-        self.local_object_path = local_object_path
-        self.local_type_path = local_type_path
-        self.local_out_path = local_out_path
-        self.local_run_script = local_run_script
+        self.local_object_path  = local_object_path
+        self.local_type_path    = local_type_path
+        self.local_out_path     = local_out_path
+        self.local_run_script   = local_run_script
 
         self.remote_object_path = remote_object_path
+        self.remote_run_script  = remote_run_script
 
         self.env = {
             '__target_host': self.target_host,
@@ -139,9 +141,11 @@ class Code(object):
         self.remote.transfer(source, destination)
 
     def _run_code(self, cdist_object, which):
-        which_exec = getattr(self, which)
-        script = os.path.join(which_exec.object_path, getattr(cdist_object, 'code_%s_path' % which))
-        return which_exec.run_script(script)
+        runner              =  getattr(self, '%s_run_script' % which)
+        object_path_base    =  getattr(self, '%s_object_path' % which)
+        code                =  getattr(cdist_object, 'code_%s_path' % which)
+        script = os.path.join(object_base_path, code)
+        return runner(script)
 
     def run_code_local(self, cdist_object):
         """Run the code-local script for the given cdist object."""
