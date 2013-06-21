@@ -113,3 +113,9 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
 
         with self.assertRaises(cdist.Error):
             self.config.iterate_until_finished()
+
+    def test_missing_requirements(self):
+        first = self.object_index['__first/man']
+        first.requirements = ['__does/not/exist']
+        with self.assertRaises(cdist.Error):
+            self.config.iterate_until_finished()

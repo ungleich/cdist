@@ -34,77 +34,58 @@ import cdist.context
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-object_base_path = op.join(fixtures, 'object')
-type_base_path = op.join(fixtures, 'type')
-add_conf_dir = op.join(fixtures, 'conf')
 
+object_base_path = op.join(fixtures, 'object')
+add_conf_dir = op.join(fixtures, 'conf')
+type_base_path = op.join(add_conf_dir, 'type')
+
+class MockContext(object):
+    """A context object that has the required attributes"""
+    def __init__(self, target_host):
+        self.target_host = target_host
+        self.local = False
+
+class MockLocal(object):
+    def __init__(self, temp_dir, type_path):
+        self.temp_dir = temp_dir
+        self.object_path = op.join(self.temp_dir, "object")
+        self.type_path = type_path
 
 class ExecutionOrderTestCase(test.CdistTestCase):
     def setUp(self):
-        self.orig_environ = os.environ
-        os.environ = os.environ.copy()
+        # self.orig_environ = os.environ
+        # os.environ = os.environ.copy()
+        # os.environ['__cdist_out_dir'] = self.out_dir
+        # os.environ['__cdist_remote_out_dir'] = self.remote_out_dir
+        # self.out_dir = os.path.join(self.temp_dir, "out")
+        # self.remote_out_dir = os.path.join(self.temp_dir, "remote")
+
         self.temp_dir = self.mkdtemp()
 
-        self.out_dir = os.path.join(self.temp_dir, "out")
-        self.remote_out_dir = os.path.join(self.temp_dir, "remote")
-
-        os.environ['__cdist_out_dir'] = self.out_dir
-        os.environ['__cdist_remote_out_dir'] = self.remote_out_dir
-
-        self.context = cdist.context.Context(
-            target_host=self.target_host,
-            remote_copy=self.remote_copy,
-            remote_exec=self.remote_exec,
-            add_conf_dirs=[add_conf_dir],
-            exec_path=test.cdist_exec_path,
-            debug=False)
-
+        self.context = MockContext(self.target_host)
+        self.context.local = MockLocal(self.temp_dir, type_base_path)
         self.config = config.Config(self.context)
 
-        self.objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
+        self._init_objects()
+
+    def _init_objects(self):
+        """copy base objects to context directory"""
+        shutil.copytree(object_base_path, self.context.local.object_path)
+        self.objects = list(core.CdistObject.list_objects(self.context.local.object_path, self.context.local.type_path))
         self.object_index = dict((o.name, o) for o in self.objects)
 
+        for cdist_object in self.objects:
+            cdist_object.state = core.CdistObject.STATE_UNDEF
+
     def tearDown(self):
-        os.environ = self.orig_environ
+        # os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
 
-        for o in self.objects:
-            o.requirements = []
+    def test_objects_changed(self):
+        pass
+        # self.assert_True(self.config.iterate_once())
 
-    def test_dependency_resolution(self):
-        """Check that the runtime respects the right order"""
-        first_man = self.object_index['__first/man']
-        second_on_the = self.object_index['__second/on-the']
-        third_moon = self.object_index['__third/moon']
-
-        first_man.requirements = [second_on_the.name]
-        second_on_the.requirements = [third_moon.name]
-
-        self.config.iterate_once()
-
-
-        self.assertEqual(
-            self.dependency_resolver.dependencies['__first/man'],
-            [third_moon, second_on_the, first_man]
-        )
-        self.assertTrue(False)
-
-    def test_circular_reference(self):
-        first_man = self.object_index['__first/man']
-        first_woman = self.object_index['__first/woman']
-        first_man.requirements = [first_woman.name]
-        first_woman.requirements = [first_man.name]
-        with self.assertRaises(resolver.CircularReferenceError):
-            self.dependency_resolver.dependencies
-        self.assertTrue(False)
-
-    def test_requirement_not_found(self):
-        first_man = self.object_index['__first/man']
-        first_man.requirements = ['__does/not/exist']
-        with self.assertRaises(cdist.Error):
-            self.dependency_resolver.dependencies
-        self.assertTrue(False)
-
+class NotTheExecutionOrderTestCase(test.CdistTestCase):
     def test_implicit_dependencies(self):
         self.context.initial_manifest = os.path.join(self.context.local.manifest_path, 'implicit_dependencies')
         self.config.stage_prepare()
