@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -59,8 +59,8 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
             exec_path=test.cdist_exec_path,
             debug=True)
 
-        self.context.local.object_path = object_base_path
-        self.context.local.type_path = type_base_path
+        self.context.local.object_path  = object_base_path
+        self.context.local.type_path    = type_base_path
 
         self.config = cdist.config.Config(self.context)
 
@@ -86,15 +86,15 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
 
         # First run: 
         # solves first and maybe second (depending on the order in the set)
-        self.config.stage_run_iterate()
+        self.config.iterate_once()
         self.assertTrue(third.state == third.STATE_DONE)
 
-        self.config.stage_run_iterate()
+        self.config.iterate_once()
         self.assertTrue(second.state == second.STATE_DONE)
 
 
         try:
-            self.config.stage_run_iterate()
+            self.config.iterate_once()
         except cdist.Error:
             # Allow failing, because the third run may or may not be unecessary already,
             # depending on the order of the objects
@@ -111,9 +111,5 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
         first.requirements = [second.name]
         second.requirements = [first.name]
 
-        # First round solves __third/moon
-        self.config.stage_run_iterate()
-
-        # Second round detects it cannot solve the rest
         with self.assertRaises(cdist.Error):
-            self.config.stage_run_iterate()
+            self.config.iterate_until_finished()

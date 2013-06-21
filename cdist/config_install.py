@@ -32,17 +32,15 @@ from cdist import core
 class ConfigInstall(object):
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, context):
+    def __init__(self, context, dry_run=False):
 
         self.context = context
-        self.log = logging.getLogger(self.context.target_host)
+        self.log      = logging.getLogger(self.context.target_host)
+        self.dry_run = dry_run
 
         self.explorer = core.Explorer(self.context.target_host, self.context.local, self.context.remote)
         self.manifest = core.Manifest(self.context.target_host, self.context.local)
-        self.code = core.Code(self.context.target_host, self.context.local, self.context.remote)
-
-        # Add switch to disable code execution
-        self.dry_run = False
+        self.code     = core.Code(self.context.target_host, self.context.local, self.context.remote)
 
     def _init_files_dirs(self):
         """Prepare files and directories for the run"""
