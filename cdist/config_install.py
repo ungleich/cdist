@@ -44,13 +44,6 @@ class ConfigInstall(object):
         # Add switch to disable code execution
         self.dry_run = False
 
-    def save_cache(self):
-        destination = os.path.join(self.context.local.cache_path, self.context.target_host)
-        self.log.debug("Saving " + self.context.local.out_path + " to " + destination)
-        if os.path.exists(destination):
-            shutil.rmtree(destination)
-        shutil.move(self.context.local.out_path, destination)
-
     def _init_files_dirs(self):
         """Prepare files and directories for the run"""
         self.context.local.create_files_dirs()
