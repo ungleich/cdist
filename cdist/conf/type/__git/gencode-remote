@@ -51,12 +51,12 @@ case $state_should in
         if [ "$state_should" != "$state_is" ]; then
             echo git clone --quiet --branch "$branch" "$source" "$destination"
         fi
-        if [ \( -n ${owner} -a "$owner_is" != "$owner" \) -o \
-             \( -n ${group} -a "$group_is" != "$group" \) ]; then
-            echo chown -R ${owner}:${group} ${destination}
+        if [ \( -n "$owner" -a "$owner_is" != "$owner" \) -o \
+             \( -n "$group" -a "$group_is" != "$group" \) ]; then
+            echo chown -R "${owner}:${group}" "$destination"
         fi
-        if [ -n ${mode} ]; then
-            echo chmod -R ${mode} ${destination}
+        if [ -n "$mode" ]; then
+            echo chmod -R "$mode" "$destination"
         fi
     ;;
     # Handled in manifest

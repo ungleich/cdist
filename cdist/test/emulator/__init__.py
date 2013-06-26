@@ -63,13 +63,13 @@ class EmulatorTestCase(test.CdistTestCase):
 
     def test_nonexistent_type_exec(self):
         argv = ['__does-not-exist']
-        self.assertRaises(core.NoSuchTypeError, emulator.Emulator, argv, env=self.env)
+        self.assertRaises(core.cdist_type.NoSuchTypeError, emulator.Emulator, argv, env=self.env)
 
     def test_nonexistent_type_requirement(self):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__does-not-exist/some-id'
         emu = emulator.Emulator(argv, env=self.env)
-        self.assertRaises(core.NoSuchTypeError, emu.run)
+        self.assertRaises(core.cdist_type.NoSuchTypeError, emu.run)
 
     def test_illegal_object_id_requirement(self):
         argv = ['__file', '/tmp/foobar']
@@ -81,7 +81,7 @@ class EmulatorTestCase(test.CdistTestCase):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__file'
         emu = emulator.Emulator(argv, env=self.env)
-        self.assertRaises(core.IllegalObjectIdError, emu.run)
+        self.assertRaises(core.cdist_object.MissingObjectIdError, emu.run)
 
     def test_singleton_object_requirement(self):
         argv = ['__file', '/tmp/foobar']

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -22,79 +22,117 @@
 
 import logging
 import os
-import stat
 import shutil
-import sys
-import tempfile
 import time
-import itertools
 import pprint
 
 import cdist
 from cdist import core
-from cdist import resolver
-
 
 class ConfigInstall(object):
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, context):
+    def __init__(self, context, dry_run=False):
 
         self.context = context
-        self.log = logging.getLogger(self.context.target_host)
-
-        # Initialise local directory structure
-        self.context.local.create_files_dirs()
-        # Initialise remote directory structure
-        self.context.remote.create_files_dirs()
+        self.log      = logging.getLogger(self.context.target_host)
+        self.dry_run = dry_run
 
         self.explorer = core.Explorer(self.context.target_host, self.context.local, self.context.remote)
         self.manifest = core.Manifest(self.context.target_host, self.context.local)
-        self.code = core.Code(self.context.target_host, self.context.local, self.context.remote)
+        self.code     = core.Code(self.context.target_host, self.context.local, self.context.remote)
 
-        # Add switch to disable code execution
-        self.dry_run = False
+    def _init_files_dirs(self):
+        """Prepare files and directories for the run"""
+        self.context.local.create_files_dirs()
+        self.context.remote.create_files_dirs()
 
-    def cleanup(self):
-        # FIXME: move to local?
-        destination = os.path.join(self.context.local.cache_path, self.context.target_host)
-        self.log.debug("Saving " + self.context.local.out_path + " to " + destination)
-        if os.path.exists(destination):
-            shutil.rmtree(destination)
-        shutil.move(self.context.local.out_path, destination)
-
-    def deploy_to(self):
-        """Mimic the old deploy to: Deploy to one host"""
-        self.stage_prepare()
-        self.stage_run()
-
-    def deploy_and_cleanup(self):
+    def run(self):
         """Do what is most often done: deploy & cleanup"""
         start_time = time.time()
-        self.deploy_to()
-        self.cleanup()
-        self.log.info("Finished successful run in %s seconds",
-            time.time() - start_time)
 
-    def stage_prepare(self):
-        """Do everything for a deploy, minus the actual code stage"""
+        self._init_files_dirs()
+
         self.explorer.run_global_explorers(self.context.local.global_explorer_out_path)
         self.manifest.run_initial_manifest(self.context.initial_manifest)
+        self.iterate_until_finished()
 
-        self.log.info("Running object manifests and type explorers")
+        self.context.local.save_cache()
+        self.log.info("Finished successful run in %s seconds", time.time() - start_time)
 
-        # Continue process until no new objects are created anymore
-        new_objects_created = True
-        while new_objects_created:
-            new_objects_created = False
-            for cdist_object in core.CdistObject.list_objects(self.context.local.object_path,
+
+    def object_list(self):
+        """Short name for object list retrieval"""
+        for cdist_object in core.CdistObject.list_objects(self.context.local.object_path,
                                                          self.context.local.type_path):
-                if cdist_object.state == core.CdistObject.STATE_PREPARED:
-                    self.log.debug("Skipping re-prepare of object %s", cdist_object)
-                    continue
-                else:
-                    self.object_prepare(cdist_object)
-                    new_objects_created = True
+            yield cdist_object
+
+    def iterate_once(self):
+        """
+            Iterate over the objects once - helper method for 
+            iterate_until_finished
+        """
+        objects_changed  = False
+
+        for cdist_object in self.object_list():
+            if cdist_object.requirements_unfinished(cdist_object.requirements):
+                """We cannot do anything for this poor object"""
+                continue
+        
+            if cdist_object.state == core.CdistObject.STATE_UNDEF:
+                """Prepare the virgin object"""
+        
+                self.object_prepare(cdist_object)
+                objects_changed = True
+        
+            if cdist_object.requirements_unfinished(cdist_object.autorequire):
+                """The previous step created objects we depend on - wait for them"""
+                continue
+        
+            if cdist_object.state == core.CdistObject.STATE_PREPARED:
+                self.object_run(cdist_object)
+                objects_changed = True
+
+        return objects_changed
+
+
+    def iterate_until_finished(self):
+        """
+            Go through all objects and solve them
+            one after another
+        """
+
+        objects_changed = True
+
+        while objects_changed:
+            objects_changed = self.iterate_once()
+
+        # Check whether all objects have been finished
+        unfinished_objects = []
+        for cdist_object in self.object_list():
+            if not cdist_object.state == cdist_object.STATE_DONE:
+                unfinished_objects.append(cdist_object)
+
+        if unfinished_objects:
+            info_string = []
+
+            for cdist_object in unfinished_objects:
+
+                requirement_names = []
+                autorequire_names = []
+
+                for requirement in cdist_object.requirements_unfinished(cdist_object.requirements):
+                    requirement_names.append(requirement.name)
+
+                for requirement in cdist_object.requirements_unfinished(cdist_object.autorequire):
+                    autorequire_names.append(requirement.name)
+
+                requirements = ", ".join(requirement_names)
+                autorequire  = ", ".join(autorequire_names)
+                info_string.append("%s requires: %s autorequires: %s" % (cdist_object.name, requirements, autorequire))
+
+            raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved: %s" %
+                ("; ".join(info_string)))
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
@@ -129,18 +167,3 @@ class ConfigInstall(object):
         # Mark this object as done
         self.log.debug("Finishing run of " + cdist_object.name)
         cdist_object.state = core.CdistObject.STATE_DONE
-
-    def stage_run(self):
-        """The final (and real) step of deployment"""
-        self.log.info("Generating and executing code")
-
-        objects = core.CdistObject.list_objects(
-            self.context.local.object_path,
-            self.context.local.type_path)
-
-        dependency_resolver = resolver.DependencyResolver(objects)
-        self.log.debug(pprint.pformat(dependency_resolver.dependencies))
-
-        for cdist_object in dependency_resolver:
-            self.log.debug("Run object: %s", cdist_object)
-            self.object_run(cdist_object)

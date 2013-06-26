@@ -50,7 +50,6 @@ class MissingObjectIdError(cdist.Error):
     def __str__(self):
         return '%s' % (self.message)
 
-
 class CdistObject(object):
     """Represents a cdist object.
 
@@ -61,6 +60,7 @@ class CdistObject(object):
     """
 
     # Constants for use with Object.state
+    STATE_UNDEF = ""
     STATE_PREPARED = "prepared"
     STATE_RUNNING = "running"
     STATE_DONE = "done"
@@ -223,66 +223,15 @@ class CdistObject(object):
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 
-    @property
-    def satisfied_requirements(self):
-        """Return state whether all of our dependencies have been resolved already"""
+    def requirements_unfinished(self, requirements):
+        """Return state whether requirements are satisfied"""
 
-        satisfied = True
+        object_list = []
 
-        for requirement in self.all_requirements:
-            log.debug("%s: Checking requirement %s (%s) .." % (self.name, requirement.name, requirement.state))
-            if not requirement.state == self.STATE_DONE:
-                satisfied = False
-                break
-        log.debug("%s is satisfied: %s" % (self.name, satisfied))
+        for requirement in requirements:
+            cdist_object = self.object_from_name(requirement)
 
-        return satisfied
+            if not cdist_object.state == self.STATE_DONE:
+                object_list.append(cdist_object)
 
-
-    def find_requirements_by_name(self, requirements):
-        """Takes a list of requirement patterns and returns a list of matching object instances.
-
-        Patterns are expected to be Unix shell-style wildcards for use with fnmatch.filter.
-
-        find_requirements_by_name(['__type/object_id', '__other_type/*']) -> 
-            [<Object __type/object_id>, <Object __other_type/any>, <Object __other_type/match>]
-        """
-
-
-        # FIXME: think about where/when to store this - probably not here
-        self.objects = dict((o.name, o) for o in self.list_objects(self.base_path, self.cdist_type.base_path))
-        object_names = self.objects.keys()
-
-        for pattern in requirements:
-            found = False
-            for requirement in fnmatch.filter(object_names, pattern):
-                found = True
-                yield self.objects[requirement]
-            if not found:
-                # FIXME: get rid of the singleton object_id, it should be invisible to the code -> hide it in Object
-                singleton = os.path.join(pattern, 'singleton')
-                if singleton in self.objects:
-                    yield self.objects[singleton]
-                else:
-                    raise RequirementNotFoundError(pattern)
-
-    @property
-    def all_requirements(self):
-        """
-        Return resolved autorequirements and requirements so that
-        a complete list of requirements is returned
-        """
-
-        all_reqs= []
-        all_reqs.extend(self.find_requirements_by_name(self.requirements))
-        all_reqs.extend(self.find_requirements_by_name(self.autorequire))
-
-        return set(all_reqs)
-
-
-class RequirementNotFoundError(cdist.Error):
-    def __init__(self, requirement):
-        self.requirement = requirement
-
-    def __str__(self):
-        return 'Requirement could not be found: %s' % self.requirement
+        return object_list

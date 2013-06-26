@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -29,6 +29,8 @@ from cdist import core
 import cdist
 import cdist.context
 import cdist.config
+import cdist.core.cdist_type
+import cdist.core.cdist_object
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
@@ -59,8 +61,8 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
             exec_path=test.cdist_exec_path,
             debug=True)
 
-        self.context.local.object_path = object_base_path
-        self.context.local.type_path = type_base_path
+        self.context.local.object_path  = object_base_path
+        self.context.local.type_path    = type_base_path
 
         self.config = cdist.config.Config(self.context)
 
@@ -86,15 +88,15 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
 
         # First run: 
         # solves first and maybe second (depending on the order in the set)
-        self.config.stage_run_iterate()
+        self.config.iterate_once()
         self.assertTrue(third.state == third.STATE_DONE)
 
-        self.config.stage_run_iterate()
+        self.config.iterate_once()
         self.assertTrue(second.state == second.STATE_DONE)
 
 
         try:
-            self.config.stage_run_iterate()
+            self.config.iterate_once()
         except cdist.Error:
             # Allow failing, because the third run may or may not be unecessary already,
             # depending on the order of the objects
@@ -111,9 +113,37 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
         first.requirements = [second.name]
         second.requirements = [first.name]
 
-        # First round solves __third/moon
-        self.config.stage_run_iterate()
+        with self.assertRaises(cdist.UnresolvableRequirementsError):
+            self.config.iterate_until_finished()
 
-        # Second round detects it cannot solve the rest
-        with self.assertRaises(cdist.Error):
-            self.config.stage_run_iterate()
+    def test_missing_requirements(self):
+        """Throw an error if requiring something non-existing"""
+        first = self.object_index['__first/man']
+        first.requirements = ['__first/not/exist']
+        with self.assertRaises(cdist.UnresolvableRequirementsError):
+            self.config.iterate_until_finished()
+
+    def test_requirement_broken_type(self):
+        """Unknown type should be detected in the resolving process"""
+        first = self.object_index['__first/man']
+        first.requirements = ['__nosuchtype/not/exist']
+        with self.assertRaises(cdist.core.cdist_type.NoSuchTypeError):
+            self.config.iterate_until_finished()
+
+    def test_requirement_singleton_where_no_singleton(self):
+        """Missing object id should be detected in the resolving process"""
+        first = self.object_index['__first/man']
+        first.requirements = ['__first']
+        with self.assertRaises(cdist.core.cdist_object.MissingObjectIdError):
+            self.config.iterate_until_finished()
+
+# Currently the resolving code will simply detect that this object does
+# not exist. It should probably check if the type is a singleton as well
+# - but maybe only in the emulator - to be discussed.
+#
+#    def test_requirement_no_singleton_where_singleton(self):
+#        """Missing object id should be detected in the resolving process"""
+#        first = self.object_index['__first/man']
+#        first.requirements = ['__singleton_test/foo']
+#        with self.assertRaises(cdist.core.?????):
+#            self.config.iterate_until_finished()
