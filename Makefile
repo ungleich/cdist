@@ -61,8 +61,19 @@ $(MANREF): $(MANREFSH)
 	$(MANREFSH)
 
 ################################################################################
-# generic code
+# manpage
+# generate links from types
+# build manpages
 #
+
+mantypedocuments=cdist/conf/type/*/man.text
+
+mantypelist: $(mantypedocuments)
+	echo $^ >> $@
+
+link-type-manpages:
+	$(helper) $@
+
 
 
 ################################################################################

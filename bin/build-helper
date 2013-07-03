@@ -67,7 +67,7 @@ case "$1" in
         done
     ;;
 
-    mantype)
+    link-type-manpages)
         for mansrc in cdist/conf/type/*/man.text; do
             dst="$(echo $mansrc | sed -e 's;cdist/conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;docs/man/man7/;')"
             ln -sf "../../../$mansrc" "$dst"
@@ -121,7 +121,7 @@ case "$1" in
         cat << eof > "$blogfile"
 [[!meta title="Cdist $version released"]]
 
-Here's a short overview about the changes found in this release:
+Here's a short overview about the changes found in version ${version}:
 
 eof
 
