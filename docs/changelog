@@ -17,6 +17,7 @@ next:
 	* Type __process: Make state parameter optional
 	* Type __cron: Simplyfied and syntax change
 	* New Type: __update_alternatives
+	* New Type: __cdist
 
 2.1.1: 2013-04-08
 	* Core: Use dynamic dependency resolver to allow indirect self dependencies
