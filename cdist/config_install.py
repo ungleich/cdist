@@ -141,7 +141,7 @@ class ConfigInstall(object):
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.state = core.CdistObject.STATE_PREPARED
 
-    def object_run(self, cdist_object, dry_run=False):
+    def object_run(self, cdist_object):
         """Run gencode and code for an object"""
 
         self.log.debug("Trying to run object %s" % (cdist_object.name))
