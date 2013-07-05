@@ -147,16 +147,16 @@ class ConfigInstall(object):
         if self.dry_run:
             dry_run = ""
         else:
-            dry_run = "(dry run)"
+            dry_run = " (dry run)"
 
-        self.log.debug("Trying to run object %s%s" % (cdist_object.name, dry_run))
+        self.log.debug("Trying to run object %s" % (cdist_object.name))
         if cdist_object.state == core.CdistObject.STATE_DONE:
             raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
 
         cdist_type = cdist_object.cdist_type
 
         # Generate
-        self.log.info("Generating and executing code for " + cdist_object.name)
+        self.log.info("Generating and executing code for %s%s" % (cdist_object.name, dry_run))
         cdist_object.code_local = self.code.run_gencode_local(cdist_object)
         cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
         if cdist_object.code_local or cdist_object.code_remote:
