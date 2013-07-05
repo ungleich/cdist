@@ -143,7 +143,13 @@ class ConfigInstall(object):
 
     def object_run(self, cdist_object, dry_run=False):
         """Run gencode and code for an object"""
-        self.log.debug("Trying to run object " + cdist_object.name)
+
+        if self.dry_run:
+            dry_run = ""
+        else:
+            dry_run = "(dry run)"
+
+        self.log.debug("Trying to run object %s%s" % (cdist_object.name, dry_run))
         if cdist_object.state == core.CdistObject.STATE_DONE:
             raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
 
