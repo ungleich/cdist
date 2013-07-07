@@ -230,7 +230,7 @@ the output of gencode-remote is executed on the target.
 The gencode scripts can make use of the parameters, the global explorers
 and the type specific explorers.
 
-If the gencode scripts encounter an error, it should print diagnostic
+If the gencode scripts encounters an error, it should print diagnostic
 messages to stderr and exit non-zero. If you need to debug the gencode
 script, you can write to stderr:
 
