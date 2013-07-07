@@ -141,6 +141,7 @@ If you have not seen this syntax (<< eof) before, it may help you to read
 about "here documents".
 
 In the __file type, stdin is used as source for the file, if - is used for source:
+
 --------------------------------------------------------------------------------
     if [ -f "$__object/parameter/source" ]; then
         source="$(cat "$__object/parameter/source")"
