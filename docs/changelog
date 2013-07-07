@@ -18,6 +18,7 @@ next:
 	* Type __cron: Simplyfied and syntax change
 	* New Type: __update_alternatives
 	* New Type: __cdist
+	* Improved documenattion (Tomáš Pospíšek)
 
 2.1.1: 2013-04-08
 	* Core: Use dynamic dependency resolver to allow indirect self dependencies
