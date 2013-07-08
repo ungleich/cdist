@@ -10,7 +10,7 @@ This is the machine you use to configure the target hosts.
  * /bin/sh: A posix like shell (for instance bash, dash, zsh)
  * Python >= 3.2
  * SSH client
- * Asciidoc (for building the manpages)
+ * Asciidoc and xsltproc (for building the manpages)
 
 ### Target Hosts
 
@@ -59,6 +59,10 @@ removed on **python3.2** installation. You surely want to reinstall them:
     apt-get install -t wheezy openssh-server openssh-client
 
 For older Debian versions, installing python 3.2 from source is required.
+
+If you want to build the cdist manpages:
+
+    aptitude install --without-recommends asciidoc xsltproc
 
 ### Fedora
 
