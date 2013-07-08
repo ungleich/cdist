@@ -139,7 +139,7 @@ To install cdist, execute the following commands:
 
 If you want to build and use the manpages, run:
 
-    ./build man
+    ./bin/build-helper manbuild
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 #### Available versions in git
