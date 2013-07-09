@@ -109,7 +109,6 @@ eof
         to_a=cdist
         to_d=l.schottelius.org
         to=${to_a}@${to_d}
-        to=n@schottelius.org
 
         from_a=nico-cdist
         from_d=schottelius.org
