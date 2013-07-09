@@ -189,10 +189,9 @@ $(GIT_TAG_FILE):
 
 #git-branch-merge: git-tag
 git-branch-merge:
-	echo $(GIT_DST_BRANCH)
 	current=$$(git rev-parse --abbrev-ref HEAD) \
-	git checkout "$(GIT_DST_BRANCH)" \
-	git merge "$(GIT_SRC_BRANCH)"
+	git checkout "$(GIT_DST_BRANCH)" && \
+	git merge "$(GIT_SRC_BRANCH)" && \
 	git checkout "$$current"
 
 
