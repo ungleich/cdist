@@ -46,16 +46,6 @@ MAN7DSTDIR=${MANDIR}/man7
 SPEECHESDIR=docs/speeches
 
 case "$1" in
-    release-man)
-        version=$($0 changelog-version)
-
-        rm -rf "${WEBMAN}"
-        mkdir -p "${WEBMAN}/man1" "${WEBMAN}/man7"
-        cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
-        cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
-        cd ${WEBMAN} && git add . && git commit -m "Cdist Manpage update: $version"
-    ;;
-
     changelog-changes)
         awk -F: 'BEGIN { start=0 } { if ($0 ~ /^[[:digit:]]/) { if(start == 0) {start = 1 } else { exit } } else { if(start==1) {print $0 }}  }' "$basedir/docs/changelog"
     ;;
@@ -245,12 +235,8 @@ eof
         echo "VERSION = \"$(git describe)\"" > cdist/version.py
     ;;
 
-    # Targets handled in the makefile
-    speeches|clean|dist-clean)
-    ;;
-
     *)
-        echo "Unknown target $@ - aborting"
+        echo "Unknown helper target $@ - aborting"
         exit 1
     ;;
 

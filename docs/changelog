@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-next:
+2.1.2: 2013-07-09
 	* Build: Change clean-dist target to "distclean"
 	* Core: Make global explorers available to initial manifest (Arkaitz Jimenez)
 	* Core: Change execution order to run object as one unit
