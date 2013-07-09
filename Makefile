@@ -210,8 +210,13 @@ git-release: git-tag git-branch-merge
 ################################################################################
 # pypi
 #
-pypi-release: man $(VERSION_FILE) git-tag
+PYPI_FILE=.lock-pypi
+
+pypi-release: $(PYPI_FILE)
+
+$(PYPI_FILE): man $(VERSION_FILE) git-tag
 	python3 setup.py sdist upload
+	touch $@
 
 ################################################################################
 # archlinux
