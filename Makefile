@@ -194,7 +194,7 @@ git-branch-merge:
 	git checkout "$$current"
 
 
-$(VERSION_FILE): .git/refs/heads/*
+$(VERSION_FILE): .git/refs/heads/* .git/refs/tags/*
 	echo "VERSION = \"$$(git describe)\"" > $@
 
 # Pub is Nico's "push to all git remotes" thing
@@ -220,7 +220,7 @@ ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
 $(ARCHLINUXTAR): PKGBUILD pypi-release
 	makepkg -c --source
 
-PKGBUILD: PKGBUILD.in
+PKGBUILD: PKGBUILD.in $(VERSION_FILE)
 	./PKGBUILD.in
 
 archlinux-release: $(ARCHLINUXTAR)
@@ -237,16 +237,8 @@ RELEASE+=ml-release freecode-release
 RELEASE+=man-dist pypi-release git-release
 RELEASE+=archlinux-release
 
-release: $(RELEASE)
-	echo "Don't forget...: linkedin"
-
-release-blog: blog
-release-ml: release-blog
-release-pub: man
-
-
-$(DIST): dist-check
-$(RELEASE): $(DIST) $(CHECKS)
+release: $(CHECKS) $(RELEASE)
+	echo "Manual steps: linkedin, twitter"
 
 # Code that is better handled in a shell script
 check-%:
