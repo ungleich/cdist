@@ -52,12 +52,12 @@ MAN7DSTDIR=$(MANDIR)/man7
 MANTYPESRC=$(shell ls $(TYPEDIR)/*/man.text)
 
 # replace first path component
-MANTYPEPREFIX=$(subst $(TYPEDIR),$(MAN7DSTDIR)/cdist-type,$(MANTYPESRC)) 
+MANTYPEPREFIX=$(subst $(TYPEDIR)/,$(MAN7DSTDIR)/cdist-type,$(MANTYPESRC))
 
 # replace man.text with .7 or .html
 MANTYPEMAN=$(subst /man.text,.7,$(MANTYPEPREFIX)) 
 MANTYPEHTML=$(subst /man.text,.html,$(MANTYPEPREFIX))
-MANTYPEALL=$(TYPEMANPAGES) $(TYPEMANHTML)
+MANTYPEALL=$(MANTYPEMAN) $(MANTYPEHTML)
 
 # Link manpage so A2XH does not create man.html but correct named file
 $(MAN7DSTDIR)/cdist-type%.text: $(TYPEDIR)/%/man.text
