@@ -187,9 +187,8 @@ $(GIT_TAG_FILE):
 	@printf "Enter tag description for $(CHANGELOG_VERSION)> "
 	@read tagmessage; git tag "$(CHANGELOG_VERSION)" -m "$$tagmessage"
 
-#git-branch-merge: git-tag
 git-branch-merge:
-	current=$$(git rev-parse --abbrev-ref HEAD) \
+	current=$$(git rev-parse --abbrev-ref HEAD); \
 	git checkout "$(GIT_DST_BRANCH)" && \
 	git merge "$(GIT_SRC_BRANCH)" && \
 	git checkout "$$current"
@@ -199,12 +198,14 @@ $(VERSION_FILE): .git/refs/heads/*
 	echo "VERSION = \"$$(git describe)\"" > $@
 
 # Pub is Nico's "push to all git remotes" thing
-# git-release is the better term
-git-release pub:
+pub:
 	for remote in "" github sf; do \
 		echo "Pushing to $$remote" \
 		git push --mirror $$remote \
 	done  
+
+git-release: git-tag git-branch-merge
+	make pub
 
 ################################################################################
 # pypi
