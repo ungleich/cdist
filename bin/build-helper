@@ -27,46 +27,41 @@ cd "$basedir"
 
 version=$(git describe)
 
-# Manpage and HTML
-A2XM="a2x -f manpage --no-xmllint -a encoding=UTF-8"
-A2XH="a2x -f xhtml --no-xmllint -a encoding=UTF-8"
+option=$1; shift
 
-# Developer webbase
-WEBDIR=$HOME/www.nico.schottelius.org
-WEBBLOG=$WEBDIR/blog
-WEBTOPDIR=$WEBDIR/software
-WEBBASE=$WEBTOPDIR/cdist
-WEBMAN=$WEBBASE/man/$version
-WEBPAGE=${WEBBASE}.mdwn
-
-# Documentation
-MANDIR=docs/man
-MAN1DSTDIR=${MANDIR}/man1
-MAN7DSTDIR=${MANDIR}/man7
-SPEECHESDIR=docs/speeches
-
-case "$1" in
+case "$option" in
     changelog-changes)
-        awk -F: 'BEGIN { start=0 } { if ($0 ~ /^[[:digit:]]/) { if(start == 0) {start = 1 } else { exit } } else { if(start==1) {print $0 }}  }' "$basedir/docs/changelog"
+        if [ "$#" -eq 1 ]; then
+            start=$1
+        else
+            start="[[:digit:]]"
+        fi
+
+        end="[[:digit:]]"
+
+        awk -F: "BEGIN { start=0 }
+            {
+                if(start == 0) {
+                    if (\$0 ~ /^$start/) {
+                        start = 1
+                    }
+                } else {
+                    if (\$0 ~ /^$end/) {
+                        exit
+                    } else {
+                        print \$0 
+                    }
+                }
+            }" "$basedir/docs/changelog"
     ;;
 
     changelog-version)
-        # get version from changelog and ensure it's not already present
+        # get version from changelog
         grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/:.*//'
     ;;
 
-    check-version)
-        changelog_version=$($0 changelog-version)
-        echo "Target version from changelog: $changelog_version"
-
-        if git show --quiet $changelog_version >/dev/null 2>&1; then
-            echo "Version $changelog_version already exists, aborting."
-            exit 1
-        fi
-    ;;
-
     check-date)
-        # verify date in changelog
+        # verify date in changelog is today
         date_today="$(date +%Y-%m-%d)"
         date_changelog=$(grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/.*: //')
 
@@ -77,9 +72,24 @@ case "$1" in
         fi
     ;;
 
+    check-unittest)
+        "$0" test
+    ;;
+
+    check-version)
+        changelog_version=$($0 changelog-version)
+
+        if git show --quiet $changelog_version >/dev/null 2>&1; then
+            echo "Version $changelog_version already exists, aborting."
+            exit 1
+        fi
+    ;;
+
+
     blog)
-        version=$($0 changelog-version)
-        blogfile=$WEBBLOG/cdist-${version}-released.mdwn
+        version=$1; shift
+        blogfile=$1; shift
+
         cat << eof > "$blogfile"
 [[!meta title="Cdist $version released"]]
 
@@ -94,16 +104,12 @@ For more information visit the [[cdist homepage|software/cdist]].
 
 [[!tag cdist config unix]]
 eof
-    ;;
-
-    release-blog)
-        version=$($0 changelog-version)
-        file=cdist-${version}-released.mdwn
         cd "$WEBBLOG"
         git add "$file"
-        git commit -m "New cdist version (blogentry): $version" "$file"
+        git commit -m "New cdist version (blogentry): $version" "$blogfile"
         git push
     ;;
+
 
     release-ml)
         version=$($0 changelog-version)
@@ -198,31 +204,7 @@ eof
 
     ;;
 
-    web-doc)
-        rsync -av "${basedir}/docs/web/" "${WEBTOPDIR}"
-
-        cd "${WEBDIR}" && git add "${WEBBASE}"
-        cd "${WEBDIR}" && git commit -m "cdist update" "${WEBBASE}" "${WEBPAGE}"
-        cd "${WEBDIR}" && make pub
-    ;;
-
-    release-web)
-        set -e
-        # Fix ikiwiki, which does not like symlinks for pseudo security
-        ssh tee.schottelius.org \
-          "cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man &&
-                rm -f latest && ln -sf "$version" latest"
-    ;;
-
-     pub)
-          for remote in "" github sf; do
-                echo "Pushing to $remote"
-                git push --mirror $remote
-          done
-    ;;
-
     test)
-        shift # skip t
         export PYTHONPATH="$(pwd -P)"
 
         if [ $# -lt 1 ]; then
@@ -231,6 +213,7 @@ eof
             python3 -m unittest "$@"
         fi
     ;;
+
     version)
         echo "VERSION = \"$(git describe)\"" > cdist/version.py
     ;;
