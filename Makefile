@@ -26,13 +26,16 @@ MANDIR=docs/man
 SPEECHDIR=docs/speeches
 TYPEDIR=cdist/conf/type
 
+WEBSRCDIR=docs/web
+
 WEBDIR=$$HOME/www.nico.schottelius.org
 WEBBLOG=$(WEBDIR)/blog
-WEBTOPDIR=$(WEBDIR)/software
-WEBBASE=$(WEBTOPDIR)/cdist
+WEBBASE=$(WEBDIR)/software/cdist
 WEBPAGE=$(WEBBASE).mdwn
 
 CHANGELOG_VERSION=$(shell $(helper) changelog-version)
+CHANGELOG_FILE=docs/changelog
+
 ################################################################################
 # Manpages
 #
@@ -87,12 +90,19 @@ man: $(MANTYPEALL) $(MANREFALL) $(MANSTATICALL)
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
 
-release-man: man
+man-git: man
 	rm -rf "${MANWEBDIR}"
 	mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
 	cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${MANWEBDIR}/man1
 	cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
 	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)"
+
+man-fix-link:
+	# Fix ikiwiki, which does not like symlinks for pseudo security
+	ssh tee.schottelius.org \
+    	"cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
+
+man-release: man web-release
 
 ################################################################################
 # Speeches
@@ -109,18 +119,42 @@ $(SPEECHDIR)/%.pdf: $(SPEECHDIR)/%.tex
 
 speeches: $(SPEECHES)
 
-release-speeches: speeches
+speeches-release: speeches
 	rm -rf "${SPEECHESWEBDIR}"
 	mkdir -p "${SPEECHESWEBDIR}"
 	cp ${SPEECHES} "${SPEECHESWEBDIR}"
 	cd ${SPEECHESWEBDIR} && git add . && git commit -m "cdist speeches updated"
 
 ################################################################################
-CHECKS=check-version check-date
+# Website
+#
+
+BLOGFILE=$(WEBBLOG)/cdist-$(CHANGELOG_VERSION)-released.mdwn
+
+$(BLOGFILE): $(CHANGELOG_FILE)
+	$(helper) blog $(CHANGELOG_VERSION) $(BLOGFILE)
+
+web-blog: $(BLOGFILE)
+
+web-doc:
+	# Go to top level, because of cdist.mdwn
+	rsync -av "$(WEBSRCDIR)/" "${WEBBASE}/.."
+	cd "${WEBBASE}/.." && git add cdist* && git commit -m "cdist doc update" cdist* || true
+
+web-pub: web
+	cd "${WEBDIR}" && make pub
+
+web-release: web-blog web-doc
+	cd "${WEBDIR}" && make pub
+
+################################################################################
+# Release && release check
+#
+CHECKS=check-version check-date check-unittest
 
 DIST=dist-tag dist-branch-merge 
 
-RELEASE=release-web release-man release-pypi release-archlinux-makepkg
+RELEASE=web-release release-man release-pypi release-archlinux-makepkg
 RELEASE+=release-blog release-ml
 RELEASE+=release-freecode release-archlinux-aur-upload
 
@@ -136,6 +170,17 @@ $(versionfile):
 
 $(DIST): dist-check
 $(RELEASE): $(DIST) $(CHECKS)
+
+# Code that is better handled in a shell script
+check-%:
+	$(helper) $@
+
+# Pub is Nico's "push to all git remotes" thing
+pub:
+	for remote in "" github sf; do \
+		echo "Pushing to $$remote" \
+		git push --mirror $$remote \
+	done  
 
 ################################################################################
 # dist code
@@ -165,8 +210,6 @@ release-archlinux: $(archlinuxtar)
 release-blog: blog
 release-ml: release-blog
 release-pub: man
-
-release-web: web-doc
 
 PKGBUILD: PKGBUILD.in
 	./PKGBUILD.in

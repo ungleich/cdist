@@ -89,6 +89,9 @@ case "$option" in
     blog)
         version=$1; shift
         blogfile=$1; shift
+        dir=${blogfile%/*}
+        file=${blogfile##*/}
+
 
         cat << eof > "$blogfile"
 [[!meta title="Cdist $version released"]]
@@ -97,17 +100,17 @@ Here's a short overview about the changes found in version ${version}:
 
 eof
 
-        $0 changelog-changes >> "$blogfile"
+        $0 changelog-changes "$version" >> "$blogfile"
 
         cat << eof >> "$blogfile"
 For more information visit the [[cdist homepage|software/cdist]].
 
 [[!tag cdist config unix]]
 eof
-        cd "$WEBBLOG"
+        cd "$dir"
         git add "$file"
-        git commit -m "New cdist version (blogentry): $version" "$blogfile"
-        git push
+        # Allow git commit to fail if there are no changes
+        git commit -m "cdist blog update: $version" "$blogfile" || true
     ;;
 
 
