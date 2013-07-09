@@ -187,10 +187,10 @@ $(GIT_TAG_FILE):
 	@printf "Enter tag description for $(CHANGELOG_VERSION)> "
 	@read tagmessage; git tag "$(CHANGELOG_VERSION)" -m "$$tagmessage"
 
-git-branch-merge:
+git-branch-merge: git-tag
 	current=$$(git rev-parse --abbrev-ref HEAD); \
 	git checkout "$(GIT_DST_BRANCH)" && \
-	git merge "$(GIT_SRC_BRANCH)" && \
+	git merge "$(CHANGELOG_VERSION)" && \
 	git checkout "$$current"
 
 
