@@ -204,8 +204,8 @@ $(VERSION_FILE): .git/refs/heads/* .git/refs/tags/* .git/HEAD
 # Pub is Nico's "push to all git remotes" thing
 pub:
 	for remote in "" github sf; do \
-		echo "Pushing to $$remote" \
-		git push --mirror $$remote \
+		echo "Pushing to $$remote"; \
+		git push --mirror $$remote; \
 	done  
 
 git-release: git-tag git-branch-merge
