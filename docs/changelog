@@ -19,6 +19,7 @@ next:
 	* New Type: __update_alternatives
 	* New Type: __cdist
 	* Improved documentation (Tomáš Pospíšek)
+	* Moved a lot of build logic into Makefile for dependency resolution
 
 2.1.1: 2013-04-08
 	* Core: Use dynamic dependency resolver to allow indirect self dependencies
