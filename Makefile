@@ -180,6 +180,7 @@ freecode-release: $(FREECODE_FILE)
 GIT_TAG_FILE=.git/refs/tags/$(CHANGELOG_VERSION)
 GIT_SRC_BRANCH=master
 GIT_DST_BRANCH=$(shell echo $(CHANGELOG_VERSION) | cut -d. -f '1,2')
+GIT_CURRENT=.git-current-branch
 
 git-tag: $(GIT_TAG_FILE)
 
@@ -187,14 +188,18 @@ $(GIT_TAG_FILE):
 	@printf "Enter tag description for $(CHANGELOG_VERSION)> "
 	@read tagmessage; git tag "$(CHANGELOG_VERSION)" -m "$$tagmessage"
 
-git-branch-merge: git-tag
-	current=$$(git rev-parse --abbrev-ref HEAD); \
-	git checkout "$(GIT_DST_BRANCH)" && \
-	git merge "$(CHANGELOG_VERSION)" && \
-	git checkout "$$current"
+git-branch-merge: git-checkout-stable
+	git merge "$(CHANGELOG_VERSION)"
 
+git-checkout-stable: git-tag
+	@git rev-parse --abbrev-ref HEAD > $(GIT_CURRENT)
+	@git checkout "$(GIT_DST_BRANCH)"
+	make git-checkout-current
 
-$(VERSION_FILE): .git/refs/heads/* .git/refs/tags/*
+git-checkout-current:
+	git checkout "$$(cat $(GIT_CURRENT))"
+
+$(VERSION_FILE): .git/refs/heads/* .git/refs/tags/* .git/HEAD
 	echo "VERSION = \"$$(git describe)\"" > $@
 
 # Pub is Nico's "push to all git remotes" thing
@@ -214,9 +219,11 @@ PYPI_FILE=.lock-pypi
 
 pypi-release: $(PYPI_FILE)
 
-$(PYPI_FILE): man $(VERSION_FILE) git-tag
+$(PYPI_FILE): man $(VERSION_FILE)
+	make git-checkout-stable
 	python3 setup.py sdist upload
 	touch $@
+	make git-checkout-current
 
 ################################################################################
 # archlinux
