@@ -46,34 +46,6 @@ MAN7DSTDIR=${MANDIR}/man7
 SPEECHESDIR=docs/speeches
 
 case "$1" in
-    manbuild)
-        trap abort INT
-        abort() {
-            kill 0
-        }
-        for section in 1 7; do
-            for src in ${MANDIR}/man${section}/*.text; do
-                manpage="${src%.text}.$section"
-                if [ ! -f "$manpage" -o "$manpage" -ot "$src" ]; then
-                    echo "Compiling man page for $src"
-                    $A2XM "$src"
-                fi
-                htmlpage="${src%.text}.html"
-                if [ ! -f "$htmlpage" -o "$htmlpage" -ot "$src" ]; then
-                    echo "Compiling html page for $src"
-                    $A2XH "$src"
-                fi
-            done
-        done
-    ;;
-
-    link-type-manpages)
-        for mansrc in cdist/conf/type/*/man.text; do
-            dst="$(echo $mansrc | sed -e 's;cdist/conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;docs/man/man7/;')"
-            ln -sf "../../../$mansrc" "$dst"
-        done
-    ;;
-
     release-man)
         version=$($0 changelog-version)
 
@@ -236,15 +208,6 @@ eof
 
     ;;
 
-    dist-speeches)
-        cd "$SPEECHESDIR"
-        for speech in *tex; do
-            pdflatex "$speech"
-            pdflatex "$speech"
-            pdflatex "$speech"
-        done
-    ;;
-        
     web-doc)
         rsync -av "${basedir}/docs/web/" "${WEBTOPDIR}"
 
@@ -268,27 +231,6 @@ eof
           done
     ;;
 
-    clean)
-        rm -f ${MAN7DSTDIR}/cdist-reference.text
-
-        find "${MANDIR}" -mindepth 2 -type l \
-            -o -name "*.1" \
-            -o -name "*.7" \
-            -o -name "*.html" \
-            -o -name "*.xml" \
-        | xargs rm -f
-
-        find * -name __pycache__  | xargs rm -rf
-    ;;
-    distclean)
-        rm -f cdist/version.py MANIFEST PKGBUILD
-        rm -rf cache/ dist/
-
-        # Archlinux
-        rm -f cdist-*.pkg.tar.xz cdist-*.tar.gz
-        rm -rf pkg/ src/
-    ;;
-
     test)
         shift # skip t
         export PYTHONPATH="$(pwd -P)"
@@ -301,6 +243,10 @@ eof
     ;;
     version)
         echo "VERSION = \"$(git describe)\"" > cdist/version.py
+    ;;
+
+    # Targets handled in the makefile
+    speeches|clean|dist-clean)
     ;;
 
     *)

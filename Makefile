@@ -23,11 +23,60 @@ A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
 helper=./bin/build-helper
 
 MANDIR=docs/man
+
 MAN1DSTDIR=$(MANDIR)/man1
 MAN7DSTDIR=$(MANDIR)/man7
 MANREF=$(MAN7DSTDIR)/cdist-reference.text
 MANREFSH=$(MANDIR)/cdist-reference.text.sh
 
+SPEECHDIR=docs/speeches
+
+TYPEDIR=cdist/conf/type
+
+################################################################################
+# Manpages for types
+#
+# Use shell / ls to get complete list - $(TYPEDIR)/*/man.text does not work
+TYPEMANSRC=$(shell ls $(TYPEDIR)/*/man.text)
+
+# replace first path component
+TYPEMANPREFIX=$(subst cdist/conf/type/,docs/man/man7/cdist-type,$(TYPEMANSRC)) 
+
+# replace man.text with .7 or .html
+TYPEMANPAGES=$(subst /man.text,.7,$(TYPEMANPREFIX)) 
+TYPEMANHTML=$(subst /man.text,.html,$(TYPEMANPREFIX))
+
+
+# Link manpage so A2XH does not create man.html but correct named file
+$(MAN7DSTDIR)/cdist-type%.text: $(TYPEDIR)/%/man.text
+	ln -sf "../../../$^" $@
+
+# Creating the type manpage
+$(MAN7DSTDIR)/cdist-type%.7: $(MAN7DSTDIR)/cdist-type%.text
+	$(A2XM) $^
+
+# Creating the type html page
+$(MAN7DSTDIR)/cdist-type%.html: $(MAN7DSTDIR)/cdist-type%.text
+	$(A2XH) $^
+
+typemanpage: $(TYPEMANPAGES)
+typemanhtml: $(TYPEMANHTML)
+
+################################################################################
+# Speeches
+#
+SPEECHESOURCES=$(SPEECHDIR)/*.tex
+SPEECHES=$(SPEECHESOURCES:.tex=.pdf)
+
+# Create speeches and ensure Toc is up-to-date
+$(SPEECHDIR)/%.pdf: $(SPEECHDIR)/%.tex
+	pdflatex -output-directory $(SPEECHDIR) $^
+	pdflatex -output-directory $(SPEECHDIR) $^
+	pdflatex -output-directory $(SPEECHDIR) $^
+
+speeches: $(SPEECHES)
+
+################################################################################
 CHECKS=check-version check-date
 
 DIST=dist-tag dist-branch-merge 
@@ -51,12 +100,6 @@ $(RELEASE): $(DIST) $(CHECKS)
 
 man: $(MANREF) mantype manbuild
 
-$(MAN7DSTDIR)/cdist-type__motd.7: $(MAN7DSTDIR)/cdist-type__motd.text 
-	$(A2XM) $^
-
-$(MAN7DSTDIR)/cdist-type__motd.text: cdist/conf/type/__motd/man.text
-	echo ln -sf $@ $^
-
 $(MANREF): $(MANREFSH)
 	$(MANREFSH)
 
@@ -73,7 +116,6 @@ mantypelist: $(mantypedocuments)
 
 link-type-manpages:
 	$(helper) $@
-
 
 
 ################################################################################
@@ -108,6 +150,30 @@ release-web: web-doc
 
 PKGBUILD: PKGBUILD.in
 	./PKGBUILD.in
+
+################################################################################
+# Cleanup
+
+clean:
+	rm -f $(MAN7DSTDIR)/cdist-reference.text
+
+	find "$(MANDIR)" -mindepth 2 -type l \ 
+	    -o -name "*.1" \
+	    -o -name "*.7" \
+	    -o -name "*.html" \
+	    -o -name "*.xml" \
+	| xargs rm -f
+
+	find * -name __pycache__  | xargs rm -rf 
+
+distclean:
+	rm -f cdist/version.py MANIFEST PKGBUILD
+	rm -rf cache/ dist/
+
+	# Archlinux
+	rm -f cdist-*.pkg.tar.xz cdist-*.tar.gz
+	rm -rf pkg/ src/
+
 
 ################################################################################
 # generic call
