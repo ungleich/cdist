@@ -27,3 +27,4 @@ cdist/version.py
 /pkg
 /src
 build
+.lock-*

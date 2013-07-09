@@ -18,6 +18,9 @@
 #
 #
 
+# dist = local
+# release = remote
+
 A2XM=a2x -f manpage --no-xmllint -a encoding=UTF-8
 A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
 helper=./bin/build-helper
@@ -35,6 +38,8 @@ WEBPAGE=$(WEBBASE).mdwn
 
 CHANGELOG_VERSION=$(shell $(helper) changelog-version)
 CHANGELOG_FILE=docs/changelog
+
+VERSION_FILE=cdist/version.py
 
 ################################################################################
 # Manpages
@@ -90,19 +95,17 @@ man: $(MANTYPEALL) $(MANREFALL) $(MANSTATICALL)
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
 
-man-git: man
+man-dist: man
 	rm -rf "${MANWEBDIR}"
 	mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
 	cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${MANWEBDIR}/man1
 	cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
 	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)"
 
-man-fix-link:
+man-release: web-release
 	# Fix ikiwiki, which does not like symlinks for pseudo security
 	ssh tee.schottelius.org \
     	"cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
-
-man-release: man web-release
 
 ################################################################################
 # Speeches
@@ -119,11 +122,11 @@ $(SPEECHDIR)/%.pdf: $(SPEECHDIR)/%.tex
 
 speeches: $(SPEECHES)
 
-speeches-release: speeches
+speeches-dist: speeches
 	rm -rf "${SPEECHESWEBDIR}"
 	mkdir -p "${SPEECHESWEBDIR}"
 	cp ${SPEECHES} "${SPEECHESWEBDIR}"
-	cd ${SPEECHESWEBDIR} && git add . && git commit -m "cdist speeches updated"
+	cd ${SPEECHESWEBDIR} && git add . && git commit -m "cdist speeches updated" || true
 
 ################################################################################
 # Website
@@ -141,31 +144,105 @@ web-doc:
 	rsync -av "$(WEBSRCDIR)/" "${WEBBASE}/.."
 	cd "${WEBBASE}/.." && git add cdist* && git commit -m "cdist doc update" cdist* || true
 
-web-pub: web
-	cd "${WEBDIR}" && make pub
+web-dist: web-blog web-doc
 
-web-release: web-blog web-doc
+web-release: web-dist man-dist speeches-dist
 	cd "${WEBDIR}" && make pub
 
 ################################################################################
-# Release && release check
+# Release: Mailinglist
 #
-CHECKS=check-version check-date check-unittest
+ML_FILE=.lock-ml
 
-DIST=dist-tag dist-branch-merge 
+# Only send mail once - lock until new changelog things happened
+$(ML_FILE): $(CHANGELOG_FILE)
+	$(helper) ml-release $(CHANGELOG_VERSION)
+	touch $@
 
-RELEASE=web-release release-man release-pypi release-archlinux-makepkg
-RELEASE+=release-blog release-ml
-RELEASE+=release-freecode release-archlinux-aur-upload
+ml-release: $(ML_FILE)
 
-version=`git describe`
-versionchangelog=`$(helper) changelog-version`
-versionfile=cdist/version.py
 
-archlinuxtar=cdist-${versionchangelog}-1.src.tar.gz
+################################################################################
+# Release: Freecode
+#
+FREECODE_FILE=.lock-freecode
 
-$(versionfile):
-	$(helper) version
+$(FREECODE_FILE): $(CHANGELOG_FILE)
+	$(helper) freecode-release $(CHANGELOG_VERSION)
+	touch $@
+
+freecode-release: $(FREECODE_FILE)
+
+################################################################################
+# git and git dependent stuff
+#
+
+GIT_TAG_FILE=.git/refs/tags/$(CHANGELOG_VERSION)
+GIT_SRC_BRANCH=master
+GIT_DST_BRANCH=$(shell echo $(CHANGELOG_VERSION) | cut -d. -f '1,2')
+
+git-tag: $(GIT_TAG_FILE)
+
+$(GIT_TAG_FILE):
+	@printf "Enter tag description for $(CHANGELOG_VERSION)> "
+	@read tagmessage; git tag "$(CHANGELOG_VERSION)" -m "$$tagmessage"
+
+#git-branch-merge: git-tag
+git-branch-merge:
+	echo $(GIT_DST_BRANCH)
+	current=$$(git rev-parse --abbrev-ref HEAD) \
+	git checkout "$(GIT_DST_BRANCH)" \
+	git merge "$(GIT_SRC_BRANCH)"
+	git checkout "$$current"
+
+
+$(VERSION_FILE): .git/refs/heads/*
+	echo "VERSION = \"$$(git describe)\"" > $@
+
+# Pub is Nico's "push to all git remotes" thing
+# git-release is the better term
+git-release pub:
+	for remote in "" github sf; do \
+		echo "Pushing to $$remote" \
+		git push --mirror $$remote \
+	done  
+
+################################################################################
+# pypi
+#
+pypi-release: man $(VERSION_FILE) git-tag
+	python3 setup.py sdist upload
+
+################################################################################
+# archlinux
+#
+ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
+$(ARCHLINUXTAR): PKGBUILD pypi-release
+	makepkg -c --source
+
+PKGBUILD: PKGBUILD.in
+	./PKGBUILD.in
+
+archlinux-release: $(ARCHLINUXTAR)
+	burp -c system $^
+
+################################################################################
+# Release
+#
+
+CHECKS=check-date check-unittest
+
+RELEASE=speeches-dist web-release 
+RELEASE+=ml-release freecode-release
+RELEASE+=man-dist pypi-release git-release
+RELEASE+=archlinux-release
+
+release: $(RELEASE)
+	echo "Don't forget...: linkedin"
+
+release-blog: blog
+release-ml: release-blog
+release-pub: man
 
 
 $(DIST): dist-check
@@ -175,47 +252,9 @@ $(RELEASE): $(DIST) $(CHECKS)
 check-%:
 	$(helper) $@
 
-# Pub is Nico's "push to all git remotes" thing
-pub:
-	for remote in "" github sf; do \
-		echo "Pushing to $$remote" \
-		git push --mirror $$remote \
-	done  
-
-################################################################################
-# dist code
-#
-dist-check: man
-
-dist: $(DIST)
-	echo "Run \"make release\" to release to the public"
-
-dist-pypi: man version
-	python3 setup.py sdist upload
-
-$(archlinuxtar): PKGBUILD dist-pypi
-	makepkg -c --source
-
-################################################################################
-# release code
-#
-#release: pub $(RELEASE)
-release: release-man
-	echo "Don't forget...: linkedin"
-
-
-release-archlinux: $(archlinuxtar)
-	burp -c system $^
-	
-release-blog: blog
-release-ml: release-blog
-release-pub: man
-
-PKGBUILD: PKGBUILD.in
-	./PKGBUILD.in
-
 ################################################################################
 # Cleanup
+#
 
 clean:
 	rm -f $(MAN7DSTDIR)/cdist-reference.text
