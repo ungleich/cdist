@@ -180,6 +180,7 @@ freecode-release: $(FREECODE_FILE)
 GIT_TAG_FILE=.git/refs/tags/$(CHANGELOG_VERSION)
 GIT_SRC_BRANCH=master
 GIT_DST_BRANCH=$(shell echo $(CHANGELOG_VERSION) | cut -d. -f '1,2')
+GIT_CURRENT=.git-current-branch
 
 git-tag: $(GIT_TAG_FILE)
 
@@ -187,14 +188,18 @@ $(GIT_TAG_FILE):
 	@printf "Enter tag description for $(CHANGELOG_VERSION)> "
 	@read tagmessage; git tag "$(CHANGELOG_VERSION)" -m "$$tagmessage"
 
-git-branch-merge:
-	current=$$(git rev-parse --abbrev-ref HEAD); \
-	git checkout "$(GIT_DST_BRANCH)" && \
-	git merge "$(GIT_SRC_BRANCH)" && \
-	git checkout "$$current"
+git-branch-merge: git-checkout-stable
+	git merge "$(CHANGELOG_VERSION)"
 
+git-checkout-stable: git-tag
+	@git rev-parse --abbrev-ref HEAD > $(GIT_CURRENT)
+	@git checkout "$(GIT_DST_BRANCH)"
+	make git-checkout-current
 
-$(VERSION_FILE): .git/refs/heads/*
+git-checkout-current:
+	git checkout "$$(cat $(GIT_CURRENT))"
+
+$(VERSION_FILE): .git/refs/heads/* .git/refs/tags/* .git/HEAD
 	echo "VERSION = \"$$(git describe)\"" > $@
 
 # Pub is Nico's "push to all git remotes" thing
@@ -210,8 +215,15 @@ git-release: git-tag git-branch-merge
 ################################################################################
 # pypi
 #
-pypi-release: man $(VERSION_FILE) git-tag
+PYPI_FILE=.lock-pypi
+
+pypi-release: $(PYPI_FILE)
+
+$(PYPI_FILE): man $(VERSION_FILE)
+	make git-checkout-stable
 	python3 setup.py sdist upload
+	touch $@
+	make git-checkout-current
 
 ################################################################################
 # archlinux
@@ -220,7 +232,7 @@ ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
 $(ARCHLINUXTAR): PKGBUILD pypi-release
 	makepkg -c --source
 
-PKGBUILD: PKGBUILD.in
+PKGBUILD: PKGBUILD.in $(VERSION_FILE)
 	./PKGBUILD.in
 
 archlinux-release: $(ARCHLINUXTAR)
@@ -237,16 +249,8 @@ RELEASE+=ml-release freecode-release
 RELEASE+=man-dist pypi-release git-release
 RELEASE+=archlinux-release
 
-release: $(RELEASE)
-	echo "Don't forget...: linkedin"
-
-release-blog: blog
-release-ml: release-blog
-release-pub: man
-
-
-$(DIST): dist-check
-$(RELEASE): $(DIST) $(CHECKS)
+release: $(CHECKS) $(RELEASE)
+	echo "Manual steps: linkedin, twitter"
 
 # Code that is better handled in a shell script
 check-%:
