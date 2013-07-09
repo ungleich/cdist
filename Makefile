@@ -194,7 +194,6 @@ git-branch-merge: git-checkout-stable
 git-checkout-stable: git-tag
 	@git rev-parse --abbrev-ref HEAD > $(GIT_CURRENT)
 	@git checkout "$(GIT_DST_BRANCH)"
-	make git-checkout-current
 
 git-checkout-current:
 	git checkout "$$(cat $(GIT_CURRENT))"
@@ -228,15 +227,20 @@ $(PYPI_FILE): man $(VERSION_FILE)
 ################################################################################
 # archlinux
 #
+ARCHLINUX_FILE=.lock-archlinux
 ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
+
 $(ARCHLINUXTAR): PKGBUILD pypi-release
 	makepkg -c --source
 
 PKGBUILD: PKGBUILD.in $(VERSION_FILE)
 	./PKGBUILD.in
 
-archlinux-release: $(ARCHLINUXTAR)
-	burp -c system $^
+$(ARCHLINUX_FILE): $(ARCHLINUXTAR) $(VERSION_FILE)
+	burp -c system $(ARCHLINUXTAR)
+	touch $@
+
+archlinux-release: $(ARCHLINUX_FILE)
 
 ################################################################################
 # Release

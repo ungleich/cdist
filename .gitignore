@@ -28,3 +28,4 @@ cdist/version.py
 /src
 build
 .lock-*
+.git-current-branch
