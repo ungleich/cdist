@@ -6,7 +6,7 @@ Changelog
 
 next:
 	* Build: Fixed several small issues in the Makefile
-	
+	* Type __package_opkg: Use shortcut version
 
 2.1.2: 2013-07-09
 	* Build: Change clean-dist target to "distclean"
