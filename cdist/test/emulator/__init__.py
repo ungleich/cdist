@@ -83,6 +83,13 @@ class EmulatorTestCase(test.CdistTestCase):
         emu = emulator.Emulator(argv, env=self.env)
         self.assertRaises(core.cdist_object.MissingObjectIdError, emu.run)
 
+    def test_no_singleton_no_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        self.env['require'] = '__test_singleton'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        # If reached here, everything is fine
+
     def test_singleton_object_requirement(self):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__issue'

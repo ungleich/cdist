@@ -64,6 +64,16 @@ class ObjectClassTestCase(test.CdistTestCase):
         found_objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
         self.assertEqual(found_objects, self.expected_objects)
 
+    def test_create_singleton(self):
+        """Check whether creating an object without id (singleton) works"""
+        singleton = self.expected_objects[0].object_from_name("__test_singleton")
+        # came here - everything fine
+
+    def test_create_singleton_not_singleton_type(self):
+        """try to create an object of a type that is not a singleton
+           without an object id"""
+        with self.assertRaises(cdist.core.cdist_object.MissingObjectIdError):
+            self.expected_objects[0].object_from_name("__first")
 
 class ObjectIdTestCase(test.CdistTestCase):
     def test_object_id_contains_double_slash(self):
