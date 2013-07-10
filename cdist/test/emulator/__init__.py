@@ -118,7 +118,7 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         initial_manifest = os.path.join(self.local.manifest_path, "init")
         self.manifest.run_initial_manifest(initial_manifest)
         cdist_type = core.CdistType(self.local.type_path, '__saturn')
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'singleton')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path)
         self.manifest.run_type_manifest(cdist_object)
         expected = ['__planet/Saturn', '__moon/Prometheus']
         self.assertEqual(sorted(cdist_object.autorequire), sorted(expected))

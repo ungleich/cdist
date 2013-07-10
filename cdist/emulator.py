@@ -34,7 +34,7 @@ class Emulator(object):
         self.stdin          = stdin
         self.env            = env
 
-        self.object_id      = False
+        self.object_id      = ''
 
         self.global_path    = self.env['__global']
         self.target_host    = self.env['__target_host']
@@ -54,10 +54,10 @@ class Emulator(object):
         """Add hostname and object to logs via logging Filter"""
 
         prefix = self.target_host + ": (emulator)"
-
-        if self.object_id:
-            prefix = prefix + " " + self.type_name + "/" + self.object_id
-
+        prefix = '{0}: emulator {1}'.format(
+            self.target_host,
+            core.CdistObject.join_name(self.type_name, self.object_id)
+        )
         record.msg = prefix + ": " + record.msg
 
         return True
@@ -122,9 +122,7 @@ class Emulator(object):
 
     def setup_object(self):
         # Setup object_id - FIXME: unset / do not setup anymore!
-        if self.cdist_type.is_singleton:
-            self.object_id = "singleton"
-        else:
+        if not self.cdist_type.is_singleton:
             self.object_id = self.args.object_id[0]
             del self.args.object_id
 
