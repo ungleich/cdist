@@ -55,7 +55,7 @@ MANTYPESRC=$(shell ls $(TYPEDIR)/*/man.text)
 MANTYPEPREFIX=$(subst $(TYPEDIR)/,$(MAN7DSTDIR)/cdist-type,$(MANTYPESRC))
 
 # replace man.text with .7 or .html
-MANTYPEMAN=$(subst /man.text,.7,$(MANTYPEPREFIX)) 
+MANTYPEMAN=$(subst /man.text,.7,$(MANTYPEPREFIX))
 MANTYPEHTML=$(subst /man.text,.html,$(MANTYPEPREFIX))
 MANTYPEALL=$(MANTYPEMAN) $(MANTYPEHTML)
 
@@ -76,8 +76,8 @@ $(MANREF): $(MANREFSH)
 # Manpages #3: static pages
 MAN1STATIC=$(shell ls $(MAN1DSTDIR)/*.text)
 MAN7STATIC=$(shell ls $(MAN7DSTDIR)/*.text)
-MANSTATICMAN=$(MAN1STATIC:.text=.1) $(MAN7STATIC:.text=.7) 
-MANSTATICHTML=$(MAN1STATIC:.text=.html) $(MAN7STATIC:.text=.html) 
+MANSTATICMAN=$(MAN1STATIC:.text=.1) $(MAN7STATIC:.text=.7)
+MANSTATICHTML=$(MAN1STATIC:.text=.html) $(MAN7STATIC:.text=.html)
 MANSTATICALL=$(MANSTATICMAN) $(MANSTATICHTML)
 
 # Manpages #4: generic part
@@ -201,13 +201,6 @@ git-checkout-current:
 $(VERSION_FILE): .git/refs/heads/* .git/refs/tags/* .git/HEAD
 	echo "VERSION = \"$$(git describe)\"" > $@
 
-# Pub is Nico's "push to all git remotes" thing
-pub:
-	for remote in "" github sf; do \
-		echo "Pushing to $$remote"; \
-		git push --mirror $$remote; \
-	done  
-
 git-release: git-tag git-branch-merge
 	make pub
 
@@ -248,7 +241,7 @@ archlinux-release: $(ARCHLINUX_FILE)
 
 CHECKS=check-date check-unittest
 
-RELEASE=speeches-dist web-release 
+RELEASE=speeches-dist web-release
 RELEASE+=ml-release freecode-release
 RELEASE+=man-dist pypi-release git-release
 RELEASE+=archlinux-release
@@ -274,7 +267,7 @@ clean:
 	    -o -name "*.xml" \
 	| xargs rm -f
 
-	find * -name __pycache__  | xargs rm -rf 
+	find * -name __pycache__  | xargs rm -rf
 
 distclean:
 	rm -f cdist/version.py MANIFEST PKGBUILD
@@ -283,3 +276,17 @@ distclean:
 	# Archlinux
 	rm -f cdist-*.pkg.tar.xz cdist-*.tar.gz
 	rm -rf pkg/ src/
+
+################################################################################
+# Misc
+#
+
+# The pub is Nico's "push to all git remotes" way ("make pub")
+pub:
+	for remote in "" github sf; do \
+		echo "Pushing to $$remote"; \
+		git push --mirror $$remote; \
+	done
+
+test:
+	$(helper) $@
