@@ -65,7 +65,7 @@ class CdistObject(object):
     STATE_RUNNING = "running"
     STATE_DONE = "done"
 
-    def __init__(self, cdist_type, base_path, object_id=None):
+    def __init__(self, cdist_type, base_path, object_id=''):
         self.cdist_type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
@@ -107,7 +107,6 @@ class CdistObject(object):
 
         """
         type_name = object_name.split(os.sep)[0]
-        # FIXME: allow object without object_id? e.g. for singleton
         object_id = os.sep.join(object_name.split(os.sep)[1:])
         return type_name, object_id
 
