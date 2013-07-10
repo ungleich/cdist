@@ -170,7 +170,8 @@ class ArgumentsTestCase(test.CdistTestCase):
         # empty file -> True
         self.assertTrue(cdist_object.parameters['boolean1'] == '')
 
-    def test_required(self):
+    def test_required_arguments(self):
+        """check whether assigning required parameter works"""
         type_name = '__arguments_required'
         object_id = 'some-id'
         value = 'some value'
