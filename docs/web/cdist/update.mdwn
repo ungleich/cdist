@@ -22,6 +22,23 @@ To upgrade to the lastet version do
 
 ## Update Instructions
 
+### Updating from 2.1 to 2.2
+
+Starting with 2.2, the syntax for requiring a singleton type changed:
+Old format:
+
+    require="__singleton_type/singleton" ...
+
+New format:
+
+    require="__singleton_type" ...
+
+Internally the "singleton" object id was dropped to make life more easy.
+You can probably fix your configuration by running the following code
+snippet (currently untested, please report back if it works for you):
+
+    find ~/.cdist/* -type f -exec sed -i 's,/singleton,,' {} \;
+
 ### Updating from 2.0 to 2.1
 
 Have a look at the update guide for [[2.0 to 2.1|2.0-to-2.1]].
