@@ -1,0 +1,280 @@
+cdist-type(7)
+=============
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type - Functionality bundled
+
+
+SYNOPSIS
+--------
+__TYPE ID --parameter value [--parameter value ...]
+
+__TYPE --parameter value [--parameter value ...] (for singletons)
+
+
+DESCRIPTION
+-----------
+Types are the main component of cdist and define functionality. If you
+use cdist, you'll write a type for every functionality you would like
+to use.
+
+
+HOW TO USE A TYPE
+-----------------
+You can use types from the initial manifest or the type manifest like a
+normal command:
+
+--------------------------------------------------------------------------------
+# Creates empty file /etc/cdist-configured
+__file /etc/cdist-configured --type file
+
+# Ensure tree is installed
+__package tree --state installed
+--------------------------------------------------------------------------------
+
+A list of supported types can be found in the cdist-reference(7) manpage.
+
+
+SINGLETON TYPES
+---------------
+If a type is flagged as a singleton, it may be used only
+once per host. This is useful for types which can be used only once on a
+system. Singleton types do not take an object name as argument.
+
+Example:
+--------------------------------------------------------------------------------
+# __issue type manages /etc/issue
+__issue
+
+# Probably your own type - singletons may use parameters
+__myfancysingleton --colour green
+--------------------------------------------------------------------------------
+
+
+HOW TO WRITE A NEW TYPE
+-----------------------
+A type consists of
+
+- parameter (optional)
+- manifest  (optional)
+- singleton (optional)
+- explorer  (optional)
+- gencode   (optional)
+
+Types are stored below cdist/conf/type/. Their name should always be prefixed with
+two underscores (__) to prevent collisions with other executables in $PATH.
+
+To implement a new type, create the directory **cdist/conf/type/__NAME**.
+
+
+DEFINING PARAMETERS
+-------------------
+Every type consists of required, optional and boolean parameters, which must
+each be declared in a newline separated file in ***parameter/required***,
+***parameter/required_multiple***, ***parameter/optional***, 
+***parameter/optional_multiple*** and ***parameter/boolean***.
+Parameters which are allowed multiple times should be listed in
+required_multiple or optional_multiple respectively. All other parameters
+follow the standard unix behaviour "the last given wins".
+If either is missing, the type will have no required, no optional, no boolean
+or no parameters at all. 
+
+Example:
+--------------------------------------------------------------------------------
+echo servername >> cdist/conf/type/__nginx_vhost/parameter/required
+echo logdirectory >> cdist/conf/type/__nginx_vhost/parameter/optional
+echo server_alias >> cdist/conf/type/__nginx_vhost/parameter/optional_multiple
+echo use_ssl >> cdist/conf/type/__nginx_vhost/parameter/boolean
+--------------------------------------------------------------------------------
+
+
+USING PARAMETERS
+----------------
+The parameters given to a type can be accessed and used in all type scripts
+(e.g manifest, gencode-*, explorer/*). Note that boolean parameters are
+represented by file existence. File exists -> True,
+file does not exist -> False
+
+Example: (e.g. in cdist/conf/type/__nginx_vhost/manifest)
+--------------------------------------------------------------------------------
+# required parameter
+servername="$(cat "$__object/parameter/servername")"
+
+# optional parameter
+if [ -f "$__object/parameter/logdirectory" ]; then
+   logdirectory="$(cat "$__object/parameter/logdirectory")"
+fi
+
+# boolean parameter
+if [ -f "$__object/parameter/use_ssl" ]; then
+   # file exists -> True
+   # do some fancy ssl stuff
+fi
+
+# parameter with multiple values
+if [ -f "$__object/parameter/server_alias" ]; then
+   for alias in $(cat "$__object/parameter/server_alias"); do
+      echo $alias > /some/where/usefull
+   done
+fi
+
+--------------------------------------------------------------------------------
+
+
+INPUT FROM STDIN
+----------------
+Every type can access what has been written on stdin when it has been called.
+The result is saved into the ***stdin*** file in the object directory.
+
+Example use of a type: (e.g. in cdist/conf/type/__archlinux_hostname)
+--------------------------------------------------------------------------------
+__file /etc/rc.conf --source - << eof
+...
+HOSTNAME="$__target_host"
+...
+eof
+--------------------------------------------------------------------------------
+If you have not seen this syntax (<< eof) before, it may help you to read
+about "here documents".
+
+In the __file type, stdin is used as source for the file, if - is used for source:
+
+--------------------------------------------------------------------------------
+    if [ -f "$__object/parameter/source" ]; then
+        source="$(cat "$__object/parameter/source")"
+        if [ "$source" = "-" ]; then
+            source="$__object/stdin"
+        fi  
+    ....
+--------------------------------------------------------------------------------
+
+
+WRITING THE MANIFEST
+--------------------
+In the manifest of a type you can use other types, so your type extends
+their functionality. A good example is the __package type, which in
+a shortened version looks like this:
+
+--------------------------------------------------------------------------------
+os="$(cat "$__global/explorer/os")"
+case "$os" in
+      archlinux) type="pacman" ;;
+      debian|ubuntu) type="apt" ;;
+      gentoo) type="emerge" ;;
+      *)
+         echo "Don't know how to manage packages on: $os" >&2
+         exit 1
+      ;;
+esac
+
+__package_$type "$@"
+--------------------------------------------------------------------------------
+
+As you can see, the type can reference different environment variables,
+which are documented in cdist-reference(7).
+
+Always ensure the manifest is executable, otherwise cdist will not be able
+to execute it. For more information about manifests see cdist-manifest(7).
+
+
+SINGLETON - ONE INSTANCE ONLY
+-----------------------------
+If you want to ensure that a type can only be used once per target, you can
+mark it as a singleton: Just create the (empty) file "singleton" in your type
+directory:
+
+--------------------------------------------------------------------------------
+touch cdist/conf/type/__NAME/singleton
+--------------------------------------------------------------------------------
+
+This will also change the way your type must be called:
+
+--------------------------------------------------------------------------------
+__YOURTYPE --parameter value
+--------------------------------------------------------------------------------
+
+As you can see, the object ID is omitted, because it does not make any sense,
+if your type can be used only once.
+
+
+THE TYPE EXPLORERS
+------------------
+If a type needs to explore specific details, it can provide type specific
+explorers, which will be executed on the target for every created object.
+
+The explorers are stored under the "explorer" directory below the type.
+It could for instance contain code to check the md5sum of a file on the
+client, like this (shortened version from the type __file):
+
+--------------------------------------------------------------------------------
+if [ -f "$__object/parameter/destination" ]; then
+   destination="$(cat "$__object/parameter/destination")"
+else
+   destination="/$__object_id"
+fi
+
+if [ -e "$destination" ]; then
+   md5sum < "$destination"
+fi
+--------------------------------------------------------------------------------
+
+
+WRITING THE GENCODE SCRIPT
+--------------------------
+There are two gencode scripts: ***gencode-local*** and ***gencode-remote***.
+The output of gencode-local is executed locally, whereas
+the output of gencode-remote is executed on the target.
+The gencode scripts can make use of the parameters, the global explorers
+and the type specific explorers.
+
+If the gencode scripts encounters an error, it should print diagnostic
+messages to stderr and exit non-zero. If you need to debug the gencode
+script, you can write to stderr:
+
+--------------------------------------------------------------------------------
+# Debug output to stderr
+echo "My fancy debug line" >&2
+
+# Output to be saved by cdist for execution on the target
+echo "touch /etc/cdist-configured"
+--------------------------------------------------------------------------------
+
+
+HINTS FOR TYPEWRITERS
+----------------------
+It must be assumed that the target is pretty dumb and thus does not have high
+level tools like ruby installed. If a type requires specific tools to be present
+on the target, there must be another type that provides this tool and the first
+type should create an object of the specific type.
+
+If your type wants to save temporary data, that may be used by other types
+later on (for instance __file), you can save them in the subdirectory
+"files" below $__object (but you must create it yourself).
+cdist will not touch this directory.
+
+If your type contains static files, it's also recommended to place them in
+a folder named "files" within the type (again, because cdist guarantees to
+never ever touch this folder).
+
+
+HOW TO INCLUDE A TYPE INTO UPSTREAM CDIST
+-----------------------------------------
+If you think your type may be useful for others, ensure it works with the
+current master branch of cdist and have a look at cdist-hacker(7) on
+how to submit it.
+
+SEE ALSO
+--------
+- cdist-explorer(7)
+- cdist-hacker(7)
+- cdist-stages(7)
+- cdist-tutorial(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
