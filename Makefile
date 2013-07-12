@@ -269,9 +269,9 @@ clean:
 
 	find * -name __pycache__  | xargs rm -rf
 
-distclean:
+distclean: clean
 	rm -f cdist/version.py MANIFEST PKGBUILD
-	rm -rf cache/ dist/
+	rm -rf dist/
 
 	# Archlinux
 	rm -f cdist-*.pkg.tar.xz cdist-*.tar.gz
