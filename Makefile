@@ -95,12 +95,12 @@ man: $(MANTYPEALL) $(MANREFALL) $(MANSTATICALL)
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
 
-man-dist: man
+man-dist: man check-date
 	rm -rf "${MANWEBDIR}"
 	mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
 	cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${MANWEBDIR}/man1
 	cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
-	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)"
+	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)" || true
 
 man-release: web-release
 	# Fix ikiwiki, which does not like symlinks for pseudo security
@@ -155,7 +155,7 @@ web-release: web-dist man-dist speeches-dist
 ML_FILE=.lock-ml
 
 # Only send mail once - lock until new changelog things happened
-$(ML_FILE): $(CHANGELOG_FILE)
+$(ML_FILE): $(CHANGELOG_FILE) git-release web-release
 	$(helper) ml-release $(CHANGELOG_VERSION)
 	touch $@
 
@@ -201,7 +201,9 @@ git-checkout-current:
 $(VERSION_FILE): .git/refs/heads/* .git/refs/tags/* .git/HEAD
 	echo "VERSION = \"$$(git describe)\"" > $@
 
-git-release: git-tag git-branch-merge
+git-release: git-tag
+	make git-branch-merge
+	make git-checkout-current
 	make pub
 
 ################################################################################
@@ -212,10 +214,8 @@ PYPI_FILE=.lock-pypi
 pypi-release: $(PYPI_FILE)
 
 $(PYPI_FILE): man $(VERSION_FILE)
-	make git-checkout-stable
 	python3 setup.py sdist upload
 	touch $@
-	make git-checkout-current
 
 ################################################################################
 # archlinux
@@ -227,7 +227,7 @@ $(ARCHLINUXTAR): PKGBUILD pypi-release
 	makepkg -c --source
 
 PKGBUILD: PKGBUILD.in $(VERSION_FILE)
-	./PKGBUILD.in
+	./PKGBUILD.in $(CHANGELOG_VERSION)
 
 $(ARCHLINUX_FILE): $(ARCHLINUXTAR) $(VERSION_FILE)
 	burp -c system $(ARCHLINUXTAR)
@@ -241,12 +241,15 @@ archlinux-release: $(ARCHLINUX_FILE)
 
 CHECKS=check-date check-unittest
 
+check-unittest: $(VERSION_FILE)
+
 RELEASE=speeches-dist web-release
 RELEASE+=ml-release freecode-release
 RELEASE+=man-dist pypi-release git-release
 RELEASE+=archlinux-release
 
-release: $(CHECKS) $(RELEASE)
+#release: $(CHECKS) $(RELEASE)
+release: | $(CHECKS) man speeches
 	echo "Manual steps: linkedin, twitter"
 
 # Code that is better handled in a shell script

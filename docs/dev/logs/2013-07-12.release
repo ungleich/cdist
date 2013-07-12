@@ -14,18 +14,19 @@
         x rsync cdist docs to website repo & add to website repo
         x create blog entry & add to website repo
         ]
-            - upload website
-                - fix latest link for manpages
-                    - send mail to mailinglist
+            x upload website
+                x fix latest link for manpages
+                    x send mail to mailinglist -> also requires git tag & git release
+                        x should also require web-release including blog!
 
         - create PKGBUILD for archlinux release
 
-        - create git tag / read description
-            - if necessary create version branch
-                - change to version branch and merge master branch
-                    - update git repos
-                        - update website from repo
-                            - create release on freecode
+        x create git tag / read description
+            t if necessary create version branch
+                x change to version branch and merge tag!
+                    x update git repos
+                        x update website from repo
+                            x create release on freecode
 
             x create versionfile
                 x make pypi release
