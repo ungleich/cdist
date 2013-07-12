@@ -2,16 +2,17 @@
 
 - checkout master branch
     [
-    - check if date is correct in docs/changelog
-    - ensure all unittests work
-    - compile manpages 
-    - compile speeches 
+    x check if date is correct in docs/changelog
+    x ensure all unittests work
+        - requires (wrong/outdated) versionfile!
+    x compile manpages 
+    x compile speeches 
     ]
         [
-        - add manpages to website repo
-        - add speeches to website repo
-        - rsync cdist docs to website repo & add to website repo
-        - create blog entry & add to website repo
+        x add manpages to website repo
+        x add speeches to website repo
+        x rsync cdist docs to website repo & add to website repo
+        x create blog entry & add to website repo
         ]
             - upload website
                 - fix latest link for manpages
@@ -26,9 +27,9 @@
                         - update website from repo
                             - create release on freecode
 
-            - create versionfile
-                - make pypi release
-                    - make archlinux release
+            x create versionfile
+                x make pypi release
+                    x make archlinux release
 
 manual last steps:
 
