@@ -53,7 +53,7 @@ To upgrade to the lastet version do
 
     pip install --upgrade cdist
 
-## Update Instructions
+## General Update Instructions
 
 ### Updating from 2.1 to 2.2
 
@@ -96,7 +96,6 @@ Have a look at the update guide for [[2.0 to 2.1|2.0-to-2.1]].
  * Type **\_\_user**: Parameter --groups removed (use the new \_\_user_groups type)
  * Type **\_\_ssh_authorized_key** has been replaced by more flexible type 
     **\_\_ssh_authorized_keys**
- * require="" is deprecated: Use --after and --before as parameters instead
 
 ### Updating from 1.7 to 2.0
 
