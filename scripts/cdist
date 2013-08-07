@@ -26,7 +26,8 @@ def commandline():
 
     import cdist.banner
     import cdist.config
-    import cdist.install
+    # import cdist.install
+    import cdist.shell
 
     # Construct parser others can reuse
     parser = {}
@@ -83,7 +84,13 @@ def commandline():
     # Config
     parser['config'] = parser['sub'].add_parser('config',
         parents=[parser['loglevel'], parser['configinstall']])
-    parser['config'].set_defaults(func=config)
+    parser['config'].set_defaults(func=cdist.config.Config.commandline)
+
+    # Shell
+    parser['shell'] = parser['sub'].add_parser('shell', 
+        parents=[parser['loglevel']])
+    parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
+
 
     # Install
     # 20120525/sar: commented until it actually does something
@@ -112,98 +119,8 @@ def commandline():
     except AttributeError:
         parser['main'].print_help()
 
-def config(args):
-    configinstall(args, mode=cdist.config.Config)
-
-def install(args):
-    configinstall(args, mode=cdist.install.Install)
-
-def configinstall(args, mode):
-    """Configure or install remote system"""
-    import multiprocessing
-    import time
-
-    initial_manifest_tempfile = None
-    if args.manifest == '-':
-        # read initial manifest from stdin
-        import tempfile
-        try:
-            handle, initial_manifest_temp_path = tempfile.mkstemp(prefix='cdist.stdin.')
-            with os.fdopen(handle, 'w') as fd:
-                fd.write(sys.stdin.read())
-        except (IOError, OSError) as e:
-            raise cdist.Error("Creating tempfile for stdin data failed: %s" % e)
-
-        args.manifest = initial_manifest_temp_path
-        import atexit
-        atexit.register(lambda: os.remove(initial_manifest_temp_path))
-
-    process = {}
-    failed_hosts = []
-    time_start = time.time()
-
-    for host in args.host:
-        if args.parallel:
-            log.debug("Creating child process for %s", host)
-            process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode, True))
-            process[host].start()
-        else:
-            try:
-                configinstall_onehost(host, args, mode, parallel=False)
-            except cdist.Error as e:
-                failed_hosts.append(host)
-
-    # Catch errors in parallel mode when joining
-    if args.parallel:
-        for host in process.keys():
-            log.debug("Joining process %s", host)
-            process[host].join()
-
-            if not process[host].exitcode == 0:
-                failed_hosts.append(host)
-
-    time_end = time.time()
-    log.info("Total processing time for %s host(s): %s", len(args.host),
-                (time_end - time_start))
-
-    if len(failed_hosts) > 0:
-        raise cdist.Error("Failed to configure the following hosts: " + 
-            " ".join(failed_hosts))
-
-def configinstall_onehost(host, args, mode, parallel):
-    """Configure or install ONE remote system"""
-
-    try:
-        import cdist.context
-
-        context = cdist.context.Context(
-            target_host=host,
-            remote_copy=args.remote_copy,
-            remote_exec=args.remote_exec,
-            initial_manifest=args.manifest,
-            add_conf_dirs=args.conf_dir,
-            exec_path=sys.argv[0],
-            debug=args.debug)
-
-        c = mode(context)
-        c.run()
-        context.cleanup()
-
-    except cdist.Error as e:
-        context.log.error(e)
-        # We are running in our own process here, need to sys.exit!
-        if parallel:
-            sys.exit(1)
-        else:
-            raise
-
-    except KeyboardInterrupt:
-        # Ignore in parallel mode, we are existing anyway
-        if parallel:
-            sys.exit(0)
-        # Pass back to controlling code in sequential mode
-        else:
-            raise
+#def install(args):
+#    configinstall(args, mode=cdist.install.Install)
 
 def emulator():
     """Prepare and run emulator"""

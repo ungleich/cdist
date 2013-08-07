@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -20,7 +19,22 @@
 #
 #
 
-import cdist.config_install
+import logging
+import sys
 
-class Config(cdist.config_install.ConfigInstall):
-    pass
+import cdist
+
+log = logging.getLogger(__name__)
+
+class Shell(object):
+    
+    def __init__(self):
+        pass
+
+    @classmethod
+    def commandline(cls):
+        pass
+        # initialise cdist
+        # Startup Shell
+
+

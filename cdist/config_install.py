@@ -23,6 +23,7 @@
 import logging
 import os
 import shutil
+import sys
 import time
 import pprint
 
@@ -46,6 +47,100 @@ class ConfigInstall(object):
         """Prepare files and directories for the run"""
         self.context.local.create_files_dirs()
         self.context.remote.create_files_dirs()
+
+    @classmethod
+    def commandline(cls, args):
+        """Configure or install remote system"""
+        import multiprocessing
+
+        # FIXME: Refactor relict - remove later
+        log = logging.getLogger("cdist")
+    
+        initial_manifest_tempfile = None
+        if args.manifest == '-':
+            # read initial manifest from stdin
+            import tempfile
+            try:
+                handle, initial_manifest_temp_path = tempfile.mkstemp(prefix='cdist.stdin.')
+                with os.fdopen(handle, 'w') as fd:
+                    fd.write(sys.stdin.read())
+            except (IOError, OSError) as e:
+                raise cdist.Error("Creating tempfile for stdin data failed: %s" % e)
+    
+            args.manifest = initial_manifest_temp_path
+            import atexit
+            atexit.register(lambda: os.remove(initial_manifest_temp_path))
+    
+        process = {}
+        failed_hosts = []
+        time_start = time.time()
+    
+        for host in args.host:
+            if args.parallel:
+                log.debug("Creating child process for %s", host)
+                process[host] = multiprocessing.Process(target=cls.onehost, args=(host, args, True))
+                process[host].start()
+            else:
+                try:
+                    cls.onehost(host, args, parallel=False)
+                except cdist.Error as e:
+                    failed_hosts.append(host)
+    
+        # Catch errors in parallel mode when joining
+        if args.parallel:
+            for host in process.keys():
+                log.debug("Joining process %s", host)
+                process[host].join()
+    
+                if not process[host].exitcode == 0:
+                    failed_hosts.append(host)
+    
+        time_end = time.time()
+        log.info("Total processing time for %s host(s): %s", len(args.host),
+                    (time_end - time_start))
+    
+        if len(failed_hosts) > 0:
+            raise cdist.Error("Failed to configure the following hosts: " + 
+                " ".join(failed_hosts))
+    
+    @classmethod
+    def onehost(cls, host, args, parallel):
+        """Configure or install ONE system"""
+    
+        # FIXME: Refactor relict - remove later
+        log = logging.getLogger("cdist")
+
+        try:
+            import cdist.context
+    
+            context = cdist.context.Context(
+                target_host=host,
+                remote_copy=args.remote_copy,
+                remote_exec=args.remote_exec,
+                initial_manifest=args.manifest,
+                add_conf_dirs=args.conf_dir,
+                exec_path=sys.argv[0],
+                debug=args.debug)
+    
+            c = cls(context)
+            c.run()
+            context.cleanup()
+    
+        except cdist.Error as e:
+            context.log.error(e)
+            if parallel:
+                # We are running in our own process here, need to sys.exit!
+                sys.exit(1)
+            else:
+                raise
+    
+        except KeyboardInterrupt:
+            # Ignore in parallel mode, we are existing anyway
+            if parallel:
+                sys.exit(0)
+            # Pass back to controlling code in sequential mode
+            else:
+                raise
 
     def run(self):
         """Do what is most often done: deploy & cleanup"""
