@@ -84,6 +84,5 @@ class Shell(object):
 
     @classmethod
     def commandline(cls, args):
-        print(os.environ['PYTHONPATH'])
         shell = cls(args.shell)
         shell.run()

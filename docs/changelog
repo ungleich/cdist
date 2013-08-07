@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+2.3.0:
+	* Core: Added support for cdist shell
+
 2.2.0: 2013-07-12
 	* Build: Cleanup the Makefile
 	* Type __package_opkg: Use shortcut version
