@@ -116,10 +116,19 @@ def commandline():
     # Work around python 3.3 bug:
     # http://bugs.python.org/issue16308
     # http://bugs.python.org/issue9253
+
+    # FIXME: catching AttributeError also hides
+    # real problems.. try a different way
+
+    # FIXME: we always print main help, not
+    # the help of the actual parser being used!
     try:
-        args.func(args)
+        getattr(args, "func")
     except AttributeError:
         parser['main'].print_help()
+        sys.exit(0)
+
+    args.func(args)
 
 #def install(args):
 #    configinstall(args, mode=cdist.install.Install)
@@ -158,12 +167,10 @@ if __name__ == "__main__":
             commandline()
 
     except KeyboardInterrupt:
-        pass
+        exit_code = 2
 
     except cdist.Error as e:
         log.error(e)
         exit_code = 1
-
-    # Determine exit code by return value of function
 
     sys.exit(exit_code)
