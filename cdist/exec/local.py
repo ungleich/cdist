@@ -127,8 +127,8 @@ class Local(object):
         Return the output as a string.
 
         """
-        assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
         self.log.debug("Local run: %s", command)
+        assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
 
         if env is None:
             env = os.environ.copy()

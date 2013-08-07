@@ -23,6 +23,10 @@ import logging
 import os
 import subprocess
 
+# initialise cdist
+import cdist.context
+
+
 # FIXME: only considering config here - enable
 # command line switch for using install object
 # when it is available
@@ -32,29 +36,54 @@ log = logging.getLogger(__name__)
 
 class Shell(object):
     
-    def __init__(self):
-        pass
+    def __init__(self, shell=None):
 
-    @classmethod
-    def commandline(cls, args):
-        pass
-        # initialise cdist
-        import cdist.context
+        self.shell = shell
 
-        context = cdist.context.Context(
-            target_host="cdist-shell-no-target-host",
+        self.target_host = "cdist-shell-no-target-host"
+        self.context = cdist.context.Context(
+            target_host=self.target_host,
             remote_copy=cdist.REMOTE_COPY,
             remote_exec=cdist.REMOTE_EXEC)
 
-        config = cdist.config.Config(context)
 
-        # Startup Shell
-        if args.shell:
-            shell = [args.shell]
-        elif 'SHELL' in os.environ:
-            shell = [os.environ['SHELL']]
-        else:
-            shell = ["/bin/sh"]
+    def _init_shell(self):
+        """Select shell to execute, if not specified by user"""
+
+        if not self.shell:
+            if 'SHELL' in os.environ:
+                self.shell = os.environ['SHELL']
+            else:
+                self.shell = "/bin/sh"
+
+    def _init_files_dirs(self):
+        self.context.local.create_files_dirs()
+
+    def _init_environment(self):
+        self.env = os.environ.copy()
+        additional_env = { 
+            'PATH': "%s:%s" % (self.context.local.bin_path, os.environ['PATH']),
+            '__cdist_type_base_path': self.context.local.type_path, # for use in type emulator
+            '__cdist_manifest': "cdist shell",
+            '__global': self.context.local.out_path,
+            '__target_host': self.target_host,
+            '__manifest': self.context.local.manifest_path,
+            '__explorer': self.context.local.global_explorer_path,
+        }
+
+        self.env.update(additional_env)
+
+    def run(self):
+        self._init_shell()
+        self._init_files_dirs()
+        self._init_environment()
 
         log.info("Starting shell...")
-        subprocess.call(shell)
+        self.context.local.run([self.shell], self.env)
+        log.info("Finished shell.")
+
+    @classmethod
+    def commandline(cls, args):
+        print(os.environ['PYTHONPATH'])
+        shell = cls(args.shell)
+        shell.run()
