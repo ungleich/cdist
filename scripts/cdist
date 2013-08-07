@@ -75,11 +75,11 @@ def commandline():
     parser['configinstall'].add_argument('--remote-copy',
          help='Command to use for remote copy (should behave like scp)',
          action='store', dest='remote_copy',
-         default="scp -o User=root -q")
+         default=cdist.REMOTE_COPY)
     parser['configinstall'].add_argument('--remote-exec',
          help='Command to use for remote execution (should behave like ssh)',
          action='store', dest='remote_exec',
-         default="ssh -o User=root -q")
+         default=cdist.REMOTE_EXEC)
 
     # Config
     parser['config'] = parser['sub'].add_parser('config',
@@ -89,6 +89,8 @@ def commandline():
     # Shell
     parser['shell'] = parser['sub'].add_parser('shell', 
         parents=[parser['loglevel']])
+    parser['shell'].add_argument('-s', '--shell',
+         help='Select shell to use, defaults to current shell')
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
 
 

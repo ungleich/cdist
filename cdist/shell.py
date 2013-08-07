@@ -20,9 +20,13 @@
 #
 
 import logging
-import sys
+import os
+import subprocess
 
-import cdist
+# FIXME: only considering config here - enable
+# command line switch for using install object
+# when it is available
+import cdist.config
 
 log = logging.getLogger(__name__)
 
@@ -32,9 +36,25 @@ class Shell(object):
         pass
 
     @classmethod
-    def commandline(cls):
+    def commandline(cls, args):
         pass
         # initialise cdist
+        import cdist.context
+
+        context = cdist.context.Context(
+            target_host="cdist-shell-no-target-host",
+            remote_copy=cdist.REMOTE_COPY,
+            remote_exec=cdist.REMOTE_EXEC)
+
+        config = cdist.config.Config(context)
+
         # Startup Shell
+        if args.shell:
+            shell = [args.shell]
+        elif 'SHELL' in os.environ:
+            shell = [os.environ['SHELL']]
+        else:
+            shell = ["/bin/sh"]
 
-
+        log.info("Starting shell...")
+        subprocess.call(shell)
