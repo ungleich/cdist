@@ -6,6 +6,7 @@ Changelog
 
 2.3.0:
 	* Core: Added support for cdist shell
+	* Documentation: Improved some manpages
 
 2.2.0: 2013-07-12
 	* Build: Cleanup the Makefile
