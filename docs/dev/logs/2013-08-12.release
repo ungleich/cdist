@@ -1,5 +1,5 @@
 - already on 2.3.0-1 during release
-    - user bug
+    - user bug: there should be no changes / commits during a release process
 
 hard linking docs/man/man7/cdist-type__user.7 -> cdist-2.3.0-1-g8192c2c/docs/man/man7
 hard linking docs/man/man7/cdist-type__user.html -> cdist-2.3.0-1-g8192c2c/docs/man/man7
