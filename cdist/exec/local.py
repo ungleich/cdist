@@ -190,7 +190,7 @@ class Local(object):
 
                 for entry in os.listdir(current_dir):
                     rel_entry_path = os.path.join(sub_dir, entry)
-                    src = os.path.join(conf_dir, sub_dir, entry)
+                    src = os.path.abspath(os.path.join(conf_dir, sub_dir, entry))
                     dst = os.path.join(self.conf_path, sub_dir, entry)
 
                     # Already exists? remove and link

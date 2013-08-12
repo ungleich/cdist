@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+2.3.1:
+	* Core: Support relative paths for configuration directories
+
 2.3.0: 2013-08-12
 	* Core: Added support for cdist shell
 	* Documentation: Improved some manpages
