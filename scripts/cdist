@@ -167,10 +167,16 @@ if __name__ == "__main__":
             commandline()
 
     except KeyboardInterrupt:
-        exit_code = 2
+        pass
+
+        # FIXME: We always get exit code = 130
+        # exit_code = 2
+        # does not make a difference
 
     except cdist.Error as e:
         log.error(e)
         exit_code = 1
 
+    #sys.exit(20)
+    #print("ok2 %s" % exit_code)
     sys.exit(exit_code)

@@ -28,6 +28,7 @@ import time
 import pprint
 
 import cdist
+import cdist.context
 from cdist import core
 
 class ConfigInstall(object):
@@ -107,11 +108,7 @@ class ConfigInstall(object):
     def onehost(cls, host, args, parallel):
         """Configure or install ONE system"""
     
-        # FIXME: Refactor relict - remove later
-        log = logging.getLogger("cdist")
-
         try:
-            import cdist.context
     
             context = cdist.context.Context(
                 target_host=host,
