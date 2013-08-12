@@ -55,6 +55,10 @@ To upgrade to the lastet version do
 
 ## General Update Instructions
 
+### Updating from 2.2 to 2.3
+
+No incompatiblities.
+
 ### Updating from 2.1 to 2.2
 
 Starting with 2.2, the syntax for requiring a singleton type changed:
