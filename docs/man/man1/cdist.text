@@ -80,7 +80,10 @@ Configure one or more hosts
 
 SHELL
 -----
-This command allows you to
+This command allows you to spawn a shell that enables access
+to the types as commands. It can be thought as an
+"interactive manifest" environment. See below for example
+usage. Its primary use is for debugging type parameters.
 
 -s/--shell::
     Select shell to use, defaults to current shell
