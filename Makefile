@@ -248,8 +248,8 @@ RELEASE+=ml-release freecode-release
 RELEASE+=man-dist pypi-release git-release
 RELEASE+=archlinux-release
 
-#release: $(CHECKS) $(RELEASE)
-release: | $(CHECKS) man speeches
+release: $(CHECKS) $(RELEASE)
+#release: | $(CHECKS) man speeches
 	echo "Manual steps: linkedin, twitter"
 
 # Code that is better handled in a shell script
