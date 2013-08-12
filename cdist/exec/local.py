@@ -85,9 +85,7 @@ class Local(object):
     def _init_conf_dirs(self):
         self.conf_dirs = []
 
-        # Comes with the distribution
-        system_conf_dir = os.path.abspath(os.path.join(os.path.dirname(cdist.__file__), "conf"))
-        self.conf_dirs.append(system_conf_dir)
+        self.conf_dirs.append(self.dist_conf_dir)
 
         # Is the default place for user created explorer, type and manifest
         if self.home_dir:
@@ -99,7 +97,7 @@ class Local(object):
             cdist_path_dirs.reverse()
             self.conf_dirs.extend(cdist_path_dirs)
 
-        # Add user supplied directories
+        # Add command line supplied directories
         if self._add_conf_dirs:
             self.conf_dirs.extend(self._add_conf_dirs)
 
