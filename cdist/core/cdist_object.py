@@ -160,10 +160,6 @@ class CdistObject(object):
 
         cdist_type = self.cdist_type.__class__(type_path, type_name)
 
-        # FIXME: get rid of this singleton crap
-        if cdist_type.is_singleton:
-            object_id = 'singleton'
-
         return self.__class__(cdist_type, base_path, object_id=object_id)
 
     def __repr__(self):
