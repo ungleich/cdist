@@ -168,10 +168,6 @@ class ObjectTestCase(test.CdistTestCase):
         self.cdist_object.explorers = {}
         os.rmdir(os.path.join(self.cdist_object.base_path, self.cdist_object.explorer_path))
 
-    def test_requirements(self):
-        expected = []
-        self.assertEqual(list(self.cdist_object.requirements), expected)
-
     def test_changed(self):
         self.assertFalse(self.cdist_object.changed)
 

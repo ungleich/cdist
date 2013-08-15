@@ -105,21 +105,28 @@ done
 
 DEPENDENCIES
 ------------
-If you want to describe that something requires something else, just
-setup the variable "require" to contain the requirements. Multiple
-requirements can be added white space separated.
+If you want to describe that something requires something else you can 
+declare the relationship with the --before and --after parameters.
+Each of which can be specified multiple times.
 
 --------------------------------------------------------------------------------
 # No dependency
 __file /etc/cdist-configured
 
 # Require above object
-require="__file/etc/cdist-configured" __link /tmp/cdist-testfile \
-   --source /etc/cdist-configured  --type symbolic
+__link /tmp/cdist-testfile \
+   --source /etc/cdist-configured --type symbolic \
+   --after __file/etc/cdist-configured
 
 # Require two objects
-require="__file/etc/cdist-configured __link/tmp/cdist-testfile" \
-   __file /tmp/cdist-another-testfile
+__file /tmp/cdist-another-testfile \
+   --after __file/etc/cdist-configured \
+   --after __link/tmp/cdist-testfile
+
+# After one, but before an other
+__file /tmp/yet-another-one \
+   --after /etc/cdist-configured \
+   --before /tmp/cdist-testfile
 
 
 --------------------------------------------------------------------------------
