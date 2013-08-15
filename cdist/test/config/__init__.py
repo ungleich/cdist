@@ -73,7 +73,6 @@ class ConfigRunTestCase(test.CdistTestCase):
 
     def tearDown(self):
         for o in self.objects:
-            o.requirements = []
             o.state = ""
 
         os.environ = self.orig_environ
@@ -84,8 +83,8 @@ class ConfigRunTestCase(test.CdistTestCase):
         second  = self.object_index['__second/on-the']
         third   = self.object_index['__third/moon']
 
-        first.requirements = [second.name]
-        second.requirements = [third.name]
+        self.context.dpm.after(first.name, second.name)
+        self.context.dpm.after(second.name, third.name)
 
         # First run: 
         # solves first and maybe second (depending on the order in the set)
@@ -111,8 +110,8 @@ class ConfigRunTestCase(test.CdistTestCase):
         first   = self.object_index['__first/man']
         second  = self.object_index['__second/on-the']
 
-        first.requirements = [second.name]
-        second.requirements = [first.name]
+        self.context.dpm.after(first.name, second.name)
+        self.context.dpm.after(second.name, first.name)
 
         with self.assertRaises(cdist.UnresolvableRequirementsError):
             self.config.iterate_until_finished()
@@ -120,21 +119,21 @@ class ConfigRunTestCase(test.CdistTestCase):
     def test_missing_requirements(self):
         """Throw an error if requiring something non-existing"""
         first = self.object_index['__first/man']
-        first.requirements = ['__first/not/exist']
+        self.context.dpm.after(first.name, '__first/not/exist')
         with self.assertRaises(cdist.UnresolvableRequirementsError):
             self.config.iterate_until_finished()
 
     def test_requirement_broken_type(self):
         """Unknown type should be detected in the resolving process"""
         first = self.object_index['__first/man']
-        first.requirements = ['__nosuchtype/not/exist']
+        self.context.dpm.after(first.name, '__nosuchtype/not/exist')
         with self.assertRaises(cdist.core.cdist_type.NoSuchTypeError):
             self.config.iterate_until_finished()
 
     def test_requirement_singleton_where_no_singleton(self):
         """Missing object id should be detected in the resolving process"""
         first = self.object_index['__first/man']
-        first.requirements = ['__first']
+        self.context.dpm.after(first.name, '__first')
         with self.assertRaises(cdist.core.cdist_object.MissingObjectIdError):
             self.config.iterate_until_finished()
 

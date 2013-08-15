@@ -160,6 +160,10 @@ class CdistObject(object):
 
         cdist_type = self.cdist_type.__class__(type_path, type_name)
 
+        # FIXME: get rid of this singleton crap
+        if cdist_type.is_singleton:
+            object_id = 'singleton'
+
         return self.__class__(cdist_type, base_path, object_id=object_id)
 
     def __repr__(self):
@@ -201,8 +205,6 @@ class CdistObject(object):
         # return relative path
         return os.path.join(self.path, "explorer")
 
-    requirements = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'require'))
-    autorequire = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'autorequire'))
     parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.parameter_path))
     explorers = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.explorer_path))
     state = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "state"))
@@ -224,16 +226,3 @@ class CdistObject(object):
             os.makedirs(absolute_parameter_path, exist_ok=allow_overwrite)
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
-
-    def requirements_unfinished(self, requirements):
-        """Return state whether requirements are satisfied"""
-
-        object_list = []
-
-        for requirement in requirements:
-            cdist_object = self.object_from_name(requirement)
-
-            if not cdist_object.state == self.STATE_DONE:
-                object_list.append(cdist_object)
-
-        return object_list
