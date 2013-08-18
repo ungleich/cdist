@@ -60,13 +60,13 @@ def commandline():
     parser['configinstall'].add_argument('-c', '--conf-dir',
          help='Add configuration directory (can be repeated, last one wins)',
          action='append')
-    parser['configinstall'].add_argument('-C', '--cache-dir',
-         help='Directory to save cache in (usually derived from target host name)')
     parser['configinstall'].add_argument('-i', '--initial-manifest', 
          help='Path to a cdist manifest or \'-\' to read from stdin.',
          dest='manifest', required=False)
     parser['configinstall'].add_argument('-n', '--dry-run',
          help='Do not execute code', action='store_true')
+    parser['configinstall'].add_argument('-o', '--output-base-path',
+         help='Directory prefix to save cdist output in')
     parser['configinstall'].add_argument('-p', '--parallel',
          help='Operate on multiple hosts in parallel',
          action='store_true', dest='parallel')

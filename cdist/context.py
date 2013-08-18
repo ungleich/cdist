@@ -27,22 +27,12 @@ import sys
 class Context(object):
     """Hold information about current context"""
 
-    def __init__(self,
-        target_host,
-        remote_copy,
-        remote_exec,
-        initial_manifest=False,
-        add_conf_dirs=None,
-        exec_path=sys.argv[0],
-        debug=False,
-        cache_dir=None):
+    def __init__(self, target_host)
 
         # Context logging
         self.log = logging.getLogger(self.target_host)
         self.log.addFilter(self)
 
-        self.initial_manifest = (initial_manifest or
-            os.path.join(self.local.manifest_path, "init"))
 
     def filter(self, record):
         """Add hostname to logs via logging Filter"""

@@ -38,11 +38,17 @@ class Local(object):
     Directly accessing the local side from python code is a bug.
 
     """
-    def __init__(self, target_host, exec_path, out_base_path=None, add_conf_dirs=None, cache_dir=None):
+    def __init__(self,
+                 target_host,
+                 exec_path,
+                 initial_manifest=None,
+                 out_base_path=None,
+                 add_conf_dirs=None)
 
         self.target_host = target_host
         self.out_base_path = out_base_path
         self.exec_path = exec_path
+        self.custom_initial_manifest = initial_manifest
 
         self._add_conf_dirs = add_conf_dirs
 
@@ -51,6 +57,7 @@ class Local(object):
         self._init_paths()
         self._init_cache_dir(cache_dir)
         self._init_conf_dirs()
+
 
     @property
     def dist_conf_dir(self):
@@ -86,6 +93,9 @@ class Local(object):
         # Depending on conf_path
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
         self.manifest_path = os.path.join(self.conf_path, "manifest")
+        self.initial_manifest = (self.custom_initial_manifest or
+                    os.path.join(self.manifest_path, "init"))
+
         self.type_path = os.path.join(self.conf_path, "type")
 
     def _init_conf_dirs(self):

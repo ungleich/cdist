@@ -41,7 +41,7 @@ class ConfigInstall(object):
 
         self.local      = local
         self.remote     = remote
-        self.log        = logging.getLogger(self.context.target_host)
+        self.log        = logging.getLogger(self.local.target_host)
         self.dry_run    = dry_run
 
         self.explorer = core.Explorer(self.target_host, self.local, self.remote)
@@ -113,26 +113,20 @@ class ConfigInstall(object):
         """Configure or install ONE system"""
     
         try:
-    
             local = cdist.local.Local(
                 target_host=host,
-                out_path=FIXME-OUT_PATH,
                 exec_path=sys.argv[0],
-                add_conf_dirs=args.conf_dir,
-                cache_dir=args.cache_dir)
+                initial_manifest=args.manifest,
+                out_base_path=args.out_base_path,
+                add_conf_dirs=args.conf_dir)
 
             remote = cdist.remote.Remote(
                 target_host=host,
                 remote_exec=args.remote_exec,
                 remote_copy=args.remote_copy)
-
-
-                #initial_manifest=args.manifest,
-                #debug=args.debug)
     
             c = cls(local, remote)
             c.run()
-            context.cleanup()
     
         except cdist.Error as e:
             context.log.error(e)
@@ -156,8 +150,8 @@ class ConfigInstall(object):
 
         self._init_files_dirs()
 
-        self.explorer.run_global_explorers(self.context.local.global_explorer_out_path)
-        self.manifest.run_initial_manifest(self.context.initial_manifest)
+        self.explorer.run_global_explorers(self.local.global_explorer_out_path)
+        self.manifest.run_initial_manifest(self.local.initial_manifest)
         self.iterate_until_finished()
 
         self.local.save_cache()
@@ -166,8 +160,8 @@ class ConfigInstall(object):
 
     def object_list(self):
         """Short name for object list retrieval"""
-        for cdist_object in core.CdistObject.list_objects(self.context.local.object_path,
-                                                         self.context.local.type_path):
+        for cdist_object in core.CdistObject.list_objects(self.local.object_path,
+                                                         self.local.type_path):
             yield cdist_object
 
     def iterate_once(self):
