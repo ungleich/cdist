@@ -24,7 +24,7 @@ import os
 import subprocess
 
 # initialise cdist
-import cdist.context
+import cdist.exec.local
 
 
 # FIXME: only considering config here - enable
@@ -41,7 +41,7 @@ class Shell(object):
         self.shell = shell
 
         self.target_host = "cdist-shell-no-target-host"
-        self.context = cdist.context.Context(
+        self.local = cdist.local.Local(
             target_host=self.target_host,
             remote_copy=cdist.REMOTE_COPY,
             remote_exec=cdist.REMOTE_EXEC)
@@ -57,18 +57,18 @@ class Shell(object):
                 self.shell = "/bin/sh"
 
     def _init_files_dirs(self):
-        self.context.local.create_files_dirs()
+        self.local.create_files_dirs()
 
     def _init_environment(self):
         self.env = os.environ.copy()
         additional_env = { 
-            'PATH': "%s:%s" % (self.context.local.bin_path, os.environ['PATH']),
-            '__cdist_type_base_path': self.context.local.type_path, # for use in type emulator
+            'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
+            '__cdist_type_base_path': self.local.type_path, # for use in type emulator
             '__cdist_manifest': "cdist shell",
-            '__global': self.context.local.out_path,
+            '__global': self.local.out_path,
             '__target_host': self.target_host,
-            '__manifest': self.context.local.manifest_path,
-            '__explorer': self.context.local.global_explorer_path,
+            '__manifest': self.local.manifest_path,
+            '__explorer': self.local.global_explorer_path,
         }
 
         self.env.update(additional_env)
@@ -79,7 +79,7 @@ class Shell(object):
         self._init_environment()
 
         log.info("Starting shell...")
-        self.context.local.run([self.shell], self.env)
+        self.local.run([self.shell], self.env)
         log.info("Finished shell.")
 
     @classmethod
