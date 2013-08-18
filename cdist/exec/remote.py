@@ -57,6 +57,13 @@ class Remote(object):
 
         self.log = logging.getLogger(self.target_host)
 
+        self._init_env()
+
+    def _init_env(self):
+        os.environ['__remote_copy'] = self.remote_copy
+        os.environ['__remote_exec'] = self.remote_exec
+
+
     def create_files_dirs(self):
         self.rmdir(self.base_path)
         self.mkdir(self.base_path)

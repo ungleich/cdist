@@ -37,32 +37,12 @@ class Context(object):
         debug=False,
         cache_dir=None):
 
-        self.debug          = debug
-        self.target_host    = target_host
-        self.exec_path      = exec_path
-        self.cache_dir      = cache_dir
-
         # Context logging
         self.log = logging.getLogger(self.target_host)
         self.log.addFilter(self)
 
         self.initial_manifest = (initial_manifest or
             os.path.join(self.local.manifest_path, "init"))
-
-        self._init_remote(remote_copy, remote_exec)
-
-    # Remote stuff
-    def _init_remote(self, remote_copy, remote_exec):
-
-        self.remote_base_path = os.environ.get('__cdist_remote_out_dir', "/var/lib/cdist")
-        self.remote_copy = remote_copy
-        self.remote_exec = remote_exec
-
-        os.environ['__remote_copy'] = self.remote_copy
-        os.environ['__remote_exec'] = self.remote_exec
-
-        self.remote = remote.Remote(self.target_host, self.remote_base_path,
-            self.remote_exec, self.remote_copy)
 
     def filter(self, record):
         """Add hostname to logs via logging Filter"""
