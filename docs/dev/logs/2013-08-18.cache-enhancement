@@ -3,3 +3,5 @@
     - add a state flag
 - save cache in a date based directory
 - also add support for a per-host pidfile
+- allow user to specify cache dir - to give
+  full flexibility
