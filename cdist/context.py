@@ -40,11 +40,13 @@ class Context(object):
         initial_manifest=False,
         add_conf_dirs=None,
         exec_path=sys.argv[0],
-        debug=False):
+        debug=False,
+        cache_dir=None):
 
         self.debug          = debug
         self.target_host    = target_host
         self.exec_path      = exec_path
+        self.cache_dir      = cache_dir
 
         # Context logging
         self.log = logging.getLogger(self.target_host)
@@ -59,7 +61,9 @@ class Context(object):
             self.temp_dir = tempfile.mkdtemp()
             self.out_path = os.path.join(self.temp_dir, "out")
 
-        self.local = local.Local(self.target_host, self.out_path, self.exec_path, add_conf_dirs=add_conf_dirs)
+        self.local = local.Local(self.target_host, self.out_path, 
+                                 self.exec_path, add_conf_dirs=add_conf_dirs,
+                                 cache_dir=self.cache_dir)
 
         self.initial_manifest = (initial_manifest or
             os.path.join(self.local.manifest_path, "init"))

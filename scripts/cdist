@@ -60,6 +60,8 @@ def commandline():
     parser['configinstall'].add_argument('-c', '--conf-dir',
          help='Add configuration directory (can be repeated, last one wins)',
          action='append')
+    parser['configinstall'].add_argument('-C', '--cache-dir',
+         help='Directory to save cache in (usually derived from target host name)')
     parser['configinstall'].add_argument('-i', '--initial-manifest', 
          help='Path to a cdist manifest or \'-\' to read from stdin.',
          dest='manifest', required=False)
