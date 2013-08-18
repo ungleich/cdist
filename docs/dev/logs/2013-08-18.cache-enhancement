@@ -1,0 +1,5 @@
+- always save cache = outdir
+    - even if run aborts (for debugging)
+    - add a state flag
+- save cache in a date based directory
+- also add support for a per-host pidfile
