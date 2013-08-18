@@ -38,10 +38,10 @@ class Local(object):
     Directly accessing the local side from python code is a bug.
 
     """
-    def __init__(self, target_host, out_path, exec_path, add_conf_dirs=None, cache_dir=None):
+    def __init__(self, target_host, exec_path, out_base_path=None, add_conf_dirs=None, cache_dir=None):
 
         self.target_host = target_host
-        self.out_path = out_path
+        self.out_base_path = out_base_path
         self.exec_path = exec_path
 
         self._add_conf_dirs = add_conf_dirs
@@ -71,11 +71,17 @@ class Local(object):
         os.umask(0o077)
 
     def _init_paths(self):
+
+        # FIXME: inherited behaviour from old context
+        if not self.out_base_path:
+            self.out_base_path = tempfile.mkdtemp()
+
+
         # Depending on out_path
-        self.bin_path = os.path.join(self.out_path, "bin")
-        self.conf_path = os.path.join(self.out_path, "conf")
-        self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
-        self.object_path = os.path.join(self.out_path, "object")
+        self.bin_path = os.path.join(self.out_base_path, "bin")
+        self.conf_path = os.path.join(self.out_base_path, "conf")
+        self.global_explorer_out_path = os.path.join(self.out_base_path, "explorer")
+        self.object_path = os.path.join(self.out_base_path, "object")
 
         # Depending on conf_path
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
@@ -160,15 +166,13 @@ class Local(object):
 
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.target_host)
-        self.log.debug("Saving " + self.out_path + " to " + destination)
+        self.log.debug("Saving " + self.out_base_path + " to " + destination)
         if os.path.exists(destination):
             shutil.rmtree(destination)
-        shutil.move(self.out_path, destination)
+        shutil.move(self.out_base_path, destination)
 
 
     def _create_context_dirs(self):
-        self.mkdir(self.out_path)
-
         self.mkdir(self.conf_path)
         self.mkdir(self.global_explorer_out_path)
         self.mkdir(self.bin_path)

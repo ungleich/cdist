@@ -28,26 +28,30 @@ import time
 import pprint
 
 import cdist
-import cdist.context
+
+import cdist.exec.local
+import cdist.exec.remote
+
 from cdist import core
 
 class ConfigInstall(object):
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, context, dry_run=False):
+    def __init__(self, local, remote, dry_run=False):
 
-        self.context = context
-        self.log      = logging.getLogger(self.context.target_host)
-        self.dry_run = dry_run
+        self.local      = local
+        self.remote     = remote
+        self.log        = logging.getLogger(self.context.target_host)
+        self.dry_run    = dry_run
 
-        self.explorer = core.Explorer(self.context.target_host, self.context.local, self.context.remote)
-        self.manifest = core.Manifest(self.context.target_host, self.context.local)
-        self.code     = core.Code(self.context.target_host, self.context.local, self.context.remote)
+        self.explorer = core.Explorer(self.target_host, self.local, self.remote)
+        self.manifest = core.Manifest(self.target_host, self.local)
+        self.code     = core.Code(self.target_host, self.local, self.remote)
 
     def _init_files_dirs(self):
         """Prepare files and directories for the run"""
-        self.context.local.create_files_dirs()
-        self.context.remote.create_files_dirs()
+        self.local.create_files_dirs()
+        self.remote.create_files_dirs()
 
     @classmethod
     def commandline(cls, args):
@@ -110,16 +114,23 @@ class ConfigInstall(object):
     
         try:
     
-            context = cdist.context.Context(
+            local = cdist.local.Local(
                 target_host=host,
-                remote_copy=args.remote_copy,
-                remote_exec=args.remote_exec,
-                initial_manifest=args.manifest,
-                add_conf_dirs=args.conf_dir,
+                out_path=FIXME-OUT_PATH,
                 exec_path=sys.argv[0],
-                debug=args.debug)
+                add_conf_dirs=args.conf_dir,
+                cache_dir=args.cache_dir)
+
+            remote = cdist.remote.Remote(
+                target_host=host,
+                remote_exec=args.remote_exec,
+                remote_copy=args.remote_copy)
+
+
+                #initial_manifest=args.manifest,
+                #debug=args.debug)
     
-            c = cls(context)
+            c = cls(local, remote)
             c.run()
             context.cleanup()
     
@@ -149,7 +160,7 @@ class ConfigInstall(object):
         self.manifest.run_initial_manifest(self.context.initial_manifest)
         self.iterate_until_finished()
 
-        self.context.local.save_cache()
+        self.local.save_cache()
         self.log.info("Finished successful run in %s seconds", time.time() - start_time)
 
 

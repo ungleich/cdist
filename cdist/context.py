@@ -23,12 +23,6 @@
 import logging
 import os
 import sys
-import tempfile
-import shutil
-
-from cdist.exec import local
-from cdist.exec import remote
-
 
 class Context(object):
     """Hold information about current context"""
@@ -52,19 +46,6 @@ class Context(object):
         self.log = logging.getLogger(self.target_host)
         self.log.addFilter(self)
 
-        # Local temp directory
-        # FIXME: if __cdist_out_dir can be given from the outside, the same directory will be used for all hosts
-        if '__cdist_out_dir' in os.environ:
-            self.out_path = os.environ['__cdist_out_dir']
-            self.temp_dir = None
-        else:
-            self.temp_dir = tempfile.mkdtemp()
-            self.out_path = os.path.join(self.temp_dir, "out")
-
-        self.local = local.Local(self.target_host, self.out_path, 
-                                 self.exec_path, add_conf_dirs=add_conf_dirs,
-                                 cache_dir=self.cache_dir)
-
         self.initial_manifest = (initial_manifest or
             os.path.join(self.local.manifest_path, "init"))
 
@@ -82,11 +63,6 @@ class Context(object):
 
         self.remote = remote.Remote(self.target_host, self.remote_base_path,
             self.remote_exec, self.remote_copy)
-
-    def cleanup(self):
-        """Remove temp stuff"""
-        if self.temp_dir:
-            shutil.rmtree(self.temp_dir)
 
     def filter(self, record):
         """Add hostname to logs via logging Filter"""
