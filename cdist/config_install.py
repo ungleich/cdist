@@ -44,9 +44,9 @@ class ConfigInstall(object):
         self.log        = logging.getLogger(self.local.target_host)
         self.dry_run    = dry_run
 
-        self.explorer = core.Explorer(self.target_host, self.local, self.remote)
-        self.manifest = core.Manifest(self.target_host, self.local)
-        self.code     = core.Code(self.target_host, self.local, self.remote)
+        self.explorer = core.Explorer(self.local.target_host, self.local, self.remote)
+        self.manifest = core.Manifest(self.local.target_host, self.local)
+        self.code     = core.Code(self.local.target_host, self.local, self.remote)
 
     def _init_files_dirs(self):
         """Prepare files and directories for the run"""
@@ -111,16 +111,18 @@ class ConfigInstall(object):
     @classmethod
     def onehost(cls, host, args, parallel):
         """Configure or install ONE system"""
+
+        log = logging.getLogger(host)
     
         try:
-            local = cdist.local.Local(
+            local = cdist.exec.local.Local(
                 target_host=host,
                 exec_path=sys.argv[0],
                 initial_manifest=args.manifest,
-                out_base_path=args.out_base_path,
+                out_path=args.out_path,
                 add_conf_dirs=args.conf_dir)
 
-            remote = cdist.remote.Remote(
+            remote = cdist.exec.remote.Remote(
                 target_host=host,
                 remote_exec=args.remote_exec,
                 remote_copy=args.remote_copy)
@@ -129,7 +131,7 @@ class ConfigInstall(object):
             c.run()
     
         except cdist.Error as e:
-            context.log.error(e)
+            log.error(e)
             if parallel:
                 # We are running in our own process here, need to sys.exit!
                 sys.exit(1)

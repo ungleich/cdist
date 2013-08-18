@@ -60,8 +60,10 @@ class Remote(object):
         self._init_env()
 
     def _init_env(self):
-        os.environ['__remote_copy'] = self.remote_copy
-        os.environ['__remote_exec'] = self.remote_exec
+        """Setup environment for scripts - HERE????"""
+        # FIXME: better do so in exec functions that require it!
+        os.environ['__remote_copy'] = self._copy
+        os.environ['__remote_exec'] = self._exec
 
 
     def create_files_dirs(self):

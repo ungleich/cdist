@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -21,22 +21,24 @@
 #
 
 import logging
-import os
-import sys
 
-class Context(object):
+class Log(logging.Logger):
     """Hold information about current context"""
 
-    def __init__(self, target_host)
+    def __init__(self, name):
 
         # Context logging
-        self.log = logging.getLogger(self.target_host)
-        self.log.addFilter(self)
+        self.name = name
 
+        # Init real logger
+        super().__init__(name)
+
+        # Add ourselves as a filter
+        self.addFilter(self)
 
     def filter(self, record):
         """Add hostname to logs via logging Filter"""
 
-        record.msg = self.target_host + ": " + str(record.msg)
+        record.msg = self.name + ": " + str(record.msg)
 
         return True

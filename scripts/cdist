@@ -65,7 +65,7 @@ def commandline():
          dest='manifest', required=False)
     parser['configinstall'].add_argument('-n', '--dry-run',
          help='Do not execute code', action='store_true')
-    parser['configinstall'].add_argument('-o', '--output-base-path',
+    parser['configinstall'].add_argument('-o', '--out-path',
          help='Directory prefix to save cdist output in')
     parser['configinstall'].add_argument('-p', '--parallel',
          help='Operate on multiple hosts in parallel',
@@ -159,9 +159,11 @@ if __name__ == "__main__":
         import os
         import re
         import cdist
+        import cdist.log
 
-        log = logging.getLogger("cdist")
+        logging.setLoggerClass(cdist.log.Log)
         logging.basicConfig(format='%(levelname)s: %(message)s')
+        log = logging.getLogger("cdist")
 
         if re.match("__", os.path.basename(sys.argv[0])):
             emulator()

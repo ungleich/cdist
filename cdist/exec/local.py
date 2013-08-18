@@ -27,6 +27,7 @@ import re
 import subprocess
 import shutil
 import logging
+import tempfile
 
 import cdist
 from cdist import core
@@ -42,11 +43,20 @@ class Local(object):
                  target_host,
                  exec_path,
                  initial_manifest=None,
-                 out_base_path=None,
-                 add_conf_dirs=None)
+                 out_path=None,
+                 add_conf_dirs=None):
 
         self.target_host = target_host
-        self.out_base_path = out_base_path
+
+        # FIXME: stopped: create base that does not require moving later
+        if out_path:
+            self.out_path = out_path
+        else:
+            self.out_path = tempfile.mkdtemp()
+
+        # FIXME: as well
+        self._init_cache_dir(None)
+
         self.exec_path = exec_path
         self.custom_initial_manifest = initial_manifest
 
@@ -55,7 +65,6 @@ class Local(object):
         self._init_log()
         self._init_permissions()
         self._init_paths()
-        self._init_cache_dir(cache_dir)
         self._init_conf_dirs()
 
 
@@ -78,17 +87,11 @@ class Local(object):
         os.umask(0o077)
 
     def _init_paths(self):
-
-        # FIXME: inherited behaviour from old context
-        if not self.out_base_path:
-            self.out_base_path = tempfile.mkdtemp()
-
-
         # Depending on out_path
-        self.bin_path = os.path.join(self.out_base_path, "bin")
-        self.conf_path = os.path.join(self.out_base_path, "conf")
-        self.global_explorer_out_path = os.path.join(self.out_base_path, "explorer")
-        self.object_path = os.path.join(self.out_base_path, "object")
+        self.bin_path = os.path.join(self.out_path, "bin")
+        self.conf_path = os.path.join(self.out_path, "conf")
+        self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
+        self.object_path = os.path.join(self.out_path, "object")
 
         # Depending on conf_path
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
@@ -116,6 +119,11 @@ class Local(object):
         # Add command line supplied directories
         if self._add_conf_dirs:
             self.conf_dirs.extend(self._add_conf_dirs)
+
+    def _init_directories(self):
+        self.mkdir(self.conf_path)
+        self.mkdir(self.global_explorer_out_path)
+        self.mkdir(self.bin_path)
 
     def _init_cache_dir(self, cache_dir):
         if cache_dir:
@@ -170,22 +178,16 @@ class Local(object):
         return self.run(command, env, return_output)
 
     def create_files_dirs(self):
-        self._create_context_dirs()
+        self._init_directories()
         self._create_conf_path_and_link_conf_dirs()
         self._link_types_for_emulator()
 
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.target_host)
-        self.log.debug("Saving " + self.out_base_path + " to " + destination)
+        self.log.debug("Saving " + self.out_path + " to " + destination)
         if os.path.exists(destination):
             shutil.rmtree(destination)
-        shutil.move(self.out_base_path, destination)
-
-
-    def _create_context_dirs(self):
-        self.mkdir(self.conf_path)
-        self.mkdir(self.global_explorer_out_path)
-        self.mkdir(self.bin_path)
+        shutil.move(self.out_path, destination)
 
     def _create_conf_path_and_link_conf_dirs(self):
         # Link destination directories
