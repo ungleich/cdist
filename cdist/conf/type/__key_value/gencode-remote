@@ -46,7 +46,8 @@ case "$state_should" in
             ;;
             wrongvalue)
                 # change exisiting value
-                echo "sed \"s|^$key\($delimiter\+\).*|$key\1$value|\" \"$file\" > \"$file.cdist-tmp\""
+                printf 'sed "s|^%s\(%s\+\).*|%s\\1%s|" "%s" > "%s.cdist-tmp"\n' \
+                    "$key" "$delimiter" "$key" "$value" "$file" "$file"
                 echo "mv \"$file.cdist-tmp\" \"$file\""
             ;;
             *)
