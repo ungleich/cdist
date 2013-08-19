@@ -149,6 +149,6 @@ class Remote(object):
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
-            raise cdist.Error(" ".join(*args) + ": " + error.args[1])
+            raise cdist.Error(" ".join(command) + ": " + error.args[1])
         except UnicodeDecodeError:
             raise DecodeError(command)
