@@ -125,6 +125,12 @@ class Local(object):
         self.mkdir(self.global_explorer_out_path)
         self.mkdir(self.bin_path)
 
+    def create_files_dirs(self):
+        self._init_directories()
+        self._create_conf_path_and_link_conf_dirs()
+        self._link_types_for_emulator()
+
+
     def _init_cache_dir(self, cache_dir):
         if cache_dir:
             self.cache_path = cache_dir
@@ -176,11 +182,6 @@ class Local(object):
         command.append(script)
 
         return self.run(command, env, return_output)
-
-    def create_files_dirs(self):
-        self._init_directories()
-        self._create_conf_path_and_link_conf_dirs()
-        self._link_types_for_emulator()
 
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.target_host)
