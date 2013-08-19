@@ -41,11 +41,11 @@ class CodeTestCase(test.CdistTestCase):
     def setUp(self):
         self.target_host = 'localhost'
 
-        self.out_path = self.mkdtemp()
+        self.base_path = self.mkdtemp()
 
         self.local = local.Local(
             target_host=self.target_host, 
-            out_path = self.out_path,
+            base_path = self.base_path,
             exec_path = cdist.test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -63,7 +63,7 @@ class CodeTestCase(test.CdistTestCase):
         self.cdist_object.create()
 
     def tearDown(self):
-        shutil.rmtree(self.out_path)
+        shutil.rmtree(self.base_path)
         shutil.rmtree(self.remote_base_path)
 
     def test_run_gencode_local_environment(self):
@@ -75,7 +75,7 @@ class CodeTestCase(test.CdistTestCase):
                 key = junk.split(' ')[1]
                 output_dict[key] = value
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
@@ -90,7 +90,7 @@ class CodeTestCase(test.CdistTestCase):
                 key = junk.split(' ')[1]
                 output_dict[key] = value
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)

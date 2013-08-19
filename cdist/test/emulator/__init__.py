@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -33,7 +33,6 @@ from cdist.exec import local
 from cdist import emulator
 from cdist import core
 from cdist import config
-import cdist.context
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
@@ -46,11 +45,11 @@ class EmulatorTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
-        out_path = self.temp_dir
+        base_path = self.temp_dir
 
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=out_path,
+            base_path=base_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -108,11 +107,11 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        out_path = os.path.join(self.temp_dir, "out")
+        base_path = os.path.join(self.temp_dir, "out")
 
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=out_path,
+            base_path=base_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -135,13 +134,13 @@ class ArgumentsTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        out_path = self.temp_dir
+        base_path = self.temp_dir
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
 
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=out_path,
+            base_path=base_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -183,6 +182,7 @@ class ArgumentsTestCase(test.CdistTestCase):
         object_id = 'some-id'
         value = 'some value'
         argv = [type_name, object_id, '--required1', value, '--required2', value]
+        print(self.env)
         os.environ.update(self.env)
         emu = emulator.Emulator(argv)
         emu.run()
@@ -227,11 +227,11 @@ class StdinTestCase(test.CdistTestCase):
         os.environ = os.environ.copy()
 
         self.temp_dir = self.mkdtemp()
-        out_path = os.path.join(self.temp_dir, "out")
+        base_path = os.path.join(self.temp_dir, "out")
 
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=out_path,
+            base_path=base_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
 
