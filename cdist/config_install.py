@@ -117,7 +117,6 @@ class ConfigInstall(object):
         try:
             local = cdist.exec.local.Local(
                 target_host=host,
-                exec_path=sys.argv[0],
                 initial_manifest=args.manifest,
                 out_path=args.out_path,
                 add_conf_dirs=args.conf_dir)

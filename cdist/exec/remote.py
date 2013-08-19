@@ -43,11 +43,19 @@ class Remote(object):
     Directly accessing the remote side from python code is a bug.
 
     """
-    def __init__(self, target_host, remote_exec, remote_copy):
+    def __init__(self,
+                 target_host,
+                 remote_exec,
+                 remote_copy,
+                 base_path=None):
         self.target_host = target_host
-        self.base_path = os.environ.get('__cdist_remote_out_dir', "/var/lib/cdist")
         self._exec = remote_exec
         self._copy = remote_copy
+
+        if base_path:
+            self.base_path = base_path
+        else:
+            self.base_path = "/var/lib/cdist"
 
         self.conf_path = os.path.join(self.base_path, "conf")
         self.object_path = os.path.join(self.base_path, "object")
