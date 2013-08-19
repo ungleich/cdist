@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -41,7 +41,7 @@ class Local(object):
     """
     def __init__(self,
                  target_host,
-                 exec_path,
+                 exec_path=sys.argv[0],
                  initial_manifest=None,
                  out_path=None,
                  add_conf_dirs=None):
