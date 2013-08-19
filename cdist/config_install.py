@@ -231,7 +231,13 @@ class ConfigInstall(object):
         self.log.info("Running manifest and explorers for " + cdist_object.name)
         self.explorer.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
+        # object may have changed, re-read from disk
+        cdist_object.from_dir(cdist_object.absolute_path)
         cdist_object.state = core.CdistObject.STATE_PREPARED
+        self.object_sync(cdist_object)
+
+    def object_sync(self, cdist_object):
+        cdist_object.to_dir(cdist_object.absolute_path)
 
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
@@ -248,6 +254,7 @@ class ConfigInstall(object):
         cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
         if cdist_object.code_local or cdist_object.code_remote:
             cdist_object.changed = True
+            self.object_sync(cdist_object)
 
         # Execute
         if not self.dry_run:
@@ -263,3 +270,4 @@ class ConfigInstall(object):
         # Mark this object as done
         self.log.debug("Finishing run of " + cdist_object.name)
         cdist_object.state = core.CdistObject.STATE_DONE
+        self.object_sync(cdist_object)

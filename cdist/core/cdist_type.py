@@ -22,7 +22,11 @@
 
 import os
 
+import cconfig
+import cconfig.schema
+
 import cdist
+
 
 class NoSuchTypeError(cdist.Error):
     def __init__(self, type_path, type_absolute_path):
@@ -33,7 +37,7 @@ class NoSuchTypeError(cdist.Error):
         return "Type '%s' does not exist at %s" % (self.type_path, self.type_absolute_path)
 
 
-class CdistType(object):
+class CdistType(cconfig.Cconfig):
     """Represents a cdist type.
 
     All interaction with types in cdist should be done through this class.
@@ -41,6 +45,21 @@ class CdistType(object):
     a bug.
 
     """
+
+    schema_decl = (
+        # path, type, subschema
+        #('explorer', cconfig.schema.ListDirCconfigType),
+        ('explorer', 'listdir'),
+        ('install', bool),
+        ('parameter', dict, (
+            ('required', list),
+            ('required_multiple', list),
+            ('optional', list),
+            ('optional_multiple', list),
+            ('boolean', list),
+        )), 
+        ('singleton', bool),
+    )   
 
     def __init__(self, base_path, name):
         self.base_path = base_path
@@ -55,12 +74,16 @@ class CdistType(object):
         self.gencode_remote_path = os.path.join(self.name, "gencode-remote")
         self.manifest_path = os.path.join(self.name, "manifest")
 
-        self.__explorers = None
-        self.__required_parameters = None
-        self.__required_multiple_parameters = None
-        self.__optional_parameters = None
-        self.__optional_multiple_parameters = None
-        self.__boolean_parameters = None
+        super(CdistType, self).__init__(cconfig.Schema(self.schema_decl))
+        self.from_dir(self.absolute_path)
+
+    @property
+    def explorer(self):
+        return self['explorer']
+
+    @property
+    def parameter(self):
+        return self['parameter']
 
     @classmethod
     def list_types(cls, base_path):
@@ -97,100 +120,39 @@ class CdistType(object):
     @property
     def is_singleton(self):
         """Check whether a type is a singleton."""
-        return os.path.isfile(os.path.join(self.absolute_path, "singleton"))
+        return self['singleton']
 
     @property
     def is_install(self):
         """Check whether a type is used for installation (if not: for configuration)"""
-        return os.path.isfile(os.path.join(self.absolute_path, "install"))
+        return self['install']
 
     @property
     def explorers(self):
         """Return a list of available explorers"""
-        if not self.__explorers:
-            try:
-                self.__explorers = os.listdir(os.path.join(self.absolute_path, "explorer"))
-            except EnvironmentError:
-                # error ignored
-                self.__explorers = []
-        return self.__explorers
+        return self['explorer']
 
     @property
     def required_parameters(self):
         """Return a list of required parameters"""
-        if not self.__required_parameters:
-            parameters = []
-            try:
-                with open(os.path.join(self.absolute_path, "parameter", "required")) as fd:
-                    for line in fd:
-                        parameters.append(line.strip())
-            except EnvironmentError:
-                # error ignored
-                pass
-            finally:
-                self.__required_parameters = parameters
-        return self.__required_parameters
+        return self['parameter']['required']
 
     @property
     def required_multiple_parameters(self):
         """Return a list of required multiple parameters"""
-        if not self.__required_multiple_parameters:
-            parameters = []
-            try:
-                with open(os.path.join(self.absolute_path, "parameter", "required_multiple")) as fd:
-                    for line in fd:
-                        parameters.append(line.strip())
-            except EnvironmentError:
-                # error ignored
-                pass
-            finally:
-                self.__required_multiple_parameters = parameters
-        return self.__required_multiple_parameters
+        return self['parameter']['required_multiple']
 
     @property
     def optional_parameters(self):
         """Return a list of optional parameters"""
-        if not self.__optional_parameters:
-            parameters = []
-            try:
-                with open(os.path.join(self.absolute_path, "parameter", "optional")) as fd:
-                    for line in fd:
-                        parameters.append(line.strip())
-            except EnvironmentError:
-                # error ignored
-                pass
-            finally:
-                self.__optional_parameters = parameters
-        return self.__optional_parameters
+        return self['parameter']['optional']
 
     @property
     def optional_multiple_parameters(self):
         """Return a list of optional multiple parameters"""
-        if not self.__optional_multiple_parameters:
-            parameters = []
-            try:
-                with open(os.path.join(self.absolute_path, "parameter", "optional_multiple")) as fd:
-                    for line in fd:
-                        parameters.append(line.strip())
-            except EnvironmentError:
-                # error ignored
-                pass
-            finally:
-                self.__optional_multiple_parameters = parameters
-        return self.__optional_multiple_parameters
+        return self['parameter']['optional_multiple']
 
     @property
     def boolean_parameters(self):
         """Return a list of boolean parameters"""
-        if not self.__boolean_parameters:
-            parameters = []
-            try:
-                with open(os.path.join(self.absolute_path, "parameter", "boolean")) as fd:
-                    for line in fd:
-                        parameters.append(line.strip())
-            except EnvironmentError:
-                # error ignored
-                pass
-            finally:
-                self.__boolean_parameters = parameters
-        return self.__boolean_parameters
+        return self['parameter']['boolean']

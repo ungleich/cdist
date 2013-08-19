@@ -98,15 +98,18 @@ class CodeTestCase(test.CdistTestCase):
 
     def test_transfer_code_remote(self):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
+        self.cdist_object.to_dir(self.cdist_object.absolute_path)
         self.code.transfer_code_remote(self.cdist_object)
         destination = os.path.join(self.remote.object_path, self.cdist_object.code_remote_path)
         self.assertTrue(os.path.isfile(destination))
 
     def test_run_code_local(self):
         self.cdist_object.code_local = self.code.run_gencode_local(self.cdist_object)
+        self.cdist_object.to_dir(self.cdist_object.absolute_path)
         self.code.run_code_local(self.cdist_object)
 
     def test_run_code_remote_environment(self):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
+        self.cdist_object.to_dir(self.cdist_object.absolute_path)
         self.code.transfer_code_remote(self.cdist_object)
         self.code.run_code_remote(self.cdist_object)

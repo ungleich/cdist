@@ -127,6 +127,7 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         cdist_type = core.CdistType(self.local.type_path, '__saturn')
         cdist_object = core.CdistObject(cdist_type, self.local.object_path)
         self.manifest.run_type_manifest(cdist_object)
+        cdist_object.from_dir(cdist_object.absolute_path)
         expected = ['__planet/Saturn', '__moon/Prometheus']
         self.assertEqual(sorted(cdist_object.autorequire), sorted(expected))
 
@@ -172,10 +173,8 @@ class ArgumentsTestCase(test.CdistTestCase):
 
         cdist_type = core.CdistType(self.local.type_path, type_name)
         cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
-        self.assertTrue('boolean1' in cdist_object.parameters)
-        self.assertFalse('boolean2' in cdist_object.parameters)
-        # empty file -> True
-        self.assertTrue(cdist_object.parameters['boolean1'] == '')
+        self.assertTrue(cdist_object.parameters['boolean1'])
+        self.assertFalse(cdist_object.parameters['boolean2'])
 
     def test_required_arguments(self):
         """check whether assigning required parameter works"""

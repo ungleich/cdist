@@ -22,6 +22,7 @@
 
 import os
 import shutil
+import unittest
 
 from cdist import test
 from cdist import core
@@ -78,6 +79,7 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
         os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
 
+    @unittest.skip('uses code that does not exist')
     def test_dependency_resolution(self):
         first   = self.object_index['__first/man']
         second  = self.object_index['__second/on-the']
@@ -103,6 +105,7 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
             pass
         self.assertTrue(first.state == first.STATE_DONE)
 
+    @unittest.skip('uses code that does not exist')
     def test_unresolvable_requirements(self):
         """Ensure an exception is thrown for unresolvable depedencies"""
 

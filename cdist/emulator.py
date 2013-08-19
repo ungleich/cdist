@@ -75,6 +75,7 @@ class Emulator(object):
         self.save_stdin()
         self.record_requirements()
         self.record_auto_requirements()
+        self.cdist_object.to_dir(self.cdist_object.absolute_path)
         self.log.debug("Finished %s %s" % (self.cdist_object.path, self.parameters))
 
     def __init_log(self):
@@ -109,7 +110,7 @@ class Emulator(object):
             parser.add_argument(argument, dest=parameter, action='append', required=False)
         for parameter in self.cdist_type.boolean_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='store_const', const='')
+            parser.add_argument(argument, dest=parameter, action='store_true')
 
         # If not singleton support one positional parameter
         if not self.cdist_type.is_singleton:
@@ -211,3 +212,4 @@ class Emulator(object):
             # Must prevent circular dependencies.
             if not parent.name in current_object.requirements:
                 parent.autorequire.append(current_object.name)
+            parent.to_dir(parent.absolute_path)

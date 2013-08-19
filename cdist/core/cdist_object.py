@@ -25,9 +25,11 @@ import logging
 import os
 import collections
 
+import cconfig
+import cconfig.schema
+
 import cdist
 import cdist.core
-from cdist.util import fsproperty
 
 log = logging.getLogger(__name__)
 
@@ -50,7 +52,7 @@ class MissingObjectIdError(cdist.Error):
     def __str__(self):
         return '%s' % (self.message)
 
-class CdistObject(object):
+class CdistObject(cconfig.Cconfig):
     """Represents a cdist object.
 
     All interaction with objects in cdist should be done through this class.
@@ -79,6 +81,31 @@ class CdistObject(object):
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
+
+        parameters = []
+        # use proper cconfig type for each parameter
+        for parameter_type, values in self.cdist_type.parameter.items():
+            if parameter_type == 'boolean':
+                _type = bool
+            else:
+                _type = str
+            for name in values:
+                parameters.append((name, _type))
+        schema_decl = (
+            # path, type, subschema
+            ('autorequire', list),
+            ('changed', bool),
+            ('code-local', str),
+            ('code-remote', str),
+            ('explorer', dict, ((name, str) for name in self.cdist_type.explorer)),
+            ('parameter', dict, tuple(parameters)),
+            ('require', list),
+            ('source', list),
+            ('state', str),
+        )
+        super(CdistObject, self).__init__(cconfig.Schema(schema_decl))
+        # FIXME: don't do this here, do not want to depend on the object already existing on disk
+        self.from_dir(self.absolute_path)
 
     @classmethod
     def list_objects(cls, object_base_path, type_base_path):
@@ -197,15 +224,69 @@ class CdistObject(object):
         # return relative path
         return os.path.join(self.path, "explorer")
 
-    requirements = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'require'))
-    autorequire = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'autorequire'))
-    parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.parameter_path))
-    explorers = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.explorer_path))
-    changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
-    state = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "state"))
-    source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
-    code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_local_path))
-    code_remote = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_remote_path))
+    # FIXME: remove all the property getters and setters below, rewrite the code using these to directly access the cconfig objects items
+    @property
+    def requirements(self):
+        return self['require']
+    @requirements.setter
+    def requirements(self, value):
+        self['require'] = value
+
+    @property
+    def autorequire(self):
+        return self['autorequire']
+    @autorequire.setter
+    def autorequire(self, value):
+        self['autorequire'] = value
+
+    @property
+    def parameters(self):
+        return self['parameter']
+    @parameters.setter
+    def parameters(self, value):
+        self['parameter'] = value
+
+    @property
+    def explorers(self):
+        return self['explorer']
+    @explorers.setter
+    def explorers(self, value):
+        self['explorer'] = value
+
+    @property
+    def changed(self):
+        return self['changed']
+    @changed.setter
+    def changed(self, value):
+        self['changed'] = value
+
+    @property
+    def state(self):
+        return self['state']
+    @state.setter
+    def state(self, value):
+        self['state'] = value
+
+    @property
+    def source(self):
+        return self['source']
+    @source.setter
+    def source(self, value):
+        self['source'] = value
+
+    @property
+    def code_local(self):
+        return self['code-local']
+    @code_local.setter
+    def code_local(self, value):
+        self['code-local'] = value
+
+    @property
+    def code_remote(self):
+        return self['code-remote']
+    @code_remote.setter
+    def code_remote(self, value):
+        self['code-remote'] = value
 
     @property
     def exists(self):

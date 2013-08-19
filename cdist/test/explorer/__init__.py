@@ -145,4 +145,4 @@ class ExplorerClassTestCase(test.CdistTestCase):
         cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'whatever')
         cdist_object.create()
         self.explorer.run_type_explorers(cdist_object)
-        self.assertEqual(cdist_object.explorers, {'world': 'hello'})
+        self.assertEqual(cdist_object.explorers, {'world': 'hello\n'})
