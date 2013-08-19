@@ -6,6 +6,7 @@ Changelog
 
 2.3.1:
 	* Core: Support relative paths for configuration directories
+	* Core: Code cleanup (removed context class, added log class)
 
 2.3.0: 2013-08-12
 	* Core: Added support for cdist shell
