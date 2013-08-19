@@ -39,21 +39,22 @@ conf_dir = op.join(fixtures, 'conf')
 class CodeTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.target_host = 'localhost'
-
-        self.base_path = self.mkdtemp()
+        self.local_dir = self.mkdtemp()
 
         self.local = local.Local(
             target_host=self.target_host, 
-            base_path = self.base_path,
+            base_path = self.local_dir,
             exec_path = cdist.test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
 
-        self.remote_base_path = self.mkdtemp()
+        self.remote_dir = self.mkdtemp()
         remote_exec = self.remote_exec
         remote_copy = self.remote_copy
-        self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
+        self.remote = remote.Remote(target_host=self.target_host, 
+            base_path=self.remote_dir, 
+            remote_exec=remote_exec, 
+            remote_copy=remote_copy)
         self.remote.create_files_dirs()
 
         self.code = code.Code(self.target_host, self.local, self.remote)
@@ -63,8 +64,8 @@ class CodeTestCase(test.CdistTestCase):
         self.cdist_object.create()
 
     def tearDown(self):
-        shutil.rmtree(self.base_path)
-        shutil.rmtree(self.remote_base_path)
+        shutil.rmtree(self.local_dir)
+        shutil.rmtree(self.remote_dir)
 
     def test_run_gencode_local_environment(self):
         output_string = self.code.run_gencode_local(self.cdist_object)
