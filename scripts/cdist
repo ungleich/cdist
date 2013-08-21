@@ -114,6 +114,7 @@ def commandline():
         logging.root.setLevel(logging.DEBUG)
 
     log.debug(args)
+    log.info("version %s" % cdist.VERSION)
 
     # Work around python 3.3 bug:
     # http://bugs.python.org/issue16308
@@ -171,16 +172,11 @@ if __name__ == "__main__":
             commandline()
 
     except KeyboardInterrupt:
-        pass
-
-        # FIXME: We always get exit code = 130
-        # exit_code = 2
-        # does not make a difference
+        exit_code = 2
 
     except cdist.Error as e:
         log.error(e)
         exit_code = 1
 
-    #sys.exit(20)
-    #print("ok2 %s" % exit_code)
+    # print("ok2 %s" % exit_code)
     sys.exit(exit_code)

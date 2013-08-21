@@ -23,21 +23,15 @@
 import logging
 
 class Log(logging.Logger):
-    """Hold information about current context"""
 
     def __init__(self, name):
 
-        # Context logging
         self.name = name
-
-        # Init real logger
         super().__init__(name)
-
-        # Add ourselves as a filter
         self.addFilter(self)
 
     def filter(self, record):
-        """Add hostname to logs via logging Filter"""
+        """Prefix messages with logger name"""
 
         record.msg = self.name + ": " + str(record.msg)
 
