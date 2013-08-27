@@ -219,6 +219,22 @@ echo __file /tmp/stdintest --mode 0644 | \
     cdist --initial-manifest - cdist-dev-01.ungleich.ch
 --------------------------------------------------------------------------------
 
+
+OTHER CONTENT IN CDIST REPOSITORY
+---------------------------------
+Usually the cdist repository contains all configuration
+items. Sometimes you may have additional resources that
+you would like to store in your central configuration
+repositiory (like password files from KeepassX,
+Libreoffice diagrams, etc.).
+
+It is recommended to use a subfolder named "non-cdist"
+in the repository for such content: It allows you to
+easily distinguish what is used by cdist and what not
+and also to store all important files in one
+repository.
+
+
 SEE ALSO
 --------
 - cdist(1)
