@@ -47,19 +47,19 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
         os.environ = os.environ.copy()
         self.temp_dir = self.mkdtemp()
 
-        self.out_dir = os.path.join(self.temp_dir, "out")
-        self.remote_out_dir = os.path.join(self.temp_dir, "remote")
-
-        os.environ['__cdist_out_dir'] = self.out_dir
-        os.environ['__cdist_remote_out_dir'] = self.remote_out_dir
-
-        self.local = cdist.exec.local(
+        self.local_dir = os.path.join(self.temp_dir, "local")
+        os.mkdir(self.local_dir)
+        self.local = cdist.exec.local.Local(
             target_host=self.target_host,
-            exec_path=test.cdist_exec_path)
-        self.remote = cdist.exec.remote(
+            base_path=self.local_dir)
+
+        self.remote_dir = os.path.join(self.temp_dir, "remote")
+        os.mkdir(self.remote_dir)
+        self.remote = cdist.exec.remote.Remote(
             target_host=self.target_host,
             remote_copy=self.remote_copy,
-            remote_exec=self.remote_exec)
+            remote_exec=self.remote_exec,
+            base_path=self.remote_dir)
 
         self.local.object_path  = object_base_path
         self.local.type_path    = type_base_path

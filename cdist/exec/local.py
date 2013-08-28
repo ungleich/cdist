@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -41,18 +41,18 @@ class Local(object):
     """
     def __init__(self,
                  target_host,
-                 exec_path,
+                 exec_path=sys.argv[0],
                  initial_manifest=None,
-                 out_path=None,
+                 base_path=None,
                  add_conf_dirs=None):
 
         self.target_host = target_host
 
         # FIXME: stopped: create base that does not require moving later
-        if out_path:
-            self.out_path = out_path
+        if base_path:
+            self.base_path = base_path
         else:
-            self.out_path = tempfile.mkdtemp()
+            self.base_path = tempfile.mkdtemp()
 
         # FIXME: as well
         self._init_cache_dir(None)
@@ -88,10 +88,10 @@ class Local(object):
 
     def _init_paths(self):
         # Depending on out_path
-        self.bin_path = os.path.join(self.out_path, "bin")
-        self.conf_path = os.path.join(self.out_path, "conf")
-        self.global_explorer_out_path = os.path.join(self.out_path, "explorer")
-        self.object_path = os.path.join(self.out_path, "object")
+        self.bin_path = os.path.join(self.base_path, "bin")
+        self.conf_path = os.path.join(self.base_path, "conf")
+        self.global_explorer_out_path = os.path.join(self.base_path, "explorer")
+        self.object_path = os.path.join(self.base_path, "object")
 
         # Depending on conf_path
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
@@ -185,10 +185,10 @@ class Local(object):
 
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.target_host)
-        self.log.debug("Saving " + self.out_path + " to " + destination)
+        self.log.debug("Saving " + self.base_path + " to " + destination)
         if os.path.exists(destination):
             shutil.rmtree(destination)
-        shutil.move(self.out_path, destination)
+        shutil.move(self.base_path, destination)
 
     def _create_conf_path_and_link_conf_dirs(self):
         # Link destination directories

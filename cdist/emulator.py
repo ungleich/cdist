@@ -28,6 +28,15 @@ import sys
 import cdist
 from cdist import core
 
+class MissingRequiredEnvironmentVariableError(cdist.Error):
+    def __init__(self, name):
+        self.name = name
+        self.message = "Emulator requires the environment variable %s to be setup" % self.name
+
+    def __str__(self):
+        return self.message
+
+
 class Emulator(object):
     def __init__(self, argv, stdin=sys.stdin.buffer, env=os.environ):
         self.argv           = argv
@@ -36,12 +45,16 @@ class Emulator(object):
 
         self.object_id      = ''
 
-        self.global_path    = self.env['__global']
-        self.target_host    = self.env['__target_host']
+        try:
+            self.global_path    = self.env['__global']
+            self.target_host    = self.env['__target_host']
 
-        # Internally only
-        self.object_source  = self.env['__cdist_manifest']
-        self.type_base_path = self.env['__cdist_type_base_path']
+            # Internally only
+            self.object_source  = self.env['__cdist_manifest']
+            self.type_base_path = self.env['__cdist_type_base_path']
+
+        except KeyError as e:
+            raise MissingRequiredEnvironmentVariableError(e.args[0])
 
         self.object_base_path = os.path.join(self.global_path, "object")
 

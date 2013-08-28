@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -39,25 +39,25 @@ conf_dir = op.join(fixtures, "conf")
 class ExplorerClassTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.target_host = 'localhost'
-
         self.temp_dir = self.mkdtemp()
-        self.out_path = os.path.join(self.temp_dir, "out")
+        self.local_path = os.path.join(self.temp_dir, "local")
         self.remote_base_path = os.path.join(self.temp_dir, "remote")
         os.makedirs(self.remote_base_path)
 
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=self.out_path,
+            base_path=self.local_path,
             exec_path=test.cdist_exec_path,
-            add_conf_dirs=[conf_dir])
+            add_conf_dirs=[conf_dir],
+            )
 
         self.local.create_files_dirs()
 
         self.remote = remote.Remote(
-            self.target_host, 
-            self.remote_exec,
-            self.remote_copy)
+            target_host=self.target_host, 
+            remote_exec=self.remote_exec,
+            remote_copy=self.remote_copy,
+            base_path=self.remote_base_path)
         self.remote.create_files_dirs()
 
         self.explorer = explorer.Explorer(

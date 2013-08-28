@@ -65,8 +65,9 @@ def commandline():
          dest='manifest', required=False)
     parser['configinstall'].add_argument('-n', '--dry-run',
          help='Do not execute code', action='store_true')
-    parser['configinstall'].add_argument('-o', '--out-path',
-         help='Directory prefix to save cdist output in')
+    parser['configinstall'].add_argument('-o', '--out-dir',
+         help='Directory to save cdist output in',
+         destination="out_path")
     parser['configinstall'].add_argument('-p', '--parallel',
          help='Operate on multiple hosts in parallel',
          action='store_true', dest='parallel')

@@ -94,7 +94,7 @@ class Manifest(object):
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             '__cdist_type_base_path': self.local.type_path, # for use in type emulator
-            '__global': self.local.out_path,
+            '__global': self.local.base_path,
             '__target_host': self.target_host,
         }
         if self.log.getEffectiveLevel() == logging.DEBUG:
