@@ -4,10 +4,11 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.3.1:
+2.3.1: 2013-08-28
 	* Core: Support relative paths for configuration directories
 	* Core: Code cleanup (removed context class, added log class)
 	* Documentation: Add more best practises
+	* Documentation: Add troubleshooting chapter
 	* Type __key_value:Fix quoting problem (Steven Armstrong)
 
 2.3.0: 2013-08-12
