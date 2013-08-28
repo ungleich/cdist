@@ -27,7 +27,6 @@ from cdist import test
 from cdist import core
 
 import cdist
-import cdist.context
 import cdist.config
 import cdist.core.cdist_type
 import cdist.core.cdist_object
@@ -54,17 +53,18 @@ class ConfigInstallRunTestCase(test.CdistTestCase):
         os.environ['__cdist_out_dir'] = self.out_dir
         os.environ['__cdist_remote_out_dir'] = self.remote_out_dir
 
-        self.context = cdist.context.Context(
+        self.local = cdist.exec.local(
+            target_host=self.target_host,
+            exec_path=test.cdist_exec_path)
+        self.remote = cdist.exec.remote(
             target_host=self.target_host,
             remote_copy=self.remote_copy,
-            remote_exec=self.remote_exec,
-            exec_path=test.cdist_exec_path,
-            debug=True)
+            remote_exec=self.remote_exec)
 
-        self.context.local.object_path  = object_base_path
-        self.context.local.type_path    = type_base_path
+        self.local.object_path  = object_base_path
+        self.local.type_path    = type_base_path
 
-        self.config = cdist.config.Config(self.context)
+        self.config = cdist.config.Config(self.local, self.remote)
 
         self.objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
         self.object_index = dict((o.name, o) for o in self.objects)
