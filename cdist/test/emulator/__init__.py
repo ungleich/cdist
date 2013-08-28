@@ -33,7 +33,6 @@ from cdist.exec import local
 from cdist import emulator
 from cdist import core
 from cdist import config
-import cdist.context
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))

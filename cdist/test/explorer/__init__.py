@@ -56,7 +56,6 @@ class ExplorerClassTestCase(test.CdistTestCase):
 
         self.remote = remote.Remote(
             self.target_host, 
-            self.remote_base_path,
             self.remote_exec,
             self.remote_copy)
         self.remote.create_files_dirs()

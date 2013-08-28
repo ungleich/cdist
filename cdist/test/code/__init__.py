@@ -53,7 +53,11 @@ class CodeTestCase(test.CdistTestCase):
         self.remote_base_path = self.mkdtemp()
         remote_exec = self.remote_exec
         remote_copy = self.remote_copy
-        self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
+        self.remote = remote.Remote(
+            target_host=self.target_host, 
+            remote_exec=remote_exec, 
+            remote_copy=remote_copy)
+        self.remote.base_path = self.remote_base_path
         self.remote.create_files_dirs()
 
         self.code = code.Code(self.target_host, self.local, self.remote)
