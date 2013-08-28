@@ -9,7 +9,7 @@ Changelog
 	* Core: Code cleanup (removed context class, added log class)
 	* Documentation: Add more best practises
 	* Documentation: Add troubleshooting chapter
-	* Type __key_value:Fix quoting problem (Steven Armstrong)
+	* Type __key_value: Fix quoting problem (Steven Armstrong)
 
 2.3.0: 2013-08-12
 	* Core: Added support for cdist shell
