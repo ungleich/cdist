@@ -211,7 +211,7 @@ git-release: git-tag
 #
 PYPI_FILE=.lock-pypi
 
-pypi-release: $(PYPI_FILE)
+pypi-release: $(PYPI_FILE) git-branch-merge
 
 $(PYPI_FILE): man $(VERSION_FILE)
 	python3 setup.py sdist upload
