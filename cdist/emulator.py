@@ -78,11 +78,6 @@ class Emulator(object):
     def run(self):
         """Emulate type commands (i.e. __file and co)"""
 
-        if '__install' in self.env:
-            if not self.cdist_type.is_install:
-                self.log.debug("Running in install mode, ignoring non install type")
-                return True
-
         self.commandline()
         self.setup_object()
         self.save_stdin()

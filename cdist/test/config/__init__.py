@@ -38,7 +38,7 @@ object_base_path = op.join(fixtures, 'object')
 type_base_path = op.join(fixtures, 'type')
 add_conf_dir = op.join(fixtures, 'conf')
 
-class ConfigInstallRunTestCase(test.CdistTestCase):
+class ConfigRunTestCase(test.CdistTestCase):
 
     def setUp(self):
 

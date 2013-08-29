@@ -27,9 +27,6 @@ import subprocess
 import cdist.exec.local
 
 
-# FIXME: only considering config here - enable
-# command line switch for using install object
-# when it is available
 import cdist.config
 
 log = logging.getLogger(__name__)
