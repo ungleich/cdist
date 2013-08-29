@@ -1,0 +1,61 @@
+cdist-type__install_mount(7)
+============================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__install_mount - mount filesystems in the installer
+
+
+DESCRIPTION
+-----------
+Mounts filesystems in the installer. Collects data to generate /etc/fstab.
+
+
+REQUIRED PARAMETERS
+-------------------
+device::
+   the device to mount
+
+
+OPTIONAL PARAMETERS
+-------------------
+dir::
+   where to mount device. Defaults to object_id.
+
+options::
+   mount options passed to mount(8) and used in /etc/fstab
+
+type::
+   filesystem type passed to mount(8) and used in /etc/fstab.
+   If type is swap, 'dir' is ignored.
+   Defaults to the filesystem used in __install_mkfs for the same 'device'.
+
+prefix::
+   the prefix to prepend to 'dir' when mounting in the installer.
+   Defaults to /target.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__install_mount slash --dir / --device /dev/sda5 --options noatime
+require="__install_mount/slash" __install_mount /boot --device /dev/sda1
+__install_mount swap --device /dev/sda2 --type swap
+require="__install_mount/slash" __install_mount /tmp --device tmpfs --type tmpfs
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__install_mount_apply(7)
+- cdist-type__install_mkfs(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

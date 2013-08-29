@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+device="$(cat "$__object/parameter/device")"
+chroot="$(cat "$__object/parameter/chroot")"
+
+
+cat << DONE
+os=\$(
+if grep -q ^DISTRIB_ID=Ubuntu ${chroot}/etc/lsb-release 2>/dev/null; then
+   echo ubuntu
+   exit 0
+fi
+
+if [ -f ${chroot}/etc/arch-release ]; then
+   echo archlinux
+   exit 0
+fi
+
+if [ -f ${chroot}/etc/debian_version ]; then
+   echo debian
+   exit 0
+fi
+)
+
+# Ensure /tmp exists
+[ -d "${chroot}/tmp" ] || mkdir -m 1777 "${chroot}/tmp"
+# Generate script to run in chroot
+script=\$(mktemp "${chroot}/tmp/__install_bootloader_grub.XXXXXXXXXX")
+# Link file descriptor #6 with stdout
+exec 6>&1
+# Link stdout with \$script
+exec > \$script
+
+echo "#!/bin/sh -l"
+echo "grub-install $device"
+case \$os in
+   archlinux)
+      # bugfix/workarround: rebuild initramfs
+      # FIXME: doesn't belong here
+      echo "mkinitcpio -p linux"
+      echo "grub-mkconfig -o /boot/grub/grub.cfg"
+   ;;
+   ubuntu|debian) echo "update-grub" ;;
+esac
+
+# Restore stdout and close file descriptor #6.
+exec 1>&6 6>&-
+
+# Make script executable
+chmod +x "\$script"
+
+# Run script in chroot
+relative_script="\${script#$chroot}"
+chroot "$chroot" "\$relative_script"
+DONE
