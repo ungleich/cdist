@@ -1,0 +1,43 @@
+cdist-type__install_umount(7)
+=============================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__install_umount - umount target directory
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to recursively umount the given target directory.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+target::
+   the mount point to umount. Defaults to object_id
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__install_umount /target
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
