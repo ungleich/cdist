@@ -1,0 +1,48 @@
+cdist-type__install_fstab(7)
+============================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__install_fstab - generate /etc/fstab during installation
+
+
+DESCRIPTION
+-----------
+Uses __install_generate_fstab to generate a /etc/fstab file and uploads it
+to the target machine at ${prefix}/etc/fstab.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+prefix::
+   The prefix under which to generate the /etc/fstab file.
+   Defaults to /target.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__install_fstab
+__install_fstab --prefix /mnt/target
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__install_mount(7)
+- cdist-type__install_generate_fstab(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
