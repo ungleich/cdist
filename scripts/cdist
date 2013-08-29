@@ -92,7 +92,7 @@ def commandline():
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
 
     # Install
-    parser['install'] = parser['sub'].add_parser('install',
+    parser['install'] = parser['sub'].add_parser('install', add_help=False,
         parents=[parser['loglevel'], parser['config']])
     parser['install'].set_defaults(func=cdist.install.Install.commandline)
 
