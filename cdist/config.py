@@ -158,7 +158,6 @@ class Config(object):
         self.local.save_cache()
         self.log.info("Finished successful run in %s seconds", time.time() - start_time)
 
-
     def object_list(self):
         """Short name for object list retrieval"""
         for cdist_object in core.CdistObject.list_objects(self.local.object_path,
