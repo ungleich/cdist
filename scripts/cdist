@@ -26,6 +26,7 @@ def commandline():
 
     import cdist.banner
     import cdist.config
+    import cdist.install
     import cdist.shell
 
     # Construct parser others can reuse
@@ -90,6 +91,10 @@ def commandline():
          help='Select shell to use, defaults to current shell')
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
 
+    # Install
+    parser['install'] = parser['sub'].add_parser('install',
+        parents=[parser['loglevel'], parser['config']])
+    parser['install'].set_defaults(func=cdist.install.Install.commandline)
 
     for p in parser:
         parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
