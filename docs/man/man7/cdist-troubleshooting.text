@@ -31,7 +31,8 @@ it does not lead to an error. And thus cdist sees the exit 0
 code of the last echo line instead of the failing command.
 
 All scripts executed by cdist carry the -e flag. 
-To prevent the above from happening, there are two solutions available:
+To prevent the above from happening, there are three solutions available,
+two of which can be used in the calling script:
 --------------------------------------------------------------------------------
 # Execute as before, but abort on failure
 sh -e "$__manifest/special"
@@ -39,6 +40,16 @@ sh -e "$__manifest/special"
 # Source the script in our namespace, runs in a set -e environment:
 . "$__manifest/special"
 --------------------------------------------------------------------------------
+
+The third solution is to include a shebang header in every script
+you write to use the -e flag:
+
+--------------------------------------------------------------------------------
+% cat ~/.cdist/manifest/special
+#!/bin/sh -e
+...
+--------------------------------------------------------------------------------
+
 
 SEE ALSO
 --------
