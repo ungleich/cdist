@@ -167,7 +167,6 @@ class Config(object):
             else:
                 yield cdist_object
 
-
     def iterate_once(self):
         """
             Iterate over the objects once - helper method for 
