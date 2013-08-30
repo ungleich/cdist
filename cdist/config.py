@@ -32,6 +32,8 @@ import cdist.exec.local
 import cdist.exec.remote
 
 from cdist import core
+from cdist import dependency
+
 
 class Config(object):
     """Cdist main class to hold arbitrary data"""
