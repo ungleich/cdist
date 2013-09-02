@@ -7,6 +7,7 @@ Changelog
 2.3.2:
 	* Core: Fix typo in argument parser
 	* Core: Code cleanup: Remove old install code (Steven Armstrong)
+	* Type __cdist: Also create home directory
 
 2.3.1: 2013-08-28
 	* Core: Support relative paths for configuration directories
