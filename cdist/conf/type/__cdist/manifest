@@ -39,8 +39,15 @@ else
    source="git://github.com/telmich/cdist.git"
 fi
 
-__user "$username"
+# Currently hardcoded - if anyone cares, make a parameter
+# out of it
+home=/home/$username
 
-require="__user/$username" __git "$directory" \
+__user "$username" --home "$home"
+
+require="__username/$user" __directory "$home" 
+    --owner "$username"
+
+require="__user/$username __directory/$home" __git "$directory" \
     --source "$source" \
     --owner "$username" --branch "$branch"
