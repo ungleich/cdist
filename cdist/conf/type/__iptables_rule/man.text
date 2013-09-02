@@ -54,6 +54,7 @@ __iptables_rule munin --rule "-A INPUT -p tcp --dport 4949 -j ACCEPT" \
 SEE ALSO
 --------
 - cdist-type(7)
+- cdist-type__iptables_apply(7)
 - iptables(8)
 
 

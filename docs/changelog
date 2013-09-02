@@ -9,6 +9,7 @@ Changelog
 	* Core: Code cleanup: Remove old install code (Steven Armstrong)
 	* Core: Improve error message when using non-existing type in requirement
 	* New Type: __iptables_rule
+	* New Type: __iptables_apply
 	* Type __cdist: Also create home directory
 	* Type __cdist: Add support for --shell parameter
 	* Type __motd: Regenerate motd on Debian and Ubuntu
