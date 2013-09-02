@@ -7,7 +7,10 @@ Changelog
 2.3.2:
 	* Core: Fix typo in argument parser
 	* Core: Code cleanup: Remove old install code (Steven Armstrong)
+	* Core: Improve error message when using non-existing type in requirement
 	* Type __cdist: Also create home directory
+	* Type __cdist: Add support for --shell parameter
+	* Type __motd: Regenerate motd on Debian and Ubuntu
 
 2.3.1: 2013-08-28
 	* Core: Support relative paths for configuration directories
