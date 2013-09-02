@@ -63,18 +63,6 @@ class Emulator(object):
 
         self.__init_log()
 
-    def filter(self, record):
-        """Add hostname and object to logs via logging Filter"""
-
-        prefix = self.target_host + ": (emulator)"
-        prefix = '{0}: emulator {1}'.format(
-            self.target_host,
-            core.CdistObject.join_name(self.type_name, self.object_id)
-        )
-        record.msg = prefix + ": " + record.msg
-
-        return True
-
     def run(self):
         """Emulate type commands (i.e. __file and co)"""
 
@@ -87,16 +75,13 @@ class Emulator(object):
 
     def __init_log(self):
         """Setup logging facility"""
-        logformat = '%(levelname)s: %(message)s'
-        logging.basicConfig(format=logformat)
 
         if '__cdist_debug' in self.env:
             logging.root.setLevel(logging.DEBUG)
         else:
             logging.root.setLevel(logging.INFO)
 
-        self.log            = logging.getLogger(__name__)
-        self.log.addFilter(self)
+        self.log  = logging.getLogger(self.target_host)
 
     def commandline(self):
         """Parse command line"""

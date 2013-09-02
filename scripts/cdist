@@ -122,12 +122,6 @@ def commandline():
 
     args.func(args)
 
-def emulator():
-    """Prepare and run emulator"""
-    import cdist.emulator
-    emulator = cdist.emulator.Emulator(sys.argv)
-    return emulator.run()
-
 if __name__ == "__main__":
     # Sys is needed for sys.exit()
     import sys
@@ -153,7 +147,9 @@ if __name__ == "__main__":
         log = logging.getLogger("cdist")
 
         if re.match("__", os.path.basename(sys.argv[0])):
-            emulator()
+            import cdist.emulator
+            emulator = cdist.emulator.Emulator(sys.argv)
+            emulator.run()
         else:
             commandline()
 
