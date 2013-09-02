@@ -21,6 +21,12 @@
 
 directory="$__object_id"
 
+if [ -f "$__object/parameter/shell" ]; then
+   shell="--shell $(cat "$__object/parameter/shell")"
+else
+   shell=""
+fi
+
 if [ -f "$__object/parameter/username" ]; then
    username="$(cat "$__object/parameter/username")"
 else
@@ -43,9 +49,9 @@ fi
 # out of it
 home=/home/$username
 
-__user "$username" --home "$home"
+__user "$username" --home "$home" $shell
 
-require="__username/$user" __directory "$home" 
+require="__user/$username" __directory "$home" \
     --owner "$username"
 
 require="__user/$username __directory/$home" __git "$directory" \
