@@ -25,7 +25,8 @@ import os
 import cdist
 
 class NoSuchTypeError(cdist.Error):
-    def __init__(self, type_path, type_absolute_path):
+    def __init__(self, name, type_path, type_absolute_path):
+        self.name = name
         self.type_path = type_path
         self.type_absolute_path = type_absolute_path
 
@@ -48,7 +49,7 @@ class CdistType(object):
         self.path = self.name
         self.absolute_path = os.path.join(self.base_path, self.path)
         if not os.path.isdir(self.absolute_path):
-            raise NoSuchTypeError(self.path, self.absolute_path)
+            raise NoSuchTypeError(self.name, self.path, self.absolute_path)
         self.manifest_path = os.path.join(self.name, "manifest")
         self.explorer_path = os.path.join(self.name, "explorer")
         self.gencode_local_path = os.path.join(self.name, "gencode-local")
