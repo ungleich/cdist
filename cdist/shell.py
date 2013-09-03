@@ -38,11 +38,8 @@ class Shell(object):
         self.shell = shell
 
         self.target_host = "cdist-shell-no-target-host"
-        self.local = cdist.local.Local(
-            target_host=self.target_host,
-            remote_copy=cdist.REMOTE_COPY,
-            remote_exec=cdist.REMOTE_EXEC)
-
+        self.local = cdist.exec.local.Local(
+            target_host=self.target_host)
 
     def _init_shell(self):
         """Select shell to execute, if not specified by user"""
@@ -62,7 +59,7 @@ class Shell(object):
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             '__cdist_type_base_path': self.local.type_path, # for use in type emulator
             '__cdist_manifest': "cdist shell",
-            '__global': self.local.out_path,
+            '__global': self.local.base_path,
             '__target_host': self.target_host,
             '__manifest': self.local.manifest_path,
             '__explorer': self.local.global_explorer_path,
