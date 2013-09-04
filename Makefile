@@ -171,39 +171,6 @@ $(FREECODE_FILE): $(CHANGELOG_FILE)
 freecode-release: $(FREECODE_FILE)
 
 ################################################################################
-# git and git dependent stuff
-#
-
-GIT_TAG_FILE=.git/refs/tags/$(CHANGELOG_VERSION)
-GIT_SRC_BRANCH=master
-GIT_DST_BRANCH=$(shell echo $(CHANGELOG_VERSION) | cut -d. -f '1,2')
-GIT_CURRENT=.git-current-branch
-
-git-tag: $(GIT_TAG_FILE)
-
-$(GIT_TAG_FILE):
-	@printf "Enter tag description for $(CHANGELOG_VERSION)> "
-	@read tagmessage; git tag "$(CHANGELOG_VERSION)" -m "$$tagmessage"
-
-git-branch-merge: git-checkout-stable
-	git merge "$(CHANGELOG_VERSION)"
-
-git-checkout-stable: git-tag
-	@git rev-parse --abbrev-ref HEAD > $(GIT_CURRENT)
-	@git checkout "$(GIT_DST_BRANCH)"
-
-git-checkout-current:
-	git checkout "$$(cat $(GIT_CURRENT))"
-
-$(VERSION_FILE): .git/refs/heads/* .git/refs/tags/* .git/HEAD
-	echo "VERSION = \"$$(git describe)\"" > $@
-
-git-release: git-tag
-	make git-branch-merge
-	make git-checkout-current
-	make pub
-
-################################################################################
 # pypi
 #
 PYPI_FILE=.lock-pypi
@@ -236,20 +203,8 @@ archlinux-release: $(ARCHLINUX_FILE)
 # Release
 #
 
-CHECKS=check-date check-unittest
-
-check-unittest: $(VERSION_FILE)
-
-RELEASE=speeches-dist web-release
-RELEASE+=ml-release freecode-release
-RELEASE+=man-dist pypi-release git-release
-RELEASE+=archlinux-release
-
-release: $(CHECKS) $(RELEASE)
-	echo "Manual steps: linkedin, twitter"
-
 # Code that is better handled in a shell script
-check-%:
+check-% release:
 	$(helper) $@
 
 ################################################################################

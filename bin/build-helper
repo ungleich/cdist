@@ -173,11 +173,82 @@ eof
 
     ;;
 
+    release-git-tag)
+        target_version=$($0 changelog-version)
+        if git rev-parse --verify refs/tags/$target_version; then
+            echo "Tag for $target_version exists, aborting"
+            exit 1
+        fi
+        printf "Enter tag description for ${target_version}: "
+        read tagmessage
+        git tag "$target_version" -m "$$tagmessage"
+    ;;
+
     release)
         set -e
+        target_version=$($0 changelog-version)
+        target_branch=$($0 version-branch)
+
+        echo "Beginning release process for $target_version"
+
         # First check everything is sane
         "$0" check-date
         "$0" check-unittest
+
+        # Generate version file to be included in packaging
+        "$0" version
+
+        # Ensure the git status is clean, else abort
+        if ! git diff-index --exit-code --quiet HEAD; then
+            echo "Unclean tree, aborting"
+            exit 1
+        fi
+
+        # Ensure we are on the master branch
+        if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
+            echo "Releases are happening from the master branch, aborting"
+            exit 1
+        fi
+
+        # Ensure version branch exists
+        if ! git rev-parse --verify refs/heads/$target_branch 2>/dev/null; then
+            git branch "$target_branch"
+        fi
+
+        # Merge master branch into version branch
+        git checkout "$target_branch"
+        git merge master
+
+        # Verify that after the merge everything works
+        "$0" check-date
+        "$0" check-unittest
+
+        # Generate man pages (indirect check if they build)
+        make man
+
+        # Generate speeches (indirect check if they build)
+        make speeches
+
+        ############################################################# 
+        # Everything green, let's do the release
+
+        # Tag the current commit
+        "$0" release-git-tag
+
+        # Also merge back the version branch
+        git checkout master
+        git merge "$target_branch"
+
+
+        exit 0
+
+        make speeches-dist
+
+    RELEASE=speeches-dist web-release
+    RELEASE+=ml-release freecode-release
+    RELEASE+=man-dist pypi-release git-release
+    RELEASE+=archlinux-release
+
     ;;
 
     test)
@@ -188,6 +259,10 @@ eof
         else
             python3 -m unittest "$@"
         fi
+    ;;
+
+    version-branch)
+        "$0" changelog-version | cut -d. -f '1,2'
     ;;
 
     version)
