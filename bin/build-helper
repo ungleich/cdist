@@ -173,6 +173,13 @@ eof
 
     ;;
 
+    release)
+        set -e
+        # First check everything is sane
+        "$0" check-date
+        "$0" check-unittest
+    ;;
+
     test)
         export PYTHONPATH="$(pwd -P)"
 

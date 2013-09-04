@@ -18,9 +18,6 @@
 #
 #
 
-# dist = local
-# release = remote
-
 A2XM=a2x -f manpage --no-xmllint -a encoding=UTF-8
 A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
 helper=./bin/build-helper
@@ -249,7 +246,6 @@ RELEASE+=man-dist pypi-release git-release
 RELEASE+=archlinux-release
 
 release: $(CHECKS) $(RELEASE)
-#release: | $(CHECKS) man speeches
 	echo "Manual steps: linkedin, twitter"
 
 # Code that is better handled in a shell script

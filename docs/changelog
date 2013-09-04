@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.3.2:
+2.3.2: 2013-09-04
 	* Core: Fix typo in argument parser
 	* Core: Code cleanup: Remove old install code (Steven Armstrong)
 	* Core: Improve error message when using non-existing type in requirement
