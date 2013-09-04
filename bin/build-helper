@@ -199,7 +199,7 @@ eof
         "$0" version
 
         # Ensure the git status is clean, else abort
-        if ! git diff-index --name-only --quiet HEAD >/dev/null; then
+        if ! git diff-index --name-only --exit-code HEAD ; then
             echo "Unclean tree, aborting"
             exit 1
         fi
