@@ -198,12 +198,8 @@ eof
         # Generate version file to be included in packaging
         "$0" version
 
-        set -x
-        pwd
-        git diff-index --exit-code --quiet HEAD
-        ret=$?
         # Ensure the git status is clean, else abort
-        if [ "$ret" -ne 0 ]; then
+        if ! git diff-index --name-only --quiet HEAD >/dev/null; then
             echo "Unclean tree, aborting"
             exit 1
         fi
