@@ -206,7 +206,10 @@ archlinux-release: $(ARCHLINUX_FILE)
 #
 
 # Code that is better handled in a shell script
-check-% release:
+check-%:
+	$(helper) $@
+
+release:
 	$(helper) $@
 
 ################################################################################
