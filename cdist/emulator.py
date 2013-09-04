@@ -96,10 +96,12 @@ class Emulator(object):
             parser.add_argument(argument, dest=parameter, action='append', required=True)
         for parameter in self.cdist_type.optional_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='store', required=False)
+            parser.add_argument(argument, dest=parameter, action='store', required=False,
+                default=self.cdist_type.parameter_defaults.get(parameter, None))
         for parameter in self.cdist_type.optional_multiple_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='append', required=False)
+            parser.add_argument(argument, dest=parameter, action='append', required=False,
+                default=self.cdist_type.parameter_defaults.get(parameter, None))
         for parameter in self.cdist_type.boolean_parameters:
             argument = "--" + parameter
             parser.add_argument(argument, dest=parameter, action='store_const', const='')
