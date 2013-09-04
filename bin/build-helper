@@ -200,7 +200,7 @@ eof
 
         # Ensure the git status is clean, else abort
         if ! git diff-index --name-only --exit-code HEAD ; then
-            echo "Unclean tree, aborting"
+            echo "Unclean tree, see files above, aborting"
             exit 1
         fi
 
