@@ -69,11 +69,13 @@ class ExplorerClassTestCase(test.CdistTestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_list_global_explorer_names(self):
+        """Ensure that all explorers are listed"""
         names = self.explorer.list_global_explorer_names()
         self.assertIn("foobar", names)
         self.assertIn("global", names)
 
     def test_transfer_global_explorers(self):
+        """Ensure transferring explorers to remote works"""
         self.explorer.transfer_global_explorers()
         source = self.local.global_explorer_path
         destination = self.remote.global_explorer_path
@@ -85,7 +87,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
         output = self.explorer.run_global_explorer('global')
         self.assertEqual(output, 'global\n')
 
-    def test_run_global_explorers(self):
+    def test_global_explorer_output(self):
         """Ensure output is created for every global explorer"""
         out_path = self.mkdtemp()
 
@@ -102,6 +104,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.assertEqual(self.explorer.list_type_explorer_names(cdist_type), expected)
 
     def test_transfer_type_explorers(self):
+        """Test if transferring type explorers works"""
         cdist_type = core.CdistType(self.local.type_path, '__test_type')
         self.explorer.transfer_type_explorers(cdist_type)
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
