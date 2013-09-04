@@ -239,16 +239,23 @@ eof
         git checkout master
         git merge "$target_branch"
 
+        # Publish git changes
+        make pub
 
-        exit 0
+        # publish man, speeches, website
+        make web-release-all
 
-        make speeches-dist
+        # Create and publish package for pypi
+        make pypi-release
 
-    RELEASE=speeches-dist web-release
-    RELEASE+=ml-release freecode-release
-    RELEASE+=man-dist pypi-release git-release
-    RELEASE+=archlinux-release
+        # Archlinux release is based on pypi
+        make archlinux-release
 
+        # Announce change on Freecode
+        make freecode-release
+
+        # Announce change on ML
+        make ml-release
     ;;
 
     test)

@@ -99,7 +99,7 @@ man-dist: man check-date
 	cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
 	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)" || true
 
-man-release: web-release
+man-fix-link: web-pub
 	# Fix ikiwiki, which does not like symlinks for pseudo security
 	ssh tee.schottelius.org \
     	"cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
@@ -143,8 +143,10 @@ web-doc:
 
 web-dist: web-blog web-doc
 
-web-release: web-dist man-dist speeches-dist
+web-pub: web-dist man-dist speeches-dist
 	cd "${WEBDIR}" && make pub
+
+web-release-all: man-fix-link
 
 ################################################################################
 # Release: Mailinglist
@@ -175,7 +177,7 @@ freecode-release: $(FREECODE_FILE)
 #
 PYPI_FILE=.lock-pypi
 
-pypi-release: $(PYPI_FILE) git-branch-merge
+pypi-release: $(PYPI_FILE)
 
 $(PYPI_FILE): man $(VERSION_FILE)
 	python3 setup.py sdist upload
@@ -187,7 +189,7 @@ $(PYPI_FILE): man $(VERSION_FILE)
 ARCHLINUX_FILE=.lock-archlinux
 ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
 
-$(ARCHLINUXTAR): PKGBUILD pypi-release
+$(ARCHLINUXTAR): PKGBUILD
 	makepkg -c --source
 
 PKGBUILD: PKGBUILD.in $(VERSION_FILE)
