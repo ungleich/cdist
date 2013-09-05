@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+2.3.3:
+	* Core: Add support for default values of optional parameters (Steven Armstrong)
+
 2.3.2: 2013-09-05
 	* Build: Ensure tests don't change attributes of non-test files
 	* Core: Fix typo in argument parser
