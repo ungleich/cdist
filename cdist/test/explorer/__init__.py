@@ -39,9 +39,9 @@ conf_dir = op.join(fixtures, "conf")
 class ExplorerClassTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.temp_dir = self.mkdtemp()
-        self.local_path = os.path.join(self.temp_dir, "local")
-        self.remote_base_path = os.path.join(self.temp_dir, "remote")
+        self.temp_dir           = self.mkdtemp()
+        self.local_path         = os.path.join(self.temp_dir, "local")
+        self.remote_base_path   = os.path.join(self.temp_dir, "remote")
         os.makedirs(self.remote_base_path)
 
         self.local = local.Local(
