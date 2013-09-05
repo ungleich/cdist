@@ -219,6 +219,21 @@ class ArgumentsTestCase(test.CdistTestCase):
         self.assertFalse('optional2' in cdist_object.parameters)
         self.assertEqual(cdist_object.parameters['optional1'], value)
 
+    def test_argument_defaults(self):
+        type_name = '__argument_defaults'
+        object_id = 'some-id'
+        value = 'value1'
+        argv = [type_name, object_id]
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        cdist_type = core.CdistType(self.local.type_path, type_name)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        self.assertTrue('optional1' in cdist_object.parameters)
+        self.assertFalse('optional2' in cdist_object.parameters)
+        self.assertEqual(cdist_object.parameters['optional1'], value)
+
 
 class StdinTestCase(test.CdistTestCase):
 

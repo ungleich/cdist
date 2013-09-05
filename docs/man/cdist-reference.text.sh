@@ -116,8 +116,13 @@ confdir/type/<name>/parameter/required::
 confdir/type/<name>/parameter/optional::
     Parameters optionally accepted by type, \n seperated list.
 
+confdir/type/<name>/parameter/default/*::
+    Default values for optional parameters.
+    Assuming an optional parameter name of 'foo', it's default value would
+    be read from the file confdir/type/<name>/parameter/default/foo.
+
 confdir/type/<name>/parameter/boolean::
-   Boolean parameters accepted by type, \n seperated list.
+    Boolean parameters accepted by type, \n seperated list.
 
 confdir/type/<name>/explorer::
     Location of the type specific explorers.

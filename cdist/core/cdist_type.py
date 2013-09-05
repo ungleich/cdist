@@ -62,6 +62,7 @@ class CdistType(object):
         self.__optional_parameters = None
         self.__optional_multiple_parameters = None
         self.__boolean_parameters = None
+        self.__parameter_defaults = None
 
     @classmethod
     def list_types(cls, base_path):
@@ -190,3 +191,19 @@ class CdistType(object):
             finally:
                 self.__boolean_parameters = parameters
         return self.__boolean_parameters
+
+    @property
+    def parameter_defaults(self):
+        if not self.__parameter_defaults:
+            defaults = {}
+            try:
+                defaults_dir = os.path.join(self.absolute_path, "parameter", "default")
+                for name in os.listdir(defaults_dir):
+                    with open(os.path.join(defaults_dir, name)) as fd:
+                        defaults[name] = fd.read().strip()
+            except EnvironmentError:
+                # error ignored
+                pass
+            finally:
+                self.__parameter_defaults = defaults
+        return self.__parameter_defaults

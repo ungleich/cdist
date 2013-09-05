@@ -82,10 +82,16 @@ follow the standard unix behaviour "the last given wins".
 If either is missing, the type will have no required, no optional, no boolean
 or no parameters at all. 
 
+Default values for optional parameters can be predefined in
+***parameter/default/<name>***.
+
 Example:
 --------------------------------------------------------------------------------
 echo servername >> cdist/conf/type/__nginx_vhost/parameter/required
 echo logdirectory >> cdist/conf/type/__nginx_vhost/parameter/optional
+echo loglevel >> cdist/conf/type/__nginx_vhost/parameter/optional
+mkdir cdist/conf/type/__nginx_vhost/parameter/default
+echo warning > cdist/conf/type/__nginx_vhost/parameter/default/loglevel
 echo server_alias >> cdist/conf/type/__nginx_vhost/parameter/optional_multiple
 echo use_ssl >> cdist/conf/type/__nginx_vhost/parameter/boolean
 --------------------------------------------------------------------------------
@@ -107,6 +113,9 @@ servername="$(cat "$__object/parameter/servername")"
 if [ -f "$__object/parameter/logdirectory" ]; then
    logdirectory="$(cat "$__object/parameter/logdirectory")"
 fi
+
+# optional parameter with predefined default
+loglevel="$(cat "$__object/parameter/loglevel")"
 
 # boolean parameter
 if [ -f "$__object/parameter/use_ssl" ]; then
