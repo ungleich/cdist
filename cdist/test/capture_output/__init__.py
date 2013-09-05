@@ -20,7 +20,6 @@
 #
 #
 
-import getpass
 import os
 import shutil
 
@@ -30,6 +29,7 @@ from cdist import test
 from cdist.exec import local
 from cdist.exec import remote
 from cdist.core import code
+from cdist.core import manifest
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
@@ -37,7 +37,7 @@ fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, 'conf')
 
 
-class CodeTestCase(test.CdistTestCase):
+class CaptureOutputTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.local_dir = self.mkdtemp()
@@ -61,55 +61,41 @@ class CodeTestCase(test.CdistTestCase):
 
         self.code = code.Code(self.target_host, self.local, self.remote)
 
-        self.cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
-        self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path, 'whatever')
+        self.manifest = manifest.Manifest(self.target_host, self.local)
+
+        self.cdist_type = core.CdistType(self.local.type_path, '__write_to_stdout_and_stderr')
+        self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path)
         self.cdist_object.create()
+        self.output_dirs = {
+            'stdout': os.path.join(self.cdist_object.absolute_path, 'stdout'),
+            'stderr': os.path.join(self.cdist_object.absolute_path, 'stderr'),
+        }
 
     def tearDown(self):
         shutil.rmtree(self.local_dir)
         shutil.rmtree(self.remote_dir)
 
-    def test_run_gencode_local_environment(self):
-        output_string = self.code.run_gencode_local(self.cdist_object)
-        output_dict = {}
-        for line in output_string.split('\n'):
-            if line:
-                junk,value = line.split(': ')
-                key = junk.split(' ')[1]
-                output_dict[key] = value
-        self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.base_path)
-        self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
-        self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
-        self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
-        self.assertEqual(output_dict['__object_name'], self.cdist_object.name)
+    def _test_output(self, which, streams=('stdout', 'stderr')):
+        for stream in streams:
+            _should = '{0}: {1}\n'.format(which, stream)
+            with open(os.path.join(self.output_dirs[stream], which), 'r') as fd:
+                _is = fd.read()
+            self.assertEqual(_should, _is)
 
-    def test_run_gencode_remote_environment(self):
-        output_string = self.code.run_gencode_remote(self.cdist_object)
-        output_dict = {}
-        for line in output_string.split('\n'):
-            if line:
-                junk,value = line.split(': ')
-                key = junk.split(' ')[1]
-                output_dict[key] = value
-        self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.base_path)
-        self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
-        self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
-        self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
-        self.assertEqual(output_dict['__object_name'], self.cdist_object.name)
-
-    def test_transfer_code_remote(self):
-        self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
-        self.code.transfer_code_remote(self.cdist_object)
-        destination = os.path.join(self.remote.object_path, self.cdist_object.code_remote_path)
-        self.assertTrue(os.path.isfile(destination))
-
-    def test_run_code_local(self):
+    def test_capture_code_output(self):
         self.cdist_object.code_local = self.code.run_gencode_local(self.cdist_object)
-        self.code.run_code_local(self.cdist_object)
+        self._test_output('gencode-local', ('stderr',))
 
-    def test_run_code_remote_environment(self):
+        self.code.run_code_local(self.cdist_object)
+        self._test_output('code-local')
+
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
+        self._test_output('gencode-remote', ('stderr',))
+
         self.code.transfer_code_remote(self.cdist_object)
         self.code.run_code_remote(self.cdist_object)
+        self._test_output('code-remote')
+
+    def test_capture_manifest_output(self):
+        self.manifest.run_type_manifest(self.cdist_object)
+        self._test_output('manifest')

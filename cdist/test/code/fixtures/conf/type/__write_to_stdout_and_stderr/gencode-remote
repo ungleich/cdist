@@ -1,4 +1,0 @@
-#!/bin/sh
-
-echo "echo \"remote: stdout\""
-echo "echo \"remote: stderr\" >&2"
