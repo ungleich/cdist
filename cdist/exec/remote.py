@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -63,7 +63,9 @@ class Remote(object):
                  base_path=None,
                  quiet_mode=None,
                  archiving_mode=None,
-                 configuration=None):
+                 configuration=None,
+                 stdout_base_path=None,
+                 stderr_base_path=None):
         self.target_host = target_host
         self._exec = remote_exec
         self._copy = remote_copy
@@ -78,6 +80,9 @@ class Remote(object):
             self.configuration = configuration
         else:
             self.configuration = {}
+
+        self.stdout_base_path = stdout_base_path
+        self.stderr_base_path = stderr_base_path
 
         self.conf_path = os.path.join(self.base_path, "conf")
         self.object_path = os.path.join(self.base_path, "object")
@@ -105,7 +110,7 @@ class Remote(object):
         self._open_logger()
 
     def _init_env(self):
-        """Setup environment for scripts - HERE????"""
+        """Setup environment for scripts."""
         # FIXME: better do so in exec functions that require it!
         os.environ['__remote_copy'] = self._copy
         os.environ['__remote_exec'] = self._exec
@@ -237,7 +242,8 @@ class Remote(object):
         self.log.trace(("Multiprocessing for parallel transfer "
                         "finished"))
 
-    def run_script(self, script, env=None, return_output=False):
+    def run_script(self, script, env=None, return_output=False, stdout=None,
+                   stderr=None):
         """Run the given script with the given environment on the remote side.
         Return the output as a string.
 
@@ -249,9 +255,11 @@ class Remote(object):
         ]
         command.append(script)
 
-        return self.run(command, env, return_output)
+        return self.run(command, env=env, return_output=return_output,
+                        stdout=stdout, stderr=stderr)
 
-    def run(self, command, env=None, return_output=False):
+    def run(self, command, env=None, return_output=False, stdout=None,
+            stderr=None):
         """Run the given command with the given environment on the remote side.
         Return the output as a string.
 
@@ -284,15 +292,45 @@ class Remote(object):
             cmd.append(string_cmd)
         else:
             cmd.extend(command)
-        return self._run_command(cmd, env=env, return_output=return_output)
+        return self._run_command(cmd, env=env, return_output=return_output,
+                                 stdout=stdout, stderr=stderr)
 
-    def _run_command(self, command, env=None, return_output=False):
+    def _get_std_fd(self, which):
+        if which == 'stdout':
+            base = self.stdout_base_path
+        else:
+            base = self.stderr_base_path
+
+        path = os.path.join(base, 'remote')
+        stdfd = open(path, 'ba+')
+        return stdfd
+
+    def _log_std_fd(self, stdfd, which):
+        if stdfd is not None and stdfd != subprocess.DEVNULL:
+            stdfd.seek(0, 0)
+            self.log.trace("Remote {}: {}".format(
+                which, stdfd.read().decode()))
+
+    def _run_command(self, command, env=None, return_output=False, stdout=None,
+                     stderr=None):
         """Run the given command with the given environment.
         Return the output as a string.
 
         """
         assert isinstance(command, (list, tuple)), (
                 "list or tuple argument expected, got: %s" % command)
+
+        if return_output and stdout is not subprocess.PIPE:
+            self.log.debug("return_output is True, ignoring stdout")
+
+        close_stdout = False
+        close_stderr = False
+        if not return_output and stdout is None:
+            stdout = self._get_std_fd('stdout')
+            close_stdout = True
+        if stderr is None:
+            stderr = self._get_std_fd('stderr')
+            close_stderr = True
 
         # export target_host, target_hostname, target_fqdn
         # for use in __remote_{exec,copy} scripts
@@ -305,19 +343,24 @@ class Remote(object):
         try:
             if self.quiet_mode:
                 stderr = subprocess.DEVNULL
-            else:
-                stderr = None
-            output, errout = exec_util.call_get_output(
-                command, env=os_environ, stderr=stderr)
-            self.log.trace("Command: {}; remote stdout: {}".format(
-                command, output))
-            # Currently, stderr is not captured.
-            # self.log.trace("Remote stderr: {}".format(errout))
             if return_output:
+                output = subprocess.check_output(command, env=os_environ,
+                                                 stderr=stderr)
+                self._log_std_fd(stderr, 'stderr')
                 return output.decode()
+            else:
+                subprocess.check_call(command, env=os_environ, stdout=stdout,
+                                      stderr=stderr)
+                self._log_std_fd(stderr, 'stderr')
+                self._log_std_fd(stdout, 'stdout')
         except subprocess.CalledProcessError as e:
             exec_util.handle_called_process_error(e, command)
         except OSError as error:
             raise cdist.Error(" ".join(command) + ": " + error.args[1])
         except UnicodeDecodeError:
             raise DecodeError(command)
+        finally:
+            if close_stdout:
+                stdout.close()
+            if close_stderr:
+                stderr.close()

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012-2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -61,7 +61,9 @@ class CodeTestCase(test.CdistTestCase):
             target_host=self.target_host,
             remote_exec=remote_exec,
             remote_copy=remote_copy,
-            base_path=self.remote_dir)
+            base_path=self.remote_dir,
+            stdout_base_path=self.local.stdout_base_path,
+            stderr_base_path=self.local.stderr_base_path)
         self.remote.create_files_dirs()
 
         self.code = code.Code(self.target_host, self.local, self.remote)
@@ -151,6 +153,7 @@ class CodeTestCase(test.CdistTestCase):
                 self.cdist_object)
         self.code.transfer_code_remote(self.cdist_object)
         self.code.run_code_remote(self.cdist_object)
+
 
 if __name__ == '__main__':
     import unittest

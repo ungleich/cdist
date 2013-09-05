@@ -89,7 +89,6 @@ class Shell(object):
         self._init_environment()
 
         log.trace("Starting shell...")
-        # save_output=False -> do not catch stdout and stderr
         self.local.run([self.shell], self.env, save_output=False)
         log.trace("Finished shell.")
 
