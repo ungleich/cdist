@@ -105,7 +105,8 @@ class Code(object):
                 '__object_name': cdist_object.name,
             })
             message_prefix=cdist_object.name
-            return self.local.run_script(script, env=env, return_output=True, message_prefix=message_prefix)
+            with open(os.path.join(cdist_object.stderr_path, 'gencode-'+ which), 'ba') as stderr:
+                return self.local.run_script(script, env=env, return_output=True, message_prefix=message_prefix, stderr=stderr)
 
     def run_gencode_local(self, cdist_object):
         """Run the gencode-local script for the given cdist object."""
@@ -126,12 +127,8 @@ class Code(object):
     def _run_code(self, cdist_object, which):
         which_exec = getattr(self, which)
         script = os.path.join(which_exec.object_path, getattr(cdist_object, 'code_%s_path' % which))
-        stdout_dir = os.path.join(cdist_object.absolute_path, 'stdout')
-        self.local.mkdir(stdout_dir)
-        stderr_dir = os.path.join(cdist_object.absolute_path, 'stderr')
-        self.local.mkdir(stderr_dir)
-        with open(os.path.join(stderr_dir, which), 'ba') as stderr, \
-            open(os.path.join(stdout_dir, which), 'ba') as stdout:
+        with open(os.path.join(cdist_object.stderr_path, 'code-'+ which), 'ba') as stderr, \
+            open(os.path.join(cdist_object.stdout_path, 'code-'+ which), 'ba') as stdout:
             return which_exec.run_script(script, stdout=stdout, stderr=stderr)
 
     def run_code_local(self, cdist_object):

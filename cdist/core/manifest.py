@@ -143,5 +143,12 @@ class Manifest(object):
     def run_type_manifest(self, cdist_object):
         type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
         message_prefix = cdist_object.name
+        which = 'manifest'
         if os.path.isfile(type_manifest):
-           self.local.run_script(type_manifest, env=self.env_type_manifest(cdist_object))
+            with open(os.path.join(cdist_object.stderr_path, which), 'ba') as stderr, \
+                open(os.path.join(cdist_object.stdout_path, which), 'ba') as stdout:
+                self.local.run_script(type_manifest,
+                    env=self.env_type_manifest(cdist_object),
+                    message_prefix=message_prefix,
+                    stdout=stdout, stderr=stderr
+                )
