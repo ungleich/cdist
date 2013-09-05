@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -153,13 +153,16 @@ class Local(object):
         self.log.debug("Local mkdir: %s", path)
         os.makedirs(path, exist_ok=True)
 
-    def run(self, command, env=None, return_output=False, message_prefix=None):
+    def run(self, command, env=None, return_output=False, message_prefix=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
         """Run the given command with the given environment.
         Return the output as a string.
 
         """
         self.log.debug("Local run: %s", command)
         assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
+
+        if return_output and stdout is not subprocess.PIPE:
+            self.log.warn("return_output is True, ignoring stdout")
 
         if env is None:
             env = os.environ.copy()
@@ -172,9 +175,9 @@ class Local(object):
 
         try:
             if return_output:
-                return subprocess.check_output(command, env=env).decode()
+                return subprocess.check_output(command, env=env, stderr=stderr).decode()
             else:
-                subprocess.check_call(command, env=env)
+                subprocess.check_call(command, env=env, stdout=stdout, stderr=stderr)
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
@@ -183,7 +186,7 @@ class Local(object):
             if message_prefix:
                 message.merge_messages()
 
-    def run_script(self, script, env=None, return_output=False, message_prefix=None):
+    def run_script(self, script, env=None, return_output=False, message_prefix=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
         """Run the given script with the given environment.
         Return the output as a string.
 
@@ -191,7 +194,7 @@ class Local(object):
         command = [ os.environ.get('CDIST_LOCAL_SHELL',"/bin/sh") , "-e"]
         command.append(script)
 
-        return self.run(command=command, env=env, return_output=return_output, message_prefix=message_prefix)
+        return self.run(command, env=env, return_output=return_output, message_prefix=message_prefix, stdout=stdout, stderr=stderr)
 
     def save_cache(self):
         if os.path.isabs(self.target_host):
@@ -238,7 +241,7 @@ class Local(object):
                     # Already exists? remove and link
                     if os.path.exists(dst):
                         os.unlink(dst)
-                    
+
                     self.log.debug("Linking %s to %s ..." % (src, dst))
                     try:
                         os.symlink(src, dst)
