@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2016-2017 Darko Poljak (darko.poljak at gmail.com)
 #
@@ -120,9 +120,11 @@ class Local(object):
                                                      "explorer")
         self.object_path = os.path.join(self.base_path, "object")
         self.messages_path = os.path.join(self.base_path, "messages")
-        self.files_path = os.path.join(self.conf_path, "files")
+        self.stdout_base_path = os.path.join(self.base_path, "stdout")
+        self.stderr_base_path = os.path.join(self.base_path, "stderr")
 
         # Depending on conf_path
+        self.files_path = os.path.join(self.conf_path, "files")
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
         self.manifest_path = os.path.join(self.conf_path, "manifest")
         self.initial_manifest = (self.custom_initial_manifest or
@@ -165,6 +167,8 @@ class Local(object):
         self.mkdir(self.object_path)
         self.mkdir(self.bin_path)
         self.mkdir(self.cache_path)
+        self.mkdir(self.stdout_base_path)
+        self.mkdir(self.stderr_base_path)
 
     def create_files_dirs(self):
         self._init_directories()
@@ -199,14 +203,41 @@ class Local(object):
         self.log.trace("Local mkdir: %s", path)
         os.makedirs(path, exist_ok=True)
 
+    def _get_std_fd(self, which):
+        if which == 'stdout':
+            base = self.stdout_base_path
+        else:
+            base = self.stderr_base_path
+
+        path = os.path.join(base, 'remote')
+        stdfd = open(path, 'ba+')
+        return stdfd
+
+    def _log_std_fd(self, stdfd, which, quiet, save_output):
+        if not quiet and save_output and stdfd is not None:
+            stdfd.seek(0, 0)
+            self.log.trace("Local {}:\n{}\n".format(
+                which, stdfd.read().decode()))
+
     def run(self, command, env=None, return_output=False, message_prefix=None,
-            save_output=True, quiet_mode=False):
+            stdout=None, stderr=None, save_output=True, quiet_mode=False):
         """Run the given command with the given environment.
         Return the output as a string.
 
         """
         assert isinstance(command, (list, tuple)), (
                 "list or tuple argument expected, got: %s" % command)
+
+        quiet = self.quiet_mode or quiet_mode
+
+        close_stdout = False
+        close_stderr = False
+        if not quiet and save_output and not return_output and stdout is None:
+            stdout = self._get_std_fd('stdout')
+            close_stdout = True
+        if not quiet and save_output and stderr is None:
+            stderr = self._get_std_fd('stderr')
+            close_stderr = True
 
         if env is None:
             env = os.environ.copy()
@@ -225,29 +256,20 @@ class Local(object):
 
         self.log.trace("Local run: %s", command)
         try:
-            if self.quiet_mode or quiet_mode:
+            if quiet:
                 stderr = subprocess.DEVNULL
-            else:
-                stderr = None
-            if save_output:
-                output, errout = exec_util.call_get_output(
+            if return_output:
+                output = subprocess.check_output(
                     command, env=env, stderr=stderr)
-                self.log.trace("Command: {}; local stdout: {}".format(
-                    command, output))
-                # Currently, stderr is not captured.
-                # self.log.trace("Local stderr: {}".format(errout))
-                if return_output:
-                    return output.decode()
+                self._log_std_fd(stderr, 'stderr', quiet, save_output)
+                return output.decode()
             else:
-                # In some cases no output is saved.
-                # This is used for shell command, stdout and stderr
-                # must not be catched.
-                if self.quiet_mode or quiet_mode:
+                if quiet:
                     stdout = subprocess.DEVNULL
-                else:
-                    stdout = None
                 subprocess.check_call(command, env=env, stderr=stderr,
                                       stdout=stdout)
+                self._log_std_fd(stderr, 'stderr', quiet, save_output)
+                self._log_std_fd(stdout, 'stdout', quiet, save_output)
         except subprocess.CalledProcessError as e:
             exec_util.handle_called_process_error(e, command)
         except OSError as error:
@@ -255,9 +277,13 @@ class Local(object):
         finally:
             if message_prefix:
                 message.merge_messages()
+            if close_stdout:
+                stdout.close()
+            if close_stderr:
+                stderr.close()
 
     def run_script(self, script, env=None, return_output=False,
-                   message_prefix=None, save_output=True):
+                   message_prefix=None, stdout=None, stderr=None):
         """Run the given script with the given environment.
         Return the output as a string.
 
@@ -271,8 +297,9 @@ class Local(object):
                            script, " ".join(command))
             command.append(script)
 
-        return self.run(command=command, env=env, return_output=return_output,
-                        message_prefix=message_prefix, save_output=save_output)
+        return self.run(command, env=env, return_output=return_output,
+                        message_prefix=message_prefix, stdout=stdout,
+                        stderr=stderr)
 
     def _cache_subpath_repl(self, matchobj):
         if matchobj.group(2) == '%P':

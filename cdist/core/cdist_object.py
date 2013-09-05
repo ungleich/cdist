@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014 Daniel Heule (hda at sfs.biz)
 #
@@ -80,6 +80,8 @@ class CdistObject(object):
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
+        self.stdout_path = os.path.join(self.absolute_path, "stdout")
+        self.stderr_path = os.path.join(self.absolute_path, "stderr")
 
     @classmethod
     def list_objects(cls, object_base_path, type_base_path, object_marker):
@@ -246,10 +248,11 @@ class CdistObject(object):
         """Create this cdist object on the filesystem.
         """
         try:
-            os.makedirs(self.absolute_path, exist_ok=allow_overwrite)
-            absolute_parameter_path = os.path.join(self.base_path,
-                                                   self.parameter_path)
-            os.makedirs(absolute_parameter_path, exist_ok=allow_overwrite)
+            for path in (self.absolute_path,
+                         os.path.join(self.base_path, self.parameter_path),
+                         self.stdout_path,
+                         self.stderr_path):
+                os.makedirs(path, exist_ok=allow_overwrite)
         except EnvironmentError as error:
             raise cdist.Error(('Error creating directories for cdist object: '
                                '%s: %s') % (self, error))

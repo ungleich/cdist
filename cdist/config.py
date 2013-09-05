@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2016-2017 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
@@ -353,7 +354,9 @@ class Config(object):
                 base_path=args.remote_out_path,
                 quiet_mode=args.quiet,
                 archiving_mode=args.use_archiving,
-                configuration=configuration)
+                configuration=configuration,
+                stdout_base_path=local.stdout_base_path,
+                stderr_base_path=local.stderr_base_path)
 
             cleanup_cmds = []
             if cleanup_cmd:
@@ -453,25 +456,30 @@ class Config(object):
         objects_changed = False
 
         for cdist_object in self.object_list():
-            if cdist_object.requirements_unfinished(cdist_object.requirements):
-                """We cannot do anything for this poor object"""
-                continue
+            try:
+                if cdist_object.requirements_unfinished(
+                        cdist_object.requirements):
+                    """We cannot do anything for this poor object"""
+                    continue
 
-            if cdist_object.state == core.CdistObject.STATE_UNDEF:
-                """Prepare the virgin object"""
+                if cdist_object.state == core.CdistObject.STATE_UNDEF:
+                    """Prepare the virgin object"""
 
-                self.object_prepare(cdist_object)
-                objects_changed = True
+                    self.object_prepare(cdist_object)
+                    objects_changed = True
 
-            if cdist_object.requirements_unfinished(cdist_object.autorequire):
-                """The previous step created objects we depend on -
-                   wait for them
-                """
-                continue
+                if cdist_object.requirements_unfinished(
+                        cdist_object.autorequire):
+                    """The previous step created objects we depend on -
+                       wait for them
+                    """
+                    continue
 
-            if cdist_object.state == core.CdistObject.STATE_PREPARED:
-                self.object_run(cdist_object)
-                objects_changed = True
+                if cdist_object.state == core.CdistObject.STATE_PREPARED:
+                    self.object_run(cdist_object)
+                    objects_changed = True
+            except cdist.Error as e:
+                raise cdist.CdistObjectError(cdist_object, e)
 
         return objects_changed
 
