@@ -36,13 +36,12 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, 'conf')
 
-class CodeTestCase(test.CdistTestCase):
-
+class BaseTestCase(test.CdistTestCase):
     def setUp(self):
         self.local_dir = self.mkdtemp()
 
         self.local = local.Local(
-            target_host=self.target_host, 
+            target_host=self.target_host,
             base_path = self.local_dir,
             exec_path = cdist.test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
@@ -52,21 +51,26 @@ class CodeTestCase(test.CdistTestCase):
         remote_exec = self.remote_exec
         remote_copy = self.remote_copy
         self.remote = remote.Remote(
-            target_host=self.target_host, 
-            remote_exec=remote_exec, 
+            target_host=self.target_host,
+            remote_exec=remote_exec,
             remote_copy=remote_copy,
             base_path=self.remote_dir)
         self.remote.create_files_dirs()
 
         self.code = code.Code(self.target_host, self.local, self.remote)
 
-        self.cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
-        self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path, 'whatever')
-        self.cdist_object.create()
-
     def tearDown(self):
         shutil.rmtree(self.local_dir)
         shutil.rmtree(self.remote_dir)
+
+
+class CodeTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(CodeTestCase, self).setUp()
+        self.cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
+        self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path, 'whatever')
+        self.cdist_object.create()
 
     def test_run_gencode_local_environment(self):
         output_string = self.code.run_gencode_local(self.cdist_object)
@@ -112,3 +116,35 @@ class CodeTestCase(test.CdistTestCase):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
         self.code.transfer_code_remote(self.cdist_object)
         self.code.run_code_remote(self.cdist_object)
+
+
+class CaptureOutputTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(CaptureOutputTestCase, self).setUp()
+        self.cdist_type = core.CdistType(self.local.type_path, '__write_to_stdout_and_stderr')
+        self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path)
+        self.cdist_object.create()
+        self.output_dirs = {
+            'stdout': os.path.join(self.cdist_object.absolute_path, 'stdout'),
+            'stderr': os.path.join(self.cdist_object.absolute_path, 'stderr'),
+        }
+
+    def _test_output(self, where):
+        for stream in ('stdout', 'stderr'):
+            _should = '{0}: {1}\n'.format(where, stream)
+            with open(os.path.join(self.output_dirs[stream], where), 'r') as fd:
+                _is = fd.read()
+            self.assertEqual(_should, _is)
+
+    def test_capture_local_output(self):
+        self.cdist_object.code_local = self.code.run_gencode_local(self.cdist_object)
+        self.code.run_code_local(self.cdist_object)
+        self._test_output('local')
+
+    def test_capture_remote_output(self):
+        self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
+        self.code.transfer_code_remote(self.cdist_object)
+        self.code.run_code_remote(self.cdist_object)
+        self._test_output('remote')
+
