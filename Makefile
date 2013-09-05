@@ -36,7 +36,7 @@ WEBPAGE=$(WEBBASE).mdwn
 CHANGELOG_VERSION=$(shell $(helper) changelog-version)
 CHANGELOG_FILE=docs/changelog
 
-VERSION_FILE=cdist/version.py
+PYTHON_VERSION=cdist/version.py
 
 ################################################################################
 # Manpages
@@ -154,7 +154,7 @@ web-release-all: man-fix-link
 ML_FILE=.lock-ml
 
 # Only send mail once - lock until new changelog things happened
-$(ML_FILE): $(CHANGELOG_FILE) git-release web-release
+$(ML_FILE): $(CHANGELOG_FILE)
 	$(helper) ml-release $(CHANGELOG_VERSION)
 	touch $@
 
@@ -175,11 +175,7 @@ freecode-release: $(FREECODE_FILE)
 ################################################################################
 # pypi
 #
-PYPI_FILE=.lock-pypi
-
-pypi-release: $(PYPI_FILE)
-
-$(PYPI_FILE): man $(VERSION_FILE)
+pypi-release: man $(PYTHON_VERSION)
 	python3 setup.py sdist upload
 	touch $@
 
@@ -192,10 +188,10 @@ ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
 $(ARCHLINUXTAR): PKGBUILD
 	makepkg -c --source
 
-PKGBUILD: PKGBUILD.in $(VERSION_FILE)
+PKGBUILD: PKGBUILD.in $(PYTHON_VERSION)
 	./PKGBUILD.in $(CHANGELOG_VERSION)
 
-$(ARCHLINUX_FILE): $(ARCHLINUXTAR) $(VERSION_FILE)
+$(ARCHLINUX_FILE): $(ARCHLINUXTAR) $(PYTHON_VERSION)
 	burp -c system $(ARCHLINUXTAR)
 	touch $@
 
@@ -204,6 +200,9 @@ archlinux-release: $(ARCHLINUX_FILE)
 ################################################################################
 # Release
 #
+
+$(PYTHON_VERSION): .git/refs/heads/master
+	$(helper) version
 
 # Code that is better handled in a shell script
 check-%:

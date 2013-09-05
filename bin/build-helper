@@ -256,6 +256,16 @@ eof
 
         # Announce change on ML
         make ml-release
+
+        cat << eof
+Manual steps post release:
+
+    - linkedin
+    - hackernews
+    - twitter
+
+eof
+
     ;;
 
     test)
