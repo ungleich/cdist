@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "echo \"local: stdout\""
+echo "echo \"local: stderr\" >&2"
