@@ -25,6 +25,7 @@ import os
 import shutil
 import sys
 import time
+import pprint
 
 import cdist
 
@@ -225,7 +226,7 @@ class Config(object):
                     'require': [obj.name for obj in self.list_unfinished_objects(deps['after'])],
                     'auto': [obj.name for obj in self.list_unfinished_objects(deps['auto'])],
                 }
-                info_string.append("{0}: {1!r}".format(cdist_object.name, unresolved_deps))
+                info_string.append("{0}: {1}".format(cdist_object.name, pprint.pformat(unresolved_deps)))
 
             raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved:\n%s" %
                 ("\n".join(info_string)))
