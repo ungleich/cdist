@@ -78,15 +78,40 @@ class ConfigRunTestCase(test.CdistTestCase):
         os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
 
-    def test_dependency_resolution(self):
+    def test_dependency_resolution_after(self):
         first   = self.object_index['__first/man']
         second  = self.object_index['__second/on-the']
         third   = self.object_index['__third/moon']
 
-        self.context.dpm.after(first.name, second.name)
-        self.context.dpm.after(second.name, third.name)
+        self.config.dpm.after(first.name, second.name)
+        self.config.dpm.after(second.name, third.name)
 
         # First run: 
+        # solves first and maybe second (depending on the order in the set)
+        self.config.iterate_once()
+        self.assertTrue(third.state == third.STATE_DONE)
+
+        self.config.iterate_once()
+        self.assertTrue(second.state == second.STATE_DONE)
+
+
+        try:
+            self.config.iterate_once()
+        except cdist.Error:
+            # Allow failing, because the third run may or may not be unecessary already,
+            # depending on the order of the objects
+            pass
+        self.assertTrue(first.state == first.STATE_DONE)
+
+    def test_dependency_resolution_before(self):
+        first   = self.object_index['__first/man']
+        second  = self.object_index['__second/on-the']
+        third   = self.object_index['__third/moon']
+
+        self.config.dpm.before(second.name, first.name)
+        self.config.dpm.before(third.name, second.name)
+
+        # First run:
         # solves first and maybe second (depending on the order in the set)
         self.config.iterate_once()
         self.assertTrue(third.state == third.STATE_DONE)
@@ -110,8 +135,8 @@ class ConfigRunTestCase(test.CdistTestCase):
         first   = self.object_index['__first/man']
         second  = self.object_index['__second/on-the']
 
-        self.context.dpm.after(first.name, second.name)
-        self.context.dpm.after(second.name, first.name)
+        self.config.dpm.after(first.name, second.name)
+        self.config.dpm.after(second.name, first.name)
 
         with self.assertRaises(cdist.UnresolvableRequirementsError):
             self.config.iterate_until_finished()
@@ -119,21 +144,21 @@ class ConfigRunTestCase(test.CdistTestCase):
     def test_missing_requirements(self):
         """Throw an error if requiring something non-existing"""
         first = self.object_index['__first/man']
-        self.context.dpm.after(first.name, '__first/not/exist')
+        self.config.dpm.after(first.name, '__first/not/exist')
         with self.assertRaises(cdist.UnresolvableRequirementsError):
             self.config.iterate_until_finished()
 
     def test_requirement_broken_type(self):
         """Unknown type should be detected in the resolving process"""
         first = self.object_index['__first/man']
-        self.context.dpm.after(first.name, '__nosuchtype/not/exist')
+        self.config.dpm.after(first.name, '__nosuchtype/not/exist')
         with self.assertRaises(cdist.core.cdist_type.NoSuchTypeError):
             self.config.iterate_until_finished()
 
     def test_requirement_singleton_where_no_singleton(self):
         """Missing object id should be detected in the resolving process"""
         first = self.object_index['__first/man']
-        self.context.dpm.after(first.name, '__first')
+        self.config.dpm.after(first.name, '__first')
         with self.assertRaises(cdist.core.cdist_object.MissingObjectIdError):
             self.config.iterate_until_finished()
 
