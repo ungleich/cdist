@@ -221,12 +221,11 @@ class Config(object):
             for cdist_object in unfinished_objects:
 
                 deps = self.dpm(cdist_object.name)
-                requirement_names = [obj.name for obj in self.list_unfinished_objects(deps['after'])]
-                autorequire_names = [obj.name for obj in self.list_unfinished_objects(deps['auto'])]
-
-                requirements = ", ".join(requirement_names)
-                autorequire  = ", ".join(autorequire_names)
-                info_string.append("%s requires: %s autorequires: %s" % (cdist_object.name, requirements, autorequire))
+                unresolved_deps = {
+                    'require': [obj.name for obj in self.list_unfinished_objects(deps['after'])],
+                    'auto': [obj.name for obj in self.list_unfinished_objects(deps['auto'])],
+                }
+                info_string.append("{0}: {1!r}".format(cdist_object.name, unresolved_deps))
 
             raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved: %s" %
                 ("\n".join(info_string)))
