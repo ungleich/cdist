@@ -227,7 +227,7 @@ class Config(object):
                 }
                 info_string.append("{0}: {1!r}".format(cdist_object.name, unresolved_deps))
 
-            raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved: %s" %
+            raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved:\n%s" %
                 ("\n".join(info_string)))
 
     def object_from_name(self, object_name):
