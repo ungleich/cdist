@@ -209,7 +209,7 @@ class Emulator(object):
                 # Save the sanitised version, not the user supplied one
                 # (__file//bar => __file/bar)
                 # This ensures pattern matching is done against sanitised list
-                self.dpm.before(cdist_object.name, self.cdist_object.name)
+                self.dpm.before(self.cdist_object.name, cdist_object.name)
         if 'after' in self.meta_parameters:
             for value in self.meta_parameters['after']:
                 # Raises an error, if object cannot be created
