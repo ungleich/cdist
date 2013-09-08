@@ -28,14 +28,9 @@ name="$__object_id"
 
 case "$os" in
     archlinux)
-        # convert bash array to shell
-        systemctl is-enabled "$name" >/dev/null 2>&1; ret=$?
-
-        if [ "$ret" = 0 ]; then
-            state="present"
-        else
-            state="absent"
-        fi
+        state=$(systemctl is-enabled "$name" >/dev/null 2>&1 \
+            && echo present \
+            || echo absent)
     ;;
 
     debian|ubuntu|openwrt)
@@ -48,7 +43,7 @@ case "$os" in
         [ "$state" ] || state="present"
     ;;
 
-    *)  
+    *)
        echo "Unsupported os: $os" >&2
        exit 1
     ;;
