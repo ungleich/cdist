@@ -245,6 +245,9 @@ eof
         # publish man, speeches, website
         make web-release-all
 
+        # Ensure that pypi release has the right version
+        "$0" version
+
         # Create and publish package for pypi
         make pypi-release
 
