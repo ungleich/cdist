@@ -4,8 +4,10 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.3.3:
+2.3.3: 2013-09-09
 	* Core: Add support for default values of optional parameters (Steven Armstrong)
+	* Type __start_on_boot: Bugfix for systemd (Steven Armstrong)
+
 
 2.3.2: 2013-09-05
 	* Build: Ensure tests don't change attributes of non-test files
