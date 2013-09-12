@@ -1,0 +1,16 @@
+#!/bin/sh
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
+
+destination="/$__object_id"
+
+if [ ! -e "$destination" ]; then
+   echo none
+elif [ -h "$destination" ]; then
+   echo symlink
+elif [ -f "$destination" ]; then
+   echo file
+elif [ -d "$destination" ]; then
+   echo directory
+else
+   echo unknown
+fi
