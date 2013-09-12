@@ -248,23 +248,29 @@ class Config(object):
 
         cdist_type = cdist_object.cdist_type
 
-        # Generate
         self.log.info("Generating and executing code for %s" % (cdist_object.name))
-        cdist_object.code_local = self.code.run_gencode_local(cdist_object)
-        cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
-        if cdist_object.code_local or cdist_object.code_remote:
-            cdist_object.changed = True
 
-        # Execute
-        if not self.dry_run:
-            if cdist_object.code_local:
+        # local
+        cdist_object.code_local = self.code.run_gencode_local(cdist_object)
+        if cdist_object.code_local:
+            cdist_object.changed = True
+            if not self.dry_run:
                 self.code.run_code_local(cdist_object)
-            if cdist_object.code_remote:
+            else:
+                self.log.info("Skipping code execution due to DRY RUN")
+
+        # remote
+        cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
+        if cdist_object.code_remote:
+            cdist_object.changed = True
+            if not self.dry_run:
                 self.code.transfer_code_remote(cdist_object)
                 self.code.run_code_remote(cdist_object)
-        else:
-            self.log.info("Skipping code execution due to DRY RUN")
+            else:
+                self.log.info("Skipping code execution due to DRY RUN")
 
+        if cdist_object.code_local or cdist_object.code_remote:
+            cdist_object.changed = True
 
         # Mark this object as done
         self.log.debug("Finishing run of " + cdist_object.name)
