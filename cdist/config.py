@@ -126,7 +126,7 @@ class Config(object):
                 remote_exec=args.remote_exec,
                 remote_copy=args.remote_copy)
     
-            c = cls(local, remote)
+            c = cls(local, remote, dry_run=args.dry_run)
             c.run()
     
         except cdist.Error as e:
