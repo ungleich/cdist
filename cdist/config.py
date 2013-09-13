@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
