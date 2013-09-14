@@ -22,12 +22,15 @@ chroot="/$__object_id"
 
 cat << DONE
 umount -l "${chroot}/tmp"
+umount -l "${chroot}/dev/pts"
 umount -l "${chroot}/dev"
 umount -l "${chroot}/sys"
 umount -l "${chroot}/proc"
 rm -f "${chroot}/etc/resolv.conf"
-# ensure /etc/resolvconf/resolv.conf.d/tail is not linked to \
-# e.g. /etc/resolvconf/resolv.conf.d/original
-rm -f "${chroot}/etc/resolvconf/resolv.conf.d/tail"
-touch "${chroot}/etc/resolvconf/resolv.conf.d/tail"
+if [ -d "${chroot}/etc/resolvconf/resolv.conf.d" ]; then
+   # ensure /etc/resolvconf/resolv.conf.d/tail is not linked to \
+   # e.g. /etc/resolvconf/resolv.conf.d/original
+   rm -f "${chroot}/etc/resolvconf/resolv.conf.d/tail"
+   touch "${chroot}/etc/resolvconf/resolv.conf.d/tail"
+fi
 DONE
