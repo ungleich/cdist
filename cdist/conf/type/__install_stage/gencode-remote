@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -29,33 +29,15 @@ if [ "\$__debug" != "yes" ]; then
 fi
 DONE
 
-uri="$(cat "$__object/parameter/uri")"
+uri="$(cat "$__object/parameter/uri" 2>/dev/null \
+   || echo "$__object_id")"
 target="$(cat "$__object/parameter/target")"
-post_install="$(cat "$__object/parameter/post_install" 2>/dev/null || true)"
 
 
 [ "$__debug" = "yes" ] && curl="curl" || curl="curl -s"
 [ "$__debug" = "yes" ] && tar="tar -xvzp" || tar="tar -xzp"
 
 echo "$curl '$uri' | $tar -C '$target'"
-if [ -n "$post_install" ]; then
-   post_install_script="$(cat "$__object/parameter/post_install_script")"
-   cat << DONE
-[ -d "${target}/proc" ] || mkdir "${target}/proc"
-mount -t proc none "${target}/proc"
-[ -d "${target}/sys" ] || mkdir "${target}/sys"
-mount -t sysfs none "${target}/sys"
-[ -d "${target}/dev" ] || mkdir "${target}/dev"
-mount --rbind /dev "${target}/dev"
-[ -d "${target}/tmp" ] || mkdir -m 1777 "${target}/tmp"
-mount -t tmpfs none "${target}/tmp"
-cp "$post_install_script" "${target}/tmp/post_install"
-chmod +x "${target}/tmp/post_install"
-cp /etc/resolv.conf "${target}/etc/"
-chroot "$target" /tmp/post_install
-umount -l "${target}/tmp" "${target}/dev" "${target}/sys" "${target}/proc"
-DONE
-fi
 
 cat << DONE
 if [ "\$__debug" != "yes" ]; then
