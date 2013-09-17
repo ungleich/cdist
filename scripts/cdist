@@ -68,6 +68,8 @@ def commandline():
          help='Do not execute code', action='store_true')
     parser['config'].add_argument('-o', '--out-dir',
          help='Directory to save cdist output in', dest="out_path")
+    parser['config'].add_argument('-r', '--remote-out-dir',
+         help='Directory to save cdist output in on the target host', dest="remote_out_path")
     parser['config'].add_argument('-p', '--parallel',
          help='Operate on multiple hosts in parallel',
          action='store_true', dest='parallel')
