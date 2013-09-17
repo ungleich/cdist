@@ -48,12 +48,15 @@ class Remote(object):
                  target_host,
                  remote_exec,
                  remote_copy,
-                 base_path="/var/lib/cdist"):
+                 base_path=None):
         self.target_host = target_host
         self._exec = remote_exec
         self._copy = remote_copy
 
-        self.base_path = base_path
+        if base_path:
+            self.base_path = base_path
+        else:
+            self.base_path = "/var/lib/cdist"
 
         self.conf_path = os.path.join(self.base_path, "conf")
         self.object_path = os.path.join(self.base_path, "object")
