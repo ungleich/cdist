@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -20,17 +20,6 @@
 
 device="$(cat "$__object/parameter/device")"
 type="$(cat "$__object/parameter/type")"
-
-# show command output in debug mode 
-cat << DONE 
-__debug=$__cdist_debug 
-if [ "\$__debug" != "yes" ]; then 
-   # Link file descriptor #6 with stdout 
-   exec 6>&1
-   # redirect all output to /dev/null
-   exec > /dev/null
-fi
-DONE
 
 case "$type" in
    swap)
@@ -62,10 +51,3 @@ case "$type" in
       fi
       echo "$command"
 esac
-
-cat << DONE
-if [ "\$__debug" != "yes" ]; then
-   # Restore stdout and close file descriptor #6.
-   exec 1>&6 6>&-
-fi
-DONE
