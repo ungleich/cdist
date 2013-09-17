@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,18 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-
-# show command output in debug mode
-cat << DONE
-__debug=$__cdist_debug
-if [ "\$__debug" != "yes" ]; then
-   # Link file descriptor #6 with stdout
-   exec 6>&1
-   # redirect all output to /dev/null
-   exec > /dev/null
-fi
-DONE
-
 
 get_type_from_mkfs() {
    _device="$1"
@@ -69,10 +57,3 @@ else
    echo "[ -d \"$mount_point\" ] || mkdir -p \"$mount_point\""
    echo "mount -t \"$type\" $options \"$device\" \"$mount_point\""
 fi
-
-cat << DONE
-if [ "\$__debug" != "yes" ]; then
-   # Restore stdout and close file descriptor #6.
-   exec 1>&6 6>&-
-fi
-DONE

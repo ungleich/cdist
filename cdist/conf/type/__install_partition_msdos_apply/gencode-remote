@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -71,15 +71,6 @@ get_objects() {
 }
 
 # include function library for use on target
-cat << DONE
-__debug=$__cdist_debug
-if [ "\$__debug" != "yes" ]; then
-   # Link file descriptor #6 with stdout
-   exec 6>&1
-   # redirect all output to /dev/null
-   exec > /dev/null
-fi
-DONE
 cat "$__type/files/lib.sh"
 
 partitions="$__object/explorer/partitions"
@@ -166,10 +157,3 @@ for object in $objects; do
       echo "toggle_bootable '$device' '$minor' || die 'Failed to toogle bootable flag for partition: $partition'"
    fi
 done
-
-cat << DONE
-if [ "\$__debug" != "yes" ]; then
-   # Restore stdout and close file descriptor #6.
-   exec 1>&6 6>&-
-fi
-DONE
