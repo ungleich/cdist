@@ -124,7 +124,8 @@ class Config(object):
             remote = cdist.exec.remote.Remote(
                 target_host=host,
                 remote_exec=args.remote_exec,
-                remote_copy=args.remote_copy)
+                remote_copy=args.remote_copy,
+                base_path=args.remote_out_path)
     
             c = cls(local, remote, dry_run=args.dry_run)
             c.run()
