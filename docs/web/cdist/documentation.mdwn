@@ -4,4 +4,6 @@ You can browse the latest
 [latest version of the manpages](/software/cdist/man/latest) or
 have a look at [all versions](/software/cdist/man).
 
+You can also view [speeches about cdist](/software/cdist/speeches).
+
 [[!tag cdist unix]]

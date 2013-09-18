@@ -11,7 +11,7 @@ cdist-manifest - (Re-)Use types
 DESCRIPTION
 -----------
 Manifests are used to define which objects to create.
-Objects are instances of **types**, like in object orientated programming languages.
+Objects are instances of **types**, like in object oriented programming languages.
 An object is represented by the combination of
 **type + slash + object name**: **__file/etc/cdist-configured** is an
 object of the type ***__file*** with the name ***etc/cdist-configured***.
@@ -57,9 +57,9 @@ DEFINE STATE IN THE INITIAL MANIFEST
 ------------------------------------
 The **initial manifest** is the entry point for cdist to find out, which
 **objects** to configure on the selected host.
-Cdist searches for the initial manifest at **cdist/conf/manifest/init**.
+Cdist expects the initial manifest at **cdist/conf/manifest/init**.
 
-Within this initial manifest, you define, which objects should be
+Within this initial manifest you define, which objects should be
 created on which host. To distinguish between hosts, you can use the
 environment variable **__target_host**. Let's have a look at a simple
 example:

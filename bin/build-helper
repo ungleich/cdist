@@ -27,84 +27,41 @@ cd "$basedir"
 
 version=$(git describe)
 
-# Manpage and HTML
-A2XM="a2x -f manpage --no-xmllint -a encoding=UTF-8"
-A2XH="a2x -f xhtml --no-xmllint -a encoding=UTF-8"
+option=$1; shift
 
-# Developer webbase
-WEBDIR=$HOME/www.nico.schottelius.org
-WEBBLOG=$WEBDIR/blog
-WEBTOPDIR=$WEBDIR/software
-WEBBASE=$WEBTOPDIR/cdist
-WEBMAN=$WEBBASE/man/$version
-WEBPAGE=${WEBBASE}.mdwn
-
-# Documentation
-MANDIR=docs/man
-MAN1DSTDIR=${MANDIR}/man1
-MAN7DSTDIR=${MANDIR}/man7
-SPEECHESDIR=docs/speeches
-
-case "$1" in
-    manbuild)
-        trap abort INT
-        abort() {
-            kill 0
-        }
-        for section in 1 7; do
-            for src in ${MANDIR}/man${section}/*.text; do
-                manpage="${src%.text}.$section"
-                if [ ! -f "$manpage" -o "$manpage" -ot "$src" ]; then
-                    echo "Compiling man page for $src"
-                    $A2XM "$src"
-                fi
-                htmlpage="${src%.text}.html"
-                if [ ! -f "$htmlpage" -o "$htmlpage" -ot "$src" ]; then
-                    echo "Compiling html page for $src"
-                    $A2XH "$src"
-                fi
-            done
-        done
-    ;;
-
-    mantype)
-        for mansrc in cdist/conf/type/*/man.text; do
-            dst="$(echo $mansrc | sed -e 's;cdist/conf/;cdist-;'  -e 's;/;;' -e 's;/man;;' -e 's;^;docs/man/man7/;')"
-            ln -sf "../../../$mansrc" "$dst"
-        done
-    ;;
-
-    release-man)
-        version=$($0 changelog-version)
-
-        rm -rf "${WEBMAN}"
-        mkdir -p "${WEBMAN}/man1" "${WEBMAN}/man7"
-        cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${WEBMAN}/man1 
-        cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${WEBMAN}/man7
-        cd ${WEBMAN} && git add . && git commit -m "Cdist Manpage update: $version"
-    ;;
-
+case "$option" in
     changelog-changes)
-        awk -F: 'BEGIN { start=0 } { if ($0 ~ /^[[:digit:]]/) { if(start == 0) {start = 1 } else { exit } } else { if(start==1) {print $0 }}  }' "$basedir/docs/changelog"
+        if [ "$#" -eq 1 ]; then
+            start=$1
+        else
+            start="[[:digit:]]"
+        fi
+
+        end="[[:digit:]]"
+
+        awk -F: "BEGIN { start=0 }
+            {
+                if(start == 0) {
+                    if (\$0 ~ /^$start/) {
+                        start = 1
+                    }
+                } else {
+                    if (\$0 ~ /^$end/) {
+                        exit
+                    } else {
+                        print \$0 
+                    }
+                }
+            }" "$basedir/docs/changelog"
     ;;
 
     changelog-version)
-        # get version from changelog and ensure it's not already present
+        # get version from changelog
         grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/:.*//'
     ;;
 
-    check-version)
-        changelog_version=$($0 changelog-version)
-        echo "Target version from changelog: $changelog_version"
-
-        if git show --quiet $changelog_version >/dev/null 2>&1; then
-            echo "Version $changelog_version already exists, aborting."
-            exit 1
-        fi
-    ;;
-
     check-date)
-        # verify date in changelog
+        # verify date in changelog is today
         date_today="$(date +%Y-%m-%d)"
         date_changelog=$(grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/.*: //')
 
@@ -115,36 +72,40 @@ case "$1" in
         fi
     ;;
 
+    check-unittest)
+        "$0" test
+    ;;
+
     blog)
-        version=$($0 changelog-version)
-        blogfile=$WEBBLOG/cdist-${version}-released.mdwn
+        version=$1; shift
+        blogfile=$1; shift
+        dir=${blogfile%/*}
+        file=${blogfile##*/}
+
+
         cat << eof > "$blogfile"
 [[!meta title="Cdist $version released"]]
 
-Here's a short overview about the changes found in this release:
+Here's a short overview about the changes found in version ${version}:
 
 eof
 
-        $0 changelog-changes >> "$blogfile"
+        $0 changelog-changes "$version" >> "$blogfile"
 
         cat << eof >> "$blogfile"
 For more information visit the [[cdist homepage|software/cdist]].
 
 [[!tag cdist config unix]]
 eof
-    ;;
-
-    release-blog)
-        version=$($0 changelog-version)
-        file=cdist-${version}-released.mdwn
-        cd "$WEBBLOG"
+        cd "$dir"
         git add "$file"
-        git commit -m "New cdist version (blogentry): $version" "$file"
-        git push
+        # Allow git commit to fail if there are no changes
+        git commit -m "cdist blog update: $version" "$blogfile" || true
     ;;
 
-    release-ml)
-        version=$($0 changelog-version)
+    ml-release)
+        version=$1; shift
+
         to_a=cdist
         to_d=l.schottelius.org
         to=${to_a}@${to_d}
@@ -165,7 +126,7 @@ cdist $version has been released with the following changes:
 
 eof
 
-        "$0" changelog-changes
+        "$0" changelog-changes "$version"
         cat << eof
 
 Cheers,
@@ -179,32 +140,8 @@ eof
     ;;
 
 
-    dist-tag)
-        version=$($0 changelog-version)
-        # add tag
-        printf "Enter tag description for %s> " "$version"
-        read tagmessage
-        git tag "$version" -m "$tagmessage"
-    ;;
-
-    dist-branch-merge)
-        version=$($0 changelog-version)
-        target_branch=${version%\.*}
-        current_branch=$(git rev-parse --abbrev-ref HEAD)
-
-        if [ "$target_branch" = "$current_branch" ]; then
-            echo "Skipping merge, already on destination branch"
-        else
-            printf "Press enter to git merge $current_branch into \"$target_branch\" > "
-            read prompt
-            git checkout "$target_branch"
-            git merge "$current_branch"
-            git checkout "$current_branch"
-        fi
-   ;;
-
-    release-freecode)
-        version=$($0 changelog-version)
+    freecode-release)
+        version=$1; shift
         api_token=$(awk '/machine freecode login/ { print $8 }' ~/.netrc)
 
         printf "Enter tag list for freecode release %s> " "$version"
@@ -236,61 +173,7 @@ eof
 
     ;;
 
-    dist-speeches)
-        cd "$SPEECHESDIR"
-        for speech in *tex; do
-            pdflatex "$speech"
-            pdflatex "$speech"
-            pdflatex "$speech"
-        done
-    ;;
-        
-    web-doc)
-        rsync -av "${basedir}/docs/web/" "${WEBTOPDIR}"
-
-        cd "${WEBDIR}" && git add "${WEBBASE}"
-        cd "${WEBDIR}" && git commit -m "cdist update" "${WEBBASE}" "${WEBPAGE}"
-        cd "${WEBDIR}" && make pub
-    ;;
-
-    release-web)
-        set -e
-        # Fix ikiwiki, which does not like symlinks for pseudo security
-        ssh tee.schottelius.org \
-          "cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man &&
-                rm -f latest && ln -sf "$version" latest"
-    ;;
-
-     pub)
-          for remote in "" github sf; do
-                echo "Pushing to $remote"
-                git push --mirror $remote
-          done
-    ;;
-
-    clean)
-        rm -f ${MAN7DSTDIR}/cdist-reference.text
-
-        find "${MANDIR}" -mindepth 2 -type l \
-            -o -name "*.1" \
-            -o -name "*.7" \
-            -o -name "*.html" \
-            -o -name "*.xml" \
-        | xargs rm -f
-
-        find * -name __pycache__  | xargs rm -rf
-    ;;
-    distclean)
-        rm -f cdist/version.py MANIFEST PKGBUILD
-        rm -rf cache/ dist/
-
-        # Archlinux
-        rm -f cdist-*.pkg.tar.xz cdist-*.tar.gz
-        rm -rf pkg/ src/
-    ;;
-
     test)
-        shift # skip t
         export PYTHONPATH="$(pwd -P)"
 
         if [ $# -lt 1 ]; then
@@ -299,12 +182,13 @@ eof
             python3 -m unittest "$@"
         fi
     ;;
+
     version)
         echo "VERSION = \"$(git describe)\"" > cdist/version.py
     ;;
 
     *)
-        echo "Unknown target $@ - aborting"
+        echo "Unknown helper target $@ - aborting"
         exit 1
     ;;
 

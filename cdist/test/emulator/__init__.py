@@ -83,6 +83,13 @@ class EmulatorTestCase(test.CdistTestCase):
         emu = emulator.Emulator(argv, env=self.env)
         self.assertRaises(core.cdist_object.MissingObjectIdError, emu.run)
 
+    def test_no_singleton_no_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        self.env['require'] = '__test_singleton'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        # If reached here, everything is fine
+
     def test_singleton_object_requirement(self):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__issue'
@@ -118,7 +125,7 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         initial_manifest = os.path.join(self.local.manifest_path, "init")
         self.manifest.run_initial_manifest(initial_manifest)
         cdist_type = core.CdistType(self.local.type_path, '__saturn')
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'singleton')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path)
         self.manifest.run_type_manifest(cdist_object)
         expected = ['__planet/Saturn', '__moon/Prometheus']
         self.assertEqual(sorted(cdist_object.autorequire), sorted(expected))
@@ -170,7 +177,8 @@ class ArgumentsTestCase(test.CdistTestCase):
         # empty file -> True
         self.assertTrue(cdist_object.parameters['boolean1'] == '')
 
-    def test_required(self):
+    def test_required_arguments(self):
+        """check whether assigning required parameter works"""
         type_name = '__arguments_required'
         object_id = 'some-id'
         value = 'some value'

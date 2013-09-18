@@ -141,28 +141,32 @@ class ConfigInstall(object):
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.state = core.CdistObject.STATE_PREPARED
 
-    def object_run(self, cdist_object, dry_run=False):
+    def object_run(self, cdist_object):
         """Run gencode and code for an object"""
-        self.log.debug("Trying to run object " + cdist_object.name)
+
+        self.log.debug("Trying to run object %s" % (cdist_object.name))
         if cdist_object.state == core.CdistObject.STATE_DONE:
             raise cdist.Error("Attempting to run an already finished object: %s", cdist_object)
 
         cdist_type = cdist_object.cdist_type
 
         # Generate
-        self.log.info("Generating and executing code for " + cdist_object.name)
+        self.log.info("Generating and executing code for %s" % (cdist_object.name))
         cdist_object.code_local = self.code.run_gencode_local(cdist_object)
         cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
         if cdist_object.code_local or cdist_object.code_remote:
             cdist_object.changed = True
 
         # Execute
-        if not dry_run:
+        if not self.dry_run:
             if cdist_object.code_local:
                 self.code.run_code_local(cdist_object)
             if cdist_object.code_remote:
                 self.code.transfer_code_remote(cdist_object)
                 self.code.run_code_remote(cdist_object)
+        else:
+            self.log.info("Skipping code execution due to DRY RUN")
+
 
         # Mark this object as done
         self.log.debug("Finishing run of " + cdist_object.name)

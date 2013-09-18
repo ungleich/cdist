@@ -27,3 +27,5 @@ cdist/version.py
 /pkg
 /src
 build
+.lock-*
+.git-current-branch

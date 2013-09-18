@@ -4,11 +4,20 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-next:
+2.2.0: 2013-07-12
+	* Build: Cleanup the Makefile
+	* Type __package_opkg: Use shortcut version
+	* Core: Remove old pseudo object id "singleton" (Steven Armstrong)
+
+2.1.2: 2013-07-09
 	* Build: Change clean-dist target to "distclean"
+	* Build: Moved a lot of build logic into Makefile for dependency resolution
 	* Core: Make global explorers available to initial manifest (Arkaitz Jimenez)
 	* Core: Change execution order to run object as one unit
+	* Documentation: Improved documentation (Tomáš Pospíšek)
 	* New Remote Example: Add support for sudo operations (Chase James)
+	* New Type: __update_alternatives
+	* New Type: __cdist
 	* Type __apt_ppa: Fix comparison operator (Tyler Akins)
 	* Type __start_on_boot: Archlinux changed to use systemd - adapt type
 	* Type __git: Missing quotes added (Chase James)
@@ -16,7 +25,6 @@ next:
 	* Type __postgres_role: Make state parameter optional, fix password bug (Chase James)
 	* Type __process: Make state parameter optional
 	* Type __cron: Simplyfied and syntax change
-	* New Type: __update_alternatives
 
 2.1.1: 2013-04-08
 	* Core: Use dynamic dependency resolver to allow indirect self dependencies

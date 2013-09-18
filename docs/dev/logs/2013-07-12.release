@@ -1,0 +1,38 @@
+- setup release date in docs/changelog to today manually
+
+- checkout master branch
+    [
+    x check if date is correct in docs/changelog
+    x ensure all unittests work
+        - requires (wrong/outdated) versionfile!
+    x compile manpages 
+    x compile speeches 
+    ]
+        [
+        x add manpages to website repo
+        x add speeches to website repo
+        x rsync cdist docs to website repo & add to website repo
+        x create blog entry & add to website repo
+        ]
+            x upload website
+                x fix latest link for manpages
+                    x send mail to mailinglist -> also requires git tag & git release
+                        x should also require web-release including blog!
+
+        - create PKGBUILD for archlinux release
+
+        x create git tag / read description
+            t if necessary create version branch
+                x change to version branch and merge tag!
+                    x update git repos
+                        x update website from repo
+                            x create release on freecode
+
+            x create versionfile
+                x make pypi release
+                    x make archlinux release
+
+manual last steps:
+
+- announce on linkedin
+- announce on twitter
