@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -19,53 +20,84 @@
 #
 
 destination="/$__object_id"
+state_should="$(cat "$__object/parameter/state")"
+type="$(cat "$__object/explorer/type")"
+stat_file="$__object/explorer/stat"
 
-state_is="$(cat "$__object/explorer/state")"
-owner_is="$(cat "$__object/explorer/owner")"
-group_is="$(cat "$__object/explorer/group")"
-mode_is="$(cat "$__object/explorer/mode")"
+# variable to keep track if we have to set directory attributes
+set_attributes=
 
-state_should="present"
-[ -f "$__object/parameter/state" ]     && state_should="$(cat "$__object/parameter/state")"
-mode=""
-[ -f "$__object/parameter/mode" ]      && mode="$(cat "$__object/parameter/mode")"
-owner=""
-[ -f "$__object/parameter/owner" ]     && owner="$(cat "$__object/parameter/owner")"
-group=""
-[ -f "$__object/parameter/group" ]     && group="$(cat "$__object/parameter/group")"
 mkdiropt=""
-[ -f "$__object/parameter/parents" ]   && mkdiropt="-p"
+[ -f "$__object/parameter/parents" ] && mkdiropt="-p"
+
 recursive=""
-[ -f "$__object/parameter/recursive" ] && recursive="-R"
+if [ -f "$__object/parameter/recursive" ]; then
+   recursive="-R"
+   # need to allways set attributes when recursive is given
+   # as we don't want to check all subfolders/files
+   set_attributes=1
+fi
+
+get_current_value() {
+   if [ -s "$stat_file" ]; then
+      _name="$1"
+      _value="$2"
+      case "$_value" in
+         [0-9]*)
+            _index=2
+         ;;
+         *)
+            _index=3
+         ;;
+      esac
+      awk '/'"$_name"':/ { print $'$_index' }' "$stat_file"
+      unset _name _value _index
+   fi
+}
+
+set_group() {
+   echo chgrp $recursive \"$1\" \"$destination\"
+}
+
+set_owner() {
+   echo chown $recursive \"$1\" \"$destination\"
+}
+
+set_mode() {
+   echo chmod $recursive \"$1\" \"$destination\"
+}
 
 case "$state_should" in
-    present)
-        if [ "$state_is" != "present" ]; then
-            echo mkdir $mkdiropt \"$destination\"
-        fi
+   present)
+      if [ "$type" != "directory" ];
+         # our destination is not a directory, remove whatever is there
+         # and then create our directory and set all attributes
+         set_attributes=1
+         cat << DONE
+rm -f "$destination"
+mkdir "$mkdiropt" "$destination"
+DONE
+      fi
 
-        # Mode settings
-        if [ "$mode" ] && [ "$mode_is" != "$mode" -o -n "$recursive" ]; then
-            echo chmod $recursive \"$mode\" \"$destination\"
-        fi
-
-        # Group
-        if [ "$group" ] && [ "$group_is" != "$group" -o -n "$recursive" ]; then
-            echo chgrp $recursive \"$group\" \"$destination\"
-        fi
-
-        # Owner
-        if [ "$owner" ] && [ "$owner_is" != "$owner" -o -n "$recursive" ]; then
-            echo chown $recursive \"$owner\" \"$destination\"
-        fi
-    ;;
-    absent)
-        if [ "$state_is" != "absent" ]; then
-          echo rm -rf \"$destination\"
-        fi
-    ;;
-    *)
-        echo "Unknown state: $state_should" >&2
-        exit 1
-    ;;
+      # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
+      # clearing S_ISUID and S_ISGID bits (see chown(2))
+      for attribute in group owner mode; do
+         if [ -f "$__object/parameter/$attribute" ]; then
+            value_should="$(cat "$__object/parameter/$attribute")"
+            value_is="$(get_current_value "$attribute" "$value_should")"
+            if [ "$set_attributes" -o "$value_should" != "$value_is" ]; then
+               "set_$attribute" "$value_should"
+            fi
+         fi
+      done
+   ;;
+   absent)
+      if [ "$type" = "directory" ]; then
+         echo rm -rf \"$destination\"
+      fi
+   ;;
+   *)
+      echo "Unknown state: $state_should" >&2
+      exit 1
+   ;;
 esac
