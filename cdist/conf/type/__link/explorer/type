@@ -1,0 +1,26 @@
+#!/bin/sh
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
+
+destination="/$__object_id"
+
+if [ ! -e "$destination" ]; then
+   echo none
+elif [ -h "$destination" ]; then
+   echo symlink
+elif [ -f "$destination" ]; then
+   type="$(cat "$__object/parameter/type")"
+   case "$type" in
+      hard)
+         link_count=$(ls -l "$destination" | awk '{ print $2 }')
+         if [ $link_count -gt 1 ]; then
+            echo hardlink
+            exit 0
+         fi
+      ;;
+   esac
+   echo file
+elif [ -d "$destination" ]; then
+   echo directory
+else
+   echo unknown
+fi
