@@ -1,0 +1,26 @@
+#!/bin/sh
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
+
+destination="/$__object_id"
+
+# nothing to work with, nothing we could do
+[ -e "$destination" ] || exit 0
+
+os=$("$__explorer/os")
+case "$os" in
+   "freebsd")
+      # FIXME: should be something like this based on man page, but can not test
+      stat -f "type: %ST
+owner: %Du %Su
+group: %Dg %Sg
+mode: %Op %Sp
+" "$destination"
+   ;;
+   *)
+      stat --printf="type: %F
+owner: %u %U
+group: %g %G
+mode: %a %A
+" "$destination"
+   ;;
+esac
