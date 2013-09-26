@@ -7,6 +7,12 @@ Changelog
 2.3.4:
 	* Core: Add missing bits to support dry run (Steven Armstrong)
 	* Core: Make unit test remote copy more compatible with scp (Steven Armstrong)
+	* New Type: __postfix (Steven Armstrong)
+	* New Type: __postfix_master (Steven Armstrong)
+	* New Type: __postfix_postconf (Steven Armstrong)
+	* New Type: __postfix_postmap (Steven Armstrong)
+	* New Type: __postfix_reload (Steven Armstrong)
+	* Type __line: Ensure regex does not contain / 
 
 
 2.3.3: 2013-09-09

@@ -49,6 +49,10 @@ case "$state_should" in
 
         [ "$line" ] && regex="^$line\$"
 
+        # Replace all / with \/
+        regex=$(echo "$regex" | sed 's;/;\\/;g')
+        echo $regex >&2
+
         cat << eof
 tmp=\$(mktemp)
 sed '/$regex/d' "$file" > \$tmp && cat "\$tmp" > "$file" && rm -f "\$tmp"
