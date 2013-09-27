@@ -13,6 +13,7 @@ Changelog
 	* New Type: __postfix_postmap (Steven Armstrong)
 	* New Type: __postfix_reload (Steven Armstrong)
 	* Type __line: Ensure regex does not contain / 
+	* Type __ssh_authorized_keys: Bugfix: Preserve ownership (Steven Armstrong)
 
 
 2.3.3: 2013-09-09
