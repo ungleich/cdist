@@ -47,7 +47,7 @@ remove_entry() {
    prefix="#cdist:$__object_name"
    suffix="#/cdist:$__object_name"
    cat << DONE
-tmpfile=\$(mktemp)
+tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
 # preserve ownership and permissions by copying existing file over tmpfile
 cp -p "$file" "\$tmpfile"
 awk -v prefix="$prefix" -v suffix="$suffix" '
