@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.3.4:
+2.3.4: 2013-10-03
 	* Core: Add missing bits to support dry run (Steven Armstrong)
 	* Core: Make unit test remote copy more compatible with scp (Steven Armstrong)
 	* New Type: __postfix (Steven Armstrong)
@@ -14,7 +14,6 @@ Changelog
 	* New Type: __postfix_reload (Steven Armstrong)
 	* Type __line: Ensure regex does not contain / 
 	* Type __ssh_authorized_keys: Bugfix: Preserve ownership (Steven Armstrong)
-
 
 2.3.3: 2013-09-09
 	* Core: Add support for default values of optional parameters (Steven Armstrong)
