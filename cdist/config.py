@@ -193,7 +193,7 @@ class Config(object):
                     self.object_run(cdist_object)
                     objects_changed = True
             except cdist.Error as e:
-                raise cdist.CdistObjectError(cdist_object, str(e))
+                raise cdist.CdistObjectError(cdist_object, e)
 
         return objects_changed
 
