@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -98,7 +98,7 @@ class Remote(object):
         command.extend(["-r", source, self.target_host + ":" + destination])
         self._run_command(command)
 
-    def run_script(self, script, env=None, return_output=False):
+    def run_script(self, script, env=None, return_output=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
         """Run the given script with the given environment on the remote side.
         Return the output as a string.
 
@@ -107,9 +107,9 @@ class Remote(object):
         command = ["/bin/sh", "-e"]
         command.append(script)
 
-        return self.run(command, env, return_output)
+        return self.run(command, env=env, return_output=return_output, stdout=stdout, stderr=stderr)
 
-    def run(self, command, env=None, return_output=False):
+    def run(self, command, env=None, return_output=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
         """Run the given command with the given environment on the remote side.
         Return the output as a string.
 
@@ -127,14 +127,17 @@ class Remote(object):
 
         cmd.extend(command)
 
-        return self._run_command(cmd, env=env, return_output=return_output)
+        return self._run_command(cmd, env=env, return_output=return_output, stdout=stdout, stderr=stderr)
 
-    def _run_command(self, command, env=None, return_output=False):
+    def _run_command(self, command, env=None, return_output=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
         """Run the given command with the given environment.
         Return the output as a string.
 
         """
         assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
+
+        if return_output and stdout is not subprocess.PIPE:
+            self.log.warn("return_output is True, ignoring stdout")
 
         # export target_host for use in __remote_{exec,copy} scripts
         os_environ = os.environ.copy()
@@ -143,9 +146,9 @@ class Remote(object):
         self.log.debug("Remote run: %s", command)
         try:
             if return_output:
-                return subprocess.check_output(command, env=os_environ).decode()
+                return subprocess.check_output(command, env=os_environ, stderr=stderr).decode()
             else:
-                subprocess.check_call(command, env=os_environ)
+                subprocess.check_call(command, env=os_environ, stdout=stdout, stderr=stderr)
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:

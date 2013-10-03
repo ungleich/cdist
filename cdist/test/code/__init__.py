@@ -36,13 +36,14 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, 'conf')
 
+
 class CodeTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.local_dir = self.mkdtemp()
 
         self.local = local.Local(
-            target_host=self.target_host, 
+            target_host=self.target_host,
             base_path = self.local_dir,
             exec_path = cdist.test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
@@ -52,8 +53,8 @@ class CodeTestCase(test.CdistTestCase):
         remote_exec = self.remote_exec
         remote_copy = self.remote_copy
         self.remote = remote.Remote(
-            target_host=self.target_host, 
-            remote_exec=remote_exec, 
+            target_host=self.target_host,
+            remote_exec=remote_exec,
             remote_copy=remote_copy,
             base_path=self.remote_dir)
         self.remote.create_files_dirs()

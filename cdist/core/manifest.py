@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -141,5 +141,11 @@ class Manifest(object):
 
     def run_type_manifest(self, cdist_object):
         type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
+        which = 'manifest'
         if os.path.isfile(type_manifest):
-           self.local.run_script(type_manifest, env=self.env_type_manifest(cdist_object))
+            with open(os.path.join(cdist_object.stderr_path, which), 'ba') as stderr, \
+                open(os.path.join(cdist_object.stdout_path, which), 'ba') as stdout:
+                self.local.run_script(type_manifest,
+                    env=self.env_type_manifest(cdist_object),
+                    stdout=stdout, stderr=stderr
+                )

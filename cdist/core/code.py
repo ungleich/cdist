@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -104,7 +104,8 @@ class Code(object):
                 '__object_id': cdist_object.object_id,
                 '__object_name': cdist_object.name,
             })
-            return self.local.run_script(script, env=env, return_output=True)
+            with open(os.path.join(cdist_object.stderr_path, 'gencode-'+ which), 'ba') as stderr:
+                return self.local.run_script(script, env=env, return_output=True, stderr=stderr)
 
     def run_gencode_local(self, cdist_object):
         """Run the gencode-local script for the given cdist object."""
@@ -128,7 +129,9 @@ class Code(object):
     def _run_code(self, cdist_object, which):
         which_exec = getattr(self, which)
         script = os.path.join(which_exec.object_path, getattr(cdist_object, 'code_%s_path' % which))
-        return which_exec.run_script(script)
+        with open(os.path.join(cdist_object.stderr_path, 'code-'+ which), 'ba') as stderr, \
+            open(os.path.join(cdist_object.stdout_path, 'code-'+ which), 'ba') as stdout:
+            return which_exec.run_script(script, stdout=stdout, stderr=stderr)
 
     def run_code_local(self, cdist_object):
         """Run the code-local script for the given cdist object."""

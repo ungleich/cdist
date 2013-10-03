@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -79,6 +79,8 @@ class CdistObject(object):
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
+        self.stdout_path = os.path.join(self.absolute_path, "stdout")
+        self.stderr_path = os.path.join(self.absolute_path, "stderr")
 
     @classmethod
     def list_objects(cls, object_base_path, type_base_path):
@@ -164,7 +166,7 @@ class CdistObject(object):
     def __eq__(self, other):
         """define equality as 'name is the same'"""
         return self.name == other.name
-    
+
     def __hash__(self):
         return hash(self.name)
 
@@ -216,9 +218,12 @@ class CdistObject(object):
         """Create this cdist object on the filesystem.
         """
         try:
-            os.makedirs(self.absolute_path, exist_ok=False)
-            absolute_parameter_path = os.path.join(self.base_path, self.parameter_path)
-            os.makedirs(absolute_parameter_path, exist_ok=False)
+            for path in (self.absolute_path,
+                    os.path.join(self.base_path, self.parameter_path),
+                    self.stdout_path,
+                    self.stderr_path
+                ):
+                os.makedirs(path, exist_ok=False)
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 

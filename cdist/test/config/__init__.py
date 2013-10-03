@@ -38,6 +38,20 @@ object_base_path = op.join(fixtures, 'object')
 type_base_path = op.join(fixtures, 'type')
 add_conf_dir = op.join(fixtures, 'conf')
 
+
+class CdistObjectErrorContext(object):
+    def __init__(self, original_error):
+        self.original_error = original_error
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, tb):
+        if exc_type is not None:
+            if exc_value.original_error:
+                raise exc_value.original_error
+
+
 class ConfigRunTestCase(test.CdistTestCase):
 
     def setUp(self):
@@ -78,6 +92,19 @@ class ConfigRunTestCase(test.CdistTestCase):
         os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
 
+    def assertRaisesCdistObjectError(self, original_error, callable_obj):
+        """
+        Test if a raised CdistObjectError was caused by the given original_error.
+        """
+        with self.assertRaises(original_error):
+            try:
+                callable_obj()
+            except cdist.CdistObjectError as e:
+                if e.original_error:
+                    raise e.original_error
+                else:
+                    raise
+
     def test_dependency_resolution(self):
         first   = self.object_index['__first/man']
         second  = self.object_index['__second/on-the']
@@ -103,6 +130,8 @@ class ConfigRunTestCase(test.CdistTestCase):
             pass
         self.assertTrue(first.state == first.STATE_DONE)
 
+
+
     def test_unresolvable_requirements(self):
         """Ensure an exception is thrown for unresolvable depedencies"""
 
@@ -113,29 +142,25 @@ class ConfigRunTestCase(test.CdistTestCase):
         first.requirements = [second.name]
         second.requirements = [first.name]
 
-        with self.assertRaises(cdist.UnresolvableRequirementsError):
-            self.config.iterate_until_finished()
+        self.assertRaisesCdistObjectError(cdist.UnresolvableRequirementsError, self.config.iterate_until_finished)
 
     def test_missing_requirements(self):
         """Throw an error if requiring something non-existing"""
         first = self.object_index['__first/man']
         first.requirements = ['__first/not/exist']
-        with self.assertRaises(cdist.UnresolvableRequirementsError):
-            self.config.iterate_until_finished()
+        self.assertRaisesCdistObjectError(cdist.UnresolvableRequirementsError, self.config.iterate_until_finished)
 
     def test_requirement_broken_type(self):
         """Unknown type should be detected in the resolving process"""
         first = self.object_index['__first/man']
         first.requirements = ['__nosuchtype/not/exist']
-        with self.assertRaises(cdist.core.cdist_type.NoSuchTypeError):
-            self.config.iterate_until_finished()
+        self.assertRaisesCdistObjectError(cdist.core.cdist_type.NoSuchTypeError, self.config.iterate_until_finished)
 
     def test_requirement_singleton_where_no_singleton(self):
         """Missing object id should be detected in the resolving process"""
         first = self.object_index['__first/man']
         first.requirements = ['__first']
-        with self.assertRaises(cdist.core.cdist_object.MissingObjectIdError):
-            self.config.iterate_until_finished()
+        self.assertRaisesCdistObjectError(cdist.core.cdist_object.MissingObjectIdError, self.config.iterate_until_finished)
 
 # Currently the resolving code will simply detect that this object does
 # not exist. It should probably check if the type is a singleton as well
