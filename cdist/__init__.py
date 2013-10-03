@@ -56,10 +56,14 @@ class UnresolvableRequirementsError(cdist.Error):
 
 class CdistObjectError(Error):
     """Something went wrong while working on a specific cdist object"""
-    def __init__(self, cdist_object, message=''):
+    def __init__(self, cdist_object, subject=''):
         self.cdist_object = cdist_object
         self.object_name = cdist_object.name.center(len(cdist_object.name)+2)
-        self.message = message
+        if isinstance(subject, Error):
+            self.original_error = subject
+        else:
+            self.original_error = None
+        self.message = str(subject)
         self.line_length = 74
 
     @property
