@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+2.3.5:
+	* Documentation: Updated manpages of __package and __file (Alex Greif)
+
 2.3.4: 2013-10-03
 	* Core: Add missing bits to support dry run (Steven Armstrong)
 	* Core: Make unit test remote copy more compatible with scp (Steven Armstrong)
