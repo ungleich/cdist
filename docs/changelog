@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.3.5:
+2.3.5: 2013-10-10
 	* Documentation: Updated manpages of __package and __file (Alex Greif)
 	* Documentation: Add more exapmles to cdist-manifest (Dan Levin)
 	* Type __package_apt: Do not install recommends by default
