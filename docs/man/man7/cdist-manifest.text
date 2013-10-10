@@ -151,6 +151,17 @@ The manifest of the type "nologin" may look like this:
 __file /etc/nologin --source "$__type/files/default.nologin"
 --------------------------------------------------------------------------------
 
+This example makes use of dependencies:
+
+--------------------------------------------------------------------------------
+# Ensure that lighttpd is installed
+__package lighttpd --state present
+# Ensure that munin makes use of lighttpd instead of the default webserver
+# package as decided by the package manager
+require="__package/lighttpd" __package munin --state present
+--------------------------------------------------------------------------------
+
+
 
 SEE ALSO
 --------

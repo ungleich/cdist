@@ -42,7 +42,7 @@ case "$state_is" in
     ;;
 esac
 
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends"
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o DPkg::Options::=\"--force-confold\""
 
 [ "$state_is" = "$state_should" ] && exit 0
 
