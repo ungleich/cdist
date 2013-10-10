@@ -18,10 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# This is based on other/examples/remote/local/, but uses --dereference for the
-# test cases
-#
 
-code="$(echo "$@" | sed "s|\([[:space:]]+\)$__target_host:|\1|g")"
+code="$(echo "$@" | sed "s|\([[:space:]]\)$__target_host:|\1|g")"
 cp --dereference $code

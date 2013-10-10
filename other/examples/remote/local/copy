@@ -20,5 +20,5 @@
 #
 #
 
-code="$(echo "$@" | sed "s|\([[:space:]]+\)$__target_host:|\1|g")"
+code="$(echo "$@" | sed "s|\([[:space:]]\)$__target_host:|\1|g")"
 cp --dereference $code
