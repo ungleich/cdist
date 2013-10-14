@@ -1,0 +1,37 @@
+cat << eof
+
+archive="/usr/lib/locale/locale-archive"
+
+regen=no
+
+if [ -f "$archive" ]; then
+    config_time=\$(stat --format "%Z" /etc/locale.gen)
+    archive_time=\$(stat --format "%Z" \"\$archive\")
+
+    if [ "$config_time" -gt "$archive_time" ]; then
+        regen=yes
+    fi
+else
+    regen=yes
+fi
+    
+if [ "\$regen" = yes ]; then
+    locale-gen
+fi
+
+eof
+
+
+## probably not needed, it seems to be /usr/lib/locale/locale-archive
+## everwhere!
+
+# tmp=\$(mktemp /tmp/cdist.XXXXXXXX)
+# find /usr/lib/locale -mindepth 1 > \$tmp
+# while read archive; do
+#     archive_time=\$(stat --format "%Z" "\$archive\")
+# 
+#     if [ "\$config_time" -gt "\$archive_time" ]; then
+#         regen=yes
+#         break
+#     fi
+# done < "$\tmp"

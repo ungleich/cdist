@@ -1,0 +1,50 @@
+cdist-type__locale(7)
+=====================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__locale - Configure locales
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to setup the locales.
+
+
+REQUIRED MULTIPLE PARAMETERS
+----------------------------
+name::
+    Specify the locale to be present
+    
+
+OPTIONAL PARAMETERS
+-------------------
+state::
+   'present' or 'absent'
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Configure locales en_US and de_CH, both as UTF8
+__locale --name "en_US.UTF-8 UTF-8" \
+         --name "de_CH.UTF-8 UTF-8" \
+         de_DE.UTF-8 UTF-8  
+
+
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- locale(1)
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2013 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

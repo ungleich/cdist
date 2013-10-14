@@ -1,0 +1,8 @@
+locales=$(cat "$__object/parameter/name")
+state=$(cat "$__object/parameter/state")
+
+__package locales --state $state
+
+__file /etc/locale.gen \
+    --mode 0644 \
+    --source "$__object/parameter/name"
