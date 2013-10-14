@@ -62,24 +62,15 @@ case "$state_should" in
          destination_upload="$(cat "$__object/files/destination_upload")"
          set_attributes=1
          if [ "$type" = "directory" ]; then
-            # our destination is currently a directory, move it out of the way,
+            # our destination is currently a directory, delete it
             cat << DONE
-destination_old="\$(mktemp "${destination}.cdist.XXXXXXXXXX")"
-mv "$destination" "\$destination_old"
+rm -rf "$destination"
 DONE
          fi
-
          # move our upload into place
          cat << DONE
 mv "$destination_upload" "$destination"
 DONE
-
-         if [ "$type" = "directory" ]; then
-            # delete the legacy directory
-            cat << DONE
-rm -rf "\$destination_old"
-DONE
-         fi
       fi
 
       # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
@@ -96,7 +87,6 @@ DONE
    ;;
 
    absent)
-      # FIXME: only delete if it's a file? or no matter what?
       if [ "$type" = "file" ]; then
          echo rm -f \"$destination\"
       fi
