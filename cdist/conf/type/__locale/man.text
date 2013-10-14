@@ -10,14 +10,8 @@ cdist-type__locale - Configure locales
 
 DESCRIPTION
 -----------
-This cdist type allows you to setup the locales.
+This cdist type allows you to setup locales.
 
-
-REQUIRED MULTIPLE PARAMETERS
-----------------------------
-name::
-    Specify the locale to be present
-    
 
 OPTIONAL PARAMETERS
 -------------------
@@ -29,18 +23,21 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Configure locales en_US and de_CH, both as UTF8
-__locale --name "en_US.UTF-8 UTF-8" \
-         --name "de_CH.UTF-8 UTF-8" \
-         de_DE.UTF-8 UTF-8  
+# Add locale de_CH.UTF-8
+__locale de_CH.UTF-8
 
+# Same as above, but more explicit
+__locale de_CH.UTF-8 --state present
 
+# Remove colourful British English
+__locale en_GB.UTF-8 --state absent
 --------------------------------------------------------------------------------
 
 
 SEE ALSO
 --------
 - locale(1)
+- localedef(1)
 - cdist-type(7)
 
 

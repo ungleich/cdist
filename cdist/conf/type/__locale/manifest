@@ -1,8 +1,32 @@
-locales=$(cat "$__object/parameter/name")
-state=$(cat "$__object/parameter/state")
+#!/bin/sh
+#
+# 2013 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Install required packages 
+#
 
-__package locales --state $state
+os=$(cat "$__global/explorer/os")
 
-__file /etc/locale.gen \
-    --mode 0644 \
-    --source "$__object/parameter/name"
+
+case "$os" in
+    debian)
+        # Debian needs a seperate package
+        __package locales --state present
+    ;;
+esac
