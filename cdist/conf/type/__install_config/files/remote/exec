@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -35,39 +35,14 @@ target_host="$__target_host"
 shift
 
 ssh="ssh -o User=root -q $target_host"
-scp="scp -o User=root -q"
+code="$ssh chroot $chroot sh -c '$@'"
 
-local_script=$(mktemp "/tmp/chroot-${0##*/}.XXXXXXXXXX")
-remote_script=$($ssh mktemp "${chroot}/tmp/chroot-${0##*/}.XXXXXXXXXX")
-relative_script="${remote_script#$chroot}"
-trap cleanup INT TERM EXIT
-cleanup() {
-   [ $__cdist_debug ] || {
-      rm "$local_script"
-      $ssh "rm $remote_script";
-   }
-}
-
-log "chroot: $chroot"
 log "target_host: $target_host"
-log "local_script: $local_script"
-log "remote_script: $remote_script"
-log "relative_script: $relative_script"
+log "chroot: $chroot"
 log "@: $@"
-cat > "$local_script" << DONE
-#!/bin/sh -l
-# FIXME: fix the dependency bug, then test if the below is required or not
-#if [ -f /etc/environment ]; then
-#   . /etc/environment
-#fi
-$@
-DONE
+log "code: $code"
 
-# Upload script to target
-$scp $local_script $target_host:$remote_script
-$ssh "chmod +x $remote_script"
-
-# run in chroot
-$ssh "chroot $chroot $relative_script"
+# Run the code
+$code
 
 log "-----"
