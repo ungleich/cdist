@@ -1,0 +1,42 @@
+cdist-type__install_partition_msdos_apply(7)
+============================================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__install_partition_msdos_apply - Apply dos partition settings
+
+
+DESCRIPTION
+-----------
+Create the partitions defined with __install_partition_msdos
+
+
+REQUIRED PARAMETERS
+-------------------
+None
+
+
+OPTIONAL PARAMETERS
+-------------------
+None.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__install_partition_msdos_apply
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__install_partition_msdos_apply(7)
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

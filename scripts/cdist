@@ -26,6 +26,7 @@ def commandline():
 
     import cdist.banner
     import cdist.config
+    import cdist.install
     import cdist.shell
 
     # Construct parser others can reuse
@@ -67,6 +68,8 @@ def commandline():
          help='Do not execute code', action='store_true')
     parser['config'].add_argument('-o', '--out-dir',
          help='Directory to save cdist output in', dest="out_path")
+    parser['config'].add_argument('-r', '--remote-out-dir',
+         help='Directory to save cdist output in on the target host', dest="remote_out_path")
     parser['config'].add_argument('-p', '--parallel',
          help='Operate on multiple hosts in parallel',
          action='store_true', dest='parallel')
@@ -90,6 +93,10 @@ def commandline():
          help='Select shell to use, defaults to current shell')
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
 
+    # Install
+    parser['install'] = parser['sub'].add_parser('install', add_help=False,
+        parents=[parser['config']])
+    parser['install'].set_defaults(func=cdist.install.Install.commandline)
 
     for p in parser:
         parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"

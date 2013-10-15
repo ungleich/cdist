@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+get_type_from_mkfs() {
+   _device="$1"
+   for mkfs_object in $(find "$__global/object/__install_mkfs" -path "*.cdist"); do
+      mkfs_device="$(cat "$mkfs_object/parameter/device")"
+      if [ "$_device" = "$mkfs_device" ]; then
+         cat "$mkfs_object/parameter/type"
+         break
+      fi
+   done
+   unset _device
+   unset mkfs_device
+   unset mkfs_object
+}
+
+device="$(cat "$__object/parameter/device")"
+dir="$(cat "$__object/parameter/dir")"
+prefix="$(cat "$__object/parameter/prefix")"
+if [ -f "$__object/parameter/type" ]; then
+   type="$(cat "$__object/parameter/type")"
+else
+   type="$(get_type_from_mkfs "$device")"
+   # store for later use by others
+   echo "$type" > "$__object/parameter/type"
+fi
+[ -n "$type" ] || die "Can't determine type for $__object"
+if [ "$type" = "swap" ]; then
+   echo "swapon \"$device\""
+else
+   if [ -f "$__object/parameter/options" ]; then
+      options="$(cat "$__object/parameter/options")"
+   else
+      options=""
+   fi
+   [ -n "$options" ] && options="-o $options"
+   mount_point="${prefix}${dir}"
+
+   echo "[ -d \"$mount_point\" ] || mkdir -p \"$mount_point\""
+   echo "mount -t \"$type\" $options \"$device\" \"$mount_point\""
+fi

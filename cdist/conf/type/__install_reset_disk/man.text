@@ -1,0 +1,43 @@
+cdist-type__install_reset_disk(7)
+=================================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__install_reset_disk - reset a disk
+
+
+DESCRIPTION
+-----------
+Remove partition table.
+Remove all lvm labels.
+Remove mdadm superblock.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+OPTIONAL PARAMETERS
+-------------------
+None.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__install_reset_disk /dev/sdb
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

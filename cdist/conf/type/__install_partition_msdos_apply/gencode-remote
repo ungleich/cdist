@@ -1,0 +1,159 @@
+#!/bin/sh
+#
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+die() {
+   echo "[__install_partition_msdos_apply] $@" >&2
+   exit 1
+}
+debug() {
+   #echo "[__install_partition_msdos_apply] $@" >&2
+   :
+}
+
+# Convert a size specifier 1G 100M or 50% into the corresponding numeric MB.
+size_to_mb() {
+   local size=$1
+   local available_size="$2"
+
+   local number_suffix="$(echo ${size} | sed -e 's:\.[0-9]\+::' -e 's:\([0-9]\+\)\([KkMmGg%]\)[Bb]\?:\1|\2:')"
+   local number="$(echo ${number_suffix} | cut -d '|' -f1)"
+   local suffix="$(echo ${number_suffix} | cut -d '|' -f2)"
+
+   case "$suffix" in
+      K|k)
+         size="$(( $number / 1024 ))"
+         ;;
+      M|m)
+         size="$number"
+         ;;
+      G|g)
+         size="$(( $number * 1024 ))"
+         ;;
+      %)
+         size="$(( $available_size * $number / 100 ))"
+         ;;
+      *)
+         size="-1"
+   esac
+   echo "$size"
+}
+
+get_objects() {
+   objects_file=$(mktemp)
+   for object in $(find "$__global/object/__install_partition_msdos" -path "*.cdist"); do
+      object_device="$(cat "$object/parameter/device")"
+      object_minor="$(cat "$object/parameter/minor")"
+      echo "$object_device $object_minor $object" >> $objects_file
+   done
+   sort -k 1,2 $objects_file | cut -d' ' -f 3
+   rm $objects_file
+   unset objects_file
+   unset object
+   unset object_device
+   unset object_minor
+}
+
+# include function library for use on target
+cat "$__type/files/lib.sh"
+
+partitions="$__object/explorer/partitions"
+objects=$(get_objects)
+current_device=""
+available_device_size=
+available_extended_size=
+available_size=
+primary_count=0
+for object in $objects; do
+   device="$(cat "$object/parameter/device")"
+   if [ "$current_device" != "$device" ]; then
+      echo "create_disklabel \"$device\" || die 'Failed to create disklabel for $device'"
+      current_device="$device"
+      device_name=$(echo ${device} | sed -e 's:^/dev/::;s:/:\\/:g')
+      available_device_size=$(( $(awk "/${device_name}\$/ { print \$3; }" "$partitions") / 1024))
+      # make sure we don't go past the end of the drive
+      available_device_size=$((available_device_size - 2))
+      available_extended_size=0
+      primary_count=0
+      debug "----- $device"
+      debug "current_device=$current_device"
+      debug "available_device_size=$available_device_size"
+   fi
+
+   type="$(cat "$object/parameter/type")"
+   partition="$(cat "$object/parameter/partition")"
+   minor="$(cat "$object/parameter/minor")"
+
+   bootable="$(cat "$object/parameter/bootable")"
+   size="$(cat "$object/parameter/size")"
+
+
+   if [ "${minor}" -lt "5" ]; then
+      # Primary partitions
+      primary_count=$(( $primary_count + 1 ))
+      available_size=$available_device_size
+   else
+      # Logical partitions
+      available_size=$available_extended_size
+   fi
+
+   if [ "$size" = "+" ]; then
+      # use rest of device
+      partition_size=""
+      available_size=0
+   else
+      partition_size=$(size_to_mb "$size" "$available_size")
+      available_size="$(( $available_size - $partition_size ))"
+   fi
+
+   if [ "${minor}" -lt "5" ]; then
+      # Primary partitions
+      available_device_size=$available_size
+      if [ "$type" = "extended" -o "$type" = "5" ]; then
+         # Extended partition
+         available_extended_size=$partition_size
+      fi
+   else
+      # Logical paritions
+      available_extended_size=$available_size
+   fi
+
+   [ "$partition_size" = "-1" ] && die "could not translate size '$size' to a usable value"
+   debug "----- $partition"
+   debug "primary_count=$primary_count"
+   debug "current_device=$current_device"
+   debug "device=$device"
+   debug "type=$type"
+   debug "partition=$partition"
+   debug "minor=$minor"
+   debug "bootable=$bootable"
+   debug "size=$size"
+   debug "partition_size=$partition_size"
+   debug "available_size=$available_size"
+   debug "available_device_size=$available_device_size"
+   debug "available_extended_size=$available_extended_size"
+   debug "----------"
+
+   echo "create_partition '$device' '$minor' '$partition_size' '$type' '$primary_count' \
+      || die 'Failed to create partition: $partition'"
+
+   if [ "$bootable" = "true" ]; then
+      echo "toggle_bootable '$device' '$minor' || die 'Failed to toogle bootable flag for partition: $partition'"
+   fi
+done

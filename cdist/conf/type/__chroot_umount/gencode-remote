@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+chroot="/$__object_id"
+
+cat << DONE
+umount -l "${chroot}/tmp"
+umount -l "${chroot}/dev/pts"
+umount -l "${chroot}/dev"
+umount -l "${chroot}/sys"
+umount -l "${chroot}/proc"
+rm -f "${chroot}/etc/resolv.conf"
+if [ -d "${chroot}/etc/resolvconf/resolv.conf.d" ]; then
+   # ensure /etc/resolvconf/resolv.conf.d/tail is not linked to \
+   # e.g. /etc/resolvconf/resolv.conf.d/original
+   rm -f "${chroot}/etc/resolvconf/resolv.conf.d/tail"
+   touch "${chroot}/etc/resolvconf/resolv.conf.d/tail"
+fi
+DONE

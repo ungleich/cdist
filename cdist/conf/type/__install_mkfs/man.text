@@ -1,0 +1,57 @@
+cdist-type__install_mkfs(7)
+===========================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__install_mkfs - build a linux file system
+
+
+DESCRIPTION
+-----------
+This cdist type is a wrapper for the mkfs command.
+
+
+REQUIRED PARAMETERS
+-------------------
+type::
+   The filesystem type to use. Same as used with mkfs -t.
+
+
+OPTIONAL PARAMETERS
+-------------------
+device::
+   defaults to object_id
+
+options::
+   file system-specific options to be passed to the mkfs command
+
+blocks::
+   the number of blocks to be used for the file system
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# reiserfs /dev/sda5
+__install_mkfs /dev/sda5 --type reiserfs
+# same thing with explicit device
+__install_mkfs whatever --device /dev/sda5 --type reiserfs
+
+# jfs with journal on /dev/sda2
+__install_mkfs /dev/sda1 --type jfs --options "-j /dev/sda2"
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- mkfs(8)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

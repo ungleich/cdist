@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+destination="$(cat "$__object/parameter/destination")"
+cat "$__type/files/fstab.header" > "$destination"
+
+mkdir "$__object/files"
+# get current UUID's from target_host
+$__remote_exec $__target_host blkid > "$__object/files/blkid"
+
+for object in $(find "$__global/object/__install_mount" -path "*.cdist"); do
+   device="$(cat "$object/parameter/device")"
+   dir="$(cat "$object/parameter/dir")"
+   prefix="$(cat "$object/parameter/prefix")"
+   type="$(cat "$object/parameter/type")"
+   if [ -f "$object/parameter/options" ]; then
+      options="$(cat "$object/parameter/options")"
+   else
+      options="defaults"
+   fi
+   dump=0
+   case "$type" in
+      swap)
+         pass=0
+         dir="$type"
+      ;;
+      tmpfs)
+         pass=0
+      ;;
+      *)
+         pass=1
+      ;;
+   esac
+   if [ -f "$__object/parameter/uuid" ]; then
+      uuid="$(grep -w $device "$__object/files/blkid" | awk '{print $2}')"
+      if [ -n "$uuid" ]; then
+         echo "# $dir was on $device during installation" >> "$destination"
+         device="$uuid"
+      fi
+   fi
+   echo "$device $dir $type $options $dump $pass" >> "$destination"
+done
