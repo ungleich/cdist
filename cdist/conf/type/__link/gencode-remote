@@ -49,10 +49,9 @@ file_type="$(cat "$__object/explorer/type")"
 case "$state_should" in
     present)
         if [ "$file_type" = "directory" ]; then
-            # our destination is currently a directory, move it out of the way
+            # our destination is currently a directory, delete it
             cat << DONE
-destination_old="\$(mktemp "${destination}.cdist.XXXXXXXXXX")"
-mv "$destination" "\$destination_old"
+rm -rf "$destination"
 DONE
         fi
 
@@ -60,13 +59,6 @@ DONE
         cat << DONE
 ln ${lnopt} -f "$source" "$destination"
 DONE
-
-        if [ "$file_type" = "directory" ]; then
-            # delete the legacy directory
-            cat << DONE
-rm -rf "\$destination_old"
-DONE
-        fi
     ;;
     absent)
         # only delete if it is a sym/hard link
