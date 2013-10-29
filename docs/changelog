@@ -6,6 +6,7 @@ Changelog
 
 2.3.6:
 	* New Type: __locale
+	* Type __line: Ensure special characters are not interpreted
 
 2.3.5: 2013-10-10
 	* Core: Unit test fix for remote_copy (Steven Armstrong)
