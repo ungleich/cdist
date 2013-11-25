@@ -1,0 +1,50 @@
+Follow up from 2013-01-20:
+
+    - (re-)create message file per object?
+        - yes, but do not necessarily save in object space
+        - save $anywhere
+
+    - object_run
+        - current notifications are imported into a file available at $__messages_in
+        - after object run, everything that has been written to $__messages_out is merged into the $__messages file
+
+        - functions:
+            self.explorer.run_global_explorers(self.local.global_explorer_out_path)
+            self.manifest.run_initial_manifest(self.local.initial_manifest)
+                self.local.run_script(initial_manifest, env=self.env_initial_manifest(initial_manifest))
+            self.explorer.run_type_explorers(cdist_object)
+            self.manifest.run_type_manifest(cdist_object)
+                self.local.run_script(type_manifest, env=self.env_type_manifest(cdist_object))
+            self.code.run_gencode_local(cdist_object)
+                self.local.run_script(script, env=env, return_output=True)
+            self.code.run_gencode_remote(cdist_object)
+                self.local.run_script(script, env=env, return_output=True)
+
+
+    - message support in ...
+        - initialmanifest - yes
+        - explorer - no
+        - only locally - yes
+        
+    - how to use notification / messaging in cdist
+        - can be used in all local scripts:
+            - initial manifest
+            - type manifest
+            - type gencode-*
+        - order of object exeution is random or as you requested using require=""
+
+    - example use:
+
+__file/gencode-local:
+         if [ "$local_cksum" != "$remote_cksum" ]; then
+            echo "$__remote_copy" "$source" "${__target_host}:${destination}"
+            echo "copy" >> "$__messages_out"
+         fi
+ 
+__nginx/manifest:
+    __file /etc/nginx/sites-enabled/myfile --source "$__type/files/nginx-config"
+
+__nginx/gencode-remote:
+    if grep -q "__file/etc/nginx/sites-enabled/myfile:copy" "$__messages_in"; then
+        echo /etc/init.d/nginx restart
+    fi
