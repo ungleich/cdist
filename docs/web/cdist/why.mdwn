@@ -42,7 +42,8 @@ in almost all cases all dependencies are usually fulfilled.
 Cdist does not require an agent or a high level programming
 languages on the target host: it will run on any host that
 has a **ssh server running** and a posix compatible shell
-(**/bin/sh**).
+(**/bin/sh**). Compared to other configuration management systems,
+it does not require to open up an additional port.
 
 ## Push based distribution
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -26,7 +26,7 @@ def commandline():
 
     import cdist.banner
     import cdist.config
-    import cdist.install
+    import cdist.shell
 
     # Construct parser others can reuse
     parser = {}
@@ -52,42 +52,44 @@ def commandline():
         parents=[parser['loglevel']])
     parser['banner'].set_defaults(func=cdist.banner.banner)
 
-    # Config and install (common stuff)
-    parser['configinstall'] = argparse.ArgumentParser(add_help=False)
-    parser['configinstall'].add_argument('host', nargs='+',
-        help='one or more hosts to operate on')
-    parser['configinstall'].add_argument('-c', '--conf-dir',
-         help='Add configuration directory (can be repeated, last one wins)',
-         action='append')
-    parser['configinstall'].add_argument('-i', '--initial-manifest', 
-         help='Path to a cdist manifest or \'-\' to read from stdin.',
-         dest='manifest', required=False)
-    parser['configinstall'].add_argument('-p', '--parallel',
-         help='Operate on multiple hosts in parallel',
-         action='store_true', dest='parallel')
-    parser['configinstall'].add_argument('-s', '--sequential',
-         help='Operate on multiple hosts sequentially (default)',
-         action='store_false', dest='parallel')
-
-    parser['configinstall'].add_argument('--remote-copy',
-         help='Command to use for remote copy (should behave like scp)',
-         action='store', dest='remote_copy',
-         default="scp -o User=root -q")
-    parser['configinstall'].add_argument('--remote-exec',
-         help='Command to use for remote execution (should behave like ssh)',
-         action='store', dest='remote_exec',
-         default="ssh -o User=root -q")
-
     # Config
     parser['config'] = parser['sub'].add_parser('config',
-        parents=[parser['loglevel'], parser['configinstall']])
-    parser['config'].set_defaults(func=config)
+        parents=[parser['loglevel']])
+    parser['config'].add_argument('host', nargs='+',
+        help='one or more hosts to operate on')
+    parser['config'].add_argument('-c', '--conf-dir',
+         help='Add configuration directory (can be repeated, last one wins)',
+         action='append')
+    parser['config'].add_argument('-i', '--initial-manifest', 
+         help='Path to a cdist manifest or \'-\' to read from stdin.',
+         dest='manifest', required=False)
+    parser['config'].add_argument('-n', '--dry-run',
+         help='Do not execute code', action='store_true')
+    parser['config'].add_argument('-o', '--out-dir',
+         help='Directory to save cdist output in', dest="out_path")
+    parser['config'].add_argument('-p', '--parallel',
+         help='Operate on multiple hosts in parallel',
+         action='store_true', dest='parallel')
+    parser['config'].add_argument('-s', '--sequential',
+         help='Operate on multiple hosts sequentially (default)',
+         action='store_false', dest='parallel')
+    parser['config'].add_argument('--remote-copy',
+         help='Command to use for remote copy (should behave like scp)',
+         action='store', dest='remote_copy',
+         default=cdist.REMOTE_COPY)
+    parser['config'].add_argument('--remote-exec',
+         help='Command to use for remote execution (should behave like ssh)',
+         action='store', dest='remote_exec',
+         default=cdist.REMOTE_EXEC)
+    parser['config'].set_defaults(func=cdist.config.Config.commandline)
 
-    # Install
-    # 20120525/sar: commented until it actually does something
-    #parser['install'] = parser['sub'].add_parser('install',
-    #    parents=[parser['loglevel'], parser['configinstall']])
-    #parser['install'].set_defaults(func=install)
+    # Shell
+    parser['shell'] = parser['sub'].add_parser('shell', 
+        parents=[parser['loglevel']])
+    parser['shell'].add_argument('-s', '--shell',
+         help='Select shell to use, defaults to current shell')
+    parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
+
 
     for p in parser:
         parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
@@ -101,106 +103,24 @@ def commandline():
         logging.root.setLevel(logging.DEBUG)
 
     log.debug(args)
-    args.func(args)
+    log.info("version %s" % cdist.VERSION)
 
-def config(args):
-    configinstall(args, mode=cdist.config.Config)
+    # Work around python 3.3 bug:
+    # http://bugs.python.org/issue16308
+    # http://bugs.python.org/issue9253
 
-def install(args):
-    configinstall(args, mode=cdist.install.Install)
+    # FIXME: catching AttributeError also hides
+    # real problems.. try a different way
 
-def configinstall(args, mode):
-    """Configure or install remote system"""
-    import multiprocessing
-    import time
-
-    initial_manifest_tempfile = None
-    if args.manifest == '-':
-        # read initial manifest from stdin
-        import tempfile
-        try:
-            handle, initial_manifest_temp_path = tempfile.mkstemp(prefix='cdist.stdin.')
-            with os.fdopen(handle, 'w') as fd:
-                fd.write(sys.stdin.read())
-        except (IOError, OSError) as e:
-            raise cdist.Error("Creating tempfile for stdin data failed: %s" % e)
-
-        args.manifest = initial_manifest_temp_path
-        import atexit
-        atexit.register(lambda: os.remove(initial_manifest_temp_path))
-
-    process = {}
-    failed_hosts = []
-    time_start = time.time()
-
-    for host in args.host:
-        if args.parallel:
-            log.debug("Creating child process for %s", host)
-            process[host] = multiprocessing.Process(target=configinstall_onehost, args=(host, args, mode, True))
-            process[host].start()
-        else:
-            try:
-                configinstall_onehost(host, args, mode, parallel=False)
-            except cdist.Error as e:
-                failed_hosts.append(host)
-
-    # Catch errors in parallel mode when joining
-    if args.parallel:
-        for host in process.keys():
-            log.debug("Joining process %s", host)
-            process[host].join()
-
-            if not process[host].exitcode == 0:
-                failed_hosts.append(host)
-
-    time_end = time.time()
-    log.info("Total processing time for %s host(s): %s", len(args.host),
-                (time_end - time_start))
-
-    if len(failed_hosts) > 0:
-        raise cdist.Error("Failed to deploy to the following hosts: " + 
-            " ".join(failed_hosts))
-
-def configinstall_onehost(host, args, mode, parallel):
-    """Configure or install ONE remote system"""
-
+    # FIXME: we always print main help, not
+    # the help of the actual parser being used!
     try:
-        import cdist.context
+        getattr(args, "func")
+    except AttributeError:
+        parser['main'].print_help()
+        sys.exit(0)
 
-        context = cdist.context.Context(
-            target_host=host,
-            remote_copy=args.remote_copy,
-            remote_exec=args.remote_exec,
-            initial_manifest=args.manifest,
-            add_conf_dirs=args.conf_dir,
-            exec_path=sys.argv[0],
-            debug=args.debug)
-
-        c = mode(context)
-        c.deploy_and_cleanup()
-        context.cleanup()
-
-    except cdist.Error as e:
-        context.log.error(e)
-        # We are running in our own process here, need to sys.exit!
-        if parallel:
-            sys.exit(1)
-        else:
-            raise
-
-    except KeyboardInterrupt:
-        # Ignore in parallel mode, we are existing anyway
-        if parallel:
-            sys.exit(0)
-        # Pass back to controlling code in sequential mode
-        else:
-            raise
-
-def emulator():
-    """Prepare and run emulator"""
-    import cdist.emulator
-    emulator = cdist.emulator.Emulator(sys.argv)
-    return emulator.run()
+    args.func(args)
 
 if __name__ == "__main__":
     # Sys is needed for sys.exit()
@@ -208,8 +128,8 @@ if __name__ == "__main__":
 
     cdistpythonversion = '3.2'
     if sys.version < cdistpythonversion:
-        print('Cdist requires Python >= ' + cdistpythonversion +
-            ' on the source host.', file=sys.stderr)
+        print('Python >= ' + cdistpythonversion +
+            ' is required on the source host.', file=sys.stderr)
         sys.exit(1)
 
 
@@ -220,22 +140,24 @@ if __name__ == "__main__":
         import os
         import re
         import cdist
+        import cdist.log
 
-        log = logging.getLogger("cdist")
+        logging.setLoggerClass(cdist.log.Log)
         logging.basicConfig(format='%(levelname)s: %(message)s')
+        log = logging.getLogger("cdist")
 
         if re.match("__", os.path.basename(sys.argv[0])):
-            emulator()
+            import cdist.emulator
+            emulator = cdist.emulator.Emulator(sys.argv)
+            emulator.run()
         else:
             commandline()
 
     except KeyboardInterrupt:
-        pass
+        exit_code = 2
 
     except cdist.Error as e:
         log.error(e)
         exit_code = 1
-
-    # Determine exit code by return value of function
 
     sys.exit(exit_code)

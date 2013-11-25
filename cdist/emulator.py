@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
@@ -28,20 +28,33 @@ import sys
 import cdist
 from cdist import core
 
+class MissingRequiredEnvironmentVariableError(cdist.Error):
+    def __init__(self, name):
+        self.name = name
+        self.message = "Emulator requires the environment variable %s to be setup" % self.name
+
+    def __str__(self):
+        return self.message
+
+
 class Emulator(object):
     def __init__(self, argv, stdin=sys.stdin.buffer, env=os.environ):
         self.argv           = argv
         self.stdin          = stdin
         self.env            = env
 
-        self.object_id      = False
+        self.object_id      = ''
 
-        self.global_path    = self.env['__global']
-        self.target_host    = self.env['__target_host']
+        try:
+            self.global_path    = self.env['__global']
+            self.target_host    = self.env['__target_host']
 
-        # Internally only
-        self.object_source  = self.env['__cdist_manifest']
-        self.type_base_path = self.env['__cdist_type_base_path']
+            # Internally only
+            self.object_source  = self.env['__cdist_manifest']
+            self.type_base_path = self.env['__cdist_type_base_path']
+
+        except KeyError as e:
+            raise MissingRequiredEnvironmentVariableError(e.args[0])
 
         self.object_base_path = os.path.join(self.global_path, "object")
 
@@ -50,25 +63,8 @@ class Emulator(object):
 
         self.__init_log()
 
-    def filter(self, record):
-        """Add hostname and object to logs via logging Filter"""
-
-        prefix = self.target_host + ": (emulator)"
-
-        if self.object_id:
-            prefix = prefix + " " + self.type_name + "/" + self.object_id
-
-        record.msg = prefix + ": " + record.msg
-
-        return True
-
     def run(self):
         """Emulate type commands (i.e. __file and co)"""
-
-        if '__install' in self.env:
-            if not self.cdist_type.is_install:
-                self.log.debug("Running in install mode, ignoring non install type")
-                return True
 
         self.commandline()
         self.setup_object()
@@ -79,16 +75,13 @@ class Emulator(object):
 
     def __init_log(self):
         """Setup logging facility"""
-        logformat = '%(levelname)s: %(message)s'
-        logging.basicConfig(format=logformat)
 
         if '__cdist_debug' in self.env:
             logging.root.setLevel(logging.DEBUG)
         else:
             logging.root.setLevel(logging.INFO)
 
-        self.log            = logging.getLogger(__name__)
-        self.log.addFilter(self)
+        self.log  = logging.getLogger(self.target_host)
 
     def commandline(self):
         """Parse command line"""
@@ -103,10 +96,12 @@ class Emulator(object):
             parser.add_argument(argument, dest=parameter, action='append', required=True)
         for parameter in self.cdist_type.optional_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='store', required=False)
+            parser.add_argument(argument, dest=parameter, action='store', required=False,
+                default=self.cdist_type.parameter_defaults.get(parameter, None))
         for parameter in self.cdist_type.optional_multiple_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='append', required=False)
+            parser.add_argument(argument, dest=parameter, action='append', required=False,
+                default=self.cdist_type.parameter_defaults.get(parameter, None))
         for parameter in self.cdist_type.boolean_parameters:
             argument = "--" + parameter
             parser.add_argument(argument, dest=parameter, action='store_const', const='')
@@ -122,9 +117,7 @@ class Emulator(object):
 
     def setup_object(self):
         # Setup object_id - FIXME: unset / do not setup anymore!
-        if self.cdist_type.is_singleton:
-            self.object_id = "singleton"
-        else:
+        if not self.cdist_type.is_singleton:
             self.object_id = self.args.object_id[0]
             del self.args.object_id
 
@@ -184,7 +177,12 @@ class Emulator(object):
                 if len(requirement) == 0: continue
 
                 # Raises an error, if object cannot be created
-                cdist_object = self.cdist_object.object_from_name(requirement)
+                try:
+                    cdist_object = self.cdist_object.object_from_name(requirement)
+                except core.cdist_type.NoSuchTypeError as e:
+                    self.log.error("%s requires object %s, but type %s does not exist (definded at %s)"  % (self.cdist_object.name, requirement, e.name, self.object_source))
+                    raise
+
 
                 self.log.debug("Recording requirement: " + requirement)
 

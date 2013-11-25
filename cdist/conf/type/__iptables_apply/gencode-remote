@@ -1,0 +1,2 @@
+# Rebuild rules - FIXME: do conditionally as soon as cdist supports it
+echo /etc/init.d/iptables restart

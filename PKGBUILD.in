@@ -1,6 +1,6 @@
 #!/bin/sh
 
-version=$(git describe)
+version="$1"
 outfile=${0%.in}
 
 cat << eof > "${outfile}"

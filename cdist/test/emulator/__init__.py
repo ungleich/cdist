@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -33,7 +33,6 @@ from cdist.exec import local
 from cdist import emulator
 from cdist import core
 from cdist import config
-import cdist.context
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
@@ -46,11 +45,11 @@ class EmulatorTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
-        out_path = self.temp_dir
+        base_path = self.temp_dir
 
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=out_path,
+            base_path=base_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -63,13 +62,13 @@ class EmulatorTestCase(test.CdistTestCase):
 
     def test_nonexistent_type_exec(self):
         argv = ['__does-not-exist']
-        self.assertRaises(core.NoSuchTypeError, emulator.Emulator, argv, env=self.env)
+        self.assertRaises(core.cdist_type.NoSuchTypeError, emulator.Emulator, argv, env=self.env)
 
     def test_nonexistent_type_requirement(self):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__does-not-exist/some-id'
         emu = emulator.Emulator(argv, env=self.env)
-        self.assertRaises(core.NoSuchTypeError, emu.run)
+        self.assertRaises(core.cdist_type.NoSuchTypeError, emu.run)
 
     def test_illegal_object_id_requirement(self):
         argv = ['__file', '/tmp/foobar']
@@ -81,7 +80,14 @@ class EmulatorTestCase(test.CdistTestCase):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__file'
         emu = emulator.Emulator(argv, env=self.env)
-        self.assertRaises(core.IllegalObjectIdError, emu.run)
+        self.assertRaises(core.cdist_object.MissingObjectIdError, emu.run)
+
+    def test_no_singleton_no_requirement(self):
+        argv = ['__file', '/tmp/foobar']
+        self.env['require'] = '__test_singleton'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        # If reached here, everything is fine
 
     def test_singleton_object_requirement(self):
         argv = ['__file', '/tmp/foobar']
@@ -101,11 +107,11 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        out_path = os.path.join(self.temp_dir, "out")
+        base_path = os.path.join(self.temp_dir, "out")
 
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=out_path,
+            base_path=base_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -118,7 +124,7 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         initial_manifest = os.path.join(self.local.manifest_path, "init")
         self.manifest.run_initial_manifest(initial_manifest)
         cdist_type = core.CdistType(self.local.type_path, '__saturn')
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'singleton')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path)
         self.manifest.run_type_manifest(cdist_object)
         expected = ['__planet/Saturn', '__moon/Prometheus']
         self.assertEqual(sorted(cdist_object.autorequire), sorted(expected))
@@ -128,13 +134,13 @@ class ArgumentsTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        out_path = self.temp_dir
+        base_path = self.temp_dir
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
 
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=out_path,
+            base_path=base_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -170,11 +176,13 @@ class ArgumentsTestCase(test.CdistTestCase):
         # empty file -> True
         self.assertTrue(cdist_object.parameters['boolean1'] == '')
 
-    def test_required(self):
+    def test_required_arguments(self):
+        """check whether assigning required parameter works"""
         type_name = '__arguments_required'
         object_id = 'some-id'
         value = 'some value'
         argv = [type_name, object_id, '--required1', value, '--required2', value]
+        print(self.env)
         os.environ.update(self.env)
         emu = emulator.Emulator(argv)
         emu.run()
@@ -211,6 +219,21 @@ class ArgumentsTestCase(test.CdistTestCase):
         self.assertFalse('optional2' in cdist_object.parameters)
         self.assertEqual(cdist_object.parameters['optional1'], value)
 
+    def test_argument_defaults(self):
+        type_name = '__argument_defaults'
+        object_id = 'some-id'
+        value = 'value1'
+        argv = [type_name, object_id]
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        cdist_type = core.CdistType(self.local.type_path, type_name)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        self.assertTrue('optional1' in cdist_object.parameters)
+        self.assertFalse('optional2' in cdist_object.parameters)
+        self.assertEqual(cdist_object.parameters['optional1'], value)
+
 
 class StdinTestCase(test.CdistTestCase):
 
@@ -219,11 +242,11 @@ class StdinTestCase(test.CdistTestCase):
         os.environ = os.environ.copy()
 
         self.temp_dir = self.mkdtemp()
-        out_path = os.path.join(self.temp_dir, "out")
+        base_path = os.path.join(self.temp_dir, "out")
 
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=out_path,
+            base_path=base_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
 

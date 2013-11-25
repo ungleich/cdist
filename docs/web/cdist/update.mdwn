@@ -14,13 +14,67 @@ If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
 The master branch on the other hand is the development branch and may not be
 working, break your setup or eat the tree in your garden.
 
+### Safely upgrading to new versions
+
+To upgrade to **any** further cdist version, you can take the
+following procedure to do a safe upgrade:
+
+    # Create new branch to try out the update
+    git checkout -b upgrade_cdist
+
+    # Get latest cdist version in git database
+    git fetch -v
+
+    # see what will happen on merge - replace
+    # master with the branch you plan to merge
+    git diff upgrade_cdist..origin/master
+
+    # Merge the new version
+    git merge origin/master
+
+Now you can ensure all custom types work with the new version.
+Assume that you need to go back to an older version during
+the migration/update, you can do so as follows:
+
+    # commit changes
+    git commit -m ...
+
+    # go back to original branch
+    git checkout master
+
+After that, you can go back and continue the upgrade:
+
+    # git checkout upgrade_cdist
+
+
 ## Update The Python Package
 
 To upgrade to the lastet version do
 
     pip install --upgrade cdist
 
-## Update Instructions
+## General Update Instructions
+
+### Updating from 2.2 to 2.3
+
+No incompatiblities.
+
+### Updating from 2.1 to 2.2
+
+Starting with 2.2, the syntax for requiring a singleton type changed:
+Old format:
+
+    require="__singleton_type/singleton" ...
+
+New format:
+
+    require="__singleton_type" ...
+
+Internally the "singleton" object id was dropped to make life more easy.
+You can probably fix your configuration by running the following code
+snippet (currently untested, please report back if it works for you):
+
+    find ~/.cdist/* -type f -exec sed -i 's,/singleton,,' {} \;
 
 ### Updating from 2.0 to 2.1
 
@@ -46,7 +100,6 @@ Have a look at the update guide for [[2.0 to 2.1|2.0-to-2.1]].
  * Type **\_\_user**: Parameter --groups removed (use the new \_\_user_groups type)
  * Type **\_\_ssh_authorized_key** has been replaced by more flexible type 
     **\_\_ssh_authorized_keys**
- * require="" is deprecated: Use --after and --before as parameters instead
 
 ### Updating from 1.7 to 2.0
 

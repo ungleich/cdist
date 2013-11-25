@@ -19,7 +19,7 @@
 #
 
 owner="$(cat "$__object/parameter/owner" 2>/dev/null || echo "$__object_id")"
-state="$(cat "$__object/parameter/present" 2>/dev/null || echo "present")"
+state="$(cat "$__object/parameter/state" 2>/dev/null || echo "present")"
 if [ -f "$__object/parameter/file" ]; then
    file="$(cat "$__object/parameter/file")"
 else

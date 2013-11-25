@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2013      Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,39 +19,43 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os="$(cat "$__global/explorer/os")"
+name="$__object_name"
 user="$(cat "$__object/parameter/user")"
-state_should="$(cat "$__object/parameter/state")"
-state_is=$(diff -q "$__object/parameter/entry" "$__object/explorer/entry" \
-   && echo present \
-   || echo absent
-)
+command="$(cat "$__object/parameter/command")"
 
-# FreeBSD mktemp doesn't allow execution without at least one param
-if [ "$os" = "freebsd" ]; then
-   mktemp="mktemp -t tmp"
+if [ -f "$__object/parameter/raw" ]; then
+   raw="$(cat "$__object/parameter/raw")"
+   entry="$raw $command"
 else
-   mktemp="mktemp"
+   minute="$(cat "$__object/parameter/minute" 2>/dev/null || echo "*")"
+   hour="$(cat "$__object/parameter/hour" 2>/dev/null || echo "*")"
+   day_of_month="$(cat "$__object/parameter/day_of_month" 2>/dev/null || echo "*")"
+   month="$(cat "$__object/parameter/month" 2>/dev/null || echo "*")"
+   day_of_week="$(cat "$__object/parameter/day_of_week" 2>/dev/null || echo "*")"
+   entry="$minute $hour $day_of_month $month $day_of_week $command"
 fi
 
-if [ "$state_is" != "$state_should" ]; then
-   case "$state_should" in
-      present)
-         cat << DONE
-tmp=\$($mktemp)
-crontab -u $user -l > \$tmp
-cat >> \$tmp << EOC
-$(cat "$__object/parameter/entry")
-EOC
-crontab -u $user \$tmp
-rm \$tmp
-DONE
-      ;;
-      absent)
-         # defined in type manifest
-         prefix="$(cat "$__object/parameter/prefix")"
-         suffix="$(cat "$__object/parameter/suffix")"
-         cat << DONE
+entry="$entry # $name"
+mkdir "$__object/files"
+echo "$entry" > "$__object/files/entry"
+
+if diff -q "$__object/files/entry" "$__object/explorer/entry" >/dev/null; then
+    state_is=present
+else
+    state_is=absent
+fi
+
+state_should="$(cat "$__object/parameter/state" 2>/dev/null || echo "present")"
+
+[ "$state_is" = "$state_should" ] && exit 0
+
+# If anything is going to change, ensure the old entries are
+# not present anymore
+
+# These are the old markers
+prefix="#cdist:__cron/$__object_id"
+suffix="#/cdist:__cron/$__object_id"
+cat << DONE
 crontab -u $user -l | awk -v prefix="$prefix" -v suffix="$suffix" '
 {
    if (index(\$0,prefix)) {
@@ -66,6 +71,16 @@ crontab -u $user -l | awk -v prefix="$prefix" -v suffix="$suffix" '
 }
 ' | crontab -u $user -
 DONE
-      ;;
-   esac
-fi
+
+case "$state_should" in
+    present)
+        echo "("
+        echo "crontab -u $user -l 2>/dev/null || true"
+        echo "echo '$entry'"
+        echo ") | crontab -u $user -"
+    ;;
+    absent)
+        echo "( crontab -u $user -l 2>/dev/null || true ) | \\"
+        echo "grep -v \"# $name\\$\" | crontab -u $user -"
+    ;;
+esac

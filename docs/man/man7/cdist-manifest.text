@@ -11,7 +11,7 @@ cdist-manifest - (Re-)Use types
 DESCRIPTION
 -----------
 Manifests are used to define which objects to create.
-Objects are instances of **types**, like in object orientated programming languages.
+Objects are instances of **types**, like in object oriented programming languages.
 An object is represented by the combination of
 **type + slash + object name**: **__file/etc/cdist-configured** is an
 object of the type ***__file*** with the name ***etc/cdist-configured***.
@@ -25,8 +25,8 @@ the reference with pointers to the manpages.
 Types in manifests are used like normal command line tools. Let's have a look
 at an example:
 --------------------------------------------------------------------------------
-# Create object of type __package with the parameter state = removed
-__package apache2 --state removed
+# Create object of type __package with the parameter state = absent
+__package apache2 --state absent
 
 # Same with the __directory type
  __directory /tmp/cdist --state present
@@ -57,9 +57,9 @@ DEFINE STATE IN THE INITIAL MANIFEST
 ------------------------------------
 The **initial manifest** is the entry point for cdist to find out, which
 **objects** to configure on the selected host.
-Cdist searches for the initial manifest at **cdist/conf/manifest/init**.
+Cdist expects the initial manifest at **cdist/conf/manifest/init**.
 
-Within this initial manifest, you define, which objects should be
+Within this initial manifest you define, which objects should be
 created on which host. To distinguish between hosts, you can use the
 environment variable **__target_host**. Let's have a look at a simple
 example:
@@ -107,7 +107,7 @@ DEPENDENCIES
 ------------
 If you want to describe that something requires something else, just
 setup the variable "require" to contain the requirements. Multiple
-requirements can be added white space seperated.
+requirements can be added white space separated.
 
 --------------------------------------------------------------------------------
 # No dependency
@@ -135,12 +135,12 @@ The initial manifest may for instance contain the following code:
 
 --------------------------------------------------------------------------------
 # Always create this file, so other sysadmins know cdist is used.
-__file /etc/cdist-configured --type file
+__file /etc/cdist-configured
 
 case "$__target_host" in
    my.server.name)
-      __file /root/bin/ --type directory
-      __file /etc/issue.net --type file --source "$__manifest/issue.net
+      __directory /root/bin/
+      __file /etc/issue.net --source "$__manifest/issue.net
    ;;
 esac
 --------------------------------------------------------------------------------
@@ -148,8 +148,19 @@ esac
 The manifest of the type "nologin" may look like this:
 
 --------------------------------------------------------------------------------
-__file /etc/nologin --type file --source "$__type/files/default.nologin"
+__file /etc/nologin --source "$__type/files/default.nologin"
 --------------------------------------------------------------------------------
+
+This example makes use of dependencies:
+
+--------------------------------------------------------------------------------
+# Ensure that lighttpd is installed
+__package lighttpd --state present
+# Ensure that munin makes use of lighttpd instead of the default webserver
+# package as decided by the package manager
+require="__package/lighttpd" __package munin --state present
+--------------------------------------------------------------------------------
+
 
 
 SEE ALSO

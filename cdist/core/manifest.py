@@ -94,7 +94,7 @@ class Manifest(object):
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             '__cdist_type_base_path': self.local.type_path, # for use in type emulator
-            '__global': self.local.out_path,
+            '__global': self.local.base_path,
             '__target_host': self.target_host,
         }
         if self.log.getEffectiveLevel() == logging.DEBUG:
@@ -106,6 +106,7 @@ class Manifest(object):
         env.update(self.env)
         env['__cdist_manifest'] = initial_manifest
         env['__manifest'] = self.local.manifest_path
+        env['__explorer'] = self.local.global_explorer_out_path
 
         return env
 

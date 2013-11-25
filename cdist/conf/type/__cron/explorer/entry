@@ -1,6 +1,7 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2013      Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -18,22 +19,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="$__object_id"
+name="$__object_name"
 user="$(cat "$__object/parameter/user")"
 
-prefix="#cdist:__cron/$name"
-suffix="#/cdist:__cron/$name"
-
-crontab -u $user -l 2>/dev/null | awk -v prefix="$prefix" -v suffix="$suffix" '
-{
-   if (index($0,prefix)) {
-      triggered=1
-   }
-   if (triggered) {
-      if (index($0,suffix)) {
-            triggered=0
-      }
-      print
-   }
-}
-'
+crontab -u $user -l 2>/dev/null | grep "# $name\$" || true

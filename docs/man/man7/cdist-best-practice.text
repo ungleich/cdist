@@ -118,7 +118,7 @@ The following **.git/config** is taken from a a real world scenario:
    url = git://git.schottelius.org/cdist
    fetch = +refs/heads/*:refs/remotes/upstream/*
 
-# Same as upstream, but works when being offline 
+# Same as upstream, but works when being offline
 [remote "local"]
    fetch = +refs/heads/*:refs/remotes/local/*
    url = /home/users/nico/p/cdist
@@ -167,7 +167,7 @@ TEMPLATING
 * create directory templates/ in your type (convention)
 * create the template as an executable file like templates/basic.conf.sh, it will output text using shell variables for the values
 
---------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 #!/bin/sh
 # in the template, use cat << eof (here document) to output the text
 # and use standard shell variables in the template
@@ -182,19 +182,58 @@ server {
   error_log /var/log/nginx/$SERVERNAME_error.log
 }
 EOF
---------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 * in the manifest, export the relevant variables and add the following lines in your manifest:
---------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 # export variables needed for the template
   export SERVERNAME='test"
   export ROOT='/var/www/test'
 # render the template
   mkdir -p "$__object/files"
   "$__type/templates/basic.conf.sh" > "$__object/files/basic.conf"
-# send the rendered template 
-  __file /etc/nginx/sites-available/test.conf  --state present   --source "$__object/files/basic.conf"
---------------------------------------------------------------------------------------
+# send the rendered template
+  __file /etc/nginx/sites-available/test.conf  \
+    --state present
+    --source "$__object/files/basic.conf"
+--------------------------------------------------------------------------------
+
+
+TESTING A NEW TYPE
+------------------
+If you want to test a new type on a node, you can tell cdist to only use an
+object of this type: Use the '--initial-manifest' parameter
+with - (stdin) as argument and feed object into stdin
+of cdist:
+
+--------------------------------------------------------------------------------
+# Singleton type without parameter
+echo __ungleich_munin_server | cdist --initial-manifest - munin.panter.ch
+
+# Singleton type with parameter
+echo __ungleich_munin_node --allow 1.2.3.4 | \
+    cdist --initial-manifest - rails-19.panter.ch
+
+# Normal type
+echo __file /tmp/stdintest --mode 0644 | \
+    cdist --initial-manifest - cdist-dev-01.ungleich.ch
+--------------------------------------------------------------------------------
+
+
+OTHER CONTENT IN CDIST REPOSITORY
+---------------------------------
+Usually the cdist repository contains all configuration
+items. Sometimes you may have additional resources that
+you would like to store in your central configuration
+repositiory (like password files from KeepassX,
+Libreoffice diagrams, etc.).
+
+It is recommended to use a subfolder named "non-cdist"
+in the repository for such content: It allows you to
+easily distinguish what is used by cdist and what not
+and also to store all important files in one
+repository.
+
 
 SEE ALSO
 --------
@@ -204,5 +243,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

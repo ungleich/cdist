@@ -89,7 +89,7 @@ class Code(object):
         self.remote = remote
         self.env = {
             '__target_host': self.target_host,
-            '__global': self.local.out_path,
+            '__global': self.local.base_path,
         }
 
     def _run_gencode(self, cdist_object, which):

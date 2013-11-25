@@ -1,0 +1,34 @@
+Traceback (most recent call last):
+  File "/home/users/nico/p/cdist/cdist/bin/../scripts/cdist", line 230, in <module>
+    commandline()
+  File "/home/users/nico/p/cdist/cdist/bin/../scripts/cdist", line 104, in commandline
+    args.func(args)
+  File "/home/users/nico/p/cdist/cdist/bin/../scripts/cdist", line 107, in config
+    configinstall(args, mode=cdist.config.Config)
+  File "/home/users/nico/p/cdist/cdist/bin/../scripts/cdist", line 143, in configinstall
+    configinstall_onehost(host, args, mode, parallel=False)
+  File "/home/users/nico/p/cdist/cdist/bin/../scripts/cdist", line 180, in configinstall_onehost
+    c.deploy_and_cleanup()
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/config_install.py", line 74, in deploy_and_cleanup
+    self.deploy_to()
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/config_install.py", line 68, in deploy_to
+    self.stage_prepare()
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/config_install.py", line 91, in stage_prepare
+    self.context.local.type_path):
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/core/cdist_object.py", line 80, in list_objects
+    yield cls(cdist.core.CdistType(type_base_path, type_name), object_base_path, object_id=object_id)
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/core/cdist_object.py", line 65, in __init__
+    self.validate_object_id()
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/core/cdist_object.py", line 130, in validate_object_id
+    (self.cdist_type.name, self.parameters))
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/util/fsproperty.py", line 210, in __get__
+    return self._get_attribute(instance, owner)
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/util/fsproperty.py", line 202, in _get_attribute
+    path = self._get_path(instance)
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/util/fsproperty.py", line 190, in _get_path
+    path = path(instance)
+  File "/home/users/nico/oeffentlich/rechner/projekte/cdist/cdist/cdist/core/cdist_object.py", line 192, in <lambda>
+    parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.parameter_path))
+AttributeError: 'CdistObject' object has no attribute 'parameter_path'
+[22:37] brief:~% 
+

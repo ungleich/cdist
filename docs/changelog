@@ -4,9 +4,84 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-next:
-	* Type __jail: State absent should implies stopped (Jake Guffey)
+2.3.6: 2013-11-25
+	* New Type: __locale
+	* Type __line: Ensure special characters are not interpreted
+
+2.3.5: 2013-10-10
+	* Core: Unit test fix for remote_copy (Steven Armstrong)
+	* Documentation: Updated manpages of __package and __file (Alex Greif)
+	* Documentation: Add more examples to cdist-manifest (Dan Levin)
+	* Type __package_apt: Do not install recommends by default
+
+2.3.4: 2013-10-03
+	* Core: Add missing bits to support dry run (Steven Armstrong)
+	* Core: Make unit test remote copy more compatible with scp (Steven Armstrong)
+	* New Type: __postfix (Steven Armstrong)
+	* New Type: __postfix_master (Steven Armstrong)
+	* New Type: __postfix_postconf (Steven Armstrong)
+	* New Type: __postfix_postmap (Steven Armstrong)
+	* New Type: __postfix_reload (Steven Armstrong)
+	* Type __line: Ensure regex does not contain / 
+	* Type __ssh_authorized_keys: Bugfix: Preserve ownership (Steven Armstrong)
+
+2.3.3: 2013-09-09
+	* Core: Add support for default values of optional parameters (Steven Armstrong)
+	* Type __start_on_boot: Bugfix for systemd (Steven Armstrong)
+
+2.3.2: 2013-09-05
+	* Build: Ensure tests don't change attributes of non-test files
+	* Core: Fix typo in argument parser
+	* Core: Code cleanup: Remove old install code (Steven Armstrong)
+	* Core: Improve error message when using non-existing type in requirement
+	* New Type: __iptables_rule
+	* New Type: __iptables_apply
+	* Type __cdist: Also create home directory
+	* Type __cdist: Add support for --shell parameter
+	* Type __motd: Regenerate motd on Debian and Ubuntu
+
+2.3.1: 2013-08-28
+	* Core: Support relative paths for configuration directories
+	* Core: Code cleanup (removed context class, added log class)
+	* Documentation: Add more best practises
+	* Documentation: Add troubleshooting chapter
+	* Type __key_value: Fix quoting problem (Steven Armstrong)
+
+2.3.0: 2013-08-12
+	* Core: Added support for cdist shell
+	* Documentation: Improved some manpages
+
+2.2.0: 2013-07-12
+	* Build: Cleanup the Makefile
+	* Type __package_opkg: Use shortcut version
+	* Core: Remove old pseudo object id "singleton" (Steven Armstrong)
+
+2.1.2: 2013-07-09
+	* Build: Change clean-dist target to "distclean"
+	* Build: Moved a lot of build logic into Makefile for dependency resolution
+	* Core: Make global explorers available to initial manifest (Arkaitz Jimenez)
+	* Core: Change execution order to run object as one unit
+	* Documentation: Improved documentation (Tomáš Pospíšek)
+	* New Remote Example: Add support for sudo operations (Chase James)
+	* New Type: __update_alternatives
+	* New Type: __cdist
+	* Type __apt_ppa: Fix comparison operator (Tyler Akins)
+	* Type __start_on_boot: Archlinux changed to use systemd - adapt type
+	* Type __git: Missing quotes added (Chase James)
+	* Type __postgres_database: Make state parameter optional (Chase James)
+	* Type __postgres_role: Make state parameter optional, fix password bug (Chase James)
+	* Type __process: Make state parameter optional
+	* Type __cron: Simplyfied and syntax change
+
+2.1.1: 2013-04-08
 	* Core: Use dynamic dependency resolver to allow indirect self dependencies
+	* Core: Remove umask call - protect /var/lib/cdist only (Arkaitz Jimenez)
+	* Explorer os: Added Slackware support (Eivind Uggedal)
+	* Type __git: Support mode and fix owner/group settings (contradict)
+	* Type __jail: State absent should implies stopped (Jake Guffey)
+	* Type __directory: Make stat call compatible with FreeBSD (Jake Guffey)
+	* Type __cron: Allow crontab without entries (Arkaitz Jimenez)
+	* Type __user: Add support for creating user home (Arkaitz Jimenez)
 
 2.1.0: 2012-12-09
 	* Core: Ensure global explorers are executable

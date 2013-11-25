@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -24,16 +24,18 @@ file="/$__object_id"
 
 if [ -f "$__object/parameter/regex" ]; then
     regex=$(cat "$__object/parameter/regex")
+    greparg=""
 else
     if [ ! -f "$__object/parameter/line" ]; then
         echo "Parameter line and regex missing - cannot explore" >&2
         exit 1
     fi
-    regex="^$(cat "$__object/parameter/line")\$"
+    regex="$(cat "$__object/parameter/line")"
+    greparg="-F -x"
 fi
 
 # Allow missing file - thus 2>/dev/null
-if grep -q "$regex" "$file" 2>/dev/null; then
+if grep -q $greparg "$regex" "$file" 2>/dev/null; then
     echo present
 else
     echo absent

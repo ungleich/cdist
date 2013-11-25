@@ -5,40 +5,51 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
-cdist - Configuration management
+cdist - Usable Configuration Management
 
 
 SYNOPSIS
 --------
-cdist [-h] [-V]
+cdist [-h] [-d] [-v] [-V] {banner,config,shell} ...
 
-cdist banner
+cdist banner [-h] [-d] [-v]
 
 cdist config [-h] [-d] [-V] [-c CONF_DIR] [-i MANIFEST] [-p] [-s] host [host ...]
 
+cdist shell [-h] [-d] [-v] [-s SHELL]
 
 
 DESCRIPTION
 -----------
 cdist is the frontend executable to the cdist configuration management.
-cdist supports different as explained below. The options to the main
-program are:
+cdist supports different subcommands as explained below.
+
+GENERAL
+-------
+All commands except the following options:
+
+-d, --debug::
+    Set log level to debug
 
 -h, --help::
    Show the help screen
+
+-v, --verbose:
+    Set log level to info, be more verbose
 
 -V, --version::
    Show version and exit
 
 
 BANNER
--------
-Displays the cdist banner.
+------
+Displays the cdist banner. Useful for printing
+cdist posters - a must have for every office.
 
 
 CONFIG
 ------
-Configure a system
+Configure one or more hosts
 
 -h, --help::
     Show the help screen
@@ -51,9 +62,6 @@ Configure a system
     delimited list of config directories. Directories given with the
     --conf-dir argument have higher precedence over those set through the
     environment variable.
-
--d, --debug::
-    Enable debug output
 
 -i MANIFEST, --initial-manifest MANIFEST::
     Path to a cdist manifest or - to read from stdin
@@ -70,20 +78,30 @@ Configure a system
 --remote-exec REMOTE_EXEC:
     Command to use for remote execution (should behave like ssh)
 
+SHELL
+-----
+This command allows you to spawn a shell that enables access
+to the types as commands. It can be thought as an
+"interactive manifest" environment. See below for example
+usage. Its primary use is for debugging type parameters.
+
+-s/--shell::
+    Select shell to use, defaults to current shell
+
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
 # Configure ikq05.ethz.ch with debug enabled
-cdist config -d ikq05.ethz.ch
+% cdist config -d ikq05.ethz.ch
 
 # Configure hosts in parallel and use a different configuration directory
-cdist config -c ~/p/cdist-nutzung \
+% cdist config -c ~/p/cdist-nutzung \
     -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
 
 # Use custom remote exec / copy commands
-cdist config --remote-exec /path/to/my/remote/exec \
+% cdist config --remote-exec /path/to/my/remote/exec \
     --remote-copy /path/to/my/remote/copy \
     -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
 
@@ -91,10 +109,18 @@ cdist config --remote-exec /path/to/my/remote/exec \
 cdist banner
 
 # Show help
-cdist --help
+% cdist --help
 
 # Show Version
-cdist --version
+% cdist --version
+
+# Enter a shell that has access to emulated types
+% cdist shell
+% __git
+usage: __git --source SOURCE [--state STATE] [--branch BRANCH]
+             [--group GROUP] [--owner OWNER] [--mode MODE] object_id
+
+
 --------------------------------------------------------------------------------
 
 
@@ -125,5 +151,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

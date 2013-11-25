@@ -38,7 +38,19 @@ case "$state_should" in
             exit 1
         fi
 
-        echo "echo \"$line\" >> $file"
+        #echo "echo \"$line\" >> $file"
+        #line_sanitised=$(cat "$__object/parameter/line" | sed 's/"/\"/g')
+        # Idea: replace ' in the string:
+        # '"'"'
+        # |------> ': end the string
+        #  |-|---> "'": create ' in the output string
+        #     |--> ': continue the string
+        #
+        # Replace all \ so \t and other combinations are not interpreted
+        #
+
+        line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g" -e 's/\\/\\\\/g')
+        echo "printf '%s\n' '$line_sanitised' >> $file"
 
     ;;
     absent)
@@ -47,13 +59,16 @@ case "$state_should" in
             exit 1
         fi
 
-        [ "$line" ] && regex="^$line\$"
+        greparg=""
+        if [ "$line" ]; then
+            regex="$line"
+            greparg="-F -x"
+        fi
 
         cat << eof
 tmp=\$(mktemp)
-sed '/$regex/d' "$file" > \$tmp && cat "\$tmp" > "$file" && rm -f "\$tmp"
+grep -v $greparg '$regex' '$file' > \$tmp && cat "\$tmp" > '$file' && rm -f "\$tmp"
 eof
-        #echo "echo q | ex -c \"/${line}/d|w|q\" \"${file}\""
     ;;
     *)
        echo "Unknown state: $state_should" >&2
