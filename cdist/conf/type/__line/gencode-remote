@@ -50,7 +50,7 @@ case "$state_should" in
         #
 
         line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g" -e 's/\\/\\\\/g')
-        echo "echo '$line_sanitised' >> $file"
+        echo "printf '%s\n' '$line_sanitised' >> $file"
 
     ;;
     absent)
