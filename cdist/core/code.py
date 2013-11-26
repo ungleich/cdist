@@ -104,7 +104,8 @@ class Code(object):
                 '__object_id': cdist_object.object_id,
                 '__object_name': cdist_object.name,
             })
-            return self.local.run_script(script, env=env, return_output=True)
+            message_prefix=cdist_object.name
+            return self.local.run_script(script, env=env, return_output=True, message_prefix=message_prefix)
 
     def run_gencode_local(self, cdist_object):
         """Run the gencode-local script for the given cdist object."""
