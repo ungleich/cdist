@@ -53,11 +53,24 @@ if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
       fi
    fi
    if [ "$create_file" -o "$upload_file" ]; then
+      # tell gencode-remote that we created or uploaded a file and that it must
+      # set all attributes no matter what the explorer retreived
       mkdir "$__object/files"
+      touch "$__object/files/set-attributes"
+
+      # upload file to temp location
       tempfile_template="${destination}.cdist.XXXXXXXXXX"
-      echo "$__remote_exec ${__target_host} \"mktemp $tempfile_template\" > \"$__object/files/destination_upload\""
+      cat << DONE
+destination_upload="\$($__remote_exec $__target_host "mktemp $tempfile_template")"
+DONE
       if [ "$upload_file" ]; then
-         echo "$__remote_copy $source ${__target_host}:\$(cat \"$__object/files/destination_upload\")"
+         cat << DONE
+$__remote_copy $source ${__target_host}:\$destination_upload
+DONE
       fi
+# move uploaded file into place
+cat << DONE
+$__remote_exec $__target_host "rm -rf \"$destination\"; mv \"\$destination_upload\" \"$destination\""
+DONE
    fi
 fi

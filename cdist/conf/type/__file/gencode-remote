@@ -57,29 +57,13 @@ set_mode() {
 set_attributes=
 case "$state_should" in
    present|exists)
-      if [ -f "$__object/files/destination_upload" ]; then
-         # we uploaded a file, move it into place and set all attributes
-         destination_upload="$(cat "$__object/files/destination_upload")"
-         set_attributes=1
-         if [ "$type" = "directory" ]; then
-            # our destination is currently a directory, delete it
-            cat << DONE
-rm -rf "$destination"
-DONE
-         fi
-         # move our upload into place
-         cat << DONE
-mv "$destination_upload" "$destination"
-DONE
-      fi
-
       # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
       #  clearing S_ISUID and S_ISGID bits (see chown(2))
       for attribute in group owner mode; do
          if [ -f "$__object/parameter/$attribute" ]; then
             value_should="$(cat "$__object/parameter/$attribute")"
             value_is="$(get_current_value "$attribute" "$value_should")"
-            if [ "$set_attributes" -o "$value_should" != "$value_is" ]; then
+            if [ -f "$__object/files/set-attributes" -o "$value_should" != "$value_is" ]; then
                "set_$attribute" "$value_should"
             fi
          fi
