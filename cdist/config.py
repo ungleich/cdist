@@ -249,7 +249,7 @@ class Config(object):
         cdist_type = cdist_object.cdist_type
 
         # Generate
-        self.log.info("Generating and executing code for %s" % (cdist_object.name))
+        self.log.info("Generating code for %s" % (cdist_object.name))
         cdist_object.code_local = self.code.run_gencode_local(cdist_object)
         cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
         if cdist_object.code_local or cdist_object.code_remote:
@@ -257,6 +257,8 @@ class Config(object):
 
         # Execute
         if not self.dry_run:
+            if cdist_object.code_local or cdist_object.code_remote:
+                self.log.info("Executing code for %s" % (cdist_object.name))
             if cdist_object.code_local:
                 self.code.run_code_local(cdist_object)
             if cdist_object.code_remote:
