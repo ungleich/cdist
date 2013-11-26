@@ -38,20 +38,23 @@ case "$state_should" in
       # Group
       if [ -f "$__object/parameter/group" ]; then
          echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
-         echo "chgrp" >> "$__object/notifications"
+# FIXME: only if necessary, not if parameter is present
+#         echo "chgrp" >> "$__object/notifications"
       fi
 
       # Owner
       if [ -f "$__object/parameter/owner" ]; then
          echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
-         echo "chown" >> "$__object/notifications"
+# FIXME: only if necessary, not if parameter is present
+#         echo "chown" >> "$__object/notifications"
       fi
 
       # Mode - needs to happen last as a chown/chgrp can alter mode by
       # clearing S_ISUID and S_ISGID bits (see chown(2))
       if [ -f "$__object/parameter/mode" ]; then
          echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
-         echo "chmod" >> "$__object/notifications"
+# FIXME: only if necessary, not if parameter is present
+#         echo "chmod" >> "$__object/notifications"
       fi
    ;;
 
@@ -59,7 +62,7 @@ case "$state_should" in
 
       if [ "$exists" = "yes" ]; then
          echo rm -f \"$destination\"
-         echo "removal" >> "$__object/notifications"
+         echo "remove" >> "$__messages_out"
       fi
 
    ;;

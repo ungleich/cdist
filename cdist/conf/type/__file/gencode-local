@@ -41,7 +41,7 @@ if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
 
          if [ "$local_cksum" != "$remote_cksum" ]; then
             echo "$__remote_copy" "$source" "${__target_host}:${destination}"
-            echo "copy" >> "$__object/notifications"
+            echo "copy" >> "$__messages_out"
          fi
       else
          echo "Source \"$source\" does not exist." >&2
