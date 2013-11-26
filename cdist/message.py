@@ -20,6 +20,7 @@
 #
 
 import logging
+import os
 import shutil
 import tempfile
 
@@ -32,29 +33,36 @@ class Message(object):
     """Support messaging between types
 
     """
-    def __init__(self, prefix, global_messages):
+    def __init__(self, prefix, messages):
         self.prefix = prefix
-        self.global_messages = global_messages
+        self.global_messages = messages
 
-        self.messages_in  = tempfile.mkstemp(suffix='.cdist_message_in')
-        self.messages_out = tempfile.mkstemp(suffix='.cdist_message_out')
+        self.messages_in  = tempfile.mkstemp(suffix='.cdist_message_in')[1]
+        self.messages_out = tempfile.mkstemp(suffix='.cdist_message_out')[1]
 
-        shutil.copyfile(self.global_messages, self.messages_in)
+        self._copy_messages()
+
 
     @property
-    def env(self, env):
+    def env(self):
         env = {}
         env['__messages_in']  = self.messages_in
         env['__messages_out'] = self.messages_out
 
         return env
 
+    def _copy_messages(self):
+        """Copy global contents into our copy"""
+        shutil.copyfile(self.global_messages, self.messages_in)
+
     def _cleanup(self):
-        os.remove(self.messages_in)
-        os.remove(self.messages_out)
+        if os.path.exists(self.messages_in):
+            os.remove(self.messages_in)
+        if os.path.exists(self.messages_out):
+            os.remove(self.messages_out)
 
     def _merge_messages(self):
-        with open(self.messages_in) as fd:
+        with open(self.messages_out) as fd:
             content = fd.readlines()
 
         with open(self.global_messages, 'a') as fd:

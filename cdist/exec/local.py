@@ -44,9 +44,11 @@ class Local(object):
                  exec_path=sys.argv[0],
                  initial_manifest=None,
                  base_path=None,
-                 add_conf_dirs=None):
+                 add_conf_dirs=None,
+                 message_prefix=None):
 
         self.target_host = target_host
+        self.message_prefix=message_prefix
 
         # FIXME: stopped: create base that does not require moving later
         if base_path:
@@ -92,6 +94,7 @@ class Local(object):
         self.conf_path = os.path.join(self.base_path, "conf")
         self.global_explorer_out_path = os.path.join(self.base_path, "explorer")
         self.object_path = os.path.join(self.base_path, "object")
+        self.messages_path = os.path.join(self.base_path, "messages")
 
         # Depending on conf_path
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
@@ -163,6 +166,9 @@ class Local(object):
         # Export __target_host for use in __remote_{copy,exec} scripts
         env['__target_host'] = self.target_host
 
+        if self.message_prefix:
+            message = cdist.Message(self.message_prefix, self.messages_path)
+
         try:
             if return_output:
                 return subprocess.check_output(command, env=env).decode()
@@ -172,6 +178,9 @@ class Local(object):
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
             raise cdist.Error(" ".join(*args) + ": " + error.args[1])
+        finally:
+            if self.message_prefix:
+                message.merge_messages()
 
     def run_script(self, script, env=None, return_output=False):
         """Run the given script with the given environment.
