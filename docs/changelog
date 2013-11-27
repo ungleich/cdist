@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+2.3.7:
+	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
+
 2.3.6: 2013-11-25
 	* New Type: __locale
 	* Type __line: Ensure special characters are not interpreted
