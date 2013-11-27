@@ -6,6 +6,8 @@ Changelog
 
 2.3.7:
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
+	* Type __link: Only remove links when state is absent (Steven Armstrong)
+	* Type __directory: Only remove directories when state is absent (Steven Armstrong)
 
 2.3.6: 2013-11-25
 	* New Type: __locale
