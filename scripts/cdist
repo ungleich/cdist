@@ -26,6 +26,7 @@ def commandline():
 
     import cdist.banner
     import cdist.config
+    import cdist.preos
     import cdist.shell
 
     # Construct parser others can reuse
@@ -82,6 +83,15 @@ def commandline():
          action='store', dest='remote_exec',
          default=cdist.REMOTE_EXEC)
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
+
+    # PreOS
+    parser['preos'] = parser['sub'].add_parser('preos', 
+        parents=[parser['loglevel']])
+    parser['preos'].add_argument('-a', '--arch',
+         help='Select architecture for preos', default="amd64")
+    parser['preos'].add_argument('target_dir', nargs=1,
+        help='Select target directory')
+    parser['preos'].set_defaults(func=cdist.preos.PreOS.commandline)
 
     # Shell
     parser['shell'] = parser['sub'].add_parser('shell', 
