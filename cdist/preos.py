@@ -42,7 +42,7 @@ class PreOS(object):
         self.options = [ "--include=openssh-server",
             "--arch=%s" % self.arch ]
 
-    def run(self):
+    def bootstrap(self):
         cmd = [ self.command ]
         cmd.extend(self.options)
         cmd.append(self.suite)
@@ -52,6 +52,8 @@ class PreOS(object):
 
         subprocess.call(cmd)
 
+    def run(self):
+        self.bootstrap()
 
     @classmethod
     def commandline(cls, args):
