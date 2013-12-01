@@ -186,8 +186,13 @@ class Local(object):
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.target_host)
         self.log.debug("Saving " + self.base_path + " to " + destination)
-        if os.path.exists(destination):
-            shutil.rmtree(destination)
+
+        try:
+            if os.path.exists(destination):
+                shutil.rmtree(destination)
+        except PermissionError as e:
+            raise cdist.Error("Cannot delete old cache %s: %s" % (destination, e))
+
         shutil.move(self.base_path, destination)
 
     def _create_conf_path_and_link_conf_dirs(self):
