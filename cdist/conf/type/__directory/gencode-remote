@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2013 Steven Armstrong (steven-cdist armstrong.cc)
 #
 # This file is part of cdist.
@@ -69,7 +69,7 @@ set_mode() {
 
 case "$state_should" in
    present)
-      if [ "$type" != "directory" ];
+      if [ "$type" != "directory" ]; then
          # our destination is not a directory, remove whatever is there
          # and then create our directory and set all attributes
          set_attributes=1
