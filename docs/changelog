@@ -9,6 +9,7 @@ Changelog
 	* Type __file: Only remove file when state is absent (Steven Armstrong)
 	* Type __link: Only remove link when state is absent (Steven Armstrong)
 	* Type __directory: Only remove directory when state is absent (Steven Armstrong)
+	* Type __directory: Fix newly introduced quoting issue
 	* Core: Fix backtrace when cache cannot be deleted
 
 2.3.6: 2013-11-25
