@@ -75,7 +75,7 @@ case "$state_should" in
          set_attributes=1
          cat << DONE
 rm -f "$destination"
-mkdir "$mkdiropt" "$destination"
+mkdir $mkdiropt "$destination"
 DONE
       fi
 
