@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.3.7:
+2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
 	* Type __file: Only remove file when state is absent (Steven Armstrong)
 	* Type __link: Only remove link when state is absent (Steven Armstrong)
