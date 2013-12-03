@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,23 +17,27 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Check whether file exists or not
-#
 
 destination="/$__object_id"
-os=$("$__explorer/os")
 
+# nothing to work with, nothing we could do
+[ -e "$destination" ] || exit 0
+
+os=$("$__explorer/os")
 case "$os" in
    "freebsd")
-      cmd="stat -f %Su"
-      ;;  
-   *)  
-      cmd="stat -c %U"
-      ;;  
+      # FIXME: should be something like this based on man page, but can not test
+      stat -f "type: %ST
+owner: %Du %Su
+group: %Dg %Sg
+mode: %Op %Sp
+" "$destination"
+   ;;
+   *)
+      stat --printf="type: %F
+owner: %u %U
+group: %g %G
+mode: %a %A
+" "$destination"
+   ;;
 esac
-
-if [ -e "$destination" ]; then
-  $cmd "$destination"
-fi
-

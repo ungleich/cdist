@@ -13,6 +13,15 @@ DESCRIPTION
 This cdist type allows you to create files, remove files and set file
 attributes on the target.
 
+If the file already exists on the target, then if it is a:
+- regular file, and state is:
+   present: replace it with the source file if they are not equal
+   exists: do nothing
+- symlink: replace it with the source file
+- directory: replace it with the source file
+
+In any case, make sure that the file attributes are as specified.
+
 
 REQUIRED PARAMETERS
 -------------------

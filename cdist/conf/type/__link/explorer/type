@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -18,13 +18,29 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Check whether file exists or not
+# Mostly a wrapper for ln
 #
 
 destination="/$__object_id"
 
-if [ -e "$destination" ]; then
-    echo yes
+if [ ! -e "$destination" ]; then
+   echo none
+elif [ -h "$destination" ]; then
+   echo symlink
+elif [ -f "$destination" ]; then
+   type="$(cat "$__object/parameter/type")"
+   case "$type" in
+      hard)
+         link_count=$(ls -l "$destination" | awk '{ print $2 }')
+         if [ $link_count -gt 1 ]; then
+            echo hardlink
+            exit 0
+         fi
+      ;;
+   esac
+   echo file
+elif [ -d "$destination" ]; then
+   echo directory
 else
-    echo no
+   echo unknown
 fi

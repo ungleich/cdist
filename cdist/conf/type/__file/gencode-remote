@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,59 +18,66 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# __file is a very basic type, which will probably be reused quite often
-#
 
 destination="/$__object_id"
-state_should=present
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
-exists="$(cat "$__object/explorer/exists")"
+state_should="$(cat "$__object/parameter/state")"
+type="$(cat "$__object/explorer/type")"
+stat_file="$__object/explorer/stat"
 
+
+get_current_value() {
+   if [ -s "$stat_file" ]; then
+      _name="$1"
+      _value="$2"
+      case "$_value" in
+         [0-9]*)
+            _index=2
+         ;;
+         *)
+            _index=3
+         ;;
+      esac
+      awk '/'"$_name"':/ { print $'$_index' }' "$stat_file"
+      unset _name _value _index
+   fi
+}
+
+set_group() {
+   echo chgrp \"$1\" \"$destination\"
+}
+
+set_owner() {
+   echo chown \"$1\" \"$destination\"
+}
+
+set_mode() {
+   echo chmod \"$1\" \"$destination\"
+}
+
+set_attributes=
 case "$state_should" in
    present|exists)
-      # No source? Create empty file
-      if [ ! -f "$__object/parameter/source" ]; then
-         if [ "$exists" = "no" ]; then
-            echo touch \"$destination\"
+      # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
+      #  clearing S_ISUID and S_ISGID bits (see chown(2))
+      for attribute in group owner mode; do
+         if [ -f "$__object/parameter/$attribute" ]; then
+            value_should="$(cat "$__object/parameter/$attribute")"
+            value_is="$(get_current_value "$attribute" "$value_should")"
+            if [ -f "$__object/files/set-attributes" -o "$value_should" != "$value_is" ]; then
+               "set_$attribute" "$value_should"
+            fi
          fi
-      fi
-
-      # Group
-      if [ -f "$__object/parameter/group" ]; then
-         echo chgrp \"$(cat "$__object/parameter/group")\" \"$destination\"
-# FIXME: only if necessary, not if parameter is present
-#         echo "chgrp" >> "$__object/notifications"
-      fi
-
-      # Owner
-      if [ -f "$__object/parameter/owner" ]; then
-         echo chown \"$(cat "$__object/parameter/owner")\" \"$destination\"
-# FIXME: only if necessary, not if parameter is present
-#         echo "chown" >> "$__object/notifications"
-      fi
-
-      # Mode - needs to happen last as a chown/chgrp can alter mode by
-      # clearing S_ISUID and S_ISGID bits (see chown(2))
-      if [ -f "$__object/parameter/mode" ]; then
-         echo chmod \"$(cat "$__object/parameter/mode")\" \"$destination\"
-# FIXME: only if necessary, not if parameter is present
-#         echo "chmod" >> "$__object/notifications"
-      fi
+      done
    ;;
 
    absent)
-
-      if [ "$exists" = "yes" ]; then
+      if [ "$type" = "file" ]; then
          echo rm -f \"$destination\"
-         echo "remove" >> "$__messages_out"
       fi
-
    ;;
 
    *)
       echo "Unknown state: $state_should" >&2
       exit 1
    ;;
-
 esac

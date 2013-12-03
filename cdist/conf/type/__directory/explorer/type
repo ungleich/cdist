@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,23 +17,17 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Check whether file exists or not
-#
 
 destination="/$__object_id"
-os=$("$__explorer/os")
 
-case "$os" in
-   "freebsd")
-      cmd="stat -f %Sg"
-      ;;
-   *)
-      cmd="stat -c %G"
-      ;;
-esac
-
-if [ -e "$destination" ]; then
-  $cmd "$destination"
+if [ ! -e "$destination" ]; then
+   echo none
+elif [ -h "$destination" ]; then
+   echo symlink
+elif [ -f "$destination" ]; then
+   echo file
+elif [ -d "$destination" ]; then
+   echo directory
+else
+   echo unknown
 fi
-
