@@ -56,12 +56,14 @@ class Message(object):
         shutil.copyfile(self.global_messages, self.messages_in)
 
     def _cleanup(self):
+        """remove temporary files"""
         if os.path.exists(self.messages_in):
             os.remove(self.messages_in)
         if os.path.exists(self.messages_out):
             os.remove(self.messages_out)
 
     def _merge_messages(self):
+        """merge newly written lines into global file"""
         with open(self.messages_out) as fd:
             content = fd.readlines()
 

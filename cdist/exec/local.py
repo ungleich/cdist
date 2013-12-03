@@ -168,6 +168,7 @@ class Local(object):
 
         if message_prefix:
             message = cdist.message.Message(message_prefix, self.messages_path)
+            env.update(message.env)
 
         try:
             if return_output:
