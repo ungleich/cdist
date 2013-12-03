@@ -52,12 +52,18 @@ source::
 
 MESSAGES
 --------
-
-copy::
-    File was copied because cksum was different from local version
-
+chgrp <group>::
+    Changed group membership
+chown <owner>::
+    Changed owner
+chmod <mode>::
+    Changed mode
+create::
+    Empty file was created (no --source specified)
 remove::
     File exists, but state is absent, file will be removed by generated code.
+upload::
+    File was uploaded
 
 
 EXAMPLES
