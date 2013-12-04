@@ -21,12 +21,7 @@
 base_dir=/etc/iptables.d
 
 name="$__object_id"
-
-if [ -f "$__object/parameter/state" ]; then
-    state="$(cat "$__object/parameter/state")"
-else
-    state="present"
-fi
+state="$(cat "$__object/parameter/state")"
 
 ################################################################################
 # Basic setup
