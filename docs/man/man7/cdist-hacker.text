@@ -134,6 +134,20 @@ git fetch -v origin
 git merge origin/master
 --------------------------------------------------------------------------------
 
+Similar when you want to develop another new feature, you go back
+to the master branch and create another branch based on it:
+
+--------------------------------------------------------------------------------
+# change to master and update to most recent upstream version
+git checkout master
+git fetch -v origin
+git merge origin/master
+
+git checkout -b another_feature
+--------------------------------------------------------------------------------
+
+(you can repeat the code above for as many features as you want to develop
+in parallel)
 
 
 SEE ALSO
