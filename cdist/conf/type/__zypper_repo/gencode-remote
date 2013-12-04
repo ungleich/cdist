@@ -74,17 +74,17 @@ case "$state" in
    ;;
    absent)
          if [ ! -z "$act_id" ]; then
-             echo zypper $zypper_def_opts removerepo "'$act_id'"
+             echo zypper $zypper_def_opts removerepo "$act_id"
          fi
    ;;
    enabled)
          if [ ! -z "$act_id" ]; then
-             echo zypper $zypper_def_opts modifyrepo -e "'$act_id'"
+             echo zypper $zypper_def_opts modifyrepo -e "$act_id"
          fi
    ;;
    disabled)
          if [ ! -z "$act_id" ]; then
-             echo zypper $zypper_def_opts modifyrepo -d "'$act_id'"
+             echo zypper $zypper_def_opts modifyrepo -d "$act_id"
          fi
    ;;
    *)
