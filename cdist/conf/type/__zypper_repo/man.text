@@ -21,7 +21,12 @@ None
 OPTIONAL PARAMETERS
 -------------------
 state::
-    Either "present" or "absent" or "enabled" or "disabled", defaults to "present"
+    Either "present" or "absent" or "enabled" or "disabled", defaults to "present" + 
+    #present#  - make sure that the repo is aviable, needs repo_uri and repo_desc + 
+         for all following states, the repo can be searched via repo_id or repo_uri + 
+    #absent#   - drop the repo if found + 
+    #enabled#  - a repo can have state disabled if installed via zypper service (ris), in this case, you can enable the repo + 
+    #disabled# - instead of absent (drop), a repo can also set to disabled, wich makes it inaccessible + 
 
 repo_uri::
     If supplied, use the uri and not the object id as repo uri.
