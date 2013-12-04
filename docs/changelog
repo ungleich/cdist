@@ -7,6 +7,7 @@ Changelog
 
 3.0.0:
 	* Core: Messaging support added
+	* Core: Removed unused "changed" attribute of objects 
 	* Type: __iptables_rule: Use default parameter
 	* Type __file: Do not generate code if mode is 0xxx
 
