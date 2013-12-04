@@ -1,0 +1,3 @@
+#!/bin/sh
+#
+echo $(zypper lr -u  | cut -d'|' -f 1 | grep -E '^[0-9]')
