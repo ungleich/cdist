@@ -10,7 +10,7 @@ cdist-type__zypper_repo - repository management with zypper
 
 DESCRIPTION
 -----------
-Zypper is usually used on the SuSE distribution to manage repositorys.
+zypper is usually used on the SuSE distribution to manage repositories.
 
 
 REQUIRED PARAMETERS
@@ -24,13 +24,13 @@ state::
     Either "present" or "absent" or "enabled" or "disabled", defaults to "present"
 
 repo_uri::
-    If supplied, use the uri and not the object id as the repo uri.
+    If supplied, use the uri and not the object id as repo uri.
 
 repo_desc::
-    If supplied, use the description and not the object id as the repo description, only used for state present if the repo must created
+    If supplied, use the description and not the object id as repo description, only used if the state is present and the repo has to be created
 
 repo_id::
-    If supplied, use the id and not the object id as the repo id, can be used for with states absent,enabled,disabled
+    If supplied, use the id and not the object id as repo id, can be used with state absent, enabled and disabled
 
 
 EXAMPLES
@@ -43,7 +43,7 @@ __zypper_repo testrepo --state present --repo_uri http://url.to.your.repo/with/p
 # Drop repo by repo uri
 __zypper_repo testrepo --state absent --repo_uri http://url.to.your.repo/with/path
 
-# Drop repo by id nummber, attention: on every call to absent, repos are new numbered from 1 to max 
+# Drop repo by id number (attention: repos are always numbered from 1 to max)
 __zypper_repo testrepo --state absent --repo_id 1
 
 # enable repo by id
@@ -52,7 +52,7 @@ __zypper_repo testrepo2 --state enabled --repo_id 2
 # enable repo by uri
 __zypper_repo testrepo3 --state enabled --repo_uri http://url.to.your.repo/with/path
 
-# disable a repo works like enabling
+# disable a repo works like enabling it
 __zypper_repo testrepo4 --state disabled --repo_id 4
 --------------------------------------------------------------------------------
 
