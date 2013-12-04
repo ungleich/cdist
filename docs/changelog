@@ -4,12 +4,19 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-2.3.7:
+
+3.0.0:
+	* Core: Messaging support added
+	* Type: __iptables_rule: Use default parameter
+	* Type __file: Do not generate code if mode is 0xxx
+
+2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
 	* Type __file: Only remove file when state is absent (Steven Armstrong)
 	* Type __link: Only remove link when state is absent (Steven Armstrong)
 	* Type __directory: Only remove directory when state is absent (Steven Armstrong)
 	* Type __directory: Fix newly introduced quoting issue
+	* Type __package_zypper: Fix explorer and parameter issue (Daniel Heule)
 	* Core: Fix backtrace when cache cannot be deleted
 
 2.3.6: 2013-11-25

@@ -27,4 +27,4 @@ else
    name="$__object_id"
 fi
 
-rpm -q --whatprovides "$name" 2>/dev/null || true
+rpm -q --whatprovides "$name"  | grep -v 'no package provides' || true

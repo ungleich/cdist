@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -191,6 +191,12 @@ __manifest::
 __global::
     Directory that contains generic output like explorer.
     Available for: initial manifest, type manifest, type gencode, shell
+__messages_in::
+    File to read messages from
+    Available for: initial manifest, type manifest, type gencode
+__messages_out::
+    File to write messages
+    Available for: initial manifest, type manifest, type gencode
 __object::
     Directory that contains the current object.
     Available for: type manifest, type explorer, type gencode

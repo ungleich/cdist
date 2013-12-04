@@ -30,6 +30,7 @@ create_file=
 if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
    if [ ! -f "$__object/parameter/source" ]; then
       create_file=1
+      echo create >> "$__messages_out"
    else
       source="$(cat "$__object/parameter/source")"
       if [ "$source" = "-" ]; then
@@ -64,6 +65,7 @@ if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
 destination_upload="\$($__remote_exec $__target_host "mktemp $tempfile_template")"
 DONE
       if [ "$upload_file" ]; then
+         echo upload >> "$__messages_out"
          cat << DONE
 $__remote_copy $source ${__target_host}:\$destination_upload
 DONE

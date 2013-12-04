@@ -30,6 +30,7 @@ import logging
 import tempfile
 
 import cdist
+import cdist.message
 from cdist import core
 
 class Local(object):
@@ -92,6 +93,7 @@ class Local(object):
         self.conf_path = os.path.join(self.base_path, "conf")
         self.global_explorer_out_path = os.path.join(self.base_path, "explorer")
         self.object_path = os.path.join(self.base_path, "object")
+        self.messages_path = os.path.join(self.base_path, "messages")
 
         # Depending on conf_path
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
@@ -128,6 +130,7 @@ class Local(object):
     def create_files_dirs(self):
         self._init_directories()
         self._create_conf_path_and_link_conf_dirs()
+        self._create_messages()
         self._link_types_for_emulator()
 
 
@@ -150,7 +153,7 @@ class Local(object):
         self.log.debug("Local mkdir: %s", path)
         os.makedirs(path, exist_ok=True)
 
-    def run(self, command, env=None, return_output=False):
+    def run(self, command, env=None, return_output=False, message_prefix=None):
         """Run the given command with the given environment.
         Return the output as a string.
 
@@ -163,6 +166,10 @@ class Local(object):
         # Export __target_host for use in __remote_{copy,exec} scripts
         env['__target_host'] = self.target_host
 
+        if message_prefix:
+            message = cdist.message.Message(message_prefix, self.messages_path)
+            env.update(message.env)
+
         try:
             if return_output:
                 return subprocess.check_output(command, env=env).decode()
@@ -172,8 +179,11 @@ class Local(object):
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
             raise cdist.Error(" ".join(*args) + ": " + error.args[1])
+        finally:
+            if message_prefix:
+                message.merge_messages()
 
-    def run_script(self, script, env=None, return_output=False):
+    def run_script(self, script, env=None, return_output=False, message_prefix=None):
         """Run the given script with the given environment.
         Return the output as a string.
 
@@ -181,7 +191,7 @@ class Local(object):
         command = ["/bin/sh", "-e"]
         command.append(script)
 
-        return self.run(command, env, return_output)
+        return self.run(command=command, env=env, return_output=return_output, message_prefix=message_prefix)
 
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.target_host)
@@ -194,6 +204,11 @@ class Local(object):
             raise cdist.Error("Cannot delete old cache %s: %s" % (destination, e))
 
         shutil.move(self.base_path, destination)
+
+    def _create_messages(self):
+        """Create empty messages"""
+        with open(self.messages_path, "w"):
+            pass
 
     def _create_conf_path_and_link_conf_dirs(self):
         # Link destination directories
