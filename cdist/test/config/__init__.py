@@ -82,14 +82,23 @@ class ConfigRunTestCase(test.CdistTestCase):
         first   = self.object_index['__first/man']
         second  = self.object_index['__second/on-the']
         third   = self.object_index['__third/moon']
+        """
+        __first man
 
-        self.config.dpm.after(first.name, second.name)
-        self.config.dpm.after(second.name, third.name)
+        __second on-the \
+           --after __first/man
 
-        # First run: 
+        __third moon \
+           --after __second/on-the
+
+        """
+        self.config.dpm.after(second.name, first.name)
+        self.config.dpm.after(third.name, second.name)
+
+        # First run:
         # solves first and maybe second (depending on the order in the set)
         self.config.iterate_once()
-        self.assertTrue(third.state == third.STATE_DONE)
+        self.assertTrue(first.state == first.STATE_DONE)
 
         self.config.iterate_once()
         self.assertTrue(second.state == second.STATE_DONE)
@@ -101,20 +110,28 @@ class ConfigRunTestCase(test.CdistTestCase):
             # Allow failing, because the third run may or may not be unecessary already,
             # depending on the order of the objects
             pass
-        self.assertTrue(first.state == first.STATE_DONE)
+        self.assertTrue(third.state == third.STATE_DONE)
 
     def test_dependency_resolution_before(self):
         first   = self.object_index['__first/man']
         second  = self.object_index['__second/on-the']
         third   = self.object_index['__third/moon']
+        """
+        __first man \
+           --before __second/on-the
 
-        self.config.dpm.before(second.name, first.name)
-        self.config.dpm.before(third.name, second.name)
+        __second on-the \
+           --before __third/moon
+
+        __third moon
+        """
+        self.config.dpm.before(first.name, second.name)
+        self.config.dpm.before(second.name, third.name)
 
         # First run:
         # solves first and maybe second (depending on the order in the set)
         self.config.iterate_once()
-        self.assertTrue(third.state == third.STATE_DONE)
+        self.assertTrue(first.state == first.STATE_DONE)
 
         self.config.iterate_once()
         self.assertTrue(second.state == second.STATE_DONE)
@@ -126,7 +143,7 @@ class ConfigRunTestCase(test.CdistTestCase):
             # Allow failing, because the third run may or may not be unecessary already,
             # depending on the order of the objects
             pass
-        self.assertTrue(first.state == first.STATE_DONE)
+        self.assertTrue(third.state == third.STATE_DONE)
 
     def test_unresolvable_requirements(self):
         """Ensure an exception is thrown for unresolvable depedencies"""
