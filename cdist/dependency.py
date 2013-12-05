@@ -25,18 +25,22 @@ class DependencyManager(object):
         return DependencyDatabase(self.base_path, object_name)
 
     def after(self, me, other):
-        """Record an after dependency"""
+        """Record an after dependency
+        __me --after __other
+        """
         with DependencyDatabase(self.base_path, me) as db:
             _list = db['after']
             if not other in _list:
                 _list.append(other)
 
-    def before(self, other, me):
-        """Record a before dependency"""
-        with DependencyDatabase(self.base_path, me) as db:
+    def before(self, me, other):
+        """Record a before dependency
+        __me --before __other
+        """
+        with DependencyDatabase(self.base_path, other) as db:
             _list = db['after']
             if not me in _list:
-                _list.append(other)
+                _list.append(me)
 
     def auto(self, parent, child):
         """Record a auto dependency"""
