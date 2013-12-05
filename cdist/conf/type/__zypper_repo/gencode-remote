@@ -60,10 +60,9 @@ elif grep -q "$repo_id" "$__object/explorer/all_repo_ids"; then
     act_id="$repo_id" 
 fi
 
+state="disabled"
 if grep -q "$act_id" "$__object/explorer/enabled_repo_ids"; then
     state="enabled"
-else
-    state="disabled"
 fi
 
 
@@ -88,7 +87,7 @@ case "$state" in
          fi
    ;;
    disabled)
-         if [ ! -z "$act_id" ] && [ "$state" = "disabled" ]; then
+         if [ ! -z "$act_id" ] && [ "$state" = "enabled" ]; then
              echo zypper $zypper_def_opts modifyrepo -d "$act_id"
          fi
    ;;
