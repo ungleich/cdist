@@ -8,6 +8,7 @@ Changelog
 3.0.0:
 	* Core: Messaging support added
 	* Core: Removed unused "changed" attribute of objects 
+	* New Type: __zypper_repo (Daniel Heule)
 	* Type: __iptables_rule: Use default parameter
 	* Type __file: Do not generate code if mode is 0xxx
 	* Type __postfix_*: Depend on __postfix Type (Steven Armstrong)
