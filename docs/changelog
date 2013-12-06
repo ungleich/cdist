@@ -10,6 +10,7 @@ Changelog
 	* Core: Removed unused "changed" attribute of objects 
 	* Type: __iptables_rule: Use default parameter
 	* Type __file: Do not generate code if mode is 0xxx
+	* Type __postfix_*: Depend on __postfix Type (Steven Armstrong)
 
 2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
