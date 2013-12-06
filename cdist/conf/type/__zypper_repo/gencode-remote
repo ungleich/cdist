@@ -73,21 +73,25 @@ case "$state" in
              exit 4
          fi
          if [ -z "$repo_id" ]; then
+             # Repo not present, so we need to create it 
              echo zypper $zypper_def_opts addrepo "'$uri'" "'$desc'"
          fi
    ;;
    absent)
          if [ ! -z "$act_id" ]; then
+             # Repo present (act_id not ""), so we ned to delete it
              echo zypper $zypper_def_opts removerepo "$act_id"
          fi
    ;;
    enabled)
          if [ ! -z "$act_id" ] && [ "$repostate" = "disabled" ]; then
+             # Repo present (act_id not "") and repostate not enabled, so a enable call is needed
              echo zypper $zypper_def_opts modifyrepo -e "$act_id"
          fi
    ;;
    disabled)
          if [ ! -z "$act_id" ] && [ "$repostate" = "enabled" ]; then
+             # Repo present (act_id not "") and repostate enabled, so a disable call is needed
              echo zypper $zypper_def_opts modifyrepo -d "$act_id"
          fi
    ;;
