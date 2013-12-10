@@ -22,8 +22,11 @@ uri="$(cat "$__object/parameter/uri" 2>/dev/null \
    || echo "$__object_id")"
 target="$(cat "$__object/parameter/target")"
 
-
 [ "$__debug" = "yes" ] && curl="curl" || curl="curl -s"
 [ "$__debug" = "yes" ] && tar="tar -xvzp" || tar="tar -xzp"
+
+if [ -f "$__object/parameter/insecure" ] ; then
+   curl="$curl -k"
+fi
 
 echo "$curl '$uri' | $tar -C '$target'"
