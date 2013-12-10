@@ -13,6 +13,7 @@ Changelog
 	* Type: __iptables_rule: Use default parameter
 	* Type __file: Do not generate code if mode is 0xxx
 	* Type __postfix_*: Depend on __postfix Type (Steven Armstrong)
+	* Type __postfix_postconf: Enable support for SuSE (Daniel Heule)
 	* Type __cron: Add support for raw lines (Daniel Heule)
 	* Type __key_value: Fix quoting issue (Steven Armstrong)
 
