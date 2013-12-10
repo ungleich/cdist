@@ -13,6 +13,7 @@ Changelog
 	* Type __file: Do not generate code if mode is 0xxx
 	* Type __postfix_*: Depend on __postfix Type (Steven Armstrong)
 	* Type __cron: Add support for raw lines (Daniel Heule)
+	* Type __key_value: Fix quoting issue (Steven Armstrong)
 
 2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
