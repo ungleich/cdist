@@ -22,7 +22,7 @@
 os=$("$__explorer/os")
 
 case "$os" in
-   ubuntu|debian|archlinux)
+   ubuntu|debian|archlinux|suse)
       :
    ;;
    *)
