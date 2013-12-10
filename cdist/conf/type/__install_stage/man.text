@@ -30,6 +30,12 @@ target::
    where to unpack the tarball to. Defaults to /target.
 
 
+BOOLEAN PARAMETERS
+------------------
+insecure::
+   run curl in insecure mode so it does not check the servers ssl certificate
+
+
 EXAMPLES
 --------
 
@@ -37,6 +43,7 @@ EXAMPLES
 __install_stage --uri tftp:///path/to/stage.tgz
 __install_stage --uri http://path/to/stage.tgz --target /mnt/foobar
 __install_stage --uri file:///path/to/stage.tgz --target /target
+__install_stage --uri https://path/to/stage.tgz --target /mnt/foobar --insecure
 --------------------------------------------------------------------------------
 
 
@@ -47,5 +54,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+Copyright \(C) 2011 - 2013 Steven Armstrong. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
