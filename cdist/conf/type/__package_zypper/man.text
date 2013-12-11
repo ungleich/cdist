@@ -26,6 +26,9 @@ name::
 state::
     Either "present" or "absent", defaults to "present"
 
+ptype::
+    Either "package", "patch", "pattern", "product" or "srcpackage", defaults to "package". For a description see man zypper.
+
 
 EXAMPLES
 --------
@@ -39,6 +42,9 @@ __package_zypper python --state present --name python2
 
 # Remove package
 __package_zypper cfengine --state absent
+
+# install all packages which belongs to pattern x11
+__package_zypper x11 --ptype pattern --state present
 --------------------------------------------------------------------------------
 
 
