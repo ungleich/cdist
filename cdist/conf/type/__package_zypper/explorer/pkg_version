@@ -35,11 +35,14 @@ else
 fi
 
 case "$ptype" in
-    package|patch|pattern|product|srcpackage)
-        zypper se --match-exact -i -t "$ptype" "$name" | grep -E '^i' | cut -d " " -f 3 || true
+    package)
+        zypper search --details --match-exact --installed-only --type "$ptype" "$name" | grep -E '^i' | cut -d " " -f 3,7 || true
+    ;;
+    patch|pattern|product|srcpackage)
+        zypper search --match-exact --installed-only --type "$ptype" "$name" | grep -E '^i' | cut -d " " -f 3 || true
     ;;
     *)
-        echo "unknown type in __package_zypper explorer" &>2
+        echo "unknown ptype in __package_zypper explorer" &>2
         exit 1
     ;;
 esac
