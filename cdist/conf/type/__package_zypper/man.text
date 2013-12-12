@@ -28,8 +28,8 @@ state::
 
 version::
     The version of the package to install. Default is to install the version
-    choosen by the local package manager. For a list of version have a look to
-    the output of "zypper se -s packagename"
+    choosen by the local package manager. For a list of available versions,
+    have a look at the output of "zypper se -s packagename"
 
 ptype::
     Either "package", "patch", "pattern", "product" or "srcpackage", defaults to "package". For a description see man zypper.
