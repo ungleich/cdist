@@ -1,0 +1,6 @@
+With Steven
+
+- Implement environments
+    - for configuring "anything" including switches
+    - can disable / use other global explorers
+- 98% of our framework is generic and can be used for any applikation
