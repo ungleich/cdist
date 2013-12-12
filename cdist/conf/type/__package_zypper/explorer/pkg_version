@@ -19,7 +19,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the status of a package off different types
+# Retrieve the status of a package of different types
 #
 
 if [ -f "$__object/parameter/name" ]; then
