@@ -25,4 +25,6 @@ if [ -f "$__object/parameter/service_uri" ]; then
 else
    uri="/$__object_id"
 fi
-echo $(zypper ls -u -E | grep -E "\<$uri\>" | cut -d'|' -f 7 )
+# simpler command which works only on SLES11 SP3 or newer:
+# echo $(zypper ls -u -E | grep -E "\<$uri\>" | cut -d'|' -f 7)
+echo $(zypper ls -u | grep -E '^([^|]+\|){3,3} Yes' | grep -E "\<$uri\>" | cut -d'|' -f 7 )
