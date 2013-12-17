@@ -22,6 +22,15 @@ disk="/$__object_id"
 disk_name="${disk##*/}"
 
 cat << DONE
+# stop lvm's if any
+if find /sys/class/block/$disk_name*/holders/ -mindepth 1 | grep -q holders/dm; then
+   if command -v vgchange >/dev/null; then
+      vgchange -a n
+   else
+      echo "WARNING: vgchange command not found" >&2
+   fi
+fi
+
 # stop mdadm raids if any
 if [ -r /proc/mdstat ]; then
    md_name="\$(awk "/$disk_name/ {print \$1}" /proc/mdstat)"
@@ -35,28 +44,19 @@ if [ -r /proc/mdstat ]; then
    fi
 fi
 
-# stop lvm's if any
-if find /sys/class/block/$disk_name*/holders/ -mindepth 1 | grep -q holders/dm; then
-   if command -v vgchange >/dev/null; then
-      vgchange -a n
-   else
-      echo "WARNING: vgchange command not found" >&2
-   fi
-fi
-
-# clean disks from any legacy signatures
-if command -v wipefs >/dev/null; then
-   wipefs -a "$disk" || true
+if command -v pvremove >/dev/null; then
+   pvremove --force --force --yes "$disk" || true
+else
+   echo "WARNING: pvremove command not found" >&2
 fi
 if command -v mdadm >/dev/null; then
    mdadm --zero-superblock --force "$disk" || true
 else
    echo "WARNING: mdadm command not found" >&2
 fi
-if command -v pvremove >/dev/null; then
-   pvremove --force --force --yes "$disk" || true
-else
-   echo "WARNING: pvremove command not found" >&2
+# clean disks from any legacy signatures
+if command -v wipefs >/dev/null; then
+   wipefs -a "$disk" || true
 fi
 
 # erase partition table
