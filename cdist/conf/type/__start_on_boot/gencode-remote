@@ -19,7 +19,7 @@
 #
 #
 
-state_should="$(cat "$__object/parameter/state" 2>/dev/null || echo present)"
+state_should="$(cat "$__object/parameter/state")"
 state_is=$(cat "$__object/explorer/state")
 
 # Short circuit if nothing is to be done
