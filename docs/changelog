@@ -21,6 +21,7 @@ Changelog
 	* Type __key_value: Fix quoting issue (Steven Armstrong)
 	* Type __package_zypper: Support non packages as well (Daniel Heule)
 	* Type __package_zypper: Support package versions (Daniel Heule)
+	* Type __package: Use state --present by default (Steven Armstrong)
 
 2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
