@@ -89,10 +89,12 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
 
       if [ "$new_value" != "$current_value" ]; then
           set -- "$@" "$(shorten_property $property)" \'$new_value\'
+          echo change $property $new_value $current_value >> "$__messages_out"
       fi
    done
 
    if [ $# -gt 0 ]; then
+      echo mod >> "$__messages_out"
       if [ "$os" = "freebsd" ]; then
          echo pw usermod "$@" "$name"
       else
@@ -102,12 +104,15 @@ if grep -q "^${name}:" "$__object/explorer/passwd"; then
       true
    fi
 else
+   echo add >> "$__messages_out"
    for property in $(ls .); do
       new_value="$(cat "$property")"
       if [ -z "$new_value" ];then       # Boolean values have no value
           set -- "$@" "$(shorten_property $property)"
+          echo set $property >> "$__messages_out"
       else
           set -- "$@" "$(shorten_property $property)" \'$new_value\'
+          echo set $property $new_value >> "$__messages_out"
       fi
    done
 
