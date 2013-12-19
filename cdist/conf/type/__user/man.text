@@ -20,19 +20,29 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
+state::
+    absent or present, defaults to present
 comment::
-   see usermod(8)
+    see usermod(8)
 home::
-   see above
+    see above
 gid::
-   see above
+    see above
 password::
-   see above
+    see above
 shell::
-   see above
+    see above
 uid::
-   see above
+    see above
 
+BOOLEAN PARAMETERS
+------------------
+system::
+    see useradd(8), apply only on user create
+create-home::
+    see useradd(8), apply only on user create
+remove-home::
+    see userdel(8), apply only on user delete
 
 EXAMPLES
 --------
@@ -44,8 +54,14 @@ __user foobar
 # Same but with a different shell
 __user foobar --shell /bin/zsh
 
+# Same but for a system account
+__user foobar --system
+
 # Set explicit uid and home
 __user foobar --uid 1001 --shell /bin/zsh --home /home/foobar
+
+# Drop user if exists
+__user foobar --state absent
 --------------------------------------------------------------------------------
 
 
