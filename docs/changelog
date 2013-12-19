@@ -6,23 +6,24 @@ Changelog
 
 
 3.0.0:
-	* Core: Messaging support added
+	* Core: Added messaging support
 	* Core: Removed unused "changed" attribute of objects 
 	* New Type: __zypper_repo (Daniel Heule)
 	* New Type: __zypper_service (Daniel Heule)
 	* New Type: __package_emerge (Daniel Heule)
 	* New Type: __package_emerge_dependencies (Daniel Heule)
-	* Type: __iptables_rule: Use default parameter
+	* Type __cron: Add support for raw lines (Daniel Heule)
 	* Type __file: Do not generate code if mode is 0xxx
+	* Type: __iptables_rule: Use default parameter
+	* Type __key_value: Fix quoting issue (Steven Armstrong)
+	* Type __package: Use state --present by default (Steven Armstrong)
+	* Type __package_zypper: Support non packages as well (Daniel Heule)
+	* Type __package_zypper: Support package versions (Daniel Heule)
 	* Type __postfix_*: Depend on __postfix Type (Steven Armstrong)
 	* Type __postfix_postconf: Enable support for SuSE (Daniel Heule)
 	* Type __postfix: Enable support for SuSE (Daniel Heule)
-	* Type __cron: Add support for raw lines (Daniel Heule)
-	* Type __key_value: Fix quoting issue (Steven Armstrong)
-	* Type __package_zypper: Support non packages as well (Daniel Heule)
-	* Type __package_zypper: Support package versions (Daniel Heule)
-	* Type __package: Use state --present by default (Steven Armstrong)
 	* Type __start_on_boot: Use default parameter state
+	* Type __start_on_boot: Add support for gentoo (Daniel Heule)
 
 2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
