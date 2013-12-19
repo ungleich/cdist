@@ -34,11 +34,11 @@ shell::
     see above
 uid::
     see above
-system::
-    see above
 
 BOOLEAN PARAMETERS
 ------------------
+system::
+    see useradd(8), apply only on user create
 create-home::
     see useradd(8), apply only on user create
 remove-home::
