@@ -8,6 +8,7 @@ Changelog
 3.0.0:
 	* Core: Added messaging support
 	* Core: Removed unused "changed" attribute of objects 
+	* Core: Support default values for multiple parameters (Steven Armstrong)
 	* New Type: __zypper_repo (Daniel Heule)
 	* New Type: __zypper_service (Daniel Heule)
 	* New Type: __package_emerge (Daniel Heule)
