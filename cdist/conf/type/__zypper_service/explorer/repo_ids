@@ -21,4 +21,7 @@
 # Manage services with Zypper (mostly suse)
 #
 #
-echo $(zypper lr -u -E  | cut -d'|' -f 1 | grep -E '^[0-9]')
+# simpler command which works only on SLES11 SP3 or newer:
+# echo $(zypper lr -u -E | cut -d'|' -f 1 | grep -E '^[0-9]')
+# on older systems, zypper doesn't know the parameter -E 
+echo $(zypper lr -u | grep -E '^([^|]+\|){3,3} Yes' | cut -d'|' -f 1 | grep -E '^[0-9]')

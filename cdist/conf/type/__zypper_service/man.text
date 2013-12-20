@@ -33,7 +33,7 @@ type::
 
 BOOLEAN PARAMETERS
 ------------------
-remove-all-other-service::
+remove-all-other-services::
    Drop all other services found on the target host before adding the new one.
 
 remove-all-repos::
@@ -45,7 +45,7 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Ensure that internal SLES11 SP3 RIS is in installed and all other services and repos are discarded
-__zypper_service INTERNAL_SLES11_SP3 --service_desc "Internal SLES11 SP3 RIS" --service_uri "http://path/to/your/ris/dir" --remove-all-other-service --remove-all-repos
+__zypper_service INTERNAL_SLES11_SP3 --service_desc "Internal SLES11 SP3 RIS" --service_uri "http://path/to/your/ris/dir" --remove-all-other-services --remove-all-repos
 
 # Ensure that internal SLES11 SP3 RIS is in installed, no changes to ohter services or repos
 __zypper_service INTERNAL_SLES11_SP3 --service_desc "Internal SLES11 SP3 RIS" --service_uri "http://path/to/your/ris/dir"
