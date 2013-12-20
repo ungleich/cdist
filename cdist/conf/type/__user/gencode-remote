@@ -102,6 +102,7 @@ if [ "$state" = "present" ]; then
        done
 
        if [ $# -gt 0 ]; then
+          echo mod >> "$__messages_out"
           if [ "$os" = "freebsd" ]; then
              echo pw usermod "$@" "$name"
           else
@@ -111,6 +112,7 @@ if [ "$state" = "present" ]; then
           true
        fi
     else
+        echo add >> "$__messages_out"
         for property in $(ls .); do
             [ "$property" = "state" ] && continue
             [ "$property" = "remove-home" ] && continue
