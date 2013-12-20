@@ -21,4 +21,6 @@
 # Retrieve all repo id nummbers from enabled repos - parsed zypper output
 #
 #
-echo $(zypper lr -E | cut -d'|' -f 1 | grep -E '^[0-9]')
+# simpler command which works only on SLES11 SP3 or newer:
+# echo $(zypper lr -E | cut -d'|' -f 1 | grep -E '^[0-9]')
+echo $(zypper lr |  grep -E '^[0-9]([^|]+\|){3,3} Yes' | cut -d'|' -f 1)
