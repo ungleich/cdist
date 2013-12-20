@@ -30,6 +30,7 @@ Changelog
 	* Type __user: Add support for state parameter (Daniel Heule)
 	* Type __user: Add support for system users (Daniel Heule)
 	* Type __user: Add messaging support (Steven Armstrong)
+	* Type __zypper_service: Support older SuSE releases (Daniel Heule)
 
 2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
