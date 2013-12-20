@@ -26,6 +26,8 @@ Changelog
 	* Type __postfix: Enable support for SuSE (Daniel Heule)
 	* Type __start_on_boot: Use default parameter state
 	* Type __start_on_boot: Add support for gentoo (Daniel Heule)
+	* Type __user: Add support for state parameter (Daniel Heule)
+	* Type __user: Add support for system users (Daniel Heule)
 
 2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
