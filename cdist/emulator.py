@@ -48,8 +48,8 @@ class DefaultList(list):
     @classmethod
     def create(cls, initial=None):
         if initial:
-            initial = initial.split('\n')
-        return cls(initial)
+            return cls(initial.split('\n'))
+        return cls()
 
 
 class Emulator(object):
