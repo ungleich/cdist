@@ -29,6 +29,7 @@ Changelog
 	* Type __start_on_boot: Add support for gentoo (Daniel Heule)
 	* Type __user: Add support for state parameter (Daniel Heule)
 	* Type __user: Add support for system users (Daniel Heule)
+	* Type __user: Add messaging support (Steven Armstrong)
 
 2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
