@@ -49,7 +49,6 @@ class DefaultList(list):
     def create(cls, initial=None):
         if initial:
             return cls(initial.split('\n'))
-        return cls()
 
 
 class Emulator(object):
