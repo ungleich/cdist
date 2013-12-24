@@ -58,7 +58,7 @@ To upgrade to the lastet version do
 ### Updating from 2.3 to 3.0
 
 The **changed** attribute of objects has been removed.
-Use [messaging](man/3.0.0/man7/cdist-messaging.html) instead.
+Use [messaging](../man/3.0.0/man7/cdist-messaging.html) instead.
 
 ### Updating from 2.2 to 2.3
 
