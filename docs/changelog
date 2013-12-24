@@ -18,7 +18,7 @@ Changelog
 	* Type __cron: Suppress stderr output from crontab (Daniel Heule)
 	* Type __cron: Fix quoting issue (Daniel Heule)
 	* Type __file: Do not generate code if mode is 0xxx
-	* Type: __iptables_rule: Use default parameter
+	* Type __iptables_rule: Use default parameter
 	* Type __key_value: Fix quoting issue (Steven Armstrong)
 	* Type __package: Use state --present by default (Steven Armstrong)
 	* Type __package_zypper: Support non packages as well (Daniel Heule)
