@@ -1,0 +1,5 @@
+- release process releases pypi from something
+  that is git describe based, not changelog based...
+
+  - git describe should equal changelog, but may be
+    inconsistent due to branch merging!

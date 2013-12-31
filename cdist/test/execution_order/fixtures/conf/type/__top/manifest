@@ -1,2 +1,0 @@
-__package b
-require="__package/b" __package a

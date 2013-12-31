@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -44,10 +44,12 @@ else
    esac
 fi
 
-set -- "$@" "$__object_id"
+state="$(cat "$__object/parameter/state")"
+
+set -- "$@" "$__object_id" "--state" "$state"
 cd "$__object/parameter"
 for property in $(ls .); do
-   if [ "$property" != "type" ]; then
+   if [ "$property" != "type" -a "$property" != "state" ]; then
       set -- "$@" "--$property" "$(cat "$property")"
    fi
 done

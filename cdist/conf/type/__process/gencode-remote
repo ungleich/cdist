@@ -25,7 +25,12 @@ else
     name="$__object_id"
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+parameter_state="$__object/parameter/state"
+if [ -f "$_parameter_state" ]; then
+    state_should=$(cat "$__object/parameter/state")
+else
+    state_should="present"
+fi
 
 runs="$(cat "$__object/explorer/runs")"
 if [ "$runs" ]; then

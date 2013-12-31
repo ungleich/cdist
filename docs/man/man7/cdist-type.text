@@ -67,25 +67,31 @@ A type consists of
 Types are stored below cdist/conf/type/. Their name should always be prefixed with
 two underscores (__) to prevent collisions with other executables in $PATH.
 
-To begin a new type, just create the directory **cdist/conf/type/__NAME**.
+To implement a new type, create the directory **cdist/conf/type/__NAME**.
 
 
 DEFINING PARAMETERS
 -------------------
 Every type consists of required, optional and boolean parameters, which must
-be created in a newline seperated file in ***parameter/required***,
+each be declared in a newline separated file in ***parameter/required***,
 ***parameter/required_multiple***, ***parameter/optional***, 
 ***parameter/optional_multiple*** and ***parameter/boolean***.
 Parameters which are allowed multiple times should be listed in
-required_multiple or optional_multiple respectively. For all other parameters
-the standard unix behaviour of the last given wins is applied.
+required_multiple or optional_multiple respectively. All other parameters
+follow the standard unix behaviour "the last given wins".
 If either is missing, the type will have no required, no optional, no boolean
 or no parameters at all. 
+
+Default values for optional parameters can be predefined in
+***parameter/default/<name>***.
 
 Example:
 --------------------------------------------------------------------------------
 echo servername >> cdist/conf/type/__nginx_vhost/parameter/required
 echo logdirectory >> cdist/conf/type/__nginx_vhost/parameter/optional
+echo loglevel >> cdist/conf/type/__nginx_vhost/parameter/optional
+mkdir cdist/conf/type/__nginx_vhost/parameter/default
+echo warning > cdist/conf/type/__nginx_vhost/parameter/default/loglevel
 echo server_alias >> cdist/conf/type/__nginx_vhost/parameter/optional_multiple
 echo use_ssl >> cdist/conf/type/__nginx_vhost/parameter/boolean
 --------------------------------------------------------------------------------
@@ -108,6 +114,9 @@ if [ -f "$__object/parameter/logdirectory" ]; then
    logdirectory="$(cat "$__object/parameter/logdirectory")"
 fi
 
+# optional parameter with predefined default
+loglevel="$(cat "$__object/parameter/loglevel")"
+
 # boolean parameter
 if [ -f "$__object/parameter/use_ssl" ]; then
    # file exists -> True
@@ -125,7 +134,7 @@ fi
 
 
 INPUT FROM STDIN
------------------
+----------------
 Every type can access what has been written on stdin when it has been called.
 The result is saved into the ***stdin*** file in the object directory.
 
@@ -141,6 +150,7 @@ If you have not seen this syntax (<< eof) before, it may help you to read
 about "here documents".
 
 In the __file type, stdin is used as source for the file, if - is used for source:
+
 --------------------------------------------------------------------------------
     if [ -f "$__object/parameter/source" ]; then
         source="$(cat "$__object/parameter/source")"
@@ -229,7 +239,7 @@ the output of gencode-remote is executed on the target.
 The gencode scripts can make use of the parameters, the global explorers
 and the type specific explorers.
 
-If the gencode scripts encounter an error, it should print diagnostic
+If the gencode scripts encounters an error, it should print diagnostic
 messages to stderr and exit non-zero. If you need to debug the gencode
 script, you can write to stderr:
 

@@ -1,0 +1,13 @@
+Required for the ossawards until 2013-10-06:
+    - all source code
+    - licenses GPLv3
+    - installation instructions,
+        - On Linux do the following:
+        - pip install
+        - 
+    - necessary documents and 
+    - a demo video onto our web hard.
+        - installation
+        - cdist via cdist
+        - presentation
+            - build from existing ones (?)

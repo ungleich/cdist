@@ -26,8 +26,8 @@ state_should=present
 
 file="$(cat "$__object/parameter/file")"
 delimiter="$(cat "$__object/parameter/delimiter")"
-value="$(cat "$__object/parameter/value")"
-
+# escape double quotes, as that is what we use ourself below
+value_escaped="$(cat "$__object/parameter/value" | sed -e "s/\([\"]\)/\\\\\1/g")"
 state_is="$(cat "$__object/explorer/state")"
 
 [ "$state_is" = "$state_should" ] && exit 0
@@ -35,19 +35,29 @@ state_is="$(cat "$__object/explorer/state")"
 case "$state_should" in
     absent)
         # remove lines starting with key
-        echo "sed '/^$key\($delimiter\+\)/d' \"$file\" > \"$file.cdist-tmp\""
-        echo "mv \"$file.cdist-tmp\" \"$file\""
+        cat << DONE
+tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
+# preserve ownership and permissions by copying existing file over tmpfile
+cp -p "$file" "\$tmpfile"
+sed '/^$key\($delimiter\+\)/d' "$file" > "\$tmpfile"
+mv -f "\$tmpfile" "$file"
+DONE
     ;;
     present)
         case "$state_is" in
             absent)
                 # add new key and value
-                echo "echo \"${key}${delimiter}${value}\" >> \"$file\""
+                printf 'echo "%s%s%s" >> "%s"' "$key" "$delimiter" "$value_escaped" "$file"
             ;;
             wrongvalue)
                 # change exisiting value
-                echo "sed \"s|^$key\($delimiter\+\).*|$key\1$value|\" \"$file\" > \"$file.cdist-tmp\""
-                echo "mv \"$file.cdist-tmp\" \"$file\""
+                cat << DONE
+tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
+# preserve ownership and permissions by copying existing file over tmpfile
+cp -p "$file" "\$tmpfile"
+sed "s|^$key\($delimiter\+\).*|$key\\1$value_escaped|" "$file" > "\$tmpfile"
+mv -f "\$tmpfile" "$file"
+DONE
             ;;
             *)
                 echo "Unknown explorer state: $state_is" >&2
@@ -57,4 +67,4 @@ case "$state_should" in
     *)
        echo "Unknown state: $state_should" >&2
        exit 1
-esac 
+esac

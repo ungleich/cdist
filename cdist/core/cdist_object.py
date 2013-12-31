@@ -65,7 +65,7 @@ class CdistObject(object):
     STATE_RUNNING = "running"
     STATE_DONE = "done"
 
-    def __init__(self, cdist_type, base_path, object_id=None):
+    def __init__(self, cdist_type, base_path, object_id=''):
         self.cdist_type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
@@ -107,7 +107,6 @@ class CdistObject(object):
 
         """
         type_name = object_name.split(os.sep)[0]
-        # FIXME: allow object without object_id? e.g. for singleton
         object_id = os.sep.join(object_name.split(os.sep)[1:])
         return type_name, object_id
 
@@ -202,7 +201,6 @@ class CdistObject(object):
     autorequire = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'autorequire'))
     parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.parameter_path))
     explorers = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.explorer_path))
-    changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
     state = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "state"))
     source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
     code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_local_path))
@@ -235,10 +233,3 @@ class CdistObject(object):
                 object_list.append(cdist_object)
 
         return object_list
-
-class RequirementNotFoundError(cdist.Error):
-    def __init__(self, requirement):
-        self.requirement = requirement
-
-    def __str__(self):
-        return 'Requirement could not be found: %s' % self.requirement

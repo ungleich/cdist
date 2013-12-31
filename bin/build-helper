@@ -1,0 +1,298 @@
+#!/bin/sh
+#
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# This file contains the heavy lifting found usually in the Makefile
+#
+
+basedir=${0%/*}/../
+# Change to checkout directory
+cd "$basedir"
+
+version=$(git describe)
+
+option=$1; shift
+
+case "$option" in
+    changelog-changes)
+        if [ "$#" -eq 1 ]; then
+            start=$1
+        else
+            start="[[:digit:]]"
+        fi
+
+        end="[[:digit:]]"
+
+        awk -F: "BEGIN { start=0 }
+            {
+                if(start == 0) {
+                    if (\$0 ~ /^$start/) {
+                        start = 1
+                    }
+                } else {
+                    if (\$0 ~ /^$end/) {
+                        exit
+                    } else {
+                        print \$0 
+                    }
+                }
+            }" "$basedir/docs/changelog"
+    ;;
+
+    changelog-version)
+        # get version from changelog
+        grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/:.*//'
+    ;;
+
+    check-date)
+        # verify date in changelog is today
+        date_today="$(date +%Y-%m-%d)"
+        date_changelog=$(grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/.*: //')
+
+        if [ "$date_today" != "$date_changelog" ]; then
+            echo "Date in changelog is not today"
+            echo "Changelog: $date_changelog"
+            exit 1
+        fi
+    ;;
+
+    check-unittest)
+        "$0" test
+    ;;
+
+    blog)
+        version=$1; shift
+        blogfile=$1; shift
+        dir=${blogfile%/*}
+        file=${blogfile##*/}
+
+
+        cat << eof > "$blogfile"
+[[!meta title="Cdist $version released"]]
+
+Here's a short overview about the changes found in version ${version}:
+
+eof
+
+        $0 changelog-changes "$version" >> "$blogfile"
+
+        cat << eof >> "$blogfile"
+For more information visit the [[cdist homepage|software/cdist]].
+
+[[!tag cdist config unix]]
+eof
+        cd "$dir"
+        git add "$file"
+        # Allow git commit to fail if there are no changes
+        git commit -m "cdist blog update: $version" "$blogfile" || true
+    ;;
+
+    ml-release)
+        version=$1; shift
+
+        to_a=cdist
+        to_d=l.schottelius.org
+        to=${to_a}@${to_d}
+
+        from_a=nico-cdist
+        from_d=schottelius.org
+        from=${from_a}@${from_d}
+
+        ( 
+        cat << eof
+From: Nico -telmich- Schottelius <$from>
+To: cdist mailing list <$to>
+Subject: cdist $version released
+
+Hello .*,
+
+cdist $version has been released with the following changes:
+
+eof
+
+        "$0" changelog-changes "$version"
+        cat << eof
+
+Cheers,
+
+Nico
+
+-- 
+Automatisation at its best level. With cdist.
+eof
+        ) | /usr/sbin/sendmail -f "$from" "$to"
+    ;;
+
+
+    freecode-release)
+        version=$1; shift
+        api_token=$(awk '/machine freecode login/ { print $8 }' ~/.netrc)
+
+        printf "Enter tag list for freecode release %s> " "$version"
+        read taglist
+
+        printf "Enter changelog for freecode release %s> " "$version"
+        read changelog
+
+        echo "Submit preview"
+        cat << eof
+tag_list = $taglist
+changelog = $changelog
+version = $version
+eof
+        printf "Press enter to submit to freecode> "
+        read dummy
+
+        cat << eof | cfreecode-api release-add cdist
+        {
+            "auth_code": "$api_token",
+            "release": {
+                "tag_list": "$taglist",
+                "version": "$version",
+                "changelog": "$changelog",
+                "hidden_from_frontpage": false
+            }
+        }
+eof
+
+    ;;
+
+    release-git-tag)
+        target_version=$($0 changelog-version)
+        if git rev-parse --verify refs/tags/$target_version; then
+            echo "Tag for $target_version exists, aborting"
+            exit 1
+        fi
+        printf "Enter tag description for ${target_version}: "
+        read tagmessage
+        git tag "$target_version" -m "$$tagmessage"
+    ;;
+
+    release)
+        set -e
+        target_version=$($0 changelog-version)
+        target_branch=$($0 version-branch)
+
+        echo "Beginning release process for $target_version"
+
+        # First check everything is sane
+        "$0" check-date
+        "$0" check-unittest
+
+        # Generate version file to be included in packaging
+        "$0" version
+
+        # Ensure the git status is clean, else abort
+        if ! git diff-index --name-only --exit-code HEAD ; then
+            echo "Unclean tree, see files above, aborting"
+            exit 1
+        fi
+
+        # Ensure we are on the master branch
+        if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
+            echo "Releases are happening from the master branch, aborting"
+            exit 1
+        fi
+
+        # Ensure version branch exists
+        if ! git rev-parse --verify refs/heads/$target_branch 2>/dev/null; then
+            git branch "$target_branch"
+        fi
+
+        # Merge master branch into version branch
+        git checkout "$target_branch"
+        git merge master
+
+        # Verify that after the merge everything works
+        "$0" check-date
+        "$0" check-unittest
+
+        # Generate man pages (indirect check if they build)
+        make man
+
+        # Generate speeches (indirect check if they build)
+        make speeches
+
+        ############################################################# 
+        # Everything green, let's do the release
+
+        # Tag the current commit
+        "$0" release-git-tag
+
+        # Also merge back the version branch
+        git checkout master
+        git merge "$target_branch"
+
+        # Publish git changes
+        make pub
+
+        # publish man, speeches, website
+        make web-release-all
+
+        # Ensure that pypi release has the right version
+        "$0" version
+
+        # Create and publish package for pypi
+        make pypi-release
+
+        # Archlinux release is based on pypi
+        make archlinux-release
+
+        # Announce change on Freecode
+        make freecode-release
+
+        # Announce change on ML
+        make ml-release
+
+        cat << eof
+Manual steps post release:
+
+    - linkedin
+    - hackernews
+    - reddit
+    - twitter
+
+eof
+
+    ;;
+
+    test)
+        export PYTHONPATH="$(pwd -P)"
+
+        if [ $# -lt 1 ]; then
+            python3 -m cdist.test
+        else
+            python3 -m unittest "$@"
+        fi
+    ;;
+
+    version-branch)
+        "$0" changelog-version | cut -d. -f '1,2'
+    ;;
+
+    version)
+        echo "VERSION = \"$(git describe)\"" > cdist/version.py
+    ;;
+
+    *)
+        echo "Unknown helper target $@ - aborting"
+        exit 1
+    ;;
+
+esac

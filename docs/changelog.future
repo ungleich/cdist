@@ -1,0 +1,10 @@
+Changelog
+---------
+
+	* Changes are always commented with their author in (braces)
+	* Exception: No braces means author == Nico Schottelius
+
+future (maybe 3.x?):
+	* Type __cron: Dropped support for old internal format
+	  Using this version prior to running cdist 2.1.2 will
+	  break add the cron entries twice.

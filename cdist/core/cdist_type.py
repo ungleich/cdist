@@ -25,7 +25,8 @@ import os
 import cdist
 
 class NoSuchTypeError(cdist.Error):
-    def __init__(self, type_path, type_absolute_path):
+    def __init__(self, name, type_path, type_absolute_path):
+        self.name = name
         self.type_path = type_path
         self.type_absolute_path = type_absolute_path
 
@@ -48,7 +49,7 @@ class CdistType(object):
         self.path = self.name
         self.absolute_path = os.path.join(self.base_path, self.path)
         if not os.path.isdir(self.absolute_path):
-            raise NoSuchTypeError(self.path, self.absolute_path)
+            raise NoSuchTypeError(self.name, self.path, self.absolute_path)
         self.manifest_path = os.path.join(self.name, "manifest")
         self.explorer_path = os.path.join(self.name, "explorer")
         self.gencode_local_path = os.path.join(self.name, "gencode-local")
@@ -61,6 +62,7 @@ class CdistType(object):
         self.__optional_parameters = None
         self.__optional_multiple_parameters = None
         self.__boolean_parameters = None
+        self.__parameter_defaults = None
 
     @classmethod
     def list_types(cls, base_path):
@@ -98,11 +100,6 @@ class CdistType(object):
     def is_singleton(self):
         """Check whether a type is a singleton."""
         return os.path.isfile(os.path.join(self.absolute_path, "singleton"))
-
-    @property
-    def is_install(self):
-        """Check whether a type is used for installation (if not: for configuration)"""
-        return os.path.isfile(os.path.join(self.absolute_path, "install"))
 
     @property
     def explorers(self):
@@ -194,3 +191,19 @@ class CdistType(object):
             finally:
                 self.__boolean_parameters = parameters
         return self.__boolean_parameters
+
+    @property
+    def parameter_defaults(self):
+        if not self.__parameter_defaults:
+            defaults = {}
+            try:
+                defaults_dir = os.path.join(self.absolute_path, "parameter", "default")
+                for name in os.listdir(defaults_dir):
+                    with open(os.path.join(defaults_dir, name)) as fd:
+                        defaults[name] = fd.read().strip()
+            except EnvironmentError:
+                # error ignored
+                pass
+            finally:
+                self.__parameter_defaults = defaults
+        return self.__parameter_defaults

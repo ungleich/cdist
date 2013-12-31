@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -18,7 +19,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the status of a package
+# Retrieve the status of a package of different types
 #
 
 if [ -f "$__object/parameter/name" ]; then
@@ -27,4 +28,21 @@ else
    name="$__object_id"
 fi
 
-rpm -q --whatprovides "$name" 2>/dev/null || true
+if [ -f "$__object/parameter/ptype" ]; then
+   ptype="$(cat "$__object/parameter/ptype")"
+else
+   ptype="package"
+fi
+
+case "$ptype" in
+    package)
+        zypper search --details --match-exact --installed-only --type "$ptype" "$name" | grep -E '^i' | cut -d " " -f 3,7 || true
+    ;;
+    patch|pattern|product|srcpackage)
+        zypper search --match-exact --installed-only --type "$ptype" "$name" | grep -E '^i' | cut -d " " -f 3 || true
+    ;;
+    *)
+        echo "unknown ptype in __package_zypper explorer" &>2
+        exit 1
+    ;;
+esac

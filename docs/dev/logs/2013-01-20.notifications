@@ -1,0 +1,20 @@
+Allow cross-type communication
+
+Sending notifications is possible from
+
+    - manifest
+    - gencode-local
+    - gencode-remote
+
+Sending a notification from an object means writing to the file "notifications" into
+its object:
+
+    echo mytest >> "$__object/notifications" # a type reports something
+
+Reading / Reacting on notifications works by accessing the file
+referred to be "$__notifications". All notifications are prefixed with
+the object name ($__object_name) and are appended into this file.
+
+To find out, whether a file was copied, run:
+
+    grep __file/etc/passwd:copy "$__notifications"

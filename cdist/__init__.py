@@ -40,11 +40,18 @@ BANNER = """
  "8888P'   `"888*""     R888" `   ^"F        'Y"
    "P'        ""         ""
 """
+
 DOT_CDIST   = ".cdist"
 
+REMOTE_COPY = "scp -o User=root -q"
+REMOTE_EXEC = "ssh -o User=root -q"
 
 class Error(Exception):
     """Base exception class for this project"""
+    pass
+
+class UnresolvableRequirementsError(cdist.Error):
+    """Resolving requirements failed"""
     pass
 
 class CdistObjectError(Error):

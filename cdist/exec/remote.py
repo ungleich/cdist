@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -43,11 +43,19 @@ class Remote(object):
     Directly accessing the remote side from python code is a bug.
 
     """
-    def __init__(self, target_host, remote_base_path, remote_exec, remote_copy):
+    def __init__(self,
+                 target_host,
+                 remote_exec,
+                 remote_copy,
+                 base_path=None):
         self.target_host = target_host
-        self.base_path = remote_base_path
         self._exec = remote_exec
         self._copy = remote_copy
+
+        if base_path:
+            self.base_path = base_path
+        else:
+            self.base_path = "/var/lib/cdist"
 
         self.conf_path = os.path.join(self.base_path, "conf")
         self.object_path = os.path.join(self.base_path, "object")
@@ -56,6 +64,15 @@ class Remote(object):
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
 
         self.log = logging.getLogger(self.target_host)
+
+        self._init_env()
+
+    def _init_env(self):
+        """Setup environment for scripts - HERE????"""
+        # FIXME: better do so in exec functions that require it!
+        os.environ['__remote_copy'] = self._copy
+        os.environ['__remote_exec'] = self._exec
+
 
     def create_files_dirs(self):
         self.rmdir(self.base_path)
@@ -132,6 +149,6 @@ class Remote(object):
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
-            raise cdist.Error(" ".join(*args) + ": " + error.args[1])
+            raise cdist.Error(" ".join(command) + ": " + error.args[1])
         except UnicodeDecodeError:
             raise DecodeError(command)

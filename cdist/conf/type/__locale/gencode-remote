@@ -1,0 +1,51 @@
+#!/bin/sh
+#
+# 2013 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Let localedef do the magic
+#
+
+locale="$__object_id"
+
+# Hardcoded, create a pull request with
+# branching on $os in case it is at another location
+alias=/usr/share/locale/locale.alias
+
+input=$(echo "$locale" | cut -d . -f 1)
+charmap=$(echo "$locale" | cut -d . -f 2)
+
+# Adding locale? The name is de_CH.UTF-8
+# Removing locale? The name is de_CH.utf8.
+# W-T-F!
+locale_remove=$(echo "$locale" | sed 's/UTF-8/utf8/')
+
+state=$(cat "$__object/parameter/state")
+
+case "$state" in
+    present)
+        echo localedef -A "$alias" -f "$charmap" -i "$input" "$locale"
+    ;;
+    absent)
+        echo localedef --delete-from-archive "$locale_remove"
+    ;;
+    *)
+        echo "Unsupported state: $state" >&2
+        exit 1
+    ;;
+esac
