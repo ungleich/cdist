@@ -1,8 +1,8 @@
-cdist (2.1.1+34-g260b6f6-1) UNRELEASED; urgency=low
+cdist (3.0.0-1) UNRELEASED; urgency=low
 
-  * New upstream snapshot
+  * New upstream release
 
- -- Axel Beckert <abe@debian.org>  Mon, 03 Jun 2013 14:52:19 +0200
+ -- Axel Beckert <abe@debian.org>  Tue, 31 Dec 2013 05:08:03 +0100
 
 cdist (2.1.0~pre8-1) unstable; urgency=low
 

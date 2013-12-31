@@ -7,7 +7,7 @@
 	dh $@ --with python3
 
 override_dh_auto_configure:
-	if [ ! -f cdist/version.py ]; then $(MAKE) version; fi
+	if [ ! -f cdist/version.py ]; then bin/build-helper version; fi
 
 override_dh_auto_install:
 	#python3 setup.py install --root=debian/cdist --install-layout=deb --install-lib=/usr/share/cdist --install-scripts=/usr/share/cdist
