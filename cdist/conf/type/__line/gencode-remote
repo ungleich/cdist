@@ -49,7 +49,15 @@ case "$state_should" in
         # Replace all \ so \t and other combinations are not interpreted
         #
 
-        line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g" -e 's/\\/\\\\/g')
+
+        # line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g" -e 's/\\/\\\\/g')
+        # The one above does not work:
+        #     --line "PS1='[\t] \[\033[1m\]\h\[\033[0m\]:\w\\$ '"
+        # becomes
+        # PS1='[\\t] \\[\\033[1m\\]\\h\\[\\033[0m\\]:\\w\\$ '
+
+        # Only replace ' with '"'"' and keep \ as they are
+        line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g")
         echo "printf '%s\n' '$line_sanitised' >> $file"
 
     ;;
