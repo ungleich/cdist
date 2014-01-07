@@ -5,6 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 3.0.1:
+	* Type __line: Remove unecessary backslash escape
 	* Type __package: Fix typo in optional parameter ptype (Daniel Heule)
 	* Type __package_rubygems: Require rubygems prior to use (Steven Armstrong)
 	* Type __start_on_boot: Fix for SuSE's chkconfig (Daniel Heule)
