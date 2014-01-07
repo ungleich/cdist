@@ -7,6 +7,7 @@ Changelog
 3.0.1:
 	* Type __package: Fix typo in optional parameter ptype (Daniel Heule)
 	* Type __package_rubygems: Require rubygems prior to use (Steven Armstrong)
+	* Type __start_on_boot: Fix for SuSE's chkconfig (Daniel Heule)
 
 3.0.0: 2013-12-24
 	* Core: Added messaging support
