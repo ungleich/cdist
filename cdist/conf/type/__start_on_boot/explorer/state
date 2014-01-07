@@ -39,8 +39,17 @@ case "$os" in
         [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
     ;;
 
-    amazon|centos|fedora|owl|redhat|suse)
+    amazon|centos|fedora|owl|redhat)
         state=$(chkconfig --level "$runlevel" "$name" || echo absent)
+        [ "$state" ] || state="present"
+    ;;
+    suse)
+        # check for target if set, usable for boot. services in runlevel B
+        if [ "$target_runlevel" != 'default' ]; then
+            runlevel="$target_runlevel"
+        fi
+        # suses chkconfig has the same name, but works different ...
+        state=$(chkconfig --check "$name" "$runlevel" || echo absent)
         [ "$state" ] || state="present"
     ;;
     gentoo)
