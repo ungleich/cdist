@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+3.0.1:
+	* Type __package: Fix typo in optional parameter ptype (Daniel Heule)
+	* Type __package_rubygems: Require rubygems prior to use (Steven Armstrong)
 
 3.0.0: 2013-12-24
 	* Core: Added messaging support
