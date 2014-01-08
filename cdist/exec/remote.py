@@ -23,6 +23,7 @@
 import io
 import os
 import sys
+import glob
 import subprocess
 import logging
 
@@ -94,9 +95,17 @@ class Remote(object):
         """Transfer a file or directory to the remote side."""
         self.log.debug("Remote transfer: %s -> %s", source, destination)
         self.rmdir(destination)
-        command = self._copy.split()
-        command.extend(["-r", source, self.target_host + ":" + destination])
-        self._run_command(command)
+        if os.path.isdir(source):
+            self.mkdir(destination)
+            for f in glob.glob1(source, '*'):
+                command = self._copy.split()
+                path = os.path.join(source, f)
+                command.extend([path, '{0}:{1}'.format(self.target_host, destination)])
+                self._run_command(command)
+        else:
+            command = self._copy.split()
+            command.extend([source, '{0}:{1}'.format(self.target_host, destination)])
+            self._run_command(command)
 
     def run_script(self, script, env=None, return_output=False):
         """Run the given script with the given environment on the remote side.
