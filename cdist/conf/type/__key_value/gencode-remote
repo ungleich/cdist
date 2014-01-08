@@ -27,7 +27,7 @@ state_should=present
 file="$(cat "$__object/parameter/file")"
 delimiter="$(cat "$__object/parameter/delimiter")"
 # escape double quotes, as that is what we use ourself below
-value_escaped="$(cat "$__object/parameter/value" | sed -e "s/\([\"]\)/\\\\\1/g")"
+value_escaped="$(cat "$__object/parameter/value" | sed -e 's/\([\"]\)/\\\1/g')"
 state_is="$(cat "$__object/explorer/state")"
 
 [ "$state_is" = "$state_should" ] && exit 0
