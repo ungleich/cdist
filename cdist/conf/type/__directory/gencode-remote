@@ -85,7 +85,13 @@ DONE
          if [ -f "$__object/parameter/$attribute" ]; then
             value_should="$(cat "$__object/parameter/$attribute")"
             value_is="$(get_current_value "$attribute" "$value_should")"
-            if [ "$set_attributes" -o "$value_should" != "$value_is" ]; then
+            # the compare isn't correct when eg 0700 = 700 so we prefix the value_is to 4 chars
+            if [ "$attribute" = "mode" ] && [ ${#value_should} != ${#value_is} ]; then
+                if [ ${#value_is} = 3 ]; then
+                    value_is=0${value_is}
+                fi
+            fi
+            if [ "$set_attributes" = 1 ] || [ "$value_should" != "$value_is" ]; then
                "set_$attribute" "$value_should"
             fi
          fi
