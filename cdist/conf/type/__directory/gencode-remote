@@ -56,15 +56,18 @@ get_current_value() {
 }
 
 set_group() {
-   echo chgrp $recursive \"$1\" \"$destination\"
+    echo chgrp $recursive \"$1\" \"$destination\"
+    echo chgrp $recursive $1 >> "$__messages_out"
 }
 
 set_owner() {
-   echo chown $recursive \"$1\" \"$destination\"
+    echo chown $recursive \"$1\" \"$destination\"
+    echo chown $recursive $1 >> "$__messages_out"
 }
 
 set_mode() {
-   echo chmod $recursive \"$1\" \"$destination\"
+    echo chmod $recursive \"$1\" \"$destination\"
+    echo chmod $recursive $1 >> "$__messages_out"
 }
 
 case "$state_should" in
@@ -77,6 +80,7 @@ case "$state_should" in
 rm -f "$destination"
 mkdir $mkdiropt "$destination"
 DONE
+        echo "remove non directory" >> "$__messages_out"
       fi
 
       # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
@@ -85,16 +89,23 @@ DONE
          if [ -f "$__object/parameter/$attribute" ]; then
             value_should="$(cat "$__object/parameter/$attribute")"
             value_is="$(get_current_value "$attribute" "$value_should")"
-            if [ "$set_attributes" -o "$value_should" != "$value_is" ]; then
+
+            # change 0xxx format to xxx format => same as stat returns
+            if [ "$attribute" = mode ]; then
+                value_should="$(echo $value_should | sed 's/^0\(...\)/\1/')"
+            fi
+
+            if [ "$set_attributes" = 1 ] || [ "$value_should" != "$value_is" ]; then
                "set_$attribute" "$value_should"
             fi
          fi
       done
    ;;
    absent)
-      if [ "$type" = "directory" ]; then
-         echo rm -rf \"$destination\"
-      fi
+        if [ "$type" = "directory" ]; then
+            echo rm -rf \"$destination\"
+            echo remove >> "$__messages_out"
+        fi
    ;;
    *)
       echo "Unknown state: $state_should" >&2
