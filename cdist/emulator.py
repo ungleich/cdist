@@ -37,6 +37,20 @@ class MissingRequiredEnvironmentVariableError(cdist.Error):
         return self.message
 
 
+class DefaultList(list):
+    """Helper class to allow default values for optional_multiple parameters.
+
+    @see https://groups.google.com/forum/#!msg/comp.lang.python/sAUvkJEDpRc/RnRymrzJVDYJ
+    """
+    def __copy__(self):
+        return []
+
+    @classmethod
+    def create(cls, initial=None):
+        if initial:
+            return cls(initial.split('\n'))
+
+
 class Emulator(object):
     def __init__(self, argv, stdin=sys.stdin.buffer, env=os.environ):
         self.argv           = argv
@@ -101,7 +115,7 @@ class Emulator(object):
         for parameter in self.cdist_type.optional_multiple_parameters:
             argument = "--" + parameter
             parser.add_argument(argument, dest=parameter, action='append', required=False,
-                default=self.cdist_type.parameter_defaults.get(parameter, None))
+                default=DefaultList.create(self.cdist_type.parameter_defaults.get(parameter, None)))
         for parameter in self.cdist_type.boolean_parameters:
             argument = "--" + parameter
             parser.add_argument(argument, dest=parameter, action='store_const', const='')
@@ -128,8 +142,6 @@ class Emulator(object):
         self.parameters = {}
         for key,value in vars(self.args).items():
             if value is not None:
-                if isinstance(value, list):
-                    value = '\n'.join(value)
                 self.parameters[key] = value
 
         if self.cdist_object.exists:

@@ -102,7 +102,6 @@ class ObjectTestCase(test.CdistTestCase):
         self.cdist_object = core.CdistObject(self.cdist_type, object_base_path, 'moon') 
 
     def tearDown(self):
-        self.cdist_object.changed = False
         self.cdist_object.prepared = False
         self.cdist_object.ran = False
         self.cdist_object.source = []
@@ -171,13 +170,6 @@ class ObjectTestCase(test.CdistTestCase):
     def test_requirements(self):
         expected = []
         self.assertEqual(list(self.cdist_object.requirements), expected)
-
-    def test_changed(self):
-        self.assertFalse(self.cdist_object.changed)
-
-    def test_changed_after_changing(self):
-        self.cdist_object.changed = True
-        self.assertTrue(self.cdist_object.changed)
 
     def test_state(self):
         self.assertEqual(self.cdist_object.state, '')

@@ -4,11 +4,41 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+3.0.1:
+	* Type __line: Remove unecessary backslash escape
+	* Type __directory: Add messaging support (Daniel Heule)
+	* Type __directory: Do not generate code if mode is 0xxx ((Daniel Heule)
+	* Type __directory: Add messaging support (Daniel Heule)
+	* Type __package: Fix typo in optional parameter ptype (Daniel Heule)
+	* Type __start_on_boot: Fix for SuSE's chkconfig (Daniel Heule)
 
-3.0.0:
-	* Core: Messaging support added
-	* Type: __iptables_rule: Use default parameter
+3.0.0: 2013-12-24
+	* Core: Added messaging support
+	* Core: Removed unused "changed" attribute of objects 
+	* Core: Support default values for multiple parameters (Steven Armstrong)
+	* Core: Ensure Object Parameter file contains \n (Steven Armstrong)
+	* New Type: __zypper_repo (Daniel Heule)
+	* New Type: __zypper_service (Daniel Heule)
+	* New Type: __package_emerge (Daniel Heule)
+	* New Type: __package_emerge_dependencies (Daniel Heule)
+	* Type __cron: Add support for raw lines (Daniel Heule)
+	* Type __cron: Suppress stderr output from crontab (Daniel Heule)
+	* Type __cron: Fix quoting issue (Daniel Heule)
 	* Type __file: Do not generate code if mode is 0xxx
+	* Type __iptables_rule: Use default parameter
+	* Type __key_value: Fix quoting issue (Steven Armstrong)
+	* Type __package: Use state --present by default (Steven Armstrong)
+	* Type __package_zypper: Support non packages as well (Daniel Heule)
+	* Type __package_zypper: Support package versions (Daniel Heule)
+	* Type __postfix_*: Depend on __postfix Type (Steven Armstrong)
+	* Type __postfix_postconf: Enable support for SuSE (Daniel Heule)
+	* Type __postfix: Enable support for SuSE (Daniel Heule)
+	* Type __start_on_boot: Use default parameter state
+	* Type __start_on_boot: Add support for gentoo (Daniel Heule)
+	* Type __user: Add support for state parameter (Daniel Heule)
+	* Type __user: Add support for system users (Daniel Heule)
+	* Type __user: Add messaging support (Steven Armstrong)
+	* Type __zypper_service: Support older SuSE releases (Daniel Heule)
 
 2.3.7: 2013-12-02
 	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)

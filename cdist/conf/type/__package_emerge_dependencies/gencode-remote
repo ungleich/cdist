@@ -1,0 +1,15 @@
+#!/bin/sh
+
+gentoolkit_installed="$(cat "$__object/explorer/gentoolkit_installed")"
+flaggie_installed="$(cat "$__object/explorer/flaggie_installed")"
+
+if [ "${gentoolkit_installed}" != "true" ]; then
+    # emerge app-portage/gentoolkit
+    echo "emerge app-portage/gentoolkit &> /dev/null || exit 1"
+fi
+
+if [ "${flaggie_installed}" != "true" ]; then
+    # emerge app-portage/flaggie
+    echo "emerge app-portage/flaggie &> /dev/null || exit 1"
+fi
+
