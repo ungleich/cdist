@@ -2,6 +2,7 @@
 #
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -73,14 +74,15 @@ set_mode() {
 case "$state_should" in
    present)
       if [ "$type" != "directory" ]; then
-         # our destination is not a directory, remove whatever is there
-         # and then create our directory and set all attributes
          set_attributes=1
-         cat << DONE
-rm -f "$destination"
-mkdir $mkdiropt "$destination"
-DONE
-        echo "remove non directory" >> "$__messages_out"
+         if [ "$type" != "none" ]; then
+            # our destination is not a directory, remove whatever is there
+            # and then create our directory and set all attributes
+            echo rm -f "\"$destination\""
+            echo "remove non directory" >> "$__messages_out"
+         fi
+         echo "mkdir $mkdiropt \"$destination\""
+         echo "create" >> "$__messages_out"
       fi
 
       # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
