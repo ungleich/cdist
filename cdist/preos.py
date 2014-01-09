@@ -108,6 +108,8 @@ cp -L "$src" "$real_dst"
 
         subprocess.call(cmd)
 
+        cmd = [ "chroot", self.target_dir, "/usr/bin/apt-get update" ]
+
     def create_helper_files(self, base_dir):
         for key, val in self.helper.items():
             filename = os.path.join(base_dir, key)
