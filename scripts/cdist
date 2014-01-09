@@ -89,6 +89,15 @@ def commandline():
         parents=[parser['loglevel']])
     parser['preos'].add_argument('-a', '--arch',
          help='Select architecture for preos', default="amd64")
+    parser['preos'].add_argument('-b', '--bootstrap',
+         help='Bootstrap directory with OS',  action="store_true")
+    parser['preos'].add_argument('-c', '--configure',
+         help='Configure previously bootstrapped directory', action="store_true",
+         dest="config")
+    parser['preos'].add_argument('-i', '--initramfs',
+         help='Create Linux initramfs',  action="store_true")
+    parser['preos'].add_argument('-k', '--kernel',
+         help='Create Linux kernel',  action="store_true")
     parser['preos'].add_argument('target_dir', nargs=1,
         help='Select target directory')
     parser['preos'].set_defaults(func=cdist.preos.PreOS.commandline)

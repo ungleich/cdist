@@ -22,16 +22,26 @@
 import logging
 import os
 import subprocess
+import stat
+import tempfile
 
-# initialise cdist
-import cdist.exec.local
 
 import cdist.config
+import cdist.exec.local
+import cdist.exec.remote
 
 log = logging.getLogger(__name__)
 
+class PreOSExistsError(cdist.Error):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return 'Path %s already exists' % self.path
+
+
 class PreOS(object):
-    
+
     def __init__(self, target_dir, arch="amd64"):
 
         self.target_dir = target_dir
@@ -42,7 +52,53 @@ class PreOS(object):
         self.options = [ "--include=openssh-server",
             "--arch=%s" % self.arch ]
 
+        self._init_helper()
+
+    def _init_helper(self):
+        self.helper = {}
+        self.helper["manifest"]  = """
+for pkg in linux-image-amd64 openssh-server; do
+    __package $pkg --state present
+done
+"""
+        self.helper["remote_exec"]  = """#!/bin/sh
+#        echo $@
+#        set -x
+chroot="$1"; shift
+
+script=$(mktemp "${chroot}/tmp/chroot-${0##*/}.XXXXXXXXXX")
+trap cleanup INT TERM EXIT
+cleanup() {
+   [ $__cdist_debug ] || rm "$script"
+}
+
+echo "#!/bin/sh -l" > "$script"
+echo "$@" >> "$script"
+chmod +x "$script"
+
+relative_script="${script#$chroot}"
+
+# run in chroot
+chroot "$chroot" "$relative_script"
+"""
+
+        self.helper["remote_copy"]  = """#!/bin/sh
+        echo $@
+        set -x
+src=$1; shift
+dst=$1; shift
+real_dst=$(echo $dst | sed 's,:,,')
+cp -L "$src" "$real_dst"
+"""
+
+    @property
+    def exists(self):
+        return os.path.exists(self.target_dir)
+
     def bootstrap(self):
+        if self.exists:
+            raise PreOSExistsError(self.target_dir)
+
         cmd = [ self.command ]
         cmd.extend(self.options)
         cmd.append(self.suite)
@@ -52,12 +108,40 @@ class PreOS(object):
 
         subprocess.call(cmd)
 
-    def run(self):
-        self.bootstrap()
+    def create_helper_files(self, base_dir):
+        for key, val in self.helper.items():
+            filename = os.path.join(base_dir, key)
+            with open(filename, "w") as fd:
+                fd.write(val)
+            os.chmod(filename, stat.S_IRUSR |  stat.S_IXUSR)
+
+    def config(self):
+        handle, path = tempfile.mkstemp(prefix='cdist.stdin.')
+        with tempfile.TemporaryDirectory() as tempdir:
+            host = self.target_dir
+
+            self.create_helper_files(tempdir)
+
+            local = cdist.exec.local.Local(
+                target_host=host,
+                initial_manifest=os.path.join(tempdir, "manifest")
+            )
+
+            remote = cdist.exec.remote.Remote(
+                target_host=host,
+                remote_exec=os.path.join(tempdir, "remote_exec"),
+                remote_copy=os.path.join(tempdir, "remote_copy"),
+            )
+
+            config = cdist.config.Config(local, remote)
+            config.run()
 
     @classmethod
     def commandline(cls, args):
-        print(args)
         self = cls(target_dir=args.target_dir[0],
             arch=args.arch)
-        self.run()
+
+        if args.bootstrap:
+            self.bootstrap()
+        if args.config:
+            self.config()

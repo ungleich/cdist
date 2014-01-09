@@ -1,0 +1,20 @@
+- debootstrap
+    x setup arch
+
+    - include trigger
+        - replace with cdist config later?
+
+    - get kernel
+    - create initramfs
+    - later:
+        - configure chroot using cdist
+
+
+    packages:
+        linux-image-amd64
+
+    - temporary manifest
+
+    - bugs with sudo
+        [22:50:04] bento:~# ln -s ~nico/.cdist/ ~
+
