@@ -194,7 +194,12 @@ class Local(object):
         return self.run(command=command, env=env, return_output=return_output, message_prefix=message_prefix)
 
     def save_cache(self):
-        destination = os.path.join(self.cache_path, self.target_host)
+        if os.path.isabs(self.target_host):
+            hostdir = self.target_host[1:]
+        else:
+            hostdir = self.target_host
+
+        destination = os.path.join(self.cache_path, hostdir)
         self.log.debug("Saving " + self.base_path + " to " + destination)
 
         try:
