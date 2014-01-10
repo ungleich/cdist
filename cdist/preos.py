@@ -56,12 +56,13 @@ class PreOS(object):
             "--arch=%s" % self.arch ]
 
         self.pxelinux = "/usr/lib/syslinux/pxelinux.0"
-        self.pxelinux-cfg = """
+        self.pxelinux_cfg = """
 DEFAULT linux
 LABEL linux
 KERNEL linux
 INITRD initramfs
 APPEND ro root=/dev/sda1 initrd=initrd.img
+"""
 
         self._init_helper()
 
@@ -153,8 +154,28 @@ cp -L "$src" "$real_dst"
                 fd.write(val)
             os.chmod(filename, stat.S_IRUSR |  stat.S_IXUSR)
 
-    def create_pxe(self, base_dir):
+    def create_kernel(self):
+        cmd=[ "cp", '"$(ls boot/vmlinuz-* | tail -n1)"' ]
+        cmd.append
+
         pass
+
+    def create_initramfs(self):
+        base_cmd="find . -print0 | sudo cpio --null -ov --format=newc | gzip -9"
+
+        pass
+
+    def create_iso(self, out_dir):
+        self.out_dir = out_dir
+
+        raise cdist.Error("Generating ISO is not yet supported")
+
+    def create_pxe(self, out_dir):
+        self.out_dir = out_dir
+
+        self.create_kernel()
+        self.create_initramfs()
+        self.create_pxeconfig()
 
     def config(self):
         handle, path = tempfile.mkstemp(prefix='cdist.stdin.')
@@ -186,3 +207,7 @@ cp -L "$src" "$real_dst"
             self.bootstrap()
         if args.config:
             self.config()
+        if args.pxe_boot:
+            self.create_pxe(args.pxe_boot)
+        if args.iso_boot:
+            self.create_iso(args.pxe_boot)
