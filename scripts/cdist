@@ -89,15 +89,22 @@ def commandline():
         parents=[parser['loglevel']])
     parser['preos'].add_argument('-a', '--arch',
          help='Select architecture for preos', default="amd64")
+    parser['preos'].add_argument('-A', '--additional-manifest',
+         help='Add stuff to configuration manifest', default="amd64")
     parser['preos'].add_argument('-b', '--bootstrap',
-         help='Bootstrap directory with OS',  action="store_true")
+         help='Bootstrap directory with PreOS',  action="store_true")
     parser['preos'].add_argument('-c', '--configure',
-         help='Configure previously bootstrapped directory', action="store_true",
-         dest="config")
-    parser['preos'].add_argument('-i', '--initramfs',
-         help='Create Linux initramfs',  action="store_true")
-    parser['preos'].add_argument('-k', '--kernel',
-         help='Create Linux kernel',  action="store_true")
+         help='Configure previously bootstrapped directory', 
+         action="store_true", dest="config")
+    parser['preos'].add_argument('-i', '--initial-manifest',
+         help='Initial manifest for configuration (added to built in)')
+    parser['preos'].add_argument('-r', '--replace-manifest',
+         help='Instead of appending to the built in manifest, replace the internal manifest', 
+         action="store_true")
+    parser['preos'].add_argument('-I', '--iso-boot',
+         help='Create ISO for booting in given location')
+    parser['preos'].add_argument('-p', '--pxe-boot',
+         help='Create PXE files for booting in given location')
     parser['preos'].add_argument('target_dir', nargs=1,
         help='Select target directory')
     parser['preos'].set_defaults(func=cdist.preos.PreOS.commandline)

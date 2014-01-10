@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013-2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -39,6 +39,9 @@ class PreOSExistsError(cdist.Error):
     def __str__(self):
         return 'Path %s already exists' % self.path
 
+class PreOSBootstrapError(cdist.Error):
+    pass
+
 
 class PreOS(object):
 
@@ -52,14 +55,39 @@ class PreOS(object):
         self.options = [ "--include=openssh-server",
             "--arch=%s" % self.arch ]
 
+        self.pxelinux = "/usr/lib/syslinux/pxelinux.0"
+        self.pxelinux-cfg = """
+DEFAULT linux
+LABEL linux
+KERNEL linux
+INITRD initramfs
+APPEND ro root=/dev/sda1 initrd=initrd.img
+
         self._init_helper()
 
     def _init_helper(self):
         self.helper = {}
         self.helper["manifest"]  = """
-for pkg in linux-image-amd64 openssh-server; do
+for pkg in \
+    file \
+    linux-image-amd64 
+    openssh-server 
+    syslinux \
+    gdisk util-linux \
+    btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
     __package $pkg --state present
 done
+
+__file /etc/network/interfaces --source - --mode 0644 << eof
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+allow-hotplug eth0
+iface eth0 init dhcp
+eof
 """
         self.helper["remote_exec"]  = """#!/bin/sh
 #        echo $@
@@ -78,13 +106,16 @@ chmod +x "$script"
 
 relative_script="${script#$chroot}"
 
+# ensure PATH is setup
+export PATH=$PATH:/bin:/usr/bin:/sbin:/usr/sbin
+
 # run in chroot
 chroot "$chroot" "$relative_script"
 """
 
         self.helper["remote_copy"]  = """#!/bin/sh
-        echo $@
-        set -x
+#        echo $@
+#        set -x
 src=$1; shift
 dst=$1; shift
 real_dst=$(echo $dst | sed 's,:,,')
@@ -106,9 +137,14 @@ cp -L "$src" "$real_dst"
 
         log.debug("Bootstrap: %s" % cmd)
 
-        subprocess.call(cmd)
+#        try:
+        subprocess.check_call(cmd)
+#        except subprocess.CalledProcessError:
+#            raise 
 
-        cmd = [ "chroot", self.target_dir, "/usr/bin/apt-get update" ]
+        # Required to run this - otherwise apt-get install fails
+        cmd = [ "chroot", self.target_dir, "/usr/bin/apt-get", "update" ]
+        subprocess.check_call(cmd)
 
     def create_helper_files(self, base_dir):
         for key, val in self.helper.items():
@@ -116,6 +152,9 @@ cp -L "$src" "$real_dst"
             with open(filename, "w") as fd:
                 fd.write(val)
             os.chmod(filename, stat.S_IRUSR |  stat.S_IXUSR)
+
+    def create_pxe(self, base_dir):
+        pass
 
     def config(self):
         handle, path = tempfile.mkstemp(prefix='cdist.stdin.')

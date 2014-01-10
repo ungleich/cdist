@@ -1,20 +1,83 @@
 - debootstrap
     x setup arch
+    x allow cdist to configure debootstrapped directory using cdist
+        x include sshd
+        x configure network (eth0, dhcp)
+        x various mkfs variants
+        - various fdisk tools
 
-    - include trigger
-        - replace with cdist config later?
+    - add option for different initial manifest
+        - allow -, stdin usage
 
-    - get kernel
-    - create initramfs
-    - later:
-        - configure chroot using cdist
+    - add option for additional manifest
+        - allow -, stdin usage
 
+    - trigger
+        - can be handled in the manifest of the user
 
-    packages:
-        linux-image-amd64
+    - remove /var/cache/apt/archives/* ?
 
-    - temporary manifest
+    - fix linux-image name (amd64)
 
-    - bugs with sudo
-        [22:50:04] bento:~# ln -s ~nico/.cdist/ ~
+    - blog!
+        - self configuring
+
+    - pxe
+        /pxe/
+            - pxelinux.0
+            - linux
+            - initramfs
+            - pxelinux.cfg/
+                - default
+
+    - iso
+
+    - add unit tests
+
+--------------------------------------------------------------------------------
+
+[1:16] bento:~% sudo cdist preos -vc ~nico/preos-tests/preos03
+INFO: cdist: version 3.0.0-38-gea286c6
+INFO: /home/users/nico/preos-tests/preos03: Running global explorers
+INFO: /home/users/nico/preos-tests/preos03: Running initial manifest /tmp/tmpxbquwe/manifest
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __file/etc/network/interfaces
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __file/etc/network/interfaces
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package/xfsprogs
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package/reiser4progs
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package/jfsutils
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package/e2fsprogs
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package/btrfs-tools
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package/file
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package/syslinux
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package/openssh-server
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package/linux-image-amd64
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package_apt/linux-image-amd64
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package_apt/linux-image-amd64
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package_apt/openssh-server
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package_apt/openssh-server
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package_apt/syslinux
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package_apt/syslinux
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package_apt/file
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package_apt/file
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package_apt/btrfs-tools
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package_apt/btrfs-tools
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package_apt/e2fsprogs
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package_apt/e2fsprogs
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package_apt/jfsutils
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package_apt/jfsutils
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package_apt/reiser4progs
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package_apt/reiser4progs
+INFO: /home/users/nico/preos-tests/preos03: Running manifest and explorers for __package_apt/xfsprogs
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package_apt/xfsprogs
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/xfsprogs
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/reiser4progs
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/jfsutils
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/e2fsprogs
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/btrfs-tools
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/file
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/syslinux
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/openssh-server
+INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/linux-image-amd64
+INFO: /home/users/nico/preos-tests/preos03: Finished successful run in 2.546635866165161 seconds
+[1:16] bento:~% 
 
