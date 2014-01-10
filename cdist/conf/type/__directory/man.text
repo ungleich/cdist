@@ -46,6 +46,21 @@ recursive::
    If supplied the chgrp and chown call will run recursively.
    This does *not* influence the behaviour of chmod.
 
+MESSAGES
+--------
+chgrp <group>::
+    Changed group membership
+chown <owner>::
+    Changed owner
+chmod <mode>::
+    Changed mode
+create::
+    Empty directory was created
+remove::
+    Directory exists, but state is absent, directory will be removed by generated code.
+remove non directory::
+    Someting other than a directory with the same name exists and was removed prior to create.
+
 
 EXAMPLES
 --------
