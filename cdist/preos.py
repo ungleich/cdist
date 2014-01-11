@@ -160,17 +160,20 @@ cp -L "$src" "$real_dst"
         srcglob = glob.glob("%s/boot/vmlinuz-*" % self.target_dir)
         src = srcglob[0]
 
+        log.info("Creating kernel  ...")
         shutil.copyfile(src, dst, follow_symlinks=True)
 
     def create_pxelinux(self):
         dst = os.path.join(self.out_dir, "pxelinux.0")
         src = "%s/usr/lib/syslinux/pxelinux.0" % self.target_dir
 
+        log.info("Creating pxelinux.0  ...")
         shutil.copyfile(src, dst, follow_symlinks=True)
 
     def create_pxeconfig(self):
         configdir = os.path.join(self.out_dir, "pxelinux.cfg")
         configfile = os.path.join(configdir, "default")
+        log.info("Creating pxe configuration ...")
         if not os.path.isdir(configdir):
             os.mkdir(configdir)
 
@@ -178,9 +181,11 @@ cp -L "$src" "$real_dst"
             fd.write(self.pxelinux_cfg)
 
     def create_initramfs(self):
-        base_cmd="find . -print0 | cpio --null -ov --format=newc | gzip -9"
+        out_file = os.path.join(self.out_dir, "initramfs")
+        cmd="cd {target_dir}; find . -print0 | cpio --null -o --format=newc | gzip -9 > {out_file}".format(target_dir = self.target_dir, out_file = out_file)
 
-        pass
+        log.info("Creating initramfs ...")
+        subprocess.check_call(cmd, shell=True)
 
     def create_iso(self, out_dir):
         self.out_dir = out_dir
@@ -191,7 +196,7 @@ cp -L "$src" "$real_dst"
         self.out_dir = out_dir
 
         self.create_kernel()
-#        self.create_initramfs()
+        self.create_initramfs()
         self.create_pxeconfig()
         self.create_pxelinux()
 
