@@ -58,6 +58,10 @@ auto eth0
 allow-hotplug eth0
 iface eth0 inet dhcp
 eof
+
+# Steven found this out - coyping it 1:1
+# fix the bloody 'stdin: is not a tty' problem
+__line /root/.profile --line 'mesg n' --state absent
 """
 
 class PreOSExistsError(cdist.Error):
