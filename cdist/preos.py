@@ -20,9 +20,11 @@
 #
 
 import logging
+import glob
 import os
 import subprocess
 import stat
+import shutil
 import tempfile
 
 
@@ -57,11 +59,10 @@ class PreOS(object):
 
         self.pxelinux = "/usr/lib/syslinux/pxelinux.0"
         self.pxelinux_cfg = """
-DEFAULT linux
-LABEL linux
-KERNEL linux
+DEFAULT preos
+LABEL preos
+KERNEL kernel
 INITRD initramfs
-APPEND ro root=/dev/sda1 initrd=initrd.img
 """
 
         self._init_helper()
@@ -155,13 +156,29 @@ cp -L "$src" "$real_dst"
             os.chmod(filename, stat.S_IRUSR |  stat.S_IXUSR)
 
     def create_kernel(self):
-        cmd=[ "cp", '"$(ls boot/vmlinuz-* | tail -n1)"' ]
-        cmd.append
+        dst = os.path.join(self.out_dir, "kernel")
+        srcglob = glob.glob("%s/boot/vmlinuz-*" % self.target_dir)
+        src = srcglob[0]
 
-        pass
+        shutil.copyfile(src, dst, follow_symlinks=True)
+
+    def create_pxelinux(self):
+        dst = os.path.join(self.out_dir, "pxelinux.0")
+        src = "%s/usr/lib/syslinux/pxelinux.0" % self.target_dir
+
+        shutil.copyfile(src, dst, follow_symlinks=True)
+
+    def create_pxeconfig(self):
+        configdir = os.path.join(self.out_dir, "pxelinux.cfg")
+        configfile = os.path.join(configdir, "default")
+        if not os.path.isdir(configdir):
+            os.mkdir(configdir)
+
+        with open(configfile, "w") as fd:
+            fd.write(self.pxelinux_cfg)
 
     def create_initramfs(self):
-        base_cmd="find . -print0 | sudo cpio --null -ov --format=newc | gzip -9"
+        base_cmd="find . -print0 | cpio --null -ov --format=newc | gzip -9"
 
         pass
 
@@ -174,8 +191,9 @@ cp -L "$src" "$real_dst"
         self.out_dir = out_dir
 
         self.create_kernel()
-        self.create_initramfs()
+#        self.create_initramfs()
         self.create_pxeconfig()
+        self.create_pxelinux()
 
     def config(self):
         handle, path = tempfile.mkstemp(prefix='cdist.stdin.')
@@ -210,4 +228,4 @@ cp -L "$src" "$real_dst"
         if args.pxe_boot:
             self.create_pxe(args.pxe_boot)
         if args.iso_boot:
-            self.create_iso(args.pxe_boot)
+            self.create_iso(args.iso_boot)
