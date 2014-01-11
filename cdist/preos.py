@@ -56,7 +56,7 @@ iface lo inet loopback
 # The primary network interface
 auto eth0
 allow-hotplug eth0
-iface eth0 init dhcp
+iface eth0 inet dhcp
 eof
 """
 

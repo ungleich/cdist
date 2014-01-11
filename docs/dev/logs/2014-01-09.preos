@@ -41,6 +41,10 @@
 
     - add unit tests
 
+- testing with qemu
+    [22:43] bento:vm-tests% qemu-system-x86_64 -m 2G -boot order=cn -drive file=testhd1,if=virtio -net nic -net user,tftp=$(pwd -P)/tftp,bootfile=/pxelinux.0,hostfwd=tcp::7777-:22 -enable-kvm
+
+
 --------------------------------------------------------------------------------
 
 [1:16] bento:~% sudo cdist preos -vc ~nico/preos-tests/preos03
