@@ -8,21 +8,25 @@
 
     - add option for different initial manifest
         - allow -, stdin usage
+        - allow to replace current manifest (later)
 
-    - add option for additional manifest
-        - allow -, stdin usage
-
-    - trigger
+    x trigger
         - can be handled in the manifest of the user
 
     - remove /var/cache/apt/archives/* ?
+        - later, optimisation level
+
+
+    - bug: cdist config als root!
 
     - fix linux-image name (amd64)
+
+    - ln -s /sbin/init /init
 
     - blog!
         - self configuring
 
-    - pxe
+    x pxe
         /pxe/
             - pxelinux.0
             - linux
@@ -31,6 +35,9 @@
                 - default
 
     - iso
+        - later
+    - usb stick (+efi version)
+        - later
 
     - add unit tests
 
@@ -80,4 +87,16 @@ INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/openss
 INFO: /home/users/nico/preos-tests/preos03: Generating code for __package/linux-image-amd64
 INFO: /home/users/nico/preos-tests/preos03: Finished successful run in 2.546635866165161 seconds
 [1:16] bento:~% 
+
+--------------------------------------------------------------------------------
+[21:14] bento:vm-tests% qemu-system-x86_64 -m 2G -boot order=cn -drive file=testhd1,if=virtio -net nic -net user,tftp=$(pwd -P)/tftp,bootfile=/pxelinux.0                            
+
+--------------------------------------------------------------------------------
+[21:16] bento:preos-tests% sudo cdist preos -vp /home/users/nico/vm-tests/tftp /home/users/nico/preos-tests/preos03/                 
+INFO: cdist: version 3.0.0-42-g0d78ab3
+INFO: cdist.preos: Creating kernel  ...
+INFO: cdist.preos: Creating initramfs ...
+760780 blocks
+INFO: cdist.preos: Creating pxe configuration ...
+INFO: cdist.preos: Creating pxelinux.0  ...
 

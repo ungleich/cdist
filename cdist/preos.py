@@ -24,15 +24,41 @@ import glob
 import os
 import subprocess
 import stat
+import sys
 import shutil
 import tempfile
-
 
 import cdist.config
 import cdist.exec.local
 import cdist.exec.remote
 
 log = logging.getLogger(__name__)
+
+DEFAULT_MANIFEST = """
+for pkg in \
+    file \
+    linux-image-amd64 \
+    openssh-server \
+    syslinux \
+    gdisk util-linux \
+    btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
+    __package $pkg --state present
+done
+
+# initramfs requires /init
+__link /init --source /sbin/init --type symbolic
+
+__file /etc/network/interfaces --source - --mode 0644 << eof
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+allow-hotplug eth0
+iface eth0 init dhcp
+eof
+"""
 
 class PreOSExistsError(cdist.Error):
     def __init__(self, path):
@@ -65,32 +91,9 @@ KERNEL kernel
 INITRD initramfs
 """
 
-        self._init_helper()
-
     def _init_helper(self):
         self.helper = {}
-        self.helper["manifest"]  = """
-for pkg in \
-    file \
-    linux-image-amd64 
-    openssh-server 
-    syslinux \
-    gdisk util-linux \
-    btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
-    __package $pkg --state present
-done
-
-__file /etc/network/interfaces --source - --mode 0644 << eof
-# The loopback network interface
-auto lo
-iface lo inet loopback
-
-# The primary network interface
-auto eth0
-allow-hotplug eth0
-iface eth0 init dhcp
-eof
-"""
+        self.helper["manifest"]  = self.initial_manifest
         self.helper["remote_exec"]  = """#!/bin/sh
 #        echo $@
 #        set -x
@@ -200,7 +203,25 @@ cp -L "$src" "$real_dst"
         self.create_pxeconfig()
         self.create_pxelinux()
 
+
+    def setup_initial_manifest(self, user_initial_manifest, replace_manifest):
+        if user_initial_manifest:
+            if user_initial_manifest == '-':
+                user_initial_manifest_content = sys.stdin.read()
+            else:
+                with open(user_initial_manifest, "r") as fd:
+                    user_initial_manifest_content = fd.read()
+        else:
+            user_initial_manifest_content = ""
+
+        if replace_manifest:
+            self.initial_manifest = user_initial_manifest_content
+        else:
+            self.initial_manifest = "{default}\n# User supplied manifest\n{user}".format(default=DEFAULT_MANIFEST, user=user_initial_manifest_content)
+
     def config(self):
+        self._init_helper()
+
         handle, path = tempfile.mkstemp(prefix='cdist.stdin.')
         with tempfile.TemporaryDirectory() as tempdir:
             host = self.target_dir
@@ -226,11 +247,21 @@ cp -L "$src" "$real_dst"
         self = cls(target_dir=args.target_dir[0],
             arch=args.arch)
 
+        # read initial manifest first - it may come from stdin
+        if args.config:
+            self.setup_initial_manifest(args.initial_manifest, args.replace_manifest)
+
+        # Bootstrap: creates base directory
         if args.bootstrap:
             self.bootstrap()
+
+        # Configure the OS
         if args.config:
             self.config()
-        if args.pxe_boot:
-            self.create_pxe(args.pxe_boot)
-        if args.iso_boot:
-            self.create_iso(args.iso_boot)
+
+        # Output pxe files
+        if args.pxe_boot_dir:
+            self.create_pxe(args.pxe_boot_dir)
+
+        #if args.iso_boot_dir:
+        #    self.create_iso(args.iso_boot)

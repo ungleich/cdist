@@ -101,9 +101,9 @@ def commandline():
     parser['preos'].add_argument('-r', '--replace-manifest',
          help='Instead of appending to the built in manifest, replace the internal manifest', 
          action="store_true")
-    parser['preos'].add_argument('-I', '--iso-boot',
-         help='Create ISO for booting in given location')
-    parser['preos'].add_argument('-p', '--pxe-boot',
+#    parser['preos'].add_argument('-I', '--iso-boot-dir',
+#         help='Create ISO for booting in given location')
+    parser['preos'].add_argument('-p', '--pxe-boot-dir',
          help='Create PXE files for booting in given location')
     parser['preos'].add_argument('target_dir', nargs=1,
         help='Select target directory')
