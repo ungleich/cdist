@@ -6,9 +6,9 @@
         x various mkfs variants
         - various fdisk tools
 
-    - add option for different initial manifest
-        - allow -, stdin usage
-        - allow to replace current manifest (later)
+    x add option for different initial manifest
+        x allow -, stdin usage
+        x allow to replace current manifest (later)
 
     x trigger
         - can be handled in the manifest of the user
@@ -43,6 +43,9 @@
 
 - testing with qemu
     [22:43] bento:vm-tests% qemu-system-x86_64 -m 2G -boot order=cn -drive file=testhd1,if=virtio -net nic -net user,tftp=$(pwd -P)/tftp,bootfile=/pxelinux.0,hostfwd=tcp::7777-:22 -enable-kvm
+
+- create preos
+    [22:43] bento:preos-tests% echo __panter_root_ssh_keys | sudo cdist preos -vp /home/users/nico/vm-tests/tftp -c /home/users/nico/preos-tests/preos03/ -i -
 
 
 --------------------------------------------------------------------------------
