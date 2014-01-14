@@ -78,8 +78,9 @@ DONE
 
 case "$state_should" in
     present)
+        # if we insert new entry, filter also all entrys out with the same id 
         echo "("
-        echo "crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" 2>/dev/null || true"
+        echo "crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" | grep -v \"# $name\\$\" 2>/dev/null || true"
         echo "echo '$entry'"
         echo ") | crontab -u $user -"
     ;;

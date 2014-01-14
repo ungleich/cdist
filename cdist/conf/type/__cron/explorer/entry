@@ -22,4 +22,4 @@
 name="$__object_name"
 user="$(cat "$__object/parameter/user")"
 
-crontab -u $user -l 2>/dev/null | grep "# $name\$" | head -n 1 || true
+crontab -u $user -l 2>/dev/null | grep "# $name\$" || true
