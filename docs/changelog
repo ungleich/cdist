@@ -9,8 +9,7 @@ Changelog
 	* Core: Allow hostnames to start with /
 	* Type __line: Remove unecessary backslash escape
 	* Type __directory: Add messaging support (Daniel Heule)
-	* Type __directory: Do not generate code if mode is 0xxx ((Daniel Heule)
-	* Type __directory: Add messaging support (Daniel Heule)
+	* Type __directory: Do not generate code if mode is 0xxx (Daniel Heule)
 	* Type __package: Fix typo in optional parameter ptype (Daniel Heule)
 	* Type __start_on_boot: Fix for SuSE's chkconfig (Daniel Heule)
 
