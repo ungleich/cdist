@@ -4,7 +4,7 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-3.0.1:
+3.0.1: 2014-01-14
 	* Core: Copy only files, not directories (Steven Armstrong)
 	* Core: Allow hostnames to start with /
 	* Type __line: Remove unecessary backslash escape
