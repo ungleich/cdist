@@ -5,7 +5,10 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 3.0.2:
+	* New Type: __block (Steven Armstrong)
+	* New Type: __mount (Steven Armstrong)
 	* Type __cron: Replace existing entry when changing it (Daniel Heule)
+
 
 3.0.1: 2014-01-14
 	* Core: Copy only files, not directories (Steven Armstrong)
