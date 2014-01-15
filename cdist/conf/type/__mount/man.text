@@ -27,12 +27,16 @@ dump::
    value for the dump field in fstab. see fstab(5)
    defaults to 0.
 
+   This parameter is ignored, if the nofstab parameter is given.
+
 options::
    comma separated string of options, see mount(8)
 
 pass::
    value for the pass field in fstab. see fstab(5)
    defaults to 0.
+
+   This parameter is ignored, if the nofstab parameter is given.
 
 path::
    mount point where to mount the device, see mount(8).
