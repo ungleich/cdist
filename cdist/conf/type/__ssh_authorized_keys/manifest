@@ -39,7 +39,7 @@ if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ];
    fi
 
    if [ ! -f "$__object/parameter/noparent" ]; then
-      # Ensure that the directory in which the authorized_keys shall be exists and 
+      # Ensure that the directory in which the authorized_keys shall be exists and
       # has the right permissions.
       ssh_directory="${file%/*}"
       __directory "$ssh_directory" --state present --parents \
