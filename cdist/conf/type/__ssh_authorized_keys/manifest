@@ -56,19 +56,16 @@ if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ];
    fi
 fi
 
-# NOTE: keep variables in sync in manifest/explorer/gencode-*
-prefix="#cdist:$__object_name"
-suffix="#/cdist:$__object_name"
-
-mkdir "$__object/files"
-
 # Generate entry for inclusion in authorized_keys file
-entry="$__object/files/entry"
-echo "$prefix" > "$entry"
+(
 if [ -f "$__object/parameter/comment" ]; then
-   echo "# $(cat "$__object/parameter/comment")" >> "$entry"
+   echo "# $(cat "$__object/parameter/comment")"
 fi
-cat "$__object/parameter/key" >> "$entry"
-# ensure we have a newline after keys
-echo >> "$entry"
-echo "$suffix" >> "$entry"
+cat "$__object/parameter/key"
+) | \
+__block "$__object_name" \
+   --file "$file" \
+   --prefix "#cdist:$__object_name" \
+   --suffix "#/cdist:$__object_name" \
+   --state "$state" \
+   --text -
