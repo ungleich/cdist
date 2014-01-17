@@ -44,6 +44,15 @@ create-home::
 remove-home::
     see userdel(8), apply only on user delete
 
+
+MESSAGES
+--------
+mod::
+    User is modified
+add::
+    New user added
+
+
 EXAMPLES
 --------
 
