@@ -26,13 +26,13 @@ cdist_args="-v"
 [ "$__debug" = "yes" ] && cdist_args="$cdist_args -d"
 
 cat << DONE
-echo "__apt_noautostart --state present" \
-   | cdist $cdist_args \
-      config \
-      --initial-manifest - \
-      --remote-exec="$remote_exec $chroot" \
-      --remote-copy="$remote_copy $chroot" \
-      $__target_host
+#echo "__apt_noautostart --state present" \
+#   | cdist $cdist_args \
+#      config \
+#      --initial-manifest - \
+#      --remote-exec="$remote_exec $chroot" \
+#      --remote-copy="$remote_copy $chroot" \
+#      $__target_host
 
 cdist $cdist_args \
    config \
@@ -40,11 +40,11 @@ cdist $cdist_args \
    --remote-copy="$remote_copy $chroot" \
    $__target_host
 
-echo "__apt_noautostart --state absent" \
-   | cdist $cdist_args \
-      config \
-      --initial-manifest - \
-      --remote-exec="$remote_exec $chroot" \
-      --remote-copy="$remote_copy $chroot" \
-      $__target_host
+#echo "__apt_noautostart --state absent" \
+#   | cdist $cdist_args \
+#      config \
+#      --initial-manifest - \
+#      --remote-exec="$remote_exec $chroot" \
+#      --remote-copy="$remote_copy $chroot" \
+#      $__target_host
 DONE
