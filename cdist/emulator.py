@@ -154,8 +154,8 @@ class Emulator(object):
             self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
             # record the created object in typeorder file
-            with open(self.typeorder_path, 'a') as tofd:
-                tofd.write(self.cdist_object.name + os.linesep)
+            with open(self.typeorder_path, 'a') as typeorderfile:
+                print(self.cdist_object.name, file=typeorderfile)
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
@@ -184,6 +184,24 @@ class Emulator(object):
 
     def record_requirements(self):
         """record requirements"""
+        #from pudb import set_trace; set_trace();
+
+        if "EXECUTE_TYPES_IN_CREATION_ORDER" in self.env and self.env['EXECUTE_TYPES_IN_CREATION_ORDER'] == 'true':
+            # load object name created bevor this one from typeorder file ...
+            with open(self.typeorder_path, 'r') as typecreationfile:
+                typecreationorder = typecreationfile.readlines()
+                # get the type created bevore this one ...
+                try:
+                    lastcreatedtype = typecreationorder[-2].strip()
+                    if 'require' in self.env:
+                        self.env['require'] += " " + lastcreatedtype
+                    else:
+                        self.env['require'] = lastcreatedtype
+                    self.log.debug("Injecting require for EXECUTE_TYPES_IN_CREATION_ORDER: %s for %s", lastcreatedtype, self.cdist_object.name)
+                except IndexError:
+                    # if no second last line, we are on the first type, so do not set a requirement
+                    pass
+
 
         if "require" in self.env:
             requirements = self.env['require']
@@ -191,18 +209,6 @@ class Emulator(object):
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0: continue
-
-
-                if requirement == "CDIST_HONOR_MANIFEST_ORDER":
-                    # load object name created bevor this one from typeorder file ...
-                    with open(self.typeorder_path, 'r') as tofd:
-                        lines = tofd.readlines()
-                        # replace the placeholder with the last created object
-                        try:
-                            requirement = lines[-2].strip()
-                        except IndexError:
-                            # if no second last line, we are on the first object, so do not set a requirement
-                            continue
 
                 # Raises an error, if object cannot be created
                 try:
@@ -212,7 +218,7 @@ class Emulator(object):
                     raise
 
 
-                self.log.debug("Recording requirement: " + requirement)
+                self.log.debug("Recording requirement: %s", requirement)
 
                 # Save the sanitised version, not the user supplied one
                 # (__file//bar => __file/bar)
