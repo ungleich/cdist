@@ -5,9 +5,11 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 3.0.2:
+	* Documentation: Document all messages sent by types (Daniel Heule)
 	* New Type: __block (Steven Armstrong)
 	* New Type: __mount (Steven Armstrong)
 	* Type __cron: Replace existing entry when changing it (Daniel Heule)
+	* Type __ssh_authorized_keys: Use new type __block (Steven Armstrong)
 
 
 3.0.1: 2014-01-14
