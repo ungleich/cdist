@@ -192,10 +192,10 @@ class Emulator(object):
                 try:
                     cdist_object = self.cdist_object.object_from_name(requirement)
                 except core.cdist_type.NoSuchTypeError as e:
-                    self.log.error("%s requires object %s, but type %s does not exist (definded at %s)"  % (self.cdist_object.name, requirement, e.name, self.object_source))
+                    self.log.error("%s requires object %s, but type %s does not exist. Defined at %s"  % (self.cdist_object.name, requirement, e.name, self.object_source))
                     raise
                 except core.cdist_object.MissingObjectIdError as e:
-                    self.log.error("%s requires object %s (without object id), but type %s is not a singleton (definded at %s)"  % (self.cdist_object.name, requirement, e.type_name, self.object_source))
+                    self.log.error("%s requires object %s without object id. Defined at %s"  % (self.cdist_object.name, requirement, self.object_source))
                     raise
 
                 self.log.debug("Recording requirement: " + requirement)
