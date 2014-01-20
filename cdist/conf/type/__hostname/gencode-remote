@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2014 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+if [ -f "$__object/parameter/name" ]; then
+    name_should="$(cat "$__object/parameter/name")"
+else
+    name_should="$(echo "${__target_host%%.*}")"
+fi
+
+os=$(cat "$__global/explorer/os")
+name_running=$(cat "$__global/explorer/hostname")
+name_config=$(cat "$__object/explorer/hostname_file")
+has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
+
+################################################################################
+# If everything is ok -> exit
+#
+if [ "$name_config" = "$name_should" -a "$name_running" = "$name_should" ]; then
+    exit 0
+fi
+
+################################################################################
+# Setup hostname
+#
+echo changed >> "$__messages_out"
+
+if [ "$has_hostnamectl" ]; then
+    echo "hostnamectl set-hostname '$name_should'"
+else
+    echo "hostname '$name_should'"
+    echo "printf '%s\n' '$name_should' > /etc/hostname"
+fi
