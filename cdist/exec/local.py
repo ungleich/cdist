@@ -188,7 +188,7 @@ class Local(object):
         Return the output as a string.
 
         """
-        command = ["/bin/sh", "-e"]
+        command = [ os.environ.get('CDIST_LOCAL_SHELL',"/bin/sh") , "-e"]
         command.append(script)
 
         return self.run(command=command, env=env, return_output=return_output, message_prefix=message_prefix)
