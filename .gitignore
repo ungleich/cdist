@@ -30,3 +30,4 @@ build
 .lock-*
 .git-current-branch
 .lock*
+.pypi-release
