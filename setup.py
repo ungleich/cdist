@@ -5,6 +5,11 @@ import os
 def data_finder(data_dir):
     entries = []
     for name in os.listdir(data_dir):
+
+        # Skip .gitignore files
+        if name == ".gitignore":
+            continue
+
         entry = os.path.join(data_dir, name)
         if os.path.isdir(entry):
             entries.extend(data_finder(entry))

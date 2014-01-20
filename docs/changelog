@@ -4,7 +4,18 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-3.0.1:
+3.0.3:
+	* Core: Enhance error message when requirement is missing object id
+
+3.0.2: 2014-01-19
+	* Documentation: Document all messages sent by types (Daniel Heule)
+	* New Type: __block (Steven Armstrong)
+	* New Type: __mount (Steven Armstrong)
+	* Type __cron: Replace existing entry when changing it (Daniel Heule)
+	* Type __ssh_authorized_keys: Use new type __block (Steven Armstrong)
+
+
+3.0.1: 2014-01-14
 	* Core: Copy only files, not directories (Steven Armstrong)
 	* Core: Allow hostnames to start with /
 	* Type __line: Remove unecessary backslash escape
