@@ -205,25 +205,30 @@ eof
         fi
 
         # Ensure we are on the master branch
+        masterbranch=yes
         if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
             echo "Releases are happening from the master branch, aborting"
 
             echo "Enter the magic word to release anyway"
             read magicword
 
-            if [ "$magicword" != "iknowwhatido" ]; then
+            if [ "$magicword" = "iknowwhatido" ]; then
+                masterbranch=no
+            else
                 exit 1
             fi
         fi
 
-        # Ensure version branch exists
-        if ! git rev-parse --verify refs/heads/$target_branch 2>/dev/null; then
-            git branch "$target_branch"
-        fi
+        if [ "$masterbranch" = yes ]; then
+            # Ensure version branch exists
+            if ! git rev-parse --verify refs/heads/$target_branch 2>/dev/null; then
+                git branch "$target_branch"
+            fi
 
-        # Merge master branch into version branch
-        git checkout "$target_branch"
-        git merge master
+            # Merge master branch into version branch
+            git checkout "$target_branch"
+            git merge master
+        fi
 
         # Verify that after the merge everything works
         "$0" check-date
