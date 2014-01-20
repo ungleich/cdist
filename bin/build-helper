@@ -207,7 +207,13 @@ eof
         # Ensure we are on the master branch
         if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
             echo "Releases are happening from the master branch, aborting"
-            exit 1
+
+            echo "Enter the magic word to release anyway"
+            read magicword
+
+            if [ "$magicword" != "iknowwhatido" ]; then
+                exit 1
+            fi
         fi
 
         # Ensure version branch exists
