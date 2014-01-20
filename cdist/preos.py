@@ -194,14 +194,21 @@ cp -L "$src" "$real_dst"
         log.info("Creating initramfs ...")
         subprocess.check_call(cmd, shell=True)
 
+    def ensure_out_dir_exists(self):
+        os.makedirs(self.out_dir, exist_ok=True)
+
+
     def create_iso(self, out_dir):
         self.out_dir = out_dir
+
+        self.ensure_out_dir_exists()
 
         raise cdist.Error("Generating ISO is not yet supported")
 
     def create_pxe(self, out_dir):
         self.out_dir = out_dir
 
+        self.ensure_out_dir_exists()
         self.create_kernel()
         self.create_initramfs()
         self.create_pxeconfig()
