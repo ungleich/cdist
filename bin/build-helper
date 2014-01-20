@@ -247,8 +247,10 @@ eof
         "$0" release-git-tag
 
         # Also merge back the version branch
-        git checkout master
-        git merge "$target_branch"
+        if [ "$masterbranch" = yes ]; then
+            git checkout master
+            git merge "$target_branch"
+        fi
 
         # Publish git changes
         make pub
