@@ -149,6 +149,5 @@ class Manifest(object):
                 open(os.path.join(cdist_object.stdout_path, which), 'ba') as stdout:
                 self.local.run_script(type_manifest,
                     env=self.env_type_manifest(cdist_object),
-                    message_prefix=message_prefix,
                     stdout=stdout, stderr=stderr
                 )
