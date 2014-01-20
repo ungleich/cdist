@@ -175,10 +175,12 @@ freecode-release: $(FREECODE_FILE)
 ################################################################################
 # pypi
 #
-pypi-release: man $(PYTHON_VERSION)
+PYPI_FILE=.pypi-release
+$(PYPI_FILE): man $(PYTHON_VERSION)
 	python3 setup.py sdist upload
 	touch $@
 
+pypi-release: $(PYPI_FILE)
 ################################################################################
 # archlinux
 #
