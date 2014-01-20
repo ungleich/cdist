@@ -38,7 +38,7 @@ DEFAULT_MANIFEST = """
 for pkg in \
     file \
     linux-image-amd64 \
-    openssh-server \
+    openssh-server curl \
     syslinux grub2 \
     gdisk util-linux lvm2 mdadm \
     btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
