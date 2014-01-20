@@ -31,6 +31,12 @@ if find /sys/class/block/$disk_name*/holders/ -mindepth 1 | grep -q holders/dm; 
    fi
 fi
 
+if command -v pvremove >/dev/null; then
+   pvremove --force --force --yes "$disk" || true
+else
+   echo "WARNING: pvremove command not found" >&2
+fi
+
 # stop mdadm raids if any
 if [ -r /proc/mdstat ]; then
    md_name="\$(awk '/$disk_name/ {print \$1}' /proc/mdstat)"
@@ -42,12 +48,6 @@ if [ -r /proc/mdstat ]; then
          echo "WARNING: could not stop active mdadm raid for disk $disk" >&2
       fi
    fi
-fi
-
-if command -v pvremove >/dev/null; then
-   pvremove --force --force --yes "$disk" || true
-else
-   echo "WARNING: pvremove command not found" >&2
 fi
 if command -v mdadm >/dev/null; then
    mdadm --zero-superblock --force "$disk" || true
