@@ -6,6 +6,8 @@ Changelog
 
 3.0.3:
 	* Core: Enhance error message when requirement is missing object id
+	* Explorer hostname: Return host name by using uname -n
+	* New Type: __hostname (Steven Armstrong)
 
 3.0.2: 2014-01-19
 	* Documentation: Document all messages sent by types (Daniel Heule)
