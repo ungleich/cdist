@@ -20,20 +20,31 @@
 #
 
 if [ -f "$__object/parameter/name" ]; then
-    name="$(cat "$__object/parameter/name")"
+    name_should="$(cat "$__object/parameter/name")"
 else
-    name="$(echo "${__target_host%%.*}")"
+    name_should="$(echo "${__target_host%%.*}")"
 fi
 
 os=$(cat "$__global/explorer/os")
+name_running=$(cat "$__global/explorer/hostname")
+name_config=$(cat "$__object/explorer/hostname_file")
+has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
 
-echo "printf '%s\n' '$name' > /etc/hostname"
+################################################################################
+# If everything is ok -> exit
+#
+if [ "$name_config" = "$name_should" -a "$name_running" = "$name_should" ]; then
+    exit 0
+fi
 
-case "$os" in
-   debian|ubuntu)
-      echo "hostname \"$name\""
-   ;;
-   archlinux)
-      echo "hostnamectl set-hostname \"$name\""
-   ;;
-esac
+################################################################################
+# Setup hostname
+#
+echo changed >> "$__messages_out"
+
+if [ "$has_hostnamectl" ]; then
+    echo "hostnamectl set-hostname '$name_should'"
+else
+    echo "hostname '$name_should'"
+    echo "printf '%s\n' '$name_should' > /etc/hostname"
+fi

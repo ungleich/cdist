@@ -24,6 +24,11 @@ name::
    (${__target_host%%.*})
 
 
+MESSAGES
+--------
+changed::
+    Changed the hostname
+
 EXAMPLES
 --------
 
