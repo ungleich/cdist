@@ -22,7 +22,7 @@
 if [ -f "$__object/parameter/name" ]; then
     name="$(cat "$__object/parameter/name")"
 else
-    name="$__target_host"
+    name="$(echo "${__target_host%%.*}")"
 fi
 
 os=$(cat "$__global/explorer/os")
