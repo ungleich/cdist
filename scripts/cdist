@@ -89,8 +89,6 @@ def commandline():
         parents=[parser['loglevel']])
     parser['preos'].add_argument('-a', '--arch',
          help='Select architecture for preos', default="amd64")
-    parser['preos'].add_argument('-A', '--additional-manifest',
-         help='Add stuff to configuration manifest', default="amd64")
     parser['preos'].add_argument('-b', '--bootstrap',
          help='Bootstrap directory with PreOS',  action="store_true")
     parser['preos'].add_argument('-c', '--configure',
