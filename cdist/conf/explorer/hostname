@@ -20,6 +20,6 @@
 #
 #
 
-if command -v hostname >/dev/null; then
-   hostname -f 2>/dev/null || true
+if command -v uname >/dev/null; then
+   uname -n
 fi
