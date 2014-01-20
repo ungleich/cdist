@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2014 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
@@ -21,5 +21,5 @@
 #
 
 if command -v hostname >/dev/null; then
-   hostname -f
+   hostname -f 2>/dev/null || true
 fi
