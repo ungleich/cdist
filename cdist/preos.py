@@ -39,8 +39,8 @@ for pkg in \
     file \
     linux-image-amd64 \
     openssh-server \
-    syslinux \
-    gdisk util-linux \
+    syslinux grub 2 \
+    gdisk util-linux lvm2 mdadm \
     btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
     __package $pkg --state present
 done
