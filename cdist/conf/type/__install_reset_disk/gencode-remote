@@ -33,7 +33,7 @@ fi
 
 # stop mdadm raids if any
 if [ -r /proc/mdstat ]; then
-   md_name="\$(awk "/$disk_name/ {print \$1}" /proc/mdstat)"
+   md_name="\$(awk '/$disk_name/ {print \$1}' /proc/mdstat)"
    if [ -n "\$md_name" ]; then
       if command -v mdadm >/dev/null; then
          mdadm --stop "/dev/\$md_name"
