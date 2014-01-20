@@ -1,0 +1,2 @@
+cd /dev
+echo sd? hd? vd?
