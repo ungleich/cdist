@@ -13,6 +13,7 @@ Changelog
 	* Core: Add environment variable to select shell for executing scripts (Daniel Heule)
 	* Explorer hostname: Return host name by using uname -n
 	* New Type: __hostname (Steven Armstrong)
+	* Type __line: Use printf instead of echo for printing user input
 
 3.0.2: 2014-01-19
 	* Documentation: Document all messages sent by types (Daniel Heule)
