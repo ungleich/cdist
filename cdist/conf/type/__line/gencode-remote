@@ -58,7 +58,7 @@ case "$state_should" in
 
         # Only replace ' with '"'"' and keep \ as they are
         line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g")
-        echo "printf '%s\n' '$line_sanitised' >> $file"
+        printf '%s' "printf '%s\n' '$line_sanitised' >> $file"
 
     ;;
     absent)
