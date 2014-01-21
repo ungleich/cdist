@@ -113,7 +113,7 @@ class Remote(object):
 
         """
 
-        command = ["/bin/sh", "-e"]
+        command = [ os.environ.get('CDIST_REMOTE_SHELL',"/bin/sh") , "-e"]
         command.append(script)
 
         return self.run(command, env, return_output)
