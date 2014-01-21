@@ -13,7 +13,12 @@ Changelog
 	* Core: Add environment variable to select shell for executing scripts (Daniel Heule)
 	* Explorer hostname: Return host name by using uname -n
 	* New Type: __hostname (Steven Armstrong)
+	* Type __cdist: Use default paremeters (Daniel Heule)
+	* Type __key_value: Use default paremeters (Daniel Heule)
 	* Type __line: Use printf instead of echo for printing user input
+	* Type __qemu_img: Use default paremeters (Daniel Heule)
+	* Type __zypper_repo: Use default paremeters (Daniel Heule)
+	* Type __zypper_service: Use default paremeters (Daniel Heule)
 
 3.0.2: 2014-01-19
 	* Documentation: Document all messages sent by types (Daniel Heule)
