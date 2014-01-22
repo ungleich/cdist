@@ -21,8 +21,9 @@
 name="$__object_id"
 
 __package software-properties-common
+__package python-software-properties
 
-require="__package/software-properties-common" \
+require="__package/software-properties-common __package/python-software-properties" \
    __file /usr/local/bin/remove-apt-repository \
    --source "$__type/files/remove-apt-repository" \
    --mode 0755
