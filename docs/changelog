@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+3.0.4:
+	* Type __apt_ppa: Install required software (Steven Armstrong)
+
 3.0.3: 2014-01-22
 	* Core: Enhance error message when requirement is missing object id
 	* Core: Add environment variable to select shell for executing scripts (Daniel Heule)
