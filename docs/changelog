@@ -8,6 +8,7 @@ Changelog
 	* Documentation: Update reference (files path in object space)
 	* Type __apt_ppa: Install required software (Steven Armstrong)
 	* Type __debconf_set_selections: Support --file - to read from stdin
+	* Type __jail: Fix jaildir parameter handling (Jake Guffey)
 
 
 3.0.3: 2014-01-22
