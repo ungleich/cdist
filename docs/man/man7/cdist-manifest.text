@@ -161,6 +161,30 @@ __package lighttpd --state present
 require="__package/lighttpd" __package munin --state present
 --------------------------------------------------------------------------------
 
+OVERRIDES
+---------
+In some special cases, you would like to create an allready defined object 
+with different parameters. In normal situations this leads to an error in cdist.
+If you whish, you can mark this second definition of an object with 
+CDIST_ALLOW_OVERRIDE=true to tell cdist, that this object override is 
+wanted and should be accepted.
+
+--------------------------------------------------------------------------------
+# for example in the inial manifest
+
+# reate user account foobar with some hash for password
+__user foobar --password 'some_fancy_hash'
+
+# ... many statements and includes in the manifest later ...
+# somewhere in a conditionaly sourced manifest 
+# (e.g. for example only sourced if a special application is on the target host)
+
+# this leads to an error ...
+__user foobar --password 'some_other_hash' 
+
+# this tells cdist, that you know that this is an override and should be accepted
+CDIST_ALLOW_OVERRIDE=true __user foobar --password 'some_other_hash'
+--------------------------------------------------------------------------------
 
 
 SEE ALSO

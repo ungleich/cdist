@@ -2,6 +2,7 @@
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -215,9 +216,10 @@ class CdistObject(object):
         """Create this cdist object on the filesystem.
         """
         try:
-            os.makedirs(self.absolute_path, exist_ok=False)
+            cdexist_ok = True if os.environ.get('CDIST_ALLOW_OVERRIDE',"false") == 'true' else False
+            os.makedirs(self.absolute_path, exist_ok=cdexist_ok)
             absolute_parameter_path = os.path.join(self.base_path, self.parameter_path)
-            os.makedirs(absolute_parameter_path, exist_ok=False)
+            os.makedirs(absolute_parameter_path, exist_ok=cdexist_ok)
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 
