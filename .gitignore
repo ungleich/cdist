@@ -29,3 +29,5 @@ cdist/version.py
 build
 .lock-*
 .git-current-branch
+.lock*
+.pypi-release

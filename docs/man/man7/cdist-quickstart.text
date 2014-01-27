@@ -72,7 +72,9 @@ As soon as you are able to login without password to localhost,
 we can use cdist to configure it. You can copy and paste the following
 code into your shell to get started and configure localhost:
 --------------------------------------------------------------------------------
-# Get cdist
+# Get cdist 
+# Mirrors can be found on
+# http://www.nico.schottelius.org/software/cdist/install/#index2h4
 git clone git://git.schottelius.org/cdist
 
 # Create manifest (maps configuration to host(s)

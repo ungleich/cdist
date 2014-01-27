@@ -13,6 +13,15 @@ DESCRIPTION
 This cdist type allows you to create files, remove files and set file
 attributes on the target.
 
+If the file already exists on the target, then if it is a:
+- regular file, and state is:
+   present: replace it with the source file if they are not equal
+   exists: do nothing
+- symlink: replace it with the source file
+- directory: replace it with the source file
+
+In any case, make sure that the file attributes are as specified.
+
 
 REQUIRED PARAMETERS
 -------------------
@@ -40,6 +49,21 @@ source::
    If supplied, copy this file from the host running cdist to the target.
    If not supplied, an empty file or directory will be created.
    If source is '-' (dash), take what was written to stdin as the file content.
+
+MESSAGES
+--------
+chgrp <group>::
+    Changed group membership
+chown <owner>::
+    Changed owner
+chmod <mode>::
+    Changed mode
+create::
+    Empty file was created (no --source specified)
+remove::
+    File exists, but state is absent, file will be removed by generated code.
+upload::
+    File was uploaded
 
 
 EXAMPLES
@@ -81,5 +105,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

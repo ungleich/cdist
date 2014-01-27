@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -40,17 +41,30 @@ case "$type" in
 esac
 
 state_is="$(cat "$__object/explorer/state")"
-state_should=present
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
 
 [ "$state_should" = "$state_is" ] && exit 0
 
+file_type="$(cat "$__object/explorer/type")"
 case "$state_should" in
     present)
-        echo ln ${lnopt} -f \"$source\" \"$destination\"
+        if [ "$file_type" = "directory" ]; then
+            # our destination is currently a directory, delete it
+            cat << DONE
+rm -rf "$destination"
+DONE
+        fi
+
+        # create our link
+        cat << DONE
+ln ${lnopt} -f "$source" "$destination"
+DONE
     ;;
     absent)
-        echo rm -f \"$destination\"
+        # only delete if it is a sym/hard link
+        if [ "$file_type" = "symlink" -o "$file_type" = "hardlink" ]; then
+            echo rm -f \"$destination\"
+        fi
     ;;
     *)
         echo "Unknown state: $state_should" >&2

@@ -19,8 +19,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-state_should=present
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
 
 if [ "$state_should" = "present" -a ! -f "$__object/parameter/value" ]; then
    echo "Missing required parameter 'value'" >&2

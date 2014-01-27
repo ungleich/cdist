@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -28,29 +29,59 @@
 globalopts="--quiet --non-interactive"
 
 if [ -f "$__object/parameter/name" ]; then
-   name="$__object/parameter/name"
+    name="$__object/parameter/name"
 else
-   name="$__object_id"
+    name="$__object_id"
 fi
 
 if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
+    state_should="$(cat "$__object/parameter/state")"
 else
-   state_should="present"
+    state_should="present"
 fi
 
-# Exit if nothing is needed to be done
-[ "$state_is" = "$state_should" ] && exit 0
+if [ -f "$__object/parameter/ptype" ]; then
+    ptype="$(cat "$__object/parameter/ptype")"
+else
+    ptype="package"
+fi
+
+if [ -f "$__object/parameter/version" ]; then
+    version_should="$(cat "$__object/parameter/version")"
+    if [ "$ptype" != "package" ]; then
+        echo "version support only for type package implemented" >&2
+        exit 2
+    fi
+else
+    version_should=""
+fi
+
+pkg_version="$(cat "$__object/explorer/pkg_version")"
+if [ -z "$pkg_version" ]; then
+    state_is="absent"
+    version_is=""
+else
+    state_is="present"
+    version_is=${pkg_version##* }
+fi
+
 
 case "$state_should" in
-   present)
-         echo zypper "$globalopts" install --auto-agree-with-licenses \"$name\"
-   ;;
-   absent)
-         echo pacman "$globalopts" remove \"$name\"
-   ;;
-   *)
-      echo "Unknown state: $state_should" >&2
-      exit 1
-   ;;
+    present)
+        if [ -z "$version_should" ]; then
+            [ "$state_is" = "present" ] && exit 0 # if state is present, we dont need to do anything
+            echo zypper $globalopts install --type \"$ptype\" --auto-agree-with-licenses \"$name\" ">/dev/null"
+        else
+            [ "$state_is" = "present" ] && [ "$version_should" = "$version_is" ] && exit 0 # if state is present and version is correct, we dont need to do anything
+            echo zypper $globalopts install --oldpackage --type \"$ptype\" --auto-agree-with-licenses \"$name\" = \"$version_should\" ">/dev/null"
+        fi
+    ;;
+    absent)
+        [ "$state_is" = "absent" ] && exit 0 # if state is absent, we dont need to do anything
+        echo zypper $globalopts remove --type \"$ptype\" \"$name\" ">/dev/null"
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
 esac

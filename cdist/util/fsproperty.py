@@ -134,7 +134,11 @@ class DirectoryDict(collections.MutableMapping):
     def __setitem__(self, key, value):
         try:
             with open(os.path.join(self.path, key), "w") as fd:
-                if type(value) == type([]):
+                if (not hasattr(value, 'strip') and
+                    (hasattr(value, '__getitem__') or
+                    hasattr(value, '__iter__'))):
+                    # if it looks like a sequence and quacks like a sequence,
+                    # it is a sequence
                     for v in value:
                         fd.write(str(v) + '\n')
                 else:

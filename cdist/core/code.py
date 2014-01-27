@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -89,7 +89,7 @@ class Code(object):
         self.remote = remote
         self.env = {
             '__target_host': self.target_host,
-            '__global': self.local.out_path,
+            '__global': self.local.base_path,
         }
 
     def _run_gencode(self, cdist_object, which):
@@ -104,7 +104,8 @@ class Code(object):
                 '__object_id': cdist_object.object_id,
                 '__object_name': cdist_object.name,
             })
-            return self.local.run_script(script, env=env, return_output=True)
+            message_prefix=cdist_object.name
+            return self.local.run_script(script, env=env, return_output=True, message_prefix=message_prefix)
 
     def run_gencode_local(self, cdist_object):
         """Run the gencode-local script for the given cdist object."""
@@ -119,9 +120,6 @@ class Code(object):
         source = os.path.join(self.local.object_path, cdist_object.code_remote_path)
         destination = os.path.join(self.remote.object_path, cdist_object.code_remote_path)
         # FIXME: BUG: do not create destination, but top level of destination!
-        # FIXME: BUG2: we are called AFTER the code-remote has been transferred already:
-        # mkdir: cannot create directory `/var/lib/cdist/object/__directory/etc/acpi/actions/.cdist/code-remote': File exists
-        # OR: this is from previous run -> cleanup missing!
         self.remote.mkdir(destination)
         self.remote.transfer(source, destination)
 

@@ -21,26 +21,27 @@
 
 directory="$__object_id"
 
-if [ -f "$__object/parameter/username" ]; then
-   username="$(cat "$__object/parameter/username")"
+if [ -f "$__object/parameter/shell" ]; then
+   shell="--shell $(cat "$__object/parameter/shell")"
 else
-   username="cdist"
+   shell=""
 fi
 
-if [ -f "$__object/parameter/branch" ]; then
-   branch="$(cat "$__object/parameter/branch")"
-else
-   branch="master"
-fi
+username="$(cat "$__object/parameter/username")"
 
-if [ -f "$__object/parameter/source" ]; then
-   source="$(cat "$__object/parameter/source")"
-else
-   source="git://github.com/telmich/cdist.git"
-fi
+branch="$(cat "$__object/parameter/branch")"
 
-__user "$username"
+source="$(cat "$__object/parameter/source")"
 
-require="__user/$username" __git "$directory" \
+# Currently hardcoded - if anyone cares, make a parameter
+# out of it
+home=/home/$username
+
+__user "$username" --home "$home" $shell
+
+require="__user/$username" __directory "$home" \
+    --owner "$username"
+
+require="__user/$username __directory/$home" __git "$directory" \
     --source "$source" \
     --owner "$username" --branch "$branch"

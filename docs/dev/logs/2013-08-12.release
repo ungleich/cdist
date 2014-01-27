@@ -1,0 +1,28 @@
+- already on 2.3.0-1 during release
+    - user bug: there should be no changes / commits during a release process
+
+hard linking docs/man/man7/cdist-type__user.7 -> cdist-2.3.0-1-g8192c2c/docs/man/man7
+hard linking docs/man/man7/cdist-type__user.html -> cdist-2.3.0-1-g8192c2c/docs/man/man7
+hard linking docs/man/man7/cdist-type__user_groups.7 -> cdist-2.3.0-1-g8192c2c/docs/man/man7
+hard linking docs/man/man7/cdist-type__user_groups.html -> cdist-2.3.0-1-g8192c2c/docs/man/man7
+hard linking scripts/cdist -> cdist-2.3.0-1-g8192c2c/scripts
+creating dist
+Creating tar archive
+removing 'cdist-2.3.0-1-g8192c2c' (and everything under it)
+running upload
+Submitting dist/cdist-2.3.0-1-g8192c2c.tar.gz to http://pypi.python.org/pypi
+Server response (200): OK
+touch .lock-pypi
+./PKGBUILD.in 2.3.0
+==> Retrieving sources...
+  -> Downloading cdist-2.3.0.tar.gz...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404 Not Found
+==> ERROR: Failure while downloading cdist-2.3.0.tar.gz
+    Aborting...
+make: *** [PKGBUILD] Error 1
+[12:38] bento:cdist% 
+

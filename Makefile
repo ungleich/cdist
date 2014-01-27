@@ -18,9 +18,6 @@
 #
 #
 
-# dist = local
-# release = remote
-
 A2XM=a2x -f manpage --no-xmllint -a encoding=UTF-8
 A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
 helper=./bin/build-helper
@@ -39,7 +36,7 @@ WEBPAGE=$(WEBBASE).mdwn
 CHANGELOG_VERSION=$(shell $(helper) changelog-version)
 CHANGELOG_FILE=docs/changelog
 
-VERSION_FILE=cdist/version.py
+PYTHON_VERSION=cdist/version.py
 
 ################################################################################
 # Manpages
@@ -102,7 +99,7 @@ man-dist: man check-date
 	cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
 	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)" || true
 
-man-release: web-release
+man-fix-link: web-pub
 	# Fix ikiwiki, which does not like symlinks for pseudo security
 	ssh tee.schottelius.org \
     	"cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
@@ -146,8 +143,10 @@ web-doc:
 
 web-dist: web-blog web-doc
 
-web-release: web-dist man-dist speeches-dist
+web-pub: web-dist man-dist speeches-dist
 	cd "${WEBDIR}" && make pub
+
+web-release-all: man-fix-link
 
 ################################################################################
 # Release: Mailinglist
@@ -155,7 +154,7 @@ web-release: web-dist man-dist speeches-dist
 ML_FILE=.lock-ml
 
 # Only send mail once - lock until new changelog things happened
-$(ML_FILE): $(CHANGELOG_FILE) git-release web-release
+$(ML_FILE): $(CHANGELOG_FILE)
 	$(helper) ml-release $(CHANGELOG_VERSION)
 	touch $@
 
@@ -174,62 +173,27 @@ $(FREECODE_FILE): $(CHANGELOG_FILE)
 freecode-release: $(FREECODE_FILE)
 
 ################################################################################
-# git and git dependent stuff
-#
-
-GIT_TAG_FILE=.git/refs/tags/$(CHANGELOG_VERSION)
-GIT_SRC_BRANCH=master
-GIT_DST_BRANCH=$(shell echo $(CHANGELOG_VERSION) | cut -d. -f '1,2')
-GIT_CURRENT=.git-current-branch
-
-git-tag: $(GIT_TAG_FILE)
-
-$(GIT_TAG_FILE):
-	@printf "Enter tag description for $(CHANGELOG_VERSION)> "
-	@read tagmessage; git tag "$(CHANGELOG_VERSION)" -m "$$tagmessage"
-
-git-branch-merge: git-checkout-stable
-	git merge "$(CHANGELOG_VERSION)"
-
-git-checkout-stable: git-tag
-	@git rev-parse --abbrev-ref HEAD > $(GIT_CURRENT)
-	@git checkout "$(GIT_DST_BRANCH)"
-
-git-checkout-current:
-	git checkout "$$(cat $(GIT_CURRENT))"
-
-$(VERSION_FILE): .git/refs/heads/* .git/refs/tags/* .git/HEAD
-	echo "VERSION = \"$$(git describe)\"" > $@
-
-git-release: git-tag
-	make git-branch-merge
-	make git-checkout-current
-	make pub
-
-################################################################################
 # pypi
 #
-PYPI_FILE=.lock-pypi
-
-pypi-release: $(PYPI_FILE)
-
-$(PYPI_FILE): man $(VERSION_FILE)
+PYPI_FILE=.pypi-release
+$(PYPI_FILE): man $(PYTHON_VERSION)
 	python3 setup.py sdist upload
 	touch $@
 
+pypi-release: $(PYPI_FILE)
 ################################################################################
 # archlinux
 #
 ARCHLINUX_FILE=.lock-archlinux
 ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
 
-$(ARCHLINUXTAR): PKGBUILD pypi-release
+$(ARCHLINUXTAR): PKGBUILD
 	makepkg -c --source
 
-PKGBUILD: PKGBUILD.in $(VERSION_FILE)
+PKGBUILD: PKGBUILD.in $(PYTHON_VERSION)
 	./PKGBUILD.in $(CHANGELOG_VERSION)
 
-$(ARCHLINUX_FILE): $(ARCHLINUXTAR) $(VERSION_FILE)
+$(ARCHLINUX_FILE): $(ARCHLINUXTAR) $(PYTHON_VERSION)
 	burp -c system $(ARCHLINUXTAR)
 	touch $@
 
@@ -239,21 +203,14 @@ archlinux-release: $(ARCHLINUX_FILE)
 # Release
 #
 
-CHECKS=check-date check-unittest
-
-check-unittest: $(VERSION_FILE)
-
-RELEASE=speeches-dist web-release
-RELEASE+=ml-release freecode-release
-RELEASE+=man-dist pypi-release git-release
-RELEASE+=archlinux-release
-
-#release: $(CHECKS) $(RELEASE)
-release: | $(CHECKS) man speeches
-	echo "Manual steps: linkedin, twitter"
+$(PYTHON_VERSION): .git/refs/heads/master
+	$(helper) version
 
 # Code that is better handled in a shell script
 check-%:
+	$(helper) $@
+
+release:
 	$(helper) $@
 
 ################################################################################
@@ -272,13 +229,15 @@ clean:
 
 	find * -name __pycache__  | xargs rm -rf
 
-distclean: clean
-	rm -f cdist/version.py MANIFEST PKGBUILD
-	rm -rf dist/
-
 	# Archlinux
 	rm -f cdist-*.pkg.tar.xz cdist-*.tar.gz
 	rm -rf pkg/ src/
+
+	rm -f MANIFEST PKGBUILD
+	rm -rf dist/
+
+distclean: clean
+	rm -f cdist/version.py
 
 ################################################################################
 # Misc

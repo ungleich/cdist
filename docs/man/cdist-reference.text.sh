@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -116,8 +116,13 @@ confdir/type/<name>/parameter/required::
 confdir/type/<name>/parameter/optional::
     Parameters optionally accepted by type, \n seperated list.
 
+confdir/type/<name>/parameter/default/*::
+    Default values for optional parameters.
+    Assuming an optional parameter name of 'foo', it's default value would
+    be read from the file confdir/type/<name>/parameter/default/foo.
+
 confdir/type/<name>/parameter/boolean::
-   Boolean parameters accepted by type, \n seperated list.
+    Boolean parameters accepted by type, \n seperated list.
 
 confdir/type/<name>/explorer::
     Location of the type specific explorers.
@@ -179,12 +184,18 @@ ENVIRONMENT VARIABLES
 ---------------------
 __explorer::
     Directory that contains all global explorers.
-    Available for: initial manifest, explorer, type explorer
+    Available for: initial manifest, explorer, type explorer, shell
 __manifest::
     Directory that contains the initial manifest.
-    Available for: initial manifest, type manifest
+    Available for: initial manifest, type manifest, shell
 __global::
     Directory that contains generic output like explorer.
+    Available for: initial manifest, type manifest, type gencode, shell
+__messages_in::
+    File to read messages from
+    Available for: initial manifest, type manifest, type gencode
+__messages_out::
+    File to write messages
     Available for: initial manifest, type manifest, type gencode
 __object::
     Directory that contains the current object.
@@ -200,7 +211,7 @@ __object_name::
     Available for: type manifest, type explorer, type gencode
 __target_host::
     The host we are deploying to.
-    Available for: explorer, initial manifest, type explorer, type manifest, type gencode
+    Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell
 __type::
     Path to the current type.
     Available for: type manifest, type gencode
@@ -216,6 +227,6 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
 eof

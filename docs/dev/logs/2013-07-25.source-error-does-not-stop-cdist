@@ -1,0 +1,56 @@
+Symptom: 
+    running something in a manifest and that fails does not exist
+    the cdist run
+
+Analysis:
+    Find out what the shell does:
+
+    [23:56] bento:testshell% cat a.sh 
+    # source something that fails
+    . b.sh
+    [23:57] bento:testshell% cat b.sh 
+    nosuchcommand
+    [23:57] bento:testshell% sh -e a.sh
+    a.sh: 2: .: b.sh: not found
+    [23:57] bento:testshell% echo $?
+    2
+
+    -> exit 2 -> looks good
+
+
+    Find out what the python does:
+
+    [23:57] bento:testshell% python3
+    Python 3.3.2 (default, May 21 2013, 15:40:45) 
+    [GCC 4.8.0 20130502 (prerelease)] on linux
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> import subprocess
+    >>> subprocess.check_call(["/bin/sh", "-e", "a.sh"])
+    a.sh: 2: .: b.sh: not found
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "/usr/lib/python3.3/subprocess.py", line 544, in check_call
+        raise CalledProcessError(retcode, cmd)
+    subprocess.CalledProcessError: Command '['/bin/sh', '-e', 'a.sh']' returned non-zero exit status 2
+    >>> 
+
+
+Conclusion:
+    Manifests that execute (!) other shell scripts does
+    not necessarily give the -e flag to the other script
+        -> called script can have failures, but exit 0
+            if something the last thing executed does exit 0!
+
+Solution:
+    Instead of doing stuff like
+    "$__manifest/special"
+
+    use
+    sh -e "$__manifest/special"
+
+    or source the script:
+    . "$__manifest/special"
+
+    (runs the script in the same namespace/process as everything in the
+    calling script)
+        

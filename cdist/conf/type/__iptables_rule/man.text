@@ -1,0 +1,64 @@
+cdist-type__iptables_rule(7)
+============================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__iptables_rule - Deploy iptable rulesets
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to manage iptable rules
+in a distribution independent manner.
+
+
+REQUIRED PARAMETERS
+-------------------
+rule::
+    The rule to apply. Essentially an iptables command
+    line without iptables in front of it.
+
+
+OPTIONAL PARAMETERS
+-------------------
+state::
+   'present' or 'absent', defaults to 'present'
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Deploy some policies
+__iptables_rule policy-in  --rule "-P INPUT DROP"
+__iptables_rule policy-out  --rule "-P OUTPUT ACCEPT"
+__iptables_rule policy-fwd  --rule "-P FORWARD DROP"
+
+# The usual established rule
+__iptables_rule established  --rule "-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT"
+
+# Some service rules
+__iptables_rule http  --rule "-A INPUT -p tcp --dport 80 -j ACCEPT"
+__iptables_rule ssh   --rule "-A INPUT -p tcp --dport 80 -j ACCEPT"
+__iptables_rule https --rule "-A INPUT -p tcp --dport 443 -j ACCEPT"
+
+# Ensure some rules are not present anymore
+__iptables_rule munin --rule "-A INPUT -p tcp --dport 4949 -j ACCEPT" \
+    --state absent
+
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__iptables_apply(7)
+- iptables(8)
+
+
+COPYING
+-------
+Copyright \(C) 2013 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

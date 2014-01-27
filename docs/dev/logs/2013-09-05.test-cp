@@ -1,0 +1,34 @@
+Test copy copys symlinks - making real files would be better
+
+Test how to use cp:
+
+[12:54] bento:~% cd test
+[12:54] bento:test% ln -s /etc/passwd
+[12:54] bento:test% cd ..
+[12:54] bento:~% cp -r test test2
+[12:54] bento:~% ls -lh test2/
+total 4.0K
+lrwxrwxrwx 1 nico nico 11 Sep  5 12:54 passwd -> /etc/passwd
+[12:54] bento:~% rm -rf test2/
+
+--------------------------------------------------------------------------------
+[12:54] bento:~% ls -lh test2/
+total 4.0K
+lrwxrwxrwx 1 nico nico 11 Sep  5 12:54 passwd -> /etc/passwd
+[12:54] bento:~% rm -rf test2/
+[12:54] bento:~% cp -r --dereference test test2 
+[12:56] bento:~% ls -l test2/
+total 4
+-rw------- 1 nico nico 960 Sep  5 12:56 passwd
+[12:56] bento:~% 
+
+--------------------------------------------------------------------------------
+[13:04] bento:cdist% git describe 
+2.3.2
+[13:09] bento:cdist% vi MANIFEST.in 
+[13:09] bento:cdist% vi MANIFEST   
+[13:09] bento:cdist% vi setup.py 
+[13:09] bento:cdist% cat cdist/version.py 
+VERSION = "2.3.1-34-g7acf041"
+[13:10] bento:cdist% 
+
