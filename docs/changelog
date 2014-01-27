@@ -5,7 +5,10 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 3.0.4:
+	* Documentation: Update reference (files path in object space)
 	* Type __apt_ppa: Install required software (Steven Armstrong)
+	* Type __debconf_set_selections: Support --file - to read from stdin
+
 
 3.0.3: 2014-01-22
 	* Core: Enhance error message when requirement is missing object id
@@ -18,6 +21,7 @@ Changelog
 	* Type __qemu_img: Use default paremeters (Daniel Heule)
 	* Type __zypper_repo: Use default paremeters (Daniel Heule)
 	* Type __zypper_service: Use default paremeters (Daniel Heule)
+
 
 3.0.2: 2014-01-19
 	* Documentation: Document all messages sent by types (Daniel Heule)
