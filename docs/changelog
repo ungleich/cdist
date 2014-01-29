@@ -4,8 +4,10 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-3.0.4:
+3.0.4: 2014-01-29
+	* Core: Ignore install types in config mode
 	* Documentation: Update reference (files path in object space)
+	* Documentation: Update best practise: Replaces templates/ with files/
 	* Type __apt_ppa: Install required software (Steven Armstrong)
 	* Type __debconf_set_selections: Support --file - to read from stdin
 	* Type __jail: Fix jaildir parameter handling (Jake Guffey)
