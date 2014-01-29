@@ -131,7 +131,8 @@ confdir/type/<name>/explorer::
 
 confdir/type/<name>/files::
     This directory is reserved for user data and will not be used
-    by cdist at any time
+    by cdist at any time. It can be used for storing supplementary
+    files (like scripts to act as a template or configuration files).
 
 out/::
     This directory contains output of cdist and is usually located
@@ -175,9 +176,16 @@ OBJECTS
 For object to object communication and tests, the following paths are
 usable within a object directory:
 
+files::
+    This directory is reserved for user data and will not be used
+    by cdist at any time. It can be used freely by the type 
+    (for instance to store template results).
 changed::
     This empty file exists in an object directory, if the object has
     code to be excuted (either remote or local)
+stdin::
+    This file exists and contains data, if data was provided on stdin 
+    when the type was called.
 
 
 ENVIRONMENT VARIABLES

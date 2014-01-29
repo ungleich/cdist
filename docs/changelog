@@ -4,12 +4,25 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-3.0.3:
+3.0.4:
+	* Documentation: Update reference (files path in object space)
+	* Type __apt_ppa: Install required software (Steven Armstrong)
+	* Type __debconf_set_selections: Support --file - to read from stdin
+	* Type __jail: Fix jaildir parameter handling (Jake Guffey)
+
+
+3.0.3: 2014-01-22
 	* Core: Enhance error message when requirement is missing object id
 	* Core: Add environment variable to select shell for executing scripts (Daniel Heule)
 	* Explorer hostname: Return host name by using uname -n
 	* New Type: __hostname (Steven Armstrong)
+	* Type __cdist: Use default paremeters (Daniel Heule)
+	* Type __key_value: Use default paremeters (Daniel Heule)
 	* Type __line: Use printf instead of echo for printing user input
+	* Type __qemu_img: Use default paremeters (Daniel Heule)
+	* Type __zypper_repo: Use default paremeters (Daniel Heule)
+	* Type __zypper_service: Use default paremeters (Daniel Heule)
+
 
 3.0.2: 2014-01-19
 	* Documentation: Document all messages sent by types (Daniel Heule)

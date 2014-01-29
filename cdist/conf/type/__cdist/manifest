@@ -27,23 +27,11 @@ else
    shell=""
 fi
 
-if [ -f "$__object/parameter/username" ]; then
-   username="$(cat "$__object/parameter/username")"
-else
-   username="cdist"
-fi
+username="$(cat "$__object/parameter/username")"
 
-if [ -f "$__object/parameter/branch" ]; then
-   branch="$(cat "$__object/parameter/branch")"
-else
-   branch="master"
-fi
+branch="$(cat "$__object/parameter/branch")"
 
-if [ -f "$__object/parameter/source" ]; then
-   source="$(cat "$__object/parameter/source")"
-else
-   source="git://github.com/telmich/cdist.git"
-fi
+source="$(cat "$__object/parameter/source")"
 
 # Currently hardcoded - if anyone cares, make a parameter
 # out of it
