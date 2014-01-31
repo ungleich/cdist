@@ -163,11 +163,14 @@ require="__package/lighttpd" __package munin --state present
 
 OVERRIDES
 ---------
-In some special cases, you would like to create an allready defined object 
+In some special cases, you would like to create an already defined object 
 with different parameters. In normal situations this leads to an error in cdist.
 If you whish, you can mark this second definition of an object with 
 CDIST_ALLOW_OVERRIDE=true to tell cdist, that this object override is 
 wanted and should be accepted.
+ATTENTION: Only use this feature if you are 100% sure in which order 
+cdist encounter the affected objects, otherwhise this results 
+into an undefined situation. 
 
 --------------------------------------------------------------------------------
 # for example in the inial manifest

@@ -212,14 +212,13 @@ class CdistObject(object):
         """Checks wether this cdist object exists on the file systems."""
         return os.path.exists(self.absolute_path)
 
-    def create(self):
+    def create(self, allow_overwrite=False):
         """Create this cdist object on the filesystem.
         """
         try:
-            cdexist_ok = True if os.environ.get('CDIST_ALLOW_OVERRIDE',"false") == 'true' else False
-            os.makedirs(self.absolute_path, exist_ok=cdexist_ok)
+            os.makedirs(self.absolute_path, exist_ok=allow_overwrite)
             absolute_parameter_path = os.path.join(self.base_path, self.parameter_path)
-            os.makedirs(absolute_parameter_path, exist_ok=cdexist_ok)
+            os.makedirs(absolute_parameter_path, exist_ok=allow_overwrite)
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 
