@@ -140,23 +140,7 @@ ATTENTION: Only use this feature if you are 100% sure in which order
 cdist encounter the affected objects, otherwhise this results 
 into an undefined situation. 
 
---------------------------------------------------------------------------------
-# for example in the inial manifest
-
-# reate user account foobar with some hash for password
-__user foobar --password 'some_fancy_hash'
-
-# ... many statements and includes in the manifest later ...
-# somewhere in a conditionaly sourced manifest 
-# (e.g. for example only sourced if a special application is on the target host)
-
-# this leads to an error ...
-__user foobar --password 'some_other_hash' 
-
-# this tells cdist, that you know that this is an override and should be accepted
-CDIST_ALLOW_OVERRIDE=true __user foobar --password 'some_other_hash'
---------------------------------------------------------------------------------
-
+THIS IS A BETA FEATURE AND MAY BE REMOVED AT ANY TIME.
 
 EXAMPLES
 --------
@@ -189,6 +173,26 @@ __package lighttpd --state present
 # package as decided by the package manager
 require="__package/lighttpd" __package munin --state present
 --------------------------------------------------------------------------------
+
+How to override objects:
+
+--------------------------------------------------------------------------------
+# for example in the inital manifest
+
+# reate user account foobar with some hash for password
+__user foobar --password 'some_fancy_hash'
+
+# ... many statements and includes in the manifest later ...
+# somewhere in a conditionaly sourced manifest 
+# (e.g. for example only sourced if a special application is on the target host)
+
+# this leads to an error ...
+__user foobar --password 'some_other_hash' 
+
+# this tells cdist, that you know that this is an override and should be accepted
+CDIST_ALLOW_OVERRIDE=true __user foobar --password 'some_other_hash'
+--------------------------------------------------------------------------------
+
 
 SEE ALSO
 --------
