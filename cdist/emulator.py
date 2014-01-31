@@ -154,7 +154,7 @@ class Emulator(object):
             if self.cdist_object.exists:
                 self.log.debug('Object %s override forced with CDIST_ALLOW_OVERRIDE=true',self.cdist_object.name)
                 self.cdist_object.create(True)
-            else
+            else:
                 self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
 
