@@ -180,7 +180,7 @@ How to override objects:
 # for example in the inital manifest
 
 # reate user account foobar with some hash for password
-__user foobar --password 'some_fancy_hash'
+__user foobar --password 'some_fancy_hash' --home /home/foobarexample
 
 # ... many statements and includes in the manifest later ...
 # somewhere in a conditionaly sourced manifest 
@@ -191,6 +191,8 @@ __user foobar --password 'some_other_hash'
 
 # this tells cdist, that you know that this is an override and should be accepted
 CDIST_ALLOW_OVERRIDE=true __user foobar --password 'some_other_hash'
+# its only an override, means the parameter --home is not touched 
+# and stay at the original value of /home/foobarexample
 --------------------------------------------------------------------------------
 
 
