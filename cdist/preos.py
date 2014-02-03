@@ -253,6 +253,12 @@ cp -L "$src" "$real_dst"
             config = cdist.config.Config(local, remote)
             config.run()
 
+    def cleanup(self):
+        # Remove cruft from chroot
+        for action in 'autoclean clean autoremove'.split():
+            cmd = [ 'chroot', self.target_dir, '/usr/bin/apt-get', action]
+            subprocess.check_call(cmd)
+
     @classmethod
     def commandline(cls, args):
         self = cls(target_dir=args.target_dir[0],
@@ -269,6 +275,9 @@ cp -L "$src" "$real_dst"
         # Configure the OS
         if args.config:
             self.config()
+
+        # Cleanup chroot
+        self.cleanup()
 
         # Output pxe files
         if args.pxe_boot_dir:
