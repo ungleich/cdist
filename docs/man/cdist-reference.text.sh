@@ -233,6 +233,9 @@ ENVIRONMENT VARIABLES (FOR WRITING)
 -----------------------------------
 The following environment variables influence the behaviour of cdist:
 
+require::
+    Setup dependencies between objects (see cdist-manifest(7))
+
 CDIST_ALLOW_OVERRIDE::
     Allow overwriting type parameters (see cdist-manifest(7))
 
