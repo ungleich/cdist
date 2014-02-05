@@ -188,8 +188,10 @@ stdin::
     when the type was called.
 
 
-ENVIRONMENT VARIABLES
----------------------
+ENVIRONMENT VARIABLES (FOR READING)
+-----------------------------------
+The following environment variables are exported by cdist:
+
 __explorer::
     Directory that contains all global explorers.
     Available for: initial manifest, explorer, type explorer, shell
@@ -227,6 +229,12 @@ __type_explorer::
     Directory that contains the type explorers.
     Available for: type explorer
 
+ENVIRONMENT VARIABLES (FOR WRITING)
+-----------------------------------
+The following environment variables influence the behaviour of cdist:
+
+CDIST_ALLOW_OVERRIDE::
+    Allow overwriting type parameters (see cdist-manifest(7))
 
 SEE ALSO
 --------
