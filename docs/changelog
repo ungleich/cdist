@@ -6,6 +6,7 @@ Changelog
 
 3.0.5:
 	* Core: Introduce override concept (Daniel Heule)
+	* Type __process: Make --state absent work (Steven Armstrong)
 
 
 3.0.4: 2014-01-29
