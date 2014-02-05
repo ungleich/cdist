@@ -5,6 +5,13 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.0.6:
+	* New Type: __apt_key (Steven Armstrong)
+	* New Type: __apt_key_uri (Steven Armstrong)
+	* New Type: __apt_norecommends (Steven Armstrong)
+	* New Type: __apt_source (Steven Armstrong)
+
+
 3.0.5: 2014-02-05
 	* Core: Introduce override concept (Daniel Heule)
 	* Type __process: Make --state absent work (Steven Armstrong)
