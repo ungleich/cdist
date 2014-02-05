@@ -33,8 +33,10 @@ APT::Install-Suggests "0";
 DONE
    ;;
    *)
-      echo "This type (${__type##*/}) makes no sense on your operating system ($os)." >&2
-      echo "If you think otherwise please submit a patch." >&2
+      cat >&2 << DONE
+The developer of this type (${__type##*/}) did not think your operating system
+($os) would have any use for it. If you think otherwise please submit a patch.
+DONE
       exit 1
    ;;
 esac
