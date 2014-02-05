@@ -30,8 +30,6 @@ fi
 if [ -f "$__object/parameter/component" ]; then
    component="$(cat "$__object/parameter/component")"
 else
-   # FIXME: nead to omit this for http://stat.ethz.ch/CRAN//bin/linux/ubuntu, investigate side-effects
-   #component="main"
    component=""
 fi
 if [ -f "$__object/parameter/arch" ]; then

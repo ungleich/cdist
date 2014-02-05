@@ -32,7 +32,7 @@ distribution::
    the targets /etc/lsb-release
 
 component::
-   space delimited list of components to enable. Defaults to 'main'.
+   space delimited list of components to enable. Defaults to an empty string.
 
 
 BOOLEAN PARAMETERS
