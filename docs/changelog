@@ -4,10 +4,11 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-3.0.5:
+
+3.0.5: 2014-02-05
 	* Core: Introduce override concept (Daniel Heule)
 	* Type __process: Make --state absent work (Steven Armstrong)
-	* Documentation: Add documentation for influencing variables
+	* Documentation: Update documentation for environment variables
 
 
 3.0.4: 2014-01-29
