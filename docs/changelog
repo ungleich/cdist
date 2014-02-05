@@ -10,6 +10,7 @@ Changelog
 	* New Type: __apt_key_uri (Steven Armstrong)
 	* New Type: __apt_norecommends (Steven Armstrong)
 	* New Type: __apt_source (Steven Armstrong)
+	* New Type: __ccollect_source
 
 
 3.0.5: 2014-02-05
