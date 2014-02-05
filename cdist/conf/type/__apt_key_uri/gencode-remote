@@ -34,7 +34,7 @@ fi
 case "$state_should" in
    present)
       uri="$(cat "$__object/parameter/uri")"
-      echo "wget -q \"$uri\" -O - | apt-key add -"
+      printf 'curl -s -L "%s" | apt-key add -\n' "$uri"
    ;;
    absent)
       cat << DONE
