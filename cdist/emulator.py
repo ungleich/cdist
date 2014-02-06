@@ -72,6 +72,7 @@ class Emulator(object):
             raise MissingRequiredEnvironmentVariableError(e.args[0])
 
         self.object_base_path = os.path.join(self.global_path, "object")
+        self.typeorder_path = os.path.join(self.global_path, "typeorder")
 
         self.type_name      = os.path.basename(argv[0])
         self.cdist_type     = core.CdistType(self.type_base_path, self.type_name)
@@ -157,6 +158,9 @@ class Emulator(object):
             else:
                 self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
+            # record the created object in typeorder file
+            with open(self.typeorder_path, 'a') as tofd:
+                tofd.write(self.cdist_object.name + os.linesep)
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
@@ -192,6 +196,18 @@ class Emulator(object):
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0: continue
+
+
+                if requirement == "CDIST_HONOR_MANIFEST_ORDER":
+                    # load object name created bevor this one from typeorder file ...
+                    with open(self.typeorder_path, 'r') as tofd:
+                        lines = tofd.readlines()
+                        # replace the placeholder with the last created object
+                        try:
+                            requirement = lines[-2].strip()
+                        except IndexError:
+                            # if no second last line, we are on the first object, so do not set a requirement
+                            continue
 
                 # Raises an error, if object cannot be created
                 try:

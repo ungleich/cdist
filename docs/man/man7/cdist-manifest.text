@@ -128,6 +128,22 @@ All objects that are created in a type manifest are automatically required
 from the type that is calling them. This is called "autorequirement" in
 cdist jargon.
 
+You can tell cdist to execute all types in the order in which they are created 
+in the manifest by setting require to the special value of 
+"CDIST_HONOR_MANIFEST_ORDER".
+
+--------------------------------------------------------------------------------
+
+# Tells cdist to execute all types in the order in which they are created ...
+export require="CDIST_HONOR_MANIFEST_ORDER"
+__sample_type 1
+__sample_type 2
+__example_type 23
+# Now this types are executed in the creation order
+--------------------------------------------------------------------------------
+
+
+
 
 OVERRIDES
 ---------
