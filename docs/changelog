@@ -4,11 +4,48 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
-3.0.2:
+
+3.0.6:
+	* New Type: __apt_key (Steven Armstrong)
+	* New Type: __apt_key_uri (Steven Armstrong)
+	* New Type: __apt_norecommends (Steven Armstrong)
+	* New Type: __apt_source (Steven Armstrong)
+
+
+3.0.5: 2014-02-05
+	* Core: Introduce override concept (Daniel Heule)
+	* Type __process: Make --state absent work (Steven Armstrong)
+	* Documentation: Update documentation for environment variables
+
+
+3.0.4: 2014-01-29
+	* Core: Ignore install types in config mode
+	* Documentation: Update reference (files path in object space)
+	* Documentation: Update best practise: Replaces templates/ with files/
+	* Type __apt_ppa: Install required software (Steven Armstrong)
+	* Type __debconf_set_selections: Support --file - to read from stdin
+	* Type __jail: Fix jaildir parameter handling (Jake Guffey)
+
+
+3.0.3: 2014-01-22
+	* Core: Enhance error message when requirement is missing object id
+	* Core: Add environment variable to select shell for executing scripts (Daniel Heule)
+	* Explorer hostname: Return host name by using uname -n
+	* New Type: __hostname (Steven Armstrong)
+	* Type __cdist: Use default paremeters (Daniel Heule)
+	* Type __key_value: Use default paremeters (Daniel Heule)
+	* Type __line: Use printf instead of echo for printing user input
+	* Type __qemu_img: Use default paremeters (Daniel Heule)
+	* Type __zypper_repo: Use default paremeters (Daniel Heule)
+	* Type __zypper_service: Use default paremeters (Daniel Heule)
+
+
+3.0.2: 2014-01-19
 	* Documentation: Document all messages sent by types (Daniel Heule)
 	* New Type: __block (Steven Armstrong)
 	* New Type: __mount (Steven Armstrong)
 	* Type __cron: Replace existing entry when changing it (Daniel Heule)
+	* Type __ssh_authorized_keys: Use new type __block (Steven Armstrong)
 
 
 3.0.1: 2014-01-14

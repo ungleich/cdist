@@ -163,7 +163,11 @@ class Config(object):
         """Short name for object list retrieval"""
         for cdist_object in core.CdistObject.list_objects(self.local.object_path,
                                                          self.local.type_path):
-            yield cdist_object
+            if cdist_object.cdist_type.is_install:
+                self.log.debug("Running in config mode, ignoring install object: {0}".format(cdist_object))
+            else:
+                yield cdist_object
+
 
     def iterate_once(self):
         """

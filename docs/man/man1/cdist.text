@@ -127,10 +127,16 @@ usage: __git --source SOURCE [--state STATE] [--branch BRANCH]
 ENVIRONMENT
 -----------
 TMPDIR, TEMP, TMP::
-   Setup the base directory for the temporary directory.
-   See http://docs.python.org/py3k/library/tempfile.html for
-   more information. This is rather useful, if the standard
-   directory used does not allow executables.
+    Setup the base directory for the temporary directory.
+    See http://docs.python.org/py3k/library/tempfile.html for
+    more information. This is rather useful, if the standard
+    directory used does not allow executables.
+
+CDIST_LOCAL_SHELL::
+    Selects shell for local script execution, defaults to /bin/sh
+
+CDIST_REMOTE_SHELL::
+    Selects shell for remote scirpt execution, defaults to /bin/sh
 
 
 EXIT STATUS

@@ -45,10 +45,7 @@ class Shell(object):
         """Select shell to execute, if not specified by user"""
 
         if not self.shell:
-            if 'SHELL' in os.environ:
-                self.shell = os.environ['SHELL']
-            else:
-                self.shell = "/bin/sh"
+            self.shell = os.environ.get('SHELL',"/bin/sh")
 
     def _init_files_dirs(self):
         self.local.create_files_dirs()

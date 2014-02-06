@@ -23,7 +23,7 @@
 #
 
 if [ -f "$__object/parameter/jaildir" ]; then
-   jaildir="$(cat "$__object/parameter/name")"
+   jaildir="$(cat "$__object/parameter/jaildir")"
 else
    jaildir="/usr/jail"
 fi

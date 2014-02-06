@@ -18,6 +18,7 @@ REQUIRED PARAMETERS
 -------------------
 file::
    Use the given filename as input for debconf-set-selections(1)
+   If filename is "-", read from stdin.
 
 
 EXAMPLES
@@ -29,6 +30,10 @@ __debconf_set_selections nslcd --file /path/to/file
 
 # Setup configuration for nslcd from another type
 __debconf_set_selections nslcd --file "$__type/files/preseed/nslcd"
+
+__debconf_set_selections nslcd --file - << eof
+gitolite gitolite/gituser string git
+eof
 --------------------------------------------------------------------------------
 
 
@@ -41,5 +46,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2014 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

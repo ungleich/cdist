@@ -2,6 +2,7 @@
 #
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -145,13 +146,17 @@ class Emulator(object):
             if value is not None:
                 self.parameters[key] = value
 
-        if self.cdist_object.exists:
+        if self.cdist_object.exists and not 'CDIST_ALLOW_OVERRIDE' in os.environ:
             if self.cdist_object.parameters != self.parameters:
                 raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
                     % (self.cdist_object.name, " ".join(self.cdist_object.source), self.cdist_object.parameters, self.object_source, self.parameters)
             )
         else:
-            self.cdist_object.create()
+            if self.cdist_object.exists:
+                self.log.debug('Object %s override forced with CDIST_ALLOW_OVERRIDE',self.cdist_object.name)
+                self.cdist_object.create(True)
+            else:
+                self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
             # record the created object in typeorder file
             with open(self.typeorder_path, 'a') as typeorderfile:
@@ -214,9 +219,11 @@ class Emulator(object):
                 try:
                     cdist_object = self.cdist_object.object_from_name(requirement)
                 except core.cdist_type.NoSuchTypeError as e:
-                    self.log.error("%s requires object %s, but type %s does not exist (definded at %s)"  % (self.cdist_object.name, requirement, e.name, self.object_source))
+                    self.log.error("%s requires object %s, but type %s does not exist. Defined at %s"  % (self.cdist_object.name, requirement, e.name, self.object_source))
                     raise
-
+                except core.cdist_object.MissingObjectIdError as e:
+                    self.log.error("%s requires object %s without object id. Defined at %s"  % (self.cdist_object.name, requirement, self.object_source))
+                    raise
 
                 self.log.debug("Recording requirement: %s", requirement)
 

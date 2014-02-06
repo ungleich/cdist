@@ -26,9 +26,9 @@ if [ ! -f "$__object/parameter/nofstab" ]; then
    (
 printf "%s" "$(cat "$__object/parameter/device")"
 printf " %s" "$path"
-type="$(cat "$__object/parameter/type" || echo "auto")"
+type="$(cat "$__object/parameter/type" 2>/dev/null || echo "auto")"
 printf " %s" "$type"
-options="$(cat "$__object/parameter/options" || echo "defaults")"
+options="$(cat "$__object/parameter/options" 2>/dev/null || echo "defaults")"
 printf " %s" "$options"
 printf " %s" "$(cat "$__object/parameter/dump")"
 printf " %s\n" "$(cat "$__object/parameter/pass")"
