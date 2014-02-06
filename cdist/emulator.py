@@ -189,9 +189,8 @@ class Emulator(object):
 
     def record_requirements(self):
         """record requirements"""
-        #from pudb import set_trace; set_trace();
 
-        if "EXECUTE_TYPES_IN_CREATION_ORDER" in self.env and self.env['EXECUTE_TYPES_IN_CREATION_ORDER'] == 'true':
+        if "CDIST_ORDER_DEPENDENCY" in self.env:
             # load object name created bevor this one from typeorder file ...
             with open(self.typeorder_path, 'r') as typecreationfile:
                 typecreationorder = typecreationfile.readlines()
@@ -202,7 +201,7 @@ class Emulator(object):
                         self.env['require'] += " " + lastcreatedtype
                     else:
                         self.env['require'] = lastcreatedtype
-                    self.log.debug("Injecting require for EXECUTE_TYPES_IN_CREATION_ORDER: %s for %s", lastcreatedtype, self.cdist_object.name)
+                    self.log.debug("Injecting require for CDIST_ORDER_DEPENDENCY: %s for %s", lastcreatedtype, self.cdist_object.name)
                 except IndexError:
                     # if no second last line, we are on the first type, so do not set a requirement
                     pass

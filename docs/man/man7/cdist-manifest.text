@@ -142,19 +142,19 @@ into an undefined situation.
 THIS IS A BETA FEATURE AND MAY BE REMOVED AT ANY TIME.
 
 
-EXECUTE_TYPES_IN_CREATION_ORDER is a EXPERIMENTAL FEATURE !
+CDIST_ORDER_DEPENDENCY is a EXPERIMENTAL FEATURE !
 You can tell cdist to execute all types in the order in which they are created 
-in the manifest by exporting EXECUTE_TYPES_IN_CREATION_ORDER with the value true.
+in the manifest by exporting CDIST_ORDER_DEPENDENCY.
 
 --------------------------------------------------------------------------------
 
 # Tells cdist to execute all types in the order in which they are created ...
-export EXECUTE_TYPES_IN_CREATION_ORDER=true
+export CDIST_ORDER_DEPENDENCY=on
 __sample_type 1
 require="__some_type_somewhere/id" __sample_type 2
 __example_type 23
 # Now this types are executed in the creation order until the variable is unset
-unset EXECUTE_TYPES_IN_CREATION_ORDER
+unset CDIST_ORDER_DEPENDENCY
 # all now following types cdist makes the order ..
 __not_in_order_type 42
 
