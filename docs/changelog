@@ -5,12 +5,17 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.0.6:
+3.0.6: 2014-02-06
 	* New Type: __apt_key (Steven Armstrong)
 	* New Type: __apt_key_uri (Steven Armstrong)
 	* New Type: __apt_norecommends (Steven Armstrong)
 	* New Type: __apt_source (Steven Armstrong)
 	* New Type: __ccollect_source
+	* Type __git: Use default parameters (Daniel Heule)
+	* Type __jail: Use default parameters (Daniel Heule)
+	* Type __package_yum: Use default parameters (Daniel Heule)
+	* Type __package_zypper: Use default parameters (Daniel Heule)
+	* Type __user_groups: Use default parameters (Daniel Heule)
 
 
 3.0.5: 2014-02-05
