@@ -100,6 +100,7 @@ class EmulatorTestCase(test.CdistTestCase):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__file/etc/*'
         emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
         # if we get here all is fine
 
 
@@ -128,6 +129,33 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         self.manifest.run_type_manifest(cdist_object)
         expected = ['__planet/Saturn', '__moon/Prometheus']
         self.assertEqual(sorted(cdist_object.autorequire), sorted(expected))
+
+class OverrideTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.temp_dir = self.mkdtemp()
+        handle, self.script = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
+        base_path = self.temp_dir
+
+        self.local = local.Local(
+            target_host=self.target_host,
+            base_path=base_path,
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
+        self.local.create_files_dirs()
+
+        self.manifest = core.Manifest(self.target_host, self.local)
+        self.env = self.manifest.env_initial_manifest(self.script)
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_override(self):
+        argv = ['__file', '/tmp/foobar']
+        self.env['require'] = '__file/etc/*'
+        emu = emulator.Emulator(argv, env=self.env)
+        # if we get here all is fine
 
 
 class ArgumentsTestCase(test.CdistTestCase):
@@ -182,7 +210,7 @@ class ArgumentsTestCase(test.CdistTestCase):
         object_id = 'some-id'
         value = 'some value'
         argv = [type_name, object_id, '--required1', value, '--required2', value]
-        print(self.env)
+#        print(self.env)
         os.environ.update(self.env)
         emu = emulator.Emulator(argv)
         emu.run()
