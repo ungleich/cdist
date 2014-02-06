@@ -72,6 +72,7 @@ class Emulator(object):
             raise MissingRequiredEnvironmentVariableError(e.args[0])
 
         self.object_base_path = os.path.join(self.global_path, "object")
+        self.typeorder_path = os.path.join(self.global_path, "typeorder")
 
         self.type_name      = os.path.basename(argv[0])
         self.cdist_type     = core.CdistType(self.type_base_path, self.type_name)
@@ -157,6 +158,9 @@ class Emulator(object):
             else:
                 self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
+            # record the created object in typeorder file
+            with open(self.typeorder_path, 'a') as typeorderfile:
+                print(self.cdist_object.name, file=typeorderfile)
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
@@ -186,6 +190,23 @@ class Emulator(object):
     def record_requirements(self):
         """record requirements"""
 
+        if "CDIST_ORDER_DEPENDENCY" in self.env:
+            # load object name created bevor this one from typeorder file ...
+            with open(self.typeorder_path, 'r') as typecreationfile:
+                typecreationorder = typecreationfile.readlines()
+                # get the type created bevore this one ...
+                try:
+                    lastcreatedtype = typecreationorder[-2].strip()
+                    if 'require' in self.env:
+                        self.env['require'] += " " + lastcreatedtype
+                    else:
+                        self.env['require'] = lastcreatedtype
+                    self.log.debug("Injecting require for CDIST_ORDER_DEPENDENCY: %s for %s", lastcreatedtype, self.cdist_object.name)
+                except IndexError:
+                    # if no second last line, we are on the first type, so do not set a requirement
+                    pass
+
+
         if "require" in self.env:
             requirements = self.env['require']
             self.log.debug("reqs = " + requirements)
@@ -203,7 +224,7 @@ class Emulator(object):
                     self.log.error("%s requires object %s without object id. Defined at %s"  % (self.cdist_object.name, requirement, self.object_source))
                     raise
 
-                self.log.debug("Recording requirement: " + requirement)
+                self.log.debug("Recording requirement: %s", requirement)
 
                 # Save the sanitised version, not the user supplied one
                 # (__file//bar => __file/bar)
