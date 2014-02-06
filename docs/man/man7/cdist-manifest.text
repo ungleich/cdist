@@ -145,7 +145,7 @@ OVERRIDES
 ---------
 In some special cases, you would like to create an already defined object 
 with different parameters. In normal situations this leads to an error in cdist.
-If you whish, you can setup the environment variable CDIST_ALLOW_OVERRIDE
+If you whish, you can setup the environment variable CDIST_OVERRIDE
 (any value or even empty is ok) to tell cdist, that this object override is 
 wanted and should be accepted.
 ATTENTION: Only use this feature if you are 100% sure in which order 
@@ -205,7 +205,7 @@ __user foobar --password 'some_fancy_hash' --home /home/foobarexample
 __user foobar --password 'some_other_hash' 
 
 # this tells cdist, that you know that this is an override and should be accepted
-CDIST_ALLOW_OVERRIDE=yes __user foobar --password 'some_other_hash'
+CDIST_OVERRIDE=yes __user foobar --password 'some_other_hash'
 # its only an override, means the parameter --home is not touched 
 # and stay at the original value of /home/foobarexample
 --------------------------------------------------------------------------------
