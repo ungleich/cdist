@@ -2,6 +2,7 @@
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -150,16 +151,22 @@ class OverrideTestCase(test.CdistTestCase):
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
 
-    def test_override(self):
+    def test_override_negative(self):
         argv = ['__file', '/tmp/foobar']
-        self.env['require'] = '__file/etc/*'
         emu = emulator.Emulator(argv, env=self.env)
         emu.run()
+        argv = ['__file', '/tmp/foobar','--mode','404']
+        emu = emulator.Emulator(argv, env=self.env)
+        self.assertRaises(cdist.Error, emu.run)
+
+    def test_override_feature(self):
         argv = ['__file', '/tmp/foobar']
-        self.env['require'] = '__file/etc/*'
         emu = emulator.Emulator(argv, env=self.env)
         emu.run()
-        # if we get here all is fine
+        argv = ['__file', '/tmp/foobar','--mode','404']
+        self.env['CDIST_OVERRIDE'] = 'on'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
 
 
 class ArgumentsTestCase(test.CdistTestCase):

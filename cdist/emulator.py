@@ -130,7 +130,6 @@ class Emulator(object):
         self.args = parser.parse_args(self.argv[1:])
         self.log.debug('Args: %s' % self.args)
 
-
     def setup_object(self):
         # Setup object_id - FIXME: unset / do not setup anymore!
         if not self.cdist_type.is_singleton:
@@ -146,7 +145,7 @@ class Emulator(object):
             if value is not None:
                 self.parameters[key] = value
 
-        if self.cdist_object.exists and not 'CDIST_OVERRIDE' in os.environ:
+        if self.cdist_object.exists and not 'CDIST_OVERRIDE' in self.env:
             if self.cdist_object.parameters != self.parameters:
                 raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
                     % (self.cdist_object.name, " ".join(self.cdist_object.source), self.cdist_object.parameters, self.object_source, self.parameters)
