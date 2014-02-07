@@ -33,11 +33,7 @@ if [ ! "$os" = "freebsd" ]; then
 	exit 1
 fi
 
-if [ -f "$__object/parameter/jaildir" ]; then
-   jaildir="$(cat "$__object/parameter/name")"
-else
-   jaildir="/usr/jail"
-fi
+jaildir="$(cat "$__object/parameter/jaildir")"
 
 __directory ${jaildir} --parents
 

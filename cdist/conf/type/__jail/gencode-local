@@ -22,17 +22,9 @@
 #  virtual machines.
 #
 
-if [ -f "$__object/parameter/jaildir" ]; then
-   jaildir="$(cat "$__object/parameter/name")"
-else
-   jaildir="/usr/jail"
-fi
+jaildir="$(cat "$__object/parameter/jaildir")"
 
-if [ -f "$__object/parameter/jailbase" ]; then
-   jailbase="$(cat "$__object/parameter/jailbase")"
-else
-   jailbase=""
-fi
+jailbase="$(cat "$__object/parameter/jailbase")"
 
 state="$(cat "$__object/parameter/state")"
 

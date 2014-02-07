@@ -33,11 +33,7 @@ else
    uri="$__object_id"
 fi
 
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
-else
-   state_should="present"
-fi
+state_should="$(cat "$__object/parameter/state")"
 
 exp_uri="$(cat "$__object/explorer/service_uri")"
 

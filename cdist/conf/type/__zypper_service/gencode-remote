@@ -39,17 +39,8 @@ else
    uri="$__object_id"
 fi
 
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
-else
-   state_should="present"
-fi
-
-if [ -f "$__object/parameter/type" ]; then
-   stype="$(cat "$__object/parameter/type")"
-else
-   stype="ris"
-fi
+state_should="$(cat "$__object/parameter/state")"
+stype="$(cat "$__object/parameter/type")"
 
 exp_uri="$(cat "$__object/explorer/service_uri")"
 exp_id="$(cat "$__object/explorer/service_id")"
