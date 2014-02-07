@@ -2,6 +2,7 @@
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -129,6 +130,44 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         expected = ['__planet/Saturn', '__moon/Prometheus']
         self.assertEqual(sorted(cdist_object.autorequire), sorted(expected))
 
+class OverrideTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.temp_dir = self.mkdtemp()
+        handle, self.script = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
+        base_path = self.temp_dir
+
+        self.local = local.Local(
+            target_host=self.target_host,
+            base_path=base_path,
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
+        self.local.create_files_dirs()
+
+        self.manifest = core.Manifest(self.target_host, self.local)
+        self.env = self.manifest.env_initial_manifest(self.script)
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_override_negative(self):
+        argv = ['__file', '/tmp/foobar']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', '/tmp/foobar','--mode','404']
+        emu = emulator.Emulator(argv, env=self.env)
+        self.assertRaises(cdist.Error, emu.run)
+
+    def test_override_feature(self):
+        argv = ['__file', '/tmp/foobar']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', '/tmp/foobar','--mode','404']
+        self.env['CDIST_OVERRIDE'] = 'on'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+
 
 class ArgumentsTestCase(test.CdistTestCase):
 
@@ -182,7 +221,7 @@ class ArgumentsTestCase(test.CdistTestCase):
         object_id = 'some-id'
         value = 'some value'
         argv = [type_name, object_id, '--required1', value, '--required2', value]
-        print(self.env)
+#        print(self.env)
         os.environ.update(self.env)
         emu = emulator.Emulator(argv)
         emu.run()
