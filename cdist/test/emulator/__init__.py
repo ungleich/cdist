@@ -100,7 +100,6 @@ class EmulatorTestCase(test.CdistTestCase):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__file/etc/*'
         emu = emulator.Emulator(argv, env=self.env)
-        emu.run()
         # if we get here all is fine
 
 
@@ -155,6 +154,11 @@ class OverrideTestCase(test.CdistTestCase):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__file/etc/*'
         emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', '/tmp/foobar']
+        self.env['require'] = '__file/etc/*'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
         # if we get here all is fine
 
 
