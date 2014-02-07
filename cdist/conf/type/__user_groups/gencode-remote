@@ -19,7 +19,7 @@
 #
 
 user="$(cat "$__object/parameter/user" 2>/dev/null || echo "$__object_id")"
-state_should="$(cat "$__object/parameter/state" 2>/dev/null || echo "present")"
+state_should="$(cat "$__object/parameter/state")"
 
 mkdir "$__object/files"
 # file has to be sorted for comparison with `comm`

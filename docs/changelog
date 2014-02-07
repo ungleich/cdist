@@ -9,18 +9,26 @@ Changelog
 	* Core: Integrate initial preos support
 
 
-3.0.6:
+3.0.7: 2014-02-08
+	* Core: Allow dependencies to be created based execution order (Daniel Heule)
+	* Core: Add tests for override (Daniel Heule)
+
+3.0.6: 2014-02-06
 	* New Type: __apt_key (Steven Armstrong)
 	* New Type: __apt_key_uri (Steven Armstrong)
 	* New Type: __apt_norecommends (Steven Armstrong)
 	* New Type: __apt_source (Steven Armstrong)
-
+	* New Type: __ccollect_source
+	* Type __git: Use default parameters (Daniel Heule)
+	* Type __jail: Use default parameters (Daniel Heule)
+	* Type __package_yum: Use default parameters (Daniel Heule)
+	* Type __package_zypper: Use default parameters (Daniel Heule)
+	* Type __user_groups: Use default parameters (Daniel Heule)
 
 3.0.5: 2014-02-05
 	* Core: Introduce override concept (Daniel Heule)
 	* Type __process: Make --state absent work (Steven Armstrong)
 	* Documentation: Update documentation for environment variables
-
 
 3.0.4: 2014-01-29
 	* Core: Ignore install types in config mode
@@ -30,7 +38,6 @@ Changelog
 	* Type __apt_ppa: Install required software (Steven Armstrong)
 	* Type __debconf_set_selections: Support --file - to read from stdin
 	* Type __jail: Fix jaildir parameter handling (Jake Guffey)
-
 
 3.0.3: 2014-01-22
 	* Core: Enhance error message when requirement is missing object id
@@ -44,14 +51,12 @@ Changelog
 	* Type __zypper_repo: Use default paremeters (Daniel Heule)
 	* Type __zypper_service: Use default paremeters (Daniel Heule)
 
-
 3.0.2: 2014-01-19
 	* Documentation: Document all messages sent by types (Daniel Heule)
 	* New Type: __block (Steven Armstrong)
 	* New Type: __mount (Steven Armstrong)
 	* Type __cron: Replace existing entry when changing it (Daniel Heule)
 	* Type __ssh_authorized_keys: Use new type __block (Steven Armstrong)
-
 
 3.0.1: 2014-01-14
 	* Core: Copy only files, not directories (Steven Armstrong)

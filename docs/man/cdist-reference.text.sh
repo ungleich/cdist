@@ -239,6 +239,9 @@ require::
 CDIST_ALLOW_OVERRIDE::
     Allow overwriting type parameters (see cdist-manifest(7))
 
+CDIST_ORDER_DEPENDENCY::
+    Create dependencies based on the execution order (see cdist-manifest(7))
+
 SEE ALSO
 --------
 - cdist(1)
@@ -246,6 +249,6 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2014 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
 eof
