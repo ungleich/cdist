@@ -34,7 +34,7 @@ class TypeTestCase(test.CdistTestCase):
     def test_list_type_names(self):
         base_path = op.join(fixtures, 'list_types')
         type_names = core.CdistType.list_type_names(base_path)
-        self.assertEqual(type_names, ['__first', '__second', '__third'])
+        self.assertEqual(sorted(type_names), ['__first', '__second', '__third'])
 
     def test_list_types(self):
         base_path = op.join(fixtures, 'list_types')
@@ -44,7 +44,7 @@ class TypeTestCase(test.CdistTestCase):
             core.CdistType(base_path, '__second'),
             core.CdistType(base_path, '__third'),
         ]
-        self.assertEqual(types, types_expected)
+        self.assertEqual(sorted(types), types_expected)
 
     def test_only_one_instance(self):
         base_path = fixtures

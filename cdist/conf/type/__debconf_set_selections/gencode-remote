@@ -21,12 +21,12 @@
 # Setup selections
 #
 
-filename"$(cat "$__object/parameter/file")"
+filename="$(cat "$__object/parameter/file")"
 
 if [ "$filename" = "-" ]; then
     filename="$__object/stdin"
 fi
 
 echo "debconf-set-selections << __file-eof"
-cat "$(cat "$filename")"
+cat "$filename"
 echo "__file-eof"

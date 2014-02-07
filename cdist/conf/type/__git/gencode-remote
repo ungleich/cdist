@@ -23,22 +23,17 @@ state_is="$(cat "$__object/explorer/state")"
 owner_is="$(cat "$__object/explorer/owner")"
 group_is="$(cat "$__object/explorer/group")"
 
-state_should=present
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
 
-branch=master
-[ -f "$__object/parameter/branch" ] && branch="$(cat "$__object/parameter/branch")"
+branch="$(cat "$__object/parameter/branch")"
 
 source="$(cat "$__object/parameter/source")"
 
 destination="/$__object_id"
 
-owner=""
-[ -f "$__object/parameter/owner" ] && owner="$(cat "$__object/parameter/owner")"
-group=""
-[ -f "$__object/parameter/group" ] && group="$(cat "$__object/parameter/group")"
-mode=""
-[ -f "$__object/parameter/mode" ] && mode="$(cat "$__object/parameter/mode")"
+owner="$(cat "$__object/parameter/owner")"
+group="$(cat "$__object/parameter/group")"
+mode="$(cat "$__object/parameter/mode")"
 
 [  "$state_should" = "$state_is" -a \
    "$owner" = "$owner_is" -a \

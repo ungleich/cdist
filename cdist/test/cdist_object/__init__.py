@@ -58,10 +58,10 @@ class ObjectClassTestCase(test.CdistTestCase):
 
     def test_list_type_names(self):
         type_names = list(cdist.core.CdistObject.list_type_names(object_base_path))
-        self.assertEqual(type_names, ['__first', '__second', '__third'])
+        self.assertEqual(sorted(type_names), ['__first', '__second', '__third'])
 
     def test_list_objects(self):
-        found_objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
+        found_objects = sorted(list(core.CdistObject.list_objects(object_base_path, type_base_path)))
         self.assertEqual(found_objects, self.expected_objects)
 
     def test_create_singleton(self):

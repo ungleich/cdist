@@ -66,11 +66,7 @@ else
    devfsenable="true"
 fi
 
-if [ -f "$__object/parameter/devfs-ruleset" ]; then
-   devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
-else
-   devfsruleset="jailrules"
-fi
+devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
 
 # devfs_ruleset being defined without devfs_enable being true
 #     is pointless. Treat this as an error.
@@ -84,14 +80,11 @@ if [ -f "$__object/parameter/onboot" ]; then
    onboot="true"
 fi
 
-if [ -f "$__object/parameter/jaildir" ]; then
-   jaildir="$(cat "$__object/parameter/jaildir")"
-else
-   jaildir="/usr/jail"
-fi
+jaildir="$(cat "$__object/parameter/jaildir")"
 
 present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
+
 # Handle ip="iface|addr, iface|addr" format
 if [ $(expr "${ip}" : ".*|.*") -gt "0" ]; then
    # If we have multiple IPs defined, $interface doesn't make sense because ip="iface|addr, iface|addr" implies it
