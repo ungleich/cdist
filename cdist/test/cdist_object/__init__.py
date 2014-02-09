@@ -2,6 +2,7 @@
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
