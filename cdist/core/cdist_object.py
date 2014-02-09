@@ -121,7 +121,8 @@ class CdistObject(object):
         return os.path.join(type_name, object_id)
 
     def validate_object_id(self):
-        # FIXME: also check that there is no object ID when type is singleton?
+        if self.cdist_type.is_singleton and self.object_id:
+            raise IllegalObjectIdError('singleton objects can\'t have a object_id')
 
         """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
         """
@@ -130,6 +131,8 @@ class CdistObject(object):
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
             if '//' in self.object_id:
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain //')
+            if self.object_id == '.':
+                raise IllegalObjectIdError(self.object_id, 'object_id may not be a .')
 
         # If no object_id and type is not singleton => error out
         if not self.object_id and not self.cdist_type.is_singleton:
