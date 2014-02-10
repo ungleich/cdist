@@ -9,6 +9,9 @@ Changelog
 	* Core: Integrate initial preos support
 
 
+3.0.8:
+	* Core: Enhance object id verification (Daniel Heule)
+
 3.0.7: 2014-02-08
 	* Core: Allow dependencies to be created based execution order (Daniel Heule)
 	* Core: Add tests for override (Daniel Heule)
