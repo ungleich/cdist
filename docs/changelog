@@ -5,7 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.0.8:
+3.0.8: 2014-02-11
 	* Core: Enhance object id verification (Daniel Heule)
 	* Core: Add unit tests for dependencies based on execution order (Daniel Heule)
 	* Core: Add unit tests for dry run (Daniel Heule)
