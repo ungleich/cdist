@@ -7,6 +7,8 @@ Changelog
 
 3.0.8:
 	* Core: Enhance object id verification (Daniel Heule)
+	* Core: Add unit tests for dependencies based on execution order (Daniel Heule)
+	* Core: Add unit tests for dry run (Daniel Heule)
 
 3.0.7: 2014-02-08
 	* Core: Allow dependencies to be created based execution order (Daniel Heule)
