@@ -18,7 +18,7 @@ REQUIRED PARAMETERS
 user::
     The remote user account to use
 state::
-    Either "present" or "absent".
+    Either "present" or "absent", defaults to "present".
 
 BOOLEAN PARAMETERS
 ------------------
