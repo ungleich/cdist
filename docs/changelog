@@ -6,8 +6,17 @@ Changelog
 
 
 3.0.9:
-	* Type __locale: Error out in case of unsupported OS
 	* Core: Ignore order dependencies if override is set (Daniel Heule)
+	* Type __locale: Error out in case of unsupported OS
+	* Type __jail: Use default parameters for state (Daniel Heule)
+	* Type __pf_ruleset: Use default parameters for state (Daniel Heule)
+	* Type __postgres_database: Use default parameters for state (Daniel Heule)
+	* Type __postgres_role: Use default parameters for state (Daniel Heule)
+	* Type __rvm: Use default parameters for state (Daniel Heule)
+	* Type __rvm_gem: Use default parameters for state (Daniel Heule)
+	* Type __rvm_gemset: Use default parameters for state (Daniel Heule)
+	* Type __rvm_ruby: Use default parameters for state (Daniel Heule)
+
 
 3.0.8: 2014-02-11
 	* Core: Enhance object id verification (Daniel Heule)
