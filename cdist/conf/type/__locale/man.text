@@ -16,7 +16,7 @@ This cdist type allows you to setup locales.
 OPTIONAL PARAMETERS
 -------------------
 state::
-   'present' or 'absent'
+   'present' or 'absent', defaults to present
 
 
 EXAMPLES
@@ -43,5 +43,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2013 Nico Schottelius. Free use of this software is
+Copyright \(C) 2013-2014 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
