@@ -5,6 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.0.9:
+	* Type __locale: Error out in case of unsupported OS
+
 3.0.8: 2014-02-11
 	* Core: Enhance object id verification (Daniel Heule)
 	* Core: Add unit tests for dependencies based on execution order (Daniel Heule)
