@@ -152,6 +152,10 @@ ATTENTION: Only use this feature if you are 100% sure in which order
 cdist encounter the affected objects, otherwhise this results 
 into an undefined situation. 
 
+If CDIST_OVERRIDE and CDIST_ORDER_DEPENDENCY is set for an object,
+CDIST_ORDER_DEPENDENCY will be ignored, because adding a dependency in case of
+overrides would result in circular dependencies, which is an error.
+
 THIS IS A BETA FEATURE AND MAY BE REMOVED OR CHANGED AT ANY TIME.
 
 

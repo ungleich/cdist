@@ -189,7 +189,8 @@ class Emulator(object):
     def record_requirements(self):
         """record requirements"""
 
-        if "CDIST_ORDER_DEPENDENCY" in self.env:
+        # Inject the predecessor, but not if its an override (this would leed to an circular dependency)
+        if "CDIST_ORDER_DEPENDENCY" in self.env and not 'CDIST_OVERRIDE' in self.env:
             # load object name created bevor this one from typeorder file ...
             with open(self.typeorder_path, 'r') as typecreationfile:
                 typecreationorder = typecreationfile.readlines()
