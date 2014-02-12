@@ -2,6 +2,7 @@
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -58,10 +59,10 @@ class ObjectClassTestCase(test.CdistTestCase):
 
     def test_list_type_names(self):
         type_names = list(cdist.core.CdistObject.list_type_names(object_base_path))
-        self.assertEqual(type_names, ['__first', '__second', '__third'])
+        self.assertEqual(sorted(type_names), ['__first', '__second', '__third'])
 
     def test_list_objects(self):
-        found_objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
+        found_objects = sorted(list(core.CdistObject.list_objects(object_base_path, type_base_path)))
         self.assertEqual(found_objects, self.expected_objects)
 
     def test_create_singleton(self):
@@ -94,6 +95,17 @@ class ObjectIdTestCase(test.CdistTestCase):
         core.CdistObject(cdist_type, object_base_path, illegal_object_id)
         # if we get here, the test passed
 
+    def test_object_id_contains_only_dot(self):
+        cdist_type = core.CdistType(type_base_path, '__third')
+        illegal_object_id = '.'
+        with self.assertRaises(core.IllegalObjectIdError):
+            core.CdistObject(cdist_type, object_base_path, illegal_object_id)
+
+    def test_object_id_on_singleton_type(self):
+        cdist_type = core.CdistType(type_base_path, '__test_singleton')
+        illegal_object_id = 'object_id'
+        with self.assertRaises(core.IllegalObjectIdError):
+            core.CdistObject(cdist_type, object_base_path, illegal_object_id)
 
 class ObjectTestCase(test.CdistTestCase):
 

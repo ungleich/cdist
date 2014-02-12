@@ -2,6 +2,7 @@
 #
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -71,6 +72,7 @@ class Emulator(object):
             raise MissingRequiredEnvironmentVariableError(e.args[0])
 
         self.object_base_path = os.path.join(self.global_path, "object")
+        self.typeorder_path = os.path.join(self.global_path, "typeorder")
 
         self.type_name      = os.path.basename(argv[0])
         self.cdist_type     = core.CdistType(self.type_base_path, self.type_name)
@@ -128,7 +130,6 @@ class Emulator(object):
         self.args = parser.parse_args(self.argv[1:])
         self.log.debug('Args: %s' % self.args)
 
-
     def setup_object(self):
         # Setup object_id - FIXME: unset / do not setup anymore!
         if not self.cdist_type.is_singleton:
@@ -144,14 +145,21 @@ class Emulator(object):
             if value is not None:
                 self.parameters[key] = value
 
-        if self.cdist_object.exists:
+        if self.cdist_object.exists and not 'CDIST_OVERRIDE' in self.env:
             if self.cdist_object.parameters != self.parameters:
                 raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
                     % (self.cdist_object.name, " ".join(self.cdist_object.source), self.cdist_object.parameters, self.object_source, self.parameters)
             )
         else:
-            self.cdist_object.create()
+            if self.cdist_object.exists:
+                self.log.debug('Object %s override forced with CDIST_OVERRIDE',self.cdist_object.name)
+                self.cdist_object.create(True)
+            else:
+                self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
+            # record the created object in typeorder file
+            with open(self.typeorder_path, 'a') as typeorderfile:
+                print(self.cdist_object.name, file=typeorderfile)
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
@@ -181,6 +189,23 @@ class Emulator(object):
     def record_requirements(self):
         """record requirements"""
 
+        if "CDIST_ORDER_DEPENDENCY" in self.env:
+            # load object name created bevor this one from typeorder file ...
+            with open(self.typeorder_path, 'r') as typecreationfile:
+                typecreationorder = typecreationfile.readlines()
+                # get the type created bevore this one ...
+                try:
+                    lastcreatedtype = typecreationorder[-2].strip()
+                    if 'require' in self.env:
+                        self.env['require'] += " " + lastcreatedtype
+                    else:
+                        self.env['require'] = lastcreatedtype
+                    self.log.debug("Injecting require for CDIST_ORDER_DEPENDENCY: %s for %s", lastcreatedtype, self.cdist_object.name)
+                except IndexError:
+                    # if no second last line, we are on the first type, so do not set a requirement
+                    pass
+
+
         if "require" in self.env:
             requirements = self.env['require']
             self.log.debug("reqs = " + requirements)
@@ -198,7 +223,7 @@ class Emulator(object):
                     self.log.error("%s requires object %s without object id. Defined at %s"  % (self.cdist_object.name, requirement, self.object_source))
                     raise
 
-                self.log.debug("Recording requirement: " + requirement)
+                self.log.debug("Recording requirement: %s", requirement)
 
                 # Save the sanitised version, not the user supplied one
                 # (__file//bar => __file/bar)

@@ -1,6 +1,7 @@
 from distutils.core import setup
 import cdist
 import os
+import re
 
 def data_finder(data_dir):
     entries = []
@@ -8,6 +9,11 @@ def data_finder(data_dir):
 
         # Skip .gitignore files
         if name == ".gitignore":
+            continue
+
+        # Skip vim swp files
+        swpfile = re.search(r'^\..*\.swp$', name)
+        if swpfile:
             continue
 
         entry = os.path.join(data_dir, name)

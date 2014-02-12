@@ -164,8 +164,8 @@ For more details consult sudoers(5)
 
 TEMPLATING
 ----------
-* create directory templates/ in your type (convention)
-* create the template as an executable file like templates/basic.conf.sh, it will output text using shell variables for the values
+* create directory files/ in your type (convention)
+* create the template as an executable file like files/basic.conf.sh, it will output text using shell variables for the values
 
 --------------------------------------------------------------------------------
 #!/bin/sh
@@ -191,7 +191,7 @@ EOF
   export ROOT='/var/www/test'
 # render the template
   mkdir -p "$__object/files"
-  "$__type/templates/basic.conf.sh" > "$__object/files/basic.conf"
+  "$__type/files/basic.conf.sh" > "$__object/files/basic.conf"
 # send the rendered template
   __file /etc/nginx/sites-available/test.conf  \
     --state present

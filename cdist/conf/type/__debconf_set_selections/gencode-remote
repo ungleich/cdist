@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -21,6 +21,12 @@
 # Setup selections
 #
 
+filename="$(cat "$__object/parameter/file")"
+
+if [ "$filename" = "-" ]; then
+    filename="$__object/stdin"
+fi
+
 echo "debconf-set-selections << __file-eof"
-cat "$(cat "$__object/parameter/file")"
+cat "$filename"
 echo "__file-eof"

@@ -23,8 +23,7 @@
 
 __package git --state present
 
-state_should=present
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
 
 # Let __directory handle removal of git repos
 

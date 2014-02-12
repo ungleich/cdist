@@ -2,6 +2,7 @@
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -120,7 +121,8 @@ class CdistObject(object):
         return os.path.join(type_name, object_id)
 
     def validate_object_id(self):
-        # FIXME: also check that there is no object ID when type is singleton?
+        if self.cdist_type.is_singleton and self.object_id:
+            raise IllegalObjectIdError('singleton objects can\'t have a object_id')
 
         """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
         """
@@ -129,6 +131,8 @@ class CdistObject(object):
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
             if '//' in self.object_id:
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain //')
+            if self.object_id == '.':
+                raise IllegalObjectIdError(self.object_id, 'object_id may not be a .')
 
         # If no object_id and type is not singleton => error out
         if not self.object_id and not self.cdist_type.is_singleton:
@@ -211,13 +215,13 @@ class CdistObject(object):
         """Checks wether this cdist object exists on the file systems."""
         return os.path.exists(self.absolute_path)
 
-    def create(self):
+    def create(self, allow_overwrite=False):
         """Create this cdist object on the filesystem.
         """
         try:
-            os.makedirs(self.absolute_path, exist_ok=False)
+            os.makedirs(self.absolute_path, exist_ok=allow_overwrite)
             absolute_parameter_path = os.path.join(self.base_path, self.parameter_path)
-            os.makedirs(absolute_parameter_path, exist_ok=False)
+            os.makedirs(absolute_parameter_path, exist_ok=allow_overwrite)
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 

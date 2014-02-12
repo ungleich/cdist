@@ -21,8 +21,8 @@
 
 key="$__object_id"
 [ -f "$__object/parameter/key" ] && key="$(cat "$__object/parameter/key")"
-state_should=present
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+
+state_should="$(cat "$__object/parameter/state")"
 
 file="$(cat "$__object/parameter/file")"
 delimiter="$(cat "$__object/parameter/delimiter")"
