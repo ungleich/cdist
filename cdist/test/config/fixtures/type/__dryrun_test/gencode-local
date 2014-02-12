@@ -1,0 +1,3 @@
+# this type is only for testing the dryrun feature, it does nothing usefull
+echo 'echo "This gencode-local script should never be executed >&2"'
+echo 'exit 1'

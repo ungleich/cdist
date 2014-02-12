@@ -9,8 +9,13 @@ Changelog
 	* Core: Integrate initial preos support
 
 
-3.0.8:
+3.0.9:
+	* Type __locale: Error out in case of unsupported OS
+
+3.0.8: 2014-02-11
 	* Core: Enhance object id verification (Daniel Heule)
+	* Core: Add unit tests for dependencies based on execution order (Daniel Heule)
+	* Core: Add unit tests for dry run (Daniel Heule)
 
 3.0.7: 2014-02-08
 	* Core: Allow dependencies to be created based execution order (Daniel Heule)
