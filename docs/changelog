@@ -7,6 +7,7 @@ Changelog
 
 3.0.9:
 	* Type __locale: Error out in case of unsupported OS
+	* Core: Ignore order dependencies if override is set (Daniel Heule)
 
 3.0.8: 2014-02-11
 	* Core: Enhance object id verification (Daniel Heule)
