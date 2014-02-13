@@ -98,9 +98,11 @@ def commandline():
 
     # Loglevels are handled globally in here and debug wins over verbose
     if args.verbose:
-        logging.root.setLevel(logging.INFO)
+        ch.setLevel(logging.INFO)
+        #logging.root.setLevel(logging.INFO)
     if args.debug:
-        logging.root.setLevel(logging.DEBUG)
+        ch.setLevel(logging.DEBUG)
+        #logging.root.setLevel(logging.DEBUG)
 
     log.debug(args)
     log.info("version %s" % cdist.VERSION)
@@ -140,10 +142,31 @@ if __name__ == "__main__":
         import os
         import re
         import cdist
-        import cdist.log
 
-        logging.setLoggerClass(cdist.log.Log)
-        logging.basicConfig(format='%(levelname)s: %(message)s')
+        #logging.basicConfig(format='%(levelname)s: %(name)s: %(message)s')
+        rlog = logging.getLogger()
+        rlog.setLevel(logging.DEBUG)
+
+        # configure our logging framework ...
+        ch = logging.StreamHandler()
+
+        # create formatter
+        consformatter = logging.Formatter('%(levelname)s: %(name)s: %(message)s')
+        ch.setFormatter(consformatter)
+        ch.setLevel(logging.INFO)
+        rlog.addHandler(ch)
+
+        #get path for debug logfile
+        logpath = os.path.join(os.environ['HOME'], ".cdist/cache")
+        #os.makedirs(logpath, exist_ok=True)
+        logfile = os.path.join(logpath, "cdist_debug.log")
+
+        fh = logging.FileHandler(logfile)
+        fileformatter = logging.Formatter('%(asctime)s - %(levelname)s: %(name)s: %(message)s')
+        fh.setFormatter(fileformatter)
+        fh.setLevel(logging.DEBUG)
+        rlog.addHandler(fh)
+
         log = logging.getLogger("cdist")
 
         if re.match("__", os.path.basename(sys.argv[0])):
