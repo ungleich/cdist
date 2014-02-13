@@ -28,6 +28,7 @@ import subprocess
 import shutil
 import logging
 import tempfile
+import time
 
 import cdist
 import cdist.message
@@ -193,13 +194,13 @@ class Local(object):
 
         return self.run(command=command, env=env, return_output=return_output, message_prefix=message_prefix)
 
-    def save_cache(self):
+    def save_cache(self,starttime=time.time()):
         if os.path.isabs(self.target_host):
             hostdir = self.target_host[1:]
         else:
             hostdir = self.target_host
 
-        destination = os.path.join(self.cache_path, hostdir)
+        destination = os.path.join(self.cache_path, time.strftime('%Y%m%d-%H%M%S',time.localtime(starttime)), hostdir)
         self.log.debug("Saving " + self.base_path + " to " + destination)
 
         try:
