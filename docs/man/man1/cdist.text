@@ -138,6 +138,14 @@ CDIST_LOCAL_SHELL::
 CDIST_REMOTE_SHELL::
     Selects shell for remote scirpt execution, defaults to /bin/sh
 
+CDIST_LOGCFG::
+    Logifle path to configure cdist logging framework, set this 
+    Enviroment to a config file for python logging framework in JSON syntax.
+    A Sample config which you must edit is distributed as other/examples/logger.conf
+    For more information see 
+    http://docs.python.org/3.3/howto/logging.html and
+    http://docs.python.org/3.3/library/logging.config.html#configuration-dictionary-schema
+
 
 EXIT STATUS
 -----------

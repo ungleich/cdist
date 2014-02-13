@@ -99,10 +99,8 @@ def commandline():
     # Loglevels are handled globally in here and debug wins over verbose
     if args.verbose:
         ch.setLevel(logging.INFO)
-        #logging.root.setLevel(logging.INFO)
     if args.debug:
         ch.setLevel(logging.DEBUG)
-        #logging.root.setLevel(logging.DEBUG)
 
     log.debug(args)
     log.info("version %s" % cdist.VERSION)
@@ -151,8 +149,6 @@ if __name__ == "__main__":
         rootlog = logging.getLogger()
         rootlog.setLevel(logging.DEBUG)
 
-        # configure our logging framework ...
-
         #load additionaly log config from user/admin
         if 'CDIST_LOGCFG' in os.environ:
             #from pudb import set_trace; set_trace()
@@ -162,7 +158,7 @@ if __name__ == "__main__":
                     config = json.load(f)
                     logging.config.dictConfig(config)
 
-        # create default console handler with formatter for root logger
+        # create default console handler with formatter for root logger, for -v and -d
         ch = logging.StreamHandler()
         consformatter = logging.Formatter('%(levelname)s: %(name)s: %(message)s')
         ch.setFormatter(consformatter)
