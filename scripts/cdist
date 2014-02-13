@@ -124,6 +124,8 @@ def commandline():
 
     args.func(args)
 
+
+
 if __name__ == "__main__":
     # Sys is needed for sys.exit()
     import sys
@@ -139,33 +141,33 @@ if __name__ == "__main__":
 
     try:
         import logging
+        import logging.config
         import os
         import re
         import cdist
+        import json
 
-        #logging.basicConfig(format='%(levelname)s: %(name)s: %(message)s')
-        rlog = logging.getLogger()
-        rlog.setLevel(logging.DEBUG)
+        #setup logging with fine control for the admin
+        rootlog = logging.getLogger()
+        rootlog.setLevel(logging.DEBUG)
 
         # configure our logging framework ...
-        ch = logging.StreamHandler()
 
-        # create formatter
+        #load additionaly log config from user/admin
+        if 'CDIST_LOGCFG' in os.environ:
+            #from pudb import set_trace; set_trace()
+            logconf = os.environ['CDIST_LOGCFG']
+            if os.path.exists(logconf):
+                with open(logconf, 'rt') as f:
+                    config = json.load(f)
+                    logging.config.dictConfig(config)
+
+        # create default console handler with formatter for root logger
+        ch = logging.StreamHandler()
         consformatter = logging.Formatter('%(levelname)s: %(name)s: %(message)s')
         ch.setFormatter(consformatter)
-        ch.setLevel(logging.INFO)
-        rlog.addHandler(ch)
-
-        #get path for debug logfile
-        logpath = os.path.join(os.environ['HOME'], ".cdist/cache")
-        #os.makedirs(logpath, exist_ok=True)
-        logfile = os.path.join(logpath, "cdist_debug.log")
-
-        fh = logging.FileHandler(logfile)
-        fileformatter = logging.Formatter('%(asctime)s - %(levelname)s: %(name)s: %(message)s')
-        fh.setFormatter(fileformatter)
-        fh.setLevel(logging.DEBUG)
-        rlog.addHandler(fh)
+        ch.setLevel(logging.WARNING)
+        rootlog.addHandler(ch)
 
         log = logging.getLogger("cdist")
 
