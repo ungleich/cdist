@@ -7,6 +7,7 @@ Changelog
 
 3.0.9:
 	* Core: Ignore order dependencies if override is set (Daniel Heule)
+	* Core: Improve unit tests for Mac OS X (Steven Armstrong)
 	* Type __locale: Error out in case of unsupported OS
 	* Type __jail: Use default parameters for state (Daniel Heule)
 	* Type __pf_ruleset: Use default parameters for state (Daniel Heule)
