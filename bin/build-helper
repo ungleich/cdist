@@ -256,7 +256,11 @@ eof
         make pub
 
         # publish man, speeches, website
-        make web-release-all
+        if [ "$masterbranch" = yes ]; then
+            make web-release-all
+        else
+            make web-release-all-no-latest
+        fi
 
         # Ensure that pypi release has the right version
         "$0" version

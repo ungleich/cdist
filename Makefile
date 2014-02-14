@@ -99,7 +99,7 @@ man-dist: man check-date
 	cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
 	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)" || true
 
-man-fix-link: web-pub
+man-latest-link: web-pub
 	# Fix ikiwiki, which does not like symlinks for pseudo security
 	ssh tee.schottelius.org \
     	"cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
@@ -146,7 +146,8 @@ web-dist: web-blog web-doc
 web-pub: web-dist man-dist speeches-dist
 	cd "${WEBDIR}" && make pub
 
-web-release-all: man-fix-link
+web-release-all: man-latest-link
+web-release-all-no-latest: web-pub
 
 ################################################################################
 # Release: Mailinglist
