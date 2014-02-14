@@ -5,9 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.0.9:
+3.0.9: 2014-02-14
 	* Core: Ignore order dependencies if override is set (Daniel Heule)
-	* Core: Improve unit tests for Mac OS X (Steven Armstrong)
+	* Core: Improve Mac OS X support for unit tests (Steven Armstrong)
 	* Type __locale: Error out in case of unsupported OS
 	* Type __jail: Use default parameters for state (Daniel Heule)
 	* Type __pf_ruleset: Use default parameters for state (Daniel Heule)
