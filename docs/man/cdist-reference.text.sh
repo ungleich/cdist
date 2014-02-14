@@ -236,7 +236,7 @@ The following environment variables influence the behaviour of cdist:
 require::
     Setup dependencies between objects (see cdist-manifest(7))
 
-CDIST_ALLOW_OVERRIDE::
+CDIST_OVERRIDE::
     Allow overwriting type parameters (see cdist-manifest(7))
 
 CDIST_ORDER_DEPENDENCY::

@@ -16,7 +16,7 @@ This type is used on *BSD systems to manage the pf firewall's ruleset.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "absent" (no ruleset at all) or "present"
+   Either "absent" (no ruleset at all) or "present", defaults to "present".
 
 
 OPTIONAL PARAMETERS
