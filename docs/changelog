@@ -12,6 +12,9 @@ Changelog
 	* Core: Integrate initial preos support
 
 
+3.0.10:
+	* Type __git: Pass onwer/group/mode values to __directory
+
 3.0.9: 2014-02-14
 	* Core: Ignore order dependencies if override is set (Daniel Heule)
 	* Core: Improve Mac OS X support for unit tests (Steven Armstrong)
