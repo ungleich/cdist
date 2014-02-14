@@ -162,10 +162,6 @@ cp -L "$src" "$real_dst"
                 fd.write(val)
             os.chmod(filename, stat.S_IRUSR |  stat.S_IXUSR)
 
-    def remove_archives(self, base_dir):
-        cmd = [ "chroot", self.target_dir, "/usr/bin/apt-get", "clean" ]
-        subprocess.check_call(cmd)
-
     def create_kernel(self):
         dst = os.path.join(self.out_dir, "kernel")
         srcglob = glob.glob("%s/boot/vmlinuz-*" % self.target_dir)
@@ -257,6 +253,12 @@ cp -L "$src" "$real_dst"
             config = cdist.config.Config(local, remote)
             config.run()
 
+    def cleanup(self):
+        # Remove cruft from chroot
+        for action in 'autoclean clean autoremove'.split():
+            cmd = [ 'chroot', self.target_dir, '/usr/bin/apt-get', action]
+            subprocess.check_call(cmd)
+
     @classmethod
     def commandline(cls, args):
         self = cls(target_dir=args.target_dir[0],
@@ -274,8 +276,8 @@ cp -L "$src" "$real_dst"
         if args.config:
             self.config()
 
-        # Cleanup archives before creating any image
-        self.remove_archives()
+        # Cleanup chroot
+        self.cleanup()
 
         # Output pxe files
         if args.pxe_boot_dir:
