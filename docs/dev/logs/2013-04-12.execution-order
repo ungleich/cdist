@@ -1,0 +1,44 @@
+Old:
+
+- global explores (all)
+- initial manifest
+- for each object
+    execute type explorers
+    execute manifest
+
+    continue until all objects (including newly created)
+    have their type explorers/manifests run
+- build dependency tree
+- for each object
+    execute gencode-*
+    execute code-*
+
+New:
+- run all global explorers
+- run initial manifest
+    creates zero or more cdist_objects
+- for each cdist_object
+    if not cdist_object.has_unfullfilled_requirements:
+        execute type explorers
+        execute manifest
+            may create new objects, resulting in autorequirements
+
+            # Gained requirements during manifest run
+            if object.has_auto_requirements():
+                continue
+
+    cdist_object.execute gencode-*
+    cdist_object.execute code-*
+
+
+Requirements / Test cases for requirments / resolver:
+
+    - omnipotence
+    - 
+
+
+--------------------------------------------------------------------------------
+ERROR: localhost: The following objects could not be resolved: __cdistmarker/singleton requires  autorequires ; __directory/etc/sudoers.d requires  autorequires ; __file/etc/sudoers.d/nico requires __directory/etc/sudoers.d autorequires ; __file/etc/motd requires  autorequires ; __package_pacman/atop requires  autorequires ; __package_pacman/screen requires  autorequires ; __package_pacman/strace requires  autorequires ; __package_pacman/vim requires  autorequires ; __package_pacman/zsh requires  autorequires ; __package_pacman/lftp requires  autorequires ; __package_pacman/nmap requires  autorequires ; __package_pacman/ntp requires  autorequires ; __package_pacman/rsync requires  autorequires ; __package_pacman/rtorrent requires  autorequires ; __package_pacman/wget requires  autorequires ; __package_pacman/nload requires  autorequires ; __package_pacman/iftop requires  autorequires ; __package_pacman/mosh requires  autorequires ; __package_pacman/git requires  autorequires ; __package_pacman/mercurial requires  autorequires ; __package_pacman/netcat requires  autorequires ; __package_pacman/python-virtualenv requires  autorequires ; __package_pacman/wireshark-cli requires  autorequires ; __package_pacman/sudo requires  autorequires 
+INFO: Total processing time for 1 host(s): 32.30426597595215
+ERROR: Failed to deploy to the following hosts: localhost
+

@@ -2,8 +2,7 @@
 # State: absent is handled by manifest - we need only to do stuff if image is
 # not existing and state != absent
 #
-state="present"
-[ -f "$__object/parameter/state" ] && state="$(cat "$__object/parameter/state")"
+state="$(cat "$__object/parameter/state")"
 [ "$state" = "absent" ] && exit 0
 
 exists="$(cat "$__object/explorer/exists")"
@@ -13,8 +12,7 @@ exists="$(cat "$__object/explorer/exists")"
 # Still there? Create image
 #
 
-format=qcow2
-[ -f "$__object/parameter/format" ] && format="$(cat "$__object/parameter/format")"
+format="$(cat "$__object/parameter/format")"
 size="$(cat "$__object/parameter/size")"
 diskimage="/$__object_id"
 

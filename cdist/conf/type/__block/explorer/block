@@ -1,0 +1,21 @@
+#!/bin/sh
+# 2013 Steven Armstrong (steven-cdist at armstrong.cc)
+
+file="$(cat "$__object/parameter/file" 2>/dev/null || echo "/$__object_id")"
+
+# file does not exist, nothing we could do
+[ -f "$file" ] || exit 0
+
+prefix=$(cat "$__object/parameter/prefix" 2>/dev/null || echo "#cdist:__block/$__object_id")
+suffix=$(cat "$__object/parameter/suffix" 2>/dev/null || echo "#/cdist:__block/$__object_id")
+awk -v prefix="$prefix" -v suffix="$suffix" '{
+   if (index($0,prefix)) {
+      triggered=1
+   }
+   if (triggered) {
+      if (index($0,suffix)) {
+            triggered=0
+      }
+      print
+   }
+}' "$file"

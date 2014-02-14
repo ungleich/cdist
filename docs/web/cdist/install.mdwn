@@ -10,7 +10,7 @@ This is the machine you use to configure the target hosts.
  * /bin/sh: A posix like shell (for instance bash, dash, zsh)
  * Python >= 3.2
  * SSH client
- * Asciidoc (for building the manpages)
+ * Asciidoc and xsltproc (for building the manpages)
 
 ### Target Hosts
 
@@ -45,20 +45,24 @@ For Debian **wheezy** or newer:
 
 On **squeeze** you can add following line in **/etc/apt/sources.list**
 
-  deb http://ftp.debian.org/debian wheezy main
+    deb http://ftp.debian.org/debian wheezy main
 
 And add pinning entry in **/etc/apt/preferences.d/wheezy**:
 
-  Package: *
-  Pin: release n=wheezy
-  Pin-Priority: 1
+    Package: *
+    Pin: release n=wheezy
+    Pin-Priority: 1
 
 Please be aware that both **openssh-server** and **openssh-client** might be
 removed on **python3.2** installation. You surely want to reinstall them:
 
-  apt-get install -t wheezy openssh-server openssh-client
+    apt-get install -t wheezy openssh-server openssh-client
 
 For older Debian versions, installing python 3.2 from source is required.
+
+If you want to build the cdist manpages:
+
+    aptitude install --without-recommends asciidoc xsltproc
 
 ### Fedora
 
@@ -139,7 +143,7 @@ To install cdist, execute the following commands:
 
 If you want to build and use the manpages, run:
 
-    ./build man
+    make man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 #### Available versions in git

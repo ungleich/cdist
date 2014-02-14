@@ -1,0 +1,40 @@
+
+start ssh
+to controlhost,
+bind other side to
+localhost:22
+
+
+targethost ------> ssh ------> controlhost
+                                   |
+                                   |
+                                socat: connect stdin/stdout to ?
+                                start cdist with port information
+                                added
+
+
+Use 
+
+socat
+
+
+--------------------------------------------------------------------------------
+       TCP:<host>:<port>
+              Connects  to <port> [TCP service] on <host> [IP address] using TCP/IP version 4 or 6 depending on address specifi‐
+              cation, name resolution, or option pf.
+              Option groups: FD,SOCKET,IP4,IP6,TCP,RETRY
+              Useful options: crnl, bind, pf, connect-timeout, tos, mtudiscover,  mss,  nodelay,  nonblock,  sourceport,  retry,
+              readbytes
+              See also: TCP4, TCP6, TCP-LISTEN, UDP, SCTP-CONNECT, UNIX-CONNECT
+
+forever
+--------------------------------------------------------------------------------
+[root@nico-dev-vm-snr01 yum.repos.d]# ps aux | grep socat
+nico     25035  0.0  0.0  41640  1524 ?        Ss   13:27   0:00 socat - TCP-LISTEN:1234
+root     25037  0.0  0.0 103240   836 pts/1    S+   13:27   0:00 grep socat
+[root@nico-dev-vm-snr01 yum.repos.d]# 
+
+
+
+--------------------------------------------------------------------------------
+

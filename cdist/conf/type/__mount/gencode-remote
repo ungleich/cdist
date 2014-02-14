@@ -1,0 +1,51 @@
+#!/bin/sh
+#
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+path="$(cat "$__object/parameter/path" 2>/dev/null || echo "/$__object_id")"
+state_should="$(cat "$__object/parameter/state")"
+state_is="$(grep -q -x yes "$__object/explorer/mounted" && echo present || echo absent)"
+
+if [ "$state_should" = "$state_is" ]; then
+   # nothing to do
+   exit 0
+fi
+
+case "$state_should" in
+   present)
+      if [ -f "$__object/parameter/nofstab" ]; then
+         # mount manually
+         printf 'mount'
+         if [ -f "$__object/parameter/type" ]; then
+            printf ' -t %s' "$(cat "$__object/parameter/type")"
+         fi
+         if [ -f "$__object/parameter/options" ]; then
+            printf ' -o %s' "$(cat "$__object/parameter/options")"
+         fi
+         printf ' %s' "$(cat "$__object/parameter/device")"
+         printf " %s\n" "$path"
+      else
+         # mount using existing fstab entry
+         printf 'mount "%s"\n' "$path"
+      fi
+   ;;
+   absent)
+      printf 'umount "%s"\n' "$path"
+   ;;
+esac

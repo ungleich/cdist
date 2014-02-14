@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -28,47 +29,58 @@ import sys
 import cdist
 from cdist import core
 
+class MissingRequiredEnvironmentVariableError(cdist.Error):
+    def __init__(self, name):
+        self.name = name
+        self.message = "Emulator requires the environment variable %s to be setup" % self.name
+
+    def __str__(self):
+        return self.message
+
+
+class DefaultList(list):
+    """Helper class to allow default values for optional_multiple parameters.
+
+    @see https://groups.google.com/forum/#!msg/comp.lang.python/sAUvkJEDpRc/RnRymrzJVDYJ
+    """
+    def __copy__(self):
+        return []
+
+    @classmethod
+    def create(cls, initial=None):
+        if initial:
+            return cls(initial.split('\n'))
+
+
 class Emulator(object):
     def __init__(self, argv, stdin=sys.stdin.buffer, env=os.environ):
         self.argv           = argv
         self.stdin          = stdin
         self.env            = env
 
-        self.object_id      = False
+        self.object_id      = ''
 
-        self.global_path    = self.env['__global']
-        self.target_host    = self.env['__target_host']
+        try:
+            self.global_path    = self.env['__global']
+            self.target_host    = self.env['__target_host']
 
-        # Internally only
-        self.object_source  = self.env['__cdist_manifest']
-        self.type_base_path = self.env['__cdist_type_base_path']
+            # Internally only
+            self.object_source  = self.env['__cdist_manifest']
+            self.type_base_path = self.env['__cdist_type_base_path']
+
+        except KeyError as e:
+            raise MissingRequiredEnvironmentVariableError(e.args[0])
 
         self.object_base_path = os.path.join(self.global_path, "object")
+        self.typeorder_path = os.path.join(self.global_path, "typeorder")
 
         self.type_name      = os.path.basename(argv[0])
         self.cdist_type     = core.CdistType(self.type_base_path, self.type_name)
 
         self.__init_log()
 
-    def filter(self, record):
-        """Add hostname and object to logs via logging Filter"""
-
-        prefix = self.target_host + ": (emulator)"
-
-        if self.object_id:
-            prefix = prefix + " " + self.type_name + "/" + self.object_id
-
-        record.msg = prefix + ": " + record.msg
-
-        return True
-
     def run(self):
         """Emulate type commands (i.e. __file and co)"""
-
-        if '__install' in self.env:
-            if not self.cdist_type.is_install:
-                self.log.debug("Running in install mode, ignoring non install type")
-                return True
 
         self.commandline()
         self.setup_object()
@@ -79,16 +91,13 @@ class Emulator(object):
 
     def __init_log(self):
         """Setup logging facility"""
-        logformat = '%(levelname)s: %(message)s'
-        logging.basicConfig(format=logformat)
 
         if '__cdist_debug' in self.env:
             logging.root.setLevel(logging.DEBUG)
         else:
             logging.root.setLevel(logging.INFO)
 
-        self.log            = logging.getLogger(__name__)
-        self.log.addFilter(self)
+        self.log  = logging.getLogger(self.target_host)
 
     def commandline(self):
         """Parse command line"""
@@ -103,10 +112,12 @@ class Emulator(object):
             parser.add_argument(argument, dest=parameter, action='append', required=True)
         for parameter in self.cdist_type.optional_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='store', required=False)
+            parser.add_argument(argument, dest=parameter, action='store', required=False,
+                default=self.cdist_type.parameter_defaults.get(parameter, None))
         for parameter in self.cdist_type.optional_multiple_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='append', required=False)
+            parser.add_argument(argument, dest=parameter, action='append', required=False,
+                default=DefaultList.create(self.cdist_type.parameter_defaults.get(parameter, None)))
         for parameter in self.cdist_type.boolean_parameters:
             argument = "--" + parameter
             parser.add_argument(argument, dest=parameter, action='store_const', const='')
@@ -119,12 +130,9 @@ class Emulator(object):
         self.args = parser.parse_args(self.argv[1:])
         self.log.debug('Args: %s' % self.args)
 
-
     def setup_object(self):
         # Setup object_id - FIXME: unset / do not setup anymore!
-        if self.cdist_type.is_singleton:
-            self.object_id = "singleton"
-        else:
+        if not self.cdist_type.is_singleton:
             self.object_id = self.args.object_id[0]
             del self.args.object_id
 
@@ -135,18 +143,23 @@ class Emulator(object):
         self.parameters = {}
         for key,value in vars(self.args).items():
             if value is not None:
-                if isinstance(value, list):
-                    value = '\n'.join(value)
                 self.parameters[key] = value
 
-        if self.cdist_object.exists:
+        if self.cdist_object.exists and not 'CDIST_OVERRIDE' in self.env:
             if self.cdist_object.parameters != self.parameters:
                 raise cdist.Error("Object %s already exists with conflicting parameters:\n%s: %s\n%s: %s"
                     % (self.cdist_object.name, " ".join(self.cdist_object.source), self.cdist_object.parameters, self.object_source, self.parameters)
             )
         else:
-            self.cdist_object.create()
+            if self.cdist_object.exists:
+                self.log.debug('Object %s override forced with CDIST_OVERRIDE',self.cdist_object.name)
+                self.cdist_object.create(True)
+            else:
+                self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
+            # record the created object in typeorder file
+            with open(self.typeorder_path, 'a') as typeorderfile:
+                print(self.cdist_object.name, file=typeorderfile)
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
@@ -176,6 +189,24 @@ class Emulator(object):
     def record_requirements(self):
         """record requirements"""
 
+        # Inject the predecessor, but not if its an override (this would leed to an circular dependency)
+        if "CDIST_ORDER_DEPENDENCY" in self.env and not 'CDIST_OVERRIDE' in self.env:
+            # load object name created bevor this one from typeorder file ...
+            with open(self.typeorder_path, 'r') as typecreationfile:
+                typecreationorder = typecreationfile.readlines()
+                # get the type created bevore this one ...
+                try:
+                    lastcreatedtype = typecreationorder[-2].strip()
+                    if 'require' in self.env:
+                        self.env['require'] += " " + lastcreatedtype
+                    else:
+                        self.env['require'] = lastcreatedtype
+                    self.log.debug("Injecting require for CDIST_ORDER_DEPENDENCY: %s for %s", lastcreatedtype, self.cdist_object.name)
+                except IndexError:
+                    # if no second last line, we are on the first type, so do not set a requirement
+                    pass
+
+
         if "require" in self.env:
             requirements = self.env['require']
             self.log.debug("reqs = " + requirements)
@@ -184,9 +215,16 @@ class Emulator(object):
                 if len(requirement) == 0: continue
 
                 # Raises an error, if object cannot be created
-                cdist_object = self.cdist_object.object_from_name(requirement)
+                try:
+                    cdist_object = self.cdist_object.object_from_name(requirement)
+                except core.cdist_type.NoSuchTypeError as e:
+                    self.log.error("%s requires object %s, but type %s does not exist. Defined at %s"  % (self.cdist_object.name, requirement, e.name, self.object_source))
+                    raise
+                except core.cdist_object.MissingObjectIdError as e:
+                    self.log.error("%s requires object %s without object id. Defined at %s"  % (self.cdist_object.name, requirement, self.object_source))
+                    raise
 
-                self.log.debug("Recording requirement: " + requirement)
+                self.log.debug("Recording requirement: %s", requirement)
 
                 # Save the sanitised version, not the user supplied one
                 # (__file//bar => __file/bar)

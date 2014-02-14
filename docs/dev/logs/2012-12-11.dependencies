@@ -8,27 +8,94 @@ __git bar
     __package git --state present
 
 
-require="__git/foo" git bar:
+require="__git/foo" __git bar:
 
     __git bar
         __git foo
             __package git --state present
         __package git --state present
-            __git foo
-                __package git --state present
+            __git foo                        <---|
+                __package git --state present ---|
 
     -> detects circular dependency
+
+--------------------------------------------------------------------------------
+
+require="__apt_repository/somewhere-where-you-can-find-package-git __git/foo" __git bar
+
+    __git bar
+        __apt_repository somewhere-where-you-can-find-package-git
+
+        __git foo
+            __package git --state present
+                __package_apt git depends nachher auf __apt_repository
+        __package git --state present
+            __git foo                        <---|
+                __package git --state present ---|
+            __apt_repository somewhere-where-you-can-find-package-git
+
+possible solutions:
+    - __package git does not depend on __git foo (clear dependency)
+        - because it DOES NOT depend on it!
+            - but we don't know whether this is always true :-/
+    - multiple instances of __package git exist, with
+        - different required BY
+        - different requirements
+    - define non inheritent dependencies (?)
+        - because __git bar really depends only on __git foo
+        - proposal: introduce require_non_recursive and require_recursive (previously: require)
+    - recording the source of the dependency and use it to assist resolving (?)
+        __package git: 
+            inherited require: __git foo von __git bar
+        __git foo:
+            inherited autorequire: __package git durch Nutzung
+    - break out circular references (?)
+        - if either of both parties is only locked by the other, allow execution of this one?
+
+--------------------------------------------------------------------------------
+
+__package foo
+    __package_apt foo
+
+__package bar
+    __package_apt bar
+
+require="__package/foo" __package bar
+
+    __package bar
+        __package foo
+            __package_apt foo
+        __package_apt bar
+            __package foo
 
 
 --------------------------------------------------------------------------------
 
-__package abc
-    __package_apt abc
+__type1 var1
+    __type2 FIX
 
-__sometype def
-    __package abc
-        __package_apt abc
+__type1 var2
+    __type2 FIX
 
+
+--------------------------------------------------------------------------------
+facts:
+    - use is different from require="", as use makes USED depend on parent deps
+    - use = called/defined in the manifest of a type
+    - it is currently not recorded, where an object gained its requirements and autorequirements
+--------------------------------------------------------------------------------
+requirements:
+    - a type should be a black box: 
+        I can require an object and it is ensured,
+        everything it needs is executed before me.
+    
+--------------------------------------------------------------------------------
+possible implementations
+- requiring it should include everything it USES
+--------------------------------------------------------------------------------
+solutions:
+    __type1 DEPENDS but does not use __type2 FIX
+    
 
 --------------------------------------------------------------------------------
 
@@ -59,14 +126,14 @@ Order:
 
 For __package:
 
-__sometype def
-    __package abc
+__sometype bar
+    __package foo
 
-__package abc
-    __package_apt abc
+__package foo
+    __package_apt foo
 
-1) __package_apt/abc (leaf node)
+1) __package_apt/foo (leaf node)
 
-2) __package/abc (new leaf node)
+2) __package/foo (new leaf node)
 
-3) __sometype/def (new leaf node)
+3) __sometype/bar (new leaf node)

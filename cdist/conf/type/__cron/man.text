@@ -41,6 +41,10 @@ raw::
    Can for example be used to specify cron EXTENSIONS like reboot, yearly etc.
    See crontab(5) for the extensions if any that your cron implementation
    implements.
+raw_command::
+   Take whatever the user has given in the commmand and ignore everything else.
+   If given, the command will be added to crontab.
+   Can for example be used to define variables like SHELL or MAILTO.
 
 
 EXAMPLES
@@ -57,6 +61,10 @@ __cron some-id --user root --command "/path/to/script" \
 
 # remove cronjob
 __cron some-id --user root --command "/path/to/script" --state absent
+
+# define default shell
+__cron some-id --user root --raw_command --command "SHELL=/bin/bash" \
+   --state present
 --------------------------------------------------------------------------------
 
 
@@ -68,5 +76,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+Copyright \(C) 2011-2013 Steven Armstrong. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

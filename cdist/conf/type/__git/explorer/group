@@ -1,0 +1,5 @@
+#!/bin/sh
+
+destination="/$__object_id/.git"
+
+stat --print "%G" ${destination} 2>/dev/null || exit 0

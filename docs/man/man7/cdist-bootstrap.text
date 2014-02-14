@@ -64,11 +64,11 @@ So **2.0** is the latest version branch in this example.
 All versions (2.0.x) within one version branch (2.0) are compatible to each
 other and won't break your configuration when updating.
 
-It's up to you decide on which branch you want to base your own work:
+It's up to you to decide which branch you want to base your own work on:
 master contains more recent changes, newer types, but may also break.
-The versions branches are stable, but thus may miss the latest features.
+The version branches are stable, but may lack the latest features.
 Your decision can be changed later on, but may result in merge conflicts,
-which you'd have to solve.
+which you will need to solve.
 
 Let's assume you want latest stuff and select the master branch as base for
 your own work. Now it's time to create your branch, which contains your

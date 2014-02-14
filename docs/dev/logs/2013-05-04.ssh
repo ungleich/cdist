@@ -1,0 +1,340 @@
+- analysis of ssh connections for callback
+    SSH_CLIENT='::1 38502 22'
+    SSH_CONNECTION='::1 38502 ::1 22'
+
+    -> callback possible to source host
+
+
+
+[ target host ]  <--------------|
+    |                           |
+    |                           |
+    |                           |
+    | trigger                   |   configuration
+    |                           |
+    v                           |
+[ configuration host ]      ----|
+
+
+- dynamic port allocation for tunneling
+
+    [1:37] bento:~% ssh -R  0:localhost:22 localhost
+    Warning: Permanently added 'localhost' (ECDSA) to the list of known hosts.
+    Allocated port 53161 for remote forward to localhost:22
+
+    SSH_AUTH_SOCK=/tmp/ssh-zDCWbUVcUK/agent.30749
+    SSH_CLIENT='::1 38587 22'
+    SSH_CONNECTION='::1 38587 ::1 22'
+    SSH_TTY=/dev/pts/21
+
+
+- ssh_config:
+    DynamicForward
+    LocalForward
+    RemoteForward
+
+- testing
+
+[1:52] bento:cdist% netstat -anp | grep 56844
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 127.0.0.1:56844         0.0.0.0:*               LISTEN      -                   
+tcp6       0      0 ::1:56844               :::*                    LISTEN      -                   
+[1:53] bento:cdist% 
+
+
+[1:48] bento:~% ssh -R  0:localhost:22  localhost       
+Allocated port 56844 for remote forward to localhost:22
+...
+
+- chatting
+
+01:42 -!- Irssi: Join to #openssh was synced in 0 secs
+01:42 < telmich> good evening
+01:43 < telmich> I am trying to make use of remote port forwarding using dynamic port 
+                 allocation (port=0) -- I am wondering if there is an easy way to 
+                 access the port number on the remote side easily?
+01:44 < telmich> background for this question is: I'd like to allow various clients to 
+                 login to a configuration server, which then configures the clients by 
+                 using the tunnel the client provides for the server to ssh back into
+02:07 < BasketCase> telmich: afaik you need to use a tool like ss/netstat/lsof to see what port it has open
+
+- ssh debug
+
+[11:37] bento:~% ssh -R 0:localhost:22 localhost
+Allocated port 33562 for remote forward to localhost:22
+
+             ..          .       .x+=:.        s
+           dF           @88>    z`    ^%      :8
+          '88bu.        %8P        .   <k    .88
+      .   '*88888bu      .       .@8Ned8"   :888ooo
+ .udR88N    ^"*8888N   .@88u   .@^%8888"  -*8888888
+<888'888k  beWE "888L ''888E` x88:  `)8b.   8888
+9888 'Y"   888E  888E   888E  8888N=*8888   8888
+9888       888E  888E   888E   %8"    R88   8888
+9888       888E  888F   888E    @8Wou 9%   .8888Lu=
+?8888u../ .888N..888    888&  .888888P`    ^%888*
+ "8888P'   `"888*""     R888" `   ^"F        'Y"
+   "P'        ""         ""
+
+Welcome to a cdist automated system!
+
+Last login: Sat May  4 01:52:46 2013 from localhost.localdomain
+debug1: PAM: reinitializing credentials
+debug1: permanently_set_uid: 0/0
+Environment:
+  USER=root
+  LOGNAME=root
+  HOME=/root
+  PATH=/usr/bin:/bin:/usr/sbin:/sbin
+  MAIL=/var/spool/mail/root
+  SHELL=/bin/bash
+  SSH_CLIENT=::1 57848 22
+  SSH_CONNECTION=::1 57848 ::1 22
+  SSH_TTY=/dev/pts/32
+  TERM=rxvt-unicode
+  XDG_SESSION_ID=1
+  XDG_RUNTIME_DIR=/run/user/1000
+  XDG_SEAT=seat0
+  XDG_VTNR=1
+  SSH_AUTH_SOCK=/tmp/ssh-6j0elukLHA/agent.17260
+[root@bento ~]# 
+[root@bento nico]# /usr/sbin/sshd -D -d
+debug1: sshd version OpenSSH_6.2, OpenSSL 1.0.1e 11 Feb 2013
+debug1: read PEM private key done: type RSA
+debug1: private host key: #0 type 1 RSA
+debug1: read PEM private key done: type DSA
+debug1: private host key: #1 type 2 DSA
+debug1: read PEM private key done: type ECDSA
+debug1: private host key: #2 type 3 ECDSA
+debug1: rexec_argv[0]='/usr/sbin/sshd'
+debug1: rexec_argv[1]='-D'
+debug1: rexec_argv[2]='-d'
+Set /proc/self/oom_score_adj from 0 to -1000
+debug1: Bind to port 22 on 0.0.0.0.
+Server listening on 0.0.0.0 port 22.
+debug1: Bind to port 22 on ::.
+Server listening on :: port 22.
+debug1: Server will not fork when running in debugging mode.
+debug1: rexec start in 5 out 5 newsock 5 pipe -1 sock 8
+debug1: inetd sockets after dupping: 3, 3
+Connection from ::1 port 57848
+debug1: Client protocol version 2.0; client software version OpenSSH_6.2
+debug1: match: OpenSSH_6.2 pat OpenSSH*
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_6.2
+debug1: permanently_set_uid: 99/99 [preauth]
+debug1: list_hostkey_types: ssh-rsa,ssh-dss,ecdsa-sha2-nistp256 [preauth]
+debug1: SSH2_MSG_KEXINIT sent [preauth]
+debug1: SSH2_MSG_KEXINIT received [preauth]
+debug1: kex: client->server aes128-ctr hmac-md5-etm@openssh.com zlib@openssh.com [preauth]
+debug1: kex: server->client aes128-ctr hmac-md5-etm@openssh.com zlib@openssh.com [preauth]
+debug1: expecting SSH2_MSG_KEX_ECDH_INIT [preauth]
+debug1: SSH2_MSG_NEWKEYS sent [preauth]
+debug1: expecting SSH2_MSG_NEWKEYS [preauth]
+debug1: SSH2_MSG_NEWKEYS received [preauth]
+debug1: KEX done [preauth]
+debug1: userauth-request for user root service ssh-connection method none [preauth]
+debug1: attempt 0 failures 0 [preauth]
+debug1: PAM: initializing for "root"
+debug1: PAM: setting PAM_RHOST to "localhost.localdomain"
+debug1: PAM: setting PAM_TTY to "ssh"
+debug1: userauth-request for user root service ssh-connection method publickey [preauth]
+debug1: attempt 1 failures 0 [preauth]
+debug1: test whether pkalg/pkblob are acceptable [preauth]
+debug1: temporarily_use_uid: 0/0 (e=0/0)
+debug1: trying public key file /root/.ssh/authorized_keys
+debug1: fd 4 clearing O_NONBLOCK
+debug1: matching key found: file /root/.ssh/authorized_keys, line 2
+Found matching RSA key: 2e:1b:3f:10:01:1d:21:6c:6c:1e:3d:a9:33:ba:3c:f7
+debug1: restore_uid: 0/0
+Postponed publickey for root from ::1 port 57848 ssh2 [preauth]
+debug1: userauth-request for user root service ssh-connection method publickey [preauth]
+debug1: attempt 2 failures 0 [preauth]
+debug1: temporarily_use_uid: 0/0 (e=0/0)
+debug1: trying public key file /root/.ssh/authorized_keys
+debug1: fd 4 clearing O_NONBLOCK
+debug1: matching key found: file /root/.ssh/authorized_keys, line 2
+Found matching RSA key: 2e:1b:3f:10:01:1d:21:6c:6c:1e:3d:a9:33:ba:3c:f7
+debug1: restore_uid: 0/0
+debug1: ssh_rsa_verify: signature correct
+debug1: do_pam_account: called
+Accepted publickey for root from ::1 port 57848 ssh2
+debug1: monitor_child_preauth: root has been authenticated by privileged process
+debug1: Enabling compression at level 6. [preauth]
+debug1: monitor_read_log: child log fd closed
+debug1: PAM: establishing credentials
+debug1: Entering interactive session for SSH2.
+debug1: server_init_dispatch_20
+debug1: server_input_global_request: rtype tcpip-forward want_reply 1
+debug1: server_input_global_request: tcpip-forward listen localhost port 0
+debug1: Local forwarding listening on ::1 port 0.
+debug1: Allocated listen port 33562
+debug1: channel 0: new [port listener]
+debug1: Local forwarding listening on 127.0.0.1 port 33562.
+debug1: channel 1: new [port listener]
+debug1: server_input_channel_open: ctype session rchan 0 win 1048576 max 16384
+debug1: input_session_request
+debug1: channel 2: new [server-session]
+debug1: session_new: session 0
+debug1: session_open: channel 2
+debug1: session_open: session 0: link with channel 2
+debug1: server_input_channel_open: confirm session
+debug1: server_input_global_request: rtype no-more-sessions@openssh.com want_reply 0
+debug1: server_input_channel_req: channel 2 request auth-agent-req@openssh.com reply 0
+debug1: session_by_channel: session 0 channel 2
+debug1: session_input_channel_req: session 0 req auth-agent-req@openssh.com
+debug1: temporarily_use_uid: 0/0 (e=0/0)
+debug1: restore_uid: 0/0
+debug1: channel 3: new [auth socket]
+debug1: server_input_channel_req: channel 2 request pty-req reply 1
+debug1: session_by_channel: session 0 channel 2
+debug1: session_input_channel_req: session 0 req pty-req
+debug1: Allocating pty.
+debug1: session_pty_req: session 0 alloc /dev/pts/32
+debug1: server_input_channel_req: channel 2 request shell reply 1
+debug1: session_by_channel: session 0 channel 2
+debug1: session_input_channel_req: session 0 req shell
+debug1: Setting controlling tty using TIOCSCTTY.
+
+--------------------------------------------------------------------------------
+debug1: server_input_global_request: rtype tcpip-forward want_reply 1
+debug1: server_input_global_request: tcpip-forward listen localhost port 0
+debug1: Local forwarding listening on ::1 port 0.
+debug1: Allocated listen port 33562
+debug1: channel 0: new [port listener]
+debug1: Local forwarding listening on 127.0.0.1 port 33562.
+
+[11:49] bento:openssh-6.2p1% grep "Allocated listen port" -r .
+./channels.c:           debug("Allocated listen port %d",
+[11:49] bento:openssh-6.2p1% 
+
+
+--------------------------------------------------------------------------------
+[11:54] bento:~% ssh -R 0:localhost:22 -R 0:192.168.1.1:33 localhost 
+Allocated port 48392 for remote forward to localhost:22
+Allocated port 37515 for remote forward to 192.168.1.1:33
+
+
+
+
+debug1: server_input_global_request: rtype tcpip-forward want_reply 1
+debug1: server_input_global_request: tcpip-forward listen localhost port 0
+debug1: Local forwarding listening on ::1 port 0.
+debug1: Allocated listen port 48392
+debug1: channel 0: new [port listener]
+debug1: Local forwarding listening on 127.0.0.1 port 48392.
+debug1: channel 1: new [port listener]
+debug1: server_input_global_request: rtype tcpip-forward want_reply 1
+debug1: server_input_global_request: tcpip-forward listen localhost port 0
+debug1: Local forwarding listening on ::1 port 0.
+debug1: Allocated listen port 37515
+debug1: channel 2: new [port listener]
+debug1: Local forwarding listening on 127.0.0.1 port 37515.
+debug1: channel 3: new [port listener]
+debug1: server_input_channel_open: ctype session rchan 0 win 1048576 max 16384
+debug1: input_session_request
+debug1: channel 4: new [server-session]
+debug1: session_new: session 0
+debug1: session_open: channel 4
+debug1: session_open: session 0: link with channel 4
+
+debug1: Local forwarding listening on ::1 port 5555.
+debug1: channel 0: new [port listener]
+debug1: Local forwarding listening on 127.0.0.1 port 5555.
+debug1: channel 1: new [port listener]
+debug1: server_input_global_request: rtype tcpip-forward want_reply 1
+debug1: server_input_global_request: tcpip-forward listen localhost port 4444
+debug1: Local forwarding listening on ::1 port 4444.
+debug1: channel 2: new [port listener]
+debug1: Local forwarding listening on 127.0.0.1 port 4444.
+debug1: channel 3: new [port listener]
+debug1: server_input_channel_open: ctype session rchan 0 win 1048576 max 16384
+debug1: input_session_request
+debug1: channel 4: new [server-session]
+debug1: session_new: session 0
+debug1: session_open: channel 4
+
+--------------------------------------------------------------------------------
+
+[12:06] bento:openssh-6.2p1% grep SSH_CONNECTION -r *
+audit-bsm.c:    case SSH_CONNECTION_CLOSE:
+audit.c:        {SSH_CONNECTION_CLOSE,      "CONNECTION_CLOSE"},
+audit.c:        {SSH_CONNECTION_ABANDON,    "CONNECTION_ABANDON"},
+audit.h:    SSH_CONNECTION_CLOSE,   /* closed after attempting auth or session */
+audit.h:    SSH_CONNECTION_ABANDON, /* closed without completing auth */
+audit-linux.c:  case SSH_CONNECTION_CLOSE:
+monitor.c:  case SSH_CONNECTION_CLOSE:
+regress/proxy-connect.sh:   SSH_CONNECTION=`${SSH} -$p -F $OBJ/ssh_proxy 999.999.999.999 'echo $SSH_CONNECTION'`
+regress/proxy-connect.sh:   if [ "$SSH_CONNECTION" != "UNKNOWN 65535 UNKNOWN 65535" ]; then
+regress/proxy-connect.sh:       fail "bad SSH_CONNECTION"
+session.c:  child_set_env(&env, &envsize, "SSH_CONNECTION", buf);
+sftp-server.c:  if ((cp = getenv("SSH_CONNECTION")) != NULL) {
+sftp-server.c:          error("Malformed SSH_CONNECTION variable: \"%s\"",
+sftp-server.c:              getenv("SSH_CONNECTION"));
+ssh.0:     SSH_CONNECTION        Identifies the client and server ends of the
+ssh.1:.It Ev SSH_CONNECTION
+sshd.c: PRIVSEP(audit_event(SSH_CONNECTION_CLOSE));
+sshd.c:     audit_event(SSH_CONNECTION_ABANDON);
+[12:06] bento:openssh-6.2p1% 
+
+--------------------------------------------------------------------------------
+debug1: Remote connections from LOCALHOST:5555 forwarded to local address localhost:22
+
+--------------------------------------------------------------------------------
+[12:42] bento:openssh-6.2p1% grep tcpip-forward *
+channels.c:     packet_put_cstring("tcpip-forward");
+channels.c: packet_put_cstring("cancel-tcpip-forward");
+Binary file channels.o matches
+grep: contrib: Is a directory
+Binary file libssh.a matches
+grep: openbsd-compat: Is a directory
+grep: regress: Is a directory
+grep: scard: Is a directory
+serverloop.c:   if (strcmp(rtype, "tcpip-forward") == 0) {
+serverloop.c:       debug("server_input_global_request: tcpip-forward listen %s port %d",
+serverloop.c:   } else if (strcmp(rtype, "cancel-tcpip-forward") == 0) {
+serverloop.c:       debug("%s: cancel-tcpip-forward addr %s port %d", __func__,
+Binary file serverloop.o matches
+Binary file ssh matches
+Binary file sshd matches
+Binary file ssh-keyscan matches
+Binary file ssh-keysign matches
+[12:42] bento:openssh-6.2p1% 
+
+--------------------------------------------------------------------------------
+Channel information for (remote) forwarding:
+
+       c = channel_new("port listener", type, sock, sock, -1,
+            CHAN_TCP_WINDOW_DEFAULT, CHAN_TCP_PACKET_DEFAULT,
+            0, "port listener", 1);
+        c->path = xstrdup(host);
+        c->host_port = port_to_connect;
+        c->listening_addr = addr == NULL ? NULL : xstrdup(addr);
+        if (listen_port == 0 && allocated_listen_port != NULL &&
+            !(datafellows & SSH_BUG_DYNAMIC_RPORT))
+            c->listening_port = *allocated_listen_port;
+        else 
+            c->listening_port = listen_port;
+
+--------------------------------------------------------------------------------
+
+Code handling remote forwarding in the client:
+- ssh_init_forwarding
+    - channel_request_remote_forwarding
+        Sends hostname + port for ssh1 only - not send in ssh2
+
+Code handling forwarding / listening in the server:
+
+- channel_new: creates channels, 2 per listener (ipv4/ipv6)
+    - channels_alloc contains number of channels
+- server_input_global_request
+    Reads only listen port, not hostname/port to connect to
+    - channel_setup_remote_fwd_listener
+        - channel_setup_remote_fwd_listener
+
+Code handling environment variables:
+
+- child_set_env
+1236     child_set_env(&env, &envsize, "SSH_CONNECTION", buf);
+

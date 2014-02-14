@@ -16,7 +16,7 @@ RVM is the Ruby enVironment Manager for the Ruby programming language.
 REQUIRED PARAMETERS
 -------------------
 state::
-    Either "present" or "absent".
+    Either "present" or "absent", defaults to "present".
 
 
 EXAMPLES

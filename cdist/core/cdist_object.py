@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -42,6 +43,13 @@ class IllegalObjectIdError(cdist.Error):
     def __str__(self):
         return '%s: %s' % (self.message, self.object_id)
 
+class MissingObjectIdError(cdist.Error):
+    def __init__(self, type_name):
+        self.type_name = type_name
+        self.message = "Type %s requires object id (is not a singleton type)" % self.type_name
+
+    def __str__(self):
+        return '%s' % (self.message)
 
 class CdistObject(object):
     """Represents a cdist object.
@@ -53,11 +61,12 @@ class CdistObject(object):
     """
 
     # Constants for use with Object.state
+    STATE_UNDEF = ""
     STATE_PREPARED = "prepared"
     STATE_RUNNING = "running"
     STATE_DONE = "done"
 
-    def __init__(self, cdist_type, base_path, object_id=None):
+    def __init__(self, cdist_type, base_path, object_id=''):
         self.cdist_type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
@@ -99,7 +108,6 @@ class CdistObject(object):
 
         """
         type_name = object_name.split(os.sep)[0]
-        # FIXME: allow object without object_id? e.g. for singleton
         object_id = os.sep.join(object_name.split(os.sep)[1:])
         return type_name, object_id
 
@@ -113,7 +121,8 @@ class CdistObject(object):
         return os.path.join(type_name, object_id)
 
     def validate_object_id(self):
-        # FIXME: also check that there is no object ID when type is singleton?
+        if self.cdist_type.is_singleton and self.object_id:
+            raise IllegalObjectIdError('singleton objects can\'t have a object_id')
 
         """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
         """
@@ -122,11 +131,17 @@ class CdistObject(object):
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
             if '//' in self.object_id:
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain //')
+            if self.object_id == '.':
+                raise IllegalObjectIdError(self.object_id, 'object_id may not be a .')
 
         # If no object_id and type is not singleton => error out
         if not self.object_id and not self.cdist_type.is_singleton:
-            raise IllegalObjectIdError(self.object_id,
-                "Missing object_id and type is not a singleton.")
+            raise MissingObjectIdError(self.cdist_type.name)
+
+                # Does not work: AttributeError: 'CdistObject' object has no attribute 'parameter_path'
+
+                #"Type %s is not a singleton type - missing object id (parameters: %s)" % 
+                #    (self.cdist_type.name, self.parameters))
 
     def object_from_name(self, object_name):
         """Convenience method for creating an object instance from an object name.
@@ -190,7 +205,6 @@ class CdistObject(object):
     autorequire = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'autorequire'))
     parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.parameter_path))
     explorers = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.explorer_path))
-    changed = fsproperty.FileBooleanProperty(lambda obj: os.path.join(obj.absolute_path, "changed"))
     state = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "state"))
     source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
     code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_local_path))
@@ -201,76 +215,25 @@ class CdistObject(object):
         """Checks wether this cdist object exists on the file systems."""
         return os.path.exists(self.absolute_path)
 
-    def create(self):
+    def create(self, allow_overwrite=False):
         """Create this cdist object on the filesystem.
         """
         try:
-            os.makedirs(self.absolute_path, exist_ok=False)
+            os.makedirs(self.absolute_path, exist_ok=allow_overwrite)
             absolute_parameter_path = os.path.join(self.base_path, self.parameter_path)
-            os.makedirs(absolute_parameter_path, exist_ok=False)
+            os.makedirs(absolute_parameter_path, exist_ok=allow_overwrite)
         except EnvironmentError as error:
             raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
 
-    @property
-    def satisfied_requirements(self):
-        """Return state whether all of our dependencies have been resolved already"""
+    def requirements_unfinished(self, requirements):
+        """Return state whether requirements are satisfied"""
 
-        satisfied = True
+        object_list = []
 
-        for requirement in self.all_requirements:
-            log.debug("%s: Checking requirement %s (%s) .." % (self.name, requirement.name, requirement.state))
-            if not requirement.state == self.STATE_DONE:
-                satisfied = False
-                break
-        log.debug("%s is satisfied: %s" % (self.name, satisfied))
+        for requirement in requirements:
+            cdist_object = self.object_from_name(requirement)
 
-        return satisfied
+            if not cdist_object.state == self.STATE_DONE:
+                object_list.append(cdist_object)
 
-
-    def find_requirements_by_name(self, requirements):
-        """Takes a list of requirement patterns and returns a list of matching object instances.
-
-        Patterns are expected to be Unix shell-style wildcards for use with fnmatch.filter.
-
-        find_requirements_by_name(['__type/object_id', '__other_type/*']) -> 
-            [<Object __type/object_id>, <Object __other_type/any>, <Object __other_type/match>]
-        """
-
-
-        # FIXME: think about where/when to store this - probably not here
-        self.objects = dict((o.name, o) for o in self.list_objects(self.base_path, self.cdist_type.base_path))
-        object_names = self.objects.keys()
-
-        for pattern in requirements:
-            found = False
-            for requirement in fnmatch.filter(object_names, pattern):
-                found = True
-                yield self.objects[requirement]
-            if not found:
-                # FIXME: get rid of the singleton object_id, it should be invisible to the code -> hide it in Object
-                singleton = os.path.join(pattern, 'singleton')
-                if singleton in self.objects:
-                    yield self.objects[singleton]
-                else:
-                    raise RequirementNotFoundError(pattern)
-
-    @property
-    def all_requirements(self):
-        """
-        Return resolved autorequirements and requirements so that
-        a complete list of requirements is returned
-        """
-
-        all_reqs= []
-        all_reqs.extend(self.find_requirements_by_name(self.requirements))
-        all_reqs.extend(self.find_requirements_by_name(self.autorequire))
-
-        return set(all_reqs)
-
-
-class RequirementNotFoundError(cdist.Error):
-    def __init__(self, requirement):
-        self.requirement = requirement
-
-    def __str__(self):
-        return 'Requirement could not be found: %s' % self.requirement
+        return object_list

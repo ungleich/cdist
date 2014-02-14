@@ -1,0 +1,93 @@
+#!/bin/sh
+#
+# 2014 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+destination="/$__object_id"
+state_should="$(cat "$__object/parameter/state")"
+type="$(cat "$__object/explorer/type")"
+stat_file="$__object/explorer/stat"
+
+
+get_current_value() {
+    if [ -s "$stat_file" ]; then
+        _name="$1"
+        _value="$2"
+        case "$_value" in
+            [0-9]*)
+                _index=2
+            ;;
+            *)
+                _index=3
+            ;;
+        esac
+        awk '/'"$_name"':/ { print $'$_index' }' "$stat_file"
+        unset _name _value _index
+    fi
+}
+
+set_group() {
+    echo chgrp \"$1\" \"$destination\"
+    echo chgrp $1 >> "$__messages_out"
+}
+
+set_owner() {
+    echo chown \"$1\" \"$destination\"
+    echo chown $1 >> "$__messages_out"
+}
+
+set_mode() {
+   echo chmod \"$1\" \"$destination\"
+   echo chmod $1 >> "$__messages_out"
+}
+
+set_attributes=
+case "$state_should" in
+    present|exists)
+    # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
+    #  clearing S_ISUID and S_ISGID bits (see chown(2))
+    for attribute in group owner mode; do
+        if [ -f "$__object/parameter/$attribute" ]; then
+            value_should="$(cat "$__object/parameter/$attribute")"
+
+            # change 0xxx format to xxx format => same as stat returns
+            if [ "$attribute" = mode ]; then
+                value_should="$(echo $value_should | sed 's/^0\(...\)/\1/')"
+            fi
+            
+            value_is="$(get_current_value "$attribute" "$value_should")"
+            if [ -f "$__object/files/set-attributes" -o "$value_should" != "$value_is" ]; then
+                "set_$attribute" "$value_should"
+            fi
+        fi
+    done
+
+    ;;
+
+    absent)
+        if [ "$type" = "file" ]; then
+            echo rm -f \"$destination\"
+            echo remove >> "$__messages_out"
+        fi
+    ;;
+
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac

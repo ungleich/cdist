@@ -33,7 +33,6 @@ nearby, so grepping for FIXME gives all positions that need to be fixed.
 
 Indention is 4 spaces (welcome to the python world).
 
-
 HOW TO SUBMIT STUFF FOR INCLUSION INTO UPSTREAM CDIST
 -----------------------------------------------------
 If you did some cool changes to cdist, which you value as a benefit for
@@ -51,7 +50,7 @@ work nor kill the authors brain:
 - On a merge request, always name the branch I should pull from
 - Always ensure **all** manpages build. Use **./build man** to test.
 - If you developed more than **one** feature, consider submitting them in
-  seperate branches. This way one feature can already be included, even if
+  separate branches. This way one feature can already be included, even if
   the other needs to be improved.
 
 As soon as your work meets these requirements, write a mail
@@ -75,14 +74,91 @@ code and thus such a type introduces redundant functionality that is given by
 core cdist already.
 
 
+EXAMPLE GIT WORKFLOW
+---------------------
+The following workflow works fine for most developers:
+
+--------------------------------------------------------------------------------
+# get latest upstream master branch
+git clone https://github.com/telmich/cdist.git
+
+# update if already existing
+cd cdist; git fetch -v; git merge origin/master
+
+# create a new branch for your feature/bugfix
+cd cdist # if you haven't done before
+git checkout -b documentation_cleanup
+
+# *hack*
+*hack*
+
+# clone the cdist repository on github if you haven't done so
+
+# configure your repo to know about your clone (only once)
+git remote add github git@github.com:YOURUSERNAME/cdist.git
+
+# push the new branch to github 
+git push github documentation_cleanup
+
+# (or everything)
+git push --mirror github
+
+# create a pull request at github (use a browser)
+# *fixthingsbecausequalityassurancefoundissuesinourpatch*
+*hack*
+
+# push code to github again
+git push ... # like above
+
+# add comment that everything should be green now (use a browser)
+
+# go back to master branch
+git checkout master
+
+# update master branch that includes your changes now
+git fetch -v origin
+git diff master..origin/master
+git merge origin/master
+--------------------------------------------------------------------------------
+
+If at any point you want to go back to the original master branch, you can
+use **git stash** to stash your changes away:
+
+--------------------------------------------------------------------------------
+# assume you are on documentation_cleanup
+git stash
+
+# change to master and update to most recent upstream version
+git checkout master
+git fetch -v origin
+git merge origin/master
+--------------------------------------------------------------------------------
+
+Similar when you want to develop another new feature, you go back
+to the master branch and create another branch based on it:
+
+--------------------------------------------------------------------------------
+# change to master and update to most recent upstream version
+git checkout master
+git fetch -v origin
+git merge origin/master
+
+git checkout -b another_feature
+--------------------------------------------------------------------------------
+
+(you can repeat the code above for as many features as you want to develop
+in parallel)
 
 
 SEE ALSO
 --------
 - cdist(7)
+- git(1)
+- git-checkout(1)
+- git-stash(1)
 
 
 COPYING
 -------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

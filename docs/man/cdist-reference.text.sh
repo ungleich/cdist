@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -116,8 +116,13 @@ confdir/type/<name>/parameter/required::
 confdir/type/<name>/parameter/optional::
     Parameters optionally accepted by type, \n seperated list.
 
+confdir/type/<name>/parameter/default/*::
+    Default values for optional parameters.
+    Assuming an optional parameter name of 'foo', it's default value would
+    be read from the file confdir/type/<name>/parameter/default/foo.
+
 confdir/type/<name>/parameter/boolean::
-   Boolean parameters accepted by type, \n seperated list.
+    Boolean parameters accepted by type, \n seperated list.
 
 confdir/type/<name>/explorer::
     Location of the type specific explorers.
@@ -126,7 +131,8 @@ confdir/type/<name>/explorer::
 
 confdir/type/<name>/files::
     This directory is reserved for user data and will not be used
-    by cdist at any time
+    by cdist at any time. It can be used for storing supplementary
+    files (like scripts to act as a template or configuration files).
 
 out/::
     This directory contains output of cdist and is usually located
@@ -170,21 +176,36 @@ OBJECTS
 For object to object communication and tests, the following paths are
 usable within a object directory:
 
+files::
+    This directory is reserved for user data and will not be used
+    by cdist at any time. It can be used freely by the type 
+    (for instance to store template results).
 changed::
     This empty file exists in an object directory, if the object has
     code to be excuted (either remote or local)
+stdin::
+    This file exists and contains data, if data was provided on stdin 
+    when the type was called.
 
 
-ENVIRONMENT VARIABLES
----------------------
+ENVIRONMENT VARIABLES (FOR READING)
+-----------------------------------
+The following environment variables are exported by cdist:
+
 __explorer::
     Directory that contains all global explorers.
-    Available for: explorer, type explorer
+    Available for: initial manifest, explorer, type explorer, shell
 __manifest::
     Directory that contains the initial manifest.
-    Available for: initial manifest, type manifest
+    Available for: initial manifest, type manifest, shell
 __global::
     Directory that contains generic output like explorer.
+    Available for: initial manifest, type manifest, type gencode, shell
+__messages_in::
+    File to read messages from
+    Available for: initial manifest, type manifest, type gencode
+__messages_out::
+    File to write messages
     Available for: initial manifest, type manifest, type gencode
 __object::
     Directory that contains the current object.
@@ -200,7 +221,7 @@ __object_name::
     Available for: type manifest, type explorer, type gencode
 __target_host::
     The host we are deploying to.
-    Available for: explorer, initial manifest, type explorer, type manifest, type gencode
+    Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell
 __type::
     Path to the current type.
     Available for: type manifest, type gencode
@@ -208,6 +229,18 @@ __type_explorer::
     Directory that contains the type explorers.
     Available for: type explorer
 
+ENVIRONMENT VARIABLES (FOR WRITING)
+-----------------------------------
+The following environment variables influence the behaviour of cdist:
+
+require::
+    Setup dependencies between objects (see cdist-manifest(7))
+
+CDIST_OVERRIDE::
+    Allow overwriting type parameters (see cdist-manifest(7))
+
+CDIST_ORDER_DEPENDENCY::
+    Create dependencies based on the execution order (see cdist-manifest(7))
 
 SEE ALSO
 --------
@@ -216,6 +249,6 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2014 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
 eof

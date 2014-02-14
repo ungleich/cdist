@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="cdist-sexy-actions.svg"
+   inkscape:export-filename="/home/users/nico/cdist-sexy-actions.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.62488877"
+     inkscape:cx="526.18109"
+     inkscape:cy="410.90353"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     objecttolerance="20"
+     guidetolerance="20"
+     inkscape:window-width="1436"
+     inkscape:window-height="861"
+     inkscape:window-x="0"
+     inkscape:window-y="18"
+     inkscape:window-maximized="0"
+     gridtolerance="10" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-308.2677)">
+    <g
+       id="g3791"
+       transform="translate(-65.448375,393.5891)">
+      <rect
+         y="167.46855"
+         x="222.23357"
+         height="88.893425"
+         width="173.74623"
+         id="rect2985"
+         style="fill:#cdff13;fill-opacity:0.90416715;stroke:none" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3755"
+         y="228.0777"
+         x="260.61935"
+         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="228.0777"
+           x="260.61935"
+           id="tspan3757"
+           sodipodi:role="line">cdist</tspan></text>
+    </g>
+    <g
+       id="g3802"
+       transform="translate(-88.702304,-97.993841)">
+      <rect
+         y="519.00165"
+         x="109.09647"
+         height="90.913727"
+         width="452.54834"
+         id="rect3796"
+         style="fill:#008000;fill-opacity:0.90416715;stroke:none" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3798"
+         y="575.57019"
+         x="171.72594"
+         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="575.57019"
+           x="171.72594"
+           id="tspan3800"
+           sodipodi:role="line">configures hosts</tspan></text>
+    </g>
+    <g
+       id="g3791-5"
+       transform="translate(258.6201,492.81494)">
+      <g
+         id="g3834"
+         transform="translate(204.05081,-98.994949)">
+        <rect
+           style="fill:#cdff13;fill-opacity:0.90416715;stroke:none"
+           id="rect2985-2"
+           width="173.74623"
+           height="88.893425"
+           x="222.23357"
+           y="167.46855" />
+        <text
+           xml:space="preserve"
+           style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="264.65994"
+           y="224.03709"
+           id="text3755-9"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3757-2"
+             x="264.65994"
+             y="224.03709">sexy</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g3802-3"
+       transform="translate(436.48671,-101.85286)">
+      <g
+         id="g3866">
+        <rect
+           style="fill:#008000;fill-opacity:0.90416715;stroke:none"
+           id="rect3796-9"
+           width="452.54834"
+           height="90.913727"
+           x="109.09647"
+           y="519.00165" />
+        <text
+           xml:space="preserve"
+           style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="143.44167"
+           y="573.54987"
+           id="text3798-6"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3800-5"
+             x="143.44167"
+             y="573.54987">manages inventory</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g3802-9"
+       transform="matrix(0.96624748,0,0,1,-134.02038,188.43537)">
+      <g
+         id="g3980"
+         transform="translate(112.6206,22.403987)">
+        <rect
+           style="fill:#822a0e;fill-opacity:1;stroke:none"
+           id="rect3796-1"
+           width="319.27777"
+           height="146.92369"
+           x="115.72122"
+           y="536.6048" />
+        <text
+           xml:space="preserve"
+           style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+           x="269.50381"
+           y="592.71771"
+           id="text3798-3"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3800-6"
+             x="269.50381"
+             y="592.71771">installs hosts</tspan><tspan
+             sodipodi:role="line"
+             x="275.871"
+             y="642.71771"
+             id="tspan3968">(missing) </tspan></text>
+      </g>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 330.53142,605.54234 354.37306,0.15493"
+       id="path3924"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g3791"
+       inkscape:connection-start-point="d4"
+       inkscape:connection-end="#g3791-5"
+       inkscape:connection-end-point="d4" />
+    <text
+       xml:space="preserve"
+       style="font-size:27.59350204px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="447.33084"
+       y="637.85706"
+       id="text3926"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3928"
+         x="447.33084"
+         y="637.85706">interact</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 244.62052,561.05765 1.06374,-49.13612"
+       id="path3930"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g3791"
+       inkscape:connection-start-point="d4"
+       inkscape:connection-end="#g3802"
+       inkscape:connection-end-point="d4" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="m 243.08193,649.95108 -1.26428,97.49307"
+       id="path3932"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g3791"
+       inkscape:connection-start-point="d4"
+       inkscape:connection-end="#g3802-9"
+       inkscape:connection-end-point="d4" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 771.80236,561.28854 0.0297,-53.22603"
+       id="path3934"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g3791-5"
+       inkscape:connection-start-point="d4"
+       inkscape:connection-end="#g3802-3"
+       inkscape:connection-end-point="d4" />
+    <g
+       id="g3802-9-7"
+       transform="matrix(0.96624748,0,0,1,323.63894,252.66181)">
+      <g
+         id="g3900-3"
+         transform="matrix(1.0748862,0,0,0.96932859,-4.8574514,97.533037)">
+        <g
+           id="g3970"
+           transform="translate(58.55042,-102.35709)">
+          <rect
+             y="519.00165"
+             x="158.40208"
+             height="144.96896"
+             width="431.08368"
+             id="rect3796-1-1"
+             style="fill:#822a0e;fill-opacity:1;stroke:none" />
+          <text
+             sodipodi:linespacing="125%"
+             id="text3798-3-7"
+             y="576.61359"
+             x="374.46384"
+             style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+             xml:space="preserve"><tspan
+               y="576.61359"
+               x="374.46384"
+               id="tspan3800-6-3"
+               sodipodi:role="line">visualises inventory</tspan><tspan
+               id="tspan3966"
+               y="626.61359"
+               x="380.83102"
+               sodipodi:role="line">(missing) </tspan></text>
+        </g>
+      </g>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 771.03726,650.18197 -1.54888,92.98943"
+       id="path3986"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g3791-5"
+       inkscape:connection-start-point="d4"
+       inkscape:connection-end="#g3802-9-7"
+       inkscape:connection-end-point="d4" />
+  </g>
+</svg>

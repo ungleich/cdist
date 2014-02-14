@@ -33,7 +33,7 @@ be created, if it has different parameters.
 STAGE 3: OBJECT INFORMATION RETRIEVAL
 -------------------------------------
 Every object is checked whether its type has explorers and if so, these are 
-executed on the target host. The results are transfered back
+executed on the target host. The results are transferred back
 and can be used in the following stages to decide what changes need to be made
 on the target to implement the desired state.
 

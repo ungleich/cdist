@@ -13,14 +13,11 @@ DESCRIPTION
 This cdist type allows you to define the state of a process.
 
 
-REQUIRED PARAMETERS
+OPTIONAL PARAMETERS
 -------------------
 state::
     Either "present" or "absent", defaults to "present"
 
-
-OPTIONAL PARAMETERS
--------------------
 name::
     Process name to match on when using pgrep -f -x.
 

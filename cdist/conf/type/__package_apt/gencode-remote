@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -42,7 +42,9 @@ case "$state_is" in
     ;;
 esac
 
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
+# Hint if we need to avoid questions at some point:
+# DEBIAN_PRIORITY=critical can reduce the number of questions
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o DPkg::Options::=\"--force-confold\""
 
 [ "$state_is" = "$state_should" ] && exit 0
 

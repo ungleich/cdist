@@ -1,0 +1,42 @@
+cdist-type__apt_norecommends(7)
+===============================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__apt_norecommends - configure apt to not install recommended packages
+
+
+DESCRIPTION
+-----------
+Configure apt to not install any recommended or suggested packages.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+None.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__apt_norecommends
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2014 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

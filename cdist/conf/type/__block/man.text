@@ -1,0 +1,82 @@
+cdist-type__block(7)
+====================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__block - Manage blocks of text in files
+
+
+DESCRIPTION
+-----------
+Manage a block of text in an existing file.
+The block is identified using the prefix and suffix parameters.
+Everything between prefix and suffix is considered to be a managed block
+of text.
+
+
+REQUIRED PARAMETERS
+-------------------
+text::
+   the text to manage.
+   If text is '-' (dash), take what was written to stdin as the text.
+
+
+OPTIONAL PARAMETERS
+-------------------
+file::
+   the file in which to manage the text block.
+   Defaults to object_id.
+
+prefix::
+   the prefix to add before the text.
+   Defaults to #cdist:__block/$__object_id
+
+suffix::
+   the prefix to add after the text.
+   Defaults to #/cdist:__block/$__object_id
+
+state::
+   'present' or 'absent', defaults to 'present'
+
+
+MESSAGES
+--------
+add::
+   block was added
+update::
+   block was updated/changed
+remove::
+   block was removed
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# text from argument
+__block /path/to/file \
+   --prefix '#start' \
+   --suffix '#end' \
+   --text 'some\nblock of\ntext'
+
+# text from stdin
+__block some-id \
+   --file /path/to/file \
+   --text - << DONE
+here some block
+of text
+DONE
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2013 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

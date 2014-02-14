@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2013 Thomas Oettli (otho at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -18,28 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="$__object_id"
-user="$(cat "$__object/parameter/user")"
-command="$(cat "$__object/parameter/command")"
-
-# set defaults
-test -f "$__object/parameter/state" || echo "present" > "$__object/parameter/state"
-
-if [ -f "$__object/parameter/raw" ]; then
-   raw="$(cat "$__object/parameter/raw")"
-   entry="$raw $command"
-else
-   minute="$(cat "$__object/parameter/minute" 2>/dev/null || echo "*")"
-   hour="$(cat "$__object/parameter/hour" 2>/dev/null || echo "*")"
-   day_of_month="$(cat "$__object/parameter/day_of_month" 2>/dev/null || echo "*")"
-   month="$(cat "$__object/parameter/month" 2>/dev/null || echo "*")"
-   day_of_week="$(cat "$__object/parameter/day_of_week" 2>/dev/null || echo "*")"
-   entry="$minute $hour $day_of_month $month $day_of_week $command"
+if [ -f "$__object/parameter/raw" ] && [ -f "$__object/parameter/raw_command" ]; then
+    echo "ERROR: both raw and raw_command specified" >&2
+    exit 1
 fi
-
-# NOTE: if changed, also change in explorers
-prefix="#cdist:__cron/$name"
-suffix="#/cdist:__cron/$name"
-echo "$prefix" | tee "$__object/parameter/prefix" > "$__object/parameter/entry"
-echo "$entry" >> "$__object/parameter/entry"
-echo "$suffix" | tee "$__object/parameter/suffix" >> "$__object/parameter/entry"

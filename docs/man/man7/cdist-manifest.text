@@ -11,7 +11,7 @@ cdist-manifest - (Re-)Use types
 DESCRIPTION
 -----------
 Manifests are used to define which objects to create.
-Objects are instances of **types**, like in object orientated programming languages.
+Objects are instances of **types**, like in object oriented programming languages.
 An object is represented by the combination of
 **type + slash + object name**: **__file/etc/cdist-configured** is an
 object of the type ***__file*** with the name ***etc/cdist-configured***.
@@ -25,8 +25,8 @@ the reference with pointers to the manpages.
 Types in manifests are used like normal command line tools. Let's have a look
 at an example:
 --------------------------------------------------------------------------------
-# Create object of type __package with the parameter state = removed
-__package apache2 --state removed
+# Create object of type __package with the parameter state = absent
+__package apache2 --state absent
 
 # Same with the __directory type
  __directory /tmp/cdist --state present
@@ -57,9 +57,9 @@ DEFINE STATE IN THE INITIAL MANIFEST
 ------------------------------------
 The **initial manifest** is the entry point for cdist to find out, which
 **objects** to configure on the selected host.
-Cdist searches for the initial manifest at **cdist/conf/manifest/init**.
+Cdist expects the initial manifest at **cdist/conf/manifest/init**.
 
-Within this initial manifest, you define, which objects should be
+Within this initial manifest you define, which objects should be
 created on which host. To distinguish between hosts, you can use the
 environment variable **__target_host**. Let's have a look at a simple
 example:
@@ -107,7 +107,7 @@ DEPENDENCIES
 ------------
 If you want to describe that something requires something else, just
 setup the variable "require" to contain the requirements. Multiple
-requirements can be added white space seperated.
+requirements can be added white space separated.
 
 --------------------------------------------------------------------------------
 # No dependency
@@ -128,6 +128,38 @@ All objects that are created in a type manifest are automatically required
 from the type that is calling them. This is called "autorequirement" in
 cdist jargon.
 
+CREATE DEPENDENCIES FROM EXECUTION ORDER
+-----------------------------------------
+You can tell cdist to execute all types in the order in which they are created 
+in the manifest by setting up the variable CDIST_ORDER_DEPENDENCY.
+When cdist sees that this variable is setup, the current created object
+automatically depends on the previously created object.
+
+It essentially helps you to build up blocks of code that build upon each other
+(like first creating the directory xyz than the file below the directory).
+
+THIS IS A BETA FEATURE AND MAY BE REMOVED OR CHANGED AT ANY TIME.
+
+
+OVERRIDES
+---------
+In some special cases, you would like to create an already defined object 
+with different parameters. In normal situations this leads to an error in cdist.
+If you whish, you can setup the environment variable CDIST_OVERRIDE
+(any value or even empty is ok) to tell cdist, that this object override is 
+wanted and should be accepted.
+ATTENTION: Only use this feature if you are 100% sure in which order 
+cdist encounter the affected objects, otherwhise this results 
+into an undefined situation. 
+
+If CDIST_OVERRIDE and CDIST_ORDER_DEPENDENCY is set for an object,
+CDIST_ORDER_DEPENDENCY will be ignored, because adding a dependency in case of
+overrides would result in circular dependencies, which is an error.
+
+THIS IS A BETA FEATURE AND MAY BE REMOVED OR CHANGED AT ANY TIME.
+
+
+
 
 EXAMPLES
 --------
@@ -135,12 +167,12 @@ The initial manifest may for instance contain the following code:
 
 --------------------------------------------------------------------------------
 # Always create this file, so other sysadmins know cdist is used.
-__file /etc/cdist-configured --type file
+__file /etc/cdist-configured
 
 case "$__target_host" in
    my.server.name)
-      __file /root/bin/ --type directory
-      __file /etc/issue.net --type file --source "$__manifest/issue.net
+      __directory /root/bin/
+      __file /etc/issue.net --source "$__manifest/issue.net
    ;;
 esac
 --------------------------------------------------------------------------------
@@ -148,8 +180,63 @@ esac
 The manifest of the type "nologin" may look like this:
 
 --------------------------------------------------------------------------------
-__file /etc/nologin --type file --source "$__type/files/default.nologin"
+__file /etc/nologin --source "$__type/files/default.nologin"
 --------------------------------------------------------------------------------
+
+This example makes use of dependencies:
+
+--------------------------------------------------------------------------------
+# Ensure that lighttpd is installed
+__package lighttpd --state present
+# Ensure that munin makes use of lighttpd instead of the default webserver
+# package as decided by the package manager
+require="__package/lighttpd" __package munin --state present
+--------------------------------------------------------------------------------
+
+How to override objects:
+
+--------------------------------------------------------------------------------
+# for example in the inital manifest
+
+# reate user account foobar with some hash for password
+__user foobar --password 'some_fancy_hash' --home /home/foobarexample
+
+# ... many statements and includes in the manifest later ...
+# somewhere in a conditionaly sourced manifest 
+# (e.g. for example only sourced if a special application is on the target host)
+
+# this leads to an error ...
+__user foobar --password 'some_other_hash' 
+
+# this tells cdist, that you know that this is an override and should be accepted
+CDIST_OVERRIDE=yes __user foobar --password 'some_other_hash'
+# its only an override, means the parameter --home is not touched 
+# and stay at the original value of /home/foobarexample
+--------------------------------------------------------------------------------
+
+Dependencies defined by execution order work as following:
+
+--------------------------------------------------------------------------------
+
+# Tells cdist to execute all types in the order in which they are created ...
+export CDIST_ORDER_DEPENDENCY=on
+__sample_type 1
+require="__some_type_somewhere/id" __sample_type 2
+__example_type 23
+# Now this types are executed in the creation order until the variable is unset
+unset CDIST_ORDER_DEPENDENCY
+# all now following types cdist makes the order ..
+__not_in_order_type 42
+
+# how it works :
+# this lines above are translated to:
+__sample_type 1
+require="__some_type_somewhere/id __sample_type/1" __sample_type 2
+require="__sample_type/2" __example_type 23
+__not_in_order_type 42
+
+--------------------------------------------------------------------------------
+
 
 
 SEE ALSO
@@ -160,5 +247,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2010-2012 Nico Schottelius. Free use of this software is
+Copyright \(C) 2010-2014 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

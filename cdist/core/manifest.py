@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -94,7 +94,7 @@ class Manifest(object):
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             '__cdist_type_base_path': self.local.type_path, # for use in type emulator
-            '__global': self.local.out_path,
+            '__global': self.local.base_path,
             '__target_host': self.target_host,
         }
         if self.log.getEffectiveLevel() == logging.DEBUG:
@@ -106,6 +106,7 @@ class Manifest(object):
         env.update(self.env)
         env['__cdist_manifest'] = initial_manifest
         env['__manifest'] = self.local.manifest_path
+        env['__explorer'] = self.local.global_explorer_out_path
 
         return env
 
@@ -121,7 +122,8 @@ class Manifest(object):
         if not os.path.isfile(initial_manifest):
             raise NoInitialManifestError(initial_manifest, user_supplied)
 
-        self.local.run_script(initial_manifest, env=self.env_initial_manifest(initial_manifest))
+        message_prefix="initialmanifest"
+        self.local.run_script(initial_manifest, env=self.env_initial_manifest(initial_manifest), message_prefix=message_prefix)
 
     def env_type_manifest(self, cdist_object):
         type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
@@ -140,5 +142,6 @@ class Manifest(object):
 
     def run_type_manifest(self, cdist_object):
         type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
+        message_prefix = cdist_object.name
         if os.path.isfile(type_manifest):
            self.local.run_script(type_manifest, env=self.env_type_manifest(cdist_object))

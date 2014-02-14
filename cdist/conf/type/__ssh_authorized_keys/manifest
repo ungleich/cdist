@@ -19,7 +19,7 @@
 #
 
 owner="$(cat "$__object/parameter/owner" 2>/dev/null || echo "$__object_id")"
-state="$(cat "$__object/parameter/present" 2>/dev/null || echo "present")"
+state="$(cat "$__object/parameter/state" 2>/dev/null)"
 if [ -f "$__object/parameter/file" ]; then
    file="$(cat "$__object/parameter/file")"
 else
@@ -39,7 +39,7 @@ if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ];
    fi
 
    if [ ! -f "$__object/parameter/noparent" ]; then
-      # Ensure that the directory in which the authorized_keys shall be exists and 
+      # Ensure that the directory in which the authorized_keys shall be exists and
       # has the right permissions.
       ssh_directory="${file%/*}"
       __directory "$ssh_directory" --state present --parents \
@@ -56,19 +56,16 @@ if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ];
    fi
 fi
 
-# NOTE: keep variables in sync in manifest/explorer/gencode-*
-prefix="#cdist:$__object_name"
-suffix="#/cdist:$__object_name"
-
-mkdir "$__object/files"
-
 # Generate entry for inclusion in authorized_keys file
-entry="$__object/files/entry"
-echo "$prefix" > "$entry"
+(
 if [ -f "$__object/parameter/comment" ]; then
-   echo "# $(cat "$__object/parameter/comment")" >> "$entry"
+   echo "# $(cat "$__object/parameter/comment")"
 fi
-cat "$__object/parameter/key" >> "$entry"
-# ensure we have a newline after keys
-echo >> "$entry"
-echo "$suffix" >> "$entry"
+cat "$__object/parameter/key"
+) | \
+__block "$__object_name" \
+   --file "$file" \
+   --prefix "#cdist:$__object_name" \
+   --suffix "#/cdist:$__object_name" \
+   --state "$state" \
+   --text -

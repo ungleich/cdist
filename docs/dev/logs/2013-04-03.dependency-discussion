@@ -1,0 +1,30 @@
+Steven, Nico
+
+Discussion raised due to proposal from Arkaitz Jimenez
+
+--------------------------------------------------------------------------------
+
+Proposal changes back to cdist behaviour as of 2011 (see commit 61b7b68).
+
+Change would introduce:
+
+- no direct stage based running
+- stages only in object (not globally)
+- cannot build full dependency list before beginning
+    - Thus wildcard requirements (require="__file/*") don't work anymore
+
+Accepting this or similar approaches means:
+
+- Drop wildcard requirements (is undocumented anyway)
+- Type execution is closed (again)
+
+Furthermore/other points:
+
+- Change cdist to continue run as long as possible
+    - Don't stop if an object fails
+    - Record failure, print at the end (and exit non zero)
+
+- Logging
+    - Catch output of manifest, gencode, code, do not display directly
+    - Print at the end
+    - Prefix with hostname as usual!

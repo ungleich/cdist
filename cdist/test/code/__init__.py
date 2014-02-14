@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -39,21 +39,23 @@ conf_dir = op.join(fixtures, 'conf')
 class CodeTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.target_host = 'localhost'
-
-        self.out_path = self.mkdtemp()
+        self.local_dir = self.mkdtemp()
 
         self.local = local.Local(
             target_host=self.target_host, 
-            out_path = self.out_path,
+            base_path = self.local_dir,
             exec_path = cdist.test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
 
-        self.remote_base_path = self.mkdtemp()
+        self.remote_dir = self.mkdtemp()
         remote_exec = self.remote_exec
         remote_copy = self.remote_copy
-        self.remote = remote.Remote(self.target_host, self.remote_base_path, remote_exec, remote_copy)
+        self.remote = remote.Remote(
+            target_host=self.target_host, 
+            remote_exec=remote_exec, 
+            remote_copy=remote_copy,
+            base_path=self.remote_dir)
         self.remote.create_files_dirs()
 
         self.code = code.Code(self.target_host, self.local, self.remote)
@@ -63,8 +65,8 @@ class CodeTestCase(test.CdistTestCase):
         self.cdist_object.create()
 
     def tearDown(self):
-        shutil.rmtree(self.out_path)
-        shutil.rmtree(self.remote_base_path)
+        shutil.rmtree(self.local_dir)
+        shutil.rmtree(self.remote_dir)
 
     def test_run_gencode_local_environment(self):
         output_string = self.code.run_gencode_local(self.cdist_object)
@@ -75,7 +77,7 @@ class CodeTestCase(test.CdistTestCase):
                 key = junk.split(' ')[1]
                 output_dict[key] = value
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
@@ -90,7 +92,7 @@ class CodeTestCase(test.CdistTestCase):
                 key = junk.split(' ')[1]
                 output_dict[key] = value
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)

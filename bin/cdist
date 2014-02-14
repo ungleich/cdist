@@ -25,7 +25,7 @@ dir=${0%/*}
 
 # Ensure version is present - the bundled/shipped version contains a static version,
 # the git version contains a dynamic version
-"$dir/../build" version
+"$dir/build-helper" version
 
 libdir=$(cd "${dir}/../" && pwd -P)
 export PYTHONPATH="${libdir}"
