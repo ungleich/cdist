@@ -21,7 +21,6 @@ Changelog
 	* Type __rvm_gemset: Use default parameters for state (Daniel Heule)
 	* Type __rvm_ruby: Use default parameters for state (Daniel Heule)
 
-
 3.0.8: 2014-02-11
 	* Core: Enhance object id verification (Daniel Heule)
 	* Core: Add unit tests for dependencies based on execution order (Daniel Heule)
