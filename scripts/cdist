@@ -120,6 +120,13 @@ def commandline():
 
 def loadLogConfig():
     """Loads the log config if the user puts CDIST_LOGCFG to the environ"""
+    import logging.config
+    import json
+    try:
+        import yaml
+        yaml_present=True
+    except ImportError:
+        yaml_present=False
     # We need a temporary logger where we can log if someting with the import of the logconfig is going wrong....
     loglog = logging.getLogger('cdist.LOGCFG')
     loglog.addHandler(ch)
@@ -170,16 +177,9 @@ if __name__ == "__main__":
 
     try:
         import logging
-        import logging.config
         import os
         import re
         import cdist
-        import json
-        try:
-            import yaml
-            yaml_present=True
-        except ImportError:
-            yaml_present=False
 
         #setup logging with fine control for the admin
         rootlog = logging.getLogger()
