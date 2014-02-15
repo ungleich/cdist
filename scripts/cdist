@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -109,18 +110,48 @@ def commandline():
     # http://bugs.python.org/issue16308
     # http://bugs.python.org/issue9253
 
-    # FIXME: catching AttributeError also hides
-    # real problems.. try a different way
-
     # FIXME: we always print main help, not
     # the help of the actual parser being used!
-    try:
-        getattr(args, "func")
-    except AttributeError:
+    if not hasattr(args, "func"):
         parser['main'].print_help()
         sys.exit(0)
 
     args.func(args)
+
+def loadLogConfig():
+    """Loads the log config if the user puts CDIST_LOGCFG to the environ"""
+    # We need a temporary logger where we can log if someting with the import of the logconfig is going wrong....
+    loglog = logging.getLogger('cdist.LOGCFG')
+    loglog.addHandler(ch)
+    logconf = os.environ['CDIST_LOGCFG']
+    if os.path.exists(logconf):
+        config = None
+        try:
+            with open(logconf, 'rt') as f:
+                logcfg = f.read()
+            try:
+                config = json.loads(logcfg)
+            except ValueError as e:
+                #ok, its not pure json, so if yaml is aviable, we try to decode with yaml
+                if yaml_present:
+                    try:
+                        config = yaml.load(logcfg)
+                    except ValueError as ye:
+                        #ups, not json, not yaml, so we have no chance ...
+                        loglog.error('Unable to decode %s as json or yaml: %s', logconf, ye)
+                        sys.exit(5)
+                else:
+                    # only json decoder aviable, but it's not json ...
+                    loglog.error('Unable to decode %s as json: %s', logconf, str(e))
+                    sys.exit(5)
+            if isinstance(config,dict):
+                logging.config.dictConfig(config)
+        except PermissionError as e:
+            loglog.error('Unable to read %s from CDIST_LOGCFG',e)
+            sys.exit(4)
+    else:
+        loglog.error('Log config file %s from CDIST_LOGCFG doesn\'t exist',logconf)
+        sys.exit(3)
 
 
 
@@ -144,25 +175,27 @@ if __name__ == "__main__":
         import re
         import cdist
         import json
+        try:
+            import yaml
+            yaml_present=True
+        except ImportError:
+            yaml_present=False
 
         #setup logging with fine control for the admin
         rootlog = logging.getLogger()
         rootlog.setLevel(logging.DEBUG)
-
-        #load additionaly log config from user/admin
-        if 'CDIST_LOGCFG' in os.environ:
-            #from pudb import set_trace; set_trace()
-            logconf = os.environ['CDIST_LOGCFG']
-            if os.path.exists(logconf):
-                with open(logconf, 'rt') as f:
-                    config = json.load(f)
-                    logging.config.dictConfig(config)
 
         # create default console handler with formatter for root logger, for -v and -d
         ch = logging.StreamHandler()
         consformatter = logging.Formatter('%(levelname)s: %(name)s: %(message)s')
         ch.setFormatter(consformatter)
         ch.setLevel(logging.WARNING)
+        
+        #load additionaly log config from user/admin
+        if 'CDIST_LOGCFG' in os.environ:
+            loadLogConfig()
+
+        #add the handler after imported log config, so -v and -d do allways work
         rootlog.addHandler(ch)
 
         log = logging.getLogger("cdist")
