@@ -33,6 +33,8 @@ import cdist.exec.local
 import cdist.exec.remote
 
 from cdist import core
+from cdist import dependency
+
 
 class Config(object):
     """Cdist main class to hold arbitrary data"""
@@ -47,6 +49,7 @@ class Config(object):
         self.explorer = core.Explorer(self.local.target_host, self.local, self.remote)
         self.manifest = core.Manifest(self.local.target_host, self.local)
         self.code     = core.Code(self.local.target_host, self.local, self.remote)
+        self.dpm = dependency.DependencyManager(os.path.join(self.local.base_path, 'dependency'))
 
     def _init_files_dirs(self):
         """Prepare files and directories for the run"""
@@ -124,7 +127,8 @@ class Config(object):
             remote = cdist.exec.remote.Remote(
                 target_host=host,
                 remote_exec=args.remote_exec,
-                remote_copy=args.remote_copy)
+                remote_copy=args.remote_copy,
+                base_path=args.remote_out_path)
     
             c = cls(local, remote, dry_run=args.dry_run)
             c.run()
@@ -158,7 +162,6 @@ class Config(object):
         self.local.save_cache()
         self.log.info("Finished successful run in %s seconds", time.time() - start_time)
 
-
     def object_list(self):
         """Short name for object list retrieval"""
         for cdist_object in core.CdistObject.list_objects(self.local.object_path,
@@ -168,7 +171,6 @@ class Config(object):
             else:
                 yield cdist_object
 
-
     def iterate_once(self):
         """
             Iterate over the objects once - helper method for 
@@ -177,17 +179,18 @@ class Config(object):
         objects_changed  = False
 
         for cdist_object in self.object_list():
-            if cdist_object.requirements_unfinished(cdist_object.requirements):
+            deps = self.dpm(cdist_object.name)
+            if self.list_unfinished_objects(deps['after']):
                 """We cannot do anything for this poor object"""
                 continue
-        
+
             if cdist_object.state == core.CdistObject.STATE_UNDEF:
                 """Prepare the virgin object"""
-        
                 self.object_prepare(cdist_object)
                 objects_changed = True
-        
-            if cdist_object.requirements_unfinished(cdist_object.autorequire):
+
+            deps.reload()
+            if self.list_unfinished_objects(deps['auto']):
                 """The previous step created objects we depend on - wait for them"""
                 continue
         
@@ -210,31 +213,44 @@ class Config(object):
             objects_changed = self.iterate_once()
 
         # Check whether all objects have been finished
-        unfinished_objects = []
-        for cdist_object in self.object_list():
-            if not cdist_object.state == cdist_object.STATE_DONE:
-                unfinished_objects.append(cdist_object)
+        unfinished_objects = self.list_unfinished_objects()
 
         if unfinished_objects:
             info_string = []
 
             for cdist_object in unfinished_objects:
 
-                requirement_names = []
-                autorequire_names = []
+                deps = self.dpm(cdist_object.name)
+                unresolved_deps = {
+                    'require': [obj.name for obj in self.list_unfinished_objects(deps['after'])],
+                    'auto': [obj.name for obj in self.list_unfinished_objects(deps['auto'])],
+                }
+                info_string.append("{0}: {1}".format(cdist_object.name, pprint.pformat(unresolved_deps)))
 
-                for requirement in cdist_object.requirements_unfinished(cdist_object.requirements):
-                    requirement_names.append(requirement.name)
+            raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved:\n%s" %
+                ("\n".join(info_string)))
 
-                for requirement in cdist_object.requirements_unfinished(cdist_object.autorequire):
-                    autorequire_names.append(requirement.name)
+    def object_from_name(self, object_name):
+        base_path = self.local.object_path
+        type_path = self.local.type_path
+        type_name, object_id = core.CdistObject.split_name(object_name)
+        cdist_type = core.CdistType(type_path, type_name)
+        return core.CdistObject(cdist_type, base_path, object_id=object_id)
 
-                requirements = ", ".join(requirement_names)
-                autorequire  = ", ".join(autorequire_names)
-                info_string.append("%s requires: %s autorequires: %s" % (cdist_object.name, requirements, autorequire))
+    def list_unfinished_objects(self, object_list=None):
+        """Return a list of objects that are not yet finished."""
 
-            raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved: %s" %
-                ("; ".join(info_string)))
+        unfinished = []
+        if object_list is None:
+            object_list = self.object_list()
+        for object_or_name in object_list:
+            if isinstance(object_or_name, core.CdistObject):
+                cdist_object = object_or_name
+            else:
+                cdist_object = self.object_from_name(object_or_name)
+            if cdist_object.state != cdist_object.STATE_DONE:
+                unfinished.append(cdist_object)
+        return unfinished
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""

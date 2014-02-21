@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -74,8 +75,13 @@ case "$state_should" in
         fi
 
         cat << eof
-tmp=\$(mktemp)
-grep -v $greparg '$regex' '$file' > \$tmp && cat "\$tmp" > '$file' && rm -f "\$tmp"
+tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
+# preserve ownership and permissions of existing file
+if [ -f "$file" ]; then
+   cp -p "$file" "\$tmpfile"
+fi
+grep -v $greparg '$regex' '$file' > \$tmpfile || true
+mv -f "\$tmpfile" "$file"
 eof
     ;;
     *)

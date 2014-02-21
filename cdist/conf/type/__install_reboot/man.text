@@ -1,0 +1,43 @@
+cdist-type__install_reboot(7)
+=============================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__install_reboot - run reboot
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to reboot a machine.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+options::
+   options to pass to the reboot command. e.g. -f
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__install_reboot
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
