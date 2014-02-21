@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # 2011 Ramon Salvadó (rsalvado at gnuine dot com)
-# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012-2015 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -24,30 +24,35 @@
 
 timezone="$__object_id"
 os=$(cat "$__global/explorer/os")
-package=""
-        
+
 case "$os" in
     archlinux|debian|ubuntu)
-        package=tzdata
+        __package tzdata
+        export require="__package/tzdata"
     ;;
     suse)
-        package=timezone
+        __package timezone
+        export require="__package/timezone"
     ;;
     freebsd)
+        # whitelist
+        :
+    ;;
+    centos)
+        __package tzdata --state present
+        export require="__package/tzdata"
+        __key_value ZONE \
+            --file /etc/sysconfig/clock \
+            --delimiter '=' \
+            --value "\"$timezone\""
     ;;
     *)
-        echo "Unsupported OS $os" >&2
+        echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+        echo "Please contribute an implementation for it if you can." >&2
         exit 1
     ;;
 esac
 
-if [ ! -z "$package" ]; then
-    __package "$package" --state present
-    require="__package/$package" __link /etc/localtime    \
-           --source "/usr/share/zoneinfo/${timezone}"      \
-           --type symbolic
-fi
-
-__link /etc/localtime    \
-    --source "/usr/share/zoneinfo/${timezone}"      \
+__link /etc/localtime \
+    --source "/usr/share/zoneinfo/${timezone}" \
     --type symbolic
