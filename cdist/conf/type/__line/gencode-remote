@@ -80,7 +80,7 @@ tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
 if [ -f "$file" ]; then
    cp -p "$file" "\$tmpfile"
 fi
-grep -v $greparg '$regex' '$file' > \$tmpfile
+grep -v $greparg '$regex' '$file' > \$tmpfile || true
 mv -f "\$tmpfile" "$file"
 eof
     ;;
