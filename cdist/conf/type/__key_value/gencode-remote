@@ -47,22 +47,26 @@ case "$state_should" in
        exit 1
 esac
 
-cat <<CDIST_HEREDOC_END_HERE_MARKER
-export state="\$(cat <<"CDIST_INPUT_END_HERE_MARKER"
+cat <<__CDIST_HEREDOC_END_HERE_MARKER
+export state="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
 $state_should
-CDIST_INPUT_END_HERE_MARKER
+__CDIST_INPUT_END_HERE_MARKER
 )"
-export key="\$(cat <<"CDIST_INPUT_END_HERE_MARKER"
+export key="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
 $key
-CDIST_INPUT_END_HERE_MARKER
+__CDIST_INPUT_END_HERE_MARKER
 )"
-export delimiter="\$(cat <<"CDIST_INPUT_END_HERE_MARKER"
+export delimiter="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
 $(cat "$__object/parameter/delimiter")
-CDIST_INPUT_END_HERE_MARKER
+__CDIST_INPUT_END_HERE_MARKER
 )"
-export value="\$(cat <<"CDIST_INPUT_END_HERE_MARKER"
+export value="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
 $(cat "$__object/parameter/value")
-CDIST_INPUT_END_HERE_MARKER
+__CDIST_INPUT_END_HERE_MARKER
+)"
+export comment="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
+$(cat "$__object/parameter/comment_line")
+__CDIST_INPUT_END_HERE_MARKER
 )"
 
 tmpfile=\$(mktemp "${file}.cdist.XXXXXXXXXX")
@@ -75,9 +79,12 @@ BEGIN {
     key=ENVIRON["key"]
     delimiter=ENVIRON["delimiter"]
     value=ENVIRON["value"]
+    comment=ENVIRON["comment"]
     keydel=key delimiter
     line=keydel value
     inserted=0
+    ll=""
+    llpopulated=0
 }
 # enter the main loop
 {
@@ -85,25 +92,48 @@ BEGIN {
     i = index(\$0,keydel)
     if(i == 1) {
         if(state == "absent") {
+            if(ll == comment) {
+                # if comment is present, clear llpopulated flag
+                llpopulated=0
+            }
             # if absent, simple yump over this line
             next
         }
         else {
+            # if comment is present and not present in last line
+            if (llpopulated == 1) {
+                print ll
+                if( comment != "" && ll != comment) {
+                    print comment
+                }
+                llpopulated=0
+            }
             inserted=1
             # state is present, so insert correct line here
             print line
+            ll=line
             next
         }
     }
     else {
-        print \$0
+        if(llpopulated == 1) {
+            print ll
+        }
+        ll=\$0
+        llpopulated=1
     }
 }
 END {
+    if(llpopulated == 1) {
+        print ll
+    }
     if(inserted == 0 && state == "present" ) {
+        if(comment != "" && ll != comment){
+            print comment
+        }
         print line
     }
 }
 AWK_EOF
 mv -f "\$tmpfile" "$file"
-CDIST_HEREDOC_END_HERE_MARKER
+__CDIST_HEREDOC_END_HERE_MARKER
