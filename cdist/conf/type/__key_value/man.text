@@ -25,12 +25,15 @@ delimiter::
 OPTIONAL PARAMETERS
 -------------------
 state::
-   present or absent, defaults to present. If present, sets the key to value,
-   if absent, removes the key from the file.
+    present or absent, defaults to present. If present, sets the key to value,
+    if absent, removes the key from the file.
 key::
-   The key to change. Defaults to object_id.
+    The key to change. Defaults to object_id.
 value::
-   The value for the key. Optional if state=absent, required otherwise.
+    The value for the key. Optional if state=absent, required otherwise.
+comment_line::
+    If supplied, the comment line is inserted before the line with key and value,
+    but only if key or value is about to be changed.
 
 
 EXAMPLES
@@ -46,11 +49,22 @@ __key_value my-fancy-id --file /etc/login.defs --key SYS_UID_MAX --value 666 \
 
 # Enable packet forwarding
 __key_value net.ipv4.ip_forward --file /etc/sysctl.conf --value 1 \
-   --delimiter '='
+   --delimiter ' = ' --comment_line '# my linux kernel should act as a router'
 
 # Remove existing key/value
 __key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '=' 
 --------------------------------------------------------------------------------
+
+
+MORE INFORMATION
+----------------
+This type does not use regex to avoid quoting problems.
+So you need to specify the key and delimiteri exactly.
+Delimiter can be one or more characters.
+Due to shell limitations, we have some values which can not be used.
+These values are:
+__CDIST_HEREDOC_END_HERE_MARKER
+__CDIST_INPUT_END_HERE_MARKER
 
 
 SEE ALSO
