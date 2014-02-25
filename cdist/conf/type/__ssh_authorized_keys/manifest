@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2012-2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -70,17 +71,17 @@ _cksum() {
    echo "$1" | cksum | cut -d' ' -f 1
 }
 
-# Add each key
-IFS=$'\n'
-for key in $(cat "$__object/parameter/key"); do
-   unset IFS
-   raw_key="$(echo "$key" | tr ' ' '\n' | awk '/^ssh-(rsa|dsa)/ {printf $1" ";getline;printf $1}')"
-   set -- "$(_cksum "$raw_key")"
+while read key; do
+   cksum_key="$(_cksum "$key")"
+   line_id="${owner}-${cksum_key}"
+
+   set -- "$line_id"
    set -- "$@" --file "$file"
-   set -- "$@" --regex ".*$raw_key.*"
+   set -- "$@" --regex ".*$key.*"
    if [ "$state" = 'present' ]; then
       set -- "$@" --line "$key"
    fi
    set -- "$@" --state "$state"
-   require="__block/$__object_name" __line "$@"
-done
+   # Ensure __line does not read stdin
+   require="__block/$__object_name" __line "$@" < /dev/null
+done < "$__object/parameter/key"
