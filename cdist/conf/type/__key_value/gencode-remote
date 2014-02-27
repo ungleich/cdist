@@ -53,7 +53,9 @@ case "$state_should" in
             *)
                 echo "Unknown explorer state: $state_is" >&2
                 exit 1
+            ;;
         esac
+    ;;
     present)
         case "$state_is" in
             absent)
@@ -68,11 +70,13 @@ case "$state_should" in
             *)
                 echo "Unknown explorer state: $state_is" >&2
                 exit 1
+            ;;
         esac
     ;;
     *)
        echo "Unknown state: $state_should" >&2
        exit 1
+    ;;
 esac
 
 cat <<__CDIST_HEREDOC_END_HERE_MARKER
@@ -184,5 +188,4 @@ END {
 }
 AWK_EOF
 mv -f "\$tmpfile" "$file"
-exit 1
 __CDIST_HEREDOC_END_HERE_MARKER

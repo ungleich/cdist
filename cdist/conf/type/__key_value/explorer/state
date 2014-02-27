@@ -48,6 +48,10 @@ BEGIN {
     if(i == 1) {
         delval = substr($0,length(key)+1)
         delpos = index(delval,delimiter)
+        if(delpos == 0) {
+            # in this case, the delimiter was not found
+            next
+        }
         if(delpos > 1) {
             spaces = substr(delval,1,delpos-1)
             sub(/[ \t]*/,"",spaces)
