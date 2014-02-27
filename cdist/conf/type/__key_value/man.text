@@ -31,9 +31,28 @@ key::
     The key to change. Defaults to object_id.
 value::
     The value for the key. Optional if state=absent, required otherwise.
-comment_line::
-    If supplied, the comment line is inserted before the line with key and value,
-    but only if key or value is about to be changed.
+comment::
+    If supplied, the value will be inserted before the line with the key,
+    but only if the key or value must be changed.
+    You need to ensure yourself that the line is prefixed with the correct
+    comment sign. (for example # or ; or wathever ..)
+
+
+BOOLEAN PARAMETERS
+------------------
+exact_delimiter::
+    If supplied, thread additional whitespaces between key, delimiter and value
+    as wrong value.
+
+
+MESSAGES
+--------
+removed::
+    Line with key was removed
+inserted::
+    A new line was inserted
+changed::
+    An existing line was changed
 
 
 EXAMPLES
@@ -58,11 +77,9 @@ __key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '='
 
 MORE INFORMATION
 ----------------
-This type does not use regex to avoid quoting problems.
-So you need to specify the key and delimiteri exactly.
-Delimiter can be one or more characters.
-Due to shell limitations, we have some values which can not be used.
-These values are:
+This type try to handle as many values as possible, so it doen't use regexes.
+So you need to exatly specify the key and delimiter. Delimiter can be of any lenght.
+Due to shell limitations, we have some values which you can't use, this values are:
 __CDIST_HEREDOC_END_HERE_MARKER
 __CDIST_INPUT_END_HERE_MARKER
 

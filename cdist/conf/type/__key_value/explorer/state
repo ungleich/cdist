@@ -27,6 +27,11 @@ file="$(cat "$__object/parameter/file")"
 export delimiter="$(cat "$__object/parameter/delimiter")"
 export value="$(cat "$__object/parameter/value" 2>/dev/null \
    || echo "__CDIST_NOTSET__")"
+if [ -f "$__object/parameter/exact_delimiter" ]; then
+    export exact_delimiter=1
+else
+    export exact_delimiter=0
+fi
 
 awk -f - "$file" <<"AWK_EOF"
 BEGIN {
@@ -34,27 +39,48 @@ BEGIN {
     key=ENVIRON["key"]
     delimiter=ENVIRON["delimiter"]
     value=ENVIRON["value"]
-    keydel=key delimiter
-    line=keydel value
+    exact_delimiter=ENVIRON["exact_delimiter"]
     found=0
 }
 # enter the main loop
 {
-    i = index($0,keydel)
+    i = index($0,key)
     if(i == 1) {
+        delval = substr($0,length(key)+1)
+        delpos = index(delval,delimiter)
+        if(delpos > 1) {
+            spaces = substr(delval,1,delpos-1)
+            sub(/[ \t]*/,"",spaces)
+            if( length(spaces) > 0 ) {
+                # if there are not only spaces between key and delimiter,
+                # continue since we we are on the wrong line
+                next
+            }
+            if( exact_delimiter == 1) {
+                # we have key and delimiter, but since additional spaces are not alowed
+                # return wrongformat
+                found=1
+                print "wrongformat"
+                exit
+            }
+        }
         found=1
         if(state == "absent") {
             # on state absent, only the ocurance is relevant, so exit here
             print "present"
             exit
         }
+        linevalue=substr(delval,delpos + length(delimiter))
+        if(exact_delimiter == 0){
+            #ok, now strip tabs and whitespaces at the beginning of the value
+            sub(/[ \t]*/,"",linevalue)
+        }
         # Key with separator found
-        if($0 == line) {
+        if(linevalue == value) {
             # exact match found, so state is present
             print "present"
         }
         else {
-            # not value is wrong ...
             print "wrongvalue"
         }
         exit

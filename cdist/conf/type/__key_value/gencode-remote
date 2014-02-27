@@ -21,21 +21,49 @@
 #
 #set -x
 
-key="$__object_id"
-[ -f "$__object/parameter/key" ] && key="$(cat "$__object/parameter/key")"
 
 state_should="$(cat "$__object/parameter/state")"
-
-file="$(cat "$__object/parameter/file")"
 state_is="$(cat "$__object/explorer/state")"
 
-[ "$state_is" = "$state_should" ] && exit 0
+if [  "$state_is" = "$state_should" ]; then
+    exit 0
+fi
 
-# here we check only if the states are valid, let awk do the work ...
+file="$(cat "$__object/parameter/file")"
+key="$__object_id"
+[ -f "$__object/parameter/key" ] && key="$(cat "$__object/parameter/key")"
+if [ -f "$__object/parameter/exact_delimiter" ]; then
+    export exact_delimiter=1
+else
+    export exact_delimiter=0
+fi
+
+# here we check only if the states are valid,
+# emmit messages and 
+# let awk do the work ...
 case "$state_should" in
-    absent|present)
+    absent)
         case "$state_is" in
-            absent|wrongvalue|present)
+            absent)
+                # nothing to do
+            ;;
+            wrongformat|wrongvalue|present)
+                echo removed >> "$__messages_out"
+            ;;
+            *)
+                echo "Unknown explorer state: $state_is" >&2
+                exit 1
+        esac
+    present)
+        case "$state_is" in
+            absent)
+                echo inserted >> "$__messages_out"
+            ;;
+            wrongformated|wrongvalue)
+                echo changed >> "$__messages_out"
+            ;;
+            present)
+                # nothing to do
             ;;
             *)
                 echo "Unknown explorer state: $state_is" >&2
@@ -56,16 +84,20 @@ export key="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
 $key
 __CDIST_INPUT_END_HERE_MARKER
 )"
-export delimiter="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
-$(cat "$__object/parameter/delimiter")
-__CDIST_INPUT_END_HERE_MARKER
-)"
 export value="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
 $(cat "$__object/parameter/value")
 __CDIST_INPUT_END_HERE_MARKER
 )"
+export delimiter="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
+$(cat "$__object/parameter/delimiter")
+__CDIST_INPUT_END_HERE_MARKER
+)"
+export exact_delimiter="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
+$exact_delimiter
+__CDIST_INPUT_END_HERE_MARKER
+)"
 export comment="\$(cat <<"__CDIST_INPUT_END_HERE_MARKER"
-$(cat "$__object/parameter/comment_line")
+$(cat "$__object/parameter/comment")
 __CDIST_INPUT_END_HERE_MARKER
 )"
 
@@ -80,17 +112,33 @@ BEGIN {
     delimiter=ENVIRON["delimiter"]
     value=ENVIRON["value"]
     comment=ENVIRON["comment"]
-    keydel=key delimiter
-    line=keydel value
+    exact_delimiter=ENVIRON["exact_delimiter"]
     inserted=0
     ll=""
     llpopulated=0
+    line=key delimiter value
 }
 # enter the main loop
 {
     # I dont use regex, this is by design, so we can match against every value without special meanings of chars ...
-    i = index(\$0,keydel)
+    i = index(\$0,key)
     if(i == 1) {
+        delval = substr(\$0,length(key)+1)
+        delpos = index(delval,delimiter)
+        if(delpos > 1) {
+            spaces = substr(delval,1,delpos-1)
+            sub(/[ \t]*/,"",spaces)
+            if( length(spaces) > 0 ) {
+                # if there are not only spaces between key and delimiter,
+                # continue since we we are on the wrong line
+                if(llpopulated == 1) {
+                    print ll
+                }
+                ll=\$0
+                llpopulated=1
+                next
+            }
+        }
         if(state == "absent") {
             if(ll == comment) {
                 # if comment is present, clear llpopulated flag
@@ -136,4 +184,5 @@ END {
 }
 AWK_EOF
 mv -f "\$tmpfile" "$file"
+exit 1
 __CDIST_HEREDOC_END_HERE_MARKER
