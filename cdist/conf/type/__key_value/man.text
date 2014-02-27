@@ -41,7 +41,7 @@ comment::
 BOOLEAN PARAMETERS
 ------------------
 exact_delimiter::
-    If supplied, thread additional whitespaces between key, delimiter and value
+    If supplied, treat additional whitespaces between key, delimiter and value
     as wrong value.
 
 
