@@ -1,0 +1,84 @@
+cdist-type__git_file(7)
+=======================
+Thomas Oettli <otho--@--sfs.biz>
+
+
+NAME
+----
+cdist-type__git_file - Take a file and commit it into a local git repository
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to commit remote files into a local git repository.
+It is typically used to get a version history of important config files.
+E.g. commit to repository before and after making changes in a file.
+
+
+REQUIRED PARAMETERS
+-------------------
+repo_path::
+   The local path of the git repository.
+
+
+OPTIONAL PARAMETERS
+-------------------
+state::
+    present or absent, defaults to present.
+    If present, copies the file in the local git repository,
+    if absent, removes the file from the local git repository.
+branch::
+    The branch of the local git repository, defaults to master.
+    You have to checkout the given master in the git repository manually,
+    otherwise this type fails.
+target_path::
+    The incremental path within the git repository, to which the file
+    should be copied.
+file::
+    The remote file, defaults to object_id.
+comment::
+    If supplied, this comment will be used for the commit to the git repository.
+    Otherwise, the following comment will be used:
+    cdist: (added|updated|removed) target_path/file"
+
+
+BOOLEAN PARAMETERS
+------------------
+commit::
+    If supplied, commit the changes to the git repository.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Copy file to local repository and commit
+__git_file /etc/postfix/main.cf --repo_path /mnt/data/git/ --commit
+
+# Same, but copy file to the subdir configs in the git repository
+__git_file /etc/postfix/main.cf --repo_path /mnt/data/git/ \
+   --target_path configs --commit
+
+# Remove file in the git repository, but don't commit
+__git_file /etc/postfix/main.cf --repo_path /mnt/data/git/ --state absent
+--------------------------------------------------------------------------------
+
+
+MORE INFORMATION
+----------------
+This type try to handle as many values as possible, so it doen't use regexes.
+So you need to exatly specify the key and delimiter. Delimiter can be of any lenght.
+Due to shell limitations, we have some values which you can't use, this values are:
+__CDIST_HEREDOC_END_HERE_MARKER
+__CDIST_INPUT_END_HERE_MARKER
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2014 Thomas Oettli. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
