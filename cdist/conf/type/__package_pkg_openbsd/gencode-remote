@@ -79,7 +79,7 @@ if [ $? -ne 0 ]; then
       status="Failed to add package, uncaught exception."
     fi
     echo "Error: \$status"
-  exit 1
+    exit 1
 fi
 eof
     ;;
