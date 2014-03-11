@@ -47,24 +47,22 @@ case "$state_should" in
     present)
         if [ "$file_type" = "directory" ]; then
             # our destination is currently a directory, delete it
-            cat << DONE
-rm -rf "$destination"
-DONE
-        fi
-
-        if [ "$state_is" = "wrongsource" ]; then
-            printf 'rm -f "%s"\n' "$destination"
+            printf 'rm -rf "%s" &&\n' "$destination"
+        else
+           if [ "$state_is" = "wrongsource" ]; then
+               # our destination is a symlink but points to the wrong source,
+               # delete it
+               printf 'rm -f "%s" &&\n' "$destination"
+           fi
         fi
 
         # create our link
-        cat << DONE
-ln ${lnopt} -f "$source" "$destination"
-DONE
+        printf 'ln %s -f "%s" "%s"\n' "$lnopt" "$source" "$destination"
     ;;
     absent)
         # only delete if it is a sym/hard link
         if [ "$file_type" = "symlink" -o "$file_type" = "hardlink" ]; then
-            echo rm -f \"$destination\"
+            printf 'rm -f "%s"\n' "$destination"
         fi
     ;;
     *)
