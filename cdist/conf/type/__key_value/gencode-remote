@@ -44,7 +44,7 @@ fi
 case "$state_should" in
     absent)
         case "$state_is" in
-            absent)
+            absent|nosuchfile)
                 # nothing to do
             ;;
             wrongformat|wrongvalue|present)
@@ -58,6 +58,9 @@ case "$state_should" in
     ;;
     present)
         case "$state_is" in
+            nosuchfile)
+                echo created >> "$__messages_out"
+            ;;
             absent)
                 echo inserted >> "$__messages_out"
             ;;
@@ -104,7 +107,11 @@ export exact_delimiter="$exact_delimiter"
 
 tmpfile=\$(mktemp "${file}.cdist.XXXXXXXXXX")
 # preserve ownership and permissions by copying existing file over tmpfile
-cp -p "$file" "\$tmpfile"
+if [ -f "$file" ]; then
+    cp -p "$file" "\$tmpfile"
+else
+    touch "$file"
+fi
 awk -f - "$file" >"\$tmpfile" <<"AWK_EOF"
 BEGIN {
     # import variables in a secure way ..

@@ -53,6 +53,8 @@ inserted::
     A new line was inserted
 changed::
     An existing line was changed
+created::
+    A new line was inserted in a new file
 
 
 EXAMPLES
