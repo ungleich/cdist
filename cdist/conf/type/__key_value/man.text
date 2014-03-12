@@ -47,13 +47,13 @@ exact_delimiter::
 
 MESSAGES
 --------
-removed::
-    Line with key was removed
-inserted::
-    A new line was inserted
-changed::
-    An existing line was changed
-created::
+remove::
+    Removed existing key and value
+insert::
+    Added key and value
+change::
+    Changed value of existing key
+create::
     A new line was inserted in a new file
 
 

@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2014 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014 Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -19,7 +19,6 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#set -x
 
 
 state_should="$(cat "$__object/parameter/state")"
@@ -48,7 +47,7 @@ case "$state_should" in
                 # nothing to do
             ;;
             wrongformat|wrongvalue|present)
-                echo removed >> "$__messages_out"
+                echo "remove" >> "$__messages_out"
             ;;
             *)
                 echo "Unknown explorer state: $state_is" >&2
@@ -59,13 +58,13 @@ case "$state_should" in
     present)
         case "$state_is" in
             nosuchfile)
-                echo created >> "$__messages_out"
+                echo "create" >> "$__messages_out"
             ;;
             absent)
-                echo inserted >> "$__messages_out"
+                echo "insert" >> "$__messages_out"
             ;;
             wrongformated|wrongvalue)
-                echo changed >> "$__messages_out"
+                echo "change" >> "$__messages_out"
             ;;
             present)
                 # nothing to do
