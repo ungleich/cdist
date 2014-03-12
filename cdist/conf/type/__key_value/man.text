@@ -70,7 +70,7 @@ __key_value my-fancy-id --file /etc/login.defs --key SYS_UID_MAX --value 666 \
 
 # Enable packet forwarding
 __key_value net.ipv4.ip_forward --file /etc/sysctl.conf --value 1 \
-   --delimiter ' = ' --comment_line '# my linux kernel should act as a router'
+   --delimiter ' = ' --comment '# my linux kernel should act as a router'
 
 # Remove existing key/value
 __key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '=' 
