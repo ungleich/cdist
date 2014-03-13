@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -18,30 +18,5 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-destination="/$__object_id"
-
-# nothing to work with, nothing we could do
-[ -e "$destination" ] || exit 0
-
-os=$("$__explorer/os")
-case "$os" in
-   "freebsd"|"openbsd")
-      # FIXME: should be something like this based on man page, but can not test
-      stat -f "type: %ST
-owner: %Du %Su
-group: %Dg %Sg
-mode: %Op %Sp
-size: %Dz
-links: %Dl
-" "$destination"
-   ;;
-   *)
-      stat --printf="type: %F
-owner: %u %U
-group: %g %G
-mode: %a %A
-size: %s
-links: %h
-" "$destination"
-   ;;
-esac
+gid="$("$__type_explorer/passwd" | cut -d':' -f 4)"
+getent group "$gid" || true

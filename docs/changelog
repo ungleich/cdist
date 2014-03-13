@@ -5,8 +5,15 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.0.10:
+next:
+	* Type __file: Enhance OpenBSD Support (og)
 	* Type __git: Pass onwer/group/mode values to __directory
+	* Type __iptable_rule: Fix example documentation (Antoine Catton)
+	* Type __key_value: Add messaging support
+	* Type __package_pkg_openbsd: Allow to change PKG_PATH (og)
+	* Type __ssh_authorized_keys: Allow managing existing keys (Steven Armstrong)
+	* Type __user: Enhance OpenBSD Support (og)
+
 
 3.0.9: 2014-02-14
 	* Core: Ignore order dependencies if override is set (Daniel Heule)
@@ -20,7 +27,6 @@ Changelog
 	* Type __rvm_gem: Use default parameters for state (Daniel Heule)
 	* Type __rvm_gemset: Use default parameters for state (Daniel Heule)
 	* Type __rvm_ruby: Use default parameters for state (Daniel Heule)
-
 
 3.0.8: 2014-02-11
 	* Core: Enhance object id verification (Daniel Heule)

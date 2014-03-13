@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -42,12 +42,14 @@ cp -p "$file" "\$tmpfile"
 sed '/^$key\($delimiter\+\)/d' "$file" > "\$tmpfile"
 mv -f "\$tmpfile" "$file"
 DONE
+        echo "remove" >> "$__messages_out"
     ;;
     present)
         case "$state_is" in
             absent)
                 # add new key and value
                 printf 'echo "%s%s%s" >> "%s"' "$key" "$delimiter" "$value_escaped" "$file"
+                echo "add" >> "$__messages_out"
             ;;
             wrongvalue)
                 # change exisiting value
@@ -58,6 +60,7 @@ cp -p "$file" "\$tmpfile"
 sed "s|^$key\($delimiter\+\).*|$key\\1$value_escaped|" "$file" > "\$tmpfile"
 mv -f "\$tmpfile" "$file"
 DONE
+                echo "changevalue" >> "$__messages_out"
             ;;
             *)
                 echo "Unknown explorer state: $state_is" >&2

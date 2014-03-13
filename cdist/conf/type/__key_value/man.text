@@ -32,6 +32,15 @@ key::
 value::
    The value for the key. Optional if state=absent, required otherwise.
 
+MESSAGES
+--------
+create::
+    Added key and value
+change::
+    Changed value of existing key
+remove::
+    Removed existing key and value
+
 
 EXAMPLES
 --------
