@@ -55,6 +55,11 @@ To upgrade to the lastet version do
 
 ## General Update Instructions
 
+### Updating from 3.0 to 3.1
+
+The type **\_\_ssh_authorized_keys** now also manages existing keys, 
+not only the ones added by cdist.
+
 ### Updating from 2.3 to 3.0
 
 The **changed** attribute of objects has been removed.
