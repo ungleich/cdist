@@ -58,6 +58,7 @@ if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ];
 fi
 
 # Remove legacy blocks created by old versions of this type
+# FIXME: remove me in 3.2+
 __block "$__object_name" \
    --file "$file" \
    --prefix "#cdist:$__object_name" \
