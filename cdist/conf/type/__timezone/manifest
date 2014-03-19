@@ -37,7 +37,10 @@ case "$os" in
         require="__package/tzdata" __link /etc/localtime    \
             --source "/usr/share/zoneinfo/${timezone}"      \
             --type symbolic
-        __key_value ZONE \
+        __file /etc/sysconfig/clock \
+            --owner root --group root --mode 644 \
+            --state exists
+        require="__file/etc/sysconfig/clock" __key_value ZONE \
            --file /etc/sysconfig/clock \
            --delimiter '=' \
            --value "\"$timezone\""
