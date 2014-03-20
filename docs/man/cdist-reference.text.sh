@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -209,10 +210,10 @@ __messages_out::
     Available for: initial manifest, type manifest, type gencode
 __object::
     Directory that contains the current object.
-    Available for: type manifest, type explorer, type gencode
+    Available for: type manifest, type explorer, type gencode and code scripts
 __object_id::
     The type unique object id.
-    Available for: type manifest, type explorer, type gencode
+    Available for: type manifest, type explorer, type gencode and code scripts
     Note: The leading and the trailing "/" will always be stripped (caused by
     the filesystem database and ensured by the core).
     Note: Double slashes ("//") will not be fixed and result in an error.
