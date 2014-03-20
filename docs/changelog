@@ -5,6 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.1.1:
+	* Core: Make __object and __object available to code (Daniel Heule)
+
 3.1.0: 2014-03-19
 	* New Type: __rbenv
 	* Type __file: Enhance OpenBSD Support (og)
