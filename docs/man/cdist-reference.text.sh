@@ -159,12 +159,12 @@ The following types are available:
 
 eof
 
-for type in man7/cdist-type__*.html; do
+for type in man7/cdist-type__*.text; do
     no_dir="${type#man7/}";
     no_type="${no_dir#cdist-type}";
-    name="${no_type%.html}";
+    name="${no_type%.text}";
     name_no_underline="$(echo $name | sed 's/^__/\\__/g')"
-    man="${no_dir%.html}(7)"
+    man="${no_dir%.text}(7)"
 
     echo "- $name_no_underline" "($man)"
 done
