@@ -123,15 +123,27 @@ class Code(object):
         self.remote.mkdir(destination)
         self.remote.transfer(source, destination)
 
-    def _run_code(self, cdist_object, which):
+    def _run_code(self, cdist_object, which, env=None):
         which_exec = getattr(self, which)
         script = os.path.join(which_exec.object_path, getattr(cdist_object, 'code_%s_path' % which))
-        return which_exec.run_script(script)
+        return which_exec.run_script(script, env=env)
 
     def run_code_local(self, cdist_object):
         """Run the code-local script for the given cdist object."""
-        return self._run_code(cdist_object, 'local')
+        # Put some env vars, to allow read only access to the parameters over $__object
+        env = os.environ.copy()
+        env.update(self.env)
+        env.update({
+            '__object': cdist_object.absolute_path,
+            '__object_id': cdist_object.object_id,
+        })
+        return self._run_code(cdist_object, 'local', env=env)
 
     def run_code_remote(self, cdist_object):
         """Run the code-remote script for the given cdist object on the remote side."""
-        return self._run_code(cdist_object, 'remote')
+        # Put some env vars, to allow read only access to the parameters over $__object which is already on the remote side
+        env = {
+            '__object': os.path.join(self.remote.object_path, cdist_object.path),
+            '__object_id': cdist_object.object_id,
+        }
+        return self._run_code(cdist_object, 'remote', env=env)
