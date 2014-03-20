@@ -157,13 +157,13 @@ TYPES
 The following types are available:
 
 eof
-
-for type in man7/cdist-type__*.text; do
+set -x
+for type in man7/cdist-type__*.html; do
     no_dir="${type#man7/}";
     no_type="${no_dir#cdist-type}";
-    name="${no_type%.text}";
+    name="${no_type%.html}";
     name_no_underline="$(echo $name | sed 's/^__/\\__/g')"
-    man="${no_dir%.text}(7)"
+    man="${no_dir%.html}(7)"
 
     echo "- $name_no_underline" "($man)"
 done
@@ -209,10 +209,12 @@ __messages_out::
     Available for: initial manifest, type manifest, type gencode
 __object::
     Directory that contains the current object.
-    Available for: type manifest, type explorer, type gencode
+    Available for: type manifest, type explorer, type gencode and 
+    at the execution of the gencode scripts 
 __object_id::
     The type unique object id.
-    Available for: type manifest, type explorer, type gencode
+    Available for: type manifest, type explorer, type gencode and
+    at the execution of the gencode scripts 
     Note: The leading and the trailing "/" will always be stripped (caused by
     the filesystem database and ensured by the core).
     Note: Double slashes ("//") will not be fixed and result in an error.
