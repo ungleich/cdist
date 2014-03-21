@@ -5,14 +5,18 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-next:
-	* Type __git: Pass onwer/group/mode values to __directory
-	* Type __ssh_authorized_keys: Allow managing existing keys (Steven Armstrong)
-	* Type __iptable_rule: Fix example documentation (Antoine Catton)
-	* Type __file: Enhance OpenBSD Support (og)
-	* Type __package_pkg_openbsd: Allow to change PKG_PATH (og)
-	* Type __user: Enhance OpenBSD Support (og)
+3.1.1:
+	* Core: Make __object and __object available to code (Daniel Heule)
 
+3.1.0: 2014-03-19
+	* New Type: __rbenv
+	* Type __file: Enhance OpenBSD Support (og)
+	* Type __git: Pass onwer/group/mode values to __directory
+	* Type __iptable_rule: Fix example documentation (Antoine Catton)
+	* Type __key_value: Add messaging support
+	* Type __package_pkg_openbsd: Allow to change PKG_PATH (og)
+	* Type __ssh_authorized_keys: Allow managing existing keys (Steven Armstrong)
+	* Type __user: Enhance OpenBSD Support (og)
 
 3.0.9: 2014-02-14
 	* Core: Ignore order dependencies if override is set (Daniel Heule)
