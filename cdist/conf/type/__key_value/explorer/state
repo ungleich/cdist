@@ -21,8 +21,8 @@
 
 export key="$(cat "$__object/parameter/key" 2>/dev/null \
    || echo "$__object_id")"
-export state="$(cat "$__object/parameter/state" 2>/dev/null \
-   || echo "present")"
+export state="$(cat "$__object/parameter/state")"
+
 file="$(cat "$__object/parameter/file")"
 
 if [ ! -f "$file" ]; then
