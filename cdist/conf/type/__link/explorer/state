@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012-2014 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -34,8 +34,13 @@ case "$type" in
    symbolic)
       cd "$destination_dir"
       source_is=$(ls -l "$destination" | sed 's/.*-> //g')
-      if [ -h "$destination" -a "$source_is" = "$source" ]; then
-         echo present
+      if [ -h "$destination" ]; then
+         # ignore trailing slashes for comparison
+         if [ "${source_is%/}" = "${source%/}" ]; then
+            echo present
+         else
+            echo wrongsource
+         fi
       else
          echo absent
       fi
