@@ -1,5 +1,3 @@
-#!/bin/sh
-
 export key="$(cat "$__object/parameter/key" 2>/dev/null \
    || echo "$__object_id")"
 export state="$(cat "$__object/parameter/state")"
@@ -32,8 +30,8 @@ BEGIN {
     comment=ENVIRON["comment"]
     exact_delimiter=ENVIRON["exact_delimiter"]
     inserted=0
-    ll=""
-    llpopulated=0
+    lastline=""
+    lastlinepopulated=0
     line=key delimiter value
 }
 # enter the main loop
@@ -49,52 +47,52 @@ BEGIN {
             if( length(spaces) > 0 ) {
                 # if there are not only spaces between key and delimiter,
                 # continue since we we are on the wrong line
-                if(llpopulated == 1) {
-                    print ll
+                if(lastlinepopulated == 1) {
+                    print lastline
                 }
-                ll=$0
-                llpopulated=1
+                lastline=$0
+                lastlinepopulated=1
                 next
             }
         }
         if(state == "absent") {
-            if(ll == comment) {
-                # if comment is present, clear llpopulated flag
-                llpopulated=0
+            if(lastline == comment) {
+                # if comment is present, clear lastlinepopulated flag
+                lastlinepopulated=0
             }
             # if absent, simple yump over this line
             next
         }
         else {
             # if comment is present and not present in last line
-            if (llpopulated == 1) {
-                print ll
-                if( comment != "" && ll != comment) {
+            if (lastlinepopulated == 1) {
+                print lastline
+                if( comment != "" && lastline != comment) {
                     print comment
                 }
-                llpopulated=0
+                lastlinepopulated=0
             }
             inserted=1
             # state is present, so insert correct line here
             print line
-            ll=line
+            lastline=line
             next
         }
     }
     else {
-        if(llpopulated == 1) {
-            print ll
+        if(lastlinepopulated == 1) {
+            print lastline
         }
-        ll=$0
-        llpopulated=1
+        lastline=$0
+        lastlinepopulated=1
     }
 }
 END {
-    if(llpopulated == 1) {
-        print ll
+    if(lastlinepopulated == 1) {
+        print lastline
     }
     if(inserted == 0 && state == "present" ) {
-        if(comment != "" && ll != comment){
+        if(comment != "" && lastline != comment){
             print comment
         }
         print line
