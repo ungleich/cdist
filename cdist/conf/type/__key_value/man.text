@@ -79,11 +79,8 @@ __key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '='
 
 MORE INFORMATION
 ----------------
-This type try to handle as many values as possible, so it doen't use regexes.
-So you need to exatly specify the key and delimiter. Delimiter can be of any lenght.
-Due to shell limitations, we have some values which you can't use, this values are:
-__CDIST_HEREDOC_END_HERE_MARKER
-__CDIST_INPUT_END_HERE_MARKER
+This type try to handle as many values as possible, so it doesn't use regexes.
+So you need to exactly specify the key and delimiter. Delimiter can be of any lenght.
 
 
 SEE ALSO
