@@ -69,12 +69,17 @@ case "$state_should" in
         # use this because pkg_add doesn't properly handle errors
         cat << eof
 export PKG_PATH="$pkg_path"                                              
-status=\$(pkg_add "$pkgopts" "$name--$flavor")
+status=\$(pkg_add "$pkgopts" "$name--$flavor" 2>&1)
+pkg_info | grep "^${name}.*${flavor}" > /dev/null 2>&1
 
-# no error
-if [ -n "\$status" ]; then
+# We didn't find the package in the list of 'installed packages', so it failed
+# This is necessary because pkg_add doesn't return properly
+if [ \$? -ne 0 ]; then
+    if [ -z "\${status}" ]; then
+      status="Failed to add package, uncaught exception."
+    fi
     echo "Error: \$status"
-	exit 1
+    exit 1
 fi
 eof
     ;;
@@ -83,9 +88,14 @@ eof
         # use this because pkg_add doesn't properly handle errors
         cat << eof
 status=\$(pkg_delete "$pkgopts" "$name--$flavor")
+pkg_info | grep "^${name}.*${flavor}" > /dev/null 2>&1
 
-# no error
-if [ -n "\$status" ]; then
+# We found the package in the list of 'installed packages'
+# This would indicate that pkg_delete failed, send the output of pkg_delete
+if [ \$? -eq 0 ]; then
+    if [ -z "\${status}" ]; then
+      status="Failed to remove package, uncaught exception."
+    fi
     echo "Error: \$status"
     exit 1
 fi
