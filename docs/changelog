@@ -9,6 +9,7 @@ Changelog
 	* Core: Make __object and __object available to code (Daniel Heule)
 	* Type __line: Ensure permissions are kept (Steven Armstrong)
 	* Type __link: Do not create link in directory, if link exists (Steven Armstrong)
+	* Type __package_pkg_openbsd: Improve error handling (og)
 
 3.1.0: 2014-03-19
 	* New Type: __rbenv
