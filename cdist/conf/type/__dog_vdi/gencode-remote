@@ -1,0 +1,19 @@
+################################################################################
+# State: absent is handled by manifest - we need only to do stuff if image is
+# not existing and state != absent
+#
+state="$(cat "$__object/parameter/state")"
+[ "$state" = "absent" ] && exit 0
+
+exists="$(cat "$__object/explorer/exists")"
+[ "$exists" ] && exit 0
+
+################################################################################
+# Still there? Create image
+#
+
+format="$(cat "$__object/parameter/format")"
+size="$(cat "$__object/parameter/size")"
+diskimage="/$__object_id"
+
+echo qemu-img create -f \"$format\" \"$diskimage\" \"$size\"
