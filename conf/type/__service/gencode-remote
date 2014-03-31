@@ -1,0 +1,98 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+# Debug
+#exec >&2
+#set -x
+
+state="$(cat "$__object/parameter/state")"
+
+### Begin forming $cmd
+cmd=""
+cmd="$(cat <<EOF
+name="$__object_id"
+
+# Stupid Bourne shell and its lack of array support...
+rc_dirs="/etc/rc.d:/usr/local/etc/rc.d"
+exists=""
+save_IFS="\$IFS"
+IFS=":"
+for dir in \$rc_dirs; do
+   [ -f "\$dir/\$name" ] && exists="\$dir/\$name"
+done
+IFS="\$save_IFS"
+
+if [ -z "\$exists" ]; then
+   echo "\$name doesn't exist as a system service on \$__target_host." >&2
+   exit -1
+fi
+
+status="\$("\$exists" status || true)"
+if [ "\$(expr "\$status" : "Cannot 'status' \$name. Set \${name}_enable to YES")" != "0" ]; then
+   echo "Can't status \$name. Set \${name}_enable to YES first in rc.conf on \$__target_host." >&2
+   exit -1
+fi
+
+EOF)"
+### End forming $cmd
+
+### Begin forming $running
+running="$(cat <<EOF
+if [ \$(expr "\$status" : ".*stopped.*") != "0" ]; then
+   "\$exists" start 2>&- >&-
+elif [ \$(expr "\$status" : ".*not running.*") != "0" ]; then
+   "\$exists" start 2>&- >&-
+elif [ \$(expr "\$status" : ".*dead.*") != "0" ]; then
+   "\$exists" restart 2>&- >&-
+fi
+EOF)"
+### End forming $running
+
+### Begin forming $stopped
+stopped="$(cat <<EOF
+   if [ \$(expr "\$status" : ".*not running.*") != "0" ]; then
+      # Do nothing -- expr cannot handle negative fwd lookups
+      #    (to my knowledge, anyway)
+      echo
+   elif [ \$(expr "\$status" : ".*running.*") != "0" ]; then
+      "\$exists" stop 2>&- >&-
+   fi
+EOF)"
+### End forming $stopped
+
+case "$state" in
+   present)
+      cmd="$(echo "${cmd}\n${running}")"
+      ;;
+   absent)
+      cmd="$(echo "${cmd}\n${stopped}")"
+      ;;
+   *)
+      echo "Unknown state: ${state}" >&2
+      exit 1
+      ;;
+esac
+
+echo "${cmd}"
+
+# Debug
+#set +x
+

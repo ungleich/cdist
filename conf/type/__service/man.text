@@ -1,0 +1,48 @@
+cdist-type__service(7)
+======================
+Jake Guffey <jake.guffey--@--eprotex.com>
+
+
+NAME
+----
+cdist-type__service - Control a system service (daemon) state
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to control the state of a service (daemon).
+
+
+REQUIRED PARAMETERS
+-------------------
+state::
+   State of the service: Either absent or present.
+
+
+OPTIONAL PARAMETERS
+-------------------
+None.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Start if not running
+__service syslog-ng --state present
+
+# Stop the process if it is running
+__service sshd --state absent
+
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Jake Guffey. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
