@@ -26,6 +26,7 @@ case "$state_should" in
             echo "Size is required when state is present" >&2
             exit 1
         fi
+    ;;
     absent)
         :
     ;;
