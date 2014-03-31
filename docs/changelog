@@ -5,6 +5,10 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.1.2:
+	* Type __qemu_img: size is optional, if state is not present
+	* New Type: __dog_vdi
+
 3.1.1: 2014-03-26
 	* Core: Make __object and __object_id available to code (Daniel Heule)
 	* New explorer: cpu_cores (Daniel Heule/Thomas Oettli)
