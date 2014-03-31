@@ -19,9 +19,9 @@ OPTIONAL PARAMETERS
 state::
     Either "present" or "absent", defaults to "present"
 size::
-    Size of the image in dog vdi compatible units.
+    Size of the image in "dog vdi" compatible units.
 
-    Required if state == present.
+    Required if state is "present".
 
 
 
