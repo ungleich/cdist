@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Jake Guffey (jake.guffey at eprotex.com)
+# 2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -17,38 +17,26 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# See if the jailbase.tgz or $jaildir/base dir exists
-#
 
-# Debug
-#exec >&2
-#set -x
+state_should="$(cat "$__object/parameter/state")"
+num_vdi_lines=$(wc -l < "$__object/explorer/list")
+name="$__object_id"
 
-if [ -f "$__object/parameter/jaildir" ]; then
-   jaildir="$(cat "$__object/parameter/jaildir")"
+
+if [ "$num_vdi_lines" = 1 ]; then
+    state_is=present
 else
-   jaildir="/usr/jail"
+    state_is=absent
 fi
 
-name="base:jailbase.tgz"
-out=""
+[ "$state_is" = "$state_should" ] && exit 0
 
-save_IFS="$IFS"
-IFS=":"
-for cur in $name; do
-    if [ -e "${jaildir}/$cur" ]; then
-        out="${out}:${cur}"
-    fi
-done
-IFS="$save_IFS"
-
-if [ -z "$out" ]; then
-    echo "NONE"
-else
-    echo "${out}"
-fi
-
-# Debug
-#set +x
-
+case "$state_should" in
+    present)
+        size="$(cat "$__object/parameter/size")"
+        echo "dog vdi create '$name' '$size'"
+    ;;
+    absent)
+        echo "dog vdi delete '$name'"
+    ;;
+esac

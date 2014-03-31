@@ -1,46 +1,46 @@
-cdist-type__qemu_img(7)
-========================
+cdist-type__rbenv(7)
+====================
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 NAME
 ----
-cdist-type__qemu_img - Manage VM disk images
+cdist-type__rbenv - Manage rbenv installation
 
 
 DESCRIPTION
 -----------
-The qemu-img program is used to create qemu images for
-qemu and (qemu-)kvm.
-
+This cdist type allows you to manage rbenv installations.
+It also installs ruby-build.
 
 
 OPTIONAL PARAMETERS
 -------------------
 state::
     Either "present" or "absent", defaults to "present"
-size::
-    Size of the image in qemu-img compatible units.
 
-    Required if state is "present".
+owner::
+    Which user should own the rbenv installation, defaults to root
 
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Create a 50G size image
-__qemu_img /home/services/kvm/vm/myvmname/system-disk --size 50G
+# Install rbenv including ruby-build for nico
+__rbenv /home/nico
 
-# Remove image
-__qemu_img /home/services/kvm/vm/myoldvm/system-disk --state absent
+# Install rbenv including ruby-build for nico
+__rbenv /home/nico --owner nico
+
+# Bastian does not need rbenv anymore, he began to code C99
+__rbenv /home/bastian --state absent
 --------------------------------------------------------------------------------
 
 
 SEE ALSO
 --------
 - cdist-type(7)
-- qemu-img(1)
 
 
 COPYING

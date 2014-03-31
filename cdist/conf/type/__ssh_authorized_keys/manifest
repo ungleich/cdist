@@ -1,6 +1,7 @@
 #!/bin/sh
 #
-# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012-2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -32,7 +33,7 @@ else
 fi
 
 if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ]; then
-   group="$(cut -d':' -f 4 "$__object/explorer/passwd")"
+   group="$(cut -d':' -f 1 "$__object/explorer/group")"
    if [ -z "$group" ]; then
       echo "Failed to get owners group from explorer." >&2
       exit 1
@@ -56,16 +57,32 @@ if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ];
    fi
 fi
 
-# Generate entry for inclusion in authorized_keys file
-(
-if [ -f "$__object/parameter/comment" ]; then
-   echo "# $(cat "$__object/parameter/comment")"
-fi
-cat "$__object/parameter/key"
-) | \
+# Remove legacy blocks created by old versions of this type
+# FIXME: remove me in 3.2+
 __block "$__object_name" \
    --file "$file" \
    --prefix "#cdist:$__object_name" \
    --suffix "#/cdist:$__object_name" \
-   --state "$state" \
-   --text -
+   --state 'absent' \
+   --text - << DONE
+remove legacy block
+DONE
+
+_cksum() {
+   echo "$1" | cksum | cut -d' ' -f 1
+}
+
+while read key; do
+   cksum_key="$(_cksum "$key")"
+   line_id="${owner}-${cksum_key}"
+
+   set -- "$line_id"
+   set -- "$@" --file "$file"
+   set -- "$@" --regex ".*$key.*"
+   if [ "$state" = 'present' ]; then
+      set -- "$@" --line "$key"
+   fi
+   set -- "$@" --state "$state"
+   # Ensure __line does not read stdin
+   require="__block/$__object_name" __line "$@" < /dev/null
+done < "$__object/parameter/key"
