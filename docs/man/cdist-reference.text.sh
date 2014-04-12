@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2014 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -236,6 +236,12 @@ The following environment variables influence the behaviour of cdist:
 
 require::
     Setup dependencies between objects (see cdist-manifest(7))
+
+CDIST_LOCAL_SHELL::
+    Use this shell locally instead of /bin/sh to execute scripts
+
+CDIST_REMOTE_SHELL::
+    Use this shell remotely instead of /bin/sh to execute scripts
 
 CDIST_OVERRIDE::
     Allow overwriting type parameters (see cdist-manifest(7))
