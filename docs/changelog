@@ -5,7 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.1.2:
+3.1.2: 2014-04-12
 	* Documentation: Add missing environment variables to reference
 	* Type __qemu_img: size is optional, if state is not present
 	* Type __key_value: Rewrite using awk (Daniel Heule)
