@@ -20,8 +20,8 @@
 #
 # Manage services with Zypper (mostly suse)
 #
-if [ -f "$__object/parameter/service_uri" ]; then
-   uri="$(cat "$__object/parameter/service_uri")"
+if [ -f "$__object/parameter/uri" ]; then
+   uri="$(cat "$__object/parameter/uri")"
 else
    uri="/$__object_id"
 fi
