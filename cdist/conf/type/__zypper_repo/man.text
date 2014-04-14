@@ -22,13 +22,13 @@ OPTIONAL PARAMETERS
 -------------------
 state::
     Either "present" or "absent" or "enabled" or "disabled", defaults to "present" + 
-    #present#  - make sure that the repo is aviable, needs repo_uri and repo_desc + 
-         for all following states, the repo can be searched via repo_id or repo_uri + 
+    #present#  - make sure that the repo is aviable, needs uri and repo_desc + 
+         for all following states, the repo can be searched via repo_id or uri + 
     #absent#   - drop the repo if found + 
     #enabled#  - a repo can have state disabled if installed via zypper service (ris), in this case, you can enable the repo + 
     #disabled# - instead of absent (drop), a repo can also set to disabled, wich makes it inaccessible + 
 
-repo_uri::
+uri::
     If supplied, use the uri and not the object id as repo uri.
 
 repo_desc::
@@ -43,10 +43,10 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Ensure testrepo in installed
-__zypper_repo testrepo --state present --repo_uri http://url.to.your.repo/with/path
+__zypper_repo testrepo --state present --uri http://url.to.your.repo/with/path
 
 # Drop repo by repo uri
-__zypper_repo testrepo --state absent --repo_uri http://url.to.your.repo/with/path
+__zypper_repo testrepo --state absent --uri http://url.to.your.repo/with/path
 
 # Drop repo by id number (attention: repos are always numbered from 1 to max)
 __zypper_repo testrepo --state absent --repo_id 1
@@ -55,7 +55,7 @@ __zypper_repo testrepo --state absent --repo_id 1
 __zypper_repo testrepo2 --state enabled --repo_id 2
 
 # enable repo by uri
-__zypper_repo testrepo3 --state enabled --repo_uri http://url.to.your.repo/with/path
+__zypper_repo testrepo3 --state enabled --uri http://url.to.your.repo/with/path
 
 # disable a repo works like enabling it
 __zypper_repo testrepo4 --state disabled --repo_id 4
