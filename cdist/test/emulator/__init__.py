@@ -103,6 +103,31 @@ class EmulatorTestCase(test.CdistTestCase):
         emu = emulator.Emulator(argv, env=self.env)
         # if we get here all is fine
 
+    def test_requirement_via_order_dependency(self):
+        self.env['CDIST_ORDER_DEPENDENCY'] = 'on'
+        argv = ['__planet', 'erde']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__planet', 'mars']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        # In real world, this is not shared over instances
+        del self.env['require']
+        argv = ['__file', '/tmp/cdisttest']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        # now load the objects and verify the require parameter of the objects
+        cdist_type = core.CdistType(self.local.type_path, '__planet')
+        erde_object = core.CdistObject(cdist_type, self.local.object_path, 'erde')
+        mars_object = core.CdistObject(cdist_type, self.local.object_path, 'mars')
+        cdist_type = core.CdistType(self.local.type_path, '__file')
+        file_object = core.CdistObject(cdist_type, self.local.object_path, '/tmp/cdisttest')
+        # now test the recorded requirements
+        self.assertTrue(len(erde_object.requirements) == 0)
+        self.assertEqual(list(mars_object.requirements), ['__planet/erde'])
+        self.assertEqual(list(file_object.requirements), ['__planet/mars'])
+        # if we get here all is fine
+
 
 class AutoRequireEmulatorTestCase(test.CdistTestCase):
 

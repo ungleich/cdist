@@ -2,6 +2,7 @@
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -136,6 +137,22 @@ class ConfigRunTestCase(test.CdistTestCase):
         first.requirements = ['__first']
         with self.assertRaises(cdist.core.cdist_object.MissingObjectIdError):
             self.config.iterate_until_finished()
+
+
+    def test_dryrun(self):
+        """Test if the dryrun option is working like expected"""
+        drylocal = cdist.exec.local.Local(
+            target_host=self.target_host,
+            base_path=self.local_dir,
+            #exec_path can not derivated from sys.argv in case of unittest ...
+            exec_path=os.path.abspath(os.path.join(my_dir,'../../../scripts/cdist')),
+            initial_manifest=os.path.join(fixtures, 'manifest/dryrun_manifest'),
+            add_conf_dirs=[ fixtures ] )
+
+        dryrun = cdist.config.Config(drylocal, self.remote, dry_run=True)
+        dryrun.run()
+        # if we are here, dryrun works like expected
+        
 
 # Currently the resolving code will simply detect that this object does
 # not exist. It should probably check if the type is a singleton as well

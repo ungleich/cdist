@@ -19,8 +19,7 @@
 #
 
 name="$__object_id"
-state_should="present"
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/state")"
 
 if [ "$state_should" != "$state_is" ]; then

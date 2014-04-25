@@ -49,7 +49,7 @@ class ObjectClassTestCase(test.CdistTestCase):
 
         self.expected_objects = []
         for cdist_object_name in self.expected_object_names:
-            cdist_type, cdist_object_id = cdist_object_name.split("/", maxsplit=1)
+            cdist_type, cdist_object_id = cdist_object_name.split("/", 1)
             cdist_object = core.CdistObject(core.CdistType(type_base_path, cdist_type), object_base_path, cdist_object_id)
             self.expected_objects.append(cdist_object)
  

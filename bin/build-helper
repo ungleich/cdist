@@ -175,7 +175,7 @@ eof
 
     release-git-tag)
         target_version=$($0 changelog-version)
-        if git rev-parse --verify refs/tags/$target_version; then
+        if git rev-parse --verify refs/tags/$target_version 2>/dev/null; then
             echo "Tag for $target_version exists, aborting"
             exit 1
         fi
@@ -256,7 +256,11 @@ eof
         make pub
 
         # publish man, speeches, website
-        make web-release-all
+        if [ "$masterbranch" = yes ]; then
+            make web-release-all
+        else
+            make web-release-all-no-latest
+        fi
 
         # Ensure that pypi release has the right version
         "$0" version

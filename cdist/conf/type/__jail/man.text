@@ -16,7 +16,7 @@ This type is used on FreeBSD to manage jails.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "present" or "absent."
+   Either "present" or "absent", defaults to "present".
 
 jailbase::
    The location of the .tgz archive containing the base fs for your jails.
