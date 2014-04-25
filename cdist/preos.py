@@ -77,15 +77,19 @@ class PreOSBootstrapError(cdist.Error):
 
 class PreOS(object):
 
-    def __init__(self, target_dir, arch="amd64"):
+    def __init__(self, target_dir, arch="amd64", mirror=None):
 
         self.target_dir = target_dir
         self.arch = arch
 
         self.command = "debootstrap"
         self.suite  = "wheezy"
-        self.options = [ "--include=openssh-server",
-            "--arch=%s" % self.arch ]
+        self.options = [
+            "--variant=minbase",
+            "--include=openssh-server",
+            "--arch=%s" % self.arch
+            ]
+        self.mirror = mirror
 
         self.pxelinux = "/usr/lib/syslinux/pxelinux.0"
         self.pxelinux_cfg = """
@@ -143,13 +147,15 @@ cp -L "$src" "$real_dst"
         cmd.extend(self.options)
         cmd.append(self.suite)
         cmd.append(self.target_dir)
+        if self.mirror:
+            cmd.append(self.mirror)
 
         log.debug("Bootstrap: %s" % cmd)
 
 #        try:
         subprocess.check_call(cmd)
 #        except subprocess.CalledProcessError:
-#            raise 
+#            raise
 
         # Required to run this - otherwise apt-get install fails
         cmd = [ "chroot", self.target_dir, "/usr/bin/apt-get", "update" ]
@@ -262,7 +268,7 @@ cp -L "$src" "$real_dst"
     @classmethod
     def commandline(cls, args):
         self = cls(target_dir=args.target_dir[0],
-            arch=args.arch)
+            arch=args.arch, mirror=args.mirror)
 
         # read initial manifest first - it may come from stdin
         if args.config:
