@@ -34,7 +34,7 @@ All commands accept the following options:
 -h, --help::
    Show the help screen
 
--v, --verbose:
+-v, --verbose::
     Set log level to info, be more verbose
 
 -V, --version::
@@ -72,10 +72,10 @@ Configure one or more hosts
 -s, --sequential::
     Operate on multiple hosts sequentially
 
---remote-copy REMOTE_COPY:
+--remote-copy REMOTE_COPY::
     Command to use for remote copy (should behave like scp)
 
---remote-exec REMOTE_EXEC:
+--remote-exec REMOTE_EXEC::
     Command to use for remote execution (should behave like ssh)
 
 SHELL
