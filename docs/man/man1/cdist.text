@@ -26,7 +26,7 @@ cdist supports different subcommands as explained below.
 
 GENERAL
 -------
-All commands except the following options:
+All commands accept the following options:
 
 -d, --debug::
     Set log level to debug
