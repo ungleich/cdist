@@ -11,6 +11,7 @@ single_value='name
 metalink
 mirrorlist
 gpgcakey
+gpgcheck 
 exclude
 includepkgs
 failovermethod
@@ -49,7 +50,7 @@ for key in baseurl gpgkey; do
    fi
 done
 # boolean properties
-for key in enabled gpgcheck repo_gpgcheck keepalive skip_if_unavailable; do
+for key in enabled repo_gpgcheck keepalive skip_if_unavailable; do
    if [ -f "$__object/parameter/$key" ]; then
       printf '%s=1\n' "$key"
    fi

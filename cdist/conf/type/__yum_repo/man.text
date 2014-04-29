@@ -32,6 +32,7 @@ mirrorlist::
 gpgkey::
    Can be specified multiple times.
 gpgcakey::
+gpgcheck::
 exclude::
 includepkgs::
 failovermethod::
@@ -58,7 +59,6 @@ cost::
 BOOLEAN PARAMETERS
 ------------------
 enabled::
-gpgcheck::
 repo_gpgcheck::
 disablegroups::
    ! enablegroups
@@ -75,7 +75,7 @@ __yum_repo epel \
    --mirrorlist 'https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch' \
    --failovermethod priority \
    --enabled \
-   --gpgcheck \
+   --gpgcheck 1 \
    --gpgkey https://fedoraproject.org/static/0608B895.txt
 --------------------------------------------------------------------------------
 

@@ -1,5 +1,4 @@
 enabled
-gpgcheck
 repo_gpgcheck
 disablegroups
 keepalive

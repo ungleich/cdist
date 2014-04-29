@@ -5,7 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.1.3:
+3.1.3: 2014-04-29
 	* New Type: __yum_repo (Steven Armstrong)
 	* Type __hostname: Add support for CentOS
 

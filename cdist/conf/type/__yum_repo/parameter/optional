@@ -3,6 +3,7 @@ cost
 exclude
 failovermethod
 gpgcakey
+gpgcheck
 http_caching
 includepkgs
 metadata_expire
