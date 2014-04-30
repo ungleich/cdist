@@ -89,7 +89,7 @@ SPLITTING UP THE INITIAL MANIFEST
 ---------------------------------
 If you want to split up your initial manifest, you can create other shell
 scripts in **cdist/conf/manifest/** and include them in **cdist/conf/manifest/init**.
-Cdist provides the environment variable ***__manifest*** to reference to
+Cdist provides the environment variable ***__manifest*** to reference
 the directory containing the initial manifest (see cdist-reference(7)).
 
 The following example would include every file with a **.sh** suffix:
