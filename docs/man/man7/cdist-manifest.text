@@ -210,8 +210,8 @@ __user foobar --password 'some_other_hash'
 
 # this tells cdist, that you know that this is an override and should be accepted
 CDIST_OVERRIDE=yes __user foobar --password 'some_other_hash'
-# its only an override, means the parameter --home is not touched 
-# and stay at the original value of /home/foobarexample
+# it's only an override, means the parameter --home is not touched 
+# and stays at the original value of /home/foobarexample
 --------------------------------------------------------------------------------
 
 Dependencies defined by execution order work as following:
