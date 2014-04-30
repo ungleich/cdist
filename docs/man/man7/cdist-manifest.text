@@ -149,8 +149,8 @@ If you whish, you can setup the environment variable CDIST_OVERRIDE
 (any value or even empty is ok) to tell cdist, that this object override is 
 wanted and should be accepted.
 ATTENTION: Only use this feature if you are 100% sure in which order 
-cdist encounter the affected objects, otherwhise this results 
-into an undefined situation. 
+cdist encounters the affected objects, otherwhise this results 
+in an undefined situation. 
 
 If CDIST_OVERRIDE and CDIST_ORDER_DEPENDENCY is set for an object,
 CDIST_ORDER_DEPENDENCY will be ignored, because adding a dependency in case of
