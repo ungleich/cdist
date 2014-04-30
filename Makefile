@@ -91,7 +91,7 @@ MANSTATICALL=$(MANSTATICMAN) $(MANSTATICHTML)
 # Creating the type html page
 %.html: %.text
 	$(A2XH) $^
-	$(CROSSLINK) $^
+	$(CROSSLINK) $@
 
 man: $(MANTYPEALL) $(MANREFALL) $(MANSTATICALL)
 
