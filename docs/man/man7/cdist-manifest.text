@@ -29,7 +29,7 @@ at an example:
 __package apache2 --state absent
 
 # Same with the __directory type
- __directory /tmp/cdist --state present
+__directory /tmp/cdist --state present
 --------------------------------------------------------------------------------
 
 These two lines create objects, which will later be used to realise the 
