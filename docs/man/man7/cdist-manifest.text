@@ -13,7 +13,7 @@ DESCRIPTION
 Manifests are used to define which objects to create.
 Objects are instances of **types**, like in object oriented programming languages.
 An object is represented by the combination of
-**type + slash + object name**: **__file/etc/cdist-configured** is an
+**type + slash + object name**: **\__file/etc/cdist-configured** is an
 object of the type ***__file*** with the name ***etc/cdist-configured***.
 
 All available types can be found in the **cdist/conf/type/** directory,
