@@ -23,8 +23,10 @@ A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
 # Create cross-links in html man pages
 # We look for something like "cdist-type(7)" and make a href out of it
 # The first matching group is the man page name and the second group
-# is the man page section (1 or 7)
-CROSSLINK=sed --in-place 's/\([[:alnum:]_-]*\)(\([17]\))/<a href="..\/man\2\/\1.html">&<\/a>/'
+# is the man page section (1 or 7). The first three lines of the input
+# (xml, DOCTYPE, head tags) are ignored, since the head tags contains
+# the title of the page and should not contain a href.
+CROSSLINK=sed --in-place '1,3!s/\([[:alnum:]_-]*\)(\([17]\))/<a href="..\/man\2\/\1.html">&<\/a>/g'
 helper=./bin/build-helper
 
 MANDIR=docs/man
