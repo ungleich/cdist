@@ -152,7 +152,7 @@ ATTENTION: Only use this feature if you are 100% sure in which order
 cdist encounters the affected objects, otherwhise this results 
 in an undefined situation. 
 
-If CDIST_OVERRIDE and CDIST_ORDER_DEPENDENCY is set for an object,
+If CDIST_OVERRIDE and CDIST_ORDER_DEPENDENCY are set for an object,
 CDIST_ORDER_DEPENDENCY will be ignored, because adding a dependency in case of
 overrides would result in circular dependencies, which is an error.
 
@@ -198,7 +198,7 @@ How to override objects:
 --------------------------------------------------------------------------------
 # for example in the inital manifest
 
-# reate user account foobar with some hash for password
+# create user account foobar with some hash for password
 __user foobar --password 'some_fancy_hash' --home /home/foobarexample
 
 # ... many statements and includes in the manifest later ...
