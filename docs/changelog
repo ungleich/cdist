@@ -6,6 +6,7 @@ Changelog
 
 
 3.1.4:
+	* Core: Ensure all created files end in \n (Steven Armstrong)
 	* Documentation: Cleanup up, added HTML links (Tomas Pospisek)
 	* Explorer interfaces: Remove test output (Daniel Heule)
 	
