@@ -25,7 +25,7 @@ to use.
 HOW TO USE A TYPE
 -----------------
 You can use types from the initial manifest or the type manifest like a
-normal command:
+normal shell command:
 
 --------------------------------------------------------------------------------
 # Creates empty file /etc/cdist-configured
