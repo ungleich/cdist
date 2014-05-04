@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Jake Guffey (jake.guffey at eprotex.com)
+# 2012,2014 Jake Guffey (jake.guffey at eprotex.com)
 #
 # This file is part of cdist.
 #
@@ -104,6 +104,7 @@ stopJail() {
 # Check $status before issuing command
    if [ "$status" = "STARTED" ]; then
       echo "/etc/rc.d/jail stop ${name}"
+      echo "stop" >> "$__messages_out"
    fi
 }
 
@@ -111,6 +112,7 @@ startJail() {
 # Check $status before issuing command
    if [ "$status" = "NOTSTART" ]; then
       echo "/etc/rc.d/jail start ${name}"
+      echo "start" >> "$__messages_out"
    fi
 }
 
@@ -162,6 +164,7 @@ EOF
          rm -f /etc/rc.conf.bak
       fi
 EOF
+   echo "delete" >> "$__messages_out"
 }
 
 createJail() {
@@ -215,6 +218,7 @@ cat <<EOF
    fi
 
 EOF
+   echo "create" >> "$__messages_out"
 
 # Create the ro+rw mountpoint entries in fstab
 cat <<EOF
@@ -310,6 +314,7 @@ if [ "$onboot" = "yes" ]; then
       fi
       unset jail_list
 EOF
+   echo "onboot" >> "$__messages_out"
 fi
 
 # Add the normal entries into the jail's rc.conf
