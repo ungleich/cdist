@@ -148,7 +148,7 @@ eof
         printf "Enter changelog for freecode release %s> " "$version"
         read changelog
 
-        echo "Submit preview"
+        echo "Submitting to freecode ..."
         python2 $(which freecode-submit) -P cdist \
             -v "$version" -c "$changelog" \
             -t "$taglist"

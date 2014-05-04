@@ -5,7 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.1.4:
+3.1.4: 2014-05-04
 	* Core: Ensure all created files end in \n (Steven Armstrong)
 	* Documentation: Cleanup up, added HTML links (Tomas Pospisek)
 	* Explorer interfaces: Remove test output (Daniel Heule)
