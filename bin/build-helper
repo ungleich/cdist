@@ -142,8 +142,6 @@ eof
 
     freecode-release)
         version=$1; shift
-        api_token=$(awk '/machine freecode login/ { print $8 }' ~/.netrc)
-
         printf "Enter tag list for freecode release %s> " "$version"
         read taglist
 
@@ -151,26 +149,9 @@ eof
         read changelog
 
         echo "Submit preview"
-        cat << eof
-tag_list = $taglist
-changelog = $changelog
-version = $version
-eof
-        printf "Press enter to submit to freecode> "
-        read dummy
-
-        cat << eof | cfreecode-api release-add cdist
-        {
-            "auth_code": "$api_token",
-            "release": {
-                "tag_list": "$taglist",
-                "version": "$version",
-                "changelog": "$changelog",
-                "hidden_from_frontpage": false
-            }
-        }
-eof
-
+        python2 $(which freecode-submit) -P cdist \
+            -v "$version" -c "$changelog" \
+            -t "$taglist"
     ;;
 
     release-git-tag)
