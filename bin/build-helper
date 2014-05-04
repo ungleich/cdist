@@ -104,6 +104,11 @@ eof
     ;;
 
     ml-release)
+        if [ $# -ne 1 ]; then
+            echo "$0 ml-release version" >&2
+            exit 1
+        fi
+
         version=$1; shift
 
         to_a=cdist
@@ -149,7 +154,7 @@ eof
         read changelog
 
         echo "Submitting to freecode ..."
-        python2 $(which freecode-submit) -P cdist \
+        python2 ~/p/foreign/freecode-submit-2.7/freecode-submit -P cdist \
             -v "$version" -c "$changelog" \
             -t "$taglist"
     ;;
