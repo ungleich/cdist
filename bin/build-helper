@@ -156,7 +156,8 @@ eof
         echo "Submitting to freecode ..."
         python2 ~/p/foreign/freecode-submit-2.7/freecode-submit -P cdist \
             -v "$version" -c "$changelog" \
-            -t "$taglist"
+            -t "$taglist" \
+            -n
     ;;
 
     release-git-tag)
