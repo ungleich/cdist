@@ -25,7 +25,6 @@
 #exec >&2
 #set -x
 
-zypper_def_opts=" -q "
 
 if [ -f "$__object/parameter/uri" ]; then
    uri="$(cat "$__object/parameter/uri")"
