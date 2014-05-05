@@ -32,9 +32,6 @@ from cdist.util import fsproperty
 
 log = logging.getLogger(__name__)
 
-OBJECT_MARKER = '.cdist'
-
-
 class IllegalObjectIdError(cdist.Error):
     def __init__(self, object_id, message=None):
         self.object_id = object_id
@@ -66,16 +63,18 @@ class CdistObject(object):
     STATE_RUNNING = "running"
     STATE_DONE = "done"
 
-    def __init__(self, cdist_type, base_path, object_id=''):
+    def __init__(self, cdist_type, base_path, object_marker=".cdist", object_id=''):
         self.cdist_type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
+
+        self.object_marker = object_marker
 
         self.validate_object_id()
         self.sanitise_object_id()
 
         self.name = self.join_name(self.cdist_type.name, self.object_id)
-        self.path = os.path.join(self.cdist_type.path, self.object_id, OBJECT_MARKER)
+        self.path = os.path.join(self.cdist_type.path, self.object_id, self.object_marker)
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
@@ -97,7 +96,7 @@ class CdistObject(object):
     def list_object_names(cls, object_base_path):
         """Return a list of object names"""
         for path, dirs, files in os.walk(object_base_path):
-            if OBJECT_MARKER in dirs:
+            if self.object_marker in dirs:
                 yield os.path.relpath(path, object_base_path)
 
     @staticmethod
@@ -127,8 +126,8 @@ class CdistObject(object):
         """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
         """
         if self.object_id:
-            if OBJECT_MARKER in self.object_id.split(os.sep):
-                raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
+            if self.object_marker in self.object_id.split(os.sep):
+                raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % self.object_marker)
             if '//' in self.object_id:
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain //')
             if self.object_id == '.':
