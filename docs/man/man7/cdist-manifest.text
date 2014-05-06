@@ -153,8 +153,6 @@ automatically depends on the previously created object.
 It essentially helps you to build up blocks of code that build upon each other
 (like first creating the directory xyz than the file below the directory).
 
-THIS IS A BETA FEATURE AND MAY BE REMOVED OR CHANGED AT ANY TIME.
-
 
 OVERRIDES
 ---------
@@ -170,8 +168,6 @@ in an undefined situation.
 If CDIST_OVERRIDE and CDIST_ORDER_DEPENDENCY are set for an object,
 CDIST_ORDER_DEPENDENCY will be ignored, because adding a dependency in case of
 overrides would result in circular dependencies, which is an error.
-
-THIS IS A BETA FEATURE AND MAY BE REMOVED OR CHANGED AT ANY TIME.
 
 
 
