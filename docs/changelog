@@ -5,6 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.1.6:
+	* Type __package_yum: Support retrieving package via URL
+
 3.1.5: 2014-05-05
 	* Type __zypper_repo: Automatically import gpg keys (Daniel Heule)
 	* Type __zypper_service: Automatically import gpg keys (Daniel Heule)
