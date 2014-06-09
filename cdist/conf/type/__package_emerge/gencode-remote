@@ -33,26 +33,32 @@ else
    state_should="present"
 fi
 
+if [ -f "$__object/parameter/version" ]; then
+    version="$(cat "$__object/parameter/version")"
+else
+    version=""
+fi
+
+if [ ! -z "$version" ]; then
+    name="=$name-$version"
+fi
+
 pkg_version="$(cat "$__object/explorer/pkg_version")"
 if [ -z "$pkg_version" ]; then
     state_is="absent"
-elif [ $(echo "$pkg_version" | wc -l) -gt 1 ]; then
+elif [ ! -z "$version" -a $(echo "$pkg_version" | wc -l) -gt 1 ]; then
+    echo "Package name is not unique! The following packages are installed:"
+    echo "$pkg_version"
+    exit 1
+elif [ -z "$version" -a $(echo "$pkg_version" | cut -d " " -f 1 | sort | uniq | wc -l) -gt 1 ]; then
     echo "Package name is not unique! The following packages are installed:"
     echo "$pkg_version"
     exit 1
 else
     state_is="present"
-    installed_version="$(echo "$pkg_version" | cut -d " " -f 2)"
+    installed_version="$(echo "$pkg_version" | cut -d " " -f 2 | tail -n 1)"
 fi
 
-if [ -f "$__object/parameter/version" ]; then
-    version="$(cat "$__object/parameter/version")"
-    if [ ! -z "$version" ]; then
-        name="=$name-$version"
-    fi
-else
-    version=""
-fi
 
 # Exit if nothing is needed to be done
 [ "$state_is" = "$state_should" ] && ( [ -z "$version" ] || [ "$installed_version" = "$version" ] ) && exit 0
