@@ -10,6 +10,7 @@ Changelog
 	* Type __hostname: Support SuSE and have CentOS use sysconfig value
 	* Type __locale: Support SuSE
 	* Type __timezone: Support SuSE
+	* Type __file: Support MacOS X (Manuel Hutter)
 
 3.1.5: 2014-05-05
 	* Type __zypper_repo: Automatically import gpg keys (Daniel Heule)
