@@ -37,7 +37,7 @@ mode: %Op %Sp
        stat -f "type: %HT
  owner: %Du %Su
  group: %Dg %Sg
- mode: %Op %Sp
+ mode: %Lp %Sp
  " "$destination"
     ;;
    *)

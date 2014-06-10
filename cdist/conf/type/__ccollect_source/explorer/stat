@@ -39,7 +39,7 @@ links: %Dl
        stat -f "type: %HT
  owner: %Du %Su
  group: %Dg %Sg
- mode: %Op %Sp
+ mode: %Lp %Sp
  size: %Dz
  links: %Dl
  " "$destination"
