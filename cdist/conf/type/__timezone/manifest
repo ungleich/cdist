@@ -27,13 +27,18 @@ os=$(cat "$__global/explorer/os")
         
 case "$os" in
     archlinux|debian|ubuntu)
-        __package tzdata --state present
-        require="__package/tzdata" __link /etc/localtime    \
-            --source "/usr/share/zoneinfo/${timezone}"      \
-            --type symbolic
+        package=tzdata
+    ;;
+    suse)
+        package=timezone
     ;;
     *)
         echo "Unsupported OS $os" >&2
         exit 1
     ;;
 esac
+
+__package "$package" --state present
+require="__package/$package" __link /etc/localtime    \
+    --source "/usr/share/zoneinfo/${timezone}"      \
+    --type symbolic
