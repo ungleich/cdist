@@ -7,8 +7,9 @@ Changelog
 
 3.1.6:
 	* Type __package_yum: Support retrieving package via URL
-	* Type __timezone: Support SuSE
 	* Type __hostname: Support SuSE and have CentOS use sysconfig value
+	* Type __locale: Support SuSE
+	* Type __timezone: Support SuSE
 
 3.1.5: 2014-05-05
 	* Type __zypper_repo: Automatically import gpg keys (Daniel Heule)
