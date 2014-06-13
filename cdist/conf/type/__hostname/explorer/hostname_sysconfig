@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -17,40 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
+# Retrieve the contents of /etc/hostname
+#
 
-destination="/$__object_id"
-
-# nothing to work with, nothing we could do
-[ -e "$destination" ] || exit 0
-
-os=$("$__explorer/os")
-case "$os" in
-   "freebsd"|"openbsd")
-      # FIXME: should be something like this based on man page, but can not test
-      stat -f "type: %ST
-owner: %Du %Su
-group: %Dg %Sg
-mode: %Op %Sp
-size: %Dz
-links: %Dl
-" "$destination"
-   ;;
-   "macosx")
-     stat -f "type: %HT
-owner: %Du %Su
-group: %Dg %Sg
-mode: %Lp %Sp
-size: %Dz
-links: %Dl
-" "$destination"
-   ;;
-   *)
-      stat --printf="type: %F
-owner: %u %U
-group: %g %G
-mode: %a %A
-size: %s
-links: %h
-" "$destination"
-   ;;
-esac
+if [ -f /etc/sysconfig/network ]; then
+    awk -F= '/^HOSTNAME=/ { print $2 }' /etc/sysconfig/network
+fi

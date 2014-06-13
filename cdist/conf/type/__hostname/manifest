@@ -20,6 +20,12 @@
 #
 
 os=$(cat "$__global/explorer/os")
+if [ -f "$__object/parameter/name" ]; then
+    name_should="$(cat "$__object/parameter/name")"
+else
+    name_should="$(echo "${__target_host%%.*}")"
+fi
+
 
 not_supported() {
    echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
@@ -28,11 +34,18 @@ not_supported() {
 }
 
 case "$os" in
-   archlinux|debian|ubuntu)
-      # handled in gencode-remote
-      :
-   ;;
-   *)
-      not_supported
-   ;;
+    archlinux|debian|suse|ubuntu)
+        # handled in gencode-remote
+        :
+    ;;
+    centos)
+        __key_value sysconfig-hostname \
+            --file /etc/sysconfig/network \
+            --delimiter '=' \
+            --key HOSTNAME \
+            --value "$name_should" --exact_delimiter
+    ;;
+    *)
+        not_supported
+    ;;
 esac

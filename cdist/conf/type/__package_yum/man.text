@@ -27,6 +27,8 @@ name::
 
 state::
     Either "present" or "absent", defaults to "present"
+url::
+    URL to use for the package
 
 
 EXAMPLES
@@ -41,6 +43,9 @@ __package_yum python --state present --name python2
 
 # Remove obsolete package
 __package_yum puppet --state absent
+
+__package epel-release-6-8 \
+    --url http://mirror.switch.ch/ftp/mirror/epel/6/i386/epel-release-6-8.noarch.rpm
 --------------------------------------------------------------------------------
 
 
