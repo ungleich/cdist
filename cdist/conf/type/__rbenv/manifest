@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# 2012-2014 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+homedir="$__object_id"
+
+state_should="$(cat "$__object/parameter/state")"
+owner="$(cat "$__object/parameter/owner")"
+
+rbenvdir="$homedir/.rbenv"
+rubybuilddir="$rbenvdir/plugins/ruby-build"
+
+__git "$rbenvdir" \
+    --source git://github.com/sstephenson/rbenv.git \
+    --owner "$owner" \
+    --state "$state_should"
+
+require="__git/$rbenvdir" __git "$rubybuilddir" \
+    --source git://github.com/sstephenson/ruby-build.git \
+    --owner "$owner" \
+    --state "$state_should"

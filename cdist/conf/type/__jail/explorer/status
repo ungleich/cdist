@@ -32,14 +32,14 @@ else
 fi
 
 if [ -f "$__object/parameter/jaildir" ]; then
-   jaildir="$(cat "$__object/parameter/name")"
+   jaildir="$(cat "$__object/parameter/jaildir")"
 else
    jaildir="/usr/jail"
 fi
 # backslash-escaped $jaildir
 sjaildir="$(echo ${jaildir} | sed 's#/#\\/#g')"
 
-jls_output="$(jls | grep "[ ^I]${sjaildir}\/${name}\$")" || true
+jls_output="$(jls | grep "[ 	]${sjaildir}\/${name}\$")" || true
 
 if [ -n "${jls_output}" ]; then
    echo "STARTED"

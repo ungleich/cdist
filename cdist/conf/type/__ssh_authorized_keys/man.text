@@ -40,9 +40,6 @@ state::
 file::
    an alternative destination file, defaults to ~$owner/.ssh/authorized_keys
 
-comment::
-   an optional comment
-
 
 BOOLEAN PARAMETERS
 ------------------
@@ -67,12 +64,11 @@ __ssh_authorized_keys root \
 __ssh_authorized_keys user-name \
    --key "ssh-rsa AXYZAAB3NzaC1yc2..."
 
-# same as above, but with explicit owner, two keys and a comment
+# same as above, but with explicit owner and two keys
 __ssh_authorized_keys some-fancy-id \
    --owner user-name \
    --key "ssh-rsa AXYZAAB3NzaC1yc2..." \
-   --key "ssh-rsa AZXYAAB3NzaC1yc2..." \
-   --comment "allow the members of project foo to login"
+   --key "ssh-rsa AZXYAAB3NzaC1yc2..."
 
 # same as above, but authorized_keys file in non standard location
 __ssh_authorized_keys some-fancy-id \
@@ -97,5 +93,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2012 Steven Armstrong. Free use of this software is
+Copyright \(C) 2012-2014 Steven Armstrong. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # 2012-2013 Nico Schottelius (nico-cdist schottelius.org)
-# 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2013-2014 Steven Armstrong (steven-cdist armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -20,4 +20,4 @@
 #
 
 code="$(echo "$@" | sed "s|\([[:space:]]\)$__target_host:|\1|g")"
-cp --dereference $code
+cp -L $code
