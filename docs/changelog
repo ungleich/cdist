@@ -4,6 +4,9 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+4.0.0pre3: 2014-06-13
+	* Update to include changes from cdist 3.1.5
+
 4.0.0pre2: 2014-02-14
 	* Core: Remove archives from generated preos (Steven Armstrong)
 
