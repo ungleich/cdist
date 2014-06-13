@@ -25,7 +25,7 @@ location.
 For starters, having cdist (which includes the configuration database) on
 your notebook should be fine.
 Additionally an external copy of the git repository the configuration
-relies in is recommended, for use as backup as well to allow easy collaboration
+relies on is recommended, for use as backup as well as to allow easy collaboration
 with others.
 
 For more sophisticated setups developing cdist configurations with multiple

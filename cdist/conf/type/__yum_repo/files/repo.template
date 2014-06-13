@@ -1,0 +1,61 @@
+#!/bin/sh
+set -u
+cat << DONE
+# Created by cdist ${__type##*/}
+# Do not change. Changes will be overwritten.
+#
+[$repo_name]
+DONE
+# single value properties
+single_value='name
+metalink
+mirrorlist
+gpgcakey
+gpgcheck 
+exclude
+includepkgs
+failovermethod
+timeout
+http_caching
+retries
+throttle
+bandwidth
+sslcacert
+sslverify
+sslclientcert
+sslclientkey
+ssl_check_cert_permissions
+metadata_expire
+mirrorlist_expire
+proxy
+proxy_username
+proxy_password
+username
+password
+cost'
+for key in $single_value; do
+   if [ -f "$__object/parameter/$key" ]; then
+      printf '%s=%s\n' "$key" "$(cat "$__object/parameter/$key")"
+   fi
+done
+# multi value properties
+for key in baseurl gpgkey; do
+   if [ -f "$__object/parameter/$key" ]; then
+      printf '%s=' "$key"
+      prefix=''
+      while read line; do
+         printf '%s%s\n' "$prefix" "$line"
+         prefix='   '
+      done < "$__object/parameter/$key"
+   fi
+done
+# boolean properties
+for key in enabled repo_gpgcheck keepalive skip_if_unavailable; do
+   if [ -f "$__object/parameter/$key" ]; then
+      printf '%s=1\n' "$key"
+   fi
+done
+# special cases
+if [ -f "$__object/parameter/disablegroups" ]; then
+   printf 'enablegroups=0\n'
+fi

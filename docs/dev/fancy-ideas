@@ -4,4 +4,14 @@
 implemented as a proof of concept at:
 https://github.com/asteven/cdist/tree/type-namespaces
 
+ 
+ 
+Execute all global explorers only when needed #286
 
+My intention is to create a brunch of global explorer which are of use in some cases and makes cdist more userfriendly. But now, all global explorers are allways executed, even the return value of the explorers is never used.
+
+I think a possible approach can be to replace the result files with pipes, and on first read of the pipe, the explorer is executed by the core, all following read calls from the pipe are answered from the core with the result of the first real execute of the explorer.
+
+So cdist can have an unlimited number of global explorers and only used explorers are executed on the target host, all other explorers laying around are simply ignored.
+
+Also a possible approach would be to create a new explorer type (dynamic explorers) which are sitting in a different directory to (for example dynexploer) and only this ones are executed with the conditional approach explained above. So the overhead to create pipes and monitor it is only in place on explorers which are not interesting for everyone ...

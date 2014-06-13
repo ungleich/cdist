@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013-2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -28,5 +28,13 @@ case "$os" in
     debian)
         # Debian needs a seperate package
         __package locales --state present
+    ;;
+    suse)
+        :
+    ;;
+    *)
+        echo "Sorry, do not know how to handle os: $os" >&2
+        echo "Please edit the type ${__type##*/} to fix this." >&2
+        exit 1
     ;;
 esac

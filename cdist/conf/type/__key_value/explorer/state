@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2014 Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -18,36 +19,85 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-key="$(cat "$__object/parameter/key" 2>/dev/null \
+export key="$(cat "$__object/parameter/key" 2>/dev/null \
    || echo "$__object_id")"
-state="$(cat "$__object/parameter/state" 2>/dev/null \
-   || echo "present")"
-file="$(cat "$__object/parameter/file")"
-delimiter="$(cat "$__object/parameter/delimiter")"
-value="$(cat "$__object/parameter/value" 2>/dev/null \
-   || echo "__CDIST_NOTSET__")"
+export state="$(cat "$__object/parameter/state")"
 
-case "$state" in
-   absent)
-      if grep -q -E "^$key$delimiter+" "$file"; then
-         # if the key exists, with whatever value, we will have to remove it
-         # so report it as present
-         echo present
-      else
-         # key does not exist
-         echo absent
-      fi
-   ;;
-   present)
-      if grep -q -E "^$key$delimiter+$value$" "$file"; then
-         # key exists and value is same
-         echo present
-      elif grep -q -E "^$key$delimiter+" "$file"; then
-         # key exists, but value is empty or different
-         echo wrongvalue
-      else
-         # key does not exist
-         echo absent
-      fi
-   ;;
-esac
+file="$(cat "$__object/parameter/file")"
+
+if [ ! -f "$file" ]; then
+    echo "nosuchfile"
+    exit
+fi
+
+export delimiter="$(cat "$__object/parameter/delimiter")"
+export value="$(cat "$__object/parameter/value" 2>/dev/null \
+   || echo "__CDIST_NOTSET__")"
+if [ -f "$__object/parameter/exact_delimiter" ]; then
+    export exact_delimiter=1
+else
+    export exact_delimiter=0
+fi
+
+awk -f - "$file" <<"AWK_EOF"
+BEGIN {
+    state=ENVIRON["state"]
+    key=ENVIRON["key"]
+    delimiter=ENVIRON["delimiter"]
+    value=ENVIRON["value"]
+    exact_delimiter=ENVIRON["exact_delimiter"]
+    found=0
+}
+# enter the main loop
+{
+    i = index($0,key)
+    if(i == 1) {
+        delval = substr($0,length(key)+1)
+        delpos = index(delval,delimiter)
+        if(delpos == 0) {
+            # in this case, the delimiter was not found
+            next
+        }
+        if(delpos > 1) {
+            spaces = substr(delval,1,delpos-1)
+            sub(/[ \t]*/,"",spaces)
+            if( length(spaces) > 0 ) {
+                # if there are not only spaces between key and delimiter,
+                # continue since we we are on the wrong line
+                next
+            }
+            if( exact_delimiter == 1) {
+                # we have key and delimiter, but since additional spaces are not alowed
+                # return wrongformat
+                found=1
+                print "wrongformat"
+                exit
+            }
+        }
+        found=1
+        if(state == "absent") {
+            # on state absent, only the ocurance is relevant, so exit here
+            print "present"
+            exit
+        }
+        linevalue=substr(delval,delpos + length(delimiter))
+        if(exact_delimiter == 0){
+            #ok, now strip tabs and whitespaces at the beginning of the value
+            sub(/[ \t]*/,"",linevalue)
+        }
+        # Key with separator found
+        if(linevalue == value) {
+            # exact match found, so state is present
+            print "present"
+        }
+        else {
+            print "wrongvalue"
+        }
+        exit
+    }
+}
+END {
+    if(found == 0)
+        print "absent"
+}
+AWK_EOF

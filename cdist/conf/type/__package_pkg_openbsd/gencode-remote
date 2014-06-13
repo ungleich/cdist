@@ -50,8 +50,11 @@ fi
 
 pkg_version="$(cat "$__object/explorer/pkg_version")"
 
-# TODO: Shouldn't be hardcoded
-echo export PKG_PATH=ftp://ftp.openbsd.org/pub/OpenBSD/$os_version/packages/$machine/
+if [ -f "$__object/parameter/pkg_path" ]; then                                  
+  pkg_path="$(cat "$__object/parameter/pkg_path")"                              
+else
+  pkg_path="ftp://ftp.openbsd.org/pub/OpenBSD/$os_version/packages/$machine/"
+fi                                                                              
 
 if [ "$pkg_version" ]; then
     state_is="present"
@@ -65,12 +68,18 @@ case "$state_should" in
     present)
         # use this because pkg_add doesn't properly handle errors
         cat << eof
-status=\$(pkg_add "$pkgopts" "$name--$flavor")
+export PKG_PATH="$pkg_path"                                              
+status=\$(pkg_add "$pkgopts" "$name--$flavor" 2>&1)
+pkg_info | grep "^${name}.*${flavor}" > /dev/null 2>&1
 
-# no error
-if [ -n "\$status" ]; then
+# We didn't find the package in the list of 'installed packages', so it failed
+# This is necessary because pkg_add doesn't return properly
+if [ \$? -ne 0 ]; then
+    if [ -z "\${status}" ]; then
+      status="Failed to add package, uncaught exception."
+    fi
     echo "Error: \$status"
-	exit 1
+    exit 1
 fi
 eof
     ;;
@@ -79,9 +88,14 @@ eof
         # use this because pkg_add doesn't properly handle errors
         cat << eof
 status=\$(pkg_delete "$pkgopts" "$name--$flavor")
+pkg_info | grep "^${name}.*${flavor}" > /dev/null 2>&1
 
-# no error
-if [ -n "\$status" ]; then
+# We found the package in the list of 'installed packages'
+# This would indicate that pkg_delete failed, send the output of pkg_delete
+if [ \$? -eq 0 ]; then
+    if [ -z "\${status}" ]; then
+      status="Failed to remove package, uncaught exception."
+    fi
     echo "Error: \$status"
     exit 1
 fi

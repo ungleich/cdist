@@ -25,12 +25,21 @@ destination="/$__object_id"
 
 os=$("$__explorer/os")
 case "$os" in
-   "freebsd")
+   "freebsd"|"openbsd")
       # FIXME: should be something like this based on man page, but can not test
       stat -f "type: %ST
 owner: %Du %Su
 group: %Dg %Sg
 mode: %Op %Sp
+size: %Dz
+links: %Dl
+" "$destination"
+   ;;
+   "macosx")
+     stat -f "type: %HT
+owner: %Du %Su
+group: %Dg %Sg
+mode: %Lp %Sp
 size: %Dz
 links: %Dl
 " "$destination"

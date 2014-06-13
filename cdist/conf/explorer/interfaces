@@ -24,12 +24,12 @@
 #
 
 # Use ip, if available
-if command -v ip; then
+if command -v ip >/dev/null; then
     ip -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
     exit 0
 fi
 
-if ! command -v ifconfig; then
+if ! command -v ifconfig >/dev/null; then
    # no ifconfig, nothing we could do
    exit 0
 fi

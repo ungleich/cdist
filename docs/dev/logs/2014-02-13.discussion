@@ -1,0 +1,86 @@
+With Steven
+
+t marker .cdist breaks
+    - use random marker that starts with .cdist-
+    - has fixed number of following characters (like 6 or 10)
+    - write marker name to $__global/marker
+    - export $__global/marker path as $__marker 
+    - document variable in cdist-reference
+        - also document the pattern how the marker is built
+          so that other people may be able to dig into the structure
+          from outside
+
+t save method
+    - in $__global/method
+    - values
+        - config
+        - install
+    - document path and description in cdist-reference
+
+t save whole runtime in cache
+    - missing items
+        - initial manifest may be specified on commandline
+            - always save the initial manifest to $__global/initial-manifest
+                - currently it is a lost tempfile
+        - remote exec / remote copy
+            - save to $__global/remote_exec
+            - save to $__global/remote_copy
+    - stdout and stderr of everything
+        - need to implement Steven's patch of stderr/stdout capturing
+    - exit code of cdist
+    - if it is complete, we can use it for replay / reconfigure
+
+- new idea: replay / reconfig / reinstall
+    - --from-cache?
+
+t stderr/stdout
+    - capture all messages
+    - prefix with target_host
+    - implementation exists in one of Steven's branches
+        - ping steven for updated pull request
+
+x on error dump all information about the failing object
+    - where created
+    - stderr
+    - stdout
+    - parameter (+values)
+    - everything known [tm]
+
+t multiple versions of cache
+    - see #298
+
+t absolute path of types, explorer
+    - resolve instead of using the temporary link name
+    - #305
+
+t report command
+    - from cache?
+    - #306
+
+t add session to "run directories"
+    - instead of /var/lib/cdist (remote)
+    - instead of static dir in cache 
+    - same id remote and local
+    - maybe timestamp
+        - in or excluding the pid of cdist?
+
+- cache
+    - also save when cdist fails
+    - save exit code
+    - be able to restore config
+
+- new command: cdist clean-cache
+    - --since
+    - --keep-versions --keep-lala $num
+
+- cdist 4.0.0pre2
+    - cleanup in preos
+
+- logging for types
+    cdist log ...?
+
+    - cdist logserver
+        - $__global/log.socket
+        - fifo?
+        echo into logpipe?
+

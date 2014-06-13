@@ -25,7 +25,7 @@ to use.
 HOW TO USE A TYPE
 -----------------
 You can use types from the initial manifest or the type manifest like a
-normal command:
+normal shell command:
 
 --------------------------------------------------------------------------------
 # Creates empty file /etc/cdist-configured
@@ -249,6 +249,27 @@ echo "My fancy debug line" >&2
 
 # Output to be saved by cdist for execution on the target
 echo "touch /etc/cdist-configured"
+--------------------------------------------------------------------------------
+
+
+VARIABLE ACCESS FROM THE GENERATED SCRIPTS
+------------------------------------------
+In the generated scripts, you have access to the following cdist variables
+
+- __object
+- __object_id
+
+but only for read operations, means there is no back copy of this
+files after the script execution.
+
+So when you generate a script with the following content, it will work:
+
+--------------------------------------------------------------------------------
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
 --------------------------------------------------------------------------------
 
 
