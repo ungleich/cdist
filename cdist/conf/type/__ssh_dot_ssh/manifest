@@ -22,7 +22,7 @@
 #
 
 owner="$__object_id"
-state="$(cat "$__object/parameter/state")
+state="$(cat "$__object/parameter/state")"
 
 group="$(cut -d':' -f 1 "$__object/explorer/group")"
 if [ -z "$group" ]; then
