@@ -12,6 +12,7 @@ Changelog
 	* Type __locale: Support SuSE
 	* Type __timezone: Support SuSE
 	* Type __file: Support MacOS X (Manuel Hutter)
+	* Type __ssh_authorized_key: Use new type __ssh_dot_ssh
 
 3.1.5: 2014-05-05
 	* Type __zypper_repo: Automatically import gpg keys (Daniel Heule)
