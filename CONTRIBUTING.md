@@ -33,7 +33,7 @@ work nor kill the authors brain:
 
 - All files should contain the usual header (Author, Copying, etc.)
 - Code submission must be done via git
-- Do not add cdist/conf/manifest/init - This file should only be touched in your
+- Do not add `cdist/conf/manifest/init` - This file should only be touched in your
   private branch!
 - Code to be included should be branched of the upstream "master" branch
    - Exception: Bugfixes to a version branch
@@ -44,7 +44,7 @@ work nor kill the authors brain:
   the other needs to be improved.
 
 As soon as your work meets these requirements, write a mail
-for inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**
+for inclusion to the mailinglist _cdist at cdist -- at -- l.schottelius.org_
 or open a pull request at http://github.com/telmich/cdist.
 
 
@@ -54,12 +54,12 @@ For detailled information about types, see cdist-type(7).
 
 Submitting a type works as described above, with the additional requirement
 that a corresponding manpage named man.text in asciidoc format with
-the manpage-name "cdist-type__NAME" is included in the type directory
-AND asciidoc is able to compile it (i.e. do NOT have to many "=" in the second
+the manpage-name `cdist-type__NAME` is included in the type directory
+AND asciidoc is able to compile it (i.e. do NOT have to many `=` in the second
 line).
 
 Warning: Submitting "exec" or "run" types that simply echo their parameter in
-gencode* will not be accepted, because they are of no use. Every type can output
+`gencode-*` will not be accepted, because they are of no use. Every type can output
 code and thus such a type introduces redundant functionality that is given by
 core cdist already.
 
