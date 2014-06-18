@@ -31,7 +31,7 @@ case "$os" in
 
     *)
     if [ -r /proc/meminfo ]; then
-        echo "$(cat /proc/meminfo | grep "MemTotal:" | awk '{print $2}')"
+        echo "$(grep "MemTotal:" /proc/meminfo | awk '{print $2}')"
     fi
     ;;
 esac
