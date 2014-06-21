@@ -25,13 +25,12 @@
 os=$("$__explorer/os")
 case "$os" in
     "macosx")
-        let memsize=$(sysctl -n hw.memsize)/1024
-        echo "$memsize"
+        echo "$(sysctl -n hw.memsize)/1024" | bc
     ;;
 
     *)
     if [ -r /proc/meminfo ]; then
-        echo "$(grep "MemTotal:" /proc/meminfo | awk '{print $2}')"
+        grep "MemTotal:" /proc/meminfo | awk '{print $2}'
     fi
     ;;
 esac
