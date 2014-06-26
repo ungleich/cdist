@@ -12,6 +12,7 @@ Changelog
 	* Type __locale: Support SuSE
 	* Type __timezone: Support SuSE
 	* Type __file: Support MacOS X (Manuel Hutter)
+	* Type __iptables_apply: Add "reset" to init.d script of iptables
 	* Type __ssh_authorized_key: Use new type __ssh_dot_ssh
 	* Type __zypper_repo: Bugfix for pattern matching (Daniel Heule)
 
