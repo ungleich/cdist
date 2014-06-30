@@ -143,6 +143,9 @@ class DirectoryDict(collections.MutableMapping):
                         fd.write(str(v) + '\n')
                 else:
                     fd.write(str(value))
+                    # ensure file ends with a single newline
+                    if value and value[-1] != '\n':
+                        fd.write('\n')
         except EnvironmentError as e:
             raise cdist.Error(str(e))
 
@@ -281,7 +284,7 @@ class FileStringProperty(FileBasedProperty):
         value = ""
         try:
             with open(path, "r") as fd:
-                value = fd.read()
+                value = fd.read().rstrip('\n')
         except EnvironmentError:
             pass
         return value
@@ -292,6 +295,9 @@ class FileStringProperty(FileBasedProperty):
             try:
                 with open(path, "w") as fd:
                     fd.write(str(value))
+                    # ensure file ends with a single newline
+                    if value[-1] != '\n':
+                        fd.write('\n')
             except EnvironmentError as e:
                 raise cdist.Error(str(e))
         else:

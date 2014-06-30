@@ -28,14 +28,28 @@ fi
 os=$(cat "$__global/explorer/os")
 name_running=$(cat "$__global/explorer/hostname")
 name_config=$(cat "$__object/explorer/hostname_file")
+name_sysconfig=$(cat "$__object/explorer/hostname_sysconfig")
 has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
 
 ################################################################################
 # If everything is ok -> exit
 #
-if [ "$name_config" = "$name_should" -a "$name_running" = "$name_should" ]; then
-    exit 0
-fi
+case "$os" in
+    archlinux|debian|suse|ubuntu)
+        if [ "$name_config" = "$name_should" -a "$name_running" = "$name_should" ]; then
+            exit 0
+        fi
+    ;;
+    centos)
+        if [ "$name_sysconfig" = "$name_should" -a "$name_running" = "$name_should" ]; then
+            exit 0
+        fi
+    ;;
+    *)
+        echo "Unsupported os: $os" >&2
+        exit 1
+    ;;
+esac
 
 ################################################################################
 # Setup hostname
@@ -45,6 +59,17 @@ echo changed >> "$__messages_out"
 if [ "$has_hostnamectl" ]; then
     echo "hostnamectl set-hostname '$name_should'"
 else
-    echo "hostname '$name_should'"
-    echo "printf '%s\n' '$name_should' > /etc/hostname"
+    case "$os" in
+        archlinux|debian|ubuntu)
+            echo "hostname '$name_should'"
+            echo "printf '%s\n' '$name_should' > /etc/hostname"
+        ;;
+        centos)
+            echo "hostname '$name_should'"
+        ;;
+        suse)
+            echo "hostname '$name_should'"
+            echo "printf '%s\n' '$name_should' > /etc/HOSTNAME"
+        ;;
+    esac
 fi

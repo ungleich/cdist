@@ -62,6 +62,8 @@ eof
 # Steven found this out - coyping it 1:1
 # fix the bloody 'stdin: is not a tty' problem
 __line /root/.profile --line 'mesg n' --state absent
+
+__hostname preos
 """
 
 class PreOSExistsError(cdist.Error):
