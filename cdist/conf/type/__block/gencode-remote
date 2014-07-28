@@ -46,7 +46,7 @@ tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
 if [ -f "$file" ]; then
    cp -p "$file" "\$tmpfile"
 fi
-awk -v prefix="^$prefix\\\$" -v suffix="^$suffix\\\$" '
+awk -v prefix="^$prefix\$" -v suffix="^$suffix\$" '
 {
    if (match(\$0,prefix)) {
       triggered=1
