@@ -29,8 +29,8 @@
 # Can only be used on FreeBSD
 os="$(cat "$__global/explorer/os")"
 if [ ! "$os" = "freebsd" ]; then
-	echo "__jail can only be used on FreeBSD targets!" >&2
-	exit 1
+   echo "__jail can only be used on FreeBSD targets!" >&2
+   exit 1
 fi
 
 jaildir="$(cat "$__object/parameter/jaildir")"

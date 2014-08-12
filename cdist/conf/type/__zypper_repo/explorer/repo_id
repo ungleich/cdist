@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2013 Daniel Heule (hda at sfs.biz)
+# 2013-2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -26,4 +26,4 @@ if [ -f "$__object/parameter/uri" ]; then
 else
    uri="$__object_id"
 fi
-echo $(zypper lr -u | grep -E "\<$uri\>" | cut -d'|' -f 1 | grep -E '^[0-9]' )
+echo $(zypper lr -u | grep -F "$uri" | cut -d'|' -f 1 | grep -E '^[0-9]' )

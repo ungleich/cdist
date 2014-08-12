@@ -12,9 +12,9 @@ DESCRIPTION
 -----------
 Adds or removes ssh keys from a authorized_keys file.
 
-This type also manages the directory containing the authorized_keys
-file and sets strict ownership and permissions. You can disable this feature
-with the --noparent boolean parameter.
+This type uses the __ssh_dot_ssh type to the directory containing 
+the authorized_keys file.
+You can disable this feature with the --noparent boolean parameter.
 
 The existence, ownership and permissions of the authorized_keys file itself are
 also managed. This can be disabled with the --nofile boolean parameter. It is

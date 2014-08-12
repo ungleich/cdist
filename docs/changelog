@@ -5,6 +5,27 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.1.6:
+	* New Type: __ssh_dot_ssh
+	* Type __package_yum: Support retrieving package via URL
+	* Type __hostname: Support SuSE and have CentOS use sysconfig value
+	* Type __locale: Support SuSE
+	* Type __timezone: Support SuSE
+	* Type __file: Support MacOS X (Manuel Hutter)
+	* Type __iptables_apply: Add "reset" to init.d script of iptables
+	* Type __ssh_authorized_key: Use new type __ssh_dot_ssh
+	* Type __zypper_repo: Bugfix for pattern matching (Daniel Heule)
+
+3.1.5: 2014-05-05
+	* Type __zypper_repo: Automatically import gpg keys (Daniel Heule)
+	* Type __zypper_service: Automatically import gpg keys (Daniel Heule)
+
+3.1.4: 2014-05-04
+	* Core: Ensure all created files end in \n (Steven Armstrong)
+	* Documentation: Cleanup up, added HTML links (Tomas Pospisek)
+	* Explorer interfaces: Remove test output (Daniel Heule)
+	* Type __jail: Add messaging support (Jake Guffey)
+	
 3.1.3: 2014-04-29
 	* New Type: __yum_repo (Steven Armstrong)
 	* Type __hostname: Add support for CentOS

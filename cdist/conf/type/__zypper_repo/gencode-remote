@@ -25,7 +25,7 @@
 #exec >&2
 #set -x
 
-zypper_def_opts=" -q "
+zypper_def_opts=" -q --non-interactive --gpg-auto-import-keys "
 
 if [ -f "$__object/parameter/repo_desc" ]; then
    desc="$(cat "$__object/parameter/repo_desc")"
