@@ -1,0 +1,47 @@
+cdist-type__package_dpkg(7)
+==========================
+Tomas Pospisek <tpo_hp--@--sourcepole.ch>
+
+
+NAME
+----
+cdist-type__package_dpkg - Manage packages with dpkg
+
+
+DESCRIPTION
+-----------
+dpkg is usually used on Debian and variants (like Ubuntu) to
+install packages.
+
+
+REQUIRED PARAMETERS
+-------------------
+install::
+    Specifies the local path to the *.deb package to be installed
+
+
+OPTIONAL PARAMETERS
+-------------------
+None
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Install foo package
+__package_dpkg --install /tmp/foo_0.1_all.deb
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__package(7)
+
+
+COPYING
+-------
+Copyright \(C) 2013 Tomas Pospisek. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
+This type is based on __package_apt
