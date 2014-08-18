@@ -5,7 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.1.6: 2014-08-17
+3.1.6: 2014-08-18
 	* New Type: __ssh_dot_ssh
 	* Type __package_yum: Support retrieving package via URL
 	* Type __hostname: Support SuSE and have CentOS use sysconfig value
