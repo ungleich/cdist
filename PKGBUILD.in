@@ -17,7 +17,13 @@ source=("http://pypi.python.org/packages/source/c/cdist/cdist-\${pkgver}.tar.gz"
 package() {
     cd cdist-\${pkgver}
     python3 setup.py build install --root="\${pkgdir}"
+    find "\$pkgdir" -type d -exec chmod 0755 {} \;
+    find "\$pkgdir" -type f -exec chmod a+r {} \;
 }
 eof
 
 makepkg -g >> "${outfile}"
+
+# Fix this issue:
+# error: failed to upload cdist-3.1.6-1.src.tar.gz: Error - all files must have permissions of 644 or 755.
+chmod a+r "${outfile}"
