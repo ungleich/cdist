@@ -33,7 +33,14 @@ else
          amazon|centos|fedora|redhat) type="yum" ;;
          archlinux) type="pacman" ;;
          debian|ubuntu) type="apt" ;;
-         freebsd) type="pkg_freebsd" ;;
+         freebsd)
+            exists="$(cat "$__object/explorer/pkgng_exists")"
+            if [ "$exists" = "pkg-ng installed" ]; then
+               type="pkgng_freebsd"
+            else
+               type="pkg_freebsd"
+            fi
+            ;;
          gentoo) type="emerge" ;;
          suse) type="zypper" ;;
          openwrt) type="opkg" ;;
