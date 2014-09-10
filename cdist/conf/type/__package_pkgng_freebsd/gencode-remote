@@ -99,15 +99,20 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
    if [ -n "$flavor" ]; then
       cmd="${cmd}-${flavor}"
    fi
+   # PKG is supposed to be removed
    if [ "$state" = "absent" ]; then
       execcmd "rm" "${cmd}"
-   elif [ "$version" != "$curr_version" ]; then
+   # PKG is supposed to be installed to a particular version
+   elif [ -n "$version" ] && [ "$version" != "$curr_version" ]; then
       if [ "$upgrade" = "true" ]; then
          execcmd "upg" "${cmd}"
       else
          printf "Version %s is already installed and pkg-ng can't upgrade directly to version %s.\nTo upgrade to the latest version, use the --upgrade flag.\n" "$curr_version" "$version" >&2
          exit 1
       fi
+   # PKG is supposed to be installed to the latest version
+   else
+      :  # Do nothing.
    fi
 else	# PKG *isn't* installed
    if [ "$state" = "absent" ]; then # Shouldn't be installed
