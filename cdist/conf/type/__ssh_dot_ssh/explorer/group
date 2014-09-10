@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2013-2014 Daniel Heule (hda at sfs.biz)
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,13 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Retrieve the id from the repo with the uri from parameter uri  - parsed zypper output
-#
-#
-if [ -f "$__object/parameter/uri" ]; then
-   uri="$(cat "$__object/parameter/uri")"
-else
-   uri="$__object_id"
-fi
-echo $(zypper lr -u | grep -F "$uri" | cut -d'|' -f 1 | grep -E '^[0-9]' )
+
+gid="$("$__type_explorer/passwd" | cut -d':' -f 4)"
+getent group "$gid" || true

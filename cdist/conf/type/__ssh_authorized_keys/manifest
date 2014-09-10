@@ -40,12 +40,8 @@ if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ];
    fi
 
    if [ ! -f "$__object/parameter/noparent" ]; then
-      # Ensure that the directory in which the authorized_keys shall be exists and
-      # has the right permissions.
-      ssh_directory="${file%/*}"
-      __directory "$ssh_directory" --state present --parents \
-         --owner "$owner" --group "$group" --mode 0700
-      export require="__directory/$ssh_directory"
+      __ssh_dot_ssh "$owner"
+      export require="__ssh_dot_ssh/$owner"
    fi
    if [ ! -f "$__object/parameter/nofile" ]; then
       # Ensure that authorized_keys file exists and has the right permissions.
