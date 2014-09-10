@@ -10,27 +10,24 @@ cdist-type__package_dpkg - Manage packages with dpkg
 
 DESCRIPTION
 -----------
-dpkg is usually used on Debian and variants (like Ubuntu) to
-install packages.
+__package_dpkg is used on Debian and variants (like Ubuntu) to
+install packages that are provided locally as *.deb files.
+
+The object given to __package_dpkg must be the name of the deb package.
 
 
 REQUIRED PARAMETERS
 -------------------
-install::
-    Specifies the local path to the *.deb package to be installed
-
-
-OPTIONAL PARAMETERS
--------------------
-None
-
+source::
+    path to the *.deb package
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Install foo package
-__package_dpkg --install /tmp/foo_0.1_all.deb
+# Install foo and bar packages
+__package_dpkg --source /tmp/foo_0.1_all.deb foo_0.1_all.deb
+__package_dpkg --source $__type/files/bar_1.4.deb bar_1.4.deb
 --------------------------------------------------------------------------------
 
 

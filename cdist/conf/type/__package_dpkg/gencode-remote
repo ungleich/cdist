@@ -27,31 +27,4 @@
 # do any checks or --force'ing.
 #
 
-local_package_path=$( cat "$__object/parameter/install" )
-package=$( basename "$local_package_path" )
-
-if [ ! -f "$local_package_path" ]; then
-   echo "Package \"$local_package_path\" does not exist." >&2
-   exit 1
-fi
-
-# upload package to temp directory
-temp_dir="cdist.XXXXXXXXXX"
-cat << DONE
-destination_dir="\$($__remote_exec $__target_host "mktemp -d $temp_dir")"
-DONE
-
-cat << DONE
-$__remote_copy $local_package_path ${__target_host}:\$destination_dir
-DONE
-
-# install package
-echo "3" >&2
-cat << DONE
-$__remote_exec $__target_host "dpkg -i \"\$destination_dir/$package\""
-DONE
-
-# clean up: remove tmp_dir and contents on remote host
-cat << DONE
-$__remote_exec $__target_host "rm -rf \"\$destination_dir\""
-DONE
+echo "dpkg -i /var/cache/apt/archives/$__object_id"
