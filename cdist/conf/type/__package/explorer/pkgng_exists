@@ -21,13 +21,7 @@
 # Retrieve the status of a package - parsed dpkg output
 #
 
-# Can't access $__global/explorer/os from here, so recreate the functionality
-#   because there's no point in executing this explorer on non-FreeBSD targets.
-if [ $(uname) = "FreeBSD" ]; then
-   if command -v pkg >&-; then
-      printf "pkg-ng installed"
-   else
-      printf "pkg-ng not found"
-   fi
+if [ "$($__explorer/os)" = "freebsd" ]; then
+   command -v pkg
 fi
 

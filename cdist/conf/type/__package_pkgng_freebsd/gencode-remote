@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Jake Guffey (jake.guffey at eprotex.com)
+# 2014 Jake Guffey (jake.guffey at eprotex.com)
 #
 # This file is part of cdist.
 #
@@ -26,27 +26,27 @@
 #set -x
 
 if [ -f "$__object/parameter/name" ]; then
-	name="$(cat "$__object/parameter/name")"
+   name="$(cat "$__object/parameter/name")"
 else
-	name="$__object_id"
+   name="$__object_id"
 fi
 
 if [ -f "$__object/parameter/flavor" ]; then
-	flavor="$(cat "$__object/parameter/flavor")"
+   flavor="$(cat "$__object/parameter/flavor")"
 fi
 
 if [ -f "$__object/parameter/version" ]; then
-	version="$(cat "$__object/parameter/version")"
+   version="$(cat "$__object/parameter/version")"
 fi
 
 if [ -f "$__object/parameter/upgrade" ]; then
-	upgrade="true"
+   upgrade="true"
 else
    upgrade="false"
 fi
 
 if [ -f "$__object/parameter/repo" ]; then
-	repo="$(cat "$__object/parameter/repo")"
+   repo="$(cat "$__object/parameter/repo")"
 fi
 
 if [ -f "$__object/parameter/state" ]; then
@@ -82,15 +82,15 @@ execcmd(){
          ;;
    esac
 
-	echo "$_cmd 2>&- >&-"	# Silence the output of the command
-	echo "status=\$?"
-	echo "if [ \"\$status\" -ne \"0\" ]; then"
-	echo "	echo \"Error: ${_cmd} exited nonzero with \$status\"'!' >&2"
-	echo "	exit 1"
-	echo "fi"
+   echo "$_cmd 2>&- >&-"   # Silence the output of the command
+   echo "status=\$?"
+   echo "if [ \"\$status\" -ne \"0\" ]; then"
+   echo "	echo \"Error: ${_cmd} exited nonzero with \$status\"'!' >&2"
+   echo "	exit 1"
+   echo "fi"
 }
 
-if [ -n "$curr_version" ]; then	# PKG *is* installed
+if [ -n "$curr_version" ]; then  # PKG *is* installed
    if [ -n "$repo" ]; then
       cmd="-r ${repo} ${name}"
    else
@@ -114,7 +114,7 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
    else
       :  # Do nothing.
    fi
-else	# PKG *isn't* installed
+else  # PKG *isn't* installed
    if [ "$state" = "absent" ]; then # Shouldn't be installed
       exit 0
    else  # Should be installed

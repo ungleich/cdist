@@ -34,8 +34,7 @@ else
          archlinux) type="pacman" ;;
          debian|ubuntu) type="apt" ;;
          freebsd)
-            exists="$(cat "$__object/explorer/pkgng_exists")"
-            if [ "$exists" = "pkg-ng installed" ]; then
+            if [ -n "$(cat "$__object/explorer/pkgng_exists")" ]; then
                type="pkgng_freebsd"
             else
                type="pkg_freebsd"
