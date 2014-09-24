@@ -33,10 +33,7 @@ case "$os" in
         package=timezone
     ;;
     centos)
-        __package tzdata --state present
-        require="__package/tzdata" __link /etc/localtime    \
-            --source "/usr/share/zoneinfo/${timezone}"      \
-            --type symbolic
+        package=tzdata
         __file /etc/sysconfig/clock \
             --owner root --group root --mode 644 \
             --state exists
@@ -52,7 +49,7 @@ case "$os" in
     ;;
 esac
 
-__package "$package" --state present
-require="__package/$package" __link /etc/localtime    \
-    --source "/usr/share/zoneinfo/${timezone}"      \
+__package "$package"
+require="__package/$package" __link /etc/localtime \
+    --source "/usr/share/zoneinfo/${timezone}" \
     --type symbolic
