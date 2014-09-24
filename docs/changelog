@@ -5,6 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.1.7:
+	* Type __cdistmarker: Fix typo (Ricardo Catalinas Jiménez)
+	
 3.1.6: 2014-08-18
 	* New Type: __ssh_dot_ssh
 	* Type __package_yum: Support retrieving package via URL
