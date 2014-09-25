@@ -18,6 +18,10 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-owner="$(cat "$__object/parameter/owner" 2>/dev/null || echo "$__object_id")"
-gid="$(getent passwd "$owner" | cut -d':' -f 4)"
-getent group "$gid" || true
+if [ -f "$__object/parameter/file" ]; then
+   cat "$__object/parameter/file"
+else
+   owner="$(cat "$__object/parameter/owner" 2>/dev/null || echo "$__object_id")"
+   home=$(getent passwd "$owner" | cut -d':' -f 6)
+   echo "$home/.ssh/authorized_keys"
+fi
