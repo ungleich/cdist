@@ -74,5 +74,6 @@ while read key; do
    if [ -f "$__object/parameter/comment" ]; then
       set -- "$@" --comment "$(cat "$__object/parameter/comment")"
    fi
-   __ssh_authorized_key "$@"
+   # Ensure __ssh_authorized_key does not read stdin
+   __ssh_authorized_key "$@" < /dev/null
 done < "$__object/parameter/key"
