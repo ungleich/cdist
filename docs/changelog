@@ -5,13 +5,14 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.1.7:
+3.1.7: 2014-09-29
 	* Type __cdistmarker: Fix typo (Ricardo Catalinas Jiménez)
 	* Core: Bugfix: Export messaging to manifests (Ricardo Catalinas Jiménez)
 	* Explorer cpu_cores, cpu_sockets, memory: Add Mac OS X support (Manuel Hutter)
 	* Type __ssh_authorized_keys: Ensure keys are correctly added (Steven Armstrong)
 	* New Type: __ssh_authorized_key (Steven Armstrong)
-	
+	* New Type: __package_pkgng_freebsd (Jake Guffey)
+
 3.1.6: 2014-08-18
 	* New Type: __ssh_dot_ssh
 	* Type __package_yum: Support retrieving package via URL
