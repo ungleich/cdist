@@ -8,6 +8,7 @@ Changelog
 3.1.7:
 	* Type __cdistmarker: Fix typo (Ricardo Catalinas Jiménez)
 	* Core: Bugfix: Export messaging to manifests (Ricardo Catalinas Jiménez)
+	* Explorer cpu_cores, cpu_sockets, memory: Add Mac OS X support (Manuel Hutter)
 	
 3.1.6: 2014-08-18
 	* New Type: __ssh_dot_ssh
