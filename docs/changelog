@@ -9,6 +9,8 @@ Changelog
 	* Type __cdistmarker: Fix typo (Ricardo Catalinas Jiménez)
 	* Core: Bugfix: Export messaging to manifests (Ricardo Catalinas Jiménez)
 	* Explorer cpu_cores, cpu_sockets, memory: Add Mac OS X support (Manuel Hutter)
+	* Type __ssh_authorized_keys: Ensure keys are correctly added (Steven Armstrong)
+	* New Type: __ssh_authorized_key (Steven Armstrong)
 	
 3.1.6: 2014-08-18
 	* New Type: __ssh_dot_ssh
