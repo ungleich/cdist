@@ -249,6 +249,16 @@ CDIST_OVERRIDE::
 CDIST_ORDER_DEPENDENCY::
     Create dependencies based on the execution order (see cdist-manifest(7))
 
+CDIST_LOGCFG::
+    Logifle path to configure cdist logging framework (see cdist(1))
+
+CDIST_LOCAL_SHELL::
+    Selects shell for local script execution (see cdist(1))
+
+CDIST_REMOTE_SHELL::
+    Selects shell for remote scirpt execution (see cdist(1))
+
+
 SEE ALSO
 --------
 - cdist(1)

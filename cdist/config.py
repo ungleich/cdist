@@ -155,7 +155,7 @@ class Config(object):
         self.manifest.run_initial_manifest(self.local.initial_manifest)
         self.iterate_until_finished()
 
-        self.local.save_cache()
+        self.local.save_cache(start_time)
         self.log.info("Finished successful run in %s seconds", time.time() - start_time)
 
 
