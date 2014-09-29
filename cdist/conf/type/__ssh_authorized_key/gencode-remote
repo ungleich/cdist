@@ -59,6 +59,7 @@ mkdir "$__object/files"
    else
       printf '%s' "$(cat "$__object/parameter/key")"
    fi
+   printf '\n'
 ) > "$__object/files/should"
 
 # Remove conflicting entries if any
