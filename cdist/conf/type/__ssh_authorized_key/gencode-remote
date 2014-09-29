@@ -18,6 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+set -u
+
 remove_line() {
    file="$1"
    line="$2"
@@ -74,6 +76,7 @@ if [ -s "$__object/explorer/entry" ]; then
 fi
 
 # Determine the current state
+entry="$(cat "$__object/files/should")"
 state_should="$(cat "$__object/parameter/state")"
 if grep -q -F -x "$entry" "$__object/explorer/entry"; then
    state_is="present"
@@ -87,7 +90,6 @@ if [ "$state_should" = "$state_is" ]; then
    exit 0
 fi
 
-entry="$(cat "$__object/files/should")"
 case "$state_should" in
    present)
       add_line "$file" "$entry"
