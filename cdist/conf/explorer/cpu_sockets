@@ -22,10 +22,19 @@
 
 # FIXME: other system types (not linux ...)
 
-if [ -r /proc/cpuinfo ]; then
-    sockets="$(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
-    if [ ${sockets} -eq 0 ]; then
-        sockets="$(cat /proc/cpuinfo | grep "processor" | wc -l)"
+os=$("$__explorer/os")
+case "$os" in
+    "macosx")
+        echo "$(system_profiler SPHardwareDataType | grep "Number of Processors" | awk -F': ' '{print $2}')"
+    ;;
+
+    *)
+    if [ -r /proc/cpuinfo ]; then
+        sockets="$(grep "physical id" /proc/cpuinfo | sort | uniq | wc -l)"
+        if [ ${sockets} -eq 0 ]; then
+            sockets="$(cat /proc/cpuinfo | grep "processor" | wc -l)"
+        fi
+        echo "${sockets}"
     fi
-    echo "${sockets}"
-fi
+    ;;
+esac
