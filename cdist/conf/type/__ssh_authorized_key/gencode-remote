@@ -78,9 +78,18 @@ fi
 # Determine the current state
 entry="$(cat "$__object/files/should")"
 state_should="$(cat "$__object/parameter/state")"
-if grep -q -F -x "$entry" "$__object/explorer/entry"; then
+num_existing_entries=$(grep -c -F -x "$entry" "$__object/explorer/entry")
+if [ $num_existing_entries -eq 1 ]; then
    state_is="present"
 else
+   # Posix grep does not define the -m option, so we can not remove a single
+   # occurence of a string from a file in the `remove_line` function. Instead
+   # _all_ occurences are removed.
+   # By using `comm` to detect conflicting entries this could lead to the
+   # situation that the key we want to add is actually removed.
+   # To workaround this we must treat 0 or more then 1 existing entries to
+   # mean current state is 'absent'. By doing this, the key is readded
+   # again after cleaning up conflicting entries.
    state_is="absent"
 fi
 
