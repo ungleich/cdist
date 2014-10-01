@@ -19,7 +19,7 @@
 #
 #
 # __package is an abstract type which dispatches to the lower level
-# __package_$name types which do the actual interaction with the packaging
+# __package_$type types which do the actual interaction with the packaging
 # system.
 #
 
