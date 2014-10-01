@@ -5,6 +5,10 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.1.8: 2014-10-01
+	* New Type: __package_update_index (Ricardo Catalinas Jiménez)
+	* New Type: __package_upgrade_all  (Ricardo Catalinas Jiménez)
+
 3.1.7: 2014-09-29
 	* Type __cdistmarker: Fix typo (Ricardo Catalinas Jiménez)
 	* Core: Bugfix: Export messaging to manifests (Ricardo Catalinas Jiménez)
