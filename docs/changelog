@@ -5,6 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.1.9:
+	* Type __package_emerge: Fix handling of slotted packages (Daniel Heule)
+
 3.1.8: 2014-10-01
 	* New Type: __package_update_index (Ricardo Catalinas Jiménez)
 	* New Type: __package_upgrade_all  (Ricardo Catalinas Jiménez)
