@@ -22,6 +22,7 @@
 #
 
 type="$__object/parameter/type"
+
 if [ -f "$type" ]; then
     type="$(cat "$type")"
 else
@@ -40,8 +41,8 @@ fi
 
 case "$type" in
     yum) ;;
-    apt) echo "apt-get update" ;;
-    pacman) echo "pacman --sync --refresh" ;;
+    apt) echo "apt-get --quiet update" ;;
+    pacman) echo "pacman --noprogressbar --sync --refresh" ;;
     *)
         echo "Don't know how to manage packages on: $os" >&2
         exit 1

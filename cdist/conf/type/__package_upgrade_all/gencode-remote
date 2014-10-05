@@ -23,6 +23,7 @@
 #
 
 type="$__object/parameter/type"
+
 if [ -f "$type" ]; then
     type="$(cat "$type")"
 else
@@ -39,18 +40,20 @@ else
     esac
 fi
 
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
+
 case "$type" in
     yum)
-        echo "yum --assumeyes update"
-        echo "yum clean all"
+        echo "yum --quiet --assumeyes update"
+        echo "yum --quiet clean all"
         ;;
     apt)
-        echo "apt-get --yes dist-upgrade"
-        echo "apt-get autoclean"
+        echo $aptget dist-upgrade
+        echo "apt-get --quiet autoclean"
         ;;
     pacman)
-        echo "pacman --noconfirm --sync --sysupgrade"
-        echo "pacman --noconfirm --sync --clean"
+        echo "pacman --noprogressbar --noconfirm --sync --sysupgrade"
+        echo "pacman --noprogressbar --noconfirm --sync --clean"
         ;;
     *)
         echo "Don't know how to manage packages on: $os" >&2
