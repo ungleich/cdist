@@ -35,6 +35,7 @@ charmap=$(echo "$locale" | cut -d . -f 2)
 # W-T-F!
 locale_remove=$(echo "$locale" | sed 's/UTF-8/utf8/')
 
+os=$(cat "$__global/explorer/os")
 state=$(cat "$__object/parameter/state")
 
 case "$state" in
@@ -49,3 +50,21 @@ case "$state" in
         exit 1
     ;;
 esac
+
+echo locale-gen
+
+if [ "$state" = present -a -f "$__object/parameter/default" ]; then
+    case "$os" in
+        debian|ubuntu)
+            echo update-locale LANG="$locale"
+        ;;
+        archlinux)
+            echo localectl set-locale LANG="$locale"
+        ;;
+        *)
+            echo "Sorry, do not know how to handle os: $os" >&2
+            echo "Please edit the type ${__type##*/} to fix this." >&2
+            exit 1
+        ;;
+    esac
+fi

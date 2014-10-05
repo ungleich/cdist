@@ -18,6 +18,11 @@ OPTIONAL PARAMETERS
 state::
    'present' or 'absent', defaults to present
 
+BOOLEAN PARAMETERS
+------------------
+default::
+   Set the given locale as the system-wide default
+
 
 EXAMPLES
 --------
@@ -26,8 +31,8 @@ EXAMPLES
 # Add locale de_CH.UTF-8
 __locale de_CH.UTF-8
 
-# Same as above, but more explicit
-__locale de_CH.UTF-8 --state present
+# Same as above, but more explicit and set the system-wide default
+__locale de_CH.UTF-8 --state present --default
 
 # Remove colourful British English
 __locale en_GB.UTF-8 --state absent
