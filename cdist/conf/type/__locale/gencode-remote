@@ -62,7 +62,7 @@ if [ "$state" = present -a -f "$__object/parameter/default" ]; then
             echo localectl set-locale LANG="$locale"
         ;;
         *)
-            echo "Sorry, do not know how to handle os: $os" >&2
+            echo "Sorry, do not know how to setup the default locale on os: $os" >&2
             echo "Please edit the type ${__type##*/} to fix this." >&2
             exit 1
         ;;
