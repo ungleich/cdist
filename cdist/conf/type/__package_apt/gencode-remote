@@ -44,7 +44,7 @@ esac
 
 # Hint if we need to avoid questions at some point:
 # DEBIAN_PRIORITY=critical can reduce the number of questions
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o DPkg::Options::=\"--force-confold\""
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
 
 [ "$state_is" = "$state_should" ] && exit 0
 

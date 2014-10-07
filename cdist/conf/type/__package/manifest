@@ -19,7 +19,7 @@
 #
 #
 # __package is an abstract type which dispatches to the lower level
-# __package_$name types which do the actual interaction with the packaging
+# __package_$type types which do the actual interaction with the packaging
 # system.
 #
 
@@ -33,7 +33,13 @@ else
          amazon|centos|fedora|redhat) type="yum" ;;
          archlinux) type="pacman" ;;
          debian|ubuntu) type="apt" ;;
-         freebsd) type="pkg_freebsd" ;;
+         freebsd)
+            if [ -n "$(cat "$__object/explorer/pkgng_exists")" ]; then
+               type="pkgng_freebsd"
+            else
+               type="pkg_freebsd"
+            fi
+            ;;
          gentoo) type="emerge" ;;
          suse) type="zypper" ;;
          openwrt) type="opkg" ;;

@@ -186,7 +186,7 @@ ARCHLINUX_FILE=.lock-archlinux
 ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
 
 $(ARCHLINUXTAR): PKGBUILD
-	umask 022; makepkg -c --source
+	umask 022; mkaurball
 
 PKGBUILD: PKGBUILD.in $(PYTHON_VERSION)
 	./PKGBUILD.in $(CHANGELOG_VERSION)
