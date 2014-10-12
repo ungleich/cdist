@@ -5,44 +5,41 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 NAME
 ----
-cdist-type__locale - Configure locales
+cdist-type__locale - Set the default locale
 
 
 DESCRIPTION
 -----------
-This cdist type allows you to setup locales.
+This cdist type allows you to generate and set the system-wide default
+locale.
+
+
+REQUIRED PARAMETERS
+-------------------
+locale::
+    The locale name (e.g. "de_CH.UTF-8").
+
+charset::
+    The locale charset (e.g. "UTF-8", "ISO-8859-1").
 
 
 OPTIONAL PARAMETERS
 -------------------
-state::
-   'present' or 'absent', defaults to present
-
-BOOLEAN PARAMETERS
-------------------
-default::
-   Set the given locale as the system-wide default
+None.
 
 
 EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-# Add locale de_CH.UTF-8
-__locale de_CH.UTF-8
-
-# Same as above, but more explicit and set the system-wide default
-__locale de_CH.UTF-8 --state present --default
-
-# Remove colourful British English
-__locale en_GB.UTF-8 --state absent
+# Generate and set the system-wide default locale
+__locale --locale de_CH.UTF-8 --charset UTF-8
 --------------------------------------------------------------------------------
 
 
 SEE ALSO
 --------
 - locale(1)
-- localedef(1)
 - cdist-type(7)
 
 

@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2013-2014 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Ricardo Catalinas Jiménez (jimenezrick at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -18,10 +19,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Install required packages 
+# Install required packages and set up config
 #
 
-os=$(cat "$__global/explorer/os")
+locale="$(cat "$__object/parameter/locale")"
+charset="$(cat "$__object/parameter/charset")"
+os="$(cat "$__global/explorer/os")"
 
 case "$os" in
     debian|ubuntu)
@@ -37,3 +40,5 @@ case "$os" in
         exit 1
     ;;
 esac
+
+__line /etc/locale.gen --line "$locale $charset" --state present
