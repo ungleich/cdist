@@ -5,7 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.1.9: 2014-10-06
+3.1.9: 2014-10-17
 	* Type __package_emerge: Fix handling of slotted packages (Daniel Heule)
 	* Type __package_apt: Use --force-confdef (Ricardo Catalinas Jiménez)
 	* Type __package_update_index: Decrease verbosity (Ricardo Catalinas Jiménez)
