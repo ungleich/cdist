@@ -78,7 +78,7 @@ fi
 # Determine the current state
 entry="$(cat "$__object/files/should")"
 state_should="$(cat "$__object/parameter/state")"
-num_existing_entries=$(grep -c -F -x "$entry" "$__object/explorer/entry")
+num_existing_entries=$(grep -c -F -x "$entry" "$__object/explorer/entry" || true)
 if [ $num_existing_entries -eq 1 ]; then
    state_is="present"
 else
