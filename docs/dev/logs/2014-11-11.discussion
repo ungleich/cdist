@@ -1,0 +1,12 @@
+- logging/cache rework
+    local:
+        ~/.cdist/log/by-host/$__target/host/config/YYYY/MM/DD/hhmmss/
+        ~/.cdist/log/by-session/YYYY/MM/DD/hhmmss/$__target_host/
+            config/
+            install/
+            export/
+    remote:
+        /var/lib/cdist/YYYY-MM-DD-hhmmss-$sourcehost.$pid
+
+- export
+
