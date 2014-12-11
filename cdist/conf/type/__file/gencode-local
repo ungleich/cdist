@@ -67,7 +67,7 @@ DONE
       if [ "$upload_file" ]; then
          echo upload >> "$__messages_out"
          cat << DONE
-$__remote_copy $source ${__target_host}:\$destination_upload
+$__remote_copy "$source" "${__target_host}:\$destination_upload"
 DONE
       fi
 # move uploaded file into place

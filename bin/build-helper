@@ -145,21 +145,6 @@ eof
     ;;
 
 
-    freecode-release)
-        version=$1; shift
-        printf "Enter tag list for freecode release %s> " "$version"
-        read taglist
-
-        printf "Enter changelog for freecode release %s> " "$version"
-        read changelog
-
-        echo "Submitting to freecode ..."
-        python2 ~/p/foreign/freecode-submit-2.7/freecode-submit -P cdist \
-            -v "$version" -c "$changelog" \
-            -t "$taglist" \
-            -n
-    ;;
-
     release-git-tag)
         target_version=$($0 changelog-version)
         if git rev-parse --verify refs/tags/$target_version 2>/dev/null; then
@@ -257,9 +242,6 @@ eof
 
         # Archlinux release is based on pypi
         make archlinux-release
-
-        # Announce change on Freecode
-        make freecode-release
 
         # Announce change on ML
         make ml-release

@@ -203,10 +203,10 @@ __global::
     Directory that contains generic output like explorer.
     Available for: initial manifest, type manifest, type gencode, shell
 __messages_in::
-    File to read messages from
+    File to read messages from.
     Available for: initial manifest, type manifest, type gencode
 __messages_out::
-    File to write messages
+    File to write messages.
     Available for: initial manifest, type manifest, type gencode
 __object::
     Directory that contains the current object.

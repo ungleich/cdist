@@ -21,16 +21,7 @@
 
 owner="$(cat "$__object/parameter/owner" 2>/dev/null || echo "$__object_id")"
 state="$(cat "$__object/parameter/state" 2>/dev/null)"
-if [ -f "$__object/parameter/file" ]; then
-   file="$(cat "$__object/parameter/file")"
-else
-   home="$(cut -d':' -f 6 "$__object/explorer/passwd")"
-   if [ -z "$home" ]; then
-      echo "Failed to get home directory from explorer." >&2
-      exit 1
-   fi
-   file="$home/.ssh/authorized_keys"
-fi
+file="$(cat "$__object/explorer/file")"
 
 if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ]; then
    group="$(cut -d':' -f 1 "$__object/explorer/group")"
@@ -40,12 +31,8 @@ if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ];
    fi
 
    if [ ! -f "$__object/parameter/noparent" ]; then
-      # Ensure that the directory in which the authorized_keys shall be exists and
-      # has the right permissions.
-      ssh_directory="${file%/*}"
-      __directory "$ssh_directory" --state present --parents \
-         --owner "$owner" --group "$group" --mode 0700
-      export require="__directory/$ssh_directory"
+      __ssh_dot_ssh "$owner"
+      export require="__ssh_dot_ssh/$owner"
    fi
    if [ ! -f "$__object/parameter/nofile" ]; then
       # Ensure that authorized_keys file exists and has the right permissions.
@@ -54,6 +41,7 @@ if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ];
          --group "$group" \
          --mode 0600 \
          --state exists
+      export require="__file/$file"
    fi
 fi
 
@@ -67,22 +55,25 @@ __block "$__object_name" \
    --text - << DONE
 remove legacy block
 DONE
+export require="__block/$__object_name"
 
 _cksum() {
    echo "$1" | cksum | cut -d' ' -f 1
 }
 
 while read key; do
-   cksum_key="$(_cksum "$key")"
-   line_id="${owner}-${cksum_key}"
-
-   set -- "$line_id"
+   type_and_key="$(echo "$key" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
+   object_id="$(_cksum "$file")-$(_cksum "$type_and_key")"
+   set -- "$object_id"
    set -- "$@" --file "$file"
-   set -- "$@" --regex ".*$key.*"
-   if [ "$state" = 'present' ]; then
-      set -- "$@" --line "$key"
-   fi
+   set -- "$@" --key "$key"
    set -- "$@" --state "$state"
-   # Ensure __line does not read stdin
-   require="__block/$__object_name" __line "$@" < /dev/null
+   if [ -f "$__object/parameter/option" ]; then
+      set -- "$@" --option "$(cat "$__object/parameter/option")"
+   fi
+   if [ -f "$__object/parameter/comment" ]; then
+      set -- "$@" --comment "$(cat "$__object/parameter/comment")"
+   fi
+   # Ensure __ssh_authorized_key does not read stdin
+   __ssh_authorized_key "$@" < /dev/null
 done < "$__object/parameter/key"

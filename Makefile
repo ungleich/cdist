@@ -171,17 +171,6 @@ ml-release: $(ML_FILE)
 
 
 ################################################################################
-# Release: Freecode
-#
-FREECODE_FILE=.lock-freecode
-
-$(FREECODE_FILE): $(CHANGELOG_FILE)
-	$(helper) freecode-release $(CHANGELOG_VERSION)
-	touch $@
-
-freecode-release: $(FREECODE_FILE)
-
-################################################################################
 # pypi
 #
 PYPI_FILE=.pypi-release
@@ -197,7 +186,7 @@ ARCHLINUX_FILE=.lock-archlinux
 ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
 
 $(ARCHLINUXTAR): PKGBUILD
-	makepkg -c --source
+	umask 022; mkaurball
 
 PKGBUILD: PKGBUILD.in $(PYTHON_VERSION)
 	./PKGBUILD.in $(CHANGELOG_VERSION)

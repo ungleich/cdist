@@ -40,7 +40,7 @@ EXAMPLES
 __cdistmarker
 
 # Creates the marker differently.
-__cdistmarker --file /tmp/cdist_marker --format '+%s'
+__cdistmarker --destination /tmp/cdist_marker --format '+%s'
 --------------------------------------------------------------------------------
 
 

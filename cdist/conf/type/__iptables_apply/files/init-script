@@ -45,4 +45,14 @@ case $1 in
     restart)
         "$0" stop &&  "$0" start
     ;;
+    reset)
+        for table in INPUT FORWARD OUTPUT; do
+            iptables -P "$table" ACCEPT
+            iptables -F "$table"
+        done
+        for table in PREROUTING POSTROUTING OUTPUT; do
+            iptables -t nat -P "$table" ACCEPT
+            iptables -t nat -F "$table"
+        done
+    ;;
 esac

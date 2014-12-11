@@ -37,11 +37,13 @@ class Message(object):
         self.prefix = prefix
         self.global_messages = messages
 
-        self.messages_in  = tempfile.mkstemp(suffix='.cdist_message_in')[1]
-        self.messages_out = tempfile.mkstemp(suffix='.cdist_message_out')[1]
+        in_fd, self.messages_in  = tempfile.mkstemp(suffix='.cdist_message_in')
+        out_fd, self.messages_out = tempfile.mkstemp(suffix='.cdist_message_out')
+
+        os.close(in_fd)
+        os.close(out_fd)
 
         self._copy_messages()
-
 
     @property
     def env(self):

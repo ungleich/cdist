@@ -15,12 +15,41 @@ Changelog
 	* Core: Integrate initial preos support
 
 
-3.1.6:
+3.1.10:
+	* Core: Fix too many open files bug (#343)
+	* Type __ssh_authorized_keys: Remove unneeded explorer (Steven Armstrong)
+	* Type __ssh_authorized_keys: Fix empty output bug of entry explorer (Steven Armstrong)
+	* Type __package_apt: Add support for --target-release
+
+3.1.9: 2014-10-17
+	* Type __package_emerge: Fix handling of slotted packages (Daniel Heule)
+	* Type __package_apt: Use --force-confdef (Ricardo Catalinas Jiménez)
+	* Type __package_update_index: Decrease verbosity (Ricardo Catalinas Jiménez)
+	* Type __package_upgrade_all: Decrease verbosity (Ricardo Catalinas Jiménez)
+
+3.1.8: 2014-10-01
+	* New Type: __package_update_index (Ricardo Catalinas Jiménez)
+	* New Type: __package_upgrade_all  (Ricardo Catalinas Jiménez)
+
+3.1.7: 2014-09-29
+	* Type __cdistmarker: Fix typo (Ricardo Catalinas Jiménez)
+	* Core: Bugfix: Export messaging to manifests (Ricardo Catalinas Jiménez)
+	* Explorer cpu_cores, cpu_sockets, memory: Add Mac OS X support (Manuel Hutter)
+	* Type __ssh_authorized_keys: Ensure keys are correctly added (Steven Armstrong)
+	* New Type: __ssh_authorized_key (Steven Armstrong)
+	* New Type: __package_pkgng_freebsd (Jake Guffey)
+
+3.1.6: 2014-08-18
+	* New Type: __ssh_dot_ssh
 	* Type __package_yum: Support retrieving package via URL
 	* Type __hostname: Support SuSE and have CentOS use sysconfig value
 	* Type __locale: Support SuSE
+	* Type __locale: Support Archlinux
 	* Type __timezone: Support SuSE
 	* Type __file: Support MacOS X (Manuel Hutter)
+	* Type __iptables_apply: Add "reset" to init.d script of iptables
+	* Type __ssh_authorized_key: Use new type __ssh_dot_ssh
+	* Type __zypper_repo: Bugfix for pattern matching (Daniel Heule)
 
 3.1.5: 2014-05-05
 	* Type __zypper_repo: Automatically import gpg keys (Daniel Heule)

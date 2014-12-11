@@ -57,6 +57,48 @@ if grep -q "^__your_type/object/id:something" "$__messages_in"; then
 fi
 --------------------------------------------------------------------------------
 
+Some real life examples:
+--------------------------------------------------------------------------------
+# Reacting on changes from block for keepalive
+if grep -q "^__block/keepalive-vrrp" "$__messages_in"; then
+    echo /etc/init.d/keepalived restart
+fi
+
+# Reacting on changes of configuration files
+if grep -q "^__file/etc/one" $__messages_in; then
+    echo 'for init in /etc/init.d/opennebula*; do $init restart; done'
+fi
+--------------------------------------------------------------------------------
+
+Restart sshd on changes
+--------------------------------------------------------------------------------
+os="$(cat "$__global/explorer/os")"
+
+case "$os" in
+    centos|redhat|suse)
+        restart="/etc/init.d/sshd restart"
+    ;;
+    debian|ubuntu)
+        restart="/etc/init.d/ssh restart"
+    ;;
+    *)
+        cat << eof >&2
+Unsupported os $os.
+If you would like to have this type running on $os,
+you can either develop the changes and send a pull
+request or ask for a quote at www.ungleich.ch
+eof
+        exit 1
+    ;;
+esac
+
+if grep -q "^__key_value/PermitRootLogin" "$__messages_in"; then
+    echo $restart
+fi
+--------------------------------------------------------------------------------
+
+
+
 
 SEE ALSO
 --------
