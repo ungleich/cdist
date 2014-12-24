@@ -243,7 +243,7 @@ distclean: clean
 
 # The pub is Nico's "push to all git remotes" way ("make pub")
 pub:
-	for remote in "" github sf; do \
+	for remote in "" sf; do \
 		echo "Pushing to $$remote"; \
 		git push --mirror $$remote; \
 	done
