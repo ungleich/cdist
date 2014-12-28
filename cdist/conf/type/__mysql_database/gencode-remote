@@ -45,7 +45,6 @@ if [ -f "$__object/parameter/user" ]; then
 EOF
 EOFF
    else
-      password=""
       cat <<-EOFF
       mysql -u root <<-EOF
       	GRANT ALL PRIVILEGES ON $database.* to '$user'@'localhost';
