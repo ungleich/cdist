@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Ricardo Catalinas Jiménez (jimenezrick at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -18,34 +19,39 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Let localedef do the magic
+# Set the system-wide default locale
 #
 
-locale="$__object_id"
+locale="$(cat "$__object/parameter/locale")"
+pattern="$(sed s/-//g "$__object/parameter/locale")"
+os="$(cat "$__global/explorer/os")"
 
-# Hardcoded, create a pull request with
-# branching on $os in case it is at another location
-alias=/usr/share/locale/locale.alias
+if ! locale -a | grep -q -i "$pattern"; then
+    case "$os" in
+        debian|ubuntu)
+            echo locale-gen "$locale"
+        ;;
+        archlinux)
+            echo locale-gen
+        ;;
+        *)
+            echo "Sorry, do not know how to generate the locale $locale on os: $os" >&2
+            echo "Please edit the type ${__type##*/} to fix this." >&2
+            exit 1
+        ;;
+    esac
+fi
 
-input=$(echo "$locale" | cut -d . -f 1)
-charmap=$(echo "$locale" | cut -d . -f 2)
-
-# Adding locale? The name is de_CH.UTF-8
-# Removing locale? The name is de_CH.utf8.
-# W-T-F!
-locale_remove=$(echo "$locale" | sed 's/UTF-8/utf8/')
-
-state=$(cat "$__object/parameter/state")
-
-case "$state" in
-    present)
-        echo localedef -A "$alias" -f "$charmap" -i "$input" "$locale"
+case "$os" in
+    debian|ubuntu)
+        echo update-locale LANG="$locale"
     ;;
-    absent)
-        echo localedef --delete-from-archive "$locale_remove"
+    archlinux)
+        echo localectl set-locale LANG="$locale"
     ;;
     *)
-        echo "Unsupported state: $state" >&2
+        echo "Sorry, do not know how to setup the default locale on os: $os" >&2
+        echo "Please edit the type ${__type##*/} to fix this." >&2
         exit 1
     ;;
 esac
