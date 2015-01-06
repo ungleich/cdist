@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2013-2014 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013-2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -29,7 +29,7 @@ case "$os" in
         # Debian needs a seperate package
         __package locales --state present
     ;;
-    archlinux|suse)
+    archlinux|suse|ubuntu)
         :
     ;;
     *)
