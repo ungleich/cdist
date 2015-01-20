@@ -24,6 +24,7 @@
 
 name="$__object_id"
 os="$(cat "$__global/explorer/os")"
+state="$(cat "$__object/parameter/state")"
 
 
 # Use short option names for portability
