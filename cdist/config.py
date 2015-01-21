@@ -127,7 +127,8 @@ class Config(object):
             remote = cdist.exec.remote.Remote(
                 target_host=host,
                 remote_exec=args.remote_exec,
-                remote_copy=args.remote_copy)
+                remote_copy=args.remote_copy,
+                base_path=args.remote_out_path)
     
             c = cls(local, remote, dry_run=args.dry_run)
             c.run()
@@ -161,7 +162,6 @@ class Config(object):
         self.local.save_cache()
         self.log.info("Finished successful run in %s seconds", time.time() - start_time)
 
-
     def object_list(self):
         """Short name for object list retrieval"""
         for cdist_object in core.CdistObject.list_objects(self.local.object_path,
@@ -170,7 +170,6 @@ class Config(object):
                 self.log.debug("Running in config mode, ignoring install object: {0}".format(cdist_object))
             else:
                 yield cdist_object
-
 
     def iterate_once(self):
         """
