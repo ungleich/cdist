@@ -88,12 +88,12 @@ if [ "$state" = "present" ]; then
                set -- "$@" "$(shorten_property $property)" \'$new_value\'
             fi
          fi
-         if [ "$os" = "freebsd" ]; then
-            echo pw groupadd "$@" "$name"
-         else
-            echo groupadd "$@" "$name"
-         fi
       done
+      if [ "$os" = "freebsd" ]; then
+         echo pw groupadd "$@" "$name"
+      else
+         echo groupadd "$@" "$name"
+      fi
    fi
 else
    # delete existing
