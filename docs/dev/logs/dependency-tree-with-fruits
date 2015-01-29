@@ -23,4 +23,7 @@
     If all manifests have run already, also all type explorers have run already (#1).
     If all type explorers have run already, some objects may have been finished completly already (#2).
 
-7. Because of #4 and #6, we need to introduce another dependency that allows to trigger reload
+7. Because of #4 and #6, we need to introduce another dependency that allows reloading after
+
+8. Because the object could be finished already due to a 'require' dependency, we need another script
+    Maybe "gen-post-run-local", "gen-post-run-remote"
