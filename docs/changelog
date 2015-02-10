@@ -5,12 +5,13 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
-3.1.10: 2015-01-06
+3.1.10: 2015-02-10
 	* Core: Fix too many open files bug (#343)
 	* Type __ssh_authorized_keys: Remove unneeded explorer (Steven Armstrong)
 	* Type __ssh_authorized_keys: Fix empty output bug of entry explorer (Steven Armstrong)
 	* Type __package_apt: Add support for --target-release
 	* Type __locale: Add support for Ubuntu
+	* Type __group: Rewrite (Steven Armstrong)
 	* Documentation: Fix typo in maintainer file (Stephan Kulla)
 
 3.1.9: 2014-10-17
