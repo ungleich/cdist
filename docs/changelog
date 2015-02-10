@@ -5,6 +5,9 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 
+3.1.11:
+	* Type __start_on_boot: Support Ubuntu upstart
+
 3.1.10: 2015-02-10
 	* Core: Fix too many open files bug (#343)
 	* Type __ssh_authorized_keys: Remove unneeded explorer (Steven Armstrong)
