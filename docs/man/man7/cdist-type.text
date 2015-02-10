@@ -100,7 +100,7 @@ echo use_ssl >> cdist/conf/type/__nginx_vhost/parameter/boolean
 USING PARAMETERS
 ----------------
 The parameters given to a type can be accessed and used in all type scripts
-(e.g manifest, gencode-*, explorer/*). Note that boolean parameters are
+(e.g manifest, gencode, explorer). Note that boolean parameters are
 represented by file existence. File exists -> True,
 file does not exist -> False
 
@@ -281,7 +281,7 @@ on the target, there must be another type that provides this tool and the first
 type should create an object of the specific type.
 
 If your type wants to save temporary data, that may be used by other types
-later on (for instance __file), you can save them in the subdirectory
+later on (for instance \__file), you can save them in the subdirectory
 "files" below $__object (but you must create it yourself).
 cdist will not touch this directory.
 

@@ -110,6 +110,7 @@ setup the variable "require" to contain the requirements. Multiple
 requirements can be added white space separated.
 
 --------------------------------------------------------------------------------
+
  1 # No dependency
  2 __file /etc/cdist-configured
  3 
@@ -121,20 +122,42 @@ requirements can be added white space separated.
  9 require="__file/etc/cdist-configured __link/tmp/cdist-testfile" \
 10    __file /tmp/cdist-another-testfile
 
-
 --------------------------------------------------------------------------------
 
 Above the "require" variable is only set for the command that is 
-immediately following it. Dependencies should allways be declared that way.
+immediately following it. Dependencies should always be declared that way.
 
-On line 4 you can see that the instantion of a type "__link" object needs
+On line 4 you can see that the instantion of a type "\__link" object needs
 the object "__file/etc/cdist-configured" to be present, before it can proceed.
 
-This also means that the "__link" command must make sure, that either
-"__file/etc/cdist-configured" allready is present, or, if it's not, it needs
+This also means that the "\__link" command must make sure, that either
+"\__file/etc/cdist-configured" allready is present, or, if it's not, it needs
 to be created. The task of cdist is to make sure, that the dependency will be
-resolved appropriately and thus "__file/etc/cdist-configured" be created
+resolved appropriately and thus "\__file/etc/cdist-configured" be created
 if necessary before "__link" proceeds (or to abort execution with an error).
+
+If you really need to make all types depend on a common dependency, you can
+export the "require" variable as well. But then, if you need to add extra
+dependencies to a specific type, you have to make sure that you append these
+to the globally already defined one.
+
+--------------------------------------------------------------------------------
+
+# First of all, update the package index
+__package_update_index
+# Upgrade all the installed packages afterwards
+require="__package_update_index" __package_upgrade_all
+# Create a common dependency for all the next types so that they get to
+# be executed only after the package upgrade has finished
+export require="__package_upgrade_all"
+
+# Ensure that lighttpd is installed after we have upgraded all the packages
+__package lighttpd --state present
+# Ensure that munin is installed after lighttpd is present and after all
+# the packages are upgraded
+require="$require __package/lighttpd" __package munin --state present
+
+--------------------------------------------------------------------------------
 
 All objects that are created in a type manifest are automatically required
 from the type that is calling them. This is called "autorequirement" in

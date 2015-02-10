@@ -1,0 +1,18 @@
+
+cdist preos keyramfs --keyfile --keyfile
+
+[17:51] freiheit:vcs% mkdir preos-keys
+[17:51] freiheit:vcs% mkdir -p preos-keys/root/.ssh 
+[17:56] freiheit:vcs% 
+
+chown root:root -R preos-keys/
+chmod 0600 preos-keys/root/.ssh/authorized_keys 
+
+chmod 0700 preos-keys/root/
+chmod 0700 preos-keys/root/.ssh/
+
+[18:20:17] freiheit:/home/users/nico/.ungleich/ungleich/vcs/preos-keys# find . | cpio -H newc -o | gzip -9 >  ../initramfs.cpio.gz
+4 blocks
+[18:21:08] freiheit:/home/users/nico/.ungleich/ungleich/vcs/preos-keys# 
+
+

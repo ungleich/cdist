@@ -1,0 +1,29 @@
+1. Manifests need type explorers to be run before
+    Only this way the manifest can use the values
+
+2. Type explorers can depend on the (successful) execution of other objects
+    A type explorer may lookup values (ownership, size, processes, etc.)
+    that are depending on the code of other objects.
+
+3. The 'require="a" b' dependency specifies only that execution of b needs to wait until a is finished
+    Other requirements given at another position may not be
+    executed before b, as cdist interprets require="a" as 
+    "a is everything that is needed to realise b"
+ 
+4. The 'require' state is thus *not* suitable to trigger reloads
+    A type b, which uses the require="" statement to wait for all
+    require="" dependencies, may be executed in an incomplete
+    status.
+
+5. Depending on multiple dependencies defined at different locations requires all objects to be present
+    Because otherwise the dependent object cannot be sure that the
+    list of objects it waits for is complete.
+
+6. If a statement requires all objects to be present, all manifests must have run already.
+    If all manifests have run already, also all type explorers have run already (#1).
+    If all type explorers have run already, some objects may have been finished completly already (#2).
+
+7. Because of #4 and #6, we need to introduce another dependency that allows reloading after
+
+8. Because the object could be finished already due to a 'require' dependency, we need another script
+    Maybe "gen-post-run-local", "gen-post-run-remote"

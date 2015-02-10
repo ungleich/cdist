@@ -229,12 +229,12 @@ class Config(object):
                 for requirement in cdist_object.requirements_unfinished(cdist_object.autorequire):
                     autorequire_names.append(requirement.name)
 
-                requirements = ", ".join(requirement_names)
-                autorequire  = ", ".join(autorequire_names)
-                info_string.append("%s requires: %s autorequires: %s" % (cdist_object.name, requirements, autorequire))
+                requirements = "\n        ".join(requirement_names)
+                autorequire  = "\n        ".join(autorequire_names)
+                info_string.append("%s requires:\n        %s\n%s autorequires:\n        %s" % (cdist_object.name, requirements, cdist_object.name, autorequire))
 
-            raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved: %s" %
-                ("; ".join(info_string)))
+            raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved:\n%s" %
+                ("\n".join(info_string)))
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
