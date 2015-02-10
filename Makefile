@@ -109,8 +109,8 @@ man-dist: man check-date
 
 man-latest-link: web-pub
 	# Fix ikiwiki, which does not like symlinks for pseudo security
-	ssh tee.schottelius.org \
-    	"cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
+	ssh staticweb.ungleich.ch \
+		"cd /home/services/www/nico/nico.schottelius.org/www/software/cdist/man/ && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
 
 ################################################################################
 # Speeches
@@ -243,10 +243,7 @@ distclean: clean
 
 # The pub is Nico's "push to all git remotes" way ("make pub")
 pub:
-	for remote in "" sf; do \
-		echo "Pushing to $$remote"; \
-		git push --mirror $$remote; \
-	done
+	git push --mirror
 
 test:
 	$(helper) $@
