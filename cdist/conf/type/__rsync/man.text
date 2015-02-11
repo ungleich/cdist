@@ -11,11 +11,12 @@ cdist-type__rsync - Mirror directories using rsync
 DESCRIPTION
 -----------
 This cdist type allows you to mirror local directories to the
-target host using rsync. 
-Rsync will be installed in the manifest of the type.
+target host using rsync. Rsync will be installed in the manifest of the type.
+If group or owner are giveng, a recursive chown will be executed on the 
+target host.
 
-If group or owner are giveng, a recursive chown 
-will be executed on the target host.
+A slash will be appended to the source directory so that only the contents
+of the directory are taken and not the directory name itself.
 
 REQUIRED PARAMETERS
 -------------------
