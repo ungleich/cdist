@@ -1,0 +1,77 @@
+cdist-type__rsync(7)
+====================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__rsync - Mirror directories using rsync
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to mirror local directories to the
+target host using rsync. 
+Rsync will be installed in the manifest of the type.
+
+If group or owner are giveng, a recursive chown 
+will be executed on the target host.
+
+REQUIRED PARAMETERS
+-------------------
+source::
+    Where to take files from
+
+
+OPTIONAL PARAMETERS
+-------------------
+group::
+   Group to chgrp to.
+
+owner::
+   User to chown to.
+
+destination::
+    Use this as the base destination instead of the object id
+
+remote-user::
+    Use this user instead of the default "root" for rsync operations.
+
+MESSAGES
+--------
+NONE
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# You can use any source directory
+__rsync /tmp/testdir \
+    --source /etc
+
+# Use source from type
+__rsync /etc \
+    --source "$__type/files/package"
+
+# Allow multiple __rsync objects to write to the same dir
+__rsync mystuff \
+    --destination /usr/local/bin \
+    --source "$__type/files/package"
+
+__rsync otherstuff \
+    --destination /usr/local/bin \
+    --source "$__type/files/package2"
+
+
+--------------------------------------------------------------------------------
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2015 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
