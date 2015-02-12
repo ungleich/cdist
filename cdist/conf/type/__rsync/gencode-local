@@ -1,10 +1,10 @@
-source_dir=$(cat "$__object/parameter/source-dir")
+source=$(cat "$__object/parameter/source")
 remote_user=$(cat "$__object/parameter/remote-user")
 
-if [ -f "$__object/parameter/destination-dir" ]; then
-    destination_dir=$(cat "$__object/parameter/destination-dir")
+if [ -f "$__object/parameter/destination" ]; then
+    destination=$(cat "$__object/parameter/destination")
 else
-    destination_dir="$__object_id"
+    destination="$__object_id"
 fi
 
 set --
@@ -16,4 +16,4 @@ fi
 
 echo rsync -a \
     --no-owner --no-group \
-    -q "$@" "${source_dir}/" "${remote_user}@${__target_host}:$destination_dir"
+    -q "$@" "${source}/" "${remote_user}@${__target_host}:${destination}"

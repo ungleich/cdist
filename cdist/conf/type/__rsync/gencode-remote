@@ -1,7 +1,7 @@
-if [ -f "$__object/parameter/destination-dir" ]; then
-    destination_dir=$(cat "$__object/parameter/destination-dir")
+if [ -f "$__object/parameter/destination" ]; then
+    destination=$(cat "$__object/parameter/destination")
 else
-    destination_dir="$__object_id"
+    destination="$__object_id"
 fi
 
 ownergroup=""
@@ -13,5 +13,5 @@ if [ -f "$__object/parameter/group" ]; then
 fi
 
 if [ "$ownergroup" ]; then
-    echo chown -R "$ownergroup" "$destination_dir"
+    echo chown -R "$ownergroup" "$destination"
 fi
