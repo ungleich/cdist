@@ -4,7 +4,7 @@ remote_user=$(cat "$__object/parameter/remote-user")
 if [ -f "$__object/parameter/destination" ]; then
     destination=$(cat "$__object/parameter/destination")
 else
-    destination="$__object_id"
+    destination="/$__object_id"
 fi
 
 set --
