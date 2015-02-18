@@ -7,6 +7,7 @@ Changelog
 
 3.1.11:
 	* Type __start_on_boot: Support Ubuntu upstart
+	* New Type: __rsync
 
 3.1.10: 2015-02-10
 	* Core: Fix too many open files bug (#343)
