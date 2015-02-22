@@ -41,8 +41,6 @@ BANNER = """
    "P'        ""         ""
 """
 
-DOT_CDIST   = ".cdist"
-
 REMOTE_COPY = "scp -o User=root -q"
 REMOTE_EXEC = "ssh -o User=root -q"
 
