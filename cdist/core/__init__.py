@@ -23,7 +23,7 @@ from cdist.core.cdist_type      import CdistType
 from cdist.core.cdist_type      import NoSuchTypeError
 from cdist.core.cdist_object    import CdistObject
 from cdist.core.cdist_object    import IllegalObjectIdError
-from cdist.core.cdist_object    import OBJECT_MARKER
+#from cdist.core.cdist_object    import OBJECT_MARKER
 from cdist.core.explorer        import Explorer
 from cdist.core.manifest        import Manifest
 from cdist.core.code            import Code

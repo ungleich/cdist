@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -161,8 +161,9 @@ class Config(object):
 
     def object_list(self):
         """Short name for object list retrieval"""
-        for cdist_object in core.CdistObject.list_objects(self.local.object_path,
-                                                         self.local.type_path):
+        for cdist_object in core.CdistObject.list_objects(object_base_path=self.local.object_path,
+                                                         type_base_path=self.local.type_path,
+                                                         object_marker_name=self.local.object_marker_name):
             if cdist_object.cdist_type.is_install:
                 self.log.debug("Running in config mode, ignoring install object: {0}".format(cdist_object))
             else:

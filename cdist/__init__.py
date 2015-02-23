@@ -41,6 +41,9 @@ BANNER = """
    "P'        ""         ""
 """
 
+# File that contains the name of the object marker
+OBJECT_MARKER_NAME = '.object_marker'
+
 REMOTE_COPY = "scp -o User=root -q"
 REMOTE_EXEC = "ssh -o User=root -q"
 

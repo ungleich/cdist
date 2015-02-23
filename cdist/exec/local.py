@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -66,8 +66,8 @@ class Local(object):
         self._init_log()
         self._init_permissions()
         self._init_paths()
+        self._init_object_marker()
         self._init_conf_dirs()
-
 
     @property
     def dist_conf_dir(self):
@@ -103,6 +103,12 @@ class Local(object):
 
         self.type_path = os.path.join(self.conf_path, "type")
 
+    def _init_object_marker(self):
+        # Does not need to be secure - just randomly different from .cdist
+        self.object_marker_file = os.path.join(self.object_path, cdist.OBJECT_MARKER_NAME)
+
+        self.object_marker_name = tempfile.mktemp(prefix='.cdist-', dir='')
+
     def _init_conf_dirs(self):
         self.conf_dirs = []
 
@@ -125,6 +131,7 @@ class Local(object):
     def _init_directories(self):
         self.mkdir(self.conf_path)
         self.mkdir(self.global_explorer_out_path)
+        self.mkdir(self.object_path)
         self.mkdir(self.bin_path)
 
     def create_files_dirs(self):
@@ -132,6 +139,11 @@ class Local(object):
         self._create_conf_path_and_link_conf_dirs()
         self._create_messages()
         self._link_types_for_emulator()
+
+        with open(self.object_marker_file, 'w') as fd:
+            fd.write("%s\n" % self.object_marker_name)
+
+        print("%s %s\n" % (self.object_marker_file, self.object_marker_name))
 
 
     def _init_cache_dir(self, cache_dir):
