@@ -47,9 +47,8 @@ if [ ! -d "$version_dir" ]; then
 fi
 
 state="$(cat "$__object/parameter/state")"
-install_to="$(cat "$__object/parameter/install-to")"
 
-__staged_file "$install_to" \
+__staged_file /usr/local/bin/consul-template \
    --source "$(cat "$version_dir/source")" \
    --cksum "$(cat "$version_dir/cksum")" \
    --fetch-command 'curl -s -L "%s"' \

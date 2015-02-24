@@ -31,8 +31,6 @@ batch-size::
 consul::
    the location of the Consul instance to query (may be an IP address or FQDN) with port.
    Defaults to 'localhost:8500'.
-install-to::
-   where to install the binary. Defaults to /usr/local/bin/consul-template
 max-stale::
    the maximum staleness of a query. If specified, Consul will distribute work among all
    servers instead of just the leader.
