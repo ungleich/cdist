@@ -1,0 +1,71 @@
+cdist-type__consul(7)
+=====================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__consul - install consul
+
+
+DESCRIPTION
+-----------
+Quick and dirty installation of the consul binary.
+Note that the consul binary is downloaded on the server and then deployed using
+the __file type.
+
+Future ideas:
+- get latest version info from https://checkpoint-api.hashicorp.com/v1/check/consul
+   - then download from
+      https://dl.bintray.com/mitchellh/consul/${current_version}_${os}_${arch}.zip
+- install from given path to binary
+- download from given url
+- install from packet
+
+
+
+OPTIONAL PARAMETERS
+-------------------
+install-from::
+   uri from where to download consul. This can be anything that curl understands.
+   If install-uri ends with .zip the downloaded file will be unziped and the
+   contained file deployed as the consul binary. If install-uri does not end in .zip
+   it is assumed to be the consul binary and will be deployed as is.
+
+install-to::
+   where to install the binary. Defaults to /usr/local/bin/consul
+
+state::
+   either 'present' or 'absent'. Defaults to 'present'
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# just install using defaults
+__consul
+
+# download on the machine running cdist, then unzip, then upload to the target host
+__consul \
+   --install-from https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip
+
+# take binary from local folder on the machine running cdist
+__consul \
+   --install-from file:///cluster/adm/software/consul/bin/consul
+
+# install the consul binary to a specific location
+__consul \
+   --install-to /somewhere/special/consul
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2015 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
