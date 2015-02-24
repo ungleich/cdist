@@ -22,9 +22,6 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-install-to::
-   where to install the binary. Defaults to /usr/local/bin/consul
-
 state::
    either 'present' or 'absent'. Defaults to 'present'
 
@@ -43,10 +40,6 @@ __consul
 # specific version
 __consul \
    --version 0.4.1
-
-# install the consul binary to a specific location
-__consul \
-   --install-to /somewhere/special/consul
 --------------------------------------------------------------------------------
 
 
