@@ -33,33 +33,22 @@ case "$os" in
    ;;
 esac
 
+versions_dir="$__type/files/versions"
+version="$(cat "$__object/parameter/version")"
+version_dir="$versions_dir/$version"
 
-state="$(cat "$__object/parameter/state")"
-install_from="$(cat "$__object/parameter/install-from")"
-install_to="$(cat "$__object/parameter/install-to")"
-
-if [ "$state" = "absent" ]; then
-   __file "$install_to" \
-      --state absent
-   exit 0
+if [ ! -d "$version_dir" ]; then
+   echo "Unknown consul version '$version'. Expected one of:" >&2
+   ls "$versions_dir" >&2
+   exit 1
 fi
 
-case "$install_from" in
-   /*|file://*)
-      source="${install_from#*file://}"
-   ;;
-   *.zip)
-      mkdir "$__object/files"
-      source="$__object/files/consul"
-      # FIXME: need some persistent place to cache downloaded files
-      curl -s "$install_from" | unzip -p > "$source"
-   ;;
-   *)
-      echo "Do not know how to install from: $install_from" >&2
-      exit 1
-   ;;
-esac
-
-__file "$install_to" \
-   --owner root --group root --mode 755 \
-   --source "$source"
+__staged_file "$(cat "$__object/parameter/install-to")" \
+   --source "$(cat "$version_dir/source")" \
+   --cksum "$(cat "$version_dir/cksum")" \
+   --fetch-command 'curl -s -L "%s"' \
+   --prepare-command 'unzip -p "%s"' \
+   --state "$(cat "$__object/parameter/state")" \
+   --group root \
+   --owner root \
+   --mode 755
