@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# 2015 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+destination="$__object_id"
+source="$(cat "$__object/parameter/source")"
+cksum="$(cat "$__object/parameter/cksum")"
+stage_dir="$(cat "$__object/parameter/stage-dir")"
+state="$(cat "$__object/parameter/state")"
+fetch_command="$(cat "$__object/parameter/fetch-command")"
+stage_file="${stage_dir}/${destination}"
+
+set -- "/${destination}"
+for param in owner group mode state; do
+   if [ -f "$__object/parameter/$param" ]; then
+      set -- "$@" "--${param}" "$(cat "$__object/parameter/$param")"
+   fi
+done
+set -- "$@" --source "$stage_file"
+
+require="$__object_name" \
+   __file "$@"

@@ -5,6 +5,7 @@ Changelog
 	* Exception: No braces means author == Nico Schottelius
 
 next:
+	* New type __staged_file: Manage staged files
 	* New type __config_file: Manage configuration files and run code on change
 
 3.1.11:
