@@ -4,6 +4,8 @@ Changelog
 	* Changes are always commented with their author in (braces)
 	* Exception: No braces means author == Nico Schottelius
 
+next:
+	* New type __config_file: Manage configuration files and run code on change
 
 3.1.11:
 	* Type __start_on_boot: Support Ubuntu upstart
