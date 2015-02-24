@@ -24,7 +24,10 @@ os=$(cat "$__global/explorer/os")
 case "$os" in
    centos|redhat)
       # whitelist safeguard
-      :
+      service_onchange='service consul-template status >/dev/null && service consul-template reload || true' \
+   ;;
+   archlinux)
+      service_onchange="systemctl status consul-template >/dev/null && systemctl reload consul-template || true"
    ;;
    *)
       echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
@@ -33,7 +36,30 @@ case "$os" in
    ;;
 esac
 
-state="present"
+versions_dir="$__type/files/versions"
+version="$(cat "$__object/parameter/version")"
+version_dir="$versions_dir/$version"
+
+if [ ! -d "$version_dir" ]; then
+   echo "Unknown consul-template version '$version'. Expected one of:" >&2
+   ls "$versions_dir" >&2
+   exit 1
+fi
+
+state="$(cat "$__object/parameter/state")"
+install_to="$(cat "$__object/parameter/install-to")"
+
+__staged_file "$install_to" \
+   --source "$(cat "$version_dir/source")" \
+   --cksum "$(cat "$version_dir/cksum")" \
+   --fetch-command 'curl -s -L "%s"' \
+   --prepare-command 'tar -xzf "%s"; cat consul-template_*/consul-template' \
+   --state "$state" \
+   --group root \
+   --owner root \
+   --mode 755
+
+
 conf_dir="/etc/consul-template/conf.d"
 conf_file="config.hcl"
 template_dir="/etc/consul-template/template"
@@ -46,17 +72,6 @@ require="__directory/etc/consul-template" \
 require="__directory/etc/consul-template" \
    __directory "$template_dir" \
       --owner root --group root --mode 750
-
-
-__staged_file /usr/local/bin/consul-template \
-   --source https://github.com/hashicorp/consul-template/releases/download/v0.6.5/consul-template_0.6.5_linux_amd64.tar.gz \
-   --cksum '1356006333 8496656 consul-template' \
-   --fetch-command 'curl -s -L "%s"' \
-   --prepare-command 'tar -xzf "%s"; cat consul-template_*/consul-template' \
-   --state present \
-   --group root \
-   --owner root \
-   --mode 755
 
 
 # Generate hcl config file
@@ -82,7 +97,7 @@ require="__directory${conf_dir}" \
    __config_file "${conf_dir}/${conf_file}" \
       --owner root --group root --mode 640 \
       --state "$state" \
-      --onchange 'service consul-template status >/dev/null && service consul-template reload || true' \
+      --onchange "$service_onchange" \
       --source -
 
 
@@ -116,6 +131,14 @@ case "$os" in
          --state "$state" \
          --source "$__type/files/${service}.upstart"
       export require="__file/etc/init/${service}.conf"
+      __start_on_boot "$service" --state "$state"
+   ;;
+   archlinux)
+      __file "/lib/systemd/system/${service}.service" \
+         --owner root --group root --mode 0555 \
+         --state "$state" \
+         --source "$__type/files/${service}.systemd"
+      export require="__file/lib/systemd/system/${service}.service"
       __start_on_boot "$service" --state "$state"
    ;;
 esac

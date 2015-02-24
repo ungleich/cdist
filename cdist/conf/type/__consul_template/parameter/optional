@@ -1,7 +1,10 @@
 auth
 batch-size
 consul
+install-to
 max-stale
 retry
+state
 token
+version
 wait

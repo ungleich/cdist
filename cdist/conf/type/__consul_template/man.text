@@ -10,8 +10,11 @@ cdist-type__consul_template - manage the consul-template service
 
 DESCRIPTION
 -----------
-Installs consul-template, generates a global config file and creates directory
-for per template config files.
+Downloads and installs the consul-template binary from
+https://github.com/hashicorp/consul-template/releases/download/.
+Generates a global config file and creates directory for per template config files.
+Note that the consul-template binary is downloaded on the server (the machine running
+cdist) and then deployed to the target host using the __file type.
 
 
 REQUIRED PARAMETERS
@@ -28,14 +31,21 @@ batch-size::
 consul::
    the location of the Consul instance to query (may be an IP address or FQDN) with port.
    Defaults to 'localhost:8500'.
+install-to::
+   where to install the binary. Defaults to /usr/local/bin/consul-template
 max-stale::
    the maximum staleness of a query. If specified, Consul will distribute work among all
    servers instead of just the leader.
 retry::
    the amount of time to wait if Consul returns an error when communicating
    with the API.
+state::
+   either 'present' or 'absent'. Defaults to 'present'
 token::
    the Consul API token.
+version::
+   which version of consul-template to install. See ./files/versions for a list of
+   supported versions. Defaults to the latest known version.
 wait::
    the minimum(:maximum) to wait before rendering a new template to disk and
    triggering a command, separated by a colon (:). If the optional maximum
@@ -56,6 +66,11 @@ EXAMPLES
 --------------------------------------------------------------------------------
 __consul_template \
    --consul consul.service.consul:8500 \
+   --retry 30s
+
+# specific version
+__consul_template \
+   --version 0.6.5 \
    --retry 30s
 --------------------------------------------------------------------------------
 
