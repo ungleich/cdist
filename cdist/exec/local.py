@@ -143,9 +143,6 @@ class Local(object):
         with open(self.object_marker_file, 'w') as fd:
             fd.write("%s\n" % self.object_marker_name)
 
-        print("%s %s\n" % (self.object_marker_file, self.object_marker_name))
-
-
     def _init_cache_dir(self, cache_dir):
         if cache_dir:
             self.cache_path = cache_dir
