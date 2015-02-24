@@ -82,7 +82,6 @@ echo "{"
 
 # parameters we define ourself
 printf '   "data_dir": "%s"\n' "$data_dir"
-printf '   ,"config_dir": "%s"\n' "$conf_dir"
 
 for param in $(ls "$__object/parameter/"); do
    case "$param" in
