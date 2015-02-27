@@ -20,6 +20,7 @@ next:
 	* New type __consul_watch_services: manages consul services watches (Steven Armstrong)
 	* New Type: __rsync (Nico Schottelius)
 	* Type __start_on_boot: Support Ubuntu upstart (Nico Schottelius)
+	* Type __timezone: Added support for FreeBSD (Christian Kruse)
 
 3.1.10: 2015-02-10
 	* Core: Fix too many open files bug (#343)
