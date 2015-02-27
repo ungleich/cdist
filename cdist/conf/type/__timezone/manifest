@@ -24,6 +24,7 @@
 
 timezone="$__object_id"
 os=$(cat "$__global/explorer/os")
+package=""
         
 case "$os" in
     archlinux|debian|ubuntu)
@@ -32,13 +33,21 @@ case "$os" in
     suse)
         package=timezone
     ;;
+    freebsd)
+    ;;
     *)
         echo "Unsupported OS $os" >&2
         exit 1
     ;;
 esac
 
-__package "$package" --state present
-require="__package/$package" __link /etc/localtime    \
+if [ ! -z "$package" ]; then
+    __package "$package" --state present
+    require="__package/$package" __link /etc/localtime    \
+           --source "/usr/share/zoneinfo/${timezone}"      \
+           --type symbolic
+fi
+
+__link /etc/localtime    \
     --source "/usr/share/zoneinfo/${timezone}"      \
     --type symbolic
