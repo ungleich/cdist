@@ -35,7 +35,7 @@ case "$state_should" in
         echo firewall-cmd --permanent --direct --add-rule \"$protocol\" \"$table\" \"$chain\" \"$priority\" $rule
     ;;
 
-    present)
+    absent)
         echo firewall-cmd --permanent --direct --remove-rule \"$protocol\" \"$table\" \"$chain\" \"$priority\" $rule
     ;;
     *)
