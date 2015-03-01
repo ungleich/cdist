@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* New type: __firewalld_rule (Nico Schottelius)
+
 3.1.11: 2015-02-27
 	* New type: __staged_file: Manage staged files (Steven Armstrong)
 	* New type: __config_file: Manage configuration files and run code on change (Steven Armstrong)
