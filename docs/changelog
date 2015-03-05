@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* New type: __firewalld_rule (Nico Schottelius)
+	* Type __consul_agent: add support for acl options (Steven Armstrong)
 
 3.1.11: 2015-02-27
 	* New type: __staged_file: Manage staged files (Steven Armstrong)
