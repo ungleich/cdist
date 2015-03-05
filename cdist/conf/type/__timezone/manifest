@@ -45,7 +45,7 @@ case "$os" in
             --owner root --group root --mode 644 \
             --state exists
         require="__file/etc/sysconfig/clock" \
-            ___key_value ZONE \
+            __key_value ZONE \
                 --file /etc/sysconfig/clock \
                 --delimiter '=' \
                 --value "\"$timezone\""
