@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -323,10 +323,6 @@ class StdinTestCase(test.CdistTestCase):
 
         self.local.create_files_dirs()
 
-        self.manifest = core.Manifest(
-            target_host=self.target_host,
-            local = self.local)
-
     def tearDown(self):
         os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
@@ -347,8 +343,11 @@ class StdinTestCase(test.CdistTestCase):
         object_id = "cdist-test-id"
         argv = [type_name, object_id]
 
-        initial_manifest_path = "/cdist-test/path/that/does/not/exist"
-        env = self.manifest.env_initial_manifest(initial_manifest_path)
+        env = os.environ.copy()
+        env['__cdist_manifest'] = "/cdist-test/path/that/does/not/exist"
+        env['__cdist_object_marker'] = self.local.object_marker_name
+        env['__cdist_type_base_path'] = self.local.type_path
+        env['__global'] = self.local.base_path
 
         ######################################################################
         # Create path where stdin should reside at
