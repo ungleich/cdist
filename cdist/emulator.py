@@ -134,7 +134,7 @@ class Emulator(object):
     def setup_object(self):
         # Setup object - and ensure it is not in args
         if self.cdist_type.is_singleton:
-            self.object_id = False
+            self.object_id = ''
         else:
             self.object_id = self.args.object_id[0]
             del self.args.object_id
