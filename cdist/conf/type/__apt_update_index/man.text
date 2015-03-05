@@ -5,7 +5,7 @@ Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 NAME
 ----
-cdist-type__apt_update_index - update apt's package index
+cdist-type__apt_update_index - Update apt's package index
 
 
 DESCRIPTION

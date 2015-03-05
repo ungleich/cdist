@@ -35,6 +35,15 @@ size: %Dz
 links: %Dl
 " "$destination"
    ;;
+   "macosx")
+     stat -f "type: %HT
+owner: %Du %Su
+group: %Dg %Sg
+mode: %Lp %Sp
+size: %Dz
+links: %Dl
+" "$destination"
+   ;;
    *)
       stat --printf="type: %F
 owner: %u %U

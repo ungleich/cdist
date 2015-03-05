@@ -1,0 +1,7 @@
+check-interval
+check-script
+check-ttl
+id
+name
+port
+state

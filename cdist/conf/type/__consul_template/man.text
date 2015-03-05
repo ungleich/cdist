@@ -1,0 +1,85 @@
+cdist-type__consul_template(7)
+==============================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__consul_template - manage the consul-template service
+
+
+DESCRIPTION
+-----------
+Downloads and installs the consul-template binary from
+https://github.com/hashicorp/consul-template/releases/download/.
+Generates a global config file and creates directory for per template config files.
+Note that the consul-template binary is downloaded on the server (the machine running
+cdist) and then deployed to the target host using the __file type.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+auth::
+   specify a username (and password) for basic authentication.
+batch-size::
+   the size of the batch when polling multiple dependencies.
+consul::
+   the location of the Consul instance to query (may be an IP address or FQDN) with port.
+   Defaults to 'localhost:8500'.
+max-stale::
+   the maximum staleness of a query. If specified, Consul will distribute work among all
+   servers instead of just the leader.
+retry::
+   the amount of time to wait if Consul returns an error when communicating
+   with the API.
+state::
+   either 'present' or 'absent'. Defaults to 'present'
+token::
+   the Consul API token.
+version::
+   which version of consul-template to install. See ./files/versions for a list of
+   supported versions. Defaults to the latest known version.
+wait::
+   the minimum(:maximum) to wait before rendering a new template to disk and
+   triggering a command, separated by a colon (:). If the optional maximum
+   value is omitted, it is assumed to be 4x the required minimum value.
+
+
+BOOLEAN PARAMETERS
+------------------
+ssl::
+   use HTTPS while talking to Consul. Requires the Consul server to be configured to serve secure connections.
+ssl-no-verify::
+   ignore certificate warnings. Only used if ssl is enabled.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__consul_template \
+   --consul consul.service.consul:8500 \
+   --retry 30s
+
+# specific version
+__consul_template \
+   --version 0.6.5 \
+   --retry 30s
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- https://github.com/hashicorp/consul-template
+
+
+COPYING
+-------
+Copyright \(C) 2015 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

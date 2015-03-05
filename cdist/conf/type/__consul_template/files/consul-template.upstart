@@ -1,0 +1,12 @@
+description "Consul-Template Daemon"
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [06]
+
+env CONSUL_TEMPLATE_LOG=info
+env GOMAXPROCS=${GOMAXPROCS}
+
+exec /usr/local/bin/consul-template -config /etc/consul-template/conf.d >> /var/log/consul-template 2>&1
+
+respawn
+respawn limit 10 10
+kill timeout 10

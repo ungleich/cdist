@@ -1,0 +1,104 @@
+- logging/cache destination
+    local:
+        ~/.cdist/log/by-host/$__target/host/config/YYYY/MM/DD/hhmmss/
+        ~/.cdist/log/by-session/YYYY/MM/DD/hhmmss/$__target_host/
+            config/
+            install/
+            export/
+    remote:
+        /var/lib/cdist/YYYY-MM-DD-hhmmss-$sourcehost.$pid
+
+    rm old directories on remote side
+
+- support for tags
+    - for partial configuration
+    - supports also install
+    - on object definition, define
+        - a) don't care (i.e. no tags)
+        - b) require tag (only if this tag is setup)
+        - c) require not tag (only if this tag is *not* setup)
+        - d) what if both given (conflicting)
+    - names for parameters:
+        - cdist config / cdist type
+            --if-tag / --not-if-tag / --require-tag
+            --not-if-tag
+
+- logging
+    - command line
+    - stdin of cdist
+    - stdout/stderr/stdin of types
+        - new: stdout/stderr
+    - initial manifest
+        - if coming from stdin
+
+- logging configurable
+    - to be discussed
+
+- sudo remote
+    - cp to tmp & mv
+    - umask issue?
+
+- install
+    - via tagged types
+    - 
+
+- export
+    - one /export script per type
+    - exports of type running after object's code is done
+    - global export should also exist after everything
+    - PR & merge
+    - change DONE status to CODE_DONE
+    - introduce EXPORT_DONE
+
+
+- preos
+    - merge with debian support only
+    - we are open to support --os-type later
+
+- stackable remotes
+    - change API for remote_exec and remote_copy
+    - new minor version
+    - PR & merge
+
+- locking
+    - optional
+    - remote lock
+    - based on $(ls /var/lib/cdist/) > 0
+
+- ideas for parallelisation
+    - run explorer in parallel
+        - type
+        - object
+    - objects without dependencies can be run in parallel
+
+- connection test
+    - just implement
+
+- multi user environment
+    - not really needed [at the moment]
+    - can be implemented by 
+        - git branches
+        - setting the output dir
+
+- python2 support with __future__
+    - steven votes against it
+    - nico does not care too much to object
+
+
+- pull based
+    - sshd / stdin + stdout
+    - use Use ProxyCommand with stdin/stdout
+        - http://www.nico.schottelius.org/blog/openssh-6.2-add-callback-functionality-using-dynamic-remote-port-forwarding/
+
+    - cdist grant-pull-access <targethost>
+        - generate user
+        - ssh pubkeypair
+    - call wraper script on targethost
+        - it is shell!
+        - ssh cdistuser@controlhost 
+
+- config replay/redo/undo
+    - not now
+
+
+- have a new discussion about handling uris

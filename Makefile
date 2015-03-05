@@ -109,8 +109,8 @@ man-dist: man check-date
 
 man-latest-link: web-pub
 	# Fix ikiwiki, which does not like symlinks for pseudo security
-	ssh tee.schottelius.org \
-    	"cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
+	ssh staticweb.ungleich.ch \
+		"cd /home/services/www/nico/nico.schottelius.org/www/software/cdist/man/ && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
 
 ################################################################################
 # Speeches
@@ -171,17 +171,6 @@ ml-release: $(ML_FILE)
 
 
 ################################################################################
-# Release: Freecode
-#
-FREECODE_FILE=.lock-freecode
-
-$(FREECODE_FILE): $(CHANGELOG_FILE)
-	$(helper) freecode-release $(CHANGELOG_VERSION)
-	touch $@
-
-freecode-release: $(FREECODE_FILE)
-
-################################################################################
 # pypi
 #
 PYPI_FILE=.pypi-release
@@ -197,7 +186,7 @@ ARCHLINUX_FILE=.lock-archlinux
 ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
 
 $(ARCHLINUXTAR): PKGBUILD
-	makepkg -c --source
+	umask 022; mkaurball
 
 PKGBUILD: PKGBUILD.in $(PYTHON_VERSION)
 	./PKGBUILD.in $(CHANGELOG_VERSION)
@@ -254,10 +243,7 @@ distclean: clean
 
 # The pub is Nico's "push to all git remotes" way ("make pub")
 pub:
-	for remote in "" github sf; do \
-		echo "Pushing to $$remote"; \
-		git push --mirror $$remote; \
-	done
+	git push --mirror
 
 test:
 	$(helper) $@
