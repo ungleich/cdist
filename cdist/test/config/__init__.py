@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -67,7 +67,7 @@ class ConfigRunTestCase(test.CdistTestCase):
 
         self.config = cdist.config.Config(self.local, self.remote)
 
-        self.objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
+        self.objects = list(core.CdistObject.list_objects(object_base_path, type_base_path, self.local.object_marker_name))
         self.object_index = dict((o.name, o) for o in self.objects)
         self.object_names = [o.name for o in self.objects]
 

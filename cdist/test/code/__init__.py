@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -61,7 +61,7 @@ class CodeTestCase(test.CdistTestCase):
         self.code = code.Code(self.target_host, self.local, self.remote)
 
         self.cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
-        self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path, 'whatever')
+        self.cdist_object = core.CdistObject(self.cdist_type, self.local.object_path, 'whatever', self.local.object_marker_name)
         self.cdist_object.create()
 
     def tearDown(self):

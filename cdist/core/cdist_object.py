@@ -158,12 +158,13 @@ class CdistObject(object):
 
         base_path = self.base_path
         type_path = self.cdist_type.base_path
+        object_marker = self.object_marker
 
         type_name, object_id = self.split_name(object_name)
 
         cdist_type = self.cdist_type.__class__(type_path, type_name)
 
-        return self.__class__(cdist_type, base_path, object_id=object_id)
+        return self.__class__(cdist_type, base_path, object_marker, object_id=object_id)
 
     def __repr__(self):
         return '<CdistObject %s>' % self.name

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014 Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -23,6 +23,7 @@
 
 import os
 import shutil
+import tempfile
 
 from cdist import test
 from cdist import core
@@ -32,37 +33,48 @@ import cdist
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-object_base_path = op.join(fixtures, 'object')
 type_base_path = op.join(fixtures, 'type')
+
+OBJECT_MARKER_NAME = '.cdist-pseudo-random'
+
+expected_object_names = sorted([
+    '__first/child',
+    '__first/dog',
+    '__first/man',
+    '__first/woman',
+    '__second/on-the',
+    '__second/under-the',
+    '__third/moon'])
+
 
 class ObjectClassTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.expected_object_names = sorted([
-            '__first/child',
-            '__first/dog',
-            '__first/man',
-            '__first/woman',
-            '__second/on-the',
-            '__second/under-the',
-            '__third/moon'])
+
+        self.tempdir = tempfile.mkdtemp(prefix="cdist.test")
+        self.object_base_path = self.tempdir
 
         self.expected_objects = []
-        for cdist_object_name in self.expected_object_names:
+        for cdist_object_name in expected_object_names:
             cdist_type, cdist_object_id = cdist_object_name.split("/", 1)
-            cdist_object = core.CdistObject(core.CdistType(type_base_path, cdist_type), object_base_path, cdist_object_id)
+            cdist_object = core.CdistObject(core.CdistType(type_base_path, cdist_type), self.object_base_path,
+                OBJECT_MARKER_NAME, cdist_object_id)
+            cdist_object.create()
             self.expected_objects.append(cdist_object)
  
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
+
     def test_list_object_names(self):
-       found_object_names = sorted(list(core.CdistObject.list_object_names(object_base_path)))
-       self.assertEqual(found_object_names, self.expected_object_names)
+       found_object_names = sorted(list(core.CdistObject.list_object_names(self.object_base_path, OBJECT_MARKER_NAME)))
+       self.assertEqual(found_object_names, expected_object_names)
 
     def test_list_type_names(self):
-        type_names = list(cdist.core.CdistObject.list_type_names(object_base_path))
+        type_names = list(cdist.core.CdistObject.list_type_names(self.object_base_path))
         self.assertEqual(sorted(type_names), ['__first', '__second', '__third'])
 
     def test_list_objects(self):
-        found_objects = sorted(list(core.CdistObject.list_objects(object_base_path, type_base_path)))
+        found_objects = sorted(list(core.CdistObject.list_objects(self.object_base_path, type_base_path, OBJECT_MARKER_NAME)))
         self.assertEqual(found_objects, self.expected_objects)
 
     def test_create_singleton(self):
@@ -77,41 +89,65 @@ class ObjectClassTestCase(test.CdistTestCase):
             self.expected_objects[0].object_from_name("__first")
 
 class ObjectIdTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp(prefix="cdist.test")
+        self.object_base_path = self.tempdir
+
+        self.expected_objects = []
+        for cdist_object_name in expected_object_names:
+            cdist_type, cdist_object_id = cdist_object_name.split("/", 1)
+            cdist_object = core.CdistObject(core.CdistType(type_base_path, cdist_type), self.object_base_path,
+                OBJECT_MARKER_NAME, cdist_object_id)
+            cdist_object.create()
+            self.expected_objects.append(cdist_object)
+ 
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
+
     def test_object_id_contains_double_slash(self):
         cdist_type = core.CdistType(type_base_path, '__third')
         illegal_object_id = '/object_id//may/not/contain/double/slash'
         with self.assertRaises(core.IllegalObjectIdError):
-            core.CdistObject(cdist_type, object_base_path, illegal_object_id)
+            core.CdistObject(cdist_type, self.object_base_path, OBJECT_MARKER_NAME, illegal_object_id)
 
     def test_object_id_contains_object_marker(self):
         cdist_type = core.CdistType(type_base_path, '__third')
-        illegal_object_id = 'object_id/may/not/contain/%s/anywhere' % core.OBJECT_MARKER
+        illegal_object_id = 'object_id/may/not/contain/%s/anywhere' % OBJECT_MARKER_NAME
         with self.assertRaises(core.IllegalObjectIdError):
-            core.CdistObject(cdist_type, object_base_path, illegal_object_id)
+            core.CdistObject(cdist_type, self.object_base_path, OBJECT_MARKER_NAME, illegal_object_id)
 
     def test_object_id_contains_object_marker_string(self):
         cdist_type = core.CdistType(type_base_path, '__third')
-        illegal_object_id = 'object_id/may/contain_%s_in_filename' % core.OBJECT_MARKER
-        core.CdistObject(cdist_type, object_base_path, illegal_object_id)
+        illegal_object_id = 'object_id/may/contain_%s_in_filename' % OBJECT_MARKER_NAME
+        core.CdistObject(cdist_type, self.object_base_path, OBJECT_MARKER_NAME, illegal_object_id)
         # if we get here, the test passed
 
     def test_object_id_contains_only_dot(self):
         cdist_type = core.CdistType(type_base_path, '__third')
         illegal_object_id = '.'
         with self.assertRaises(core.IllegalObjectIdError):
-            core.CdistObject(cdist_type, object_base_path, illegal_object_id)
+            core.CdistObject(cdist_type, self.object_base_path, OBJECT_MARKER_NAME, illegal_object_id)
 
     def test_object_id_on_singleton_type(self):
         cdist_type = core.CdistType(type_base_path, '__test_singleton')
         illegal_object_id = 'object_id'
         with self.assertRaises(core.IllegalObjectIdError):
-            core.CdistObject(cdist_type, object_base_path, illegal_object_id)
+            core.CdistObject(cdist_type, self.object_base_path, OBJECT_MARKER_NAME, illegal_object_id)
 
 class ObjectTestCase(test.CdistTestCase):
 
     def setUp(self):
+        self.tempdir = tempfile.mkdtemp(prefix="cdist.test")
+        self.object_base_path = self.tempdir
+
         self.cdist_type = core.CdistType(type_base_path, '__third')
-        self.cdist_object = core.CdistObject(self.cdist_type, object_base_path, 'moon') 
+        self.cdist_object = core.CdistObject(self.cdist_type, self.object_base_path, OBJECT_MARKER_NAME, 'moon') 
+        self.cdist_object.create()
+
+        self.cdist_object.parameters['planet'] = 'Saturn'
+        self.cdist_object.parameters['name'] = 'Prometheus'
+
 
     def tearDown(self):
         self.cdist_object.prepared = False
@@ -121,6 +157,8 @@ class ObjectTestCase(test.CdistTestCase):
         self.cdist_object.code_remote = ''
         self.cdist_object.state = ''
 
+        shutil.rmtree(self.tempdir)
+
     def test_name(self):
         self.assertEqual(self.cdist_object.name, '__third/moon')
 
@@ -128,22 +166,22 @@ class ObjectTestCase(test.CdistTestCase):
         self.assertEqual(self.cdist_object.object_id, 'moon')
 
     def test_path(self):
-        self.assertEqual(self.cdist_object.path, '__third/moon/.cdist')
+        self.assertEqual(self.cdist_object.path, "__third/moon/%s" % OBJECT_MARKER_NAME)
 
     def test_absolute_path(self):
-        self.assertEqual(self.cdist_object.absolute_path, os.path.join(object_base_path, '__third/moon/.cdist'))
+        self.assertEqual(self.cdist_object.absolute_path, os.path.join(self.object_base_path, "__third/moon/%s" % OBJECT_MARKER_NAME))
 
     def test_code_local_path(self):
-        self.assertEqual(self.cdist_object.code_local_path, '__third/moon/.cdist/code-local')
+        self.assertEqual(self.cdist_object.code_local_path, "__third/moon/%s/code-local" % OBJECT_MARKER_NAME)
 
     def test_code_remote_path(self):
-        self.assertEqual(self.cdist_object.code_remote_path, '__third/moon/.cdist/code-remote')
+        self.assertEqual(self.cdist_object.code_remote_path, "__third/moon/%s/code-remote" % OBJECT_MARKER_NAME)
 
     def test_parameter_path(self):
-        self.assertEqual(self.cdist_object.parameter_path, '__third/moon/.cdist/parameter')
+        self.assertEqual(self.cdist_object.parameter_path, "__third/moon/%s/parameter" % OBJECT_MARKER_NAME)
 
     def test_explorer_path(self):
-        self.assertEqual(self.cdist_object.explorer_path, '__third/moon/.cdist/explorer')
+        self.assertEqual(self.cdist_object.explorer_path, "__third/moon/%s/explorer" % OBJECT_MARKER_NAME)
 
     def test_parameters(self):
         expected_parameters = {'planet': 'Saturn', 'name': 'Prometheus'}
