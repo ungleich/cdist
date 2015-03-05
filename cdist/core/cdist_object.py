@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -63,7 +63,7 @@ class CdistObject(object):
     STATE_RUNNING = "running"
     STATE_DONE = "done"
 
-    def __init__(self, cdist_type, base_path, object_marker=".cdist", object_id=''):
+    def __init__(self, cdist_type, base_path, object_marker, object_id):
         self.cdist_type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
@@ -75,29 +75,33 @@ class CdistObject(object):
 
         self.name = self.join_name(self.cdist_type.name, self.object_id)
         self.path = os.path.join(self.cdist_type.path, self.object_id, self.object_marker)
+
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
 
     @classmethod
-    def list_objects(cls, object_base_path, type_base_path):
+    def list_objects(cls, object_base_path, type_base_path, object_marker):
         """Return a list of object instances"""
-        for object_name in cls.list_object_names(object_base_path):
+        for object_name in cls.list_object_names(object_base_path, object_marker):
             type_name, object_id = cls.split_name(object_name)
-            yield cls(cdist.core.CdistType(type_base_path, type_name), object_base_path, object_id=object_id)
+            yield cls(cdist.core.CdistType(type_base_path, type_name),
+                base_path=object_base_path,
+                object_marker=object_marker,
+                object_id=object_id)
+
+    @classmethod
+    def list_object_names(cls, object_base_path, object_marker):
+        """Return a list of object names"""
+        for path, dirs, files in os.walk(object_base_path):
+            if object_marker in dirs:
+                yield os.path.relpath(path, object_base_path)
 
     @classmethod
     def list_type_names(cls, object_base_path):
         """Return a list of type names"""
         return os.listdir(object_base_path)
-
-    @classmethod
-    def list_object_names(cls, object_base_path):
-        """Return a list of object names"""
-        for path, dirs, files in os.walk(object_base_path):
-            if self.object_marker in dirs:
-                yield os.path.relpath(path, object_base_path)
 
     @staticmethod
     def split_name(object_name):
