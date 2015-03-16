@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2015 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -22,7 +23,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   centos|redhat|ubuntu)
+   centos|debian|redhat|ubuntu)
       # whitelist safeguard
       :
    ;;
@@ -139,6 +140,32 @@ require="__directory${conf_dir}" \
       --onchange 'service consul status >/dev/null && service consul reload || true' \
       --source -
 
+init_sysvinit()
+{
+    __file /etc/init.d/consul \
+        --owner root --group root --mode 0755 \
+        --state "$state" \
+        --source "$__type/files/consul.sysv-$1"
+    require="__file/etc/init.d/consul" __start_on_boot consul
+}
+
+init_systemd()
+{
+    __file /lib/systemd/system/consul.service \
+        --owner root --group root --mode 0644 \
+        --state "$state" \
+        --source "$__type/files/consul.systemd"
+        require="__file/lib/systemd/system/consul.service" __start_on_boot consul
+}
+
+init_upstart()
+{
+    __file /etc/init/consul.conf \
+        --owner root --group root --mode 0644 \
+        --state "$state" \
+        --source "$__type/files/consul.upstart"
+    require="__file/etc/init/consul.conf" __start_on_boot consul
+}
 
 # Install init script to start on boot
 case "$os" in
@@ -146,29 +173,38 @@ case "$os" in
       os_version="$(sed 's/[^0-9.]//g' "$__global/explorer/os_version")"
       major_version="${os_version%%.*}"
       case "$major_version" in
+         [456])
+            init_sysvinit redhat
+         ;;
          7)
-            __file /lib/systemd/system/consul.service \
-               --owner root --group root --mode 0555 \
-               --state "$state" \
-               --source "$__type/files/consul.systemd"
-            export require="__file/lib/systemd/system/consul.service"
+            init_systemd
          ;;
          *)
-            __file /etc/init.d/consul \
-               --owner root --group root --mode 0555 \
-               --state "$state" \
-               --source "$__type/files/consul.sysv"
-            export require="__file/etc/init.d/consul"
+            echo "Unsupported CentOS/Redhat version: $os_version" >&2
+            exit 1
          ;;
       esac
-      __start_on_boot consul --state "$state"
    ;;
+
+    debian)
+        os_version=$(cat "$__global/explorer/os_version")
+        major_version="${os_version%%.*}"
+
+        case "$major_version" in
+            [567])
+                init_sysvinit debian
+            ;;
+            8)
+                init_sysvinit
+            ;;
+            *)
+                echo "Unsupported Debian version $os_version" >&2
+                exit 1
+            ;;
+        esac
+    ;;
+
    ubuntu)
-      __file /etc/init/consul.conf \
-         --owner root --group root --mode 0644 \
-         --state "$state" \
-         --source "$__type/files/consul.upstart"
-      export require="__file/etc/init/consul.conf"
-      __start_on_boot consul --state "$state"
+      init_upstart
    ;;
 esac
