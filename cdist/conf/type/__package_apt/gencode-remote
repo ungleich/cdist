@@ -27,11 +27,7 @@ else
    name="$__object_id"
 fi
 
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
-else
-   state_should="present"
-fi
+state_should="$(cat "$__object/parameter/state")"
 
 if [ -f "$__object/parameter/target-release" ]; then
    target_release="--target-release $(cat "$__object/parameter/target-release")"
