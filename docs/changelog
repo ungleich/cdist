@@ -1,10 +1,19 @@
 Changelog
 ---------
 
-next:
+3.1.12: 2015-03-19
+	* Core: Support object ids '.cdist' (Nico Schottelius)
 	* New type: __firewalld_rule (Nico Schottelius)
 	* Type __consul_agent: add support for acl options (Steven Armstrong)
-	* Core: Support object ids '.cdist' (Nico Schottelius)
+	* Type __consul_agent: add support for Debian (Nico Schottelius)
+	* Type __package_apt: Use default parameters (Antoine Catton)
+	* Type __package_luarocks: Use default parameters (Antoine Catton)
+	* Type __package_opkg: Use default parameters (Antoine Catton)
+	* Type __package_pacman: Use default parameters (Antoine Catton)
+	* Type __package_pip: Use default parameters (Antoine Catton)
+	* Type __package_pkg_freebsd: Use default parameters (Antoine Catton)
+	* Type __package_pkg_openbsd: Use default parameters (Antoine Catton)
+	* Type __package_pkgng_openbsd: Use default parameters (Antoine Catton)
 
 3.1.11: 2015-02-27
 	* New type: __staged_file: Manage staged files (Steven Armstrong)
