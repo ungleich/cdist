@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# 2013 Daniel Heule (hda at sfs.biz)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage services with Zypper (mostly suse)
+#
+
+# Debug
+#exec >&2
+#set -x
+
+
+if [ -f "$__object/parameter/uri" ]; then
+   uri="$(cat "$__object/parameter/uri")"
+else
+   uri="$__object_id"
+fi
+
+state_should="$(cat "$__object/parameter/state")"
+
+exp_uri="$(cat "$__object/explorer/service_uri")"
+
+if [ "$uri" = "$exp_uri" ] ; then
+    state_is="present"
+else
+    state_is="absent"
+fi
+
+
+# Exit if nothing is needed to be done
+[ "$state_is" = "$state_should" ] && exit 0
+
+# we need this list to remove ids, but we must do this in reverse order
+exp_repos="$(cat "$__object/explorer/repo_ids" | rev)"
+
+# boolean parameter
+if [ -f "$__object/parameter/remove-all-repos" ]; then
+   # file exists -> True
+   for i in $exp_repos; do
+     __zypper_repo "droprepo${i}" --state absent --repo_id "${i}"
+   done 
+fi

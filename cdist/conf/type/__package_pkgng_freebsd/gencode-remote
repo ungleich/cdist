@@ -1,0 +1,127 @@
+#!/bin/sh
+#
+# 2014 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage packages with pkg on FreeBSD
+#
+
+# Debug
+#exec >&2
+#set -x
+
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
+
+flavor="$(cat "$__object/parameter/flavor")"
+version="$(cat "$__object/parameter/version")"
+
+if [ -f "$__object/parameter/upgrade" ]; then
+   upgrade="true"
+else
+   upgrade="false"
+fi
+
+repo="$(cat "$__object/parameter/repo")"
+state="$(cat "$__object/parameter/state")"
+curr_version="$(cat "$__object/explorer/pkg_version")"
+add_cmd="pkg install -y"
+rm_cmd="pkg delete -y"
+upg_cmd="pkg upgrade -y"
+cmd=""
+
+# Print the command to be executed
+# Parms: $1 -- mode, "rm", "add", or "upg"
+#        $2 -- the command to be echoed
+execcmd(){
+   local _cmd=""
+
+   case "$1" in
+      add)
+         _cmd="${add_cmd} $2"
+         ;;
+      rm)
+         _cmd="${rm_cmd} $2"
+         ;;
+      upg)
+         _cmd="${upg_cmd} $2"
+         ;;
+      *)
+         printf "Error. Don't understand command: %s" "$1" >&2
+         exit 1
+         ;;
+   esac
+
+   echo "$_cmd 2>&- >&-"   # Silence the output of the command
+   echo "status=\$?"
+   echo "if [ \"\$status\" -ne \"0\" ]; then"
+   echo "	echo \"Error: ${_cmd} exited nonzero with \$status\"'!' >&2"
+   echo "	exit 1"
+   echo "fi"
+}
+
+if [ -n "$curr_version" ]; then  # PKG *is* installed
+   if [ -n "$repo" ]; then
+      cmd="-r ${repo} ${name}"
+   else
+      cmd="${name}"
+   fi
+   if [ -n "$flavor" ]; then
+      cmd="${cmd}-${flavor}"
+   fi
+   # PKG is supposed to be removed
+   if [ "$state" = "absent" ]; then
+      execcmd "rm" "${cmd}"
+   # PKG is supposed to be installed to a particular version
+   elif [ -n "$version" ] && [ "$version" != "$curr_version" ]; then
+      if [ "$upgrade" = "true" ]; then
+         execcmd "upg" "${cmd}"
+      else
+         printf "Version %s is already installed and pkg-ng can't upgrade directly to version %s.\nTo upgrade to the latest version, use the --upgrade flag.\n" "$curr_version" "$version" >&2
+         exit 1
+      fi
+   # PKG is supposed to be installed to the latest version
+   else
+      :  # Do nothing.
+   fi
+else  # PKG *isn't* installed
+   if [ "$state" = "absent" ]; then # Shouldn't be installed
+      exit 0
+   else  # Should be installed
+      if [ -n "$repo" ]; then
+         cmd="-r ${repo} ${name}"
+      else
+         cmd="${name}"
+      fi
+      if [ -n "$flavor" ]; then
+         cmd="${cmd}-${flavor}"
+      fi
+      if [ -n "$version" ]; then
+         cmd="${cmd}-${version}"
+      fi
+
+      execcmd "add" "$cmd"
+      exit 0
+   fi
+fi
+
+# Debug
+#set +x

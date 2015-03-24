@@ -29,6 +29,8 @@ flavor::
 state::
     Either "present" or "absent", defaults to "present"
 
+pkg_path::
+    Manually specify a PKG_PATH to add packages from.
 
 EXAMPLES
 --------
@@ -45,6 +47,10 @@ __package_pkg_openbsd python --state present --name python2
 
 # Remove obsolete package
 __package_pkg_openbsd puppet --state absent
+
+# Add a package using a particular mirror
+__package_pkg_openbsd bash \
+  --pkg_path http://openbsd.mirrorcatalogs.com/snapshots/packages/amd64
 --------------------------------------------------------------------------------
 
 

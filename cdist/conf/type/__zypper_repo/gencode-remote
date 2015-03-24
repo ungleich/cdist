@@ -1,0 +1,98 @@
+#!/bin/sh
+#
+# 2013 Daniel Heule (hda at sfs.biz)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage repo services with Zypper (mostly suse)
+#
+
+# Debug
+#exec >&2
+#set -x
+
+zypper_def_opts=" -q --non-interactive --gpg-auto-import-keys "
+
+if [ -f "$__object/parameter/repo_desc" ]; then
+   desc="$(cat "$__object/parameter/repo_desc")"
+else
+   desc="$__object_id"
+fi
+
+if [ -f "$__object/parameter/uri" ]; then
+   uri="$(cat "$__object/parameter/uri")"
+else
+   uri="$__object_id"
+fi
+
+if [ -f "$__object/parameter/repo_id" ]; then
+   id="$(cat "$__object/parameter/repo_id")"
+else
+   id="$__object_id"
+fi
+
+state="$(cat "$__object/parameter/state")"
+
+repo_id="$(cat "$__object/explorer/repo_id")"
+
+act_id=""
+if grep -q "$id" "$__object/explorer/all_repo_ids"; then
+    act_id="$id"
+elif grep -q "$repo_id" "$__object/explorer/all_repo_ids"; then
+    act_id="$repo_id" 
+fi
+
+repostate="disabled"
+if grep -q "$act_id" "$__object/explorer/enabled_repo_ids"; then
+    repostate="enabled"
+fi
+
+
+case "$state" in
+   present)
+         if [ -z "$desc" ] || [ -z "$uri" ]; then
+             echo "parameter repo_desc and uri for $state needed" >&2
+             exit 4
+         fi
+         if [ -z "$repo_id" ]; then
+             # Repo not present, so we need to create it 
+             echo zypper $zypper_def_opts addrepo "'$uri'" "'$desc'"
+         fi
+   ;;
+   absent)
+         if [ ! -z "$act_id" ]; then
+             # Repo present (act_id not ""), so we ned to delete it
+             echo zypper $zypper_def_opts removerepo "$act_id"
+         fi
+   ;;
+   enabled)
+         if [ ! -z "$act_id" ] && [ "$repostate" = "disabled" ]; then
+             # Repo present (act_id not "") and repostate not enabled, so a enable call is needed
+             echo zypper $zypper_def_opts modifyrepo -e "$act_id"
+         fi
+   ;;
+   disabled)
+         if [ ! -z "$act_id" ] && [ "$repostate" = "enabled" ]; then
+             # Repo present (act_id not "") and repostate enabled, so a disable call is needed
+             echo zypper $zypper_def_opts modifyrepo -d "$act_id"
+         fi
+   ;;
+   *)
+      echo "Unknown state: $state" >&2
+      exit 1
+   ;;
+esac

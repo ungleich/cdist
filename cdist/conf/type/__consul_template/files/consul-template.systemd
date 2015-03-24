@@ -1,0 +1,19 @@
+[Unit]
+Description=Consul-Template Daemon
+Wants=basic.target
+After=basic.target network.target
+
+[Service]
+User=root
+Group=root
+Environment="CONSUL_TEMPLATE_LOG=info"
+Environment="GOMAXPROCS=2"
+ExecStart=/usr/local/bin/consul-template -config /etc/consul-template/conf.d
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=10s
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

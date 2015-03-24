@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+name="$__object_id"
+state="$(cat "$__object/parameter/state")"
+uri="$(cat "$__object/parameter/uri")"
+
+if [ -f "$__object/parameter/distribution" ]; then
+   distribution="$(cat "$__object/parameter/distribution")"
+else
+   distribution="$(cat "$__global/explorer/lsb_codename")"
+fi
+
+component="$(cat "$__object/parameter/component")"
+
+if [ -f "$__object/parameter/arch" ]; then
+   forcedarch="[arch=$(cat "$__object/parameter/arch")]"
+else
+   forcedarch=""
+fi
+
+# export variables for use in template
+export name
+export uri
+export distribution
+export component
+export forcedarch
+
+# generate file from template
+mkdir "$__object/files"
+"$__type/files/source.list.template" > "$__object/files/source.list"
+__file "/etc/apt/sources.list.d/${name}.list" \
+   --source "$__object/files/source.list" \
+   --owner root --group root --mode 0644 \
+   --state "$state"
+
+require="$__object_name" __apt_update_index

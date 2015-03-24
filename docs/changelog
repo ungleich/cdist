@@ -1,15 +1,304 @@
 Changelog
 ---------
 
-	* Changes are always commented with their author in (braces)
-	* Exception: No braces means author == Nico Schottelius
+3.1.12: 2015-03-19
+	* Core: Support object ids '.cdist' (Nico Schottelius)
+	* New type: __firewalld_rule (Nico Schottelius)
+	* Type __consul_agent: add support for acl options (Steven Armstrong)
+	* Type __consul_agent: add support for Debian (Nico Schottelius)
+	* Type __package_apt: Use default parameters (Antoine Catton)
+	* Type __package_luarocks: Use default parameters (Antoine Catton)
+	* Type __package_opkg: Use default parameters (Antoine Catton)
+	* Type __package_pacman: Use default parameters (Antoine Catton)
+	* Type __package_pip: Use default parameters (Antoine Catton)
+	* Type __package_pkg_freebsd: Use default parameters (Antoine Catton)
+	* Type __package_pkg_openbsd: Use default parameters (Antoine Catton)
+	* Type __package_pkgng_openbsd: Use default parameters (Antoine Catton)
 
-next:
+3.1.11: 2015-02-27
+	* New type: __staged_file: Manage staged files (Steven Armstrong)
+	* New type: __config_file: Manage configuration files and run code on change (Steven Armstrong)
+	* New type: __consul: install consul (Steven Armstrong)
+	* New type: __consul_agent: manage the consul agent (Steven Armstrong)
+	* New type: __consul_check: manages consul checks (Steven Armstrong)
+	* New type: __consul_reload: reload consul (Steven Armstrong)
+	* New type: __consul_service: manages consul services (Steven Armstrong)
+	* New type: __consul_template: manage the consul-template service (Steven Armstrong)
+	* New type: __consul_template_template: manage consul-template templates (Steven Armstrong)
+	* New type: __consul_watch_checks: manages consul checks watches (Steven Armstrong)
+	* New type: __consul_watch_event: manages consul event watches (Steven Armstrong)
+	* New type: __consul_watch_key: manages consul key watches (Steven Armstrong)
+	* New type: __consul_watch_keyprefix: manages consul keyprefix watches (Steven Armstrong)
+	* New type: __consul_watch_nodes: manages consul nodes watches (Steven Armstrong)
+	* New type: __consul_watch_service: manages consul service watches (Steven Armstrong)
+	* New type: __consul_watch_services: manages consul services watches (Steven Armstrong)
+	* New Type: __rsync (Nico Schottelius)
+	* Type __start_on_boot: Support Ubuntu upstart (Nico Schottelius)
+	* Type __timezone: Added support for FreeBSD (Christian Kruse)
+
+3.1.10: 2015-02-10
+	* Core: Fix too many open files bug (#343)
+	* Type __ssh_authorized_keys: Remove unneeded explorer (Steven Armstrong)
+	* Type __ssh_authorized_keys: Fix empty output bug of entry explorer (Steven Armstrong)
+	* Type __package_apt: Add support for --target-release (Nico Schottelius)
+	* Type __locale: Add support for Ubuntu (Nico Schottelius)
+	* Type __group: Rewrite (Steven Armstrong)
+	* Documentation: Fix typo in maintainer file (Stephan Kulla)
+
+3.1.9: 2014-10-17
+	* Type __package_emerge: Fix handling of slotted packages (Daniel Heule)
+	* Type __package_apt: Use --force-confdef (Ricardo Catalinas Jiménez)
+	* Type __package_update_index: Decrease verbosity (Ricardo Catalinas Jiménez)
+	* Type __package_upgrade_all: Decrease verbosity (Ricardo Catalinas Jiménez)
+
+3.1.8: 2014-10-01
+	* New Type: __package_update_index (Ricardo Catalinas Jiménez)
+	* New Type: __package_upgrade_all  (Ricardo Catalinas Jiménez)
+
+3.1.7: 2014-09-29
+	* Type __cdistmarker: Fix typo (Ricardo Catalinas Jiménez)
+	* Core: Bugfix: Export messaging to manifests (Ricardo Catalinas Jiménez)
+	* Explorer cpu_cores, cpu_sockets, memory: Add Mac OS X support (Manuel Hutter)
+	* Type __ssh_authorized_keys: Ensure keys are correctly added (Steven Armstrong)
+	* New Type: __ssh_authorized_key (Steven Armstrong)
+	* New Type: __package_pkgng_freebsd (Jake Guffey)
+
+3.1.6: 2014-08-18
+	* New Type: __ssh_dot_ssh (Nico Schottelius)
+	* Type __package_yum: Support retrieving package via URL (Nico Schottelius)
+	* Type __hostname: Support SuSE and have CentOS use sysconfig value (Nico Schottelius)
+	* Type __locale: Support SuSE (Nico Schottelius)
+	* Type __locale: Support Archlinux (Nico Schottelius)
+	* Type __timezone: Support SuSE (Nico Schottelius)
+	* Type __file: Support MacOS X (Manuel Hutter)
+	* Type __iptables_apply: Add "reset" to init.d script of iptables (Nico Schottelius)
+	* Type __ssh_authorized_key: Use new type __ssh_dot_ssh (Nico Schottelius)
+	* Type __zypper_repo: Bugfix for pattern matching (Daniel Heule)
+
+3.1.5: 2014-05-05
+	* Type __zypper_repo: Automatically import gpg keys (Daniel Heule)
+	* Type __zypper_service: Automatically import gpg keys (Daniel Heule)
+
+3.1.4: 2014-05-04
+	* Core: Ensure all created files end in \n (Steven Armstrong)
+	* Documentation: Cleanup up, added HTML links (Tomas Pospisek)
+	* Explorer interfaces: Remove test output (Daniel Heule)
+	* Type __jail: Add messaging support (Jake Guffey)
+	
+3.1.3: 2014-04-29
+	* New Type: __yum_repo (Steven Armstrong)
+	* Type __hostname: Add support for CentOS (Nico Schottelius)
+
+3.1.2: 2014-04-12
+	* Documentation: Add missing environment variables to reference (Nico Schottelius)
+	* Type __qemu_img: size is optional, if state is not present (Nico Schottelius)
+	* Type __key_value: Rewrite using awk (Daniel Heule)
+	* New Type: __dog_vdi (Nico Schottelius)
+
+3.1.1: 2014-03-26
+	* Core: Make __object and __object_id available to code (Daniel Heule)
+	* New explorer: cpu_cores (Daniel Heule/Thomas Oettli)
+	* New explorer: cpu_sockets (Daniel Heule/Thomas Oettli)
+	* New explorer: machine_type (Daniel Heule/Thomas Oettli)
+	* New explorer: memory (Daniel Heule/Thomas Oettli)
+	* Type __jail: Fix parameter names in explorer (Jake Guffey)
+	* Type __line: Ensure permissions are kept (Steven Armstrong)
+	* Type __link: Do not create link in directory, if link exists (Steven Armstrong)
+	* Type __package_pkg_openbsd: Improve error handling (og)
+
+3.1.0: 2014-03-19
+	* New Type: __rbenv (Nico Schottelius)
+	* Type __file: Enhance OpenBSD Support (og)
+	* Type __git: Pass onwer/group/mode values to __directory (Nico Schottelius)
+	* Type __iptable_rule: Fix example documentation (Antoine Catton)
+	* Type __key_value: Add messaging support (Nico Schottelius)
+	* Type __package_pkg_openbsd: Allow to change PKG_PATH (og)
+	* Type __ssh_authorized_keys: Allow managing existing keys (Steven Armstrong)
+	* Type __user: Enhance OpenBSD Support (og)
+
+3.0.9: 2014-02-14
+	* Core: Ignore order dependencies if override is set (Daniel Heule)
+	* Core: Improve Mac OS X support for unit tests (Steven Armstrong)
+	* Type __locale: Error out in case of unsupported OS (Nico Schottelius)
+	* Type __jail: Use default parameters for state (Daniel Heule)
+	* Type __pf_ruleset: Use default parameters for state (Daniel Heule)
+	* Type __postgres_database: Use default parameters for state (Daniel Heule)
+	* Type __postgres_role: Use default parameters for state (Daniel Heule)
+	* Type __rvm: Use default parameters for state (Daniel Heule)
+	* Type __rvm_gem: Use default parameters for state (Daniel Heule)
+	* Type __rvm_gemset: Use default parameters for state (Daniel Heule)
+	* Type __rvm_ruby: Use default parameters for state (Daniel Heule)
+
+3.0.8: 2014-02-11
+	* Core: Enhance object id verification (Daniel Heule)
+	* Core: Add unit tests for dependencies based on execution order (Daniel Heule)
+	* Core: Add unit tests for dry run (Daniel Heule)
+
+3.0.7: 2014-02-08
+	* Core: Allow dependencies to be created based execution order (Daniel Heule)
+	* Core: Add tests for override (Daniel Heule)
+
+3.0.6: 2014-02-06
+	* New Type: __apt_key (Steven Armstrong)
+	* New Type: __apt_key_uri (Steven Armstrong)
+	* New Type: __apt_norecommends (Steven Armstrong)
+	* New Type: __apt_source (Steven Armstrong)
+	* New Type: __ccollect_source (Nico Schottelius)
+	* Type __git: Use default parameters (Daniel Heule)
+	* Type __jail: Use default parameters (Daniel Heule)
+	* Type __package_yum: Use default parameters (Daniel Heule)
+	* Type __package_zypper: Use default parameters (Daniel Heule)
+	* Type __user_groups: Use default parameters (Daniel Heule)
+
+3.0.5: 2014-02-05
+	* Core: Introduce override concept (Daniel Heule)
+	* Type __process: Make --state absent work (Steven Armstrong)
+	* Documentation: Update documentation for environment variables (Nico Schottelius)
+
+3.0.4: 2014-01-29
+	* Core: Ignore install types in config mode (Nico Schottelius)
+	* Documentation: Update reference (files path in object space) (Nico Schottelius)
+	* Documentation: Update best practise: Replaces templates/ with files/ (Nico Schottelius)
+	* Type __apt_ppa: Install required software (Steven Armstrong)
+	* Type __debconf_set_selections: Support --file - to read from stdin (Nico Schottelius)
+	* Type __jail: Fix jaildir parameter handling (Jake Guffey)
+
+3.0.3: 2014-01-22
+	* Core: Enhance error message when requirement is missing object id (Nico Schottelius)
+	* Core: Add environment variable to select shell for executing scripts (Daniel Heule)
+	* Explorer hostname: Return host name by using uname -n (Nico Schottelius)
+	* New Type: __hostname (Steven Armstrong)
+	* Type __cdist: Use default paremeters (Daniel Heule)
+	* Type __key_value: Use default paremeters (Daniel Heule)
+	* Type __line: Use printf instead of echo for printing user input (Nico Schottelius)
+	* Type __qemu_img: Use default paremeters (Daniel Heule)
+	* Type __zypper_repo: Use default paremeters (Daniel Heule)
+	* Type __zypper_service: Use default paremeters (Daniel Heule)
+
+3.0.2: 2014-01-19
+	* Documentation: Document all messages sent by types (Daniel Heule)
+	* New Type: __block (Steven Armstrong)
+	* New Type: __mount (Steven Armstrong)
+	* Type __cron: Replace existing entry when changing it (Daniel Heule)
+	* Type __ssh_authorized_keys: Use new type __block (Steven Armstrong)
+
+3.0.1: 2014-01-14
+	* Core: Copy only files, not directories (Steven Armstrong)
+	* Core: Allow hostnames to start with / (Nico Schottelius)
+	* Type __line: Remove unecessary backslash escape (Nico Schottelius)
+	* Type __directory: Add messaging support (Daniel Heule)
+	* Type __directory: Do not generate code if mode is 0xxx (Daniel Heule)
+	* Type __package: Fix typo in optional parameter ptype (Daniel Heule)
+	* Type __start_on_boot: Fix for SuSE's chkconfig (Daniel Heule)
+
+3.0.0: 2013-12-24
+	* Core: Added messaging support (Nico Schottelius)
+	* Core: Removed unused "changed" attribute of objects  (Nico Schottelius)
+	* Core: Support default values for multiple parameters (Steven Armstrong)
+	* Core: Ensure Object Parameter file contains \n (Steven Armstrong)
+	* New Type: __zypper_repo (Daniel Heule)
+	* New Type: __zypper_service (Daniel Heule)
+	* New Type: __package_emerge (Daniel Heule)
+	* New Type: __package_emerge_dependencies (Daniel Heule)
+	* Type __cron: Add support for raw lines (Daniel Heule)
+	* Type __cron: Suppress stderr output from crontab (Daniel Heule)
+	* Type __cron: Fix quoting issue (Daniel Heule)
+	* Type __file: Do not generate code if mode is 0xxx (Nico Schottelius)
+	* Type __iptables_rule: Use default parameter (Nico Schottelius)
+	* Type __key_value: Fix quoting issue (Steven Armstrong)
+	* Type __package: Use state --present by default (Steven Armstrong)
+	* Type __package_zypper: Support non packages as well (Daniel Heule)
+	* Type __package_zypper: Support package versions (Daniel Heule)
+	* Type __postfix_*: Depend on __postfix Type (Steven Armstrong)
+	* Type __postfix_postconf: Enable support for SuSE (Daniel Heule)
+	* Type __postfix: Enable support for SuSE (Daniel Heule)
+	* Type __start_on_boot: Use default parameter state (Nico Schottelius)
+	* Type __start_on_boot: Add support for gentoo (Daniel Heule)
+	* Type __user: Add support for state parameter (Daniel Heule)
+	* Type __user: Add support for system users (Daniel Heule)
+	* Type __user: Add messaging support (Steven Armstrong)
+	* Type __zypper_service: Support older SuSE releases (Daniel Heule)
+
+2.3.7: 2013-12-02
+	* Type __file: Secure the file transfer by using mktemp (Steven Armstrong)
+	* Type __file: Only remove file when state is absent (Steven Armstrong)
+	* Type __link: Only remove link when state is absent (Steven Armstrong)
+	* Type __directory: Only remove directory when state is absent (Steven Armstrong)
+	* Type __directory: Fix newly introduced quoting issue (Nico Schottelius)
+	* Type __package_zypper: Fix explorer and parameter issue (Daniel Heule)
+	* Core: Fix backtrace when cache cannot be deleted (Nico Schottelius)
+
+2.3.6: 2013-11-25
+	* New Type: __locale (Nico Schottelius)
+	* Type __line: Ensure special characters are not interpreted (Nico Schottelius)
+
+2.3.5: 2013-10-10
+	* Core: Unit test fix for remote_copy (Steven Armstrong)
+	* Documentation: Updated manpages of __package and __file (Alex Greif)
+	* Documentation: Add more examples to cdist-manifest (Dan Levin)
+	* Type __package_apt: Do not install recommends by default (Nico Schottelius)
+
+2.3.4: 2013-10-03
+	* Core: Add missing bits to support dry run (Steven Armstrong)
+	* Core: Make unit test remote copy more compatible with scp (Steven Armstrong)
+	* New Type: __postfix (Steven Armstrong)
+	* New Type: __postfix_master (Steven Armstrong)
+	* New Type: __postfix_postconf (Steven Armstrong)
+	* New Type: __postfix_postmap (Steven Armstrong)
+	* New Type: __postfix_reload (Steven Armstrong)
+	* Type __line: Ensure regex does not contain / 
+	* Type __ssh_authorized_keys: Bugfix: Preserve ownership (Steven Armstrong)
+
+2.3.3: 2013-09-09
+	* Core: Add support for default values of optional parameters (Steven Armstrong)
+	* Type __start_on_boot: Bugfix for systemd (Steven Armstrong)
+
+2.3.2: 2013-09-05
+	* Build: Ensure tests don't change attributes of non-test files (Nico Schottelius)
+	* Core: Fix typo in argument parser (Nico Schottelius)
+	* Core: Code cleanup: Remove old install code (Steven Armstrong)
+	* Core: Improve error message when using non-existing type in requirement (Nico Schottelius)
+	* New Type: __iptables_rule (Nico Schottelius)
+	* New Type: __iptables_apply (Nico Schottelius)
+	* Type __cdist: Also create home directory (Nico Schottelius)
+	* Type __cdist: Add support for --shell parameter (Nico Schottelius)
+	* Type __motd: Regenerate motd on Debian and Ubuntu (Nico Schottelius)
+
+2.3.1: 2013-08-28
+	* Core: Support relative paths for configuration directories (Nico Schottelius)
+	* Core: Code cleanup (removed context class, added log class) (Nico Schottelius)
+	* Documentation: Add more best practises (Nico Schottelius)
+	* Documentation: Add troubleshooting chapter (Nico Schottelius)
+	* Type __key_value: Fix quoting problem (Steven Armstrong)
+
+2.3.0: 2013-08-12
+	* Core: Added support for cdist shell (Nico Schottelius)
+	* Documentation: Improved some manpages (Nico Schottelius)
+
+2.2.0: 2013-07-12
+	* Build: Cleanup the Makefile (Nico Schottelius)
+	* Type __package_opkg: Use shortcut version (Nico Schottelius)
+	* Core: Remove old pseudo object id "singleton" (Steven Armstrong)
+
+2.1.2: 2013-07-09
+	* Build: Change clean-dist target to "distclean" (Nico Schottelius)
+	* Build: Moved a lot of build logic into Makefile for dependency resolution
 	* Core: Make global explorers available to initial manifest (Arkaitz Jimenez)
-	* Change execution order to run object as one unit
+	* Core: Change execution order to run object as one unit (Nico Schottelius)
+	* Documentation: Improved documentation (Tomáš Pospíšek)
+	* New Remote Example: Add support for sudo operations (Chase James)
+	* New Type: __update_alternatives (Nico Schottelius)
+	* New Type: __cdist (Nico Schottelius)
+	* Type __apt_ppa: Fix comparison operator (Tyler Akins)
+	* Type __start_on_boot: Archlinux changed to use systemd - adapt type (Nico Schottelius)
+	* Type __git: Missing quotes added (Chase James)
+	* Type __postgres_database: Make state parameter optional (Chase James)
+	* Type __postgres_role: Make state parameter optional, fix password bug (Chase James)
+	* Type __process: Make state parameter optional (Nico Schottelius)
+	* Type __cron: Simplyfied and syntax change (Nico Schottelius)
 
 2.1.1: 2013-04-08
-	* Core: Use dynamic dependency resolver to allow indirect self dependencies
+	* Core: Use dynamic dependency resolver to allow indirect self dependencies (Nico Schottelius)
 	* Core: Remove umask call - protect /var/lib/cdist only (Arkaitz Jimenez)
 	* Explorer os: Added Slackware support (Eivind Uggedal)
 	* Type __git: Support mode and fix owner/group settings (contradict)
@@ -19,90 +308,90 @@ next:
 	* Type __user: Add support for creating user home (Arkaitz Jimenez)
 
 2.1.0: 2012-12-09
-	* Core: Ensure global explorers are executable
+	* Core: Ensure global explorers are executable (Nico Schottelius)
 	* Core: Ensure type explorers are executable (Steven Armstrong)
-	* New Type: __git
+	* New Type: __git (Nico Schottelius)
 	* New Type: __ssh_authorized_keys (Steven Armstrong)
 	* New Type: __user_groups (Steven Armstrong)
-	* Type __rvm_gemset: Change parameter "default" to be boolean
+	* Type __rvm_gemset: Change parameter "default" to be boolean (Nico Schottelius)
 	* Type __user: Remove --groups support (now provided by __user_groups)
 	* Type __apt_ppa: Bugfix: Installeded ppa detection (Steven Armstrong)
 	* Type __jail: Change optional parameter "started" to boolean "stopped" parameter,
 		change optional parameter "devfs-enable" to boolean "devfs-disable" parameter and
-		change optional parameter "onboot" to boolean.
-	* Type __package_pip: Bugfix: Installeded the package, not pyro
-	* Remove Type __ssh_authorized_key: Superseeded by __ssh_authorized_keys
+		change optional parameter "onboot" to boolean. (Nico Schottelius)
+	* Type __package_pip: Bugfix: Installeded the package, not pyro (Nico Schottelius)
+	* Remove Type __ssh_authorized_key: Superseeded by __ssh_authorized_keys (Nico Schottelius)
 	* Support for CDIST_PATH (Steven Armstrong)
 
 2.1.0pre8: 2012-11-15
 	* Type cleanup: __apt_ppa, __apt_ppa_update_index, __file, 
 		__ssh_authorized_key, __timezone, all install types (Steven Armstrong)
-	* Types: Remove all parameter changing code
-	* Type __rvm_ruby: Change parameter "default" to be boolean
-	* Documentation: Web documentation clean up
+	* Types: Remove all parameter changing code (Nico Schottelius)
+	* Type __rvm_ruby: Change parameter "default" to be boolean (Nico Schottelius)
+	* Documentation: Web documentation clean up (Nico Schottelius)
 
 2.1.0pre7: 2012-11-07
-	* Core: All unit tests restored back to working
-	* Core: Print error message when missing the initial manifest
+	* Core: All unit tests restored back to working (Nico Schottelius)
+	* Core: Print error message when missing the initial manifest (Nico Schottelius)
 
 2.1.0pre6: 2012-11-05
-	* New Example: Turn remote calls into local calls (used for unittesting)
-	* Core: Export PYTHONPATH, it's also needed by emulator
-	* Bugfix Type __rvm_ruby: Add clean package dependencies
-	* Bugfix Type __rvm_gem: Run rvm as user, not as root
-	* Cleanup Type __rvm, __rvm_gemset: Use shortcut version
-	* Bugfix __rvm_gemset: Correctly check for gemsets
+	* New Example: Turn remote calls into local calls (used for unittesting) (Nico Schottelius)
+	* Core: Export PYTHONPATH, it's also needed by emulator (Nico Schottelius)
+	* Bugfix Type __rvm_ruby: Add clean package dependencies (Nico Schottelius)
+	* Bugfix Type __rvm_gem: Run rvm as user, not as root (Nico Schottelius)
+	* Cleanup Type __rvm, __rvm_gemset: Use shortcut version (Nico Schottelius)
+	* Bugfix __rvm_gemset: Correctly check for gemsets (Nico Schottelius)
 	* Cleanup Type __postgres_database,  __postgres_role: Reference each other
-		in documentation
-	* Cleanp Type __postgres_role: Use boolean parameters where appropriate
-	* Cleanp Type __postgres_role: Use shortcut version
+		in documentation (Nico Schottelius)
+	* Cleanp Type __postgres_role: Use boolean parameters where appropriate (Nico Schottelius)
+	* Cleanp Type __postgres_role: Use shortcut version (Nico Schottelius)
 
 2.1.0pre5: 2012-11-01
-	* Core: First round of tests updated to work with multiple configuration directories
+	* Core: First round of tests updated to work with multiple configuration directories (Nico Schottelius)
 
 2.1.0pre4: 2012-10-31
-	* Dist: PyPi: Moved cdist.py to script/cdist to avoid double import
-	* Core: Added support for multiple configuration directories (no documentation)
+	* Dist: PyPi: Moved cdist.py to script/cdist to avoid double import (Nico Schottelius)
+	* Core: Added support for multiple configuration directories (no documentation) (Nico Schottelius)
 
 2.1.0pre3: 2012-10-30
-	* Dist: PyPi: Types and explorer included as package data
+	* Dist: PyPi: Types and explorer included as package data (Nico Schottelius)
 
 2.1.0pre2: 2012-10-26
-	* Dist: PyPi: Add conf/ directory to distribution
-	* Dist: Initial support for archlinux packaging
+	* Dist: PyPi: Add conf/ directory to distribution (Nico Schottelius)
+	* Dist: Initial support for archlinux packaging (Nico Schottelius)
 
 2.1.0pre1: 2012-10-26
-	* Core: Removed obsolete variable __self
-	* Removed type __addifnosuchline (replaced by __line)
-	* Removed type __removeline (replaced by __line)
-	* Type __directory: Parameter --parents and --recursive are now boolean
+	* Core: Removed obsolete variable __self (Nico Schottelius)
+	* Removed type __addifnosuchline (replaced by __line) (Nico Schottelius)
+	* Removed type __removeline (replaced by __line) (Nico Schottelius)
+	* Type __directory: Parameter --parents and --recursive are now boolean (Nico Schottelius)
 	* Type __package_apt, __package_luarocks, __package_opkg,
 		__package_pacman, __package_pkg_freebsd, __package_pkg_openbsd,
 		__package_rubygem, __package_yum, __process:
-			Parameter state accepts only "present" and "absent"
-	* Dist: Initial support for pypi packaging
+			Parameter state accepts only "present" and "absent" (Nico Schottelius)
+	* Dist: Initial support for pypi packaging (Nico Schottelius)
 
 2.0.15: 2012-11-02
 	* Core: Make variable __object_name available in type explorers (Steven Armtrong)
-	* New Type: __qemu_img
-	* New Type: __line
+	* New Type: __qemu_img (Nico Schottelius)
+	* New Type: __line (Nico Schottelius)
 	* New Type: __pf_apply (Jake Guffey)
 	* New Type: __pf_ruleset (Jake Guffey)
-	* Bugfix Type: __rvm: Make type work if rvm is already installed
+	* Bugfix Type: __rvm: Make type work if rvm is already installed (Nico Schottelius)
 
 2.0.14: 2012-09-07
 	* Bugfix Type: __jail: Use correct variable (Jake Guffey)
 	* Change Type: __jail: Parameter jailbase now optional (Jake Guffey)
 	* Bugfix Type: __user: Use passwd database on FreeBSD (Jake Guffey)
-	* Bugfix Type: __start_on_boot: Do not change parameters
+	* Bugfix Type: __start_on_boot: Do not change parameters (Nico Schottelius)
 	* Feature __user: Added support for BSDs (Sébastien Gross)
 	* Feature __group: Added support for FreeBSD (Jake Guffey)
-	* New Type: __package_zypper
-	* Feature Types: Initial Support for SuSE Linux
+	* New Type: __package_zypper (Nico Schottelius)
+	* Feature Types: Initial Support for SuSE Linux (Nico Schottelius)
 	
 2.0.13: 2012-06-05
 	* Bugfix __ssh_authorized_key: Ensure it sets proper group (contradict)
-	* Bugfix __addifnosuchline: Fixed quotes/interpolation bug ("a  b" became "a b")
+	* Bugfix __addifnosuchline: Fixed quotes/interpolation bug ("a  b" became "a b") (Nico Schottelius)
 	* New Explorer: interfaces (Sébastien Gross)
 	* Feature core: Support reading from stdin in types (Steven Armstrong)
 	* Feature core: Support multiple parameters for types (Steven Armstrong)
@@ -110,24 +399,24 @@ next:
 
 2.0.12: 2012-05-29
 	* Core: Correctly raise error on Python < 3.2 (Steven Armtrong)
-	* Core: Add support for --remote-exec and --remote-copy parameters
+	* Core: Add support for --remote-exec and --remote-copy parameters (Nico Schottelius)
 	* Documentation: Debian Squeeze hints (Sébastien Gross)
 
 2.0.11: 2012-05-23
-	* Fix insecure file/directory creation: Use umask 077
+	* Fix insecure file/directory creation: Use umask 077 (Nico Schottelius)
 
 2.0.10: 2012-05-18
 	* Cleanup __group: No getent gshadow in old Redhat, use groupmod -g
 		(Matt Coddington)
-	* Bugfix __package_yum: Missing cat
+	* Bugfix __package_yum: Missing cat (Nico Schottelius)
 	* Bugfix __start_on_boot: Correctly use sed and quotes (Steven Armstrong)
 	* Feature __file: Support for --state exists (Steven Armstrong)
-	* Feature core: Make variable __manifest available to type manifests
+	* Feature core: Make variable __manifest available to type manifests (Nico Schottelius)
 	* Feature core: Correct parent dependency handling (Steven Armstrong)
 	* Bugfix several types: Fix sed for FreeBSD (Istvan Beregszaszi)
 	* New Type: __jail (Jake Guffey)
 	* Change Type: __rvm*: --state present/absent not installed/remvoed (Evax Software)
-	* Bugfix Type: __cron: Hide error output from crontab
+	* Bugfix Type: __cron: Hide error output from crontab (Nico Schottelius)
 	* Various smaller bugfixes (Chris Lamb)
 
 2.0.9: 2012-03-12
@@ -141,19 +430,19 @@ next:
 	* Feature __start_on_boot: Support for OpenWRT (Giel van Schijndel)
 	* Feature __start_on_boot: Support for Amazon Linux (Matt Coddington)
 	* New Example: Use rsync to backup files (Matt Coddington) 
-	* Feature core: Exit non-zero, if configuration failed
+	* Feature core: Exit non-zero, if configuration failed (Nico Schottelius)
 	* Documentation: Describe how to do templating (Aurélien Bondis)
 
 2.0.8: 2012-02-20
-	* Bugfix core: Remove another nasty traceback when sending SIGINT (aka Ctrl-C)
-	* Cleanup: Better hint to source of error
-	* Cleanup: Do not output failing script, but path to script only
+	* Bugfix core: Remove another nasty traceback when sending SIGINT (aka Ctrl-C) (Nico Schottelius)
+	* Cleanup: Better hint to source of error (Nico Schottelius)
+	* Cleanup: Do not output failing script, but path to script only (Nico Schottelius)
 	* Cleanup: Remove support for __debug variable in manifests (Type != Core
-		debugging)
+		debugging) (Nico Schottelius)
 	* Cleanup: Change __package_* to support absent/present (default state
-		name now). The values removed/installed will be removed in cdist 2.1.
+		name now). The values removed/installed will be removed in cdist 2.1. (Nico Schottelius)
 	* Cleanup: Change __process to support absent/present (default state
-		name now). The values running/stopped will be removed in cdist 2.1.
+		name now). The values running/stopped will be removed in cdist 2.1. (Nico Schottelius)
 	* Feature Core: Support boolean parameters (Steven Armstrong)
 
 2.0.7: 2012-02-13
@@ -162,9 +451,9 @@ next:
 	* Bugfix __link: Properly handle existing links (Steven Armstrong)
 	* Bugfix __key_value: More robust implementation (Steven Armstrong)
 	* Bugfix __user: Fix for changing a user's group by name (Matt Coddington)
-	* New Type: __package_pip
+	* New Type: __package_pip (Nico Schottelius)
 	* Bugfix/Cleanup: Correctly allow Object ID to start and end with /, but
-		not contain //.
+		not contain //. (Nico Schottelius)
 
 2.0.6: 2012-01-28
 	* Bugfix __apt_ppa:
@@ -183,8 +472,8 @@ next:
 2.0.5: 2012-01-18
 	* Bugfix __key_value: Use correct delimiters
 		(Steven Armstrong, Daniel Maher)
-	* Cleanup: Explicitly require Python >= 3.2 (do not fail implicitly)
-	* Documentation: (Re)write of the tutorial
+	* Cleanup: Explicitly require Python >= 3.2 (do not fail implicitly) (Nico Schottelius)
+	* Documentation: (Re)write of the tutorial (Nico Schottelius)
 	* Feature: __addifnosuchline supports matching on 
 		regular expressions (Daniel Maher)
 	* Feature: __directory, __file, __link:
@@ -193,11 +482,11 @@ next:
 	* New Type: __cdistmarker (Daniel Maher)
 
 2.0.4: 2011-11-18
-	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C)
+	* Bugfix core: Remove traceback when sending SIGINT (aka Ctrl-C) (Nico Schottelius)
 	* Bugfix core: Accept parameters with - in the name (Steven Armstrong)
-	* Cleanup: __object_fq variable removed (never used)
-	* Cleanup: Environment variable __self DEPRECATED, use __object_name instead
-	* Cleanup: Environment variable __self scheduled for removal in cdist 2.1
+	* Cleanup: __object_fq variable removed (never used) (Nico Schottelius)
+	* Cleanup: Environment variable __self DEPRECATED, use __object_name instead (Nico Schottelius)
+	* Cleanup: Environment variable __self scheduled for removal in cdist 2.1 (Nico Schottelius)
 	* Documentation: Many examples for use of __remote_* (Steven Armstrong)
 	* Feature: Automatically require all used objects (Steven Armstrong)
 	* New Type: __cron (Steven Armstrong)
@@ -205,28 +494,28 @@ next:
 2.0.3: 2011-10-18
 	* Improved logging, added --verbose, by more quiet by default
 	* Bugfix __user: Correct quoting (Steven Armstrong)
-	* Bugfix __addifnosuchline: Falsely exited
-	* Bugfix requirements: Restore original require="" behaviour
-	* Feature requirements: Check for broken object_ids and abort
+	* Bugfix __addifnosuchline: Falsely exited (Nico Schottelius)
+	* Bugfix requirements: Restore original require="" behaviour (Nico Schottelius)
+	* Feature requirements: Check for broken object_ids and abort (Nico Schottelius)
 	* Massive refactoring and unittesting introduced (Steven Armstrong)
 
 2.0.2: 2011-09-27
 	* Add support for detection of OpenWall Linux (Matthias Teege)
-	* Add support for __debug variable in manifests
-	* Bugfix core: Various issues with type emulator
+	* Add support for __debug variable in manifests (Nico Schottelius)
+	* Bugfix core: Various issues with type emulator (Nico Schottelius)
 
 2.0.1: 2011-09-23
-	* Bugfix core: Always print source of error in case of exec errors
-	* Bugfix core: Various smaller bugs in string concatenation
-	* Feature: Add marker "changed" to changed objects
+	* Bugfix core: Always print source of error in case of exec errors (Nico Schottelius)
+	* Bugfix core: Various smaller bugs in string concatenation (Nico Schottelius)
+	* Feature: Add marker "changed" to changed objects (Nico Schottelius)
 
 2.0.0: 2011-09-16
 	* New Type: __package_rubygem (Chase Allen James)
-	* __self replaced by __object_fq
-	* Rewrote cdist in Python
+	* __self replaced by __object_fq (Nico Schottelius)
+	* Rewrote cdist in Python (Nico Schottelius)
 
 1.7.1: 2011-07-26
-	* Documentation: Add explorers to reference
+	* Documentation: Add explorers to reference (Nico Schottelius)
 	* Documentation: Typo cleanup (Derek Brost)
 	* Type __key_value: Bugfix (Steven Armstrong)
 	* New Type: __postgres_role (Steven Armstrong)
@@ -236,42 +525,42 @@ next:
 	* Bugfix type __package_yum: Fix redhat support (Ramon Salvadó)
 	* Improved type __package_yum: Add centos support (Ramon Salvadó)
 	* New Type: __timezone (Ramon Salvadó)
-	* Renamed explorer: hardware_type to machine
-	* Core: Do not execute empty code fragments
+	* Renamed explorer: hardware_type to machine (Nico Schottelius)
+	* Core: Do not execute empty code fragments (Nico Schottelius)
 
 1.6.2: 2011-04-19
-	* Core: Introduce __cdist_tmp_base_dir
-	* Core: Cleanup and enhance cdist-type-template
-	* Core: cdist-mass-deploy: Report failed cdist-deploy-to instances
+	* Core: Introduce __cdist_tmp_base_dir (Nico Schottelius)
+	* Core: Cleanup and enhance cdist-type-template (Nico Schottelius)
+	* Core: cdist-mass-deploy: Report failed cdist-deploy-to instances (Nico Schottelius)
 	* New Type: __ssh_authorized_key (Aurélien Bondis)
 
 1.6.1: 2011-04-07
-	* Improved logging: Show code responsible for abort
-	* Improved logging: Consistently prefix with current object or core
-	* Bugfix: Type __debconf_set_selections used wrong contens for selection
-	* Bugfix: Don't fail, if cache directory is not existing
-	* Bugfix: __user and __group exited non-zero if no change was necessary
-	* New Explorer: hardware_type
+	* Improved logging: Show code responsible for abort (Nico Schottelius)
+	* Improved logging: Consistently prefix with current object or core (Nico Schottelius)
+	* Bugfix: Type __debconf_set_selections used wrong contens for selection (Nico Schottelius)
+	* Bugfix: Don't fail, if cache directory is not existing (Nico Schottelius)
+	* Bugfix: __user and __group exited non-zero if no change was necessary (Nico Schottelius)
+	* New Explorer: hardware_type (Nico Schottelius)
 	* New Type: __package_pkg_openbsd (Andi Brönnimann)
 	* New Type: __autofs_map (Steven Armstrong)
 	* New Type: __autofs_master (Steven Armstrong)
 
 1.6.0: 2011-04-06
-	* New Type: __package_yum
-	* New type: __debconf_set_selections
-	* New explorer: os_version
-	* Bugfix: Type __group failed in case of __group NAME syntax
+	* New Type: __package_yum (Nico Schottelius)
+	* New type: __debconf_set_selections (Nico Schottelius)
+	* New explorer: os_version (Nico Schottelius)
+	* Bugfix: Type __group failed in case of __group NAME syntax (Nico Schottelius)
 	* Bugfix: __package* types: consistently name --state removed instead of
-		uninstalled or deinstalled
-	* Type __package: Added Fedora support
-	* Type __package_apt: Removed --preseed support
-	* Explorer os gained Fedora support
-	* Simplified types __user and __group
-	* New helper binary: cdist-mass-deploy
+		uninstalled or deinstalled (Nico Schottelius)
+	* Type __package: Added Fedora support (Nico Schottelius)
+	* Type __package_apt: Removed --preseed support (Nico Schottelius)
+	* Explorer os gained Fedora support (Nico Schottelius)
+	* Simplified types __user and __group (Nico Schottelius)
+	* New helper binary: cdist-mass-deploy (Nico Schottelius)
 
 1.5.0: 2011-04-01
-	* Add basic cache functionality
-	* New type: __process
+	* Add basic cache functionality (Nico Schottelius)
+	* New type: __process (Nico Schottelius)
 	* Restructured execution: (Steven Armstrong)
 		Orientate processing on objects, resolve dependencies and
 		ensure correct execution order.
@@ -281,77 +570,77 @@ next:
 1.4.1: 2011-03-25
 	* New type: __key_value (Steven Armstrong)
 	* New type: __apt_ppa (Steven Armstrong)
-	* Documentation: Manpage generation cleanup
+	* Documentation: Manpage generation cleanup (Nico Schottelius)
 	* Documentation: Manpage fix for __apt_ppa
 
 1.4.0: 2011-03-24
-	* Add --recursive to __directory
-	* Move cdist generated stuff to .cdist of an object
-	* Allow objects to be redefined
+	* Add --recursive to __directory (Nico Schottelius)
+	* Move cdist generated stuff to .cdist of an object (Nico Schottelius)
+	* Allow objects to be redefined (Nico Schottelius)
 
 1.3.2: 2011-03-21
-	* Add --source to __motd
-	* Add --preseed to __package_apt
-	* Include HTML documentation of manpages and publish them
+	* Add --source to __motd (Nico Schottelius)
+	* Add --preseed to __package_apt (Nico Schottelius)
+	* Include HTML documentation of manpages and publish them (Nico Schottelius)
 
 1.3.1: 2011-03-21
-	* Document: cdist-type-build-emulation
-	* Document: cdist-type-emulator
-	* Document: cdist-remote-explorer-run
-	* Fix dependencies in cdist-code-run
-	* Fix dependencies in cdist-manifest-run-all
-	* Add --source to __issue and fix os check
+	* Document: cdist-type-build-emulation (Nico Schottelius)
+	* Document: cdist-type-emulator (Nico Schottelius)
+	* Document: cdist-remote-explorer-run (Nico Schottelius)
+	* Fix dependencies in cdist-code-run (Nico Schottelius)
+	* Fix dependencies in cdist-manifest-run-all (Nico Schottelius)
+	* Add --source to __issue and fix os check (Nico Schottelius)
 
 1.3.0: 2011-03-20
-	* Add support for local and remote code generation and execution
-	* Bugfix: Remove obsolete $@ call in cdist-remote-explorer-run
-	* Bugfix: Correct manpage for __removeline (broke manpage generation)
+	* Add support for local and remote code generation and execution (Nico Schottelius)
+	* Bugfix: Remove obsolete $@ call in cdist-remote-explorer-run (Nico Schottelius)
+	* Bugfix: Correct manpage for __removeline (broke manpage generation) (Nico Schottelius)
 
 1.2.0: 2011-03-19
-	* Added dependencies (see cdist-type(7))
+	* Added dependencies (see cdist-type(7)) (Nico Schottelius)
 	* New type: __removeline (Daniel Roth)
 	* New type: __group (Steven Armstrong)
 	* New type: __user (Steven Armstrong)
-	* Documentation: cdist-run-remote
-	* Documentation: cdist-code-run-all
-	* Documentation: cdist-object-gencode
-	* Documentation: cdist-explorer-run-global
-	* Documentation: cdist-manifest-run-init
-	* Documentation: cdist-manifest-run-all
-	* Documentation: cdist-object-gencode-all
-	* Documentation: cdist-manifest-run
+	* Documentation: cdist-run-remote (Nico Schottelius)
+	* Documentation: cdist-code-run-all (Nico Schottelius)
+	* Documentation: cdist-object-gencode (Nico Schottelius)
+	* Documentation: cdist-explorer-run-global (Nico Schottelius)
+	* Documentation: cdist-manifest-run-init (Nico Schottelius)
+	* Documentation: cdist-manifest-run-all (Nico Schottelius)
+	* Documentation: cdist-object-gencode-all (Nico Schottelius)
+	* Documentation: cdist-manifest-run (Nico Schottelius)
 
 1.1.0: 2011-03-16
-	* Replace type __file with __file, __directory, __link
-	* Documentation: cdist-env
-	* Documentation: cdist-config
-	* Documentation: cdist-dir
-	* Documentation: cdist-quickstart
+	* Replace type __file with __file, __directory, __link (Nico Schottelius)
+	* Documentation: cdist-env (Nico Schottelius)
+	* Documentation: cdist-config (Nico Schottelius)
+	* Documentation: cdist-dir (Nico Schottelius)
+	* Documentation: cdist-quickstart (Nico Schottelius)
 
 1.0.4: 2011-03-15
-	* New type: __motd
+	* New type: __motd (Nico Schottelius)
 	* New type: __addifnosuchline (Daniel Roth)
-	* New type: __user
-	* Document type: __issue
-	* Document type: __package
-	* Document type: __package_pacman
-	* Document type: __package_apt
-	* New parameter for __file: --owner and --group
+	* New type: __user (Nico Schottelius)
+	* Document type: __issue (Nico Schottelius)
+	* Document type: __package (Nico Schottelius)
+	* Document type: __package_pacman (Nico Schottelius)
+	* Document type: __package_apt (Nico Schottelius)
+	* New parameter for __file: --owner and --group (Nico Schottelius)
 
 1.0.3: 2011-03-11
-	* Update regexp used for sane characters
-	* Allow types without parameters
-	* Allow type to be singleton
-	* Type __file learned --type symlink
+	* Update regexp used for sane characters (Nico Schottelius)
+	* Allow types without parameters (Nico Schottelius)
+	* Allow type to be singleton (Nico Schottelius)
+	* Type __file learned --type symlink (Nico Schottelius)
 
 1.0.2: 2011-03-09
-	* Add manpages: cdist-type, cdist-type__file, cdist-reference, cdist-explorer
-	* Make doc/man/ usable as MANPATH entry
+	* Add manpages: cdist-type, cdist-type__file, cdist-reference, cdist-explorer (Nico Schottelius)
+	* Make doc/man/ usable as MANPATH entry (Nico Schottelius)
 
 1.0.1: 2011-03-08
-	* Added cdist-type-template including manpage
-	* Fix manpage building
-	* Add new manpages: cdist-stages, cdist-bin-transfer
+	* Added cdist-type-template including manpage (Nico Schottelius)
+	* Fix manpage building (Nico Schottelius)
+	* Add new manpages: cdist-stages, cdist-bin-transfer (Nico Schottelius)
 
 1.0.0: 2011-03-07
-	* Initial release
+	* Initial release (Nico Schottelius)

@@ -1,0 +1,44 @@
+raw quote from irc
+
+16:00 < sar> telmich: btw, ich denke nicht dass man install schon zu gross bewerben 
+             sollte
+16:00 < telmich> sar: ack
+16:00 < sar> telmich: imho sollten wir erst die cdist environments implementieren, 
+             install waere dann eines davon
+16:00 < sar> config ein anderes
+16:01 < sar> foobar noch ein anderes
+16:01 < sar> es macht einfach keinen sinn auf type ebene install vs nicht-install zu 
+             unterscheiden
+16:02 < telmich> sar: environments sind bei mir noch nicht ganz im gehirn (ganicht?) 
+                 angelangt - hast du (nochmal?) kurz eine idee, was du damit meinst?
+16:02 < sar> telmich: wenn man cdist anschaut, dann macht es eigentlich folgendes:
+16:03 < sar> - definiere objekte mit hilfe von types
+16:03 < sar> - deps zwischen objekten
+16:03 < sar> - queue von objekten abarbeiten und auf $etwas anwenden
+16:03 < sar> das ist alles
+16:04 < sar> telmich: das ist eigentlich ziemlich generisch
+16:04 < sar> telmich: fuer mich wuerde es sich hier anbieten das auch so zu 
+             abstrahieren
+16:05 < sar> telmich: ein environment (nenn das mal so weil kein besserer name zzt) 
+             koennte das wie $objekt auf $etwas bestimmen
+16:05 < sar> telmich: und auch was fuer types es in diesem environment gibt
+16:06 < telmich> sar: klingt gut
+16:06 < sar> telmich: e.g. es gibt ein environment fuer config -> was wir jetzt haben
+16:06 < sar> eins fuer install -> += was im install branch ist (nur die types), den 
+             python code brauchts nacher nicht mehr
+16:07 < sar> eins fuer cisco-switch -> hat types um mit cisco zu spielen
+16:07 < sar> usw
+16:07 < sar> ein environment hat auch eigene remote-{exec,copy} scripte
+16:08 < sar> und vielleicht globale explorer, vielleicht auch nicht
+16:08 < sar> ein enviroment ist ein cconfig style directory
+16:09 < sar> wo man cdist drueber laufen laesst
+16:09 < sar> so was in der art
+16:13 < telmich> sar: hmmja...klingt gut
+16:15 < telmich> vielleicht etwas für cdist 4 oder cdist 5 :-)
+16:15 < telmich> aber ich denke auf jeden fall als grundgedanke behaltbar
+16:16 < telmich> ok für dich, wenn ich den chat ins docs/dev/logs kopiere als 
+                 erinnerungs
+16:16 < telmich> s/s$/?/?
+16:16 < telmich> s/?$//
+16:20 < sar> klar
+

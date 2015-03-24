@@ -20,6 +20,6 @@ you can join the
 ### Commercial support
 
 You can request commercial support for cdist from
-[my company](http://firma.schottelius.org/english/).
+[my company](http://www.ungleich.ch/english/).
 
 [[!tag cdist unix]]

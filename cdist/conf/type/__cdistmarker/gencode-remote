@@ -19,19 +19,11 @@
 #
 
 # The marker file is established in the docs, but it isn't obligatory.
-if [ -f "$__object/parameter/destination" ]; then
-    destination="$(cat "$__object/parameter/destination")"
-else
-    destination='/etc/cdist-configured'
-fi
+destination="$(cat "$__object/parameter/destination")"
 
 # The basic output of date is usually good enough, but variety is the
 #   spice of life...
-if [ -f "$__object/parameter/format" ]; then
-    format="$(cat "$__object/parameter/format")"
-else
-    format='-u'
-fi
+format="$(cat "$__object/parameter/format")"
 
 # Dump the timestamp in UTC to the marker
 echo "date $format > $destination"

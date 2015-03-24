@@ -51,23 +51,10 @@ else
 	name="$__object_id"
 fi
 
-if [ -f "$__object/parameter/flavor" ]; then
-	flavor="$(cat "$__object/parameter/flavor")"
-fi
-
-if [ -f "$__object/parameter/version" ]; then
-	version="$(cat "$__object/parameter/version")"
-fi
-
-if [ -f "$__object/parameter/pkgsite" ]; then
-	pkgsite="$(cat "$__object/parameter/pkgsite")"
-fi
-
-if [ -f "$__object/parameter/state" ]; then
-   state="$(cat "$__object/parameter/state")"
-else
-   state="present"
-fi
+flavor="$(cat "$__object/parameter/flavor")"
+version="$(cat "$__object/parameter/version")"
+pkgsite="$(cat "$__object/parameter/pkgsite")"
+state="$(cat "$__object/parameter/state")"
 curr_version="$(cat "$__object/explorer/pkg_version")"
 add_cmd="pkg_add"
 rm_cmd="pkg_delete"

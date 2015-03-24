@@ -27,7 +27,7 @@ state_should="$(cat "$__object/parameter/state")"
 case "$state_should" in
     present)
         if [ -f "$__object/parameter/password" ]; then
-            password="$(cat "$__object/parameter/$parameter")"
+            password="$(cat "$__object/parameter/password")"
         fi
         booleans=""
         for boolean in login createdb createrole superuser; do

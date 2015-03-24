@@ -16,7 +16,7 @@ This type is used on FreeBSD to manage jails.
 REQUIRED PARAMETERS
 -------------------
 state::
-   Either "present" or "absent."
+   Either "present" or "absent", defaults to "present".
 
 jailbase::
    The location of the .tgz archive containing the base fs for your jails.
@@ -66,6 +66,19 @@ example a jail needs to have its IP address or netmask changed, the jail must
 be removed then re-added with the correct IP address/netmask or the appropriate
 line (jail_<name>_ip="...") modified within rc.conf through some alternate
 means.
+
+MESSAGES
+--------
+start::
+   The jail was started
+stop::
+   The jail was stopped
+create:
+   The jail was created
+delete::
+   The jail was deleted
+onboot::
+   The jail was configured to start on boot
 
 EXAMPLES
 --------

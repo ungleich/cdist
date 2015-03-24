@@ -22,6 +22,7 @@
 
 import logging
 import os
+import glob
 
 import cdist
 
@@ -79,7 +80,7 @@ class Explorer(object):
 
     def list_global_explorer_names(self):
         """Return a list of global explorer names."""
-        return os.listdir(self.local.global_explorer_path)
+        return glob.glob1(self.local.global_explorer_path, '*')
 
     def run_global_explorers(self, out_path):
         """Run global explorers and save output to files in the given
@@ -111,7 +112,7 @@ class Explorer(object):
         """Return a list of explorer names for the given type."""
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
         try:
-            return os.listdir(source)
+            return glob.glob1(source, '*')
         except EnvironmentError:
             return []
 

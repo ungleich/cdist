@@ -13,15 +13,12 @@ DESCRIPTION
 This cdist type allows you to create or drop postgres roles.
 
 
-REQUIRED PARAMETERS
+OPTIONAL PARAMETERS
 -------------------
 state::
     Either "present" or "absent", defaults to "present"
 
-
-OPTIONAL PARAMETERS
--------------------
-All parameter map directly to the corresponding postgres createrole
+All other parameters map directly to the corresponding postgres createrole
 parameters.
 
 password::
@@ -41,13 +38,13 @@ EXAMPLES
 --------
 
 --------------------------------------------------------------------------------
-__postgres_role myrole --state present
+__postgres_role myrole
 
-__postgres_role myrole --state present --password 'secret'
+__postgres_role myrole --password 'secret'
 
-__postgres_role admin --state present --password 'very-secret' --superuser
+__postgres_role admin --password 'very-secret' --superuser
 
-__postgres_role dbcustomer --state present --password 'bla' --createdb
+__postgres_role dbcustomer --password 'bla' --createdb
 --------------------------------------------------------------------------------
 
 

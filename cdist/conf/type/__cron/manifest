@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2013 Thomas Oettli (otho at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -18,28 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="$__object_id"
-user="$(cat "$__object/parameter/user")"
-command="$(cat "$__object/parameter/command")"
-state="$(cat "$__object/parameter/state" 2>/dev/null || echo "present")"
-
-if [ -f "$__object/parameter/raw" ]; then
-   raw="$(cat "$__object/parameter/raw")"
-   entry="$raw $command"
-else
-   minute="$(cat "$__object/parameter/minute" 2>/dev/null || echo "*")"
-   hour="$(cat "$__object/parameter/hour" 2>/dev/null || echo "*")"
-   day_of_month="$(cat "$__object/parameter/day_of_month" 2>/dev/null || echo "*")"
-   month="$(cat "$__object/parameter/month" 2>/dev/null || echo "*")"
-   day_of_week="$(cat "$__object/parameter/day_of_week" 2>/dev/null || echo "*")"
-   entry="$minute $hour $day_of_month $month $day_of_week $command"
+if [ -f "$__object/parameter/raw" ] && [ -f "$__object/parameter/raw_command" ]; then
+    echo "ERROR: both raw and raw_command specified" >&2
+    exit 1
 fi
-
-# NOTE: keep variables in sync in manifest/explorer/gencode-*
-prefix="#cdist:__cron/$name"
-suffix="#/cdist:__cron/$name"
-cat >> "$__object/parameter/entry" << DONE
-"$prefix"
-"$entry"
-"$suffix"
-DONE

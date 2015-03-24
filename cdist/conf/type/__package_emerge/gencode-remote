@@ -1,0 +1,75 @@
+#!/bin/sh
+#
+# 2013 Thomas Oettli (otho at sfs.biz)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage packages with Portage (mostly gentoo)
+#
+
+if [ -f "$__object/parameter/name" ]; then
+   name="$__object/parameter/name"
+else
+   name="$__object_id"
+fi
+
+state_should="$(cat "$__object/parameter/state")"
+
+version="$(cat "$__object/parameter/version")"
+
+if [ -n "$version" ]; then
+    name="=$name-$version"
+fi
+
+pkg_version="$(cat "$__object/explorer/pkg_version")"
+if [ -z "$pkg_version" ]; then
+    state_is="absent"
+elif [ -z "$version" -a $(echo "$pkg_version" | wc -l) -gt 1 ]; then
+    echo "Package name is not unique! The following packages are installed:"
+    echo "$pkg_version"
+    exit 1
+elif [ -n "$version" -a $(echo "$pkg_version" | cut -d " " -f 1 | sort | uniq | wc -l) -gt 1 ]; then
+    echo "Package name is not unique! The following packages are installed:"
+    echo "$pkg_version"
+    exit 1
+else
+    state_is="present"
+    if [ -n "$version" ] && echo "$pkg_version" | cut -d " " -f 2 | grep -q -x "$version"; then
+        installed_version="$(echo "$pkg_version" | cut -d " " -f 2 | grep -x "$version")"
+    else
+        installed_version="$(echo "$pkg_version" | cut -d " " -f 2 | tail -n 1)"
+    fi
+fi
+
+
+# Exit if nothing is needed to be done
+[ "$state_is" = "$state_should" ] && ( [ -z "$version" ] || [ "$installed_version" = "$version" ] ) && exit 0
+[ "$state_should" = "absent" ] && [ ! -z "$version" ] && [ "$installed_version" != "$version" ] && exit 0
+
+
+case "$state_should" in
+   present)
+        echo "emerge \"$name\" &>/dev/null || exit 1"
+        ;;
+   absent)
+        echo "emerge -C \"$name\" &>/dev/null || exit 1"
+        ;;
+   *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+        ;;
+esac

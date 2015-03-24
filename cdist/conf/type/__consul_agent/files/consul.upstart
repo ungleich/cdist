@@ -1,0 +1,13 @@
+description "Consul Agent"
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [06]
+
+setuid consul
+setgid consul
+
+respawn
+respawn limit 10 10
+kill timeout 10
+
+exec /usr/local/bin/consul agent -config-dir /etc/consul/conf.d
+

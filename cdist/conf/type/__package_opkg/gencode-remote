@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011,2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Giel van Schijndel (giel plus cdist at mortis dot eu)
 #
 # This file is part of cdist.
@@ -28,11 +28,7 @@ else
    name="$__object_id"
 fi
 
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
-else
-   state_should="present"
-fi
+state_should="$(cat "$__object/parameter/state")"
 
 state_is="$(cat "$__object/explorer/pkg_status")"
 case "$state_is" in
@@ -42,20 +38,20 @@ case "$state_is" in
     ;;
 esac
 
-if [ "$state_is" != "$state_should" ]; then
-   case "$state_should" in
-      present)
-         if [ "$present" = "notpresent" ]; then
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+    present)
+        if [ "$present" = "notpresent" ]; then
             echo opkg --verbosity=0 update
-         fi
-         echo opkg --verbosity=0 install \"$name\"
-      ;;
-      absent)
-         echo opkg --verbosity=0 remove \"$name\"
-      ;;
-      *)
-         echo "Unknown state: $state" >&2
-         exit 1
-      ;;
-   esac
-fi
+        fi
+        echo opkg --verbosity=0 install \"$name\"
+    ;;
+    absent)
+        echo opkg --verbosity=0 remove \"$name\"
+    ;;
+    *)
+        echo "Unknown state: $state" >&2
+        exit 1
+    ;;
+esac

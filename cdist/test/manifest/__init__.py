@@ -46,11 +46,11 @@ class ManifestTestCase(test.CdistTestCase):
         self.orig_environ = os.environ
         os.environ = os.environ.copy()
         self.temp_dir = self.mkdtemp()
-        self.target_host = 'localhost'
+
         out_path = self.temp_dir
         self.local = local.Local(
             target_host=self.target_host,
-            out_path=out_path,
+            base_path=out_path,
             exec_path = cdist.test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -78,7 +78,7 @@ class ManifestTestCase(test.CdistTestCase):
                 output_dict[key] = value
         self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
         self.assertEqual(output_dict['__manifest'], self.local.manifest_path)
 
@@ -99,7 +99,7 @@ class ManifestTestCase(test.CdistTestCase):
                 output_dict[key] = value
         self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
-        self.assertEqual(output_dict['__global'], self.local.out_path)
+        self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
         self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], cdist_object.absolute_path)

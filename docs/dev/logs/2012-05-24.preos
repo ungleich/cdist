@@ -1,0 +1,72 @@
+Todo for preos:
+
+get debian installer (?)
+    x86, amd64
+configure sshd
+    add authorized_keys
+output files
+    tftp: cuni:    curl -s "http://http.us.debian.org/debian/dists/$version/main/installer-$arch/current/images/netboot/netboot.tar.gz" | tar xz
+    iso
+
+
+http://wiki.debian.org/DebianInstaller/
+--------------------------------------------------------------------------------
+debootstrap:
+    [19:33] brief:hack% sudo debootstrap squeeze ./debian-squeeze
+    [19:30] brief:hack# du -sh .
+    213M    .
+
+install kernel
+    [19:35] brief:hack# chroot debian-squeeze/ apt-get -y install linux-image-amd64 
+    [19:37] brief:debian-squeeze# ls boot/initrd*                   
+    boot/initrd.img-2.6.32-5-amd64
+    [19:37] brief:debian-squeeze# ls boot/vmlinuz*
+    boot/vmlinuz-2.6.32-5-amd64
+
+install sshd
+    [19:37] brief:hack# chroot debian-squeeze/ apt-get -y --force-yes install openssh-server 
+
+    - connect back?
+    - generate sshd keys?
+
+--------------------------------------------------------------------------------
+initramfs:
+       find . -print0 | bsdcpio $( (( QUIET )) && echo '--quiet' ) -R 0:0 -0oH newc | $COMPRESSION $COMPRESSION_OPTIONS > "$IMGPATH"
+
+    /init for booting
+    find . -print0 | cpio --null -ov --format=newc | gzip -9 > /boot/my-initramfs.cpio.gz
+    cpio -H newc -o
+    find . | cpio -H newc -o > ../initramfs.cpio # <-- this is the actual initramfs
+
+
+[19:39] brief:debian-squeeze# find . | bsdcpio -H newc -o > ../initramfs.cpio 
+[19:43] brief:debian-squeeze# xz ../initramfs.cpio
+
+
+--------------------------------------------------------------------------------
+cdrom:
+    http://tldp.org/HOWTO/Bootdisk-HOWTO/cd-roms.html
+
+--------------------------------------------------------------------------------
+
+[19:34] brief:hack# chroot debian-squeeze/ apt-cache search kernel | grep linux-image
+linux-image-2.6.32-5-amd64-dbg - Debugging infos for Linux 2.6.32-5-amd64
+linux-image-2.6.32-5-amd64 - Linux 2.6.32 for 64-bit PCs
+linux-image-2.6.32-5-openvz-amd64-dbg - Debugging infos for Linux 2.6.32-5-openvz-amd64
+linux-image-2.6.32-5-openvz-amd64 - Linux 2.6.32 for 64-bit PCs, OpenVZ support
+linux-image-2.6.32-5-vserver-amd64-dbg - Debugging infos for Linux 2.6.32-5-vserver-amd64
+linux-image-2.6.32-5-vserver-amd64 - Linux 2.6.32 for 64-bit PCs, Linux-VServer support
+linux-image-2.6.32-5-xen-amd64-dbg - Debugging infos for Linux 2.6.32-5-xen-amd64
+linux-image-2.6.32-5-xen-amd64 - Linux 2.6.32 for 64-bit PCs, Xen dom0 support
+linux-image-2.6-amd64 - Linux 2.6 for 64-bit PCs (meta-package)
+linux-image-2.6-openvz-amd64 - Linux 2.6 for 64-bit PCs (meta-package), OpenVZ support
+linux-image-2.6-vserver-amd64 - Linux 2.6 for 64-bit PCs (meta-package), Linux-VServer support
+linux-image-2.6-xen-amd64 - Linux 2.6 for 64-bit PCs (meta-package), Xen dom0 support
+linux-image-amd64 - Linux for 64-bit PCs (meta-package)
+linux-image-openvz-amd64 - Linux for 64-bit PCs (meta-package), OpenVZ support
+linux-image-vserver-amd64 - Linux for 64-bit PCs (meta-package), Linux-VServer support
+linux-image-xen-amd64 - Linux for 64-bit PCs (meta-package), Xen dom0 support
+[19:34] brief:hack# 
+
+--------------------------------------------------------------------------------
+

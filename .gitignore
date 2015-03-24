@@ -26,3 +26,8 @@ cdist/version.py
 /cdist-*.tar.gz
 /pkg
 /src
+build
+.lock-*
+.git-current-branch
+.lock*
+.pypi-release

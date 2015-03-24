@@ -22,7 +22,7 @@ name="$__object_id"
 state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/state")"
 
-if [ "$state_should" == "$state_is" ]; then
+if [ "$state_should" = "$state_is" ]; then
    # Nothing to do, move along
    exit 0
 fi

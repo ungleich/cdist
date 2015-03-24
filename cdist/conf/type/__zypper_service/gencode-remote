@@ -1,0 +1,87 @@
+#!/bin/sh
+#
+# 2013 Daniel Heule (hda at sfs.biz)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage services with Zypper (mostly suse)
+#
+
+# Debug
+#exec >&2
+#set -x
+
+zypper_def_opts=" -q --non-interactive --gpg-auto-import-keys "
+
+if [ -f "$__object/parameter/service_desc" ]; then
+   desc="$(cat "$__object/parameter/service_desc")"
+else
+   desc="$__object_id"
+fi
+
+if [ -f "$__object/parameter/uri" ]; then
+   uri="$(cat "$__object/parameter/uri")"
+else
+   uri="$__object_id"
+fi
+
+state_should="$(cat "$__object/parameter/state")"
+stype="$(cat "$__object/parameter/type")"
+
+exp_uri="$(cat "$__object/explorer/service_uri")"
+exp_id="$(cat "$__object/explorer/service_id")"
+
+# we need this list to remove ids, but we must do this in reverse order
+exp_ids="$(cat "$__object/explorer/service_ids" | rev)"
+
+if [ "$uri" = "$exp_uri" ] ; then
+    state_is="present"
+else
+    state_is="absent"
+fi
+
+# remove all other services if needed ...
+if [ -f "$__object/parameter/remove-all-other-services" ]; then
+   # file exists -> True
+   for i in $exp_ids; do
+     if [ "$i" != "$exp_id" ] ; then
+       echo zypper $zypper_def_opts  removeservice "$i" "&>/dev/null"
+     fi
+   done 
+   echo zypper $zypper_def_opts refs "&>/dev/null"
+fi
+
+
+# Exit if nothing is needed to be done
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state_should" in
+   present)
+         echo zypper $zypper_def_opts addservice -t "$stype" "$uri" \"$desc\"
+         echo zypper $zypper_def_opts refs
+         echo zypper $zypper_def_opts ref
+   ;;
+   absent)
+         echo zypper $zypper_def_opts removeservice "$service_id"
+         echo zypper $zypper_def_opts refs
+         echo zypper $zypper_def_opts ref
+   ;;
+   *)
+      echo "Unknown state: $state_should" >&2
+      exit 1
+   ;;
+esac

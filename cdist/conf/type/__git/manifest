@@ -23,8 +23,10 @@
 
 __package git --state present
 
-state_should=present
-[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
+owner="$(cat "$__object/parameter/owner")"
+group="$(cat "$__object/parameter/group")"
+mode="$(cat "$__object/parameter/mode")"
 
 # Let __directory handle removal of git repos
 
@@ -34,7 +36,10 @@ case "$state_should" in
     ;;
 
     absent)
-        __directory "$__object_id" --state absent
+        __directory "$__object_id" --state absent \
+            --owner "$owner" \
+            --group "$group" \
+            --mode "$mode"
     ;;
 
     *)

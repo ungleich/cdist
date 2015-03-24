@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -89,7 +90,7 @@ class Code(object):
         self.remote = remote
         self.env = {
             '__target_host': self.target_host,
-            '__global': self.local.out_path,
+            '__global': self.local.base_path,
         }
 
     def _run_gencode(self, cdist_object, which):
@@ -104,7 +105,8 @@ class Code(object):
                 '__object_id': cdist_object.object_id,
                 '__object_name': cdist_object.name,
             })
-            return self.local.run_script(script, env=env, return_output=True)
+            message_prefix=cdist_object.name
+            return self.local.run_script(script, env=env, return_output=True, message_prefix=message_prefix)
 
     def run_gencode_local(self, cdist_object):
         """Run the gencode-local script for the given cdist object."""
@@ -119,21 +121,30 @@ class Code(object):
         source = os.path.join(self.local.object_path, cdist_object.code_remote_path)
         destination = os.path.join(self.remote.object_path, cdist_object.code_remote_path)
         # FIXME: BUG: do not create destination, but top level of destination!
-        # FIXME: BUG2: we are called AFTER the code-remote has been transferred already:
-        # mkdir: cannot create directory `/var/lib/cdist/object/__directory/etc/acpi/actions/.cdist/code-remote': File exists
-        # OR: this is from previous run -> cleanup missing!
         self.remote.mkdir(destination)
         self.remote.transfer(source, destination)
 
-    def _run_code(self, cdist_object, which):
+    def _run_code(self, cdist_object, which, env=None):
         which_exec = getattr(self, which)
         script = os.path.join(which_exec.object_path, getattr(cdist_object, 'code_%s_path' % which))
-        return which_exec.run_script(script)
+        return which_exec.run_script(script, env=env)
 
     def run_code_local(self, cdist_object):
         """Run the code-local script for the given cdist object."""
-        return self._run_code(cdist_object, 'local')
+        # Put some env vars, to allow read only access to the parameters over $__object
+        env = os.environ.copy()
+        env.update(self.env)
+        env.update({
+            '__object': cdist_object.absolute_path,
+            '__object_id': cdist_object.object_id,
+        })
+        return self._run_code(cdist_object, 'local', env=env)
 
     def run_code_remote(self, cdist_object):
         """Run the code-remote script for the given cdist object on the remote side."""
-        return self._run_code(cdist_object, 'remote')
+        # Put some env vars, to allow read only access to the parameters over $__object which is already on the remote side
+        env = {
+            '__object': os.path.join(self.remote.object_path, cdist_object.path),
+            '__object_id': cdist_object.object_id,
+        }
+        return self._run_code(cdist_object, 'remote', env=env)

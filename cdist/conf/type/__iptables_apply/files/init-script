@@ -1,0 +1,58 @@
+#!/bin/sh
+# Nico Schottelius
+# Zürisee, Mon Sep  2 18:38:27 CEST 2013
+#
+### BEGIN INIT INFO
+# Provides:          iptables
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# X-Start-Before:    fail2ban
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Applies iptables ruleset
+# Description:       Applies all rules found in /etc/iptables.d
+#                    and saves/restores previous status
+### END INIT INFO
+
+
+basedir=/etc/iptables.d
+status="${basedir}/.pre-start"
+
+case $1 in
+    start)
+        # Save status
+        iptables-save > "$status"
+
+        # Apply our ruleset
+        cd "$basedir"
+        count="$(ls -1 | wc -l)"
+
+        # Only do something if there are rules
+        if [ "$count" -ge 1 ]; then
+            for rule in *; do
+                echo "Applying iptables rule $rule ..."
+                iptables $(cat "$rule")
+            done
+        fi
+    ;;
+
+    stop)
+        # Restore from status before, if there is something to restore
+        if [ -f "$status" ]; then
+            iptables-restore < "$status"
+        fi
+    ;;
+    restart)
+        "$0" stop &&  "$0" start
+    ;;
+    reset)
+        for table in INPUT FORWARD OUTPUT; do
+            iptables -P "$table" ACCEPT
+            iptables -F "$table"
+        done
+        for table in PREROUTING POSTROUTING OUTPUT; do
+            iptables -t nat -P "$table" ACCEPT
+            iptables -t nat -F "$table"
+        done
+    ;;
+esac

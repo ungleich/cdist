@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -27,11 +27,15 @@ else
    name="$__object_id"
 fi
 
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "$__object/parameter/state")"
+
+if [ -f "$__object/parameter/target-release" ]; then
+   target_release="--target-release $(cat "$__object/parameter/target-release")"
 else
-   state_should="present"
+   target_release=""
 fi
+
+
 
 # FIXME: use grep directly, state is a list, not a line!
 state_is="$(cat "$__object/explorer/state")"
@@ -42,13 +46,15 @@ case "$state_is" in
     ;;
 esac
 
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes"
+# Hint if we need to avoid questions at some point:
+# DEBIAN_PRIORITY=critical can reduce the number of questions
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
 
 [ "$state_is" = "$state_should" ] && exit 0
 
 case "$state_should" in
     present)
-        echo $aptget install \"$name\"
+        echo $aptget install $target_release \"$name\"
     ;;
     absent)
         echo $aptget remove \"$name\"

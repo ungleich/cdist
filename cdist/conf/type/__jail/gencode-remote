@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Jake Guffey (jake.guffey at eprotex.com)
+# 2012,2014 Jake Guffey (jake.guffey at eprotex.com)
 #
 # This file is part of cdist.
 #
@@ -66,11 +66,7 @@ else
    devfsenable="true"
 fi
 
-if [ -f "$__object/parameter/devfs-ruleset" ]; then
-   devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
-else
-   devfsruleset="jailrules"
-fi
+devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
 
 # devfs_ruleset being defined without devfs_enable being true
 #     is pointless. Treat this as an error.
@@ -84,14 +80,11 @@ if [ -f "$__object/parameter/onboot" ]; then
    onboot="true"
 fi
 
-if [ -f "$__object/parameter/jaildir" ]; then
-   jaildir="$(cat "$__object/parameter/name")"
-else
-   jaildir="/usr/jail"
-fi
+jaildir="$(cat "$__object/parameter/jaildir")"
 
 present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
+
 # Handle ip="iface|addr, iface|addr" format
 if [ $(expr "${ip}" : ".*|.*") -gt "0" ]; then
    # If we have multiple IPs defined, $interface doesn't make sense because ip="iface|addr, iface|addr" implies it
@@ -111,6 +104,7 @@ stopJail() {
 # Check $status before issuing command
    if [ "$status" = "STARTED" ]; then
       echo "/etc/rc.d/jail stop ${name}"
+      echo "stop" >> "$__messages_out"
    fi
 }
 
@@ -118,6 +112,7 @@ startJail() {
 # Check $status before issuing command
    if [ "$status" = "NOTSTART" ]; then
       echo "/etc/rc.d/jail start ${name}"
+      echo "start" >> "$__messages_out"
    fi
 }
 
@@ -169,6 +164,7 @@ EOF
          rm -f /etc/rc.conf.bak
       fi
 EOF
+   echo "delete" >> "$__messages_out"
 }
 
 createJail() {
@@ -222,6 +218,7 @@ cat <<EOF
    fi
 
 EOF
+   echo "create" >> "$__messages_out"
 
 # Create the ro+rw mountpoint entries in fstab
 cat <<EOF
@@ -317,6 +314,7 @@ if [ "$onboot" = "yes" ]; then
       fi
       unset jail_list
 EOF
+   echo "onboot" >> "$__messages_out"
 fi
 
 # Add the normal entries into the jail's rc.conf

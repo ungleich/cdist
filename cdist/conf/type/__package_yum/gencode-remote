@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -27,11 +27,15 @@ else
    name="$__object_id"
 fi
 
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
+# Support installing from an URL
+if [ -f "$__object/parameter/url" ]; then
+   install_name="$(cat "$__object/parameter/url")"
 else
-   state_should="present"
+   install_name="$name"
 fi
+
+
+state_should="$(cat "$__object/parameter/state")"
 
 if grep -q -E "(centos|redhat|amazon)" "$__global/explorer/os"; then
     opts="-y --quiet"
@@ -51,7 +55,7 @@ fi
 
 case "$state_should" in
     present)
-        echo yum $opts install \"$name\"
+        echo yum $opts install \"$install_name\"
     ;;
     absent)
         echo yum $opts remove \"$name\"

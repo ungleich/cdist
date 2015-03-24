@@ -27,6 +27,9 @@ name::
 state::
     Either "present" or "absent", defaults to "present"
 
+target-release::
+    Passed on to apt-get install, see apt-get(8).
+    Essentially allows you to retrieve packages from a different release
 
 EXAMPLES
 --------

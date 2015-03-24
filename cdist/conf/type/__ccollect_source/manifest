@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# 2014 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+name="$__object_id"
+state="$(cat "$__object/parameter/state")"
+source="$(cat "$__object/parameter/source")"
+destination="$(cat "$__object/parameter/destination")"
+ccollectconf="$(cat "$__object/parameter/ccollectconf" | sed 's,/$,,')"
+
+sourcedir="$ccollectconf/sources"
+basedir="$sourcedir/$name"
+
+destination_file="$basedir/destination"
+source_file="$basedir/source"
+exclude_file="$basedir/exclude"
+verbose_file="$basedir/verbose"
+
+__directory "$basedir" --state "$state"
+
+export require="__directory$basedir"
+echo "$destination" | __file "$destination_file" --source - --state "$state"
+echo "$source" | __file "$source_file" --source - --state "$state"
+
+################################################################################
+# Booleans
+if [ -f "$__object/parameter/verbose" ]; then
+    verbosestate="present"
+else
+    verbosestate="absent"
+fi
+__file "$verbose_file" --state "$verbosestate"
+
+if [ -f "$__object/parameter/exclude" ]; then
+    __file "$exclude_file" --source - --state "$state" \
+        < "$__object/parameter/exclude"
+fi

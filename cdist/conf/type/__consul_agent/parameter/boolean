@@ -1,0 +1,8 @@
+disable-remote-exec
+disable-update-check
+leave-on-terminate
+rejoin-after-leave
+server
+syslog
+verify-incoming
+verify-outgoing
