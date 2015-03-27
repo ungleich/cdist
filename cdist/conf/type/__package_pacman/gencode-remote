@@ -31,11 +31,7 @@ else
    name="$__object_id"
 fi
 
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
-else
-   state_should="present"
-fi
+state_should="$(cat "$__object/parameter/state")"
 
 pkg_version="$(cat "$__object/explorer/pkg_version")"
 if [ -z "$pkg_version" ]; then

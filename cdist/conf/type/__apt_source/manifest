@@ -27,11 +27,9 @@ if [ -f "$__object/parameter/distribution" ]; then
 else
    distribution="$(cat "$__global/explorer/lsb_codename")"
 fi
-if [ -f "$__object/parameter/component" ]; then
-   component="$(cat "$__object/parameter/component")"
-else
-   component=""
-fi
+
+component="$(cat "$__object/parameter/component")"
+
 if [ -f "$__object/parameter/arch" ]; then
    forcedarch="[arch=$(cat "$__object/parameter/arch")]"
 else

@@ -1,0 +1,83 @@
+#!/bin/sh
+#
+# 2015 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+name="$(cat "$__object/parameter/name" 2>/dev/null || echo "$__object_id")"
+conf_dir="/etc/consul/conf.d"
+conf_file="service_${name}.json"
+state="$(cat "$__object/parameter/state")"
+
+# Sanity checks
+if [ -f "$__object/parameter/check-script" -a -f "$__object/parameter/check-ttl" ]; then
+   echo "Use either --check-script together with --check-interval OR --check-ttl, but not both" >&2
+   exit 1
+fi
+if [ -f "$__object/parameter/check-script" -a ! -f "$__object/parameter/check-interval" ]; then
+   echo "When using --check-script you must also define --check-interval" >&2
+   exit 1
+fi
+
+# Generate json config file
+(
+echo "{"
+printf '   "service": {\n'
+printf '      "name": "%s"\n' "$name"
+for param in $(ls "$__object/parameter/"); do
+   case "$param" in
+      state|name|check-interval) continue ;;
+      check-script)
+         printf '     ,"check": {\n'
+         printf '         "script": "%s"\n' "$(cat "$__object/parameter/check-script")"
+         printf '         ,"interval": "%s"\n' "$(cat "$__object/parameter/check-interval")"
+         printf '      }\n'
+      ;;
+      check-ttl)
+         printf '     ,"check": {\n'
+         printf '         "ttl": "%s"\n' "$(cat "$__object/parameter/check-ttl")"
+         printf '      }\n'
+      ;;
+      tag)
+         # create json array from newline delimited file
+         tags="$(awk '{printf "\""$1"\","}' "$__object/parameter/tag")"
+         # remove trailing ,
+         printf '      ,"tags": [%s]\n' "${tags%*,}"
+      ;;
+      port)
+         # integer key=value parameters
+         key="$(echo "$param" | tr '-' '_')"
+         printf '      ,"%s": %s\n' "$key" "$(cat "$__object/parameter/$param")"
+      ;;
+      *)
+         # string key=value parameters
+         key="$(echo "$param" | tr '-' '_')"
+         printf '      ,"%s": "%s"\n' "$key" "$(cat "$__object/parameter/$param")"
+      ;;
+   esac
+done
+# end service
+echo "   }"
+# end json file
+echo "}"
+) | \
+require="__directory${conf_dir}" \
+   __config_file "${conf_dir}/${conf_file}" \
+      --owner root --group consul --mode 640 \
+      --state "$state" \
+      --onchange 'service consul status >/dev/null && service consul reload || true' \
+      --source -

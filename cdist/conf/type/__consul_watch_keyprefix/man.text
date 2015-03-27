@@ -1,0 +1,55 @@
+cdist-type__consul_watch_keyprefix(7)
+=====================================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__consul_watch_keyprefix - manages consul keyprefix watches
+
+
+DESCRIPTION
+-----------
+Generate and deploy watch definitions of type 'keyprefix' for a consul agent.
+See http://www.consul.io/docs/agent/watches.html for parameter documentation.
+
+
+REQUIRED PARAMETERS
+-------------------
+handler::
+   the handler to invoke when the data view updates
+prefix::
+   the prefix of keys to watch for changes
+
+
+OPTIONAL PARAMETERS
+-------------------
+datacenter::
+   can be provided to override the agent's default datacenter
+state::
+   if this watch is 'present' or 'absent'. Defaults to 'present'.
+token::
+   can be provided to override the agent's default ACL token
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__consul_watch_keyprefix some-id \
+   --prefix foo/ \
+   --handler /usr/bin/my-prefix-handler.sh
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__consul_agent(7)
+- http://www.consul.io/docs/agent/watches.html
+
+
+COPYING
+-------
+Copyright \(C) 2015 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
