@@ -31,13 +31,8 @@ else
    name="$__object_id"
 fi
 
-if [ -f "$__object/parameter/flavor" ]; then
-   flavor="$(cat "$__object/parameter/flavor")"
-fi
-
-if [ -f "$__object/parameter/version" ]; then
-   version="$(cat "$__object/parameter/version")"
-fi
+flavor="$(cat "$__object/parameter/flavor")"
+version="$(cat "$__object/parameter/version")"
 
 if [ -f "$__object/parameter/upgrade" ]; then
    upgrade="true"
@@ -45,15 +40,8 @@ else
    upgrade="false"
 fi
 
-if [ -f "$__object/parameter/repo" ]; then
-   repo="$(cat "$__object/parameter/repo")"
-fi
-
-if [ -f "$__object/parameter/state" ]; then
-   state="$(cat "$__object/parameter/state")"
-else
-   state="present"
-fi
+repo="$(cat "$__object/parameter/repo")"
+state="$(cat "$__object/parameter/state")"
 curr_version="$(cat "$__object/explorer/pkg_version")"
 add_cmd="pkg install -y"
 rm_cmd="pkg delete -y"

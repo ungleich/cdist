@@ -1,0 +1,38 @@
+cdist-type__cdist_preos(7)
+==========================
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+NAME
+----
+cdist-type__cdist - Manage cdist installations
+
+
+DESCRIPTION
+-----------
+This cdist type creates a directory containing an operating
+suitable for installation using cdist.
+
+REQUIRED PARAMETERS
+-------------------
+
+OPTIONAL PARAMETERS
+-------------------
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__cdist_preos /tmp/random_name_for_packaging
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__cdist(7)
+
+
+COPYING
+-------
+Copyright \(C) 2015 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

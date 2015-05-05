@@ -204,11 +204,13 @@ class CdistType(object):
             try:
                 defaults_dir = os.path.join(self.absolute_path, "parameter", "default")
                 for name in os.listdir(defaults_dir):
-                    with open(os.path.join(defaults_dir, name)) as fd:
-                        defaults[name] = fd.read().strip()
+                    try:
+                        with open(os.path.join(defaults_dir, name)) as fd:
+                            defaults[name] = fd.read().strip()
+                    except EnvironmentError:
+                        pass  # Swallow errors raised by open() or read()
             except EnvironmentError:
-                # error ignored
-                pass
+                pass  # Swallow error raised by os.listdir()
             finally:
                 self.__parameter_defaults = defaults
         return self.__parameter_defaults

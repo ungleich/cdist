@@ -137,7 +137,7 @@ immediately.
 
 To install cdist, execute the following commands:
 
-    git clone git://git.schottelius.org/cdist
+    git clone https://github.com/telmich/cdist.git
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 

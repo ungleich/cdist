@@ -148,14 +148,17 @@ cp -L "$src" "$real_dst"
 
         log.debug("Bootstrap: %s" % cmd)
 
-#        try:
-        subprocess.check_call(cmd)
-#        except subprocess.CalledProcessError:
-#            raise 
+        try:
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError:
+            raise cdist.Error("Debootstrap failed (root priviliges required)")
 
         # Required to run this - otherwise apt-get install fails
         cmd = [ "chroot", self.target_dir, "/usr/bin/apt-get", "update" ]
-        subprocess.check_call(cmd)
+        try:
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError:
+            raise cdist.Error("chrooted apt-get update failed (root priviliges required)")
 
     def create_helper_files(self, base_dir):
         for key, val in self.helper.items():
