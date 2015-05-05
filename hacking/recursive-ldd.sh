@@ -6,10 +6,13 @@
 
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
-bin_list="fdisk 
+pkg="
 
-for command in command_list;
+bin_list="fdisk mount"
 
+for bin in command_list; do
+
+done
 
 
 exit 0
