@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Type __block: Fix support for non stdin blocks (Dominique Roux)
+
 3.1.12: 2015-03-19
 	* Core: Support object ids '.cdist' (Nico Schottelius)
 	* New type: __firewalld_rule (Nico Schottelius)
