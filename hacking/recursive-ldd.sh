@@ -8,7 +8,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
 pkg="
 
-bin_list="fdisk mount"
+bin_list="bash fdisk mount syslinux umount rm mv"
 
 for bin in command_list; do
 
