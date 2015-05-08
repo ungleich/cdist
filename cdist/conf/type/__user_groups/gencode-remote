@@ -21,6 +21,20 @@
 user="$(cat "$__object/parameter/user" 2>/dev/null || echo "$__object_id")"
 state_should="$(cat "$__object/parameter/state")"
 
+os_version="$(cat "$__global/explorer/os_version")"
+case "$os_version" in
+    SUSE\ Linux\ Enterprise\ Server\ 11*VERSION\ =\ 11*)
+        old=yes
+        addparam="-A"
+        delparam="-R"
+    ;;
+    *)
+        old=no
+        addparam="-a"
+        delparam="-d"
+    ;;
+esac
+
 mkdir "$__object/files"
 # file has to be sorted for comparison with `comm`
 sort "$__object/parameter/group" > "$__object/files/group.sorted"
@@ -28,11 +42,11 @@ sort "$__object/parameter/group" > "$__object/files/group.sorted"
 case "$state_should" in
    present)
       changed_groups="$(comm -13 "$__object/explorer/group" "$__object/files/group.sorted")"
-      action="-a"
+      action="$addparam"
    ;;
    absent)
       changed_groups="$(comm -12 "$__object/explorer/group" "$__object/files/group.sorted")"
-      action="-d"
+      action="$delparam"
    ;;
 esac
 
@@ -42,5 +56,9 @@ if [ -z "$changed_groups" ]; then
 fi
 
 for group in $changed_groups; do
-   echo "gpasswd $action \"$user\" \"$group\""
+   if [ "$old" = "no" ]; then
+     echo "gpasswd $action \"$user\" \"$group\""
+   else
+     echo "usermod $action \"$group\" \"$user\""
+   fi
 done
