@@ -23,11 +23,9 @@ state_should="$(cat "$__object/parameter/state")"
 oldusermod="$(cat "$__object/explorer/oldusermod")"
 
 if [ "$oldusermod" = "true" ]; then
-        old=yes
         addparam="-A"
         delparam="-R"
 else
-        old=no
         addparam="-a"
         delparam="-d"
 fi
@@ -53,9 +51,9 @@ if [ -z "$changed_groups" ]; then
 fi
 
 for group in $changed_groups; do
-   if [ "$old" = "no" ]; then
-     echo "gpasswd $action \"$user\" \"$group\""
-   else
+   if [ "$oldusermod" = "true" ]; then
      echo "usermod $action \"$group\" \"$user\""
+   else
+     echo "gpasswd $action \"$user\" \"$group\""
    fi
 done
