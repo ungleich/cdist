@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Type __block: Fix support for non stdin blocks (Dominique Roux)
+	* Type __consul_agent: Use systemd for Debian 8 (Nico Schottelius)
 
 3.1.12: 2015-03-19
 	* Core: Support object ids '.cdist' (Nico Schottelius)
