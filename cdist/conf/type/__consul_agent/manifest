@@ -195,7 +195,7 @@ case "$os" in
                 init_sysvinit debian
             ;;
             8)
-                init_sysvinit
+                init_systemd
             ;;
             *)
                 echo "Unsupported Debian version $os_version" >&2
