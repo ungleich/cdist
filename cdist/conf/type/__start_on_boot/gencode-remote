@@ -28,6 +28,7 @@ target_runlevel="$(cat "$__object/parameter/target_runlevel")"
 [ "$state_should" = "$state_is" ] && exit 0
 
 os=$(cat "$__global/explorer/os")
+os_version=$(cat "$__global/explorer/os_version")
 name="$__object_id"
 
 case "$state_should" in
@@ -36,8 +37,19 @@ case "$state_should" in
             archlinux)
                 echo "systemctl enable \"$name\""
             ;;
-            debian|ubuntu)
-                echo "update-rc.d \"$name\" defaults >/dev/null"
+            debian)
+                case "$os_version" in
+                    [1-7]*)
+                        echo "update-rc.d \"$name\" defaults >/dev/null"
+                    ;;
+                    8*)
+                        echo "systemctl enable \"$name\""
+                    ;;
+                    *)
+                        echo "Unsupported version $os_version of $os" >&2
+                        exit 1
+                    ;;
+                esac
             ;;
 
             gentoo)
@@ -53,6 +65,10 @@ case "$state_should" in
                 # code, deal with it by checking for success ourselves in that
                 # case (the || ... part).
                 echo "/etc/init.d/\"$name\" enable || [ -f /etc/rc.d/S??\"$name\" ]"
+            ;;
+
+            ubuntu)
+                echo "update-rc.d \"$name\" defaults >/dev/null"
             ;;
 
             *)
