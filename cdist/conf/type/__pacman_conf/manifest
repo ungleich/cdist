@@ -1,0 +1,111 @@
+#get params
+section=$(cat "$__object/parameter/section")
+key=$(cat "$__object/parameter/key")
+value=$(cat "$__object/parameter/value")
+file=$(cat "$__object/parameter/file" 2>/dev/null || echo "")
+state=$(cat "$__object/parameter/state" 2>/dev/null || echo "present" )
+
+#path variable default /etc/pacman.d
+sec_path="/etc/pacman.d"
+
+#allowed keys (from man pacman.conf)
+allowed_option_keys=( "RootDir" "DBPath" "CacheDir" "GPGDir" "LogFile" "HoldPkg" "IgnorePkg" "IgnoreGroup" "Include" "Architecture" "XferCommand" "NoUpgrade" "NoExtract" "CleanMethod" "SigLevel" "LocalFileSigLevel" "RemoteFileSigLevel" )
+boolean_option_keys=( "UseSyslog" "Color" "UseDelta" "TotalDownload" "CheckSpace" "VerbosePkgLists" )
+allowed_repo_keys=( "Include" "Server" "SigLevel" "Usage" )
+
+#set global variables
+MATH=1
+
+#function for check if array contain string
+contains_element() {
+
+    MATCH=1
+
+    local passed_array
+    passed_array=(`echo "$2"`)
+
+    for e in "${passed_array[@]}"; do
+        if [ "${e}" == "${1}" ]; then
+            MATCH=0
+            return 0
+        fi  
+    done
+    MATCH=1
+}
+
+if [ "${file}" != "" ]; then
+    __file "${sec_path}/plain_file_${file}"\
+        --state exists --mode 666
+
+    if [ "${state}" == "present" ]; then
+
+        require="__file/${sec_path}/plain_file_${file}" __key_value ${file}_${key}\
+            --file ${sec_path}/plain_file_${file} --key ${key} --value ${value} --delimiter ' = '
+
+        exit 0
+
+    elif [ "${state}" == "absent" ]; then
+        require="__file/${sec_path}/plain_file_${file}" __key_value ${file}_${key}\
+                --state absent
+
+    else
+        echo "ERROR: State not found" >&2
+    fi
+fi  
+
+if [ "${section}" == "options" ]; then
+
+    __file "${sec_path}/${section}"\
+            --state exists --mode 666 --source - << eof
+[${section}]
+eof
+    #check if key is valid
+    #check for boolean value
+    contains_element "${key}" "$(echo ${boolean_option_keys[@]})"
+
+    if [ "${MATCH}" -eq 0 ]; then
+        if [ "${value}" == "on" ]; then
+            require="__file/${sec_path}/${section}" __line ${key}_${value}\
+                --file ${sec_path}/${section} --line ${key}
+        elif [ "${value}" == "off" ]; then
+            require="__file/${sec_path}/${section}" __line ${key}_${value}\
+                --file ${sec_path}/${section} --line ${key} --state absent
+        fi
+        
+    else
+        contains_element "${key}" "$(echo ${allowed_option_keys[@]})"
+
+        if [ "${MATCH}" -eq 0 ]; then
+            require="__file/${sec_path}/${section}" __key_value ${section}_${key}\
+                    --file ${sec_path}/${section} --key ${key} --value ${value} --delimiter ' = '
+        else
+            echo "Key is not valid. Have a look at man pacman.conf" >&2
+        fi
+    fi
+
+else 
+        __file "${sec_path}/repo_${section}"\
+            --state exists --mode 666 --source - << eof
+[${section}]
+eof
+    if [ "${state}" == "present" ]; then
+
+        #check if key is valid
+        contains_element "${key}" "$(echo ${allowed_repo_keys[@]})"
+        if [ ${MATCH} -eq 1 ]; then
+            exit
+        fi
+    
+        require="__file/${sec_path}/repo_${section}" __key_value ${section}_${key}\
+                --file ${sec_path}/repo_${section} --key ${key} --value ${value} --delimiter ' = '
+
+    elif [ "${state}" == "absent" ]; then
+
+        require="__file/${sec_path}/repo_${section}" __key_value ${section}_${key}\
+            --state absent
+
+    else
+        echo "ERROR: State not found" >&2
+    fi
+
+fi

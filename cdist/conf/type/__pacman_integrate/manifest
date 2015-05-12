@@ -1,0 +1,46 @@
+state=$(cat $__object/parameter/state 2>/dev/null || echo "present" )
+
+if [ "${state}" == "present" ]; then
+    #__rsync /etc/pacman.conf\
+    __file /home/rouxdo/Documents/Work/cdist-dev/pacman.conf\
+        --owner root --group root --mode 644 --source $__type/files/pacman.conf.cdist
+
+    #__rsync /etc/pacman.d/options\
+    __file /home/rouxdo/Documents/Work/cdist-dev/pacman.d/options\
+        --owner root --group root --mode 644 --source $__type/files/options
+
+    #__file /etc/pacman.d/repo_empty_placeholder\
+    __file /home/rouxdo/Documents/Work/cdist-dev/pacman.d/repo_empty_placeholder\
+        --owner root --group root --mode 644
+
+    #__file /etc/pacman.d/plain_file_empty_placeholder\
+    __file /home/rouxdo/Documents/Work/cdist-dev/pacman.d/plain_file_empty_placeholder\
+        --owner root --group root --mode 644
+
+elif [ "${state}" == "absent" ]; then
+
+    #__rsync /etc/pacman.conf\
+    __file /home/rouxdo/Documents/Work/cdist-dev/pacman.conf\
+        --owner root --group root --mode 644 --source $__type/files/pacman.conf.pacman
+
+    #__rsync /etc/pacman.d/mirrorlist\
+    __file /home/rouxdo/Documents/Work/cdist-dev/pacman.d/mirrorlist\
+        --owner root --group root --mode 644 --source $__type/files/mirrorlist
+
+    #__rsync /etc/pacman.d/options\
+    __file /home/rouxdo/Documents/Work/cdist-dev/pacman.d/options\
+        --state absent
+
+    #__file /etc/pacman.d/repo_empty_placeholder\
+    __file /home/rouxdo/Documents/Work/cdist-dev/pacman.d/repo_empty_placeholder\
+        --state absent
+
+    #__file /etc/pacman.d/plain_file_empty_placeholder\
+    __file /home/rouxdo/Documents/Work/cdist-dev/pacman.d/plain_file_empty_placeholder\
+        --state absent
+
+else
+
+    echo "ERROR: State not found" >&2
+
+fi
