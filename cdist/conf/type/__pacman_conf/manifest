@@ -71,6 +71,7 @@ if [ "${file}" != "" ]; then
 
     else
         echo "ERROR: Unknown state: ${state}" >&2
+        exit 0
     fi
 fi  
 
