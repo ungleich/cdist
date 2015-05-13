@@ -1,6 +1,14 @@
+- next step
+    - rootfs fix
+    - get working to login
+    - have sshd enabled
+
+- everything into initramfs?
+
 - Target: 
     - get working iso
     - have it configured and gathered by cdist?
+
 
 - boot process via ...?
     - systemd?
@@ -10,6 +18,8 @@
     - binlist
     - bootstrap of os
         -> root permissions!
+
+- boot device
 
 - uefi support
     [9:15] wurzel:hacking% pacman -Ql syslinux | grep ldlin
