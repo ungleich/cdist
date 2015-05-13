@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -155,7 +156,7 @@ class Config(object):
         self.manifest.run_initial_manifest(self.local.initial_manifest)
         self.iterate_until_finished()
 
-        self.local.save_cache()
+        self.local.save_cache(start_time)
         self.log.info("Finished successful run in %s seconds", time.time() - start_time)
 
 
