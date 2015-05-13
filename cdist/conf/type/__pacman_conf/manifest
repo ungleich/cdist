@@ -68,6 +68,7 @@ if [ "${file}" != "" ]; then
     elif [ "${state}" == "absent" ]; then
         require="__file/${sec_path}/plain_file_${file}" __key_value ${file}_${key}\
                 --state absent
+        exit 0
 
     else
         echo "ERROR: Unknown state: ${state}" >&2
