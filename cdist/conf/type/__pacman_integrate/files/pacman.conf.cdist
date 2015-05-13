@@ -3,4 +3,4 @@
 #
 Include = /etc/pacman.d/options
 Include = /etc/pacman.d/repo_*
-Include = /etc/plain_file_*
+Include = /etc/pacman.d/plain_file_*

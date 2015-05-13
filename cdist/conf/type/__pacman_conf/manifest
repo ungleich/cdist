@@ -45,7 +45,7 @@ contains_element() {
     keys="${@:2}"
 
 
-    for key in "${keys}"; do
+    for key in ${keys}; do
         if [ "${key}" == "${target}" ]; then
             MATCH=1
             return 0
