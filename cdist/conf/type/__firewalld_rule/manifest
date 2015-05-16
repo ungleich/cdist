@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2013-2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2015 David Hürlimann (david at ungleich.ch)
 #
 # This file is part of cdist.
 #
@@ -17,20 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
+# This type allows to configure the desired localtime timezone.
 
-
-file="$(cat "$__object/parameter/file" 2>/dev/null || echo "/$__object_id")"
-prefix=$(cat "$__object/parameter/prefix" 2>/dev/null || echo "#cdist:__block/$__object_id")
-suffix=$(cat "$__object/parameter/suffix" 2>/dev/null || echo "#/cdist:__block/$__object_id")
-text=$(cat "$__object/parameter/text")
-
-mkdir "$__object/files"
-# Generate text block for inclusion in file
-block="$__object/files/block"
-echo "$prefix" > "$block"
-if [ "$text" = "-" ]; then
-   cat "$__object/stdin" >> "$block"
-else
-   echo "$text" >> "$block"
-fi
-echo "$suffix" >> "$block"
+__package firewalld

@@ -2,17 +2,21 @@ Changelog
 ---------
 
 	* Changes are always commented with their author in (braces)
-	* Exception: No braces means author == Nico Schottelius
 
 4.0.0pre3: 2014-06-13
-	* Update to include changes from cdist 3.1.5
+	* Update to include changes from cdist 3.1.5 (Nico Schottelius)
 
 4.0.0pre2: 2014-02-14
 	* Core: Remove archives from generated preos (Steven Armstrong)
 
 4.0.0pre1: 2014-01-20
-	* Core: Integrate initial install support
-	* Core: Integrate initial preos support
+	* Core: Integrate initial install support (Nico Schottelius)
+	* Core: Integrate initial preos support (Nico Schottelius)
+
+next:
+	* Type __block: Fix support for non stdin blocks (Dominique Roux)
+	* Type __consul_agent: Use systemd for Debian 8 (Nico Schottelius)
+	* Type __firewalld_rule: Ensure firewalld is present (David Hürlimann)
 
 3.1.12: 2015-03-19
 	* Core: Support object ids '.cdist' (Nico Schottelius)
