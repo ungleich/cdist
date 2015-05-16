@@ -7,7 +7,9 @@ Changelog
 	* Type __consul: Add source & cksum for 0.5.1 (Nico Schottelius)
 	* Type __consul_agent: Use systemd for Debian 8 (Nico Schottelius)
 	* Type __firewalld_rule: Ensure firewalld package is present (David Hürlimann)
+	* Type __locale: Support CentOS (David Hürlimann)
 	* Type __staged_file: Fix comparision operator (Nico Schottelius)
+	* Type __user_groups: Support old Linux versions (Daniel Heule)
 
 3.1.12: 2015-03-19
 	* Core: Support object ids '.cdist' (Nico Schottelius)
