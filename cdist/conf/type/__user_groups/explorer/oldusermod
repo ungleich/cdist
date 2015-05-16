@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-# 2013-2015 Nico Schottelius (nico-cdist at schottelius.org)
-# 2015 David Hürlimann (david at ungleich.ch)
+# 2015 Heule Daniel (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -18,24 +17,5 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Install required packages 
-#
 
-os=$(cat "$__global/explorer/os")
-
-
-case "$os" in
-    debian)
-        # Debian needs a seperate package
-        __package locales --state present
-    ;;
-    archlinux|suse|ubuntu|centos)
-        :
-    ;;
-    *)
-        echo "Sorry, do not know how to handle os: $os" >&2
-        echo "Please edit the type ${__type##*/} to fix this." >&2
-        exit 1
-    ;;
-esac
+usermod --help | grep -q -- '-A group' && echo true || echo false
