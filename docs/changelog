@@ -1,10 +1,13 @@
 Changelog
 ---------
 
-next:
+3.1.13: 2015-05-16
 	* Type __block: Fix support for non stdin blocks (Dominique Roux)
+	* Type __consul: Install package unzip (Nico Schottelius)
+	* Type __consul: Add source & cksum for 0.5.1 (Nico Schottelius)
 	* Type __consul_agent: Use systemd for Debian 8 (Nico Schottelius)
-	* Type __firewalld_rule: Ensure firewalld is present (David Hürlimann)
+	* Type __firewalld_rule: Ensure firewalld package is present (David Hürlimann)
+	* Type __staged_file: Fix comparision operator (Nico Schottelius)
 
 3.1.12: 2015-03-19
 	* Core: Support object ids '.cdist' (Nico Schottelius)
