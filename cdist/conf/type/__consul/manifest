@@ -43,7 +43,9 @@ if [ ! -d "$version_dir" ]; then
    exit 1
 fi
 
-__staged_file /usr/local/bin/consul \
+__package unzip
+
+require="__package/unzip" __staged_file /usr/local/bin/consul \
    --source "$(cat "$version_dir/source")" \
    --cksum "$(cat "$version_dir/cksum")" \
    --fetch-command 'curl -s -L "%s"' \

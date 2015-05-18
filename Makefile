@@ -35,7 +35,7 @@ TYPEDIR=cdist/conf/type
 
 WEBSRCDIR=docs/web
 
-WEBDIR=$$HOME/www.nico.schottelius.org
+WEBDIR=$$HOME/vcs/www.nico.schottelius.org
 WEBBLOG=$(WEBDIR)/blog
 WEBBASE=$(WEBDIR)/software/cdist
 WEBPAGE=$(WEBBASE).mdwn
