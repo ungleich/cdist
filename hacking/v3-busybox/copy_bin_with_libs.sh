@@ -6,14 +6,20 @@
 
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
-pkg="
+#bin_list="udevadm bash fdisk mount syslinux umount rm mv"
+bin_list="udevadm fdisk"
 
-bin_list="bash fdisk mount syslinux umount rm mv"
+libs=$(mktemp /tmp/cdist-preos-libs.XXXXXXXXXXXXX)
 
-for bin in command_list; do
+for bin in bin_list; do
+
 
 done
 
+rm -f "$libs"
+
+# lfs
+## ldd /bin/$f | sed "s/\t//" | cut -d " " -f1 >> $unsorted
 
 exit 0
 

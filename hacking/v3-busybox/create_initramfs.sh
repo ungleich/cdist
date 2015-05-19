@@ -20,6 +20,8 @@ done
 cd "${initramfs_dir}"
 find . | cpio -H newc -o | gzip
 
+rm -rf "${initramfs_dir}"
+
 exit 0
 
 # TODO:

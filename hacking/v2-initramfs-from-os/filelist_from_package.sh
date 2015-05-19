@@ -8,12 +8,14 @@
           gettext  glibc  grep  gzip  inetutils iproute2  \
           iputils  jfsutils  less  licenses  linux  logrotate  lvm2 \
           man-db man-pages  mdadm  nano  pacman  pciutils   \
-          pcmciautils  perl  procps-ng psmisc  reiserfsprogs        \
+          pcmciautils  procps-ng psmisc  reiserfsprogs        \
           s-nail  sed  shadow  sysfsutils  systemd-sysvcompat  tar  \
-          texinfo  usbutils  util-linux  vi  which  xfsprogs        \
+          usbutils  util-linux  vi  which  xfsprogs        \
     ; do
         pacman -Qlq $pkg | grep -v  \
             -e /usr/share/man/      \
-            -e /usr/share/doc/
+            -e /usr/share/doc/      \
+            -e /usr/include
+
     done
 ) | sort | uniq

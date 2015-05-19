@@ -2,8 +2,13 @@
     - rootfs fix
     - get working to login
     - have sshd enabled
+    - kernel -> initramfs?
+    http://jootamam.net/howto-initramfs-image.htm
+        - busybox!!
 
 - everything into initramfs?
+
+- permission problem on various files below /etc
 
 - Target: 
     - get working iso
