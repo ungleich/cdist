@@ -236,7 +236,7 @@ How to override objects:
 __user foobar --password 'some_fancy_hash' --home /home/foobarexample
 
 # ... many statements and includes in the manifest later ...
-# somewhere in a conditionaly sourced manifest 
+# somewhere in a conditionally sourced manifest
 # (e.g. for example only sourced if a special application is on the target host)
 
 # this leads to an error ...
