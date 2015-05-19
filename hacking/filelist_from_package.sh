@@ -1,7 +1,19 @@
 #!/bin/sh
 
 # Generate filelist excluding stuff that takes only space
-for pkg in bash systemd util-linux openssh; do
-    pacman -Qlq $pkg | grep -v \
-        -e /usr/share/man/
-done
+(
+    for pkg in systemd openssh \
+          bash  bzip2  coreutils  cryptsetup  device-mapper  dhcpcd \
+          diffutils  e2fsprogs  file filesystem  findutils  gawk    \
+          gettext  glibc  grep  gzip  inetutils iproute2  \
+          iputils  jfsutils  less  licenses  linux  logrotate  lvm2 \
+          man-db man-pages  mdadm  nano  pacman  pciutils   \
+          pcmciautils  perl  procps-ng psmisc  reiserfsprogs        \
+          s-nail  sed  shadow  sysfsutils  systemd-sysvcompat  tar  \
+          texinfo  usbutils  util-linux  vi  which  xfsprogs        \
+    ; do
+        pacman -Qlq $pkg | grep -v  \
+            -e /usr/share/man/      \
+            -e /usr/share/doc/
+    done
+) | sort | uniq
