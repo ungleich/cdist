@@ -1,5 +1,8 @@
 #!/bin/sh
 
+#Create all the symlinks to /bin/busybox
+/bin/busybox --install -s
+
 #Mount things needed by this script
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
@@ -7,8 +10,6 @@ mount -t sysfs sysfs /sys
 #Disable kernel messages from popping onto the screen
 echo 0 > /proc/sys/kernel/printk
 
-#Create all the symlinks to /bin/busybox
-busybox --install -s
 
 #Create device nodes
 mknod /dev/null c 1 3

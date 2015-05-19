@@ -10,7 +10,7 @@ fi
 indir=$1; shift
 iso=$1; shift
 
-version=0.3
+version=0.4
 
 out=preos-${version}.iso
 
