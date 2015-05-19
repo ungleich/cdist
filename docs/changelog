@@ -13,6 +13,9 @@ Changelog
 	* Core: Integrate initial install support (Nico Schottelius)
 	* Core: Integrate initial preos support (Nico Schottelius)
 
+next:
+	* Documentation: Fix spelling in manual pages (Dmitry Bogatov)
+
 3.1.13: 2015-05-16
 	* Type __block: Fix support for non stdin blocks (Dominique Roux)
 	* Type __consul: Install package unzip (Nico Schottelius)

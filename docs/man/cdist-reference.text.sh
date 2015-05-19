@@ -84,7 +84,7 @@ confdir/manifest/init::
 
 confdir/manifest/*::
     All other files in this directory are not directly used by cdist, but you
-    can seperate configuration mappings, if you have a lot of code in the
+    can separate configuration mappings, if you have a lot of code in the
     conf/manifest/init file. This may also be helpful to have different admins
     maintain different groups of hosts.
 
@@ -112,10 +112,10 @@ confdir/type/<name>/gencode-remote::
     Used to generate code to be executed on the target host
 
 confdir/type/<name>/parameter/required::
-    Parameters required by type, \n seperated list.
+    Parameters required by type, \n separated list.
 
 confdir/type/<name>/parameter/optional::
-    Parameters optionally accepted by type, \n seperated list.
+    Parameters optionally accepted by type, \n separated list.
 
 confdir/type/<name>/parameter/default/*::
     Default values for optional parameters.
@@ -123,7 +123,7 @@ confdir/type/<name>/parameter/default/*::
     be read from the file confdir/type/<name>/parameter/default/foo.
 
 confdir/type/<name>/parameter/boolean::
-    Boolean parameters accepted by type, \n seperated list.
+    Boolean parameters accepted by type, \n separated list.
 
 confdir/type/<name>/explorer::
     Location of the type specific explorers.
