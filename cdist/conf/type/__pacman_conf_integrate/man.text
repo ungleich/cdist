@@ -1,11 +1,11 @@
-cdist-type__pacman_integrate(7)
-===============================
+cdist-type__pacman_conf_integrate(7)
+====================================
 Dominique Roux <dominique.roux4@gmail.com>
 
 
 NAME
 ----
-cdist-type__pacman_integrate - Integrate default pacman.conf to cdist conform and vice versa
+cdist-type__pacman_conf_integrate - Integrate default pacman.conf to cdist conform and vice versa
 
 
 DESCRIPTION
@@ -28,10 +28,10 @@ EXAMPLES
 
 --------------------------------------------------------------------------------
 # Convert normal to cdist conform
-__pacman_integrate convert
+__pacman_conf_integrate convert
 
 # Convert cdist conform to normal
-__pacman_integrate convert --state absent
+__pacman_conf_integrate convert --state absent
 
 --------------------------------------------------------------------------------
 
