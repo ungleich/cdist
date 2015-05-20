@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013-2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #

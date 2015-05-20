@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -23,6 +23,7 @@
 
 import os
 import shutil
+import tempfile
 
 from cdist import test
 from cdist import core
@@ -35,9 +36,13 @@ import cdist.core.cdist_object
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
-object_base_path = op.join(fixtures, 'object')
 type_base_path = op.join(fixtures, 'type')
 add_conf_dir = op.join(fixtures, 'conf')
+
+expected_object_names = sorted([
+    '__first/man',
+    '__second/on-the',
+    '__third/moon'])
 
 class ConfigRunTestCase(test.CdistTestCase):
 
@@ -54,6 +59,20 @@ class ConfigRunTestCase(test.CdistTestCase):
             target_host=self.target_host,
             base_path=self.local_dir)
 
+        # Setup test objects
+        self.object_base_path = op.join(self.temp_dir, 'object')
+
+        self.objects = []
+        for cdist_object_name in expected_object_names:
+            cdist_type, cdist_object_id = cdist_object_name.split("/", 1)
+            cdist_object = core.CdistObject(core.CdistType(type_base_path, cdist_type), self.object_base_path,
+                self.local.object_marker_name, cdist_object_id)
+            cdist_object.create()
+            self.objects.append(cdist_object)
+
+        self.object_index = dict((o.name, o) for o in self.objects)
+        self.object_names = [o.name for o in self.objects]
+
         self.remote_dir = os.path.join(self.temp_dir, "remote")
         os.mkdir(self.remote_dir)
         self.remote = cdist.exec.remote.Remote(
@@ -62,14 +81,10 @@ class ConfigRunTestCase(test.CdistTestCase):
             remote_exec=self.remote_exec,
             base_path=self.remote_dir)
 
-        self.local.object_path  = object_base_path
+        self.local.object_path  = self.object_base_path
         self.local.type_path    = type_base_path
 
         self.config = cdist.config.Config(self.local, self.remote)
-
-        self.objects = list(core.CdistObject.list_objects(object_base_path, type_base_path))
-        self.object_index = dict((o.name, o) for o in self.objects)
-        self.object_names = [o.name for o in self.objects]
 
     def tearDown(self):
         for o in self.objects:

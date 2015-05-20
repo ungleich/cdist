@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -31,9 +31,6 @@ import cdist.core
 from cdist.util import fsproperty
 
 log = logging.getLogger(__name__)
-
-OBJECT_MARKER = '.cdist'
-
 
 class IllegalObjectIdError(cdist.Error):
     def __init__(self, object_id, message=None):
@@ -66,39 +63,45 @@ class CdistObject(object):
     STATE_RUNNING = "running"
     STATE_DONE = "done"
 
-    def __init__(self, cdist_type, base_path, object_id=''):
+    def __init__(self, cdist_type, base_path, object_marker, object_id):
         self.cdist_type = cdist_type # instance of Type
         self.base_path = base_path
         self.object_id = object_id
+
+        self.object_marker = object_marker
 
         self.validate_object_id()
         self.sanitise_object_id()
 
         self.name = self.join_name(self.cdist_type.name, self.object_id)
-        self.path = os.path.join(self.cdist_type.path, self.object_id, OBJECT_MARKER)
+        self.path = os.path.join(self.cdist_type.path, self.object_id, self.object_marker)
+
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
         self.code_remote_path = os.path.join(self.path, "code-remote")
         self.parameter_path = os.path.join(self.path, "parameter")
 
     @classmethod
-    def list_objects(cls, object_base_path, type_base_path):
+    def list_objects(cls, object_base_path, type_base_path, object_marker):
         """Return a list of object instances"""
-        for object_name in cls.list_object_names(object_base_path):
+        for object_name in cls.list_object_names(object_base_path, object_marker):
             type_name, object_id = cls.split_name(object_name)
-            yield cls(cdist.core.CdistType(type_base_path, type_name), object_base_path, object_id=object_id)
+            yield cls(cdist.core.CdistType(type_base_path, type_name),
+                base_path=object_base_path,
+                object_marker=object_marker,
+                object_id=object_id)
+
+    @classmethod
+    def list_object_names(cls, object_base_path, object_marker):
+        """Return a list of object names"""
+        for path, dirs, files in os.walk(object_base_path):
+            if object_marker in dirs:
+                yield os.path.relpath(path, object_base_path)
 
     @classmethod
     def list_type_names(cls, object_base_path):
         """Return a list of type names"""
         return os.listdir(object_base_path)
-
-    @classmethod
-    def list_object_names(cls, object_base_path):
-        """Return a list of object names"""
-        for path, dirs, files in os.walk(object_base_path):
-            if OBJECT_MARKER in dirs:
-                yield os.path.relpath(path, object_base_path)
 
     @staticmethod
     def split_name(object_name):
@@ -127,8 +130,8 @@ class CdistObject(object):
         """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
         """
         if self.object_id:
-            if OBJECT_MARKER in self.object_id.split(os.sep):
-                raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % OBJECT_MARKER)
+            if self.object_marker in self.object_id.split(os.sep):
+                raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % self.object_marker)
             if '//' in self.object_id:
                 raise IllegalObjectIdError(self.object_id, 'object_id may not contain //')
             if self.object_id == '.':
@@ -155,12 +158,13 @@ class CdistObject(object):
 
         base_path = self.base_path
         type_path = self.cdist_type.base_path
+        object_marker = self.object_marker
 
         type_name, object_id = self.split_name(object_name)
 
         cdist_type = self.cdist_type.__class__(type_path, type_name)
 
-        return self.__class__(cdist_type, base_path, object_id=object_id)
+        return self.__class__(cdist_type, base_path, object_marker, object_id=object_id)
 
     def __repr__(self):
         return '<CdistObject %s>' % self.name

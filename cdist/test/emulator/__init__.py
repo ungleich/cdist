@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014      Daniel Heule     (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -57,9 +57,14 @@ class EmulatorTestCase(test.CdistTestCase):
 
         self.manifest = core.Manifest(self.target_host, self.local)
         self.env = self.manifest.env_initial_manifest(self.script)
+        self.env['__cdist_object_marker'] = self.local.object_marker_name
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
+
+#    def test_missing_object_marker_variable(self):
+#        del self.env['__cdist_object_marker']
+#        self.assertRaises(KeyError, emulator.Emulator, argv, env=self.env)
 
     def test_nonexistent_type_exec(self):
         argv = ['__does-not-exist']
@@ -73,7 +78,7 @@ class EmulatorTestCase(test.CdistTestCase):
 
     def test_illegal_object_id_requirement(self):
         argv = ['__file', '/tmp/foobar']
-        self.env['require'] = '__file/bad/id/with/.cdist/inside'
+        self.env['require'] = "__file/bad/id/with/%s/inside" % self.local.object_marker_name
         emu = emulator.Emulator(argv, env=self.env)
         self.assertRaises(core.IllegalObjectIdError, emu.run)
 
@@ -118,10 +123,10 @@ class EmulatorTestCase(test.CdistTestCase):
         emu.run()
         # now load the objects and verify the require parameter of the objects
         cdist_type = core.CdistType(self.local.type_path, '__planet')
-        erde_object = core.CdistObject(cdist_type, self.local.object_path, 'erde')
-        mars_object = core.CdistObject(cdist_type, self.local.object_path, 'mars')
+        erde_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'erde')
+        mars_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'mars')
         cdist_type = core.CdistType(self.local.type_path, '__file')
-        file_object = core.CdistObject(cdist_type, self.local.object_path, '/tmp/cdisttest')
+        file_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, '/tmp/cdisttest')
         # now test the recorded requirements
         self.assertTrue(len(erde_object.requirements) == 0)
         self.assertEqual(list(mars_object.requirements), ['__planet/erde'])
@@ -150,7 +155,7 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
         initial_manifest = os.path.join(self.local.manifest_path, "init")
         self.manifest.run_initial_manifest(initial_manifest)
         cdist_type = core.CdistType(self.local.type_path, '__saturn')
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, '')
         self.manifest.run_type_manifest(cdist_object)
         expected = ['__planet/Saturn', '__moon/Prometheus']
         self.assertEqual(sorted(cdist_object.autorequire), sorted(expected))
@@ -172,6 +177,7 @@ class OverrideTestCase(test.CdistTestCase):
 
         self.manifest = core.Manifest(self.target_host, self.local)
         self.env = self.manifest.env_initial_manifest(self.script)
+        self.env['__cdist_object_marker'] = self.local.object_marker_name
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -211,6 +217,7 @@ class ArgumentsTestCase(test.CdistTestCase):
 
         self.manifest = core.Manifest(self.target_host, self.local)
         self.env = self.manifest.env_initial_manifest(self.script)
+        self.env['__cdist_object_marker'] = self.local.object_marker_name
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -222,7 +229,7 @@ class ArgumentsTestCase(test.CdistTestCase):
         emu.run()
 
         cdist_type = core.CdistType(self.local.type_path, '__arguments_with_dashes')
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, 'some-id')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'some-id')
         self.assertTrue('with-dash' in cdist_object.parameters)
 
     def test_boolean(self):
@@ -234,7 +241,7 @@ class ArgumentsTestCase(test.CdistTestCase):
         emu.run()
 
         cdist_type = core.CdistType(self.local.type_path, type_name)
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, object_id)
         self.assertTrue('boolean1' in cdist_object.parameters)
         self.assertFalse('boolean2' in cdist_object.parameters)
         # empty file -> True
@@ -242,17 +249,17 @@ class ArgumentsTestCase(test.CdistTestCase):
 
     def test_required_arguments(self):
         """check whether assigning required parameter works"""
+
         type_name = '__arguments_required'
         object_id = 'some-id'
         value = 'some value'
         argv = [type_name, object_id, '--required1', value, '--required2', value]
-#        print(self.env)
         os.environ.update(self.env)
         emu = emulator.Emulator(argv)
         emu.run()
 
         cdist_type = core.CdistType(self.local.type_path, type_name)
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, object_id)
         self.assertTrue('required1' in cdist_object.parameters)
         self.assertTrue('required2' in cdist_object.parameters)
         self.assertEqual(cdist_object.parameters['required1'], value)
@@ -278,7 +285,7 @@ class ArgumentsTestCase(test.CdistTestCase):
         emu.run()
 
         cdist_type = core.CdistType(self.local.type_path, type_name)
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, object_id)
         self.assertTrue('optional1' in cdist_object.parameters)
         self.assertFalse('optional2' in cdist_object.parameters)
         self.assertEqual(cdist_object.parameters['optional1'], value)
@@ -293,7 +300,7 @@ class ArgumentsTestCase(test.CdistTestCase):
         emu.run()
 
         cdist_type = core.CdistType(self.local.type_path, type_name)
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, object_id)
         self.assertTrue('optional1' in cdist_object.parameters)
         self.assertFalse('optional2' in cdist_object.parameters)
         self.assertEqual(cdist_object.parameters['optional1'], value)
@@ -316,10 +323,6 @@ class StdinTestCase(test.CdistTestCase):
 
         self.local.create_files_dirs()
 
-        self.manifest = core.Manifest(
-            target_host=self.target_host,
-            local = self.local)
-
     def tearDown(self):
         os.environ = self.orig_environ
         shutil.rmtree(self.temp_dir)
@@ -340,13 +343,16 @@ class StdinTestCase(test.CdistTestCase):
         object_id = "cdist-test-id"
         argv = [type_name, object_id]
 
-        initial_manifest_path = "/cdist-test/path/that/does/not/exist"
-        env = self.manifest.env_initial_manifest(initial_manifest_path)
+        env = os.environ.copy()
+        env['__cdist_manifest'] = "/cdist-test/path/that/does/not/exist"
+        env['__cdist_object_marker'] = self.local.object_marker_name
+        env['__cdist_type_base_path'] = self.local.type_path
+        env['__global'] = self.local.base_path
 
         ######################################################################
         # Create path where stdin should reside at
         cdist_type = core.CdistType(self.local.type_path, type_name)
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, object_id)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, object_id)
         stdin_out_path = os.path.join(cdist_object.absolute_path, 'stdin')
 
         ######################################################################

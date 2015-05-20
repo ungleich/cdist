@@ -1,0 +1,29 @@
+- locate code that references .cdist
+    - cdist_object.py
+- need to change code that handles objects?
+    - setup object marker
+        exec/local.py
+    - cdist/emulator.py
+        - need to know the marker name
+        - shell.py
+        - test/manifest/__init__.py
+        - core/code.py:
+        - core/manifest.py:
+        - core/manifest.py:
+    - list_object_names() needs to know the marker -- used BY:
+        - list_objects 
+            - cdist/test/cdist_object/__init__.py
+            - cdist/config.py
+        - cdist/test/cdist_object/__init__.py
+
+    - list_object_names
+        - needs to have object_marker
+
+- or modify object code to load name
+- setup a per-run random name
+    - local.py
+- use the per-run random name
+- create test
+
+    def __init__(self, cdist_type, base_path, object_marker=".cdist", object_id=''):
+

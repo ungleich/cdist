@@ -1,0 +1,14 @@
+Change object marker from .cdist to .cdist-TEMPNAME to allow using
+object ids that contain / are .cdist.
+
+Changes required:
+
+    cdist/emulator.py:
+        needs to know suffix/name
+    tests:
+        allow object id named /.cdist
+    tests:
+        many
+    cdist/config.py:
+        have suffix
+

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2014 Daniel Heule (hda at sfs.biz)
 #
@@ -64,9 +64,10 @@ class Emulator(object):
             self.global_path    = self.env['__global']
             self.target_host    = self.env['__target_host']
 
-            # Internally only
+            # Internal variables
             self.object_source  = self.env['__cdist_manifest']
             self.type_base_path = self.env['__cdist_type_base_path']
+            self.object_marker  = self.env['__cdist_object_marker']
 
         except KeyError as e:
             raise MissingRequiredEnvironmentVariableError(e.args[0])
@@ -131,13 +132,16 @@ class Emulator(object):
         self.log.debug('Args: %s' % self.args)
 
     def setup_object(self):
-        # Setup object_id - FIXME: unset / do not setup anymore!
-        if not self.cdist_type.is_singleton:
+        # Setup object - and ensure it is not in args
+        if self.cdist_type.is_singleton:
+            self.object_id = ''
+        else:
             self.object_id = self.args.object_id[0]
             del self.args.object_id
 
         # Instantiate the cdist object we are defining
-        self.cdist_object = core.CdistObject(self.cdist_type, self.object_base_path, self.object_id)
+        self.cdist_object = core.CdistObject(self.cdist_type, 
+            self.object_base_path, self.object_marker, self.object_id)
 
         # Create object with given parameters
         self.parameters = {}
