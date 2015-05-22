@@ -5,6 +5,7 @@ next:
 	* Documentation: Fix spelling in manual pages (Dmitry Bogatov)
 	* New type: __pacman_conf: Manage pacman.conf (Dominique Roux)
 	* New type: __pacman_conf_integrate: cdist compatible pacman.conf (Dominique Roux)
+	* Type __consul: Do not install unused package unzip (Steven Armstrong)
 
 
 3.1.13: 2015-05-16
