@@ -10,7 +10,7 @@ cdist-type__install_generate_fstab - generate /etc/fstab during installation
 
 DESCRIPTION
 -----------
-Generates a /etc/fstab file from information retreived from
+Generates a /etc/fstab file from information retrieved from
 __install_mount definitions.
 
 
