@@ -1,0 +1,93 @@
+# < 0.7.0
+ssl = true
+ssl_no_verify = true
+
+# >= 0.7.0
+ssl {
+   enabled = true
+   verify = false
+}
+
+# >= 0.9.0
+ssl-cert
+ssl-ca-cert
+
+
+
+--------------------------------------------------------------------------------
+### from docs
+
+
+ssl {
+  enabled = true
+  verify = false
+  cert = "/path/to/client/cert.pem"
+  ca_cert = "/path/to/ca/cert.pem"
+}
+
+
+ssl
+   Use HTTPS while talking to Consul. Requires the Consul server to be configured to serve secure connections. The default value is false.
+
+ssl-verify
+   Verify certificates when connecting via SSL. This requires the use of -ssl. The default value is true.
+
+ssl-cert
+   Path to an SSL client certificate to use to authenticate to the consul server. Useful if the consul server "verify_incoming" option is set.
+
+ssl-ca-cert
+   Path to a CA certificate file, containing one or more CA certificates to use to validate the certificate sent by the consul server to us. This is a handy alternative to setting --ssl-verify=false if you are using your own CA.
+
+--------------------------------------------------------------------------------
+
+### example config file from docs
+
+consul = "127.0.0.1:8500"
+token = "abcd1234" // May also be specified via the envvar CONSUL_TOKEN
+retry = "10s"
+max_stale = "10m"
+log_level = "warn"
+pid_file = "/path/to/pid"
+
+vault {
+  address = "https://vault.service.consul:8200"
+  token = "abcd1234" // May also be specified via the envvar VAULT_TOKEN
+  ssl {
+    enabled = true
+    verify = true
+    cert = "/path/to/client/cert.pem"
+    ca_cert = "/path/to/ca/cert.pem"
+  }
+}
+
+
+--auth-username
+--auth-password
+# if any are given enabled = true
+auth {
+  enabled = true
+  username = "test"
+  password = "test"
+}
+
+ssl {
+  enabled = true
+  verify = false
+  cert = "/path/to/client/cert.pem"
+  ca_cert = "/path/to/ca/cert.pem"
+}
+
+syslog {
+  enabled = true
+  facility = "LOCAL5"
+}
+
+template {
+  source = "/path/on/disk/to/template"
+  destination = "/path/on/disk/where/template/will/render"
+  command = "optional command to run when the template is updated"
+}
+
+template {
+  // Multiple template definitions are supported
+}

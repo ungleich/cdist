@@ -1,9 +1,14 @@
-auth
+auth-username
+auth-password
 batch-size
 consul
+log-level
 max-stale
 retry
 state
+ssl-cert
+ssl-ca-cert
+syslog-facility
 token
 version
 wait
