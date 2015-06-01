@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2014-2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -23,7 +24,6 @@ from cdist.core.cdist_type      import CdistType
 from cdist.core.cdist_type      import NoSuchTypeError
 from cdist.core.cdist_object    import CdistObject
 from cdist.core.cdist_object    import IllegalObjectIdError
-from cdist.core.cdist_object    import OBJECT_MARKER
 from cdist.core.explorer        import Explorer
 from cdist.core.manifest        import Manifest
 from cdist.core.code            import Code

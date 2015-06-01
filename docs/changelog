@@ -7,6 +7,7 @@ next:
 	* New type: __pacman_conf_integrate: cdist compatible pacman.conf (Dominique Roux)
 	* Type __consul: Do not install unused package unzip (Steven Armstrong)
 	* Type __consul: Add source & cksum for 0.5.2 (Steven Armstrong)
+	* Core: Support object ids '.cdist' (Nico Schottelius)
 
 
 3.1.13: 2015-05-16
