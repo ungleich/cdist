@@ -47,6 +47,13 @@ destination::
 remote-user::
     Use this user instead of the default "root" for rsync operations.
 
+rsync-opts::
+    Use this option to give rsync options with.
+    See rsync(1) for available options.
+    Only "--" options are supported.
+    Write the options without the beginning "--"
+    Can be specified multiple times.
+
 MESSAGES
 --------
 NONE
@@ -72,6 +79,11 @@ __rsync mystuff \
 __rsync otherstuff \
     --destination /usr/local/bin \
     --source "$__type/files/package2"
+
+# Use rsync option --exclude
+__rsync /tmp/testdir \
+    --source /etc \
+    --rsync-opts exclude=sshd_conf
 
 
 --------------------------------------------------------------------------------

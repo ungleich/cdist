@@ -30,7 +30,7 @@ fi
 set --
 if [ -f "$__object/parameter/rsync-opts" ]; then
     while read opts; do
-        set -- "$@" "$opts"
+        set -- "$@" "--$opts"
     done < $__object/parameter/rsync-opts
 fi
 
