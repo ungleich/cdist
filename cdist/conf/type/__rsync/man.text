@@ -91,6 +91,7 @@ __rsync /tmp/testdir \
 SEE ALSO
 --------
 - cdist-type(7)
+- rsync(1)
 
 
 COPYING
