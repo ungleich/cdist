@@ -85,6 +85,12 @@ __rsync /tmp/testdir \
     --source /etc \
     --rsync-opts exclude=sshd_conf
 
+# Use rsync with multiple options --exclude --dry-run
+__rsync /tmp/testing \
+    --source /home/tester \
+    --rsync-opts exclude=id_rsa \
+    --rsync-opts dry-run
+
 
 --------------------------------------------------------------------------------
 
