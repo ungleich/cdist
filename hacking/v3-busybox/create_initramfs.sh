@@ -18,15 +18,19 @@ for link in sh mount; do
 done
 
 cd "${initramfs_dir}"
-find . | cpio -H newc -o | gzip
 
-rm -rf "${initramfs_dir}"
-
-exit 0
+# Add Arch Linux initramfs with kernel modules included
+zcat /boot/initramfs-linux-fallback.img | cpio -i
 
 # TODO:
-# - Kernel modules
 # - ssh
 # - various mkfs
 # - libs
 
+# Create new initramfs
+find . | cpio -H newc -o | gzip
+
+# echo ${initramfs_dir}
+rm -rf "${initramfs_dir}"
+
+exit 0
