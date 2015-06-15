@@ -47,12 +47,16 @@ destination::
 remote-user::
     Use this user instead of the default "root" for rsync operations.
 
+
+OPTIONAL MULTIPLE PARAMETERS
+----------------------------
 rsync-opts::
     Use this option to give rsync options with.
     See rsync(1) for available options.
     Only "--" options are supported.
     Write the options without the beginning "--"
     Can be specified multiple times.
+
 
 MESSAGES
 --------
