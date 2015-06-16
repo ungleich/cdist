@@ -39,6 +39,7 @@ cp /lib/libnss* "$dir/lib"
 
 # Required by sshd
 mkdir -p "$dir/var/empty"
+chmod 0700 "$dir/var/empty"
 
 #cat << eof > "$dir/etc/shadow"
 #root:x:0:0:root:/root:/bin/bash
