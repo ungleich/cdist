@@ -1,6 +1,7 @@
 #!/bin/sh
-set -ex
+set -e
 
+here=$(pwd -P)
 
 initramfs_dir=$(mktemp -d /tmp/cdist-preos.XXXXXXX)
 # initramfs_dir=$1
@@ -22,10 +23,10 @@ cd "${initramfs_dir}"
 # Add Arch Linux initramfs with kernel modules included
 zcat /boot/initramfs-linux-fallback.img | cpio -i
 
-# TODO:
-# - ssh
-# - various mkfs
-# - libs
+# Add helper binaries
+"$here/copy_bin_with_libs.sh" "$initramfs_dir" >/dev/null 2>&1
+"$here/sshd_config.sh" "$initramfs_dir"
+
 
 # Create new initramfs
 find . | cpio -H newc -o | gzip

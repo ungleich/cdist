@@ -1,17 +1,16 @@
 #!/bin/sh
 
-#Create all the symlinks to /bin/busybox
+# Create all the symlinks to /bin/busybox
 /bin/busybox --install -s
 
-#Mount things needed by this script
+# Mount things needed by this script
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
-#Disable kernel messages from popping onto the screen
+# Disable kernel messages from popping onto the screen
 echo 0 > /proc/sys/kernel/printk
 
-
-#Create device nodes
+# Create device nodes
 mknod /dev/null c 1 3
 mknod /dev/tty c 5 0
 mdev -s
@@ -24,5 +23,10 @@ udevadm trigger --action=add --type=subsystems
 udevadm trigger --action=add --type=devices
 udevadm settle
 
+# /bin/sshd
+
+# Generate keys for sshd
+echo "Generating keys for sshd"
+ssh-keygen -A
 
 exec sh
