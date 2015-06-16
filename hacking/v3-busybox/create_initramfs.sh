@@ -29,7 +29,7 @@ zcat /boot/initramfs-linux-fallback.img | cpio -i
 
 
 # Create new initramfs
-find . | cpio -H newc -o | gzip
+find . | cpio -H newc -R root -o | gzip
 
 # echo ${initramfs_dir}
 rm -rf "${initramfs_dir}"
