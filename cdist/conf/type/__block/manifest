@@ -31,6 +31,6 @@ echo "$prefix" > "$block"
 if [ "$text" = "-" ]; then
    cat "$__object/stdin" >> "$block"
 else
-   cat "$text" >> "$block"
+   echo "$text" >> "$block"
 fi
 echo "$suffix" >> "$block"

@@ -22,11 +22,7 @@
 #
 
 state_is=$(cat "$__object/explorer/state")
-if [ -f "$__object/parameter/state" ]; then
-   state_should="$(cat "$__object/parameter/state")"
-else
-   state_should="present"
-fi
+state_should="$(cat "$__object/parameter/state")"
 
 [ "$state_is" = "$state_should" ] && exit 0
 

@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2015 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -74,7 +75,7 @@ cat << DONE
 verify_cksum() {
    cksum_is="\$(cksum "$stage_file" | cut -d' ' -f1,2)"
    cksum_should="$(cat "$__object/parameter/cksum" | cut -d' ' -f1,2)"
-   if [ "\$cksum_is" == "\$cksum_should" ]; then
+   if [ "\$cksum_is" = "\$cksum_should" ]; then
       return 0
    else
       return 1

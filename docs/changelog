@@ -2,9 +2,35 @@ Changelog
 ---------
 
 next:
+	* Documentation: Fix spelling in manual pages (Dmitry Bogatov)
+	* New type: __pacman_conf: Manage pacman.conf (Dominique Roux)
+	* New type: __pacman_conf_integrate: cdist compatible pacman.conf (Dominique Roux)
+	* Core: Support object ids '.cdist' (Nico Schottelius)
+
+
+3.1.13: 2015-05-16
+	* Type __block: Fix support for non stdin blocks (Dominique Roux)
+	* Type __consul: Install package unzip (Nico Schottelius)
+	* Type __consul: Add source & cksum for 0.5.1 (Nico Schottelius)
+	* Type __consul_agent: Use systemd for Debian 8 (Nico Schottelius)
+	* Type __firewalld_rule: Ensure firewalld package is present (David Hürlimann)
+	* Type __locale: Support CentOS (David Hürlimann)
+	* Type __staged_file: Fix comparision operator (Nico Schottelius)
+	* Type __user_groups: Support old Linux versions (Daniel Heule)
+
+3.1.12: 2015-03-19
+	* Core: Support object ids '.cdist' (Nico Schottelius)
 	* New type: __firewalld_rule (Nico Schottelius)
 	* Type __consul_agent: add support for acl options (Steven Armstrong)
-	* Core: Support object ids '.cdist' (Nico Schottelius)
+	* Type __consul_agent: add support for Debian (Nico Schottelius)
+	* Type __package_apt: Use default parameters (Antoine Catton)
+	* Type __package_luarocks: Use default parameters (Antoine Catton)
+	* Type __package_opkg: Use default parameters (Antoine Catton)
+	* Type __package_pacman: Use default parameters (Antoine Catton)
+	* Type __package_pip: Use default parameters (Antoine Catton)
+	* Type __package_pkg_freebsd: Use default parameters (Antoine Catton)
+	* Type __package_pkg_openbsd: Use default parameters (Antoine Catton)
+	* Type __package_pkgng_openbsd: Use default parameters (Antoine Catton)
 
 3.1.11: 2015-02-27
 	* New type: __staged_file: Manage staged files (Steven Armstrong)
