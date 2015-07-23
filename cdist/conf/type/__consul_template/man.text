@@ -57,6 +57,15 @@ syslog-facility::
    The default value is LOCAL0.
 token::
    the Consul API token.
+vault-address::
+   the location of the Vault instance to query (may be an IP address or FQDN) with port.
+vault-token::
+   the Vault API token.
+vault-ssl-cert::
+   Path to an SSL client certificate to use to authenticate to the vault server.
+vault-ssl-ca-cert::
+   Path to a CA certificate file, containing one or more CA certificates to
+   use to validate the certificate sent by the vault server to us.
 version::
    which version of consul-template to install. See ./files/versions for a list of
    supported versions. Defaults to the latest known version.
@@ -74,6 +83,10 @@ ssl-no-verify::
    ignore certificate warnings. Only used if ssl is enabled.
 syslog::
    Send log output to syslog (in addition to stdout and stderr).
+vault-ssl::
+   use HTTPS while talking to Vault. Requires the Vault server to be configured to serve secure connections.
+vault-ssl-no-verify::
+   ignore certificate warnings. Only used if vault is enabled.
 
 
 EXAMPLES

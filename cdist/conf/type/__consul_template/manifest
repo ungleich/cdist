@@ -77,17 +77,64 @@ require="__directory/etc/consul-template" \
 (
 for param in $(ls "$__object/parameter/"); do
    case "$param" in
-      ssl|ssl-no-verify) # boolean
-         key="$(echo "$param" | tr '-' '_')"
-         printf '%s = true\n' "$key"
+      auth-password|state|ssl-*|syslog-*|version|vault-token|vault-ssl*) continue ;;
+      auth-username)
+         printf 'auth {\n'
+         printf '  enabled = true\n'
+         printf '  username = "%s"\n' "$(cat "$__object/parameter/auth-username")"
+         if [ -f "$__object/parameter/auth-password" ]; then
+            printf '  password = %s\n' "$(cat "$__object/parameter/auth-password")"
+         fi
+         printf '}\n'
       ;;
-      auth|batch-size|consul|max-stale|retry|token|wait)
-         key="$(echo "$param" | tr '-' '_')"
-         printf '%s = "%s"\n' "$key" "$(cat "$__object/parameter/$param")"
+      ssl)
+         printf 'ssl {\n'
+         printf '  enabled = true\n'
+         if [ -f "$__object/parameter/ssl-no-verify" ]; then
+            printf '  verify = false\n'
+         fi
+         if [ -f "$__object/parameter/ssl-cert" ]; then
+            printf '  cert = "%s"\n' "$(cat "$__object/parameter/ssl-cert")"
+         fi
+         if [ -f "$__object/parameter/ssl-ca-cert" ]; then
+            printf '  ca_cert = "%s"\n' "$(cat "$__object/parameter/ssl-ca-cert")"
+         fi
+         printf '}\n'
+      ;;
+      syslog)
+         printf 'syslog {\n'
+         printf '  enabled = true\n'
+         if [ -f "$__object/parameter/syslog-facility" ]; then
+            printf '  facility = "%s"\n' "$(cat "$__object/parameter/syslog-facility")"
+         fi
+         printf '}\n'
+      ;;
+      vault-address)
+         printf 'vault {\n'
+         printf '  address = "%s"\n' "$(cat "$__object/parameter/vault-address")"
+         if [ -f "$__object/parameter/vault-token" ]; then
+            printf '  token = "%s"\n' "$(cat "$__object/parameter/vault-token")"
+         fi
+         if [ -f "$__object/parameter/vault-ssl" ]; then
+         printf '  ssl {\n'
+         printf '    enabled = true\n'
+         if [ -f "$__object/parameter/vault-ssl-no-verify" ]; then
+            printf '    verify = false\n'
+         fi
+         if [ -f "$__object/parameter/vault-ssl-cert" ]; then
+            printf '    cert = "%s"\n' "$(cat "$__object/parameter/vault-ssl-cert")"
+         fi
+         if [ -f "$__object/parameter/vault-ssl-ca-cert" ]; then
+            printf '    ca_cert = "%s"\n' "$(cat "$__object/parameter/vault-ssl-ca-cert")"
+         fi
+         printf '  }\n'
+         fi
+         printf '}\n'
       ;;
       *)
-         # ignore unknown parameters
-         :
+         # string key=value parameters
+         key="$(echo "$param" | tr '-' '_')"
+         printf '%s = "%s"\n' "$key" "$(cat "$__object/parameter/$param")"
       ;;
    esac
 done
