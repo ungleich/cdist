@@ -10,5 +10,9 @@ ssl-cert
 ssl-ca-cert
 syslog-facility
 token
+vault-address
+vault-token
+vault-ssl-cert
+vault-ssl-ca-cert
 version
 wait
