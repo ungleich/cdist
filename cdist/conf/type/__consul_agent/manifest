@@ -160,10 +160,15 @@ init_systemd()
 
 init_upstart()
 {
-    __file /etc/init/consul.conf \
+    __file /etc/init/consul-prepare.conf \
         --owner root --group root --mode 0644 \
         --state "$state" \
-        --source "$__type/files/consul.upstart"
+        --source "$__type/files/consul-prepare.upstart"
+    require="__file/etc/init/consul-prepare.conf" \
+        __file /etc/init/consul.conf \
+            --owner root --group root --mode 0644 \
+            --state "$state" \
+            --source "$__type/files/consul.upstart"
     require="__file/etc/init/consul.conf" __start_on_boot consul
 }
 

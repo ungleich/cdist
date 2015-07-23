@@ -7,6 +7,11 @@ After=basic.target network.target
 User=consul
 Group=consul
 Environment="GOMAXPROCS=2"
+# Run ExecStartPre with root-permissions
+PermissionsStartOnly=true
+ExecStartPre=/usr/bin/mkdir -p /var/run/consul
+ExecStartPre=/usr/bin/chown consul:consul /var/run/consul
+ExecStartPre=/usr/bin/chmod 2770 /var/run/consul
 ExecStart=/usr/local/bin/consul agent -config-dir /etc/consul/conf.d
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process

@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2015 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -29,6 +30,10 @@ CONSUL=/usr/local/bin/consul
 CONFIG=/etc/$NAME/conf.d
 PID_FILE=/var/run/$NAME/pidfile
 
+mkdir -p /var/run/$NAME
+chown consul:consul /var/run/$NAME
+chmod 2770 /var/run/$NAME
+
 export PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
 
 case "$1" in
@@ -51,7 +56,7 @@ case "$1" in
             log_end_msg 1 || true
         fi
     ;;
-    
+
     reload)
         log_daemon_msg "Reloading consul agent" "consul" || true
         if start-stop-daemon --stop --signal HUP --quiet --oknodo --pidfile $PID_FILE --exec $CONSUL; then
