@@ -38,7 +38,7 @@ start() {
 
 stop() {
    echo -n "Shutting down $NAME: "
-   "$CONSUL" leave
+   killproc -p "$PID_FILE" $NAME
    retcode=$?
    rm -f /var/lock/subsys/$NAME
    return $retcode
@@ -88,7 +88,7 @@ case "$1" in
       fi
    ;;
    *)
-      echo "Usage: $NAME {start|stop|status|reload|restart}"
+      echo "Usage: $NAME {start|stop|status|reload|restart|condrestart|info}"
       exit 1
    ;;
 esac
