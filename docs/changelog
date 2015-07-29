@@ -6,6 +6,7 @@ next:
 	* New type: __pacman_conf: Manage pacman.conf (Dominique Roux)
 	* New type: __pacman_conf_integrate: cdist compatible pacman.conf (Dominique Roux)
 	* Core: Support object ids '.cdist' (Nico Schottelius)
+	* Type __apt_norecommends: Also setup autoremove options (Dmitry Bogatov)
 
 
 3.1.13: 2015-05-16
