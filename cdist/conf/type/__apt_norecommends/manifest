@@ -30,6 +30,8 @@ case "$os" in
          --source - << DONE
 APT::Install-Recommends "0";
 APT::Install-Suggests "0";
+APT::AutoRemove::RecommendsImportant "0";
+APT::AutoRemove::SuggestsImportant "0";
 DONE
    ;;
    *)
