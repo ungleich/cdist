@@ -21,8 +21,14 @@
 user="$(cat "$__object/parameter/user" 2>/dev/null || echo "$__object_id")"
 state_should="$(cat "$__object/parameter/state")"
 oldusermod="$(cat "$__object/explorer/oldusermod")"
+os=$(cat "$__global/explorer/os")
 
-if [ "$oldusermod" = "true" ]; then
+if [ "$os" = "netbsd" ]; then
+	# NetBSD does not have a command to remove a user from a group
+	oldusermod="true"
+	addparam="-G"
+	delparam=";;#"
+elif [ "$oldusermod" = "true" ]; then
         addparam="-A"
         delparam="-R"
 else
