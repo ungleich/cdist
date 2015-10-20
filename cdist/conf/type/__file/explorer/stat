@@ -25,7 +25,7 @@ destination="/$__object_id"
 
 os=$("$__explorer/os")
 case "$os" in
-   "freebsd"|"openbsd")
+   "freebsd"|"netbsd"|"openbsd")
       # FIXME: should be something like this based on man page, but can not test
       stat -f "type: %ST
 owner: %Du %Su
