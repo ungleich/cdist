@@ -109,6 +109,12 @@ for param in $(ls "$__object/parameter/"); do
          # remove trailing ,
          printf '   ,"retry_join": [%s]\n' "${retry_join%*,}"
       ;;
+      retry-join-wan)
+         # join multiple parameters into json array over wan
+         retry_join_wan="$(awk '{printf "\""$1"\","}' "$__object/parameter/retry-join-wan")"
+         # remove trailing ,
+         printf '   ,"retry_join_wan": [%s]\n' "${retry_join_wan%*,}"
+      ;;
       bootstrap-expect)
          # integer key=value parameters
          key="$(echo "$param" | tr '-' '_')"
