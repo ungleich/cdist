@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011-2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2015 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -32,20 +32,22 @@ exec > $install_script
 
 # Generate script to install bootloader on distro
 printf '#!/bin/sh -l\n'
-printf 'grub-install "%s"\n' "$device"
 
 case "$target_os" in
    ubuntu|debian)
+      printf 'grub-install "%s"\n' "$device"
       printf 'update-grub\n'
    ;;
    archlinux)
       # bugfix/workarround: rebuild initramfs
       # FIXME: doesn't belong here
+      printf 'grub-install "%s"\n' "$device"
       printf 'mkinitcpio -p linux\n'
       printf 'grub-mkconfig -o /boot/grub/grub.cfg\n'
    ;;
    centos)
-      :
+      printf 'grub2-install "%s"\n' "$device"
+      printf 'grub2-mkconfig --output=/boot/grub2/grub.cfg\n'
    ;;
    *)
       echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
