@@ -29,7 +29,7 @@ if [ -f "$__object/parameter/owner" ]; then
     ownergroup=$(cat "$__object/parameter/owner")
 fi
 if [ -f "$__object/parameter/group" ]; then
-    ownergroup=":$(cat "$__object/parameter/group")"
+    ownergroup="${ownergroup}:$(cat "$__object/parameter/group")"
 fi
 
 if [ "$ownergroup" ]; then
