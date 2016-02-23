@@ -51,7 +51,7 @@ case "$($__explorer/os)" in
    owl)
       cat /etc/owl-release
    ;;
-   redhat|centos)
+   redhat|centos|mitel)
       cat /etc/redhat-release
    ;;
    slackware)
