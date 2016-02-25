@@ -24,13 +24,19 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-auth::
-   specify a username (and password) for basic authentication.
+auth-username::
+   specify a username for basic authentication.
+auth-password::
+   specify a password for basic authentication.
 batch-size::
    the size of the batch when polling multiple dependencies.
 consul::
    the location of the Consul instance to query (may be an IP address or FQDN) with port.
    Defaults to 'localhost:8500'.
+log-level::
+   The log level for output. This applies to the stdout/stderr logging as well
+   as syslog logging (if enabled). Valid values are "debug", "info", "warn",
+   and "err". The default value is "warn".
 max-stale::
    the maximum staleness of a query. If specified, Consul will distribute work among all
    servers instead of just the leader.
@@ -39,8 +45,27 @@ retry::
    with the API.
 state::
    either 'present' or 'absent'. Defaults to 'present'
+ssl-cert::
+   Path to an SSL client certificate to use to authenticate to the consul server.
+   Useful if the consul server "verify_incoming" option is set.
+ssl-ca-cert::
+   Path to a CA certificate file, containing one or more CA certificates to
+   use to validate the certificate sent by the consul server to us. This is a
+   handy alternative to setting --ssl-no-verify if you are using your own CA.
+syslog-facility::
+   The facility to use when sending to syslog. This requires the use of --syslog.
+   The default value is LOCAL0.
 token::
    the Consul API token.
+vault-address::
+   the location of the Vault instance to query (may be an IP address or FQDN) with port.
+vault-token::
+   the Vault API token.
+vault-ssl-cert::
+   Path to an SSL client certificate to use to authenticate to the vault server.
+vault-ssl-ca-cert::
+   Path to a CA certificate file, containing one or more CA certificates to
+   use to validate the certificate sent by the vault server to us.
 version::
    which version of consul-template to install. See ./files/versions for a list of
    supported versions. Defaults to the latest known version.
@@ -56,6 +81,12 @@ ssl::
    use HTTPS while talking to Consul. Requires the Consul server to be configured to serve secure connections.
 ssl-no-verify::
    ignore certificate warnings. Only used if ssl is enabled.
+syslog::
+   Send log output to syslog (in addition to stdout and stderr).
+vault-ssl::
+   use HTTPS while talking to Vault. Requires the Vault server to be configured to serve secure connections.
+vault-ssl-no-verify::
+   ignore certificate warnings. Only used if vault is enabled.
 
 
 EXAMPLES

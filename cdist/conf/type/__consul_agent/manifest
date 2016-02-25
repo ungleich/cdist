@@ -132,10 +132,10 @@ if [ -f "$__object/parameter/json-config" ]; then
    if [ "$json_config" = "-" ]; then
       json_config="$__object/stdin"
    fi
-   printf ','
-   # remove trailing ,
-   json=$(cat "$json_config")
-   echo "${json%*,}"
+   # remove leading and trailing whitespace and commas from first and last line
+   # indent each line with 3 spaces for consistency
+   json=$(sed -e 's/^[ \t]*/   /' -e '1s/^[ \t,]*//' -e '$s/[ \t,]*$//' "$json_config")
+   printf '   ,%s\n' "$json"
 fi
 echo "}"
 ) | \
@@ -166,10 +166,15 @@ init_systemd()
 
 init_upstart()
 {
-    __file /etc/init/consul.conf \
+    __file /etc/init/consul-prepare.conf \
         --owner root --group root --mode 0644 \
         --state "$state" \
-        --source "$__type/files/consul.upstart"
+        --source "$__type/files/consul-prepare.upstart"
+    require="__file/etc/init/consul-prepare.conf" \
+        __file /etc/init/consul.conf \
+            --owner root --group root --mode 0644 \
+            --state "$state" \
+            --source "$__type/files/consul.upstart"
     require="__file/etc/init/consul.conf" __start_on_boot consul
 }
 

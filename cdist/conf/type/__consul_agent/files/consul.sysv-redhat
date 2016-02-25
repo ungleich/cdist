@@ -22,7 +22,9 @@ LOG_FILE=/var/log/$NAME
 export GOMAXPROCS=${GOMAXPROCS:-2}
 
 mkdir -p /var/run/$NAME
-chown consul /var/run/$NAME
+chown consul:consul /var/run/$NAME
+chmod 2770 /var/run/$NAME
+
 
 start() {
    echo -n "Starting $NAME: "
@@ -36,7 +38,7 @@ start() {
 
 stop() {
    echo -n "Shutting down $NAME: "
-   "$CONSUL" leave
+   killproc -p "$PID_FILE" $NAME
    retcode=$?
    rm -f /var/lock/subsys/$NAME
    return $retcode
@@ -86,7 +88,7 @@ case "$1" in
       fi
    ;;
    *)
-      echo "Usage: $NAME {start|stop|status|reload|restart}"
+      echo "Usage: $NAME {start|stop|status|reload|restart|condrestart|info}"
       exit 1
    ;;
 esac

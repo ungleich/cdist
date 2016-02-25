@@ -1,0 +1,9 @@
+start on starting consul
+
+task
+
+script
+   mkdir -p /var/run/consul
+   chown consul:consul /var/run/consul
+   chmod 2770 /var/run/consul
+end script
