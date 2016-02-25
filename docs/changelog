@@ -7,6 +7,12 @@ next:
 	* New type: __pacman_conf_integrate: cdist compatible pacman.conf (Dominique Roux)
 	* Core: Support object ids '.cdist' (Nico Schottelius)
 	* Type __apt_norecommends: Also setup autoremove options (Dmitry Bogatov)
+	* Type __user_groups: Add NetBSD support (Jonathan A. Kollasch)
+	* Type __timezone: Add NetBSD support (Jonathan A. Kollasch)
+	* Type __ccollect_source: Add NetBSD support (Jonathan A. Kollasch)
+	* Type __directory: Add NetBSD support (Jonathan A. Kollasch)
+	* Type __file: Add NetBSD support (Jonathan A. Kollasch)
+	* Type __group: Add NetBSD support (Jonathan A. Kollasch)
 
 
 3.1.13: 2015-05-16
