@@ -13,6 +13,7 @@ next:
 	* Type __directory: Add NetBSD support (Jonathan A. Kollasch)
 	* Type __file: Add NetBSD support (Jonathan A. Kollasch)
 	* Type __group: Add NetBSD support (Jonathan A. Kollasch)
+	* Type __consul: Add new consul versions (Nico Schottelius)
 
 
 3.1.13: 2015-05-16
