@@ -41,10 +41,8 @@ BANNER = """
    "P'        ""         ""
 """
 
-SSH_MUX_OPTS = ("-o ControlPath=~/.ssh/master-%l-%r@%h:%p"
-    " -o ControlMaster=auto -o ControlPersist=125")
-REMOTE_COPY = "scp -o User=root -q " + SSH_MUX_OPTS
-REMOTE_EXEC = "ssh -o User=root -q " + SSH_MUX_OPTS
+REMOTE_COPY = "scp -o User=root -q"
+REMOTE_EXEC = "ssh -o User=root -q"
 
 class Error(Exception):
     """Base exception class for this project"""
