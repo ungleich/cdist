@@ -22,6 +22,8 @@
 #
 
 def inspect_ssh_mux_opts():
+    import subprocess
+
     """Inspect whether or not ssh supports multiplexing options"""
     wanted_mux_opts = {
         "ControlPath":"~/.ssh/master-%l-%r@%h:%p",
@@ -38,13 +40,13 @@ def inspect_ssh_mux_opts():
     for x in check:
         try:
             subprocess.check_output("ssh -o {}".format(x),
-                    stderr=subprocess.STDOUT)
+                    stderr=subprocess.STDOUT, shell=True)
         except subprocess.CalledProcessError as e:
             foo = e.output.decode().lower()
             if not "bad configuration option" in foo:
                 for o in check[x]:
                     mux_opts[o] = wanted_mux_opts[o]
-    foo = ["-o {}={}".format(x, mux_opts[x]) for x in mux_opts]
+    foo = [" -o {}={}".format(x, mux_opts[x]) for x in mux_opts]
     return " ".join(foo)
 
 def commandline():
