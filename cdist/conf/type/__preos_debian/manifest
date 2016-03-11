@@ -1,0 +1,110 @@
+#!/bin/sh
+##
+## 2016 Darko Poljak (darko.poljak at gmail.com)
+##
+## This file is part of cdist.
+##
+## cdist is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## cdist is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with cdist. If not, see <http://www.gnu.org/licenses/>.
+
+if [ -f "$__object/parameter/pxe" ]; then
+    if [ ! -f "$__object/parameter/pxebootdir" ]; then
+        echo "ERROR: pxebootdir parameter required for pxe" >&2
+        exit 1
+    fi
+    pxe_boot_dir="$(cat "$__object/parameter/pxebootdir")"
+    if [ -z "${pxe_boot_dir}" ] ; then
+        echo "ERROR: pxebootdir parameter required for pxe" >&2
+        exit 1
+    fi
+fi
+ 
+############
+# bootstrap
+if [ -f "$__object/parameter/bootstrap" ]; then
+    arch="$(cat "$__object/parameter/arch")"
+    suite="$(cat "$__object/parameter/suite")"
+    target_dir="/$__object_id"
+
+    echo debootstrap --include=openssh-server --arch=\"${arch}\" ${suite} ${target_dir}
+
+    #chroot ${target_dir} /usr/bin/apt-get update
+    # cleanup chroot
+    #for action in autoclean clean autoremove; do
+    #    chroot ${target_dir} /usr/bin/apt-get ${action}
+    #done
+fi
+
+#########
+# config
+if [ -f "$__object/parameter/config" ]; then
+    for pkg in \
+        file \
+        linux-image-amd64 \
+        openssh-server curl \
+        syslinux grub2 \
+        gdisk util-linux lvm2 mdadm \
+        btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
+        __package $pkg --state present
+    done
+
+    # initramfs requires /init
+    __link /init --source /sbin/init --type symbolic
+
+    __file /etc/network/interfaces --source - --mode 0644 << eof
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+allow-hotplug eth0
+iface eth0 inet dhcp
+eof
+
+    # Steven found this out - coyping it 1:1
+    # fix the bloody 'stdin: is not a tty' problem
+    __line /root/.profile --line 'mesg n' --state absent
+
+    __hostname preos
+fi
+
+if [ -f "$__object/parameter/pxe" ]; then
+    ############
+    # create pxe
+    # pxe_boot_dir set in check at the begining
+
+    __directory ${pxe_boot_dir} --parents --recursive --mode 0755 --state present
+    # cp -L "${target_dir}/boot/vmlinuz-*" "${pxe_boot_dir}/kernel"
+    for x in ${target_dir}/boot/vmlinuz-* ; do
+        __file ${pxe_boot_dir}/kernel --source ${x} --mode 0640 --state present
+    done
+
+    curr_dir=$(pwd)
+    cd ${target_dir}
+    # not POSIX compliant, but this is ok because this PreOS is debian
+    find . -print0 | cpio --null -o --format=newc | gzip -9 > ${pxe_boot_dir}/initramfs
+    cd ${curr_dir}
+
+    configdir="${pxe_boot_dir}/pxelinux.cfg"
+    __directory ${configdir} --parents --recursive --mode 0755 --state present
+    __file ${configdir}/default --source - << eof
+DEFAULT preos
+LABEL preos
+KERNEL kernel
+INITRD initramfs
+eof
+    # cp -L ${target_dir}/usr/lib/syslinux/pxelinux.0 ${pxe_boot_dir}/pxelinux.0
+    __file ${pxe_boot_dir}/pxelinux.0 --source ${target_dir}/usr/lib/syslinux/pxelinux.0 --mode 0640 --state present
+fi
+

@@ -1,0 +1,5 @@
+case "$__target_host" in
+    preos-debian)
+        __preos_debian ./test-preos --bootstrap
+    ;;
+esac
