@@ -195,7 +195,7 @@ class Local(object):
         except subprocess.CalledProcessError:
             raise cdist.Error("Command failed: " + " ".join(command))
         except OSError as error:
-            raise cdist.Error(" ".join(*args) + ": " + error.args[1])
+            raise cdist.Error(" ".join((str(x) for x in error.args)))
         finally:
             if message_prefix:
                 message.merge_messages()
