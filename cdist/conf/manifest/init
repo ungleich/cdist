@@ -1,5 +1,5 @@
 case "$__target_host" in
     preos-debian)
-        __preos_debian ./test-preos --bootstrap
+        __preos_debian /opt/preos_debian --bootstrap --configure --pxe --pxebootdir /opt/preos_debian/pxe
     ;;
 esac
