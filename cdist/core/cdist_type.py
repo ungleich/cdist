@@ -107,6 +107,11 @@ class CdistType(object):
         return os.path.isfile(os.path.join(self.absolute_path, "install"))
 
     @property
+    def is_local(self):
+        """Check whether a type is used only locally."""
+        return os.path.isfile(os.path.join(self.absolute_path, "local"))
+
+    @property
     def explorers(self):
         """Return a list of available explorers"""
         if not self.__explorers:

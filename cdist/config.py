@@ -37,12 +37,13 @@ from cdist import core
 class Config(object):
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, local, remote, dry_run=False):
+    def __init__(self, local, remote, dry_run=False, locally=False):
 
         self.local      = local
         self.remote     = remote
         self.log        = logging.getLogger(self.local.target_host)
         self.dry_run    = dry_run
+        self.locally = locally
 
         self.explorer = core.Explorer(self.local.target_host, self.local, self.remote)
         self.manifest = core.Manifest(self.local.target_host, self.local)
@@ -51,7 +52,8 @@ class Config(object):
     def _init_files_dirs(self):
         """Prepare files and directories for the run"""
         self.local.create_files_dirs()
-        self.remote.create_files_dirs()
+        if not self.locally:
+            self.remote.create_files_dirs()
 
     @classmethod
     def commandline(cls, args):
@@ -126,7 +128,7 @@ class Config(object):
                 remote_exec=args.remote_exec,
                 remote_copy=args.remote_copy)
     
-            c = cls(local, remote, dry_run=args.dry_run)
+            c = cls(local, remote, dry_run=args.dry_run, locally=args.locally)
             c.run()
     
         except cdist.Error as e:
@@ -151,7 +153,8 @@ class Config(object):
 
         self._init_files_dirs()
 
-        self.explorer.run_global_explorers(self.local.global_explorer_out_path)
+        if not self.locally:
+            self.explorer.run_global_explorers(self.local.global_explorer_out_path)
         self.manifest.run_initial_manifest(self.local.initial_manifest)
         self.iterate_until_finished()
 
@@ -164,8 +167,15 @@ class Config(object):
         for cdist_object in core.CdistObject.list_objects(self.local.object_path,
                                                          self.local.type_path,
                                                          self.local.object_marker_name):
-            if cdist_object.cdist_type.is_install:
+            if self.locally:
+                if cdist_object.cdist_type.is_local:
+                    yield cdist_object
+                else:
+                    self.log.debug("Running in local mode, ignoring non-local object: {0}".format(cdist_object))
+            elif cdist_object.cdist_type.is_install:
                 self.log.debug("Running in config mode, ignoring install object: {0}".format(cdist_object))
+            elif cdist_object.cdist_type.is_local:
+                self.log.debug("Running in config mode, ignoring local object: {0}".format(cdist_object))
             else:
                 yield cdist_object
 
@@ -240,7 +250,8 @@ class Config(object):
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
         self.log.info("Running manifest and explorers for " + cdist_object.name)
-        self.explorer.run_type_explorers(cdist_object)
+        if not self.locally:
+            self.explorer.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.state = core.CdistObject.STATE_PREPARED
 
@@ -256,7 +267,8 @@ class Config(object):
         # Generate
         self.log.info("Generating code for %s" % (cdist_object.name))
         cdist_object.code_local = self.code.run_gencode_local(cdist_object)
-        cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
+        if not self.locally:
+            cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
         if cdist_object.code_local or cdist_object.code_remote:
             cdist_object.changed = True
 
