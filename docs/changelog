@@ -9,6 +9,8 @@ next:
 	* Type __consul: Add source & cksum for 0.5.2 (Steven Armstrong)
 	* Core: Support object ids '.cdist' (Nico Schottelius)
 	* Type __apt_norecommends: Also setup autoremove options (Dmitry Bogatov)
+   * Type __apt_ppa: Do not install legacy package python-software-properties
+	(Steven Armstrong)
 
 
 3.1.13: 2015-05-16
