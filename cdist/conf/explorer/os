@@ -77,6 +77,11 @@ if grep -q ^Fedora /etc/redhat-release 2>/dev/null; then
    exit 0
 fi
 
+if grep -q ^Mitel /etc/redhat-release 2>/dev/null; then
+   echo mitel
+   exit 0
+fi
+
 if [ -f /etc/redhat-release ]; then
    echo redhat
    exit 0
