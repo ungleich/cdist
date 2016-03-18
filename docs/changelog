@@ -16,6 +16,7 @@ next:
 	* Type __file: Add NetBSD support (Jonathan A. Kollasch)
 	* Type __group: Add NetBSD support (Jonathan A. Kollasch)
 	* Type __consul: Add new consul versions (Nico Schottelius)
+	* Type __apt_ppa: Do not install legacy package python-software-properties (Steven Armstrong)
 
 
 3.1.13: 2015-05-16
