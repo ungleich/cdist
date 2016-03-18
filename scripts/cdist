@@ -92,6 +92,10 @@ def commandline():
             cdist.REMOTE_EXEC += MUX_OPTS
         if not has_env_remote_copy:
             cdist.REMOTE_COPY += MUX_OPTS
+    if has_env_remote_exec:
+        cdist.REMOTE_EXEC = os.environ['CDIST_REMOTE_EXEC']
+    if has_env_remote_copy:
+        cdist.REMOTE_COPY = os.environ['CDIST_REMOTE_COPY']
 
     parser['config'] = parser['sub'].add_parser('config',
         parents=[parser['loglevel']])
