@@ -249,6 +249,12 @@ CDIST_OVERRIDE::
 CDIST_ORDER_DEPENDENCY::
     Create dependencies based on the execution order (see cdist-manifest(7))
 
+CDIST_REMOTE_EXEC::
+    Use this command for remote execution (should behave like ssh)
+
+CDIST_REMOTE_COPY::
+    Use this command for remote copy (should behave like scp)
+
 SEE ALSO
 --------
 - cdist(1)
