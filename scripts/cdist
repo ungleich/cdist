@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
-# 2016 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -20,34 +19,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-
-def inspect_ssh_mux_opts():
-    import subprocess
-
-    """Inspect whether or not ssh supports multiplexing options"""
-    wanted_mux_opts = {
-        "ControlPath":"~/.ssh/master-%l-%r@%h:%p",
-        "ControlMaster":"auto",
-        "ControlPersist":"125",
-    }
-    # if checked key option is present then this assumes
-    # all options in value are present
-    check = {
-        "ControlMaster": ("ControlMaster", "ControlPath"),
-        "ControlPersist": ("ControlPersist",),
-    }
-    mux_opts = {}
-    for x in check:
-        try:
-            subprocess.check_output("ssh -o {}".format(x),
-                    stderr=subprocess.STDOUT, shell=True)
-        except subprocess.CalledProcessError as e:
-            foo = e.output.decode().lower()
-            if not "bad configuration option" in foo:
-                for o in check[x]:
-                    mux_opts[o] = wanted_mux_opts[o]
-    foo = [" -o {}={}".format(x, mux_opts[x]) for x in mux_opts]
-    return " ".join(foo)
 
 def commandline():
     """Parse command line"""
@@ -82,11 +53,6 @@ def commandline():
     parser['banner'].set_defaults(func=cdist.banner.banner)
 
     # Config
-    # inspect multiplexing options for default remote copy/exec scp/ssh
-    MUX_OPTS = inspect_ssh_mux_opts()
-    cdist.REMOTE_EXEC += MUX_OPTS
-    cdist.REMOTE_COPY += MUX_OPTS
-
     parser['config'] = parser['sub'].add_parser('config',
         parents=[parser['loglevel']])
     parser['config'].add_argument('host', nargs='+',
