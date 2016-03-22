@@ -79,24 +79,6 @@ def commandline():
     parser['banner'].set_defaults(func=cdist.banner.banner)
 
     # Config
-    # inspect multiplexing options for default remote copy/exec scp/ssh
-    # but not if env vars are present
-    has_env_remote_exec = "CDIST_REMOTE_EXEC" in os.environ
-    has_env_remote_copy = "CDIST_REMOTE_COPY" in os.environ
-    if not has_env_remote_exec or not has_env_remote_copy:
-        control_path_dir = tempfile.mkdtemp(prefix="cdist.control.path")
-        import atexit
-        atexit.register(lambda: shutil.rmtree(control_path_dir))
-        MUX_OPTS = inspect_ssh_mux_opts(control_path_dir)
-        if not has_env_remote_exec:
-            cdist.REMOTE_EXEC += MUX_OPTS
-        if not has_env_remote_copy:
-            cdist.REMOTE_COPY += MUX_OPTS
-    if has_env_remote_exec:
-        cdist.REMOTE_EXEC = os.environ['CDIST_REMOTE_EXEC']
-    if has_env_remote_copy:
-        cdist.REMOTE_COPY = os.environ['CDIST_REMOTE_COPY']
-
     parser['config'] = parser['sub'].add_parser('config',
         parents=[parser['loglevel']])
     parser['config'].add_argument('host', nargs='+',
@@ -117,14 +99,17 @@ def commandline():
     parser['config'].add_argument('-s', '--sequential',
          help='Operate on multiple hosts sequentially (default)',
          action='store_false', dest='parallel')
+    # remote-copy and remote-exec defaults are environment variables
+    # if set; if not then None - these will be futher handled after
+    # parsing to determine implementation default
     parser['config'].add_argument('--remote-copy',
          help='Command to use for remote copy (should behave like scp)',
          action='store', dest='remote_copy',
-         default=cdist.REMOTE_COPY)
+         default=os.environ.get('CDIST_REMOTE_COPY'))
     parser['config'].add_argument('--remote-exec',
          help='Command to use for remote execution (should behave like ssh)',
          action='store', dest='remote_exec',
-         default=cdist.REMOTE_EXEC)
+         default=os.environ.get('CDIST_REMOTE_EXEC'))
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
 
     # Shell
@@ -145,6 +130,21 @@ def commandline():
         logging.root.setLevel(logging.INFO)
     if args.debug:
         logging.root.setLevel(logging.DEBUG)
+    args_dict = vars(args)
+    # if command with remote_copy and remote_exec params
+    if 'remote_copy' in args_dict and 'remote_exec' in args_dict:
+        # if remote-exec and/or remote-copy args are None then user
+        # didn't specify command line options nor env vars:
+        # inspect multiplexing options for default cdist.REMOTE_COPY/EXEC
+        if args_dict['remote_copy'] is None or args_dict['remote_exec'] is None:
+            control_path_dir = tempfile.mkdtemp(prefix="cdist.control.path")
+            import atexit
+            atexit.register(lambda: shutil.rmtree(control_path_dir))
+            mux_opts = inspect_ssh_mux_opts(control_path_dir)
+            if args_dict['remote_exec'] is None:
+                args.remote_exec = cdist.REMOTE_EXEC + mux_opts
+            if args_dict['remote_copy'] is None:
+                args.remote_copy = cdist.REMOTE_COPY + mux_opts
 
     log.debug(args)
     log.info("version %s" % cdist.VERSION)
