@@ -27,10 +27,8 @@ uname_s="$(uname -s)"
 case "$uname_s" in
     Linux|FreeBSD)
         ps -o comm= -p 1 || true
-        exit 0
     ;;
     *)
-        echo "init exlorer needs to be implemented for $os" >&2
-        exit 1
+        echo "unknown"
     ;;
 esac
