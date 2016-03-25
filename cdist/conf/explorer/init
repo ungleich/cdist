@@ -29,6 +29,7 @@ case "$uname_s" in
         ps -o comm= -p 1 || true
     ;;
     *)
-        echo "unknown"
+        # return a empty string as unknown value
+        echo ""
     ;;
 esac
