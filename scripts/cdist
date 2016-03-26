@@ -133,11 +133,16 @@ def commandline():
     args_dict = vars(args)
     # if command with remote_copy and remote_exec params
     if 'remote_copy' in args_dict and 'remote_exec' in args_dict:
+        # if out_path is not set then create temp dir here so
+        # Local uses it for base_path and ssh mux socket is
+        # created in it.
+        if args_dict['out_path'] is None:
+            args.out_path = tempfile.mkdtemp()
         # if remote-exec and/or remote-copy args are None then user
         # didn't specify command line options nor env vars:
         # inspect multiplexing options for default cdist.REMOTE_COPY/EXEC
         if args_dict['remote_copy'] is None or args_dict['remote_exec'] is None:
-            control_path_dir = tempfile.mkdtemp(prefix="cdist.control.path")
+            control_path_dir = args.out_path
             import atexit
             atexit.register(lambda: shutil.rmtree(control_path_dir))
             mux_opts = inspect_ssh_mux_opts(control_path_dir)
