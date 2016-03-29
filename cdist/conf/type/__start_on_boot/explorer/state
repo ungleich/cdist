@@ -24,47 +24,51 @@
 
 os=$("$__explorer/os")
 runlevel=$("$__explorer/runlevel")
+init=$("$__explorer/init")
 target_runlevel="$(cat "$__object/parameter/target_runlevel")"
 name="$__object_id"
 
-case "$os" in
-    archlinux)
-        state=$(systemctl is-enabled "$name" >/dev/null 2>&1 \
-            && echo present \
-            || echo absent)
-    ;;
+if [ "$init" == 'systemd' ]; then
+    # this handles ALL linux distros with systemd
+    # e.g. archlinux, gentoo, new RHEL and SLES versions
+    state=$(systemctl is-enabled "$name" >/dev/null 2>&1 \
+        && echo present \
+        || echo absent)
 
-    debian|openwrt)
-        state="present"
-        [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
-    ;;
-    ubuntu)
-        state="absent"
-        [ -f "/etc/rc$runlevel.d/S"??"$name" ] && state="present"
-        [ -f "/etc/init/${name}.conf" ] && state="present"
-    ;;
+else
+    case "$os" in
+        debian|openwrt)
+            state="present"
+            [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
+        ;;
+        ubuntu)
+            state="absent"
+            [ -f "/etc/rc$runlevel.d/S"??"$name" ] && state="present"
+            [ -f "/etc/init/${name}.conf" ] && state="present"
+        ;;
 
-    amazon|centos|fedora|owl|redhat)
-        state=$(chkconfig --level "$runlevel" "$name" || echo absent)
-        [ "$state" ] || state="present"
-    ;;
-    suse)
-        # check for target if set, usable for boot. services in runlevel B
-        if [ "$target_runlevel" != 'default' ]; then
-            runlevel="$target_runlevel"
-        fi
-        # suses chkconfig has the same name, but works different ...
-        state=$(chkconfig --check "$name" "$runlevel" || echo absent)
-        [ "$state" ] || state="present"
-    ;;
-    gentoo)
-        state="present"
-        [ -f "/etc/runlevels/${target_runlevel}/${name}" ] || state="absent"
-    ;;
-    *)
-       echo "Unsupported os: $os" >&2
-       exit 1
-    ;;
-esac
+        amazon|centos|fedora|owl|redhat)
+            state=$(chkconfig --level "$runlevel" "$name" || echo absent)
+            [ "$state" ] || state="present"
+        ;;
+        suse)
+            # check for target if set, usable for boot. services in runlevel B
+            if [ "$target_runlevel" != 'default' ]; then
+                runlevel="$target_runlevel"
+            fi
+            # suses chkconfig has the same name, but works different ...
+            state=$(chkconfig --check "$name" "$runlevel" || echo absent)
+            [ "$state" ] || state="present"
+        ;;
+        gentoo)
+            state="present"
+            [ -f "/etc/runlevels/${target_runlevel}/${name}" ] || state="absent"
+        ;;
+        *)
+           echo "Unsupported os: $os" >&2
+           exit 1
+        ;;
+    esac
+fi
 
 echo $state
