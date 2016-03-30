@@ -1,3 +1,5 @@
+#!/bin/sh
+
 if grep -q "^__file/etc/iptables.d/" "$__messages_in"; then
     echo /etc/init.d/iptables restart
 fi
