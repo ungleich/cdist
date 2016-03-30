@@ -130,12 +130,29 @@ class Remote(object):
         # FIXME: replace this by -o SendEnv name -o SendEnv name ... to ssh?
         # can't pass environment to remote side, so prepend command with
         # variable declarations
+
+        # cdist command prepended with variable assignments expects
+        # posix shell (bourne, bash) at the remote as user default shell.
+        # If remote user shell isn't poxis shell, but for e.g. csh/tcsh
+        # then these var assignments are not var assignments for this
+        # remote shell, it tries to execute it as a command and fails.
+        # So really do this by default:
+        # /bin/sh -c 'export <var assignments>; command'
+        # so that constructed remote command isn't dependent on remote
+        # shell. Do this only if env is not None. env breaks this.
+        # Explicitly use /bin/sh, because var assignments assume poxis
+        # shell already.
+        # This leaves the posibility to write script that needs to be run
+        # remotely in e.g. csh and setting up CDIST_REMOTE_SHELL to e.g.
+        # /bin/csh will execute this script in the right way.
         if env:
-            remote_env = ["%s=%s" % item for item in env.items()]
-            cmd.extend(remote_env)
-
-        cmd.extend(command)
-
+            cmd.append("/bin/sh")
+            cmd.append("-c")
+            remote_env = [" export %s=%s;" % item for item in env.items()]
+            string_cmd = " ".join(remote_env) + " ".join(command)
+            cmd.append(string_cmd)
+        else:
+            cmd.extend(command)
         return self._run_command(cmd, env=env, return_output=return_output)
 
     def _run_command(self, command, env=None, return_output=False):
