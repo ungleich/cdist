@@ -22,7 +22,7 @@ state=$(cat $__object/parameter/state 2>/dev/null)
 
 path="/etc/"
 
-if [ "${state}" == "present" ]; then
+if [ "${state}" = "present" ]; then
     __file /etc/pacman.conf\
         --owner root --group root --mode 644 --source $__type/files/pacman.conf.cdist
 
@@ -35,7 +35,7 @@ if [ "${state}" == "present" ]; then
     __file /etc/pacman.d/plain_file_empty_placeholder\
         --owner root --group root --mode 644
 
-elif [ "${state}" == "absent" ]; then
+elif [ "${state}" = "absent" ]; then
 
     __file /etc/pacman.conf\
         --owner root --group root --mode 644 --source $__type/files/pacman.conf.pacman

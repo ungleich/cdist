@@ -2,6 +2,10 @@ Changelog
 ---------
 
 next:
+	* Core: Add CDIST_REMOTE_COPY/EXEC env variables and multiplexing options for default scp/ssh (Darko Poljak)
+	* Types: Remove bashisms in scripts (Darko Poljak)
+	* Core: Fix bug in remote command with environment (Darko Poljak)
+	* Core: Fix bug in local code execution (Darko Poljak)
 	* Documentation: Fix spelling in manual pages (Dmitry Bogatov)
 	* New type: __pacman_conf: Manage pacman.conf (Dominique Roux)
 	* New type: __pacman_conf_integrate: cdist compatible pacman.conf (Dominique Roux)
@@ -16,6 +20,7 @@ next:
 	* Type __file: Add NetBSD support (Jonathan A. Kollasch)
 	* Type __group: Add NetBSD support (Jonathan A. Kollasch)
 	* Type __consul: Add new consul versions (Nico Schottelius)
+	* Type __apt_ppa: Do not install legacy package python-software-properties (Steven Armstrong)
 
 
 3.1.13: 2015-05-16

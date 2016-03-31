@@ -42,7 +42,7 @@ case "$ptype" in
         zypper search --match-exact --installed-only --type "$ptype" "$name" | grep -E '^i' | cut -d " " -f 3 || true
     ;;
     *)
-        echo "unknown ptype in __package_zypper explorer" &>2
+        echo "unknown ptype in __package_zypper explorer" >&2
         exit 1
     ;;
 esac

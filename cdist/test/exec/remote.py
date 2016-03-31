@@ -39,7 +39,7 @@ class RemoteTestCase(test.CdistTestCase):
         user = getpass.getuser()
         remote_exec = "ssh -o User=%s -q" % user
         remote_copy = "scp -o User=%s -q" % user
-        self.remote = remote.Remote(self.target_host, self.base_path, remote_exec, remote_copy)
+        self.remote = remote.Remote(self.target_host, base_path=self.base_path, remote_exec=remote_exec, remote_copy=remote_copy)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -125,7 +125,7 @@ class RemoteTestCase(test.CdistTestCase):
         os.chmod(remote_exec_path, 0o755)
         remote_exec = remote_exec_path
         remote_copy = "echo"
-        r = remote.Remote(self.target_host, self.base_path, remote_exec, remote_copy)
+        r = remote.Remote(self.target_host, base_path=self.base_path, remote_exec=remote_exec, remote_copy=remote_copy)
         self.assertEqual(r.run('/bin/true', return_output=True), "%s\n" % self.target_host)
 
     def test_run_script_target_host_in_env(self):
@@ -135,8 +135,33 @@ class RemoteTestCase(test.CdistTestCase):
         os.chmod(remote_exec_path, 0o755)
         remote_exec = remote_exec_path
         remote_copy = "echo"
-        r = remote.Remote(self.target_host, self.base_path, remote_exec, remote_copy)
+        r = remote.Remote(self.target_host, base_path=self.base_path, remote_exec=remote_exec, remote_copy=remote_copy)
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", "/bin/true"])
         self.assertEqual(r.run_script(script, return_output=True), "%s\n" % self.target_host)
+
+    def test_run_script_with_env_target_host_in_env(self):
+        handle, script = self.mkstemp(dir=self.temp_dir)
+        with os.fdopen(handle, "w") as fd:
+            fd.writelines(["#!/bin/sh\n", 'if [ "$__object" ]; then echo $__object; else echo no_env; fi\n'])
+        os.chmod(script, 0o755)
+        handle, remote_exec_path = self.mkstemp(dir=self.temp_dir)
+        with os.fdopen(handle, 'w') as fd:
+            fd.writelines(["#!/bin/sh\n", 'shift; cmd=$1; shift; $cmd "$@"\n'])
+        os.chmod(remote_exec_path, 0o755)
+        remote_exec = remote_exec_path
+        remote_copy = "echo"
+        r = remote.Remote(self.target_host, base_path=self.base_path, remote_exec=remote_exec, remote_copy=remote_copy)
+        output = r.run_script(script, return_output=True)
+        self.assertEqual(output, "no_env\n")
+        env = {
+            '__object': 'test_object',
+        }
+        output = r.run_script(script, env=env, return_output=True)
+        self.assertEqual(output, "test_object\n")
+
+if __name__ == '__main__':
+    import unittest
+
+    unittest.main()
