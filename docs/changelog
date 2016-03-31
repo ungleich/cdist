@@ -2,6 +2,9 @@ Changelog
 ---------
 
 next:
+	* Types: Remove bashisms in scripts (Darko Poljak)
+	* Core: Fix bug in remote command with environment (Darko Poljak)
+	* Core: Fix bug in local code execution (Darko Poljak)
 	* Documentation: Fix spelling in manual pages (Dmitry Bogatov)
 	* New type: __pacman_conf: Manage pacman.conf (Dominique Roux)
 	* New type: __pacman_conf_integrate: cdist compatible pacman.conf (Dominique Roux)
