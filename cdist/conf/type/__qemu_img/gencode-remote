@@ -1,3 +1,5 @@
+#!/bin/sh
+#
 ################################################################################
 # State: absent is handled by manifest - we need only to do stuff if image is
 # not existing and state != absent

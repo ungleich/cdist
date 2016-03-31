@@ -28,7 +28,7 @@ init=$("$__explorer/init")
 target_runlevel="$(cat "$__object/parameter/target_runlevel")"
 name="$__object_id"
 
-if [ "$init" == 'systemd' ]; then
+if [ "$init" = 'systemd' ]; then
     # this handles ALL linux distros with systemd
     # e.g. archlinux, gentoo, new RHEL and SLES versions
     state=$(systemctl is-enabled "$name" >/dev/null 2>&1 \

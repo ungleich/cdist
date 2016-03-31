@@ -1,3 +1,5 @@
+#!/bin/sh
+#
 # 2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.

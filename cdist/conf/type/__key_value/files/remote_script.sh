@@ -1,3 +1,5 @@
+#!/bin/sh
+
 export key="$(cat "$__object/parameter/key" 2>/dev/null \
    || echo "$__object_id")"
 export state="$(cat "$__object/parameter/state")"

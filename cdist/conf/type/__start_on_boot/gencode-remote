@@ -34,7 +34,7 @@ name="$__object_id"
 
 case "$state_should" in
     present)
-        if [ "$init" == 'systemd' ]; then
+        if [ "$init" = 'systemd' ]; then
             # this handles ALL linux distros with systemd
             # e.g. archlinux, gentoo in some cases, new RHEL and SLES versions
             echo "systemctl -q enable \"$name\""
@@ -85,7 +85,7 @@ case "$state_should" in
     ;;
 
     absent)
-        if [ "$init" == 'systemd' ]; then
+        if [ "$init" = 'systemd' ]; then
             # this handles ALL linux distros with systemd
             # e.g. archlinux, gentoo in some cases, new RHEL and SLES versions
             echo "systemctl -q disable \"$name\""
