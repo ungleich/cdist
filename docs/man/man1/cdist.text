@@ -138,6 +138,11 @@ CDIST_LOCAL_SHELL::
 CDIST_REMOTE_SHELL::
     Selects shell for remote scirpt execution, defaults to /bin/sh
 
+CDIST_REMOTE_EXEC::
+    Use this command for remote execution (should behave like ssh)
+
+CDIST_REMOTE_COPY::
+    Use this command for remote copy (should behave like scp)
 
 EXIT STATUS
 -----------
