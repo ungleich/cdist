@@ -155,9 +155,16 @@ class RemoteTestCase(test.CdistTestCase):
         r = remote.Remote(self.target_host, base_path=self.base_path, remote_exec=remote_exec, remote_copy=remote_copy)
         output = r.run_script(script, return_output=True)
         self.assertEqual(output, "no_env\n")
+
+        handle, remote_exec_path = self.mkstemp(dir=self.temp_dir)
+        with os.fdopen(handle, 'w') as fd:
+            fd.writelines(["#!/bin/sh\n", 'shift; cmd=$1; eval $cmd\n'])
+        os.chmod(remote_exec_path, 0o755)
+        remote_exec = remote_exec_path
         env = {
             '__object': 'test_object',
         }
+        r = remote.Remote(self.target_host, base_path=self.base_path, remote_exec=remote_exec, remote_copy=remote_copy)
         output = r.run_script(script, env=env, return_output=True)
         self.assertEqual(output, "test_object\n")
 
