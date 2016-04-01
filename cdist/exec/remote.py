@@ -146,10 +146,9 @@ class Remote(object):
         # remotely in e.g. csh and setting up CDIST_REMOTE_SHELL to e.g.
         # /bin/csh will execute this script in the right way.
         if env:
-            cmd.append("/bin/sh")
-            cmd.append("-c")
             remote_env = [" export %s=%s;" % item for item in env.items()]
-            string_cmd = " ".join(remote_env) + " ".join(command)
+            string_cmd = ("/bin/sh -c '" + " ".join(remote_env)
+                + " ".join(command) + "'")
             cmd.append(string_cmd)
         else:
             cmd.extend(command)
