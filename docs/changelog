@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Core: Fix bug with parallel hosts operation when output path is specifed (Darko Poljak)
 	* Core: Add CDIST_REMOTE_COPY/EXEC env variables and multiplexing options for default scp/ssh (Darko Poljak)
 	* Types: Remove bashisms in scripts (Darko Poljak)
 	* Core: Fix bug in remote command with environment (Darko Poljak)

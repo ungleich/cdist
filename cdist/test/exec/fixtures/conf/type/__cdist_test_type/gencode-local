@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "echo __target_host: $__target_host"
+echo "echo __global: $__global"
+echo "echo __type: $__type"
+echo "echo __object: $__object"
+echo "echo __object_id: $__object_id"
+echo "echo __object_name: $__object_name"

@@ -2,6 +2,7 @@
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2016 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -51,9 +52,18 @@ class Local(object):
 
         # FIXME: stopped: create base that does not require moving later
         if base_path:
-            self.base_path = base_path
+            base_path_parent = base_path
         else:
-            self.base_path = tempfile.mkdtemp()
+            base_path_parent = tempfile.mkdtemp()
+            import atexit
+            atexit.register(lambda: shutil.rmtree(base_path_parent))
+        self.hostdir = self._hostdir()
+        self.base_path = os.path.join(base_path_parent, self.hostdir)
+
+        self._init_log()
+        self._init_permissions()
+
+        self.mkdir(self.base_path)
 
         # FIXME: as well
         self._init_cache_dir(None)
@@ -63,8 +73,6 @@ class Local(object):
 
         self._add_conf_dirs = add_conf_dirs
 
-        self._init_log()
-        self._init_permissions()
         self._init_paths()
         self._init_object_marker()
         self._init_conf_dirs()
@@ -79,6 +87,13 @@ class Local(object):
             return os.path.join(os.environ['HOME'], ".cdist")
         else:
             return None
+
+    def _hostdir(self):
+        if os.path.isabs(self.target_host):
+            hostdir = self.target_host[1:]
+        else:
+            hostdir = self.target_host
+        return hostdir
 
     def _init_log(self):
         self.log = logging.getLogger(self.target_host)
@@ -210,13 +225,9 @@ class Local(object):
 
         return self.run(command=command, env=env, return_output=return_output, message_prefix=message_prefix)
 
-    def save_cache(self):
-        if os.path.isabs(self.target_host):
-            hostdir = self.target_host[1:]
-        else:
-            hostdir = self.target_host
 
-        destination = os.path.join(self.cache_path, hostdir)
+    def save_cache(self):
+        destination = os.path.join(self.cache_path, self.hostdir)
         self.log.debug("Saving " + self.base_path + " to " + destination)
 
         try:

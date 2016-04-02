@@ -2,6 +2,7 @@
 #
 # 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2016 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -35,17 +36,21 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, "conf")
 
+bin_true = "/usr/bin/true"
+bin_false = "/usr/bin/false"
+
 class LocalTestCase(test.CdistTestCase):
 
     def setUp(self):
 
         target_host = 'localhost'
         self.temp_dir = self.mkdtemp()
-        self.out_path = self.temp_dir
+        self.out_parent_path = self.temp_dir
+        self.out_path = op.join(self.out_parent_path, target_host)
 
         self.local = local.Local(
             target_host=target_host,
-            out_path=self.out_path,
+            base_path=self.out_parent_path,
             exec_path=test.cdist_exec_path
         )
 
@@ -63,7 +68,7 @@ class LocalTestCase(test.CdistTestCase):
         self.assertEqual(self.local.conf_path, os.path.join(self.out_path, "conf"))
 
     def test_out_path(self):
-        self.assertEqual(self.local.out_path, self.out_path)
+        self.assertEqual(self.local.base_path, self.out_path)
 
     def test_bin_path(self):
         self.assertEqual(self.local.bin_path, os.path.join(self.out_path, "bin"))
@@ -94,7 +99,7 @@ class LocalTestCase(test.CdistTestCase):
 
         link_test_local = local.Local(
             target_host='localhost',
-            out_path=self.out_path,
+            base_path=self.out_parent_path,
             exec_path=test.cdist_exec_path,
         )
 
@@ -111,7 +116,7 @@ class LocalTestCase(test.CdistTestCase):
 
         link_test_local = local.Local(
             target_host='localhost',
-            out_path=self.out_path,
+            base_path=self.out_parent_path,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir]
         )
@@ -131,7 +136,7 @@ class LocalTestCase(test.CdistTestCase):
 
         link_test_local = local.Local(
             target_host='localhost',
-            out_path=self.out_path,
+            base_path=self.out_parent_path,
             exec_path=test.cdist_exec_path,
         )
 
@@ -144,21 +149,21 @@ class LocalTestCase(test.CdistTestCase):
     ### other tests
 
     def test_run_success(self):
-        self.local.run(['/bin/true'])
+        self.local.run([bin_true])
 
     def test_run_fail(self):
-        self.assertRaises(cdist.Error, self.local.run, ['/bin/false'])
+        self.assertRaises(cdist.Error, self.local.run, [bin_false])
 
     def test_run_script_success(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
-            fd.writelines(["#!/bin/sh\n", "/bin/true"])
+            fd.writelines(["#!/bin/sh\n", bin_true])
         self.local.run_script(script)
 
     def test_run_script_fail(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
-            fd.writelines(["#!/bin/sh\n", "/bin/false"])
+            fd.writelines(["#!/bin/sh\n", bin_false])
         self.assertRaises(cdist.Error, self.local.run_script, script)
 
     def test_run_script_get_output(self):
@@ -180,6 +185,11 @@ class LocalTestCase(test.CdistTestCase):
 
     def test_create_files_dirs(self):
         self.local.create_files_dirs()
-        self.assertTrue(os.path.isdir(self.local.out_path))
+        self.assertTrue(os.path.isdir(self.local.base_path))
         self.assertTrue(os.path.isdir(self.local.bin_path))
         self.assertTrue(os.path.isdir(self.local.conf_path))
+
+if __name__ == "__main__":
+    import unittest
+
+    unittest.main()
