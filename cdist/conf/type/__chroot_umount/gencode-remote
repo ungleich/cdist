@@ -26,7 +26,9 @@ umount -l "${chroot}/dev/pts"
 umount -l "${chroot}/dev"
 umount -l "${chroot}/sys"
 umount -l "${chroot}/proc"
-rm -f "${chroot}/etc/resolv.conf"
+if mountpoint -q "${chroot}/etc/resolv.conf"; then
+   umount "${chroot}/etc/resolv.conf"
+fi
 if [ -d "${chroot}/etc/resolvconf/resolv.conf.d" ]; then
    # ensure /etc/resolvconf/resolv.conf.d/tail is not linked to \
    # e.g. /etc/resolvconf/resolv.conf.d/original
