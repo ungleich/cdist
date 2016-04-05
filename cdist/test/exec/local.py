@@ -36,8 +36,8 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, "conf")
 
-bin_true = "/usr/bin/true"
-bin_false = "/usr/bin/false"
+bin_true = "true"
+bin_false = "false"
 
 class LocalTestCase(test.CdistTestCase):
 
