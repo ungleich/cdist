@@ -61,8 +61,6 @@ case "$state_should" in
 
                 amazon|centos|fedora|owl|redhat|suse)
                     echo chkconfig \"$name\" on
-                            echo "Unsupported version $os_version of $os" >&2
-                            exit 1
                 ;;
 
                 openwrt)
