@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2016 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -40,12 +41,49 @@ else
     pip="pip"
 fi
 
+runasparam="$__object/parameter/runas"
+if [ -f "$runasparam" ]
+then
+    runas=$(cat "$runasparam")
+    has_sudo=$(cat "$__object/explorer/sudo")
+    if [ "$has_sudo" = "yes" ]
+    then
+        runas_cmd="sudo"
+    else
+        has_su=$(cat "$__object/explorer/su")
+        if [ "$has_su" = "yes" ]
+        then
+            runas_cmd="su"
+        else
+            runas_cmd=""
+        fi
+    fi
+else
+    runas_cmd=""
+fi
+
 case "$state_should" in
     present)
-        echo $pip install -q "$name"
+        if [ "$runas_cmd" = "sudo" ]
+        then
+            echo sudo -H -u $runas $pip install -q "$name"
+        elif [ "$runas_cmd" = "su" ]
+        then
+            echo su $runas -c \"$pip install -q "$name"\"
+        else
+            echo $pip install -q "$name"
+        fi
     ;;
     absent)
-        echo $pip uninstall -q -y "$name"
+        if [ "$runas_cmd" = "sudo" ]
+        then
+            echo sudo -H -u $runas $pip uninstall -q -y "$name"
+        elif [ "$runas_cmd" = "su" ]
+        then
+            echo su $runas -c \"$pip uninstall -q -y "$name"\"
+        else
+            echo $pip uninstall -q -y "$name"
+        fi
     ;;
     *)
         echo "Unknown state: $state_should" >&2

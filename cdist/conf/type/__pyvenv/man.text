@@ -1,0 +1,76 @@
+﻿cdist-type__pyvenv(7)
+==================
+Darko Poljak <darko.poljak--@--gmail.com>
+
+
+NAME
+----
+cdist-type__pyvenv - Create or remove python virtualenv
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to create or remove python virtualenv.
+It assumes pip and virtualenv are already installed. Concrete packages
+or installation procedures depend on concrete OS and/or OS
+version/distribution.
+Ensure this in your init manifest as in the following example:
+--------------------------------------------------------------------------------
+case "$__target_host" in
+    localhost)
+        __package python3-pip --state present
+        require="__package/python3-pip" __package_pip virtualenv --pip pip3 --state present
+        require="__package/python3-pip __package_pip/virtualenv" __pyvenv /home/darko/testenv --owner darko --group darko --mode 740 --state present
+    ;;
+--------------------------------------------------------------------------------
+
+
+REQUIRED PARAMETERS
+-------------------
+None
+
+OPTIONAL PARAMETERS
+-------------------
+state::
+    Either "present" or "absent", defaults to "present"
+
+group::
+   Group to chgrp to.
+
+mode::
+   Unix permissions, suitable for chmod.
+
+owner::
+   User to chown to.
+
+python::
+    Use specific python interpreter for creating virtualenv.
+    The default is the interpreter that virtualenv was installed with.
+
+venvparams::
+    virtualenv specific parameters to pass to virtualenv invocation.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__pyvenv /home/services/djangoenv
+
+# Create python virtualenv for user foo using specific python interpreter.
+__pyvenv /home/foo/fooenv --group foo --user foo --python python2.6
+
+# Create python virtualenv with specific parameters.
+__pyvenv /home/services/djangoenv --venvparams "--relocatable --system-site-packages"
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2016 Darko Poljak. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

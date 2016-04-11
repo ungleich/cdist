@@ -30,6 +30,11 @@ pip::
 state::
     Either "present" or "absent", defaults to "present" 
 
+runas::
+    Run pip as specified user. By default it runs as root.
+    It uses sudo or su, whichever it founds first, respectively.
+    If no sudo nor su is present then pip is run by default.
+
 
 EXAMPLES
 --------
@@ -40,6 +45,9 @@ __package_pip pyro --state present
 
 # Use pip in a virtualenv located at /root/shinken_virtualenv
 __package_pip pyro --state present --pip /root/shinken_virtualenv/bin/pip
+
+# Use pip in a virtualenv located at /foo/shinken_virtualenv as user foo
+__package_pip pyro --state present --pip /foo/shinken_virtualenv/bin/pip --runas foo
 --------------------------------------------------------------------------------
 
 
