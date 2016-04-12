@@ -37,7 +37,7 @@ if [ "$init" = 'systemd' ]; then
 
 else
     case "$os" in
-        debian|openwrt)
+        debian|openwrt|devuan)
             state="present"
             [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
         ;;

@@ -22,7 +22,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   ubuntu|debian|archlinux|suse|centos)
+   ubuntu|debian|archlinux|suse|centos|devuan)
       __package postfix --state present
    ;;
    *)

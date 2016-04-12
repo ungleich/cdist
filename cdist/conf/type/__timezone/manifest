@@ -26,7 +26,7 @@ timezone="$__object_id"
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-    archlinux|debian|ubuntu)
+    archlinux|debian|ubuntu|devuan)
         __package tzdata
         export require="__package/tzdata"
     ;;
