@@ -24,7 +24,7 @@ timezone="$__object_id"
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   ubuntu|debian)
+   ubuntu|debian|devuan)
       echo "echo \"$timezone\" > /etc/timezone"
    ;;
 esac

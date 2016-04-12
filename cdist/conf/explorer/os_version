@@ -33,6 +33,9 @@ case "$($__explorer/os)" in
    debian)
       cat /etc/debian_version
    ;;
+   devuan)
+      cat /etc/devuan_version
+   ;;
    fedora)
       cat /etc/fedora-release
    ;;

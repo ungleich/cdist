@@ -22,8 +22,8 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-    debian|ubuntu)
-    
+    debian|ubuntu|devuan)
+
         # Debian and Ubuntu need to be updated,
         # as seen in /etc/init.d/bootlogs
         echo "uname -snrvm > /var/run/motd"
