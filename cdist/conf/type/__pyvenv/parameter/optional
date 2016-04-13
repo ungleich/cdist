@@ -3,3 +3,4 @@ group
 owner
 mode
 venvparams
+pyvenv
