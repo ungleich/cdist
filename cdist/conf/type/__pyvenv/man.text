@@ -19,8 +19,10 @@ Ensure this for e.g. in your init manifest as in the following example:
 case "$__target_host" in
     localhost)
         __package python3-venv --state present
-        require="__package/python3-venv" __pyvenv /home/darko/testenv --owner darko --group darko --mode 740 --state present
+        require="__package/python3-venv" __pyvenv /home/darko/testenv --pyvenv "pyvenv-3.4" --owner darko --group darko --mode 740 --state present
+        require="__pyvenv/home/darko/testenv" __package_pip docopt --pip /home/darko/testenv/bin/pip --runas darko --state present
     ;;
+esac
 --------------------------------------------------------------------------------
 
 
