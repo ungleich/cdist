@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# It assumes pip and virtualenv are already installed. Concrete packages
+# It assumes python >= 3.3 is already installed. Concrete packages
 # or installation procedures depend on concrete OS and/or OS
 # version/distribution.
 

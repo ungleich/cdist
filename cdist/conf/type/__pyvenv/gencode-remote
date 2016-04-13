@@ -30,13 +30,6 @@ destination="/$__object_id"
 owner="$(cat "$__object/parameter/owner")"
 group="$(cat "$__object/parameter/group")"
 mode="$(cat "$__object/parameter/mode")"
-python="$(cat "$__object/parameter/python")"
-if [ "$python" ]
-then
-    python_opt="-p $python"
-else
-    python_opt=""
-fi
 venvparams="$(cat "$__object/parameter/venvparams")"
 
 [  "$state_should" = "$state_is" -a \
@@ -46,9 +39,8 @@ venvparams="$(cat "$__object/parameter/venvparams")"
 
 case $state_should in
     present)
-
         if [ "$state_should" != "$state_is" ]; then
-            echo virtualenv "$python_opt" $venvparams "$destination"
+            echo pyvenv $venvparams "$destination"
         fi
         if [ \( -n "$owner" -a "$owner_is" != "$owner" \) -o \
              \( -n "$group" -a "$group_is" != "$group" \) ]; then
