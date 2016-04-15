@@ -20,8 +20,9 @@
 # This explorer returns script code string for running a command with sudo.
 # If no sudo is found then it returns empty string.
 # It uses two arguments, first user and the second command to run.
-# If the result string is assigned to foo it is used as:
-# $ $foo user command
+# If the result string is assigned to foo it can be used in code
+# generation as:
+# echo "$foo user command"
 #
 
 which sudo > /dev/null 2>&1

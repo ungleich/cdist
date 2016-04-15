@@ -23,8 +23,9 @@
 # If no su nor sudo is found then it returns string script code to run
 # bare command.
 # It uses two arguments, first user and the second command to run.
-# If the result string is assigned to foo it is used as:
-# $ $foo user command
+# If the result string is assigned to foo it can be used in code
+# generation as:
+# echo "$foo user command"
 #
 
 sudo_func() {
