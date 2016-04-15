@@ -2,7 +2,7 @@ Changelog
 ---------
 
 next:
-    * Types: Add global explorers su, sudo and sucmd (Darko Poljak)
+	* Types: Add global explorers su, sudo and sucmd (Darko Poljak)
 	* Type __package_pip: Add support for running as specified user (useful for pip in venv) (Darko Poljak)
 	* New type: __pyvenv: Manage python virtualenv (Darko Poljak)
 	* Core: Add CDIST_REMOTE_COPY/EXEC env variables and multiplexing options for default scp/ssh (Darko Poljak)
