@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# 2016 Darko Poljak (darko.poljak at gmail.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# This explorer returns script code string for running a command with su
+# or sudo, whichever it founds. If searches the command in the order of
+# first sudo and then su if sudo is not found.
+# If no sudo nor su is found then it returns string script code to run
+# bare command.
+# It uses two arguments, first user and the second command to run.
+# If the result string is assigned to foo it is used as:
+# $ $foo user command
+#
+
+# first check sudo
+which sudo > /dev/null 2>&1
+if [ $? -eq 0 ]
+then
+    func='f() { sudo -H -u $1 $2; }'
+else
+    # if no sudo then check su
+    which su > /dev/null 2>&1
+    if [ $? -eq 0 ]
+    then
+        func='f() { su -c "$2" $1 ; }'
+    else
+        # if no sudo nor su then run bare command
+        func='f() { $2 ; }'
+    fi
+fi
+echo "eval '${func}' ; f "
