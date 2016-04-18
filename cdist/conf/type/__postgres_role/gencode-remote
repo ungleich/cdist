@@ -30,7 +30,7 @@ case "$state_should" in
             password="$(cat "$__object/parameter/password")"
         fi
         booleans=""
-        for boolean in login createdb createrole superuser; do
+        for boolean in login createdb createrole replication superuser; do
             if [ ! -f "$__object/parameter/$boolean" ]; then
                 boolean="no${boolean}"
             fi

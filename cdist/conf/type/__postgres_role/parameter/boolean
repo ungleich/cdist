@@ -1,5 +1,6 @@
 login
 createdb
 createrole
+replication
 superuser
 inherit
