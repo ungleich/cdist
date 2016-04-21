@@ -45,24 +45,23 @@ runasparam="$__object/parameter/runas"
 if [ -f "$runasparam" ]
 then
     runas=$(cat "$runasparam")
-    runas_cmd=$(cat "$__global/explorer/sucmd")
 else
-    runas_cmd=""
+    runas=""
 fi
 
 case "$state_should" in
     present)
-        if [ "$runas_cmd" ]
+        if [ "$runas" ]
         then
-            echo "$runas_cmd $runas \"$pip install -q $name\""
+            echo "su -c \"$pip install -q $name\" $runas"
         else
             echo $pip install -q "$name"
         fi
     ;;
     absent)
-        if [ "$runas_cmd" ]
+        if [ "$runas" ]
         then
-            echo "$runas_cmd $runas \"$pip uninstall -q -y $name\""
+            echo "su -c \"$pip uninstall -q -y $name\" $runas"
         else
             echo $pip uninstall -q -y "$name"
         fi
