@@ -1,0 +1,67 @@
+#!/bin/sh
+#
+# 2016 Darko Poljak (darko.poljak at gmail.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+state_is="$(cat "$__object/explorer/state")"
+owner_is="$(cat "$__object/explorer/owner")"
+group_is="$(cat "$__object/explorer/group")"
+
+state_should="$(cat "$__object/parameter/state")"
+
+owner="$(cat "$__object/parameter/owner")"
+group="$(cat "$__object/parameter/group")"
+mode="$(cat "$__object/parameter/mode")"
+
+[  "$state_should" = "$state_is" -a \
+   "$owner" = "$owner_is" -a \
+   "$group" = "$group_is" -a \
+   -n "$mode" ] && exit 0
+
+destination="/$__object_id"
+venvparams="$(cat "$__object/parameter/venvparams")"
+pyvenvparam="$__object/parameter/pyvenv"
+if [ -f "$pyvenvparam" ]
+then
+    pyvenv=$(cat "$pyvenvparam")
+else
+    pyvenv="pyvenv"
+fi
+
+case $state_should in
+    present)
+        if [ "$state_should" != "$state_is" ]; then
+            echo $pyvenv $venvparams "$destination"
+        fi
+        if [ \( -n "$owner" -a "$owner_is" != "$owner" \) -o \
+             \( -n "$group" -a "$group_is" != "$group" \) ]; then
+            echo chown -R "${owner}:${group}" "$destination"
+        fi
+        if [ -n "$mode" ]; then
+            echo chmod -R "$mode" "$destination"
+        fi
+    ;;
+    absent)
+    ;;
+
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac
