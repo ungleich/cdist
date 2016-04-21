@@ -32,8 +32,6 @@ state::
 
 runas::
     Run pip as specified user. By default it runs as root.
-    It uses sudo or su, whichever it founds first, respectively.
-    If no sudo nor su is present then pip is run by default.
 
 
 EXAMPLES
