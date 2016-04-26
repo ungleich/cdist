@@ -41,13 +41,4 @@ mountpoint -q "${chroot}/dev/pts" \
 [ -d "${chroot}/tmp" ] || mkdir -m 1777 "${chroot}/tmp"
 mountpoint -q "${chroot}/tmp" \
    || mount -t tmpfs -o mode=1777,strictatime,nodev,nosuid tmpfs "${chroot}/tmp"
-
-if [ -f "${chroot}/etc/resolv.conf" ]; then
-   # if file exists, bind mount over it
-   mountpoint -q "${chroot}/etc/resolv.conf" \
-      || mount --bind -o ro /etc/resolv.conf "${chroot}/etc/resolv.conf"
-else
-   # otherwise copy
-   cp /etc/resolv.conf "${chroot}/etc/resolv.conf"
-fi
 DONE
