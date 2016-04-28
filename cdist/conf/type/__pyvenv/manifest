@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2016 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -17,19 +17,30 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
 
-os=$(cat "$__global/explorer/os")
+# It assumes pyvenv is already installed. Concrete packages
+# or installation procedures depend on concrete OS and/or OS
+# version/distribution.
 
-case "$os" in
-    debian|ubuntu|devuan)
+state_should="$(cat "$__object/parameter/state")"
+owner="$(cat "$__object/parameter/owner")"
+group="$(cat "$__object/parameter/group")"
+mode="$(cat "$__object/parameter/mode")"
 
-        # Debian and Ubuntu need to be updated,
-        # as seen in /etc/init.d/bootlogs
-        echo "uname -snrvm > /var/run/motd"
-        echo "cat /etc/motd.tail >> /var/run/motd"
+case "$state_should" in
+    present)
+        :
     ;;
+
+    absent)
+        __directory "$__object_id" --state absent \
+            --owner "$owner" \
+            --group "$group" \
+            --mode "$mode"
+    ;;
+
     *)
-        exit 0
+        echo "Unknown state: $state_should" >&2
+        exit 1
     ;;
 esac

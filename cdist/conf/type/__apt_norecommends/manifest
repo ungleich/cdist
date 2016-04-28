@@ -22,7 +22,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   ubuntu|debian)
+   ubuntu|debian|devuan)
       # No stinking recommends thank you very much.
       # If I want something installed I will do so myself.
       __file /etc/apt/apt.conf.d/99-no-recommends \

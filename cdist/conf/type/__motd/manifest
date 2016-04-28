@@ -30,7 +30,7 @@ os=$(cat "$__global/explorer/os")
 
 
 case "$os" in
-   debian|ubuntu)
+   debian|ubuntu|devuan)
       destination=/etc/motd.tail
    ;;
    *)

@@ -32,7 +32,7 @@ else
    case "$os" in
          amazon|centos|fedora|redhat) type="yum" ;;
          archlinux) type="pacman" ;;
-         debian|ubuntu) type="apt" ;;
+         debian|ubuntu|devuan) type="apt" ;;
          freebsd)
             if [ -n "$(cat "$__object/explorer/pkgng_exists")" ]; then
                type="pkgng_freebsd"

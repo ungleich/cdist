@@ -49,6 +49,11 @@ if [ -f /etc/debian_version ]; then
    echo debian
    exit 0
 fi
+
+if [ -f /etc/devuan_version ]; then
+   echo devuan
+   exit 0
+fi
 ###
 
 if [ -f /etc/gentoo-release ]; then
