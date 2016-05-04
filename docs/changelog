@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.0.0: 2016-05-04
 	* Core: Fix bug with parallel hosts operation when output path is specifed (Darko Poljak)
 	* Type __package_pip: Add support for running as specified user (useful for pip in venv) (Darko Poljak)
 	* New type: __pyvenv: Manage python virtualenv (Darko Poljak)
