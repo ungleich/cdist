@@ -26,7 +26,7 @@ A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
 # is the man page section (1 or 7). The first three lines of the input
 # (xml, DOCTYPE, head tags) are ignored, since the head tags contains
 # the title of the page and should not contain a href.
-CROSSLINK=sed --in-place '1,3!s/\([[:alnum:]_-]*\)(\([17]\))/<a href="..\/man\2\/\1.html">&<\/a>/g'
+CROSSLINK=sed -i '1,3!s/\([[:alnum:]_-]*\)(\([17]\))/<a href="..\/man\2\/\1.html">&<\/a>/g'
 helper=./bin/build-helper
 
 MANDIR=docs/man
