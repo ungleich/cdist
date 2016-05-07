@@ -42,7 +42,7 @@ raw::
    See crontab(5) for the extensions if any that your cron implementation
    implements.
 raw_command::
-   Take whatever the user has given in the commmand and ignore everything else.
+   Take whatever the user has given in the command and ignore everything else.
    If given, the command will be added to crontab.
    Can for example be used to define variables like SHELL or MAILTO.
 

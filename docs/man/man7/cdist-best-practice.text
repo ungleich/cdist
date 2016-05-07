@@ -88,7 +88,7 @@ MAINTAINING MULTIPLE CONFIGURATIONS
 -----------------------------------
 When you need to manage multiple sites with cdist, like company_a, company_b
 and private for instance, you can easily use git for this purpose.
-Including a possible common base that is reused accross the different sites:
+Including a possible common base that is reused across the different sites:
 
 --------------------------------------------------------------------------------
 # create branches
