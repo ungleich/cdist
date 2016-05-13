@@ -34,7 +34,7 @@ prefix::
    Defaults to #cdist:__block/$__object_id
 
 suffix::
-   the prefix to add after the text.
+   the suffix to add after the text.
    Defaults to #/cdist:__block/$__object_id
 
 state::
