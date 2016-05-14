@@ -183,7 +183,7 @@ files::
     (for instance to store template results).
 changed::
     This empty file exists in an object directory, if the object has
-    code to be excuted (either remote or local)
+    code to be executed (either remote or local)
 stdin::
     This file exists and contains data, if data was provided on stdin 
     when the type was called.

@@ -181,11 +181,11 @@ OVERRIDES
 ---------
 In some special cases, you would like to create an already defined object 
 with different parameters. In normal situations this leads to an error in cdist.
-If you whish, you can setup the environment variable CDIST_OVERRIDE
+If you wish, you can setup the environment variable CDIST_OVERRIDE
 (any value or even empty is ok) to tell cdist, that this object override is 
 wanted and should be accepted.
 ATTENTION: Only use this feature if you are 100% sure in which order 
-cdist encounters the affected objects, otherwhise this results 
+cdist encounters the affected objects, otherwise this results
 in an undefined situation. 
 
 If CDIST_OVERRIDE and CDIST_ORDER_DEPENDENCY are set for an object,

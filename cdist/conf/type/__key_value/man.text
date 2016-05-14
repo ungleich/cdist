@@ -19,7 +19,7 @@ REQUIRED PARAMETERS
 file::
    The file to operate on.
 delimiter::
-   The delimiter which seperates the key from the value.
+   The delimiter which separates the key from the value.
 
 
 OPTIONAL PARAMETERS
