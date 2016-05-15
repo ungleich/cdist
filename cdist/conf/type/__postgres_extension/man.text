@@ -1,0 +1,52 @@
+cdist-type__postgres_extension(7)
+=================================
+Tomas Pospisek <tpo_deb--@--sourcepole.ch>
+
+
+NAME
+----
+cdist-type__postgres_extension - manage postgres extensions
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to create or drop postgres extensions.
+
+The object you need to pass to __postgres_extension consists of
+the database name and the extension name joined by a colon in the
+following form:
+
+    dbname:extension
+
+f.ex.
+
+    rails_test:unaccent
+
+
+OPTIONAL PARAMETERS
+-------------------
+state::
+    Either "present" or "absent", defaults to "present"
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__postgres_extension           rails_test:unaccent
+__postgres_extension --present rails_test:unaccent
+__postgres_extension --absent  rails_test:unaccent
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__postgres_database(7)
+- http://www.postgresql.org/docs/current/static/sql-createextension.html
+
+
+COPYING
+-------
+Copyright \(C) 2014 Tomas Pospisek. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

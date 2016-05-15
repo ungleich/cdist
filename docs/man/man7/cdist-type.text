@@ -24,8 +24,17 @@ to use.
 
 HOW TO USE A TYPE
 -----------------
-You can use types from the initial manifest or the type manifest like a
-normal shell command:
+When you change into the cdist shell (or set your PATH variable accordingly)
+then you can use types from the initial manifest or the type manifest like a
+normal shell command.
+
+First change into the cdist shell:
+
+--------------------------------------------------------------------------------
+cdist shell
+--------------------------------------------------------------------------------
+
+Now you can execute cdist types:
 
 --------------------------------------------------------------------------------
 # Creates empty file /etc/cdist-configured
