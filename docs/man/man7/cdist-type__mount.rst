@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__mount/man.rst

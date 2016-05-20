@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__start_on_boot/man.rst

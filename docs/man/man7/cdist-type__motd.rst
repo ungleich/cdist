@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__motd/man.rst

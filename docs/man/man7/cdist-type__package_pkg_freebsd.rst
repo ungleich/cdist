@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__package_pkg_freebsd/man.rst

@@ -18,15 +18,6 @@
 #
 #
 
-A2XM=a2x -f manpage --no-xmllint -a encoding=UTF-8
-A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
-# Create cross-links in html man pages
-# We look for something like "cdist-type(7)" and make a href out of it
-# The first matching group is the man page name and the second group
-# is the man page section (1 or 7). The first three lines of the input
-# (xml, DOCTYPE, head tags) are ignored, since the head tags contains
-# the title of the page and should not contain a href.
-CROSSLINK=sed -i '' '1,3!s/\([[:alnum:]_-]*\)(\([17]\))/<a href="..\/man\2\/\1.html">&<\/a>/g'
 helper=./bin/build-helper
 
 MANDIR=docs/man
@@ -45,6 +36,8 @@ CHANGELOG_FILE=docs/changelog
 
 PYTHON_VERSION=cdist/version.py
 
+SPHINXM=make -C $(MANDIR) man
+SPHINXH=make -C $(MANDIR) html
 ################################################################################
 # Manpages
 #
@@ -52,59 +45,42 @@ MAN1DSTDIR=$(MANDIR)/man1
 MAN7DSTDIR=$(MANDIR)/man7
 
 # Manpages #1: Types
-# Use shell / ls to get complete list - $(TYPEDIR)/*/man.text does not work
-MANTYPESRC=$(shell ls $(TYPEDIR)/*/man.text)
-
-# replace first path component
+# Use shell / ls to get complete list - $(TYPEDIR)/*/man.rst does not work
+MANTYPESRC=$(shell ls $(TYPEDIR)/*/man.rst)
 MANTYPEPREFIX=$(subst $(TYPEDIR)/,$(MAN7DSTDIR)/cdist-type,$(MANTYPESRC))
+MANTYPES=$(subst /man.rst,.rst,$(MANTYPEPREFIX))
 
-# replace man.text with .7 or .html
-MANTYPEMAN=$(subst /man.text,.7,$(MANTYPEPREFIX))
-MANTYPEHTML=$(subst /man.text,.html,$(MANTYPEPREFIX))
-MANTYPEALL=$(MANTYPEMAN) $(MANTYPEHTML)
-
-# Link manpage so A2XH does not create man.html but correct named file
-$(MAN7DSTDIR)/cdist-type%.text: $(TYPEDIR)/%/man.text
+# Link manpage: do not create man.html but correct named file
+$(MAN7DSTDIR)/cdist-type%.rst: $(TYPEDIR)/%/man.rst
 	ln -sf "../../../$^" $@
 
 # Manpages #2: reference
-MANREF=$(MAN7DSTDIR)/cdist-reference.text
-MANREFSH=$(MANDIR)/cdist-reference.text.sh
-MANREFMAN=$(MANREF:.text=.7)
-MANREFHTML=$(MANREF:.text=.html)
-MANREFALL=$(MANREFMAN) $(MANREFHTML)
+MANREF=$(MAN7DSTDIR)/cdist-reference.rst
+MANREFSH=$(MANDIR)/cdist-reference.rst.sh
 
 $(MANREF): $(MANREFSH)
 	$(MANREFSH)
 
-# Manpages #3: static pages
-MAN1STATIC=$(shell ls $(MAN1DSTDIR)/*.text)
-MAN7STATIC=$(shell ls $(MAN7DSTDIR)/*.text)
-MANSTATICMAN=$(MAN1STATIC:.text=.1) $(MAN7STATIC:.text=.7)
-MANSTATICHTML=$(MAN1STATIC:.text=.html) $(MAN7STATIC:.text=.html)
-MANSTATICALL=$(MANSTATICMAN) $(MANSTATICHTML)
+# Manpages #3: generic part
+mansphinxman: $(MANTYPES) $(MANREF)
+	$(SPHINXM)
 
-# Manpages #4: generic part
+mansphinxhtml: $(MANTYPES) $(MANREF)
+	$(SPHINXH)
 
-# Creating the type manpage
-%.1 %.7: %.text
-	$(A2XM) $^
-
-# Creating the type html page
-%.html: %.text
-	$(A2XH) $^
-	$(CROSSLINK) $@
-
-man: $(MANTYPEALL) $(MANREFALL) $(MANSTATICALL)
+man: mansphinxman mansphinxhtml
 
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
+MANBUILDDIR=$(MANDIR)/_build/html
 
-man-dist: man check-date
+man-dist: man
 	rm -rf "${MANWEBDIR}"
-	mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
-	cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${MANWEBDIR}/man1
-	cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
+	mkdir -p "${MANWEBDIR}"
+	# mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
+	# cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${MANWEBDIR}/man1
+	# cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
+	cp -R ${MANBUILDDIR}/* ${MANWEBDIR}
 	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)" || true
 
 man-latest-link: web-pub
@@ -216,14 +192,12 @@ release:
 #
 
 clean:
-	rm -f $(MAN7DSTDIR)/cdist-reference.text
+	rm -f $(MAN7DSTDIR)/cdist-reference.rst
 
 	find "$(MANDIR)" -mindepth 2 -type l \
-	    -o -name "*.1" \
-	    -o -name "*.7" \
-	    -o -name "*.html" \
-	    -o -name "*.xml" \
 	| xargs rm -f
+
+	make -C $(MANDIR) clean
 
 	find * -name __pycache__  | xargs rm -rf
 

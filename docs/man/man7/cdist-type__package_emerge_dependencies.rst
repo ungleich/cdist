@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__package_emerge_dependencies/man.rst

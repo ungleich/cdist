@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__firewalld_rule/man.rst

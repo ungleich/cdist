@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__dog_vdi/man.rst

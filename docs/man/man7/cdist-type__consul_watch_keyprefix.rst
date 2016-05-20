@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__consul_watch_keyprefix/man.rst

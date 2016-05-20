@@ -1,0 +1,66 @@
+cdist-type__run_command(7)
+==========================
+Run a command 
+
+Benedikt Koeppel <code--@--benediktkoeppel.ch>
+
+
+DESCRIPTION
+-----------
+This cdist type allows you to run a specific command once at installation time.
+
+
+REQUIRED PARAMETERS
+-------------------
+
+
+OPTIONAL PARAMETERS
+-------------------
+command
+   Command (with arguments) to run.
+
+   If no command is give, then the object_id is executed.
+
+
+
+EXAMPLES
+--------
+
+.. code-block:: sh
+
+    # Run a command
+    __run_command "/etc/init.d/mysql restart"
+    # runs `/etc/init.d/mysql restart` (the "object_id")
+
+    # Run the same command:
+    __run_command restart-mysql --command "/etc/init.d/mysql restart"
+    # runs `/etc/init.d/mysql restart` (the --command argument)
+    # additionally, it can easily be referenced (for example in a require="..."
+    #as __run_command/restart-mysql
+
+    # Run a script:
+    __run_command install-pear --command "$(cat <<-EOF
+        /usr/bin/pear install --force Auth
+        /usr/bin/pear install --force HTML_Template_IT-1.2.1
+        /usr/bin/pear install --force MDB2
+        /usr/bin/pear install --force MDB2#mysql
+        /usr/bin/pear config-set preferred_state beta;
+        /usr/bin/pear install --force --alldeps Spreadsheet_Excel_Writer;
+        /usr/bin/pear config-set preferred_state stable
+        /usr/bin/pear install --force HTTP_Request
+        /usr/bin/pear install --force Mail
+        /usr/bin/pear install --force Auth_HTTP
+        /usr/bin/pear install --force XML_RPC 
+    EOF
+    )"
+
+
+SEE ALSO
+--------
+- `cdist-type(7) <cdist-type.html>`_
+
+
+COPYING
+-------
+Copyright \(C) 2012 Benedikt Koeppel. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

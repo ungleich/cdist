@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__consul_service/man.rst

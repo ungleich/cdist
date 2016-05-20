@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__package_update_index/man.rst

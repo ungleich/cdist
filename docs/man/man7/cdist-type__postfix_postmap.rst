@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__postfix_postmap/man.rst

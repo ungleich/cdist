@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__package_upgrade_all/man.rst

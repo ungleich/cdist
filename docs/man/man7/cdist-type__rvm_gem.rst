@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__rvm_gem/man.rst

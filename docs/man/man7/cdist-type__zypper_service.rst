@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__zypper_service/man.rst

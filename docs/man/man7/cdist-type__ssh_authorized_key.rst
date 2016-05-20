@@ -1,0 +1,1 @@
+../../../cdist/conf/type/__ssh_authorized_key/man.rst
