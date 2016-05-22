@@ -26,6 +26,7 @@ import shutil
 import sys
 import time
 import pprint
+import itertools
 
 import cdist
 
@@ -61,11 +62,17 @@ class Config(object):
         """
         if isinstance(source, str):
             import fileinput
-            for host in fileinput.input(files=(source)):
-                yield host.strip()  # remove leading and trailing whitespace
+            try:
+                for host in fileinput.input(files=(source)):
+                    # remove leading and trailing whitespace
+                    yield host.strip()  
+            except (IOError, OSError) as e:
+                raise cdist.Error("Error reading hosts from \'{}\'".format(
+                    source))
         else:
-            for host in source:
-                yield host
+            if source:
+                for host in source:
+                    yield host
 
 
     @classmethod
@@ -77,7 +84,8 @@ class Config(object):
         log = logging.getLogger("cdist")
 
         if args.manifest == '-' and args.hostfile == '-':
-            raise cdist.Error("Cannot read both, manifest and host file, from stdin")
+            raise cdist.Error(("Cannot read both, manifest and host file, " 
+                "from stdin"))
         # if no host source is specified then read hosts from stdin
         if not (args.hostfile or args.host):
             args.hostfile = '-'
@@ -102,12 +110,8 @@ class Config(object):
         time_start = time.time()
 
         hostcnt = 0
-        if args.host:
-            host_source = args.host
-        else:
-            host_source = args.hostfile
-    
-        for host in cls.hosts(host_source):
+        for host in itertools.chain(cls.hosts(args.host),
+                                    cls.hosts(args.hostfile)):
             hostcnt += 1
             if args.parallel:
                 log.debug("Creating child process for %s", host)

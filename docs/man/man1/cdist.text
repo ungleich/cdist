@@ -64,9 +64,10 @@ Configure one or more hosts
     environment variable.
 
 -f HOSTFILE, --file HOSTFILE::
-    Read hosts to operate on from specified file or from stdin if '-'
-    (each host on separate line). If no host or host file is
-    specified then, by default, read hosts from stdin.
+    Read additional hosts to operate on from specified file
+    or from stdin if '-' (each host on separate line).
+    If no host or host file is specified then, by default,
+    read hosts from stdin.
 
 -i MANIFEST, --initial-manifest MANIFEST::
     Path to a cdist manifest or - to read from stdin

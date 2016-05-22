@@ -90,9 +90,10 @@ def commandline():
          help=('Add configuration directory (can be repeated, '
              'last one wins)'), action='append')
     parser['config'].add_argument('-f', '--file',
-         help=('Read hosts to operate on from specified file or from stdin '
-             'if \'-\' (each host on separate line). If no host or host '
-             'file is specified then, by default, read hosts from stdin.'),
+         help=('Read additional hosts to operate on from specified file '
+             'or from stdin if \'-\' (each host on separate line). '
+             'If no host or host file is specified then, by default, '
+             'read hosts from stdin.'),
          dest='hostfile', required=False)
     parser['config'].add_argument('-i', '--initial-manifest', 
          help='Path to a cdist manifest or \'-\' to read from stdin.',
