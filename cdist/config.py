@@ -53,6 +53,21 @@ class Config(object):
         self.local.create_files_dirs()
         self.remote.create_files_dirs()
 
+    @staticmethod
+    def hosts(source):
+        """Yield hosts from source.
+           Source can be a sequence or filename (stdin if \'-\').
+           In case of filename each line represents one host.
+        """
+        if isinstance(source, str):
+            import fileinput
+            for host in fileinput.input(files=(source)):
+                yield host.strip()  # remove leading and trailing whitespace
+        else:
+            for host in source:
+                yield host
+
+
     @classmethod
     def commandline(cls, args):
         """Configure remote system"""
@@ -60,6 +75,12 @@ class Config(object):
 
         # FIXME: Refactor relict - remove later
         log = logging.getLogger("cdist")
+
+        if args.manifest == '-' and args.hostfile == '-':
+            raise cdist.Error("Cannot read both, manifest and host file, from stdin")
+        # if no host source is specified then read hosts from stdin
+        if not (args.hostfile or args.host):
+            args.hostfile = '-'
     
         initial_manifest_tempfile = None
         if args.manifest == '-':
@@ -79,8 +100,15 @@ class Config(object):
         process = {}
         failed_hosts = []
         time_start = time.time()
+
+        hostcnt = 0
+        if args.host:
+            host_source = args.host
+        else:
+            host_source = args.hostfile
     
-        for host in args.host:
+        for host in cls.hosts(host_source):
+            hostcnt += 1
             if args.parallel:
                 log.debug("Creating child process for %s", host)
                 process[host] = multiprocessing.Process(target=cls.onehost, args=(host, args, True))
@@ -101,7 +129,7 @@ class Config(object):
                     failed_hosts.append(host)
     
         time_end = time.time()
-        log.info("Total processing time for %s host(s): %s", len(args.host),
+        log.info("Total processing time for %s host(s): %s", hostcnt,
                     (time_end - time_start))
     
         if len(failed_hosts) > 0:
