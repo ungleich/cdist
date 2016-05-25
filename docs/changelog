@@ -4,6 +4,7 @@ Changelog
 next:
 	* Documentation: Migrate to reStructuredText format and sphinx (Darko Poljak)
 	* Core: Add -f option to read additional hosts from file/stdin (Darko Poljak)
+	* Type __apt_key: Use pool.sks-keyservers.net as keyserver (Steven Armstrong)
 
 4.0.0: 2016-05-04
 	* Core: Fix bug with parallel hosts operation when output path is specifed (Darko Poljak)
