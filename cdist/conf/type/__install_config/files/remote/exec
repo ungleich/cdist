@@ -35,7 +35,10 @@ target_host="$__target_host"
 shift
 
 ssh="ssh -o User=root -q $target_host"
-code="$ssh chroot $chroot sh -c '$@'"
+
+# escape ' with '"'"'
+code="$(echo "$@" | sed -e "s/'/'\"'\"'/g")"
+code="$ssh chroot $chroot sh -c '$code'"
 
 log "target_host: $target_host"
 log "chroot: $chroot"
