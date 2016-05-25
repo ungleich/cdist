@@ -8,8 +8,8 @@ docs/man/man7/*.7
 docs/man/man*/*.html
 docs/man/man*/*.xml
 docs/man/man*/docbook-xsl.css
-docs/man/man7/cdist-type__*.text
-docs/man/man7/cdist-reference.text
+docs/man/man7/cdist-type__*.rst
+docs/man/man7/cdist-reference.rst
 
 # Ignore cdist cache for version control
 /cache/
