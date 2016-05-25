@@ -265,7 +265,7 @@ for mansubdir in ('man1', 'man7'):
             froot, fext = os.path.splitext(fname)
             if fext == '.rst':
                 man_page = (os.path.join(mansubdir, froot), froot, '',
-                        [], 7)
+                        [], mansubdir[-1])
                 man_pages.append(man_page)
 
 #man_pages = [
