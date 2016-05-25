@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Core: Add -f option to read additional hosts from file/stdin (Darko Poljak)
+
 4.0.0: 2016-05-04
 	* Core: Fix bug with parallel hosts operation when output path is specifed (Darko Poljak)
 	* Type __package_pip: Add support for running as specified user (useful for pip in venv) (Darko Poljak)
@@ -24,7 +27,6 @@ Changelog
 	* Type __group: Add NetBSD support (Jonathan A. Kollasch)
 	* Type __consul: Add new consul versions (Nico Schottelius)
 	* Type __apt_ppa: Do not install legacy package python-software-properties (Steven Armstrong)
-
 
 3.1.13: 2015-05-16
 	* Type __block: Fix support for non stdin blocks (Dominique Roux)
