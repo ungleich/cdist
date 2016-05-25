@@ -111,7 +111,7 @@ EXAMPLES
     --remote-copy /path/to/my/remote/copy \
     -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
 
-# Configure hosts in parallel by reading hosts from file loadbalancers
+# Configure hosts read from file loadbalancers
 % cdist config -f loadbalancers
 
 # Display banner

@@ -85,7 +85,7 @@ def commandline():
     parser['config'] = parser['sub'].add_parser('config',
         parents=[parser['loglevel']])
     parser['config'].add_argument('host', nargs='*',
-        help='one or more hosts to operate on')
+        help='host(s) to operate on')
     parser['config'].add_argument('-c', '--conf-dir',
          help=('Add configuration directory (can be repeated, '
              'last one wins)'), action='append')
