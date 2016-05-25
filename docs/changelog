@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Documentation: Migrate to reStructuredText format and sphinx (Darko Poljak)
 	* Core: Add -f option to read additional hosts from file/stdin (Darko Poljak)
 
 4.0.0: 2016-05-04

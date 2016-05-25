@@ -1,0 +1,46 @@
+cdist-type__qemu_img(7)
+=======================
+Manage VM disk images
+
+Nico Schottelius <nico-cdist--@--schottelius.org>
+
+
+DESCRIPTION
+-----------
+The qemu-img program is used to create qemu images for
+qemu and (qemu-)kvm.
+
+
+
+OPTIONAL PARAMETERS
+-------------------
+state
+    Either "present" or "absent", defaults to "present"
+size
+    Size of the image in qemu-img compatible units.
+
+    Required if state is "present".
+
+
+EXAMPLES
+--------
+
+.. code-block:: sh
+
+    # Create a 50G size image
+    __qemu_img /home/services/kvm/vm/myvmname/system-disk --size 50G
+
+    # Remove image
+    __qemu_img /home/services/kvm/vm/myoldvm/system-disk --state absent
+
+
+SEE ALSO
+--------
+- `cdist-type(7) <cdist-type.html>`_
+- qemu-img(1)
+
+
+COPYING
+-------
+Copyright \(C) 2012-2014 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
