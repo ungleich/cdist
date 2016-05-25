@@ -14,7 +14,7 @@ SYNOPSIS
 
     cdist banner [-h] [-d] [-v]
 
-    cdist config [-h] [-d] [-V] [-c CONF_DIR] [-i MANIFEST] [-p] [-s] host [host ...]
+    cdist config [-h] [-d] [-V] [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST] [-p] [-s] [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
@@ -69,6 +69,13 @@ Configure one or more hosts
     --conf-dir argument have higher precedence over those set through the
     environment variable.
 
+.. option:: -f HOSTFILE, --file HOSTFILE
+
+    Read additional hosts to operate on from specified file
+    or from stdin if '-' (each host on separate line).
+    If no host or host file is specified then, by default,
+    read hosts from stdin.
+
 .. option:: -i MANIFEST, --initial-manifest MANIFEST
 
     Path to a cdist manifest or - to read from stdin
@@ -117,6 +124,9 @@ EXAMPLES
     % cdist config --remote-exec /path/to/my/remote/exec \
         --remote-copy /path/to/my/remote/copy \
         -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch
+
+    # Configure hosts read from file loadbalancers
+    % cdist config -f loadbalancers
 
     # Display banner
     cdist banner

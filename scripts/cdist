@@ -67,12 +67,14 @@ def commandline():
         action='store_true', default=False)
 
     # Main subcommand parser
-    parser['main'] = argparse.ArgumentParser(description='cdist ' + cdist.VERSION,
+    parser['main'] = argparse.ArgumentParser(description='cdist '
+            + cdist.VERSION,
         parents=[parser['loglevel']])
     parser['main'].add_argument('-V', '--version',
         help='Show version', action='version',
         version='%(prog)s ' + cdist.VERSION)
-    parser['sub'] = parser['main'].add_subparsers(title="Commands")
+    parser['sub'] = parser['main'].add_subparsers(title="Commands",
+            dest="command")
 
     # Banner
     parser['banner'] = parser['sub'].add_parser('banner', 
@@ -82,11 +84,17 @@ def commandline():
     # Config
     parser['config'] = parser['sub'].add_parser('config',
         parents=[parser['loglevel']])
-    parser['config'].add_argument('host', nargs='+',
-        help='one or more hosts to operate on')
+    parser['config'].add_argument('host', nargs='*',
+        help='host(s) to operate on')
     parser['config'].add_argument('-c', '--conf-dir',
-         help='Add configuration directory (can be repeated, last one wins)',
-         action='append')
+         help=('Add configuration directory (can be repeated, '
+             'last one wins)'), action='append')
+    parser['config'].add_argument('-f', '--file',
+         help=('Read additional hosts to operate on from specified file '
+             'or from stdin if \'-\' (each host on separate line). '
+             'If no host or host file is specified then, by default, '
+             'read hosts from stdin.'),
+         dest='hostfile', required=False)
     parser['config'].add_argument('-i', '--initial-manifest', 
          help='Path to a cdist manifest or \'-\' to read from stdin.',
          dest='manifest', required=False)
@@ -108,7 +116,8 @@ def commandline():
          action='store', dest='remote_copy',
          default=os.environ.get('CDIST_REMOTE_COPY'))
     parser['config'].add_argument('--remote-exec',
-         help='Command to use for remote execution (should behave like ssh)',
+         help=('Command to use for remote execution '
+               '(should behave like ssh)'),
          action='store', dest='remote_exec',
          default=os.environ.get('CDIST_REMOTE_EXEC'))
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
@@ -146,6 +155,11 @@ def commandline():
                 args.remote_exec = cdist.REMOTE_EXEC + mux_opts
             if args_dict['remote_copy'] is None:
                 args.remote_copy = cdist.REMOTE_COPY + mux_opts
+
+    if args.command == 'config':
+        if args.manifest == '-' and args.hostfile == '-':
+            print('cdist config: error: cannot read both, manifest and host file, from stdin')
+            sys.exit(1)
 
     log.debug(args)
     log.info("version %s" % cdist.VERSION)
