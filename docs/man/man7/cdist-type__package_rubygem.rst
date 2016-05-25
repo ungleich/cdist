@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__package_rubygem/man.rst

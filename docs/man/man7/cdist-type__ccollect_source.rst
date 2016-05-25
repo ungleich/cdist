@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__ccollect_source/man.rst

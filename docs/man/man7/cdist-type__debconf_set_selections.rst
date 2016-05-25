@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__debconf_set_selections/man.rst

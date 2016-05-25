@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__pf_ruleset/man.rst

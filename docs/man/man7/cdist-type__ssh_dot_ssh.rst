@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__ssh_dot_ssh/man.rst

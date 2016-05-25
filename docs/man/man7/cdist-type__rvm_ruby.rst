@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__rvm_ruby/man.rst

@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__postgres_role/man.rst

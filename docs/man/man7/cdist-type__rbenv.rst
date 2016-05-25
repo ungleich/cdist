@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__rbenv/man.rst

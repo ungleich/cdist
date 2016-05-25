@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__iptables_rule/man.rst

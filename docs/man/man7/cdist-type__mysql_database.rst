@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__mysql_database/man.rst

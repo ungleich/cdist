@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__staged_file/man.rst

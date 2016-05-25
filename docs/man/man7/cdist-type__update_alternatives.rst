@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__update_alternatives/man.rst

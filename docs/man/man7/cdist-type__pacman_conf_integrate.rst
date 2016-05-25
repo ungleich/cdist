@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__pacman_conf_integrate/man.rst

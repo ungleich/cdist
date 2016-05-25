@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__consul_template_template/man.rst

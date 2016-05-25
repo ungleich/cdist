@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__apt_ppa/man.rst

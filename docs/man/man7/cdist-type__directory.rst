@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__directory/man.rst

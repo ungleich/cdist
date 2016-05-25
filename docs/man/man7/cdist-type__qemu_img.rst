@@ -1,1 +1,0 @@
-../../../cdist/conf/type/__qemu_img/man.rst
