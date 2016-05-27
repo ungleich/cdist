@@ -49,7 +49,7 @@ The following global explorers are available:
 eof
 (
     cd ../../cdist/conf/explorer
-    for explorer in *; do
+    for explorer in $(ls * | LC_ALL=C sort); do
        echo "- $explorer"
     done
 )
@@ -157,7 +157,7 @@ The following types are available:
 
 eof
 
-for type in man7/cdist-type__*.rst; do
+for type in $(ls man7/cdist-type__*.rst | LC_ALL=C sort); do
     no_dir="${type#man7/}";
     no_type="${no_dir#cdist-type}";
     name="${no_type%.rst}";
