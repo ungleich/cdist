@@ -15,7 +15,31 @@ SYNOPSIS
 
     cdist banner [-h] [-d] [-v]
 
-    cdist config [-h] [-d] [-V] [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST] [-p] [-s] [host [host ...]]
+    cdist config [-h] [-d] [-v] [-I INVENTORY_DIR] [-c CONF_DIR]
+                 [-f HOSTFILE] [-i MANIFEST] [-n] [-o OUT_PATH] [-p] [-s]
+                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                 [-t] [-a]
+                 [host [host ...]]
+
+    cdist inventory list [-h] [-d] [-v] [-I INVENTORY_DIR] [-H] [-a] [-t]
+                 [-f HOSTFILE]
+                 [host [host ...]]
+
+    cdist inventory add-host [-h] [-d] [-v] [-I INVENTORY_DIR]
+                 [-f HOSTFILE]
+                 [host [host ...]]
+
+    cdist inventory del-host [-h] [-d] [-v] [-I INVENTORY_DIR] [-a]
+                 [-f HOSTFILE]
+                 [host [host ...]]
+
+    cdist inventory add-tag [-h] [-d] [-v] [-I INVENTORY_DIR] [-f HOSTFILE]
+                 [-t TAGLIST] [-T TAGFILE]
+                 [host [host ...]]
+
+    cdist inventory del-tag [-h] [-d] [-v] [-I INVENTORY_DIR] [-a]
+                 [-f HOSTFILE] [-t TAGLIST] [-T TAGFILE]
+                 [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
@@ -60,6 +84,12 @@ Configure one or more hosts
 
     Show the help screen
 
+.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
+
+    Use specified custom inventory directory. Default inventory directory is
+    'inventory' directory placed inside cdist distribution under 'cdist'
+    directory along 'conf' directory.
+
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
     Add a configuration directory. Can be specified multiple times.
@@ -81,6 +111,10 @@ Configure one or more hosts
 
     Path to a cdist manifest or - to read from stdin
 
+.. option:: -n, --dry-run
+
+    Do not execute code
+
 .. option:: -p, --parallel
 
     Operate on multiple hosts in parallel
@@ -96,6 +130,206 @@ Configure one or more hosts
 .. option:: --remote-exec REMOTE_EXEC
 
     Command to use for remote execution (should behave like ssh)
+
+.. option:: -t, --tag
+
+    host is specified by tag, not hostname/address; list
+    all hosts that contain any of specified tags
+
+.. option:: -a, --all
+
+    list hosts that have all specified tags, if -t/--tag
+    is specified
+
+
+INVENTORY
+---------
+Manage inventory database.
+
+
+INVENTORY LIST
+--------------
+List inventory database.
+
+.. option::  host
+
+    host(s) to list
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
+
+    Use specified custom inventory directory. Default inventory directory is
+    'inventory' directory placed inside cdist distribution under 'cdist'
+    directory along 'conf' directory.
+
+.. option:: -H, --host-only
+
+    Suppress tags listing
+
+.. option:: -a, --all
+
+    list hosts that have all specified tags, if -t/--tag
+    is specified
+
+.. option:: -t, --tag
+
+    host is specified by tag, not hostname/address; list
+    all hosts that contain any of specified tags
+
+.. option:: -f HOSTFILE, --file HOSTFILE
+
+    Read additional hosts to list from specified file or
+    from stdin if '-' (each host on separate line). If no
+    host or host file is specified then, by default, list
+    all.
+
+
+INVENTORY ADD-HOST
+------------------
+Add host(s) to inventory database.
+
+.. option:: host
+
+    host(s) to add
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
+
+    Use specified custom inventory directory. Default inventory directory is
+    'inventory' directory placed inside cdist distribution under 'cdist'
+    directory along 'conf' directory.
+
+.. option:: -f HOSTFILE, --file HOSTFILE
+
+    Read additional hosts to add from specified file or
+    from stdin if '-' (each host on separate line). If no
+    host or host file is specified then, by default, read
+    from stdin.
+
+
+INVENTORY DEL-HOST
+------------------
+Delete host(s) from inventory database.
+
+.. option:: host
+
+    host(s) to delete
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
+
+    Use specified custom inventory directory. Default inventory directory is
+    'inventory' directory placed inside cdist distribution under 'cdist'
+    directory along 'conf' directory.
+
+.. option:: -a, --all
+
+    Delete all hosts
+
+.. option:: -f HOSTFILE, --file HOSTFILE
+
+    Read additional hosts to delete from specified file or
+    from stdin if '-' (each host on separate line). If no
+    host or host file is specified then, by default, read
+    from stdin.
+
+
+INVENTORY ADD-TAG
+-----------------
+Add tag(s) to inventory database.
+
+.. option:: host
+
+    list of host(s) for which tags are added
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
+
+    Use specified custom inventory directory. Default inventory directory is
+    'inventory' directory placed inside cdist distribution under 'cdist'
+    directory along 'conf' directory.
+
+.. option:: -f HOSTFILE, --file HOSTFILE
+
+    Read additional hosts to add tags from specified file
+    or from stdin if '-' (each host on separate line). If
+    no host or host file is specified then, by default,
+    read from stdin. If no tags/tagfile nor hosts/hostfile
+    are specified then tags are read from stdin and are
+    added to all hosts.
+
+.. option:: -t TAGLIST, --taglist TAGLIST
+
+    Tag list to be added for specified host(s), comma
+    separated values
+
+.. option:: -T TAGFILE, --tag-file TAGFILE
+
+    Read additional tags to add from specified file or
+    from stdin if '-' (each tag on separate line). If no
+    tag or tag file is specified then, by default, read
+    from stdin. If no tags/tagfile nor hosts/hostfile are
+    specified then tags are read from stdin and are added
+    to all hosts.
+
+
+INVENTORY DEL-TAG
+-----------------
+Delete tag(s) from inventory database.
+
+.. option:: host
+
+    list of host(s) for which tags are deleted
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
+
+    Use specified custom inventory directory. Default inventory directory is
+    'inventory' directory placed inside cdist distribution under 'cdist'
+    directory along 'conf' directory.
+
+.. option:: -a, --all
+
+    Delete all tags for specified host(s)
+
+.. option:: -f HOSTFILE, --file HOSTFILE
+
+    Read additional hosts to delete tags for from
+    specified file or from stdin if '-' (each host on
+    separate line). If no host or host file is specified
+    then, by default, read from stdin. If no tags/tagfile
+    nor hosts/hostfile are specified then tags are read
+    from stdin and are deleted from all hosts.
+
+.. option:: -t TAGLIST, --taglist TAGLIST
+
+    Tag list to be deleted for specified host(s), comma
+    separated values
+
+.. option:: -T TAGFILE, --tag-file TAGFILE
+
+    Read additional tags from specified file or from stdin
+    if '-' (each tag on separate line). If no tag or tag
+    file is specified then, by default, read from stdin.
+    If no tags/tagfile nor hosts/hostfile are specified
+    then tags are read from stdin and are added to all
+    hosts.
+
 
 SHELL
 -----
@@ -143,6 +377,39 @@ EXAMPLES
     % __git
     usage: __git --source SOURCE [--state STATE] [--branch BRANCH]
                  [--group GROUP] [--owner OWNER] [--mode MODE] object_id
+
+    # List inventory content
+    % cdist inventory list
+
+    # List inventory for specified host localhost
+    % cdist inventory list localhost
+
+    # List inventory for specified tag loadbalancer
+    % cdist inventory list -t loadbalancer
+
+    # Add hosts to inventory
+    % cdist inventory add-host web1 web2 web3
+
+    # Delete hosts from file old-hosts from inventory
+    % cdist inventory del-host -f old-hosts
+
+    # Add tags to specifed hosts
+    % cdist inventory add-tag -t europe,croatia,web,static web1 web2
+
+    # Add tag to all hosts in inventory
+    % cdist inventory add-tag -t vm
+
+    # Delete all tags from specified host
+    % cdist inventory del-tag -a localhost
+
+    # Delete tags read from stdin from hosts specified by file hosts
+    % cdist del-tag -T - -f hosts
+
+    # Configure hosts from inventory with any of specified tags
+    % cdist config -t web dynamic
+
+    # Configure hosts from inventory with all specified tags
+    % cdist config -t -a web dynamic
 
 
 ENVIRONMENT

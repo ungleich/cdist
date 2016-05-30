@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2016 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -34,6 +35,7 @@ import cdist.exec.local
 import cdist.exec.remote
 
 from cdist import core
+from cdist import inventory
 
 class Config(object):
     """Cdist main class to hold arbitrary data"""
@@ -110,8 +112,18 @@ class Config(object):
         time_start = time.time()
 
         hostcnt = 0
-        for host in itertools.chain(cls.hosts(args.host),
-                                    cls.hosts(args.hostfile)):
+        if args.tag:
+            if not args.inventory_dir:
+                args.inventory_dir = inventory.dist_inventory_db
+            inv_list = inventory.InventoryList(hosts=args.host,
+                    istag=True, hostfile=args.hostfile,
+                    db_basedir=args.inventory_dir,
+                    has_all_tags=args.has_all_tags)
+            it = inv_list.host_entries()
+        else:
+            it = itertools.chain(cls.hosts(args.host),
+                    cls.hosts(args.hostfile))
+        for host in it:
             hostcnt += 1
             if args.parallel:
                 log.debug("Creating child process for %s", host)
