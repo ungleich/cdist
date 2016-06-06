@@ -23,8 +23,8 @@
 #
 
 # Debug
-exec >&2
-set -x
+#exec >&2
+#set -x
 
 jaildir="$(cat "$__object/parameter/jaildir")"
 
@@ -48,5 +48,5 @@ if [ "$state" = "present" ]; then
 fi   # state=present
 
 # Debug
-set +x
+#set +x
 
