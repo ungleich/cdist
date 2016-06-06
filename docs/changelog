@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Core: Improve error reporting for local and remote run command (Darko Poljak)
+
 4.1.0: 2016-05-27
 	* Documentation: Migrate to reStructuredText format and sphinx (Darko Poljak)
 	* Core: Add -f option to read additional hosts from file/stdin (Darko Poljak)
