@@ -133,6 +133,56 @@ class EmulatorTestCase(test.CdistTestCase):
         self.assertEqual(list(file_object.requirements), ['__planet/mars'])
         # if we get here all is fine
 
+class EmulatorConflictingRequirementsTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.temp_dir = self.mkdtemp()
+        handle, self.script = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
+        base_path = self.temp_dir
+
+        self.local = local.Local(
+            target_host=self.target_host,
+            base_path=base_path,
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
+        self.local.create_files_dirs()
+
+        self.manifest = core.Manifest(self.target_host, self.local)
+        self.env = self.manifest.env_initial_manifest(self.script)
+        self.env['__cdist_object_marker'] = self.local.object_marker_name
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_object_conflicting_requirements_req_none(self):
+        argv = ['__directory', 'spam']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', 'eggs']
+        self.env['require'] = '__directory/spam'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', 'eggs']
+        if 'require' in self.env:
+            del self.env['require']
+        emu = emulator.Emulator(argv, env=self.env)
+        self.assertRaises(cdist.Error, emu.run)
+
+    def test_object_conflicting_requirements_none_req(self):
+        argv = ['__directory', 'spam']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', 'eggs']
+        if 'require' in self.env:
+            del self.env['require']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', 'eggs']
+        self.env['require'] = '__directory/spam'
+        emu = emulator.Emulator(argv, env=self.env)
+        self.assertRaises(cdist.Error, emu.run)
+
 
 class AutoRequireEmulatorTestCase(test.CdistTestCase):
 
@@ -366,3 +416,8 @@ class StdinTestCase(test.CdistTestCase):
             stdin_saved_by_emulator = fd.read()
 
         self.assertEqual(random_string, stdin_saved_by_emulator)
+
+
+if __name__ == '__main__':
+    import unittest
+    unittest.main()
