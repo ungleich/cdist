@@ -21,6 +21,10 @@
 # Retrieve the contents of /etc/hostname
 #
 
+# Almost any distribution
 if [ -f /etc/hostname ]; then
     cat /etc/hostname
+# SuSE
+elif [ -f /etc/HOSTNAME ]; then
+    cat /etc/HOSTNAME
 fi

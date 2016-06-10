@@ -49,6 +49,11 @@ if [ -f /etc/debian_version ]; then
    echo debian
    exit 0
 fi
+
+if [ -f /etc/devuan_version ]; then
+   echo devuan
+   exit 0
+fi
 ###
 
 if [ -f /etc/gentoo-release ]; then
@@ -74,6 +79,11 @@ fi
 
 if grep -q ^Fedora /etc/redhat-release 2>/dev/null; then
    echo fedora
+   exit 0
+fi
+
+if grep -q ^Mitel /etc/redhat-release 2>/dev/null; then
+   echo mitel
    exit 0
 fi
 

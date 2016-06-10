@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2013 Daniel Heule (hda at sfs.biz)
+# 2013-2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
 #
@@ -18,12 +18,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the id from the repo with the uri from parameter repo_uri  - parsed zypper output
+# Retrieve the id from the repo with the uri from parameter uri  - parsed zypper output
 #
 #
-if [ -f "$__object/parameter/repo_uri" ]; then
-   uri="$(cat "$__object/parameter/repo_uri")"
+if [ -f "$__object/parameter/uri" ]; then
+   uri="$(cat "$__object/parameter/uri")"
 else
    uri="$__object_id"
 fi
-echo $(zypper lr -u | grep -E "\<$uri\>" | cut -d'|' -f 1 | grep -E '^[0-9]' )
+echo $(zypper lr -u | grep -F "$uri" | cut -d'|' -f 1 | grep -E '^[0-9]' )

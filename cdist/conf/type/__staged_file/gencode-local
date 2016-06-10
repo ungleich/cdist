@@ -1,0 +1,99 @@
+#!/bin/sh
+#
+# 2015 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2015 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+#set -x
+
+destination="$__object_id"
+source="$(cat "$__object/parameter/source")"
+cksum="$(cat "$__object/parameter/cksum")"
+stage_dir="$(cat "$__object/parameter/stage-dir")"
+state="$(cat "$__object/parameter/state")"
+fetch_command="$(cat "$__object/parameter/fetch-command")"
+stage_file="${stage_dir}/${destination}"
+stage_file_dir="${stage_file%/*}"
+source_file_name="${source##*/}"
+
+if [ "$state" = "absent" ]; then
+   # nothing to do
+   exit 0
+fi
+
+#printf 'set -x\n'
+
+if [ ! -d "$stage_dir" ]; then
+   printf 'mkdir -p "%s"\n' "$stage_dir"
+   printf 'chmod 700 "%s"\n' "$stage_dir"
+fi
+
+if [ ! -d "$stage_file_dir" ]; then
+   printf 'mkdir -p "%s"\n' "$stage_file_dir"
+fi
+
+
+get_file() {
+   if [ -f "$__object/parameter/prepare-command" ]; then
+      fetch_and_prepare_file
+   else
+      fetch_file
+   fi
+}
+
+fetch_file() {
+   printf "$fetch_command" "$source"
+   printf ' > "%s"\n' "$stage_file"
+}
+
+fetch_and_prepare_file() {
+   printf 'tmpdir="$(mktemp -d --tmpdir="/tmp" "%s")"\n' "${__type##*/}.XXXXXXXXXX"
+   printf 'cd "$tmpdir"\n'
+   printf "$fetch_command > \"%s\"\n" "$source" "$source_file_name"
+   prepare_command="$(cat "$__object/parameter/prepare-command")"
+   printf "$prepare_command > \"%s\"\n" "$source_file_name" "$stage_file"
+   printf 'cd - >/dev/null\n'
+   printf 'rm -rf "$tmpdir"\n'
+}
+
+cat << DONE
+verify_cksum() {
+   cksum_is="\$(cksum "$stage_file" | cut -d' ' -f1,2)"
+   cksum_should="$(cat "$__object/parameter/cksum" | cut -d' ' -f1,2)"
+   if [ "\$cksum_is" = "\$cksum_should" ]; then
+      return 0
+   else
+      return 1
+   fi
+}
+DONE
+
+if [ ! -f "$stage_file" ]; then
+   get_file
+else
+   printf 'verify_cksum || {\n'
+   get_file
+   printf '}\n'
+fi
+
+cat << DONE
+verify_cksum || {
+   echo "Failed to verify checksum for $__object_name" >&2
+   exit 1
+}
+DONE

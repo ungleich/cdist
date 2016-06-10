@@ -1,0 +1,81 @@
+#!/bin/sh
+#
+# 2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2015 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+if [ -f "/etc/default/consul" ]; then
+    . /etc/default/consul
+fi
+
+. /lib/lsb/init-functions
+
+NAME=consul
+CONSUL=/usr/local/bin/consul
+CONFIG=/etc/$NAME/conf.d
+PID_FILE=/var/run/$NAME/pidfile
+
+mkdir -p /var/run/$NAME
+chown consul:consul /var/run/$NAME
+chmod 2770 /var/run/$NAME
+
+export PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
+
+case "$1" in
+    start)
+        log_daemon_msg "Starting consul agent" "consul" || true
+        if start-stop-daemon --start --quiet --oknodo \
+            --pidfile "$PID_FILE" --background \
+            --exec $CONSUL -- agent -pid-file="$PID_FILE" -config-dir "$CONFIG"; then
+            log_end_msg 0 || true
+        else
+            log_end_msg 1 || true
+        fi
+    ;;
+
+    stop)
+        log_daemon_msg "Stopping consul agent" "consul" || true
+        if start-stop-daemon --stop --quiet --oknodo --pidfile $PID_FILE; then
+            log_end_msg 0 || true
+        else
+            log_end_msg 1 || true
+        fi
+    ;;
+
+    reload)
+        log_daemon_msg "Reloading consul agent" "consul" || true
+        if start-stop-daemon --stop --signal HUP --quiet --oknodo --pidfile $PID_FILE --exec $CONSUL; then
+            log_end_msg 0 || true
+        else
+            log_end_msg 1 || true
+        fi
+    ;;
+
+    restart)
+        $0 stop && $0 start
+    ;;
+
+    status)
+        status_of_proc -p $PID_FILE $CONSUL consul && exit 0 || exit $?
+    ;;
+
+    *)
+        log_action_msg "Usage: /etc/init.d/consul {start|stop|reload|restart|status}"
+        exit 1
+    ;;
+esac

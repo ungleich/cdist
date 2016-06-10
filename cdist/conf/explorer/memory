@@ -22,6 +22,15 @@
 
 # FIXME: other system types (not linux ...)
 
-if [ -r /proc/meminfo ]; then
-    echo "$(cat /proc/meminfo | grep "MemTotal:" | awk '{print $2}')"
-fi
+os=$("$__explorer/os")
+case "$os" in
+    "macosx")
+        echo "$(sysctl -n hw.memsize)/1024" | bc
+    ;;
+
+    *)
+    if [ -r /proc/meminfo ]; then
+        grep "MemTotal:" /proc/meminfo | awk '{print $2}'
+    fi
+    ;;
+esac

@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# 2014 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Retrieve the status of a package - parsed dpkg output
+#
+
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
+
+# Don't produce "no pkgs installed" output -- breaks things
+PKG_OUTPUT=$(pkg info 2>&1)
+echo -n "$(echo "$PKG_OUTPUT" \
+   | awk '{print $1}' \
+   | sed 's/^\(.*\)-\([^-]*\)$/name:\1 ver:\2/g' \
+   | grep "name:$name ver:" \
+   | sed 's/^.*ver:\(.*\)/\1/g')"
+

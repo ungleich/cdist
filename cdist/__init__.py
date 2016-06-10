@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2010-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -40,8 +40,6 @@ BANNER = """
  "8888P'   `"888*""     R888" `   ^"F        'Y"
    "P'        ""         ""
 """
-
-DOT_CDIST   = ".cdist"
 
 REMOTE_COPY = "scp -o User=root -q"
 REMOTE_EXEC = "ssh -o User=root -q"

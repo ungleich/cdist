@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2015 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -26,6 +26,7 @@ import shutil
 import sys
 import time
 import pprint
+import itertools
 
 import cdist
 
@@ -53,6 +54,27 @@ class Config(object):
         self.local.create_files_dirs()
         self.remote.create_files_dirs()
 
+    @staticmethod
+    def hosts(source):
+        """Yield hosts from source.
+           Source can be a sequence or filename (stdin if \'-\').
+           In case of filename each line represents one host.
+        """
+        if isinstance(source, str):
+            import fileinput
+            try:
+                for host in fileinput.input(files=(source)):
+                    # remove leading and trailing whitespace
+                    yield host.strip()  
+            except (IOError, OSError) as e:
+                raise cdist.Error("Error reading hosts from \'{}\'".format(
+                    source))
+        else:
+            if source:
+                for host in source:
+                    yield host
+
+
     @classmethod
     def commandline(cls, args):
         """Configure remote system"""
@@ -60,6 +82,13 @@ class Config(object):
 
         # FIXME: Refactor relict - remove later
         log = logging.getLogger("cdist")
+
+        if args.manifest == '-' and args.hostfile == '-':
+            raise cdist.Error(("Cannot read both, manifest and host file, " 
+                "from stdin"))
+        # if no host source is specified then read hosts from stdin
+        if not (args.hostfile or args.host):
+            args.hostfile = '-'
     
         initial_manifest_tempfile = None
         if args.manifest == '-':
@@ -79,8 +108,11 @@ class Config(object):
         process = {}
         failed_hosts = []
         time_start = time.time()
-    
-        for host in args.host:
+
+        hostcnt = 0
+        for host in itertools.chain(cls.hosts(args.host),
+                                    cls.hosts(args.hostfile)):
+            hostcnt += 1
             if args.parallel:
                 log.debug("Creating child process for %s", host)
                 process[host] = multiprocessing.Process(target=cls.onehost, args=(host, args, True))
@@ -101,7 +133,7 @@ class Config(object):
                     failed_hosts.append(host)
     
         time_end = time.time()
-        log.info("Total processing time for %s host(s): %s", len(args.host),
+        log.info("Total processing time for %s host(s): %s", hostcnt,
                     (time_end - time_start))
     
         if len(failed_hosts) > 0:
@@ -162,7 +194,8 @@ class Config(object):
     def object_list(self):
         """Short name for object list retrieval"""
         for cdist_object in core.CdistObject.list_objects(self.local.object_path,
-                                                         self.local.type_path):
+                                                         self.local.type_path,
+                                                         self.local.object_marker_name):
             if cdist_object.cdist_type.is_install:
                 self.log.debug("Running in config mode, ignoring install object: {0}".format(cdist_object))
             else:
@@ -229,12 +262,12 @@ class Config(object):
                 for requirement in cdist_object.requirements_unfinished(cdist_object.autorequire):
                     autorequire_names.append(requirement.name)
 
-                requirements = ", ".join(requirement_names)
-                autorequire  = ", ".join(autorequire_names)
-                info_string.append("%s requires: %s autorequires: %s" % (cdist_object.name, requirements, autorequire))
+                requirements = "\n        ".join(requirement_names)
+                autorequire  = "\n        ".join(autorequire_names)
+                info_string.append("%s requires:\n        %s\n%s autorequires:\n        %s" % (cdist_object.name, requirements, cdist_object.name, autorequire))
 
-            raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved: %s" %
-                ("; ".join(info_string)))
+            raise cdist.UnresolvableRequirementsError("The requirements of the following objects could not be resolved:\n%s" %
+                ("\n".join(info_string)))
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""

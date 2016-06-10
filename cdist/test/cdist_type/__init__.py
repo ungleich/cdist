@@ -153,3 +153,10 @@ class TypeTestCase(test.CdistTestCase):
         self.assertFalse('optional2' in cdist_type.parameter_defaults)
         self.assertEqual(cdist_type.parameter_defaults['optional1'], 'value1')
 
+    def test_directory_in_default(self):
+        base_path = fixtures
+        cdist_type = core.CdistType(base_path, '__directory_in_default')
+        self.assertEqual(
+            list(sorted(cdist_type.parameter_defaults.keys())),
+            ['bar', 'foo']
+        )

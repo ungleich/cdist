@@ -1,0 +1,109 @@
+#!/bin/sh
+#
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+set -u
+
+remove_line() {
+   file="$1"
+   line="$2"
+   cat << DONE
+tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
+# preserve ownership and permissions of existing file
+if [ -f "$file" ]; then
+   cp -p "$file" "\$tmpfile"
+fi
+grep -v -F -x '$line' '$file' > \$tmpfile || true
+mv -f "\$tmpfile" "$file"
+DONE
+}
+
+add_line() {
+   file="$1"
+   line="$2"
+   # escape single quotes
+   line_sanitised=$(echo "$line" | sed -e "s/'/'\"'\"'/g")
+   printf '%s' "printf '%s\n' '$line_sanitised' >> $file"
+}
+
+
+file="$(cat "$__object/parameter/file")"
+mkdir "$__object/files"
+
+# Generate the entry as it should be
+(
+   if [ -f "$__object/parameter/option" ]; then
+      # comma seperated list of options
+      options="$(cat "$__object/parameter/option" | tr '\n' ',')"
+      printf '%s ' "${options%*,}"
+   fi
+   if [ -f "$__object/parameter/comment" ]; then
+      # extract the keytype and base64 encoded key ignoring any options and comment
+      printf '%s ' "$(cat "$__object/parameter/key" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
+      # override the comment with the one explicitly given
+      printf '%s' "$(cat "$__object/parameter/comment")"
+   else
+      printf '%s' "$(cat "$__object/parameter/key")"
+   fi
+   printf '\n'
+) > "$__object/files/should"
+
+# Remove conflicting entries if any
+if [ -s "$__object/explorer/entry" ]; then
+   # Note that the files have to be sorted for comparison with `comm`.
+   sort "$__object/explorer/entry" > "$__object/files/is"
+   comm -13 "$__object/files/should" "$__object/files/is" | {
+      while read entry; do
+         remove_line "$file" "$entry"
+      done
+   }
+fi
+
+# Determine the current state
+entry="$(cat "$__object/files/should")"
+state_should="$(cat "$__object/parameter/state")"
+num_existing_entries=$(grep -c -F -x "$entry" "$__object/explorer/entry" || true)
+if [ $num_existing_entries -eq 1 ]; then
+   state_is="present"
+else
+   # Posix grep does not define the -m option, so we can not remove a single
+   # occurence of a string from a file in the `remove_line` function. Instead
+   # _all_ occurences are removed.
+   # By using `comm` to detect conflicting entries this could lead to the
+   # situation that the key we want to add is actually removed.
+   # To workaround this we must treat 0 or more then 1 existing entries to
+   # mean current state is 'absent'. By doing this, the key is readded
+   # again after cleaning up conflicting entries.
+   state_is="absent"
+fi
+
+# Manage the actual entry as it should be
+if [ "$state_should" = "$state_is" ]; then
+   # Nothing to do
+   exit 0
+fi
+
+case "$state_should" in
+   present)
+      add_line "$file" "$entry"
+   ;;
+   absent)
+      remove_line "$file" "$entry"
+   ;;
+esac

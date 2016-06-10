@@ -1,0 +1,133 @@
+#!/bin/sh
+#
+# 2015 Dominique Roux (dominique.roux4 at gmail.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+#get params
+section=$(cat "$__object/parameter/section")
+key=$(cat "$__object/parameter/key")
+value=$(cat "$__object/parameter/value")
+file=$(cat "$__object/parameter/file" 2>/dev/null)
+state=$(cat "$__object/parameter/state" 2>/dev/null)
+
+#path variable default /etc/pacman.d
+sec_path="/etc/pacman.d"
+
+#allowed keys (from man pacman.conf)
+allowed_option_keys="RootDir DBPath CacheDir GPGDir LogFile HoldPkg IgnorePkg IgnoreGroup Include Architecture XferCommand NoUpgrade NoExtract CleanMethod SigLevel LocalFileSigLevel RemoteFileSigLevel"
+boolean_option_keys="UseSyslog Color UseDelta TotalDownload CheckSpace VerbosePkgLists"
+allowed_repo_keys="Include Server SigLevel Usage"
+
+#set global variables
+MATCH=0
+
+#function for check if array contain string
+contains_element() {
+
+    MATCH=0
+
+    target=$1
+    shift
+
+    for key in "$@"; do
+        if [ "${key}" = "${target}" ]; then
+            MATCH=1
+            return 0
+        fi  
+    done
+    MATCH=0
+}
+
+if [ "${file}" ]; then
+    __file "${sec_path}/plain_file_${file}"\
+        --state exists --mode 666
+
+    if [ "${state}" = "present" ]; then
+
+        require="__file/${sec_path}/plain_file_${file}" __key_value ${file}_${key}\
+            --file ${sec_path}/plain_file_${file} --key ${key} --value ${value} --delimiter ' = '
+
+        exit 0
+
+    elif [ "${state}" = "absent" ]; then
+        require="__file/${sec_path}/plain_file_${file}" __key_value ${file}_${key}\
+                --state absent
+        exit 0
+
+    else
+        echo "ERROR: Unknown state: ${state}" >&2
+        exit 0
+    fi
+fi  
+
+if [ "${section}" = "options" ]; then
+
+    __file "${sec_path}/${section}"\
+            --state exists --mode 666 --source - << eof
+[${section}]
+eof
+    #check if key is valid
+    #check for boolean value
+    contains_element "${key}" "${boolean_option_keys}"
+
+    if [ "${MATCH}" -eq 1 ]; then
+        if [ "${value}" = "on" ]; then
+            require="__file/${sec_path}/${section}" __line ${key}_${value}\
+                --file ${sec_path}/${section} --line ${key}
+        elif [ "${value}" = "off" ]; then
+            require="__file/${sec_path}/${section}" __line ${key}_${value}\
+                --file ${sec_path}/${section} --line ${key} --state absent
+        fi
+        
+    else
+        contains_element "${key}" "${allowed_option_keys}"
+
+        if [ "${MATCH}" -eq 1 ]; then
+            require="__file/${sec_path}/${section}" __key_value ${section}_${key}\
+                    --file ${sec_path}/${section} --key ${key} --value ${value} --delimiter ' = '
+        else
+            echo "Key: ${key} is not valid. Have a look at man pacman.conf" >&2
+        fi
+    fi
+
+else 
+        __file "${sec_path}/repo_${section}"\
+            --state exists --mode 666 --source - << eof
+[${section}]
+eof
+    if [ "${state}" = "present" ]; then
+
+        #check if key is valid
+        contains_element "${key}" "${allowed_repo_keys}"
+        if [ ${MATCH} -eq 0 ]; then
+            exit
+        fi
+    
+        require="__file/${sec_path}/repo_${section}" __key_value ${section}_${key}\
+                --file ${sec_path}/repo_${section} --key ${key} --value ${value} --delimiter ' = '
+
+    elif [ "${state}" = "absent" ]; then
+
+        require="__file/${sec_path}/repo_${section}" __key_value ${section}_${key}\
+            --state absent
+
+    else
+        echo "ERROR: Unknown state: ${state}" >&2
+    fi
+
+fi

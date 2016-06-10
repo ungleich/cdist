@@ -1,0 +1,95 @@
+#!/bin/bash
+#
+# /etc/rc.d/init.d/consul
+#
+# Daemonize the consul agent.
+#
+# chkconfig: 2345 95 95
+# description: Service discovery and configuration made easy. \
+# Distributed, highly available, and datacenter-aware.
+# processname: consul
+# pidfile: /var/run/consul/pidfile
+
+# Source function library.
+. /etc/init.d/functions
+NAME=consul
+CONSUL=/usr/local/bin/consul
+CONFIG=/etc/$NAME/conf.d
+PID_FILE=/var/run/$NAME/pidfile
+LOG_FILE=/var/log/$NAME
+
+[ -e /etc/sysconfig/$NAME ] && . /etc/sysconfig/$NAME
+export GOMAXPROCS=${GOMAXPROCS:-2}
+
+mkdir -p /var/run/$NAME
+chown consul:consul /var/run/$NAME
+chmod 2770 /var/run/$NAME
+
+
+start() {
+   echo -n "Starting $NAME: "
+   daemon --user=consul \
+      --pidfile="$PID_FILE" \
+      "$CONSUL" agent -pid-file="$PID_FILE" -config-dir "$CONFIG" >> "$LOG_FILE" &
+   retcode=$?
+   touch /var/lock/subsys/$NAME
+   return $retcode
+}
+
+stop() {
+   echo -n "Shutting down $NAME: "
+   killproc -p "$PID_FILE" $NAME
+   retcode=$?
+   rm -f /var/lock/subsys/$NAME
+   return $retcode
+}
+
+case "$1" in
+   start)
+      if $(status -p "$PID_FILE" $NAME >/dev/null); then
+         echo "$NAME already running"
+      else
+         start
+      fi
+   ;;
+   stop)
+      if $(status -p "$PID_FILE" $NAME >/dev/null); then
+         stop
+      else
+         echo "$NAME not running"
+      fi
+   ;;
+   info)
+      "$CONSUL" info
+   ;;
+   status)
+      status -p "$PID_FILE" $NAME
+      exit $?
+   ;;
+   restart)
+      if $(status -p "$PID_FILE" $NAME >/dev/null); then
+         stop
+      fi
+      start
+   ;;
+   reload)
+      if $(status -p "$PID_FILE" $NAME >/dev/null); then
+         kill -HUP `cat $PID_FILE`
+      else
+         echo "$NAME not running"
+      fi
+   ;;
+   condrestart)
+      if [ -f /var/lock/subsys/$NAME ]; then
+         if $(status -p "$PID_FILE" $NAME >/dev/null); then
+            stop
+         fi
+         start
+      fi
+   ;;
+   *)
+      echo "Usage: $NAME {start|stop|status|reload|restart|condrestart|info}"
+      exit 1
+   ;;
+esac
+exit $?

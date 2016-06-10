@@ -23,7 +23,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-    ubuntu|debian|archlinux)
+    ubuntu|debian|archlinux|devuan)
         __package autofs --state present
         __start_on_boot autofs --state present
     ;;

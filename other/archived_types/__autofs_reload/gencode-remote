@@ -28,7 +28,7 @@ not_supported() {
 }
 
 case "$os" in
-   ubuntu|debian|archlinux)
+   ubuntu|debian|archlinux|devuan)
       echo "pkill -HUP automount"
    ;;
    *)

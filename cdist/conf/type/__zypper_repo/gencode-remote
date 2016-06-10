@@ -25,7 +25,7 @@
 #exec >&2
 #set -x
 
-zypper_def_opts=" -q "
+zypper_def_opts=" -q --non-interactive --gpg-auto-import-keys "
 
 if [ -f "$__object/parameter/repo_desc" ]; then
    desc="$(cat "$__object/parameter/repo_desc")"
@@ -33,8 +33,8 @@ else
    desc="$__object_id"
 fi
 
-if [ -f "$__object/parameter/repo_uri" ]; then
-   uri="$(cat "$__object/parameter/repo_uri")"
+if [ -f "$__object/parameter/uri" ]; then
+   uri="$(cat "$__object/parameter/uri")"
 else
    uri="$__object_id"
 fi
@@ -65,7 +65,7 @@ fi
 case "$state" in
    present)
          if [ -z "$desc" ] || [ -z "$uri" ]; then
-             echo "parameter repo_desc and repo_uri for $state needed" >&2
+             echo "parameter repo_desc and uri for $state needed" >&2
              exit 4
          fi
          if [ -z "$repo_id" ]; then

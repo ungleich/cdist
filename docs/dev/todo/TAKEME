@@ -5,10 +5,6 @@ Feel free to pick one!
 
 CORE
 ----
-- support default parameter
-- document and add paremeters for remote-copy and remote-exec!
-    - remove hack, make a feature of it
-
 - remove var=foo calls on remote side. Use -o SendEnv (yeah, see ssh_config(5))
 
 TESTS
@@ -23,9 +19,6 @@ TESTS
 
 USER INTERFACE
 --------------
-- How to cleanly implement "restart service if config file changed"
-    -> document
-
 - Cache
    - add example how to use 
    - export variable $__cache
@@ -45,7 +38,6 @@ TYPES
 - Add testing framework (proposed by Evax Software)
 - __user
    add option to include --create-home
-- Merge __addifnosuchline and __removeline into __line + --state present|absent
 - __cron: Support --file to be used instead of user cron (probably direct support
     of /etc/cron.d)
 

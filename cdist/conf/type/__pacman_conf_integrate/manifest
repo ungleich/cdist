@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# 2015 Dominique Roux (dominique.roux4 at gmail.com
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+state=$(cat $__object/parameter/state 2>/dev/null)
+
+path="/etc/"
+
+if [ "${state}" = "present" ]; then
+    __file /etc/pacman.conf\
+        --owner root --group root --mode 644 --source $__type/files/pacman.conf.cdist
+
+    __file /etc/pacman.d/options\
+        --owner root --group root --mode 644 --source $__type/files/options
+
+    __file /etc/pacman.d/repo_empty_placeholder\
+        --owner root --group root --mode 644
+
+    __file /etc/pacman.d/plain_file_empty_placeholder\
+        --owner root --group root --mode 644
+
+elif [ "${state}" = "absent" ]; then
+
+    __file /etc/pacman.conf\
+        --owner root --group root --mode 644 --source $__type/files/pacman.conf.pacman
+
+    __file /etc/pacman.d/mirrorlist\
+        --owner root --group root --mode 644 --source $__type/files/mirrorlist
+
+    __file /etc/pacman.d/options\
+        --state absent
+
+    __file /etc/pacman.d/repo_empty_placeholder\
+        --state absent
+
+    __file /etc/pacman.d/plain_file_empty_placeholder\
+        --state absent
+
+else
+
+    echo "ERROR: Unknown state: ${state}" >&2
+
+fi

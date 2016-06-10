@@ -18,8 +18,6 @@
 #
 #
 
-A2XM=a2x -f manpage --no-xmllint -a encoding=UTF-8
-A2XH=a2x -f xhtml --no-xmllint -a encoding=UTF-8
 helper=./bin/build-helper
 
 MANDIR=docs/man
@@ -28,7 +26,7 @@ TYPEDIR=cdist/conf/type
 
 WEBSRCDIR=docs/web
 
-WEBDIR=$$HOME/www.nico.schottelius.org
+WEBDIR=$$HOME/vcs/www.nico.schottelius.org
 WEBBLOG=$(WEBDIR)/blog
 WEBBASE=$(WEBDIR)/software/cdist
 WEBPAGE=$(WEBBASE).mdwn
@@ -38,6 +36,8 @@ CHANGELOG_FILE=docs/changelog
 
 PYTHON_VERSION=cdist/version.py
 
+SPHINXM=make -C $(MANDIR) man
+SPHINXH=make -C $(MANDIR) html
 ################################################################################
 # Manpages
 #
@@ -45,64 +45,48 @@ MAN1DSTDIR=$(MANDIR)/man1
 MAN7DSTDIR=$(MANDIR)/man7
 
 # Manpages #1: Types
-# Use shell / ls to get complete list - $(TYPEDIR)/*/man.text does not work
-MANTYPESRC=$(shell ls $(TYPEDIR)/*/man.text)
-
-# replace first path component
+# Use shell / ls to get complete list - $(TYPEDIR)/*/man.rst does not work
+MANTYPESRC=$(shell ls $(TYPEDIR)/*/man.rst)
 MANTYPEPREFIX=$(subst $(TYPEDIR)/,$(MAN7DSTDIR)/cdist-type,$(MANTYPESRC))
+MANTYPES=$(subst /man.rst,.rst,$(MANTYPEPREFIX))
 
-# replace man.text with .7 or .html
-MANTYPEMAN=$(subst /man.text,.7,$(MANTYPEPREFIX))
-MANTYPEHTML=$(subst /man.text,.html,$(MANTYPEPREFIX))
-MANTYPEALL=$(MANTYPEMAN) $(MANTYPEHTML)
-
-# Link manpage so A2XH does not create man.html but correct named file
-$(MAN7DSTDIR)/cdist-type%.text: $(TYPEDIR)/%/man.text
+# Link manpage: do not create man.html but correct named file
+$(MAN7DSTDIR)/cdist-type%.rst: $(TYPEDIR)/%/man.rst
 	ln -sf "../../../$^" $@
 
 # Manpages #2: reference
-MANREF=$(MAN7DSTDIR)/cdist-reference.text
-MANREFSH=$(MANDIR)/cdist-reference.text.sh
-MANREFMAN=$(MANREF:.text=.7)
-MANREFHTML=$(MANREF:.text=.html)
-MANREFALL=$(MANREFMAN) $(MANREFHTML)
+MANREF=$(MAN7DSTDIR)/cdist-reference.rst
+MANREFSH=$(MANDIR)/cdist-reference.rst.sh
 
 $(MANREF): $(MANREFSH)
 	$(MANREFSH)
 
-# Manpages #3: static pages
-MAN1STATIC=$(shell ls $(MAN1DSTDIR)/*.text)
-MAN7STATIC=$(shell ls $(MAN7DSTDIR)/*.text)
-MANSTATICMAN=$(MAN1STATIC:.text=.1) $(MAN7STATIC:.text=.7)
-MANSTATICHTML=$(MAN1STATIC:.text=.html) $(MAN7STATIC:.text=.html)
-MANSTATICALL=$(MANSTATICMAN) $(MANSTATICHTML)
+# Manpages #3: generic part
+mansphinxman: $(MANTYPES) $(MANREF)
+	$(SPHINXM)
 
-# Manpages #4: generic part
+mansphinxhtml: $(MANTYPES) $(MANREF)
+	$(SPHINXH)
 
-# Creating the type manpage
-%.1 %.7: %.text
-	$(A2XM) $^
-
-# Creating the type html page
-%.html: %.text
-	$(A2XH) $^
-
-man: $(MANTYPEALL) $(MANREFALL) $(MANSTATICALL)
+man: mansphinxman mansphinxhtml
 
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
+MANBUILDDIR=$(MANDIR)/_build/html
 
-man-dist: man check-date
+man-dist: man
 	rm -rf "${MANWEBDIR}"
-	mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
-	cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${MANWEBDIR}/man1
-	cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
+	mkdir -p "${MANWEBDIR}"
+	# mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
+	# cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${MANWEBDIR}/man1
+	# cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
+	cp -R ${MANBUILDDIR}/* ${MANWEBDIR}
 	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)" || true
 
 man-latest-link: web-pub
 	# Fix ikiwiki, which does not like symlinks for pseudo security
-	ssh tee.schottelius.org \
-    	"cd /home/services/www/nico/www.nico.schottelius.org/www/software/cdist/man && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
+	ssh staticweb.ungleich.ch \
+		"cd /home/services/www/nico/nico.schottelius.org/www/software/cdist/man/ && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
 
 ################################################################################
 # Speeches
@@ -163,17 +147,6 @@ ml-release: $(ML_FILE)
 
 
 ################################################################################
-# Release: Freecode
-#
-FREECODE_FILE=.lock-freecode
-
-$(FREECODE_FILE): $(CHANGELOG_FILE)
-	$(helper) freecode-release $(CHANGELOG_VERSION)
-	touch $@
-
-freecode-release: $(FREECODE_FILE)
-
-################################################################################
 # pypi
 #
 PYPI_FILE=.pypi-release
@@ -189,7 +162,7 @@ ARCHLINUX_FILE=.lock-archlinux
 ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
 
 $(ARCHLINUXTAR): PKGBUILD
-	makepkg -c --source
+	umask 022; mkaurball
 
 PKGBUILD: PKGBUILD.in $(PYTHON_VERSION)
 	./PKGBUILD.in $(CHANGELOG_VERSION)
@@ -219,14 +192,12 @@ release:
 #
 
 clean:
-	rm -f $(MAN7DSTDIR)/cdist-reference.text
+	rm -f $(MAN7DSTDIR)/cdist-reference.rst
 
 	find "$(MANDIR)" -mindepth 2 -type l \
-	    -o -name "*.1" \
-	    -o -name "*.7" \
-	    -o -name "*.html" \
-	    -o -name "*.xml" \
 	| xargs rm -f
+
+	make -C $(MANDIR) clean
 
 	find * -name __pycache__  | xargs rm -rf
 
@@ -246,10 +217,7 @@ distclean: clean
 
 # The pub is Nico's "push to all git remotes" way ("make pub")
 pub:
-	for remote in "" github sf; do \
-		echo "Pushing to $$remote"; \
-		git push --mirror $$remote; \
-	done
+	git push --mirror
 
 test:
 	$(helper) $@

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011-2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2016 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -21,9 +21,8 @@
 name="$__object_id"
 
 __package software-properties-common
-__package python-software-properties
 
-require="__package/software-properties-common __package/python-software-properties" \
+require="__package/software-properties-common" \
    __file /usr/local/bin/remove-apt-repository \
    --source "$__type/files/remove-apt-repository" \
    --mode 0755
