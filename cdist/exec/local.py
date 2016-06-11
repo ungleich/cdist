@@ -34,7 +34,7 @@ import cdist
 import cdist.message
 from cdist import core
 
-CONF_SUBDIRS_LINKED = [ "explorer", "files", "manifest", "type" ]:
+CONF_SUBDIRS_LINKED = [ "explorer", "files", "manifest", "type" ]
 
 class Local(object):
     """Execute commands locally.
@@ -111,6 +111,7 @@ class Local(object):
         self.global_explorer_out_path = os.path.join(self.base_path, "explorer")
         self.object_path = os.path.join(self.base_path, "object")
         self.messages_path = os.path.join(self.base_path, "messages")
+        self.files_path = os.path.join(self.conf_path, "files")
 
         # Depending on conf_path
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")

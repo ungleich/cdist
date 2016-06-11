@@ -81,6 +81,7 @@ class ManifestTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
         self.assertEqual(output_dict['__manifest'], self.local.manifest_path)
+        self.assertEqual(output_dict['__files'], self.local.files_path)
 
     def test_type_manifest_environment(self):
         cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
@@ -105,6 +106,7 @@ class ManifestTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
         self.assertEqual(output_dict['__object_name'], cdist_object.name)
+        self.assertEqual(output_dict['__files'], self.local.files_path)
 
     def test_debug_env_setup(self):
         current_level = self.log.getEffectiveLevel()
@@ -112,3 +114,8 @@ class ManifestTestCase(test.CdistTestCase):
         manifest = cdist.core.manifest.Manifest(self.target_host, self.local)
         self.assertTrue("__cdist_debug" in manifest.env)
         self.log.setLevel(current_level)
+
+
+if __name__ == '__main__':
+    import unittest
+    unittest.main()

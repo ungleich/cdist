@@ -10,4 +10,5 @@ __self: $__self
 __object: $__object
 __object_id: $__object_id
 __object_name: $__object_name
+__files: $__files
 DONE

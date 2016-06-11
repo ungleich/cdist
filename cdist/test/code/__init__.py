@@ -82,6 +82,7 @@ class CodeTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
         self.assertEqual(output_dict['__object_name'], self.cdist_object.name)
+        self.assertEqual(output_dict['__files'], self.local.files_path)
 
     def test_run_gencode_remote_environment(self):
         output_string = self.code.run_gencode_remote(self.cdist_object)
@@ -97,6 +98,7 @@ class CodeTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__object'], self.cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], self.cdist_object.object_id)
         self.assertEqual(output_dict['__object_name'], self.cdist_object.name)
+        self.assertEqual(output_dict['__files'], self.local.files_path)
 
     def test_transfer_code_remote(self):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
@@ -112,3 +114,7 @@ class CodeTestCase(test.CdistTestCase):
         self.cdist_object.code_remote = self.code.run_gencode_remote(self.cdist_object)
         self.code.transfer_code_remote(self.cdist_object)
         self.code.run_code_remote(self.cdist_object)
+
+if __name__ == '__main__':
+    import unittest
+    unittest.main()
