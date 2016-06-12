@@ -60,6 +60,7 @@ class Shell(object):
             '__target_host': self.target_host,
             '__manifest': self.local.manifest_path,
             '__explorer': self.local.global_explorer_path,
+            '__files': self.local.files_path,
         }
 
         self.env.update(additional_env)
