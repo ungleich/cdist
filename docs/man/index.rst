@@ -4,9 +4,28 @@ Welcome to cdist documentation
 Contents:
 
 .. toctree::
-   :titlesonly:
+   :maxdepth: 2
    :glob:
    :numbered:
 
-   man1/*
-   man7/*
+   cdist-intro
+   cdist-why
+   cdist-os
+   cdist-install
+   cdist-update
+   cdist-support
+   cdist-features
+   cdist-quickstart
+   man1/cdist
+   cdist-bootstrap
+   cdist-manifest
+   cdist-type
+   cdist-types
+   cdist-explorer
+   cdist-messaging
+   cdist-reference
+   cdist-best-practice
+   cdist-stages
+   cdist-remote-exec-copy
+   cdist-hacker
+   cdist-troubleshooting

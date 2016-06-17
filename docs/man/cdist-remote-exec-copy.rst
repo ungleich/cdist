@@ -1,15 +1,6 @@
-cdist-remote-exec-copy(7)
-=========================
+Remote exec and copy commands
+=============================
 
-NAME
-----
-cdist-remote-exec-copy - How to use remote exec and copy
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-INTRO
------
 Cdist interacts with the target host in two ways:
 
 - it executes code (__remote_exec)
@@ -30,19 +21,3 @@ For __remote_copy, it must behave like scp.
 With this simple interface the user can take total control of how cdist
 interacts with the target when required, while the default implementation 
 remains as simple as possible.
-
-
-EXAMPLES
---------
-See cdist/other/examples/remote/ for some example implementations.
-
-
-SEE ALSO
---------
-- `cdist(1) <../man1/cdist.html>`_
-
-
-COPYING
--------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

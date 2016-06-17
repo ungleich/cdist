@@ -1,30 +1,17 @@
-cdist-quickstart(7)
-===================
+Quickstart
+==========
 
-NAME
-----
-cdist-quickstart - Jump in and enjoy cdist
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-INTRODUCTION
-------------
 This tutorial is aimed at people learning cdist and shows
 typical approaches as well as gives an easy start into
 the world of configuration management.
 
-This tutorial assumes you are configuring **localhost**, because
-it is always available. Just replace **localhost** with your target
-host for real life usage.
-
-
-
-QUICK START - GET YOUR HANDS DIRTY NOW
---------------------------------------
 For those who just want to configure a system with the
 cdist configuration management and do not need (or want)
 to understand everything.
+
+This tutorial assumes you are configuring **localhost**, because
+it is always available. Just replace **localhost** with your target
+host for real life usage.
 
 Cdist uses **ssh** for communication and transportation
 and usually logs into the **target host** as the
@@ -84,15 +71,3 @@ code into your shell to get started and configure localhost::
 That's it, you've successfully used cdist to configure your first host!
 Continue reading the next sections, to understand what you did and how
 to create a more sophisticated configuration.
-
-
-SEE ALSO
---------
-- `cdist(1) <../man1/cdist.html>`_
-- `cdist-tutorial(7) <cdist-tutorial.html>`_
-
-
-COPYING
--------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

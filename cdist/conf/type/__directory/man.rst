@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__directory - Manage a directory
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
 
 DESCRIPTION
 -----------
@@ -92,7 +90,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

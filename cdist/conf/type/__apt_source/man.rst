@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__apt_source - Manage apt sources
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 DESCRIPTION
 -----------
@@ -60,7 +58,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

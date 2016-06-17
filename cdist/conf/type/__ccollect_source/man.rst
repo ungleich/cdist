@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__ccollect_source - Manage ccollect sources
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
 
 DESCRIPTION
 -----------
@@ -55,9 +53,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- ccollect(1)
-- http://www.nico.schottelius.org/software/ccollect/
+ccollect(1)
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+ccollect documentation at:
+<http://www.nico.schottelius.org/software/ccollect/>.
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__cdistmarker - Add a timestamped cdist marker.
 
-Daniel Maher <phrawzty+cdist--@--gmail.com>
-
 
 DESCRIPTION
 -----------
@@ -46,7 +44,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdisty-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Daniel Maher <phrawzty+cdist--@--gmail.com>
 
 
 COPYING

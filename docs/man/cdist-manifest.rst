@@ -1,14 +1,7 @@
-cdist-manifest(7)
-=================
+Manifest
+========
 
-NAME
-----
-cdist-manifest - (Re-)Use types
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-DESCRIPTION
+Description
 -----------
 Manifests are used to define which objects to create.
 Objects are instances of **types**, like in object oriented programming languages.
@@ -44,15 +37,15 @@ In general, manifests are used to define which types are used depending
 on given conditions.
 
 
-INITIAL AND TYPE MANIFESTS
+Initial and type manifests
 --------------------------
 Cdist knows about two types of manifests: The initial manifest and type
 manifests. The initial manifest is used to define, which configurations
 to apply to which hosts. The type manifests are used to create objects
-from types. More about manifests in types can be found in cdist-type(7).
+from types. More about manifests in types can be found in `cdist type <cdist-type.html>`_.
 
 
-DEFINE STATE IN THE INITIAL MANIFEST
+Define state in the initial manifest
 ------------------------------------
 The **initial manifest** is the entry point for cdist to find out, which
 **objects** to configure on the selected host.
@@ -82,12 +75,12 @@ utilises cdist types. Every available type can be executed like a normal
 command.
 
 
-SPLITTING UP THE INITIAL MANIFEST
+Splitting up the initial manifest
 ---------------------------------
 If you want to split up your initial manifest, you can create other shell
 scripts in **cdist/conf/manifest/** and include them in **cdist/conf/manifest/init**.
 Cdist provides the environment variable **__manifest** to reference
-the directory containing the initial manifest (see cdist-reference(7)).
+the directory containing the initial manifest (see `cdist reference <cdist-reference.html>`_).
 
 The following example would include every file with a **.sh** suffix::
 
@@ -98,7 +91,7 @@ The following example would include every file with a **.sh** suffix::
     done
 
 
-DEPENDENCIES
+Dependencies
 ------------
 If you want to describe that something requires something else, just
 setup the variable "require" to contain the requirements. Multiple
@@ -157,10 +150,10 @@ from the type that is calling them. This is called "autorequirement" in
 cdist jargon.
 
 You can find an more in depth description of the flow execution of manifests
-in cdist-stages(7) and of how types work in cdist-type(7).
+in `cdist execution stages <cdist-stages.html>`_ and of how types work in `cdist type <cdist-type.html>`_.
 
 
-CREATE DEPENDENCIES FROM EXECUTION ORDER
+Create dependencies from execution order
 -----------------------------------------
 You can tell cdist to execute all types in the order in which they are created 
 in the manifest by setting up the variable CDIST_ORDER_DEPENDENCY.
@@ -171,7 +164,7 @@ It essentially helps you to build up blocks of code that build upon each other
 (like first creating the directory xyz than the file below the directory).
 
 
-OVERRIDES
+Overrides
 ---------
 In some special cases, you would like to create an already defined object 
 with different parameters. In normal situations this leads to an error in cdist.
@@ -187,7 +180,7 @@ CDIST_ORDER_DEPENDENCY will be ignored, because adding a dependency in case of
 overrides would result in circular dependencies, which is an error.
 
 
-EXAMPLES
+Examples
 --------
 The initial manifest may for instance contain the following code:
 
@@ -260,15 +253,3 @@ Dependencies defined by execution order work as following:
     require="__some_type_somewhere/id __sample_type/1" __sample_type 2
     require="__sample_type/2" __example_type 23
     __not_in_order_type 42
-
-
-SEE ALSO
---------
-- `cdist-tutorial(7) <cdist-tutorial.html>`_
-- `cdist-type(7) <cdist-type.html>`_
-
-
-COPYING
--------
-Copyright \(C) 2010-2014 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

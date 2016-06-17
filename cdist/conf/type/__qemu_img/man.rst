@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__qemu_img - Manage VM disk images
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
 
 DESCRIPTION
 -----------
@@ -39,8 +37,15 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- qemu-img(1)
+qemu-img(1)
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

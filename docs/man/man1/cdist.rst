@@ -5,8 +5,6 @@ NAME
 ----
 cdist - Usable Configuration Management
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
 
 SYNOPSIS
 --------
@@ -179,9 +177,11 @@ The following exit values shall be returned:
 
 SEE ALSO
 --------
-- `cdist-type(7) <../man7/cdist-type.html>`_
-- `cdist-reference(7) <../man7/cdist-reference.html>`_
+Full documentation at: <:cdist_docs:`index`>.
 
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 COPYING
 -------

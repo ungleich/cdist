@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__mysql_database - Manage a MySQL database
 
-Benedikt Koeppel <code@benediktkoeppel.ch>
-
 
 DESCRIPTION
 -----------
@@ -40,7 +38,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Benedikt Koeppel <code@benediktkoeppel.ch>
 
 
 COPYING

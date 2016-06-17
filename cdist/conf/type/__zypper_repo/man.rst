@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__zypper_repo - Repository management with zypper
 
-Daniel Heule <hda--@--sfs.biz>
-
 
 DESCRIPTION
 -----------
@@ -64,7 +62,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Daniel Heule <hda--@--sfs.biz>
 
 
 COPYING

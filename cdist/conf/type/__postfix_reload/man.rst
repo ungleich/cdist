@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__postfix_reload - Tell postfix to reload its configuration
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 DESCRIPTION
 -----------
@@ -33,7 +31,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

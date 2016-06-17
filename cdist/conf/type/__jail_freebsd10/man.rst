@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__jail_freeebsd10 - Manage FreeBSD jails
 
-Jake Guffey <jake.guffey--@--jointheirstm.org>
-
 
 DESCRIPTION
 -----------
@@ -109,7 +107,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Jake Guffey <jake.guffey--@--jointheirstm.org>
 
 
 COPYING

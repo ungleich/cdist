@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__postfix_postconf - Configure postfix main.cf
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 DESCRIPTION
 -----------
@@ -40,8 +38,15 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- postconf(5)
+postconf(5)
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

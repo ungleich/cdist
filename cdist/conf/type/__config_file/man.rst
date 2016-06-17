@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__config_file - _Manages config files
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 DESCRIPTION
 -----------
@@ -50,8 +48,15 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__file(7) <cdist-type__file.html>`_
+`cdist-type__file(7) <cdist-type__file.html>`_
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

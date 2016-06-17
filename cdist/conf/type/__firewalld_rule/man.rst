@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__firewalld_rule - Configure firewalld rules
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
 
 DESCRIPTION
 -----------
@@ -67,9 +65,16 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__iptables_rule(7) <cdist-type__iptables_rule.html>`_
-- firewalld(8)
+`cdist-type__iptables_rule(7) <cdist-type__iptables_rule.html>`_,
+firewalld(8)
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__pacman_conf_integrate - Integrate default pacman.conf to cdist conform and vice versa
 
-Dominique Roux <dominique.roux4@gmail.com>
-
 
 DESCRIPTION
 -----------
@@ -37,8 +35,15 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- grep(1)
+grep(1)
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Dominique Roux <dominique.roux4@gmail.com>
 
 
 COPYING

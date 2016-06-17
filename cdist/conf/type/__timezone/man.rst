@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__timezone - Allows one to configure the desired localtime timezone.
 
-Ramon Salvadó <rsalvado--@--gnuine--dot--com>
-
 
 DESCRIPTION
 -----------
@@ -38,7 +36,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Ramon Salvadó <rsalvado--@--gnuine--dot--com>
 
 
 COPYING

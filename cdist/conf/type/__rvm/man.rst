@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__rvm - Install rvm for a given user
 
-Evax Software <contact@evax.fr>
-
 
 DESCRIPTION
 -----------
@@ -33,10 +31,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__rvm_ruby(7) <cdist-type__rvm_ruby.html>`_
-- `cdist-type__rvm_gemset(7) <cdist-type__rvm_gemset.html>`_
-- `cdist-type__rvm_gem(7) <cdist-type__rvm_gem.html>`_
+`cdist-type__rvm_gem(7) <cdist-type__rvm_gem.html>`_,
+`cdist-type__rvm_gemset(7) <cdist-type__rvm_gemset.html>`_,
+`cdist-type__rvm_ruby(7) <cdist-type__rvm_ruby.html>`_
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Evax Software <contact@evax.fr>
 
 
 COPYING
