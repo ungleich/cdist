@@ -26,6 +26,7 @@ import sys
 import glob
 import subprocess
 import logging
+import cdist.exec.util as exec_util
 
 import cdist
 
@@ -167,12 +168,14 @@ class Remote(object):
 
         self.log.debug("Remote run: %s", command)
         try:
+            output = exec_util.call_get_output(command, env=os_environ)
+            self.log.debug("Remote output: {}".format(output))
             if return_output:
-                return subprocess.check_output(command, env=os_environ).decode()
-            else:
-                subprocess.check_call(command, env=os_environ)
-        except subprocess.CalledProcessError:
-            raise cdist.Error("Command failed: " + " ".join(command))
+                return output.decode()
+        except subprocess.CalledProcessError as e:
+            raise cdist.Error("Command failed: " + " ".join(command)
+                    + " with returncode: {} and output: {}".format(
+                        e.returncode, e.output))
         except OSError as error:
             raise cdist.Error(" ".join(command) + ": " + error.args[1])
         except UnicodeDecodeError:
