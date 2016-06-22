@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Core: Improve error reporting for local and remote run command (Darko Poljak)
 	* New type: __jail_freebsd9: Handle jail management on FreeBSD <= 9.X (Jake Guffey)
 	* New type: __jail_freebsd10: Handle jail management on FreeBSD >= 10.0 (Jake Guffey)
 	* Type __jail: Dynamically select the correct jail subtype based on target host OS (Jake Guffey)
