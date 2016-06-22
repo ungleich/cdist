@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Core: Add files directory for static files (Darko Poljak)
 	* Core: Fix conflicting requirements (Darko Poljak)
 	* Custom: Add bash and zsh completions (Darko Poljak)
 	* Core: Improve error reporting for local and remote run command (Darko Poljak)

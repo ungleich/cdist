@@ -35,6 +35,8 @@ import cdist.message
 from cdist import core
 import cdist.exec.util as exec_util
 
+CONF_SUBDIRS_LINKED = [ "explorer", "files", "manifest", "type" ]
+
 class Local(object):
     """Execute commands locally.
 
@@ -110,6 +112,7 @@ class Local(object):
         self.global_explorer_out_path = os.path.join(self.base_path, "explorer")
         self.object_path = os.path.join(self.base_path, "object")
         self.messages_path = os.path.join(self.base_path, "messages")
+        self.files_path = os.path.join(self.conf_path, "files")
 
         # Depending on conf_path
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
@@ -247,14 +250,14 @@ class Local(object):
             pass
 
     def _create_conf_path_and_link_conf_dirs(self):
-        # Link destination directories
-        for sub_dir in [ "explorer", "manifest", "type" ]:
+        # Create destination directories
+        for sub_dir in CONF_SUBDIRS_LINKED:
             self.mkdir(os.path.join(self.conf_path, sub_dir))
 
         # Iterate over all directories and link the to the output dir
         for conf_dir in self.conf_dirs:
             self.log.debug("Checking conf_dir %s ..." % (conf_dir))
-            for sub_dir in [ "explorer", "manifest", "type" ]:
+            for sub_dir in CONF_SUBDIRS_LINKED:
                 current_dir = os.path.join(conf_dir, sub_dir)
 
                 # Allow conf dirs to contain only partial content

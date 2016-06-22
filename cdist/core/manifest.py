@@ -36,6 +36,7 @@ common:
         __cdist_manifest: full qualified path of the manifest == script
         __cdist_type_base_path: full qualified path to the directory where types are defined for use in type emulator
             == local.type_path
+        __files: full qualified path to the files dir
 
 initial manifest is:
     script: full qualified path to the initial manifest
@@ -96,6 +97,7 @@ class Manifest(object):
             '__cdist_type_base_path': self.local.type_path, # for use in type emulator
             '__global': self.local.base_path,
             '__target_host': self.target_host,
+            '__files': self.local.files_path,
         }
         if self.log.getEffectiveLevel() == logging.DEBUG:
             self.env.update({'__cdist_debug': "yes" })

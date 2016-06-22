@@ -50,6 +50,7 @@ gencode-local
         __object_id: the objects id
         __object_fq: full qualified object id, iow: $type.name + / + object_id
         __type: full qualified path to the type's dir
+        __files: full qualified path to the files dir
 
     returns: string containing the generated code or None
 
@@ -63,6 +64,7 @@ gencode-remote
         __object_id: the objects id
         __object_fq: full qualified object id, iow: $type.name + / + object_id
         __type: full qualified path to the type's dir
+        __files: full qualified path to the files dir
 
     returns: string containing the generated code or None
 
@@ -91,6 +93,7 @@ class Code(object):
         self.env = {
             '__target_host': self.target_host,
             '__global': self.local.base_path,
+            '__files': self.local.files_path,
         }
 
     def _run_gencode(self, cdist_object, which):
