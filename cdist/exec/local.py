@@ -33,6 +33,7 @@ import tempfile
 import cdist
 import cdist.message
 from cdist import core
+import cdist.exec.util as exec_util
 
 CONF_SUBDIRS_LINKED = [ "explorer", "files", "manifest", "type" ]
 
@@ -206,12 +207,14 @@ class Local(object):
             env.update(message.env)
 
         try:
+            output = exec_util.call_get_output(command, env=env)
+            self.log.debug("Local output: {}".format(output))
             if return_output:
-                return subprocess.check_output(command, env=env).decode()
-            else:
-                subprocess.check_call(command, env=env)
-        except subprocess.CalledProcessError:
-            raise cdist.Error("Command failed: " + " ".join(command))
+                return output.decode()
+        except subprocess.CalledProcessError as e:
+            raise cdist.Error("Command failed: " + " ".join(command)
+                    + " with returncode: {} and output: {}".format(
+                        e.returncode, e.output))
         except OSError as error:
             raise cdist.Error(" ".join(command) + ": " + error.args[1])
         finally:
