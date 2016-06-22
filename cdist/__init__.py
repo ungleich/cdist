@@ -41,8 +41,8 @@ BANNER = """
    "P'        ""         ""
 """
 
-REMOTE_COPY = "scp -o User=root -q"
-REMOTE_EXEC = "ssh -o User=root -q"
+REMOTE_COPY = "scp -o User=root"
+REMOTE_EXEC = "ssh -o User=root"
 
 class Error(Exception):
     """Base exception class for this project"""
