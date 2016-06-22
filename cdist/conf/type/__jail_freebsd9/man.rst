@@ -1,13 +1,13 @@
-cdist-type__jail(7)
-===================
+cdist-type__jail_freebsd9(7)
+============================
 Manage FreeBSD jails
 
-Jake Guffey <jake.guffey--@--jointheirstm.org>
+Jake Guffey <jake.guffey--@--eprotex.com>
 
 
 DESCRIPTION
 -----------
-This type is used on FreeBSD to manage jails by calling the appropriate per-version subtype.
+This type is used on FreeBSD <= 9.x to manage jails.
 
 
 REQUIRED PARAMETERS
@@ -83,23 +83,23 @@ EXAMPLES
 .. code-block:: sh
 
     # Create a jail called www
-    __jail www --state present --ip "192.168.1.2" --jailbase /my/jail/base.tgz
+    __jail_freebsd9 www --state present --ip "192.168.1.2" --jailbase /my/jail/base.tgz
 
     # Remove the jail called www
-    __jail www --state absent --jailbase /my/jail/base.tgz
+    __jail_freebsd9 www --state absent --jailbase /my/jail/base.tgz
 
     # The jail www should not be started
-    __jail www --state present --stopped \
+    __jail_freebsd9 www --state present --stopped \
        --ip "192.168.1.2 netmask 255.255.255.0" \
        --jailbase /my/jail/base.tgz
 
     # Use the name variable explicitly
-    __jail thisjail --state present --name www \
+    __jail_freebsd9 thisjail --state present --name www \
        --ip "192.168.1.2" \
        --jailbase /my/jail/base.tgz
 
     # Go nuts
-    __jail lotsofoptions --state present --name testjail \
+    __jail_freebsd9 lotsofoptions --state present --name testjail \
        --ip "192.168.1.100 netmask 255.255.255.0" \
        --hostname "testjail.example.com" --interface "em0" \
        --onboot --jailbase /my/jail/base.tgz --jaildir /jails
@@ -112,5 +112,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2012,2016 Jake Guffey. Free use of this software is
+Copyright \(C) 2012-2016 Jake Guffey. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
