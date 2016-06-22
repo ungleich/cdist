@@ -38,7 +38,7 @@ case "$os" in
         # whitelist
         :
     ;;
-    centos)
+    scientific|centos)
         __package tzdata --state present
         export require="__package/tzdata"
         __file /etc/sysconfig/clock \

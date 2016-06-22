@@ -29,7 +29,7 @@ else
     # By default determine package manager based on operating system
     os="$(cat "$__global/explorer/os")"
     case "$os" in
-        amazon|centos|fedora|redhat) type="yum" ;;
+        amazon|scientific|centos|fedora|redhat) type="yum" ;;
         debian|ubuntu|devuan) type="apt" ;;
         archlinux) type="pacman" ;;
         *)

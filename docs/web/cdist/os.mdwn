@@ -5,6 +5,7 @@ cdist was tested or is know to run on at least
  * [Archlinux](http://www.archlinux.org/)
  * [Debian](http://www.debian.org/)
  * [CentOS](http://www.centos.org/)
+ * [Scientific](https://www.scientificlinux.org/)
  * [Fedora](http://fedoraproject.org/)
  * [FreeBSD](http://www.freebsd.org)
  * [Gentoo](http://www.gentoo.org/)
