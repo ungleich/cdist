@@ -52,7 +52,7 @@ __staged_file /usr/local/bin/consul-template \
    --source "$(cat "$version_dir/source")" \
    --cksum "$(cat "$version_dir/cksum")" \
    --fetch-command 'curl -s -L "%s"' \
-   --prepare-command 'tar -xzf "%s"; cat consul-template_*/consul-template' \
+   --prepare-command 'unzip -p "%s"' \
    --state "$state" \
    --group root \
    --owner root \
