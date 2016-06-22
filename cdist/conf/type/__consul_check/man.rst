@@ -20,18 +20,17 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-interval
-   the interval in which the script given with --script should be run
+docker-container-id
+   the id of the docker container to run
 
-script
-   the shell command to run every --interval
-
-ttl
-   how long a check is considered healthy without being updated through the
-   HTTP interfave
+http
+   the url to check
 
 id
-   Defaults to --name
+   The id of this check.
+
+interval
+   the interval in which the check should run
 
 name
    The name of this check. Defaults to __object_id
@@ -39,8 +38,33 @@ name
 notes
    human readable description
 
+script
+   the shell command to run
+
+service-id
+   the id of the service this check is bound to
+
+shell
+   the shell to run inside the docker container
+
 state
    if this check is 'present' or 'absent'. Defaults to 'present'.
+
+status
+   specify the initial state of this health check
+
+tcp
+   the host and port to check
+
+timeout
+   after how long to timeout checks which take to long
+
+token
+   ACL token to use for interacting with the catalog
+
+ttl
+   how long a TTL check is considered healthy without being updated through the
+   HTTP interface
 
 
 EXAMPLES
@@ -67,5 +91,5 @@ SEE ALSO
 
 COPYING
 -------
-Copyright \(C) 2015 Steven Armstrong. Free use of this software is
+Copyright \(C) 2015-2016 Steven Armstrong. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
