@@ -45,7 +45,7 @@ DONE
 
 cat << DONE
 $__remote_exec $__target_host << EOSSH
-if mountpoint -q "${chroot}/etc/resolv.conf";
+if mountpoint -q "${chroot}/etc/resolv.conf"; then
    umount "${chroot}/etc/resolv.conf"
 fi
 if [ -f "${chroot}/etc/resolv.conf" -a ! -s "${chroot}/etc/resolv.conf" ]; then
