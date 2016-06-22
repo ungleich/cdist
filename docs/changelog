@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Core: Fix conflicting requirements (Darko Poljak)
 	* Custom: Add bash and zsh completions (Darko Poljak)
 	* Core: Improve error reporting for local and remote run command (Darko Poljak)
 	* New type: __jail_freebsd9: Handle jail management on FreeBSD <= 9.X (Jake Guffey)
