@@ -1,0 +1,362 @@
+#!/bin/sh
+#
+# 2012,2014,2016 Jake Guffey (jake.guffey at jointheirstm.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# The __jail_freebsd10 type creates, configures, and deletes FreeBSD
+#  jails for use as virtual machines on FreeBSD 10.x.
+#
+
+# Debug
+#exec >&2
+#set -x
+
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
+
+state="$(cat "$__object/parameter/state")"
+
+started="true"
+# If the user wants the jail gone, it implies it shouldn't be started.
+[ -f "$__object/parameter/stopped" -o "$state" = "absent" ] && started="false"
+
+if [ -f "$__object/parameter/ip" ]; then
+   ip="$(cat "$__object/parameter/ip")"
+else
+# IP is an optional param when $state=absent, but
+#    when $state=present, it's required. Enforce this.
+   if [ "$state" = "present" ]; then
+      exec >&2
+      echo "If --state is 'present,' --ip must be given\!"
+      exit 1
+   fi
+fi
+
+if [ -f "$__object/parameter/hostname" ]; then
+   hostname="$(cat "$__object/parameter/hostname")"
+else
+   hostname="$name"
+fi
+
+if [ -f "$__object/parameter/devfs-disable" ]; then
+   devfsenable="false"
+else
+   devfsenable="true"
+fi
+
+devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
+
+# devfs_ruleset being defined without devfs_enable being true
+#     is pointless. Treat this as an error.
+if [ -n "$devfsruleset" -a "$devfsenable" = "false" ]; then
+   exec >&2
+   echo "Can't have --devfs-ruleset defined with --devfs-disable"
+   exit 1
+fi
+
+if [ -f "$__object/parameter/onboot" ]; then
+   onboot="true"
+fi
+
+jaildir="$(cat "$__object/parameter/jaildir")"
+
+present="$(cat "$__object/explorer/present")"
+#present="$(cat "$__type/explorer/present")"
+status="$(cat "$__object/explorer/status")"
+
+# Handle ip="addr, addr" format
+if [ $(expr "${ip}" : ".*, .*") -gt "0" ]; then
+   SAVE_IFS="$IFS"
+   IFS=", "
+   for cur_ip in ${ip}; do
+      # Just get the last IP address for SSH to listen on
+      mgmt_ip=$(echo "${ip}" | cut '-d ' -f1)   # In case using "ip netmask" format rather than CIDR
+   done
+   IFS="$SAVE_IFS"
+else
+   mgmt_ip=$(echo "${ip}" | cut '-d ' -f1) # In case using "ip netmask" format rather than CIDR
+fi
+
+stopJail() {
+# Check $status before issuing command
+   if [ "$status" = "STARTED" ]; then
+      echo "/etc/rc.d/jail stop ${name}"
+      echo "stop" >> "$__messages_out"
+   fi
+}
+
+startJail() {
+# Check $status before issuing command
+   if [ "$status" = "NOTSTART" ]; then
+      echo "/etc/rc.d/jail start ${name}"
+      echo "start" >> "$__messages_out"
+   fi
+}
+
+deleteJail() {
+# Unmount the jail's mountpoints if necessary
+   cat <<EOF
+      output="\$(mount | grep "\/${name}\/dev")" || true
+      if [ -n "\${output}" ]; then # /dev is still mounted...jail still running?
+         /etc/rc.d/jail stop "${name}"
+      fi
+      output="\$(mount | grep "\/rw\/${name}\/")" || true
+      if [ -n "\${output}" ]; then # >=1 rw mount is mounted still
+         for DIR in "${output}"; do
+            umount -F "/etc/fstab.${name}" "\$(echo "${DIR}" | awk '{print $3}')"
+         done
+      fi
+      output="\$(mount | grep "\/${name} (")" || true
+      if [ -n "\${output}" ]; then # ro mount is mounted still
+         umount -F "/etc/fstab.${name}" "\$(echo "${output}" | awk '{print $3}')"
+      fi
+EOF
+# Remove the jail's rw mountpoints
+   echo "rm -rf \"${jaildir}/rw/${name}\""
+# Remove the jail directory
+   echo "rm -rf \"${jaildir}/${name}\""
+# Remove the jail's fstab
+   echo "rm -f \"/etc/fstab.${name}\""
+# Remove jail entry from jail.conf
+   cat <<EOF
+      sed -i .bak -E -e "/^${name} {\$/,/^}\\\$/d" /etc/jail.conf
+      if [ -f "/etc/jail.conf.bak" ]; then
+         rm -f "/etc/jail.conf.bak"
+      fi
+EOF
+# Remove " $name " from jail_list if it's there
+   cat <<EOF
+      eval \$(grep '^jail_list=' /etc/rc.conf)
+
+      for JAIL in \${jail_list}; do
+         if [ ! "\${JAIL}" = "${name}" ]; then
+            new_list="\${new_list} \${JAIL}"
+         fi
+      done
+      jail_list="\${new_list}"
+      
+      sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+      unset jail_list
+      if [ -f "/etc/rc.conf.bak" ]; then
+         rm -f /etc/rc.conf.bak
+      fi
+EOF
+   echo "delete" >> "$__messages_out"
+}
+
+createJail() {
+# Create the jail directory
+cat <<EOF
+   umask 022
+   mkdir -p ${jaildir}/${name}
+   if [ ! -d "${jaildir}/base" ]; then
+      mkdir "${jaildir}/base"
+      tar -xzf "${jaildir}/jailbase.tgz" -C "${jaildir}/base"
+      if [ ! -d "${jaildir}/base/usr/local" ]; then
+         mkdir -p "${jaildir}/base/usr/local"
+      fi
+      if [ ! -d "${jaildir}/base/usr/home" ]; then
+         mkdir -p "${jaildir}/base/usr/home"
+      fi
+      if [ ! -d "${jaildir}/base/home" ]; then
+          if [ ! -L "${jaildir}/base/home" ]; then
+             SAVE=\$PWD; cd ${jaildir}/base
+             ln -s usr/home home
+             cd \$SAVE; unset SAVE
+          fi
+      fi
+   fi
+   if [ ! -d "${jaildir}/rw" ]; then
+      mkdir "${jaildir}/rw"
+   fi
+   mkdir -p "${jaildir}/rw/${name}/etc"
+   cp -r ${jaildir}/base/etc/* "${jaildir}/rw/${name}/etc/"
+   if [ ! -f "${jaildir}/rw/${name}/etc/resolv.conf" ]; then
+      cp /etc/resolv.conf "${jaildir}/rw/${name}/etc/"
+   fi
+   mkdir "${jaildir}/rw/${name}/local"
+   mkdir "${jaildir}/rw/${name}/var"
+   if [ -n "\$(ls ${jaildir}/base/var)" ]; then
+      cp -r ${jaildir}/base/var/* "${jaildir}/rw/${name}/var/"
+   fi
+   chmod 755 "${jaildir}/rw/${name}/var"
+   chmod 755 "${jaildir}/base/var"
+   if [ ! -d "${jaildir}/base/var/db" ]; then
+      mkdir -p "${jaildir}/base/var/db"
+   fi
+   if [ -n "\$(ls ${jaildir}/base/var/db)" ]; then
+      chmod 755 "${jaildir}/rw/${name}/var/db"
+      chmod 755 "${jaildir}/base/var/db"
+   fi
+   mkdir "${jaildir}/rw/${name}/home"
+   if [ -n "\$(ls ${jaildir}/base/usr/home)" ]; then
+      cp -r ${jaildir}/base/usr/home/* "${jaildir}/rw/${name}/home/"
+   fi
+   mkdir "${jaildir}/rw/${name}/root"
+   if [ -n "\$(ls -A ${jaildir}/base/root)" ]; then
+      cp -r ${jaildir}/base/root/ "${jaildir}/rw/${name}/root/"
+   fi
+
+EOF
+   echo "create" >> "$__messages_out"
+
+# Create the ro+rw mountpoint entries in fstab
+cat <<EOF
+   cat >/etc/fstab.${name} <<END
+${jaildir}/base			${jaildir}/${name}		nullfs	ro	0 0
+${jaildir}/rw/${name}/etc	${jaildir}/${name}/etc		nullfs	rw	0 0
+${jaildir}/rw/${name}/local	${jaildir}/${name}/usr/local	nullfs	rw	0 0
+${jaildir}/rw/${name}/var		${jaildir}/${name}/var	nullfs	rw	0 0
+${jaildir}/rw/${name}/home	${jaildir}/${name}/usr/home	nullfs	rw	0 0
+${jaildir}/rw/${name}/root	${jaildir}/${name}/root		nullfs	rw	0 0
+END
+EOF
+
+# Add the jail configuration to jail.conf
+cat <<EOF
+   # first check to see whether jail_enable="YES" exists in rc.conf or not and add it
+   #   if necessary
+
+   jail_enable="\$(grep '^jail_enable=' /etc/rc.conf | cut -d= -f2)"
+   if [ -z "\$jail_enable" ]; then	# no jail_enable line in rc.conf at all
+      echo "jail_enable=\"YES\"" >>/etc/rc.conf
+   elif [ ! "\$(echo \$jail_enable | tr '[a-z]' '[A-Z]' | tr -d '"')" = "YES" ]; then	# jail_enable="NO"
+      sed -i '.bak' 's/^jail_enable=.*$/jail_enable="YES"/g' /etc/rc.conf	# fix this -^
+      rm -f /etc/rc.conf.bak
+   fi
+
+   jailfile=/etc/jail.conf
+   jailheader="${name} {"
+
+   jaildata="path=\"${jaildir}/${name}\";"
+
+   if [ "$devfsenable" = "true" ]; then
+      jaildata="\$jaildata
+      mount.devfs;"
+   else
+      jaildata="\$jaildata
+      mount.nodevfs;"
+   fi
+
+   jaildata="\$jaildata
+   host.hostname=\"${hostname}\";
+   ip4.addr=\"${ip}\";
+   exec.start=\"/bin/sh /etc/rc\";
+   exec.stop=\"/bin/sh /etc/rc.shutdown\";
+   exec.consolelog=\"/var/log/jail_${name}_console.log\";
+   mount.fstab=\"/etc/fstab.${name}\";
+   allow.mount;
+   exec.clean;
+   allow.set_hostname=0;
+   allow.sysvipc=0;
+   allow.raw_sockets=0;"
+
+   jailtrailer="}"
+
+   if [ "$devfsenable" = "true" ] && [ "${devfsruleset}" = "jailrules" ]; then   # The default ruleset is to be used
+      if [ ! -f /etc/devfs.rules ]; then
+         touch /etc/devfs.rules
+      fi
+      if [ -z "\$(grep '\[jailrules=' /etc/devfs.rules)" ]; then   # The default ruleset doesn't exist
+         # Get the highest-numbered ruleset
+         highest="\$(sed -n 's/\[.*=\([0-9]*\)\]/\1/pg' /etc/devfs.rules | sort -u | tail -n 1)" || true
+         # increment by 1
+         [ -z "\$highest" ] && highest=10
+         let num="\${highest}+1" 2>&1 >/dev/null   # Close the FD==fail...
+         # add default ruleset
+         cat >>/etc/devfs.rules <<END
+
+[jailrules=\${num}]
+add include \\\$devfsrules_hide_all
+add include \\\$devfsrules_unhide_basic
+add include \\\$devfsrules_unhide_login
+END
+      fi
+      devfsruleset_num=\$(grep "\[${devfsruleset}=" /etc/devfs.rules | sed -n 's/\[.*=\([0-9]*\)\]/\1/pg')
+      if [ -n "\$devfsruleset_num" ]; then
+         jaildata="\$jaildata
+         devfs_ruleset=\"\${devfsruleset_num}\";"
+      fi
+   fi
+
+EOF
+
+   echo "printf \"%s\\n%s\n%s\n\" \"\$jailheader\" \"\$jaildata\" \"\$jailtrailer\" >>\"\$jailfile\""
+
+# Add $name to jail_list if $onboot=yes
+if [ "$onboot" = "yes" ]; then
+
+   # first check to see whether jail_enable="YES" exists in rc.conf or not and add it
+   #   if necessary
+
+   cat <<EOF
+      eval "\$(grep '^jail_list=' /etc/rc.conf)"
+      if [ -z "\$jail_list" ]; then	# no jail_list line in rc.conf at all
+         echo "jail_list=\"${name}\"" >>/etc/rc.conf
+      else
+         jail_list="\${jail_list} ${name}"
+         sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+         rm -f /etc/rc.conf.bak
+      fi
+      unset jail_list
+EOF
+   echo "onboot" >> "$__messages_out"
+fi
+
+# Add the normal entries into the jail's rc.conf
+cat <<EOF
+echo hostname=\"${hostname}\" >"${jaildir}/rw/${name}/etc/rc.conf"
+echo sshd_enable=\"YES\" >>"${jaildir}/rw/${name}/etc/rc.conf"
+echo sendmail_enable=\"NONE\" >>"${jaildir}/rw/${name}/etc/rc.conf"
+echo syslogd_enable=\"YES\" >>"${jaildir}/rw/${name}/etc/rc.conf"
+echo syslogd_flags=\"-ss\" >>"${jaildir}/rw/${name}/etc/rc.conf"
+
+EOF
+# Configure SSHd's listening address
+cat <<EOF
+mgmt_ip="$(echo "$mgmt_ip" | sed -E -e 's#/[0-9]*$##g')"
+sed -E -i '.bak' -e "s/#?ListenAddress 0.0.0.0/ListenAddress \${mgmt_ip}/" "${jaildir}/rw/${name}/etc/ssh/sshd_config"
+EOF
+}
+
+if [ "$present" = "EXISTS" ]; then   # The jail currently exists
+   if [ "$state" = "present" ]; then   # The jail is supposed to exist
+      if [ "$started" = "true" ]; then   # The jail is supposed to be started
+         startJail
+      else   # The jail is not supposed to be started
+         stopJail
+      fi
+      exit 0
+   else   # The jail is not supposed to exist
+      stopJail
+      deleteJail
+      exit 0
+   fi
+else   # The jail does not currently exist
+   if [ "$state" = "absent" ]; then   # The jail is not supposed to be present
+      exit 0
+   else   # The jail is supposed to exist
+      createJail
+      [ "$started" = "true" ] && startJail
+      exit 0
+   fi
+fi
+
