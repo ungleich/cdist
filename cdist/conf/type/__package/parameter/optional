@@ -4,3 +4,4 @@ type
 pkgsite
 state
 ptype
+repo

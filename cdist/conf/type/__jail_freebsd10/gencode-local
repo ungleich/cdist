@@ -26,29 +26,26 @@
 #exec >&2
 #set -x
 
-# Can only be used on FreeBSD
-os="$(cat "$__global/explorer/os")"
-if [ ! "$os" = "freebsd" ]; then
-   echo "__jail can only be used on FreeBSD targets!" >&2
+jaildir="$(cat "$__object/parameter/jaildir")"
+
+jailbase="$(cat "$__object/parameter/jailbase")"
+
+state="$(cat "$__object/parameter/state")"
+
+if [ "$state" = "present" ] && [ -z "$jailbase" ]; then
+   exec >&2
+   echo "jailbase is a REQUIRED parameter when state=present!"
    exit 1
 fi
 
-jaildir="$(cat "$__object/parameter/jaildir")"
+remotebase="${jaildir}/jailbase.tgz"
+basepresent="$(cat "$__object/explorer/basepresent")"
 
-__directory ${jaildir} --parents
-
-set -- "$@" "$__object_id" "--state" "$state"
-cd "$__object/parameter"
-for property in $(ls .); do
-	set -- "$@" "--$property" "$(cat "$property")"
-done
-
-ver="$(cat "$__global/explorer/os_version")"
-if [ -n "$(echo "$ver" | grep '^10\.' )" ]; then   # Version is 10.x
-   __jail_freebsd10 "$@"
-else
-   __jail_freebsd9 "$@"
-fi
+if [ "$state" = "present" ]; then
+   if [ "$basepresent" = "NONE" ]; then
+      echo "$__remote_copy" "${jailbase}" "$__target_host:${remotebase}"
+   fi   # basepresent=NONE
+fi   # state=present
 
 # Debug
 #set +x
