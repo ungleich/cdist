@@ -1,6 +1,9 @@
 cdist-type__rvm_gemset(7)
 ==========================
-Manage gemsets through rvm
+
+NAME
+----
+cdist-type__rvm_gemset - Manage gemsets through rvm
 
 Evax Software <contact@evax.fr>
 

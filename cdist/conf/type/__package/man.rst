@@ -1,6 +1,9 @@
 cdist-type__package(7)
 ======================
-Manage packages
+
+NAME
+----
+cdist-type__package - Manage packages
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

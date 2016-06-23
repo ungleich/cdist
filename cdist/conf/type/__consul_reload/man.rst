@@ -1,6 +1,9 @@
 cdist-type__consul_reload(7)
 ============================
-Reload consul
+
+NAME
+----
+cdist-type__consul_reload - Reload consul
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

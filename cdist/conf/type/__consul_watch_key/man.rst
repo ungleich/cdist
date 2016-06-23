@@ -1,6 +1,9 @@
 cdist-type__consul_watch_key(7)
 ===============================
-Manages consul key watches
+
+NAME
+----
+cdist-type__consul_watch_key - Manages consul key watches
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

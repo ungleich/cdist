@@ -1,6 +1,9 @@
 cdist-type__rvm_gemset(7)
 ==========================
-Manage Ruby gems through rvm
+
+NAME
+----
+cdist-type__rvm_gemset - Manage Ruby gems through rvm
 
 Evax Software <contact@evax.fr>
 

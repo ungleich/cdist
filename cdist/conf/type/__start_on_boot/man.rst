@@ -1,6 +1,9 @@
 cdist-type__start_on_boot(7)
 ============================
-Manage stuff to be started at boot
+
+NAME
+----
+cdist-type__start_on_boot - Manage stuff to be started at boot
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

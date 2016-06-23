@@ -1,6 +1,9 @@
 cdist-type__package_update_index(7)
 ===================================
-Update the package index
+
+NAME
+----
+cdist-type__update_index - Update the package index
 
 Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
 

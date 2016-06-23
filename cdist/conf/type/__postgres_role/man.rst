@@ -1,6 +1,9 @@
 cdist-type__postgres_role(7)
 ============================
-Manage postgres roles
+
+NAME
+----
+cdist-type__postgres_role - Manage postgres roles
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

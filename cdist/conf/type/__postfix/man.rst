@@ -1,6 +1,9 @@
 cdist-type__postfix(7)
 ======================
-Install postfix
+
+NAME
+----
+cdist-type__postfix - Install postfix
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

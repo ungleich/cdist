@@ -1,6 +1,9 @@
 cdist-type__package_emerge(7)
 =============================
-Manage packages with portage
+
+NAME
+----
+cdist-type__package_emerge - Manage packages with portage
 
 Thomas Oettli <otho--@--sfs.biz>
 

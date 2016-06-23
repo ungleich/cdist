@@ -1,6 +1,9 @@
 cdist-type__rvm(7)
 ==================
-Install rvm for a given user
+
+NAME
+----
+cdist-type__rvm - Install rvm for a given user
 
 Evax Software <contact@evax.fr>
 

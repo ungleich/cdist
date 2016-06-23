@@ -1,6 +1,9 @@
 cdist-type__pacman_conf(7)
 ==========================
-Manage pacman configuration
+
+NAME
+----
+cdist-type__pacman_conf - Manage pacman configuration
 
 Dominique Roux <dominique.roux4@gmail.com>
 

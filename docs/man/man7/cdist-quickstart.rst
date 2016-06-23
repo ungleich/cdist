@@ -1,6 +1,9 @@
 cdist-quickstart(7)
 ===================
-Jump in and enjoy cdist
+
+NAME
+----
+cdist-quickstart - Jump in and enjoy cdist
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

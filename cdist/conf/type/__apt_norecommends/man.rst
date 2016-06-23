@@ -1,6 +1,9 @@
 cdist-type__apt_norecommends(7)
 ===============================
-Configure apt to not install recommended packages
+
+NAME
+----
+cdist-type__apt_norecommends - Configure apt to not install recommended packages
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

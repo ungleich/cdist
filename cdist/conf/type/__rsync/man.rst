@@ -1,6 +1,9 @@
 cdist-type__rsync(7)
 ====================
-Mirror directories using rsync
+
+NAME
+----
+cdist-type__rsync - Mirror directories using rsync
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

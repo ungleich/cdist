@@ -1,12 +1,11 @@
 cdist-type__pf_apply(7)
 =======================
-Apply pf(4) ruleset on \*BSD
-
-Jake Guffey <jake.guffey--@--eprotex.com>
-
 
 NAME
 ----
+cdist-type__pf_apply - Apply pf(4) ruleset on \*BSD
+
+Jake Guffey <jake.guffey--@--eprotex.com>
 
 
 DESCRIPTION

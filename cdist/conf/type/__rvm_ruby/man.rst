@@ -1,6 +1,9 @@
 cdist-type__rvm_ruby(7)
 =======================
-Manage ruby installations through rvm
+
+NAME
+----
+cdist-type__rvm_ruby - Manage ruby installations through rvm
 
 Evax Software <contact@evax.fr>
 

@@ -1,6 +1,9 @@
 cdist-messaging(7)
 ==================
-How the initial manifest and types can communication
+
+NAME
+----
+cdist-messaging - How the initial manifest and types can communication
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

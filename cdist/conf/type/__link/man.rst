@@ -1,6 +1,9 @@
 cdist-type__link(7)
 ===================
-Manage links (hard and symbolic)
+
+NAME
+----
+cdist-type__link - Manage links (hard and symbolic)
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

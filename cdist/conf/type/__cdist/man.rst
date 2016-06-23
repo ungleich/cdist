@@ -1,6 +1,9 @@
 cdist-type__cdist(7)
 ====================
-Manage cdist installations
+
+NAME
+----
+cdist-type__cdist - Manage cdist installations
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

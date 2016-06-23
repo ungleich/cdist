@@ -1,12 +1,11 @@
 cdist-type__ssh_dot_ssh(7)
 ==========================
-Manage .ssh directory
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
 
 NAME
 ----
+cdist-type__ssh_dot_ssh - Manage .ssh directory
+
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 DESCRIPTION

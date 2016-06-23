@@ -37,7 +37,10 @@ exec > "$dest"
 cat << eof 
 cdist-reference(7)
 ==================
-Variable, path and type reference for cdist
+
+NAME
+----
+cdist-reference - Variable, path and type reference for cdist
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

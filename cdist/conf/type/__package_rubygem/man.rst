@@ -1,6 +1,9 @@
 cdist-type__package_rubygem(7)
 ==============================
-Manage rubygem packages
+
+NAME
+----
+cdist-type__package_rubygem - Manage rubygem packages
 
 Chase Allen James <nx-cdist@nu-ex.com>
 

@@ -1,6 +1,9 @@
 cdist-type__jail_freebsd10(7)
 =============================
-Manage FreeBSD jails
+
+NAME
+----
+cdist-type__jail_freeebsd10 - Manage FreeBSD jails
 
 Jake Guffey <jake.guffey--@--jointheirstm.org>
 

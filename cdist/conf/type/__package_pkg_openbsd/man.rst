@@ -1,6 +1,9 @@
 cdist-type__package_pkg(7)
 ==========================
-Manage OpenBSD packages
+
+NAME
+----
+cdist-type__package_pkg - Manage OpenBSD packages
 
 Andi Brönnimann <andi-cdist--@--v-net.ch>
 

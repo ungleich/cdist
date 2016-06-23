@@ -1,6 +1,9 @@
 cdist-type__line(7)
 ===================
-Manage lines in files
+
+NAME
+----
+cdist-type__line - Manage lines in files
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

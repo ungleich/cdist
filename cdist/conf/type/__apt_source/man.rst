@@ -1,6 +1,9 @@
 cdist-type__apt_source(7)
 =========================
-Manage apt sources
+
+NAME
+----
+cdist-type__apt_source - Manage apt sources
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

@@ -1,6 +1,9 @@
 cdist-type__zypper_service(7)
 =============================
-Service management with zypper
+
+NAME
+----
+cdist-type__zypper_service - Service management with zypper
 
 Daniel Heule <hda--@--sfs.biz>
 

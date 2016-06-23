@@ -1,6 +1,9 @@
 cdist-type__postfix_master(7)
 =============================
-Configure postfix master.cf
+
+NAME
+----
+cdist-type__postfix_master - Configure postfix master.cf
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

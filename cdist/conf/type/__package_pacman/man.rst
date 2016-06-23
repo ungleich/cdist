@@ -1,6 +1,9 @@
 cdist-type__package_pacman(7)
 =============================
-Manage packages with pacman
+
+NAME
+----
+cdist-type__package_pacman - Manage packages with pacman
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

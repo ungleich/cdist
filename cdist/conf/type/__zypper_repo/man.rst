@@ -1,6 +1,9 @@
 cdist-type__zypper_repo(7)
 ==========================
-Repository management with zypper
+
+NAME
+----
+cdist-type__zypper_repo - Repository management with zypper
 
 Daniel Heule <hda--@--sfs.biz>
 

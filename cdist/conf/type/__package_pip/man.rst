@@ -1,6 +1,9 @@
 cdist-type__package_pip(7)
 ==========================
-Manage packages with pip
+
+NAME
+----
+cdist-type__package_pip - Manage packages with pip
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

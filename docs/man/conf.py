@@ -29,7 +29,9 @@ import os
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = []
+extensions = [
+    'cdist.sphinxext.manpage',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -257,15 +259,18 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-mandir = os.path.dirname(os.path.realpath(__file__))
-man_pages = []
+root_mandir = os.path.dirname(os.path.realpath(__file__))
+mandirs = []
 for mansubdir in ('man1', 'man7'):
-    for root, dirs, files in os.walk(os.path.join(mandir, mansubdir)):
+    mandirs.append((os.path.join(root_mandir, mansubdir), mansubdir[-1]))
+man_pages = []
+for mandir, section in mandirs:
+    for root, dirs, files in os.walk(mandir):
         for fname in files:
             froot, fext = os.path.splitext(fname)
             if fext == '.rst':
-                man_page = (os.path.join(mansubdir, froot), froot, '',
-                        [], mansubdir[-1])
+                man_page = (os.path.join('man' + str(section), froot),
+                        froot, '', [], section)
                 man_pages.append(man_page)
 
 #man_pages = [

@@ -1,6 +1,9 @@
 cdist-type__apt_ppa(7)
 ======================
-Manage ppa repositories
+
+NAME
+----
+cdist-type__apt_ppa - Manage ppa repositories
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

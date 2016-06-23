@@ -1,6 +1,9 @@
 cdist-type__directory(7)
 ========================
-Manage a directory
+
+NAME
+----
+cdist-type__directory - Manage a directory
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

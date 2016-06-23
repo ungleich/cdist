@@ -1,6 +1,9 @@
 cdist-type__key_value(7)
 ========================
-Change property values in files
+
+NAME
+----
+cdist-type__key_value - Change property values in files
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

@@ -1,6 +1,9 @@
 cdist-type__apt_update_index(7)
 ===============================
-Update apt's package index
+
+NAME
+----
+cdist-type__apt_update_index - Update apt's package index
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

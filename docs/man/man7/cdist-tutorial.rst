@@ -1,6 +1,9 @@
 cdist-tutorial(7)
 =================
-A guided introduction into cdist
+
+NAME
+----
+cdist-tutorial - A guided introduction into cdist
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

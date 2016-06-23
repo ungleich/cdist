@@ -1,6 +1,9 @@
 cdist-bootstrap(7)
 ==================
-Setup cdist environment
+
+NAME
+----
+cdist-bootstrap - Setup cdist environment
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

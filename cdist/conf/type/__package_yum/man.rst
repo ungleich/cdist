@@ -1,6 +1,9 @@
 cdist-type__package_yum(7)
 ==========================
-Manage packages with yum
+
+NAME
+----
+cdist-type__package_yum - Manage packages with yum
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

@@ -1,6 +1,9 @@
 cdist-type__package_emerge_dependencies(7)
 ==========================================
-Install dependencies for __package_emerge
+
+NAME
+----
+cdist-type__package_emerge_dependencies - Install dependencies for __package_emerge
 
 Thomas Oettli <otho--@--sfs.biz>
 

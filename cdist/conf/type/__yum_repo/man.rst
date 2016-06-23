@@ -1,6 +1,9 @@
 cdist-type__yum_repo(7)
 =======================
-Manage yum repositories
+
+NAME
+----
+cdist-type__yum_repo - Manage yum repositories
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

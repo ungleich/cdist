@@ -1,6 +1,9 @@
 cdist-type__mount(7)
 ====================
-Manage filesystem mounts
+
+NAME
+----
+cdit-type__mount - Manage filesystem mounts
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

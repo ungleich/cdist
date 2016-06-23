@@ -1,6 +1,9 @@
 cdist-type__dog_vdi(7)
 ======================
-Manage Sheepdog VM images
+
+NAME
+----
+cdist-type__dog_vdi - Manage Sheepdog VM images
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

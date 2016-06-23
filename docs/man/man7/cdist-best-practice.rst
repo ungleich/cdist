@@ -1,6 +1,9 @@
 cdist-best-practice(7)
 ======================
-Practices used in real environments
+
+NAME
+----
+cdist-best-practice - Practices used in real environments
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

@@ -1,6 +1,9 @@
 cdist-type__package_apt(7)
 ==========================
-Manage packages with apt-get
+
+NAME
+----
+cdist-type__package_apt - Manage packages with apt-get
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

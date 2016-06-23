@@ -1,6 +1,9 @@
 cdist-type__update_alternatives(7)
 ==================================
-Configure alternatives
+
+NAME
+----
+cdist-type__update_alternatives - Configure alternatives
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

@@ -1,6 +1,9 @@
 cdist-type__consul_service(7)
 =============================
-Manages consul services
+
+NAME
+----
+cdist-type__consul_service - Manages consul services
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

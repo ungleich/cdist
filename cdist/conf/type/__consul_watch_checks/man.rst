@@ -1,6 +1,9 @@
 cdist-type__consul_watch_checks(7)
 ==================================
-Manages consul checks watches
+
+NAME
+----
+cdist-type__consul_watch_checks - Manages consul checks watches
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 
