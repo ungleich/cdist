@@ -20,20 +20,61 @@
 #
 
 import subprocess
+import sys
 from tempfile import TemporaryFile
 
 import cdist
 
+STDERR_UNSUPPORTED = 'Not supported in this python version'
+
 def call_get_output(command, env=None):
     """Run the given command with the given environment.
-    Return the stdout and stderr output as a byte string.
+    Return the tuple of stdout and stderr output as a byte strings.
     """
-    assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: {}".format(command)
+
+    assert isinstance(command, (list, tuple)), (
+            "list or tuple argument expected, got: {}".format(command))
+
+    if sys.version_info >= (3, 5):
+        return call_get_out_err(command, env)
+    else:
+        return (call_get_stdout(command, env), STDERR_UNSUPPORTED)
+
+def handle_called_process_error(err, command):
+    if sys.version_info >= (3, 5):
+        errout = err.stderr
+    else:
+        errout = STDERR_UNSUPPORTED
+    raise cdist.Error("Command failed: " + " ".join(command)
+        + " with returncode: {} and stdout: {}, stderr: {}".format(
+            err.returncode, err.output, errout))
+
+def call_get_stdout(command, env=None):
+    """Run the given command with the given environment.
+    Return the stdout output as a byte string, stderr is ignored.
+    """
+    assert isinstance(command, (list, tuple)), (
+        "list or tuple argument expected, got: {}".format(command))
 
     with TemporaryFile() as fout:
-        subprocess.check_call(command, env=env,
-                stdout=fout, stderr=subprocess.STDOUT)
+        subprocess.check_call(command, env=env, stdout=fout)
         fout.seek(0)
         output = fout.read()
+
+    return output
+
+def call_get_out_err(command, env=None):
+    """Run the given command with the given environment.
+    Return the tuple of stdout and stderr output as a byte strings.
+    """
+    assert isinstance(command, (list, tuple)), (
+        "list or tuple argument expected, got: {}".format(command))
+
+    with TemporaryFile() as fout, TemporaryFile() as ferr:
+        subprocess.check_call(command, env=env,
+                stdout=fout, stderr=ferr)
+        fout.seek(0)
+        ferr.seek(0)
+        output = (fout.read(), ferr.read())
 
     return output
