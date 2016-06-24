@@ -1,6 +1,9 @@
 cdist-type__jail(7)
 ===================
-Manage FreeBSD jails
+
+NAME
+----
+cdist-type__jail - Manage FreeBSD jails
 
 Jake Guffey <jake.guffey--@--jointheirstm.org>
 

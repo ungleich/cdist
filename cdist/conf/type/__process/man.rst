@@ -1,6 +1,9 @@
 cdist-type__process(7)
 ======================
-Start or stop process
+
+NAME
+----
+cdist-type__process - Start or stop process
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

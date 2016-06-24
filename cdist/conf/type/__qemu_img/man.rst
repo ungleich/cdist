@@ -1,6 +1,9 @@
 cdist-type__qemu_img(7)
 =======================
-Manage VM disk images
+
+NAME
+----
+cdist-type__qemu_img - Manage VM disk images
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

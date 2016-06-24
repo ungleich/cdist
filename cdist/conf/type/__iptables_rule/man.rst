@@ -1,6 +1,9 @@
 cdist-type__iptables_rule(7)
 ============================
-Deploy iptable rulesets
+
+NAME
+----
+cdist-type__iptables_rule - Deploy iptable rulesets
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

@@ -1,6 +1,9 @@
 cdist-type__consul_watch_event(7)
 =================================
-Manages consul event watches
+
+NAME
+----
+cdist-type__consul_watch_event - Manages consul event watches
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

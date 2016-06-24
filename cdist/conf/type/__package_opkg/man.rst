@@ -1,6 +1,9 @@
 cdist-type__package_opkg(7)
 ===========================
-Manage packages with opkg
+
+NAME
+----
+cdist-type__package_opkg - Manage packages with opkg
 
 Giel van Schijndel <giel+cdist--@--mortis.eu>
 

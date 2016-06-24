@@ -1,6 +1,9 @@
 cdist-type__postgres_database(7)
 ================================
-Create/drop postgres databases
+
+NAME
+----
+cdist-type__postgres_database - Create/drop postgres databases
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

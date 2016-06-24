@@ -1,6 +1,9 @@
 cdist-type__consul_template_template(7)
 =======================================
-Manage consul-template templates
+
+NAME
+----
+cdist-type__consul_template_template - Manage consul-template templates
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

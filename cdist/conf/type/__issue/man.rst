@@ -1,6 +1,9 @@
 cdist-type__issue(7)
 ====================
-Manage issue
+
+NAME
+----
+cdist-type__issue - Manage issue
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

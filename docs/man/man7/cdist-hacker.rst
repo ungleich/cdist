@@ -1,6 +1,9 @@
 cdist-hacker(7)
 ===============
-How to get (stuff) into cdist
+
+NAME
+----
+cdist-hacker - How to get (stuff) into cdist
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

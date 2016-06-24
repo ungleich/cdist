@@ -88,6 +88,29 @@ man-latest-link: web-pub
 	ssh staticweb.ungleich.ch \
 		"cd /home/services/www/nico/nico.schottelius.org/www/software/cdist/man/ && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
 
+# Manpages: .cdist Types
+DOT_CDIST_PATH=${HOME}/.cdist
+DOTMAN7DSTDIR=$(MAN7DSTDIR)
+DOTTYPEDIR=$(DOT_CDIST_PATH)/type
+$(info $(DOTTYPEDIR))
+DOTMANTYPESRC=$(shell ls $(DOTTYPEDIR)/*/man.rst)
+$(info $(DOTMANTYPESRC))
+DOTMANTYPEPREFIX=$(subst $(DOTTYPEDIR)/,$(DOTMAN7DSTDIR)/cdist-type,$(DOTMANTYPESRC))
+$(info $(DOTMANTYPEPREFIX))
+DOTMANTYPES=$(subst /man.rst,.rst,$(DOTMANTYPEPREFIX))
+$(info $(DOTMANTYPES))
+
+# Link manpage: do not create man.html but correct named file
+$(DOTMAN7DSTDIR)/cdist-type%.rst: $(DOTTYPEDIR)/%/man.rst
+	ln -sf "$^" $@
+
+# Manpages #3: generic part
+dotmansphinxman: $(DOTMANTYPES)
+	$(SPHINXM)
+
+dotman: dotmansphinxman
+
+
 ################################################################################
 # Speeches
 #

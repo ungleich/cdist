@@ -1,6 +1,9 @@
 cdist-type__package_pkg_freebsd(7)
 ==================================
-Manage FreeBSD packages 
+
+NAME
+----
+cdist-type__package_pkg_freebsd - Manage FreeBSD packages 
 
 Jake Guffey <jake.guffey--@--eprotex.com>
 

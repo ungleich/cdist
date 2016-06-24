@@ -1,6 +1,9 @@
 cdist-remote-exec-copy(7)
 =========================
-How to use remote exec and copy
+
+NAME
+----
+cdist-remote-exec-copy - How to use remote exec and copy
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

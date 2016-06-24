@@ -1,6 +1,9 @@
 cdist-type__firewalld_rule(7)
 =============================
-Configure firewalld rules
+
+NAME
+----
+cdist-type__firewalld_rule - Configure firewalld rules
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

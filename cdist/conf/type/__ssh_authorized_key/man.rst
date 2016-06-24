@@ -1,6 +1,9 @@
 cdist-type__ssh_authorized_key(7)
 =================================
-Manage a single ssh authorized key entry
+
+NAME
+----
+cdist-type__ssh_authorized_key - Manage a single ssh authorized key entry
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

@@ -1,6 +1,9 @@
 cdist-type__user(7)
 ===================
-Manage users
+
+NAME
+----
+cdist-type__user - Manage users
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

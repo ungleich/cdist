@@ -1,6 +1,9 @@
 cdist-type__consul(7)
 =====================
-Install consul
+
+NAME
+----
+cdist-type__consul - Install consul
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

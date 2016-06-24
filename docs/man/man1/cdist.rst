@@ -1,6 +1,9 @@
 cdist(1)
 ========
-Usable Configuration Management
+
+NAME
+----
+cdist - Usable Configuration Management
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

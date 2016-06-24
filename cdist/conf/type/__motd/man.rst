@@ -1,6 +1,9 @@
 cdist-type__motd(7)
 ===================
-Manage message of the day
+
+NAME
+----
+cdist-type__motd - Manage message of the day
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

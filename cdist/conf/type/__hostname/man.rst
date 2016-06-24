@@ -1,6 +1,9 @@
 cdist-type__hostname(7)
 =======================
-Set the hostname
+
+NAME
+----
+cdist-type__hostname - Set the hostname
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

@@ -1,6 +1,9 @@
 cdist-type__debconf_set_selections(7)
 =====================================
-Setup debconf selections
+
+NAME
+----
+cdist-type__debconf_set_selections - Setup debconf selections
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

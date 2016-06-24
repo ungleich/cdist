@@ -1,6 +1,9 @@
 cdist-type__staged_file(7)
 ==========================
-Manage staged files
+
+NAME
+----
+cdist-type__staged_file - Manage staged files
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

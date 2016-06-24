@@ -1,6 +1,9 @@
 cdist-type__group(7)
 ====================
-Manage groups
+
+NAME
+----
+cdist-type__group - Manage groups
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

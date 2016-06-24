@@ -1,6 +1,9 @@
 cdist-type__package_upgrade_all(7)
 ==================================
-Upgrade all the installed packages
+
+NAME
+----
+cdist-type__package_upgrade_all - Upgrade all the installed packages
 
 Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
 

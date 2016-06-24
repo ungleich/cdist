@@ -1,6 +1,9 @@
 cdist-type(7)
 =============
-Functionality bundled
+
+NAME
+----
+cdist-type - Functionality bundled
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

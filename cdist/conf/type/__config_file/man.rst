@@ -1,6 +1,9 @@
 cdist-type__config_file(7)
 ==========================
-Manages config files
+
+NAME
+----
+cdist-type__config_file - _Manages config files
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

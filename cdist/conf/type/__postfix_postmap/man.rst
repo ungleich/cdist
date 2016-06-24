@@ -1,6 +1,9 @@
 cdist-type__postfix_postmap(7)
 ==============================
-Run postmap on the given file
+
+NAME
+----
+cdist-type__postfix_postmap - Run postmap on the given file
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

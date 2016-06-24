@@ -1,6 +1,9 @@
 cdist-type__iptables_apply(7)
 =============================
-Apply the rules
+
+NAME
+----
+cdist-type__iptables_apply - Apply the rules
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

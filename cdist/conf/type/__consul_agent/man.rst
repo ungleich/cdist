@@ -1,6 +1,9 @@
 cdist-type__consul_agent(7)
 ===========================
-Manage the consul agent
+
+NAME
+----
+cdist-type__consul_agent - Manage the consul agent
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

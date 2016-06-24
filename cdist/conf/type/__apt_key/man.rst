@@ -1,6 +1,9 @@
 cdist-type__apt_key(7)
 ======================
-Manage the list of keys used by apt
+
+NAME
+----
+cdist-type__apt_key - Manage the list of keys used by apt
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

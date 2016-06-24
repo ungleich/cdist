@@ -1,6 +1,9 @@
 cdist-stages(7)
 ===============
-Stages used during configuration deployment
+
+NAME
+----
+cdist-stages - Stages used during configuration deployment
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

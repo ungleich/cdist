@@ -1,6 +1,9 @@
 cdist-type__ccollect_source(7)
 ==============================
-Manage ccollect sources
+
+NAME
+----
+cdist-type__ccollect_source - Manage ccollect sources
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

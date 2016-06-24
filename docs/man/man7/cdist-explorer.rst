@@ -1,6 +1,9 @@
 cdist-explorer(7)
 =================
-Explore the target systems
+
+NAME
+----
+cdist-explorer - Explore the target systems
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

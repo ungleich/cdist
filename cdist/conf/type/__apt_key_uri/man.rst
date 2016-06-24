@@ -1,6 +1,9 @@
 cdist-type__apt_key_uri(7)
 ==========================
-Add apt key from uri
+
+NAME
+----
+cdist-type__apt_key_uri - Add apt key from uri
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

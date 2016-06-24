@@ -1,6 +1,9 @@
 cdist-type__file(7)
 ===================
-Manage files.
+
+NAME
+----
+cdist-type__file - Manage files.
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

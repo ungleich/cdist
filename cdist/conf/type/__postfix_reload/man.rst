@@ -1,6 +1,9 @@
 cdist-type__postfix_reload(7)
 =============================
-Tell postfix to reload its configuration
+
+NAME
+----
+cdist-type__postfix_reload - Tell postfix to reload its configuration
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

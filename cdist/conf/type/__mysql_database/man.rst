@@ -1,6 +1,9 @@
 cdist-type__mysql_database(7)
 =============================
-Manage a MySQL database
+
+NAME
+----
+cdist-type__mysql_database - Manage a MySQL database
 
 Benedikt Koeppel <code@benediktkoeppel.ch>
 

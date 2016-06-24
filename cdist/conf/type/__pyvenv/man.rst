@@ -1,6 +1,9 @@
 cdist-type__pyvenv(7)
 =====================
-Create or remove python virtual environment
+
+NAME
+----
+cdist-type__pyvenv - Create or remove python virtual environment
 
 Darko Poljak <darko.poljak--@--gmail.com>
 

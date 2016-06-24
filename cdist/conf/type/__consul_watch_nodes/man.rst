@@ -1,6 +1,9 @@
 cdist-type__consul_watch_nodes(7)
 =================================
-Manages consul nodes watches
+
+NAME
+----
+cdist-type__consul_watch_nodes - Manages consul nodes watches
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

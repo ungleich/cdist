@@ -1,6 +1,9 @@
 cdist-type__user_groups(7)
 ==========================
-Manage user groups
+
+NAME
+----
+cdist-type__user_groups - Manage user groups
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

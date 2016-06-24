@@ -1,6 +1,9 @@
 cdist-type__consul_check(7)
 =============================
-Manages consul checks
+
+NAME
+----
+cdist-type__consul_check - Manages consul checks
 
 Steven Armstrong <steven-cdist--@--armstrong.cc>
 

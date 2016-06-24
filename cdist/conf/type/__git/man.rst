@@ -1,6 +1,9 @@
 cdist-type__git(7)
 ==================
-Get and or keep git repositories up-to-date
+
+NAME
+----
+cdist-type__git -  Get and or keep git repositories up-to-date
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

@@ -1,6 +1,9 @@
 cdist-type__timezone(7)
 =======================
-Allows one to configure the desired localtime timezone.
+
+NAME
+----
+cdist-type__timezone - Allows one to configure the desired localtime timezone.
 
 Ramon Salvadó <rsalvado--@--gnuine--dot--com>
 

@@ -1,6 +1,9 @@
 cdist-troubleshooting(7)
 ========================
-Common problems and their solutions
+
+NAME
+----
+cdist-troubleshooting - Common problems and their solutions
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

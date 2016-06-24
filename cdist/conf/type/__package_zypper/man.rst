@@ -1,6 +1,9 @@
 cdist-type__package_zypper(7)
 =============================
-Manage packages with zypper
+
+NAME
+----
+cdist-type__package_zypper - Manage packages with zypper
 
 Daniel Heule <hda--@--sfs.biz>
 

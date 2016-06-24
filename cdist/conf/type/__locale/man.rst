@@ -1,6 +1,9 @@
 cdist-type__locale(7)
 =====================
-Configure locales
+
+NAME
+----
+cdit-type__locale - Configure locales
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

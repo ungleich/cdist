@@ -1,6 +1,9 @@
 cdist-manifest(7)
 =================
-(Re-)Use types
+
+NAME
+----
+cdist-manifest - (Re-)Use types
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 

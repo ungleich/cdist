@@ -1,6 +1,9 @@
 cdist-type__rbenv(7)
 ====================
-Manage rbenv installation
+
+NAME
+----
+cdist-type__rbenv - Manage rbenv installation
 
 Nico Schottelius <nico-cdist--@--schottelius.org>
 
