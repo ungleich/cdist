@@ -168,14 +168,13 @@ class Remote(object):
 
         self.log.debug("Remote run: %s", command)
         try:
-            output = exec_util.call_get_output(command, env=os_environ)
-            self.log.debug("Remote output: {}".format(output))
+            output, errout = exec_util.call_get_output(command, env=os_environ)
+            self.log.debug("Remote stdout: {}".format(output))
+            self.log.debug("Remote stderr: {}".format(errout))
             if return_output:
                 return output.decode()
         except subprocess.CalledProcessError as e:
-            raise cdist.Error("Command failed: " + " ".join(command)
-                    + " with returncode: {} and output: {}".format(
-                        e.returncode, e.output))
+            exec_util.handle_called_process_error(e, command)
         except OSError as error:
             raise cdist.Error(" ".join(command) + ": " + error.args[1])
         except UnicodeDecodeError:
