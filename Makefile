@@ -46,7 +46,8 @@ MAN7DSTDIR=$(MANDIR)/man7
 
 # Manpages #1: Types
 # Use shell / ls to get complete list - $(TYPEDIR)/*/man.rst does not work
-MANTYPESRC=$(shell ls $(TYPEDIR)/*/man.rst)
+# Using ls does not work if no file with given pattern exist, so use wildcard
+MANTYPESRC=$(wildcard $(TYPEDIR)/*/man.rst)
 MANTYPEPREFIX=$(subst $(TYPEDIR)/,$(MAN7DSTDIR)/cdist-type,$(MANTYPESRC))
 MANTYPES=$(subst /man.rst,.rst,$(MANTYPEPREFIX))
 
@@ -92,13 +93,9 @@ man-latest-link: web-pub
 DOT_CDIST_PATH=${HOME}/.cdist
 DOTMAN7DSTDIR=$(MAN7DSTDIR)
 DOTTYPEDIR=$(DOT_CDIST_PATH)/type
-$(info $(DOTTYPEDIR))
-DOTMANTYPESRC=$(shell ls $(DOTTYPEDIR)/*/man.rst)
-$(info $(DOTMANTYPESRC))
+DOTMANTYPESRC=$(wildcard $(DOTTYPEDIR)/*/man.rst)
 DOTMANTYPEPREFIX=$(subst $(DOTTYPEDIR)/,$(DOTMAN7DSTDIR)/cdist-type,$(DOTMANTYPESRC))
-$(info $(DOTMANTYPEPREFIX))
 DOTMANTYPES=$(subst /man.rst,.rst,$(DOTMANTYPEPREFIX))
-$(info $(DOTMANTYPES))
 
 # Link manpage: do not create man.html but correct named file
 $(DOTMAN7DSTDIR)/cdist-type%.rst: $(DOTTYPEDIR)/%/man.rst
