@@ -9,6 +9,9 @@ next:
 	* New type: __jail_freebsd9: Handle jail management on FreeBSD <= 9.X (Jake Guffey)
 	* New type: __jail_freebsd10: Handle jail management on FreeBSD >= 10.0 (Jake Guffey)
 	* Type __jail: Dynamically select the correct jail subtype based on target host OS (Jake Guffey)
+	* Explorer __machine_type: add openvz and lxc
+	* Explorer __os __os_version: add scientific
+	* Type various: add scientific
 
 4.1.0: 2016-05-27
 	* Documentation: Migrate to reStructuredText format and sphinx (Darko Poljak)
