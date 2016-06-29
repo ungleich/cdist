@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__key_value - Change property values in files
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 DESCRIPTION
 -----------
@@ -85,7 +83,13 @@ So you need to exactly specify the key and delimiter. Delimiter can be of any le
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

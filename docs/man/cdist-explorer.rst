@@ -1,14 +1,7 @@
-cdist-explorer(7)
-=================
+Explorer
+========
 
-NAME
-----
-cdist-explorer - Explore the target systems
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-DESCRIPTION
+Description
 -----------
 Explorer are small shell scripts, which will be executed on the target
 host. The aim of the explorer is to give hints to types on how to act on the
@@ -39,7 +32,7 @@ error message on stderr, which will cause cdist to abort.
 You can also use stderr for debugging purposes while developing a new
 explorer.
 
-EXAMPLES
+Examples
 --------
 A very simple explorer may look like this::
 
@@ -59,16 +52,3 @@ A type explorer, which could check for the status of a package may look like thi
 
     # Expect dpkg failing, if package is not known / installed
     dpkg -s "$name" 2>/dev/null || exit 0
-
-
-SEE ALSO
---------
-- `cdist(1) <../man1/cdist.html>`_
-- `cdist-reference(7) <cdist-reference.html>`_
-- `cdist-stages(7) <cdist-stages.html>`_
-
-
-COPYING
--------
-Copyright \(C) 2010-2014 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

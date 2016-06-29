@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__pyvenv - Create or remove python virtual environment
 
-Darko Poljak <darko.poljak--@--gmail.com>
-
 
 DESCRIPTION
 -----------
@@ -71,7 +69,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Darko Poljak <darko.poljak--@--gmail.com>
 
 
 COPYING

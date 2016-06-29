@@ -1,13 +1,7 @@
-cdist-messaging(7)
-==================
+Messaging
+=========
 
-NAME
-----
-cdist-messaging - How the initial manifest and types can communication
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-DESCRIPTION
+Description
 -----------
 cdist has a simple but powerful way of allowing communication between
 the initial manifest and types as well as types and types.
@@ -27,11 +21,11 @@ This way overwriting any of the two files by accident does not
 interfere with other types.
 
 The order of execution is not defined unless you create dependencies 
-between the different objects (see cdist-manifest(7)) and thus you
+between the different objects (see `cdist manifest <cdist-manifest.html>`_) and thus you
 can only react reliably on messages by objects that you depend on.
 
 
-AVAILABILITY
+Availability
 ------------
 Messaging is possible between all **local** scripts:
 
@@ -41,7 +35,7 @@ Messaging is possible between all **local** scripts:
 - type/gencode-remote
 
 
-EXAMPLES
+Examples
 --------
 When you want to emit a message use:
 
@@ -98,17 +92,3 @@ Restart sshd on changes
     if grep -q "^__key_value/PermitRootLogin" "$__messages_in"; then
         echo $restart
     fi
-
-
-SEE ALSO
---------
-- `cdist(1) <../man1/cdist.html>`_
-- `cdist-manifest(7) <cdist-manifest.html>`_
-- `cdist-reference(7) <cdist-reference.html>`_
-- `cdist-type(7) <cdist-type.html>`_
-
-
-COPYING
--------
-Copyright \(C) 2013 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

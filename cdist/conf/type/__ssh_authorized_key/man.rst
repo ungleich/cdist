@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__ssh_authorized_key - Manage a single ssh authorized key entry
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 DESCRIPTION
 -----------
@@ -57,9 +55,16 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist__ssh_authorized_keys(7) <cdist__ssh_authorized_keys.html>`_
-- sshd(8)
+`cdist__ssh_authorized_keys(7) <cdist__ssh_authorized_keys.html>`_,
+sshd(8)
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
 
 COPYING
 -------

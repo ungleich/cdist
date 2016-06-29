@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__debconf_set_selections - Setup debconf selections
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
 
 DESCRIPTION
 -----------
@@ -39,9 +37,16 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__update_alternatives(7) <cdist-type__update_alternatives.html>`_
-- debconf-set-selections(1)
+debconf-set-selections(1),
+`cdist-type__update_alternatives(7) <cdist-type__update_alternatives.html>`_
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

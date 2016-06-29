@@ -1,14 +1,8 @@
-cdist-best-practice(7)
-======================
+Best practice
+=============
+Practices used in real environments
 
-NAME
-----
-cdist-best-practice - Practices used in real environments
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-PASSWORDLESS CONNECTIONS
+Passwordless connections
 ------------------------
 It is recommended to run cdist with public key authentication.
 This requires a private/public key pair and the entry
@@ -16,7 +10,7 @@ This requires a private/public key pair and the entry
 See sshd_config(5) and ssh-keygen(1).
 
 
-SPEEDING UP SSH CONNECTIONS
+Speeding up ssh connections
 ---------------------------
 When connecting to a new host, the initial delay with ssh connections
 is pretty big. You can work around this by
@@ -30,7 +24,7 @@ inclusion into your ~/.ssh/config::
       ControlPersist 10
 
 
-SPEEDING UP SHELL EXECUTION
+Speeding up shell execution
 ----------------------------
 On the source host, ensure that /bin/sh is *not* bash: bash is quite slow for
 script execution. Instead, you could use dash after installing it::
@@ -38,7 +32,7 @@ script execution. Instead, you could use dash after installing it::
     ln -sf /bin/dash /bin/sh
 
 
-MULTI MASTER OR ENVIRONMENT SETUPS
+Multi master or environment setups
 ----------------------------------
 If you plan to distribute cdist among servers or use different
 environments, you can do so easily with the included version
@@ -64,7 +58,7 @@ you can clone it multiple times::
     machine-b % git clone git://your-git-server/cdist
 
 
-SEPERATING WORK BY GROUPS
+Seperating work by groups
 -------------------------
 If you are working with different groups on one cdist-configuration,
 you can delegate to other manifests and have the groups edit only
@@ -77,7 +71,7 @@ their manifests. You can use the following snippet in
     sh -e "$__manifest/cbrg"
 
 
-MAINTAINING MULTIPLE CONFIGURATIONS
+Maintaining multiple configurations
 -----------------------------------
 When you need to manage multiple sites with cdist, like company_a, company_b
 and private for instance, you can easily use git for this purpose.
@@ -138,7 +132,7 @@ The following **.git/config** is taken from a a real world scenario::
 Have a look at git-remote(1) to adjust the remote configuration, which allows
 
 
-MULTIPLE DEVELOPERS WITH DIFFERENT TRUST
+Multiple developers with different trust
 ----------------------------------------
 If you are working in an environment that requires different people to
 work on the same configuration, but having different privileges, you can
@@ -155,7 +149,7 @@ implement this scenario with a gateway host and sudo:
 For more details consult sudoers(5)
 
 
-TEMPLATING
+Templating
 ----------
 * create directory files/ in your type (convention)
 * create the template as an executable file like files/basic.conf.sh, it will output text using shell variables for the values
@@ -193,7 +187,7 @@ TEMPLATING
         --source "$__object/files/basic.conf"
 
 
-TESTING A NEW TYPE
+Testing a new type
 ------------------
 If you want to test a new type on a node, you can tell cdist to only use an
 object of this type: Use the '--initial-manifest' parameter
@@ -214,7 +208,7 @@ of cdist:
         cdist --initial-manifest - cdist-dev-01.ungleich.ch
 
 
-OTHER CONTENT IN CDIST REPOSITORY
+Other content in cdist repository
 ---------------------------------
 Usually the cdist repository contains all configuration
 items. Sometimes you may have additional resources that
@@ -227,15 +221,3 @@ in the repository for such content: It allows you to
 easily distinguish what is used by cdist and what not
 and also to store all important files in one
 repository.
-
-
-SEE ALSO
---------
-- `cdist(1) <../man1/cdist.html>`_
-- `cdist-tutorial(7) <cdist-tutorial.html>`_
-
-
-COPYING
--------
-Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

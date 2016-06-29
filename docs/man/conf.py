@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.realpath
 # ones.
 extensions = [
     'cdist.sphinxext.manpage',
+    'sphinx.ext.extlinks',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -309,3 +310,9 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+extlinks = {
+    'cdist_docs':
+        ('http://www.nico.schottelius.org/software/cdist/man/{}/%s.html'.format(
+            release), None),
+}

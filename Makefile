@@ -63,10 +63,10 @@ $(MANREF): $(MANREFSH)
 	$(MANREFSH)
 
 # Manpages #3: generic part
-mansphinxman: $(MANTYPES) $(MANREF)
+mansphinxman: $(MANTYPES) $(MANREF) $(PYTHON_VERSION)
 	$(SPHINXM)
 
-mansphinxhtml: $(MANTYPES) $(MANREF)
+mansphinxhtml: $(MANTYPES) $(MANREF) $(PYTHON_VERSION)
 	$(SPHINXH)
 
 man: mansphinxman mansphinxhtml

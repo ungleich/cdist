@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__consul_check - Manages consul checks
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 DESCRIPTION
 -----------
@@ -64,8 +62,15 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__consul_agent(7) <cdist-type__consul_agent.html>`_
+`cdist-type__consul_agent(7) <cdist-type__consul_agent.html>`_
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

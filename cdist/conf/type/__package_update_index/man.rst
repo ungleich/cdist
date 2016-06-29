@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__update_index - Update the package index
 
-Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
-
 
 DESCRIPTION
 -----------
@@ -44,7 +42,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
 
 
 COPYING

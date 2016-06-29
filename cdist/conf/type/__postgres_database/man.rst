@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__postgres_database - Create/drop postgres databases
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 DESCRIPTION
 -----------
@@ -32,8 +30,15 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__postgres_role(7) <cdist-type__postgres_role.html>`_
+`cdist-type__postgres_role(7) <cdist-type__postgres_role.html>`_
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

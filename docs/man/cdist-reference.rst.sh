@@ -29,23 +29,17 @@ __cdist_myname=${0##*/};
 __cdist_abs_myname="$__cdist_abs_mydir/$__cdist_myname"
 
 filename="${__cdist_myname%.sh}"
-dest="$__cdist_abs_mydir/man7/$filename"
+dest="$__cdist_abs_mydir/$filename"
 
 cd "$__cdist_abs_mydir"
 
 exec > "$dest"
 cat << eof 
-cdist-reference(7)
-==================
+Reference
+=========
+Variable, path and type reference for cdist
 
-NAME
-----
-cdist-reference - Variable, path and type reference for cdist
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-EXPLORERS
+Explorers
 ---------
 The following global explorers are available:
 
@@ -59,7 +53,7 @@ eof
 
 cat << eof 
 
-PATHS
+Paths
 -----
 \$HOME/.cdist
     The standard cdist configuration directory relative to your home directory
@@ -76,10 +70,6 @@ confdir
     By default it consists of everything in \$HOME/.cdist and cdist/conf/.
     For more details see cdist(1)
 
-confdir/files/
-    Cdist does not care about this directory besides providing access to it.
-    It is thought to be a general file storage area.
-
 confdir/manifest/init
     This is the central entry point.
     It is an executable (+x bit set) shell script that can use
@@ -94,11 +84,11 @@ confdir/manifest/*
     maintain different groups of hosts.
 
 confdir/explorer/<name>
-    Contains explorers to be run on the target hosts, see cdist-explorer(7).
+    Contains explorers to be run on the target hosts, see \`cdist explorer <cdist-explorer.html>\`_.
 
 confdir/type/
     Contains all available types, which are used to provide
-    some kind of functionality. See cdist-type(7).
+    some kind of functionality. See \`cdist type <cdist-type.html>\`_.
 
 confdir/type/<name>/
     Home of the type <name>.
@@ -133,7 +123,7 @@ confdir/type/<name>/parameter/boolean
 confdir/type/<name>/explorer
     Location of the type specific explorers.
     This directory is referenced by the variable __type_explorer (see below).
-    See cdist-explorer(7).
+    See \`cdist explorer <cdist-explorer.html>\`_.
 
 confdir/type/<name>/files
     This directory is reserved for user data and will not be used
@@ -158,27 +148,28 @@ out/object/<object>
 out/object/<object>/explorers
     Output of type specific explorers, per object.
 
-TYPES
+Types
 -----
 The following types are available:
 
 eof
 
-for type in $(ls man7/cdist-type__*.rst | LC_ALL=C sort); do
+# If there is no such file then ls prints error to stderr,
+# so redirect stderr to /dev/null.
+for type in $(ls man7/cdist-type__*.rst 2>/dev/null | LC_ALL=C sort); do
     no_dir="${type#man7/}";
     no_type="${no_dir#cdist-type}";
     name="${no_type%.rst}";
-    name_no_underline="$(echo $name | sed 's/^__/\\__/g')"
     manref="${no_dir%.rst}"
     man="${manref}(7)"
 
-    echo "- $name_no_underline" "(\`${man} <${manref}.html>\`_)"
+    echo "- $name" "(\`${man} <man7/${manref}.html>\`_)"
 done
 
 cat << eof
 
 
-OBJECTS
+Objects
 -------
 For object to object communication and tests, the following paths are
 usable within a object directory:
@@ -195,17 +186,13 @@ stdin
     when the type was called.
 
 
-ENVIRONMENT VARIABLES (FOR READING)
+Environment variables (for reading)
 -----------------------------------
 The following environment variables are exported by cdist:
 
 __explorer
     Directory that contains all global explorers.
     Available for: initial manifest, explorer, type explorer, shell
-__files
-    Directory that contains content from the "files" subdirectories
-    from the configuration directories.
-    Available for: initial manifest, type manifest, type gencode, shell
 __manifest
     Directory that contains the initial manifest.
     Available for: initial manifest, type manifest, shell
@@ -240,12 +227,12 @@ __type_explorer
     Directory that contains the type explorers.
     Available for: type explorer
 
-ENVIRONMENT VARIABLES (FOR WRITING)
+Environment variables (for writing)
 -----------------------------------
 The following environment variables influence the behaviour of cdist:
 
 require
-    Setup dependencies between objects (see cdist-manifest(7))
+    Setup dependencies between objects (see \`cdist manifest <cdist-manifest.html>\`_)
 
 CDIST_LOCAL_SHELL
     Use this shell locally instead of /bin/sh to execute scripts
@@ -254,24 +241,14 @@ CDIST_REMOTE_SHELL
     Use this shell remotely instead of /bin/sh to execute scripts
 
 CDIST_OVERRIDE
-    Allow overwriting type parameters (see cdist-manifest(7))
+    Allow overwriting type parameters (see  \`cdist manifest <cdist-manifest.html>\`_)
 
 CDIST_ORDER_DEPENDENCY
-    Create dependencies based on the execution order (see cdist-manifest(7))
+    Create dependencies based on the execution order (see  \`cdist manifest <cdist-manifest.html>\`_)
 
 CDIST_REMOTE_EXEC
     Use this command for remote execution (should behave like ssh)
 
 CDIST_REMOTE_COPY
     Use this command for remote copy (should behave like scp)
-
-SEE ALSO
---------
-- \`cdist(1) <../man1/cdist.html>\`_
-
-
-COPYING
--------
-Copyright \(C) 2011-2014 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
 eof

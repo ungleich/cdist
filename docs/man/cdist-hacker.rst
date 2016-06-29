@@ -1,14 +1,7 @@
-cdist-hacker(7)
-===============
+Hacking
+=======
 
-NAME
-----
-cdist-hacker - How to get (stuff) into cdist
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-WELCOME
+Welcome
 -------
 Welcome dear hacker! I invite you to a tour of pointers to
 get into the usable configuration mangament system, cdist.
@@ -19,14 +12,14 @@ twice before merging or implementing a feature: Less features
 with good usability are far better than the opposite.
 
 
-REPORTING BUGS
+Reporting bugs
 --------------
 If you believe you've found a bug and verified that it is
 in the latest version, drop a mail to the cdist mailing list,
 subject prefixed with "[BUG] " or create an issue on github.
 
 
-CODING CONVENTIONS (EVERYWHERE)
+Coding conventions (everywhere)
 -------------------------------
 If something should be better done or needs to fixed, add the word FIXME
 nearby, so grepping for FIXME gives all positions that need to be fixed.
@@ -34,7 +27,7 @@ nearby, so grepping for FIXME gives all positions that need to be fixed.
 Indention is 4 spaces (welcome to the python world).
 
 
-HOW TO SUBMIT STUFF FOR INCLUSION INTO UPSTREAM CDIST
+How to submit stuff for inclusion into upstream cdist
 -----------------------------------------------------
 If you did some cool changes to cdist, which you value as a benefit for
 everybody using cdist, you're welcome to propose inclusion into upstream.
@@ -61,9 +54,9 @@ for inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**
 or open a pull request at http://github.com/telmich/cdist.
 
 
-HOW TO SUBMIT A NEW TYPE
+How to submit a new type
 ------------------------
-For detailled information about types, see cdist-type(7).
+For detailled information about types, see `cdist type <cdist-type.html>`_.
 
 Submitting a type works as described above, with the additional requirement
 that a corresponding manpage named man.text in asciidoc format with
@@ -77,9 +70,11 @@ code and thus such a type introduces redundant functionality that is given by
 core cdist already.
 
 
-EXAMPLE GIT WORKFLOW
+Example git workflow
 ---------------------
-The following workflow works fine for most developers::
+The following workflow works fine for most developers
+
+.. code-block:: sh
 
     # get latest upstream master branch
     git clone https://github.com/telmich/cdist.git
@@ -125,6 +120,8 @@ The following workflow works fine for most developers::
 If at any point you want to go back to the original master branch, you can
 use **git stash** to stash your changes away::
 
+.. code-block:: sh
+
     # assume you are on documentation_cleanup
     git stash
 
@@ -136,6 +133,8 @@ use **git stash** to stash your changes away::
 Similar when you want to develop another new feature, you go back
 to the master branch and create another branch based on it::
 
+.. code-block:: sh
+
     # change to master and update to most recent upstream version
     git checkout master
     git fetch -v origin
@@ -145,17 +144,3 @@ to the master branch and create another branch based on it::
 
 (you can repeat the code above for as many features as you want to develop
 in parallel)
-
-
-SEE ALSO
---------
-- `cdist(1) <../man1/cdist.html>`_
-- git(1)
-- git-checkout(1)
-- git-stash(1)
-
-
-COPYING
--------
-Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

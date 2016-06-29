@@ -5,8 +5,6 @@ NAME
 ----
 cdist-type__pf_ruleset - Copy a pf(4) ruleset to $__target_host
 
-Jake Guffey <jake.guffey--@--eprotex.com>
-
 
 DESCRIPTION
 -----------
@@ -41,8 +39,15 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- pf(4)
+pf(4)
+
+Full documentation at: <:cdist_docs:`index`>,
+especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+
+
+AUTHORS
+-------
+Jake Guffey <jake.guffey--@--eprotex.com>
 
 
 COPYING
