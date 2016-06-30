@@ -155,7 +155,7 @@ class EmulatorConflictingRequirementsTestCase(test.CdistTestCase):
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
 
-    def test_object_conflicting_requirements_req_none(self):
+    def test_object_different_requirements_req_none(self):
         argv = ['__directory', 'spam']
         emu = emulator.Emulator(argv, env=self.env)
         emu.run()
@@ -167,9 +167,14 @@ class EmulatorConflictingRequirementsTestCase(test.CdistTestCase):
         if 'require' in self.env:
             del self.env['require']
         emu = emulator.Emulator(argv, env=self.env)
-        self.assertRaises(cdist.Error, emu.run)
+        emu.run()
 
-    def test_object_conflicting_requirements_none_req(self):
+        cdist_type = core.CdistType(self.local.type_path, '__file')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'eggs')
+        reqs = set(('__directory/spam',))
+        self.assertEqual(reqs, set(cdist_object.requirements))
+
+    def test_object_different_requirements_none_req(self):
         argv = ['__directory', 'spam']
         emu = emulator.Emulator(argv, env=self.env)
         emu.run()
@@ -181,7 +186,37 @@ class EmulatorConflictingRequirementsTestCase(test.CdistTestCase):
         argv = ['__file', 'eggs']
         self.env['require'] = '__directory/spam'
         emu = emulator.Emulator(argv, env=self.env)
-        self.assertRaises(cdist.Error, emu.run)
+        emu.run()
+
+        cdist_type = core.CdistType(self.local.type_path, '__file')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'eggs')
+        reqs = set(('__directory/spam',))
+        self.assertEqual(reqs, set(cdist_object.requirements))
+
+    def test_object_different_requirements(self):
+        argv = ['__directory', 'spam']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__directory', 'spameggs']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+
+        argv = ['__file', 'eggs']
+        if 'require' in self.env:
+            del self.env['require']
+        self.env['require'] = '__directory/spam'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+
+        argv = ['__file', 'eggs']
+        self.env['require'] = '__directory/spameggs'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+
+        cdist_type = core.CdistType(self.local.type_path, '__file')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'eggs')
+        reqs = set(('__directory/spam', '__directory/spameggs',))
+        self.assertEqual(reqs, set(cdist_object.requirements))
 
 
 class AutoRequireEmulatorTestCase(test.CdistTestCase):

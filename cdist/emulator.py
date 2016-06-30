@@ -201,6 +201,34 @@ class Emulator(object):
             except EnvironmentError as e:
                 raise cdist.Error('Failed to read from stdin: %s' % e)
 
+
+    def record_requirement(self, requirement):
+        """record requirement and return recorded requirement"""
+
+        # Raises an error, if object cannot be created
+        try:
+            cdist_object = self.cdist_object.object_from_name(requirement)
+        except core.cdist_type.NoSuchTypeError as e:
+            self.log.error(("%s requires object %s, but type %s does not"
+                    " exist. Defined at %s"  % (self.cdist_object.name,
+                        requirement, e.name, self.object_source)))
+            raise
+        except core.cdist_object.MissingObjectIdError as e:
+            self.log.error(("%s requires object %s without object id."
+                " Defined at %s"  % (self.cdist_object.name, requirement,
+                    self.object_source)))
+            raise
+
+        self.log.debug("Recording requirement: %s", requirement)
+
+        # Save the sanitised version, not the user supplied one
+        # (__file//bar => __file/bar)
+        # This ensures pattern matching is done against sanitised list
+        self.cdist_object.requirements.append(cdist_object.name)
+
+        return cdist_object.name
+
+
     def record_requirements(self):
         """record requirements"""
 
@@ -228,24 +256,8 @@ class Emulator(object):
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0: continue
-
-                # Raises an error, if object cannot be created
-                try:
-                    cdist_object = self.cdist_object.object_from_name(requirement)
-                except core.cdist_type.NoSuchTypeError as e:
-                    self.log.error("%s requires object %s, but type %s does not exist. Defined at %s"  % (self.cdist_object.name, requirement, e.name, self.object_source))
-                    raise
-                except core.cdist_object.MissingObjectIdError as e:
-                    self.log.error("%s requires object %s without object id. Defined at %s"  % (self.cdist_object.name, requirement, self.object_source))
-                    raise
-
-                self.log.debug("Recording requirement: %s", requirement)
-
-                # Save the sanitised version, not the user supplied one
-                # (__file//bar => __file/bar)
-                # This ensures pattern matching is done against sanitised list
-                self.cdist_object.requirements.append(cdist_object.name)
-                reqs.add(cdist_object.name)
+                req = self.record_requirement(requirement)
+                reqs.add(req)
         if self._existing_reqs is not None:
             # if object exists then compare existing and new requirements
             self.log.debug("OBJ: {} {}".format(self.cdist_type, self.object_id))
@@ -253,15 +265,19 @@ class Emulator(object):
             self.log.debug("REQS: {}".format(reqs))
 
             if self._existing_reqs != reqs:
-                errmsg = ("Object {} already exists with conflicting "
-                    "requirements:\n{}: {}\n{}: {}".format(
+                dbgmsg = ("Object {} already exists with different "
+                    "requirements:\n{}: {}\n{}: {}. Merging sets.".format(
                         self.cdist_object.name,
                         " ".join(self.cdist_object.source),
                         self._existing_reqs,
                         self.object_source,
                         reqs))
-                self.log.error(errmsg)
-                raise cdist.Error(errmsg)
+                self.log.debug(dbgmsg)
+                all_reqs = reqs | self._existing_reqs
+                self.log.debug("All requirements: {}".format(all_reqs))
+                for x in all_reqs:
+                    if not x in self.cdist_object.requirements:
+                        self.record_requirement(x)
 
 
     def record_auto_requirements(self):
