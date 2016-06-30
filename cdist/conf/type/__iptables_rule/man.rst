@@ -50,11 +50,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__iptables_apply(7) <cdist-type__iptables_apply.html>`_,
-iptables(8)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__iptables_apply`\ (7), :manpage:`iptables`\ (8)
 
 
 AUTHORS

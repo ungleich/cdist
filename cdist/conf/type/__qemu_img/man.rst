@@ -37,10 +37,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-qemu-img(1)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`qemu-img`\ (1)
 
 
 AUTHORS

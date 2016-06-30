@@ -42,12 +42,8 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__rvm(7) <cdist-type__rvm.html>`_,
-`cdist-type__rvm_gem(7) <cdist-type__rvm_gem.html>`_,
-`cdist-type__rvm_gemset(7) <cdist-type__rvm_gemset.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__rvm`\ (7), :manpage:`cdist-type__rvm_gem`\ (7),
+:manpage:`cdist-type__rvm_gemset`\ (7)
 
 
 AUTHORS

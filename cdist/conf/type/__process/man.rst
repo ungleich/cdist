@@ -58,10 +58,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__start_on_boot(7) <cdist-type__start_on_boot.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__start_on_boot`\ (7)
 
 
 AUTHORS

@@ -50,12 +50,6 @@ EXAMPLES
     __cdist --source "git://git.schottelius.org/cdist" /home/cdist/cdist
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Nico Schottelius <nico-cdist--@--schottelius.org>

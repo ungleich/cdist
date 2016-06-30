@@ -45,10 +45,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__process(7) <cdist-type__process.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__process`\ (7)
 
 
 AUTHORS

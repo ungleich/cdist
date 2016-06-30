@@ -60,12 +60,6 @@ EXAMPLES
     __zypper_repo testrepo4 --state disabled --repo_id 4
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Daniel Heule <hda--@--sfs.biz>

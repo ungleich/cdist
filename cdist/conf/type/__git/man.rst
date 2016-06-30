@@ -47,12 +47,6 @@ EXAMPLES
     __git /home/nico/cdist --source git://github.com/telmich/cdist.git --branch 2.1
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Nico Schottelius <nico-cdist--@--schottelius.org>

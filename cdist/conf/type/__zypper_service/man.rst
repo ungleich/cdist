@@ -53,12 +53,6 @@ EXAMPLES
     __zypper_service INTERNAL_SLES11_SP3 --state absent --uri "http://path/to/your/ris/dir"
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Daniel Heule <hda--@--sfs.biz>

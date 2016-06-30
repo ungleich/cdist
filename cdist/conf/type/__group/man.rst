@@ -67,12 +67,6 @@ EXAMPLES
     __group foobar --gid 1234 --password 'crypted-password-string'
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Steven Armstrong <steven-cdist--@--armstrong.cc>

@@ -40,12 +40,6 @@ EXAMPLES
     __package_update_index --type apt
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>

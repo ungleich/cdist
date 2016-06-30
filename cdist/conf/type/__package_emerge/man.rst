@@ -47,11 +47,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__package(7) <cdist-type__package.html>`_,
-`cdist-type__package_emerge_dependencies(7) <cdist-type__package_emerge_dependencies.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__package`\ (7), :manpage:`cdist-type__package_emerge_dependencies`\ (7)
 
 
 AUTHORS

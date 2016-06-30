@@ -37,11 +37,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-debconf-set-selections(1),
-`cdist-type__update_alternatives(7) <cdist-type__update_alternatives.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`debconf-set-selections`\ (1), :manpage:`cdist-type__update_alternatives`\ (7)
 
 
 AUTHORS

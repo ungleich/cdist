@@ -20,8 +20,9 @@ MANIFEST
 dist/
 cdist/version.py
 
-#sphinx build dir
+# sphinx build dirs, cache
 _build/
+docs/dist
 
 # Packaging: Archlinux
 /PKGBUILD

@@ -39,10 +39,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-pf(4)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`pf`\ (4)
 
 
 AUTHORS

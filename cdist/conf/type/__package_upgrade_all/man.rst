@@ -40,12 +40,6 @@ EXAMPLES
     __package_upgrade_all --type apt
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>

@@ -84,10 +84,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-pw(8), usermod(8)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`pw`\ (8), :manpage:`usermod`\ (8)
 
 
 AUTHORS

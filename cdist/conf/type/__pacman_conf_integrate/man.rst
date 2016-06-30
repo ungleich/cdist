@@ -35,10 +35,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-grep(1)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`grep`\ (1)
 
 
 AUTHORS

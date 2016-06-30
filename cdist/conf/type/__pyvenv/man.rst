@@ -67,12 +67,6 @@ EXAMPLES
     __pyvenv /home/services/djangoenv --venvparams "--copies --system-site-packages"
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Darko Poljak <darko.poljak--@--gmail.com>

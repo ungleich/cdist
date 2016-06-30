@@ -53,12 +53,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-ccollect(1)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-ccollect documentation at:
-<http://www.nico.schottelius.org/software/ccollect/>.
+:manpage:`ccollect`\ (1)
 
 
 AUTHORS
