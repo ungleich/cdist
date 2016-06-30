@@ -27,6 +27,7 @@ state_should="present"
 [ -f "$__object/parameter/regex" ] && regex=$(cat "$__object/parameter/regex")
 [ -f "$__object/parameter/state" ] && state_should=$(cat "$__object/parameter/state")
 [ -f "$__object/parameter/line" ]  && line=$(cat "$__object/parameter/line")
+[ -f "$__object/parameter/onchange" ]  && onchange=$(cat "$__object/parameter/onchange")
 
 state_is="$(cat "$__object/explorer/state")"
 
@@ -59,7 +60,9 @@ case "$state_should" in
 
         # Only replace ' with '"'"' and keep \ as they are
         line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g")
-        printf '%s' "printf '%s\n' '$line_sanitised' >> $file"
+        printf '%s\n' "printf '%s\n' '$line_sanitised' >> $file"
+
+        [ -z "$onchange" ] || echo "$onchange"
 
     ;;
     absent)
@@ -83,6 +86,8 @@ fi
 grep -v $greparg '$regex' '$file' > \$tmpfile || true
 mv -f "\$tmpfile" "$file"
 eof
+
+        [ -z "$onchange" ] || echo "$onchange"
     ;;
     *)
        echo "Unknown state: $state_should" >&2

@@ -40,6 +40,9 @@ file
     If supplied, use this as the destination file.
     Otherwise the object_id is used.
 
+onchange::
+   the code to run if the file changes
+
 
 EXAMPLES
 --------
@@ -53,6 +56,7 @@ EXAMPLES
     __line home-fstab \
         --file /etc/fstab \
         --line 'filer.fs:/vol/home /home  nfs    defaults        0 0' \
+        --onchange 'mount /home' \
         --state present
 
     # Removes the line specifiend in "include_www" from the file "lighttpd.conf"
