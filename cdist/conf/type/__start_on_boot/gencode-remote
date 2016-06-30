@@ -59,7 +59,7 @@ case "$state_should" in
                     echo rc-update add \"$name\" \"$target_runlevel\"
                 ;;
 
-                amazon|centos|fedora|owl|redhat|suse)
+                amazon|scientific|centos|fedora|owl|redhat|suse)
                     echo chkconfig \"$name\" on
                 ;;
 

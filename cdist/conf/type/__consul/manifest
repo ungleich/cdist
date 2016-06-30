@@ -23,7 +23,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   centos|redhat|ubuntu|debian|archlinux|gentoo)
+   scientific|centos|redhat|ubuntu|debian|archlinux|gentoo)
       # any linux should work
       :
    ;;

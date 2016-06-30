@@ -38,7 +38,7 @@ case "$os" in
         # handled in gencode-remote
         :
     ;;
-    centos)
+    scientific|centos)
         __key_value sysconfig-hostname \
             --file /etc/sysconfig/network \
             --delimiter '=' \

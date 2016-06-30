@@ -23,7 +23,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   centos|debian|redhat|ubuntu)
+   scientific|centos|debian|redhat|ubuntu)
       # whitelist safeguard
       :
    ;;

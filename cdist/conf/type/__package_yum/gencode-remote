@@ -37,7 +37,7 @@ fi
 
 state_should="$(cat "$__object/parameter/state")"
 
-if grep -q -E "(centos|redhat|amazon)" "$__global/explorer/os"; then
+if grep -q -E "(scientific|centos|redhat|amazon)" "$__global/explorer/os"; then
     opts="-y --quiet"
 else
     opts="--assumeyes --quiet"
