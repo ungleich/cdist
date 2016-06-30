@@ -29,11 +29,7 @@ None (__iptables_apply is used by __iptables_rule)
 
 SEE ALSO
 --------
-`cdist-type__iptables_rule(7) <cdist-type__iptables_rule.html>`_,
-iptables(8)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__iptables_rule`\ (7), :manpage:`iptables`\ (8)
 
 
 AUTHORS

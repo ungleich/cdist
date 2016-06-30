@@ -48,10 +48,8 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__postgres_database(7) <cdist-type__postgres_database.html>`_
+:manpage:`cdist-type__postgres_database`\ (7)
 
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
 postgresql documentation at:
 <http://www.postgresql.org/docs/current/static/sql-createrole.html>.
 

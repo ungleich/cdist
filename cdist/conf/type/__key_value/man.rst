@@ -81,12 +81,6 @@ This type try to handle as many values as possible, so it doesn't use regexes.
 So you need to exactly specify the key and delimiter. Delimiter can be of any lenght.
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Steven Armstrong <steven-cdist--@--armstrong.cc>

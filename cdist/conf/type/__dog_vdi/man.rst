@@ -43,10 +43,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-qemu(1), dog(8)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`qemu`\ (1), :manpage:`dog`\ (8)
 
 
 AUTHORS

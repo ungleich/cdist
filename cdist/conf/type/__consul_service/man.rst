@@ -66,10 +66,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__consul_agent(7) <cdist-type__consul_agent.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__consul_agent`\ (7)
 
 
 AUTHORS

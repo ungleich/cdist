@@ -125,10 +125,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-consul documentation at:
-<https://github.com/hashicorp/consul-template>.
+consul documentation at: <https://github.com/hashicorp/consul-template>.
 
 
 AUTHORS

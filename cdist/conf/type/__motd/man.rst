@@ -35,12 +35,6 @@ EXAMPLES
     __motd --source "$__type/files/my-motd"
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Nico Schottelius <nico-cdist--@--schottelius.org>

@@ -34,10 +34,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-locale(1), localedef(1)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`locale`\ (1), :manpage:`localedef`\ (1)
 
 
 AUTHORS

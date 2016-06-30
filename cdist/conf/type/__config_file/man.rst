@@ -48,10 +48,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__file(7) <cdist-type__file.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__file`\ (7)
 
 
 AUTHORS

@@ -39,11 +39,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-pf(4),
-`cdist-type__pf_ruleset(7) <cdist-type__pf_ruleset.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`pf`\ (4), :manpage:`cdist-type__pf_ruleset`\ (7)
 
 
 AUTHORS

@@ -175,10 +175,6 @@ The following exit values shall be returned:
     One or more host configurations failed
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>.
-
 AUTHORS
 -------
 Nico Schottelius <nico-cdist--@--schottelius.org>

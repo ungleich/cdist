@@ -33,10 +33,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__ssh_authorized_keys(7) <cdist-type__ssh_authorized_keys.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__ssh_authorized_keys`\ (7)
 
 
 AUTHORS

@@ -65,11 +65,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__iptables_rule(7) <cdist-type__iptables_rule.html>`_,
-firewalld(8)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__iptables_rule`\ (7), :manpage:`firewalld`\ (8)
 
 
 AUTHORS

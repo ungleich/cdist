@@ -30,10 +30,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist-type__postgres_role(7) <cdist-type__postgres_role.html>`_
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`cdist-type__postgres_role`\ (7)
 
 
 AUTHORS

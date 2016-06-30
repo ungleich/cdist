@@ -37,12 +37,6 @@ EXAMPLES
     __apt_ppa ppa:sans-intern/missing-bits --state absent
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Steven Armstrong <steven-cdist--@--armstrong.cc>

@@ -55,11 +55,8 @@ EXAMPLES
 
 SEE ALSO
 --------
-`cdist__ssh_authorized_keys(7) <cdist__ssh_authorized_keys.html>`_,
-sshd(8)
+:manpage:`cdist__ssh_authorized_keys`\ (7), :manpage:`sshd`\ (8)
 
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
 
 AUTHORS
 -------

@@ -76,9 +76,9 @@ If you want to build and use the manpages, run:
 .. code-block:: sh
 
     make man
-    export MANPATH=$MANPATH:$(pwd -P)/docs/man/_build/man
+    export MANPATH=$MANPATH:$(pwd -P)/docs/dist/man
 
-Or you can move manpages from docs/man/_build/man directory to some
+Or you can move manpages from docs/dist/man directory to some
 other directory and add it to MANPATH.
 
 You can also build manpages for types in your ~/.cdist directory:
@@ -87,12 +87,23 @@ You can also build manpages for types in your ~/.cdist directory:
 
     make dotman
 
-Built manpages are now in docs/man/_build/man directory. If you have
-some other custom .cdist directory, e.g. /custom/.cdist then use:
+Built manpages are now in docs/dist/man directory. If you have
+some other custom .cdist directory, e.g. /opt/cdist then use:
 
 .. code-block:: sh
 
-    DOT_CDIST_PATH=/custom/.cdist make dotman
+    DOT_CDIST_PATH=/opt/cdist make dotman
+
+Building and using HTML documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you want to build and use HTML documentation, run:
+
+.. code-block:: sh
+
+    make html
+
+Now you can access docs/dist/html/index.html.
 
 Python package
 ~~~~~~~~~~~~~~

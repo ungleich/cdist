@@ -48,12 +48,6 @@ EXAMPLES
     __apt_key UbuntuArchiveKey --keyid 437D05B5 --keyserver keyserver.ubuntu.com
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Steven Armstrong <steven-cdist--@--armstrong.cc>

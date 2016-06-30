@@ -68,10 +68,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-crontab(5)
-
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
+:manpage:`crontab`\ (5)
 
 
 AUTHORS

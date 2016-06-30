@@ -36,12 +36,6 @@ EXAMPLES
     __mysql_database "cdist" --name "cdist" --user "myuser" --password "mypwd"
 
 
-SEE ALSO
---------
-Full documentation at: <:cdist_docs:`index`>,
-especially cdist type chapter: <:cdist_docs:`cdist-type`>.
-
-
 AUTHORS
 -------
 Benedikt Koeppel <code@benediktkoeppel.ch>
