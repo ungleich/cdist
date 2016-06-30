@@ -73,7 +73,7 @@ man: mansphinxman mansphinxhtml
 
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
-MANBUILDDIR=$(MANDIR)/_build/html
+MANBUILDDIR=docs/dist/html
 
 man-dist: man
 	rm -rf "${MANWEBDIR}"
@@ -212,7 +212,7 @@ release:
 #
 
 clean:
-	rm -f $(MAN7DSTDIR)/cdist-reference.rst
+	rm -f $(MANDIR)/cdist-reference.rst
 
 	find "$(MANDIR)" -mindepth 2 -type l \
 	| xargs rm -f
