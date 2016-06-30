@@ -20,7 +20,7 @@
 
 helper=./bin/build-helper
 
-MANDIR=docs/man
+DOCS_SRC_DIR=docs/src
 SPEECHDIR=docs/speeches
 TYPEDIR=cdist/conf/type
 
@@ -36,13 +36,13 @@ CHANGELOG_FILE=docs/changelog
 
 PYTHON_VERSION=cdist/version.py
 
-SPHINXM=make -C $(MANDIR) man
-SPHINXH=make -C $(MANDIR) html
+SPHINXM=make -C $(DOCS_SRC_DIR) man
+SPHINXH=make -C $(DOCS_SRC_DIR) html
 ################################################################################
 # Manpages
 #
-MAN1DSTDIR=$(MANDIR)/man1
-MAN7DSTDIR=$(MANDIR)/man7
+MAN1DSTDIR=$(DOCS_SRC_DIR)/man1
+MAN7DSTDIR=$(DOCS_SRC_DIR)/man7
 
 # Manpages #1: Types
 # Use shell / ls to get complete list - $(TYPEDIR)/*/man.rst does not work
@@ -56,26 +56,26 @@ $(MAN7DSTDIR)/cdist-type%.rst: $(TYPEDIR)/%/man.rst
 	ln -sf "../../../$^" $@
 
 # Manpages #2: reference
-MANREF=$(MAN7DSTDIR)/cdist-reference.rst
-MANREFSH=$(MANDIR)/cdist-reference.rst.sh
+DOCSREF=$(MAN7DSTDIR)/cdist-reference.rst
+DOCSREFSH=$(DOCS_SRC_DIR)/cdist-reference.rst.sh
 
-$(MANREF): $(MANREFSH)
-	$(MANREFSH)
+$(DOCSREF): $(DOCSREFSH)
+	$(DOCSREFSH)
 
 # Manpages #3: generic part
-mansphinxman: $(MANTYPES) $(MANREF) $(PYTHON_VERSION)
+sphinxman: $(MANTYPES) $(DOCSREF) $(PYTHON_VERSION)
 	$(SPHINXM)
 
-mansphinxhtml: $(MANTYPES) $(MANREF) $(PYTHON_VERSION)
+sphinxhtml: $(MANTYPES) $(DOCSREF) $(PYTHON_VERSION)
 	$(SPHINXH)
 
-man: mansphinxman mansphinxhtml
+docs: sphinxman sphinxhtml
 
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
 MANBUILDDIR=docs/dist/html
 
-man-dist: man
+docs-dist: man
 	rm -rf "${MANWEBDIR}"
 	mkdir -p "${MANWEBDIR}"
 	# mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
@@ -102,10 +102,10 @@ $(DOTMAN7DSTDIR)/cdist-type%.rst: $(DOTTYPEDIR)/%/man.rst
 	ln -sf "$^" $@
 
 # Manpages #3: generic part
-dotmansphinxman: $(DOTMANTYPES)
+dotsphinxman: $(DOTMANTYPES)
 	$(SPHINXM)
 
-dotman: dotmansphinxman
+dotman: dotsphinxman
 
 
 ################################################################################
@@ -147,7 +147,7 @@ web-doc:
 
 web-dist: web-blog web-doc
 
-web-pub: web-dist man-dist speeches-dist
+web-pub: web-dist docs-dist speeches-dist
 	cd "${WEBDIR}" && make pub
 
 web-release-all: man-latest-link
@@ -212,12 +212,12 @@ release:
 #
 
 clean:
-	rm -f $(MANDIR)/cdist-reference.rst
+	rm -f $(DOCS_SRC_DIR)/cdist-reference.rst
 
-	find "$(MANDIR)" -mindepth 2 -type l \
+	find "$(DOCS_SRC_DIR)" -mindepth 2 -type l \
 	| xargs rm -f
 
-	make -C $(MANDIR) clean
+	make -C $(DOCS_SRC_DIR) clean
 
 	find * -name __pycache__  | xargs rm -rf
 

@@ -206,8 +206,8 @@ eof
         "$0" check-date
         "$0" check-unittest
 
-        # Generate man pages (indirect check if they build)
-        make man
+        # Generate documentation (man and html)
+        make docs
 
         # Generate speeches (indirect check if they build)
         make speeches
