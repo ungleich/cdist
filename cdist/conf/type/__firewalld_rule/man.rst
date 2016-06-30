@@ -65,7 +65,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__iptables_rule`\ (7), :manpage:`firewalld`\ (8)
+:strong:`cdist-type__iptables_rule`\ (7), :strong:`firewalld`\ (8)
 
 
 AUTHORS

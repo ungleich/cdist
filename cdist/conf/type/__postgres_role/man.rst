@@ -48,7 +48,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__postgres_database`\ (7)
+:strong:`cdist-type__postgres_database`\ (7)
 
 postgresql documentation at:
 <http://www.postgresql.org/docs/current/static/sql-createrole.html>.

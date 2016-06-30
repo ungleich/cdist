@@ -43,7 +43,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`qemu`\ (1), :manpage:`dog`\ (8)
+:strong:`qemu`\ (1), :strong:`dog`\ (8)
 
 
 AUTHORS

@@ -39,7 +39,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`pf`\ (4)
+:strong:`pf`\ (4)
 
 
 AUTHORS

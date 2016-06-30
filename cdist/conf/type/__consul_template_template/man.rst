@@ -59,7 +59,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__consul_template`\ (7), :manpage:`cdist-type__consul_template_config`\ (7)
+:strong:`cdist-type__consul_template`\ (7), :strong:`cdist-type__consul_template_config`\ (7)
 
 
 AUTHORS

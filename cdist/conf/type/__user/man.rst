@@ -84,7 +84,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`pw`\ (8), :manpage:`usermod`\ (8)
+:strong:`pw`\ (8), :strong:`usermod`\ (8)
 
 
 AUTHORS

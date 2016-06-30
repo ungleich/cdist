@@ -99,7 +99,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__file`\ (7)
+:strong:`cdist-type__file`\ (7)
 
 
 AUTHORS

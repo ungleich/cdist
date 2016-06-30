@@ -53,7 +53,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`ccollect`\ (1)
+:strong:`ccollect`\ (1)
 
 
 AUTHORS
