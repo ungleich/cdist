@@ -77,9 +77,6 @@ class Emulator(object):
 
         self.type_name      = os.path.basename(argv[0])
         self.cdist_type     = core.CdistType(self.type_base_path, self.type_name)
-        # if set then object already exists and this var holds existing
-        # requirements
-        self._existing_reqs = None
 
         self.__init_log()
 
@@ -155,7 +152,6 @@ class Emulator(object):
         if self.cdist_object.exists and not 'CDIST_OVERRIDE' in self.env:
             # make existing requirements a set, so we can compare it
             # later with new requirements
-            self._existing_reqs = set(self.cdist_object.requirements)
             if self.cdist_object.parameters != self.parameters:
                 errmsg = ("Object %s already exists with conflicting "
                     "parameters:\n%s: %s\n%s: %s" % (self.cdist_object.name,
@@ -249,35 +245,13 @@ class Emulator(object):
                     # if no second last line, we are on the first type, so do not set a requirement
                     pass
 
-        reqs = set()
         if "require" in self.env:
             requirements = self.env['require']
             self.log.debug("reqs = " + requirements)
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0: continue
-                req = self.record_requirement(requirement)
-                reqs.add(req)
-        if self._existing_reqs is not None:
-            # if object exists then compare existing and new requirements
-            self.log.debug("OBJ: {} {}".format(self.cdist_type, self.object_id))
-            self.log.debug("EXISTING REQS: {}".format(self._existing_reqs))
-            self.log.debug("REQS: {}".format(reqs))
-
-            if self._existing_reqs != reqs:
-                dbgmsg = ("Object {} already exists with different "
-                    "requirements:\n{}: {}\n{}: {}. Merging sets.".format(
-                        self.cdist_object.name,
-                        " ".join(self.cdist_object.source),
-                        self._existing_reqs,
-                        self.object_source,
-                        reqs))
-                self.log.debug(dbgmsg)
-                all_reqs = reqs | self._existing_reqs
-                self.log.debug("All requirements: {}".format(all_reqs))
-                for x in all_reqs:
-                    if not x in self.cdist_object.requirements:
-                        self.record_requirement(x)
+                self.record_requirement(requirement)
 
 
     def record_auto_requirements(self):
