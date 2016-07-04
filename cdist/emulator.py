@@ -77,9 +77,6 @@ class Emulator(object):
 
         self.type_name      = os.path.basename(argv[0])
         self.cdist_type     = core.CdistType(self.type_base_path, self.type_name)
-        # if set then object already exists and this var holds existing
-        # requirements
-        self._existing_reqs = None
 
         self.__init_log()
 
@@ -155,7 +152,6 @@ class Emulator(object):
         if self.cdist_object.exists and not 'CDIST_OVERRIDE' in self.env:
             # make existing requirements a set, so we can compare it
             # later with new requirements
-            self._existing_reqs = set(self.cdist_object.requirements)
             if self.cdist_object.parameters != self.parameters:
                 errmsg = ("Object %s already exists with conflicting "
                     "parameters:\n%s: %s\n%s: %s" % (self.cdist_object.name,
@@ -201,6 +197,34 @@ class Emulator(object):
             except EnvironmentError as e:
                 raise cdist.Error('Failed to read from stdin: %s' % e)
 
+
+    def record_requirement(self, requirement):
+        """record requirement and return recorded requirement"""
+
+        # Raises an error, if object cannot be created
+        try:
+            cdist_object = self.cdist_object.object_from_name(requirement)
+        except core.cdist_type.NoSuchTypeError as e:
+            self.log.error(("%s requires object %s, but type %s does not"
+                    " exist. Defined at %s"  % (self.cdist_object.name,
+                        requirement, e.name, self.object_source)))
+            raise
+        except core.cdist_object.MissingObjectIdError as e:
+            self.log.error(("%s requires object %s without object id."
+                " Defined at %s"  % (self.cdist_object.name, requirement,
+                    self.object_source)))
+            raise
+
+        self.log.debug("Recording requirement: %s", requirement)
+
+        # Save the sanitised version, not the user supplied one
+        # (__file//bar => __file/bar)
+        # This ensures pattern matching is done against sanitised list
+        self.cdist_object.requirements.append(cdist_object.name)
+
+        return cdist_object.name
+
+
     def record_requirements(self):
         """record requirements"""
 
@@ -221,47 +245,13 @@ class Emulator(object):
                     # if no second last line, we are on the first type, so do not set a requirement
                     pass
 
-        reqs = set()
         if "require" in self.env:
             requirements = self.env['require']
             self.log.debug("reqs = " + requirements)
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0: continue
-
-                # Raises an error, if object cannot be created
-                try:
-                    cdist_object = self.cdist_object.object_from_name(requirement)
-                except core.cdist_type.NoSuchTypeError as e:
-                    self.log.error("%s requires object %s, but type %s does not exist. Defined at %s"  % (self.cdist_object.name, requirement, e.name, self.object_source))
-                    raise
-                except core.cdist_object.MissingObjectIdError as e:
-                    self.log.error("%s requires object %s without object id. Defined at %s"  % (self.cdist_object.name, requirement, self.object_source))
-                    raise
-
-                self.log.debug("Recording requirement: %s", requirement)
-
-                # Save the sanitised version, not the user supplied one
-                # (__file//bar => __file/bar)
-                # This ensures pattern matching is done against sanitised list
-                self.cdist_object.requirements.append(cdist_object.name)
-                reqs.add(cdist_object.name)
-        if self._existing_reqs is not None:
-            # if object exists then compare existing and new requirements
-            self.log.debug("OBJ: {} {}".format(self.cdist_type, self.object_id))
-            self.log.debug("EXISTING REQS: {}".format(self._existing_reqs))
-            self.log.debug("REQS: {}".format(reqs))
-
-            if self._existing_reqs != reqs:
-                errmsg = ("Object {} already exists with conflicting "
-                    "requirements:\n{}: {}\n{}: {}".format(
-                        self.cdist_object.name,
-                        " ".join(self.cdist_object.source),
-                        self._existing_reqs,
-                        self.object_source,
-                        reqs))
-                self.log.error(errmsg)
-                raise cdist.Error(errmsg)
+                self.record_requirement(requirement)
 
 
     def record_auto_requirements(self):
