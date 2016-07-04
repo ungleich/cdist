@@ -73,15 +73,15 @@ docs: man html
 
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
-MANBUILDDIR=docs/dist/html
+HTMLBUILDDIR=docs/dist/html
 
-docs-dist: man
+docs-dist: html
 	rm -rf "${MANWEBDIR}"
 	mkdir -p "${MANWEBDIR}"
 	# mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
 	# cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${MANWEBDIR}/man1
 	# cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
-	cp -R ${MANBUILDDIR}/* ${MANWEBDIR}
+	cp -R ${HTMLBUILDDIR}/* ${MANWEBDIR}
 	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)" || true
 
 man-latest-link: web-pub
