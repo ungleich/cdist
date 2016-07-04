@@ -63,13 +63,13 @@ $(DOCSREF): $(DOCSREFSH)
 	$(DOCSREFSH)
 
 # Manpages #3: generic part
-sphinxman: $(MANTYPES) $(DOCSREF) $(PYTHON_VERSION)
+man: $(MANTYPES) $(DOCSREF) $(PYTHON_VERSION)
 	$(SPHINXM)
 
-sphinxhtml: $(MANTYPES) $(DOCSREF) $(PYTHON_VERSION)
+html: $(MANTYPES) $(DOCSREF) $(PYTHON_VERSION)
 	$(SPHINXH)
 
-docs: sphinxman sphinxhtml
+docs: man html
 
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
@@ -102,11 +102,8 @@ $(DOTMAN7DSTDIR)/cdist-type%.rst: $(DOTTYPEDIR)/%/man.rst
 	ln -sf "$^" $@
 
 # Manpages #3: generic part
-dotsphinxman: $(DOTMANTYPES)
+dotman: $(DOTMANTYPES)
 	$(SPHINXM)
-
-dotman: dotsphinxman
-
 
 ################################################################################
 # Speeches

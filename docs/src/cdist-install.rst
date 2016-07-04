@@ -12,7 +12,7 @@ This is the machine you use to configure the target hosts.
  * /bin/sh: A posix like shell (for instance bash, dash, zsh)
  * Python >= 3.2
  * SSH client
- * sphinx (for building html docs and/or the manpages)
+ * sphinx (for building html docs and/or the man pages)
 
 Target Hosts
 ~~~~~~~~~~~~
@@ -88,18 +88,31 @@ If you want to use man pages, run:
 
     export MANPATH=$MANPATH:$(pwd -P)/docs/dist/man
 
-Or you can move manpages from docs/dist/man directory to some
+Or you can move man pages from docs/dist/man directory to some
 other directory and add it to MANPATH.
 
 Full HTML documentation can be accessed at docs/dist/html/index.html.
 
-You can also build manpages for types in your ~/.cdist directory:
+You can also build only man pages or only html documentation, for
+only man pages run:
+
+.. code-block:: sh
+
+    make man
+
+for only html documentation run:
+
+.. code-block:: sh
+
+    make html
+
+You can also build man pages for types in your ~/.cdist directory:
 
 .. code-block:: sh
 
     make dotman
 
-Built manpages are now in docs/dist/man directory. If you have
+Built man pages are now in docs/dist/man directory. If you have
 some other custom .cdist directory, e.g. /opt/cdist then use:
 
 .. code-block:: sh
