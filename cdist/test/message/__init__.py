@@ -25,14 +25,15 @@ import tempfile
 from cdist import test
 import cdist.message
 
+
 class MessageTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.prefix="cdist-test"
+        self.prefix = "cdist-test"
         self.content = "A very short story"
         self.tempfile = tempfile.mkstemp()[1]
         self.message = cdist.message.Message(prefix=self.prefix,
-            messages=self.tempfile)
+                                             messages=self.tempfile)
 
     def tearDown(self):
         os.remove(self.tempfile)
@@ -47,7 +48,6 @@ class MessageTestCase(test.CdistTestCase):
 
         self.assertIn('__messages_in', env)
         self.assertIn('__messages_out', env)
-
 
     def test_copy_content(self):
         """

@@ -35,7 +35,8 @@ import cdist.message
 from cdist import core
 import cdist.exec.util as exec_util
 
-CONF_SUBDIRS_LINKED = [ "explorer", "files", "manifest", "type" ]
+CONF_SUBDIRS_LINKED = ["explorer", "files", "manifest", "type", ]
+
 
 class Local(object):
     """Execute commands locally.
@@ -82,7 +83,8 @@ class Local(object):
 
     @property
     def dist_conf_dir(self):
-        return os.path.abspath(os.path.join(os.path.dirname(cdist.__file__), "conf"))
+        return os.path.abspath(os.path.join(os.path.dirname(cdist.__file__),
+                                            "conf"))
 
     @property
     def home_dir(self):
@@ -109,7 +111,8 @@ class Local(object):
         # Depending on out_path
         self.bin_path = os.path.join(self.base_path, "bin")
         self.conf_path = os.path.join(self.base_path, "conf")
-        self.global_explorer_out_path = os.path.join(self.base_path, "explorer")
+        self.global_explorer_out_path = os.path.join(self.base_path,
+                                                     "explorer")
         self.object_path = os.path.join(self.base_path, "object")
         self.messages_path = os.path.join(self.base_path, "messages")
         self.files_path = os.path.join(self.conf_path, "files")
@@ -118,7 +121,7 @@ class Local(object):
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
         self.manifest_path = os.path.join(self.conf_path, "manifest")
         self.initial_manifest = (self.custom_initial_manifest or
-                    os.path.join(self.manifest_path, "init"))
+                                 os.path.join(self.manifest_path, "init"))
 
         self.type_path = os.path.join(self.conf_path, "type")
 
@@ -164,8 +167,8 @@ class Local(object):
         with open(self.object_marker_file, 'w') as fd:
             fd.write("%s\n" % self.object_marker_name)
 
-        self.log.debug("Object marker %s saved in %s" % (self.object_marker_name, self.object_marker_file))
-
+        self.log.debug("Object marker %s saved in %s" % (
+            self.object_marker_name, self.object_marker_file))
 
     def _init_cache_dir(self, cache_dir):
         if cache_dir:
@@ -174,7 +177,8 @@ class Local(object):
             if self.home_dir:
                 self.cache_path = os.path.join(self.home_dir, "cache")
             else:
-                raise cdist.Error("No homedir setup and no cache dir location given")
+                raise cdist.Error(
+                        "No homedir setup and no cache dir location given")
 
     def rmdir(self, path):
         """Remove directory on the local side."""
@@ -192,7 +196,8 @@ class Local(object):
 
         """
         self.log.debug("Local run: %s", command)
-        assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
+        assert isinstance(command, (list, tuple)), (
+                "list or tuple argument expected, got: %s" % command)
 
         if env is None:
             env = os.environ.copy()
@@ -220,16 +225,17 @@ class Local(object):
             if message_prefix:
                 message.merge_messages()
 
-    def run_script(self, script, env=None, return_output=False, message_prefix=None):
+    def run_script(self, script, env=None, return_output=False,
+                   message_prefix=None):
         """Run the given script with the given environment.
         Return the output as a string.
 
         """
-        command = [ os.environ.get('CDIST_LOCAL_SHELL',"/bin/sh") , "-e"]
+        command = [os.environ.get('CDIST_LOCAL_SHELL', "/bin/sh"), "-e"]
         command.append(script)
 
-        return self.run(command=command, env=env, return_output=return_output, message_prefix=message_prefix)
-
+        return self.run(command=command, env=env, return_output=return_output,
+                        message_prefix=message_prefix)
 
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.hostdir)
@@ -239,7 +245,8 @@ class Local(object):
             if os.path.exists(destination):
                 shutil.rmtree(destination)
         except PermissionError as e:
-            raise cdist.Error("Cannot delete old cache %s: %s" % (destination, e))
+            raise cdist.Error(
+                    "Cannot delete old cache %s: %s" % (destination, e))
 
         shutil.move(self.base_path, destination)
 
@@ -265,18 +272,21 @@ class Local(object):
 
                 for entry in os.listdir(current_dir):
                     rel_entry_path = os.path.join(sub_dir, entry)
-                    src = os.path.abspath(os.path.join(conf_dir, sub_dir, entry))
+                    src = os.path.abspath(os.path.join(conf_dir,
+                                                       sub_dir,
+                                                       entry))
                     dst = os.path.join(self.conf_path, sub_dir, entry)
 
                     # Already exists? remove and link
                     if os.path.exists(dst):
                         os.unlink(dst)
-                    
+
                     self.log.debug("Linking %s to %s ..." % (src, dst))
                     try:
                         os.symlink(src, dst)
                     except OSError as e:
-                        raise cdist.Error("Linking %s %s to %s failed: %s" % (sub_dir, src, dst, e.__str__()))
+                        raise cdist.Error("Linking %s %s to %s failed: %s" % (
+                            sub_dir, src, dst, e.__str__()))
 
     def _link_types_for_emulator(self):
         """Link emulator to types"""
@@ -288,4 +298,6 @@ class Local(object):
             try:
                 os.symlink(src, dst)
             except OSError as e:
-                raise cdist.Error("Linking emulator from %s to %s failed: %s" % (src, dst, e.__str__()))
+                raise cdist.Error(
+                        "Linking emulator from %s to %s failed: %s" % (
+                            src, dst, e.__str__()))

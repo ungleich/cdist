@@ -27,6 +27,7 @@ import unittest
 import cdist
 import cdist.banner
 
+
 class Banner(unittest.TestCase):
     def setUp(self):
         self.banner = cdist.BANNER + "\n"
@@ -38,5 +39,5 @@ class Banner(unittest.TestCase):
         sys.stdout = output
 
         cdist.banner.banner(None)
-        
+
         self.assertEqual(output.getvalue(), self.banner)

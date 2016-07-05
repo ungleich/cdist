@@ -29,10 +29,12 @@ import sys
 import cdist
 from cdist import core
 
+
 class MissingRequiredEnvironmentVariableError(cdist.Error):
     def __init__(self, name):
         self.name = name
-        self.message = "Emulator requires the environment variable %s to be setup" % self.name
+        self.message = ("Emulator requires the environment variable %s to be "
+                        "setup" % self.name)
 
     def __str__(self):
         return self.message
@@ -41,7 +43,7 @@ class MissingRequiredEnvironmentVariableError(cdist.Error):
 class DefaultList(list):
     """Helper class to allow default values for optional_multiple parameters.
 
-    @see https://groups.google.com/forum/#!msg/comp.lang.python/sAUvkJEDpRc/RnRymrzJVDYJ
+       @see https://groups.google.com/forum/#!msg/comp.lang.python/sAUvkJEDpRc/RnRymrzJVDYJ
     """
     def __copy__(self):
         return []
@@ -54,20 +56,20 @@ class DefaultList(list):
 
 class Emulator(object):
     def __init__(self, argv, stdin=sys.stdin.buffer, env=os.environ):
-        self.argv           = argv
-        self.stdin          = stdin
-        self.env            = env
+        self.argv = argv
+        self.stdin = stdin
+        self.env = env
 
-        self.object_id      = ''
+        self.object_id = ''
 
         try:
-            self.global_path    = self.env['__global']
-            self.target_host    = self.env['__target_host']
+            self.global_path = self.env['__global']
+            self.target_host = self.env['__target_host']
 
             # Internal variables
-            self.object_source  = self.env['__cdist_manifest']
+            self.object_source = self.env['__cdist_manifest']
             self.type_base_path = self.env['__cdist_type_base_path']
-            self.object_marker  = self.env['__cdist_object_marker']
+            self.object_marker = self.env['__cdist_object_marker']
 
         except KeyError as e:
             raise MissingRequiredEnvironmentVariableError(e.args[0])
@@ -75,8 +77,8 @@ class Emulator(object):
         self.object_base_path = os.path.join(self.global_path, "object")
         self.typeorder_path = os.path.join(self.global_path, "typeorder")
 
-        self.type_name      = os.path.basename(argv[0])
-        self.cdist_type     = core.CdistType(self.type_base_path, self.type_name)
+        self.type_name = os.path.basename(argv[0])
+        self.cdist_type = core.CdistType(self.type_base_path, self.type_name)
 
         self.__init_log()
 
@@ -88,7 +90,8 @@ class Emulator(object):
         self.save_stdin()
         self.record_requirements()
         self.record_auto_requirements()
-        self.log.debug("Finished %s %s" % (self.cdist_object.path, self.parameters))
+        self.log.debug("Finished %s %s" % (
+            self.cdist_object.path, self.parameters))
 
     def __init_log(self):
         """Setup logging facility"""
@@ -98,30 +101,38 @@ class Emulator(object):
         else:
             logging.root.setLevel(logging.INFO)
 
-        self.log  = logging.getLogger(self.target_host)
+        self.log = logging.getLogger(self.target_host)
 
     def commandline(self):
         """Parse command line"""
 
-        parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS)
+        parser = argparse.ArgumentParser(add_help=False,
+                                         argument_default=argparse.SUPPRESS)
 
         for parameter in self.cdist_type.required_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='store', required=True)
+            parser.add_argument(argument, dest=parameter, action='store',
+                                required=True)
         for parameter in self.cdist_type.required_multiple_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='append', required=True)
+            parser.add_argument(argument, dest=parameter, action='append',
+                                required=True)
         for parameter in self.cdist_type.optional_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='store', required=False,
-                default=self.cdist_type.parameter_defaults.get(parameter, None))
+            default = self.cdist_type.parameter_defaults.get(parameter, None)
+            parser.add_argument(argument, dest=parameter, action='store',
+                                required=False, default=default)
         for parameter in self.cdist_type.optional_multiple_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='append', required=False,
-                default=DefaultList.create(self.cdist_type.parameter_defaults.get(parameter, None)))
+            default = DefaultList.create(
+                    self.cdist_type.parameter_defaults.get(
+                        parameter, None))
+            parser.add_argument(argument, dest=parameter, action='append',
+                                required=False, default=default)
         for parameter in self.cdist_type.boolean_parameters:
             argument = "--" + parameter
-            parser.add_argument(argument, dest=parameter, action='store_const', const='')
+            parser.add_argument(argument, dest=parameter,
+                                action='store_const', const='')
 
         # If not singleton support one positional parameter
         if not self.cdist_type.is_singleton:
@@ -140,30 +151,33 @@ class Emulator(object):
             del self.args.object_id
 
         # Instantiate the cdist object we are defining
-        self.cdist_object = core.CdistObject(self.cdist_type, 
-            self.object_base_path, self.object_marker, self.object_id)
+        self.cdist_object = core.CdistObject(
+                self.cdist_type, self.object_base_path, self.object_marker,
+                self.object_id)
 
         # Create object with given parameters
         self.parameters = {}
-        for key,value in vars(self.args).items():
+        for key, value in vars(self.args).items():
             if value is not None:
                 self.parameters[key] = value
 
-        if self.cdist_object.exists and not 'CDIST_OVERRIDE' in self.env:
+        if self.cdist_object.exists and 'CDIST_OVERRIDE' not in self.env:
             # make existing requirements a set, so we can compare it
             # later with new requirements
             if self.cdist_object.parameters != self.parameters:
                 errmsg = ("Object %s already exists with conflicting "
-                    "parameters:\n%s: %s\n%s: %s" % (self.cdist_object.name,
-                        " ".join(self.cdist_object.source),
-                        self.cdist_object.parameters,
-                        self.object_source,
-                        self.parameters))
+                          "parameters:\n%s: %s\n%s: %s" % (
+                              self.cdist_object.name,
+                              " ".join(self.cdist_object.source),
+                              self.cdist_object.parameters,
+                              self.object_source,
+                              self.parameters))
                 self.log.error(errmsg)
                 raise cdist.Error(errmsg)
         else:
             if self.cdist_object.exists:
-                self.log.debug('Object %s override forced with CDIST_OVERRIDE',self.cdist_object.name)
+                self.log.debug(('Object %s override forced with '
+                                'CDIST_OVERRIDE'), self.cdist_object.name)
                 self.cdist_object.create(True)
             else:
                 self.cdist_object.create()
@@ -176,6 +190,7 @@ class Emulator(object):
         self.cdist_object.source.append(self.object_source)
 
     chunk_size = 65536
+
     def _read_stdin(self):
         return self.stdin.read(self.chunk_size)
 
@@ -197,7 +212,6 @@ class Emulator(object):
             except EnvironmentError as e:
                 raise cdist.Error('Failed to read from stdin: %s' % e)
 
-
     def record_requirement(self, requirement):
         """record requirement and return recorded requirement"""
 
@@ -206,13 +220,15 @@ class Emulator(object):
             cdist_object = self.cdist_object.object_from_name(requirement)
         except core.cdist_type.NoSuchTypeError as e:
             self.log.error(("%s requires object %s, but type %s does not"
-                    " exist. Defined at %s"  % (self.cdist_object.name,
-                        requirement, e.name, self.object_source)))
+                            " exist. Defined at %s" % (
+                                self.cdist_object.name,
+                                requirement, e.name, self.object_source)))
             raise
         except core.cdist_object.MissingObjectIdError as e:
             self.log.error(("%s requires object %s without object id."
-                " Defined at %s"  % (self.cdist_object.name, requirement,
-                    self.object_source)))
+                            " Defined at %s" % (self.cdist_object.name,
+                                                requirement,
+                                                self.object_source)))
             raise
 
         self.log.debug("Recording requirement: %s", requirement)
@@ -224,12 +240,13 @@ class Emulator(object):
 
         return cdist_object.name
 
-
     def record_requirements(self):
         """record requirements"""
 
-        # Inject the predecessor, but not if its an override (this would leed to an circular dependency)
-        if "CDIST_ORDER_DEPENDENCY" in self.env and not 'CDIST_OVERRIDE' in self.env:
+        # Inject the predecessor, but not if its an override
+        # (this would leed to an circular dependency)
+        if ("CDIST_ORDER_DEPENDENCY" in self.env and
+                'CDIST_OVERRIDE' not in self.env):
             # load object name created bevor this one from typeorder file ...
             with open(self.typeorder_path, 'r') as typecreationfile:
                 typecreationorder = typecreationfile.readlines()
@@ -240,9 +257,12 @@ class Emulator(object):
                         self.env['require'] += " " + lastcreatedtype
                     else:
                         self.env['require'] = lastcreatedtype
-                    self.log.debug("Injecting require for CDIST_ORDER_DEPENDENCY: %s for %s", lastcreatedtype, self.cdist_object.name)
+                    self.log.debug(("Injecting require for "
+                                    "CDIST_ORDER_DEPENDENCY: %s for %s"),
+                                   lastcreatedtype, self.cdist_object.name)
                 except IndexError:
-                    # if no second last line, we are on the first type, so do not set a requirement
+                    # if no second last line, we are on the first type,
+                    # so do not set a requirement
                     pass
 
         if "require" in self.env:
@@ -250,22 +270,25 @@ class Emulator(object):
             self.log.debug("reqs = " + requirements)
             for requirement in requirements.split(" "):
                 # Ignore empty fields - probably the only field anyway
-                if len(requirement) == 0: continue
+                if len(requirement) == 0:
+                    continue
                 self.record_requirement(requirement)
 
-
     def record_auto_requirements(self):
-        """An object shall automatically depend on all objects that it defined in it's type manifest.
+        """An object shall automatically depend on all objects that it
+           defined in it's type manifest.
         """
-        # __object_name is the name of the object whose type manifest is currently executed
+        # __object_name is the name of the object whose type manifest is
+        # currently executed
         __object_name = self.env.get('__object_name', None)
         if __object_name:
             # The object whose type manifest is currently run
             parent = self.cdist_object.object_from_name(__object_name)
             # The object currently being defined
             current_object = self.cdist_object
-            # As parent defined current_object it shall automatically depend on it.
+            # As parent defined current_object it shall automatically
+            # depend on it.
             # But only if the user hasn't said otherwise.
             # Must prevent circular dependencies.
-            if not parent.name in current_object.requirements:
+            if parent.name not in current_object.requirements:
                 parent.autorequire.append(current_object.name)

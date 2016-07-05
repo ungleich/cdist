@@ -27,6 +27,7 @@ import cdist
 
 STDERR_UNSUPPORTED = 'Not supported in this python version'
 
+
 def call_get_output(command, env=None):
     """Run the given command with the given environment.
     Return the tuple of stdout and stderr output as a byte strings.
@@ -40,14 +41,16 @@ def call_get_output(command, env=None):
     else:
         return (call_get_stdout(command, env), STDERR_UNSUPPORTED)
 
+
 def handle_called_process_error(err, command):
     if sys.version_info >= (3, 5):
         errout = err.stderr
     else:
         errout = STDERR_UNSUPPORTED
-    raise cdist.Error("Command failed: " + " ".join(command)
-        + " with returncode: {} and stdout: {}, stderr: {}".format(
-            err.returncode, err.output, errout))
+    raise cdist.Error("Command failed: " + " ".join(command) +
+                      " with returncode: {} and stdout: {}, stderr: {}".format(
+                          err.returncode, err.output, errout))
+
 
 def call_get_stdout(command, env=None):
     """Run the given command with the given environment.
@@ -63,6 +66,7 @@ def call_get_stdout(command, env=None):
 
     return output
 
+
 def call_get_out_err(command, env=None):
     """Run the given command with the given environment.
     Return the tuple of stdout and stderr output as a byte strings.
@@ -72,7 +76,7 @@ def call_get_out_err(command, env=None):
 
     with TemporaryFile() as fout, TemporaryFile() as ferr:
         subprocess.check_call(command, env=env,
-                stdout=fout, stderr=ferr)
+                              stdout=fout, stderr=ferr)
         fout.seek(0)
         ferr.seek(0)
         output = (fout.read(), ferr.read())

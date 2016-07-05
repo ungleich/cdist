@@ -40,6 +40,7 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, 'conf')
 
+
 class ManifestTestCase(test.CdistTestCase):
 
     def setUp(self):
@@ -51,7 +52,7 @@ class ManifestTestCase(test.CdistTestCase):
         self.local = local.Local(
             target_host=self.target_host,
             base_path=out_path,
-            exec_path = cdist.test.cdist_exec_path,
+            exec_path=cdist.test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
 
@@ -63,7 +64,8 @@ class ManifestTestCase(test.CdistTestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_initial_manifest_environment(self):
-        initial_manifest = os.path.join(self.local.manifest_path, "dump_environment")
+        initial_manifest = os.path.join(self.local.manifest_path,
+                                        "dump_environment")
         handle, output_file = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
         os.environ['__cdist_test_out'] = output_file
@@ -74,18 +76,21 @@ class ManifestTestCase(test.CdistTestCase):
         output_dict = {}
         for line in output_string.split('\n'):
             if line:
-                key,value = line.split(': ')
+                key, value = line.split(': ')
                 output_dict[key] = value
         self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
         self.assertEqual(output_dict['__global'], self.local.base_path)
-        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
+        self.assertEqual(output_dict['__cdist_type_base_path'],
+                         self.local.type_path)
         self.assertEqual(output_dict['__manifest'], self.local.manifest_path)
         self.assertEqual(output_dict['__files'], self.local.files_path)
 
     def test_type_manifest_environment(self):
         cdist_type = core.CdistType(self.local.type_path, '__dump_environment')
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'whatever')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path,
+                                        self.local.object_marker_name,
+                                        'whatever')
         handle, output_file = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
         os.environ['__cdist_test_out'] = output_file
@@ -96,12 +101,13 @@ class ManifestTestCase(test.CdistTestCase):
         output_dict = {}
         for line in output_string.split('\n'):
             if line:
-                key,value = line.split(': ')
+                key, value = line.split(': ')
                 output_dict[key] = value
         self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
         self.assertEqual(output_dict['__target_host'], self.local.target_host)
         self.assertEqual(output_dict['__global'], self.local.base_path)
-        self.assertEqual(output_dict['__cdist_type_base_path'], self.local.type_path)
+        self.assertEqual(output_dict['__cdist_type_base_path'],
+                         self.local.type_path)
         self.assertEqual(output_dict['__type'], cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'], cdist_object.absolute_path)
         self.assertEqual(output_dict['__object_id'], cdist_object.object_id)
