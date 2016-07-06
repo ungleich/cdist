@@ -38,6 +38,7 @@ DEFAULT_MANIFEST = """
 for pkg in \
     file \
     linux-image-amd64 \
+    lsb-release \
     openssh-server curl \
     syslinux grub2 \
     gdisk util-linux lvm2 mdadm \
