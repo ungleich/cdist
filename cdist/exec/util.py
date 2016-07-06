@@ -25,7 +25,7 @@ from tempfile import TemporaryFile
 
 import cdist
 
-STDERR_UNSUPPORTED = 'Not supported in this python version'
+STDERR_UNSUPPORTED = '<Not supported in this python version>'
 
 def call_get_output(command, env=None):
     """Run the given command with the given environment.
