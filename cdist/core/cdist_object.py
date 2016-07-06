@@ -32,6 +32,7 @@ from cdist.util import fsproperty
 
 log = logging.getLogger(__name__)
 
+
 class IllegalObjectIdError(cdist.Error):
     def __init__(self, object_id, message=None):
         self.object_id = object_id
@@ -40,13 +41,16 @@ class IllegalObjectIdError(cdist.Error):
     def __str__(self):
         return '%s: %s' % (self.message, self.object_id)
 
+
 class MissingObjectIdError(cdist.Error):
     def __init__(self, type_name):
         self.type_name = type_name
-        self.message = "Type %s requires object id (is not a singleton type)" % self.type_name
+        self.message = ("Type %s requires object id (is not a "
+                        "singleton type)") % self.type_name
 
     def __str__(self):
         return '%s' % (self.message)
+
 
 class CdistObject(object):
     """Represents a cdist object.
@@ -64,7 +68,7 @@ class CdistObject(object):
     STATE_DONE = "done"
 
     def __init__(self, cdist_type, base_path, object_marker, object_id):
-        self.cdist_type = cdist_type # instance of Type
+        self.cdist_type = cdist_type  # instance of Type
         self.base_path = base_path
         self.object_id = object_id
 
@@ -74,7 +78,8 @@ class CdistObject(object):
         self.sanitise_object_id()
 
         self.name = self.join_name(self.cdist_type.name, self.object_id)
-        self.path = os.path.join(self.cdist_type.path, self.object_id, self.object_marker)
+        self.path = os.path.join(self.cdist_type.path, self.object_id,
+                                 self.object_marker)
 
         self.absolute_path = os.path.join(self.base_path, self.path)
         self.code_local_path = os.path.join(self.path, "code-local")
@@ -84,12 +89,13 @@ class CdistObject(object):
     @classmethod
     def list_objects(cls, object_base_path, type_base_path, object_marker):
         """Return a list of object instances"""
-        for object_name in cls.list_object_names(object_base_path, object_marker):
+        for object_name in cls.list_object_names(
+                object_base_path, object_marker):
             type_name, object_id = cls.split_name(object_name)
             yield cls(cdist.core.CdistType(type_base_path, type_name),
-                base_path=object_base_path,
-                object_marker=object_marker,
-                object_id=object_id)
+                      base_path=object_base_path,
+                      object_marker=object_marker,
+                      object_id=object_id)
 
     @classmethod
     def list_object_names(cls, object_base_path, object_marker):
@@ -125,26 +131,34 @@ class CdistObject(object):
 
     def validate_object_id(self):
         if self.cdist_type.is_singleton and self.object_id:
-            raise IllegalObjectIdError('singleton objects can\'t have a object_id')
+            raise IllegalObjectIdError(('singleton objects can\'t have an '
+                                        'object_id'))
 
-        """Validate the given object_id and raise IllegalObjectIdError if it's not valid.
+        """Validate the given object_id and raise IllegalObjectIdError
+           if it's not valid.
         """
         if self.object_id:
             if self.object_marker in self.object_id.split(os.sep):
-                raise IllegalObjectIdError(self.object_id, 'object_id may not contain \'%s\'' % self.object_marker)
+                raise IllegalObjectIdError(
+                        self.object_id, ('object_id may not contain '
+                                         '\'%s\'') % self.object_marker)
             if '//' in self.object_id:
-                raise IllegalObjectIdError(self.object_id, 'object_id may not contain //')
+                raise IllegalObjectIdError(
+                        self.object_id, 'object_id may not contain //')
             if self.object_id == '.':
-                raise IllegalObjectIdError(self.object_id, 'object_id may not be a .')
+                raise IllegalObjectIdError(
+                        self.object_id, 'object_id may not be a .')
 
         # If no object_id and type is not singleton => error out
         if not self.object_id and not self.cdist_type.is_singleton:
             raise MissingObjectIdError(self.cdist_type.name)
 
-                # Does not work: AttributeError: 'CdistObject' object has no attribute 'parameter_path'
+        # Does not work:
+        # AttributeError:
+        # 'CdistObject' object has no attribute 'parameter_path'
 
-                #"Type %s is not a singleton type - missing object id (parameters: %s)" % 
-                #    (self.cdist_type.name, self.parameters))
+        # "Type %s is not a singleton type - missing object id
+        # (parameters: %s)" % (self.cdist_type.name, self.parameters))
 
     def object_from_name(self, object_name):
         """Convenience method for creating an object instance from an object name.
@@ -152,7 +166,8 @@ class CdistObject(object):
         Mainly intended to create objects when resolving requirements.
 
         e.g:
-            <CdistObject __foo/bar>.object_from_name('__other/object') -> <CdistObject __other/object>
+            <CdistObject __foo/bar>.object_from_name('__other/object') ->
+                <CdistObject __other/object>
 
         """
 
@@ -164,7 +179,8 @@ class CdistObject(object):
 
         cdist_type = self.cdist_type.__class__(type_path, type_name)
 
-        return self.__class__(cdist_type, base_path, object_marker, object_id=object_id)
+        return self.__class__(cdist_type, base_path, object_marker,
+                              object_id=object_id)
 
     def __repr__(self):
         return '<CdistObject %s>' % self.name
@@ -172,7 +188,7 @@ class CdistObject(object):
     def __eq__(self, other):
         """define equality as 'name is the same'"""
         return self.name == other.name
-    
+
     def __hash__(self):
         return hash(self.name)
 
@@ -205,14 +221,22 @@ class CdistObject(object):
         # return relative path
         return os.path.join(self.path, "explorer")
 
-    requirements = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'require'))
-    autorequire = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, 'autorequire'))
-    parameters = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.parameter_path))
-    explorers = fsproperty.DirectoryDictProperty(lambda obj: os.path.join(obj.base_path, obj.explorer_path))
-    state = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.absolute_path, "state"))
-    source = fsproperty.FileListProperty(lambda obj: os.path.join(obj.absolute_path, "source"))
-    code_local = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_local_path))
-    code_remote = fsproperty.FileStringProperty(lambda obj: os.path.join(obj.base_path, obj.code_remote_path))
+    requirements = fsproperty.FileListProperty(
+            lambda obj: os.path.join(obj.absolute_path, 'require'))
+    autorequire = fsproperty.FileListProperty(
+            lambda obj: os.path.join(obj.absolute_path, 'autorequire'))
+    parameters = fsproperty.DirectoryDictProperty(
+            lambda obj: os.path.join(obj.base_path, obj.parameter_path))
+    explorers = fsproperty.DirectoryDictProperty(
+            lambda obj: os.path.join(obj.base_path, obj.explorer_path))
+    state = fsproperty.FileStringProperty(
+            lambda obj: os.path.join(obj.absolute_path, "state"))
+    source = fsproperty.FileListProperty(
+            lambda obj: os.path.join(obj.absolute_path, "source"))
+    code_local = fsproperty.FileStringProperty(
+            lambda obj: os.path.join(obj.base_path, obj.code_local_path))
+    code_remote = fsproperty.FileStringProperty(
+            lambda obj: os.path.join(obj.base_path, obj.code_remote_path))
 
     @property
     def exists(self):
@@ -224,10 +248,12 @@ class CdistObject(object):
         """
         try:
             os.makedirs(self.absolute_path, exist_ok=allow_overwrite)
-            absolute_parameter_path = os.path.join(self.base_path, self.parameter_path)
+            absolute_parameter_path = os.path.join(self.base_path,
+                                                   self.parameter_path)
             os.makedirs(absolute_parameter_path, exist_ok=allow_overwrite)
         except EnvironmentError as error:
-            raise cdist.Error('Error creating directories for cdist object: %s: %s' % (self, error))
+            raise cdist.Error(('Error creating directories for cdist object: '
+                               '%s: %s') % (self, error))
 
     def requirements_unfinished(self, requirements):
         """Return state whether requirements are satisfied"""

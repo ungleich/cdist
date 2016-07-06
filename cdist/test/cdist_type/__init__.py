@@ -34,7 +34,8 @@ class TypeTestCase(test.CdistTestCase):
     def test_list_type_names(self):
         base_path = op.join(fixtures, 'list_types')
         type_names = core.CdistType.list_type_names(base_path)
-        self.assertEqual(sorted(type_names), ['__first', '__second', '__third'])
+        self.assertEqual(sorted(type_names),
+                         ['__first', '__second', '__third'])
 
     def test_list_types(self):
         base_path = op.join(fixtures, 'list_types')
@@ -54,7 +55,8 @@ class TypeTestCase(test.CdistTestCase):
 
     def test_nonexistent_type(self):
         base_path = fixtures
-        self.assertRaises(core.NoSuchTypeError, core.CdistType, base_path, '__i-dont-exist')
+        self.assertRaises(core.NoSuchTypeError, core.CdistType, base_path,
+                          '__i-dont-exist')
 
     def test_name(self):
         base_path = fixtures
@@ -74,27 +76,32 @@ class TypeTestCase(test.CdistTestCase):
     def test_absolute_path(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__name_path')
-        self.assertEqual(cdist_type.absolute_path, os.path.join(base_path, '__name_path'))
+        self.assertEqual(cdist_type.absolute_path,
+                         os.path.join(base_path, '__name_path'))
 
     def test_manifest_path(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__name_path')
-        self.assertEqual(cdist_type.manifest_path, os.path.join('__name_path', 'manifest'))
+        self.assertEqual(cdist_type.manifest_path,
+                         os.path.join('__name_path', 'manifest'))
 
     def test_explorer_path(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__name_path')
-        self.assertEqual(cdist_type.explorer_path, os.path.join('__name_path', 'explorer'))
+        self.assertEqual(cdist_type.explorer_path,
+                         os.path.join('__name_path', 'explorer'))
 
     def test_gencode_local_path(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__name_path')
-        self.assertEqual(cdist_type.gencode_local_path, os.path.join('__name_path', 'gencode-local'))
+        self.assertEqual(cdist_type.gencode_local_path,
+                         os.path.join('__name_path', 'gencode-local'))
 
     def test_gencode_remote_path(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__name_path')
-        self.assertEqual(cdist_type.gencode_remote_path, os.path.join('__name_path', 'gencode-remote'))
+        self.assertEqual(cdist_type.gencode_remote_path,
+                         os.path.join('__name_path', 'gencode-remote'))
 
     def test_singleton_is_singleton(self):
         base_path = fixtures
@@ -119,17 +126,20 @@ class TypeTestCase(test.CdistTestCase):
     def test_with_required_parameters(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__with_required_parameters')
-        self.assertEqual(cdist_type.required_parameters, ['required1', 'required2'])
+        self.assertEqual(cdist_type.required_parameters,
+                         ['required1', 'required2'])
 
     def test_without_required_parameters(self):
         base_path = fixtures
-        cdist_type = core.CdistType(base_path, '__without_required_parameters')
+        cdist_type = core.CdistType(base_path,
+                                    '__without_required_parameters')
         self.assertEqual(cdist_type.required_parameters, [])
 
     def test_with_optional_parameters(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__with_optional_parameters')
-        self.assertEqual(cdist_type.optional_parameters, ['optional1', 'optional2'])
+        self.assertEqual(cdist_type.optional_parameters,
+                         ['optional1', 'optional2'])
 
     def test_without_optional_parameters(self):
         base_path = fixtures
@@ -139,7 +149,8 @@ class TypeTestCase(test.CdistTestCase):
     def test_with_boolean_parameters(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__with_boolean_parameters')
-        self.assertEqual(cdist_type.boolean_parameters, ['boolean1', 'boolean2'])
+        self.assertEqual(cdist_type.boolean_parameters,
+                         ['boolean1', 'boolean2'])
 
     def test_without_boolean_parameters(self):
         base_path = fixtures
@@ -158,5 +169,4 @@ class TypeTestCase(test.CdistTestCase):
         cdist_type = core.CdistType(base_path, '__directory_in_default')
         self.assertEqual(
             list(sorted(cdist_type.parameter_defaults.keys())),
-            ['bar', 'foo']
-        )
+            ['bar', 'foo'])

@@ -36,12 +36,13 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 conf_dir = op.join(fixtures, "conf")
 
+
 class ExplorerClassTestCase(test.CdistTestCase):
 
     def setUp(self):
-        self.temp_dir           = self.mkdtemp()
-        self.local_path         = os.path.join(self.temp_dir, "local")
-        self.remote_base_path   = os.path.join(self.temp_dir, "remote")
+        self.temp_dir = self.mkdtemp()
+        self.local_path = os.path.join(self.temp_dir, "local")
+        self.remote_base_path = os.path.join(self.temp_dir, "remote")
         os.makedirs(self.remote_base_path)
 
         self.local = local.Local(
@@ -54,15 +55,15 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.local.create_files_dirs()
 
         self.remote = remote.Remote(
-            target_host=self.target_host, 
+            target_host=self.target_host,
             remote_exec=self.remote_exec,
             remote_copy=self.remote_copy,
             base_path=self.remote_base_path)
         self.remote.create_files_dirs()
 
         self.explorer = explorer.Explorer(
-            self.target_host, 
-            self.local, 
+            self.target_host,
+            self.local,
             self.remote)
 
     def tearDown(self):
@@ -79,7 +80,8 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.explorer.transfer_global_explorers()
         source = self.local.global_explorer_path
         destination = self.remote.global_explorer_path
-        self.assertEqual(sorted(os.listdir(source)), sorted(os.listdir(destination)))
+        self.assertEqual(sorted(os.listdir(source)),
+                         sorted(os.listdir(destination)))
 
     def test_run_global_explorer(self):
         """Checkt that running ONE global explorer works"""
@@ -101,14 +103,16 @@ class ExplorerClassTestCase(test.CdistTestCase):
     def test_list_type_explorer_names(self):
         cdist_type = core.CdistType(self.local.type_path, '__test_type')
         expected = cdist_type.explorers
-        self.assertEqual(self.explorer.list_type_explorer_names(cdist_type), expected)
+        self.assertEqual(self.explorer.list_type_explorer_names(cdist_type),
+                         expected)
 
     def test_transfer_type_explorers(self):
         """Test if transferring type explorers works"""
         cdist_type = core.CdistType(self.local.type_path, '__test_type')
         self.explorer.transfer_type_explorers(cdist_type)
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
-        destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
+        destination = os.path.join(self.remote.type_path,
+                                   cdist_type.explorer_path)
         self.assertEqual(os.listdir(source), os.listdir(destination))
 
     def test_transfer_type_explorers_only_once(self):
@@ -116,7 +120,8 @@ class ExplorerClassTestCase(test.CdistTestCase):
         # first transfer
         self.explorer.transfer_type_explorers(cdist_type)
         source = os.path.join(self.local.type_path, cdist_type.explorer_path)
-        destination = os.path.join(self.remote.type_path, cdist_type.explorer_path)
+        destination = os.path.join(self.remote.type_path,
+                                   cdist_type.explorer_path)
         self.assertEqual(os.listdir(source), os.listdir(destination))
         # nuke destination folder content, but recreate directory
         shutil.rmtree(destination)
@@ -127,24 +132,36 @@ class ExplorerClassTestCase(test.CdistTestCase):
 
     def test_transfer_object_parameters(self):
         cdist_type = core.CdistType(self.local.type_path, '__test_type')
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'whatever')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path,
+                                        self.local.object_marker_name,
+                                        'whatever')
         cdist_object.create()
-        cdist_object.parameters = {'first': 'first value', 'second': 'second value'}
+        cdist_object.parameters = {
+                'first': 'first value',
+                'second': 'second value'
+        }
         self.explorer.transfer_object_parameters(cdist_object)
-        source = os.path.join(self.local.object_path, cdist_object.parameter_path)
-        destination = os.path.join(self.remote.object_path, cdist_object.parameter_path)
-        self.assertEqual(sorted(os.listdir(source)), sorted(os.listdir(destination)))
+        source = os.path.join(self.local.object_path,
+                              cdist_object.parameter_path)
+        destination = os.path.join(self.remote.object_path,
+                                   cdist_object.parameter_path)
+        self.assertEqual(sorted(os.listdir(source)),
+                         sorted(os.listdir(destination)))
 
     def test_run_type_explorer(self):
         cdist_type = core.CdistType(self.local.type_path, '__test_type')
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'whatever')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path,
+                                        self.local.object_marker_name,
+                                        'whatever')
         self.explorer.transfer_type_explorers(cdist_type)
         output = self.explorer.run_type_explorer('world', cdist_object)
         self.assertEqual(output, 'hello\n')
 
     def test_run_type_explorers(self):
         cdist_type = core.CdistType(self.local.type_path, '__test_type')
-        cdist_object = core.CdistObject(cdist_type, self.local.object_path, self.local.object_marker_name, 'whatever')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path,
+                                        self.local.object_marker_name,
+                                        'whatever')
         cdist_object.create()
         self.explorer.run_type_explorers(cdist_object)
         self.assertEqual(cdist_object.explorers, {'world': 'hello'})

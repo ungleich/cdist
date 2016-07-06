@@ -24,6 +24,7 @@ import os
 
 import cdist
 
+
 class NoSuchTypeError(cdist.Error):
     def __init__(self, name, type_path, type_absolute_path):
         self.name = name
@@ -31,7 +32,8 @@ class NoSuchTypeError(cdist.Error):
         self.type_absolute_path = type_absolute_path
 
     def __str__(self):
-        return "Type '%s' does not exist at %s" % (self.type_path, self.type_absolute_path)
+        return "Type '%s' does not exist at %s" % (
+                self.type_path, self.type_absolute_path)
 
 
 class CdistType(object):
@@ -75,13 +77,13 @@ class CdistType(object):
         """Return a list of type names"""
         return os.listdir(base_path)
 
-
     _instances = {}
+
     def __new__(cls, *args, **kwargs):
         """only one instance of each named type may exist"""
         # name is second argument
         name = args[1]
-        if not name in cls._instances:
+        if name not in cls._instances:
             instance = super(CdistType, cls).__new__(cls)
             cls._instances[name] = instance
             # return instance so __init__ is called
@@ -103,7 +105,8 @@ class CdistType(object):
 
     @property
     def is_install(self):
-        """Check whether a type is used for installation (if not: for configuration)"""
+        """Check whether a type is used for installation
+          (if not: for configuration)"""
         return os.path.isfile(os.path.join(self.absolute_path, "install"))
 
     @property
@@ -111,7 +114,8 @@ class CdistType(object):
         """Return a list of available explorers"""
         if not self.__explorers:
             try:
-                self.__explorers = os.listdir(os.path.join(self.absolute_path, "explorer"))
+                self.__explorers = os.listdir(os.path.join(self.absolute_path,
+                                                           "explorer"))
             except EnvironmentError:
                 # error ignored
                 self.__explorers = []
@@ -123,7 +127,9 @@ class CdistType(object):
         if not self.__required_parameters:
             parameters = []
             try:
-                with open(os.path.join(self.absolute_path, "parameter", "required")) as fd:
+                with open(os.path.join(self.absolute_path,
+                                       "parameter",
+                                       "required")) as fd:
                     for line in fd:
                         parameters.append(line.strip())
             except EnvironmentError:
@@ -139,7 +145,9 @@ class CdistType(object):
         if not self.__required_multiple_parameters:
             parameters = []
             try:
-                with open(os.path.join(self.absolute_path, "parameter", "required_multiple")) as fd:
+                with open(os.path.join(self.absolute_path,
+                                       "parameter",
+                                       "required_multiple")) as fd:
                     for line in fd:
                         parameters.append(line.strip())
             except EnvironmentError:
@@ -155,7 +163,9 @@ class CdistType(object):
         if not self.__optional_parameters:
             parameters = []
             try:
-                with open(os.path.join(self.absolute_path, "parameter", "optional")) as fd:
+                with open(os.path.join(self.absolute_path,
+                                       "parameter",
+                                       "optional")) as fd:
                     for line in fd:
                         parameters.append(line.strip())
             except EnvironmentError:
@@ -171,7 +181,9 @@ class CdistType(object):
         if not self.__optional_multiple_parameters:
             parameters = []
             try:
-                with open(os.path.join(self.absolute_path, "parameter", "optional_multiple")) as fd:
+                with open(os.path.join(self.absolute_path,
+                                       "parameter",
+                                       "optional_multiple")) as fd:
                     for line in fd:
                         parameters.append(line.strip())
             except EnvironmentError:
@@ -187,7 +199,9 @@ class CdistType(object):
         if not self.__boolean_parameters:
             parameters = []
             try:
-                with open(os.path.join(self.absolute_path, "parameter", "boolean")) as fd:
+                with open(os.path.join(self.absolute_path,
+                                       "parameter",
+                                       "boolean")) as fd:
                     for line in fd:
                         parameters.append(line.strip())
             except EnvironmentError:
@@ -202,7 +216,9 @@ class CdistType(object):
         if not self.__parameter_defaults:
             defaults = {}
             try:
-                defaults_dir = os.path.join(self.absolute_path, "parameter", "default")
+                defaults_dir = os.path.join(self.absolute_path,
+                                            "parameter",
+                                            "default")
                 for name in os.listdir(defaults_dir):
                     try:
                         with open(os.path.join(defaults_dir, name)) as fd:

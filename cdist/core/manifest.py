@@ -32,9 +32,11 @@ common:
     env:
         PATH: prepend directory with type emulator symlinks == local.bin_path
         __target_host: the target host we are working on
-        __global: full qualified path to the global output dir == local.out_path
+        __global: full qualified path to the global
+                  output dir == local.out_path
         __cdist_manifest: full qualified path of the manifest == script
-        __cdist_type_base_path: full qualified path to the directory where types are defined for use in type emulator
+        __cdist_type_base_path: full qualified path to the directory where
+                                types are defined for use in type emulator
             == local.type_path
         __files: full qualified path to the files dir
 
@@ -58,6 +60,7 @@ type manifeste is:
     creates: new objects through type emulator
 '''
 
+
 class NoInitialManifestError(cdist.Error):
     """
     Display missing initial manifest:
@@ -72,7 +75,9 @@ class NoInitialManifestError(cdist.Error):
 
         if user_supplied:
             if os.path.islink(manifest_path):
-                self.message = "%s: %s -> %s" % (msg_header, manifest_path, os.path.realpath(manifest_path))
+                self.message = "%s: %s -> %s" % (
+                        msg_header, manifest_path,
+                        os.path.realpath(manifest_path))
             else:
                 self.message = "%s: %s" % (msg_header, manifest_path)
         else:
@@ -94,14 +99,15 @@ class Manifest(object):
 
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
-            '__cdist_type_base_path': self.local.type_path, # for use in type emulator
+            # for use in type emulator
+            '__cdist_type_base_path': self.local.type_path,
             '__global': self.local.base_path,
             '__target_host': self.target_host,
             '__files': self.local.files_path,
         }
-        if self.log.getEffectiveLevel() == logging.DEBUG:
-            self.env.update({'__cdist_debug': "yes" })
 
+        if self.log.getEffectiveLevel() == logging.DEBUG:
+            self.env.update({'__cdist_debug': "yes"})
 
     def env_initial_manifest(self, initial_manifest):
         env = os.environ.copy()
@@ -124,11 +130,14 @@ class Manifest(object):
         if not os.path.isfile(initial_manifest):
             raise NoInitialManifestError(initial_manifest, user_supplied)
 
-        message_prefix="initialmanifest"
-        self.local.run_script(initial_manifest, env=self.env_initial_manifest(initial_manifest), message_prefix=message_prefix)
+        message_prefix = "initialmanifest"
+        self.local.run_script(initial_manifest,
+                              env=self.env_initial_manifest(initial_manifest),
+                              message_prefix=message_prefix)
 
     def env_type_manifest(self, cdist_object):
-        type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
+        type_manifest = os.path.join(self.local.type_path,
+                                     cdist_object.cdist_type.manifest_path)
         env = os.environ.copy()
         env.update(self.env)
         env.update({
@@ -143,7 +152,10 @@ class Manifest(object):
         return env
 
     def run_type_manifest(self, cdist_object):
-        type_manifest = os.path.join(self.local.type_path, cdist_object.cdist_type.manifest_path)
+        type_manifest = os.path.join(self.local.type_path,
+                                     cdist_object.cdist_type.manifest_path)
         message_prefix = cdist_object.name
         if os.path.isfile(type_manifest):
-            self.local.run_script(type_manifest, env=self.env_type_manifest(cdist_object), message_prefix=message_prefix)
+            self.local.run_script(type_manifest,
+                                  env=self.env_type_manifest(cdist_object),
+                                  message_prefix=message_prefix)

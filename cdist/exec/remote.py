@@ -30,6 +30,7 @@ import cdist.exec.util as exec_util
 
 import cdist
 
+
 class DecodeError(cdist.Error):
     def __init__(self, command):
         self.command = command
@@ -75,7 +76,6 @@ class Remote(object):
         os.environ['__remote_copy'] = self._copy
         os.environ['__remote_exec'] = self._exec
 
-
     def create_files_dirs(self):
         self.rmdir(self.base_path)
         self.mkdir(self.base_path)
@@ -101,11 +101,13 @@ class Remote(object):
             for f in glob.glob1(source, '*'):
                 command = self._copy.split()
                 path = os.path.join(source, f)
-                command.extend([path, '{0}:{1}'.format(self.target_host, destination)])
+                command.extend([path, '{0}:{1}'.format(
+                    self.target_host, destination)])
                 self._run_command(command)
         else:
             command = self._copy.split()
-            command.extend([source, '{0}:{1}'.format(self.target_host, destination)])
+            command.extend([source, '{0}:{1}'.format(
+                self.target_host, destination)])
             self._run_command(command)
 
     def run_script(self, script, env=None, return_output=False):
@@ -114,7 +116,7 @@ class Remote(object):
 
         """
 
-        command = [ os.environ.get('CDIST_REMOTE_SHELL',"/bin/sh") , "-e"]
+        command = [os.environ.get('CDIST_REMOTE_SHELL', "/bin/sh"), "-e"]
         command.append(script)
 
         return self.run(command, env, return_output)
@@ -148,8 +150,8 @@ class Remote(object):
         # /bin/csh will execute this script in the right way.
         if env:
             remote_env = [" export %s=%s;" % item for item in env.items()]
-            string_cmd = ("/bin/sh -c '" + " ".join(remote_env)
-                + " ".join(command) + "'")
+            string_cmd = ("/bin/sh -c '" + " ".join(remote_env) +
+                          " ".join(command) + "'")
             cmd.append(string_cmd)
         else:
             cmd.extend(command)
@@ -160,7 +162,8 @@ class Remote(object):
         Return the output as a string.
 
         """
-        assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
+        assert isinstance(command, (list, tuple)), (
+                "list or tuple argument expected, got: %s" % command)
 
         # export target_host for use in __remote_{exec,copy} scripts
         os_environ = os.environ.copy()
