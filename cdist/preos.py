@@ -86,7 +86,7 @@ class PreOS(object):
         self.arch = arch
 
         self.command = "debootstrap"
-        self.suite  = "wheezy"
+        self.suite  = "stable"
         self.options = [ "--include=openssh-server",
             "--arch=%s" % self.arch ]
 
