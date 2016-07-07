@@ -33,7 +33,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__ssh_authorized_keys`\ (7)
+:strong:`cdist-type__ssh_authorized_keys`\ (7)
 
 
 AUTHORS

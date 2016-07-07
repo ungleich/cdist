@@ -107,7 +107,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`jail`\ (8)
+:strong:`jail`\ (8)
 
 
 AUTHORS

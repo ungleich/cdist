@@ -56,10 +56,6 @@ CONFIG
 ------
 Configure one or more hosts
 
-.. option:: -h, --help
-
-    Show the help screen
-
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
     Add a configuration directory. Can be specified multiple times.

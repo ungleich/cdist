@@ -36,7 +36,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__package`\ (7), :manpage:`cdist-type__package_emerge`\ (7)
+:strong:`cdist-type__package`\ (7), :strong:`cdist-type__package_emerge`\ (7)
 
 
 AUTHORS

@@ -55,7 +55,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist__ssh_authorized_keys`\ (7), :manpage:`sshd`\ (8)
+:strong:`cdist__ssh_authorized_keys`\ (7), :strong:`sshd`\ (8)
 
 
 AUTHORS

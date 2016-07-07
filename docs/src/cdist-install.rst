@@ -12,7 +12,7 @@ This is the machine you use to configure the target hosts.
  * /bin/sh: A posix like shell (for instance bash, dash, zsh)
  * Python >= 3.2
  * SSH client
- * sphinx (for building html docs and/or the manpages)
+ * sphinx (for building html docs and/or the man pages)
 
 Target Hosts
 ~~~~~~~~~~~~
@@ -68,42 +68,56 @@ If the main site is down, you can acquire cdist from one of the following sites:
  * git://github.com/telmich/cdist.git `github <https://github.com/telmich/cdist>`_
  * git://git.code.sf.net/p/cdist/code `sourceforge <https://sourceforge.net/p/cdist/code>`_
 
-Building and using manpages
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Building and using documentation (man and html)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you want to build and use the manpages, run:
+If you want to build and use the documentation, run:
+
+.. code-block:: sh
+
+    make docs
+
+Documentation comes in two formats, man pages and full HTML
+documentation. Documentation is built into distribution's
+docs/dist directory. man pages are in docs/dist/man and
+HTML documentation in docs/dist/html.
+
+If you want to use man pages, run:
+
+.. code-block:: sh
+
+    export MANPATH=$MANPATH:$(pwd -P)/docs/dist/man
+
+Or you can move man pages from docs/dist/man directory to some
+other directory and add it to MANPATH.
+
+Full HTML documentation can be accessed at docs/dist/html/index.html.
+
+You can also build only man pages or only html documentation, for
+only man pages run:
 
 .. code-block:: sh
 
     make man
-    export MANPATH=$MANPATH:$(pwd -P)/docs/dist/man
 
-Or you can move manpages from docs/dist/man directory to some
-other directory and add it to MANPATH.
-
-You can also build manpages for types in your ~/.cdist directory:
-
-.. code-block:: sh
-
-    make dotman
-
-Built manpages are now in docs/dist/man directory. If you have
-some other custom .cdist directory, e.g. /opt/cdist then use:
-
-.. code-block:: sh
-
-    DOT_CDIST_PATH=/opt/cdist make dotman
-
-Building and using HTML documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If you want to build and use HTML documentation, run:
+for only html documentation run:
 
 .. code-block:: sh
 
     make html
 
-Now you can access docs/dist/html/index.html.
+You can also build man pages for types in your ~/.cdist directory:
+
+.. code-block:: sh
+
+    make dotman
+
+Built man pages are now in docs/dist/man directory. If you have
+some other custom .cdist directory, e.g. /opt/cdist then use:
+
+.. code-block:: sh
+
+    DOT_CDIST_PATH=/opt/cdist make dotman
 
 Python package
 ~~~~~~~~~~~~~~

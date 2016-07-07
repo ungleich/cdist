@@ -35,7 +35,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`grep`\ (1)
+:strong:`grep`\ (1)
 
 
 AUTHORS

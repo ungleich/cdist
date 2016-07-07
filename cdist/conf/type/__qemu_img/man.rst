@@ -37,7 +37,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`qemu-img`\ (1)
+:strong:`qemu-img`\ (1)
 
 
 AUTHORS

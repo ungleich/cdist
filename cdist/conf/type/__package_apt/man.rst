@@ -46,7 +46,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__package`\ (7)
+:strong:`cdist-type__package`\ (7)
 
 
 AUTHORS

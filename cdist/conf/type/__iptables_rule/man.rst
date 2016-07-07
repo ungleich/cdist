@@ -50,7 +50,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__iptables_apply`\ (7), :manpage:`iptables`\ (8)
+:strong:`cdist-type__iptables_apply`\ (7), :strong:`iptables`\ (8)
 
 
 AUTHORS
