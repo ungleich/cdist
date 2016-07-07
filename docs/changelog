@@ -13,6 +13,7 @@ next:
 	* Explorer __machine_type: add openvz and lxc
 	* Explorer __os __os_version: add scientific
 	* Type various: add scientific
+	* Explorer __machine_type: add virtualbox (Stu Zhao)
 
 4.1.0: 2016-05-27
 	* Documentation: Migrate to reStructuredText format and sphinx (Darko Poljak)
