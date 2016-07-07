@@ -260,7 +260,15 @@ eof
         fi
 
         # Publish git changes
-        make helper=${helper} WEBDIR=${WEBDIR} pub
+        case "$run_as" in
+            freebsd)
+                # if we are not Nico :) then just push, no mirror
+                git push
+            ;;
+            *)
+                make helper=${helper} WEBDIR=${WEBDIR} pub
+            ;;
+        esac
 
         # publish man, speeches, website
         if [ "$masterbranch" = yes ]; then
