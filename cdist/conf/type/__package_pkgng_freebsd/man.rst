@@ -1,8 +1,9 @@
 cdist-type__package_pkgng_freebsd(7)
 ====================================
-Manage FreeBSD packages with pkg-ng
 
-Jake Guffey <jake.guffey--@--eprotex.com>
+NAME
+----
+cdist-type__package_pkgng_freebsd - Manage FreeBSD packages with pkg-ng
 
 
 DESCRIPTION
@@ -84,8 +85,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:manpage:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Jake Guffey <jake.guffey--@--eprotex.com>
 
 
 COPYING

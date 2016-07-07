@@ -1,12 +1,9 @@
 cdist-type__ssh_dot_ssh(7)
 ==========================
-Manage .ssh directory
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
 
 NAME
 ----
+cdist-type__ssh_dot_ssh - Manage .ssh directory
 
 
 DESCRIPTION
@@ -36,8 +33,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__ssh_authorized_keys(7) <cdist-type__ssh_authorized_keys.html>`_
+:manpage:`cdist-type__ssh_authorized_keys`\ (7)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

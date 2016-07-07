@@ -1,8 +1,9 @@
 cdist-type__link(7)
 ===================
-Manage links (hard and symbolic)
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__link - Manage links (hard and symbolic)
 
 
 DESCRIPTION
@@ -46,9 +47,9 @@ EXAMPLES
     __link /opt/plone --state absent
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

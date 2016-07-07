@@ -1,28 +1,24 @@
-cdist-type(7)
-=============
-Functionality bundled
+cdist type
+==========
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-SYNOPSIS
---------
-
-::
-
-    __TYPE ID --parameter value [--parameter value ...]
-    __TYPE --parameter value [--parameter value ...] (for singletons)
-
-
-DESCRIPTION
+Description
 -----------
 Types are the main component of cdist and define functionality. If you
 use cdist, you'll write a type for every functionality you would like
 to use.
 
+Synopsis
+--------
 
-HOW TO USE A TYPE
+.. code-block:: sh
+
+    __TYPE ID --parameter value [--parameter value ...]
+    __TYPE --parameter value [--parameter value ...] (for singletons)
+
+
+How to use a type
 -----------------
+
 You can use types from the initial manifest or the type manifest like a
 normal shell command:
 
@@ -34,10 +30,10 @@ normal shell command:
     # Ensure tree is installed
     __package tree --state installed
 
-A list of supported types can be found in the cdist-reference(7) manpage.
+A list of supported types can be found in the `cdist reference <cdist-reference.html>`_ manpage.
 
 
-SINGLETON TYPES
+Singleton types
 ---------------
 If a type is flagged as a singleton, it may be used only
 once per host. This is useful for types which can be used only once on a
@@ -55,7 +51,7 @@ Example:
     __myfancysingleton --colour green
 
 
-HOW TO WRITE A NEW TYPE
+How to write a new type
 -----------------------
 A type consists of
 
@@ -71,7 +67,7 @@ two underscores (__) to prevent collisions with other executables in $PATH.
 To implement a new type, create the directory **cdist/conf/type/__NAME**.
 
 
-DEFINING PARAMETERS
+Defining parameters
 -------------------
 Every type consists of required, optional and boolean parameters, which must
 each be declared in a newline separated file in **parameter/required**,
@@ -99,7 +95,7 @@ Example:
     echo use_ssl >> cdist/conf/type/__nginx_vhost/parameter/boolean
 
 
-USING PARAMETERS
+Using parameters
 ----------------
 The parameters given to a type can be accessed and used in all type scripts
 (e.g manifest, gencode, explorer). Note that boolean parameters are
@@ -135,7 +131,7 @@ Example: (e.g. in cdist/conf/type/__nginx_vhost/manifest)
     fi
 
 
-INPUT FROM STDIN
+Input from stdin
 ----------------
 Every type can access what has been written on stdin when it has been called.
 The result is saved into the **stdin** file in the object directory.
@@ -165,7 +161,7 @@ In the __file type, stdin is used as source for the file, if - is used for sourc
     ....
 
 
-WRITING THE MANIFEST
+Writing the manifest
 --------------------
 In the manifest of a type you can use other types, so your type extends
 their functionality. A good example is the __package type, which in
@@ -187,13 +183,13 @@ a shortened version looks like this:
     __package_$type "$@"
 
 As you can see, the type can reference different environment variables,
-which are documented in cdist-reference(7).
+which are documented in `cdist reference <cdist-reference.html>`_.
 
 Always ensure the manifest is executable, otherwise cdist will not be able
-to execute it. For more information about manifests see cdist-manifest(7).
+to execute it. For more information about manifests see `cdist manifest <cdist-manifest.html>`_.
 
 
-SINGLETON - ONE INSTANCE ONLY
+Singleton - one instance only
 -----------------------------
 If you want to ensure that a type can only be used once per target, you can
 mark it as a singleton: Just create the (empty) file "singleton" in your type
@@ -213,7 +209,7 @@ As you can see, the object ID is omitted, because it does not make any sense,
 if your type can be used only once.
 
 
-THE TYPE EXPLORERS
+The type explorers
 ------------------
 If a type needs to explore specific details, it can provide type specific
 explorers, which will be executed on the target for every created object.
@@ -235,7 +231,7 @@ client, like this (shortened version from the type __file):
     fi
 
 
-WRITING THE GENCODE SCRIPT
+Writing the gencode script
 --------------------------
 There are two gencode scripts: **gencode-local** and **gencode-remote**.
 The output of gencode-local is executed locally, whereas
@@ -256,7 +252,7 @@ script, you can write to stderr:
     echo "touch /etc/cdist-configured"
 
 
-VARIABLE ACCESS FROM THE GENERATED SCRIPTS
+Variable access from the generated scripts
 ------------------------------------------
 In the generated scripts, you have access to the following cdist variables
 
@@ -277,7 +273,7 @@ So when you generate a script with the following content, it will work:
     fi
 
 
-HINTS FOR TYPEWRITERS
+Hints for typewriters
 ----------------------
 It must be assumed that the target is pretty dumb and thus does not have high
 level tools like ruby installed. If a type requires specific tools to be present
@@ -294,21 +290,8 @@ a folder named "files" within the type (again, because cdist guarantees to
 never ever touch this folder).
 
 
-HOW TO INCLUDE A TYPE INTO UPSTREAM CDIST
+How to include a type into upstream cdist
 -----------------------------------------
 If you think your type may be useful for others, ensure it works with the
-current master branch of cdist and have a look at cdist-hacker(7) on
+current master branch of cdist and have a look at `cdist hacking <cdist-hacker.html>`_ on
 how to submit it.
-
-SEE ALSO
---------
-- `cdist-explorer(7) <cdist-explorer.html>`_
-- `cdist-hacker(7) <cdist-hacker.html>`_
-- `cdist-stages(7) <cdist-stages.html>`_
-- `cdist-tutorial(7) <cdist-tutorial.html>`_
-
-
-COPYING
--------
-Copyright \(C) 2011-2012 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

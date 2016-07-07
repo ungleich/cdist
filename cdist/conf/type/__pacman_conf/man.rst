@@ -1,8 +1,9 @@
 cdist-type__pacman_conf(7)
 ==========================
-Manage pacman configuration
 
-Dominique Roux <dominique.roux4@gmail.com>
+NAME
+----
+cdist-type__pacman_conf - Manage pacman configuration
 
 
 DESCRIPTION
@@ -58,8 +59,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- grep(1)
+:manpage:`grep`\ (1)
+
+
+AUTHORS
+-------
+Dominique Roux <dominique.roux4@gmail.com>
 
 
 COPYING

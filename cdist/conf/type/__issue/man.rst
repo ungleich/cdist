@@ -1,8 +1,9 @@
 cdist-type__issue(7)
 ====================
-Manage issue
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__issue - Manage issue
 
 
 DESCRIPTION
@@ -33,9 +34,9 @@ EXAMPLES
     __issue --source "$__type/files/myfancyissue"
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

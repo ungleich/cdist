@@ -1,8 +1,9 @@
 cdist-type__ssh_authorized_keys(7)
 ==================================
-Manage ssh authorized_keys files
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__ssh_authorized_keys - Manage ssh authorized_keys files
 
 
 DESCRIPTION
@@ -104,8 +105,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- sshd(8)
+:manpage:`sshd`\ (8)
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

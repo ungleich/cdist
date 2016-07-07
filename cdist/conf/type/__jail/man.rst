@@ -1,13 +1,14 @@
 cdist-type__jail(7)
 ===================
-Manage FreeBSD jails
 
-Jake Guffey <jake.guffey--@--eprotex.com>
+NAME
+----
+cdist-type__jail - Manage FreeBSD jails
 
 
 DESCRIPTION
 -----------
-This type is used on FreeBSD to manage jails.
+This type is used on FreeBSD to manage jails by calling the appropriate per-version subtype.
 
 
 REQUIRED PARAMETERS
@@ -107,10 +108,15 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
+:manpage:`jail`\ (8)
+
+
+AUTHORS
+-------
+Jake Guffey <jake.guffey--@--jointheirstm.org>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Jake Guffey. Free use of this software is
+Copyright \(C) 2012,2016 Jake Guffey. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).

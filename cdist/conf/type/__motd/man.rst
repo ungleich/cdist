@@ -1,8 +1,9 @@
 cdist-type__motd(7)
 ===================
-Manage message of the day
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__motd - Manage message of the day
 
 
 DESCRIPTION
@@ -34,9 +35,9 @@ EXAMPLES
     __motd --source "$__type/files/my-motd"
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

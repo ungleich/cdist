@@ -1,8 +1,9 @@
 cdist-type__line(7)
 ===================
-Manage lines in files
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__line - Manage lines in files
 
 
 DESCRIPTION
@@ -60,8 +61,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- grep(1)
+:manpage:`grep`\ (1)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

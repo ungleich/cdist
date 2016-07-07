@@ -1,8 +1,9 @@
 cdist-type__postfix_reload(7)
 =============================
-Tell postfix to reload its configuration
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__postfix_reload - Tell postfix to reload its configuration
 
 
 DESCRIPTION
@@ -28,9 +29,9 @@ EXAMPLES
     __postfix_reload
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

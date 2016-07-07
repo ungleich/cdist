@@ -1,6 +1,20 @@
 Changelog
 ---------
 
+next:
+	* Core: pep8 (Darko Poljak)
+	* Documentation: Restructure and fix and improve docs and manpages (Darko Poljak)
+	* Core: Add files directory for static files (Darko Poljak)
+	* Custom: Add bash and zsh completions (Darko Poljak)
+	* Core: Improve error reporting for local and remote run command (Darko Poljak)
+	* New type: __jail_freebsd9: Handle jail management on FreeBSD <= 9.X (Jake Guffey)
+	* New type: __jail_freebsd10: Handle jail management on FreeBSD >= 10.0 (Jake Guffey)
+	* Type __jail: Dynamically select the correct jail subtype based on target host OS (Jake Guffey)
+	* Explorer __machine_type: add openvz and lxc
+	* Explorer __os __os_version: add scientific
+	* Type various: add scientific
+	* Explorer __machine_type: add virtualbox (Stu Zhao)
+
 4.1.0: 2016-05-27
 	* Documentation: Migrate to reStructuredText format and sphinx (Darko Poljak)
 	* Core: Add -f option to read additional hosts from file/stdin (Darko Poljak)

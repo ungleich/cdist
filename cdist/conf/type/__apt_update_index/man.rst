@@ -1,8 +1,9 @@
 cdist-type__apt_update_index(7)
 ===============================
-Update apt's package index
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__apt_update_index - Update apt's package index
 
 
 DESCRIPTION
@@ -27,9 +28,9 @@ EXAMPLES
     __apt_update_index
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

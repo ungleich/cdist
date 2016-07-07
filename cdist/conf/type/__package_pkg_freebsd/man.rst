@@ -1,8 +1,9 @@
 cdist-type__package_pkg_freebsd(7)
 ==================================
-Manage FreeBSD packages 
 
-Jake Guffey <jake.guffey--@--eprotex.com>
+NAME
+----
+cdist-type__package_pkg_freebsd - Manage FreeBSD packages 
 
 
 DESCRIPTION
@@ -53,8 +54,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:manpage:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Jake Guffey <jake.guffey--@--eprotex.com>
 
 
 COPYING

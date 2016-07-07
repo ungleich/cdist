@@ -1,8 +1,9 @@
 cdist-type__iptables_apply(7)
 =============================
-Apply the rules
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__iptables_apply - Apply the rules
 
 
 DESCRIPTION
@@ -28,9 +29,12 @@ None (__iptables_apply is used by __iptables_rule)
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__iptables_rule(7) <cdist-type__iptables_rule.html>`_
-- iptables(8)
+:manpage:`cdist-type__iptables_rule`\ (7), :manpage:`iptables`\ (8)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

@@ -1,8 +1,9 @@
 cdist-type__cdist(7)
 ====================
-Manage cdist installations
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__cdist - Manage cdist installations
 
 
 DESCRIPTION
@@ -49,9 +50,9 @@ EXAMPLES
     __cdist --source "git://git.schottelius.org/cdist" /home/cdist/cdist
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

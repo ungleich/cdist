@@ -1,8 +1,9 @@
 cdist-type__consul_template_template(7)
 =======================================
-Manage consul-template templates
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul_template_template - Manage consul-template templates
 
 
 DESCRIPTION
@@ -67,9 +68,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__consul_template(7) <cdist-type__consul_template.html>`_
-- `cdist-type__consul_template_config(7) <cdist-type__consul_template_config.html>`_
+:manpage:`cdist-type__consul_template`\ (7), :manpage:`cdist-type__consul_template_config`\ (7)
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

@@ -1,8 +1,9 @@
 cdist-type__update_alternatives(7)
 ==================================
-Configure alternatives
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__update_alternatives - Configure alternatives
 
 
 DESCRIPTION
@@ -29,9 +30,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__debconf_set_selections(7) <cdist-type__debconf_set_selections.html>`_
-- update-alternatives(8)
+:manpage:`cdist-type__debconf_set_selections`\ (7), :manpage:`update-alternatives`\ (8)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

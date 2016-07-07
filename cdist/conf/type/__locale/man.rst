@@ -1,8 +1,9 @@
 cdist-type__locale(7)
 =====================
-Configure locales
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdit-type__locale - Configure locales
 
 
 DESCRIPTION
@@ -33,9 +34,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- locale(1)
-- localedef(1)
-- `cdist-type(7) <cdist-type.html>`_
+:manpage:`locale`\ (1), :manpage:`localedef`\ (1)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

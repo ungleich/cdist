@@ -1,8 +1,9 @@
 cdist-type__git(7)
 ==================
-Get and or keep git repositories up-to-date
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__git -  Get and or keep git repositories up-to-date
 
 
 DESCRIPTION
@@ -46,9 +47,9 @@ EXAMPLES
     __git /home/nico/cdist --source git://github.com/telmich/cdist.git --branch 2.1
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

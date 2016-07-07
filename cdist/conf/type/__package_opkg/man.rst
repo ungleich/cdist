@@ -1,8 +1,9 @@
 cdist-type__package_opkg(7)
 ===========================
-Manage packages with opkg
 
-Giel van Schijndel <giel+cdist--@--mortis.eu>
+NAME
+----
+cdist-type__package_opkg - Manage packages with opkg
 
 
 DESCRIPTION
@@ -38,8 +39,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:manpage:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Giel van Schijndel <giel+cdist--@--mortis.eu>
 
 
 COPYING

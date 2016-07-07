@@ -31,8 +31,9 @@ import cdist.config
 
 log = logging.getLogger(__name__)
 
+
 class Shell(object):
-    
+
     def __init__(self, shell=None):
 
         self.shell = shell
@@ -45,21 +46,23 @@ class Shell(object):
         """Select shell to execute, if not specified by user"""
 
         if not self.shell:
-            self.shell = os.environ.get('SHELL',"/bin/sh")
+            self.shell = os.environ.get('SHELL', "/bin/sh")
 
     def _init_files_dirs(self):
         self.local.create_files_dirs()
 
     def _init_environment(self):
         self.env = os.environ.copy()
-        additional_env = { 
+        additional_env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
-            '__cdist_type_base_path': self.local.type_path, # for use in type emulator
+            # for use in type emulator
+            '__cdist_type_base_path': self.local.type_path,
             '__cdist_manifest': "cdist shell",
             '__global': self.local.base_path,
             '__target_host': self.target_host,
             '__manifest': self.local.manifest_path,
             '__explorer': self.local.global_explorer_path,
+            '__files': self.local.files_path,
         }
 
         self.env.update(additional_env)

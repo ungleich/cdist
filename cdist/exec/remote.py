@@ -26,8 +26,10 @@ import sys
 import glob
 import subprocess
 import logging
+import cdist.exec.util as exec_util
 
 import cdist
+
 
 class DecodeError(cdist.Error):
     def __init__(self, command):
@@ -74,7 +76,6 @@ class Remote(object):
         os.environ['__remote_copy'] = self._copy
         os.environ['__remote_exec'] = self._exec
 
-
     def create_files_dirs(self):
         self.rmdir(self.base_path)
         self.mkdir(self.base_path)
@@ -100,11 +101,13 @@ class Remote(object):
             for f in glob.glob1(source, '*'):
                 command = self._copy.split()
                 path = os.path.join(source, f)
-                command.extend([path, '{0}:{1}'.format(self.target_host, destination)])
+                command.extend([path, '{0}:{1}'.format(
+                    self.target_host, destination)])
                 self._run_command(command)
         else:
             command = self._copy.split()
-            command.extend([source, '{0}:{1}'.format(self.target_host, destination)])
+            command.extend([source, '{0}:{1}'.format(
+                self.target_host, destination)])
             self._run_command(command)
 
     def run_script(self, script, env=None, return_output=False):
@@ -113,7 +116,7 @@ class Remote(object):
 
         """
 
-        command = [ os.environ.get('CDIST_REMOTE_SHELL',"/bin/sh") , "-e"]
+        command = [os.environ.get('CDIST_REMOTE_SHELL', "/bin/sh"), "-e"]
         command.append(script)
 
         return self.run(command, env, return_output)
@@ -147,8 +150,8 @@ class Remote(object):
         # /bin/csh will execute this script in the right way.
         if env:
             remote_env = [" export %s=%s;" % item for item in env.items()]
-            string_cmd = ("/bin/sh -c '" + " ".join(remote_env)
-                + " ".join(command) + "'")
+            string_cmd = ("/bin/sh -c '" + " ".join(remote_env) +
+                          " ".join(command) + "'")
             cmd.append(string_cmd)
         else:
             cmd.extend(command)
@@ -159,7 +162,8 @@ class Remote(object):
         Return the output as a string.
 
         """
-        assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
+        assert isinstance(command, (list, tuple)), (
+                "list or tuple argument expected, got: %s" % command)
 
         # export target_host for use in __remote_{exec,copy} scripts
         os_environ = os.environ.copy()
@@ -167,12 +171,13 @@ class Remote(object):
 
         self.log.debug("Remote run: %s", command)
         try:
+            output, errout = exec_util.call_get_output(command, env=os_environ)
+            self.log.debug("Remote stdout: {}".format(output))
+            self.log.debug("Remote stderr: {}".format(errout))
             if return_output:
-                return subprocess.check_output(command, env=os_environ).decode()
-            else:
-                subprocess.check_call(command, env=os_environ)
-        except subprocess.CalledProcessError:
-            raise cdist.Error("Command failed: " + " ".join(command))
+                return output.decode()
+        except subprocess.CalledProcessError as e:
+            exec_util.handle_called_process_error(e, command)
         except OSError as error:
             raise cdist.Error(" ".join(command) + ": " + error.args[1])
         except UnicodeDecodeError:

@@ -1,8 +1,9 @@
 cdist-type__user(7)
 ===================
-Manage users
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__user - Manage users
 
 
 DESCRIPTION
@@ -83,8 +84,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- usermod(8) or pw(8)
+:manpage:`pw`\ (8), :manpage:`usermod`\ (8)
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

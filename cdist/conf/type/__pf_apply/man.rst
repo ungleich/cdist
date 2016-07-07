@@ -1,12 +1,9 @@
 cdist-type__pf_apply(7)
 =======================
-Apply pf(4) ruleset on \*BSD
-
-Jake Guffey <jake.guffey--@--eprotex.com>
-
 
 NAME
 ----
+cdist-type__pf_apply - Apply pf(4) ruleset on \*BSD
 
 
 DESCRIPTION
@@ -42,9 +39,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__pf_ruleset(7) <cdist-type__pf_ruleset.html>`_
-- pf(4)
+:manpage:`pf`\ (4), :manpage:`cdist-type__pf_ruleset`\ (7)
+
+
+AUTHORS
+-------
+Jake Guffey <jake.guffey--@--eprotex.com>
 
 
 COPYING

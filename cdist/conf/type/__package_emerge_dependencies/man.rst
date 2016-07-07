@@ -1,8 +1,9 @@
 cdist-type__package_emerge_dependencies(7)
 ==========================================
-Install dependencies for __package_emerge
 
-Thomas Oettli <otho--@--sfs.biz>
+NAME
+----
+cdist-type__package_emerge_dependencies - Install dependencies for __package_emerge
 
 
 DESCRIPTION
@@ -35,9 +36,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
-- `cdist-type__package_emerge(7) <cdist-type__package_emerge.html>`_
+:manpage:`cdist-type__package`\ (7), :manpage:`cdist-type__package_emerge`\ (7)
+
+
+AUTHORS
+-------
+Thomas Oettli <otho--@--sfs.biz>
 
 
 COPYING

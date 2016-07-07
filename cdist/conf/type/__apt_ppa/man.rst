@@ -1,8 +1,9 @@
 cdist-type__apt_ppa(7)
 ======================
-Manage ppa repositories
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__apt_ppa - Manage ppa repositories
 
 
 DESCRIPTION
@@ -36,9 +37,9 @@ EXAMPLES
     __apt_ppa ppa:sans-intern/missing-bits --state absent
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

@@ -1,8 +1,9 @@
 cdist-type__package(7)
 ======================
-Manage packages
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__package - Manage packages
 
 
 DESCRIPTION
@@ -50,9 +51,9 @@ EXAMPLES
     __package vim --state present --type __package_apt
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

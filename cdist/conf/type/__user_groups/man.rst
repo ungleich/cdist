@@ -1,8 +1,9 @@
 cdist-type__user_groups(7)
 ==========================
-Manage user groups
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__user_groups - Manage user groups
 
 
 DESCRIPTION
@@ -38,9 +39,9 @@ EXAMPLES
        --group webuser2 --state absent
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

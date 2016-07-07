@@ -1,8 +1,9 @@
 cdist-type__dog_vdi(7)
 ======================
-Manage Sheepdog VM images
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__dog_vdi - Manage Sheepdog VM images
 
 
 DESCRIPTION
@@ -42,9 +43,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- dog(8)
-- qemu(1)
+:manpage:`qemu`\ (1), :manpage:`dog`\ (8)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

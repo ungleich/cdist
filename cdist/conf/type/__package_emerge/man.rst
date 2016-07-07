@@ -1,8 +1,9 @@
 cdist-type__package_emerge(7)
 =============================
-Manage packages with portage
 
-Thomas Oettli <otho--@--sfs.biz>
+NAME
+----
+cdist-type__package_emerge - Manage packages with portage
 
 
 DESCRIPTION
@@ -46,9 +47,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
-- `cdist-type__package_emerge_dependencies(7) <cdist-type__package_emerge_dependencies.html>`_
+:manpage:`cdist-type__package`\ (7), :manpage:`cdist-type__package_emerge_dependencies`\ (7)
+
+
+AUTHORS
+-------
+Thomas Oettli <otho--@--sfs.biz>
 
 
 COPYING

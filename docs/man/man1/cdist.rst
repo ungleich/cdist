@@ -1,8 +1,9 @@
 cdist(1)
 ========
-Usable Configuration Management
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist - Usable Configuration Management
 
 
 SYNOPSIS
@@ -174,11 +175,9 @@ The following exit values shall be returned:
     One or more host configurations failed
 
 
-SEE ALSO
---------
-- `cdist-type(7) <../man7/cdist-type.html>`_
-- `cdist-reference(7) <../man7/cdist-reference.html>`_
-
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 COPYING
 -------

@@ -1,8 +1,9 @@
 cdist-type__zypper_service(7)
 =============================
-Service management with zypper
 
-Daniel Heule <hda--@--sfs.biz>
+NAME
+----
+cdist-type__zypper_service - Service management with zypper
 
 
 DESCRIPTION
@@ -52,9 +53,9 @@ EXAMPLES
     __zypper_service INTERNAL_SLES11_SP3 --state absent --uri "http://path/to/your/ris/dir"
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Daniel Heule <hda--@--sfs.biz>
 
 
 COPYING

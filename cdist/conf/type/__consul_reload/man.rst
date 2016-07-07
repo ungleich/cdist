@@ -1,8 +1,9 @@
 cdist-type__consul_reload(7)
 ============================
-Reload consul
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul_reload - Reload consul
 
 
 DESCRIPTION
@@ -28,9 +29,9 @@ EXAMPLES
     __consul_reload
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

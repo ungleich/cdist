@@ -1,8 +1,9 @@
 cdist-type__cron(7)
 ===================
-Installs and manages cron jobs
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__cron - Installs and manages cron jobs
 
 
 DESCRIPTION
@@ -67,8 +68,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- crontab(5)
+:manpage:`crontab`\ (5)
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

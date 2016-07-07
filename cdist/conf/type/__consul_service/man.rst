@@ -1,8 +1,9 @@
 cdist-type__consul_service(7)
 =============================
-Manages consul services
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul_service - Manages consul services
 
 
 DESCRIPTION
@@ -65,8 +66,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__consul_agent(7) <cdist-type__consul_agent.html>`_
+:manpage:`cdist-type__consul_agent`\ (7)
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

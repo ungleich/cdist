@@ -1,11 +1,7 @@
-cdist-troubleshooting(7)
-========================
-Common problems and their solutions
+Troubleshooting
+===============
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-ERROR IN MANIFEST IS NOT CONSIDERED AN ERROR BY CDIST
+Error in manifest is not considered an error by cdist
 -----------------------------------------------------
 Situation: You are executing other scripts from a manifest.
 This script fails, but cdist does not recognise the error.
@@ -47,15 +43,3 @@ you write to use the -e flag:
     % cat ~/.cdist/manifest/special
     #!/bin/sh -e
     ...
-
-
-SEE ALSO
---------
-- `cdist(1) <../man1/cdist.html>`_
-- `cdist-tutorial(7) <cdist-tutorial.html>`_
-
-
-COPYING
--------
-Copyright \(C) 2013 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

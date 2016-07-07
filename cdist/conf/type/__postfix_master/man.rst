@@ -1,8 +1,9 @@
 cdist-type__postfix_master(7)
 =============================
-Configure postfix master.cf
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__postfix_master - Configure postfix master.cf
 
 
 DESCRIPTION
@@ -67,8 +68,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- master(5)
+:manpage:`master`\ (5)
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

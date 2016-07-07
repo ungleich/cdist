@@ -20,6 +20,7 @@ import os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../")))
 
 # -- General configuration ------------------------------------------------
 
@@ -29,7 +30,10 @@ import os
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = []
+extensions = [
+    'cdist.sphinxext.manpage',
+    'sphinx.ext.extlinks',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -140,7 +144,7 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -257,15 +261,18 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-mandir = os.path.dirname(os.path.realpath(__file__))
-man_pages = []
+root_mandir = os.path.dirname(os.path.realpath(__file__))
+mandirs = []
 for mansubdir in ('man1', 'man7'):
-    for root, dirs, files in os.walk(os.path.join(mandir, mansubdir)):
+    mandirs.append((os.path.join(root_mandir, mansubdir), mansubdir[-1]))
+man_pages = []
+for mandir, section in mandirs:
+    for root, dirs, files in os.walk(mandir):
         for fname in files:
             froot, fext = os.path.splitext(fname)
             if fext == '.rst':
-                man_page = (os.path.join(mansubdir, froot), froot, '',
-                        [], mansubdir[-1])
+                man_page = (os.path.join('man' + str(section), froot),
+                        froot, '', [], section)
                 man_pages.append(man_page)
 
 #man_pages = [

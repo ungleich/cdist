@@ -1,8 +1,9 @@
 cdist-type__hostname(7)
 =======================
-Set the hostname
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__hostname - Set the hostname
 
 
 DESCRIPTION
@@ -38,9 +39,9 @@ EXAMPLES
     __hostname --name some-static-hostname
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

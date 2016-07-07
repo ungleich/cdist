@@ -1,8 +1,9 @@
 cdist-type__package_upgrade_all(7)
 ==================================
-Upgrade all the installed packages
 
-Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
+NAME
+----
+cdist-type__package_upgrade_all - Upgrade all the installed packages
 
 
 DESCRIPTION
@@ -39,9 +40,9 @@ EXAMPLES
     __package_upgrade_all --type apt
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
 
 
 COPYING

@@ -1,8 +1,9 @@
 cdist-type__postgres_role(7)
 ============================
-Manage postgres roles
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__postgres_role - Manage postgres roles
 
 
 DESCRIPTION
@@ -47,9 +48,15 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__postgres_database(7) <cdist-type__postgres_database.html>`_
-- http://www.postgresql.org/docs/current/static/sql-createrole.html
+:manpage:`cdist-type__postgres_database`\ (7)
+
+postgresql documentation at:
+<http://www.postgresql.org/docs/current/static/sql-createrole.html>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

@@ -1,8 +1,9 @@
 cdist-type__mount(7)
 ====================
-Manage filesystem mounts
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdit-type__mount - Manage filesystem mounts
 
 
 DESCRIPTION
@@ -70,9 +71,9 @@ EXAMPLES
        --options "mfsmaster=mfsmaster.domain.tld,mfssubfolder=/one,nonempty,_netdev"
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

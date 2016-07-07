@@ -40,7 +40,7 @@ case "$os" in
             exit 0
         fi
     ;;
-    centos)
+    scientific|centos)
         if [ "$name_sysconfig" = "$name_should" -a "$name_running" = "$name_should" ]; then
             exit 0
         fi

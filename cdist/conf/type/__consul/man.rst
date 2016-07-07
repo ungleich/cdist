@@ -1,8 +1,9 @@
 cdist-type__consul(7)
 =====================
-Install consul
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul - Install consul
 
 
 DESCRIPTION
@@ -40,9 +41,9 @@ EXAMPLES
        --version 0.4.1
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

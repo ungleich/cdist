@@ -9,7 +9,7 @@ docs/man/man*/*.html
 docs/man/man*/*.xml
 docs/man/man*/docbook-xsl.css
 docs/man/man7/cdist-type__*.rst
-docs/man/man7/cdist-reference.rst
+docs/man/cdist-reference.rst
 
 # Ignore cdist cache for version control
 /cache/
@@ -20,8 +20,9 @@ MANIFEST
 dist/
 cdist/version.py
 
-#sphinx build dir
+# sphinx build dirs, cache
 _build/
+docs/dist
 
 # Packaging: Archlinux
 /PKGBUILD

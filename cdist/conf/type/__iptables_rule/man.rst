@@ -1,8 +1,9 @@
 cdist-type__iptables_rule(7)
 ============================
-Deploy iptable rulesets
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__iptables_rule - Deploy iptable rulesets
 
 
 DESCRIPTION
@@ -49,9 +50,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__iptables_apply(7) <cdist-type__iptables_apply.html>`_
-- iptables(8)
+:manpage:`cdist-type__iptables_apply`\ (7), :manpage:`iptables`\ (8)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

@@ -1,8 +1,9 @@
 cdist-type__package_luarocks(7)
 ===============================
-Manage luarocks packages
 
-Christian G. Warden <cwarden@xerus.org>
+NAME
+----
+cdist-type__package_luarocks - Manage luarocks packages
 
 
 DESCRIPTION
@@ -38,8 +39,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:manpage:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Christian G. Warden <cwarden@xerus.org>
 
 
 COPYING

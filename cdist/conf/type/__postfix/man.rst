@@ -1,8 +1,9 @@
 cdist-type__postfix(7)
 ======================
-Install postfix
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__postfix - Install postfix
 
 
 DESCRIPTION
@@ -28,9 +29,9 @@ EXAMPLES
     __postfix
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

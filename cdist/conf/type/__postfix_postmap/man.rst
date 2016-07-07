@@ -1,8 +1,9 @@
 cdist-type__postfix_postmap(7)
 ==============================
-Run postmap on the given file
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__postfix_postmap - Run postmap on the given file
 
 
 DESCRIPTION
@@ -28,9 +29,9 @@ EXAMPLES
     __postfix_postmap /etc/postfix/generic
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

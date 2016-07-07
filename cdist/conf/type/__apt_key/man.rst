@@ -1,8 +1,9 @@
 cdist-type__apt_key(7)
 ======================
-Manage the list of keys used by apt
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__apt_key - Manage the list of keys used by apt
 
 
 DESCRIPTION
@@ -47,9 +48,9 @@ EXAMPLES
     __apt_key UbuntuArchiveKey --keyid 437D05B5 --keyserver keyserver.ubuntu.com
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

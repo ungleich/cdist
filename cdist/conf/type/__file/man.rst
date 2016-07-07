@@ -1,8 +1,9 @@
 cdist-type__file(7)
 ===================
-Manage files.
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__file - Manage files.
 
 
 DESCRIPTION
@@ -98,9 +99,9 @@ EXAMPLES
     DONE
 
 
-SEE ALSO
---------
-* `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

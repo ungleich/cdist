@@ -1,8 +1,9 @@
 cdist-type__directory(7)
 ========================
-Manage a directory
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__directory - Manage a directory
 
 
 DESCRIPTION
@@ -87,9 +88,9 @@ EXAMPLES
         --owner root --group root --mode 0755 --state present
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

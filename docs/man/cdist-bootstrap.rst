@@ -1,18 +1,11 @@
-cdist-bootstrap(7)
-==================
-Setup cdist environment
-
-Nico Schottelius <nico-cdist--@--schottelius.org>
-
-
-INTRODUCTION
-------------
+Bootstrap
+=========
 This document describes the usual steps recommended for a new
 cdist setup. It is recommended that you have read and understood
-cdist-quickstart(7) before digging into this.
+`cdist quickstart <cdist-quickstart.html>`_ before digging into this.
 
 
-LOCATION
+Location
 ---------
 First of all, you should think about where to store your configuration
 database and who will be accessing or changing it. Secondly you have to
@@ -26,13 +19,13 @@ relies on is recommended, for use as backup as well as to allow easy collaborati
 with others.
 
 For more sophisticated setups developing cdist configurations with multiple
-people, have a look at cdist-best-practice(7).
+people, have a look at `cdist best practice <cdist-best-practice.html>`_.
 
 
-SETUP WORKING DIRECTORY AND BRANCH
+Setup working directory and branch
 ----------------------------------
 I assume you have a fresh copy of the cdist tree in ~/cdist, cloned from
-one of the official urls (see cdist-quickstart(7) if you don't).
+one of the official urls (see `cdist quickstart <cdist-quickstart.html>`_ if you don't).
 Entering the command "git branch" should show you "* master", which indicates
 you are on the **master** branch.
 
@@ -82,7 +75,7 @@ In this tutorial I use the branch **mycompany**::
 From now on, you can use git as usual to commit your changes in your own branch.
 
 
-PUBLISHING THE CONFIGURATION
+Publishing the configuration
 ----------------------------
 Usually a development machine like a notebook should be considered
 temporary only. For this reason and to enable shareability, the configuration
@@ -111,7 +104,7 @@ branch with the **master** branch on the host **loch**. Thus you can commit
 as usual in your branch and push out changes by entering **git push**.
 
 
-UPDATING FROM ORIGIN
+Updating from origin
 --------------------
 Whenever you want to update your cdist installation, you can use git to do so::
 
@@ -123,15 +116,3 @@ Whenever you want to update your cdist installation, you can use git to do so::
 
     # Alternative: Update current branch with 2.0 branch from origin
     cdist% git merge origin/2.0
-
-
-SEE ALSO
---------
-- `cdist(1) <../man1/cdist.html>`_
-- `cdist-tutorial(7) <cdist-tutorial.html>`_
-
-
-COPYING
--------
-Copyright \(C) 2012 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).

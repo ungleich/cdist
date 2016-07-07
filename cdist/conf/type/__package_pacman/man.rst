@@ -1,8 +1,9 @@
 cdist-type__package_pacman(7)
 =============================
-Manage packages with pacman
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__package_pacman - Manage packages with pacman
 
 
 DESCRIPTION
@@ -41,8 +42,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:manpage:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

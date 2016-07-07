@@ -46,7 +46,8 @@ MAN7DSTDIR=$(MANDIR)/man7
 
 # Manpages #1: Types
 # Use shell / ls to get complete list - $(TYPEDIR)/*/man.rst does not work
-MANTYPESRC=$(shell ls $(TYPEDIR)/*/man.rst)
+# Using ls does not work if no file with given pattern exist, so use wildcard
+MANTYPESRC=$(wildcard $(TYPEDIR)/*/man.rst)
 MANTYPEPREFIX=$(subst $(TYPEDIR)/,$(MAN7DSTDIR)/cdist-type,$(MANTYPESRC))
 MANTYPES=$(subst /man.rst,.rst,$(MANTYPEPREFIX))
 
@@ -62,17 +63,17 @@ $(MANREF): $(MANREFSH)
 	$(MANREFSH)
 
 # Manpages #3: generic part
-mansphinxman: $(MANTYPES) $(MANREF)
+mansphinxman: $(MANTYPES) $(MANREF) $(PYTHON_VERSION)
 	$(SPHINXM)
 
-mansphinxhtml: $(MANTYPES) $(MANREF)
+mansphinxhtml: $(MANTYPES) $(MANREF) $(PYTHON_VERSION)
 	$(SPHINXH)
 
 man: mansphinxman mansphinxhtml
 
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
-MANBUILDDIR=$(MANDIR)/_build/html
+MANBUILDDIR=docs/dist/html
 
 man-dist: man
 	rm -rf "${MANWEBDIR}"
@@ -87,6 +88,25 @@ man-latest-link: web-pub
 	# Fix ikiwiki, which does not like symlinks for pseudo security
 	ssh staticweb.ungleich.ch \
 		"cd /home/services/www/nico/nico.schottelius.org/www/software/cdist/man/ && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
+
+# Manpages: .cdist Types
+DOT_CDIST_PATH=${HOME}/.cdist
+DOTMAN7DSTDIR=$(MAN7DSTDIR)
+DOTTYPEDIR=$(DOT_CDIST_PATH)/type
+DOTMANTYPESRC=$(wildcard $(DOTTYPEDIR)/*/man.rst)
+DOTMANTYPEPREFIX=$(subst $(DOTTYPEDIR)/,$(DOTMAN7DSTDIR)/cdist-type,$(DOTMANTYPESRC))
+DOTMANTYPES=$(subst /man.rst,.rst,$(DOTMANTYPEPREFIX))
+
+# Link manpage: do not create man.html but correct named file
+$(DOTMAN7DSTDIR)/cdist-type%.rst: $(DOTTYPEDIR)/%/man.rst
+	ln -sf "$^" $@
+
+# Manpages #3: generic part
+dotmansphinxman: $(DOTMANTYPES)
+	$(SPHINXM)
+
+dotman: dotmansphinxman
+
 
 ################################################################################
 # Speeches
@@ -192,7 +212,7 @@ release:
 #
 
 clean:
-	rm -f $(MAN7DSTDIR)/cdist-reference.rst
+	rm -f $(MANDIR)/cdist-reference.rst
 
 	find "$(MANDIR)" -mindepth 2 -type l \
 	| xargs rm -f

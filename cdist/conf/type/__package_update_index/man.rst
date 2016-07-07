@@ -1,8 +1,9 @@
 cdist-type__package_update_index(7)
 ===================================
-Update the package index
 
-Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
+NAME
+----
+cdist-type__update_index - Update the package index
 
 
 DESCRIPTION
@@ -39,9 +40,9 @@ EXAMPLES
     __package_update_index --type apt
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
 
 
 COPYING

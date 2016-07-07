@@ -22,7 +22,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   centos|redhat)
+   scientific|centos|redhat)
       # whitelist safeguard
       service_onchange='service consul-template status >/dev/null && service consul-template reload || true' \
    ;;

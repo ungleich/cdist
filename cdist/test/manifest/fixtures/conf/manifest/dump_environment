@@ -6,4 +6,5 @@ __target_host: $__target_host
 __global: $__global
 __cdist_type_base_path: $__cdist_type_base_path
 __manifest: $__manifest
+__files: $__files
 DONE

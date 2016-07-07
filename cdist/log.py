@@ -22,6 +22,7 @@
 
 import logging
 
+
 class Log(logging.Logger):
 
     def __init__(self, name):

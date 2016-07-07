@@ -1,8 +1,9 @@
 cdist-type__zypper_repo(7)
 ==========================
-Repository management with zypper
 
-Daniel Heule <hda--@--sfs.biz>
+NAME
+----
+cdist-type__zypper_repo - Repository management with zypper
 
 
 DESCRIPTION
@@ -59,9 +60,9 @@ EXAMPLES
     __zypper_repo testrepo4 --state disabled --repo_id 4
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Daniel Heule <hda--@--sfs.biz>
 
 
 COPYING

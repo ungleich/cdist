@@ -1,8 +1,9 @@
 cdist-type__package_zypper(7)
 =============================
-Manage packages with zypper
 
-Daniel Heule <hda--@--sfs.biz>
+NAME
+----
+cdist-type__package_zypper - Manage packages with zypper
 
 
 DESCRIPTION
@@ -55,8 +56,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:manpage:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Daniel Heule <hda--@--sfs.biz>
 
 
 COPYING

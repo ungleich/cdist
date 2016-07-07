@@ -1,8 +1,9 @@
 cdist-type__consul_watch_nodes(7)
 =================================
-Manages consul nodes watches
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul_watch_nodes - Manages consul nodes watches
 
 
 DESCRIPTION
@@ -40,9 +41,14 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__consul_agent(7) <cdist-type__consul_agent.html>`_
-- http://www.consul.io/docs/agent/watches.html
+:manpage:`cdist-type__consul_agent`\ (7)
+
+consul documentation at: <http://www.consul.io/docs/agent/watches.html>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

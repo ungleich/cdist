@@ -1,8 +1,9 @@
 cdist-type__apt_source(7)
 =========================
-Manage apt sources
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__apt_source - Manage apt sources
 
 
 DESCRIPTION
@@ -55,9 +56,9 @@ EXAMPLES
        --component partner --state present
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

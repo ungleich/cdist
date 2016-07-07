@@ -1,8 +1,9 @@
 cdist-type__start_on_boot(7)
 ============================
-Manage stuff to be started at boot
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__start_on_boot - Manage stuff to be started at boot
 
 
 DESCRIPTION
@@ -44,8 +45,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__process(7) <cdist-type__process.html>`_
+:manpage:`cdist-type__process`\ (7)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

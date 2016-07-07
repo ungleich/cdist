@@ -1,8 +1,9 @@
 cdist-type__group(7)
 ====================
-Manage groups
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__group - Manage groups
 
 
 DESCRIPTION
@@ -66,9 +67,9 @@ EXAMPLES
     __group foobar --gid 1234 --password 'crypted-password-string'
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

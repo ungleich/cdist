@@ -1,8 +1,9 @@
 cdist-type__rsync(7)
 ====================
-Mirror directories using rsync
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__rsync - Mirror directories using rsync
 
 
 DESCRIPTION
@@ -97,8 +98,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- rsync(1)
+:manpage:`rsync`\ (1)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

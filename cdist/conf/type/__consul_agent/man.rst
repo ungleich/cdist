@@ -1,8 +1,9 @@
 cdist-type__consul_agent(7)
 ===========================
-Manage the consul agent
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul_agent - Manage the consul agent
 
 
 DESCRIPTION
@@ -164,8 +165,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- http://www.consul.io/docs/agent/options.html
+consul documentation at: <http://www.consul.io/docs/agent/options.html>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

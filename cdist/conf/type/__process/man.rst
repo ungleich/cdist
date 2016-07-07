@@ -1,8 +1,9 @@
 cdist-type__process(7)
 ======================
-Start or stop process
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__process - Start or stop process
 
 
 DESCRIPTION
@@ -57,8 +58,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__start_on_boot(7) <cdist-type__start_on_boot.html>`_
+:manpage:`cdist-type__start_on_boot`\ (7)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

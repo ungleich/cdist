@@ -1,8 +1,9 @@
 cdist-type__yum_repo(7)
 =======================
-Manage yum repositories
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__yum_repo - Manage yum repositories
 
 
 DESCRIPTION
@@ -110,9 +111,9 @@ EXAMPLES
        --gpgkey https://fedoraproject.org/static/0608B895.txt
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

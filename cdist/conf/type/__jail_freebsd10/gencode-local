@@ -1,0 +1,52 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# The __jail type creates, configures, and deletes FreeBSD jails for use as
+#  virtual machines.
+#
+
+# Debug
+#exec >&2
+#set -x
+
+jaildir="$(cat "$__object/parameter/jaildir")"
+
+jailbase="$(cat "$__object/parameter/jailbase")"
+
+state="$(cat "$__object/parameter/state")"
+
+if [ "$state" = "present" ] && [ -z "$jailbase" ]; then
+   exec >&2
+   echo "jailbase is a REQUIRED parameter when state=present!"
+   exit 1
+fi
+
+remotebase="${jaildir}/jailbase.tgz"
+basepresent="$(cat "$__object/explorer/basepresent")"
+
+if [ "$state" = "present" ]; then
+   if [ "$basepresent" = "NONE" ]; then
+      echo "$__remote_copy" "${jailbase}" "$__target_host:${remotebase}"
+   fi   # basepresent=NONE
+fi   # state=present
+
+# Debug
+#set +x
+

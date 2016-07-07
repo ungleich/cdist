@@ -1,8 +1,9 @@
 cdist-type__rbenv(7)
 ====================
-Manage rbenv installation
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__rbenv - Manage rbenv installation
 
 
 DESCRIPTION
@@ -35,9 +36,9 @@ EXAMPLES
     __rbenv /home/bastian --state absent
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING

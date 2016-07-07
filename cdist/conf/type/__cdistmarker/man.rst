@@ -1,8 +1,9 @@
 cdist-type__cdistmarker(7)
 ==========================
-Add a timestamped cdist marker.
 
-Daniel Maher <phrawzty+cdist--@--gmail.com>
+NAME
+----
+cdist-type__cdistmarker - Add a timestamped cdist marker.
 
 
 DESCRIPTION
@@ -41,9 +42,9 @@ EXAMPLES
     __cdistmarker --destination /tmp/cdist_marker --format '+%s'
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdisty-type.html>`_
+AUTHORS
+-------
+Daniel Maher <phrawzty+cdist--@--gmail.com>
 
 
 COPYING

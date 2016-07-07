@@ -1,8 +1,9 @@
 cdist-type__consul_template(7)
 ==============================
-Manage the consul-template service
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul_template - Manage the consul-template service
 
 
 DESCRIPTION
@@ -124,8 +125,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- https://github.com/hashicorp/consul-template
+consul documentation at: <https://github.com/hashicorp/consul-template>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING

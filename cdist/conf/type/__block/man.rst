@@ -1,8 +1,9 @@
 cdist-type__block(7)
 ====================
-Manage blocks of text in files
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__block - Manage blocks of text in files
 
 
 DESCRIPTION
@@ -68,9 +69,9 @@ EXAMPLES
     DONE
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
