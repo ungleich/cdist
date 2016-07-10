@@ -54,6 +54,7 @@ class Local(object):
                  add_conf_dirs=None):
 
         self.target_host = target_host
+        self._init_log()
 
         # FIXME: stopped: create base that does not require moving later
         if base_path:
@@ -69,7 +70,6 @@ class Local(object):
                        "\"{}\"".format(self.target_host, self.hostdir))
         self.base_path = os.path.join(base_path_parent, self.hostdir)
 
-        self._init_log()
         self._init_permissions()
 
         self.mkdir(self.base_path)
