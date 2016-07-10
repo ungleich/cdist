@@ -2,3 +2,4 @@ command
 source
 source-file
 state
+wait

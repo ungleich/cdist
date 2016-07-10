@@ -29,6 +29,7 @@ import subprocess
 import shutil
 import logging
 import tempfile
+import hashlib
 
 import cdist
 import cdist.message
@@ -59,9 +60,13 @@ class Local(object):
             base_path_parent = base_path
         else:
             base_path_parent = tempfile.mkdtemp()
-            import atexit
-            atexit.register(lambda: shutil.rmtree(base_path_parent))
+            # TODO: the below atexit hook nukes any debug info we would have
+            #  if cdist exits with error.
+            # import atexit
+            # atexit.register(lambda: shutil.rmtree(base_path_parent))
         self.hostdir = self._hostdir()
+        self.log.debug("Calculated temp dir for target \"{}\" is "
+                       "\"{}\"".format(self.target_host, self.hostdir))
         self.base_path = os.path.join(base_path_parent, self.hostdir)
 
         self._init_log()
@@ -94,11 +99,10 @@ class Local(object):
             return None
 
     def _hostdir(self):
-        if os.path.isabs(self.target_host):
-            hostdir = self.target_host[1:]
-        else:
-            hostdir = self.target_host
-        return hostdir
+        # Do not assume target_host is anything that can be used as a
+        # directory name.
+        # Instead use a hash, which is known to work as directory name.
+        return hashlib.md5(self.target_host.encode('utf-8')).hexdigest()
 
     def _init_log(self):
         self.log = logging.getLogger(self.target_host)
