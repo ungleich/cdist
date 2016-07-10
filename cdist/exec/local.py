@@ -62,9 +62,11 @@ class Local(object):
             base_path_parent = tempfile.mkdtemp()
             # TODO: the below atexit hook nukes any debug info we would have
             #  if cdist exits with error.
-            #import atexit
-            #atexit.register(lambda: shutil.rmtree(base_path_parent))
+            # import atexit
+            # atexit.register(lambda: shutil.rmtree(base_path_parent))
         self.hostdir = self._hostdir()
+        self.log.debug("Calculated temp dir for target \"{}\" is "
+                       "\"{}\"".format(self.target_host, self.hostdir))
         self.base_path = os.path.join(base_path_parent, self.hostdir)
 
         self._init_log()
@@ -97,8 +99,9 @@ class Local(object):
             return None
 
     def _hostdir(self):
-        # Do not assume target_host is anything that can be used as a directory name.
-        # Instead use a hash, which is know to work as directory name.
+        # Do not assume target_host is anything that can be used as a
+        # directory name.
+        # Instead use a hash, which is known to work as directory name.
         return hashlib.md5(self.target_host.encode('utf-8')).hexdigest()
 
     def _init_log(self):
@@ -239,7 +242,7 @@ class Local(object):
                         message_prefix=message_prefix)
 
     def save_cache(self):
-        destination = os.path.join(self.cache_path, self.target_host)
+        destination = os.path.join(self.cache_path, self.hostdir)
         self.log.debug("Saving " + self.base_path + " to " + destination)
 
         try:

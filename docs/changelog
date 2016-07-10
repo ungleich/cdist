@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Core: Fix hostdir: use hash instead of target host (Steven Armstrong)
 	* Core: pep8 (Darko Poljak)
 	* Documentation: Restructure and fix and improve docs and manpages (Darko Poljak)
 	* Core: Add files directory for static files (Darko Poljak)
