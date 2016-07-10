@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Build: Make github signed release (Darko Poljak)
 	* Core: pep8 (Darko Poljak)
 	* Documentation: Restructure and fix and improve docs and manpages (Darko Poljak)
 	* Core: Add files directory for static files (Darko Poljak)

@@ -153,7 +153,70 @@ eof
         fi
         printf "Enter tag description for ${target_version}: "
         read tagmessage
-        git tag "$target_version" -m "$$tagmessage"
+
+        # setup for signed tags:
+        # gpg --fulL-gen-key
+        # gpg --list-secret-keys --keyid-format LONG
+        # git config --local user.signingkey <id>
+        # for exporting pub key:
+        #     gpg --armor --export <id> > pubkey.asc
+        #     gpg --output pubkey.gpg --export <id>
+        # show tag with signature
+        # git show <tag>
+        # verify tag signature
+        # git tag -v <tag>
+        #
+        # gpg verify signature
+        # gpg --verify <asc-file> <file>
+        # gpg --no-default-keyring --keyring <pubkey.gpg> --verify <asc-file> <file>
+        #
+
+        git tag -s "$target_version" -m "$tagmessage"
+        git push --tags
+    ;;
+
+    sign-git-tag)
+        if [ $# -lt 3 ]
+        then
+            printf "usage: $0 sign-git-tag TAG AUTHTOKEN\n"
+            exit 1
+        fi
+        tag="$2"
+        if ! git rev-parse -q --verify "${tag}" >/dev/null 2>&1
+            printf "Tag \"${tag}\" not found.\n"
+            exit 1
+        fi
+        token="$3"
+        archivename="cdist-${tag}.tar.gz"
+        git archive --prefix="cdist-${tag}" -o "${archivename}" "${tag}" \
+            || exit 1
+        gpg --armor --detach-sign "${archivename}" || exit 1
+
+        # make github release
+        curl -H "Authorization: token ${token}" \
+            --request POST \
+            --data "{ \"tag_name\":\"${tag}\", \
+                      \"target_commitish\":\"master\", \
+                      \"name\": \"${tag}\", \
+                      \"body\":\"${tag}\", \
+                      \"draft\":false, \
+                      \"prerelease\": false}" \
+            "https://api.github.com/repos/ungleich/cdist/releases" || exit 1
+
+        # get release ID
+        repoid=$(curl "https://api.github.com/repos/ungleich/cdist/releases/tags/${tag}" \
+            || python3 -c 'import json; import sys; print(json.loads(sys.stdin.read())["id"])') \
+            || exit 1
+
+        curl -H "Authorization: token ${token}" \
+             -H "Accept: application/vnd.github.manifold-preview" \
+             -H "Content-Type: application/pgp-signature" \
+             --data-binary @${archivename}.asc \
+            "https://uploads.github.com/repos/ungleich/cdist/releases/${repoid}/assets?name=${archivename}.asc" \
+            || exit 1
+
+        # remove generated files (archive and asc)
+        rm -f "${archivename}" "${archivename}.asc"
     ;;
 
     release)
@@ -218,6 +281,11 @@ eof
 
         # Tag the current commit
         "$0" release-git-tag
+
+        # sign git tag
+        printf "Enter github authentication token: "
+        read token
+        "$0" sign-git-tag "${target_version}" "${token}"
 
         # Also merge back the version branch
         if [ "$masterbranch" = yes ]; then
