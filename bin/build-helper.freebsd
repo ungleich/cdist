@@ -218,6 +218,7 @@ eof
         fi
         tag="$2"
         if ! git rev-parse -q --verify "${tag}" >/dev/null 2>&1
+        then
             printf "Tag \"${tag}\" not found.\n"
             exit 1
         fi
