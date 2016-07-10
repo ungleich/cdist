@@ -166,6 +166,7 @@ eof
         # First check everything is sane
         "$0" check-date
         "$0" check-unittest
+        "$0" pep8
 
         # Generate version file to be included in packaging
         "$0" version
@@ -266,6 +267,28 @@ eof
         else
             python3 -m unittest "$@"
         fi
+    ;;
+
+    pep8)
+        pep8 ${basedir} | less
+        echo "Please review pep8 report."
+        while true
+        do
+            echo "Continue (yes/no)?"
+            any=
+            read any
+            case "$any" in
+                yes)
+                    break
+                ;;
+                no)
+                    exit 1
+                ;;
+                *)
+                    echo "Please answer with 'yes' or 'no' explicitly."
+                ;;
+        esac
+        done
     ;;
 
     version-branch)
