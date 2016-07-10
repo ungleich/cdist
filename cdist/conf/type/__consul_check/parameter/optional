@@ -1,7 +1,15 @@
+docker-container-id
+http
 id
 interval
 name
 notes
 script
+service-id
+shell
 state
+status
+tcp
+timeout
+token
 ttl

@@ -37,6 +37,14 @@ source-file
 state
    if this template is 'present' or 'absent'. Defaults to 'present'.
 
+wait
+   The `minimum(:maximum)` time to wait before rendering a new template to
+   disk and triggering a command, separated by a colon (`:`). If the optional
+   maximum value is omitted, it is assumed to be 4x the required minimum value.
+   This is a numeric time with a unit suffix ("5s"). There is no default value.
+   The wait value for a template takes precedence over any globally-configured
+   wait.
+
 
 EXAMPLES
 --------
@@ -52,6 +60,7 @@ EXAMPLES
 
     # upload a local file to the target and configure it
     __consul_template_template nginx \
+       --wait '2s:6s' \
        --source-file "$__manifest/files/nginx.ctmpl" \
        --destination /etc/nginx/nginx.conf \
        --command 'service nginx restart'
@@ -69,5 +78,5 @@ Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 COPYING
 -------
-Copyright \(C) 2015 Steven Armstrong. Free use of this software is
+Copyright \(C) 2015-2016 Steven Armstrong. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
