@@ -175,10 +175,10 @@ eof
         git push --tags
     ;;
 
-    sign-git-tag)
+    sign-git-release)
         if [ $# -lt 2 ]
         then
-            printf "usage: $0 sign-git-tag TAG TOKEN [ARCHIVE]\n"
+            printf "usage: $0 sign-git-release TAG TOKEN [ARCHIVE]\n"
             printf "    if ARCHIVE is not specified then it is created\n"
             exit 1
         fi
@@ -296,7 +296,7 @@ eof
         # sign git tag
         printf "Enter github authentication token: "
         read token
-        "$0" sign-git-tag "${target_version}" "${token}"
+        "$0" sign-git-release "${target_version}" "${token}"
 
         # Also merge back the version branch
         if [ "$masterbranch" = yes ]; then
