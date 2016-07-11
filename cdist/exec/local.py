@@ -66,7 +66,7 @@ class Local(object):
             # import atexit
             # atexit.register(lambda: shutil.rmtree(base_path_parent))
         self.hostdir = self._hostdir()
-        self.log.debug("Calculated temp dir for target \"{}\" is "
+        self.log.info("Calculated temp dir for target \"{}\" is "
                        "\"{}\"".format(self.target_host, self.hostdir))
         self.base_path = os.path.join(base_path_parent, self.hostdir)
 
