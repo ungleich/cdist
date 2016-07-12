@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Build: Make github signed release (Darko Poljak)
 	* Core: Fix hostdir: use hash instead of target host (Steven Armstrong)
 	* Core: pep8 (Darko Poljak)
 	* Documentation: Restructure and fix and improve docs and manpages (Darko Poljak)
