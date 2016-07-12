@@ -194,7 +194,8 @@ class Local(object):
         self.log.debug("Local mkdir: %s", path)
         os.makedirs(path, exist_ok=True)
 
-    def run(self, command, env=None, return_output=False, message_prefix=None):
+    def run(self, command, env=None, return_output=False, message_prefix=None,
+            save_output=True):
         """Run the given command with the given environment.
         Return the output as a string.
 
@@ -216,11 +217,17 @@ class Local(object):
             env.update(message.env)
 
         try:
-            output, errout = exec_util.call_get_output(command, env=env)
-            self.log.debug("Local stdout: {}".format(output))
-            self.log.debug("Local stderr: {}".format(errout))
-            if return_output:
-                return output.decode()
+            if save_output:
+                output, errout = exec_util.call_get_output(command, env=env)
+                self.log.debug("Local stdout: {}".format(output))
+                self.log.debug("Local stderr: {}".format(errout))
+                if return_output:
+                    return output.decode()
+            else:
+                # In some cases no output is saved.
+                # This is used for shell command, stdout and stderr
+                # must not be catched.
+                subprocess.check_call(command, env=env)
         except subprocess.CalledProcessError as e:
             exec_util.handle_called_process_error(e, command)
         except OSError as error:
