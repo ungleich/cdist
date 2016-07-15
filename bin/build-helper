@@ -214,7 +214,7 @@ eof
 
         # get release ID
         repoid=$(curl "https://api.github.com/repos/ungleich/cdist/releases/tags/${tag}" \
-            || python3 -c 'import json; import sys; print(json.loads(sys.stdin.read())["id"])') \
+            | python3 -c 'import json; import sys; print(json.loads(sys.stdin.read())["id"])') \
             || exit 1
 
         curl -H "Authorization: token ${token}" \
