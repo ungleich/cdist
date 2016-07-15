@@ -284,6 +284,8 @@ eof
         "$0" check-unittest
 
         # Generate documentation (man and html)
+        # First, clean old generated docs
+        make docs-clean
         make docs
 
         # Generate speeches (indirect check if they build)

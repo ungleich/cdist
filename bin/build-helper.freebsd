@@ -319,6 +319,8 @@ eof
         "$0" check-unittest
 
         # Generate documentation (man and html)
+        # First, clean old generated docs
+        make helper=${helper} WEBDIR=${WEBDIR} docs-clean
         make helper=${helper} WEBDIR=${WEBDIR} docs
 
         # Generate speeches (indirect check if they build)

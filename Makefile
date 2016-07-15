@@ -38,6 +38,7 @@ PYTHON_VERSION=cdist/version.py
 
 SPHINXM=make -C $(DOCS_SRC_DIR) man
 SPHINXH=make -C $(DOCS_SRC_DIR) html
+SPHINXC=make -C $(DOCS_SRC_DIR) clean
 ################################################################################
 # Manpages
 #
@@ -70,6 +71,9 @@ html: $(MANTYPES) $(DOCSREF) $(PYTHON_VERSION)
 	$(SPHINXH)
 
 docs: man html
+
+docs-clean:
+	$(SPHINXC)
 
 # Manpages #5: release part
 MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
