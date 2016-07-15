@@ -204,7 +204,8 @@ eof
         # gpg verify signature
         # gpg --verify <asc-file> <file>
         # gpg --no-default-keyring --keyring <pubkey.gpg> --verify <asc-file> <file>
-        #
+        # Ensure gpg-agent is running.
+        gpg-agent
 
         git tag -s "$target_version" -m "$tagmessage"
         git push --tags
