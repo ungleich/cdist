@@ -205,6 +205,7 @@ eof
         # gpg --verify <asc-file> <file>
         # gpg --no-default-keyring --keyring <pubkey.gpg> --verify <asc-file> <file>
         # Ensure gpg-agent is running.
+        export GPG_TTY=$(tty)
         gpg-agent
 
         git tag -s "$target_version" -m "$tagmessage"
