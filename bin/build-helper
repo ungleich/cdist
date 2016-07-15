@@ -225,7 +225,7 @@ eof
             || exit 1
 
         # remove generated files (archive and asc)
-        if [ $# -ge 2]
+        if [ $# -eq 2]
         then
             rm -f "${archivename}"
         fi

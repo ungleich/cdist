@@ -260,7 +260,7 @@ eof
             || exit 1
 
         # remove generated files (archive and asc)
-        if [ $# -ge 2]
+        if [ $# -eq 2]
         then
             rm -f "${archivename}"
         fi
@@ -346,6 +346,8 @@ eof
             freebsd)
                 # if we are not Nico :) then just push, no mirror
                 git push
+                # push also new branch and set up tracking
+                git push -u origin "${target_branch}"
             ;;
             *)
                 make helper=${helper} WEBDIR=${WEBDIR} pub
