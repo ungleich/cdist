@@ -229,6 +229,10 @@ clean:
 	rm -f MANIFEST PKGBUILD
 	rm -rf dist/
 
+	# Signed release
+	rm -f cdist-*.tar.gz
+	rm -f cdist-*.tar.gz.asc
+
 distclean: clean
 	rm -f cdist/version.py
 
