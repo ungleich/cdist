@@ -13,6 +13,7 @@ docs/src/cdist-reference.rst
 
 # Python: cache, distutils, distribution in general
 __pycache__/
+*.pyc
 MANIFEST
 dist/
 cdist/version.py
