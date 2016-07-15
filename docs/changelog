@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-4.2.0: 2016-07-15
+4.2.0: 2016-07-16
 	* Build: Make github signed release (Darko Poljak)
 	* Core: Fix hostdir: use hash instead of target host (Steven Armstrong)
 	* Core: pep8 (Darko Poljak)
