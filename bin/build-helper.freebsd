@@ -226,7 +226,7 @@ eof
             exit 1
         fi
         token="$2"
-        if [ $# -ge 2 ]
+        if [ $# -gt 2 ]
         then
             archivename="$3"
         else
