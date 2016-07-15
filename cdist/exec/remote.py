@@ -173,7 +173,8 @@ class Remote(object):
         try:
             output, errout = exec_util.call_get_output(command, env=os_environ)
             self.log.debug("Remote stdout: {}".format(output))
-            self.log.debug("Remote stderr: {}".format(errout))
+            # Currently, stderr is not captured.
+            # self.log.debug("Remote stderr: {}".format(errout))
             if return_output:
                 return output.decode()
         except subprocess.CalledProcessError as e:

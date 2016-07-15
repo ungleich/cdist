@@ -220,7 +220,8 @@ class Local(object):
             if save_output:
                 output, errout = exec_util.call_get_output(command, env=env)
                 self.log.debug("Local stdout: {}".format(output))
-                self.log.debug("Local stderr: {}".format(errout))
+                # Currently, stderr is not captured.
+                # self.log.debug("Local stderr: {}".format(errout))
                 if return_output:
                     return output.decode()
             else:

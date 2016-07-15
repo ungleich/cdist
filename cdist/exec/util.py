@@ -26,9 +26,6 @@ from tempfile import TemporaryFile
 import cdist
 
 
-STDERR_UNSUPPORTED = '<Not yet supported>'
-
-
 # IMPORTANT:
 # with the code below in python 3.5 when command is executed and error
 # occurs then stderr is not captured.
@@ -126,16 +123,21 @@ def call_get_output(command, env=None):
 
     assert isinstance(command, (list, tuple)), (
             "list or tuple argument expected, got: {}".format(command))
-    return (_call_get_stdout(command, env), STDERR_UNSUPPORTED)
+    return (_call_get_stdout(command, env), None)
 
 
 def handle_called_process_error(err, command):
-    errout = STDERR_UNSUPPORTED
+    # Currently, stderr is not captured.
+    # errout = None
+    # raise cdist.Error("Command failed: " + " ".join(command) +
+    #                   (" with returncode: {}\n"
+    #                    "stdout: {}\n"
+    #                    "stderr: {}").format(
+    #                       err.returncode, err.output, errout))
     raise cdist.Error("Command failed: " + " ".join(command) +
                       (" with returncode: {}\n"
-                       "stdout: {}\n"
-                       "stderr: {}").format(
-                          err.returncode, err.output, errout))
+                       "stdout: {}").format(
+                          err.returncode, err.output))
 
 
 def _call_get_stdout(command, env=None):
