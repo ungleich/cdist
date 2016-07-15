@@ -245,7 +245,7 @@ eof
         "$0" pep8
 
         # Generate version file to be included in packaging
-        "$0" version
+        "$0" target-version
 
         # Ensure the git status is clean, else abort
         if ! git diff-index --name-only --exit-code HEAD ; then
@@ -380,6 +380,11 @@ eof
 
     version)
         echo "VERSION = \"$(git describe)\"" > cdist/version.py
+    ;;
+
+    target-version)
+        target_version=$($0 changelog-version)
+        echo "VERSION = \"${target_version}\"" > cdist/version.py
     ;;
 
     *)
