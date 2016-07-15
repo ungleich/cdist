@@ -22,6 +22,10 @@ cdist/version.py
 _build/
 docs/dist
 
+# Ignore temp files used for signing
+cdist-*.tar.gz
+cdist-*.tar.gz.asc
+
 # Packaging: Archlinux
 /PKGBUILD
 /cdist-*.pkg.tar.xz
