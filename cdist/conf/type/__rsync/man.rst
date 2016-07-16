@@ -98,7 +98,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`rsync`\ (1)
+:strong:`rsync`\ (1)
 
 
 AUTHORS

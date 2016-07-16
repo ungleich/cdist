@@ -153,7 +153,83 @@ eof
         fi
         printf "Enter tag description for ${target_version}: "
         read tagmessage
-        git tag "$target_version" -m "$$tagmessage"
+
+        # setup for signed tags:
+        # gpg --fulL-gen-key
+        # gpg --list-secret-keys --keyid-format LONG
+        # git config --local user.signingkey <id>
+        # for exporting pub key:
+        #     gpg --armor --export <id> > pubkey.asc
+        #     gpg --output pubkey.gpg --export <id>
+        # show tag with signature
+        # git show <tag>
+        # verify tag signature
+        # git tag -v <tag>
+        #
+        # gpg verify signature
+        # gpg --verify <asc-file> <file>
+        # gpg --no-default-keyring --keyring <pubkey.gpg> --verify <asc-file> <file>
+        # Ensure gpg-agent is running.
+        export GPG_TTY=$(tty)
+        gpg-agent
+
+        git tag -s "$target_version" -m "$tagmessage"
+        git push --tags
+    ;;
+
+    sign-git-release)
+        if [ $# -lt 2 ]
+        then
+            printf "usage: $0 sign-git-release TAG TOKEN [ARCHIVE]\n"
+            printf "    if ARCHIVE is not specified then it is created\n"
+            exit 1
+        fi
+        tag="$1"
+        if ! git rev-parse -q --verify "${tag}" >/dev/null 2>&1
+        then
+            printf "Tag \"${tag}\" not found.\n"
+            exit 1
+        fi
+        token="$2"
+        if [ $# -gt 2 ]
+        then
+            archivename="$3"
+        else
+            archivename="cdist-${tag}.tar.gz"
+            git archive --prefix="cdist-${tag}" -o "${archivename}" "${tag}" \
+                || exit 1
+        fi
+        gpg --armor --detach-sign "${archivename}" || exit 1
+
+        # make github release
+        curl -H "Authorization: token ${token}" \
+            --request POST \
+            --data "{ \"tag_name\":\"${tag}\", \
+                      \"target_commitish\":\"master\", \
+                      \"name\": \"${tag}\", \
+                      \"body\":\"${tag}\", \
+                      \"draft\":false, \
+                      \"prerelease\": false}" \
+            "https://api.github.com/repos/ungleich/cdist/releases" || exit 1
+
+        # get release ID
+        repoid=$(curl "https://api.github.com/repos/ungleich/cdist/releases/tags/${tag}" \
+            | python3 -c 'import json; import sys; print(json.loads(sys.stdin.read())["id"])') \
+            || exit 1
+
+        curl -H "Authorization: token ${token}" \
+             -H "Accept: application/vnd.github.manifold-preview" \
+             -H "Content-Type: application/pgp-signature" \
+             --data-binary @${archivename}.asc \
+            "https://uploads.github.com/repos/ungleich/cdist/releases/${repoid}/assets?name=${archivename}.asc" \
+            || exit 1
+
+        # remove generated files (archive and asc)
+        if [ $# -eq 2]
+        then
+            rm -f "${archivename}"
+        fi
+        rm -f "${archivename}.asc"
     ;;
 
     release)
@@ -166,9 +242,10 @@ eof
         # First check everything is sane
         "$0" check-date
         "$0" check-unittest
+        "$0" pep8
 
         # Generate version file to be included in packaging
-        "$0" version
+        "$0" target-version
 
         # Ensure the git status is clean, else abort
         if ! git diff-index --name-only --exit-code HEAD ; then
@@ -206,8 +283,10 @@ eof
         "$0" check-date
         "$0" check-unittest
 
-        # Generate man pages (indirect check if they build)
-        make man
+        # Generate documentation (man and html)
+        # First, clean old generated docs
+        make docs-clean
+        make docs
 
         # Generate speeches (indirect check if they build)
         make speeches
@@ -217,6 +296,11 @@ eof
 
         # Tag the current commit
         "$0" release-git-tag
+
+        # sign git tag
+        printf "Enter github authentication token: "
+        read token
+        "$0" sign-git-release "${target_version}" "${token}"
 
         # Also merge back the version branch
         if [ "$masterbranch" = yes ]; then
@@ -268,12 +352,39 @@ eof
         fi
     ;;
 
+    pep8)
+        pep8 ${basedir} | less
+        echo "Please review pep8 report."
+        while true
+        do
+            echo "Continue (yes/no)?"
+            any=
+            read any
+            case "$any" in
+                yes)
+                    break
+                ;;
+                no)
+                    exit 1
+                ;;
+                *)
+                    echo "Please answer with 'yes' or 'no' explicitly."
+                ;;
+        esac
+        done
+    ;;
+
     version-branch)
         "$0" changelog-version | cut -d. -f '1,2'
     ;;
 
     version)
         echo "VERSION = \"$(git describe)\"" > cdist/version.py
+    ;;
+
+    target-version)
+        target_version=$($0 changelog-version)
+        echo "VERSION = \"${target_version}\"" > cdist/version.py
     ;;
 
     *)

@@ -39,7 +39,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`pf`\ (4), :manpage:`cdist-type__pf_ruleset`\ (7)
+:strong:`pf`\ (4), :strong:`cdist-type__pf_ruleset`\ (7)
 
 
 AUTHORS

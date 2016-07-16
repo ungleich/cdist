@@ -93,7 +93,7 @@ def commandline():
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
 
     # Inventory
-    parser['inventory'] = parser['sub'].add_parser('inventory',
+    parser['inventory'] = parser['sub'].add_parser('betainventory',
         parents=[parser['loglevel']])
     parser['inventory_main'] = argparse.ArgumentParser(add_help=False,
         parents=[parser['loglevel']])

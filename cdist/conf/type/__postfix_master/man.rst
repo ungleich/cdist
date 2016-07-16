@@ -68,7 +68,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`master`\ (5)
+:strong:`master`\ (5)
 
 
 AUTHORS

@@ -45,7 +45,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__process`\ (7)
+:strong:`cdist-type__process`\ (7)
 
 
 AUTHORS

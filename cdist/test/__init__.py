@@ -28,7 +28,9 @@ cdist_base_path = os.path.abspath(
 
 cdist_exec_path = os.path.join(cdist_base_path, "scripts/cdist")
 
-global_fixtures_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "fixtures"))
+global_fixtures_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                   "fixtures"))
+
 
 class CdistTestCase(unittest.TestCase):
 

@@ -42,8 +42,8 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__rvm`\ (7), :manpage:`cdist-type__rvm_gem`\ (7),
-:manpage:`cdist-type__rvm_gemset`\ (7)
+:strong:`cdist-type__rvm`\ (7), :strong:`cdist-type__rvm_gem`\ (7),
+:strong:`cdist-type__rvm_gemset`\ (7)
 
 
 AUTHORS

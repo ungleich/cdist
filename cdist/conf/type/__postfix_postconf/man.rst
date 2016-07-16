@@ -38,7 +38,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`postconf`\ (5)
+:strong:`postconf`\ (5)
 
 
 AUTHORS

@@ -11,7 +11,7 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-d] [-v] [-V] {banner,config,shell} ...
+    cdist [-h] [-d] [-v] [-V] {banner,config,betainventory,shell} ...
 
     cdist banner [-h] [-d] [-v]
 
@@ -21,23 +21,23 @@ SYNOPSIS
                  [-t] [-a]
                  [host [host ...]]
 
-    cdist inventory list [-h] [-d] [-v] [-I INVENTORY_DIR] [-H] [-a] [-t]
+    cdist betainventory list [-h] [-d] [-v] [-I INVENTORY_DIR] [-H] [-a] [-t]
                  [-f HOSTFILE]
                  [host [host ...]]
 
-    cdist inventory add-host [-h] [-d] [-v] [-I INVENTORY_DIR]
+    cdist betainventory add-host [-h] [-d] [-v] [-I INVENTORY_DIR]
                  [-f HOSTFILE]
                  [host [host ...]]
 
-    cdist inventory del-host [-h] [-d] [-v] [-I INVENTORY_DIR] [-a]
+    cdist betainventory del-host [-h] [-d] [-v] [-I INVENTORY_DIR] [-a]
                  [-f HOSTFILE]
                  [host [host ...]]
 
-    cdist inventory add-tag [-h] [-d] [-v] [-I INVENTORY_DIR] [-f HOSTFILE]
+    cdist betainventory add-tag [-h] [-d] [-v] [-I INVENTORY_DIR] [-f HOSTFILE]
                  [-t TAGLIST] [-T TAGFILE]
                  [host [host ...]]
 
-    cdist inventory del-tag [-h] [-d] [-v] [-I INVENTORY_DIR] [-a]
+    cdist betainventory del-tag [-h] [-d] [-v] [-I INVENTORY_DIR] [-a]
                  [-f HOSTFILE] [-t TAGLIST] [-T TAGFILE]
                  [host [host ...]]
 
@@ -80,16 +80,6 @@ CONFIG
 ------
 Configure one or more hosts
 
-.. option:: -h, --help
-
-    Show the help screen
-
-.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
-
-    Use specified custom inventory directory. Default inventory directory is
-    'inventory' directory placed inside cdist distribution under 'cdist'
-    directory along 'conf' directory.
-
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
     Add a configuration directory. Can be specified multiple times.
@@ -110,6 +100,12 @@ Configure one or more hosts
 .. option:: -i MANIFEST, --initial-manifest MANIFEST
 
     Path to a cdist manifest or - to read from stdin
+
+.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
+
+    Use specified custom inventory directory. Default inventory directory is
+    'inventory' directory placed inside cdist distribution under 'cdist'
+    directory along 'conf' directory.
 
 .. option:: -n, --dry-run
 
@@ -379,31 +375,31 @@ EXAMPLES
                  [--group GROUP] [--owner OWNER] [--mode MODE] object_id
 
     # List inventory content
-    % cdist inventory list
+    % cdist betainventory list
 
     # List inventory for specified host localhost
-    % cdist inventory list localhost
+    % cdist betainventory list localhost
 
     # List inventory for specified tag loadbalancer
-    % cdist inventory list -t loadbalancer
+    % cdist betainventory list -t loadbalancer
 
     # Add hosts to inventory
-    % cdist inventory add-host web1 web2 web3
+    % cdist betainventory add-host web1 web2 web3
 
     # Delete hosts from file old-hosts from inventory
-    % cdist inventory del-host -f old-hosts
+    % cdist betainventory del-host -f old-hosts
 
     # Add tags to specifed hosts
-    % cdist inventory add-tag -t europe,croatia,web,static web1 web2
+    % cdist betainventory add-tag -t europe,croatia,web,static web1 web2
 
     # Add tag to all hosts in inventory
-    % cdist inventory add-tag -t vm
+    % cdist betainventory add-tag -t vm
 
     # Delete all tags from specified host
-    % cdist inventory del-tag -a localhost
+    % cdist betainventory del-tag -a localhost
 
     # Delete tags read from stdin from hosts specified by file hosts
-    % cdist del-tag -T - -f hosts
+    % cdist betainventory del-tag -T - -f hosts
 
     # Configure hosts from inventory with any of specified tags
     % cdist config -t web dynamic

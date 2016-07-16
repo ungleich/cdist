@@ -14,12 +14,13 @@ from sphinx import addnodes
     but leaves everything to actual reStructuredText file content.
 """
 
+
 class ManualPageTranslator(sphinx.writers.manpage.ManualPageTranslator):
 
-   def header(self):
-       tmpl = (".TH \"%(title_upper)s\" \"%(manual_section)s\""
-               " \"%(date)s\" \"%(version)s\" \"%(manual_group)s\"\n")
-       return tmpl % self._docinfo
+    def header(self):
+        tmpl = (".TH \"%(title_upper)s\" \"%(manual_section)s\""
+                " \"%(date)s\" \"%(version)s\" \"%(manual_group)s\"\n")
+        return tmpl % self._docinfo
 
 
 class ManualPageWriter(sphinx.writers.manpage.ManualPageWriter):
@@ -75,6 +76,7 @@ class ManualPageBuilder(sphinx.builders.manpage.ManualPageBuilder):
 
             docwriter.write(largetree, destination)
         self.info()
+
 
 def setup(app):
     app.add_builder(ManualPageBuilder)

@@ -2,14 +2,11 @@
 .*.swp
 
 # Ignore generated manpages
-docs/man/.marker
-docs/man/man1/*.1
-docs/man/man7/*.7
-docs/man/man*/*.html
-docs/man/man*/*.xml
-docs/man/man*/docbook-xsl.css
-docs/man/man7/cdist-type__*.rst
-docs/man/cdist-reference.rst
+docs/src/.marker
+docs/src/man1/*.1
+docs/src/man7/*.7
+docs/src/man7/cdist-type__*.rst
+docs/src/cdist-reference.rst
 
 # Ignore cdist cache for version control
 /cache/
@@ -19,6 +16,7 @@ cdist/inventory/
 
 # Python: cache, distutils, distribution in general
 __pycache__/
+*.pyc
 MANIFEST
 dist/
 cdist/version.py
@@ -26,6 +24,10 @@ cdist/version.py
 # sphinx build dirs, cache
 _build/
 docs/dist
+
+# Ignore temp files used for signing
+cdist-*.tar.gz
+cdist-*.tar.gz.asc
 
 # Packaging: Archlinux
 /PKGBUILD

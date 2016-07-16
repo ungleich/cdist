@@ -105,7 +105,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`sshd`\ (8)
+:strong:`sshd`\ (8)
 
 
 AUTHORS

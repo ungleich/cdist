@@ -44,6 +44,7 @@ expected_object_names = sorted([
     '__second/on-the',
     '__third/moon'])
 
+
 class ConfigRunTestCase(test.CdistTestCase):
 
     def setUp(self):
@@ -65,8 +66,11 @@ class ConfigRunTestCase(test.CdistTestCase):
         self.objects = []
         for cdist_object_name in expected_object_names:
             cdist_type, cdist_object_id = cdist_object_name.split("/", 1)
-            cdist_object = core.CdistObject(core.CdistType(type_base_path, cdist_type), self.object_base_path,
-                self.local.object_marker_name, cdist_object_id)
+            cdist_object = core.CdistObject(core.CdistType(type_base_path,
+                                                           cdist_type),
+                                            self.object_base_path,
+                                            self.local.object_marker_name,
+                                            cdist_object_id)
             cdist_object.create()
             self.objects.append(cdist_object)
 
@@ -81,8 +85,8 @@ class ConfigRunTestCase(test.CdistTestCase):
             remote_exec=self.remote_exec,
             base_path=self.remote_dir)
 
-        self.local.object_path  = self.object_base_path
-        self.local.type_path    = type_base_path
+        self.local.object_path = self.object_base_path
+        self.local.type_path = type_base_path
 
         self.config = cdist.config.Config(self.local, self.remote)
 
@@ -95,14 +99,14 @@ class ConfigRunTestCase(test.CdistTestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_dependency_resolution(self):
-        first   = self.object_index['__first/man']
-        second  = self.object_index['__second/on-the']
-        third   = self.object_index['__third/moon']
+        first = self.object_index['__first/man']
+        second = self.object_index['__second/on-the']
+        third = self.object_index['__third/moon']
 
         first.requirements = [second.name]
         second.requirements = [third.name]
 
-        # First run: 
+        # First run:
         # solves first and maybe second (depending on the order in the set)
         self.config.iterate_once()
         self.assertTrue(third.state == third.STATE_DONE)
@@ -110,11 +114,11 @@ class ConfigRunTestCase(test.CdistTestCase):
         self.config.iterate_once()
         self.assertTrue(second.state == second.STATE_DONE)
 
-
         try:
             self.config.iterate_once()
         except cdist.Error:
-            # Allow failing, because the third run may or may not be unecessary already,
+            # Allow failing, because the third run may or may not be
+            # unecessary already,
             # depending on the order of the objects
             pass
         self.assertTrue(first.state == first.STATE_DONE)
@@ -123,8 +127,8 @@ class ConfigRunTestCase(test.CdistTestCase):
         """Ensure an exception is thrown for unresolvable depedencies"""
 
         # Create to objects depending on each other - no solution possible
-        first   = self.object_index['__first/man']
-        second  = self.object_index['__second/on-the']
+        first = self.object_index['__first/man']
+        second = self.object_index['__second/on-the']
 
         first.requirements = [second.name]
         second.requirements = [first.name]
@@ -153,21 +157,22 @@ class ConfigRunTestCase(test.CdistTestCase):
         with self.assertRaises(cdist.core.cdist_object.MissingObjectIdError):
             self.config.iterate_until_finished()
 
-
     def test_dryrun(self):
         """Test if the dryrun option is working like expected"""
         drylocal = cdist.exec.local.Local(
             target_host=self.target_host,
             base_path=self.local_dir,
-            #exec_path can not derivated from sys.argv in case of unittest ...
-            exec_path=os.path.abspath(os.path.join(my_dir,'../../../scripts/cdist')),
-            initial_manifest=os.path.join(fixtures, 'manifest/dryrun_manifest'),
-            add_conf_dirs=[ fixtures ] )
+            # exec_path can not derivated from sys.argv in case of unittest
+            exec_path=os.path.abspath(os.path.join(
+                my_dir, '../../../scripts/cdist')),
+            initial_manifest=os.path.join(fixtures,
+                                          'manifest/dryrun_manifest'),
+            add_conf_dirs=[fixtures])
 
         dryrun = cdist.config.Config(drylocal, self.remote, dry_run=True)
         dryrun.run()
         # if we are here, dryrun works like expected
-        
+
 
 # Currently the resolving code will simply detect that this object does
 # not exist. It should probably check if the type is a singleton as well

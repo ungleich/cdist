@@ -17,114 +17,6 @@ This is the machine you use to configure the target hosts.
  * /bin/sh: A posix like shell (for instance bash, dash, zsh)
  * SSH server
 
-## Requirement Installation: Python >= 3.2
-
-Ensure you have at least Python 3.2 or newer installed on 
-the **source host**.
-You can check this by running **python -V**:
-
-    % python -V
-    Python 3.3.0
-
-### Archlinux
-
-Archlinux includes a recent python in the extra repository. 
-You can install it using
-
-    pacman -S python
-
-### CentOS
-
-See the "From source" section
-
-### Debian
-
-For Debian **wheezy** or newer:
-
-    aptitude install python3
-
-On **squeeze** you can add following line in **/etc/apt/sources.list**
-
-    deb http://ftp.debian.org/debian wheezy main
-
-And add pinning entry in **/etc/apt/preferences.d/wheezy**:
-
-    Package: *
-    Pin: release n=wheezy
-    Pin-Priority: 1
-
-Please be aware that both **openssh-server** and **openssh-client** might be
-removed on **python3.2** installation. You surely want to reinstall them:
-
-    apt-get install -t wheezy openssh-server openssh-client
-
-For older Debian versions, installing python 3.2 from source is required.
-
-If you want to build the cdist manpages:
-
-    aptitude install --without-recommends asciidoc xsltproc
-
-### Fedora
-
-Fedora 15 and newer includes a recent python.
-You can install it using
-
-    yum install python3
-
-### FreeBSD
-
-For the port:
-
-    cd /usr/ports/lang/python32/ && make install clean
-
-For the package:
-
-    pkg_add -r python32
-
-You can also use any newer version, but at least python 3.2 is required.
-
-### Gentoo
-
-Gentoo only provides python 3.2 in testing packages (http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=3&chap=3).
-If you want to ensure nothing breaks you must set back the python version to what was default before.
-
-    emerge -av =python-3.2.2 --autounmask-write
-    emerge -av =python-3.2.2
-    eselect python list
-    eselect python list set python3.2
-
-### Max OS X
-
-You can choose between Homebrew and Macports, either way works:
-
-[Homebrew](http://mxcl.github.com/homebrew/) variant:
-
-    brew install python3
-
-[Macports](http://www.macports.org/install.php) variant:
-
-    port install python32
-    ln -s /opt/local/bin/python3.2 /opt/local/bin/python3
-
-### Redhat
-
-See the "From source" section
-
-### From Source
-
-For those operating systems not yet supporting Python 3.2:
-
-    pyversion=3.2.3
-    wget http://www.python.org/ftp/python/$pyversion/Python-${pyversion}.tar.bz2
-    tar xvfj Python-${pyversion}.tar.bz2
-    cd Python-${pyversion}
-    ./configure
-    make
-    sudo make install
-
-This installs python 3.2 to /usr/local/bin. 
-Ensure this directory is in your PATH environment variable.
-
 ## Install cdist
 
 You can install cdist either from git or as a python package.
@@ -141,10 +33,8 @@ To install cdist, execute the following commands:
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 
-If you want to build and use the manpages, run:
-
-    make man
-    export MANPATH=$MANPATH:$(pwd -P)/doc/man
+From version 4.2.0 cdist tags and github releases are signed.
+You can get GPG public key used for signing [here](/software/cdist/pgp-key-EFD2AE4EC36B6901.asc).
 
 #### Available versions in git
 
@@ -168,6 +58,36 @@ If the main site is down, you can acquire cdist from one of the following sites:
 
  * git://github.com/telmich/cdist.git ([github](https://github.com/telmich/cdist))
  * git://git.code.sf.net/p/cdist/code ([sourceforge](https://sourceforge.net/p/cdist/code))
+
+#### Building and using documentation (man and html)
+
+If you want to build and use the documentation, run:
+
+    make docs
+
+Documentation comes in two formats, man pages and full HTML
+documentation. Documentation is built into distribution's
+docs/dist directory. man pages are in docs/dist/man and
+HTML documentation in docs/dist/html.
+
+If you want to use man pages, run:
+
+    export MANPATH=$MANPATH:$(pwd -P)/docs/dist/man
+
+Or you can move manpages from docs/dist/man directory to some
+other directory and add it to MANPATH.
+
+Full HTML documentation can be accessed at docs/dist/html/index.html.
+
+You can also build manpages for types in your ~/.cdist directory:
+
+    make dotman
+
+Built manpages are now in docs/dist/man directory. If you have
+some other custom .cdist directory, e.g. /opt/cdist then use:
+
+    DOT_CDIST_PATH=/opt/cdist make dotman
+
 
 ### Python Package
 

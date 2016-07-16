@@ -30,7 +30,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__debconf_set_selections`\ (7), :manpage:`update-alternatives`\ (8)
+:strong:`cdist-type__debconf_set_selections`\ (7), :strong:`update-alternatives`\ (8)
 
 
 AUTHORS

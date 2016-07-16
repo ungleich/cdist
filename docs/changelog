@@ -2,10 +2,14 @@ Changelog
 ---------
 
 next:
-	* Core: Add inventory functionality (Darko Poljak)
+	* Core: Add inventory (beta) functionality (Darko Poljak)
+
+4.2.0: 2016-07-16
+	* Build: Make github signed release (Darko Poljak)
+	* Core: Fix hostdir: use hash instead of target host (Steven Armstrong)
+	* Core: pep8 (Darko Poljak)
 	* Documentation: Restructure and fix and improve docs and manpages (Darko Poljak)
 	* Core: Add files directory for static files (Darko Poljak)
-	* Core: Fix conflicting requirements (Darko Poljak)
 	* Custom: Add bash and zsh completions (Darko Poljak)
 	* Core: Improve error reporting for local and remote run command (Darko Poljak)
 	* New type: __jail_freebsd9: Handle jail management on FreeBSD <= 9.X (Jake Guffey)
@@ -14,6 +18,7 @@ next:
 	* Explorer __machine_type: add openvz and lxc
 	* Explorer __os __os_version: add scientific
 	* Type various: add scientific
+	* Explorer __machine_type: add virtualbox (Stu Zhao)
 
 4.1.0: 2016-05-27
 	* Documentation: Migrate to reStructuredText format and sphinx (Darko Poljak)

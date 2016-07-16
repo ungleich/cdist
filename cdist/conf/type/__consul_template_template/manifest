@@ -55,7 +55,7 @@ for param in $(ls "$__object/parameter/"); do
          printf '   source = "%s"\n' "$destination"
 
       ;;
-      source|destination|command)
+      source|destination|command|wait)
          printf '   %s = "%s"\n' "$param" "$(cat "$__object/parameter/$param")"
       ;;
       *)

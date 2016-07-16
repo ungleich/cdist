@@ -37,15 +37,17 @@ common:
         PATH: prepend directory with type emulator symlinks == local.bin_path
         __target_host: the target host we are working on
         __cdist_manifest: full qualified path of the manifest == script
-        __cdist_type_base_path: full qualified path to the directory where types are defined for use in type emulator
-            == local.type_path
+        __cdist_type_base_path: full qualified path to the directory where
+                                types are defined for use in type emulator
+                                == local.type_path
 
 gencode-local
     script: full qualified path to a types gencode-local
 
     env:
         __target_host: the target host we are working on
-        __global: full qualified path to the global output dir == local.out_path
+        __global: full qualified path to the global
+                  output dir == local.out_path
         __object: full qualified path to the object's dir
         __object_id: the objects id
         __object_fq: full qualified object id, iow: $type.name + / + object_id
@@ -59,7 +61,8 @@ gencode-remote
 
     env:
         __target_host: the target host we are working on
-        __global: full qualified path to the global output dir == local.out_path
+        __global: full qualified path to the global
+                  output dir == local.out_path
         __object: full qualified path to the object's dir
         __object_id: the objects id
         __object_fq: full qualified object id, iow: $type.name + / + object_id
@@ -98,7 +101,8 @@ class Code(object):
 
     def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.cdist_type
-        script = os.path.join(self.local.type_path, getattr(cdist_type, 'gencode_%s_path' % which))
+        script = os.path.join(self.local.type_path,
+                              getattr(cdist_type, 'gencode_%s_path' % which))
         if os.path.isfile(script):
             env = os.environ.copy()
             env.update(self.env)
@@ -108,8 +112,9 @@ class Code(object):
                 '__object_id': cdist_object.object_id,
                 '__object_name': cdist_object.name,
             })
-            message_prefix=cdist_object.name
-            return self.local.run_script(script, env=env, return_output=True, message_prefix=message_prefix)
+            message_prefix = cdist_object.name
+            return self.local.run_script(script, env=env, return_output=True,
+                                         message_prefix=message_prefix)
 
     def run_gencode_local(self, cdist_object):
         """Run the gencode-local script for the given cdist object."""
@@ -120,21 +125,26 @@ class Code(object):
         return self._run_gencode(cdist_object, 'remote')
 
     def transfer_code_remote(self, cdist_object):
-        """Transfer the code_remote script for the given object to the remote side."""
-        source = os.path.join(self.local.object_path, cdist_object.code_remote_path)
-        destination = os.path.join(self.remote.object_path, cdist_object.code_remote_path)
+        """Transfer the code_remote script for the given object to the
+           remote side."""
+        source = os.path.join(self.local.object_path,
+                              cdist_object.code_remote_path)
+        destination = os.path.join(self.remote.object_path,
+                                   cdist_object.code_remote_path)
         # FIXME: BUG: do not create destination, but top level of destination!
         self.remote.mkdir(destination)
         self.remote.transfer(source, destination)
 
     def _run_code(self, cdist_object, which, env=None):
         which_exec = getattr(self, which)
-        script = os.path.join(which_exec.object_path, getattr(cdist_object, 'code_%s_path' % which))
+        script = os.path.join(which_exec.object_path,
+                              getattr(cdist_object, 'code_%s_path' % which))
         return which_exec.run_script(script, env=env)
 
     def run_code_local(self, cdist_object):
         """Run the code-local script for the given cdist object."""
-        # Put some env vars, to allow read only access to the parameters over $__object
+        # Put some env vars, to allow read only access to the parameters
+        # over $__object
         env = os.environ.copy()
         env.update(self.env)
         env.update({
@@ -144,10 +154,13 @@ class Code(object):
         return self._run_code(cdist_object, 'local', env=env)
 
     def run_code_remote(self, cdist_object):
-        """Run the code-remote script for the given cdist object on the remote side."""
-        # Put some env vars, to allow read only access to the parameters over $__object which is already on the remote side
+        """Run the code-remote script for the given cdist object on the
+           remote side."""
+        # Put some env vars, to allow read only access to the parameters
+        # over $__object which is already on the remote side
         env = {
-            '__object': os.path.join(self.remote.object_path, cdist_object.path),
+            '__object': os.path.join(self.remote.object_path,
+                                     cdist_object.path),
             '__object_id': cdist_object.object_id,
         }
         return self._run_code(cdist_object, 'remote', env=env)

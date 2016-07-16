@@ -29,13 +29,15 @@ import subprocess
 import shutil
 import logging
 import tempfile
+import hashlib
 
 import cdist
 import cdist.message
 from cdist import core
 import cdist.exec.util as exec_util
 
-CONF_SUBDIRS_LINKED = [ "explorer", "files", "manifest", "type" ]
+CONF_SUBDIRS_LINKED = ["explorer", "files", "manifest", "type", ]
+
 
 class Local(object):
     """Execute commands locally.
@@ -52,18 +54,22 @@ class Local(object):
                  add_conf_dirs=None):
 
         self.target_host = target_host
+        self._init_log()
 
         # FIXME: stopped: create base that does not require moving later
         if base_path:
             base_path_parent = base_path
         else:
             base_path_parent = tempfile.mkdtemp()
-            import atexit
-            atexit.register(lambda: shutil.rmtree(base_path_parent))
+            # TODO: the below atexit hook nukes any debug info we would have
+            #  if cdist exits with error.
+            # import atexit
+            # atexit.register(lambda: shutil.rmtree(base_path_parent))
         self.hostdir = self._hostdir()
+        self.log.info("Calculated temp dir for target \"{}\" is "
+                      "\"{}\"".format(self.target_host, self.hostdir))
         self.base_path = os.path.join(base_path_parent, self.hostdir)
 
-        self._init_log()
         self._init_permissions()
 
         self.mkdir(self.base_path)
@@ -82,7 +88,8 @@ class Local(object):
 
     @property
     def dist_conf_dir(self):
-        return os.path.abspath(os.path.join(os.path.dirname(cdist.__file__), "conf"))
+        return os.path.abspath(os.path.join(os.path.dirname(cdist.__file__),
+                                            "conf"))
 
     @property
     def home_dir(self):
@@ -92,11 +99,10 @@ class Local(object):
             return None
 
     def _hostdir(self):
-        if os.path.isabs(self.target_host):
-            hostdir = self.target_host[1:]
-        else:
-            hostdir = self.target_host
-        return hostdir
+        # Do not assume target_host is anything that can be used as a
+        # directory name.
+        # Instead use a hash, which is known to work as directory name.
+        return hashlib.md5(self.target_host.encode('utf-8')).hexdigest()
 
     def _init_log(self):
         self.log = logging.getLogger(self.target_host)
@@ -109,7 +115,8 @@ class Local(object):
         # Depending on out_path
         self.bin_path = os.path.join(self.base_path, "bin")
         self.conf_path = os.path.join(self.base_path, "conf")
-        self.global_explorer_out_path = os.path.join(self.base_path, "explorer")
+        self.global_explorer_out_path = os.path.join(self.base_path,
+                                                     "explorer")
         self.object_path = os.path.join(self.base_path, "object")
         self.messages_path = os.path.join(self.base_path, "messages")
         self.files_path = os.path.join(self.conf_path, "files")
@@ -118,7 +125,7 @@ class Local(object):
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
         self.manifest_path = os.path.join(self.conf_path, "manifest")
         self.initial_manifest = (self.custom_initial_manifest or
-                    os.path.join(self.manifest_path, "init"))
+                                 os.path.join(self.manifest_path, "init"))
 
         self.type_path = os.path.join(self.conf_path, "type")
 
@@ -164,8 +171,8 @@ class Local(object):
         with open(self.object_marker_file, 'w') as fd:
             fd.write("%s\n" % self.object_marker_name)
 
-        self.log.debug("Object marker %s saved in %s" % (self.object_marker_name, self.object_marker_file))
-
+        self.log.debug("Object marker %s saved in %s" % (
+            self.object_marker_name, self.object_marker_file))
 
     def _init_cache_dir(self, cache_dir):
         if cache_dir:
@@ -174,7 +181,8 @@ class Local(object):
             if self.home_dir:
                 self.cache_path = os.path.join(self.home_dir, "cache")
             else:
-                raise cdist.Error("No homedir setup and no cache dir location given")
+                raise cdist.Error(
+                        "No homedir setup and no cache dir location given")
 
     def rmdir(self, path):
         """Remove directory on the local side."""
@@ -186,13 +194,15 @@ class Local(object):
         self.log.debug("Local mkdir: %s", path)
         os.makedirs(path, exist_ok=True)
 
-    def run(self, command, env=None, return_output=False, message_prefix=None):
+    def run(self, command, env=None, return_output=False, message_prefix=None,
+            save_output=True):
         """Run the given command with the given environment.
         Return the output as a string.
 
         """
         self.log.debug("Local run: %s", command)
-        assert isinstance(command, (list, tuple)), "list or tuple argument expected, got: %s" % command
+        assert isinstance(command, (list, tuple)), (
+                "list or tuple argument expected, got: %s" % command)
 
         if env is None:
             env = os.environ.copy()
@@ -207,11 +217,18 @@ class Local(object):
             env.update(message.env)
 
         try:
-            output, errout = exec_util.call_get_output(command, env=env)
-            self.log.debug("Local stdout: {}".format(output))
-            self.log.debug("Local stderr: {}".format(errout))
-            if return_output:
-                return output.decode()
+            if save_output:
+                output, errout = exec_util.call_get_output(command, env=env)
+                self.log.debug("Local stdout: {}".format(output))
+                # Currently, stderr is not captured.
+                # self.log.debug("Local stderr: {}".format(errout))
+                if return_output:
+                    return output.decode()
+            else:
+                # In some cases no output is saved.
+                # This is used for shell command, stdout and stderr
+                # must not be catched.
+                subprocess.check_call(command, env=env)
         except subprocess.CalledProcessError as e:
             exec_util.handle_called_process_error(e, command)
         except OSError as error:
@@ -220,16 +237,17 @@ class Local(object):
             if message_prefix:
                 message.merge_messages()
 
-    def run_script(self, script, env=None, return_output=False, message_prefix=None):
+    def run_script(self, script, env=None, return_output=False,
+                   message_prefix=None):
         """Run the given script with the given environment.
         Return the output as a string.
 
         """
-        command = [ os.environ.get('CDIST_LOCAL_SHELL',"/bin/sh") , "-e"]
+        command = [os.environ.get('CDIST_LOCAL_SHELL', "/bin/sh"), "-e"]
         command.append(script)
 
-        return self.run(command=command, env=env, return_output=return_output, message_prefix=message_prefix)
-
+        return self.run(command=command, env=env, return_output=return_output,
+                        message_prefix=message_prefix)
 
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.hostdir)
@@ -239,7 +257,8 @@ class Local(object):
             if os.path.exists(destination):
                 shutil.rmtree(destination)
         except PermissionError as e:
-            raise cdist.Error("Cannot delete old cache %s: %s" % (destination, e))
+            raise cdist.Error(
+                    "Cannot delete old cache %s: %s" % (destination, e))
 
         shutil.move(self.base_path, destination)
 
@@ -265,18 +284,21 @@ class Local(object):
 
                 for entry in os.listdir(current_dir):
                     rel_entry_path = os.path.join(sub_dir, entry)
-                    src = os.path.abspath(os.path.join(conf_dir, sub_dir, entry))
+                    src = os.path.abspath(os.path.join(conf_dir,
+                                                       sub_dir,
+                                                       entry))
                     dst = os.path.join(self.conf_path, sub_dir, entry)
 
                     # Already exists? remove and link
                     if os.path.exists(dst):
                         os.unlink(dst)
-                    
+
                     self.log.debug("Linking %s to %s ..." % (src, dst))
                     try:
                         os.symlink(src, dst)
                     except OSError as e:
-                        raise cdist.Error("Linking %s %s to %s failed: %s" % (sub_dir, src, dst, e.__str__()))
+                        raise cdist.Error("Linking %s %s to %s failed: %s" % (
+                            sub_dir, src, dst, e.__str__()))
 
     def _link_types_for_emulator(self):
         """Link emulator to types"""
@@ -288,4 +310,6 @@ class Local(object):
             try:
                 os.symlink(src, dst)
             except OSError as e:
-                raise cdist.Error("Linking emulator from %s to %s failed: %s" % (src, dst, e.__str__()))
+                raise cdist.Error(
+                        "Linking emulator from %s to %s failed: %s" % (
+                            src, dst, e.__str__()))

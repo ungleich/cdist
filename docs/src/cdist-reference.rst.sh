@@ -70,6 +70,10 @@ confdir
     By default it consists of everything in \$HOME/.cdist and cdist/conf/.
     For more details see cdist(1)
 
+confdir/files/
+    Cdist does not care about this directory besides providing access to it.
+    It is thought to be a general file storage area.
+
 confdir/manifest/init
     This is the central entry point.
     It is an executable (+x bit set) shell script that can use
@@ -193,6 +197,10 @@ The following environment variables are exported by cdist:
 __explorer
     Directory that contains all global explorers.
     Available for: initial manifest, explorer, type explorer, shell
+__files
+    Directory that contains content from the "files" subdirectories
+    from the configuration directories.
+    Available for: initial manifest, type manifest, type gencode, shell
 __manifest
     Directory that contains the initial manifest.
     Available for: initial manifest, type manifest, shell

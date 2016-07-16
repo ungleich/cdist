@@ -68,7 +68,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`crontab`\ (5)
+:strong:`crontab`\ (5)
 
 
 AUTHORS

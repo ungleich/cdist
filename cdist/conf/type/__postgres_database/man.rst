@@ -30,7 +30,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`cdist-type__postgres_role`\ (7)
+:strong:`cdist-type__postgres_role`\ (7)
 
 
 AUTHORS

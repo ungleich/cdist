@@ -34,7 +34,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:manpage:`locale`\ (1), :manpage:`localedef`\ (1)
+:strong:`locale`\ (1), :strong:`localedef`\ (1)
 
 
 AUTHORS

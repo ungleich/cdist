@@ -40,7 +40,9 @@ echo "$source" | __file "$source_file" --source - --state "$state"
 
 ################################################################################
 # Booleans
-if [ -f "$__object/parameter/verbose" ]; then
+if [ "${state}" = "absent" ]; then
+    verbosestate="absent"
+elif [ -f "$__object/parameter/verbose" ]; then
     verbosestate="present"
 else
     verbosestate="absent"

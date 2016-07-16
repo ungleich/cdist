@@ -48,11 +48,12 @@ if [ -r /proc/cpuinfo ]; then
                 if grep -q -i 'vmware' /sys/class/dmi/id/product_name; then
                     echo "virtual_by_vmware"
                     exit
-                else 
-                    if grep -q -i 'bochs' /sys/class/dmi/id/product_name; then
-                        echo "virtual_by_kvm"
-                        exit 
-                    fi
+                elif grep -q -i 'bochs' /sys/class/dmi/id/product_name; then
+                    echo "virtual_by_kvm"
+                    exit 
+                elif grep -q -i 'virtualbox' /sys/class/dmi/id/product_name; then
+                    echo "virtual_by_virtualbox"
+                    exit 
                 fi
             fi
         fi
