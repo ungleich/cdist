@@ -111,7 +111,7 @@ syslog
    enables logging to syslog
 
 verify-incoming
-   enforce the use of TLS and verify a client's authenticity on incomming connections
+   enforce the use of TLS and verify a client's authenticity on incoming connections
 
 verify-outgoing
    enforce the use of TLS and verify the peers authenticity on outgoing connections
