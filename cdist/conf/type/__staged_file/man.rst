@@ -15,7 +15,7 @@ cdist) and then deployed to the target host using the __file type.
 REQUIRED PARAMETERS
 -------------------
 source
-   the URL from which to retreive the source file.
+   the URL from which to retrieve the source file.
    e.g.
 
    * https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip
