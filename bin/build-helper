@@ -196,7 +196,7 @@ eof
             archivename="$3"
         else
             archivename="cdist-${tag}.tar.gz"
-            git archive --prefix="cdist-${tag}" -o "${archivename}" "${tag}" \
+            git archive --prefix="cdist-${tag}/" -o "${archivename}" "${tag}" \
                 || exit 1
         fi
         gpg --armor --detach-sign "${archivename}" || exit 1
