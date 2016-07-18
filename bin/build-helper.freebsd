@@ -252,6 +252,13 @@ eof
             | python3 -c 'import json; import sys; print(json.loads(sys.stdin.read())["id"])') \
             || exit 1
 
+        # upload archive and then signature
+        curl -H "Authorization: token ${token}" \
+             -H "Accept: application/vnd.github.manifold-preview" \
+             -H "Content-Type: application/x-gtar" \
+             --data-binary @${archivename} \
+            "https://uploads.github.com/repos/ungleich/cdist/releases/${repoid}/assets?name=${archivename}" \
+            || exit 1
         curl -H "Authorization: token ${token}" \
              -H "Accept: application/vnd.github.manifold-preview" \
              -H "Content-Type: application/pgp-signature" \
