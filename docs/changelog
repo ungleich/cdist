@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+4.2.1: 2016-07-18
+	* Build: Fix signed release (Darko Poljak)
+	* Build: Fix building docs (Darko Poljak)
+	* Documentation: Fix man pages (Dmitry Bogatov)
+	* Documentation: Fix spellings (Dmitry Bogatov)
+
 4.2.0: 2016-07-16
 	* Build: Make github signed release (Darko Poljak)
 	* Core: Fix hostdir: use hash instead of target host (Steven Armstrong)
