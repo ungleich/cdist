@@ -25,8 +25,8 @@ keyid
    the id of the key to add. Defaults to __object_id
 
 keyserver
-   the keyserver from which to fetch the key. If omitted the default set in
-   ./parameter/default/keyserver is used.
+   the keyserver from which to fetch the key. If omitted the default set
+   in ./parameter/default/keyserver is used.
 
 
 EXAMPLES

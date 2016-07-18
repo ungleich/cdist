@@ -20,10 +20,10 @@ uri
 OPTIONAL PARAMETERS
 -------------------
 service_desc
-    If supplied, use the service_desc and not the object id as descritpion for the service.
+    If supplied, use the service_desc and not the object id as description for the service.
 
 state
-    Either "present" or "absent", defaults to "present"  
+    Either "present" or "absent", defaults to "present"
 
 type
     Defaults to "ris", the standard type of services at SLES11. For other values, see manpage of zypper.

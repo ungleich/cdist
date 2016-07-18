@@ -72,13 +72,13 @@ EXAMPLES
        --delimiter ' = ' --comment '# my linux kernel should act as a router'
 
     # Remove existing key/value
-    __key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '=' 
+    __key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '='
 
 
 MORE INFORMATION
 ----------------
 This type try to handle as many values as possible, so it doesn't use regexes.
-So you need to exactly specify the key and delimiter. Delimiter can be of any lenght.
+So you need to exactly specify the key and delimiter. Delimiter can be of any length.
 
 
 AUTHORS

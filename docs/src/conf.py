@@ -15,7 +15,6 @@
 
 import sys
 import os
-import cdist.version
 import sphinx_rtd_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -23,7 +22,11 @@ import sphinx_rtd_theme
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath(os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), "../../")))
+    os.path.dirname(os.path.realpath(__file__)), "..", "..")))
+
+# Import cdist after sys.path fixup above.
+
+import cdist.version  # nopep8 - ignore error that import is not at top
 
 # -- General configuration ------------------------------------------------
 
