@@ -336,8 +336,21 @@ usage. Its primary use is for debugging type parameters.
 
 .. option:: -s/--shell
 
-    Select shell to use, defaults to current shell
+    Select shell to use, defaults to current shell. Used shell should
+    be POSIX compatible shell.
 
+FILES
+-----
+~/.cdist
+    Your personal cdist config directory. If exists it will be
+    automatically used.
+${cdist_prefix}/cdist/conf
+    The distribution configuration directory. ${cdist_prefix} is
+    installation-dependent. If you install cdist using git it is
+    equal to your cloned directory. If you install it using python
+    pip then it is equal to
+    ${prefix}/lib/python<version>/site-packages/cdist sub-directory
+    where ${prefix}, by default, is /usr/local (see :strong:`python`\ (1)).
 
 EXAMPLES
 --------
