@@ -68,6 +68,12 @@ code into your shell to get started and configure localhost::
     # Find out that cdist created /etc/cdist-configured
     ls -l /etc/cdist-configured
 
+Note: cdist/conf is configuration directory shipped with cdist distribution.
+If exists, ~/.cdist, is also automatically used as cdist configuration
+directory. So in the above example you could create ~/.cdist directory,
+then ~/.cdist/manifest sub-directory and create init manifest
+~/.cdist/manifest/init.
+
 That's it, you've successfully used cdist to configure your first host!
 Continue reading the next sections, to understand what you did and how
 to create a more sophisticated configuration.
