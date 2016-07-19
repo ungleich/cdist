@@ -33,6 +33,7 @@ my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 inventory_dir = op.join(fixtures, "inventory")
 
+
 class InventoryTestCase(test.CdistTestCase):
 
     def _create_host_with_tags(self, host, tags):
@@ -45,19 +46,19 @@ class InventoryTestCase(test.CdistTestCase):
     def setUp(self):
         self.maxDiff = None
         self.db = {
-            "loadbalancer1": ["loadbalancer", "all", "europe",],
-            "loadbalancer2": ["loadbalancer", "all", "europe",],
-            "loadbalancer3": ["loadbalancer", "all", "africa",],
-            "loadbalancer4": ["loadbalancer", "all", "africa",],
-            "web1": ["web", "all", "static",],
-            "web2": ["web", "all", "dynamic",],
-            "web3": ["web", "all", "dynamic",],
-            "shell1": ["shell", "all", "free",],
-            "shell2": ["shell", "all", "free",],
-            "shell3": ["shell", "all", "charge",],
-            "shell4": ["shell", "all", "charge",],
-            "monty": ["web", "python", "shell",],
-            "python": ["web", "python", "shell",],
+            "loadbalancer1": ["loadbalancer", "all", "europe", ],
+            "loadbalancer2": ["loadbalancer", "all", "europe", ],
+            "loadbalancer3": ["loadbalancer", "all", "africa", ],
+            "loadbalancer4": ["loadbalancer", "all", "africa", ],
+            "web1": ["web", "all", "static", ],
+            "web2": ["web", "all", "dynamic", ],
+            "web3": ["web", "all", "dynamic", ],
+            "shell1": ["shell", "all", "free", ],
+            "shell2": ["shell", "all", "free", ],
+            "shell3": ["shell", "all", "charge", ],
+            "shell4": ["shell", "all", "charge", ],
+            "monty": ["web", "python", "shell", ],
+            "python": ["web", "python", "shell", ],
         }
         for x in self.db:
             self.db[x] = sorted(self.db[x])
@@ -83,7 +84,7 @@ class InventoryTestCase(test.CdistTestCase):
         self.assertEqual(inv.db_basedir, dbdir)
         shutil.rmtree(inv.db_basedir)
 
-    #### InventoryList ####
+    # InventoryList
     def test_inventory_list_print(self):
         invList = inventory.InventoryList(db_basedir=inventory_dir)
         invList.run()
@@ -92,7 +93,7 @@ class InventoryTestCase(test.CdistTestCase):
 
     def test_inventory_list_print_host_only(self):
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                list_only_host=True)
+                                          list_only_host=True)
         invList.run()
         output = self._get_output()
         self.assertFalse(' ' in output)
@@ -100,16 +101,16 @@ class InventoryTestCase(test.CdistTestCase):
     def test_inventory_list_all(self):
         invList = inventory.InventoryList(db_basedir=inventory_dir)
         entries = invList.entries()
-        db = { host: sorted(tags) for host, tags in entries }
+        db = {host: sorted(tags) for host, tags in entries}
         self.assertEqual(db, self.db)
 
     def test_inventory_list_by_host_hosts(self):
         hosts = ("web1", "web2", "web3",)
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                hosts=hosts)
+                                          hosts=hosts)
         entries = invList.entries()
-        db = { host: sorted(tags) for host, tags in entries }
-        expected_db = { host: sorted(self.db[host]) for host in hosts }
+        db = {host: sorted(tags) for host, tags in entries}
+        expected_db = {host: sorted(self.db[host]) for host in hosts}
         self.assertEqual(db, expected_db)
 
     def test_inventory_list_by_host_hostfile(self):
@@ -119,10 +120,10 @@ class InventoryTestCase(test.CdistTestCase):
             for x in hosts:
                 f.write("{}\n".format(x))
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                hostfile=hostfile)
+                                          hostfile=hostfile)
         entries = invList.entries()
-        db = { host: sorted(tags) for host, tags in entries }
-        expected_db = { host: sorted(self.db[host]) for host in hosts }
+        db = {host: sorted(tags) for host, tags in entries}
+        expected_db = {host: sorted(self.db[host]) for host in hosts}
         self.assertEqual(db, expected_db)
         os.remove(hostfile)
 
@@ -134,12 +135,12 @@ class InventoryTestCase(test.CdistTestCase):
             for x in hostsf:
                 f.write("{}\n".format(x))
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                hosts=hosts, hostfile=hostfile)
+                                          hosts=hosts, hostfile=hostfile)
         entries = invList.entries()
-        db = { host: sorted(tags) for host, tags in entries }
+        db = {host: sorted(tags) for host, tags in entries}
         import itertools
-        expected_db = { host: sorted(self.db[host]) for host in
-                itertools.chain(hostsf, hosts) }
+        expected_db = {host: sorted(self.db[host]) for host in
+                       itertools.chain(hostsf, hosts)}
         self.assertEqual(db, expected_db)
         os.remove(hostfile)
 
@@ -162,9 +163,9 @@ class InventoryTestCase(test.CdistTestCase):
     def test_inventory_list_by_tag_hosts(self):
         tags = ("web", "shell",)
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                istag=True, hosts=tags)
+                                          istag=True, hosts=tags)
         entries = invList.entries()
-        db = { host: sorted(tags) for host, tags in entries }
+        db = {host: sorted(tags) for host, tags in entries}
         expected_db = self._gen_expected_db_for_tags(tags)
         self.assertEqual(db, expected_db)
 
@@ -175,9 +176,9 @@ class InventoryTestCase(test.CdistTestCase):
             for x in tags:
                 f.write("{}\n".format(x))
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                istag=True, hostfile=tagfile)
+                                          istag=True, hostfile=tagfile)
         entries = invList.entries()
-        db = { host: sorted(tags) for host, tags in entries }
+        db = {host: sorted(tags) for host, tags in entries}
         expected_db = self._gen_expected_db_for_tags(tags)
         self.assertEqual(db, expected_db)
         os.remove(tagfile)
@@ -190,9 +191,10 @@ class InventoryTestCase(test.CdistTestCase):
             for x in tagsf:
                 f.write("{}\n".format(x))
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                istag=True, hosts=tags, hostfile=tagfile)
+                                          istag=True, hosts=tags,
+                                          hostfile=tagfile)
         entries = invList.entries()
-        db = { host: sorted(tags) for host, tags in entries }
+        db = {host: sorted(tags) for host, tags in entries}
         import itertools
         expected_db = self._gen_expected_db_for_tags(tags + tagsf)
         self.assertEqual(db, expected_db)
@@ -201,20 +203,21 @@ class InventoryTestCase(test.CdistTestCase):
     def test_inventory_list_by_tag_has_all_tags(self):
         tags = ("web", "python", "shell",)
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                istag=True, hosts=tags, has_all_tags=True)
+                                          istag=True, hosts=tags,
+                                          has_all_tags=True)
         entries = invList.entries()
-        db = { host: sorted(tags) for host, tags in entries }
+        db = {host: sorted(tags) for host, tags in entries}
         expected_db = self._gen_expected_db_for_has_all_tags(tags)
         self.assertEqual(db, expected_db)
 
-    #### InventoryHost ####
+    # InventoryHost
     def test_inventory_host_add_hosts(self):
         hosts = ("spam", "eggs", "foo",)
         invHost = inventory.InventoryHost(db_basedir=inventory_dir,
-            action="add", hosts=hosts)
+                                          action="add", hosts=hosts)
         invHost.run()
         invList = inventory.InventoryList(db_basedir=inventory_dir)
-        expected_hosts = tuple( x for x in invList.host_entries() if x in hosts)
+        expected_hosts = tuple(x for x in invList.host_entries() if x in hosts)
         self.assertEqual(sorted(hosts), sorted(expected_hosts))
 
     def test_inventory_host_add_hostfile(self):
@@ -224,10 +227,10 @@ class InventoryTestCase(test.CdistTestCase):
             for x in hosts:
                 f.write("{}\n".format(x))
         invHost = inventory.InventoryHost(db_basedir=inventory_dir,
-            action="add", hostfile=hostfile)
+                                          action="add", hostfile=hostfile)
         invHost.run()
         invList = inventory.InventoryList(db_basedir=inventory_dir)
-        expected_hosts = tuple( x for x in invList.host_entries() if x in hosts)
+        expected_hosts = tuple(x for x in invList.host_entries() if x in hosts)
         self.assertEqual(sorted(hosts), sorted(expected_hosts))
         os.remove(hostfile)
 
@@ -239,10 +242,11 @@ class InventoryTestCase(test.CdistTestCase):
             for x in hostf:
                 f.write("{}\n".format(x))
         invHost = inventory.InventoryHost(db_basedir=inventory_dir,
-            action="add", hosts=hosts, hostfile=hostfile)
+                                          action="add", hosts=hosts,
+                                          hostfile=hostfile)
         invHost.run()
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                hosts=hosts + hostf)
+                                          hosts=hosts + hostf)
         expected_hosts = tuple(invList.host_entries())
         self.assertEqual(sorted(hosts + hostf), sorted(expected_hosts))
         os.remove(hostfile)
@@ -250,9 +254,10 @@ class InventoryTestCase(test.CdistTestCase):
     def test_inventory_host_del_hosts(self):
         hosts = ("web1", "shell1",)
         invHost = inventory.InventoryHost(db_basedir=inventory_dir,
-            action="del", hosts=hosts)
+                                          action="del", hosts=hosts)
         invHost.run()
-        invList = inventory.InventoryList(db_basedir=inventory_dir, hosts=hosts)
+        invList = inventory.InventoryList(db_basedir=inventory_dir,
+                                          hosts=hosts)
         expected_hosts = tuple(invList.host_entries())
         self.assertTupleEqual(expected_hosts, ())
 
@@ -263,9 +268,10 @@ class InventoryTestCase(test.CdistTestCase):
             for x in hosts:
                 f.write("{}\n".format(x))
         invHost = inventory.InventoryHost(db_basedir=inventory_dir,
-            action="del", hostfile=hostfile)
+                                          action="del", hostfile=hostfile)
         invHost.run()
-        invList = inventory.InventoryList(db_basedir=inventory_dir, hosts=hosts)
+        invList = inventory.InventoryList(db_basedir=inventory_dir,
+                                          hosts=hosts)
         expected_hosts = tuple(invList.host_entries())
         self.assertTupleEqual(expected_hosts, ())
         os.remove(hostfile)
@@ -278,10 +284,11 @@ class InventoryTestCase(test.CdistTestCase):
             for x in hostf:
                 f.write("{}\n".format(x))
         invHost = inventory.InventoryHost(db_basedir=inventory_dir,
-            action="del", hosts=hosts, hostfile=hostfile)
+                                          action="del", hosts=hosts,
+                                          hostfile=hostfile)
         invHost.run()
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                hosts=hosts + hostf)
+                                          hosts=hosts + hostf)
         expected_hosts = tuple(invList.host_entries())
         self.assertTupleEqual(expected_hosts, ())
         os.remove(hostfile)
@@ -293,37 +300,40 @@ class InventoryTestCase(test.CdistTestCase):
             os.mkdir(invalid_hostfile)
             hosts = ("invalid",)
             invHost = inventory.InventoryHost(db_basedir=inventory_dir,
-                action="del", hosts=hosts)
+                                              action="del", hosts=hosts)
             invHost.run()
         except e:
             os.rmdir(invalid_hostfile)
             raise e
 
-    #### InventoryTag ####
+    # InventoryTag
     def test_inventory_tag_init(self):
         invTag = inventory.InventoryTag(db_basedir=inventory_dir,
-            action="add")
+                                        action="add")
         self.assertTrue(invTag.allhosts)
         self.assertEqual(invTag.tagfile, "-")
 
     def test_inventory_tag_stdin_multiple_hosts(self):
         try:
             invTag = inventory.InventoryTag(db_basedir=inventory_dir,
-                action="add", tagfile="-", hosts=("host1", "host2",))
+                                            action="add", tagfile="-",
+                                            hosts=("host1", "host2",))
         except e:
             self.fail()
 
     def test_inventory_tag_stdin_hostfile(self):
         try:
             invTag = inventory.InventoryTag(db_basedir=inventory_dir,
-                action="add", tagfile="-", hostfile="hosts")
+                                            action="add", tagfile="-",
+                                            hostfile="hosts")
         except e:
             self.fail()
 
     @unittest.expectedFailure
     def test_inventory_tag_stdin_both(self):
         invTag = inventory.InventoryTag(db_basedir=inventory_dir,
-            action="add", tagfile="-", hostfile="-")
+                                        action="add", tagfile="-",
+                                        hostfile="-")
 
     def test_inventory_tag_add_for_all_hosts(self):
         tags = ("spam-spam-spam", "spam-spam-eggs",)
@@ -333,7 +343,8 @@ class InventoryTestCase(test.CdistTestCase):
             for x in tagsf:
                 f.write("{}\n".format(x))
         invTag = inventory.InventoryTag(db_basedir=inventory_dir,
-            action="add", tags=tags, tagfile=tagfile)
+                                        action="add", tags=tags,
+                                        tagfile=tagfile)
         invTag.run()
         invList = inventory.InventoryList(db_basedir=inventory_dir)
         failed = False
@@ -362,11 +373,12 @@ class InventoryTestCase(test.CdistTestCase):
             for x in hostsf:
                 f.write("{}\n".format(x))
         invTag = inventory.InventoryTag(db_basedir=inventory_dir,
-            action="add", tags=tags, tagfile=tagfile, hosts=hosts,
-            hostfile=hostfile)
+                                        action="add", tags=tags,
+                                        tagfile=tagfile, hosts=hosts,
+                                        hostfile=hostfile)
         invTag.run()
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                hosts=hosts + hostsf)
+                                          hosts=hosts + hostsf)
         failed = False
         for host, taglist in invList.entries():
             if host not in hosts + hostsf:
@@ -391,7 +403,8 @@ class InventoryTestCase(test.CdistTestCase):
             for x in tagsf:
                 f.write("{}\n".format(x))
         invTag = inventory.InventoryTag(db_basedir=inventory_dir,
-            action="del", tags=tags, tagfile=tagfile)
+                                        action="del", tags=tags,
+                                        tagfile=tagfile)
         invTag.run()
         invList = inventory.InventoryList(db_basedir=inventory_dir)
         failed = False
@@ -420,11 +433,12 @@ class InventoryTestCase(test.CdistTestCase):
             for x in hostsf:
                 f.write("{}\n".format(x))
         invTag = inventory.InventoryTag(db_basedir=inventory_dir,
-            action="del", tags=tags, tagfile=tagfile, hosts=hosts,
-            hostfile=hostfile)
+                                        action="del", tags=tags,
+                                        tagfile=tagfile, hosts=hosts,
+                                        hostfile=hostfile)
         invTag.run()
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                hosts=hosts + hostsf)
+                                          hosts=hosts + hostsf)
         failed = False
         for host, taglist in invList.entries():
             if host not in hosts + hostsf:
@@ -449,10 +463,11 @@ class InventoryTestCase(test.CdistTestCase):
             for x in hostsf:
                 f.write("{}\n".format(x))
         invHost = inventory.InventoryHost(db_basedir=inventory_dir,
-            action="del", all=True, hosts=hosts, hostfile=hostfile)
+                                          action="del", all=True,
+                                          hosts=hosts, hostfile=hostfile)
         invHost.run()
         invList = inventory.InventoryList(db_basedir=inventory_dir,
-                hosts=hosts + hostsf)
+                                          hosts=hosts + hostsf)
         for host, htags in invList.entries():
             self.assertEqual(htags, ())
         os.remove(hostfile)

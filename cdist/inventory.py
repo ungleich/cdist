@@ -32,11 +32,13 @@ DIST_INVENTORY_DB_NAME = "inventory"
 dist_inventory_db = os.path.abspath(os.path.join(
     os.path.dirname(cdist.__file__), DIST_INVENTORY_DB_NAME))
 
+
 def contains_all(big, little):
     """Return True if big contains all elements from little,
        False otherwise.
     """
     return set(little).issubset(set(big))
+
 
 def contains_any(big, little):
     """Return True if big contains any element from little,
@@ -46,6 +48,11 @@ def contains_any(big, little):
         if x in big:
             return True
     return False
+
+
+def check_always_true(x, y):
+    return True
+
 
 class Inventory(object):
     """Inventory main class"""
@@ -61,7 +68,7 @@ class Inventory(object):
             os.makedirs(self.db_basedir, exist_ok=True)
         elif not os.path.isdir(self.db_basedir):
             raise cdist.Error(("Invalid inventory db basedir \'{}\',"
-                " must be a directory").format(self.db_basedir))
+                               " must be a directory").format(self.db_basedir))
 
     @staticmethod
     def strlist_to_list(slist):
@@ -105,8 +112,8 @@ class Inventory(object):
             return False
         else:
             if not os.path.isfile(hostpath):
-                raise cdist.Error(("Host path \'{}\' exists,"
-                    " but is not a valid file").format(hostpath))
+                raise cdist.Error(("Host path \'{}\' exists, but is not"
+                                   " a valid file").format(hostpath))
         return True
 
     def _read_host_tags(self, hostpath):
@@ -150,32 +157,36 @@ class Inventory(object):
 
         if args.command == "list":
             c = InventoryList(hosts=args.host, istag=args.tag,
-                    hostfile=args.hostfile, db_basedir=args.inventory_dir,
-                    list_only_host=args.list_only_host,
-                    has_all_tags=args.has_all_tags)
+                              hostfile=args.hostfile,
+                              db_basedir=args.inventory_dir,
+                              list_only_host=args.list_only_host,
+                              has_all_tags=args.has_all_tags)
         elif args.command == "add-host":
             c = InventoryHost(hosts=args.host, hostfile=args.hostfile,
-                    db_basedir=args.inventory_dir)
+                              db_basedir=args.inventory_dir)
         elif args.command == "del-host":
             c = InventoryHost(hosts=args.host, hostfile=args.hostfile,
-                    all=args.all, db_basedir=args.inventory_dir, action="del" )
+                              all=args.all, db_basedir=args.inventory_dir,
+                              action="del")
         elif args.command == "add-tag":
             c = InventoryTag(hosts=args.host, tags=args.taglist,
-                    hostfile=args.hostfile, tagfile=args.tagfile,
-                    db_basedir=args.inventory_dir)
+                             hostfile=args.hostfile, tagfile=args.tagfile,
+                             db_basedir=args.inventory_dir)
         elif args.command == "del-tag":
             c = InventoryTag(hosts=args.host, tags=args.taglist,
-                    hostfile=args.hostfile, tagfile=args.tagfile,
-                    all=args.all, db_basedir=args.inventory_dir, action="del")
+                             hostfile=args.hostfile, tagfile=args.tagfile,
+                             all=args.all, db_basedir=args.inventory_dir,
+                             action="del")
         else:
             raise cdist.Error("Unknown inventory command \'{}\'".format(
                         args.command))
         c.run()
 
+
 class InventoryList(Inventory):
     def __init__(self, hosts=None, istag=False, hostfile=None,
-            list_only_host=False, has_all_tags=False,
-            db_basedir=dist_inventory_db):
+                 list_only_host=False, has_all_tags=False,
+                 db_basedir=dist_inventory_db):
         super().__init__(db_basedir)
         self.hosts = hosts
         self.istag = istag
@@ -206,8 +217,6 @@ class InventoryList(Inventory):
                 yield host, tags
 
     def entries(self):
-        check_always_true = lambda x, y: True
-
         if not self.hosts and not self.hostfile:
             self.log.info("Listing all hosts")
             it_hosts = self._all_hosts()
@@ -215,12 +224,15 @@ class InventoryList(Inventory):
             check_func = check_always_true
         else:
             it = itertools.chain(self._input_values(self.hosts),
-                    self._input_values(self.hostfile))
+                                 self._input_values(self.hostfile))
             if self.istag:
                 self.log.info("Listing by tag(s)")
                 it_hosts = self._all_hosts()
                 it_tags = it
-                check_func = contains_all if self.has_all_tags else contains_any
+                if self.has_all_tags:
+                    check_func = contains_all
+                else:
+                    check_func = contains_any
             else:
                 self.log.info("Listing by host(s)")
                 it_hosts = it
@@ -237,14 +249,15 @@ class InventoryList(Inventory):
         for host, tags in self.entries():
             self._print(host, tags)
 
+
 class InventoryHost(Inventory):
     def __init__(self, hosts=None, hostfile=None,
-            db_basedir=dist_inventory_db, all=False, action="add"):
+                 db_basedir=dist_inventory_db, all=False, action="add"):
         super().__init__(db_basedir)
         self.actions = ("add", "del")
-        if not action in self.actions:
+        if action not in self.actions:
             raise cdist.Error("Invalid action \'{}\', valid actions are:"
-                    " {}\n".format(action, self.actions.keys()))
+                              " {}\n".format(action, self.actions.keys()))
         self.action = action
         self.hosts = hosts
         self.hostfile = hostfile
@@ -270,7 +283,7 @@ class InventoryHost(Inventory):
         else:
             if not os.path.isfile(hostpath):
                 raise cdist.Error(("Host path \'{}\' is"
-                    " not a valid file").format(hostpath))
+                                   " not a valid file").format(hostpath))
             if self.action == "del":
                 os.remove(hostpath)
 
@@ -281,18 +294,19 @@ class InventoryHost(Inventory):
         else:
             self.log.debug("Doing for specified hosts")
             it = itertools.chain(self._input_values(self.hosts),
-                    self._input_values(self.hostfile))
+                                 self._input_values(self.hostfile))
         for host in it:
             self._action(host)
 
+
 class InventoryTag(Inventory):
     def __init__(self, hosts=None, tags=None, hostfile=None, tagfile=None,
-            db_basedir=dist_inventory_db, all=False, action="add"):
+                 db_basedir=dist_inventory_db, all=False, action="add"):
         super().__init__(db_basedir)
         self.actions = ("add", "del")
-        if not action in self.actions:
+        if action not in self.actions:
             raise cdist.Error("Invalid action \'{}\', valid actions are:"
-                    " {}\n".format(action, self.actions.keys()))
+                              " {}\n".format(action, self.actions.keys()))
         self.action = action
         self.hosts = hosts
         self.tags = tags
@@ -320,7 +334,7 @@ class InventoryTag(Inventory):
         host_tags = self._get_host_tags(host)
         if host_tags is None:
             print("Host \'{}\' does not exist, skipping".format(host),
-                    file=sys.stderr)
+                  file=sys.stderr)
             return
         self.log.debug("existing host_tags: {}".format(host_tags))
         if self.action == "del" and self.all:
@@ -347,7 +361,7 @@ class InventoryTag(Inventory):
         else:
             self.log.debug("Doing for specified hosts")
             it = itertools.chain(self._input_values(self.hosts),
-                self._input_values(self.hostfile))
+                                 self._input_values(self.hostfile))
         if not(self.action == "del" and self.all):
             self._read_input_tags()
         for host in it:

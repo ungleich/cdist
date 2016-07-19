@@ -119,13 +119,14 @@ class Config(object):
             if not args.inventory_dir:
                 args.inventory_dir = inventory.dist_inventory_db
             inv_list = inventory.InventoryList(hosts=args.host,
-                    istag=True, hostfile=args.hostfile,
-                    db_basedir=args.inventory_dir,
-                    has_all_tags=args.has_all_tags)
+                                               istag=True,
+                                               hostfile=args.hostfile,
+                                               db_basedir=args.inventory_dir,
+                                               has_all_tags=args.has_all_tags)
             it = inv_list.host_entries()
         else:
             it = itertools.chain(cls.hosts(args.host),
-                    cls.hosts(args.hostfile))
+                                 cls.hosts(args.hostfile))
         for host in it:
             hostcnt += 1
             if args.parallel:
