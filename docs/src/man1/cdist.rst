@@ -23,7 +23,10 @@ SYNOPSIS
 DESCRIPTION
 -----------
 cdist is the frontend executable to the cdist configuration management.
-cdist supports different subcommands as explained below.
+It supports different subcommands as explained below.
+
+It is written in Python so it requires :strong:`python`\ (1) to be installed.
+It requires a minimal Python version 3.2.
 
 GENERAL
 -------
@@ -54,7 +57,7 @@ cdist posters - a must have for every office.
 
 CONFIG
 ------
-Configure one or more hosts
+Configure one or more hosts.
 
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
@@ -110,13 +113,9 @@ FILES
 ~/.cdist
     Your personal cdist config directory. If exists it will be
     automatically used.
-${cdist_prefix}/cdist/conf
-    The distribution configuration directory. ${cdist_prefix} is
-    installation-dependent. If you install cdist using git it is
-    equal to your cloned directory. If you install it using python
-    pip then it is equal to
-    ${prefix}/lib/python<version>/site-packages/cdist sub-directory
-    where ${prefix}, by default, is /usr/local (see :strong:`python`\ (1)).
+cdist/conf
+    The distribution configuration directory. It contains official types and
+    explorers. This path is relative to cdist installation directory.
 
 EXAMPLES
 --------
@@ -162,26 +161,34 @@ TMPDIR, TEMP, TMP
     more information. This is rather useful, if the standard
     directory used does not allow executables.
 
+CDIST_PATH
+    Colon delimited list of config directories.
+
 CDIST_LOCAL_SHELL
-    Selects shell for local script execution, defaults to /bin/sh
+    Selects shell for local script execution, defaults to /bin/sh.
 
 CDIST_REMOTE_SHELL
-    Selects shell for remote scirpt execution, defaults to /bin/sh
+    Selects shell for remote scirpt execution, defaults to /bin/sh.
+
+CDIST_OVERRIDE
+    Allow overwriting type parameters.
+
+CDIST_ORDER_DEPENDENCY
+    Create dependencies based on the execution order.
 
 CDIST_REMOTE_EXEC
-    Use this command for remote execution (should behave like ssh)
+    Use this command for remote execution (should behave like ssh).
 
 CDIST_REMOTE_COPY
-    Use this command for remote copy (should behave like scp)
+    Use this command for remote copy (should behave like scp).
 
 EXIT STATUS
 -----------
 The following exit values shall be returned:
 
-0
-    Successful completion
-1
-    One or more host configurations failed
+0   Successful completion.
+
+1   One or more host configurations failed.
 
 
 AUTHORS
