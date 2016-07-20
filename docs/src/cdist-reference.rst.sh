@@ -56,19 +56,19 @@ cat << eof
 Paths
 -----
 \$HOME/.cdist
-    The standard cdist configuration directory relative to your home directory
-    This is usually the place you want to store your site specific configuration
+    The standard cdist configuration directory relative to your home directory.
+    This is usually the place you want to store your site specific configuration.
 
 cdist/conf/
-    The distribution configuration directory
-    This contains types and explorers to be used
+    The distribution configuration directory.
+    This contains types and explorers to be used.
 
 confdir
     Cdist will use all available configuration directories and create
     a temporary confdir containing links to the real configuration directories.
     This way it is possible to merge configuration directories.
     By default it consists of everything in \$HOME/.cdist and cdist/conf/.
-    For more details see cdist(1)
+    For more details see cdist(1).
 
 confdir/files/
     Cdist does not care about this directory besides providing access to it.
@@ -99,16 +99,16 @@ confdir/type/<name>/
     This directory is referenced by the variable __type (see below).
 
 confdir/type/<name>/man.rst
-    Manpage in reStructuredText format (required for inclusion into upstream)
+    Manpage in reStructuredText format (required for inclusion into upstream).
 
 confdir/type/<name>/manifest
     Used to generate additional objects from a type.
 
 confdir/type/<name>/gencode-local
-    Used to generate code to be executed on the source host
+    Used to generate code to be executed on the source host.
 
 confdir/type/<name>/gencode-remote
-    Used to generate code to be executed on the target host
+    Used to generate code to be executed on the target host.
 
 confdir/type/<name>/parameter/required
     Parameters required by type, \n separated list.
@@ -184,7 +184,7 @@ files
     (for instance to store template results).
 changed
     This empty file exists in an object directory, if the object has
-    code to be executed (either remote or local)
+    code to be executed (either remote or local).
 stdin
     This file exists and contains data, if data was provided on stdin 
     when the type was called.
@@ -196,67 +196,70 @@ The following environment variables are exported by cdist:
 
 __explorer
     Directory that contains all global explorers.
-    Available for: initial manifest, explorer, type explorer, shell
+    Available for: initial manifest, explorer, type explorer, shell.
 __files
     Directory that contains content from the "files" subdirectories
     from the configuration directories.
-    Available for: initial manifest, type manifest, type gencode, shell
+    Available for: initial manifest, type manifest, type gencode, shell.
 __manifest
     Directory that contains the initial manifest.
-    Available for: initial manifest, type manifest, shell
+    Available for: initial manifest, type manifest, shell.
 __global
     Directory that contains generic output like explorer.
-    Available for: initial manifest, type manifest, type gencode, shell
+    Available for: initial manifest, type manifest, type gencode, shell.
 __messages_in
     File to read messages from.
-    Available for: initial manifest, type manifest, type gencode
+    Available for: initial manifest, type manifest, type gencode.
 __messages_out
     File to write messages.
-    Available for: initial manifest, type manifest, type gencode
+    Available for: initial manifest, type manifest, type gencode.
 __object
     Directory that contains the current object.
-    Available for: type manifest, type explorer, type gencode and code scripts
+    Available for: type manifest, type explorer, type gencode and code scripts.
 __object_id
     The type unique object id.
-    Available for: type manifest, type explorer, type gencode and code scripts
+    Available for: type manifest, type explorer, type gencode and code scripts.
     Note: The leading and the trailing "/" will always be stripped (caused by
     the filesystem database and ensured by the core).
     Note: Double slashes ("//") will not be fixed and result in an error.
 __object_name
     The full qualified name of the current object.
-    Available for: type manifest, type explorer, type gencode
+    Available for: type manifest, type explorer, type gencode.
 __target_host
     The host we are deploying to.
-    Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell
+    Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell.
 __type
     Path to the current type.
-    Available for: type manifest, type gencode
+    Available for: type manifest, type gencode.
 __type_explorer
     Directory that contains the type explorers.
-    Available for: type explorer
+    Available for: type explorer.
 
 Environment variables (for writing)
 -----------------------------------
 The following environment variables influence the behaviour of cdist:
 
 require
-    Setup dependencies between objects (see \`cdist manifest <cdist-manifest.html>\`_)
+    Setup dependencies between objects (see \`cdist manifest <cdist-manifest.html>\`_).
+
+CDIST_PATH
+    Colon delimited list of config directories.
 
 CDIST_LOCAL_SHELL
-    Use this shell locally instead of /bin/sh to execute scripts
+    Use this shell locally instead of /bin/sh to execute scripts.
 
 CDIST_REMOTE_SHELL
-    Use this shell remotely instead of /bin/sh to execute scripts
+    Use this shell remotely instead of /bin/sh to execute scripts.
 
 CDIST_OVERRIDE
-    Allow overwriting type parameters (see  \`cdist manifest <cdist-manifest.html>\`_)
+    Allow overwriting type parameters (see  \`cdist manifest <cdist-manifest.html>\`_).
 
 CDIST_ORDER_DEPENDENCY
-    Create dependencies based on the execution order (see  \`cdist manifest <cdist-manifest.html>\`_)
+    Create dependencies based on the execution order (see  \`cdist manifest <cdist-manifest.html>\`_).
 
 CDIST_REMOTE_EXEC
-    Use this command for remote execution (should behave like ssh)
+    Use this command for remote execution (should behave like ssh).
 
 CDIST_REMOTE_COPY
-    Use this command for remote copy (should behave like scp)
+    Use this command for remote copy (should behave like scp).
 eof
