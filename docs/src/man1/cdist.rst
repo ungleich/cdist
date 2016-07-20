@@ -191,4 +191,4 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 COPYING
 -------
 Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+granted under the terms of the GNU General Public License v3 or later (GPLv3+).
