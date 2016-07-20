@@ -38,8 +38,9 @@ DEFAULT_MANIFEST = """
 for pkg in \
     file \
     linux-image-amd64 \
+    lsb-release \
     openssh-server curl \
-    syslinux grub2 \
+    pxelinux syslinux-common grub2 \
     gdisk util-linux lvm2 mdadm \
     btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
     __package $pkg --state present
@@ -63,7 +64,7 @@ eof
 # fix the bloody 'stdin: is not a tty' problem
 __line /root/.profile --line 'mesg n' --state absent
 
-__hostname preos
+__hostname --name preos
 """
 
 class PreOSExistsError(cdist.Error):
@@ -85,11 +86,11 @@ class PreOS(object):
         self.arch = arch
 
         self.command = "debootstrap"
-        self.suite  = "wheezy"
+        self.suite  = "stable"
         self.options = [ "--include=openssh-server",
             "--arch=%s" % self.arch ]
 
-        self.pxelinux = "/usr/lib/syslinux/pxelinux.0"
+        self.pxelinux = "/usr/lib/PXELINUX/pxelinux.0"
         self.pxelinux_cfg = """
 DEFAULT preos
 LABEL preos
@@ -177,9 +178,16 @@ cp -L "$src" "$real_dst"
 
     def create_pxelinux(self):
         dst = os.path.join(self.out_dir, "pxelinux.0")
-        src = "%s/usr/lib/syslinux/pxelinux.0" % self.target_dir
+        src = "%s/usr/lib/PXELINUX/pxelinux.0" % self.target_dir
 
         log.info("Creating pxelinux.0  ...")
+        shutil.copyfile(src, dst, follow_symlinks=True)
+
+    def create_ldlinux(self):
+        dst = os.path.join(self.out_dir, "ldlinux.c32")
+        src = "%s/usr/lib/syslinux/modules/bios/ldlinux.c32" % self.target_dir
+
+        log.info("Creating ldlinux.c32  ...")
         shutil.copyfile(src, dst, follow_symlinks=True)
 
     def create_pxeconfig(self):
@@ -218,6 +226,7 @@ cp -L "$src" "$real_dst"
         self.create_initramfs()
         self.create_pxeconfig()
         self.create_pxelinux()
+        self.create_ldlinux()
 
 
     def setup_initial_manifest(self, user_initial_manifest, replace_manifest):

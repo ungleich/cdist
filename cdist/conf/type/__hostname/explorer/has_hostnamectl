@@ -18,7 +18,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Check whether system has hostnamectl
+# Check whether system has hostnamectl and it's usable, i.e. don't
+# try to use it when systemd isn't running yet.
 #
 
-command -v hostnamectl || true
+if command -v hostnamectl >/dev/null && hostnamectl status >/dev/null 2>&1; then
+  echo "yes"
+else
+  true
+fi
