@@ -1,0 +1,49 @@
+#!/bin/sh
+# Copyright (C) 2015  Bogatov Dmitry <KAction@gnu.org>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+hostname="$__object_id"
+state="$(cat "$__object/parameter/state")"
+
+# First remove all lines for given hostname and then insert again.
+# Otherwise, we risk having multiple entries for same hostname.
+#
+# There is a corner case, which we do not handle. Namely, /etc/hosts
+# format allows several host names on single line, like following:
+#
+#     192.168.15.16 foo bar
+#
+# If this type manages hostname `foo', then hostname bar will get erased.
+
+__line "__hosts/delete/${hostname}" \
+       --state absent               \
+       --regex " ${hostname}[ ]*$"  \
+       --file /etc/hosts
+export require="__line/__hosts/delete/${hostname}"
+
+case "$state" in
+    absent)
+        : # Nothing to do
+        ;;
+    present)
+        ip="$(cat "$__object/parameter/ip")"
+        __line "__hosts/insert/${hostname}" \
+               --line "${ip} ${hostname}"   \
+               --file /etc/hosts
+        ;;
+    *)
+        echo "ERROR: type (${__type##*/}) does not support state \`$state'"
+        exit 1
+esac
