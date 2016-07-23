@@ -422,7 +422,7 @@ eof
     ;;
 
     pep8)
-        pep8 ${basedir} | less
+        pep8 "${basedir}" "${basedir}/scripts/cdist" | less
         echo "Please review pep8 report."
         while true
         do
