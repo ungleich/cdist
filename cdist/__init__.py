@@ -90,4 +90,4 @@ def str_hash(s):
     if isinstance(s, str):
         return hashlib.md5(s.encode('utf-8')).hexdigest()
     else:
-        raise Error("str_hash param should be string")
+        raise Error("Param should be string")
