@@ -21,6 +21,7 @@
 
 import os
 import subprocess
+import hashlib
 
 import cdist.version
 
@@ -82,3 +83,11 @@ def file_to_list(filename):
         lines = []
 
     return lines
+
+
+def str_hash(s):
+    """Return hash of string s"""
+    if isinstance(s, str):
+        return hashlib.md5(s.encode('utf-8')).hexdigest()
+    else:
+        raise Error("str_hash param should be string")
