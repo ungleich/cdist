@@ -49,9 +49,12 @@ class ManifestTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
 
         out_path = self.temp_dir
+        hostdir = cdist.str_hash(self.target_host)
+        base_root_path = os.path.join(out_path, hostdir)
         self.local = local.Local(
             target_host=self.target_host,
-            base_path=out_path,
+            base_root_path=base_root_path,
+            host_dir_name=hostdir,
             exec_path=cdist.test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
