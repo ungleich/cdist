@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* New type: __hosts: manage entries in /etc/hosts (Dmitry Bogatov)
+
 4.2.1: 2016-07-18
 	* Build: Fix signed release (Darko Poljak)
 	* Build: Fix building docs (Darko Poljak)
