@@ -249,7 +249,7 @@ eof
         # First check everything is sane
         "$0" check-date
         "$0" check-unittest
-        "$0" pep8
+        "$0" check-pep8
 
         # Generate version file to be included in packaging
         "$0" target-version
@@ -361,6 +361,10 @@ eof
 
     pep8)
         pep8 "${basedir}" "${basedir}/scripts/cdist" | less
+    ;;
+
+    check-pep8)
+        "$0" pep8
         echo "Please review pep8 report."
         while true
         do
