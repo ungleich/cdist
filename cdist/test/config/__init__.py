@@ -55,10 +55,13 @@ class ConfigRunTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
 
         self.local_dir = os.path.join(self.temp_dir, "local")
-        os.mkdir(self.local_dir)
+        self.hostdir = cdist.str_hash(self.target_host)
+        self.host_base_path = os.path.join(self.local_dir, self.hostdir)
+        os.makedirs(self.host_base_path)
         self.local = cdist.exec.local.Local(
             target_host=self.target_host,
-            base_path=self.local_dir)
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir)
 
         # Setup test objects
         self.object_base_path = op.join(self.temp_dir, 'object')
@@ -161,7 +164,8 @@ class ConfigRunTestCase(test.CdistTestCase):
         """Test if the dryrun option is working like expected"""
         drylocal = cdist.exec.local.Local(
             target_host=self.target_host,
-            base_path=self.local_dir,
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             # exec_path can not derivated from sys.argv in case of unittest
             exec_path=os.path.abspath(os.path.join(
                 my_dir, '../../../scripts/cdist')),
@@ -184,3 +188,8 @@ class ConfigRunTestCase(test.CdistTestCase):
 #        first.requirements = ['__singleton_test/foo']
 #        with self.assertRaises(cdist.core.?????):
 #            self.config.iterate_until_finished()
+
+if __name__ == "__main__":
+    import unittest
+
+    unittest.main()

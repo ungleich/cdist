@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Core: Fix ssh ControlPath socket file error (Darko Poljak)
 	* Documentation: Update cdist man page and cdist-references (Darko Poljak)
 	* Documentation: Change cdist and cdist-type__pyvenv man page licenses to GPLv3+ (Darko Poljak)
 	* Documentation: Add FILES to cdist man page (Darko Poljak)

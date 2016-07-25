@@ -41,10 +41,13 @@ class CodeTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.local_dir = self.mkdtemp()
+        self.hostdir = cdist.str_hash(self.target_host)
+        self.host_base_path = os.path.join(self.local_dir, self.hostdir)
 
         self.local = local.Local(
             target_host=self.target_host,
-            base_path=self.local_dir,
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             exec_path=cdist.test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()

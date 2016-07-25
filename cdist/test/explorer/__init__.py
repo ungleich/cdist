@@ -42,12 +42,15 @@ class ExplorerClassTestCase(test.CdistTestCase):
     def setUp(self):
         self.temp_dir = self.mkdtemp()
         self.local_path = os.path.join(self.temp_dir, "local")
+        hostdir = cdist.str_hash(self.target_host)
+        base_root_path = os.path.join(self.local_path, hostdir)
         self.remote_base_path = os.path.join(self.temp_dir, "remote")
         os.makedirs(self.remote_base_path)
 
         self.local = local.Local(
             target_host=self.target_host,
-            base_path=self.local_path,
+            base_root_path=base_root_path,
+            host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir],
             )
