@@ -29,7 +29,6 @@ import subprocess
 import shutil
 import logging
 import tempfile
-import hashlib
 
 import cdist
 import cdist.message
@@ -48,40 +47,25 @@ class Local(object):
     """
     def __init__(self,
                  target_host,
+                 base_root_path,
+                 host_dir_name,
                  exec_path=sys.argv[0],
                  initial_manifest=None,
-                 base_path=None,
                  add_conf_dirs=None):
 
         self.target_host = target_host
-        self._init_log()
-
-        # FIXME: stopped: create base that does not require moving later
-        if base_path:
-            base_path_parent = base_path
-        else:
-            base_path_parent = tempfile.mkdtemp()
-            # TODO: the below atexit hook nukes any debug info we would have
-            #  if cdist exits with error.
-            # import atexit
-            # atexit.register(lambda: shutil.rmtree(base_path_parent))
-        self.hostdir = self._hostdir()
-        self.log.info("Calculated temp dir for target \"{}\" is "
-                      "\"{}\"".format(self.target_host, self.hostdir))
-        self.base_path = os.path.join(base_path_parent, self.hostdir)
-
-        self._init_permissions()
-
-        self.mkdir(self.base_path)
-
-        # FIXME: as well
-        self._init_cache_dir(None)
+        self.hostdir = host_dir_name
+        self.base_path = os.path.join(base_root_path, "data")
 
         self.exec_path = exec_path
         self.custom_initial_manifest = initial_manifest
-
         self._add_conf_dirs = add_conf_dirs
 
+        self._init_log()
+        self._init_permissions()
+        self.mkdir(self.base_path)
+        # FIXME: create dir that does not require moving later
+        self._init_cache_dir(None)
         self._init_paths()
         self._init_object_marker()
         self._init_conf_dirs()
@@ -97,12 +81,6 @@ class Local(object):
             return os.path.join(os.environ['HOME'], ".cdist")
         else:
             return None
-
-    def _hostdir(self):
-        # Do not assume target_host is anything that can be used as a
-        # directory name.
-        # Instead use a hash, which is known to work as directory name.
-        return hashlib.md5(self.target_host.encode('utf-8')).hexdigest()
 
     def _init_log(self):
         self.log = logging.getLogger(self.target_host)

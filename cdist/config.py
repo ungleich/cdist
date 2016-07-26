@@ -28,6 +28,7 @@ import sys
 import time
 import pprint
 import itertools
+import tempfile
 
 import cdist
 
@@ -36,6 +37,36 @@ import cdist.exec.remote
 
 from cdist import core
 from cdist import inventory
+
+
+def inspect_ssh_mux_opts():
+    """Inspect whether or not ssh supports multiplexing options.
+
+       Return string containing multiplexing options if supported.
+       If ControlPath is supported then placeholder for that path is
+       specified and can be used for final string formatting.
+       For example, this function can return string:
+       "-o ControlMaster=auto -o ControlPersist=125 -o ControlPath={}".
+       Then it can be formatted:
+       mux_opts_string.format('/tmp/tmpxxxxxx/ssh-control-path').
+    """
+    import subprocess
+
+    wanted_mux_opts = {
+        "ControlPath": "{}",
+        "ControlMaster": "auto",
+        "ControlPersist": "125",
+    }
+    mux_opts = " ".join([" -o {}={}".format(
+        x, wanted_mux_opts[x]) for x in wanted_mux_opts])
+    try:
+        subprocess.check_output("ssh {}".format(mux_opts),
+                                stderr=subprocess.STDOUT, shell=True)
+    except subprocess.CalledProcessError as e:
+        subproc_output = e.output.decode().lower()
+        if "bad configuration option" in subproc_output:
+            return ""
+    return mux_opts
 
 
 class Config(object):
@@ -96,7 +127,6 @@ class Config(object):
         initial_manifest_tempfile = None
         if args.manifest == '-':
             # read initial manifest from stdin
-            import tempfile
             try:
                 handle, initial_manifest_temp_path = tempfile.mkstemp(
                         prefix='cdist.stdin.')
@@ -114,7 +144,29 @@ class Config(object):
         failed_hosts = []
         time_start = time.time()
 
+        # default remote cmd patterns
+        args.remote_exec_pattern = None
+        args.remote_copy_pattern = None
+
+        args_dict = vars(args)
+        # if remote-exec and/or remote-copy args are None then user
+        # didn't specify command line options nor env vars:
+        # inspect multiplexing options for default cdist.REMOTE_COPY/EXEC
+        if (args_dict['remote_copy'] is None or
+                args_dict['remote_exec'] is None):
+            mux_opts = inspect_ssh_mux_opts()
+            if args_dict['remote_exec'] is None:
+                args.remote_exec_pattern = cdist.REMOTE_EXEC + mux_opts
+            if args_dict['remote_copy'] is None:
+                args.remote_copy_pattern = cdist.REMOTE_COPY + mux_opts
+
+        if args.out_path:
+            base_root_path = args.out_path
+        else:
+            base_root_path = tempfile.mkdtemp()
+
         hostcnt = 0
+
         if args.tag:
             if not args.inventory_dir:
                 args.inventory_dir = inventory.dist_inventory_db
@@ -128,15 +180,23 @@ class Config(object):
             it = itertools.chain(cls.hosts(args.host),
                                  cls.hosts(args.hostfile))
         for host in it:
+            hostdir = cdist.str_hash(host)
+            host_base_path = os.path.join(base_root_path, hostdir)
+
+            log.debug("Base root path for target host \"{}\" is \"{}\"".format(
+                host, host_base_path))
+
             hostcnt += 1
             if args.parallel:
                 log.debug("Creating child process for %s", host)
                 process[host] = multiprocessing.Process(
-                        target=cls.onehost, args=(host, args, True))
+                        target=cls.onehost,
+                        args=(host, host_base_path, hostdir, args, True))
                 process[host].start()
             else:
                 try:
-                    cls.onehost(host, args, parallel=False)
+                    cls.onehost(host, host_base_path, hostdir,
+                                args, parallel=False)
                 except cdist.Error as e:
                     failed_hosts.append(host)
 
@@ -158,22 +218,42 @@ class Config(object):
                               " ".join(failed_hosts))
 
     @classmethod
-    def onehost(cls, host, args, parallel):
+    def onehost(cls, host, host_base_path, host_dir_name, args, parallel):
         """Configure ONE system"""
 
         log = logging.getLogger(host)
 
         try:
+            control_path = os.path.join(host_base_path, "ssh-control-path")
+            # If we constructed patterns for remote commands then there is
+            # placeholder for ssh ControlPath, format it and we have unique
+            # ControlPath for each host.
+            #
+            # If not then use args.remote_exec/copy that user specified.
+            if args.remote_exec_pattern:
+                remote_exec = args.remote_exec_pattern.format(control_path)
+            else:
+                remote_exec = args.remote_exec
+            if args.remote_copy_pattern:
+                remote_copy = args.remote_copy_pattern.format(control_path)
+            else:
+                remote_copy = args.remote_copy
+            log.debug("remote_exec for host \"{}\": {}".format(
+                host, remote_exec))
+            log.debug("remote_copy for host \"{}\": {}".format(
+                host, remote_copy))
+
             local = cdist.exec.local.Local(
                 target_host=host,
+                base_root_path=host_base_path,
+                host_dir_name=host_dir_name,
                 initial_manifest=args.manifest,
-                base_path=args.out_path,
                 add_conf_dirs=args.conf_dir)
 
             remote = cdist.exec.remote.Remote(
                 target_host=host,
-                remote_exec=args.remote_exec,
-                remote_copy=args.remote_copy)
+                remote_exec=remote_exec,
+                remote_copy=remote_copy)
 
             c = cls(local, remote, dry_run=args.dry_run)
             c.run()

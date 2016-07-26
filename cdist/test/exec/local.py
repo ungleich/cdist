@@ -47,11 +47,14 @@ class LocalTestCase(test.CdistTestCase):
         target_host = 'localhost'
         self.temp_dir = self.mkdtemp()
         self.out_parent_path = self.temp_dir
-        self.out_path = op.join(self.out_parent_path, target_host)
+        self.hostdir = cdist.str_hash(target_host)
+        self.host_base_path = op.join(self.out_parent_path, self.hostdir)
+        self.out_path = op.join(self.host_base_path, "data")
 
         self.local = local.Local(
             target_host=target_host,
-            base_path=self.out_parent_path,
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path
         )
 
@@ -109,7 +112,8 @@ class LocalTestCase(test.CdistTestCase):
 
         link_test_local = local.Local(
             target_host='localhost',
-            base_path=self.out_parent_path,
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
         )
 
@@ -127,7 +131,8 @@ class LocalTestCase(test.CdistTestCase):
 
         link_test_local = local.Local(
             target_host='localhost',
-            base_path=self.out_parent_path,
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir]
         )
@@ -148,7 +153,8 @@ class LocalTestCase(test.CdistTestCase):
 
         link_test_local = local.Local(
             target_host='localhost',
-            base_path=self.out_parent_path,
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
         )
 

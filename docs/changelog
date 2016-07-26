@@ -4,6 +4,12 @@ Changelog
 next:
 	* Core: Add inventory (beta) functionality (Darko Poljak)
 
+4.2.2: 2016-07-26
+	* Core: Fix ssh ControlPath socket file error (Darko Poljak)
+	* Documentation: Update cdist man page and cdist-references (Darko Poljak)
+	* Documentation: Change cdist and cdist-type__pyvenv man page licenses to GPLv3+ (Darko Poljak)
+	* Documentation: Add FILES to cdist man page (Darko Poljak)
+
 4.2.1: 2016-07-18
 	* Build: Fix signed release (Darko Poljak)
 	* Build: Fix building docs (Darko Poljak)
