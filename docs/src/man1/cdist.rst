@@ -350,6 +350,9 @@ FILES
 cdist/conf
     The distribution configuration directory. It contains official types and
     explorers. This path is relative to cdist installation directory.
+cdist/inventory
+    The distribution inventory directory.
+    This path is relative to cdist installation directory.
 
 EXAMPLES
 --------
