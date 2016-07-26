@@ -48,10 +48,13 @@ class EmulatorTestCase(test.CdistTestCase):
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
         base_path = self.temp_dir
+        hostdir = cdist.str_hash(self.target_host)
+        host_base_path = os.path.join(base_path, hostdir)
 
         self.local = local.Local(
             target_host=self.target_host,
-            base_path=base_path,
+            base_root_path=host_base_path,
+            host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -148,10 +151,13 @@ class EmulatorConflictingRequirementsTestCase(test.CdistTestCase):
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
         base_path = self.temp_dir
+        hostdir = cdist.str_hash(self.target_host)
+        host_base_path = os.path.join(base_path, hostdir)
 
         self.local = local.Local(
             target_host=self.target_host,
-            base_path=base_path,
+            base_root_path=host_base_path,
+            host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -235,10 +241,13 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
     def setUp(self):
         self.temp_dir = self.mkdtemp()
         base_path = os.path.join(self.temp_dir, "out")
+        hostdir = cdist.str_hash(self.target_host)
+        host_base_path = os.path.join(base_path, hostdir)
 
         self.local = local.Local(
             target_host=self.target_host,
-            base_path=base_path,
+            base_root_path=host_base_path,
+            host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -265,10 +274,13 @@ class OverrideTestCase(test.CdistTestCase):
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
         base_path = self.temp_dir
+        hostdir = cdist.str_hash(self.target_host)
+        host_base_path = os.path.join(base_path, hostdir)
 
         self.local = local.Local(
             target_host=self.target_host,
-            base_path=base_path,
+            base_root_path=host_base_path,
+            host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -303,12 +315,15 @@ class ArgumentsTestCase(test.CdistTestCase):
     def setUp(self):
         self.temp_dir = self.mkdtemp()
         base_path = self.temp_dir
+        hostdir = cdist.str_hash(self.target_host)
+        host_base_path = os.path.join(base_path, hostdir)
         handle, self.script = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
 
         self.local = local.Local(
             target_host=self.target_host,
-            base_path=base_path,
+            base_root_path=host_base_path,
+            host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
         self.local.create_files_dirs()
@@ -425,10 +440,13 @@ class StdinTestCase(test.CdistTestCase):
 
         self.temp_dir = self.mkdtemp()
         base_path = os.path.join(self.temp_dir, "out")
+        hostdir = cdist.str_hash(self.target_host)
+        host_base_path = os.path.join(base_path, hostdir)
 
         self.local = local.Local(
             target_host=self.target_host,
-            base_path=base_path,
+            base_root_path=host_base_path,
+            host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir])
 
