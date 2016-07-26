@@ -213,36 +213,37 @@ def commandline():
                   'read hosts from stdin.'),
             dest='hostfile', required=False)
     parser['config'].add_argument(
-             '-i', '--initial-manifest',
-             help='Path to a cdist manifest or \'-\' to read from stdin.',
-             dest='manifest', required=False)
+           '-i', '--initial-manifest',
+           help='Path to a cdist manifest or \'-\' to read from stdin.',
+           dest='manifest', required=False)
     parser['config'].add_argument(
-             '-n', '--dry-run', help='Do not execute code', action='store_true')
+           '-n', '--dry-run',
+           help='Do not execute code', action='store_true')
     parser['config'].add_argument(
-             '-o', '--out-dir',
-             help='Directory to save cdist output in', dest="out_path")
+           '-o', '--out-dir',
+           help='Directory to save cdist output in', dest="out_path")
     parser['config'].add_argument(
-             '-p', '--parallel',
-             help='Operate on multiple hosts in parallel',
-             action='store_true', dest='parallel')
+           '-p', '--parallel',
+           help='Operate on multiple hosts in parallel',
+           action='store_true', dest='parallel')
     parser['config'].add_argument(
-             '-s', '--sequential',
-             help='Operate on multiple hosts sequentially (default)',
-             action='store_false', dest='parallel')
+           '-s', '--sequential',
+           help='Operate on multiple hosts sequentially (default)',
+           action='store_false', dest='parallel')
     # remote-copy and remote-exec defaults are environment variables
     # if set; if not then None - these will be futher handled after
     # parsing to determine implementation default
     parser['config'].add_argument(
-             '--remote-copy',
-             help='Command to use for remote copy (should behave like scp)',
-             action='store', dest='remote_copy',
-             default=os.environ.get('CDIST_REMOTE_COPY'))
+           '--remote-copy',
+           help='Command to use for remote copy (should behave like scp)',
+           action='store', dest='remote_copy',
+           default=os.environ.get('CDIST_REMOTE_COPY'))
     parser['config'].add_argument(
-             '--remote-exec',
-             help=('Command to use for remote execution '
-                   '(should behave like ssh)'),
-             action='store', dest='remote_exec',
-             default=os.environ.get('CDIST_REMOTE_EXEC'))
+           '--remote-exec',
+           help=('Command to use for remote execution '
+                 '(should behave like ssh)'),
+           action='store', dest='remote_exec',
+           default=os.environ.get('CDIST_REMOTE_EXEC'))
     parser['config'].add_argument(
              '-t', '--tag',
              help=('host is specified by tag, not hostname/address; '
