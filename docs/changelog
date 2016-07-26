@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+next:
+	* New type: __keyboard: Set keyboard layout (Carlos Ortigoza)
+	* New type: __locale_system: Set system-wide locale (Carlos Ortigoza)
+
 4.2.2: 2016-07-26
 	* Core: Fix ssh ControlPath socket file error (Darko Poljak)
 	* Documentation: Update cdist man page and cdist-references (Darko Poljak)

@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# Carlos Ortigoza (carlos.ortigoza at ungleich.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Configure keyboard type by modifying /etc/sysconfig/keyboard file.
+#
+
+os=$(cat "$__global/explorer/os")
+keyboard_type="$(cat "$__object/parameter/type")"
+
+case "$os" in
+    centos)
+        __file /etc/sysconfig/keyboard \
+            --owner root --group root --mode 644 \
+            --state exists
+
+        require="__file/etc/sysconfig/keyboard" \
+            __key_value KEYTABLE \
+                --file /etc/sysconfig/keyboard \
+                --delimiter '=' \
+                --value "\"$keyboard_type\""
+        
+        require="__file/etc/sysconfig/keyboard" \
+            __key_value LAYOUT \
+                --file /etc/sysconfig/keyboard \
+                --delimiter '=' \
+                --value "\"$keyboard_type\""
+    ;;
+    *)
+      echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+      echo "Please contribute an implementation for it if you can." >&2
+      exit 1
+    ;;
+esac
