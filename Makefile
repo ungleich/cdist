@@ -246,3 +246,6 @@ pub:
 
 test:
 	$(helper) $@
+
+pep8:
+	$(helper) $@
