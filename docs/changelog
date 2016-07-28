@@ -1,5 +1,7 @@
 Changelog
 ---------
+next:
+	* New type __filesystem: manage filesystems on devices ( Daniel Heule )
 
 4.2.2: 2016-07-26
 	* Core: Fix ssh ControlPath socket file error (Darko Poljak)
