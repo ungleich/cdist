@@ -34,10 +34,11 @@ else
 fi
 
 
-blkdev_devname="$(cat "$__object/explorer/blkdev_devname")"
-blkdev_fstype="$(cat "$__object/explorer/blkdev_fstype")"
-blkdev_label="$(cat "$__object/explorer/blkdev_label")"
-blkdev_mountpoint="$(cat "$__object/explorer/blkdev_mountpoint")"
+
+blkdev_devname="$(grep -P -o2 'NAME="\K[^"]*' "$__object/explorer/lsblk")"
+blkdev_fstype="$(grep -P -o2 'FSTYPE="\K[^"]*' "$__object/explorer/lsblk")"
+blkdev_label="$(grep -P -o2 'LABEL="\K[^"]*' "$__object/explorer/lsblk")"
+blkdev_mountpoint="$(grep -P -o2 'MOUNTPOINT="\K[^"]*' "$__object/explorer/lsblk")"
 
 if [ -z "$blkdev_devname" ]; then
     echo "Specified device $mydev not found on target system" >&2

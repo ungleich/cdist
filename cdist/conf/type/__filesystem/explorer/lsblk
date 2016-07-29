@@ -28,7 +28,8 @@ case "$os" in
             echo "lsblk is required for __filesystem type" >&2
             exit 1
         else
-            echo -n $(lsblk -n -o MOUNTPOINT "$blkdev" 2>/dev/null)
+            #echo -n $(lsblk -nd -P -o NAME,FSTYPE,LABEL,MOUNTPOINT "$blkdev" 2>/dev/null)
+            lsblk -nd -P -o NAME,FSTYPE,LABEL,MOUNTPOINT "$blkdev" 2>/dev/null
         fi
     ;;
     *)
