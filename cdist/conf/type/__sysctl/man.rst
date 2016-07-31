@@ -35,4 +35,5 @@ Steven Armstrong <steven-cdist--@--armstrong.cc>
 COPYING
 -------
 Copyright \(C) 2014 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3+).
+granted under the terms of the GNU General Public License version 3 or
+later (GPLv3+).
