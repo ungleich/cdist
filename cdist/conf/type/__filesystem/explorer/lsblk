@@ -20,7 +20,7 @@
 
 os=$("$__explorer/os")
 
-blkdev="$(cat "$__object/parameter/blkdev")"
+blkdev="$(cat "$__object/parameter/device")"
 
 case "$os" in
     centos|fedora|redhat|suse|gentoo)

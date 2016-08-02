@@ -22,7 +22,7 @@ REQUIRED PARAMETERS
 fstype
     Filesystem type, for example 'ext3', 'btrfs' or 'xfs'
 
-blkdev
+device
     Blockdevice for filesystem,
     On linux, it can be any by lsblk accepted device notation 
     
@@ -51,7 +51,7 @@ force
 
 MESSAGES
 --------
-filesystem <fstype> on <blkdev> : <discoverd device> created
+filesystem <fstype> on <device> : <discoverd device> created
    Filesytem was created on <discoverd device>
 
 
@@ -61,11 +61,11 @@ EXAMPLES
 .. code-block:: sh
 
     # Ensures that device /dev/sdb is formated with xfs 
-    __filesystem dev_sdb --fstype xfs --blkdev /dev/sdb --label Testdisk1
+    __filesystem dev_sdb --fstype xfs --device /dev/sdb --label Testdisk1
     # The same thing with btrfs and disk spezified by pci path to disk 1:0 on vmware
-    __filesystem dev_sdb --fstype btrfs --blkdev /dev/disk/by-path/pci-0000:0b:00.0-scsi-0:0:0:0 --label Testdisk2
+    __filesystem dev_sdb --fstype btrfs --device /dev/disk/by-path/pci-0000:0b:00.0-scsi-0:0:0:0 --label Testdisk2
     # Make sure that a multipath san device has a filesystem ...
-    __filesystem dev_sdb --fstype xfs --blkdev /dev/mapper/360060e80432f560050202f22000023ff --label Testdisk3
+    __filesystem dev_sdb --fstype xfs --device /dev/mapper/360060e80432f560050202f22000023ff --label Testdisk3
 
 
 AUTHORS
