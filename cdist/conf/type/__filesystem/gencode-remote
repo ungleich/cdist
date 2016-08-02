@@ -20,7 +20,12 @@
 
 
 fstype="$(cat "$__object/parameter/fstype")"
-mydev="$(cat "$__object/parameter/device")"
+
+if [ -f "$__object/parameter/device" ]; then
+    mydev="$(cat "$__object/parameter/device")"
+else
+    mydev="$__object_id"
+fi
 
 label="$(cat "$__object/parameter/label")"
 mkfsoptions="$(cat "$__object/parameter/mkfsoptions")"

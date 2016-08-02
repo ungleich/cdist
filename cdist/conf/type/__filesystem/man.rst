@@ -22,8 +22,12 @@ REQUIRED PARAMETERS
 fstype
     Filesystem type, for example 'ext3', 'btrfs' or 'xfs'
 
+
+
+OPTIONAL PARAMETERS
+-------------------
 device
-    Blockdevice for filesystem,
+    Blockdevice for filesystem, Defaults to object_id.
     On linux, it can be any by lsblk accepted device notation 
     
     for example 
@@ -31,9 +35,6 @@ device
         or /dev/disk/by-xxxx/xxx
         or /dev/mapper/xxxx
 
-
-OPTIONAL PARAMETERS
--------------------
 label
    Label which sould apply on the filesystem
 
@@ -61,7 +62,7 @@ EXAMPLES
 .. code-block:: sh
 
     # Ensures that device /dev/sdb is formated with xfs 
-    __filesystem dev_sdb --fstype xfs --device /dev/sdb --label Testdisk1
+    __filesystem /dev/sdb --fstype xfs --label Testdisk1
     # The same thing with btrfs and disk spezified by pci path to disk 1:0 on vmware
     __filesystem dev_sdb --fstype btrfs --device /dev/disk/by-path/pci-0000:0b:00.0-scsi-0:0:0:0 --label Testdisk2
     # Make sure that a multipath san device has a filesystem ...

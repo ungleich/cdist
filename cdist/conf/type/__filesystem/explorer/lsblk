@@ -20,7 +20,11 @@
 
 os=$("$__explorer/os")
 
-blkdev="$(cat "$__object/parameter/device")"
+if [ -f "$__object/parameter/device" ]; then
+    blkdev="$(cat "$__object/parameter/device")"
+else
+    blkdev="$__object_id"
+fi
 
 case "$os" in
     centos|fedora|redhat|suse|gentoo)
