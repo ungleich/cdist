@@ -3,18 +3,27 @@ cdist-type__locale_system(7)
 
 NAME
 ----
-cdit-type__locale_system - Set system-wide locale
+cdist-type__locale_system - Set system-wide locale
 
 
 DESCRIPTION
 -----------
 This cdist type allows you to modify system-wide locale.
+The name of the locale category is given as the object id
+(usually you are probably interested in using LANG)
 
 
 OPTIONAL PARAMETERS
 -------------------
-locale
-   Any valid locale, defaults to en_US.UTF-8
+
+state
+    present or absent, defaults to present.
+    If present, sets the locale category to the given value.
+    If absent, removes the locale category from the system file.
+
+value
+    The value for the locale category.
+    Defaults to en_US.UTF-8.
 
 
 EXAMPLES
@@ -22,24 +31,36 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Set system locale to en_US.UTF-8
-    __locale_system 
+    # Set LANG to en_US.UTF-8
+    __locale_system LANG
 
     # Same as above, but more explicit
-    __locale_system --locale en_US.UTF-8
+    __locale_system LANG --value en_US.UTF-8
+
+    # Set category LC_MESSAGES to de_CH.UTF-8
+    __locale_system LC_MESSAGES --value de_CH.UTF-8
+
+    # Remove setting for LC_ALL
+    __locale_system LC_ALL --state absent
+
 
 
 SEE ALSO
 --------
-:strong:`locale`\ (1), :strong:`localedef`\ (1)
+:strong:`locale`\ (1)
+:strong:`localedef`\ (1)
+:strong:`cdist-type__locale`\ (7)
 
 
 AUTHORS
 -------
-Carlos Ortigoza <carlos.ortigoza--@--ungleich.ch>
+Steven Armstrong <steven-cdist--@--armstrong.cc>,
+Carlos Ortigoza <carlos.ortigoza--@--ungleich.ch>,
+Nico Schottelius <nico.schottelius--@--ungleich.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2016 Carlos Ortigoza. Free use of this software is
-granted under the terms of the GNU General Public License v3 or later (GPLv3+).
+Copyright \(C) 2016 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 or
+later (GPLv3+).

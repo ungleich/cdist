@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# 2016 - 2016 Daniel Heule     (hda at sfs.biz)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os=$("$__explorer/os")
+
+if [ -f "$__object/parameter/device" ]; then
+    blkdev="$(cat "$__object/parameter/device")"
+else
+    blkdev="$__object_id"
+fi
+
+case "$os" in
+    centos|fedora|redhat|suse|gentoo)
+        if [ ! -x "$(command -v lsblk)" ]; then
+            echo "lsblk is required for __filesystem type" >&2
+            exit 1
+        else
+            #echo -n $(lsblk -nd -P -o NAME,FSTYPE,LABEL,MOUNTPOINT "$blkdev" 2>/dev/null)
+            lsblk -nd -P -o NAME,FSTYPE,LABEL,MOUNTPOINT "$blkdev" 2>/dev/null
+        fi
+    ;;
+    *)
+        echo "__filesystem type lacks implementation for os: $os" >&2
+        exit 1
+    ;;
+esac
