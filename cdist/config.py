@@ -238,6 +238,8 @@ class Config(object):
                 # (address, port, flow_info, scopeid) for AF_INET6
                 ip_addr = socket.getaddrinfo(
                         host, None, type=socket.SOCK_STREAM)[0][4][0]
+                # gethostbyaddr returns triple
+                # (hostname, aliaslist, ipaddrlist)
                 host_name = socket.gethostbyaddr(ip_addr)[0]
             except socket.gaierror as e:
                 log.error("{}: {}".format(e[0], e[1]))
