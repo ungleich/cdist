@@ -37,7 +37,11 @@ class CdistTestCase(unittest.TestCase):
     remote_exec = os.path.join(global_fixtures_dir, "remote", "exec")
     remote_copy = os.path.join(global_fixtures_dir, "remote", "copy")
 
-    target_host = 'cdisttesthost'
+    target_host = (
+        'cdisttesthost',
+        'cdisttesthost',
+        'cdisttesthost',
+    )
 
     def mkdtemp(self, **kwargs):
         return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)

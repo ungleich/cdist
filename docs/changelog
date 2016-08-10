@@ -1,8 +1,8 @@
 Changelog
 ---------
 next:
-	* New type __filesystem: manage filesystems on devices ( Daniel Heule )
-
+	* Core: Add derived env vars for target hostname and fqdn (Darko Poljak)
+	* New type __filesystem: manage filesystems on devices (Daniel Heule)
 	* New type: __locale_system (Steven Armstrong, Carlos Ortigoza, Nico Schottelius)
 	* New type: __sysctl (Steven Armstrong)
 

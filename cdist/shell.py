@@ -38,7 +38,12 @@ class Shell(object):
 
         self.shell = shell
 
-        self.target_host = "cdist-shell-no-target-host"
+        self.target_host = (
+            "cdist-shell-no-target-host",
+            "cdist-shell-no-target-host",
+            "cdist-shell-no-target-host",
+        )
+
         self.local = cdist.exec.local.Local(
             target_host=self.target_host)
 
@@ -59,7 +64,9 @@ class Shell(object):
             '__cdist_type_base_path': self.local.type_path,
             '__cdist_manifest': "cdist shell",
             '__global': self.local.base_path,
-            '__target_host': self.target_host,
+            '__target_host': self.target_host[0],
+            '__target_hostname': self.target_host[1],
+            '__target_fqdn': self.target_host[2],
             '__manifest': self.local.manifest_path,
             '__explorer': self.local.global_explorer_path,
             '__files': self.local.files_path,

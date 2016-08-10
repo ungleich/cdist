@@ -28,6 +28,7 @@ import time
 import pprint
 import itertools
 import tempfile
+import socket
 
 import cdist
 
@@ -74,7 +75,7 @@ class Config(object):
 
         self.local = local
         self.remote = remote
-        self.log = logging.getLogger(self.local.target_host)
+        self.log = logging.getLogger(self.local.target_host[0])
         self.dry_run = dry_run
 
         self.explorer = core.Explorer(self.local.target_host, self.local,
@@ -229,15 +230,37 @@ class Config(object):
             log.debug("remote_copy for host \"{}\": {}".format(
                 host, remote_copy))
 
+            try:
+                # getaddrinfo returns a list of 5-tuples:
+                # (family, type, proto, canonname, sockaddr)
+                # where sockaddr is:
+                # (address, port) for AF_INET,
+                # (address, port, flow_info, scopeid) for AF_INET6
+                ip_addr = socket.getaddrinfo(
+                        host, None, type=socket.SOCK_STREAM)[0][4][0]
+                host_name = socket.gethostbyaddr(ip_addr)[0]
+            except socket.gaierror as e:
+                log.error("{}: {}".format(e[0], e[1]))
+                # in case of error provide empty value
+                host_name = None
+
+            try:
+                host_fqdn = socket.getfqdn(host)
+            except socket.herror as e:
+                log.error("{}: {}".format(e[0], e[1]))
+                # in case of error provide empty value
+                host_fqdn = None
+            target_host = (host, host_name, host_fqdn)
+
             local = cdist.exec.local.Local(
-                target_host=host,
+                target_host=target_host,
                 base_root_path=host_base_path,
                 host_dir_name=host_dir_name,
                 initial_manifest=args.manifest,
                 add_conf_dirs=args.conf_dir)
 
             remote = cdist.exec.remote.Remote(
-                target_host=host,
+                target_host=target_host,
                 remote_exec=remote_exec,
                 remote_copy=remote_copy)
 

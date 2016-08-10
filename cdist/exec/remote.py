@@ -66,7 +66,7 @@ class Remote(object):
         self.type_path = os.path.join(self.conf_path, "type")
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
 
-        self.log = logging.getLogger(self.target_host)
+        self.log = logging.getLogger(self.target_host[0])
 
         self._init_env()
 
@@ -102,12 +102,12 @@ class Remote(object):
                 command = self._copy.split()
                 path = os.path.join(source, f)
                 command.extend([path, '{0}:{1}'.format(
-                    self.target_host, destination)])
+                    self.target_host[0], destination)])
                 self._run_command(command)
         else:
             command = self._copy.split()
             command.extend([source, '{0}:{1}'.format(
-                self.target_host, destination)])
+                self.target_host[0], destination)])
             self._run_command(command)
 
     def run_script(self, script, env=None, return_output=False):
@@ -128,7 +128,7 @@ class Remote(object):
         """
         # prefix given command with remote_exec
         cmd = self._exec.split()
-        cmd.append(self.target_host)
+        cmd.append(self.target_host[0])
 
         # FIXME: replace this by -o SendEnv name -o SendEnv name ... to ssh?
         # can't pass environment to remote side, so prepend command with
@@ -165,9 +165,12 @@ class Remote(object):
         assert isinstance(command, (list, tuple)), (
                 "list or tuple argument expected, got: %s" % command)
 
-        # export target_host for use in __remote_{exec,copy} scripts
+        # export target_host, target_hostname, target_fqdn
+        # for use in __remote_{exec,copy} scripts
         os_environ = os.environ.copy()
-        os_environ['__target_host'] = self.target_host
+        os_environ['__target_host'] = self.target_host[0]
+        os_environ['__target_hostname'] = self.target_host[1]
+        os_environ['__target_fqdn'] = self.target_host[2]
 
         self.log.debug("Remote run: %s", command)
         try:

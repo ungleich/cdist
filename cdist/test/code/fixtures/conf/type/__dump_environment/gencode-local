@@ -1,6 +1,8 @@
 #!/bin/sh
 
 echo "echo __target_host: $__target_host"
+echo "echo __target_hostname: $__target_hostname"
+echo "echo __target_fqdn: $__target_fqdn"
 echo "echo __global: $__global"
 echo "echo __type: $__type"
 echo "echo __object: $__object"
