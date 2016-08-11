@@ -23,6 +23,7 @@
 import os
 import shutil
 import getpass
+import multiprocessing
 
 import cdist
 from cdist import core
@@ -168,3 +169,34 @@ class ExplorerClassTestCase(test.CdistTestCase):
         cdist_object.create()
         self.explorer.run_type_explorers(cdist_object)
         self.assertEqual(cdist_object.explorers, {'world': 'hello'})
+
+    def test_jobs_parameter(self):
+        self.assertIsNone(self.explorer.jobs)
+        expl = explorer.Explorer(
+            self.target_host,
+            self.local,
+            self.remote,
+            jobs=8)
+        self.assertEqual(expl.jobs, 8)
+
+    def test_run_parallel_jobs(self):
+        expl = explorer.Explorer(
+            self.target_host,
+            self.local,
+            self.remote,
+            jobs=multiprocessing.cpu_count())
+        self.assertIsNotNone(expl.jobs)
+        out_path = self.mkdtemp()
+
+        expl.run_global_explorers(out_path)
+        names = sorted(expl.list_global_explorer_names())
+        output = sorted(os.listdir(out_path))
+
+        self.assertEqual(names, output)
+        shutil.rmtree(out_path)
+
+
+if __name__ == '__main__':
+    import unittest
+
+    unittest.main()

@@ -22,6 +22,20 @@
 #
 
 
+def check_positive_int(value):
+    import argparse
+
+    try:
+        val = int(value)
+    except ValueError as e:
+        raise argparse.ArgumentTypeError(
+                "{} is invalid int value".format(value))
+    if val <= 0:
+        raise argparse.ArgumentTypeError(
+                "{} is invalid positive int value".format(val))
+    return val
+
+
 def commandline():
     """Parse command line"""
     import argparse
@@ -31,6 +45,7 @@ def commandline():
     import cdist.shell
     import shutil
     import os
+    import multiprocessing
 
     # Construct parser others can reuse
     parser = {}
@@ -105,6 +120,11 @@ def commandline():
                  '(should behave like ssh)'),
            action='store', dest='remote_exec',
            default=os.environ.get('CDIST_REMOTE_EXEC'))
+    parser['config'].add_argument(
+           '-j', '--jobs', nargs='?', type=check_positive_int,
+           help='Specify the maximum number of parallel jobs',
+           action='store', dest='jobs',
+           const=multiprocessing.cpu_count())
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
 
     # Shell

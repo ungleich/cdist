@@ -23,6 +23,7 @@
 import logging
 import os
 import glob
+import multiprocessing
 
 import cdist
 
@@ -65,7 +66,7 @@ class Explorer(object):
     """Executes cdist explorers.
 
     """
-    def __init__(self, target_host, local, remote):
+    def __init__(self, target_host, local, remote, jobs=None):
         self.target_host = target_host
 
         self.log = logging.getLogger(target_host)
@@ -77,6 +78,7 @@ class Explorer(object):
             '__explorer': self.remote.global_explorer_path,
         }
         self._type_explorers_transferred = []
+        self.jobs = jobs
 
     # global
 
@@ -91,11 +93,37 @@ class Explorer(object):
         """
         self.log.info("Running global explorers")
         self.transfer_global_explorers()
+        if self.jobs is None:
+            self._run_global_explorers_seq(out_path)
+        else:
+            self._run_global_explorers_parallel(out_path)
+
+    def _run_global_explorer(self, explorer, out_path):
+        output = self.run_global_explorer(explorer)
+        path = os.path.join(out_path, explorer)
+        with open(path, 'w') as fd:
+            fd.write(output)
+
+    def _run_global_explorers_seq(self, out_path):
+        self.log.info("Running global explorers sequentially")
         for explorer in self.list_global_explorer_names():
-            output = self.run_global_explorer(explorer)
-            path = os.path.join(out_path, explorer)
-            with open(path, 'w') as fd:
-                fd.write(output)
+            self._run_global_explorer(explorer, out_path)
+
+    def _run_global_explorers_parallel(self, out_path):
+        self.log.info("Running global explorers in {} parallel jobs".format(
+            self.jobs))
+        self.log.info("Starting multiprocessing Pool")
+        with multiprocessing.Pool(self.jobs) as pool:
+            self.log.info("Starting async global explorer run")
+            results = [
+                pool.apply_async(self._run_global_explorer, (e, out_path,))
+                for e in self.list_global_explorer_names()
+            ]
+            self.log.info("Waiting async global explorer run results")
+            for r in results:
+                r.get()
+            self.log.info("Async global explorer run finished")
+        self.log.info("Multiprocessing Pool finished")
 
     def transfer_global_explorers(self):
         """Transfer the global explorers to the remote side."""
