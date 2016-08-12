@@ -15,7 +15,10 @@ SYNOPSIS
 
     cdist banner [-h] [-d] [-v]
 
-    cdist config [-h] [-d] [-V] [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST] [-p] [-s] [host [host ...]]
+    config [-h] [-d] [-v] [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST]
+           [-n] [-o OUT_PATH] [-p] [-s] [--remote-copy REMOTE_COPY]
+           [--remote-exec REMOTE_EXEC] [-j [JOBS]]
+           [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
@@ -95,6 +98,11 @@ Configure one or more hosts.
 .. option:: --remote-exec REMOTE_EXEC
 
     Command to use for remote execution (should behave like ssh)
+
+.. option:: -j [JOBS], --jobs [JOBS]
+
+    Specify the maximum number of parallel jobs; currently only
+    global explorers are supported
 
 SHELL
 -----
