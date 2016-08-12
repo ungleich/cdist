@@ -122,7 +122,8 @@ def commandline():
            default=os.environ.get('CDIST_REMOTE_EXEC'))
     parser['config'].add_argument(
            '-j', '--jobs', nargs='?', type=check_positive_int,
-           help='Specify the maximum number of parallel jobs',
+           help=('Specify the maximum number of parallel jobs; currently '
+                 'only global explorers are supported'),
            action='store', dest='jobs',
            const=multiprocessing.cpu_count())
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
