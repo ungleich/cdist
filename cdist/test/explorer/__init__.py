@@ -179,6 +179,20 @@ class ExplorerClassTestCase(test.CdistTestCase):
             jobs=8)
         self.assertEqual(expl.jobs, 8)
 
+    def test_transfer_global_explorers_parallel(self):
+        expl = explorer.Explorer(
+            self.target_host,
+            self.local,
+            self.remote,
+            jobs=multiprocessing.cpu_count())
+        self.assertIsNotNone(expl.jobs)
+
+        expl.transfer_global_explorers()
+        source = self.local.global_explorer_path
+        destination = self.remote.global_explorer_path
+        self.assertEqual(sorted(os.listdir(source)),
+                         sorted(os.listdir(destination)))
+
     def test_run_parallel_jobs(self):
         expl = explorer.Explorer(
             self.target_host,

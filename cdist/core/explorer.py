@@ -69,7 +69,7 @@ class Explorer(object):
     def __init__(self, target_host, local, remote, jobs=None):
         self.target_host = target_host
 
-        self.log = logging.getLogger(target_host)
+        self._open_logger()
 
         self.local = local
         self.remote = remote
@@ -79,6 +79,9 @@ class Explorer(object):
         }
         self._type_explorers_transferred = []
         self.jobs = jobs
+
+    def _open_logger(self):
+        self.log = logging.getLogger(self.target_host)
 
     # global
 
@@ -112,24 +115,46 @@ class Explorer(object):
     def _run_global_explorers_parallel(self, out_path):
         self.log.info("Running global explorers in {} parallel jobs".format(
             self.jobs))
-        self.log.info("Starting multiprocessing Pool")
+        self.log.debug("Multiprocessing start method is {}".format(
+            multiprocessing.get_start_method()))
+        self.log.info(("Starting multiprocessing Pool for global "
+                       "explorers run"))
         with multiprocessing.Pool(self.jobs) as pool:
-            self.log.info("Starting async global explorer run")
+            self.log.info("Starting async for global explorer run")
             results = [
                 pool.apply_async(self._run_global_explorer, (e, out_path,))
                 for e in self.list_global_explorer_names()
             ]
-            self.log.info("Waiting async global explorer run results")
+
+            self.log.info("Waiting async results for global explorer runs")
             for r in results:
-                r.get()
-            self.log.info("Async global explorer run finished")
-        self.log.info("Multiprocessing Pool finished")
+                r.get()  # self._run_global_explorer returns None
+            self.log.info(("Multiprocessing run for global explorers "
+                           "finished"))
+
+    # logger is not pickable, so remove it when we pickle
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if 'log' in state:
+            del state['log']
+        return state
+
+    # recreate logger when we unpickle
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._open_logger()
 
     def transfer_global_explorers(self):
         """Transfer the global explorers to the remote side."""
         self.remote.mkdir(self.remote.global_explorer_path)
-        self.remote.transfer(self.local.global_explorer_path,
-                             self.remote.global_explorer_path)
+        if self.jobs is None:
+            self.remote.transfer(self.local.global_explorer_path,
+                                 self.remote.global_explorer_path)
+        else:
+            self.remote.transfer_dir_parallel(
+                    self.local.global_explorer_path,
+                    self.remote.global_explorer_path,
+                    self.jobs)
         self.remote.run(["chmod", "0700",
                          "%s/*" % (self.remote.global_explorer_path)])
 

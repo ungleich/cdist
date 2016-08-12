@@ -26,9 +26,10 @@ import sys
 import glob
 import subprocess
 import logging
-import cdist.exec.util as exec_util
+import multiprocessing
 
 import cdist
+import cdist.exec.util as exec_util
 
 
 class DecodeError(cdist.Error):
@@ -66,9 +67,24 @@ class Remote(object):
         self.type_path = os.path.join(self.conf_path, "type")
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
 
-        self.log = logging.getLogger(self.target_host)
+        self._open_logger()
 
         self._init_env()
+
+    def _open_logger(self):
+        self.log = logging.getLogger(self.target_host)
+
+    # logger is not pickable, so remove it when we pickle
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if 'log' in state:
+            del state['log']
+        return state
+
+    # recreate logger when we unpickle
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._open_logger()
 
     def _init_env(self):
         """Setup environment for scripts - HERE????"""
@@ -109,6 +125,40 @@ class Remote(object):
             command.extend([source, '{0}:{1}'.format(
                 self.target_host, destination)])
             self._run_command(command)
+
+    def transfer_dir_parallel(self, source, destination, jobs):
+        """Transfer a directory to the remote side in parallel mode."""
+        self.log.debug("Remote transfer: %s -> %s", source, destination)
+        self.rmdir(destination)
+        if os.path.isdir(source):
+            self.mkdir(destination)
+            self.log.info("Remote transfer in {} parallel jobs".format(
+                jobs))
+            self.log.debug("Multiprocessing start method is {}".format(
+                multiprocessing.get_start_method()))
+            self.log.info(("Starting multiprocessing Pool for parallel "
+                           "remote transfer"))
+            with multiprocessing.Pool(jobs) as pool:
+                self.log.info("Starting async for parallel transfer")
+                commands = []
+                for f in glob.glob1(source, '*'):
+                    command = self._copy.split()
+                    path = os.path.join(source, f)
+                    command.extend([path, '{0}:{1}'.format(
+                        self.target_host, destination)])
+                    commands.append(command)
+                results = [
+                    pool.apply_async(self._run_command, (cmd,))
+                    for cmd in commands
+                ]
+
+                self.log.info("Waiting async results for parallel transfer")
+                for r in results:
+                    r.get()  # self._run_command returns None
+                self.log.info(("Multiprocessing for parallel transfer "
+                               "finished"))
+        else:
+            raise cdist.Error("Source {} is not a directory".format(source))
 
     def run_script(self, script, env=None, return_output=False):
         """Run the given script with the given environment on the remote side.
