@@ -2,6 +2,7 @@ Changelog
 ---------
 next:
 	* Core: Add derived env vars for target hostname and fqdn (Darko Poljak)
+	* New type: __keyboard: Set keyboard layout (Carlos Ortigoza)
 	* Documentation: Re-license types' man pages to GPLV3+ (Dmitry Bogatov,	Darko Poljak)
 	* New type __filesystem: manage filesystems on devices (Daniel Heule)
 	* New type: __locale_system (Steven Armstrong, Carlos Ortigoza, Nico Schottelius)
