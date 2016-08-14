@@ -74,14 +74,16 @@ class Explorer(object):
         self.local = local
         self.remote = remote
         self.env = {
-            '__target_host': self.target_host,
+            '__target_host': self.target_host[0],
+            '__target_hostname': self.target_host[1],
+            '__target_fqdn': self.target_host[2],
             '__explorer': self.remote.global_explorer_path,
         }
         self._type_explorers_transferred = []
         self.jobs = jobs
 
     def _open_logger(self):
-        self.log = logging.getLogger(self.target_host)
+        self.log = logging.getLogger(self.target_host[0])
 
     # global
 

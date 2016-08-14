@@ -83,7 +83,7 @@ class Local(object):
             return None
 
     def _init_log(self):
-        self.log = logging.getLogger(self.target_host)
+        self.log = logging.getLogger(self.target_host[0])
 
     # logger is not pickable, so remove it when we pickle
     def __getstate__(self):
@@ -196,8 +196,11 @@ class Local(object):
 
         if env is None:
             env = os.environ.copy()
-        # Export __target_host for use in __remote_{copy,exec} scripts
-        env['__target_host'] = self.target_host
+        # Export __target_host, __target_hostname, __target_fqdn
+        # for use in __remote_{copy,exec} scripts
+        env['__target_host'] = self.target_host[0]
+        env['__target_hostname'] = self.target_host[1]
+        env['__target_fqdn'] = self.target_host[2]
 
         # Export for emulator
         env['__cdist_object_marker'] = self.object_marker_name

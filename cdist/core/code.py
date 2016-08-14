@@ -36,6 +36,9 @@ common:
     env:
         PATH: prepend directory with type emulator symlinks == local.bin_path
         __target_host: the target host we are working on
+        __target_hostname: the target hostname provided from __target_host
+        __target_fqdn: the target's fully qualified domain name provided from
+                       __target_host
         __cdist_manifest: full qualified path of the manifest == script
         __cdist_type_base_path: full qualified path to the directory where
                                 types are defined for use in type emulator
@@ -46,6 +49,9 @@ gencode-local
 
     env:
         __target_host: the target host we are working on
+        __target_hostname: the target hostname provided from __target_host
+        __target_fqdn: the target's fully qualified domain name provided from
+                       __target_host
         __global: full qualified path to the global
                   output dir == local.out_path
         __object: full qualified path to the object's dir
@@ -61,6 +67,9 @@ gencode-remote
 
     env:
         __target_host: the target host we are working on
+        __target_hostname: the target hostname provided from __target_host
+        __target_fqdn: the target's fully qualified domain name provided from
+                       __target_host
         __global: full qualified path to the global
                   output dir == local.out_path
         __object: full qualified path to the object's dir
@@ -89,12 +98,17 @@ class Code(object):
     """Generates and executes cdist code scripts.
 
     """
+    # target_host is tuple (target_host, target_hostname, target_fqdn)
     def __init__(self, target_host, local, remote):
-        self.target_host = target_host
+        self.target_host = target_host[0]
+        self.target_hostname = target_host[1]
+        self.target_fqdn = target_host[2]
         self.local = local
         self.remote = remote
         self.env = {
-            '__target_host': self.target_host,
+            '__target_host': self.target_host[0],
+            '__target_hostname': self.target_host[1],
+            '__target_fqdn': self.target_host[2],
             '__global': self.local.base_path,
             '__files': self.local.files_path,
         }

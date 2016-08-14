@@ -53,8 +53,8 @@ Cdist expects the initial manifest at **cdist/conf/manifest/init**.
 
 Within this initial manifest you define, which objects should be
 created on which host. To distinguish between hosts, you can use the
-environment variable **__target_host**. Let's have a look at a simple
-example::
+environment variable **__target_host** and/or **__target_hostname** and/or
+**__target_fqdn**. Let's have a look at a simple example::
 
     __cdistmarker
 

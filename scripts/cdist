@@ -133,7 +133,8 @@ def commandline():
             'shell', parents=[parser['loglevel']])
     parser['shell'].add_argument(
             '-s', '--shell',
-            help='Select shell to use, defaults to current shell')
+            help=('Select shell to use, defaults to current shell. Used shell'
+                  ' should be POSIX compatible shell.'))
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
 
     for p in parser:

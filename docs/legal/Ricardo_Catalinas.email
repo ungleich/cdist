@@ -1,0 +1,183 @@
+From kaction  Wed Jul 20 18:15:05 2016
+Return-path: <jimenezrick@gmail.com>
+Envelope-to: KAction@gnu.org
+Delivery-date: Wed, 20 Jul 2016 11:13:48 -0400
+Received: from fencepost.gnu.org [208.118.235.10]
+	by searing with POP3 (fetchmail-6.3.26)
+	for <kaction@localhost> (single-drop); Wed, 20 Jul 2016 18:15:05 +0300 (MSK)
+Received: from eggs.gnu.org ([2001:4830:134:3::10]:33032)
+	by fencepost.gnu.org with esmtps (TLS1.0:RSA_AES_256_CBC_SHA1:256)
+	(Exim 4.82)
+	(envelope-from <jimenezrick@gmail.com>)
+	id 1bPtBz-0007Ty-T1
+	for KAction@gnu.org; Wed, 20 Jul 2016 11:13:48 -0400
+Received: from Debian-exim by eggs.gnu.org with spam-scanned (Exim 4.71)
+	(envelope-from <jimenezrick@gmail.com>)
+	id 1bPtBx-0005MG-9h
+	for KAction@gnu.org; Wed, 20 Jul 2016 11:13:46 -0400
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on eggs.gnu.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,FREEMAIL_FROM,
+	HTML_MESSAGE,T_DKIM_INVALID autolearn=disabled version=3.3.2
+Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f]:36812)
+	by eggs.gnu.org with esmtp (Exim 4.71)
+	(envelope-from <jimenezrick@gmail.com>)
+	id 1bPtBw-0005Lt-Ul
+	for KAction@gnu.org; Wed, 20 Jul 2016 11:13:45 -0400
+Received: by mail-wm0-x22f.google.com with SMTP id q128so60444546wma.1
+        for <KAction@gnu.org>; Wed, 20 Jul 2016 08:13:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to;
+        bh=YrPuTGXNLw9oFiHKKS+IheiScrs5DuAEvUTlakl0Mxg=;
+        b=WyUhnGVNalPpcJVnkHrFy1wNBjA/S7fZujrzehx9NGmJFOnawS4GJeatEZ4Pdj3hcq
+         sBzndUsU57BoYVn99QGM5eELbngARMKyU81V3sobYs5oeP6tFdKxnDpedgS6+yTKXLjP
+         ZH/tJiINIpXhjSxJkqw8q/dV5SKz6do840Roj1234XUKinRnUPX+zJt3Kjy2M+/dDfL8
+         wp5u9xTIS1c9cA3xYN/rdrsIjbRkgo01Yh1wVaZBYpaWFybX09uOSo4fXFGZ6rKQl8iJ
+         3M+S3+wQxaP2PZzj9z0eV/GVNM5+5lVcmUjI/PAqIq6nS6mOawolTB078FMFD9cvDRtS
+         KiNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to;
+        bh=YrPuTGXNLw9oFiHKKS+IheiScrs5DuAEvUTlakl0Mxg=;
+        b=EwpgAswQ/18QAMRKkz00dKKmXL7loG/R2ZX6KjvFCsBb0x8sV90eWI+17vBF+GVS1y
+         k6pXyyfLBFgeFBlgjN8oqaSqHhKNoOzWLNKHpOwAW+WnJ/SyprpxdU1BHz2ZOMDTOJuP
+         9NTW8LoB4fU24ns1Yor6ykRMeBGQZDvTT3Zi4JsU48522W1WRXXH/Y4sJRm/hdlSaU18
+         1UN7ySE0Oey6Ufk+yG7M6EwJvY7ZI+zRlPsoknGwofg8H6VH7mKBcDvHc71Wk5tGOVMN
+         iJeKjmgmReG38Em5C+uGO0h9zjsIYZsYC8dUyRCkfNLD66pRdpFuRFIWhG/PU1aH9hIo
+         Wlng==
+X-Gm-Message-State: ALyK8tLwjExHqmfFbrI69OlGTEDrsSCXwwBlBtD3gfpXU42hI/M5850STADANQROCfznBfKvk/zO9N4+82n/hA==
+MIME-Version: 1.0
+X-Received: by 10.194.209.163 with SMTP id mn3mr1847437wjc.45.1469027623430;
+ Wed, 20 Jul 2016 08:13:43 -0700 (PDT)
+Received: by 10.194.228.10 with HTTP; Wed, 20 Jul 2016 08:13:43 -0700 (PDT)
+Received: by 10.194.228.10 with HTTP; Wed, 20 Jul 2016 08:13:43 -0700 (PDT)
+In-Reply-To: <E1bPt8C-0004Ob-EO@eggs.gnu.org>
+References: <E1bPt8C-0004Ob-EO@eggs.gnu.org>
+Date: Wed, 20 Jul 2016 16:13:43 +0100
+Message-ID: <CAFM17DtUtjz3XPg6eUDQEQOZvHi_+-Q4hHULiG6am=tM8GG1rg@mail.gmail.com>
+Subject: Re: cdist contribution relicensing
+From: =?UTF-8?Q?Ricardo_Catalinas_Jim=C3=A9nez?= <jimenezrick@gmail.com>
+To: Dmitry Bogatov <KAction@gnu.org>
+Content-Type: multipart/alternative; boundary=047d7b3a8d24a8fb78053812a524
+X-detected-operating-system: by eggs.gnu.org: GNU/Linux 2.2.x-3.x [generic]
+X-Received-From: 2a00:1450:400c:c09::22f
+X-UIDL: H8X!!VF3!!(#b"!\C)!!
+
+--047d7b3a8d24a8fb78053812a524
+Content-Type: text/plain; charset=UTF-8
+
+  I, Ricardo Catalinas <jimenezrick@gmail.com> permit to relicense all my
+contribution to
+        cdist project, source codehttps://github.com/ungleich/cdist
+        to GNU General Public license, version 3 or (at your option)
+        any later version, as published by Free Software Foundation.
+
+        20th Jule 2016 year
+
+/Ricardo
+
+On Jul 20, 2016 4:11 PM, "Dmitry Bogatov" <KAction@gnu.org> wrote:
+
+>
+> Hello, dear contributors of cdist project!
+>
+> Recently we discovered licensing issue with your contribution. Namely,
+> while most of code is GPLv3+, including some of code written by you,
+> manpages (man.txt, now man.rst) are GPLv3 only licensed.
+>
+> On behalf of cdist releasers (Darko and Nico), I (another cdist
+> contributor and cdist Debian maintainer) ask you to permit relicense
+> your contribution from GPLv3 to GPLv3+. Without your permission, we
+> would be stuck the day when GPLv4 come (hope it will never come, but
+> still), or have to reimplement your contribution.
+>
+> If you agree, please respond with something like
+>
+>         I, #name# <#email#> permit to relicense all my contribution to
+>         cdist project, source code https://github.com/ungleich/cdist
+>         to GNU General Public license, version 3 or (at your option)
+>         any later version, as published by Free Software Foundation.
+>
+>         #day# Jule 2016 year.
+>
+> If possible, GPG-sign such email. Do not include anything else
+> valuable in this email that you do not want to be stored forever in
+> public.
+>
+> Dear contributors, when replying to this email, please do not send
+> copy to other contributors -- save their inbox storage.
+>
+> Thank you in advance for one more contribution.
+>
+> --
+> Accept: text/plain, text/x-diff
+> Accept-Language: eo,en,ru
+> X-Web-Site: sinsekvu.github.io
+>
+
+--047d7b3a8d24a8fb78053812a524
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<p dir=3D"ltr">=C2=A0 I, Ricardo Catalinas &lt;<a href=3D"mailto:jimenezric=
+k@gmail.com">jimenezrick@gmail.com</a>&gt; permit to relicense all my contr=
+ibution to<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 cdist project, source code<a href=3D"https://gi=
+thub.com/ungleich/cdist">https://github.com/ungleich/cdist</a><br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 to GNU General Public license, version 3 or (at=
+ your option)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 any later version, as published by Free Softwar=
+e Foundation.</p>
+<p dir=3D"ltr">=C2=A0 =C2=A0 =C2=A0 =C2=A0 20th Jule 2016 year</p>
+<p dir=3D"ltr">/Ricardo</p>
+<div class=3D"gmail_extra"><br><div class=3D"gmail_quote">On Jul 20, 2016 4=
+:11 PM, &quot;Dmitry Bogatov&quot; &lt;<a href=3D"mailto:KAction@gnu.org">K=
+Action@gnu.org</a>&gt; wrote:<br type=3D"attribution"><blockquote class=3D"=
+gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-=
+left:1ex"><br>
+Hello, dear contributors of cdist project!<br>
+<br>
+Recently we discovered licensing issue with your contribution. Namely,<br>
+while most of code is GPLv3+, including some of code written by you,<br>
+manpages (man.txt, now man.rst) are GPLv3 only licensed.<br>
+<br>
+On behalf of cdist releasers (Darko and Nico), I (another cdist<br>
+contributor and cdist Debian maintainer) ask you to permit relicense<br>
+your contribution from GPLv3 to GPLv3+. Without your permission, we<br>
+would be stuck the day when GPLv4 come (hope it will never come, but<br>
+still), or have to reimplement your contribution.<br>
+<br>
+If you agree, please respond with something like<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 I, #name# &lt;#email#&gt; permit to relicense a=
+ll my contribution to<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 cdist project, source code <a href=3D"https://g=
+ithub.com/ungleich/cdist" rel=3D"noreferrer" target=3D"_blank">https://gith=
+ub.com/ungleich/cdist</a><br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 to GNU General Public license, version 3 or (at=
+ your option)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 any later version, as published by Free Softwar=
+e Foundation.<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 #day# Jule 2016 year.<br>
+<br>
+If possible, GPG-sign such email. Do not include anything else<br>
+valuable in this email that you do not want to be stored forever in<br>
+public.<br>
+<br>
+Dear contributors, when replying to this email, please do not send<br>
+copy to other contributors -- save their inbox storage.<br>
+<br>
+Thank you in advance for one more contribution.<br>
+<br>
+--<br>
+Accept: text/plain, text/x-diff<br>
+Accept-Language: eo,en,ru<br>
+X-Web-Site: <a href=3D"http://sinsekvu.github.io" rel=3D"noreferrer" target=
+=3D"_blank">sinsekvu.github.io</a><br>
+</blockquote></div></div>
+
+--047d7b3a8d24a8fb78053812a524--
+

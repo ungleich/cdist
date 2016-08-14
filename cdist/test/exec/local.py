@@ -44,10 +44,14 @@ class LocalTestCase(test.CdistTestCase):
 
     def setUp(self):
 
-        target_host = 'localhost'
+        target_host = (
+            'localhost',
+            'localhost',
+            'localhost',
+        )
         self.temp_dir = self.mkdtemp()
         self.out_parent_path = self.temp_dir
-        self.hostdir = cdist.str_hash(target_host)
+        self.hostdir = cdist.str_hash(target_host[0])
         self.host_base_path = op.join(self.out_parent_path, self.hostdir)
         self.out_path = op.join(self.host_base_path, "data")
 
@@ -111,7 +115,11 @@ class LocalTestCase(test.CdistTestCase):
         test_type = "__file"
 
         link_test_local = local.Local(
-            target_host='localhost',
+            target_host=(
+                'localhost',
+                'localhost',
+                'localhost',
+            ),
             base_root_path=self.host_base_path,
             host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
@@ -130,7 +138,11 @@ class LocalTestCase(test.CdistTestCase):
         test_type = "__cdist_test_type"
 
         link_test_local = local.Local(
-            target_host='localhost',
+            target_host=(
+                'localhost',
+                'localhost',
+                'localhost',
+            ),
             base_root_path=self.host_base_path,
             host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
@@ -152,7 +164,11 @@ class LocalTestCase(test.CdistTestCase):
         os.environ['CDIST_PATH'] = conf_dir
 
         link_test_local = local.Local(
-            target_host='localhost',
+            target_host=(
+                'localhost',
+                'localhost',
+                'localhost',
+            ),
             base_root_path=self.host_base_path,
             host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
