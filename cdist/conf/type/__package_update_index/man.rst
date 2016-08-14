@@ -22,7 +22,7 @@ OPTIONAL PARAMETERS
 type
     The package manager to use. Default is determined based on the $os
     explorer variable.
-    e.g. 
+    e.g.
     * apt for Debian
     * yum for Red Hat
     * pacman for Arch Linux
@@ -47,5 +47,8 @@ Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
 
 COPYING
 -------
-Copyright \(C) 2014 Ricardo Catalinas Jiménez. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+
+Copyright \(C) 2014 Ricardo Catalinas Jiménez. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

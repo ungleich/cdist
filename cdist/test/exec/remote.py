@@ -67,22 +67,22 @@ class RemoteTestCase(test.CdistTestCase):
     # /test api
 
     def test_run_success(self):
-        self.remote.run(['/bin/true'])
+        self.remote.run(['true'])
 
     def test_run_fail(self):
-        self.assertRaises(cdist.Error, self.remote.run, ['/bin/false'])
+        self.assertRaises(cdist.Error, self.remote.run, ['false'])
 
     def test_run_script_success(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
-            fd.writelines(["#!/bin/sh\n", "/bin/true"])
+            fd.writelines(["#!/bin/sh\n", "true"])
         self.remote.run_script(script)
 
     def test_run_script_fail(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
-            fd.writelines(["#!/bin/sh\n", "/bin/false"])
-        self.assertRaises(remote.RemoteScriptError, self.remote.run_script,
+            fd.writelines(["#!/bin/sh\n", "false"])
+        self.assertRaises(cdist.Error, self.remote.run_script,
                           script)
 
     def test_run_script_get_output(self):
@@ -121,8 +121,8 @@ class RemoteTestCase(test.CdistTestCase):
         # test if the payload file is in the target directory
         self.assertTrue(os.path.isfile(os.path.join(target, source_file_name)))
 
-    def test_create_directories(self):
-        self.remote.create_directories()
+    def test_create_files_dirs(self):
+        self.remote.create_files_dirs()
         self.assertTrue(os.path.isdir(self.remote.base_path))
         self.assertTrue(os.path.isdir(self.remote.conf_path))
 
@@ -135,7 +135,7 @@ class RemoteTestCase(test.CdistTestCase):
         remote_copy = "echo"
         r = remote.Remote(self.target_host, base_path=self.base_path,
                           remote_exec=remote_exec, remote_copy=remote_copy)
-        self.assertEqual(r.run('/bin/true', return_output=True),
+        self.assertEqual(r.run('true', return_output=True),
                          "%s\n" % self.target_host)
 
     def test_run_script_target_host_in_env(self):
@@ -149,7 +149,7 @@ class RemoteTestCase(test.CdistTestCase):
                           remote_exec=remote_exec, remote_copy=remote_copy)
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
-            fd.writelines(["#!/bin/sh\n", "/bin/true"])
+            fd.writelines(["#!/bin/sh\n", "true"])
         self.assertEqual(r.run_script(script, return_output=True),
                          "%s\n" % self.target_host)
 
