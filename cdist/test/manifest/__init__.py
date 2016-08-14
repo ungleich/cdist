@@ -49,7 +49,7 @@ class ManifestTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
 
         out_path = self.temp_dir
-        hostdir = cdist.str_hash(self.target_host)
+        hostdir = cdist.str_hash(self.target_host[0])
         base_root_path = os.path.join(out_path, hostdir)
         self.local = local.Local(
             target_host=self.target_host,
@@ -60,7 +60,7 @@ class ManifestTestCase(test.CdistTestCase):
         self.local.create_files_dirs()
 
         self.manifest = manifest.Manifest(self.target_host, self.local)
-        self.log = logging.getLogger(self.target_host)
+        self.log = logging.getLogger(self.target_host[0])
 
     def tearDown(self):
         os.environ = self.orig_environ
@@ -82,7 +82,12 @@ class ManifestTestCase(test.CdistTestCase):
                 key, value = line.split(': ')
                 output_dict[key] = value
         self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
-        self.assertEqual(output_dict['__target_host'], self.local.target_host)
+        self.assertEqual(output_dict['__target_host'],
+                         self.local.target_host[0])
+        self.assertEqual(output_dict['__target_hostname'],
+                         self.local.target_host[1])
+        self.assertEqual(output_dict['__target_fqdn'],
+                         self.local.target_host[2])
         self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__cdist_type_base_path'],
                          self.local.type_path)
@@ -107,7 +112,12 @@ class ManifestTestCase(test.CdistTestCase):
                 key, value = line.split(': ')
                 output_dict[key] = value
         self.assertTrue(output_dict['PATH'].startswith(self.local.bin_path))
-        self.assertEqual(output_dict['__target_host'], self.local.target_host)
+        self.assertEqual(output_dict['__target_host'],
+                         self.local.target_host[0])
+        self.assertEqual(output_dict['__target_hostname'],
+                         self.local.target_host[1])
+        self.assertEqual(output_dict['__target_fqdn'],
+                         self.local.target_host[2])
         self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__cdist_type_base_path'],
                          self.local.type_path)

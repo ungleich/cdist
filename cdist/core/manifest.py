@@ -32,6 +32,9 @@ common:
     env:
         PATH: prepend directory with type emulator symlinks == local.bin_path
         __target_host: the target host we are working on
+        __target_hostname: the target hostname provided from __target_host
+        __target_fqdn: the target's fully qualified domain name provided from
+                       __target_host
         __global: full qualified path to the global
                   output dir == local.out_path
         __cdist_manifest: full qualified path of the manifest == script
@@ -95,14 +98,16 @@ class Manifest(object):
         self.target_host = target_host
         self.local = local
 
-        self.log = logging.getLogger(self.target_host)
+        self.log = logging.getLogger(self.target_host[0])
 
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
             # for use in type emulator
             '__cdist_type_base_path': self.local.type_path,
             '__global': self.local.base_path,
-            '__target_host': self.target_host,
+            '__target_host': self.target_host[0],
+            '__target_hostname': self.target_host[1],
+            '__target_fqdn': self.target_host[2],
             '__files': self.local.files_path,
         }
 

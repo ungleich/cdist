@@ -34,7 +34,11 @@ class RemoteTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        self.target_host = 'localhost'
+        self.target_host = (
+            'localhost',
+            'localhost',
+            'localhost',
+        )
         self.base_path = self.temp_dir
         user = getpass.getuser()
         remote_exec = "ssh -o User=%s -q" % user
@@ -136,7 +140,7 @@ class RemoteTestCase(test.CdistTestCase):
         r = remote.Remote(self.target_host, base_path=self.base_path,
                           remote_exec=remote_exec, remote_copy=remote_copy)
         self.assertEqual(r.run('true', return_output=True),
-                         "%s\n" % self.target_host)
+                         "%s\n" % self.target_host[0])
 
     def test_run_script_target_host_in_env(self):
         handle, remote_exec_path = self.mkstemp(dir=self.temp_dir)
@@ -151,7 +155,7 @@ class RemoteTestCase(test.CdistTestCase):
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", "true"])
         self.assertEqual(r.run_script(script, return_output=True),
-                         "%s\n" % self.target_host)
+                         "%s\n" % self.target_host[0])
 
     def test_run_script_with_env_target_host_in_env(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
