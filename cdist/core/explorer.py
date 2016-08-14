@@ -117,19 +117,19 @@ class Explorer(object):
             self.jobs))
         self.log.debug("Multiprocessing start method is {}".format(
             multiprocessing.get_start_method()))
-        self.log.info(("Starting multiprocessing Pool for global "
+        self.log.debug(("Starting multiprocessing Pool for global "
                        "explorers run"))
         with multiprocessing.Pool(self.jobs) as pool:
-            self.log.info("Starting async for global explorer run")
+            self.log.debug("Starting async for global explorer run")
             results = [
                 pool.apply_async(self._run_global_explorer, (e, out_path,))
                 for e in self.list_global_explorer_names()
             ]
 
-            self.log.info("Waiting async results for global explorer runs")
+            self.log.debug("Waiting async results for global explorer runs")
             for r in results:
                 r.get()  # self._run_global_explorer returns None
-            self.log.info(("Multiprocessing run for global explorers "
+            self.log.debug(("Multiprocessing run for global explorers "
                            "finished"))
 
     # logger is not pickable, so remove it when we pickle

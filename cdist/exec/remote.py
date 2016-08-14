@@ -136,10 +136,10 @@ class Remote(object):
                 jobs))
             self.log.debug("Multiprocessing start method is {}".format(
                 multiprocessing.get_start_method()))
-            self.log.info(("Starting multiprocessing Pool for parallel "
+            self.log.debug(("Starting multiprocessing Pool for parallel "
                            "remote transfer"))
             with multiprocessing.Pool(jobs) as pool:
-                self.log.info("Starting async for parallel transfer")
+                self.log.debug("Starting async for parallel transfer")
                 commands = []
                 for f in glob.glob1(source, '*'):
                     command = self._copy.split()
@@ -152,10 +152,10 @@ class Remote(object):
                     for cmd in commands
                 ]
 
-                self.log.info("Waiting async results for parallel transfer")
+                self.log.debug("Waiting async results for parallel transfer")
                 for r in results:
                     r.get()  # self._run_command returns None
-                self.log.info(("Multiprocessing for parallel transfer "
+                self.log.debug(("Multiprocessing for parallel transfer "
                                "finished"))
         else:
             raise cdist.Error("Source {} is not a directory".format(source))
