@@ -15,7 +15,10 @@ SYNOPSIS
 
     cdist banner [-h] [-d] [-v]
 
-    cdist config [-h] [-d] [-V] [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST] [-p] [-s] [host [host ...]]
+    cdist config [-h] [-d] [-v] [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST]
+                 [-n] [-o OUT_PATH] [-p] [-s] [--remote-copy REMOTE_COPY]
+                 [--remote-exec REMOTE_EXEC]
+                 [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
@@ -32,13 +35,13 @@ GENERAL
 -------
 All commands accept the following options:
 
+.. option:: -h, --help
+
+    Show the help screen
+
 .. option:: -d, --debug
 
     Set log level to debug
-
-.. option:: -h, --help
-
-   Show the help screen
 
 .. option:: -v, --verbose
 
@@ -80,13 +83,21 @@ Configure one or more hosts.
 
     Path to a cdist manifest or - to read from stdin
 
+.. option:: -n, --dry-run
+
+    Do not execute code
+
+.. option:: -o OUT_PATH, --out-dir OUT_PATH
+
+    Directory to save cdist output in
+
 .. option:: -p, --parallel
 
     Operate on multiple hosts in parallel
 
 .. option:: -s, --sequential
 
-    Operate on multiple hosts sequentially
+    Operate on multiple hosts sequentially (default)
 
 .. option:: --remote-copy REMOTE_COPY
 
@@ -103,7 +114,7 @@ to the types as commands. It can be thought as an
 "interactive manifest" environment. See below for example
 usage. Its primary use is for debugging type parameters.
 
-.. option:: -s/--shell
+.. option:: -s SHELL, --shell SHELL
 
     Select shell to use, defaults to current shell. Used shell should
     be POSIX compatible shell.

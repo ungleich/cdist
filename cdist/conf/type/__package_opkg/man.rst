@@ -49,5 +49,7 @@ Giel van Schijndel <giel+cdist--@--mortis.eu>
 
 COPYING
 -------
-Copyright \(C) 2012 Giel van Schijndel. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012 Giel van Schijndel. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
