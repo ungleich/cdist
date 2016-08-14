@@ -64,9 +64,11 @@ class Emulator(object):
 
         try:
             self.global_path = self.env['__global']
-            self.target_host = self.env['__target_host']
-            self.target_hostname = self.env['__target_hostname']
-            self.target_fqdn = self.env['__target_fqdn']
+            self.target_host = (
+                self.env['__target_host'],
+                self.env['__target_hostname'],
+                self.env['__target_fqdn']
+            )
 
             # Internal variables
             self.object_source = self.env['__cdist_manifest']
