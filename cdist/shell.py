@@ -22,6 +22,7 @@
 import logging
 import os
 import subprocess
+import tempfile
 
 # initialise cdist
 import cdist.exec.local
@@ -44,8 +45,14 @@ class Shell(object):
             "cdist-shell-no-target-host",
         )
 
+        host_dir_name = cdist.str_hash(self.target_host[0])
+        base_root_path = tempfile.mkdtemp()
+        host_base_path = os.path.join(base_root_path, host_dir_name)
+
         self.local = cdist.exec.local.Local(
-            target_host=self.target_host)
+            target_host=self.target_host,
+            base_root_path=host_base_path,
+            host_dir_name=host_dir_name)
 
     def _init_shell(self):
         """Select shell to execute, if not specified by user"""
