@@ -1,6 +1,8 @@
 Changelog
 ---------
+
 next:
+	* Core: Add inventory (beta) functionality (Darko Poljak)
 	* Core: Add -b, --enable-beta option for enabling beta functionalities (Darko Poljak)
 	* Core: Add -j, --jobs option for parallel execution and add parallel support for global explorers (currently in beta) (Darko Poljak)
 	* Core: Add derived env vars for target hostname and fqdn (Darko Poljak)
@@ -9,9 +11,6 @@ next:
 	* New type __filesystem: manage filesystems on devices (Daniel Heule)
 	* New type: __locale_system (Steven Armstrong, Carlos Ortigoza, Nico Schottelius)
 	* New type: __sysctl (Steven Armstrong)
-
-next:
-	* Core: Add inventory (beta) functionality (Darko Poljak)
 
 4.2.2: 2016-07-26
 	* Core: Fix ssh ControlPath socket file error (Darko Poljak)
