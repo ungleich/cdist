@@ -6,7 +6,7 @@ _cdist()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     prevprev="${COMP_WORDS[COMP_CWORD-2]}"
     opts="-h --help -d --debug -v --verbose -V --version"
-    cmds="banner shell config betainventory"
+    cmds="banner shell config inventory"
 
     case "${prevprev}" in
         shell)
@@ -18,7 +18,7 @@ _cdist()
                     ;;
             esac
             ;;
-         betainventory)
+         inventory)
             case "${prev}" in
                 list)
                     opts="-h --help -d --debug -v --verbose -I --inventory \
@@ -77,7 +77,7 @@ _cdist()
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
             return 0
             ;;
-        betainventory)
+        inventory)
             cmds="list add-host del-host add-tag del-tag"
             opts="-h --help -d --debug -v --verbose"
             COMPREPLY=( $(compgen -W "${opts} ${cmds}" -- ${cur}) )
