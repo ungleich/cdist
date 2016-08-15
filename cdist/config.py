@@ -71,8 +71,6 @@ def inspect_ssh_mux_opts():
 class Config(object):
     """Cdist main class to hold arbitrary data"""
 
-    BETA_ARGS = ['jobs']
-
     def __init__(self, local, remote, dry_run=False, jobs=None):
 
         self.local = local
@@ -112,19 +110,6 @@ class Config(object):
                     yield host
 
     @classmethod
-    def _check_beta(cls, args_dict):
-        if 'beta' not in args_dict:
-            args_dict['beta'] = False
-        # Check only if beta is not enabled: if beta option is specified then
-        # raise error.
-        if not args_dict['beta']:
-            err_msg = ("\'{}\' is beta, but beta is not enabled. If you want "
-                       "to use it please enable beta functionalities.")
-            for arg in cls.BETA_ARGS:
-                if arg in args_dict:
-                    raise cdist.Error(err_msg.format(arg))
-
-    @classmethod
     def commandline(cls, args):
         """Configure remote system"""
         import multiprocessing
@@ -135,9 +120,6 @@ class Config(object):
         if args.manifest == '-' and args.hostfile == '-':
             raise cdist.Error(("Cannot read both, manifest and host file, "
                                "from stdin"))
-
-        args_dict = vars(args)
-        cls._check_beta(args_dict)
 
         # if no host source is specified then read hosts from stdin
         if not (args.hostfile or args.host):
@@ -167,6 +149,7 @@ class Config(object):
         args.remote_exec_pattern = None
         args.remote_copy_pattern = None
 
+        args_dict = vars(args)
         # if remote-exec and/or remote-copy args are None then user
         # didn't specify command line options nor env vars:
         # inspect multiplexing options for default cdist.REMOTE_COPY/EXEC

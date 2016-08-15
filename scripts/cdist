@@ -22,6 +22,12 @@
 #
 
 
+# list of beta arguments for sub-commands
+BETA_ARGS = {
+    'config': ['jobs', ],
+}
+
+
 def check_positive_int(value):
     import argparse
 
@@ -34,6 +40,20 @@ def check_positive_int(value):
         raise argparse.ArgumentTypeError(
                 "{} is invalid positive int value".format(val))
     return val
+
+
+def check_beta(args_dict):
+    if 'beta' not in args_dict:
+        args_dict['beta'] = False
+    # Check only if beta is not enabled: if beta option is specified then
+    # raise error.
+    if not args_dict['beta']:
+        err_msg = ("\'{}\' is beta, but beta is not enabled. If you want "
+                   "to use it please enable beta functionalities.")
+        cmd = args_dict['command']
+        for arg in BETA_ARGS[cmd]:
+            if arg in args_dict:
+                raise cdist.CdistBetaRequired(cmd, arg)
 
 
 def commandline():
@@ -172,6 +192,7 @@ def commandline():
         parser['main'].print_help()
         sys.exit(0)
 
+    check_beta(vars(args))
     args.func(args)
 
 if __name__ == "__main__":
