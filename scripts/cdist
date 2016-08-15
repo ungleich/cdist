@@ -22,9 +22,11 @@
 #
 
 
+# list of beta sub-commands
+BETA_COMMANDS = ['inventory', ]
 # list of beta arguments for sub-commands
 BETA_ARGS = {
-    'config': ['jobs', ],
+    'config': ['jobs', 'tag', ],
 }
 
 
@@ -49,6 +51,10 @@ def check_beta(args_dict):
     # raise error.
     if not args_dict['beta']:
         cmd = args_dict['command']
+        # first check if command is beta
+        if cmd in BETA_COMMANDS:
+            raise cdist.CdistBetaRequired(cmd)
+        # then check if some command's argument is beta
         for arg in BETA_ARGS[cmd]:
             if arg in args_dict:
                 raise cdist.CdistBetaRequired(cmd, arg)
@@ -102,20 +108,28 @@ def commandline():
 
     # Inventory
     parser['inventory'] = parser['sub'].add_parser(
-           'betainventory', parents=[parser['loglevel']])
-    parser['inventory_main'] = argparse.ArgumentParser(
+           'inventory', parents=[parser['loglevel']])
+    parser['subcmd_main'] = argparse.ArgumentParser(
            add_help=False, parents=[parser['loglevel']])
-    parser['inventory_main'].add_argument(
+    parser['subcmd_main'].add_argument(
            '-I', '--inventory',
            help=('Use specified custom inventory directory.'
                  ' Default is \'inventory\' directory placed along default'
                  ' \'conf\' directory.'),
            dest="inventory_dir", required=False)
+    parser['subcmd_main'].add_argument(
+           '-b', '--enable-beta',
+           help=('Enable beta functionalities. Beta functionalities '
+                 'include:\n'
+                 '\tCOMMAND          OPTIONS\n'
+                 '\tinventory        ALL\n'
+                 '\tconfig           -j/--jobs, -t/--tag, -a/--all'),
+           action='store_true', dest='beta', default=False)
     parser['invsub'] = parser['inventory'].add_subparsers(
             title="Inventory commands", dest="command")
 
     parser['list'] = parser['invsub'].add_parser(
-            'list', parents=[parser['inventory_main']])
+            'list', parents=[parser['subcmd_main']])
     parser['list'].add_argument(
             'host', nargs='*', help='host(s) to list')
     parser['list'].add_argument(
@@ -139,7 +153,7 @@ def commandline():
                   'list all.'), dest='hostfile', required=False)
 
     parser['add-host'] = parser['invsub'].add_parser(
-            'add-host', parents=[parser['inventory_main']])
+            'add-host', parents=[parser['subcmd_main']])
     parser['add-host'].add_argument(
             'host', nargs='*', help='host(s) to add')
     parser['add-host'].add_argument(
@@ -151,7 +165,7 @@ def commandline():
            dest='hostfile', required=False)
 
     parser['add-tag'] = parser['invsub'].add_parser(
-            'add-tag', parents=[parser['inventory_main']])
+            'add-tag', parents=[parser['subcmd_main']])
     parser['add-tag'].add_argument(
            'host', nargs='*',
            help='list of host(s) for which tags are added')
@@ -180,7 +194,7 @@ def commandline():
            dest='tagfile', required=False)
 
     parser['del-host'] = parser['invsub'].add_parser(
-            'del-host', parents=[parser['inventory_main']])
+            'del-host', parents=[parser['subcmd_main']])
     parser['del-host'].add_argument(
             'host', nargs='*', help='host(s) to delete')
     parser['del-host'].add_argument(
@@ -195,7 +209,7 @@ def commandline():
             dest='hostfile', required=False)
 
     parser['del-tag'] = parser['invsub'].add_parser(
-            'del-tag', parents=[parser['inventory_main']])
+            'del-tag', parents=[parser['subcmd_main']])
     parser['del-tag'].add_argument(
             'host', nargs='*',
             help='list of host(s) for which tags are deleted')
@@ -232,14 +246,9 @@ def commandline():
 
     # Config
     parser['config'] = parser['sub'].add_parser(
-            'config', parents=[parser['inventory_main']])
+            'config', parents=[parser['subcmd_main']])
     parser['config'].add_argument(
             'host', nargs='*', help='host(s) to operate on')
-    parser['config'].add_argument(
-           '-b', '--enable-beta',
-           help=('Enable beta functionalities. Beta functionalities '
-                 'include the following options: -j/--jobs.'),
-           action='store_true', dest='beta', default=False)
     parser['config'].add_argument(
             '-c', '--conf-dir',
             help=('Add configuration directory (can be repeated, '
@@ -258,7 +267,7 @@ def commandline():
     parser['config'].add_argument(
            '-j', '--jobs', nargs='?', type=check_positive_int,
            help=('Specify the maximum number of parallel jobs, currently '
-                 'only global explorers are supported (currently in beta'),
+                 'only global explorers are supported'),
            action='store', dest='jobs',
            const=multiprocessing.cpu_count())
     parser['config'].add_argument(
