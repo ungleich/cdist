@@ -42,27 +42,23 @@ _cdist()
                 inventory)
                     case $words[3] in
                         list)
-                            opts=(-h --help -d --debug -v --verbose -I --inventory -H --host-only -a --all -t --tag -f --file)
+                            opts=(-h --help -d --debug -v --verbose -b --enable-beta -I --inventory -a --all -f --file -H --host-only -t --tag)
                             compadd "$@" -- $opts
                             ;;
                         add-host)
-                            opts=(-h --help -d --debug -v --verbose -I --inventory \
-                                -f --file)
+                            opts=(-h --help -d --debug -v --verbose -b --enable-beta -I --inventory -f --file)
                             compadd "$@" -- $opts
                             ;;
                         del-host)
-                            opts=(-h --help -d --debug -v --verbose -I --inventory \
-                                -f --file -a --all)
+                            opts=(-h --help -d --debug -v --verbose -b --enable-beta -I --inventory -a --all -f --file)
                             compadd "$@" -- $opts
                             ;;
                         add-tag)
-                            opts=(-h --help -d --debug -v --verbose -I --inventory \
-                                -f --file -t --taglist -T --tag-file)
+                            opts=(-h --help -d --debug -v --verbose -b --enable-beta -I --inventory -f --file -T --tag-file -t --taglist)
                             compadd "$@" -- $opts
                             ;;
                         del-tag)
-                            opts=(-h --help -d --debug -v --verbose -I --inventory \
-                                -f --file -t --taglist -T --tag-file -a --all)
+                            opts=(-h --help -d --debug -v --verbose -b --enable-beta -I --inventory -a --all -f --file -T --tag-file -t --taglist)
                             compadd "$@" -- $opts
                             ;;
                         *)

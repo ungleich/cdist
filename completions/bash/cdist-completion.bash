@@ -21,32 +21,33 @@ _cdist()
          inventory)
             case "${prev}" in
                 list)
-                    opts="-h --help -d --debug -v --verbose -I --inventory \
-                        -H --host-only -a --all -t --tag -f --file"
+                    opts="-h --help -d --debug -v --verbose -b --enable-beta \
+                        -I --inventory -a --all -f --file -H --host-only \
+                        -t --tag"
                     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
                     return 0
                     ;;
                 add-host)
-                    opts="-h --help -d --debug -v --verbose -I --inventory \
-                        -f --file"
+                    opts="-h --help -d --debug -v --verbose -b --enable-beta \
+                        -I --inventory -f --file"
                     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
                     return 0
                     ;;
                 del-host)
-                    opts="-h --help -d --debug -v --verbose -I --inventory \
-                        -f --file -a --all"
+                    opts="-h --help -d --debug -v --verbose -b --enable-beta \
+                        -I --inventory -a --all -f --file"
                     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
                     return 0
                     ;;
                 add-tag)
-                    opts="-h --help -d --debug -v --verbose -I --inventory \
-                        -f --file -t --taglist -T --tag-file"
+                    opts="-h --help -d --debug -v --verbose -b --enable-beta \
+                        -I --inventory -f --file -T --tag-file -t --taglist"
                     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
                     return 0
                     ;;
                 del-tag)
-                    opts="-h --help -d --debug -v --verbose -I --inventory \
-                        -f --file -t --taglist -T --tag-file -a --all"
+                    opts="-h --help -d --debug -v --verbose -b --enable-beta \
+                        -I --inventory -a --all -f --file -T --tag-file -t --taglist"
                     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
                     return 0
                     ;;
@@ -70,10 +71,10 @@ _cdist()
             return 0
             ;;
         config)
-            opts="-h --help -d --debug -v --verbose -a --all -b --enable-beta \
-                -c --conf-dir -f --file -i --initial-manifest -j --jobs \
-                -n --dry-run -o --out-dir -p --parallel -s --sequential \
-                --remote-copy --remote-exec -t --tags -I --inventory"
+            opts="-h --help -d --debug -v --verbose -b --enable-beta \
+                -I --inventory -c --conf-dir -f --file -i --initial-manifest \
+                -j --jobs -n --dry-run -o --out-dir -p --parallel \
+                -s --sequential --remote-copy --remote-exec -t --tags -a --all"
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
             return 0
             ;;
