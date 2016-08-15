@@ -55,9 +55,10 @@ def check_beta(args_dict):
         if cmd in BETA_COMMANDS:
             raise cdist.CdistBetaRequired(cmd)
         # then check if some command's argument is beta
-        for arg in BETA_ARGS[cmd]:
-            if arg in args_dict:
-                raise cdist.CdistBetaRequired(cmd, arg)
+        if cmd in BETA_ARGS:
+            for arg in BETA_ARGS[cmd]:
+                if arg in args_dict:
+                    raise cdist.CdistBetaRequired(cmd, arg)
 
 
 def commandline():
