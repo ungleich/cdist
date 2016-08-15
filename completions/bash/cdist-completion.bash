@@ -70,10 +70,10 @@ _cdist()
             return 0
             ;;
         config)
-            opts="-h --help -d --debug -v --verbose -I --inventory \
-                -c --conf-dir -f --file -i --initial-manifest -n --dry-run \
-                -o --out-dir -p --parallel -s --sequential --remote-copy \
-                --remote-exec -t --tag -a --all"
+            opts="-h --help -d --debug -v --verbose -a --all -b --enable-beta \
+                -c --conf-dir -f --file -i --initial-manifest -j --jobs \
+                -n --dry-run -o --out-dir -p --parallel -s --sequential \
+                --remote-copy --remote-exec -t --tags -I --inventory"
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
             return 0
             ;;
