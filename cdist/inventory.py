@@ -153,33 +153,33 @@ class Inventory(object):
 
         log.info("Using inventory: {}".format(args.inventory_dir))
         log.debug("Inventory args: {}".format(vars(args)))
-        log.debug("Inventory command: {}".format(args.command))
+        log.debug("Inventory command: {}".format(args.subcommand))
 
-        if args.command == "list":
+        if args.subcommand == "list":
             c = InventoryList(hosts=args.host, istag=args.tag,
                               hostfile=args.hostfile,
                               db_basedir=args.inventory_dir,
                               list_only_host=args.list_only_host,
                               has_all_tags=args.has_all_tags)
-        elif args.command == "add-host":
+        elif args.subcommand == "add-host":
             c = InventoryHost(hosts=args.host, hostfile=args.hostfile,
                               db_basedir=args.inventory_dir)
-        elif args.command == "del-host":
+        elif args.subcommand == "del-host":
             c = InventoryHost(hosts=args.host, hostfile=args.hostfile,
                               all=args.all, db_basedir=args.inventory_dir,
                               action="del")
-        elif args.command == "add-tag":
+        elif args.subcommand == "add-tag":
             c = InventoryTag(hosts=args.host, tags=args.taglist,
                              hostfile=args.hostfile, tagfile=args.tagfile,
                              db_basedir=args.inventory_dir)
-        elif args.command == "del-tag":
+        elif args.subcommand == "del-tag":
             c = InventoryTag(hosts=args.host, tags=args.taglist,
                              hostfile=args.hostfile, tagfile=args.tagfile,
                              all=args.all, db_basedir=args.inventory_dir,
                              action="del")
         else:
             raise cdist.Error("Unknown inventory command \'{}\'".format(
-                        args.command))
+                        args.subcommand))
         c.run()
 
 

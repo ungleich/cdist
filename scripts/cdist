@@ -113,45 +113,44 @@ def commandline():
     parser['subcmd_main'] = argparse.ArgumentParser(
            add_help=False, parents=[parser['loglevel']])
     parser['subcmd_main'].add_argument(
+           '-b', '--enable-beta',
+           help=('Enable beta functionalities. Beta functionalities '
+                 'include inventory command with all sub-commands '
+                 'and all options; config sub-command options: '
+                 '-j/--jobs, -t/--tag, -a/--all.'),
+           action='store_true', dest='beta', default=False)
+    parser['subcmd_main'].add_argument(
            '-I', '--inventory',
            help=('Use specified custom inventory directory.'
                  ' Default is \'inventory\' directory placed along default'
                  ' \'conf\' directory.'),
            dest="inventory_dir", required=False)
-    parser['subcmd_main'].add_argument(
-           '-b', '--enable-beta',
-           help=('Enable beta functionalities. Beta functionalities '
-                 'include:\n'
-                 '\tCOMMAND          OPTIONS\n'
-                 '\tinventory        ALL\n'
-                 '\tconfig           -j/--jobs, -t/--tag, -a/--all'),
-           action='store_true', dest='beta', default=False)
     parser['invsub'] = parser['inventory'].add_subparsers(
-            title="Inventory commands", dest="command")
+            title="Inventory commands", dest="subcommand")
 
     parser['list'] = parser['invsub'].add_parser(
             'list', parents=[parser['subcmd_main']])
     parser['list'].add_argument(
             'host', nargs='*', help='host(s) to list')
     parser['list'].add_argument(
-            '-H', '--host-only', help=('Suppress tags listing'),
-            action="store_true", dest="list_only_host", default=False)
-    parser['list'].add_argument(
             '-a', '--all',
             help=('list hosts that have all specified tags, '
                   'if -t/--tag is specified'),
             action="store_true", dest="has_all_tags", default=False)
-    parser['list'].add_argument(
-            '-t', '--tag',
-            help=('host is specified by tag, not hostname/address; '
-                  'list all hosts that contain any of specified tags'),
-            action="store_true", default=False)
     parser['list'].add_argument(
             '-f', '--file',
             help=('Read additional hosts to list from specified file '
                   'or from stdin if \'-\' (each host on separate line). '
                   'If no host or host file is specified then, by default, '
                   'list all.'), dest='hostfile', required=False)
+    parser['list'].add_argument(
+            '-H', '--host-only', help=('Suppress tags listing'),
+            action="store_true", dest="list_only_host", default=False)
+    parser['list'].add_argument(
+            '-t', '--tag',
+            help=('host is specified by tag, not hostname/address; '
+                  'list all hosts that contain any of specified tags'),
+            action="store_true", default=False)
 
     parser['add-host'] = parser['invsub'].add_parser(
             'add-host', parents=[parser['subcmd_main']])
@@ -180,11 +179,6 @@ def commandline():
                  ' added to all hosts.'),
            dest='hostfile', required=False)
     parser['add-tag'].add_argument(
-           '-t', '--taglist',
-           help=("Tag list to be added for specified host(s), comma separated"
-                 " values"),
-           dest="taglist", required=False)
-    parser['add-tag'].add_argument(
            '-T', '--tag-file',
            help=('Read additional tags to add from specified file '
                  'or from stdin if \'-\' (each tag on separate line). '
@@ -193,6 +187,11 @@ def commandline():
                  ' are specified then tags are read from stdin and are'
                  ' added to all hosts.'),
            dest='tagfile', required=False)
+    parser['add-tag'].add_argument(
+           '-t', '--taglist',
+           help=("Tag list to be added for specified host(s), comma separated"
+                 " values"),
+           dest="taglist", required=False)
 
     parser['del-host'] = parser['invsub'].add_parser(
             'del-host', parents=[parser['subcmd_main']])
@@ -228,11 +227,6 @@ def commandline():
                   ' deleted from all hosts.'),
             dest='hostfile', required=False)
     parser['del-tag'].add_argument(
-            '-t', '--taglist',
-            help=("Tag list to be deleted for specified host(s), "
-                  "comma separated values"),
-            dest="taglist", required=False)
-    parser['del-tag'].add_argument(
             '-T', '--tag-file',
             help=('Read additional tags from specified file '
                   'or from stdin if \'-\' (each tag on separate line). '
@@ -241,6 +235,11 @@ def commandline():
                   ' hosts/hostfile are specified then tags are read from'
                   ' stdin and are added to all hosts.'),
             dest='tagfile', required=False)
+    parser['del-tag'].add_argument(
+            '-t', '--taglist',
+            help=("Tag list to be deleted for specified host(s), "
+                  "comma separated values"),
+            dest="taglist", required=False)
 
     parser['inventory'].set_defaults(
             func=cdist.inventory.Inventory.commandline)
@@ -250,6 +249,11 @@ def commandline():
             'config', parents=[parser['subcmd_main']])
     parser['config'].add_argument(
             'host', nargs='*', help='host(s) to operate on')
+    parser['config'].add_argument(
+             '-a', '--all',
+             help=('list hosts that have all specified tags, '
+                   'if -t/--tag is specified'),
+             action="store_true", dest="has_all_tags", default=False)
     parser['config'].add_argument(
             '-c', '--conf-dir',
             help=('Add configuration directory (can be repeated, '
@@ -304,11 +308,6 @@ def commandline():
              help=('host is specified by tag, not hostname/address; '
                    'list all hosts that contain any of specified tags'),
              dest='tag', required=False, action="store_true", default=False)
-    parser['config'].add_argument(
-             '-a', '--all',
-             help=('list hosts that have all specified tags, '
-                   'if -t/--tag is specified'),
-             action="store_true", dest="has_all_tags", default=False)
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
 
     for p in parser:

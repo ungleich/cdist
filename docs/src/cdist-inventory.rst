@@ -6,9 +6,8 @@ Introduction
 
 cdist comes with simple built-in tag based inventory. It is a simple inventory
 with list of hosts and a host has a list of tags.
-Inventory functionality is still in **beta** so it comes with new features
-policy. New features are from now added with **beta** prefix. **beta\***
-can change at any time without warning or might even be removed.
+Inventory functionality is still in **beta** so it can be used only if enable-beta
+command line flag is specified (-b, --enable-beta).
 
 Description
 -----------
@@ -49,118 +48,118 @@ Examples
 .. code-block:: sh
 
     # List inventory content
-    $ cdist betainventory list
+    $ cdist list -b
 
     # List inventory for specified host localhost
-    $ cdist betainventory list localhost
+    $ cdist list -b localhost
 
     # List inventory for specified tag loadbalancer
-    $ cdist betainventory list -t loadbalancer
+    $ cdist list -b -t loadbalancer
 
     # Add hosts to inventory
-    $ cdist betainventory add-host web1 web2 web3
+    $ cdist add-host -b web1 web2 web3
 
     # Delete hosts from file old-hosts from inventory
-    $ cdist betainventory del-host -f old-hosts
+    $ cdist del-host -b -f old-hosts
 
     # Add tags to specifed hosts
-    $ cdist betainventory add-tag -t europe,croatia,web,static web1 web2
+    $ cdist add-tag -b -t europe,croatia,web,static web1 web2
 
     # Add tag to all hosts in inventory
-    $ cdist betainventory add-tag -t vm
+    $ cdist add-tag -b -t vm
 
     # Delete all tags from specified host
-    $ cdist betainventory del-tag -a localhost
+    $ cdist del-tag -b -a localhost
 
     # Delete tags read from stdin from hosts specified by file hosts
-    $ cdist betainventory del-tag -T - -f hosts
+    $ cdist del-tag -b -T - -f hosts
 
     # Configure hosts from inventory with any of specified tags
-    $ cdist config -t web dynamic
+    $ cdist -b -t web dynamic
 
     # Configure hosts from inventory with all specified tags
-    $ cdist config -t -a web dynamic
+    $ cdist -b -t -a web dynamic
 
 Example of manipulating database
 --------------------------------
 
 .. code-block:: sh
 
-    $ python3 scripts/cdist betainventory list
-    $ python3 scripts/cdist betainventory add-host localhost
-    $ python3 scripts/cdist betainventory add-host test.mycloud.net
-    $ python3 scripts/cdist betainventory list
+    $ python3 scripts/cdist inventory list -b
+    $ python3 scripts/cdist inventory add-host -b localhost
+    $ python3 scripts/cdist inventory add-host -b test.mycloud.net
+    $ python3 scripts/cdist inventory list -b
     localhost
     test.mycloud.net
-    $ python3 scripts/cdist betainventory add-host web1.mycloud.net web2.mycloud.net shell1.mycloud.net shell2.mycloud.net
-    $ python3 scripts/cdist betainventory list
+    $ python3 scripts/cdist inventory add-host -b web1.mycloud.net web2.mycloud.net shell1.mycloud.net shell2.mycloud.net
+    $ python3 scripts/cdist inventory list -b
     localhost
     test.mycloud.net
     web1.mycloud.net
     web2.mycloud.net
     shell1.mycloud.net
     shell2.mycloud.net
-    $ python3 scripts/cdist betainventory add-tag -t web web1.mycloud.net web2.mycloud.net
-    $ python3 scripts/cdist betainventory add-tag -t shell shell1.mycloud.net shell2.mycloud.net
-    $ python3 scripts/cdist betainventory add-tag -t cloud
-    $ python3 scripts/cdist betainventory list
+    $ python3 scripts/cdist inventory add-tag -b -t web web1.mycloud.net web2.mycloud.net
+    $ python3 scripts/cdist inventory add-tag -b -t shell shell1.mycloud.net shell2.mycloud.net
+    $ python3 scripts/cdist inventory add-tag -b -t cloud
+    $ python3 scripts/cdist inventory list -b
     localhost cloud
     test.mycloud.net cloud
     web1.mycloud.net cloud,web
     web2.mycloud.net cloud,web
     shell1.mycloud.net cloud,shell
     shell2.mycloud.net cloud,shell
-    $ python3 scripts/cdist betainventory add-tag -t test,web,shell test.mycloud.net
-    $ python3 scripts/cdist betainventory list
+    $ python3 scripts/cdist inventory add-tag -b -t test,web,shell test.mycloud.net
+    $ python3 scripts/cdist inventory list -b
     localhost cloud
     test.mycloud.net cloud,shell,test,web
     web1.mycloud.net cloud,web
     web2.mycloud.net cloud,web
     shell1.mycloud.net cloud,shell
     shell2.mycloud.net cloud,shell
-    $ python3 scripts/cdist betainventory del-tag -t shell test.mycloud.net
-    $ python3 scripts/cdist betainventory list
+    $ python3 scripts/cdist inventory del-tag -b -t shell test.mycloud.net
+    $ python3 scripts/cdist inventory list -b
     localhost cloud
     test.mycloud.net cloud,test,web
     web1.mycloud.net cloud,web
     web2.mycloud.net cloud,web
     shell1.mycloud.net cloud,shell
     shell2.mycloud.net cloud,shell
-    $ python3 scripts/cdist betainventory add-tag -t all
-    $ python3 scripts/cdist betainventory add-tag -t mistake
-    $ python3 scripts/cdist betainventory list
+    $ python3 scripts/cdist inventory add-tag -b -t all
+    $ python3 scripts/cdist inventory add-tag -b -t mistake
+    $ python3 scripts/cdist inventory list -b
     localhost all,cloud,mistake
     test.mycloud.net all,cloud,mistake,test,web
     web1.mycloud.net all,cloud,mistake,web
     web2.mycloud.net all,cloud,mistake,web
     shell1.mycloud.net all,cloud,mistake,shell
     shell2.mycloud.net all,cloud,mistake,shell
-    $ python3 scripts/cdist betainventory del-tag -t mistake
-    $ python3 scripts/cdist betainventory list
+    $ python3 scripts/cdist inventory del-tag -b -t mistake
+    $ python3 scripts/cdist inventory list -b
     localhost all,cloud
     test.mycloud.net all,cloud,test,web
     web1.mycloud.net all,cloud,web
     web2.mycloud.net all,cloud,web
     shell1.mycloud.net all,cloud,shell
     shell2.mycloud.net all,cloud,shell
-    $ python3 scripts/cdist betainventory del-host localhost
-    $ python3 scripts/cdist betainventory list
+    $ python3 scripts/cdist inventory del-host -b localhost
+    $ python3 scripts/cdist inventory list -b
     test.mycloud.net all,cloud,test,web
     web1.mycloud.net all,cloud,web
     web2.mycloud.net all,cloud,web
     shell1.mycloud.net all,cloud,shell
     shell2.mycloud.net all,cloud,shell
-    $ python3 scripts/cdist betainventory list -t web
+    $ python3 scripts/cdist inventory list -b -t web
     test.mycloud.net all,cloud,test,web
     web1.mycloud.net all,cloud,web
     web2.mycloud.net all,cloud,web
-    $ python3 scripts/cdist betainventory list -t -a web test
+    $ python3 scripts/cdist inventory list -b -t -a web test
     test.mycloud.net all,cloud,test,web
-    $ python3 scripts/cdist betainventory list -t -a web all
+    $ python3 scripts/cdist inventory list -b -t -a web all
     test.mycloud.net all,cloud,test,web
     web1.mycloud.net all,cloud,web
     web2.mycloud.net all,cloud,web
-    $ python3 scripts/cdist betainventory list -t web all
+    $ python3 scripts/cdist inventory list -b -t web all
     test.mycloud.net all,cloud,test,web
     web1.mycloud.net all,cloud,web
     web2.mycloud.net all,cloud,web

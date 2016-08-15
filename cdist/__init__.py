@@ -59,16 +59,24 @@ class UnresolvableRequirementsError(cdist.Error):
 class CdistBetaRequired(cdist.Error):
     """Beta functionality is used but beta is not enabled"""
 
-    def __init__(self, command, arg):
+    def __init__(self, command, arg=None):
         self.command = command
         self.arg = arg
 
     def __str__(self):
-        err_msg = ("\'{}\' argument of \'{}\' command is beta, but beta is "
-                   "not enabled. If you want to use it please enable beta "
-                   "functionalities by using the -b/--enable-beta command "
-                   "line flag.")
-        return err_msg.format(self.arg, self.command)
+        if self.arg is None:
+            err_msg = ("\'{}\' command is beta, but beta is "
+                       "not enabled. If you want to use it please enable beta "
+                       "functionalities by using the -b/--enable-beta command "
+                       "line flag.")
+            fmt_args = [self.command, ]
+        else:
+            err_msg = ("\'{}\' argument of \'{}\' command is beta, but beta "
+                       "is not enabled. If you want to use it please enable "
+                       "beta functionalities by using the -b/--enable-beta "
+                       "command line flag.")
+            fmt_args = [self.arg, self.command, ]
+        return err_msg.format(*fmt_args)
 
 
 class CdistObjectError(Error):
