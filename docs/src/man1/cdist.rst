@@ -15,9 +15,9 @@ SYNOPSIS
 
     cdist banner [-h] [-d] [-v]
 
-    cdist config [-h] [-d] [-v] [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST]
-                 [-n] [-o OUT_PATH] [-p] [-s] [--remote-copy REMOTE_COPY]
-                 [--remote-exec REMOTE_EXEC] [-j [JOBS]] [-b]
+    cdist config [-h] [-d] [-v] [-b] [-c CONF_DIR] [-f HOSTFILE]
+                 [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
+                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                  [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
@@ -62,6 +62,11 @@ CONFIG
 ------
 Configure one or more hosts.
 
+.. option:: -b, --enable-beta
+
+    Enable beta functionalities. Beta functionalities include the
+    following options: -j/--jobs.
+
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
     Add a configuration directory. Can be specified multiple times.
@@ -82,6 +87,11 @@ Configure one or more hosts.
 .. option:: -i MANIFEST, --initial-manifest MANIFEST
 
     Path to a cdist manifest or - to read from stdin
+
+.. option:: -j [JOBS], --jobs [JOBS]
+
+    Specify the maximum number of parallel jobs; currently only
+    global explorers are supported (currently in beta)
 
 .. option:: -n, --dry-run
 
@@ -106,16 +116,6 @@ Configure one or more hosts.
 .. option:: --remote-exec REMOTE_EXEC
 
     Command to use for remote execution (should behave like ssh)
-
-.. option:: -j [JOBS], --jobs [JOBS]
-
-    Specify the maximum number of parallel jobs; currently only
-    global explorers are supported (currently in beta)
-
-.. option:: -b, --enable-beta
-
-    Enable beta functionalities. Beta functionalities include the
-    following options: -j/--jobs.
 
 SHELL
 -----

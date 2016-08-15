@@ -48,8 +48,6 @@ def check_beta(args_dict):
     # Check only if beta is not enabled: if beta option is specified then
     # raise error.
     if not args_dict['beta']:
-        err_msg = ("\'{}\' is beta, but beta is not enabled. If you want "
-                   "to use it please enable beta functionalities.")
         cmd = args_dict['command']
         for arg in BETA_ARGS[cmd]:
             if arg in args_dict:
@@ -98,6 +96,11 @@ def commandline():
     parser['config'].add_argument(
             'host', nargs='*', help='host(s) to operate on')
     parser['config'].add_argument(
+           '-b', '--enable-beta',
+           help=('Enable beta functionalities. Beta functionalities '
+                 'include the following options: -j/--jobs.'),
+           action='store_true', dest='beta', default=False)
+    parser['config'].add_argument(
             '-c', '--conf-dir',
             help=('Add configuration directory (can be repeated, '
                   'last one wins)'), action='append')
@@ -112,6 +115,12 @@ def commandline():
            '-i', '--initial-manifest',
            help='Path to a cdist manifest or \'-\' to read from stdin.',
            dest='manifest', required=False)
+    parser['config'].add_argument(
+           '-j', '--jobs', nargs='?', type=check_positive_int,
+           help=('Specify the maximum number of parallel jobs, currently '
+                 'only global explorers are supported (currently in beta'),
+           action='store', dest='jobs',
+           const=multiprocessing.cpu_count())
     parser['config'].add_argument(
            '-n', '--dry-run',
            help='Do not execute code', action='store_true')
@@ -140,17 +149,6 @@ def commandline():
                  '(should behave like ssh)'),
            action='store', dest='remote_exec',
            default=os.environ.get('CDIST_REMOTE_EXEC'))
-    parser['config'].add_argument(
-           '-j', '--jobs', nargs='?', type=check_positive_int,
-           help=('Specify the maximum number of parallel jobs, currently '
-                 'only global explorers are supported (currently in beta'),
-           action='store', dest='jobs',
-           const=multiprocessing.cpu_count())
-    parser['config'].add_argument(
-           '-b', '--enable-beta',
-           help=('Enable beta functionalities. Beta functionalities '
-                 'include the following options: -j/--jobs.'),
-           action='store_true', dest='beta', default=False)
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
 
     # Shell
