@@ -66,7 +66,8 @@ class CdistBetaRequired(cdist.Error):
     def __str__(self):
         err_msg = ("\'{}\' argument of \'{}\' command is beta, but beta is "
                    "not enabled. If you want to use it please enable beta "
-                   "functionalities.")
+                   "functionalities by using the -b/--enable-beta command "
+                   "line flag.")
         return err_msg.format(self.arg, self.command)
 
 
