@@ -17,7 +17,7 @@ SYNOPSIS
 
     cdist config [-h] [-d] [-v] [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST]
                  [-n] [-o OUT_PATH] [-p] [-s] [--remote-copy REMOTE_COPY]
-                 [--remote-exec REMOTE_EXEC] [-j [JOBS]]
+                 [--remote-exec REMOTE_EXEC] [-j [JOBS]] [-b]
                  [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
@@ -110,7 +110,12 @@ Configure one or more hosts.
 .. option:: -j [JOBS], --jobs [JOBS]
 
     Specify the maximum number of parallel jobs; currently only
-    global explorers are supported
+    global explorers are supported (currently in beta)
+
+.. option:: -b, --enable-beta
+
+    Enable beta functionalities. Beta functionalities include the
+    following options: -j/--jobs.
 
 SHELL
 -----
