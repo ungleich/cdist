@@ -1,0 +1,102 @@
+#!/bin/sh
+#
+# 2016 - 2016 Daniel Heule     (hda at sfs.biz)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+fstype="$(cat "$__object/parameter/fstype")"
+
+if [ -f "$__object/parameter/device" ]; then
+    mydev="$(cat "$__object/parameter/device")"
+else
+    mydev="$__object_id"
+fi
+
+label="$(cat "$__object/parameter/label")"
+mkfsoptions="$(cat "$__object/parameter/mkfsoptions")"
+
+
+if [ -f "$__object/parameter/force" ]; then
+  # create filesystem even an other filesystem is on disk or the label is not correct, use with caution !
+  forcefs="true"
+else
+  forcefs="false"
+fi
+
+
+
+blkdev_devname="$(grep -P -o 'NAME="\K[^"]*' "$__object/explorer/lsblk")"
+blkdev_fstype="$(grep -P -o 'FSTYPE="\K[^"]*' "$__object/explorer/lsblk")"
+blkdev_label="$(grep -P -o 'LABEL="\K[^"]*' "$__object/explorer/lsblk")"
+blkdev_mountpoint="$(grep -P -o 'MOUNTPOINT="\K[^"]*' "$__object/explorer/lsblk")"
+
+if [ -z "$blkdev_devname" ]; then
+    echo "Specified device $mydev not found on target system" >&2
+    exit 1
+fi
+
+[ "$blkdev_label" = "$label" ] && [ "$blkdev_fstype" = "$fstype" ] && exit 0
+
+if [ -n "$blkdev_mountpoint" ]; then
+    echo "Specified device $mydev is mounted on $blkdev_mountpoint, __filesystem does NOTHING with mountd devices" >&2
+    exit 0
+fi
+
+if [ -n "$blkdev_fstype" ] && [ "$forcefs" != "true" ]; then
+    if [ "$blkdev_label" != "$label" ]; then
+        echo "Specified device $mydev has not the spezified label: $blkdev_label, but __filesystem does NOTHING in this case without the --force option" >&2
+        exit 0
+    fi
+    if [ "$blkdev_fstype" != "$fstype" ]; then
+        echo "Specified device $mydev has not the spezified filesystem: $blkdev_fstype, but __filesystem does NOTHING in this case without the --force option" >&2
+        exit 0
+    fi
+fi
+
+
+# ok, all conditions checked, we need to format the device, lets go
+opts="$mkfsoptions"
+if [ -n "$label" ]; then
+    opts="$opts -L '$label'"
+fi
+
+case "$fstype" in
+    ext2|ext3|ext4)
+        if [ "$forcefs" = "true" ]; then
+            opts="$opts -F"
+        fi
+        echo "mkfs.$fstype $opts /dev/$blkdev_devname"
+    ;;
+    btrfs)
+        if [ "$forcefs" = "true" ]; then
+            opts="$opts --force"
+        fi
+        echo "mkfs.btrfs $opts /dev/$blkdev_devname"
+    ;;
+    xfs)
+        if [ "$forcefs" = "true" ]; then
+            opts="$opts -f"
+        fi
+        echo "mkfs.xfs $opts /dev/$blkdev_devname"
+    ;;
+    *)
+        echo "__filesystem type lacks implementation for filesystem: $fstype" >&2
+        exit 1
+    ;;
+esac
+echo "filesystem $fstype on $mydev : /dev/$blkdev_devname created" >> "$__messages_out"

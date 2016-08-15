@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,12 +17,23 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Sync repo to testhosts
-#
 
-dirs="cdist cdist-nutzung"
 
-for dir in $dirs; do
-   rsync -av --delete /home/users/nico/p/$dir/ root@rnic01:$dir
-done
+os=$(cat "$__global/explorer/os")
+
+case "$os" in
+   redhat|centos|ubuntu|debian|archlinux)
+      :
+   ;;
+   *)
+      echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+      echo "Please contribute an implementation for it if you can." >&2
+      exit 1
+   ;;
+esac
+
+__key_value "$__object_name" \
+   --key "$__object_id" \
+   --file /etc/sysctl.conf \
+   --value "$(cat "$__object/parameter/value")" \
+   --delimiter '='

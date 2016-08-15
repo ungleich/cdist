@@ -15,11 +15,10 @@ SYNOPSIS
 
     cdist banner [-h] [-d] [-v]
 
-    cdist config [-h] [-d] [-v] [-I INVENTORY_DIR] [-c CONF_DIR]
-                 [-f HOSTFILE] [-i MANIFEST] [-n] [-o OUT_PATH] [-p] [-s]
-                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
-                 [-t] [-a]
-                 [host [host ...]]
+    cdist config [-h] [-d] [-v] [-a] [-b] [-c CONF_DIR] [-f HOSTFILE]
+                 [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
+                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC] [-t]
+                 [-I INVENTORY_DIR]
 
     cdist betainventory list [-h] [-d] [-v] [-I INVENTORY_DIR] [-H] [-a] [-t]
                  [-f HOSTFILE]
@@ -56,13 +55,13 @@ GENERAL
 -------
 All commands accept the following options:
 
+.. option:: -h, --help
+
+    Show the help screen
+
 .. option:: -d, --debug
 
     Set log level to debug
-
-.. option:: -h, --help
-
-   Show the help screen
 
 .. option:: -v, --verbose
 
@@ -82,6 +81,16 @@ cdist posters - a must have for every office.
 CONFIG
 ------
 Configure one or more hosts.
+
+.. option:: -a, --all
+
+    list hosts that have all specified tags, if -t/--tag
+    is specified
+
+.. option:: -b, --enable-beta
+
+    Enable beta functionalities. Beta functionalities include the
+    following options: -j/--jobs.
 
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
@@ -104,15 +113,18 @@ Configure one or more hosts.
 
     Path to a cdist manifest or - to read from stdin
 
-.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
+.. option:: -j [JOBS], --jobs [JOBS]
 
-    Use specified custom inventory directory. Default inventory directory is
-    'inventory' directory placed inside cdist distribution under 'cdist'
-    directory along 'conf' directory.
+    Specify the maximum number of parallel jobs; currently only
+    global explorers are supported (currently in beta)
 
 .. option:: -n, --dry-run
 
     Do not execute code
+
+.. option:: -o OUT_PATH, --out-dir OUT_PATH
+
+    Directory to save cdist output in
 
 .. option:: -p, --parallel
 
@@ -120,7 +132,7 @@ Configure one or more hosts.
 
 .. option:: -s, --sequential
 
-    Operate on multiple hosts sequentially
+    Operate on multiple hosts sequentially (default)
 
 .. option:: --remote-copy REMOTE_COPY
 
@@ -135,10 +147,11 @@ Configure one or more hosts.
     host is specified by tag, not hostname/address; list
     all hosts that contain any of specified tags
 
-.. option:: -a, --all
+.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
-    list hosts that have all specified tags, if -t/--tag
-    is specified
+    Use specified custom inventory directory. Default inventory directory is
+    'inventory' directory placed inside cdist distribution under 'cdist'
+    directory along 'conf' directory.
 
 
 INVENTORY
@@ -337,7 +350,7 @@ to the types as commands. It can be thought as an
 "interactive manifest" environment. See below for example
 usage. Its primary use is for debugging type parameters.
 
-.. option:: -s/--shell
+.. option:: -s SHELL, --shell SHELL
 
     Select shell to use, defaults to current shell. Used shell should
     be POSIX compatible shell.

@@ -1,5 +1,14 @@
 Changelog
 ---------
+next:
+	* Core: Add -b, --enable-beta option for enabling beta functionalities (Darko Poljak)
+	* Core: Add -j, --jobs option for parallel execution and add parallel support for global explorers (currently in beta) (Darko Poljak)
+	* Core: Add derived env vars for target hostname and fqdn (Darko Poljak)
+	* New type: __keyboard: Set keyboard layout (Carlos Ortigoza)
+	* Documentation: Re-license types' man pages to GPLV3+ (Dmitry Bogatov,	Darko Poljak)
+	* New type __filesystem: manage filesystems on devices (Daniel Heule)
+	* New type: __locale_system (Steven Armstrong, Carlos Ortigoza, Nico Schottelius)
+	* New type: __sysctl (Steven Armstrong)
 
 next:
 	* Core: Add inventory (beta) functionality (Darko Poljak)
@@ -154,7 +163,7 @@ next:
 	* Documentation: Cleanup up, added HTML links (Tomas Pospisek)
 	* Explorer interfaces: Remove test output (Daniel Heule)
 	* Type __jail: Add messaging support (Jake Guffey)
-	
+
 3.1.3: 2014-04-29
 	* New Type: __yum_repo (Steven Armstrong)
 	* Type __hostname: Add support for CentOS (Nico Schottelius)
@@ -316,7 +325,7 @@ next:
 	* New Type: __postfix_postconf (Steven Armstrong)
 	* New Type: __postfix_postmap (Steven Armstrong)
 	* New Type: __postfix_reload (Steven Armstrong)
-	* Type __line: Ensure regex does not contain / 
+	* Type __line: Ensure regex does not contain /
 	* Type __ssh_authorized_keys: Bugfix: Preserve ownership (Steven Armstrong)
 
 2.3.3: 2013-09-09
@@ -394,7 +403,7 @@ next:
 	* Support for CDIST_PATH (Steven Armstrong)
 
 2.1.0pre8: 2012-11-15
-	* Type cleanup: __apt_ppa, __apt_ppa_update_index, __file, 
+	* Type cleanup: __apt_ppa, __apt_ppa_update_index, __file,
 		__ssh_authorized_key, __timezone, all install types (Steven Armstrong)
 	* Types: Remove all parameter changing code (Nico Schottelius)
 	* Type __rvm_ruby: Change parameter "default" to be boolean (Nico Schottelius)
@@ -458,7 +467,7 @@ next:
 	* Feature __group: Added support for FreeBSD (Jake Guffey)
 	* New Type: __package_zypper (Nico Schottelius)
 	* Feature Types: Initial Support for SuSE Linux (Nico Schottelius)
-	
+
 2.0.13: 2012-06-05
 	* Bugfix __ssh_authorized_key: Ensure it sets proper group (contradict)
 	* Bugfix __addifnosuchline: Fixed quotes/interpolation bug ("a  b" became "a b") (Nico Schottelius)
@@ -490,7 +499,7 @@ next:
 	* Various smaller bugfixes (Chris Lamb)
 
 2.0.9: 2012-03-12
-	* Cleanup documentation: Fix environment variable list to be properly 
+	* Cleanup documentation: Fix environment variable list to be properly
 		displayed (Giel van Schijndel)
 	* Cleanup documentation: Some minor corrections
 	* New Type: __package_opkg (Giel van Schijndel)
@@ -499,7 +508,7 @@ next:
 	* Feature __package: Support for OpenWRT (Giel van Schijndel)
 	* Feature __start_on_boot: Support for OpenWRT (Giel van Schijndel)
 	* Feature __start_on_boot: Support for Amazon Linux (Matt Coddington)
-	* New Example: Use rsync to backup files (Matt Coddington) 
+	* New Example: Use rsync to backup files (Matt Coddington)
 	* Feature core: Exit non-zero, if configuration failed (Nico Schottelius)
 	* Documentation: Describe how to do templating (Aurélien Bondis)
 
@@ -544,7 +553,7 @@ next:
 		(Steven Armstrong, Daniel Maher)
 	* Cleanup: Explicitly require Python >= 3.2 (do not fail implicitly) (Nico Schottelius)
 	* Documentation: (Re)write of the tutorial (Nico Schottelius)
-	* Feature: __addifnosuchline supports matching on 
+	* Feature: __addifnosuchline supports matching on
 		regular expressions (Daniel Maher)
 	* Feature: __directory, __file, __link:
 		Add --state parameter (Steven Armstrong)

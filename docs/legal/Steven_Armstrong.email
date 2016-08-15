@@ -1,0 +1,57 @@
+From kaction  Thu Jul 21 00:55:04 2016
+Return-path: <steven-cdist@armstrong.cc>
+Envelope-to: KAction@gnu.org
+Delivery-date: Wed, 20 Jul 2016 17:51:39 -0400
+Received: from fencepost.gnu.org [208.118.235.10]
+	by searing with POP3 (fetchmail-6.3.26)
+	for <kaction@localhost> (single-drop); Thu, 21 Jul 2016 00:55:04 +0300 (MSK)
+Received: from eggs.gnu.org ([2001:4830:134:3::10]:42614)
+	by fencepost.gnu.org with esmtps (TLS1.0:RSA_AES_256_CBC_SHA1:256)
+	(Exim 4.82)
+	(envelope-from <steven-cdist@armstrong.cc>)
+	id 1bPzP1-0005f6-89
+	for KAction@gnu.org; Wed, 20 Jul 2016 17:51:39 -0400
+Received: from Debian-exim by eggs.gnu.org with spam-scanned (Exim 4.71)
+	(envelope-from <steven-cdist@armstrong.cc>)
+	id 1bPzOx-00032C-RS
+	for KAction@gnu.org; Wed, 20 Jul 2016 17:51:38 -0400
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on eggs.gnu.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_50,RP_MATCHES_RCVD
+	autolearn=disabled version=3.3.2
+Received: from wolke.armstrong.cc ([136.243.209.126]:37928)
+	by eggs.gnu.org with esmtp (Exim 4.71)
+	(envelope-from <steven-cdist@armstrong.cc>)
+	id 1bPzOx-00031o-L9
+	for KAction@gnu.org; Wed, 20 Jul 2016 17:51:35 -0400
+Sender: steven@armstrong.cc
+Subject: Re: cdist contribution relicensing
+To: Dmitry Bogatov <KAction@gnu.org>
+References: <E1bPt8C-0004Ob-EO@eggs.gnu.org>
+From: Steven Armstrong <steven-cdist@armstrong.cc>
+Message-ID: <cb41e882-06c7-0ee4-0cdb-5881bfd1f1c7@armstrong.cc>
+Date: Wed, 20 Jul 2016 23:51:28 +0200
+MIME-Version: 1.0
+In-Reply-To: <E1bPt8C-0004Ob-EO@eggs.gnu.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-detected-operating-system: by eggs.gnu.org: GNU/Linux 2.2.x-3.x [generic]
+X-Received-From: 136.243.209.126
+X-UIDL: b-6"!eP*"!*!D"!c+f!!
+
+Dmitry Bogatov wrote on 07/20/16 17:09:
+> 	I, #name# <#email#> permit to relicense all my contribution to
+> 	cdist project, source code https://github.com/ungleich/cdist
+> 	to GNU General Public license, version 3 or (at your option)
+> 	any later version, as published by Free Software Foundation.
+>
+>         #day# Jule 2016 year.
+
+I, Steven Armstrong <steven-cdist@armstrong.cc>, permit to re-license 
+all my contribution to the cdist project source code 
+https://github.com/ungleich/cdist to GNU General Public license, version 
+3 or (at your option) any later version, as published by Free Software 
+Foundation.
+
+20 July 2016
+

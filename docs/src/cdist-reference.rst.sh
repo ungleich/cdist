@@ -230,7 +230,18 @@ __object_name
     The full qualified name of the current object.
     Available for: type manifest, type explorer, type gencode.
 __target_host
-    The host we are deploying to.
+    The host we are deploying to. This is primary variable. It's content is
+    literally the one user passed in.
+    Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell.
+__target_hostname
+    The hostname of host we are deploying to. This variable is derived from
+    **__target_host** (using **socket.getaddrinfo(__target_host)** and then
+    **socket.gethostbyaddr()**).
+    Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell.
+__target_fqdn
+    The fully qualified domain name of the host we are deploying to.
+    This variable is derived from **__target_host**
+    (using **socket.getfqdn()**).
     Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell.
 __type
     Path to the current type.

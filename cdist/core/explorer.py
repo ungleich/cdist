@@ -23,6 +23,7 @@
 import logging
 import os
 import glob
+import multiprocessing
 
 import cdist
 
@@ -65,18 +66,24 @@ class Explorer(object):
     """Executes cdist explorers.
 
     """
-    def __init__(self, target_host, local, remote):
+    def __init__(self, target_host, local, remote, jobs=None):
         self.target_host = target_host
 
-        self.log = logging.getLogger(target_host)
+        self._open_logger()
 
         self.local = local
         self.remote = remote
         self.env = {
-            '__target_host': self.target_host,
+            '__target_host': self.target_host[0],
+            '__target_hostname': self.target_host[1],
+            '__target_fqdn': self.target_host[2],
             '__explorer': self.remote.global_explorer_path,
         }
         self._type_explorers_transferred = []
+        self.jobs = jobs
+
+    def _open_logger(self):
+        self.log = logging.getLogger(self.target_host[0])
 
     # global
 
@@ -91,17 +98,65 @@ class Explorer(object):
         """
         self.log.info("Running global explorers")
         self.transfer_global_explorers()
+        if self.jobs is None:
+            self._run_global_explorers_seq(out_path)
+        else:
+            self._run_global_explorers_parallel(out_path)
+
+    def _run_global_explorer(self, explorer, out_path):
+        output = self.run_global_explorer(explorer)
+        path = os.path.join(out_path, explorer)
+        with open(path, 'w') as fd:
+            fd.write(output)
+
+    def _run_global_explorers_seq(self, out_path):
+        self.log.info("Running global explorers sequentially")
         for explorer in self.list_global_explorer_names():
-            output = self.run_global_explorer(explorer)
-            path = os.path.join(out_path, explorer)
-            with open(path, 'w') as fd:
-                fd.write(output)
+            self._run_global_explorer(explorer, out_path)
+
+    def _run_global_explorers_parallel(self, out_path):
+        self.log.info("Running global explorers in {} parallel jobs".format(
+            self.jobs))
+        self.log.debug("Multiprocessing start method is {}".format(
+            multiprocessing.get_start_method()))
+        self.log.debug(("Starting multiprocessing Pool for global "
+                       "explorers run"))
+        with multiprocessing.Pool(self.jobs) as pool:
+            self.log.debug("Starting async for global explorer run")
+            results = [
+                pool.apply_async(self._run_global_explorer, (e, out_path,))
+                for e in self.list_global_explorer_names()
+            ]
+
+            self.log.debug("Waiting async results for global explorer runs")
+            for r in results:
+                r.get()  # self._run_global_explorer returns None
+            self.log.debug(("Multiprocessing run for global explorers "
+                           "finished"))
+
+    # logger is not pickable, so remove it when we pickle
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if 'log' in state:
+            del state['log']
+        return state
+
+    # recreate logger when we unpickle
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._open_logger()
 
     def transfer_global_explorers(self):
         """Transfer the global explorers to the remote side."""
         self.remote.mkdir(self.remote.global_explorer_path)
-        self.remote.transfer(self.local.global_explorer_path,
-                             self.remote.global_explorer_path)
+        if self.jobs is None:
+            self.remote.transfer(self.local.global_explorer_path,
+                                 self.remote.global_explorer_path)
+        else:
+            self.remote.transfer_dir_parallel(
+                    self.local.global_explorer_path,
+                    self.remote.global_explorer_path,
+                    self.jobs)
         self.remote.run(["chmod", "0700",
                          "%s/*" % (self.remote.global_explorer_path)])
 

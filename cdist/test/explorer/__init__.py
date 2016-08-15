@@ -23,6 +23,7 @@
 import os
 import shutil
 import getpass
+import multiprocessing
 
 import cdist
 from cdist import core
@@ -42,7 +43,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
     def setUp(self):
         self.temp_dir = self.mkdtemp()
         self.local_path = os.path.join(self.temp_dir, "local")
-        hostdir = cdist.str_hash(self.target_host)
+        hostdir = cdist.str_hash(self.target_host[0])
         base_root_path = os.path.join(self.local_path, hostdir)
         self.remote_base_path = os.path.join(self.temp_dir, "remote")
         os.makedirs(self.remote_base_path)
@@ -168,3 +169,48 @@ class ExplorerClassTestCase(test.CdistTestCase):
         cdist_object.create()
         self.explorer.run_type_explorers(cdist_object)
         self.assertEqual(cdist_object.explorers, {'world': 'hello'})
+
+    def test_jobs_parameter(self):
+        self.assertIsNone(self.explorer.jobs)
+        expl = explorer.Explorer(
+            self.target_host,
+            self.local,
+            self.remote,
+            jobs=8)
+        self.assertEqual(expl.jobs, 8)
+
+    def test_transfer_global_explorers_parallel(self):
+        expl = explorer.Explorer(
+            self.target_host,
+            self.local,
+            self.remote,
+            jobs=multiprocessing.cpu_count())
+        self.assertIsNotNone(expl.jobs)
+
+        expl.transfer_global_explorers()
+        source = self.local.global_explorer_path
+        destination = self.remote.global_explorer_path
+        self.assertEqual(sorted(os.listdir(source)),
+                         sorted(os.listdir(destination)))
+
+    def test_run_parallel_jobs(self):
+        expl = explorer.Explorer(
+            self.target_host,
+            self.local,
+            self.remote,
+            jobs=multiprocessing.cpu_count())
+        self.assertIsNotNone(expl.jobs)
+        out_path = self.mkdtemp()
+
+        expl.run_global_explorers(out_path)
+        names = sorted(expl.list_global_explorer_names())
+        output = sorted(os.listdir(out_path))
+
+        self.assertEqual(names, output)
+        shutil.rmtree(out_path)
+
+
+if __name__ == '__main__':
+    import unittest
+
+    unittest.main()

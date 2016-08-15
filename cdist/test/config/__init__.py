@@ -55,7 +55,7 @@ class ConfigRunTestCase(test.CdistTestCase):
         self.temp_dir = self.mkdtemp()
 
         self.local_dir = os.path.join(self.temp_dir, "local")
-        self.hostdir = cdist.str_hash(self.target_host)
+        self.hostdir = cdist.str_hash(self.target_host[0])
         self.host_base_path = os.path.join(self.local_dir, self.hostdir)
         os.makedirs(self.host_base_path)
         self.local = cdist.exec.local.Local(

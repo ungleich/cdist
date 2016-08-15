@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,9 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Generate documentation of exported variables
-#
 
+value_should="$(cat "$__object/parameter/value")"
+value_is="$(cat "$__object/explorer/value")"
 
-cat bin/* | awk '/^export/ { print $2 }'
+if [ "$value_should" = "$value_is" ]; then
+   # Nothing to do
+   exit 0
+fi
+
+# set the current runtime value
+printf 'sysctl -w %s="%s"\n' "$__object_id" "$value_should"

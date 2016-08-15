@@ -22,6 +22,38 @@
 #
 
 
+# list of beta arguments for sub-commands
+BETA_ARGS = {
+    'config': ['jobs', ],
+}
+
+
+def check_positive_int(value):
+    import argparse
+
+    try:
+        val = int(value)
+    except ValueError as e:
+        raise argparse.ArgumentTypeError(
+                "{} is invalid int value".format(value))
+    if val <= 0:
+        raise argparse.ArgumentTypeError(
+                "{} is invalid positive int value".format(val))
+    return val
+
+
+def check_beta(args_dict):
+    if 'beta' not in args_dict:
+        args_dict['beta'] = False
+    # Check only if beta is not enabled: if beta option is specified then
+    # raise error.
+    if not args_dict['beta']:
+        cmd = args_dict['command']
+        for arg in BETA_ARGS[cmd]:
+            if arg in args_dict:
+                raise cdist.CdistBetaRequired(cmd, arg)
+
+
 def commandline():
     """Parse command line"""
     import argparse
@@ -32,6 +64,7 @@ def commandline():
     import cdist.inventory
     import shutil
     import os
+    import multiprocessing
 
     # Construct parser others can reuse
     parser = {}
@@ -60,10 +93,11 @@ def commandline():
 
     # Shell
     parser['shell'] = parser['sub'].add_parser(
-           'shell', parents=[parser['loglevel']])
+            'shell', parents=[parser['loglevel']])
     parser['shell'].add_argument(
-           '-s', '--shell',
-           help='Select shell to use, defaults to current shell')
+            '-s', '--shell',
+            help=('Select shell to use, defaults to current shell. Used shell'
+                  ' should be POSIX compatible shell.'))
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
 
     # Inventory
@@ -202,6 +236,11 @@ def commandline():
     parser['config'].add_argument(
             'host', nargs='*', help='host(s) to operate on')
     parser['config'].add_argument(
+           '-b', '--enable-beta',
+           help=('Enable beta functionalities. Beta functionalities '
+                 'include the following options: -j/--jobs.'),
+           action='store_true', dest='beta', default=False)
+    parser['config'].add_argument(
             '-c', '--conf-dir',
             help=('Add configuration directory (can be repeated, '
                   'last one wins)'), action='append')
@@ -216,6 +255,12 @@ def commandline():
            '-i', '--initial-manifest',
            help='Path to a cdist manifest or \'-\' to read from stdin.',
            dest='manifest', required=False)
+    parser['config'].add_argument(
+           '-j', '--jobs', nargs='?', type=check_positive_int,
+           help=('Specify the maximum number of parallel jobs, currently '
+                 'only global explorers are supported (currently in beta'),
+           action='store', dest='jobs',
+           const=multiprocessing.cpu_count())
     parser['config'].add_argument(
            '-n', '--dry-run',
            help='Do not execute code', action='store_true')
@@ -286,6 +331,7 @@ def commandline():
         parser['main'].print_help()
         sys.exit(0)
 
+    check_beta(vars(args))
     args.func(args)
 
 if __name__ == "__main__":
