@@ -85,6 +85,18 @@ class Local(object):
     def _init_log(self):
         self.log = logging.getLogger(self.target_host[0])
 
+    # logger is not pickable, so remove it when we pickle
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if 'log' in state:
+            del state['log']
+        return state
+
+    # recreate logger when we unpickle
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._init_log()
+
     def _init_permissions(self):
         # Setup file permissions using umask
         os.umask(0o077)

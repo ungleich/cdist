@@ -71,15 +71,16 @@ def inspect_ssh_mux_opts():
 class Config(object):
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, local, remote, dry_run=False):
+    def __init__(self, local, remote, dry_run=False, jobs=None):
 
         self.local = local
         self.remote = remote
         self.log = logging.getLogger(self.local.target_host[0])
         self.dry_run = dry_run
+        self.jobs = jobs
 
         self.explorer = core.Explorer(self.local.target_host, self.local,
-                                      self.remote)
+                                      self.remote, jobs=self.jobs)
         self.manifest = core.Manifest(self.local.target_host, self.local)
         self.code = core.Code(self.local.target_host, self.local, self.remote)
 
@@ -119,6 +120,7 @@ class Config(object):
         if args.manifest == '-' and args.hostfile == '-':
             raise cdist.Error(("Cannot read both, manifest and host file, "
                                "from stdin"))
+
         # if no host source is specified then read hosts from stdin
         if not (args.hostfile or args.host):
             args.hostfile = '-'
@@ -266,7 +268,7 @@ class Config(object):
                 remote_exec=remote_exec,
                 remote_copy=remote_copy)
 
-            c = cls(local, remote, dry_run=args.dry_run)
+            c = cls(local, remote, dry_run=args.dry_run, jobs=args.jobs)
             c.run()
 
         except cdist.Error as e:

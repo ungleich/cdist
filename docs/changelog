@@ -1,6 +1,8 @@
 Changelog
 ---------
 next:
+	* Core: Add -b, --enable-beta option for enabling beta functionalities (Darko Poljak)
+	* Core: Add -j, --jobs option for parallel execution and add parallel support for global explorers (currently in beta) (Darko Poljak)
 	* Core: Add derived env vars for target hostname and fqdn (Darko Poljak)
 	* New type: __keyboard: Set keyboard layout (Carlos Ortigoza)
 	* Documentation: Re-license types' man pages to GPLV3+ (Dmitry Bogatov,	Darko Poljak)
