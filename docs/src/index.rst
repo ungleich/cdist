@@ -23,6 +23,7 @@ Contents:
    cdist-types
    cdist-explorer
    cdist-messaging
+   cdist-parallelization
    cdist-reference
    cdist-best-practice
    cdist-stages
