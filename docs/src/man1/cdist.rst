@@ -158,6 +158,10 @@ EXAMPLES
     # Configure hosts read from file loadbalancers
     % cdist config -f loadbalancers
 
+    # Configure hosts read from file web.hosts using 16 parallel jobs
+    # (beta functionality)
+    % cdist config -b -j 16 -f web.hosts
+
     # Display banner
     cdist banner
 
