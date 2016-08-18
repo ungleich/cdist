@@ -10,17 +10,17 @@ DESCRIPTION
 -----------
 This cdist type allows you to create filesystems on devices.
 
-If the device is mounted on target, it refuses to do someting.
+If the device is mounted on target, it refuses to do anything.
 
-If the device has a filesystem other as the specified and/or
-  the label is not correct, it only make a new filesystem 
-  if you specified --force option
+If the device has a filesystem other then the specified and/or
+the label is not correct, it only makes a new filesystem 
+if you have specified --force option.
 
 
 REQUIRED PARAMETERS
 -------------------
 fstype
-    Filesystem type, for example 'ext3', 'btrfs' or 'xfs'
+    Filesystem type, for example 'ext3', 'btrfs' or 'xfs'.
 
 
 
@@ -28,15 +28,16 @@ OPTIONAL PARAMETERS
 -------------------
 device
     Blockdevice for filesystem, Defaults to object_id.
-    On linux, it can be any by lsblk accepted device notation 
-    
-    for example 
-        /dev/sdx 
-        or /dev/disk/by-xxxx/xxx
-        or /dev/mapper/xxxx
+    On linux, it can be any lsblk accepted device notation.
+
+    | 
+    | For example:
+    |    /dev/sdx 
+    |    or /dev/disk/by-xxxx/xxx
+    |    or /dev/mapper/xxxx
 
 label
-   Label which sould apply on the filesystem
+   Label which sould apply on the filesystem.
 
 mkfsoptions
    Additional options which are inserted to the mkfs.xxx call.
@@ -46,13 +47,13 @@ BOOLEAN PARAMETERS
 ------------------
 force
    Normaly, this type does nothing if a filesystem is found
-   on the target device. If you specify force, its formated
-   if the filesystem type or label differs from parameters
-   Warning: This option can easy lead into data loss !
+   on the target device. If you specify force, it's formated
+   if the filesystem type or label differs from parameters.
+   Warning: This option can easily lead into data loss!
 
 MESSAGES
 --------
-filesystem <fstype> on <device> : <discoverd device> created
+filesystem <fstype> on <device> \: <discoverd device> created
    Filesytem was created on <discoverd device>
 
 

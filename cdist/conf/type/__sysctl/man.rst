@@ -15,7 +15,7 @@ Runtime settings are set by directly calling the sysctl executable.
 
 REQUIRED PARAMETERS
 -------------------
-value::
+value
    The value to set for the given key (object_id)
 
 

@@ -10,7 +10,7 @@ DESCRIPTION
 -----------
 This cdist type allows you to modify system-wide locale.
 The name of the locale category is given as the object id
-(usually you are probably interested in using LANG)
+(usually you are probably interested in using LANG).
 
 
 OPTIONAL PARAMETERS
@@ -47,16 +47,14 @@ EXAMPLES
 
 SEE ALSO
 --------
-:strong:`locale`\ (1)
-:strong:`localedef`\ (1)
-:strong:`cdist-type__locale`\ (7)
+:strong:`locale`\ (1), :strong:`localedef`\ (1), :strong:`cdist-type__locale`\ (7)
 
 
 AUTHORS
 -------
-Steven Armstrong <steven-cdist--@--armstrong.cc>,
-Carlos Ortigoza <carlos.ortigoza--@--ungleich.ch>,
-Nico Schottelius <nico.schottelius--@--ungleich.ch>
+| Steven Armstrong <steven-cdist--@--armstrong.cc>
+| Carlos Ortigoza <carlos.ortigoza--@--ungleich.ch>
+| Nico Schottelius <nico.schottelius--@--ungleich.ch>
 
 
 COPYING
