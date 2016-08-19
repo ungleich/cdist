@@ -28,6 +28,7 @@ import time
 import pprint
 import itertools
 import tempfile
+import socket
 
 import cdist
 
@@ -70,15 +71,16 @@ def inspect_ssh_mux_opts():
 class Config(object):
     """Cdist main class to hold arbitrary data"""
 
-    def __init__(self, local, remote, dry_run=False):
+    def __init__(self, local, remote, dry_run=False, jobs=None):
 
         self.local = local
         self.remote = remote
-        self.log = logging.getLogger(self.local.target_host)
+        self.log = logging.getLogger(self.local.target_host[0])
         self.dry_run = dry_run
+        self.jobs = jobs
 
         self.explorer = core.Explorer(self.local.target_host, self.local,
-                                      self.remote)
+                                      self.remote, jobs=self.jobs)
         self.manifest = core.Manifest(self.local.target_host, self.local)
         self.code = core.Code(self.local.target_host, self.local, self.remote)
 
@@ -118,6 +120,7 @@ class Config(object):
         if args.manifest == '-' and args.hostfile == '-':
             raise cdist.Error(("Cannot read both, manifest and host file, "
                                "from stdin"))
+
         # if no host source is specified then read hosts from stdin
         if not (args.hostfile or args.host):
             args.hostfile = '-'
@@ -229,19 +232,51 @@ class Config(object):
             log.debug("remote_copy for host \"{}\": {}".format(
                 host, remote_copy))
 
+            try:
+                # getaddrinfo returns a list of 5-tuples:
+                # (family, type, proto, canonname, sockaddr)
+                # where sockaddr is:
+                # (address, port) for AF_INET,
+                # (address, port, flow_info, scopeid) for AF_INET6
+                ip_addr = socket.getaddrinfo(
+                        host, None, type=socket.SOCK_STREAM)[0][4][0]
+                # gethostbyaddr returns triple
+                # (hostname, aliaslist, ipaddrlist)
+                host_name = socket.gethostbyaddr(ip_addr)[0]
+                log.debug("derived host_name for host \"{}\": {}".format(
+                    host, host_name))
+            except socket.gaierror as e:
+                log.warn("host_name: {}".format(e))
+                # in case of error provide empty value
+                host_name = ''
+            except socket.herror as e:
+                log.warn("host_name: {}".format(e))
+                # in case of error provide empty value
+                host_name = ''
+
+            try:
+                host_fqdn = socket.getfqdn(host)
+                log.debug("derived host_fqdn for host \"{}\": {}".format(
+                    host, host_fqdn))
+            except socket.herror as e:
+                log.warn("host_fqdn: {}".format(e))
+                # in case of error provide empty value
+                host_fqdn = ''
+            target_host = (host, host_name, host_fqdn)
+
             local = cdist.exec.local.Local(
-                target_host=host,
+                target_host=target_host,
                 base_root_path=host_base_path,
                 host_dir_name=host_dir_name,
                 initial_manifest=args.manifest,
                 add_conf_dirs=args.conf_dir)
 
             remote = cdist.exec.remote.Remote(
-                target_host=host,
+                target_host=target_host,
                 remote_exec=remote_exec,
                 remote_copy=remote_copy)
 
-            c = cls(local, remote, dry_run=args.dry_run)
+            c = cls(local, remote, dry_run=args.dry_run, jobs=args.jobs)
             c.run()
 
         except cdist.Error as e:

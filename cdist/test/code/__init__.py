@@ -41,7 +41,7 @@ class CodeTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.local_dir = self.mkdtemp()
-        self.hostdir = cdist.str_hash(self.target_host)
+        self.hostdir = cdist.str_hash(self.target_host[0])
         self.host_base_path = os.path.join(self.local_dir, self.hostdir)
 
         self.local = local.Local(
@@ -83,7 +83,12 @@ class CodeTestCase(test.CdistTestCase):
                 junk, value = line.split(': ')
                 key = junk.split(' ')[1]
                 output_dict[key] = value
-        self.assertEqual(output_dict['__target_host'], self.local.target_host)
+        self.assertEqual(output_dict['__target_host'],
+                         self.local.target_host[0])
+        self.assertEqual(output_dict['__target_hostname'],
+                         self.local.target_host[1])
+        self.assertEqual(output_dict['__target_fqdn'],
+                         self.local.target_host[2])
         self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'],
@@ -101,7 +106,12 @@ class CodeTestCase(test.CdistTestCase):
                 junk, value = line.split(': ')
                 key = junk.split(' ')[1]
                 output_dict[key] = value
-        self.assertEqual(output_dict['__target_host'], self.local.target_host)
+        self.assertEqual(output_dict['__target_host'],
+                         self.local.target_host[0])
+        self.assertEqual(output_dict['__target_hostname'],
+                         self.local.target_host[1])
+        self.assertEqual(output_dict['__target_fqdn'],
+                         self.local.target_host[2])
         self.assertEqual(output_dict['__global'], self.local.base_path)
         self.assertEqual(output_dict['__type'], self.cdist_type.absolute_path)
         self.assertEqual(output_dict['__object'],

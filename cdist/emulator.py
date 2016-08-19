@@ -64,7 +64,11 @@ class Emulator(object):
 
         try:
             self.global_path = self.env['__global']
-            self.target_host = self.env['__target_host']
+            self.target_host = (
+                self.env['__target_host'],
+                self.env['__target_hostname'],
+                self.env['__target_fqdn']
+            )
 
             # Internal variables
             self.object_source = self.env['__cdist_manifest']
@@ -101,7 +105,7 @@ class Emulator(object):
         else:
             logging.root.setLevel(logging.INFO)
 
-        self.log = logging.getLogger(self.target_host)
+        self.log = logging.getLogger(self.target_host[0])
 
     def commandline(self):
         """Parse command line"""

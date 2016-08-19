@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# 2012-2016 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2016 Carlos Ortigoza (carlos.ortigoza at ungleich.ch)
+# 2016 Nico Schottelius (nico.schottelius at ungleich.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Configure system-wide locale by modifying i18n file.
+#
+
+os=$(cat "$__global/explorer/os")
+
+case "$os" in
+    debian|ubuntu)
+        locale_conf="/etc/default/locale"
+        ;;
+    archlinux)
+        locale_conf="/etc/locale.conf"
+        ;;
+    redhat|centos)
+        locale_conf="/etc/sysconfig/i18n"
+        ;;
+    *)
+        echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+        echo "Please contribute an implementation for it if you can." >&2
+        exit 1
+        ;;
+esac
+
+__file "$locale_conf" \
+       --owner root --group root --mode 644 \
+       --state exists
+
+require="__file/$locale_conf" \
+       __key_value "$locale_conf:$__object_id" \
+       --file "$locale_conf" \
+       --key "$__object_id" \
+       --delimiter = \
+       --state "$(cat "$__object/parameter/state")" \
+       --value "$(cat "$__object/parameter/value")"

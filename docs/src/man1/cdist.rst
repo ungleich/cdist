@@ -15,7 +15,10 @@ SYNOPSIS
 
     cdist banner [-h] [-d] [-v]
 
-    cdist config [-h] [-d] [-V] [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST] [-p] [-s] [host [host ...]]
+    cdist config [-h] [-d] [-v] [-b] [-c CONF_DIR] [-f HOSTFILE]
+                 [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
+                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                 [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
@@ -32,13 +35,13 @@ GENERAL
 -------
 All commands accept the following options:
 
+.. option:: -h, --help
+
+    Show the help screen
+
 .. option:: -d, --debug
 
     Set log level to debug
-
-.. option:: -h, --help
-
-   Show the help screen
 
 .. option:: -v, --verbose
 
@@ -58,6 +61,11 @@ cdist posters - a must have for every office.
 CONFIG
 ------
 Configure one or more hosts.
+
+.. option:: -b, --enable-beta
+
+    Enable beta functionalities. Beta functionalities include the
+    following options: -j/--jobs.
 
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
@@ -80,13 +88,26 @@ Configure one or more hosts.
 
     Path to a cdist manifest or - to read from stdin
 
+.. option:: -j [JOBS], --jobs [JOBS]
+
+    Specify the maximum number of parallel jobs; currently only
+    global explorers are supported (currently in beta)
+
+.. option:: -n, --dry-run
+
+    Do not execute code
+
+.. option:: -o OUT_PATH, --out-dir OUT_PATH
+
+    Directory to save cdist output in
+
 .. option:: -p, --parallel
 
     Operate on multiple hosts in parallel
 
 .. option:: -s, --sequential
 
-    Operate on multiple hosts sequentially
+    Operate on multiple hosts sequentially (default)
 
 .. option:: --remote-copy REMOTE_COPY
 
@@ -103,7 +124,7 @@ to the types as commands. It can be thought as an
 "interactive manifest" environment. See below for example
 usage. Its primary use is for debugging type parameters.
 
-.. option:: -s/--shell
+.. option:: -s SHELL, --shell SHELL
 
     Select shell to use, defaults to current shell. Used shell should
     be POSIX compatible shell.
@@ -136,6 +157,10 @@ EXAMPLES
 
     # Configure hosts read from file loadbalancers
     % cdist config -f loadbalancers
+
+    # Configure hosts read from file web.hosts using 16 parallel jobs
+    # (beta functionality)
+    % cdist config -b -j 16 -f web.hosts
 
     # Display banner
     cdist banner
@@ -194,6 +219,18 @@ The following exit values shall be returned:
 AUTHORS
 -------
 Nico Schottelius <nico-cdist--@--schottelius.org>
+
+CAVEATS
+-------
+When operating in parallel, either by operating in parallel for each host
+(-p/--parallel) or by parallel jobs within a host (-j/--jobs), and depending
+on target SSH server and its configuration you may encounter connection drops.
+This is controlled with sshd :strong:`MaxStartups` configuration options.
+You may also encounter session open refusal. This happens with ssh multiplexing
+when you reach maximum number of open sessions permitted per network
+connection. In this case ssh will disable multiplexing.
+This limit is controlled with sshd :strong:`MaxSessions` configuration
+options. For more details refer to :strong:`sshd_config`\ (5).
 
 COPYING
 -------

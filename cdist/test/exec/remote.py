@@ -24,6 +24,7 @@ import getpass
 import shutil
 import string
 import random
+import multiprocessing
 
 import cdist
 from cdist import test
@@ -34,7 +35,11 @@ class RemoteTestCase(test.CdistTestCase):
 
     def setUp(self):
         self.temp_dir = self.mkdtemp()
-        self.target_host = 'localhost'
+        self.target_host = (
+            'localhost',
+            'localhost',
+            'localhost',
+        )
         self.base_path = self.temp_dir
         user = getpass.getuser()
         remote_exec = "ssh -o User=%s -q" % user
@@ -67,22 +72,22 @@ class RemoteTestCase(test.CdistTestCase):
     # /test api
 
     def test_run_success(self):
-        self.remote.run(['/bin/true'])
+        self.remote.run(['true'])
 
     def test_run_fail(self):
-        self.assertRaises(cdist.Error, self.remote.run, ['/bin/false'])
+        self.assertRaises(cdist.Error, self.remote.run, ['false'])
 
     def test_run_script_success(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
-            fd.writelines(["#!/bin/sh\n", "/bin/true"])
+            fd.writelines(["#!/bin/sh\n", "true"])
         self.remote.run_script(script)
 
     def test_run_script_fail(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
-            fd.writelines(["#!/bin/sh\n", "/bin/false"])
-        self.assertRaises(remote.RemoteScriptError, self.remote.run_script,
+            fd.writelines(["#!/bin/sh\n", "false"])
+        self.assertRaises(cdist.Error, self.remote.run_script,
                           script)
 
     def test_run_script_get_output(self):
@@ -121,8 +126,24 @@ class RemoteTestCase(test.CdistTestCase):
         # test if the payload file is in the target directory
         self.assertTrue(os.path.isfile(os.path.join(target, source_file_name)))
 
-    def test_create_directories(self):
-        self.remote.create_directories()
+    def test_transfer_dir_parallel(self):
+        source = self.mkdtemp(dir=self.temp_dir)
+        # put 8 files in the directory as payload
+        filenames = []
+        for x in range(8):
+            handle, source_file = self.mkstemp(dir=source)
+            os.close(handle)
+            source_file_name = os.path.split(source_file)[-1]
+            filenames.append(source_file_name)
+        target = self.mkdtemp(dir=self.temp_dir)
+        self.remote.transfer_dir_parallel(source, target,
+                                          multiprocessing.cpu_count())
+        # test if the payload files are in the target directory
+        for filename in filenames:
+            self.assertTrue(os.path.isfile(os.path.join(target, filename)))
+
+    def test_create_files_dirs(self):
+        self.remote.create_files_dirs()
         self.assertTrue(os.path.isdir(self.remote.base_path))
         self.assertTrue(os.path.isdir(self.remote.conf_path))
 
@@ -135,8 +156,8 @@ class RemoteTestCase(test.CdistTestCase):
         remote_copy = "echo"
         r = remote.Remote(self.target_host, base_path=self.base_path,
                           remote_exec=remote_exec, remote_copy=remote_copy)
-        self.assertEqual(r.run('/bin/true', return_output=True),
-                         "%s\n" % self.target_host)
+        self.assertEqual(r.run('true', return_output=True),
+                         "%s\n" % self.target_host[0])
 
     def test_run_script_target_host_in_env(self):
         handle, remote_exec_path = self.mkstemp(dir=self.temp_dir)
@@ -149,9 +170,9 @@ class RemoteTestCase(test.CdistTestCase):
                           remote_exec=remote_exec, remote_copy=remote_copy)
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
-            fd.writelines(["#!/bin/sh\n", "/bin/true"])
+            fd.writelines(["#!/bin/sh\n", "true"])
         self.assertEqual(r.run_script(script, return_output=True),
-                         "%s\n" % self.target_host)
+                         "%s\n" % self.target_host[0])
 
     def test_run_script_with_env_target_host_in_env(self):
         handle, script = self.mkstemp(dir=self.temp_dir)
