@@ -1,6 +1,7 @@
 Changelog
 ---------
-next:
+
+4.3.0: 2016-08-19
 	* Documentation: Add Parallelization chapter (Darko Poljak)
 	* Core: Add -b, --enable-beta option for enabling beta functionalities (Darko Poljak)
 	* Core: Add -j, --jobs option for parallel execution and add parallel support for global explorers (currently in beta) (Darko Poljak)
