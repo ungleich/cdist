@@ -254,6 +254,10 @@ class Local(object):
                     "Cannot delete old cache %s: %s" % (destination, e))
 
         shutil.move(self.base_path, destination)
+        # add target_host since cache dir is hash-ed target_host
+        host_cache_path = os.path.join(destination, "target_host")
+        with open(host_cache_path, 'w') as hostf:
+            print(self.target_host[0], file=hostf)
 
     def _create_messages(self):
         """Create empty messages"""
