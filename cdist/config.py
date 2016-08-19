@@ -99,8 +99,15 @@ class Config(object):
             import fileinput
             try:
                 for host in fileinput.input(files=(source)):
-                    # remove leading and trailing whitespace
-                    yield host.strip()
+                    # remove comment if present
+                    comment_index = host.find('#')
+                    if comment_index >= 0:
+                        host = host[:comment_index]
+                    # remove leading and trailing whitespaces
+                    host = host.strip()
+                    # skip empty lines
+                    if host:
+                        yield host
             except (IOError, OSError) as e:
                 raise cdist.Error("Error reading hosts from \'{}\'".format(
                     source))
