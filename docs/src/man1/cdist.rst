@@ -410,6 +410,10 @@ EXAMPLES
     # Configure hosts read from file loadbalancers
     % cdist config -f loadbalancers
 
+    # Configure hosts read from file web.hosts using 16 parallel jobs
+    # (beta functionality)
+    % cdist config -b -j 16 -f web.hosts
+
     # Display banner
     cdist banner
 
@@ -500,6 +504,18 @@ The following exit values shall be returned:
 AUTHORS
 -------
 Nico Schottelius <nico-cdist--@--schottelius.org>
+
+CAVEATS
+-------
+When operating in parallel, either by operating in parallel for each host
+(-p/--parallel) or by parallel jobs within a host (-j/--jobs), and depending
+on target SSH server and its configuration you may encounter connection drops.
+This is controlled with sshd :strong:`MaxStartups` configuration options.
+You may also encounter session open refusal. This happens with ssh multiplexing
+when you reach maximum number of open sessions permitted per network
+connection. In this case ssh will disable multiplexing.
+This limit is controlled with sshd :strong:`MaxSessions` configuration
+options. For more details refer to :strong:`sshd_config`\ (5).
 
 COPYING
 -------

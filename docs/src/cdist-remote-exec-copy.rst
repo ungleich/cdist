@@ -9,8 +9,8 @@ Cdist interacts with the target host in two ways:
 By default this is accomplished with ssh and scp respectively.
 The default implementations used by cdist are::
 
-    __remote_exec: ssh -o User=root -q
-    __remote_copy: scp -o User=root -q
+    __remote_exec: ssh -o User=root
+    __remote_copy: scp -o User=root
 
 The user can override these defaults by providing custom implementations and
 passing them to cdist with the --remote-exec and/or --remote-copy arguments.

@@ -257,17 +257,25 @@ class Config(object):
                 # gethostbyaddr returns triple
                 # (hostname, aliaslist, ipaddrlist)
                 host_name = socket.gethostbyaddr(ip_addr)[0]
+                log.debug("derived host_name for host \"{}\": {}".format(
+                    host, host_name))
             except socket.gaierror as e:
-                log.error("{}: {}".format(e[0], e[1]))
+                log.warn("host_name: {}".format(e))
                 # in case of error provide empty value
-                host_name = None
+                host_name = ''
+            except socket.herror as e:
+                log.warn("host_name: {}".format(e))
+                # in case of error provide empty value
+                host_name = ''
 
             try:
                 host_fqdn = socket.getfqdn(host)
+                log.debug("derived host_fqdn for host \"{}\": {}".format(
+                    host, host_fqdn))
             except socket.herror as e:
-                log.error("{}: {}".format(e[0], e[1]))
+                log.warn("host_fqdn: {}".format(e))
                 # in case of error provide empty value
-                host_fqdn = None
+                host_fqdn = ''
             target_host = (host, host_name, host_fqdn)
 
             local = cdist.exec.local.Local(
