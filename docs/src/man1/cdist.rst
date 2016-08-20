@@ -120,10 +120,15 @@ Configure one or more hosts.
 
 HOSTFILE FORMAT
 ~~~~~~~~~~~~~~~
-HOSTFILE contains hosts per line.
-All characters after and including '#' until the end of line is a comment
-and is stripped away.
-Empty lines and comment lines (line that starts with '#') are skipped.
+HOSTFILE contains hosts per line. 
+All characters after and including '#' until the end of line is a comment.
+In a line, all leading and trailing whitespace characters are ignored.
+Empty lines are ignored/skipped.
+
+Hostfile line is processed like the following. First, all comments are
+removed. Then all leading and trailing whitespace characters are stripped.
+If such a line results in empty line it is ignored/skipped. Otherwise,
+host string is used.
 
 
 SHELL
