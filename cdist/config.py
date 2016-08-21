@@ -121,9 +121,10 @@ class Config(object):
                     host = Config.hostfile_process_line(host)
                     if host:
                         yield host
-            except (IOError, OSError) as e:
-                raise cdist.Error("Error reading hosts from \'{}\'".format(
-                    source))
+            except (IOError, OSError, UnicodeError) as e:
+                raise cdist.Error(
+                        "Error reading hosts from file \'{}\': {}".format(
+                            source, e))
         else:
             if source:
                 for host in source:
