@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Core: Improve hostfile: support comments, skip empty lines (Darko Poljak)
+
 4.3.0: 2016-08-19
 	* Documentation: Add Parallelization chapter (Darko Poljak)
 	* Core: Add -b, --enable-beta option for enabling beta functionalities (Darko Poljak)
