@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.3.1: 2016-08-22
 	* Documentation: Spelling fixes (Darko Poljak)
 	* Type __filesystem: Spelling fixes (Dmitry Bogatov)
 	* Core: Add target_host file to cache since cache dir name can be hash (Darko Poljak)
