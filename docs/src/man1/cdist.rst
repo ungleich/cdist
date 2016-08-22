@@ -200,7 +200,7 @@ List inventory database.
     Read additional hosts to list from specified file or
     from stdin if '-' (each host on separate line). If no
     host or host file is specified then, by default, list
-    all.
+    all. Hostfile format is the same as config hostfile format.
 
 .. option:: -H, --host-only
 
@@ -238,7 +238,7 @@ Add host(s) to inventory database.
     Read additional hosts to add from specified file or
     from stdin if '-' (each host on separate line). If no
     host or host file is specified then, by default, read
-    from stdin.
+    from stdin. Hostfile format is the same as config hostfile format.
 
 .. option:: -h, --help
 
@@ -275,7 +275,7 @@ Delete host(s) from inventory database.
     Read additional hosts to delete from specified file or
     from stdin if '-' (each host on separate line). If no
     host or host file is specified then, by default, read
-    from stdin.
+    from stdin. Hostfile format is the same as config hostfile format.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
@@ -306,7 +306,7 @@ Add tag(s) to inventory database.
     no host or host file is specified then, by default,
     read from stdin. If no tags/tagfile nor hosts/hostfile
     are specified then tags are read from stdin and are
-    added to all hosts.
+    added to all hosts. Hostfile format is the same as config hostfile format.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
@@ -321,7 +321,7 @@ Add tag(s) to inventory database.
     tag or tag file is specified then, by default, read
     from stdin. If no tags/tagfile nor hosts/hostfile are
     specified then tags are read from stdin and are added
-    to all hosts.
+    to all hosts. Tagfile format is the same as config hostfile format.
 
 .. option:: -t TAGLIST, --taglist TAGLIST
 
@@ -355,7 +355,8 @@ Delete tag(s) from inventory database.
     separate line). If no host or host file is specified
     then, by default, read from stdin. If no tags/tagfile
     nor hosts/hostfile are specified then tags are read
-    from stdin and are deleted from all hosts.
+    from stdin and are deleted from all hosts. Hostfile
+    format is the same as config hostfile format.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
@@ -370,7 +371,7 @@ Delete tag(s) from inventory database.
     file is specified then, by default, read from stdin.
     If no tags/tagfile nor hosts/hostfile are specified
     then tags are read from stdin and are added to all
-    hosts.
+    hosts. Tagfile format is the same as config hostfile format.
 
 .. option:: -t TAGLIST, --taglist TAGLIST
 

@@ -35,6 +35,7 @@ import cdist
 
 import cdist.exec.local
 import cdist.exec.remote
+import cdist.util.hostfile
 
 from cdist import core
 from cdist import inventory
@@ -92,25 +93,6 @@ class Config(object):
         self.remote.create_files_dirs()
 
     @staticmethod
-    def hostfile_process_line(line):
-        """Return host from read line or None if no host present."""
-        if not line:
-            return None
-        # remove comment if present
-        comment_index = line.find('#')
-        if comment_index >= 0:
-            host = line[:comment_index]
-        else:
-            host = line
-        # remove leading and trailing whitespaces
-        host = host.strip()
-        # skip empty lines
-        if host:
-            return host
-        else:
-            return None
-
-    @staticmethod
     def hosts(source):
         """Yield hosts from source.
            Source can be a sequence or filename (stdin if \'-\').
@@ -120,7 +102,7 @@ class Config(object):
             import fileinput
             try:
                 for host in fileinput.input(files=(source)):
-                    host = Config.hostfile_process_line(host)
+                    host = cdist.util.hostfile.hostfile_process_line(host)
                     if host:
                         yield host
             except (IOError, OSError, UnicodeError) as e:

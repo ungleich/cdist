@@ -88,7 +88,8 @@ class Inventory(object):
             try:
                 with fileinput.FileInput(files=(source)) as f:
                     for x in f:
-                        result = x.rstrip("\n")
+                        result = cdist.util.hostfile.hostfile_process_line(
+                                x, strip_func=str.rstrip)
                         if result:
                             yield result
             except (IOError, OSError) as e:
