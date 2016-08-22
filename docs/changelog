@@ -82,7 +82,7 @@ next:
 	* Type __consul_agent: Use systemd for Debian 8 (Nico Schottelius)
 	* Type __firewalld_rule: Ensure firewalld package is present (David Hürlimann)
 	* Type __locale: Support CentOS (David Hürlimann)
-	* Type __staged_file: Fix comparision operator (Nico Schottelius)
+	* Type __staged_file: Fix comparison operator (Nico Schottelius)
 	* Type __user_groups: Support old Linux versions (Daniel Heule)
 
 3.1.12: 2015-03-19
@@ -269,7 +269,7 @@ next:
 3.0.1: 2014-01-14
 	* Core: Copy only files, not directories (Steven Armstrong)
 	* Core: Allow hostnames to start with / (Nico Schottelius)
-	* Type __line: Remove unecessary backslash escape (Nico Schottelius)
+	* Type __line: Remove unnecessary backslash escape (Nico Schottelius)
 	* Type __directory: Add messaging support (Daniel Heule)
 	* Type __directory: Do not generate code if mode is 0xxx (Daniel Heule)
 	* Type __package: Fix typo in optional parameter ptype (Daniel Heule)
