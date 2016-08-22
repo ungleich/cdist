@@ -126,7 +126,7 @@ Example: (e.g. in cdist/conf/type/__nginx_vhost/manifest)
     # parameter with multiple values
     if [ -f "$__object/parameter/server_alias" ]; then
        for alias in $(cat "$__object/parameter/server_alias"); do
-          echo $alias > /some/where/usefull
+          echo $alias > /some/where/useful
        done
     fi
 

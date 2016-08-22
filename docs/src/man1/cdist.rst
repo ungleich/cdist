@@ -110,7 +110,7 @@ Configure one or more hosts.
     Read additional hosts to operate on from specified file
     or from stdin if '-' (each host on separate line).
     If no host or host file is specified then, by default,
-    read hosts from stdin.
+    read hosts from stdin. For the file format see below.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
@@ -155,6 +155,18 @@ Configure one or more hosts.
 
     host is specified by tag, not hostname/address; list
     all hosts that contain any of specified tags
+
+HOSTFILE FORMAT
+~~~~~~~~~~~~~~~
+HOSTFILE contains hosts per line. 
+All characters after and including '#' until the end of line is a comment.
+In a line, all leading and trailing whitespace characters are ignored.
+Empty lines are ignored/skipped.
+
+Hostfile line is processed like the following. First, all comments are
+removed. Then all leading and trailing whitespace characters are stripped.
+If such a line results in empty line it is ignored/skipped. Otherwise,
+host string is used.
 
 
 INVENTORY
@@ -478,7 +490,7 @@ CDIST_LOCAL_SHELL
     Selects shell for local script execution, defaults to /bin/sh.
 
 CDIST_REMOTE_SHELL
-    Selects shell for remote scirpt execution, defaults to /bin/sh.
+    Selects shell for remote script execution, defaults to /bin/sh.
 
 CDIST_OVERRIDE
     Allow overwriting type parameters.
