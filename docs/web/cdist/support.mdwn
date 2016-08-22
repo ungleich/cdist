@@ -18,7 +18,7 @@ you can join the
 [cdist group](http://www.linkedin.com/groups/cdist-configuration-management-3952797).
 
 ### Chat
-Chat with us: [ungleich chat] (https://chat.ungleich.ch/channel/cdist).
+Chat with us: [ungleich chat](https://chat.ungleich.ch/channel/cdist).
 
 ### Commercial support
 
