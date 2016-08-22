@@ -85,7 +85,7 @@ Use `messaging </software/cdist/man/3.0.0/man7/cdist-messaging.html>`_ instead.
 Updating from 2.2 to 2.3
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-No incompatiblities.
+No incompatibilities.
 
 Updating from 2.1 to 2.2
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -164,7 +164,7 @@ Updating from 1.5 to 1.6
 Updating from 1.3 to 1.5
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-No incompatiblities.
+No incompatibilities.
 
 Updating from 1.2 to 1.3
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -174,7 +174,7 @@ Rename **gencode** of every type to **gencode-remote**.
 Updating from 1.1 to 1.2
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-No incompatiblities.
+No incompatibilities.
 
 Updating from 1.0 to 1.1
 ~~~~~~~~~~~~~~~~~~~~~~~~

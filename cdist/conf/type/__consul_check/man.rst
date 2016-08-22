@@ -11,7 +11,7 @@ DESCRIPTION
 Generate and deploy check definitions for a consul agent.
 See http://www.consul.io/docs/agent/checks.html for parameter documentation.
 
-Use either script toghether with interval, or use ttl.
+Use either script together with interval, or use ttl.
 
 
 REQUIRED PARAMETERS

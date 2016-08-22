@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Documentation: Spelling fixes (Darko Poljak)
 	* Type __filesystem: Spelling fixes (Dmitry Bogatov)
 	* Core: Add target_host file to cache since cache dir name can be hash (Darko Poljak)
 	* Core: Improve hostfile: support comments, skip empty lines (Darko Poljak)

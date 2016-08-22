@@ -207,7 +207,7 @@ CDIST_LOCAL_SHELL
     Selects shell for local script execution, defaults to /bin/sh.
 
 CDIST_REMOTE_SHELL
-    Selects shell for remote scirpt execution, defaults to /bin/sh.
+    Selects shell for remote script execution, defaults to /bin/sh.
 
 CDIST_OVERRIDE
     Allow overwriting type parameters.

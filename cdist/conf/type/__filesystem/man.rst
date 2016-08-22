@@ -37,7 +37,7 @@ device
     |    or /dev/mapper/xxxx
 
 label
-   Label which sould apply on the filesystem.
+   Label which should be applied on the filesystem.
 
 mkfsoptions
    Additional options which are inserted to the mkfs.xxx call.

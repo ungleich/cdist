@@ -10,7 +10,7 @@ explorers and manifest to custom directories.
 
 This document will guide you to a successful update.
 
-## Preperation
+## Preparation
 
 As for every software and system you use in production, you should first of 
 all make a backup of your data. To prevent any breakage, it is
@@ -35,7 +35,7 @@ Now try to merge upstream into the new branch.
     % git merge origin/2.1
 
 Fix any conflicts that may have been occurred due to local changes
-and then **git add** and *git commit** those changes. This should seldomly
+and then **git add** and *git commit** those changes. This should seldom 
 occur and if, it's mostly for people hacking on the cdist core.
 
 ## Move "conf" directory

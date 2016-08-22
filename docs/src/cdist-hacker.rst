@@ -56,7 +56,7 @@ or open a pull request at http://github.com/telmich/cdist.
 
 How to submit a new type
 ------------------------
-For detailled information about types, see `cdist type <cdist-type.html>`_.
+For detailed information about types, see `cdist type <cdist-type.html>`_.
 
 Submitting a type works as described above, with the additional requirement
 that a corresponding manpage named man.text in asciidoc format with

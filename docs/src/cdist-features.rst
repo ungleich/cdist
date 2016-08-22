@@ -7,7 +7,7 @@ Simplicity
     There is only one type to extend cdist called **type**
 
 Design
-    + Type and core cleanly seperated
+    + Type and core cleanly separated
     + Sticks completly to the KISS (keep it simple and stupid) paradigma
     + Meaningful error messages - do not lose time debugging error messages
     + Consistency in behaviour, naming and documentation
