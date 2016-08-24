@@ -166,8 +166,6 @@ class Emulator(object):
                 self.parameters[key] = value
 
         if self.cdist_object.exists and 'CDIST_OVERRIDE' not in self.env:
-            # make existing requirements a set, so we can compare it
-            # later with new requirements
             if self.cdist_object.parameters != self.parameters:
                 errmsg = ("Object %s already exists with conflicting "
                           "parameters:\n%s: %s\n%s: %s" % (
