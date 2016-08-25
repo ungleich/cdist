@@ -22,19 +22,19 @@
 
 
 def hostfile_process_line(line, strip_func=str.strip):
-    """Return host from read line or None if no host present."""
+    """Return entry from read line or None if no entry present."""
     if not line:
         return None
     # remove comment if present
     comment_index = line.find('#')
     if comment_index >= 0:
-        host = line[:comment_index]
+        foo = line[:comment_index]
     else:
-        host = line
-    # remove leading and trailing whitespaces
-    host = strip_func(host)
+        foo = line
+    # strip line
+    foo = strip_func(foo)
     # skip empty lines
-    if host:
-        return host
+    if foo:
+        return foo
     else:
         return None
