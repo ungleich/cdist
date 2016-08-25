@@ -53,6 +53,10 @@ def contains_any(big, little):
 def check_always_true(x, y):
     return True
 
+def rstrip_nl(s):
+    '''str.rstrip "\n" from s'''
+    return str.rstrip(s, "\n")
+
 
 class Inventory(object):
     """Inventory main class"""
@@ -89,7 +93,7 @@ class Inventory(object):
                 with fileinput.FileInput(files=(source)) as f:
                     for x in f:
                         result = cdist.util.hostfile.hostfile_process_line(
-                                x, strip_func=str.rstrip)
+                                x, strip_func=rstrip_nl)
                         if result:
                             yield result
             except (IOError, OSError) as e:
