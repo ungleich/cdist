@@ -78,6 +78,10 @@ class Config(object):
         self.log = logging.getLogger(self.local.target_host[0])
         self.dry_run = dry_run
         self.jobs = jobs
+        # list of sets
+        # each set contains leaf objects from each step in dependency
+        # resolution
+        self.typeorder = []
 
         self.explorer = core.Explorer(self.local.target_host, self.local,
                                       self.remote, jobs=self.jobs)
@@ -341,23 +345,57 @@ class Config(object):
             else:
                 yield cdist_object
 
-    def iterate_once(self):
+    def _prepare_objects_seq(self, prepare_list):
+        for cdist_object in prepare_list:
+            self.object_prepare(cdist_object)
+            self._dump_requirements(self.object_list())
+
+    def iterate_once_prepare(self):
         """
-            Iterate over the objects once - helper method for
+            Iterate once over the objects for preparation - helper method for
+            iterate_until_finished.
+        """
+        objects_changed = False
+        prepare_list = []
+        for cdist_object in self.object_list():
+            if cdist_object.state == core.CdistObject.STATE_UNDEF:
+                prepare_list.append(cdist_object)
+                objects_changed = True
+
+        self.log.debug(("Objects that can be prepared in one iteration: "
+                        "{}").format(prepare_list))
+
+        if prepare_list:
+            self._prepare_objects_seq(prepare_list)
+
+        return objects_changed
+
+    def _run_objects_seq(self, run_list):
+        for cdist_object in run_list:
+            self.object_run(cdist_object)
+
+    def _append_typeorder(self, object_list):
+        self.typeorder.append(set(x.name for x in object_list))
+
+    def _write_typeorder_file(self):
+        global_path = self.local.base_path
+        typeorder_path = os.path.join(global_path, "typeorder")
+        with open(typeorder_path, 'a') as typeorderfile:
+            for cobj_set in self.typeorder:
+                for cobj in cobj_set:
+                    print(cobj, file=typeorderfile)
+
+    def iterate_once_run(self):
+        """
+            Iterate over the objects once for running - helper method for
             iterate_until_finished
         """
         objects_changed = False
-
+        run_list = []
         for cdist_object in self.object_list():
             if cdist_object.requirements_unfinished(cdist_object.requirements):
                 """We cannot do anything for this poor object"""
                 continue
-
-            if cdist_object.state == core.CdistObject.STATE_UNDEF:
-                """Prepare the virgin object"""
-
-                self.object_prepare(cdist_object)
-                objects_changed = True
 
             if cdist_object.requirements_unfinished(cdist_object.autorequire):
                 """The previous step created objects we depend on -
@@ -366,10 +404,37 @@ class Config(object):
                 continue
 
             if cdist_object.state == core.CdistObject.STATE_PREPARED:
-                self.object_run(cdist_object)
+                run_list.append(cdist_object)
                 objects_changed = True
 
+        self.log.debug("Objects that can be run in one iteration: {}".format(
+                        run_list))
+
+        if run_list:
+            self._append_typeorder(run_list)
+            self._run_objects_seq(run_list)
+
         return objects_changed
+
+    def _prepare_all_objects(self):
+        # First prepare all objects.
+        # After all objects are prepared is cdist aware of all dependencies.
+        # The order of object preparation is unimportant: preparation just
+        # runs explorers and type's manifest which solely (without actual
+        # code execution) registers objects (with requirements).
+        # We cannot iterate through list of objects once because each
+        # object preparation can introduce more objects.
+        objects_changed = True
+        self._dump_requirements(self.object_list())
+        while objects_changed:
+            objects_changed = self.iterate_once_prepare()
+
+    def _run_all_objects(self):
+        # After all objects are prepared and cdist is aware of all dependencies
+        # we can run objects.
+        objects_changed = True
+        while objects_changed:
+            objects_changed = self.iterate_once_run()
 
     def iterate_until_finished(self):
         """
@@ -377,10 +442,12 @@ class Config(object):
             one after another
         """
 
-        objects_changed = True
+        self.log.info("Preparing objects sequentially")
+        self._prepare_all_objects()
 
-        while objects_changed:
-            objects_changed = self.iterate_once()
+        self.log.info("Running objects sequentially")
+        self._run_all_objects()
+        self._write_typeorder_file()
 
         # Check whether all objects have been finished
         unfinished_objects = []
@@ -417,6 +484,22 @@ class Config(object):
             raise cdist.UnresolvableRequirementsError(
                     ("The requirements of the following objects could not be "
                      "resolved:\n%s") % ("\n".join(info_string)))
+
+    def _dump_requirements(self, object_list):
+        if self.log.getEffectiveLevel() != logging.DEBUG:
+            return
+
+        dump_string = ["Requirements dump:\n", ]
+        for cdist_object in object_list:
+            requirements = "\n        ".join(cdist_object.requirements)
+            autorequire = "\n        ".join(cdist_object.autorequire)
+            dump_string.append(("{0} requires:\n"
+                                "        {1}\n"
+                                "{0} autorequires:\n"
+                                "        {2}\n".format(
+                                    cdist_object.name,
+                                    requirements,  autorequire)))
+        self.log.debug("".join(dump_string))
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""

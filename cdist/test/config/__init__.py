@@ -109,16 +109,17 @@ class ConfigRunTestCase(test.CdistTestCase):
         first.requirements = [second.name]
         second.requirements = [third.name]
 
+        self.config._prepare_all_objects()
         # First run:
         # solves first and maybe second (depending on the order in the set)
-        self.config.iterate_once()
+        self.config.iterate_once_run()
         self.assertTrue(third.state == third.STATE_DONE)
 
-        self.config.iterate_once()
+        self.config.iterate_once_run()
         self.assertTrue(second.state == second.STATE_DONE)
 
         try:
-            self.config.iterate_once()
+            self.config.iterate_once_run()
         except cdist.Error:
             # Allow failing, because the third run may or may not be
             # unecessary already,
@@ -176,6 +177,32 @@ class ConfigRunTestCase(test.CdistTestCase):
         dryrun = cdist.config.Config(drylocal, self.remote, dry_run=True)
         dryrun.run()
         # if we are here, dryrun works like expected
+
+    def test_desp_resolver(self):
+        try:
+            local = cdist.exec.local.Local(
+                target_host=self.target_host,
+                base_root_path=self.host_base_path,
+                host_dir_name=self.hostdir,
+                exec_path=os.path.abspath(os.path.join(
+                    my_dir, '../../../scripts/cdist')),
+                initial_manifest=os.path.join(
+                    fixtures, 'manifest/init-deps-resolver'),
+                add_conf_dirs=[fixtures])
+
+            # dry_run is ok for dependency testing
+            config = cdist.config.Config(local, self.remote, dry_run=True)
+            config.run()
+            expected_typeorder = [
+                {'__f/f', '__e/e', '__j/j'},
+                {'__c/c', '__b/b', '__i/i'},
+                {'__d/d'},
+                {'__a/a'},
+                {'__h/h', '__g/g'}
+            ]
+            self.assertEqual(config.typeorder, expected_typeorder)
+        except cdist.UnresolvableRequirementsError as e:
+            self.fail("Dependency resolver failed: {}".format(e))
 
 
 # Currently the resolving code will simply detect that this object does
