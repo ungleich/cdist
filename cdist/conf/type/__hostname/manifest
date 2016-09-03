@@ -23,7 +23,14 @@ os=$(cat "$__global/explorer/os")
 if [ -f "$__object/parameter/name" ]; then
     name_should="$(cat "$__object/parameter/name")"
 else
-    name_should="$(echo "${__target_host%%.*}")"
+    case "$os" in
+    openbsd)
+        name_should="$(echo "${__target_host}")"
+    ;;
+    *)
+        name_should="$(echo "${__target_host%%.*}")"
+    ;;
+    esac
 fi
 
 
@@ -44,6 +51,9 @@ case "$os" in
             --delimiter '=' \
             --key HOSTNAME \
             --value "$name_should" --exact_delimiter
+    ;;
+    openbsd)
+        echo "$name_should" | __file /etc/myname --source -
     ;;
     *)
         not_supported
