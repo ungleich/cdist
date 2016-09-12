@@ -22,7 +22,8 @@ os="$($__explorer/os)"
 
 if [ "$os" = "netbsd" ]; then
     echo netbsd
-    exit
+elif [ "$os" = "freebsd" ]; then
+    echo freebsd
+else
+    usermod --help | grep -q -- '-A group' && echo true || echo false
 fi
-
-usermod --help | grep -q -- '-A group' && echo true || echo false
