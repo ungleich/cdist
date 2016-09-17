@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* New type: __firewalld_start: start/stop firewalld and/or enable/disable start on boot (Darko Poljak)
+
 4.3.1: 2016-08-22
 	* Documentation: Spelling fixes (Darko Poljak)
 	* Type __filesystem: Spelling fixes (Dmitry Bogatov)
