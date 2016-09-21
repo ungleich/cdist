@@ -266,12 +266,10 @@ class Config(object):
                 host_name = socket.gethostbyaddr(ip_addr)[0]
                 log.debug("derived host_name for host \"{}\": {}".format(
                     host, host_name))
-            except socket.gaierror as e:
-                log.warn("host_name: {}".format(e))
-                # in case of error provide empty value
-                host_name = ''
-            except socket.herror as e:
-                log.warn("host_name: {}".format(e))
+            except (socket.gaierror, socket.herror) as e:
+                log.warn("Could not derive host_name for {}"
+                         ", $host_name will be empty. Error is: {}".format(
+                             host, e))
                 # in case of error provide empty value
                 host_name = ''
 
@@ -280,9 +278,12 @@ class Config(object):
                 log.debug("derived host_fqdn for host \"{}\": {}".format(
                     host, host_fqdn))
             except socket.herror as e:
-                log.warn("host_fqdn: {}".format(e))
+                log.warn("Could not derive host_fqdn for {}"
+                         ", $host_fqdn will be empty. Error is: {}".format(
+                             host, e))
                 # in case of error provide empty value
                 host_fqdn = ''
+
             target_host = (host, host_name, host_fqdn)
 
             local = cdist.exec.local.Local(
