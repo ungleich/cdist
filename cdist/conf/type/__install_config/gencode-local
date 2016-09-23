@@ -27,6 +27,7 @@ cdist_args="-v"
 
 
 cat << DONE
+
 $__remote_exec $__target_host << EOSSH
 if [ ! -f "${chroot}/etc/resolv.conf" ]; then
    touch "${chroot}/etc/resolv.conf"
