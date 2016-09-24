@@ -79,7 +79,8 @@ class Emulator(object):
             raise MissingRequiredEnvironmentVariableError(e.args[0])
 
         self.object_base_path = os.path.join(self.global_path, "object")
-        self.typeorder_path = os.path.join(self.global_path, "typeorder")
+        self.creat_typeorder_path = os.path.join(self.global_path,
+                                                 "creation_typeorder")
 
         self.type_name = os.path.basename(argv[0])
         self.cdist_type = core.CdistType(self.type_base_path, self.type_name)
@@ -184,8 +185,9 @@ class Emulator(object):
             else:
                 self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
+
             # record the created object in typeorder file
-            with open(self.typeorder_path, 'a') as typeorderfile:
+            with open(self.creat_typeorder_path, 'a') as typeorderfile:
                 print(self.cdist_object.name, file=typeorderfile)
 
         # Record / Append source
@@ -249,10 +251,11 @@ class Emulator(object):
         # (this would leed to an circular dependency)
         if ("CDIST_ORDER_DEPENDENCY" in self.env and
                 'CDIST_OVERRIDE' not in self.env):
-            # load object name created bevor this one from typeorder file ...
-            with open(self.typeorder_path, 'r') as typecreationfile:
+            # load object name created before this one from
+            # creation typeorder file ...
+            with open(self.creat_typeorder_path, 'r') as typecreationfile:
                 typecreationorder = typecreationfile.readlines()
-                # get the type created bevore this one ...
+                # get the type created before this one ...
                 try:
                     lastcreatedtype = typecreationorder[-2].strip()
                     if 'require' in self.env:
