@@ -106,7 +106,7 @@ rejoin-after-leave
 server
    used to control if an agent is in server or client mode
 
-syslog
+enable-syslog
    enables logging to syslog
 
 verify-incoming
