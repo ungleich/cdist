@@ -1,8 +1,9 @@
 cdist-type__consul_agent(7)
 ===========================
-Manage the consul agent
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul_agent - Manage the consul agent
 
 
 DESCRIPTION
@@ -110,7 +111,7 @@ enable-syslog
    enables logging to syslog
 
 verify-incoming
-   enforce the use of TLS and verify a client's authenticity on incomming connections
+   enforce the use of TLS and verify a client's authenticity on incoming connections
 
 verify-outgoing
    enforce the use of TLS and verify the peers authenticity on outgoing connections
@@ -164,11 +165,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- http://www.consul.io/docs/agent/options.html
+consul documentation at: <http://www.consul.io/docs/agent/options.html>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2015 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2015 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

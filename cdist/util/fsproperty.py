@@ -136,7 +136,7 @@ class DirectoryDict(collections.MutableMapping):
             with open(os.path.join(self.path, key), "w") as fd:
                 if (not hasattr(value, 'strip') and
                     (hasattr(value, '__getitem__') or
-                    hasattr(value, '__iter__'))):
+                     hasattr(value, '__iter__'))):
                     # if it looks like a sequence and quacks like a sequence,
                     # it is a sequence
                     for v in value:
@@ -175,14 +175,19 @@ class FileBasedProperty(object):
         """
         :param path: string or callable
 
-        Abstract super class. Subclass and set the class member attribute_class accordingly.
+        Abstract super class. Subclass and set the class member
+        attribute_class accordingly.
 
         Usage with a sublcass:
 
         class Foo(object):
-            # note that the actual DirectoryDict is stored as __parameters on the instance
-            parameters = DirectoryDictProperty(lambda instance: os.path.join(instance.absolute_path, 'parameter'))
-            # note that the actual DirectoryDict is stored as __other_dict on the instance
+            # note that the actual DirectoryDict is stored as __parameters
+            # on the instance
+            parameters = DirectoryDictProperty(
+                lambda instance: os.path.join(instance.absolute_path,
+                                              'parameter'))
+            # note that the actual DirectoryDict is stored as __other_dict
+            # on the instance
             other_dict = DirectoryDictProperty('/tmp/other_dict')
 
             def __init__(self):

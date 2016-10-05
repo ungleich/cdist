@@ -21,6 +21,7 @@
 
 import os
 import subprocess
+import hashlib
 
 import cdist.version
 
@@ -41,28 +42,48 @@ BANNER = """
    "P'        ""         ""
 """
 
-REMOTE_COPY = "scp -o User=root -q"
-REMOTE_EXEC = "ssh -o User=root -q"
+REMOTE_COPY = "scp -o User=root"
+REMOTE_EXEC = "ssh -o User=root"
+
 
 class Error(Exception):
     """Base exception class for this project"""
     pass
 
+
 class UnresolvableRequirementsError(cdist.Error):
     """Resolving requirements failed"""
     pass
 
+
+class CdistBetaRequired(cdist.Error):
+    """Beta functionality is used but beta is not enabled"""
+
+    def __init__(self, command, arg):
+        self.command = command
+        self.arg = arg
+
+    def __str__(self):
+        err_msg = ("\'{}\' argument of \'{}\' command is beta, but beta is "
+                   "not enabled. If you want to use it please enable beta "
+                   "functionalities by using the -b/--enable-beta command "
+                   "line flag.")
+        return err_msg.format(self.arg, self.command)
+
+
 class CdistObjectError(Error):
     """Something went wrong with an object"""
-    
+
     def __init__(self, cdist_object, message):
         self.name = cdist_object.name
         self.source = " ".join(cdist_object.source)
         self.message = message
 
-
     def __str__(self):
-        return '%s: %s (defined at %s)' % (self.name, self.message, self.source)
+        return '%s: %s (defined at %s)' % (self.name,
+                                           self.message,
+                                           self.source)
+
 
 def file_to_list(filename):
     """Return list from \n seperated file"""
@@ -77,3 +98,11 @@ def file_to_list(filename):
         lines = []
 
     return lines
+
+
+def str_hash(s):
+    """Return hash of string s"""
+    if isinstance(s, str):
+        return hashlib.md5(s.encode('utf-8')).hexdigest()
+    else:
+        raise Error("Param should be string")

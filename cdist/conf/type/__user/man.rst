@@ -1,8 +1,9 @@
 cdist-type__user(7)
 ===================
-Manage users
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__user - Manage users
 
 
 DESCRIPTION
@@ -83,11 +84,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- usermod(8) or pw(8)
+:strong:`pw`\ (8), :strong:`usermod`\ (8)
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2011 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2011 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

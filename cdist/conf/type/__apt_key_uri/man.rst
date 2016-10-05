@@ -1,8 +1,9 @@
 cdist-type__apt_key_uri(7)
 ==========================
-Add apt key from uri
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__apt_key_uri - Add apt key from uri
 
 
 DESCRIPTION
@@ -37,12 +38,14 @@ EXAMPLES
        --state present
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2011-2014 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2011-2014 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

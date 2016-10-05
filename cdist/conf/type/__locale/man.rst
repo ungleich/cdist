@@ -1,8 +1,9 @@
 cdist-type__locale(7)
 =====================
-Configure locales
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__locale - Configure locales
 
 
 DESCRIPTION
@@ -33,12 +34,16 @@ EXAMPLES
 
 SEE ALSO
 --------
-- locale(1)
-- localedef(1)
-- `cdist-type(7) <cdist-type.html>`_
+:strong:`locale`\ (1), :strong:`localedef`\ (1), :strong:`cdist-type__locale_system`\ (7)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2013-2014 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2013-2016 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License version 3 or
+later (GPLv3+).

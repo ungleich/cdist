@@ -1,8 +1,9 @@
 cdist-type__consul_template(7)
 ==============================
-Manage the consul-template service
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul_template - Manage the consul-template service
 
 
 DESCRIPTION
@@ -124,11 +125,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- https://github.com/hashicorp/consul-template
+consul documentation at: <https://github.com/hashicorp/consul-template>.
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2015 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2015 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

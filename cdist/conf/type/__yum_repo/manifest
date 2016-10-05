@@ -22,7 +22,7 @@ os=$(cat "$__global/explorer/os")
 state="$(cat "$__object/parameter/state")"
 
 case "$os" in
-   centos)
+   scientific|centos)
       repo_name="$__object_id"
       export repo_name
       repo_file="/etc/yum.repos.d/${repo_name}.repo"

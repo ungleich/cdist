@@ -1,8 +1,9 @@
 cdist-type__key_value(7)
 ========================
-Change property values in files
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__key_value - Change property values in files
 
 
 DESCRIPTION
@@ -71,21 +72,23 @@ EXAMPLES
        --delimiter ' = ' --comment '# my linux kernel should act as a router'
 
     # Remove existing key/value
-    __key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '=' 
+    __key_value LEGACY_KEY --file /etc/somefile --state absent --delimiter '='
 
 
 MORE INFORMATION
 ----------------
 This type try to handle as many values as possible, so it doesn't use regexes.
-So you need to exactly specify the key and delimiter. Delimiter can be of any lenght.
+So you need to exactly specify the key and delimiter. Delimiter can be of any length.
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2011 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2011 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

@@ -1,12 +1,9 @@
 cdist-type__pf_apply(7)
 =======================
-Apply pf(4) ruleset on \*BSD
-
-Jake Guffey <jake.guffey--@--eprotex.com>
-
 
 NAME
 ----
+cdist-type__pf_apply - Apply pf(4) ruleset on \*BSD
 
 
 DESCRIPTION
@@ -42,12 +39,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__pf_ruleset(7) <cdist-type__pf_ruleset.html>`_
-- pf(4)
+:strong:`pf`\ (4), :strong:`cdist-type__pf_ruleset`\ (7)
+
+
+AUTHORS
+-------
+Jake Guffey <jake.guffey--@--eprotex.com>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Jake Guffey. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012 Jake Guffey. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

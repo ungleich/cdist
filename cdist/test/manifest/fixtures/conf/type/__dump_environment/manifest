@@ -3,6 +3,8 @@
 cat > $__cdist_test_out << DONE
 PATH: $PATH
 __target_host: $__target_host
+__target_hostname: $__target_hostname
+__target_fqdn: $__target_fqdn
 __global: $__global
 __cdist_type_base_path: $__cdist_type_base_path
 __type: $__type
@@ -10,4 +12,5 @@ __self: $__self
 __object: $__object
 __object_id: $__object_id
 __object_name: $__object_name
+__files: $__files
 DONE

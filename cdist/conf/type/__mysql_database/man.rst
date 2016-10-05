@@ -1,8 +1,9 @@
 cdist-type__mysql_database(7)
 =============================
-Manage a MySQL database
 
-Benedikt Koeppel <code@benediktkoeppel.ch>
+NAME
+----
+cdist-type__mysql_database - Manage a MySQL database
 
 
 DESCRIPTION
@@ -35,12 +36,14 @@ EXAMPLES
     __mysql_database "cdist" --name "cdist" --user "myuser" --password "mypwd"
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Benedikt Koeppel <code@benediktkoeppel.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Benedikt Koeppel. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012 Benedikt Koeppel. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

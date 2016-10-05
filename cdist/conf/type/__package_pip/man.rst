@@ -1,8 +1,9 @@
 cdist-type__package_pip(7)
 ==========================
-Manage packages with pip
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__package_pip - Manage packages with pip
 
 
 DESCRIPTION
@@ -48,11 +49,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:strong:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012 Nico Schottelius. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

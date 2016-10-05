@@ -1,8 +1,9 @@
 cdist-type__group(7)
 ====================
-Manage groups
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__group - Manage groups
 
 
 DESCRIPTION
@@ -66,12 +67,14 @@ EXAMPLES
     __group foobar --gid 1234 --password 'crypted-password-string'
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2011-2015 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2011-2015 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

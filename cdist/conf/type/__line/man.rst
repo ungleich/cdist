@@ -1,8 +1,9 @@
 cdist-type__line(7)
 ===================
-Manage lines in files
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__line - Manage lines in files
 
 
 DESCRIPTION
@@ -60,11 +61,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- grep(1)
+:strong:`grep`\ (1)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2012-2013 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012-2013 Nico Schottelius. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

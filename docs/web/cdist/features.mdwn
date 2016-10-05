@@ -3,7 +3,7 @@ But cdist ticks differently, here is the feature set that makes it unique:
 [[!table  data="""
 Keywords | Description
 Simplicity | There is only one type to extend cdist called ***type***
-Design | Type and core cleanly seperated
+Design | Type and core cleanly separated
 Design | Sticks completly to the KISS (keep it simple and stupid) paradigma
 Design | Meaningful error messages - do not lose time debugging error messages
 Design | Consistency in behaviour, naming and documentation

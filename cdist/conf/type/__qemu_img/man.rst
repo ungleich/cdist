@@ -1,8 +1,9 @@
 cdist-type__qemu_img(7)
 =======================
-Manage VM disk images
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__qemu_img - Manage VM disk images
 
 
 DESCRIPTION
@@ -36,11 +37,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- qemu-img(1)
+:strong:`qemu-img`\ (1)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2012-2014 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012-2014 Nico Schottelius. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

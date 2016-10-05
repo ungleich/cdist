@@ -1,8 +1,9 @@
 cdist-type__consul_template_template(7)
 =======================================
-Manage consul-template templates
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__consul_template_template - Manage consul-template templates
 
 
 DESCRIPTION
@@ -67,12 +68,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__consul_template(7) <cdist-type__consul_template.html>`_
-- `cdist-type__consul_template_config(7) <cdist-type__consul_template_config.html>`_
+:strong:`cdist-type__consul_template`\ (7), :strong:`cdist-type__consul_template_config`\ (7)
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2015-2016 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2015-2016 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

@@ -1,8 +1,9 @@
 cdist-type__debconf_set_selections(7)
 =====================================
-Setup debconf selections
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__debconf_set_selections - Setup debconf selections
 
 
 DESCRIPTION
@@ -36,12 +37,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__update_alternatives(7) <cdist-type__update_alternatives.html>`_
-- debconf-set-selections(1)
+:strong:`debconf-set-selections`\ (1), :strong:`cdist-type__update_alternatives`\ (7)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2011-2014 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2011-2014 Nico Schottelius. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

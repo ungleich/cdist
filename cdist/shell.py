@@ -22,6 +22,7 @@
 import logging
 import os
 import subprocess
+import tempfile
 
 # initialise cdist
 import cdist.exec.local
@@ -31,35 +32,51 @@ import cdist.config
 
 log = logging.getLogger(__name__)
 
+
 class Shell(object):
-    
+
     def __init__(self, shell=None):
 
         self.shell = shell
 
-        self.target_host = "cdist-shell-no-target-host"
+        self.target_host = (
+            "cdist-shell-no-target-host",
+            "cdist-shell-no-target-host",
+            "cdist-shell-no-target-host",
+        )
+
+        host_dir_name = cdist.str_hash(self.target_host[0])
+        base_root_path = tempfile.mkdtemp()
+        host_base_path = os.path.join(base_root_path, host_dir_name)
+
         self.local = cdist.exec.local.Local(
-            target_host=self.target_host)
+            target_host=self.target_host,
+            base_root_path=host_base_path,
+            host_dir_name=host_dir_name)
 
     def _init_shell(self):
         """Select shell to execute, if not specified by user"""
 
         if not self.shell:
-            self.shell = os.environ.get('SHELL',"/bin/sh")
+            self.shell = os.environ.get('SHELL', "/bin/sh")
 
     def _init_files_dirs(self):
         self.local.create_files_dirs()
 
     def _init_environment(self):
         self.env = os.environ.copy()
-        additional_env = { 
+        additional_env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
-            '__cdist_type_base_path': self.local.type_path, # for use in type emulator
+            # for use in type emulator
+            '__cdist_type_base_path': self.local.type_path,
             '__cdist_manifest': "cdist shell",
             '__global': self.local.base_path,
-            '__target_host': self.target_host,
+            '__target_host': self.target_host[0],
+            '__target_hostname': self.target_host[1],
+            '__target_fqdn': self.target_host[2],
             '__manifest': self.local.manifest_path,
             '__explorer': self.local.global_explorer_path,
+            '__files': self.local.files_path,
         }
 
         self.env.update(additional_env)
@@ -70,7 +87,8 @@ class Shell(object):
         self._init_environment()
 
         log.info("Starting shell...")
-        self.local.run([self.shell], self.env)
+        # save_output=False -> do not catch stdout and stderr
+        self.local.run([self.shell], self.env, save_output=False)
         log.info("Finished shell.")
 
     @classmethod

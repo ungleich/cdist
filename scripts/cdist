@@ -21,28 +21,39 @@
 #
 #
 
-def inspect_ssh_mux_opts(control_path_dir="~/.ssh/"):
-    """Inspect whether or not ssh supports multiplexing options"""
-    import subprocess
-    import os
 
-    control_path = os.path.join(control_path_dir,
-            "cdist.socket.master-%l-%r@%h:%p")
-    wanted_mux_opts = {
-        "ControlPath": control_path,
-        "ControlMaster": "auto",
-        "ControlPersist": "125",
-    }
-    mux_opts = " ".join([" -o {}={}".format(x,
-        wanted_mux_opts[x]) for x in wanted_mux_opts])
+# list of beta arguments for sub-commands
+BETA_ARGS = {
+    'config': ['jobs', ],
+}
+
+
+def check_positive_int(value):
+    import argparse
+
     try:
-        subprocess.check_output("ssh {}".format(mux_opts),
-                stderr=subprocess.STDOUT, shell=True)
-    except subprocess.CalledProcessError as e:
-        subproc_output = e.output.decode().lower()
-        if "bad configuration option" in subproc_output:
-            return ""
-    return mux_opts
+        val = int(value)
+    except ValueError as e:
+        raise argparse.ArgumentTypeError(
+                "{} is invalid int value".format(value))
+    if val <= 0:
+        raise argparse.ArgumentTypeError(
+                "{} is invalid positive int value".format(val))
+    return val
+
+
+def check_beta(args_dict):
+    if 'beta' not in args_dict:
+        args_dict['beta'] = False
+    # Check only if beta is not enabled: if beta option is specified then
+    # raise error.
+    if not args_dict['beta']:
+        cmd = args_dict['command']
+        if cmd in BETA_ARGS:
+            for arg in BETA_ARGS[cmd]:
+                if arg in args_dict and args_dict[arg]:
+                    raise cdist.CdistBetaRequired(cmd, arg)
+
 
 def commandline():
     """Parse command line"""
@@ -51,87 +62,108 @@ def commandline():
     import cdist.banner
     import cdist.config
     import cdist.shell
-    import tempfile
     import shutil
     import os
+    import multiprocessing
 
     # Construct parser others can reuse
     parser = {}
     # Options _all_ parsers have in common
     parser['loglevel'] = argparse.ArgumentParser(add_help=False)
-    parser['loglevel'].add_argument('-d', '--debug',
-        help='Set log level to debug', action='store_true',
-        default=False)
-    parser['loglevel'].add_argument('-v', '--verbose',
-        help='Set log level to info, be more verbose',
-        action='store_true', default=False)
+    parser['loglevel'].add_argument(
+            '-d', '--debug', help='Set log level to debug',
+            action='store_true', default=False)
+    parser['loglevel'].add_argument(
+            '-v', '--verbose', help='Set log level to info, be more verbose',
+            action='store_true', default=False)
 
     # Main subcommand parser
-    parser['main'] = argparse.ArgumentParser(description='cdist '
-            + cdist.VERSION,
-        parents=[parser['loglevel']])
-    parser['main'].add_argument('-V', '--version',
-        help='Show version', action='version',
-        version='%(prog)s ' + cdist.VERSION)
-    parser['sub'] = parser['main'].add_subparsers(title="Commands",
-            dest="command")
+    parser['main'] = argparse.ArgumentParser(
+            description='cdist ' + cdist.VERSION, parents=[parser['loglevel']])
+    parser['main'].add_argument(
+            '-V', '--version', help='Show version', action='version',
+            version='%(prog)s ' + cdist.VERSION)
+    parser['sub'] = parser['main'].add_subparsers(
+            title="Commands", dest="command")
 
     # Banner
-    parser['banner'] = parser['sub'].add_parser('banner', 
-        parents=[parser['loglevel']])
+    parser['banner'] = parser['sub'].add_parser(
+            'banner', parents=[parser['loglevel']])
     parser['banner'].set_defaults(func=cdist.banner.banner)
 
     # Config
-    parser['config'] = parser['sub'].add_parser('config',
-        parents=[parser['loglevel']])
-    parser['config'].add_argument('host', nargs='*',
-        help='host(s) to operate on')
-    parser['config'].add_argument('-c', '--conf-dir',
-         help=('Add configuration directory (can be repeated, '
-             'last one wins)'), action='append')
-    parser['config'].add_argument('-f', '--file',
-         help=('Read additional hosts to operate on from specified file '
-             'or from stdin if \'-\' (each host on separate line). '
-             'If no host or host file is specified then, by default, '
-             'read hosts from stdin.'),
-         dest='hostfile', required=False)
-    parser['config'].add_argument('-i', '--initial-manifest', 
-         help='Path to a cdist manifest or \'-\' to read from stdin.',
-         dest='manifest', required=False)
-    parser['config'].add_argument('-n', '--dry-run',
-         help='Do not execute code', action='store_true')
-    parser['config'].add_argument('-o', '--out-dir',
-         help='Directory to save cdist output in', dest="out_path")
-    parser['config'].add_argument('-p', '--parallel',
-         help='Operate on multiple hosts in parallel',
-         action='store_true', dest='parallel')
-    parser['config'].add_argument('-s', '--sequential',
-         help='Operate on multiple hosts sequentially (default)',
-         action='store_false', dest='parallel')
+    parser['config'] = parser['sub'].add_parser(
+            'config', parents=[parser['loglevel']])
+    parser['config'].add_argument(
+            'host', nargs='*', help='host(s) to operate on')
+    parser['config'].add_argument(
+           '-b', '--enable-beta',
+           help=('Enable beta functionalities. Beta functionalities '
+                 'include the following options: -j/--jobs.'),
+           action='store_true', dest='beta', default=False)
+    parser['config'].add_argument(
+            '-c', '--conf-dir',
+            help=('Add configuration directory (can be repeated, '
+                  'last one wins)'), action='append')
+    parser['config'].add_argument(
+            '-f', '--file',
+            help=('Read additional hosts to operate on from specified file '
+                  'or from stdin if \'-\' (each host on separate line). '
+                  'If no host or host file is specified then, by default, '
+                  'read hosts from stdin.'),
+            dest='hostfile', required=False)
+    parser['config'].add_argument(
+           '-i', '--initial-manifest',
+           help='Path to a cdist manifest or \'-\' to read from stdin.',
+           dest='manifest', required=False)
+    parser['config'].add_argument(
+           '-j', '--jobs', nargs='?', type=check_positive_int,
+           help=('Specify the maximum number of parallel jobs, currently '
+                 'only global explorers are supported (currently in beta'),
+           action='store', dest='jobs',
+           const=multiprocessing.cpu_count())
+    parser['config'].add_argument(
+           '-n', '--dry-run',
+           help='Do not execute code', action='store_true')
+    parser['config'].add_argument(
+           '-o', '--out-dir',
+           help='Directory to save cdist output in', dest="out_path")
+    parser['config'].add_argument(
+           '-p', '--parallel',
+           help='Operate on multiple hosts in parallel',
+           action='store_true', dest='parallel')
+    parser['config'].add_argument(
+           '-s', '--sequential',
+           help='Operate on multiple hosts sequentially (default)',
+           action='store_false', dest='parallel')
     # remote-copy and remote-exec defaults are environment variables
     # if set; if not then None - these will be futher handled after
     # parsing to determine implementation default
-    parser['config'].add_argument('--remote-copy',
-         help='Command to use for remote copy (should behave like scp)',
-         action='store', dest='remote_copy',
-         default=os.environ.get('CDIST_REMOTE_COPY'))
-    parser['config'].add_argument('--remote-exec',
-         help=('Command to use for remote execution '
-               '(should behave like ssh)'),
-         action='store', dest='remote_exec',
-         default=os.environ.get('CDIST_REMOTE_EXEC'))
+    parser['config'].add_argument(
+           '--remote-copy',
+           help='Command to use for remote copy (should behave like scp)',
+           action='store', dest='remote_copy',
+           default=os.environ.get('CDIST_REMOTE_COPY'))
+    parser['config'].add_argument(
+           '--remote-exec',
+           help=('Command to use for remote execution '
+                 '(should behave like ssh)'),
+           action='store', dest='remote_exec',
+           default=os.environ.get('CDIST_REMOTE_EXEC'))
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
 
     # Shell
-    parser['shell'] = parser['sub'].add_parser('shell', 
-        parents=[parser['loglevel']])
-    parser['shell'].add_argument('-s', '--shell',
-         help='Select shell to use, defaults to current shell')
+    parser['shell'] = parser['sub'].add_parser(
+            'shell', parents=[parser['loglevel']])
+    parser['shell'].add_argument(
+            '-s', '--shell',
+            help=('Select shell to use, defaults to current shell. Used shell'
+                  ' should be POSIX compatible shell.'))
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
 
-
     for p in parser:
-        parser[p].epilog = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
+        parser[p].epilog = (
+                "Get cdist at http://www.nico.schottelius.org/software/cdist/")
 
     args = parser['main'].parse_args(sys.argv[1:])
 
@@ -140,26 +172,6 @@ def commandline():
         logging.root.setLevel(logging.INFO)
     if args.debug:
         logging.root.setLevel(logging.DEBUG)
-    args_dict = vars(args)
-    # if command with remote_copy and remote_exec params
-    if 'remote_copy' in args_dict and 'remote_exec' in args_dict:
-        # if remote-exec and/or remote-copy args are None then user
-        # didn't specify command line options nor env vars:
-        # inspect multiplexing options for default cdist.REMOTE_COPY/EXEC
-        if args_dict['remote_copy'] is None or args_dict['remote_exec'] is None:
-            control_path_dir = tempfile.mkdtemp()
-            import atexit
-            atexit.register(lambda: shutil.rmtree(control_path_dir))
-            mux_opts = inspect_ssh_mux_opts(control_path_dir)
-            if args_dict['remote_exec'] is None:
-                args.remote_exec = cdist.REMOTE_EXEC + mux_opts
-            if args_dict['remote_copy'] is None:
-                args.remote_copy = cdist.REMOTE_COPY + mux_opts
-
-    if args.command == 'config':
-        if args.manifest == '-' and args.hostfile == '-':
-            print('cdist config: error: cannot read both, manifest and host file, from stdin')
-            sys.exit(1)
 
     log.debug(args)
     log.info("version %s" % cdist.VERSION)
@@ -179,6 +191,7 @@ def commandline():
         parser['main'].print_help()
         sys.exit(0)
 
+    check_beta(vars(args))
     args.func(args)
 
 if __name__ == "__main__":
@@ -188,9 +201,8 @@ if __name__ == "__main__":
     cdistpythonversion = '3.2'
     if sys.version < cdistpythonversion:
         print('Python >= ' + cdistpythonversion +
-            ' is required on the source host.', file=sys.stderr)
+              ' is required on the source host.', file=sys.stderr)
         sys.exit(1)
-
 
     exit_code = 0
 

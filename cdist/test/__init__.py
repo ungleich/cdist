@@ -28,14 +28,20 @@ cdist_base_path = os.path.abspath(
 
 cdist_exec_path = os.path.join(cdist_base_path, "scripts/cdist")
 
-global_fixtures_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "fixtures"))
+global_fixtures_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                   "fixtures"))
+
 
 class CdistTestCase(unittest.TestCase):
 
     remote_exec = os.path.join(global_fixtures_dir, "remote", "exec")
     remote_copy = os.path.join(global_fixtures_dir, "remote", "copy")
 
-    target_host = 'cdisttesthost'
+    target_host = (
+        'cdisttesthost',
+        'cdisttesthost',
+        'cdisttesthost',
+    )
 
     def mkdtemp(self, **kwargs):
         return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)

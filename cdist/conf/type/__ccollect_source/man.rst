@@ -1,8 +1,9 @@
 cdist-type__ccollect_source(7)
 ==============================
-Manage ccollect sources
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__ccollect_source - Manage ccollect sources
 
 
 DESCRIPTION
@@ -52,12 +53,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- ccollect(1)
-- http://www.nico.schottelius.org/software/ccollect/
+:strong:`ccollect`\ (1)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2014 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2014 Nico Schottelius. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

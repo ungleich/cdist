@@ -1,0 +1,342 @@
+From kaction  Tue Aug  2 13:59:41 2016
+Return-path: <thomas.oettli@sfs.biz>
+Envelope-to: KAction@gnu.org
+Delivery-date: Tue, 02 Aug 2016 05:50:23 -0400
+Received: from fencepost.gnu.org [208.118.235.10]
+	by searing with POP3 (fetchmail-6.3.26)
+	for <kaction@localhost> (single-drop); Tue, 02 Aug 2016 13:59:41 +0300 (MSK)
+Received: from eggs.gnu.org ([2001:4830:134:3::10]:41424)
+	by fencepost.gnu.org with esmtps (TLS1.0:RSA_AES_256_CBC_SHA1:256)
+	(Exim 4.82)
+	(envelope-from <thomas.oettli@sfs.biz>)
+	id 1bUWL9-0006S9-Ft
+	for KAction@gnu.org; Tue, 02 Aug 2016 05:50:23 -0400
+Received: from Debian-exim by eggs.gnu.org with spam-scanned (Exim 4.71)
+	(envelope-from <thomas.oettli@sfs.biz>)
+	id 1bUWL1-0007oE-Eo
+	for KAction@gnu.org; Tue, 02 Aug 2016 05:50:21 -0400
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on eggs.gnu.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,HTML_MESSAGE,
+	RCVD_IN_DNSWL_NONE,TVD_FW_GRAPHIC_NAME_MID autolearn=disabled version=3.3.2
+Received: from mail2.sfsservices.biz ([194.93.112.42]:43385)
+	by eggs.gnu.org with esmtp (Exim 4.71)
+	(envelope-from <thomas.oettli@sfs.biz>)
+	id 1bUWKe-0007eL-5Z
+	for KAction@gnu.org; Tue, 02 Aug 2016 05:50:15 -0400
+X-Received: from localhost (localhost [127.0.0.1])
+	by mail2.sfsservices.biz (Postfix) with ESMTP id B80B68BEA15B
+	for <KAction@gnu.org>; Tue,  2 Aug 2016 11:49:19 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at sfsservices.biz
+X-Received: from mail2.sfsservices.biz ([127.0.0.1])
+	by localhost (mail2.sfsservices.biz [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id Kq9SpRTVO-tm for <KAction@gnu.org>;
+	Tue,  2 Aug 2016 11:49:19 +0200 (CEST)
+X-Received: from chsfsd15.sfs-intra.net (chsfsln0002.sfs-intra.net [INTERNAL-IP])
+	by mail2.sfsservices.biz (Postfix) with ESMTP
+	for <KAction@gnu.org>; Tue,  2 Aug 2016 11:49:19 +0200 (CEST)
+In-Reply-To: <E1bPt8C-0004Ob-EO@eggs.gnu.org>
+References: <E1bPt8C-0004Ob-EO@eggs.gnu.org>
+Subject: Antwort: cdist contribution relicensing
+X-KeepSent: A672E59F:C63BD8B2-C1258003:0035E697;
+ type=4; name=$KeepSent
+To: Dmitry Bogatov <KAction@gnu.org>
+X-Mailer: IBM Notes Release 9.0.1 October 14, 2013
+Message-ID: <OFA672E59F.C63BD8B2-ONC1258003.0035E697-C1258003.0035F451@sfs-intra.net>
+From: Thomas Oettli <thomas.oettli@sfs.biz>
+Date: Tue, 2 Aug 2016 11:49:18 +0200
+X-MIMETrack: Serialize by Router on chsfsd15/SFS(Release 9.0.1FP6|April  20, 2016) at
+ 02.08.2016 11:49:19
+MIME-Version: 1.0
+Content-type: multipart/related; 
+	Boundary="0__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007"
+X-detected-operating-system: by eggs.gnu.org: GNU/Linux 2.2.x-3.x [generic]
+X-Received-From: 194.93.112.42
+X-UIDL: Jb%#!^\~!!pT3"!DD="!
+
+--0__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007
+Content-type: multipart/alternative; 
+	Boundary="1__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007"
+
+--1__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007
+Content-type: text/plain; charset=UTF-8
+Content-transfer-encoding: quoted-printable
+
+
+I, Thomas Oettli <otho@sfs.biz> permit to relicense all my contribution=
+ to
+cdist project, source code https://github.com/ungleich/cdist
+to GNU General Public license, version 3 or (at your option)
+any later version, as published by Free Software Foundation.
+
+
+
+Thomas Oettli
+Systemengineer SAP & Linux
+
+SFS services AG, Corporate IT
+Rosenbergsaustrasse 8, CH-9435 Heerbrugg
+T +41 71 72 75269   F +41 71 72 75237
+thomas.oettli@sfs.biz      www.sfs.biz
+
+
+
+Denken Sie an die Umwelt bevor Sie drucken. - Please consider your
+environment before printing.
+
+
+
+
+Von:	Dmitry Bogatov <KAction@gnu.org>
+An:	Andi Br=C3=B6nnimann <andi-cdist@v-net.ch>, Benedikt Koeppel
+            <code@benediktkoeppel.ch>, Chase Allen James
+            <nx-cdist@nu-ex.com>, Christian G. Warden <cwarden@xerus.or=
+g>,
+            Daniel Heule <hda@sfs.biz>, Daniel Maher <phrawzty
+            +cdist@gmail.com>, Dominique Roux <dominique.roux4@gmail.co=
+m>,
+            Evax Software <contact@evax.fr>, Giel van Schijndel <giel
+            +cdist@mortis.eu>, Jake Guffey <jake.guffey@eprotex.com>, J=
+ake
+            Guffey <jake.guffey@jointheirstm.org>, Nico Schottelius
+            <nico-cdist@schottelius.org>, Ramon Salvad=C3=B3
+            <rsalvado@gnuine.com>, Ricardo Catalinas Jim=C3=A9nez
+            <jimenezrick@gmail.com>, Steven Armstrong
+            <steven-cdist@armstrong.cc>, Thomas Oettli <otho@sfs.biz>
+Kopie:	Darko Poljak <darko.poljak@gmail.com>, Nico Schottelius
+            <nico.schottelius@ungleich.ch>
+Datum:	20.07.2016 17:11
+Betreff:	cdist contribution relicensing
+
+
+
+
+Hello, dear contributors of cdist project!
+
+Recently we discovered licensing issue with your contribution. Namely,
+while most of code is GPLv3+, including some of code written by you,
+manpages (man.txt, now man.rst) are GPLv3 only licensed.
+
+On behalf of cdist releasers (Darko and Nico), I (another cdist
+contributor and cdist Debian maintainer) ask you to permit relicense
+your contribution from GPLv3 to GPLv3+. Without your permission, we
+would be stuck the day when GPLv4 come (hope it will never come, but
+still), or have to reimplement your contribution.
+
+If you agree, please respond with something like
+
+		 I, #name# <#email#> permit to relicense all my contribution to
+		 cdist project, source code https://github.com/ungleich/cdist
+		 to GNU General Public license, version 3 or (at your option)
+		 any later version, as published by Free Software Foundation.
+
+        #day# Jule 2016 year.
+
+If possible, GPG-sign such email. Do not include anything else
+valuable in this email that you do not want to be stored forever in
+public.
+
+Dear contributors, when replying to this email, please do not send
+copy to other contributors -- save their inbox storage.
+
+Thank you in advance for one more contribution.
+
+--
+Accept: text/plain, text/x-diff
+Accept-Language: eo,en,ru
+X-Web-Site: sinsekvu.github.io
+[Anhang "attsga4c.dat" gel=C3=B6scht von Thomas Oettli/otho/SFS]=
+
+--1__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007
+Content-type: text/html; charset=UTF-8
+Content-Disposition: inline
+Content-transfer-encoding: quoted-printable
+
+<html><body>
+<p><tt><font size=3D"2">I, Thomas Oettli &lt;otho@sfs.biz&gt; permit to=
+ relicense all my contribution to<br>
+cdist project, source code </font></tt><tt><font size=3D"2"><a href=3D"=
+https://github.com/ungleich/cdist">https://github.com/ungleich/cdist</a=
+></font></tt><tt><font size=3D"2"><br>
+to GNU General Public license, version 3 or (at your option)<br>
+any later version, as published by Free Software Foundation.</font></tt=
+><br>
+<br>
+<br>
+<br>
+<font size=3D"2" face=3D"sans-serif">Thomas Oettli<br>
+Systemengineer SAP &amp; Linux</font><br>
+<font size=3D"2" face=3D"sans-serif"><br>
+SFS services AG, Corporate IT<br>
+Rosenbergsaustrasse 8, CH-9435 Heerbrugg<br>
+T +41 71 72 75269 &nbsp; F +41 71 72 75237 &nbsp; </font><br>
+<a href=3D"mailto:thomas.oettli@sfs.biz"><font size=3D"2" color=3D"#000=
+0FF" face=3D"sans-serif">thomas.oettli@sfs.biz</font></a><font size=3D"=
+2" face=3D"sans-serif">&nbsp;</font><font size=3D"2" color=3D"#0000FF" =
+face=3D"sans-serif">&nbsp; &nbsp; &nbsp;www.sfs.biz</font><br>
+<br>
+<img src=3D"cid:1__=3D4EBB0A90DFA660078f9e8a93df@sfs-intra.net" width=3D=
+"86" height=3D"42"><br>
+<br>
+<img src=3D"cid:2__=3D4EBB0A90DFA660078f9e8a93df@sfs-intra.net" width=3D=
+"310" height=3D"34" alt=3D"Denken Sie an die Umwelt bevor Sie drucken. =
+- Please consider your environment before printing."><br>
+<br>
+<br>
+<img width=3D"16" height=3D"16" src=3D"cid:3__=3D4EBB0A90DFA660078f9e8a=
+93df@sfs-intra.net" border=3D"0" alt=3D"Inactive hide details for Dmitr=
+y Bogatov ---20.07.2016 17:11:48---Hello, dear contributors of cdist pr=
+oject! Recently we discov"><font size=3D"2" color=3D"#424282" face=3D"s=
+ans-serif">Dmitry Bogatov ---20.07.2016 17:11:48---Hello, dear contribu=
+tors of cdist project! Recently we discovered licensing issue with your=
+ contribu</font><br>
+<br>
+<font size=3D"1" color=3D"#5F5F5F" face=3D"sans-serif">Von:	</font><fon=
+t size=3D"1" face=3D"sans-serif">Dmitry Bogatov &lt;KAction@gnu.org&gt;=
+</font><br>
+<font size=3D"1" color=3D"#5F5F5F" face=3D"sans-serif">An:	</font><font=
+ size=3D"1" face=3D"sans-serif">Andi Br=C3=B6nnimann &lt;andi-cdist@v-n=
+et.ch&gt;, Benedikt Koeppel &lt;code@benediktkoeppel.ch&gt;, Chase Alle=
+n James &lt;nx-cdist@nu-ex.com&gt;, Christian G. Warden &lt;cwarden@xer=
+us.org&gt;, Daniel Heule &lt;hda@sfs.biz&gt;, Daniel Maher &lt;phrawzty=
++cdist@gmail.com&gt;, Dominique Roux &lt;dominique.roux4@gmail.com&gt;,=
+ Evax Software &lt;contact@evax.fr&gt;, Giel van Schijndel &lt;giel+cdi=
+st@mortis.eu&gt;, Jake Guffey &lt;jake.guffey@eprotex.com&gt;, Jake Guf=
+fey &lt;jake.guffey@jointheirstm.org&gt;, Nico Schottelius &lt;nico-cdi=
+st@schottelius.org&gt;, Ramon Salvad=C3=B3 &lt;rsalvado@gnuine.com&gt;,=
+ Ricardo Catalinas Jim=C3=A9nez &lt;jimenezrick@gmail.com&gt;, Steven A=
+rmstrong &lt;steven-cdist@armstrong.cc&gt;, Thomas Oettli &lt;otho@sfs.=
+biz&gt;</font><br>
+<font size=3D"1" color=3D"#5F5F5F" face=3D"sans-serif">Kopie:	</font><f=
+ont size=3D"1" face=3D"sans-serif">Darko Poljak &lt;darko.poljak@gmail.=
+com&gt;, Nico Schottelius &lt;nico.schottelius@ungleich.ch&gt;</font><b=
+r>
+<font size=3D"1" color=3D"#5F5F5F" face=3D"sans-serif">Datum:	</font><f=
+ont size=3D"1" face=3D"sans-serif">20.07.2016 17:11</font><br>
+<font size=3D"1" color=3D"#5F5F5F" face=3D"sans-serif">Betreff:	</font>=
+<font size=3D"1" face=3D"sans-serif">cdist contribution relicensing</fo=
+nt><br>
+<hr width=3D"100%" size=3D"2" align=3D"left" noshade style=3D"color:#80=
+91A5; "><br>
+<br>
+<br>
+<tt><font size=3D"2"><br>
+Hello, dear contributors of cdist project!<br>
+<br>
+Recently we discovered licensing issue with your contribution. Namely,<=
+br>
+while most of code is GPLv3+, including some of code written by you,<br=
+>
+manpages (man.txt, now man.rst) are GPLv3 only licensed.<br>
+<br>
+On behalf of cdist releasers (Darko and Nico), I (another cdist<br>
+contributor and cdist Debian maintainer) ask you to permit relicense<br=
+>
+your contribution from GPLv3 to GPLv3+. Without your permission, we<br>=
+
+would be stuck the day when GPLv4 come (hope it will never come, but<br=
+>
+still), or have to reimplement your contribution.<br>
+<br>
+If you agree, please respond with something like<br>
+<br>
+		 I, #name# &lt;#email#&gt; permit to relicense all my contribution to=
+<br>
+		 cdist project, source code </font></tt><tt><font size=3D"2"><a href=3D=
+"https://github.com/ungleich/cdist">https://github.com/ungleich/cdist</=
+a></font></tt><tt><font size=3D"2"><br>
+		 to GNU General Public license, version 3 or (at your option)<br>
+		 any later version, as published by Free Software Foundation.<br>
+<br>
+ &nbsp; &nbsp; &nbsp; &nbsp;#day# Jule 2016 year.<br>
+<br>
+If possible, GPG-sign such email. Do not include anything else<br>
+valuable in this email that you do not want to be stored forever in<br>=
+
+public.<br>
+<br>
+Dear contributors, when replying to this email, please do not send<br>
+copy to other contributors -- save their inbox storage.<br>
+<br>
+Thank you in advance for one more contribution.<br>
+<br>
+--<br>
+Accept: text/plain, text/x-diff<br>
+Accept-Language: eo,en,ru<br>
+X-Web-Site: sinsekvu.github.io<br>
+[Anhang &quot;attsga4c.dat&quot; gel=C3=B6scht von Thomas Oettli/otho/S=
+FS] </font></tt><br>
+</body></html>=
+
+
+--1__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007--
+
+
+--0__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007
+Content-type: image/gif; 
+	name="16993833.gif"
+Content-Disposition: inline; filename="16993833.gif"
+Content-ID: <1__=4EBB0A90DFA660078f9e8a93df@sfs-intra.net>
+Content-transfer-encoding: base64
+
+R0lGODlhVgAqAOUAAPA4IP////AwGPAoEPi4sPBIMPAwEPCAcPiYkPA4GPBwYPjAuPCQgPiooOgg
+CPBYSOggAPBAKPAoCPBQOPCIePCIgPiYiPjQyPB4aPigkOgYAPBoWOgoCPBgSPBgUPBoUPCYiPjw
+8PBYQPCYkPigmPjAsPjIwPjg2Pjo4Pjw6OgoEPAgCPBIOPjY0PjY2Pjg4PBQQPB4YPCAePCQiPio
+mPiwqPjo6PAgAPBAMPBwWPCAaPiQiPiwoPjIyPjQ0Pj48CwAAAAAVgAqAEAI/wADCBTogwIMAAgT
+KlwIIAKDgRApTChAsaLFixU9uIAIEYUFDxhDVpyQQWABhgAEbJjBoKXLly4RhIC4YADDBB1kHNjJ
+s+fOGhBRpnzgsyhPCicGpoAgtClDBy8E1nRKFSGHgSiYVnUKwQYCm1udCjggFaxCAyU5qlWLgENY
+sRTWyp1Lt67du3gHOhDwtq/fv2EFqBA4gS9ghQ7KHk6YWOADw4sRehAqoLLlywIMDJAgQ+0CFSgT
+WDaQOTNpA6htDpxAGfVo05k5DNiRV+4ByAklKF5ooEHt3xAx4E54e3ECCCY4amAIoQXwDcP9aiAg
+8EOCyNizbxVgQeAFrYcFKP8Y6DZyAYgn9i42QAFE9L8rfAeYuh6DQAbv/UogIZQF8IH0nUUDcBKg
+NMF/LjiAnW4AmnUYgxesEFkCA6i1AQQDYKbhewnAsBtDG2poAAc/cBTCAxCQFmJl16H0gUAnZACC
+BSOMQKMFCOCIwIwIYOBgQgZ8CCQJ/wUQQg0NJKnkkkrywMCPCEWgXUMNMoQWgVMOBEIHD3TpJZcP
+dAAmmBuAEJVcFyjAQgEfUFdkABKJJJIIFFygFgEODKDnnnz26eefgAYq6KCE6nkDdSdNqeiiKZEl
+kA04cJCfU6RB9N2kTiWggZ0ciaCeX6oZCd5iFQbQA2iRNSaQgthF8AKrrQr/CViQAaAAa2QsWIfS
+iiJqEJesCfFq2QARDCRCiwuJJqxlEIwn1IFFBgikfLUVyNB5wCW6kEoMVODtt95SYEFya0mLkAA5
+kIDAuuy2m6ObAr1nAAYZuNtuA85xhN96A6RAE5R9qSRQcYdVOlAByAImwANVRrbCQFJGJoAHA7Xw
+qcIVABswxQOZAAGmVAkwwp0MGMWTj7tqLEIMCrTs8sstzzBXCDQcADPMHxiAEra/QccQg+YCYACR
+b+YVw3sBeJBiZafx+iywVwKHAYaoVW311fk9wFp2DnAadNS1RbzgBWIvBgEKAxEAJdh56YydBhsF
+IECGCdRttwCi2a13Zg5MUOAvRwh8fK4D4/03gNtvieZABEkV7fjjRZtAwOSUV2755SVcrjnmmxOQ
+eeecb77AQBcsx+jpkWmQQtmotx4wBsK5LvtbA8inA+uz555Q4QEBADs=
+
+--0__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007
+Content-type: image/gif; 
+	name="16816884.gif"
+Content-Disposition: inline; filename="16816884.gif"
+Content-ID: <2__=4EBB0A90DFA660078f9e8a93df@sfs-intra.net>
+Content-transfer-encoding: base64
+
+R0lGODlhNgEiAOQAAP///wCAAACIAJiIAACImACguOj4+Pj40HDI6PjgmND4+Pj46ACIcLigALjw
++OjIcAC40NC4APjw0NDw+HCIAJigAJjg+LjI0LjI6NDIuOjIuOj40PjwuAAAAAAAAAAAACwAAAAA
+NgEiAEAI/wABCBxIsKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzClzQQIDHjx4LGFAYoGBJACdRCgxw
+suXKlzBZwhyYkqDLmTNb3qS58mbKmipt9hyq8idPo0GBykx6tGlMpQd3QkWpM2fMq0GT7tQo8YFH
+BFzDih1LtqzZs2gRDgDJtq0ABg4SJvBIwCTLpUxxYhWqd2revzyzStVb1KpgwkgT50X6d/Bex34h
+G2YceXJgn5cDp93MubPnz6BDP5zL1oLo06hTq15d0avbryT5Hp6N+bFJvo4v57Y8WzZlzb+xKq3d
+W/HtzL150xauHOjFtWAFSqjwunrbujbvMmYd1aBz7rJB+/9diFfs970R11r3CHchaQHYNfsuL/Mn
+/fI0a94Fnp/y/p7byfcfgFv1x59yVAUXXIIH0kdVdv5tN+BRCurWWH6ATRQBBOB16OGHIKJ1gHoh
+jUReeA2d55B+aano3XFcFeiiRSxKNCNCN6YmwQQAjAgSAQoAsGNCU2kHGV5GGobjUxMSqCRvSaKY
+m0slVUkgcZNp95JksWnVpHHLQdjfUgGKSOJ6QIao5ppsonbmRwVs8OZ6P7Zp5514hjXnW3E15GOd
+4Ul1n36DRkWoUYXmZCWATtGGZGbDIToYlYxuKSlRlRalE4uJ/jfgok1q2hSVmzJ1X1YD7VldmgiR
+Fh9hGSb/hx6Mzb14IaqI3QqmfJYRB+aUuc66q22y+lbrYsjhCoCqIjnk2kev5mmetNQqG2Oo1War
+7bbc/ckqt+CGK65BC1zgrQIZmEiklhHlSNKnZhXYHYoYyRgvvA+5S2uIHLXVbJfAPfookxTa+hh+
+mVb5XX2KOlfkgxArKLCDneqGaKANG2pqcRJfClq/1f07b7KSVYgYvmWSDKOv+wJbGKjIVbYcl3YN
+HOCvyW7ZIK+dvQdSewDPGqa8N+MG67E7W9uXkpTCfJzMDutqMLJLEpshlk9uBrJ1HOLIroHH4qvs
+1/Yt7PTYnoLtnYNMC2gzp4cGOnDNERpKJoT2NTi3vGRp1hAkQa5FN9ABGIxr+OHVBo744oyntta/
+W9P5WrSNV245Rup1rdCfaNLKN5v6Xj7y0ft2FvpBqrol+EHvRVsjzbA/nSWxPh1pLM4Q663z7nc/
+5XvEs1/Nsq67AW9877UL51zqr61eEAcUwFe6l0h+Wv2XKzNts8W9CxU72mlfNbzUWYZ/NffDl40f
+7sZ9TxDzbIl8UAR0Tc9l98WnrzL5sRaHINK44x/7cna8mO0PV8jbn/5yl6r1yK9VgBLdiSR4mtNR
+ZHk/65ND6HcdCnrwgyAMoQhDExAAOw==
+
+--0__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007
+Content-type: image/gif; 
+	name="graycol.gif"
+Content-Disposition: inline; filename="graycol.gif"
+Content-ID: <3__=4EBB0A90DFA660078f9e8a93df@sfs-intra.net>
+Content-transfer-encoding: base64
+
+R0lGODlhEAAQAKECAMzMzAAAAP///wAAACH5BAEAAAIALAAAAAAQABAAAAIXlI+py+0PopwxUbpu
+ZRfKZ2zgSJbmSRYAIf4fT3B0aW1pemVkIGJ5IFVsZWFkIFNtYXJ0U2F2ZXIhAAA7
+
+--0__=4EBB0A90DFA660078f9e8a93df938690918c4EBB0A90DFA66007--
+
+

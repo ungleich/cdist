@@ -1,8 +1,9 @@
 cdist-type__package_pkg_freebsd(7)
 ==================================
-Manage FreeBSD packages 
 
-Jake Guffey <jake.guffey--@--eprotex.com>
+NAME
+----
+cdist-type__package_pkg_freebsd - Manage FreeBSD packages 
 
 
 DESCRIPTION
@@ -53,11 +54,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:strong:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Jake Guffey <jake.guffey--@--eprotex.com>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Jake Guffey. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012 Jake Guffey. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

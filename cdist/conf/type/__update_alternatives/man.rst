@@ -1,8 +1,9 @@
 cdist-type__update_alternatives(7)
 ==================================
-Configure alternatives
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__update_alternatives - Configure alternatives
 
 
 DESCRIPTION
@@ -29,12 +30,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__debconf_set_selections(7) <cdist-type__debconf_set_selections.html>`_
-- update-alternatives(8)
+:strong:`cdist-type__debconf_set_selections`\ (7), :strong:`update-alternatives`\ (8)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2013 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2013 Nico Schottelius. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

@@ -1,8 +1,9 @@
 cdist-type__file(7)
 ===================
-Manage files.
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__file - Manage files.
 
 
 DESCRIPTION
@@ -98,12 +99,14 @@ EXAMPLES
     DONE
 
 
-SEE ALSO
---------
-* `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2011-2013 Nico Schottelius. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

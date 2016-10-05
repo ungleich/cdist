@@ -1,8 +1,9 @@
 cdist-type__pacman_conf_integrate(7)
 ====================================
-Integrate default pacman.conf to cdist conform and vice versa
 
-Dominique Roux <dominique.roux4@gmail.com>
+NAME
+----
+cdist-type__pacman_conf_integrate - Integrate default pacman.conf to cdist conform and vice versa
 
 
 DESCRIPTION
@@ -34,11 +35,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- grep(1)
+:strong:`grep`\ (1)
+
+
+AUTHORS
+-------
+Dominique Roux <dominique.roux4@gmail.com>
 
 
 COPYING
 -------
-Copyright \(C) 2015 Dominique Roux. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2015 Dominique Roux. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

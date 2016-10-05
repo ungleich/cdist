@@ -1,8 +1,9 @@
 cdist-type__timezone(7)
 =======================
-Allows one to configure the desired localtime timezone.
 
-Ramon Salvadó <rsalvado--@--gnuine--dot--com>
+NAME
+----
+cdist-type__timezone - Allows one to configure the desired localtime timezone.
 
 
 DESCRIPTION
@@ -33,9 +34,9 @@ EXAMPLES
     __timezone US/Central
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Ramon Salvadó <rsalvado--@--gnuine--dot--com>
 
 
 COPYING

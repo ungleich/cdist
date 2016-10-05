@@ -1,0 +1,122 @@
+From kaction  Wed Jul 20 18:25:04 2016
+Return-path: <cwarden@xerus.org>
+Envelope-to: KAction@gnu.org
+Delivery-date: Wed, 20 Jul 2016 11:20:15 -0400
+Received: from fencepost.gnu.org [208.118.235.10]
+	by searing with POP3 (fetchmail-6.3.26)
+	for <kaction@localhost> (single-drop); Wed, 20 Jul 2016 18:25:04 +0300 (MSK)
+Received: from eggs.gnu.org ([2001:4830:134:3::10]:34238)
+	by fencepost.gnu.org with esmtps (TLS1.0:RSA_AES_256_CBC_SHA1:256)
+	(Exim 4.82)
+	(envelope-from <cwarden@xerus.org>)
+	id 1bPtIF-000809-Ob
+	for KAction@gnu.org; Wed, 20 Jul 2016 11:20:15 -0400
+Received: from Debian-exim by eggs.gnu.org with spam-scanned (Exim 4.71)
+	(envelope-from <cwarden@xerus.org>)
+	id 1bPtIB-0006jv-SP
+	for KAction@gnu.org; Wed, 20 Jul 2016 11:20:15 -0400
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on eggs.gnu.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_50,RP_MATCHES_RCVD,
+	T_DKIM_INVALID autolearn=disabled version=3.3.2
+Received: from sage.xerus.org ([207.210.217.189]:21397)
+	by eggs.gnu.org with esmtp (Exim 4.71)
+	(envelope-from <cwarden@xerus.org>)
+	id 1bPtIB-0006cm-9G
+	for KAction@gnu.org; Wed, 20 Jul 2016 11:20:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xerus.org; s=sage;
+	h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:To:From:Date; bh=O5u4neMHAeGrtpVYFlmpULGNH1YPNhLUEaWPXxzf2xk=;
+	b=KjzaEXo/CKeUuLj2B1Hrf3krvsJgkMnjqvjJM2KfFJWsiiHU9qPlUtaETBG9jE9tD5MTjg/5/Wr/4u+CnA3xLeNBMIDrFaLaPW2vdlqFsRSVsjl3g/a4LqNrIZcU60/Lwlzb4ber5Y5i69MUX4Y/m1p57FjXTlqONbZZzOa82WQ=;
+Received: from c-71-59-214-243.hsd1.or.comcast.net ([71.59.214.243] helo=speedy.xerus.org)
+	by sage.xerus.org (envelope-from <cwarden@xerus.org>)
+	with esmtpsa (Exim 4.80 #2 (Debian))
+	id 1bPtHk-0005To-3h
+	for <KAction@gnu.org>; Wed, 20 Jul 2016 08:19:44 -0700
+Received: from cwarden by speedy.xerus.org with local (Exim 4.80)
+	(envelope-from <cwarden@xerus.org>)
+	id 1bPtHj-0007NB-6e
+	for KAction@gnu.org; Wed, 20 Jul 2016 08:19:43 -0700
+Date: Wed, 20 Jul 2016 08:19:43 -0700
+From: "Christian G. Warden" <cwarden@xerus.org>
+To: Dmitry Bogatov <KAction@gnu.org>
+Subject: Re: cdist contribution relicensing
+Message-ID: <20160720151943.GD8681@xerus.org>
+References: <E1bPt8C-0004Ob-EO@eggs.gnu.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eAbsdosE1cNLO4uF"
+Content-Disposition: inline
+In-Reply-To: <E1bPt8C-0004Ob-EO@eggs.gnu.org>
+X-Face: jD^+@)>yf8|'#1~7ie$N]>2XN},k*wInk~T->gX/l"0?GDg#b;M[;(4'R94H`6,~p"&"(`$
+ ?KVH_(2BuS[Zi(IFt,DWb'j77JZMQ~S0mN]o^>zAGQOaz6/uCSFu(O,jf*(e<*'Sa~yW1k1RC0xhd1
+ ]'F2p]Wvt3bJ$i2E69!rDttE@/nw?1kS#-#Al(p=G\{Jj4GaRlN(V=R@+&dqD{`v7Y{!WE_?H!iD2D
+ Z$
+User-Agent: Mutt/1.6.0 (2016-04-01)
+X-Sender-Verification: OK
+X-detected-operating-system: by eggs.gnu.org: GNU/Linux 2.2.x-3.x (no timestamps) [generic]
+X-Received-From: 207.210.217.189
+X-UIDL: Dh>"!+M_"!<fH"!NLl"!
+
+
+--eAbsdosE1cNLO4uF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+I, Christian Warden <cwarden@xerus.org>, waive all copyright and
+related rights in my contribution to the cdist project.
+
+Christian
+
+On Wed, Jul 20, 2016 at 06:09:46PM +0300, Dmitry Bogatov wrote:
+>=20
+> Hello, dear contributors of cdist project!
+>=20
+> Recently we discovered licensing issue with your contribution. Namely,
+> while most of code is GPLv3+, including some of code written by you,
+> manpages (man.txt, now man.rst) are GPLv3 only licensed.
+>=20
+> On behalf of cdist releasers (Darko and Nico), I (another cdist
+> contributor and cdist Debian maintainer) ask you to permit relicense
+> your contribution from GPLv3 to GPLv3+. Without your permission, we
+> would be stuck the day when GPLv4 come (hope it will never come, but
+> still), or have to reimplement your contribution.
+>=20
+> If you agree, please respond with something like
+>=20
+> 	I, #name# <#email#> permit to relicense all my contribution to
+> 	cdist project, source code https://github.com/ungleich/cdist
+> 	to GNU General Public license, version 3 or (at your option)
+> 	any later version, as published by Free Software Foundation.
+>=20
+>         #day# Jule 2016 year.
+>=20
+> If possible, GPG-sign such email. Do not include anything else
+> valuable in this email that you do not want to be stored forever in
+> public.
+>=20
+> Dear contributors, when replying to this email, please do not send
+> copy to other contributors -- save their inbox storage.
+>=20
+> Thank you in advance for one more contribution.
+>=20
+> --
+> Accept: text/plain, text/x-diff
+> Accept-Language: eo,en,ru
+> X-Web-Site: sinsekvu.github.io
+
+
+
+--eAbsdosE1cNLO4uF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlePlo8ACgkQXSJ4OU73l6Ap6wCgjNo7oLH8G6KUECBOTyCoGbMk
+wgAAoJHq5Tx5EWNO9pg3YvBtff5m1iHx
+=srJn
+-----END PGP SIGNATURE-----
+
+--eAbsdosE1cNLO4uF--
+

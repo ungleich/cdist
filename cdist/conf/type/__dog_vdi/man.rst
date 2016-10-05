@@ -1,8 +1,9 @@
 cdist-type__dog_vdi(7)
 ======================
-Manage Sheepdog VM images
 
-Nico Schottelius <nico-cdist--@--schottelius.org>
+NAME
+----
+cdist-type__dog_vdi - Manage Sheepdog VM images
 
 
 DESCRIPTION
@@ -42,12 +43,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- dog(8)
-- qemu(1)
+:strong:`qemu`\ (1), :strong:`dog`\ (8)
+
+
+AUTHORS
+-------
+Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2014 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2014 Nico Schottelius. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

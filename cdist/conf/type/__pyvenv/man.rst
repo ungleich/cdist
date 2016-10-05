@@ -1,8 +1,9 @@
 cdist-type__pyvenv(7)
 =====================
-Create or remove python virtual environment
 
-Darko Poljak <darko.poljak--@--gmail.com>
+NAME
+----
+cdist-type__pyvenv - Create or remove python virtual environment
 
 
 DESCRIPTION
@@ -66,13 +67,13 @@ EXAMPLES
     __pyvenv /home/services/djangoenv --venvparams "--copies --system-site-packages"
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Darko Poljak <darko.poljak--@--gmail.com>
 
 
 COPYING
 -------
 Copyright \(C) 2016 Darko Poljak. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+granted under the terms of the GNU General Public License v3 or later (GPLv3+).
 

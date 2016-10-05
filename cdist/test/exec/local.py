@@ -39,18 +39,26 @@ conf_dir = op.join(fixtures, "conf")
 bin_true = "true"
 bin_false = "false"
 
+
 class LocalTestCase(test.CdistTestCase):
 
     def setUp(self):
 
-        target_host = 'localhost'
+        target_host = (
+            'localhost',
+            'localhost',
+            'localhost',
+        )
         self.temp_dir = self.mkdtemp()
         self.out_parent_path = self.temp_dir
-        self.out_path = op.join(self.out_parent_path, target_host)
+        self.hostdir = cdist.str_hash(target_host[0])
+        self.host_base_path = op.join(self.out_parent_path, self.hostdir)
+        self.out_path = op.join(self.host_base_path, "data")
 
         self.local = local.Local(
             target_host=target_host,
-            base_path=self.out_parent_path,
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path
         )
 
@@ -59,47 +67,61 @@ class LocalTestCase(test.CdistTestCase):
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
 
-    ### test api
+    # test api
 
     def test_cache_path(self):
-        self.assertEqual(self.local.cache_path, os.path.join(self.home_dir, "cache"))
+        self.assertEqual(self.local.cache_path,
+                         os.path.join(self.home_dir, "cache"))
 
     def test_conf_path(self):
-        self.assertEqual(self.local.conf_path, os.path.join(self.out_path, "conf"))
+        self.assertEqual(self.local.conf_path,
+                         os.path.join(self.out_path, "conf"))
 
     def test_out_path(self):
         self.assertEqual(self.local.base_path, self.out_path)
 
     def test_bin_path(self):
-        self.assertEqual(self.local.bin_path, os.path.join(self.out_path, "bin"))
+        self.assertEqual(self.local.bin_path,
+                         os.path.join(self.out_path, "bin"))
 
     def test_global_explorer_out_path(self):
-        self.assertEqual(self.local.global_explorer_out_path, os.path.join(self.out_path, "explorer"))
+        self.assertEqual(self.local.global_explorer_out_path,
+                         os.path.join(self.out_path, "explorer"))
 
     def test_object_path(self):
-        self.assertEqual(self.local.object_path, os.path.join(self.out_path, "object"))
+        self.assertEqual(self.local.object_path,
+                         os.path.join(self.out_path, "object"))
 
-    ### /test api
+    # /test api
 
-    ### test internal implementation
+    # test internal implementation
 
     def test_global_explorer_path(self):
-        self.assertEqual(self.local.global_explorer_path, os.path.join(self.out_path, "conf", "explorer"))
+        self.assertEqual(self.local.global_explorer_path,
+                         os.path.join(self.out_path, "conf", "explorer"))
 
     def test_manifest_path(self):
-        self.assertEqual(self.local.manifest_path, os.path.join(self.out_path, "conf", "manifest"))
+        self.assertEqual(self.local.manifest_path,
+                         os.path.join(self.out_path, "conf", "manifest"))
 
     def test_type_path(self):
-        self.assertEqual(self.local.type_path, os.path.join(self.out_path, "conf", "type"))
+        self.assertEqual(self.local.type_path,
+                         os.path.join(self.out_path, "conf", "type"))
 
     def test_dist_conf_dir_linking(self):
-        """Ensure that links are correctly created for types included in distribution"""
+        """Ensure that links are correctly created for types included
+           in distribution"""
 
-        test_type="__file"
+        test_type = "__file"
 
         link_test_local = local.Local(
-            target_host='localhost',
-            base_path=self.out_parent_path,
+            target_host=(
+                'localhost',
+                'localhost',
+                'localhost',
+            ),
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
         )
 
@@ -110,13 +132,19 @@ class LocalTestCase(test.CdistTestCase):
         self.assertTrue(os.path.isdir(our_type_dir))
 
     def test_added_conf_dir_linking(self):
-        """Ensure that links are correctly created for types in added conf directories"""
+        """Ensure that links are correctly created for types in added conf
+           directories"""
 
-        test_type="__cdist_test_type"
+        test_type = "__cdist_test_type"
 
         link_test_local = local.Local(
-            target_host='localhost',
-            base_path=self.out_parent_path,
+            target_host=(
+                'localhost',
+                'localhost',
+                'localhost',
+            ),
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
             add_conf_dirs=[conf_dir]
         )
@@ -128,15 +156,21 @@ class LocalTestCase(test.CdistTestCase):
         self.assertTrue(os.path.isdir(our_type_dir))
 
     def test_conf_dir_from_path_linking(self):
-        """Ensure that links are correctly created for types in conf directories which are defined in CDIST_PATH"""
+        """Ensure that links are correctly created for types in conf
+           directories which are defined in CDIST_PATH"""
 
-        test_type="__cdist_test_type"
+        test_type = "__cdist_test_type"
 
         os.environ['CDIST_PATH'] = conf_dir
 
         link_test_local = local.Local(
-            target_host='localhost',
-            base_path=self.out_parent_path,
+            target_host=(
+                'localhost',
+                'localhost',
+                'localhost',
+            ),
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
         )
 
@@ -146,7 +180,7 @@ class LocalTestCase(test.CdistTestCase):
 
         self.assertTrue(os.path.isdir(our_type_dir))
 
-    ### other tests
+    # other tests
 
     def test_run_success(self):
         self.local.run([bin_true])
@@ -170,7 +204,8 @@ class LocalTestCase(test.CdistTestCase):
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", "echo foobar"])
-        self.assertEqual(self.local.run_script(script, return_output=True), "foobar\n")
+        self.assertEqual(self.local.run_script(script, return_output=True),
+                         "foobar\n")
 
     def test_mkdir(self):
         temp_dir = self.mkdtemp(dir=self.temp_dir)

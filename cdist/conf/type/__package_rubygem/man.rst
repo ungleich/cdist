@@ -1,8 +1,9 @@
 cdist-type__package_rubygem(7)
 ==============================
-Manage rubygem packages
 
-Chase Allen James <nx-cdist@nu-ex.com>
+NAME
+----
+cdist-type__package_rubygem - Manage rubygem packages
 
 
 DESCRIPTION
@@ -38,11 +39,18 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:strong:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Chase Allen James <nx-cdist@nu-ex.com>
 
 
 COPYING
 -------
-Copyright \(C) 2011 Chase Allen James. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+
+Copyright \(C) 2011 Chase Allen James. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

@@ -30,7 +30,7 @@ else
    # By default determine package manager based on operating system
    os="$(cat "$__global/explorer/os")"
    case "$os" in
-         amazon|centos|fedora|redhat) type="yum" ;;
+         amazon|scientific|centos|fedora|redhat) type="yum" ;;
          archlinux) type="pacman" ;;
          debian|ubuntu|devuan) type="apt" ;;
          freebsd)
@@ -43,6 +43,7 @@ else
          gentoo) type="emerge" ;;
          suse) type="zypper" ;;
          openwrt) type="opkg" ;;
+         openbsd) type="pkg_openbsd" ;;
          *)
             echo "Don't know how to manage packages on: $os" >&2
             exit 1

@@ -1,8 +1,9 @@
 cdist-type__package_emerge(7)
 =============================
-Manage packages with portage
 
-Thomas Oettli <otho--@--sfs.biz>
+NAME
+----
+cdist-type__package_emerge - Manage packages with portage
 
 
 DESCRIPTION
@@ -46,12 +47,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
-- `cdist-type__package_emerge_dependencies(7) <cdist-type__package_emerge_dependencies.html>`_
+:strong:`cdist-type__package`\ (7), :strong:`cdist-type__package_emerge_dependencies`\ (7)
+
+
+AUTHORS
+-------
+Thomas Oettli <otho--@--sfs.biz>
 
 
 COPYING
 -------
-Copyright \(C) 2013 Thomas Oettli. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2013 Thomas Oettli. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

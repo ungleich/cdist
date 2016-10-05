@@ -1,8 +1,9 @@
 cdist-type__package_upgrade_all(7)
 ==================================
-Upgrade all the installed packages
 
-Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
+NAME
+----
+cdist-type__package_upgrade_all - Upgrade all the installed packages
 
 
 DESCRIPTION
@@ -39,12 +40,14 @@ EXAMPLES
     __package_upgrade_all --type apt
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
-
+AUTHORS
+-------
+Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
 
 COPYING
 -------
-Copyright \(C) 2014 Ricardo Catalinas Jiménez. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+
+Copyright \(C) 2014 Ricardo Catalinas Jiménez. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

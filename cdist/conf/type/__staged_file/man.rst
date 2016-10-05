@@ -1,8 +1,9 @@
 cdist-type__staged_file(7)
 ==========================
-Manage staged files
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__staged_file - Manage staged files
 
 
 DESCRIPTION
@@ -14,7 +15,7 @@ cdist) and then deployed to the target host using the __file type.
 REQUIRED PARAMETERS
 -------------------
 source
-   the URL from which to retreive the source file.
+   the URL from which to retrieve the source file.
    e.g.
 
    * https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip
@@ -98,11 +99,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__file(7) <cdist-type__file.html>`_
+:strong:`cdist-type__file`\ (7)
+
+
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2015 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2015 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

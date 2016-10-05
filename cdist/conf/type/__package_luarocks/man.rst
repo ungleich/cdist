@@ -1,8 +1,9 @@
 cdist-type__package_luarocks(7)
 ===============================
-Manage luarocks packages
 
-Christian G. Warden <cwarden@xerus.org>
+NAME
+----
+cdist-type__package_luarocks - Manage luarocks packages
 
 
 DESCRIPTION
@@ -38,11 +39,17 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__package(7) <cdist-type__package.html>`_
+:strong:`cdist-type__package`\ (7)
+
+
+AUTHORS
+-------
+Christian G. Warden <cwarden@xerus.org>
 
 
 COPYING
 -------
-Copyright \(C) 2012 SwellPath, Inc. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012 SwellPath, Inc. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

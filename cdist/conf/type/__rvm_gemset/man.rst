@@ -1,8 +1,9 @@
 cdist-type__rvm_gemset(7)
 ==========================
-Manage gemsets through rvm
 
-Evax Software <contact@evax.fr>
+NAME
+----
+cdist-type__rvm_gemset - Manage gemsets through rvm
 
 
 DESCRIPTION
@@ -40,10 +41,13 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `cdist-type(7) <cdist-type.html>`_
-- `cdist-type__rvm(7) <cdist-type__rvm.html>`_
-- `cdist-type__rvm_ruby(7) <cdist-type__rvm_ruby.html>`_
-- `cdist-type__rvm_gem(7) <cdist-type__rvm_gem.html>`_
+:strong:`cdist-type__rvm`\ (7), :strong:`cdist-type__rvm_gem`\ (7),
+:strong:`cdist-type__rvm_ruby`\ (7)
+
+
+AUTHORS
+-------
+Evax Software <contact@evax.fr>
 
 
 COPYING

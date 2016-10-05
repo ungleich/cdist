@@ -1,8 +1,9 @@
 cdist-type__apt_key(7)
 ======================
-Manage the list of keys used by apt
 
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+NAME
+----
+cdist-type__apt_key - Manage the list of keys used by apt
 
 
 DESCRIPTION
@@ -24,8 +25,8 @@ keyid
    the id of the key to add. Defaults to __object_id
 
 keyserver
-   the keyserver from which to fetch the key. If omitted the default set in
-   ./parameter/default/keyserver is used.
+   the keyserver from which to fetch the key. If omitted the default set
+   in ./parameter/default/keyserver is used.
 
 
 EXAMPLES
@@ -47,12 +48,14 @@ EXAMPLES
     __apt_key UbuntuArchiveKey --keyid 437D05B5 --keyserver keyserver.ubuntu.com
 
 
-SEE ALSO
---------
-- `cdist-type(7) <cdist-type.html>`_
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2011-2014 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2011-2014 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
