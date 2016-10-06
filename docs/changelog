@@ -3,6 +3,8 @@ Changelog
 
 next:
 	* New type: __firewalld_start: start/stop firewalld and/or enable/disable start on boot (Darko Poljak)
+	* Bugfix __consul_agent: config option was misnamed 'syslog' instead of
+	'enable_syslog' (Steven Armstrong)
 
 4.3.1: 2016-08-22
 	* Documentation: Spelling fixes (Darko Poljak)
