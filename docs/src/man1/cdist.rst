@@ -248,7 +248,7 @@ options. For more details refer to :strong:`sshd_config`\ (5).
 
 When requirements for the same object are defined in different manifests (see
 example below) in init manifest and in some other type manifest and they differs
-then dependency resolver cannot detect dependencies right. This happends because
+then dependency resolver cannot detect dependencies right. This happens because
 cdist cannot prepare all objects first and then run objects because some
 object can depend on the result of type explorer(s) and explorers are executed
 during object run. cdist will detect such case and write warning message.
