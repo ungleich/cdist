@@ -270,7 +270,7 @@ Example for such a case:
         require="__c/c __d/d" __a a
 
     Warning message:
-        .WARNING: cdisttesthost: Object __a/a already exists with requirements:
+        WARNING: cdisttesthost: Object __a/a already exists with requirements:
         /usr/home/darko/ungleich/cdist/cdist/test/config/fixtures/manifest/init-deps-resolver /tmp/tmp.cdist.test.ozagkg54/local/759547ff4356de6e3d9e08522b0d0807/data/conf/type/__g/manifest: set()
         /tmp/tmp.cdist.test.ozagkg54/local/759547ff4356de6e3d9e08522b0d0807/data/conf/type/__g/manifest: {'__c/c', '__d/d'}
         Dependency resolver could not handle dependencies as expected.
