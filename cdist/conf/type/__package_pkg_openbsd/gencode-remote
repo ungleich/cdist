@@ -29,6 +29,10 @@
 os_version="$(cat "$__global/explorer/os_version")"
 machine="$(cat "$__global/explorer/machine")"
 
+if [ -f "$__object/parameter/version" ]; then
+	version="$(cat "$__object/parameter/version")"
+fi
+
 if [ -f "$__object/parameter/flavor" ]; then
 	flavor="$(cat "$__object/parameter/flavor")"
 fi
@@ -40,6 +44,16 @@ if [ -f "$__object/parameter/name" ]; then
    name="$__object/parameter/name"
 else
    name="$__object_id"
+fi
+
+if [ -n "$version" -a -n "$flavor" ]; then
+   pkgid="$name-$version-$flavor"
+elif [ -n "$version" ]; then
+   pkgid="$name-$version"
+elif [ -n "$flavor" ]; then
+   pkgid="$name--$flavor"
+else
+   pkgid="$name"
 fi
 
 state_should="$(cat "$__object/parameter/state")"
@@ -65,8 +79,8 @@ case "$state_should" in
         # use this because pkg_add doesn't properly handle errors
         cat << eof
 export PKG_PATH="$pkg_path"                                              
-status=\$(pkg_add "$pkgopts" "$name--$flavor" 2>&1)
-pkg_info | grep "^${name}.*${flavor}" > /dev/null 2>&1
+status=\$(pkg_add "$pkgopts" "$pkgid" 2>&1)
+pkg_info | grep "^${name}.*${version}.*${flavor}" > /dev/null 2>&1
 
 # We didn't find the package in the list of 'installed packages', so it failed
 # This is necessary because pkg_add doesn't return properly
@@ -83,8 +97,8 @@ eof
     absent)
         # use this because pkg_add doesn't properly handle errors
         cat << eof
-status=\$(pkg_delete "$pkgopts" "$name--$flavor")
-pkg_info | grep "^${name}.*${flavor}" > /dev/null 2>&1
+status=\$(pkg_delete "$pkgopts" "$pkgid")
+pkg_info | grep "^${name}.*${version}.*${flavor}" > /dev/null 2>&1
 
 # We found the package in the list of 'installed packages'
 # This would indicate that pkg_delete failed, send the output of pkg_delete

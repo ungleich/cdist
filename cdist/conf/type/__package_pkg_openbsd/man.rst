@@ -24,6 +24,9 @@ name
 flavor
     If supplied, use to avoid ambiguity.
 
+version
+    If supplied, use to avoid ambiguity.
+
 state
     Either "present" or "absent", defaults to "present"
 
