@@ -30,7 +30,7 @@ username
 
 source
     Select the source from which to clone cdist from.
-    Defaults to "git://github.com/telmich/cdist.git".
+    Defaults to "git://github.com/ungleich/cdist.git".
 
 
 branch
@@ -47,7 +47,7 @@ EXAMPLES
     __cdist /home/cdist/cdist
 
     # Use alternative source
-    __cdist --source "git://github.com/telmich/cdist" /home/cdist/cdist
+    __cdist --source "git://github.com/ungleich/cdist" /home/cdist/cdist
 
 
 AUTHORS
