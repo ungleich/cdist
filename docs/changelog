@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Documentation: Update no longer existing links (Simon Walter)
 	* Core: Add warning message for faulty dependencies case (Darko Poljak)
 	* Explorer os_version: Use /etc/os-release instead of /etc/SuSE-release	(Daniel Heule)
 	* Type __package: Call __package_pkg_openbsd on openbsd (Andres Erbsen)
