@@ -47,7 +47,7 @@ EXAMPLES
     __cdist /home/cdist/cdist
 
     # Use alternative source
-    __cdist --source "git://git.schottelius.org/cdist" /home/cdist/cdist
+    __cdist --source "git://github.com/telmich/cdist" /home/cdist/cdist
 
 
 AUTHORS
