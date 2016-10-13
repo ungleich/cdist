@@ -11,7 +11,7 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-d] [-v] [-V] {banner,config,shell} ...
+    cdist [-h] [-d] [-v] [-V] {banner,config,shell,install} ...
 
     cdist banner [-h] [-d] [-v]
 
@@ -19,6 +19,11 @@ SYNOPSIS
                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                  [host [host ...]]
+
+    cdist install [-h] [-d] [-v] [-b] [-c CONF_DIR] [-f HOSTFILE]
+                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
+                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                  [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
@@ -58,9 +63,9 @@ Displays the cdist banner. Useful for printing
 cdist posters - a must have for every office.
 
 
-CONFIG
-------
-Configure one or more hosts.
+CONFIG/INSTALL
+--------------
+Configure/install one or more hosts.
 
 .. option:: -b, --enable-beta
 
@@ -191,6 +196,8 @@ EXAMPLES
     usage: __git --source SOURCE [--state STATE] [--branch BRANCH]
                  [--group GROUP] [--owner OWNER] [--mode MODE] object_id
 
+    # Install ikq05.ethz.ch with debug enabled
+    % cdist install -d ikq05.ethz.ch
 
 ENVIRONMENT
 -----------
