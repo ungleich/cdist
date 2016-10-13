@@ -29,9 +29,10 @@ class Install(cdist.config.Config):
         """Short name for object list retrieval.
         In install mode, we only care about install objects.
         """
-        for cdist_object in cdist.core.CdistObject.list_objects(self.local.object_path,
-                                                         self.local.type_path):
+        for cdist_object in cdist.core.CdistObject.list_objects(
+                self.local.object_path, self.local.type_path):
             if cdist_object.cdist_type.is_install:
                 yield cdist_object
             else:
-                self.log.debug("Running in install mode, ignoring non install object: {0}".format(cdist_object))
+                self.log.debug("Running in install mode, ignoring non install"
+                               "object: {0}".format(cdist_object))
