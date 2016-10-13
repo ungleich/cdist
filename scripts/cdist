@@ -61,6 +61,7 @@ def commandline():
 
     import cdist.banner
     import cdist.config
+    import cdist.install
     import cdist.shell
     import shutil
     import os
@@ -160,6 +161,11 @@ def commandline():
             help=('Select shell to use, defaults to current shell. Used shell'
                   ' should be POSIX compatible shell.'))
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
+
+    # Install
+    parser['install'] = parser['sub'].add_parser('install', add_help=False,
+        parents=[parser['config']])
+    parser['install'].set_defaults(func=cdist.install.Install.commandline)
 
     for p in parser:
         parser[p].epilog = (
