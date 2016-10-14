@@ -25,6 +25,10 @@ SYNOPSIS
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                   [host [host ...]]
 
+    cdist preos [-h] [-d] [-v] [-a ARCH] [-b] [-c] [-i INITIAL_MANIFEST]
+                [-r] [-p PXE_BOOT_DIR]
+                target_dir
+
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
 
@@ -134,6 +138,36 @@ Hostfile line is processed like the following. First, all comments are
 removed. Then all leading and trailing whitespace characters are stripped.
 If such a line results in empty line it is ignored/skipped. Otherwise,
 host string is used.
+
+
+PREOS
+-----
+Create PreOS in target_dir.
+
+.. option:: -a ARCH, --arch ARCH
+
+    Select architecture for preos
+
+.. option:: -b, --bootstrap
+
+    Bootstrap directory with PreOS
+
+.. option:: -c, --configure
+
+    Configure previously bootstrapped directory
+
+.. option:: -i INITIAL_MANIFEST, --initial-manifest INITIAL_MANIFEST
+
+    Initial manifest for configuration (added to built in)
+
+.. option:: -r, --replace-manifest
+    
+    Instead of appending to the built in manifest, replace
+    the internal manifest
+
+.. option:: -p PXE_BOOT_DIR, --pxe-boot-dir PXE_BOOT_DIR
+
+    Create PXE files for booting in given location
 
 
 SHELL
