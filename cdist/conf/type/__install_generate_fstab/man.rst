@@ -1,7 +1,5 @@
 cdist-type__install_generate_fstab(7)
 =====================================
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 NAME
 ----
@@ -16,37 +14,40 @@ __install_mount definitions.
 
 REQUIRED PARAMETERS
 -------------------
-destination::
+destination
    The path where to store the generated fstab file.
    Note that this is a path on the server, where cdist is running, not the target host.
 
 
 OPTIONAL PARAMETERS
 -------------------
-None.
+None
 
 
 BOOLEAN PARAMETERS
 -------------------
-uuid::
+uuid
    use UUID instead of device in fstab 
 
 
 EXAMPLES
 --------
 
---------------------------------------------------------------------------------
-__install_generate_fstab --destination /path/where/you/want/fstab
-__install_generate_fstab --uuid --destination /path/where/you/want/fstab
---------------------------------------------------------------------------------
+.. code-block:: sh
+
+    __install_generate_fstab --destination /path/where/you/want/fstab
+
+    __install_generate_fstab --uuid --destination /path/where/you/want/fstab
 
 
-SEE ALSO
---------
-- cdist-type(7)
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

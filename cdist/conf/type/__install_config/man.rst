@@ -1,7 +1,5 @@
 cdist-type__install_config(7)
 =============================
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 NAME
 ----
@@ -17,31 +15,33 @@ cdist config against the /target chroot on the remote host.
 
 REQUIRED PARAMETERS
 -------------------
-None.
+None
 
 
 OPTIONAL PARAMETERS
 -------------------
-chroot::
+chroot
    where to chroot before running grub-install. Defaults to /target.
 
 
 EXAMPLES
 --------
 
---------------------------------------------------------------------------------
-__install_config
+.. code-block:: sh
 
-__install_config --chroot /mnt/somewhere
---------------------------------------------------------------------------------
+    __install_config
+
+    __install_config --chroot /mnt/somewhere
 
 
-SEE ALSO
---------
-- cdist-type(7)
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2011 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2011 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

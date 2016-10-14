@@ -1,7 +1,5 @@
 cdist-type__install_bootloader_grub(7)
 ======================================
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 NAME
 ----
@@ -15,33 +13,36 @@ This cdist type allows you to install grub2 bootloader on given disk.
 
 REQUIRED PARAMETERS
 -------------------
-None.
+None
 
 
 OPTIONAL PARAMETERS
 -------------------
-device::
+device
    The device to install grub to. Defaults to object_id
 
-chroot::
+chroot
    where to chroot before running grub-install. Defaults to /target.
 
 
 EXAMPLES
 --------
 
---------------------------------------------------------------------------------
-__install_bootloader_grub /dev/sda
-__install_bootloader_grub /dev/sda --chroot /mnt/foobar
---------------------------------------------------------------------------------
+.. code-block:: sh
+
+    __install_bootloader_grub /dev/sda
+
+    __install_bootloader_grub /dev/sda --chroot /mnt/foobar
 
 
-SEE ALSO
---------
-- cdist-type(7)
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2011 Steven Armstrong. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2011 Steven Armstrong. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
