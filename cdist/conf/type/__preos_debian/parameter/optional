@@ -1,0 +1,7 @@
+arch
+suite
+pxe_boot_dir
+cdist_params
+init_manifest
+remote_exec
+remote_copy

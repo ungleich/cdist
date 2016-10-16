@@ -23,7 +23,7 @@
 
 
 # list of beta sub-commands
-BETA_COMMANDS = ['install', 'preos', ]
+BETA_COMMANDS = ['install', ]
 # list of beta arguments for sub-commands
 BETA_ARGS = {
     'config': ['jobs', ],
@@ -68,7 +68,6 @@ def commandline():
     import cdist.banner
     import cdist.config
     import cdist.install
-    import cdist.preos
     import cdist.shell
     import shutil
     import os
@@ -159,38 +158,6 @@ def commandline():
            action='store', dest='remote_exec',
            default=os.environ.get('CDIST_REMOTE_EXEC'))
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
-
-    # PreOS
-    parser['preos'] = parser['sub'].add_parser('preos',
-                                               parents=[parser['loglevel']])
-    parser['preos'].add_argument('-a', '--arch',
-                                 help='Select architecture for preos',
-                                 default="amd64")
-    parser['preos'].add_argument('-b', '--bootstrap',
-                                 help='Bootstrap directory with PreOS',
-                                 action="store_true")
-    parser['preos'].add_argument(
-        '-c', '--configure',
-        help='Configure previously bootstrapped directory',
-        action="store_true", dest="config")
-    parser['preos'].add_argument(
-        '-i', '--initial-manifest',
-        help='Initial manifest for configuration (added to built in)')
-    parser['preos'].add_argument(
-        '-r', '--replace-manifest',
-        help=('Instead of appending to the built in manifest, replace the '
-              'internal manifest'),
-        action="store_true")
-#    parser['preos'].add_argument(
-#       '-I', '--iso-boot-dir',
-#       help='Create ISO for booting in given location')
-    parser['preos'].add_argument(
-        '-p', '--pxe-boot-dir',
-        help='Create PXE files for booting in given location')
-    parser['preos'].add_argument(
-        'target_dir', nargs=1,
-        help='Select target directory')
-    parser['preos'].set_defaults(func=cdist.preos.PreOS.commandline)
 
     # Shell
     parser['shell'] = parser['sub'].add_parser(

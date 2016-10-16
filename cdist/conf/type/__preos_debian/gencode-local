@@ -1,0 +1,104 @@
+#!/bin/sh
+##
+## 2016 Darko Poljak (darko.poljak at ungleich.ch)
+##
+## This file is part of cdist.
+##
+## cdist is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## cdist is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with cdist. If not, see <http://www.gnu.org/licenses/>.
+
+# only on local debian
+if [ ! -f "/etc/debian_version" ]
+then
+    echo "ERROR: __preos_debian is supported only on debian" >&2
+    exit 1
+fi
+
+target_dir="/$__object_id"
+if [ -e "$target_dir" ]
+then
+    echo "ERROR: "$target_dir" already exists " >&2
+    exit 1
+fi
+
+arch=$(cat "$__object/parameter/arch")
+suite=$(cat "$__object/parameter/suite")
+
+# bootstrap
+if [ -f "$__object/parameter/bootstrap" ]
+then
+    echo <<EOF
+debootstrap --include=openssh-server --arch="${arch}" "${suite}" "${target_dir}"
+chroot "${target_dir}" /usr/bin/apt-get update
+EOF
+fi
+
+# config
+if [ -f "$__object/parameter/configure" ]
+then
+    cdist_params=$(cat "$__object/parameter/cdist-params")
+    if [ -f "$__object/parameter/init-manifest" ]
+    then
+        init_manifest=$(cat "$__object/parameter/init-manifest")
+    else
+        init_manifest="${__type}/files/init"
+    fi
+    if [ -f "$__object/parameter/remote-exec" ]
+    then
+        remote_exec=$(cat "$__object/parameter/remote-exec")
+    else
+        remote_exec="${__type}/files/remote-exec.sh"
+    fi
+    if [ -f "$__object/parameter/remote-copy" ]
+    then
+        remote_copy=$(cat "$__object/parameter/remote-copy")
+    else
+        remote_copy="${__type}/files/remote-copy.sh"
+    fi
+
+    echo <<EOF
+cdist config ${cdist_params} -i "${__init_manifest}" \
+    --remote-exec "${__remote_exec}" \
+    --remote-copy "${__remote_copy}" \
+    "${target_dir}"
+EOF
+fi
+
+if [ -f "$__object/parameter/bootstrap" ]
+then
+    echo <<EOF
+chroot "${target_dir}" /usr/bin/apt-get autoclean
+chroot "${target_dir}" /usr/bin/apt-get clean
+chroot "${target_dir}" /usr/bin/apt-get autoremove
+EOF
+fi
+
+if [ -f "$__object/parameter/pxe-boot-dir" ]
+then
+    pxe_boot_dir=$(cat "$__object/parameter/pxe-boot-dir")
+    echo <<EOF
+cp "${target_dir}"/boot/vmlinuz-* "${pxe_boot_dir}"/kernel
+cd "${target_dir}"
+find . -print0 | cpio --null -o --format=newc | gzip -9 > "${pxe_boot_dir}"/initramfs
+cat <<EOPXEF > "${pxe_boot_dir}"/pxelinux.cfg/default
+DEFAULT preos
+LABEL preos
+KERNEL kernel
+INITRD initramfs
+EOPXEF
+
+cp "${target_dir}"/usr/lib/PXELINUX/pxelinux.0 "${pxe_boot_dir}"/pxelinux.0
+cp "${target_dir}"/usr/lib/syslinux/modules/bios/ldlinux.c32 \
+    "${pxe_boot_dir}"/ldlinux.c32
+EOF
+fi
