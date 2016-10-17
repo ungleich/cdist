@@ -24,6 +24,7 @@ arch
 
 cdist-params
     Parameters for cdist invocation when configuring bootstrapped PreOS.
+    By default, '-v' is turned on.
 
 init-manifest
     Initial manifest for cdist invocation when configuring bootstrapped PreOS.
