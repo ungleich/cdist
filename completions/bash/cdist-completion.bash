@@ -6,7 +6,7 @@ _cdist()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     prevprev="${COMP_WORDS[COMP_CWORD-2]}"
     opts="-h --help -d --debug -v --verbose -V --version"
-    cmds="banner shell config"
+    cmds="banner shell config install"
 
     case "${prevprev}" in
         shell)
@@ -35,7 +35,7 @@ _cdist()
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
             return 0
             ;;
-        config)
+        config|install)
             opts="-h --help -d --debug -v --verbose -b --enable-beta \
                 -c --conf-dir -f --file -i --initial-manifest -j --jobs \
                 -n --dry-run -o --out-dir -p --parallel -s --sequential \
