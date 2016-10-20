@@ -1,7 +1,7 @@
 arch
 suite
-pxe_boot_dir
-cdist_params
-init_manifest
-remote_exec
-remote_copy
+pxe-boot-dir
+cdist-params
+init-manifest
+remote-exec
+remote-copy
