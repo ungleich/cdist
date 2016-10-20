@@ -17,10 +17,10 @@
 ## You should have received a copy of the GNU General Public License
 ## along with cdist. If not, see <http://www.gnu.org/licenses/>.
 
-# only on local debian
-if [ ! -f "/etc/debian_version" ]
+which debootstrap 2>&1 > /dev/null
+if [ $? -ne 0 ]
 then
-    echo "ERROR: __preos_debian is supported only on debian" >&2
+    echo "ERROR: debootstrap not found" >&2
     exit 1
 fi
 
