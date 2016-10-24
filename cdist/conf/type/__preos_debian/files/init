@@ -7,7 +7,6 @@ for pkg in \
     openssh-server curl \
     pxelinux syslinux-common grub2 \
     gdisk util-linux lvm2 mdadm \
-    dbus \
     btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
     __package $pkg --state present
 done
@@ -30,4 +29,6 @@ eof
 # fix the bloody 'stdin: is not a tty' problem
 __line /root/.profile --line 'mesg n' --state absent
 
-__hostname --name preos
+# skipped for now, in case of systemd __hostname uses
+# hostnamectl for setting hostname and it needs dbus running
+# __hostname --name preos
