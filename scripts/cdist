@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2016 Nico Schottelius (nico-cdist at schottelius.org)
 # 2016 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
@@ -23,7 +23,7 @@
 
 
 # list of beta sub-commands
-BETA_COMMANDS = ['install', ]
+BETA_COMMANDS = ['install', 'trigger' ]
 # list of beta arguments for sub-commands
 BETA_ARGS = {
     'config': ['jobs', ],
@@ -69,6 +69,7 @@ def commandline():
     import cdist.config
     import cdist.install
     import cdist.shell
+    import cdist.trigger
     import shutil
     import os
     import multiprocessing
@@ -83,6 +84,12 @@ def commandline():
     parser['loglevel'].add_argument(
             '-v', '--verbose', help='Set log level to info, be more verbose',
             action='store_true', default=False)
+
+    parser['beta'] = argparse.ArgumentParser(add_help=False)
+    parser['beta'].add_argument(
+           '-b', '--enable-beta',
+           help=('Enable beta functionalities.'),
+           action='store_true', dest='beta', default=False)
 
     # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(
@@ -167,6 +174,14 @@ def commandline():
             help=('Select shell to use, defaults to current shell. Used shell'
                   ' should be POSIX compatible shell.'))
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
+
+    parser['trigger'] = parser['sub'].add_parser(
+            'trigger', parents=[parser['loglevel'], parser['beta']])
+    parser['trigger'].add_argument(
+            '-H', '--http-port',
+            help=('Create trigger listener via http on specified port'),
+            action='append')
+    parser['trigger'].set_defaults(func=cdist.trigger.Trigger.commandline)
 
     # Install
     parser['install'] = parser['sub'].add_parser('install', add_help=False,
