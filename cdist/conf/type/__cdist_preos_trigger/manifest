@@ -7,7 +7,7 @@ trigger_exec="${trigger_tool} ${trigger_target}"
 
 __file /etc/systemd/system/cdist-preos-trigger.service --owner root \
     --group root \
-    --mode 555 \
+    --mode 644 \
     --source - << EOF
 [Unit]
 Description=preos trigger
