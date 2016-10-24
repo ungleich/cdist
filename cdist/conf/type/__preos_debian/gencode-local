@@ -92,6 +92,7 @@ mkdir -p "${pxe_boot_dir}"
 cp "${target_dir}"/boot/vmlinuz-* "${pxe_boot_dir}"/kernel
 cd "${target_dir}"
 find . -print0 | cpio --null -o --format=newc | gzip -9 > "${pxe_boot_dir}"/initramfs
+mkdir -p "${pxe_boot_dir}"/pxelinux.cfg
 cat <<EOPXEF > "${pxe_boot_dir}"/pxelinux.cfg/default
 DEFAULT preos
 LABEL preos
