@@ -8,7 +8,7 @@ trigger_exec="${trigger_tool} ${trigger_target}"
 __file /etc/systemd/system/preos-trigger.service --owner root \
     --group root \
     --mode 755 \
-    -- source - << EOF
+    --source - << EOF
 [Unit]
 Description=preos trigger
 After=network.target
