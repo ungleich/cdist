@@ -1,0 +1,30 @@
+#!/bin/sh
+
+trigger_tool=$(cat "$__object/parameter/trigger-tool")
+trigger_target=$(cat "$__object/parameter/trigger-target")
+
+trigger_exec="${trigger_tool} ${trigger_target}"
+
+__file /etc/systemd/system/preos-trigger.service --owner root \
+    --group root \
+    --mode 755 \
+    -- source - << EOF
+[Unit]
+Description=preos trigger
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+StandardOutput=syslog
+SyslogIdentifier=PreosTrigger
+User=root
+Group=root
+ExecStart=${trigger_exec}
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+require="__file/etc/systemd/system/preos-trigger.service" \
+    __start_on_boot preos-trigger
