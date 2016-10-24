@@ -35,4 +35,4 @@ __line /root/.profile --line 'mesg n' --state absent
 
 # for the moment to test it if it works
 # TODO: make it better
-__cdist_preos_trigger --trigger-target $(hostname --all-ip-addresses)
+__cdist_preos_trigger http --trigger-target $(hostname --all-ip-addresses)
