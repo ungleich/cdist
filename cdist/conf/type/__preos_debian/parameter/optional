@@ -5,3 +5,4 @@ cdist-params
 init-manifest
 remote-exec
 remote-copy
+mirror

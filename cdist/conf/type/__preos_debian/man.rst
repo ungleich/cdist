@@ -30,6 +30,9 @@ init-manifest
     Initial manifest for cdist invocation when configuring bootstrapped PreOS.
     By default, 'init' file under type's 'files' directory is used.
 
+mirror
+    Mirror debootstrap will use.
+
 pxe-boot-dir
     Location for PXE files. If empty then PXE is not created.
 

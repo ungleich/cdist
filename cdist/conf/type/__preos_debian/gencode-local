@@ -27,6 +27,12 @@ fi
 target_dir="/$__object_id"
 arch=$(cat "$__object/parameter/arch")
 suite=$(cat "$__object/parameter/suite")
+if [ -f "$__object/parameter/mirror" ]
+then
+    mirror=$(cat "$__object/parameter/mirror")
+else
+    mirror=
+fi
 
 # bootstrap
 if [ -f "$__object/parameter/bootstrap" ]
@@ -39,7 +45,8 @@ then
 
     cat <<EOF
 mkdir -p "${target_dir}"
-debootstrap --include=openssh-server --arch="${arch}" "${suite}" "${target_dir}"
+debootstrap --include=openssh-server --arch="${arch}" "${suite}" "${target_dir}" \
+    ${mirror}
 chroot "${target_dir}" /usr/bin/apt-get update
 EOF
 fi
