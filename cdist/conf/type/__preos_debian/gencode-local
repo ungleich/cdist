@@ -24,13 +24,13 @@ then
     exit 1
 fi
 
+target_dir="/$__object_id"
 arch=$(cat "$__object/parameter/arch")
 suite=$(cat "$__object/parameter/suite")
 
 # bootstrap
 if [ -f "$__object/parameter/bootstrap" ]
 then
-    target_dir="/$__object_id"
     if [ -e "$target_dir" ]
     then
         echo "ERROR: "${target_dir}" already exists " >&2
