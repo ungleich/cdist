@@ -47,9 +47,6 @@ then
 mkdir -p "${target_dir}"
 debootstrap --include=openssh-server --arch="${arch}" "${suite}" "${target_dir}" \
     ${mirror}
-mount -t proc none "${target_dir}"/proc || true
-mount -t sysfs none "${target_dir}"/sys || true
-mount -t devpts none "${target_dir}"/dev/pts || true
 chroot "${target_dir}" /usr/bin/apt-get update
 EOF
 fi
@@ -78,6 +75,10 @@ then
     fi
 
     cat <<EOF
+mount -t proc none "${target_dir}"/proc || true
+mount -t sysfs none "${target_dir}"/sys || true
+mount -t devpts none "${target_dir}"/dev/pts || true
+
 cdist config ${cdist_params} -i "${init_manifest}" \
     --remote-exec "${remote_exec}" \
     --remote-copy "${remote_copy}" \
@@ -101,6 +102,7 @@ then
 umount "${target_dir}"/dev/pts || true
 umount "${target_dir}"/sys || true
 umount "${target_dir}"/proc || true
+
 mkdir -p "${pxe_boot_dir}"
 cp "${target_dir}"/boot/vmlinuz-* "${pxe_boot_dir}"/kernel
 cd "${target_dir}"

@@ -5,9 +5,9 @@ trigger_target=$(cat "$__object/parameter/trigger-target")
 
 trigger_exec="${trigger_tool} ${trigger_target}"
 
-__file /etc/systemd/system/preos-trigger.service --owner root \
+__file /etc/systemd/system/cdist-preos-trigger.service --owner root \
     --group root \
-    --mode 755 \
+    --mode 555 \
     --source - << EOF
 [Unit]
 Description=preos trigger
@@ -26,5 +26,5 @@ ExecStart=${trigger_exec}
 WantedBy=multi-user.target
 EOF
 
-require="__file/etc/systemd/system/preos-trigger.service" \
-    __start_on_boot preos-trigger
+require="__file/etc/systemd/system/cdist-preos-trigger.service" \
+    __start_on_boot cdist-preos-trigger
