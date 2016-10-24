@@ -98,9 +98,9 @@ if [ -f "$__object/parameter/pxe-boot-dir" ]
 then
     pxe_boot_dir=$(cat "$__object/parameter/pxe-boot-dir")
     cat <<EOF
-umount /dev/pts || true
-umount /sys || true
-umount /proc || true
+umount "${target_dir}"/dev/pts || true
+umount "${target_dir}"/sys || true
+umount "${target_dir}"/proc || true
 mkdir -p "${pxe_boot_dir}"
 cp "${target_dir}"/boot/vmlinuz-* "${pxe_boot_dir}"/kernel
 cd "${target_dir}"
