@@ -68,9 +68,9 @@ then
     fi
 
     echo <<EOF
-cdist config ${cdist_params} -i "${__init_manifest}" \
-    --remote-exec "${__remote_exec}" \
-    --remote-copy "${__remote_copy}" \
+cdist config ${cdist_params} -i "${init_manifest}" \
+    --remote-exec "${remote_exec}" \
+    --remote-copy "${remote_copy}" \
     "${target_dir}"
 EOF
 fi
