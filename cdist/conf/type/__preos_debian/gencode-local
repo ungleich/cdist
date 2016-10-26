@@ -37,9 +37,15 @@ fi
 # bootstrap
 if [ -f "$__object/parameter/bootstrap" ]
 then
-    if [ -e "$target_dir" ]
+    if [ -e "${target_dir}" ]
     then
-        echo "ERROR: "${target_dir}" already exists " >&2
+        dir_content=$(ls -A "${target_dir}" | wc -l)
+    else
+        dir_content=0
+    fi
+    if [ "${dir_content}" -ne 0 ]
+    then
+        echo "ERROR: "${target_dir}" not empty " >&2
         exit 1
     fi
 
