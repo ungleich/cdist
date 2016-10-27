@@ -128,8 +128,7 @@ printf "${trigger_line}${ssh_auth_keys_line}" | cat "${init_manifest}" - |\
 
 # __hostname with systmed uses hostnamectl which needs dbus running
 # set hostname explicitly here instead
-chroot "${bootstrap_dir}" hostname preos
-chroot "${bootstrap_dir}" printf '%s\n' 'preos' > /etc/hostname
+printf "preos\n" > "${bootstrap_dir}/etc/hostname"
 
 chroot "${bootstrap_dir}" /usr/bin/apt-get autoclean
 chroot "${bootstrap_dir}" /usr/bin/apt-get clean
