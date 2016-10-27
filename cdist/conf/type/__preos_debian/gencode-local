@@ -161,5 +161,7 @@ fi
 
 if [ -f "$__object/parameter/rm-bootstrap-dir" ]
 then
-    rm -r -f "${bootstrap_dir}"
+    cat <<EOF
+rm -r -f "${bootstrap_dir}"
+EOF
 fi
