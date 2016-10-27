@@ -50,8 +50,8 @@ work nor kill the authors brain:
   the other needs to be improved.
 
 As soon as your work meets these requirements, write a mail
-for inclusion to the mailinglist **cdist at cdist -- at -- l.schottelius.org**
-or open a pull request at http://github.com/telmich/cdist.
+for inclusion to the mailinglist **cdist-configuration-management at googlegroups.com**
+or open a pull request at http://github.com/ungleich/cdist.
 
 
 How to submit a new type
@@ -77,7 +77,7 @@ The following workflow works fine for most developers
 .. code-block:: sh
 
     # get latest upstream master branch
-    git clone https://github.com/telmich/cdist.git
+    git clone https://github.com/ungleich/cdist.git
 
     # update if already existing
     cd cdist; git fetch -v; git merge origin/master

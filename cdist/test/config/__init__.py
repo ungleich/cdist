@@ -177,6 +177,22 @@ class ConfigRunTestCase(test.CdistTestCase):
         dryrun.run()
         # if we are here, dryrun works like expected
 
+    def test_desp_resolver(self):
+        """Test to show dependency resolver warning message."""
+        local = cdist.exec.local.Local(
+            target_host=self.target_host,
+            base_root_path=self.host_base_path,
+            host_dir_name=self.hostdir,
+            exec_path=os.path.abspath(os.path.join(
+                my_dir, '../../../scripts/cdist')),
+            initial_manifest=os.path.join(
+                fixtures, 'manifest/init-deps-resolver'),
+            add_conf_dirs=[fixtures])
+
+        # dry_run is ok for dependency testing
+        config = cdist.config.Config(local, self.remote, dry_run=True)
+        config.run()
+
 
 # Currently the resolving code will simply detect that this object does
 # not exist. It should probably check if the type is a singleton as well

@@ -3,6 +3,17 @@ Changelog
 
 next:
 	* Core: Add inventory (beta) functionality (Darko Poljak)
+	* All: Merge install feature from 4.0-pre-not-stable (Darko Poljak)
+
+4.3.2: 2016-10-13
+	* Documentation: Update no longer existing links (Simon Walter)
+	* Core: Add warning message for faulty dependencies case (Darko Poljak)
+	* Explorer os_version: Use /etc/os-release instead of /etc/SuSE-release	(Daniel Heule)
+	* Type __package: Call __package_pkg_openbsd on openbsd (Andres Erbsen)
+	* Type __package_pkg_openbsd: Support --version (Andres Erbsen)
+	* Type __hostname: Support openbsd (Andres Erbsen)
+	* New type: __firewalld_start: start/stop firewalld and/or enable/disable start on boot (Darko Poljak)
+	* Bugfix __consul_agent: config option was misnamed 'syslog' instead of	'enable_syslog' (Steven Armstrong)
 
 4.3.1: 2016-08-22
 	* Documentation: Spelling fixes (Darko Poljak)

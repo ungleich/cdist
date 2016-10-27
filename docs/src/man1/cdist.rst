@@ -11,7 +11,7 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-d] [-v] [-V] {banner,config,inventory,shell} ...
+    cdist [-h] [-d] [-v] [-V] {banner,config,shell,install,inventory} ...
 
     cdist banner [-h] [-d] [-v]
 
@@ -20,6 +20,11 @@ SYNOPSIS
                  [-p] [-s] [--remote-copy REMOTE_COPY]
                  [--remote-exec REMOTE_EXEC] [-t] [-a]
                  [host [host ...]]
+
+    cdist install [-h] [-d] [-v] [-b] [-c CONF_DIR] [-f HOSTFILE]
+                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
+                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                  [host [host ...]]
 
     cdist inventory list [-h] [-d] [-v] [-b] [-I INVENTORY_DIR] [-a]
                          [-f HOSTFILE] [-H] [-t]
@@ -79,9 +84,9 @@ Displays the cdist banner. Useful for printing
 cdist posters - a must have for every office.
 
 
-CONFIG
-------
-Configure one or more hosts.
+CONFIG/INSTALL
+--------------
+Configure/install one or more hosts.
 
 .. option:: -a, --all
 
@@ -442,6 +447,9 @@ EXAMPLES
     usage: __git --source SOURCE [--state STATE] [--branch BRANCH]
                  [--group GROUP] [--owner OWNER] [--mode MODE] object_id
 
+    # Install ikq05.ethz.ch with debug enabled
+    % cdist install -d ikq05.ethz.ch
+
     # List inventory content
     % cdist inventory list -b
 
@@ -474,7 +482,6 @@ EXAMPLES
 
     # Configure hosts from inventory with all specified tags
     % cdist config -b -t -a web dynamic
-
 
 ENVIRONMENT
 -----------
@@ -529,6 +536,35 @@ when you reach maximum number of open sessions permitted per network
 connection. In this case ssh will disable multiplexing.
 This limit is controlled with sshd :strong:`MaxSessions` configuration
 options. For more details refer to :strong:`sshd_config`\ (5).
+
+When requirements for the same object are defined in different manifests (see
+example below) in init manifest and in some other type manifest and they differs
+then dependency resolver cannot detect dependencies right. This happens because
+cdist cannot prepare all objects first and then run objects because some
+object can depend on the result of type explorer(s) and explorers are executed
+during object run. cdist will detect such case and write warning message.
+Example for such a case:
+
+.. code-block:: sh
+
+    init manifest:
+        __a a
+        require="__e/e" __b b
+        require="__f/f" __c c
+        __e e
+        __f f
+        require="__c/c" __d d
+        __g g
+        __h h
+
+    type __g manifest:
+        require="__c/c __d/d" __a a
+
+    Warning message:
+        WARNING: cdisttesthost: Object __a/a already exists with requirements:
+        /usr/home/darko/ungleich/cdist/cdist/test/config/fixtures/manifest/init-deps-resolver /tmp/tmp.cdist.test.ozagkg54/local/759547ff4356de6e3d9e08522b0d0807/data/conf/type/__g/manifest: set()
+        /tmp/tmp.cdist.test.ozagkg54/local/759547ff4356de6e3d9e08522b0d0807/data/conf/type/__g/manifest: {'__c/c', '__d/d'}
+        Dependency resolver could not handle dependencies as expected.
 
 COPYING
 -------

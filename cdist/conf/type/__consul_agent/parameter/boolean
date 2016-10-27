@@ -3,6 +3,6 @@ disable-update-check
 leave-on-terminate
 rejoin-after-leave
 server
-syslog
+enable-syslog
 verify-incoming
 verify-outgoing

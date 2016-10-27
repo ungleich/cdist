@@ -40,7 +40,7 @@ case "$os" in
             exit 0
         fi
     ;;
-    scientific|centos)
+    scientific|centos|openbsd)
         if [ "$name_sysconfig" = "$name_should" -a "$name_running" = "$name_should" ]; then
             exit 0
         fi
@@ -64,7 +64,7 @@ else
             echo "hostname '$name_should'"
             echo "printf '%s\n' '$name_should' > /etc/hostname"
         ;;
-        centos)
+        centos|openbsd)
             echo "hostname '$name_should'"
         ;;
         suse)

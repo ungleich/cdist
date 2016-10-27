@@ -61,7 +61,11 @@ case "$($__explorer/os)" in
       cat /etc/slackware-version
    ;;
    suse)
-      cat /etc/SuSE-release
+      if [ -f /etc/os-release ]; then
+        cat /etc/os-release
+      else
+        cat /etc/SuSE-release
+      fi
    ;;
    ubuntu)
       lsb_release -sr

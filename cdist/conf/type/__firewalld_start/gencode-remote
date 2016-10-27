@@ -1,0 +1,84 @@
+#!/bin/sh
+#
+# 2016 Darko Poljak(darko.poljak at ungleich.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+startstate="$(cat "$__object/parameter/startstate")"
+init=$(cat "$__global/explorer/init")
+
+os=$(cat "$__global/explorer/os")
+os_version=$(cat "$__global/explorer/os_version")
+name="firewalld"
+
+case "${startstate}" in
+    present)
+        cmd="start"
+        ;;
+    absent)
+        cmd="stop"
+        ;;
+    *)
+        echo "Unknown startstate: ${startstate}" >&2
+        exit 1
+    ;;
+esac
+
+if [ "$init" = 'systemd' ]; then
+    # this handles ALL linux distros with systemd
+    # e.g. archlinux, gentoo in some cases, new RHEL and SLES versions
+    echo "systemctl \"$cmd\" \"$name\""
+else
+    case "$os" in
+        debian)
+            case "$os_version" in
+                [1-7]*)
+                    echo "service \"$name\" \"$cmd\""
+                ;;
+                8*)
+                    echo "systemctl \"$cmd\" \"$name\""
+                ;;
+                *)
+                    echo "Unsupported version $os_version of $os" >&2
+                    exit 1
+                ;;
+            esac
+        ;;
+
+        gentoo)
+            echo service \"$name\" \"$cmd\"
+        ;;
+
+        amazon|scientific|centos|fedora|owl|redhat|suse)
+            echo service \"$name\" \"$cmd\"
+        ;;
+
+        openwrt)
+            echo "/etc/init.d/\"$name\" \"$cmd\""
+        ;;
+
+        ubuntu)
+            echo "service \"$name\" \"$cmd\""
+        ;;
+
+        *)
+           echo "Unsupported os: $os" >&2
+           exit 1
+        ;;
+    esac
+fi

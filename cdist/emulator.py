@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2011-2015 Nico Schottelius (nico-cdist at schottelius.org)
-# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2012-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2014 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -83,6 +83,10 @@ class Emulator(object):
 
         self.type_name = os.path.basename(argv[0])
         self.cdist_type = core.CdistType(self.type_base_path, self.type_name)
+
+        # If set then object alreay exists and this var holds existing
+        # requirements.
+        self._existing_reqs = None
 
         self.__init_log()
 
@@ -166,8 +170,9 @@ class Emulator(object):
                 self.parameters[key] = value
 
         if self.cdist_object.exists and 'CDIST_OVERRIDE' not in self.env:
-            # make existing requirements a set, so we can compare it
-            # later with new requirements
+            # Make existing requirements a set so that we can compare it
+            # later with new requirements.
+            self._existing_reqs = set(self.cdist_object.requirements)
             if self.cdist_object.parameters != self.parameters:
                 errmsg = ("Object %s already exists with conflicting "
                           "parameters:\n%s: %s\n%s: %s" % (
@@ -245,7 +250,7 @@ class Emulator(object):
         return cdist_object.name
 
     def record_requirements(self):
-        """record requirements"""
+        """Record requirements."""
 
         # Inject the predecessor, but not if its an override
         # (this would leed to an circular dependency)
@@ -269,6 +274,7 @@ class Emulator(object):
                     # so do not set a requirement
                     pass
 
+        reqs = set()
         if "require" in self.env:
             requirements = self.env['require']
             self.log.debug("reqs = " + requirements)
@@ -276,7 +282,23 @@ class Emulator(object):
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0:
                     continue
-                self.record_requirement(requirement)
+                object_name = self.record_requirement(requirement)
+                reqs.add(object_name)
+        if self._existing_reqs is not None:
+            # If object exists then compare existing and new requirements.
+            if self._existing_reqs != reqs:
+                warnmsg = ("Object {} already exists with requirements:\n"
+                           "{}: {}\n"
+                           "{}: {}\n"
+                           "Dependency resolver could not handle dependencies "
+                           "as expected.".format(
+                               self.cdist_object.name,
+                               " ".join(self.cdist_object.source),
+                               self._existing_reqs,
+                               self.object_source,
+                               reqs
+                           ))
+                self.log.warning(warnmsg)
 
     def record_auto_requirements(self):
         """An object shall automatically depend on all objects that it

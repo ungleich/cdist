@@ -23,7 +23,7 @@
 
 
 # list of beta sub-commands
-BETA_COMMANDS = ['inventory', ]
+BETA_COMMANDS = ['install', 'inventory', ]
 # list of beta arguments for sub-commands
 BETA_ARGS = {
     'config': ['jobs', 'tag', ],
@@ -67,6 +67,7 @@ def commandline():
 
     import cdist.banner
     import cdist.config
+    import cdist.install
     import cdist.shell
     import cdist.inventory
     import shutil
@@ -309,6 +310,11 @@ def commandline():
                    'list all hosts that contain any of specified tags'),
              dest='tag', required=False, action="store_true", default=False)
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
+
+    # Install
+    parser['install'] = parser['sub'].add_parser('install', add_help=False,
+                                                 parents=[parser['config']])
+    parser['install'].set_defaults(func=cdist.install.Install.commandline)
 
     for p in parser:
         parser[p].epilog = (
