@@ -14,14 +14,13 @@ at boot and will execute trigger command - connect to specified host and port.
 
 REQUIRED PARAMETERS
 -------------------
-trigger-target
-    Target for trigger tool.
+trigger-command
+    Command that will be executed as a PreOS cdist trigger.
 
 
 OPTIONAL PARAMETERS
 -------------------
-trigger-tool
-    Tool that will be used for cdist triggering. By default, curl is used.
+None
 
 
 EXAMPLES
@@ -30,7 +29,7 @@ EXAMPLES
 .. code-block:: sh
 
     # Configure default curl trigger for host cdist.ungleich.ch at port 80.
-    __cdist_preos_trigger http --trigger-target cdist.ungleich.ch:80
+    __cdist_preos_trigger http --trigger-command '/usr/bin/curl cdist.ungleich.ch:80'
 
 
 AUTHORS

@@ -24,9 +24,10 @@ then
     exit 1
 fi
 
-target_dir="/$__object_id"
+bootstrap_dir="/$__object_id"
 arch=$(cat "$__object/parameter/arch")
 suite=$(cat "$__object/parameter/suite")
+
 if [ -f "$__object/parameter/mirror" ]
 then
     mirror=$(cat "$__object/parameter/mirror")
@@ -37,23 +38,22 @@ fi
 # bootstrap
 if [ -f "$__object/parameter/bootstrap" ]
 then
-    if [ -e "${target_dir}" ]
+    if [ -e "${bootstrap_dir}" ]
     then
-        dir_content=$(ls -A "${target_dir}" | wc -l)
+        dir_content=$(ls -A "${bootstrap_dir}" | wc -l)
     else
         dir_content=0
     fi
     if [ "${dir_content}" -ne 0 ]
     then
-        echo "ERROR: "${target_dir}" not empty " >&2
+        echo "ERROR: "${bootstrap_dir}" not empty " >&2
         exit 1
     fi
 
     cat <<EOF
-mkdir -p "${target_dir}"
-debootstrap --include=openssh-server --arch="${arch}" "${suite}" "${target_dir}" \
+mkdir -p "${bootstrap_dir}"
+debootstrap --include=openssh-server --arch=${arch} ${suite} ${bootstrap_dir} \
     ${mirror}
-chroot "${target_dir}" /usr/bin/apt-get update
 EOF
 fi
 
@@ -80,24 +80,45 @@ then
         remote_copy="${__type}/files/remote-copy.sh"
     fi
 
-    cat <<EOF
-mount -t proc none "${target_dir}"/proc || true
-mount -t sysfs none "${target_dir}"/sys || true
-mount -t devpts none "${target_dir}"/dev/pts || true
+    trigger_command=$(cat "${__object}/parameter/trigger-command")
 
-cdist config ${cdist_params} -i "${init_manifest}" \
+    set --
+    while read keyfile
+    do
+        set -- "$@" --key $(cat "${keyfile}")
+    done < "$__object/parameter/keyfile"
+
+    cat <<EOF
+mount -t proc none "${bootstrap_dir}/proc" || true
+mount -t sysfs none "${bootstrap_dir}/sys" || true
+mount -o bind /dev "${bootstrap_dir}/dev" || true
+mount -t devpts none "${bootstrap_dir}/dev/pts" || true
+
+chroot "${bootstrap_dir}" /usr/bin/apt-get update
+
+# append ssh keys and cdist preos trigger to basic preos init manifest
+printf "__directory /root/.ssh --state present\n\
+__ssh_authorized_keys root $@\n\
+__cdist_preos_trigger http --trigger-command ${trigger_command}\n\
+" | cat "${init_manifest}" - | cdist config \
+    ${cdist_params} -i - \
     --remote-exec "${remote_exec}" \
     --remote-copy "${remote_copy}" \
-    "${target_dir}"
-EOF
-fi
+    "${bootstrap_dir}"
 
-if [ -f "$__object/parameter/bootstrap" ]
-then
-    cat <<EOF
-chroot "${target_dir}" /usr/bin/apt-get autoclean
-chroot "${target_dir}" /usr/bin/apt-get clean
-chroot "${target_dir}" /usr/bin/apt-get autoremove
+# __hostname with systmed uses hostnamectl which needs dbus running
+# set hostname explicitly here instead
+chroot "${bootstrap_dir}" hostname preos
+chroot "${bootstrap_dir}" printf '%s\n' 'preos' > /etc/hostname
+
+chroot "${bootstrap_dir}" /usr/bin/apt-get autoclean
+chroot "${bootstrap_dir}" /usr/bin/apt-get clean
+chroot "${bootstrap_dir}" /usr/bin/apt-get autoremove
+
+umount "${bootstrap_dir}/dev/pts" || true
+umount "${bootstrap_dir}/dev" || true
+umount "${bootstrap_dir}/sys" || true
+umount "${bootstrap_dir}/proc" || true
 EOF
 fi
 
@@ -105,24 +126,23 @@ if [ -f "$__object/parameter/pxe-boot-dir" ]
 then
     pxe_boot_dir=$(cat "$__object/parameter/pxe-boot-dir")
     cat <<EOF
-umount "${target_dir}"/dev/pts || true
-umount "${target_dir}"/sys || true
-umount "${target_dir}"/proc || true
-
 mkdir -p "${pxe_boot_dir}"
-cp "${target_dir}"/boot/vmlinuz-* "${pxe_boot_dir}"/kernel
-cd "${target_dir}"
-find . -print0 | cpio --null -o --format=newc | gzip -9 > "${pxe_boot_dir}"/initramfs
-mkdir -p "${pxe_boot_dir}"/pxelinux.cfg
-cat <<EOPXEF > "${pxe_boot_dir}"/pxelinux.cfg/default
+cp "${bootstrap_dir}"/boot/vmlinuz-* "${pxe_boot_dir}/kernel"
+cd "${bootstrap_dir}"
+find . -print0 | cpio --null -o --format=newc | gzip -9 > "${pxe_boot_dir}/initramfs"
+
+mkdir -p "${pxe_boot_dir}/pxelinux.cfg"
+cat <<EOPXEF > "${pxe_boot_dir}/pxelinux.cfg/default"
 DEFAULT preos
 LABEL preos
 KERNEL kernel
-INITRD initramfs
+APPEND utf8 load_ramdisk=1 root=/dev/ram nofb initrd=initramfs console=ttyS1,115200
 EOPXEF
 
-cp "${target_dir}"/usr/lib/PXELINUX/pxelinux.0 "${pxe_boot_dir}"/pxelinux.0
-cp "${target_dir}"/usr/lib/syslinux/modules/bios/ldlinux.c32 \
-    "${pxe_boot_dir}"/ldlinux.c32
+cp "${bootstrap_dir}/usr/lib/PXELINUX/pxelinux.0" "${pxe_boot_dir}/pxelinux.0"
+cp "${bootstrap_dir}/usr/lib/syslinux/modules/bios/ldlinux.c32" \
+    "${pxe_boot_dir}/ldlinux.c32"
+# network boot need all files world readable
+chmod -R 644 "${bootstrap_dir}"/*
 EOF
 fi

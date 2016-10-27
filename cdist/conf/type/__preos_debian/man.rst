@@ -9,12 +9,20 @@ cdist-type__preos_debian - create PreOS debian
 DESCRIPTION
 -----------
 Create and/or configure minimal PreOS debian using debootstrap
-and/or create PXE boot.
+and/or create PXE boot. Currently only network bootable PreOS
+is supported.
 
 
 REQUIRED PARAMETERS
 -------------------
-None
+trigger-command
+    Command PreOS will use to trigger cdist at cdist machine.
+
+
+REQUIRED_MULTIPLE
+-----------------
+keyfile
+    ssh key files that will be added to PreOS root ssh authorized keys.
 
 
 OPTIONAL PARAMETERS
