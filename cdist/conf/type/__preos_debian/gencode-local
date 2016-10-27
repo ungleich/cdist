@@ -94,7 +94,7 @@ then
         while read keyfile
         do
             key=$(cat "${keyfile}")
-            keyfiles="${keyfiles} --key \\\\\"${key}\\\\\""
+            keyfiles="${keyfiles} --key '${key}'"
         done < "$__object/parameter/keyfile"
         ssh_auth_keys_line="__ssh_authorized_keys root ${keyfiles}\n"
     else
