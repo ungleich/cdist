@@ -75,11 +75,8 @@ EXAMPLES
 .. code-block:: sh
 
     # Bootstrap and configure default debian PreOS in /usr/preos and create PXE in /pxe
-    __preos_debian /usr/preos --bootstrap --configure --pxe-boot-dir /pxe
-
-    # Configure already bootstrapped debian PreOS in /usr/preos using custom init
-    # manifest
-    __preos_debian --configure --init-manifest "${__files}"/preos-manifest
+    __preos_debian /usr/preos --bootstrap --configure --pxe-boot-dir /pxe \
+        --keyfile ~/.ssh/id_rsa.pub --trigger-command "/usr/bin/curl 192.168.111.5"
 
 
 SEE ALSO
