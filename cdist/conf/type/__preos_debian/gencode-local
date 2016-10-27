@@ -85,7 +85,7 @@ then
     keyfiles=""
     while read keyfile
     do
-        keyfiles="--key \"$(cat "${keyfile}")\""
+        keyfiles="--key \\\"$(cat "${keyfile}")\\\""
     done < "$__object/parameter/keyfile"
 
     cat <<EOF
@@ -107,10 +107,10 @@ mount -t devpts none "${bootstrap_dir}/dev/pts" || true
 chroot "${bootstrap_dir}" /usr/bin/apt-get update
 
 # append ssh keys and cdist preos trigger to basic preos init manifest
-printf '__directory /root/.ssh --state present\n\
+printf "__directory /root/.ssh --state present\n\
 __ssh_authorized_keys root ${keyfiles}\n\
 __cdist_preos_trigger http --trigger-command \'${trigger_command}\'\n\
-' | cat "${init_manifest}" - | cdist config \
+" | cat "${init_manifest}" - | cdist config \
     ${cdist_params} -i - \
     --remote-exec "${remote_exec}" \
     --remote-copy "${remote_copy}" \
