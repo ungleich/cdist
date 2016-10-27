@@ -52,7 +52,7 @@ then
 
     cat <<EOF
 check_bootstrap_dir() {
-    if [ ! -e "$1" ]
+    if [ ! -e "\$1" ]
     then
         echo "ERROR: bootstrap directory $1 does not exist" >&2
         exit 1
