@@ -95,8 +95,7 @@ then
         do
             keyfiles="--key \\\\\"$(cat "${keyfile}")\\\\\""
         done < "$__object/parameter/keyfile"
-        ssh_auth_keys_line="__directory /root/.ssh --state present\n\
-__ssh_authorized_keys root ${keyfiles}\n"
+        ssh_auth_keys_line="__ssh_authorized_keys root ${keyfiles}\n"
     else
         ssh_auth_keys_line=""
     fi
