@@ -173,7 +173,7 @@ cp "${bootstrap_dir}/usr/lib/PXELINUX/pxelinux.0" "${pxe_boot_dir}/pxelinux.0"
 cp "${bootstrap_dir}/usr/lib/syslinux/modules/bios/ldlinux.c32" \
     "${pxe_boot_dir}/ldlinux.c32"
 # network boot need all files world readable
-chmod -R 644 "${bootstrap_dir}"/*
+chmod -R 644 "${pxe_boot_dir}"/*
 EOF
 fi
 
