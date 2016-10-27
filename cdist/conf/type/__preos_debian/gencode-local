@@ -24,6 +24,14 @@ then
     exit 1
 fi
 
+check_bootstrap_dir() {
+    if [ ! -e "$1" ]
+    then
+        echo "ERROR: bootstrap directory $1 does not exist" >&2
+        exit 1
+    fi
+}
+
 bootstrap_dir="/$__object_id"
 arch=$(cat "$__object/parameter/arch")
 suite=$(cat "$__object/parameter/suite")
@@ -60,6 +68,8 @@ fi
 # config
 if [ -f "$__object/parameter/configure" ]
 then
+    check_bootstrap_dir "${bootstrap_dir}"
+
     cdist_params=$(cat "$__object/parameter/cdist-params")
     if [ -f "$__object/parameter/init-manifest" ]
     then
@@ -124,6 +134,8 @@ fi
 
 if [ -f "$__object/parameter/pxe-boot-dir" ]
 then
+    check_bootstrap_dir "${bootstrap_dir}"
+
     pxe_boot_dir=$(cat "$__object/parameter/pxe-boot-dir")
     cat <<EOF
 mkdir -p "${pxe_boot_dir}"
@@ -145,4 +157,9 @@ cp "${bootstrap_dir}/usr/lib/syslinux/modules/bios/ldlinux.c32" \
 # network boot need all files world readable
 chmod -R 644 "${bootstrap_dir}"/*
 EOF
+fi
+
+if [ -f "$__object/parameter/rm-bootstrap-dir" ]
+then
+    rm -r -f "${bootstrap_dir}"
 fi

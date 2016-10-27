@@ -64,6 +64,10 @@ bootstrap
 configure
     If set then bootstrapped PreOS is configured by invoking cdist config.
 
+rm-bootstrap-dir
+    Remove bootstrap directory when finished. Usefull to clean when PXE
+    is used and bootstrap directory is no longer needed.
+
 
 EXAMPLES
 --------
