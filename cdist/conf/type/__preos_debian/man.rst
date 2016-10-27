@@ -13,18 +13,6 @@ and/or create PXE boot. Currently only network bootable PreOS
 is supported.
 
 
-REQUIRED PARAMETERS
--------------------
-trigger-command
-    Command PreOS will use to trigger cdist at cdist machine.
-
-
-REQUIRED_MULTIPLE
------------------
-keyfile
-    ssh key files that will be added to PreOS root ssh authorized keys.
-
-
 OPTIONAL PARAMETERS
 -------------------
 arch
@@ -44,9 +32,6 @@ mirror
 pxe-boot-dir
     Location for PXE files. If empty then PXE is not created.
 
-suite
-    Use debian suite (default stable).
-
 remote-copy
     remote-copy command for cdist invocation when configuring bootstrapped PreOS.
     By default, 'remote-copy.sh' file under type's 'files' directory is used.
@@ -54,6 +39,18 @@ remote-copy
 remote-exec
     remote-exec command for cdist invocation when configuring bootstrapped PreOS.
     By default, 'remote-exec.sh' file under type's 'files' directory is used.
+
+suite
+    Use debian suite (default stable).
+
+trigger-command
+    Command PreOS will use to trigger cdist at cdist machine.
+
+
+OPTIONAL MULTIPLE PARAMETERS
+----------------------------
+keyfile
+    ssh key file that will be added to PreOS root ssh authorized keys.
 
 
 BOOLEAN PARAMETERS

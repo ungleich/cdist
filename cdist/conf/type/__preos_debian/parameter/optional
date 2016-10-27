@@ -6,3 +6,4 @@ init-manifest
 remote-exec
 remote-copy
 mirror
+trigger-command
