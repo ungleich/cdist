@@ -24,14 +24,6 @@ then
     exit 1
 fi
 
-check_bootstrap_dir() {
-    if [ ! -e "$1" ]
-    then
-        echo "ERROR: bootstrap directory $1 does not exist" >&2
-        exit 1
-    fi
-}
-
 bootstrap_dir="/$__object_id"
 arch=$(cat "$__object/parameter/arch")
 suite=$(cat "$__object/parameter/suite")
@@ -59,6 +51,14 @@ then
     fi
 
     cat <<EOF
+check_bootstrap_dir() {
+    if [ ! -e "$1" ]
+    then
+        echo "ERROR: bootstrap directory $1 does not exist" >&2
+        exit 1
+    fi
+}
+
 mkdir -p "${bootstrap_dir}"
 debootstrap --include=openssh-server --arch=${arch} ${suite} ${bootstrap_dir} \
     ${mirror}
@@ -68,8 +68,6 @@ fi
 # config
 if [ -f "$__object/parameter/configure" ]
 then
-    check_bootstrap_dir "${bootstrap_dir}"
-
     cdist_params=$(cat "$__object/parameter/cdist-params")
     if [ -f "$__object/parameter/init-manifest" ]
     then
@@ -99,6 +97,8 @@ then
     done < "$__object/parameter/keyfile"
 
     cat <<EOF
+check_bootstrap_dir "${bootstrap_dir}"
+
 mount -t proc none "${bootstrap_dir}/proc" || true
 mount -t sysfs none "${bootstrap_dir}/sys" || true
 mount -o bind /dev "${bootstrap_dir}/dev" || true
@@ -134,10 +134,10 @@ fi
 
 if [ -f "$__object/parameter/pxe-boot-dir" ]
 then
-    check_bootstrap_dir "${bootstrap_dir}"
-
     pxe_boot_dir=$(cat "$__object/parameter/pxe-boot-dir")
     cat <<EOF
+check_bootstrap_dir "${bootstrap_dir}"
+
 mkdir -p "${pxe_boot_dir}"
 cp "${bootstrap_dir}"/boot/vmlinuz-* "${pxe_boot_dir}/kernel"
 cd "${bootstrap_dir}"
