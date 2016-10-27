@@ -51,14 +51,6 @@ then
     fi
 
     cat <<EOF
-check_bootstrap_dir() {
-    if [ ! -e "\$1" ]
-    then
-        echo "ERROR: bootstrap directory $1 does not exist" >&2
-        exit 1
-    fi
-}
-
 mkdir -p "${bootstrap_dir}"
 debootstrap --include=openssh-server --arch=${arch} ${suite} ${bootstrap_dir} \
     ${mirror}
@@ -97,6 +89,14 @@ then
     done < "$__object/parameter/keyfile"
 
     cat <<EOF
+check_bootstrap_dir() {
+    if [ ! -e "\$1" ]
+    then
+        echo "ERROR: bootstrap directory $1 does not exist" >&2
+        exit 1
+    fi
+}
+
 check_bootstrap_dir "${bootstrap_dir}"
 
 mount -t proc none "${bootstrap_dir}/proc" || true
@@ -136,6 +136,14 @@ if [ -f "$__object/parameter/pxe-boot-dir" ]
 then
     pxe_boot_dir=$(cat "$__object/parameter/pxe-boot-dir")
     cat <<EOF
+check_bootstrap_dir() {
+    if [ ! -e "\$1" ]
+    then
+        echo "ERROR: bootstrap directory $1 does not exist" >&2
+        exit 1
+    fi
+}
+
 check_bootstrap_dir "${bootstrap_dir}"
 
 mkdir -p "${pxe_boot_dir}"
