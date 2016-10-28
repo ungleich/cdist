@@ -4,7 +4,7 @@
 
 for pkg in \
     file \
-    linux-image-amd64 \
+    linux-image \
     lsb-release \
     openssh-server curl \
     pxelinux syslinux-common \
