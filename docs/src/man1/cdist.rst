@@ -119,9 +119,13 @@ Configure/install one or more hosts.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
-    Use specified custom inventory directory. Default inventory directory is
-    'inventory' directory placed inside cdist distribution under 'cdist'
-    directory along 'conf' directory.
+    Use specified custom inventory directory. Inventory
+    directory is set up by the following rules: if this
+    argument is set then specified directory is used, if
+    CDIST_INVENTORY_DIR env var is set then its value is
+    used, if HOME env var is set then ~/.ctt/inventory is
+    used, otherwise distribution inventory directory is
+    used.
 
 .. option:: -i MANIFEST, --initial-manifest MANIFEST
 
@@ -213,9 +217,13 @@ List inventory database.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
-    Use specified custom inventory directory. Default inventory directory is
-    'inventory' directory placed inside cdist distribution under 'cdist'
-    directory along 'conf' directory.
+    Use specified custom inventory directory. Inventory
+    directory is set up by the following rules: if this
+    argument is set then specified directory is used, if
+    CDIST_INVENTORY_DIR env var is set then its value is
+    used, if HOME env var is set then ~/.ctt/inventory is
+    used, otherwise distribution inventory directory is
+    used.
 
 .. option:: -t, --tag
 
@@ -251,9 +259,13 @@ Add host(s) to inventory database.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
-    Use specified custom inventory directory. Default inventory directory is
-    'inventory' directory placed inside cdist distribution under 'cdist'
-    directory along 'conf' directory.
+    Use specified custom inventory directory. Inventory
+    directory is set up by the following rules: if this
+    argument is set then specified directory is used, if
+    CDIST_INVENTORY_DIR env var is set then its value is
+    used, if HOME env var is set then ~/.ctt/inventory is
+    used, otherwise distribution inventory directory is
+    used.
 
 
 INVENTORY DEL-HOST
@@ -284,9 +296,13 @@ Delete host(s) from inventory database.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
-    Use specified custom inventory directory. Default inventory directory is
-    'inventory' directory placed inside cdist distribution under 'cdist'
-    directory along 'conf' directory.
+    Use specified custom inventory directory. Inventory
+    directory is set up by the following rules: if this
+    argument is set then specified directory is used, if
+    CDIST_INVENTORY_DIR env var is set then its value is
+    used, if HOME env var is set then ~/.ctt/inventory is
+    used, otherwise distribution inventory directory is
+    used.
 
 
 INVENTORY ADD-TAG
@@ -315,9 +331,13 @@ Add tag(s) to inventory database.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
-    Use specified custom inventory directory. Default inventory directory is
-    'inventory' directory placed inside cdist distribution under 'cdist'
-    directory along 'conf' directory.
+    Use specified custom inventory directory. Inventory
+    directory is set up by the following rules: if this
+    argument is set then specified directory is used, if
+    CDIST_INVENTORY_DIR env var is set then its value is
+    used, if HOME env var is set then ~/.ctt/inventory is
+    used, otherwise distribution inventory directory is
+    used.
 
 .. option:: -T TAGFILE, --tag-file TAGFILE
 
@@ -365,9 +385,13 @@ Delete tag(s) from inventory database.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
-    Use specified custom inventory directory. Default inventory directory is
-    'inventory' directory placed inside cdist distribution under 'cdist'
-    directory along 'conf' directory.
+    Use specified custom inventory directory. Inventory
+    directory is set up by the following rules: if this
+    argument is set then specified directory is used, if
+    CDIST_INVENTORY_DIR env var is set then its value is
+    used, if HOME env var is set then ~/.ctt/inventory is
+    used, otherwise distribution inventory directory is
+    used.
 
 .. option:: -T TAGFILE, --tag-file TAGFILE
 

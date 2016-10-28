@@ -148,13 +148,32 @@ class Inventory(object):
             return False
 
     @classmethod
+    def home_dir(cls):
+        if 'HOME' in os.environ:
+            return os.path.join(os.environ['HOME'], ".cdist", "inventory")
+        else:
+            return None
+
+    @classmethod
     def commandline(cls, args):
         """Manipulate inventory db"""
         log = logging.getLogger("cdist")
         if 'taglist' in args:
             args.taglist = cls.strlist_to_list(args.taglist)
+        # The order of inventory dir setting by decreasing priority
+        # 1. inventory_dir argument
+        # 2. CDIST_INVENTORY_DIR env var if set
+        # 3. ~/.ctt/inventory if HOME env var is set
+        # 4. distribution inventory directory
         if not args.inventory_dir:
-            args.inventory_dir = dist_inventory_db
+            if 'CDIST_INVENTORY_DIR' in os.environ:
+                args.inventory_dir = os.environ['CDIST_INVENTORY_DIR']
+            else:
+                home = cls.home_dir()
+                if home:
+                    args.inventory_dir = home
+                else:
+                    args.inventory_dir = dist_inventory_db
 
         log.info("Using inventory: {}".format(args.inventory_dir))
         log.debug("Inventory args: {}".format(vars(args)))

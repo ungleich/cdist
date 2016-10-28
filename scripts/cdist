@@ -99,9 +99,7 @@ def commandline():
             'banner', parents=[parser['loglevel']])
     parser['banner'].set_defaults(func=cdist.banner.banner)
 
-    # Inventory
-    parser['inventory'] = parser['sub'].add_parser(
-           'inventory', parents=[parser['loglevel']])
+
     parser['subcmd_main'] = argparse.ArgumentParser(
            add_help=False, parents=[parser['loglevel']])
     parser['subcmd_main'].add_argument(
@@ -113,13 +111,90 @@ def commandline():
            action='store_true', dest='beta', default=False)
     parser['subcmd_main'].add_argument(
            '-I', '--inventory',
-           help=('Use specified custom inventory directory.'
-                 ' Default is \'inventory\' directory placed along default'
-                 ' \'conf\' directory.'),
+           help=('Use specified custom inventory directory. '
+                 'Inventory directory is set up by the following rules: '
+                 'if this argument is set then specified directory is used, '
+                 'if CDIST_INVENTORY_DIR env var is set then its value is '
+                 'used, if HOME env var is set then ~/.ctt/inventory is used, '
+                 'otherwise distribution inventory directory is used.'),
            dest="inventory_dir", required=False)
+
+    # Config
+    parser['config'] = parser['sub'].add_parser(
+            'config', parents=[parser['subcmd_main']])
+    parser['config'].add_argument(
+            'host', nargs='*', help='host(s) to operate on')
+    parser['config'].add_argument(
+             '-a', '--all',
+             help=('list hosts that have all specified tags, '
+                   'if -t/--tag is specified'),
+             action="store_true", dest="has_all_tags", default=False)
+    parser['config'].add_argument(
+            '-c', '--conf-dir',
+            help=('Add configuration directory (can be repeated, '
+                  'last one wins)'), action='append')
+    parser['config'].add_argument(
+            '-f', '--file',
+            help=('Read additional hosts to operate on from specified file '
+                  'or from stdin if \'-\' (each host on separate line). '
+                  'If no host or host file is specified then, by default, '
+                  'read hosts from stdin.'),
+            dest='hostfile', required=False)
+    parser['config'].add_argument(
+           '-i', '--initial-manifest',
+           help='Path to a cdist manifest or \'-\' to read from stdin.',
+           dest='manifest', required=False)
+    parser['config'].add_argument(
+           '-j', '--jobs', nargs='?', type=check_positive_int,
+           help=('Specify the maximum number of parallel jobs, currently '
+                 'only global explorers are supported'),
+           action='store', dest='jobs',
+           const=multiprocessing.cpu_count())
+    parser['config'].add_argument(
+           '-n', '--dry-run',
+           help='Do not execute code', action='store_true')
+    parser['config'].add_argument(
+           '-o', '--out-dir',
+           help='Directory to save cdist output in', dest="out_path")
+    parser['config'].add_argument(
+           '-p', '--parallel',
+           help='Operate on multiple hosts in parallel',
+           action='store_true', dest='parallel')
+    parser['config'].add_argument(
+           '-s', '--sequential',
+           help='Operate on multiple hosts sequentially (default)',
+           action='store_false', dest='parallel')
+    # remote-copy and remote-exec defaults are environment variables
+    # if set; if not then None - these will be futher handled after
+    # parsing to determine implementation default
+    parser['config'].add_argument(
+           '--remote-copy',
+           help='Command to use for remote copy (should behave like scp)',
+           action='store', dest='remote_copy',
+           default=os.environ.get('CDIST_REMOTE_COPY'))
+    parser['config'].add_argument(
+           '--remote-exec',
+           help=('Command to use for remote execution '
+                 '(should behave like ssh)'),
+           action='store', dest='remote_exec',
+           default=os.environ.get('CDIST_REMOTE_EXEC'))
+    parser['config'].add_argument(
+             '-t', '--tag',
+             help=('host is specified by tag, not hostname/address; '
+                   'list all hosts that contain any of specified tags'),
+             dest='tag', required=False, action="store_true", default=False)
+    parser['config'].set_defaults(func=cdist.config.Config.commandline)
+
+    # Install
+    parser['install'] = parser['sub'].add_parser('install', add_help=False,
+                                                 parents=[parser['config']])
+    parser['install'].set_defaults(func=cdist.install.Install.commandline)
+
+    # Inventory
+    parser['inventory'] = parser['sub'].add_parser(
+           'inventory', parents=[parser['loglevel']])
     parser['invsub'] = parser['inventory'].add_subparsers(
             title="Inventory commands", dest="subcommand")
-
     parser['list'] = parser['invsub'].add_parser(
             'list', parents=[parser['subcmd_main']])
     parser['list'].add_argument(
@@ -235,77 +310,6 @@ def commandline():
 
     parser['inventory'].set_defaults(
             func=cdist.inventory.Inventory.commandline)
-
-    # Config
-    parser['config'] = parser['sub'].add_parser(
-            'config', parents=[parser['subcmd_main']])
-    parser['config'].add_argument(
-            'host', nargs='*', help='host(s) to operate on')
-    parser['config'].add_argument(
-             '-a', '--all',
-             help=('list hosts that have all specified tags, '
-                   'if -t/--tag is specified'),
-             action="store_true", dest="has_all_tags", default=False)
-    parser['config'].add_argument(
-            '-c', '--conf-dir',
-            help=('Add configuration directory (can be repeated, '
-                  'last one wins)'), action='append')
-    parser['config'].add_argument(
-            '-f', '--file',
-            help=('Read additional hosts to operate on from specified file '
-                  'or from stdin if \'-\' (each host on separate line). '
-                  'If no host or host file is specified then, by default, '
-                  'read hosts from stdin.'),
-            dest='hostfile', required=False)
-    parser['config'].add_argument(
-           '-i', '--initial-manifest',
-           help='Path to a cdist manifest or \'-\' to read from stdin.',
-           dest='manifest', required=False)
-    parser['config'].add_argument(
-           '-j', '--jobs', nargs='?', type=check_positive_int,
-           help=('Specify the maximum number of parallel jobs, currently '
-                 'only global explorers are supported'),
-           action='store', dest='jobs',
-           const=multiprocessing.cpu_count())
-    parser['config'].add_argument(
-           '-n', '--dry-run',
-           help='Do not execute code', action='store_true')
-    parser['config'].add_argument(
-           '-o', '--out-dir',
-           help='Directory to save cdist output in', dest="out_path")
-    parser['config'].add_argument(
-           '-p', '--parallel',
-           help='Operate on multiple hosts in parallel',
-           action='store_true', dest='parallel')
-    parser['config'].add_argument(
-           '-s', '--sequential',
-           help='Operate on multiple hosts sequentially (default)',
-           action='store_false', dest='parallel')
-    # remote-copy and remote-exec defaults are environment variables
-    # if set; if not then None - these will be futher handled after
-    # parsing to determine implementation default
-    parser['config'].add_argument(
-           '--remote-copy',
-           help='Command to use for remote copy (should behave like scp)',
-           action='store', dest='remote_copy',
-           default=os.environ.get('CDIST_REMOTE_COPY'))
-    parser['config'].add_argument(
-           '--remote-exec',
-           help=('Command to use for remote execution '
-                 '(should behave like ssh)'),
-           action='store', dest='remote_exec',
-           default=os.environ.get('CDIST_REMOTE_EXEC'))
-    parser['config'].add_argument(
-             '-t', '--tag',
-             help=('host is specified by tag, not hostname/address; '
-                   'list all hosts that contain any of specified tags'),
-             dest='tag', required=False, action="store_true", default=False)
-    parser['config'].set_defaults(func=cdist.config.Config.commandline)
-
-    # Install
-    parser['install'] = parser['sub'].add_parser('install', add_help=False,
-                                                 parents=[parser['config']])
-    parser['install'].set_defaults(func=cdist.install.Install.commandline)
 
     # Shell
     parser['shell'] = parser['sub'].add_parser(
