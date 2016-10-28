@@ -7,7 +7,7 @@ for pkg in \
     linux-image-amd64 \
     lsb-release \
     openssh-server curl \
-    pxelinux syslinux-common grub2 \
+    pxelinux syslinux-common \
     gdisk util-linux lvm2 mdadm \
     btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
     __package $pkg --state present
