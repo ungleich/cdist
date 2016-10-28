@@ -99,7 +99,6 @@ def commandline():
             'banner', parents=[parser['loglevel']])
     parser['banner'].set_defaults(func=cdist.banner.banner)
 
-
     parser['subcmd_main'] = argparse.ArgumentParser(
            add_help=False, parents=[parser['loglevel']])
     parser['subcmd_main'].add_argument(
@@ -115,8 +114,8 @@ def commandline():
                  'Inventory directory is set up by the following rules: '
                  'if this argument is set then specified directory is used, '
                  'if CDIST_INVENTORY_DIR env var is set then its value is '
-                 'used, if HOME env var is set then ~/.ctt/inventory is used, '
-                 'otherwise distribution inventory directory is used.'),
+                 'used, if HOME env var is set then ~/.cdist/inventory is '
+                 'used, otherwise distribution inventory directory is used.'),
            dest="inventory_dir", required=False)
 
     # Config

@@ -123,7 +123,7 @@ Configure/install one or more hosts.
     directory is set up by the following rules: if this
     argument is set then specified directory is used, if
     CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.ctt/inventory is
+    used, if HOME env var is set then ~/.cdit/inventory is
     used, otherwise distribution inventory directory is
     used.
 
@@ -221,7 +221,7 @@ List inventory database.
     directory is set up by the following rules: if this
     argument is set then specified directory is used, if
     CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.ctt/inventory is
+    used, if HOME env var is set then ~/.cdist/inventory is
     used, otherwise distribution inventory directory is
     used.
 
@@ -263,7 +263,7 @@ Add host(s) to inventory database.
     directory is set up by the following rules: if this
     argument is set then specified directory is used, if
     CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.ctt/inventory is
+    used, if HOME env var is set then ~/.cdist/inventory is
     used, otherwise distribution inventory directory is
     used.
 
@@ -300,7 +300,7 @@ Delete host(s) from inventory database.
     directory is set up by the following rules: if this
     argument is set then specified directory is used, if
     CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.ctt/inventory is
+    used, if HOME env var is set then ~/.cdist/inventory is
     used, otherwise distribution inventory directory is
     used.
 
@@ -335,7 +335,7 @@ Add tag(s) to inventory database.
     directory is set up by the following rules: if this
     argument is set then specified directory is used, if
     CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.ctt/inventory is
+    used, if HOME env var is set then ~/.cdist/inventory is
     used, otherwise distribution inventory directory is
     used.
 
@@ -389,7 +389,7 @@ Delete tag(s) from inventory database.
     directory is set up by the following rules: if this
     argument is set then specified directory is used, if
     CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.ctt/inventory is
+    used, if HOME env var is set then ~/.cdist/inventory is
     used, otherwise distribution inventory directory is
     used.
 

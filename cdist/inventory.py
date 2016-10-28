@@ -53,6 +53,7 @@ def contains_any(big, little):
 def check_always_true(x, y):
     return True
 
+
 def rstrip_nl(s):
     '''str.rstrip "\n" from s'''
     return str.rstrip(s, "\n")
@@ -163,7 +164,7 @@ class Inventory(object):
         # The order of inventory dir setting by decreasing priority
         # 1. inventory_dir argument
         # 2. CDIST_INVENTORY_DIR env var if set
-        # 3. ~/.ctt/inventory if HOME env var is set
+        # 3. ~/.cdist/inventory if HOME env var is set
         # 4. distribution inventory directory
         if not args.inventory_dir:
             if 'CDIST_INVENTORY_DIR' in os.environ:
