@@ -67,17 +67,32 @@ then
     else
         init_manifest="${__type}/files/init"
     fi
+    if [ ! -f "${init_manifest}" ]
+    then
+        echo "ERROR: ${init_manifest} does not exist" >&2
+        exit 1
+    fi
     if [ -f "$__object/parameter/remote-exec" ]
     then
         remote_exec=$(cat "$__object/parameter/remote-exec")
     else
         remote_exec="${__type}/files/remote-exec.sh"
     fi
+    if [ ! -f "${remote_exec}" ]
+    then
+        echo "ERROR: ${remote_exec} does not exist" >&2
+        exit 1
+    fi
     if [ -f "$__object/parameter/remote-copy" ]
     then
         remote_copy=$(cat "$__object/parameter/remote-copy")
     else
         remote_copy="${__type}/files/remote-copy.sh"
+    fi
+    if [ ! -f "${remote_copy}" ]
+    then
+        echo "ERROR: ${remote_copy} does not exist" >&2
+        exit 1
     fi
 
     if [ -f "${__object}/parameter/trigger-command" ]
@@ -93,6 +108,11 @@ then
         keyfiles=""
         while read keyfile
         do
+            if [ ! -f "${keyfile}" ]
+            then
+                echo "ERROR: ${keyfile} does not exist" >&2
+                exit 1
+            fi
             key=$(cat "${keyfile}")
             keyfiles="${keyfiles} --key '${key}'"
         done < "$__object/parameter/keyfile"
