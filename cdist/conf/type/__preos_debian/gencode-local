@@ -185,7 +185,7 @@ cat <<EOPXEF > "${pxe_boot_dir}/pxelinux.cfg/default"
 DEFAULT preos
 LABEL preos
 KERNEL kernel
-APPEND utf8 load_ramdisk=1 root=/dev/ram nofb initrd=initramfs console=ttyS1,115200
+APPEND utf8 load_ramdisk=1 root=/dev/ram nofb initrd=initramfs console=ttyS1,115200 net.ifnames=0
 EOPXEF
 
 cp "${bootstrap_dir}/usr/lib/PXELINUX/pxelinux.0" "${pxe_boot_dir}/pxelinux.0"
