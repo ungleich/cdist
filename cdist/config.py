@@ -136,7 +136,7 @@ class Config(object):
         import multiprocessing
 
         # FIXME: Refactor relict - remove later
-        log = logging.getLogger("cdist")
+        log = logging.getLogger(__name__)
 
         if args.manifest == '-' and args.hostfile == '-':
             raise cdist.Error(("Cannot read both, manifest and host file, "
@@ -227,6 +227,8 @@ class Config(object):
             raise cdist.Error("Failed to configure the following hosts: " +
                               " ".join(failed_hosts))
 
+
+
     @classmethod
     def onehost(cls, host, host_base_path, host_dir_name, args, parallel):
         """Configure ONE system"""
@@ -316,6 +318,16 @@ class Config(object):
             # Pass back to controlling code in sequential mode
             else:
                 raise
+
+
+    # FIXME begin to cleanup with this method
+    @staticmethod
+    def create_host_tmpdir(host):
+        base_dir = tempfile.mkdtemp()
+        hostdir = cdist.str_hash(host)
+
+        return (base_dir, hostdir)
+
 
     def run(self):
         """Do what is most often done: deploy & cleanup"""

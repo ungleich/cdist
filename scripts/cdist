@@ -150,6 +150,7 @@ def commandline():
            '-s', '--sequential',
            help='Operate on multiple hosts sequentially (default)',
            action='store_false', dest='parallel')
+
     # remote-copy and remote-exec defaults are environment variables
     # if set; if not then None - these will be futher handled after
     # parsing to determine implementation default
