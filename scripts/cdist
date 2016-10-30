@@ -180,7 +180,7 @@ def commandline():
             'trigger', parents=[parser['loglevel'], parser['beta']])
     parser['trigger'].add_argument(
             '-4', '--ipv4',
-            help=('Listen only to IPv4 (instead of IPv4 and IPv4)'), action='store_true')
+            help=('Listen only to IPv4 (instead of IPv4 and IPv6)'), action='store_true')
     parser['trigger'].add_argument(
             '-H', '--http-port',
             help=('Create trigger listener via http on specified port'))
