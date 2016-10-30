@@ -37,13 +37,14 @@ log = logging.getLogger(__name__)
 class Trigger():
     """cdist trigger handling"""
 
-    def __init__(self, http_port=None, dry_run=False, ipv4only=False):
+    def __init__(self, http_port=None, dry_run=False, ipv4only=False,
+                 cdistargs=None):
         self.log = logging.getLogger("trigger")
         self.dry_run = dry_run
         self.http_port = int(http_port)
         self.ipv4only = ipv4only
 
-        self.args = "fun"
+        self.args = cdistargs
 
         # can only be set once
         multiprocessing.set_start_method('forkserver')
@@ -68,7 +69,11 @@ class Trigger():
 
     @staticmethod
     def commandline(args):
-        t = Trigger(http_port=args.http_port, ipv4only=args.ipv4)
+        http_port = args.http_port
+        ipv4only = args.ipv4
+        del args.http_port
+        del args.ipv4
+        t = Trigger(http_port=http_port, ipv4only=ipv4only, cdistargs=args)
         t.run()
 
 class TriggerHttp(BaseHTTPRequestHandler):
@@ -78,13 +83,16 @@ class TriggerHttp(BaseHTTPRequestHandler):
         code = 200
         mode = None
 
-        print(self.server.cdistargs)
+        self.cdistargs = self.server.cdistargs
+        print(self.cdistargs)
+        print('path: ' + str(self.path))
 
         m = re.match("^/(?P<mode>config|install)/.*", self.path)
         if m:
             mode = m.group('mode')
         else:
             code = 404
+            print('mode: ' + str(mode))
 
         if mode:
             self.run_cdist(mode, host)
@@ -105,8 +113,15 @@ class TriggerHttp(BaseHTTPRequestHandler):
         module = getattr(cdist, mode)
         theclass = getattr(module, cname)
 
-        host_base_path, hostdir = theclass.create_host_tmpdir(host)
-        theclass.onehost(host, host_base_path, hostdir, args, parallel=False)
+        if hasattr(self.cdistargs, 'out_path'):
+            out_path = self.cdistargs.out_path
+        else:
+            out_path = None
+        host_base_path, hostdir = theclass.create_host_base_dirs(
+            host, theclass.create_base_root_path(out_path))
+        theclass.construct_remote_exec_copy_patterns(self.cdistargs)
+        theclass.onehost(host, host_base_path, hostdir, self.cdistargs,
+                         parallel=False)
 
 
 class HTTPServerV6(http.server.HTTPServer):

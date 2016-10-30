@@ -105,20 +105,57 @@ def commandline():
             'banner', parents=[parser['loglevel']])
     parser['banner'].set_defaults(func=cdist.banner.banner)
 
-    # Config
-    parser['config'] = parser['sub'].add_parser(
-            'config', parents=[parser['loglevel']])
-    parser['config'].add_argument(
-            'host', nargs='*', help='host(s) to operate on')
-    parser['config'].add_argument(
-           '-b', '--enable-beta',
-           help=('Enable beta functionalities. Beta functionalities '
-                 'include the following options: -j/--jobs.'),
-           action='store_true', dest='beta', default=False)
-    parser['config'].add_argument(
+    parser['config_main'] = argparse.ArgumentParser(add_help=False)
+    parser['config_main'].add_argument(
             '-c', '--conf-dir',
             help=('Add configuration directory (can be repeated, '
                   'last one wins)'), action='append')
+    parser['config_main'].add_argument(
+           '-i', '--initial-manifest',
+           help='path to a cdist manifest or \'-\' to read from stdin.',
+           dest='manifest', required=False)
+    parser['config_main'].add_argument(
+           '-j', '--jobs', nargs='?', type=check_positive_int,
+           help=('specify the maximum number of parallel jobs, currently '
+                 'only global explorers are supported (currently in beta'),
+           action='store', dest='jobs',
+           const=multiprocessing.cpu_count())
+    parser['config_main'].add_argument(
+           '-n', '--dry-run',
+           help='do not execute code', action='store_true')
+    parser['config_main'].add_argument(
+           '-o', '--out-dir',
+           help='directory to save cdist output in', dest="out_path")
+
+    # remote-copy and remote-exec defaults are environment variables
+    # if set; if not then None - these will be futher handled after
+    # parsing to determine implementation default
+    parser['config_main'].add_argument(
+           '--remote-copy',
+           help='Command to use for remote copy (should behave like scp)',
+           action='store', dest='remote_copy',
+           default=os.environ.get('CDIST_REMOTE_COPY'))
+    parser['config_main'].add_argument(
+           '--remote-exec',
+           help=('Command to use for remote execution '
+                 '(should behave like ssh)'),
+           action='store', dest='remote_exec',
+           default=os.environ.get('CDIST_REMOTE_EXEC'))
+
+    # Config
+    parser['config'] = parser['sub'].add_parser(
+            'config', parents=[parser['loglevel'], parser['beta'],
+                               parser['config_main']])
+    parser['config'].add_argument(
+            'host', nargs='*', help='host(s) to operate on')
+    parser['config'].add_argument(
+           '-s', '--sequential',
+           help='operate on multiple hosts sequentially (default)',
+           action='store_false', dest='parallel')
+    parser['config'].add_argument(
+           '-p', '--parallel',
+           help='operate on multiple hosts in parallel',
+           action='store_true', dest='parallel')
     parser['config'].add_argument(
             '-f', '--file',
             help=('Read additional hosts to operate on from specified file '
@@ -126,45 +163,6 @@ def commandline():
                   'If no host or host file is specified then, by default, '
                   'read hosts from stdin.'),
             dest='hostfile', required=False)
-    parser['config'].add_argument(
-           '-i', '--initial-manifest',
-           help='Path to a cdist manifest or \'-\' to read from stdin.',
-           dest='manifest', required=False)
-    parser['config'].add_argument(
-           '-j', '--jobs', nargs='?', type=check_positive_int,
-           help=('Specify the maximum number of parallel jobs, currently '
-                 'only global explorers are supported (currently in beta'),
-           action='store', dest='jobs',
-           const=multiprocessing.cpu_count())
-    parser['config'].add_argument(
-           '-n', '--dry-run',
-           help='Do not execute code', action='store_true')
-    parser['config'].add_argument(
-           '-o', '--out-dir',
-           help='Directory to save cdist output in', dest="out_path")
-    parser['config'].add_argument(
-           '-p', '--parallel',
-           help='Operate on multiple hosts in parallel',
-           action='store_true', dest='parallel')
-    parser['config'].add_argument(
-           '-s', '--sequential',
-           help='Operate on multiple hosts sequentially (default)',
-           action='store_false', dest='parallel')
-
-    # remote-copy and remote-exec defaults are environment variables
-    # if set; if not then None - these will be futher handled after
-    # parsing to determine implementation default
-    parser['config'].add_argument(
-           '--remote-copy',
-           help='Command to use for remote copy (should behave like scp)',
-           action='store', dest='remote_copy',
-           default=os.environ.get('CDIST_REMOTE_COPY'))
-    parser['config'].add_argument(
-           '--remote-exec',
-           help=('Command to use for remote execution '
-                 '(should behave like ssh)'),
-           action='store', dest='remote_exec',
-           default=os.environ.get('CDIST_REMOTE_EXEC'))
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
 
     # Shell
@@ -178,16 +176,15 @@ def commandline():
 
     # Trigger
     parser['trigger'] = parser['sub'].add_parser(
-            'trigger', parents=[parser['loglevel'], parser['beta']])
+            'trigger', parents=[parser['loglevel'],
+                                parser['beta'],
+                                parser['config_main']])
     parser['trigger'].add_argument(
-            '-4', '--ipv4',
+            '-4', '--ipv4', default=False,
             help=('Listen only to IPv4 (instead of IPv4 and IPv6)'), action='store_true')
     parser['trigger'].add_argument(
-            '-H', '--http-port',
+            '-H', '--http-port', action='store', default=3000, required=False,
             help=('Create trigger listener via http on specified port'))
-    parser['trigger'].add_argument(
-           '-n', '--dry-run',
-           help='Do not execute code', action='store_true')
     parser['trigger'].set_defaults(func=cdist.trigger.Trigger.commandline)
 
     # Install
