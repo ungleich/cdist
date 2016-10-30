@@ -29,7 +29,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import multiprocessing
 
-import cdist
+import cdist.config
+import cdist.install
 
 log = logging.getLogger(__name__)
 
@@ -42,16 +43,22 @@ class Trigger():
         self.http_port = int(http_port)
         self.ipv4only = ipv4only
 
+        self.args = "fun"
+
         # can only be set once
         multiprocessing.set_start_method('forkserver')
+
+    # Create pool suitable for passing objects
+    def __init_pool(self):
+        pass
 
     def run_httpd(self):
         server_address = ('', self.http_port)
 
         if self.ipv4only:
-            httpd = HTTPServerV4(server_address, TriggerHttp)
+            httpd = HTTPServerV4(self.args, server_address, TriggerHttp)
         else:
-            httpd = HTTPServerV6(server_address, TriggerHttp)
+            httpd = HTTPServerV6(self.args, server_address, TriggerHttp)
 
         httpd.serve_forever()
 
@@ -65,14 +72,13 @@ class Trigger():
         t.run()
 
 class TriggerHttp(BaseHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        http.server.BaseHTTPRequestHandler.__init__(self, *args, **kwargs)
-
     def do_GET(self):
         # FIXME: dispatch to pool instead of single process
         host = self.client_address[0]
         code = 200
         mode = None
+
+        print(self.server.cdistargs)
 
         m = re.match("^/(?P<mode>config|install)/.*", self.path)
         if m:
@@ -95,12 +101,12 @@ class TriggerHttp(BaseHTTPRequestHandler):
     def run_cdist(self, mode, host):
         log.debug("Running cdist {} {}".format(mode, host))
 
+        cname = mode.title()
+        module = getattr(cdist, mode)
+        theclass = getattr(module, cname)
 
-class HTTPServerV4(http.server.HTTPServer):
-    """
-    Server that listens to IPv4 and IPv6 requests
-    """
-    address_family = socket.AF_INET
+        host_base_path, hostdir = theclass.create_host_tmpdir(host)
+        theclass.onehost(host, host_base_path, hostdir, args, parallel=False)
 
 
 class HTTPServerV6(http.server.HTTPServer):
@@ -108,3 +114,13 @@ class HTTPServerV6(http.server.HTTPServer):
     Server that listens both to IPv4 and IPv6 requests
     """
     address_family = socket.AF_INET6
+
+    def __init__(self, cdistargs, *args, **kwargs):
+        self.cdistargs = cdistargs
+        http.server.HTTPServer.__init__(self, *args, **kwargs)
+
+class HTTPServerV4(HTTPServerV6):
+    """
+    Server that listens to IPv4 and IPv6 requests
+    """
+    address_family = socket.AF_INET
