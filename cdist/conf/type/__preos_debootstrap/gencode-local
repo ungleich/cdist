@@ -25,6 +25,18 @@ then
 fi
 
 bootstrap_dir="/$__object_id"
+os=$(cat "$__object/parameter/os")
+
+case "${os}" in
+    ubuntu|debian)
+        # nothing, those are valid values
+        ;;
+    *)
+        echo "ERROR: invalid os value: ${os}" >&2
+        exit 1
+        ;;
+esac
+
 arch=$(cat "$__object/parameter/arch")
 suite=$(cat "$__object/parameter/suite")
 
@@ -65,7 +77,7 @@ then
     then
         init_manifest=$(cat "$__object/parameter/init-manifest")
     else
-        init_manifest="${__type}/files/init"
+        init_manifest="${__type}/files/init-manifest-${os}"
     fi
     if [ ! -f "${init_manifest}" ]
     then

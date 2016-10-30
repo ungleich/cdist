@@ -1,16 +1,15 @@
-cdist-type__preos_debian(7)
-===========================
+cdist-type__preos_debootstrap(7)
+================================
 
 NAME
 ----
-cdist-type__preos_debian - create PreOS debian
+cdist-type__preos_debootstrap - create PreOS debian or ubuntu
 
 
 DESCRIPTION
 -----------
-Create and/or configure minimal PreOS debian using debootstrap
-and/or create PXE boot. Currently only network bootable PreOS
-is supported.
+Create and/or configure minimal PreOS debian or ubuntu using debootstrap
+and/or create PXE boot. Currently only network bootable PreOS is supported.
 
 
 OPTIONAL PARAMETERS
@@ -29,6 +28,10 @@ init-manifest
 mirror
     Mirror debootstrap will use.
 
+os
+    Create specifed OS as PreOS. Available values are 'debian' and 'ubuntu'.
+    By default, 'debian' is used.
+
 pxe-boot-dir
     Location for PXE files. If empty then PXE is not created.
 
@@ -41,7 +44,7 @@ remote-exec
     By default, 'remote-exec.sh' file under type's 'files' directory is used.
 
 suite
-    Use debian suite (default stable).
+    Use specified suite (default is stable).
 
 trigger-command
     Command PreOS will use to trigger cdist at cdist machine.
@@ -71,14 +74,22 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Bootstrap and configure default debian PreOS in /usr/preos and create PXE in /pxe
-    __preos_debian /usr/preos --bootstrap --configure --pxe-boot-dir /pxe \
+    # Bootstrap default stable debian PreOS in /usr/preos
+    # and configure it with using specified ssh key for authoried keys and
+    # with specified trigger command
+    # and create PXE in /pxe.
+    __preos_debootstrap /usr/preos --bootstrap --configure --pxe-boot-dir /pxe \
         --keyfile ~/.ssh/id_rsa.pub --trigger-command "/usr/bin/curl 192.168.111.5"
+
+    # Create default stable ubuntu PreOS.
+    __preos_debootstrap /usr/preos --os ubuntu --bootstrap --configure \
+        --pxe-boot-dir /pxe --keyfile ~/.ssh/id_rsa.pub \
+        --trigger-command "/usr/bin/curl 192.168.111.5"
 
 
 SEE ALSO
 --------
-:strong:`debootstrap` (8)
+:strong:`debootstrap`\ (8), :strong:`pxeboot`\ (8)
 
 
 AUTHORS

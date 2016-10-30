@@ -7,3 +7,4 @@ remote-exec
 remote-copy
 mirror
 trigger-command
+os
