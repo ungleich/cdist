@@ -192,7 +192,7 @@ class Config(object):
         for host in itertools.chain(cls.hosts(args.host),
                                     cls.hosts(args.hostfile)):
             host_base_path, hostdir = cls.create_host_base_dirs(
-                host, hostdir)
+                host, base_root_path)
 
             log.debug("Base root path for target host \"{}\" is \"{}\"".format(
                 host, host_base_path))
