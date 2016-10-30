@@ -118,6 +118,16 @@ class TypeTestCase(test.CdistTestCase):
         cdist_type = core.CdistType(base_path, '__install')
         self.assertTrue(cdist_type.is_install)
 
+    def test_preos_is_preos(self):
+        base_path = fixtures
+        cdist_type = core.CdistType(base_path, '__preos')
+        self.assertTrue(cdist_type.is_preos)
+
+    def test_not_preos_is_preos(self):
+        base_path = fixtures
+        cdist_type = core.CdistType(base_path, '__not_preos')
+        self.assertFalse(cdist_type.is_preos)
+
     def test_not_install_is_install(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__not_install')

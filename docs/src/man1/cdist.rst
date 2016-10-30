@@ -11,7 +11,7 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-d] [-v] [-V] {banner,config,shell,install} ...
+    cdist [-h] [-d] [-v] [-V] {banner,config,install,preos,shell} ...
 
     cdist banner [-h] [-d] [-v]
 
@@ -24,6 +24,11 @@ SYNOPSIS
                   [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                   [host [host ...]]
+
+    cdist preos [-h] [-d] [-v] [-b] [-c CONF_DIR] [-f HOSTFILE]
+                [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
+                [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
@@ -63,9 +68,9 @@ Displays the cdist banner. Useful for printing
 cdist posters - a must have for every office.
 
 
-CONFIG/INSTALL
+CONFIG/INSTALL/PREOS
 --------------
-Configure/install one or more hosts.
+Configure/install one or more hosts/create PreOS.
 
 .. option:: -b, --enable-beta
 
@@ -198,6 +203,19 @@ EXAMPLES
 
     # Install ikq05.ethz.ch with debug enabled
     % cdist install -d ikq05.ethz.ch
+
+    # Create default debian PreOS
+    echo __preos_debootstrap /preos --bootstrap --configure \
+        --keyfile ~/.ssh/id_rsa.pub \
+        --trigger-command \"/usr/bin/curl 192.168.111.5\" \
+        --pxe-boot-dir /pxe | cdist preos -v -i - localhost
+
+    # Create ubuntu PreOS
+    echo __preos_debootstrap --os ubuntu /preos --bootstrap --configure \
+        --keyfile ~/.ssh/id_rsa.pub \
+        --trigger-command \"/usr/bin/curl 192.168.111.5\" \
+        --pxe-boot-dir /pxe | cdist preos -v -i - localhost
+
 
 ENVIRONMENT
 -----------

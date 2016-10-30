@@ -23,7 +23,7 @@
 
 
 # list of beta sub-commands
-BETA_COMMANDS = ['install', ]
+BETA_COMMANDS = ['install', 'preos', ]
 # list of beta arguments for sub-commands
 BETA_ARGS = {
     'config': ['jobs', ],
@@ -68,6 +68,7 @@ def commandline():
     import cdist.banner
     import cdist.config
     import cdist.install
+    import cdist.preos
     import cdist.shell
     import shutil
     import os
@@ -159,6 +160,16 @@ def commandline():
            default=os.environ.get('CDIST_REMOTE_EXEC'))
     parser['config'].set_defaults(func=cdist.config.Config.commandline)
 
+    # Install
+    parser['install'] = parser['sub'].add_parser('install', add_help=False,
+                                                 parents=[parser['config']])
+    parser['install'].set_defaults(func=cdist.install.Install.commandline)
+
+    # PreOs
+    parser['preos'] = parser['sub'].add_parser('preos', add_help=False,
+                                               parents=[parser['config']])
+    parser['preos'].set_defaults(func=cdist.preos.Preos.commandline)
+
     # Shell
     parser['shell'] = parser['sub'].add_parser(
             'shell', parents=[parser['loglevel']])
@@ -167,11 +178,6 @@ def commandline():
             help=('Select shell to use, defaults to current shell. Used shell'
                   ' should be POSIX compatible shell.'))
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
-
-    # Install
-    parser['install'] = parser['sub'].add_parser('install', add_help=False,
-                                                 parents=[parser['config']])
-    parser['install'].set_defaults(func=cdist.install.Install.commandline)
 
     for p in parser:
         parser[p].epilog = (
