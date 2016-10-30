@@ -24,6 +24,7 @@ import logging
 import re
 import socket
 import http.server
+import socketserver
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -48,10 +49,6 @@ class Trigger():
 
         # can only be set once
         multiprocessing.set_start_method('forkserver')
-
-    # Create pool suitable for passing objects
-    def __init_pool(self):
-        pass
 
     def run_httpd(self):
         server_address = ('', self.http_port)
@@ -78,7 +75,6 @@ class Trigger():
 
 class TriggerHttp(BaseHTTPRequestHandler):
     def do_GET(self):
-        # FIXME: dispatch to pool instead of single process
         host = self.client_address[0]
         code = 200
         mode = None
@@ -124,7 +120,7 @@ class TriggerHttp(BaseHTTPRequestHandler):
                          parallel=False)
 
 
-class HTTPServerV6(http.server.HTTPServer):
+class HTTPServerV6(socketserver.ForkingMixIn, http.server.HTTPServer):
     """
     Server that listens both to IPv4 and IPv6 requests.
     """
