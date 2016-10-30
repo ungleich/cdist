@@ -180,8 +180,9 @@ def commandline():
                                 parser['beta'],
                                 parser['config_main']])
     parser['trigger'].add_argument(
-            '-4', '--ipv4', default=False,
-            help=('Listen only to IPv4 (instead of IPv4 and IPv6)'), action='store_true')
+            '-6', '--ipv6', default=False,
+            help=('Listen to both IPv4 and IPv6 (instead of only IPv4)'),
+            action='store_true')
     parser['trigger'].add_argument(
             '-H', '--http-port', action='store', default=3000, required=False,
             help=('Create trigger listener via http on specified port'))

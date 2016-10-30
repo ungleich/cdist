@@ -38,25 +38,23 @@ log = logging.getLogger(__name__)
 class Trigger():
     """cdist trigger handling"""
 
-    def __init__(self, http_port=None, dry_run=False, ipv4only=False,
+    def __init__(self, http_port=None, dry_run=False, ipv6=False,
                  cdistargs=None):
         self.log = logging.getLogger("trigger")
         self.dry_run = dry_run
         self.http_port = int(http_port)
-        self.ipv4only = ipv4only
+        self.ipv6 = ipv6
 
         self.args = cdistargs
-
-        # can only be set once
-        multiprocessing.set_start_method('forkserver')
 
     def run_httpd(self):
         server_address = ('', self.http_port)
 
-        if self.ipv4only:
-            httpd = HTTPServerV4(self.args, server_address, TriggerHttp)
+        if self.ipv6:
+            httpdcls = HTTPServerV6
         else:
-            httpd = HTTPServerV6(self.args, server_address, TriggerHttp)
+            httpdcls = HTTPServerV4
+        httpd = httpdcls(self.args, server_address, TriggerHttp)
 
         httpd.serve_forever()
 
@@ -67,10 +65,10 @@ class Trigger():
     @staticmethod
     def commandline(args):
         http_port = args.http_port
-        ipv4only = args.ipv4
+        ipv6 = args.ipv6
         del args.http_port
-        del args.ipv4
-        t = Trigger(http_port=http_port, ipv4only=ipv4only, cdistargs=args)
+        del args.ipv6
+        t = Trigger(http_port=http_port, ipv6=ipv6, cdistargs=args)
         t.run()
 
 class TriggerHttp(BaseHTTPRequestHandler):
@@ -122,7 +120,7 @@ class TriggerHttp(BaseHTTPRequestHandler):
 
 class HTTPServerV6(socketserver.ForkingMixIn, http.server.HTTPServer):
     """
-    Server that listens both to IPv4 and IPv6 requests.
+    Server that listens to both IPv4 and IPv6 requests.
     """
     address_family = socket.AF_INET6
 
@@ -132,6 +130,6 @@ class HTTPServerV6(socketserver.ForkingMixIn, http.server.HTTPServer):
 
 class HTTPServerV4(HTTPServerV6):
     """
-    Server that listens to IPv4 requests
+    Server that listens to IPv4 requests.
     """
     address_family = socket.AF_INET
