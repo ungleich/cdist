@@ -98,13 +98,13 @@ class TriggerHttp(BaseHTTPRequestHandler):
 
 class HTTPServerV4(http.server.HTTPServer):
     """
-    Server that listens to IPv4 and IPv6 requests
+    Server that listens only to IPv4 requests.
     """
     address_family = socket.AF_INET
 
 
 class HTTPServerV6(http.server.HTTPServer):
     """
-    Server that listens both to IPv4 and IPv6 requests
+    Server that listens both to IPv4 and IPv6 requests.
     """
     address_family = socket.AF_INET6
