@@ -92,6 +92,7 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
                 log.info("Dry run, skipping cdist execution")
             else:
                 self.run_cdist(mode, host)
+            log.debug("cdist run finished")
         else:
             log.info("Unsupported mode in path %s, ignoring", self.path)
 
