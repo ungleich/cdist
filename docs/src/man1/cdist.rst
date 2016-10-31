@@ -27,6 +27,11 @@ SYNOPSIS
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
+    cdist trigger [-h] [-d] [-v] [-b] [-c CONF_DIR] [-i MANIFEST]
+                  [-j [JOBS]] [-n] [-o OUT_PATH]
+                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                  [-6] [-H HTTP_PORT]
+
 
 DESCRIPTION
 -----------
@@ -148,6 +153,67 @@ usage. Its primary use is for debugging type parameters.
     Select shell to use, defaults to current shell. Used shell should
     be POSIX compatible shell.
 
+
+TRIGGER
+-------
+Start trigger (simple http server) that waits for connections. When host
+connects then it triggers config or install command, cdist config is then
+executed which configures/installs host.
+Request path recognies following formats:
+
+* :strong:`/config/.*` for config
+* :strong:`/install/.*` for install 
+
+
+.. option:: -6, --ipv6
+
+    Listen to both IPv4 and IPv6 (instead of only IPv4)
+
+.. option:: -b, --enable-beta
+
+    Enable beta functionalities.
+
+.. option:: -c CONF_DIR, --conf-dir CONF_DIR
+
+    Add configuration directory (can be repeated, last one wins)
+
+.. option:: -d, --debug
+
+    Set log level to debug
+
+.. option:: -H HTTP_PORT, --http-port HTTP_PORT
+
+    Create trigger listener via http on specified port
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -i MANIFEST, --initial-manifest MANIFEST
+
+    path to a cdist manifest or '-' to read from stdin.
+
+.. option:: -n, --dry-run
+
+    do not execute code
+
+.. option:: -o OUT_PATH, --out-dir OUT_PATH
+
+    directory to save cdist output in
+
+.. option:: --remote-copy REMOTE_COPY
+
+    Command to use for remote copy (should behave like scp)
+
+.. option:: --remote-exec REMOTE_EXEC
+
+    Command to use for remote execution (should behave like ssh)
+
+.. option:: -v, --verbose
+
+    Set log level to info, be more verbose
+
+
 FILES
 -----
 ~/.cdist
@@ -198,6 +264,11 @@ EXAMPLES
 
     # Install ikq05.ethz.ch with debug enabled
     % cdist install -d ikq05.ethz.ch
+
+    # Start trigger in verbose mode that will configure host using specified
+    # init manifest
+    % cdist trigger -b -v -i ~/.cdist/manifest/init-for-triggered
+
 
 ENVIRONMENT
 -----------
