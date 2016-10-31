@@ -43,7 +43,7 @@ class Trigger():
         self.http_port = int(http_port)
         self.ipv6 = ipv6
         self.args = cdistargs
-        log.debug("IPv6: {0}", self.ipv6)
+        log.debug("IPv6: %s", self.ipv6)
 
     def run_httpd(self):
         server_address = ('', self.http_port)
@@ -54,7 +54,9 @@ class Trigger():
             httpdcls = HTTPServerV4
         httpd = httpdcls(self.args, server_address, TriggerHttp)
 
-        log.debug("Starting server at port {}", self.http_port)
+        log.debug("Starting server at port %d", self.http_port)
+        if self.dry_run:
+            log.debug("Running in dry run mode")
         httpd.serve_forever()
 
     def run(self):
@@ -67,7 +69,8 @@ class Trigger():
         ipv6 = args.ipv6
         del args.http_port
         del args.ipv6
-        t = Trigger(http_port=http_port, ipv6=ipv6, cdistargs=args)
+        t = Trigger(http_port=http_port, dry_run=args.dry_run, ipv6=ipv6,
+                    cdistargs=args)
         t.run()
 
 class TriggerHttp(http.server.BaseHTTPRequestHandler):
@@ -84,13 +87,13 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
         else:
             code = 404
         if mode:
-            log.debug("Running cdist for {0} in mode {1}", host, mode)
-            if self.dry_run:
+            log.debug("Running cdist for %s in mode %s", host, mode)
+            if self.server.dry_run:
                 log.info("Dry run, skipping cdist execution")
             else:
                 self.run_cdist(mode, host)
         else:
-            log.info("Unsupported path {1}, ignoring", mode, self.path)
+            log.info("Unsupported mode in path %s, ignoring", self.path)
 
         self.send_response(code)
         self.end_headers()
@@ -102,7 +105,7 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
         self.do_GET()
 
     def run_cdist(self, mode, host):
-        log.debug("Running cdist {} {}".format(mode, host))
+        log.debug("Running cdist {%s} {%s}", mode, host)
 
         cname = mode.title()
         module = getattr(cdist, mode)
@@ -115,7 +118,7 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
         host_base_path, hostdir = theclass.create_host_base_dirs(
             host, theclass.create_base_root_path(out_path))
         theclass.construct_remote_exec_copy_patterns(self.cdistargs)
-        log.debug("Executing cdist onehost with params: {0}, {1}, {2}, {3}, ",
+        log.debug("Executing cdist onehost with params: %s, %s, %s, %s, ",
                   host, host_base_path, hostdir, self.cdistargs)
         theclass.onehost(host, host_base_path, hostdir, self.cdistargs,
                          parallel=False)
@@ -129,6 +132,7 @@ class HTTPServerV6(socketserver.ForkingMixIn, http.server.HTTPServer):
 
     def __init__(self, cdistargs, *args, **kwargs):
         self.cdistargs = cdistargs
+        self.dry_run = cdistargs.dry_run
         http.server.HTTPServer.__init__(self, *args, **kwargs)
 
 class HTTPServerV4(HTTPServerV6):
