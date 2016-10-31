@@ -174,8 +174,7 @@ class Config(object):
         hostcnt = 0
 
         if args.tag:
-            if not args.inventory_dir:
-                args.inventory_dir = inventory.dist_inventory_db
+            inventory.determine_default_inventory_dir(args)
             inv_list = inventory.InventoryList(hosts=args.host,
                                                istag=True,
                                                hostfile=args.hostfile,

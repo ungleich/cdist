@@ -33,6 +33,30 @@ dist_inventory_db = os.path.abspath(os.path.join(
     os.path.dirname(cdist.__file__), DIST_INVENTORY_DB_NAME))
 
 
+def home_dir():
+    if 'HOME' in os.environ:
+        return os.path.join(os.environ['HOME'], ".cdist", "inventory")
+    else:
+        return None
+
+
+def determine_default_inventory_dir(args):
+    # The order of inventory dir setting by decreasing priority
+    # 1. inventory_dir argument
+    # 2. CDIST_INVENTORY_DIR env var if set
+    # 3. ~/.cdist/inventory if HOME env var is set
+    # 4. distribution inventory directory
+    if not args.inventory_dir:
+        if 'CDIST_INVENTORY_DIR' in os.environ:
+            args.inventory_dir = os.environ['CDIST_INVENTORY_DIR']
+        else:
+            home = home_dir()
+            if home:
+                args.inventory_dir = home
+            else:
+                args.inventory_dir = dist_inventory_db
+
+
 def contains_all(big, little):
     """Return True if big contains all elements from little,
        False otherwise.
@@ -149,32 +173,12 @@ class Inventory(object):
             return False
 
     @classmethod
-    def home_dir(cls):
-        if 'HOME' in os.environ:
-            return os.path.join(os.environ['HOME'], ".cdist", "inventory")
-        else:
-            return None
-
-    @classmethod
     def commandline(cls, args):
         """Manipulate inventory db"""
         log = logging.getLogger("cdist")
         if 'taglist' in args:
             args.taglist = cls.strlist_to_list(args.taglist)
-        # The order of inventory dir setting by decreasing priority
-        # 1. inventory_dir argument
-        # 2. CDIST_INVENTORY_DIR env var if set
-        # 3. ~/.cdist/inventory if HOME env var is set
-        # 4. distribution inventory directory
-        if not args.inventory_dir:
-            if 'CDIST_INVENTORY_DIR' in os.environ:
-                args.inventory_dir = os.environ['CDIST_INVENTORY_DIR']
-            else:
-                home = cls.home_dir()
-                if home:
-                    args.inventory_dir = home
-                else:
-                    args.inventory_dir = dist_inventory_db
+        determine_default_inventory_dir(args)
 
         log.info("Using inventory: {}".format(args.inventory_dir))
         log.debug("Inventory args: {}".format(vars(args)))
