@@ -106,8 +106,6 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
         self.do_GET()
 
     def run_cdist(self, mode, host):
-        log.debug("Running cdist for %s in mode %s", host, mode)
-
         cname = mode.title()
         module = getattr(cdist, mode)
         theclass = getattr(module, cname)
