@@ -24,6 +24,7 @@ Contents:
    cdist-explorer
    cdist-messaging
    cdist-parallelization
+   cdist-preos
    cdist-reference
    cdist-best-practice
    cdist-stages
