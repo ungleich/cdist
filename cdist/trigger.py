@@ -26,8 +26,6 @@ import socket
 import http.server
 import socketserver
 
-from http.server import BaseHTTPRequestHandler, HTTPServer
-
 import multiprocessing
 
 import cdist.config
@@ -44,8 +42,8 @@ class Trigger():
         self.dry_run = dry_run
         self.http_port = int(http_port)
         self.ipv6 = ipv6
-
         self.args = cdistargs
+        log.debug("IPv6: {0}", self.ipv6)
 
     def run_httpd(self):
         server_address = ('', self.http_port)
@@ -56,6 +54,7 @@ class Trigger():
             httpdcls = HTTPServerV4
         httpd = httpdcls(self.args, server_address, TriggerHttp)
 
+        log.debug("Starting server at port {}", self.http_port)
         httpd.serve_forever()
 
     def run(self):
@@ -71,25 +70,27 @@ class Trigger():
         t = Trigger(http_port=http_port, ipv6=ipv6, cdistargs=args)
         t.run()
 
-class TriggerHttp(BaseHTTPRequestHandler):
+class TriggerHttp(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         host = self.client_address[0]
         code = 200
         mode = None
 
         self.cdistargs = self.server.cdistargs
-        print(self.cdistargs)
-        print('path: ' + str(self.path))
 
         m = re.match("^/(?P<mode>config|install)/.*", self.path)
         if m:
             mode = m.group('mode')
         else:
             code = 404
-            print('mode: ' + str(mode))
-
         if mode:
-            self.run_cdist(mode, host)
+            log.debug("Running cdist for {0} in mode {1}", host, mode)
+            if self.dry_run:
+                log.info("Dry run, skipping cdist execution")
+            else:
+                self.run_cdist(mode, host)
+        else:
+            log.info("Unsupported path {1}, ignoring", mode, self.path)
 
         self.send_response(code)
         self.end_headers()
@@ -114,6 +115,8 @@ class TriggerHttp(BaseHTTPRequestHandler):
         host_base_path, hostdir = theclass.create_host_base_dirs(
             host, theclass.create_base_root_path(out_path))
         theclass.construct_remote_exec_copy_patterns(self.cdistargs)
+        log.debug("Executing cdist onehost with params: {0}, {1}, {2}, {3}, ",
+                  host, host_base_path, hostdir, self.cdistargs)
         theclass.onehost(host, host_base_path, hostdir, self.cdistargs,
                          parallel=False)
 
