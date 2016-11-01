@@ -30,7 +30,8 @@ class Install(cdist.config.Config):
         In install mode, we only care about install objects.
         """
         for cdist_object in cdist.core.CdistObject.list_objects(
-                self.local.object_path, self.local.type_path):
+                self.local.object_path, self.local.type_path,
+                self.local.object_marker_name):
             if cdist_object.cdist_type.is_install:
                 yield cdist_object
             else:

@@ -162,7 +162,7 @@ executed which configures/installs host.
 Request path recognies following formats:
 
 * :strong:`/config/.*` for config
-* :strong:`/install/.*` for install 
+* :strong:`/install/.*` for install
 
 
 .. option:: -6, --ipv6
