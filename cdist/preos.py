@@ -30,7 +30,8 @@ class Preos(cdist.config.Config):
         In preos mode, we only care about preos objects.
         """
         for cdist_object in cdist.core.CdistObject.list_objects(
-                self.local.object_path, self.local.type_path):
+                self.local.object_path, self.local.type_path,
+                self.local.object_marker_name):
             if cdist_object.cdist_type.is_preos:
                 yield cdist_object
             else:
