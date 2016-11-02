@@ -67,7 +67,7 @@ CONFIG/INSTALL
 --------------
 Configure/install one or more hosts.
 
-.. option:: -b, --enable-beta
+.. option:: -b, --beta
 
     Enable beta functionalities. Beta functionalities include the
     following options: -j/--jobs.

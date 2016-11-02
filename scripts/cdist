@@ -104,7 +104,7 @@ def commandline():
     parser['config'].add_argument(
             'host', nargs='*', help='host(s) to operate on')
     parser['config'].add_argument(
-           '-b', '--enable-beta',
+           '-b', '--beta',
            help=('Enable beta functionalities. Beta functionalities '
                  'include the following options: -j/--jobs.'),
            action='store_true', dest='beta', default=False)
