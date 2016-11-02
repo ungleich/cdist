@@ -515,7 +515,7 @@ EXAMPLES
     % cdist config -b -t -a web dynamic
 
     # Configure all hosts from inventory db
-    $ cdist -b -A
+    $ cdist config -b -A
 
 ENVIRONMENT
 -----------

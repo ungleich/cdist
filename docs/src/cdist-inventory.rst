@@ -50,40 +50,40 @@ Examples
 .. code-block:: sh
 
     # List inventory content
-    $ cdist list -b
+    $ cdist inventory list -b
 
     # List inventory for specified host localhost
-    $ cdist list -b localhost
+    $ cdist inventory list -b localhost
 
     # List inventory for specified tag loadbalancer
-    $ cdist list -b -t loadbalancer
+    $ cdist inventory list -b -t loadbalancer
 
     # Add hosts to inventory
-    $ cdist add-host -b web1 web2 web3
+    $ cdist inventory add-host -b web1 web2 web3
 
     # Delete hosts from file old-hosts from inventory
-    $ cdist del-host -b -f old-hosts
+    $ cdist inventory del-host -b -f old-hosts
 
     # Add tags to specifed hosts
-    $ cdist add-tag -b -t europe,croatia,web,static web1 web2
+    $ cdist inventory add-tag -b -t europe,croatia,web,static web1 web2
 
     # Add tag to all hosts in inventory
-    $ cdist add-tag -b -t vm
+    $ cdist inventory add-tag -b -t vm
 
     # Delete all tags from specified host
-    $ cdist del-tag -b -a localhost
+    $ cdist inventory del-tag -b -a localhost
 
     # Delete tags read from stdin from hosts specified by file hosts
-    $ cdist del-tag -b -T - -f hosts
+    $ cdist inventory del-tag -b -T - -f hosts
 
     # Configure hosts from inventory with any of specified tags
-    $ cdist -b -t web dynamic
+    $ cdist config -b -t web dynamic
 
     # Configure hosts from inventory with all specified tags
-    $ cdist -b -t -a web dynamic
+    $ cdist config -b -t -a web dynamic
 
     # Configure all hosts from inventory db
-    $ cdist -b -A
+    $ cdist config -b -A
 
 Example of manipulating database
 --------------------------------
