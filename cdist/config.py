@@ -339,6 +339,9 @@ class Config(object):
             if cdist_object.cdist_type.is_install:
                 self.log.debug(("Running in config mode, ignoring install "
                                 "object: {0}").format(cdist_object))
+            elif cdist_object.cdist_type.is_preos:
+                self.log.debug(("Running in config mode, ignoring preos "
+                                "object: {0}").format(cdist_object))
             else:
                 yield cdist_object
 

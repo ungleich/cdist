@@ -1,0 +1,10 @@
+arch
+suite
+pxe-boot-dir
+cdist-params
+init-manifest
+remote-exec
+remote-copy
+mirror
+trigger-command
+os

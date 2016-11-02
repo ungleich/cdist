@@ -1,0 +1,25 @@
+#!/bin/sh
+
+trigger_command=$(cat "$__object/parameter/trigger-command")
+
+__file /etc/systemd/system/cdist-preos-trigger.service --owner root \
+    --group root \
+    --mode 644 \
+    --source - << EOF
+[Unit]
+Description=preos trigger
+After=network.target
+
+[Service]
+Type=simple
+Restart=no
+User=root
+Group=root
+ExecStart=${trigger_command}
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+require="__file/etc/systemd/system/cdist-preos-trigger.service" \
+    __start_on_boot cdist-preos-trigger
