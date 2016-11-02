@@ -66,8 +66,17 @@ destination_upload="\$($__remote_exec $__target_host "mktemp $tempfile_template"
 DONE
       if [ "$upload_file" ]; then
          echo upload >> "$__messages_out"
+         # IPv6 fix
+         case "${__target_host}" in
+             *:*)
+                 my_target_host="[${__target_host}]"
+                 ;;
+             *)
+                 my_target_host="${__target_host}"
+                 ;;
+         esac
          cat << DONE
-$__remote_copy "$source" "${__target_host}:\$destination_upload"
+$__remote_copy "$source" "${my_target_host}:\$destination_upload"
 DONE
       fi
 # move uploaded file into place

@@ -43,7 +43,16 @@ basepresent="$(cat "$__object/explorer/basepresent")"
 
 if [ "$state" = "present" ]; then
    if [ "$basepresent" = "NONE" ]; then
-      echo "$__remote_copy" "${jailbase}" "$__target_host:${remotebase}"
+     # IPv6 fix
+     case "${__target_host}" in
+         *:*)
+             my_target_host="[${__target_host}]"
+             ;;
+         *)
+             my_target_host="${__target_host}"
+             ;;
+     esac
+      echo "$__remote_copy" "${jailbase}" "${my_target_host}:${remotebase}"
    fi   # basepresent=NONE
 fi   # state=present
 
