@@ -33,6 +33,7 @@ import cdist.install
 
 log = logging.getLogger(__name__)
 
+
 class Trigger():
     """cdist trigger handling"""
 
@@ -72,6 +73,7 @@ class Trigger():
         t = Trigger(http_port=http_port, dry_run=args.dry_run, ipv6=ipv6,
                     cdistargs=args)
         t.run()
+
 
 class TriggerHttp(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -133,6 +135,7 @@ class HTTPServerV6(socketserver.ForkingMixIn, http.server.HTTPServer):
         self.cdistargs = cdistargs
         self.dry_run = cdistargs.dry_run
         http.server.HTTPServer.__init__(self, *args, **kwargs)
+
 
 class HTTPServerV4(HTTPServerV6):
     """

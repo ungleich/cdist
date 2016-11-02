@@ -148,7 +148,6 @@ class Config(object):
             if args_dict['remote_copy'] is None:
                 args.remote_copy_pattern = cdist.REMOTE_COPY + mux_opts
 
-
     @classmethod
     def commandline(cls, args):
         """Configure remote system"""
@@ -227,8 +226,6 @@ class Config(object):
         if len(failed_hosts) > 0:
             raise cdist.Error("Failed to configure the following hosts: " +
                               " ".join(failed_hosts))
-
-
 
     @classmethod
     def onehost(cls, host, host_base_path, host_dir_name, args, parallel):
@@ -320,7 +317,6 @@ class Config(object):
             else:
                 raise
 
-
     @staticmethod
     def create_base_root_path(out_path=None):
         if out_path:
@@ -330,14 +326,12 @@ class Config(object):
 
         return base_root_path
 
-
     @staticmethod
     def create_host_base_dirs(host, base_root_path):
         hostdir = cdist.str_hash(host)
         host_base_path = os.path.join(base_root_path, hostdir)
 
         return (host_base_path, hostdir)
-
 
     def run(self):
         """Do what is most often done: deploy & cleanup"""
