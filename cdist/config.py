@@ -173,13 +173,17 @@ class Config(object):
 
         hostcnt = 0
 
-        if args.tag:
+        if args.tag or args.all_tagged_hosts:
             inventory.determine_default_inventory_dir(args)
-            inv_list = inventory.InventoryList(hosts=args.host,
-                                               istag=True,
-                                               hostfile=args.hostfile,
-                                               db_basedir=args.inventory_dir,
-                                               has_all_tags=args.has_all_tags)
+            if args.all_tagged_hosts:
+                inv_list = inventory.InventoryList(
+                    hosts=None, istag=True, hostfile=None,
+                    db_basedir=args.inventory_dir)
+            else:
+                inv_list = inventory.InventoryList(
+                    hosts=args.host, istag=True, hostfile=args.hostfile,
+                    db_basedir=args.inventory_dir,
+                    has_all_tags=args.has_all_tags)
             it = inv_list.host_entries()
         else:
             it = itertools.chain(cls.hosts(args.host),

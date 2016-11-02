@@ -35,12 +35,14 @@ add tag(s), delete host(s) and delete tag(s).
 Configuring hosts using inventory
 ---------------------------------
 
-config command now has new options, **-t** and **-a**.
+config command now has new options, **-t**, **-a** and **-A**.
+
+**-A** means that all hosts in tag db is selected.
+
+**-a** means that selected hosts must contain ALL specified tags.
 
 **-t** means that host specifies tag - all hosts that have specified tags are
 selected.
-
-**-a** means that selected hosts must contain ALL specified tags.
 
 Examples
 --------
@@ -79,6 +81,9 @@ Examples
 
     # Configure hosts from inventory with all specified tags
     $ cdist -b -t -a web dynamic
+
+    # Configure all hosts from inventory db
+    $ cdist -b -A
 
 Example of manipulating database
 --------------------------------

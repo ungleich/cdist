@@ -15,10 +15,10 @@ SYNOPSIS
 
     cdist banner [-h] [-d] [-v]
 
-    cdist config [-h] [-d] [-v] [-b] [-I INVENTORY_DIR] [-c CONF_DIR]
-                 [-f HOSTFILE] [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
-                 [-p] [-s] [--remote-copy REMOTE_COPY]
-                 [--remote-exec REMOTE_EXEC] [-t] [-a]
+    cdist config [-h] [-d] [-v] [-b] [-I INVENTORY_DIR] [-A] [-a]
+                 [-c CONF_DIR] [-f HOSTFILE] [-i MANIFEST] [-j [JOBS]] [-n]
+                 [-o OUT_PATH] [-p] [-s] [--remote-copy REMOTE_COPY]
+                 [--remote-exec REMOTE_EXEC] [-t]
                  [host [host ...]]
 
     cdist install [-h] [-d] [-v] [-b] [-c CONF_DIR] [-f HOSTFILE]
@@ -87,6 +87,10 @@ cdist posters - a must have for every office.
 CONFIG/INSTALL
 --------------
 Configure/install one or more hosts.
+
+.. option:: -A, --all-tagged
+
+    use all hosts present in tags db
 
 .. option:: -a, --all
 
@@ -425,6 +429,9 @@ FILES
 ~/.cdist
     Your personal cdist config directory. If exists it will be
     automatically used.
+~/.cdist/inventory
+    The home inventory directory. If ~/.cdist exists it will be used as
+    default inventory directory.
 cdist/conf
     The distribution configuration directory. It contains official types and
     explorers. This path is relative to cdist installation directory.
@@ -506,6 +513,9 @@ EXAMPLES
 
     # Configure hosts from inventory with all specified tags
     % cdist config -b -t -a web dynamic
+
+    # Configure all hosts from inventory db
+    $ cdist -b -A
 
 ENVIRONMENT
 -----------
