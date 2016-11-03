@@ -283,6 +283,7 @@ class Config(object):
                 host_fqdn = ''
 
             target_host = (host, host_name, host_fqdn)
+            log.debug("target_host: {}".format(target_host))
 
             local = cdist.exec.local.Local(
                 target_host=target_host,
