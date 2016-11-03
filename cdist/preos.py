@@ -37,3 +37,12 @@ class Preos(cdist.config.Config):
             else:
                 self.log.debug("Running in preos mode, ignoring non preos"
                                "object: {0}".format(cdist_object))
+
+# PreOS interface:
+# commandline #  parsers and sets args
+# init(args)
+# bootstrap(args) # if
+# config(args) # if
+# cleanup(args)
+# pxe(args) # if
+# bootable_drive(args) # if # iso that can be dd-ed to usb

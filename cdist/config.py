@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2016 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -34,8 +35,10 @@ import cdist
 
 import cdist.exec.local
 import cdist.exec.remote
+import cdist.util.hostfile
 
 from cdist import core
+from cdist import inventory
 
 
 def inspect_ssh_mux_opts():
@@ -90,25 +93,6 @@ class Config(object):
         self.remote.create_files_dirs()
 
     @staticmethod
-    def hostfile_process_line(line):
-        """Return host from read line or None if no host present."""
-        if not line:
-            return None
-        # remove comment if present
-        comment_index = line.find('#')
-        if comment_index >= 0:
-            host = line[:comment_index]
-        else:
-            host = line
-        # remove leading and trailing whitespaces
-        host = host.strip()
-        # skip empty lines
-        if host:
-            return host
-        else:
-            return None
-
-    @staticmethod
     def hosts(source):
         """Yield hosts from source.
            Source can be a sequence or filename (stdin if \'-\').
@@ -118,7 +102,7 @@ class Config(object):
             import fileinput
             try:
                 for host in fileinput.input(files=(source)):
-                    host = Config.hostfile_process_line(host)
+                    host = cdist.util.hostfile.hostfile_process_line(host)
                     if host:
                         yield host
             except (IOError, OSError, UnicodeError) as e:
@@ -188,11 +172,25 @@ class Config(object):
         base_root_path = cls.create_base_root_path(args.out_path)
 
         hostcnt = 0
-        for host in itertools.chain(cls.hosts(args.host),
-                                    cls.hosts(args.hostfile)):
+
+        if args.tag or args.all_tagged_hosts:
+            inventory.determine_default_inventory_dir(args)
+            if args.all_tagged_hosts:
+                inv_list = inventory.InventoryList(
+                    hosts=None, istag=True, hostfile=None,
+                    db_basedir=args.inventory_dir)
+            else:
+                inv_list = inventory.InventoryList(
+                    hosts=args.host, istag=True, hostfile=args.hostfile,
+                    db_basedir=args.inventory_dir,
+                    has_all_tags=args.has_all_tags)
+            it = inv_list.host_entries()
+        else:
+            it = itertools.chain(cls.hosts(args.host),
+                                 cls.hosts(args.hostfile))
+        for host in it:
             host_base_path, hostdir = cls.create_host_base_dirs(
                 host, base_root_path)
-
             log.debug("Base root path for target host \"{}\" is \"{}\"".format(
                 host, host_base_path))
 
