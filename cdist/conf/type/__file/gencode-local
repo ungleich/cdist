@@ -67,14 +67,13 @@ DONE
       if [ "$upload_file" ]; then
          echo upload >> "$__messages_out"
          # IPv6 fix
-         case "${__target_host}" in
-             *:*)
-                 my_target_host="[${__target_host}]"
-                 ;;
-             *)
-                 my_target_host="${__target_host}"
-                 ;;
-         esac
+         echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$'
+         if [ $? -eq 0 ]
+         then
+             my_target_host="[${__target_host}]"
+         else
+             my_target_host="${__target_host}"
+         fi
          cat << DONE
 $__remote_copy "$source" "${my_target_host}:\$destination_upload"
 DONE

@@ -60,14 +60,13 @@ case $uname in
 esac
 
 # IPv6 fix
-case "${__target_host}" in
- *:*)
-     my_target_host="[${__target_host}]"
-     ;;
- *)
-     my_target_host="${__target_host}"
-     ;;
-esac
+echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$'
+if [ $? -eq 0 ]
+then
+    my_target_host="[${__target_host}]"
+else
+    my_target_host="${__target_host}"
+fi
 
 if [ -n "${cksum}" ]; then
    if [ ! "\${currentSum}" = "${cksum}" ]; then
