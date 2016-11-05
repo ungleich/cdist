@@ -50,7 +50,8 @@ class Debian(object):
                 prog='cdist preos {}'.format(cls.preos_name),
                 parents=[cdist_parser['loglevel'], cdist_parser['beta']])
         parser.add_argument('target_dir', nargs=1,
-                            help="target directory")
+                            help=("target directory where PreOS will be "
+                                  "bootstrapped"))
         parser.add_argument('-a', '--arch', help='target architecture',
                             dest='arch', default="amd64")
         parser.add_argument(
@@ -63,15 +64,18 @@ class Debian(object):
             dest='configure', action='store_true', default=False)
         parser.add_argument(
             '-c', '--cdist-params',
-            help='parameters that will be passed to cdist config',
+            help=("parameters that will be passed to cdist config, by default"
+                  " only '-v' is used"),
             dest='cdist_params', default="-v")
         parser.add_argument(
             '-e', '--remote-exec',
-            help='remote exec that cdist config will use',
+            help=("remote exec that cdist config will use, by default "
+                  "internal script is used"),
             dest='remote_exec', default=default_remote_exec)
         parser.add_argument(
             '-i', '--init-manifest',
-            help='init manifest that cdist config will use',
+            help=("init manifest that cdist config will use, by default "
+                  "internal init manifest is used"),
             dest='manifest', default=default_init_manifest)
         parser.add_argument(
             '-k', '--keyfile', nargs="*",
@@ -85,17 +89,18 @@ class Debian(object):
                             dest='pxe_boot_dir')
         parser.add_argument(
             '-r', '--rm-bootstrap-dir',
-            help='remove target directory after finishind',
+            help='remove target directory after finishing',
             dest='rm_bootstrap_dir', action='store_true', default=False)
         parser.add_argument('-s', '--suite', help='suite used',
                             dest='suite', default="stable")
         parser.add_argument(
             '-t', '--trigger-command',
-            help='trigger-command that will be added to cdist config',
+            help='trigger command that will be added to cdist config',
             dest='trigger_command')
         parser.add_argument(
             '-y', '--remote-copy',
-            help='remote copy that cdist config will use',
+            help=("remote copy that cdist config will use, by default "
+                  "internal script is used"),
             dest='remote_copy', default=default_remote_copy)
         parser.epilog = cdist.argparse.EPILOG
 
