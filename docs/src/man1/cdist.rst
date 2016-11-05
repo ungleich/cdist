@@ -50,11 +50,21 @@ SYNOPSIS
                          [-f HOSTFILE] [-H] [-t]
                          [host [host ...]]
 
-    cdist preos [-h] [-d] [-v] [-b] [-c CONF_DIR] [-i MANIFEST]
-                [-j [JOBS]] [-n] [-o OUT_PATH] [--remote-copy REMOTE_COPY]
-                [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                [-f HOSTFILE] [-p] [-s] [-t]
-                [host [host ...]] 
+    cdist preos [-h] preos
+
+    cdist preos debian [-h] [-d] [-v] [-b] [-a ARCH] [-B] [-C]
+                       [-c CDIST_PARAMS] [-e REMOTE_EXEC] [-i MANIFEST]
+                       [-k [KEYFILE [KEYFILE ...]]] [-m MIRROR]
+                       [-p PXE_BOOT_DIR] [-r] [-s SUITE]
+                       [-t TRIGGER_COMMAND] [-y REMOTE_COPY]
+                       target_dir
+
+    cdist preos ubuntu [-h] [-d] [-v] [-b] [-a ARCH] [-B] [-C]
+                       [-c CDIST_PARAMS] [-e REMOTE_EXEC] [-i MANIFEST]
+                       [-k [KEYFILE [KEYFILE ...]]] [-m MIRROR]
+                       [-p PXE_BOOT_DIR] [-r] [-s SUITE]
+                       [-t TRIGGER_COMMAND] [-y REMOTE_COPY]
+                       target_dir
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
@@ -99,9 +109,9 @@ Displays the cdist banner. Useful for printing
 cdist posters - a must have for every office.
 
 
-CONFIG/INSTALL/PREOS
+CONFIG/INSTALL
 --------------
-Configure/install one or more hosts/create PreOS.
+Configure/install one or more hosts.
 
 .. option:: -A, --all-tagged
 
@@ -424,6 +434,94 @@ List inventory database.
     all hosts that contain any of specified tags
 
 
+PREOS
+-----
+Create PreOS. Currently, the following PreOS-es are supported:
+
+* debian
+* ubuntu
+
+
+PREOS DEBIAN/UBUNTU
+-------------------
+
+.. option:: target_dir
+
+    target directory where PreOS will be bootstrapped
+
+.. option:: -a ARCH, --arch ARCH
+
+    target architecture
+
+.. option:: -B, --bootstrap
+
+    do bootstrap step
+
+.. option:: -b, --beta
+
+    Enable beta functionalities.
+
+.. option:: -C, --configure
+
+    do configure step
+
+.. option:: -c CDIST_PARAMS, --cdist-params CDIST_PARAMS
+
+    parameters that will be passed to cdist config, by
+    default only '-v' is used
+
+.. option:: -d, --debug
+
+    Set log level to debug
+
+.. option:: -e REMOTE_EXEC, --remote-exec REMOTE_EXEC
+
+    remote exec that cdist config will use, by default
+    internal script is used
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -i MANIFEST, --init-manifest MANIFEST
+
+    init manifest that cdist config will use, by default
+    internal init manifest is used
+
+.. option:: -k [KEYFILE [KEYFILE ...]], --keyfile [KEYFILE [KEYFILE ...]]
+
+    ssh key files that will be added to cdist config
+
+.. option:: -m MIRROR, --mirror MIRROR
+
+    use specified mirror
+
+.. option:: -p PXE_BOOT_DIR, --pxe-boot-dir PXE_BOOT_DIR
+
+    PXE boot directory
+
+.. option:: -r, --rm-bootstrap-dir
+
+    remove target directory after finishing
+
+.. option:: -s SUITE, --suite SUITE
+
+    suite used
+
+.. option:: -t TRIGGER_COMMAND, --trigger-command TRIGGER_COMMAND
+
+    trigger command that will be added to cdist config
+
+.. option:: -v, --verbose
+
+    Set log level to info, be more verbose
+
+.. option:: -y REMOTE_COPY, --remote-copy REMOTE_COPY
+
+    remote copy that cdist config will use, by default
+    internal script is used
+
+
 SHELL
 -----
 This command allows you to spawn a shell that enables access
@@ -595,17 +693,15 @@ EXAMPLES
     # Configure all hosts from inventory db
     $ cdist config -b -A
 
-    # Create default debian PreOS
-    echo __preos_debootstrap /preos --bootstrap --configure \
-        --keyfile ~/.ssh/id_rsa.pub \
-        --trigger-command \"/usr/bin/curl 192.168.111.5\" \
-        --pxe-boot-dir /pxe | cdist preos -v -i - localhost
+    # Create default debian PreOS in debug mode
+    $ cdist preos debian /preos/preos-debian -b -d -C \
+        -k ~/.ssh/id_rsa.pub -p /preos/pxe-debian \
+        -t "/usr/bin/curl 192.168.111.5:3000"
 
     # Create ubuntu PreOS
-    echo __preos_debootstrap --os ubuntu /preos --bootstrap --configure \
-        --keyfile ~/.ssh/id_rsa.pub \
-        --trigger-command \"/usr/bin/curl 192.168.111.5\" \
-        --pxe-boot-dir /pxe | cdist preos -v -i - localhost
+    $ cdist preos ubuntu /preos/preos-ubuntu -b -C \
+        -k ~/.ssh/id_rsa.pub -p /preos/pxe-ubuntu \
+        -t "/usr/bin/curl 192.168.111.5:3000"
 
     # Start trigger in verbose mode that will configure host using specified
     # init manifest
