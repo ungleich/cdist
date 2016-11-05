@@ -693,15 +693,16 @@ EXAMPLES
     # Configure all hosts from inventory db
     $ cdist config -b -A
 
-    # Create default debian PreOS in debug mode
+    # Create default debian PreOS in debug mode with config
+    # trigger command
     $ cdist preos debian /preos/preos-debian -b -d -C \
         -k ~/.ssh/id_rsa.pub -p /preos/pxe-debian \
-        -t "/usr/bin/curl 192.168.111.5:3000"
+        -t "/usr/bin/curl 192.168.111.5:3000/config/"
 
-    # Create ubuntu PreOS
+    # Create ubuntu PreOS with install trigger command
     $ cdist preos ubuntu /preos/preos-ubuntu -b -C \
         -k ~/.ssh/id_rsa.pub -p /preos/pxe-ubuntu \
-        -t "/usr/bin/curl 192.168.111.5:3000"
+        -t "/usr/bin/curl 192.168.111.5:3000/install/"
 
     # Start trigger in verbose mode that will configure host using specified
     # init manifest
