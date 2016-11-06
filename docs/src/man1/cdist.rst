@@ -608,12 +608,16 @@ FILES
 ~/.cdist/inventory
     The home inventory directory. If ~/.cdist exists it will be used as
     default inventory directory.
+~/.cdist/preos
+    PreOS plugins directory, if existing.
 cdist/conf
     The distribution configuration directory. It contains official types and
     explorers. This path is relative to cdist installation directory.
 cdist/inventory
     The distribution inventory directory.
     This path is relative to cdist installation directory.
+cdist/preos
+    The distribution PreOS plugins directory.
 
 EXAMPLES
 --------

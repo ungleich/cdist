@@ -63,3 +63,5 @@ manifest '~/.cdist/manifest/init-for-triggered'.
 Implementing new PreOS sub-command
 ----------------------------------
 TODO: describe preos plugin system and how to add new preos/preos sub-command
+You can create your custom PreOS-es in ~/.cdist/preos directory. Create it if
+it does not exist.
