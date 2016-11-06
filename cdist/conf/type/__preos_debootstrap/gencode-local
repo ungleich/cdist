@@ -17,13 +17,6 @@
 ## You should have received a copy of the GNU General Public License
 ## along with cdist. If not, see <http://www.gnu.org/licenses/>.
 
-which debootstrap 2>&1 > /dev/null
-if [ $? -ne 0 ]
-then
-    echo "ERROR: debootstrap not found" >&2
-    exit 1
-fi
-
 bootstrap_dir="/$__object_id"
 os=$(cat "$__object/parameter/os")
 
@@ -37,19 +30,24 @@ case "${os}" in
         ;;
 esac
 
-arch=$(cat "$__object/parameter/arch")
-suite=$(cat "$__object/parameter/suite")
-
-if [ -f "$__object/parameter/mirror" ]
-then
-    mirror=$(cat "$__object/parameter/mirror")
-else
-    mirror=
-fi
-
 # bootstrap
 if [ -f "$__object/parameter/bootstrap" ]
 then
+    command -v debootstrap 2>&1 > /dev/null || {
+        echo "ERROR: debootstrap not found" >&2
+        exit 1
+    }
+
+    arch=$(cat "$__object/parameter/arch")
+    suite=$(cat "$__object/parameter/suite")
+
+    if [ -f "$__object/parameter/mirror" ]
+    then
+        mirror=$(cat "$__object/parameter/mirror")
+    else
+        mirror=
+    fi
+
     if [ -e "${bootstrap_dir}" ]
     then
         dir_content=$(ls -A "${bootstrap_dir}" | wc -l)
