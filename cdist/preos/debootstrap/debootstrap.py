@@ -32,7 +32,8 @@ import subprocess
 
 
 class Debian(object):
-    preos_name = 'debian'
+    _preos_name = 'debian'
+    _cdist_preos = True
 
     @classmethod
     def commandline(cls, argv):
@@ -42,12 +43,12 @@ class Debian(object):
         default_remote_exec = os.path.join(files_dir, "remote-exec.sh")
         default_remote_copy = os.path.join(files_dir, "remote-copy.sh")
         default_init_manifest = os.path.join(
-            files_dir, "init-manifest-{}".format(cls.preos_name))
+            files_dir, "init-manifest-{}".format(cls._preos_name))
         cmd = os.path.join(files_dir, "code")
 
         cdist_parser = cdist.argparse.get_parsers()
         parser = argparse.ArgumentParser(
-                prog='cdist preos {}'.format(cls.preos_name),
+                prog='cdist preos {}'.format(cls._preos_name),
                 parents=[cdist_parser['loglevel'], cdist_parser['beta']])
         parser.add_argument('target_dir', nargs=1,
                             help=("target directory where PreOS will be "
@@ -104,15 +105,15 @@ class Debian(object):
             dest='remote_copy', default=default_remote_copy)
         parser.epilog = cdist.argparse.EPILOG
 
-        cdist.argparse.add_beta_command(cls.preos_name)
+        cdist.argparse.add_beta_command(cls._preos_name)
         args = parser.parse_args(argv)
-        args.command = cls.preos_name
+        args.command = cls._preos_name
         cdist.argparse.check_beta(vars(args))
 
         cdist.preos.check_root()
 
         args.target_dir = os.path.realpath(args.target_dir[0])
-        args.os = cls.preos_name
+        args.os = cls._preos_name
         args.remote_exec = os.path.realpath(args.remote_exec)
         args.remote_copy = os.path.realpath(args.remote_copy)
         args.manifest = os.path.realpath(args.manifest)
@@ -123,7 +124,7 @@ class Debian(object):
             args.pxe_boot_dir = os.path.realpath(args.pxe_boot_dir)
 
         cdist.argparse.handle_loglevel(args)
-        log.debug("preos: {}, args: {}".format(cls.preos_name, args))
+        log.debug("preos: {}, args: {}".format(cls._preos_name, args))
         try:
             env = vars(args)
             new_env = {}
@@ -141,7 +142,11 @@ class Debian(object):
                     new_env[key] = env[key]
             env = new_env
             env.update(os.environ)
-            log.debug("preos: {} env: {}".format(cls.preos_name, env))
+            log.debug("preos: {} env: {}".format(cls._preos_name, env))
             subprocess.check_call(cmd, env=env, shell=True)
         except subprocess.CalledProcessError as e:
-            log.error("preos {} failed: {}".format(cls.preos_name, e))
+            log.error("preos {} failed: {}".format(cls._preos_name, e))
+
+
+class Ubuntu(Debian):
+    _preos_name = "ubuntu"

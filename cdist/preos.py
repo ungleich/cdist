@@ -8,8 +8,8 @@ import logging
 
 
 _PREOS_CALL = "commandline"
-_PREOS_NAME = "preos_name"
-_PREOS_EXCLUDE = "preos_exclude"
+_PREOS_NAME = "_preos_name"
+_PREOS_MARKER = "_cdist_preos"
 _PLUGINS_DIR = "preos"
 _PLUGINS_PATH = [os.path.join(os.path.dirname(__file__), _PLUGINS_DIR), ]
 cdist_home = cdist.home_dir()
@@ -26,12 +26,13 @@ log = logging.getLogger("PreOS")
 
 
 def preos_plugin(obj):
-    if not hasattr(obj, _PREOS_EXCLUDE):
-        exclude = False
+    """It is preos if _PREOS_MARKER is True and has _PREOS_CALL."""
+    if hasattr(obj, _PREOS_MARKER):
+        is_preos = getattr(obj, _PREOS_MARKER)
     else:
-        exclude = getattr(obj, _PREOS_EXCLUDE)
+        is_preos = False
 
-    if not exclude and hasattr(obj, _PREOS_CALL):
+    if is_preos and hasattr(obj, _PREOS_CALL):
         yield obj
 
 
@@ -60,7 +61,7 @@ def find_preoses():
     preoses = {}
     for preos in find_preos_plugins():
         if hasattr(preos, _PREOS_NAME):
-            preos_name = preos.preos_name
+            preos_name = getattr(preos, _PREOS_NAME)
         else:
             preos_name = preos.__name__.lower()
         preoses[preos_name] = preos
@@ -92,7 +93,11 @@ class PreOS(object):
         if preos_name in cls.preoses:
             preos = cls.preoses[preos_name]
             func = getattr(preos, _PREOS_CALL)
-            func(argv[2:])
+            if inspect.ismodule(preos):
+                func_args = [preos, argv[2:], ]
+            else:
+                func_args = [argv[2:], ]
+            func(*func_args)
         else:
             log.error("Unknown preos: {}, available preoses: {}".format(
                 preos_name, set(cls.preoses.keys())))
