@@ -142,6 +142,13 @@ check_bootstrap_dir() {
 
 check_bootstrap_dir "${bootstrap_dir}"
 
+TRAPFUNC="umount \"${bootstrap_dir}/dev/pts\" || true; \
+umount \"${bootstrap_dir}/dev\" || true; \
+umount \"${bootstrap_dir}/sys\" || true; \
+umount \"${bootstrap_dir}/proc\" || true;"
+
+trap "${TRAPFUNC}" 0 1 2 3 15
+
 mount -t proc none "${bootstrap_dir}/proc" || true
 mount -t sysfs none "${bootstrap_dir}/sys" || true
 mount -o bind /dev "${bootstrap_dir}/dev" || true
@@ -168,6 +175,8 @@ umount "${bootstrap_dir}/dev/pts" || true
 umount "${bootstrap_dir}/dev" || true
 umount "${bootstrap_dir}/sys" || true
 umount "${bootstrap_dir}/proc" || true
+
+trap - 0 1 2 3 15
 EOF
 fi
 
