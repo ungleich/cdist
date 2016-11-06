@@ -40,3 +40,6 @@ build
 .git-current-branch
 .lock*
 .pypi-release
+
+# misc
+.*project*
