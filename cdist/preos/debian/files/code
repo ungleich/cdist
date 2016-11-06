@@ -25,13 +25,6 @@ then
     cdist_params="${cdist_params} -d"
 fi
 
-which debootstrap 2>&1 > /dev/null
-if [ $? -ne 0 ]
-then
-    echo "ERROR: debootstrap not found" >&2
-    exit 1
-fi
-
 bootstrap_dir="${target_dir}"
 
 case "${os}" in
@@ -55,6 +48,11 @@ check_bootstrap_dir() {
 # bootstrap
 if [ "${bootstrap}" ]
 then
+    command -v debootstrap 2>&1 > /dev/null || {
+        echo "ERROR: debootstrap not found" >&2
+        exit 1
+    }
+
     if [ -e "${bootstrap_dir}" ]
     then
         dir_content=$(ls -A "${bootstrap_dir}" | wc -l)
@@ -135,6 +133,13 @@ then
         echo "configuring..."
     fi
 
+    TRAPFUNC="umount \"${bootstrap_dir}/dev/pts\" || true; \
+umount \"${bootstrap_dir}/dev\" || true; \
+umount \"${bootstrap_dir}/sys\" || true; \
+umount \"${bootstrap_dir}/proc\" || true;"
+
+    trap "${TRAPFUNC}" 0 1 2 3 15
+
     mount -t proc none "${bootstrap_dir}/proc" || true
     mount -t sysfs none "${bootstrap_dir}/sys" || true
     mount -o bind /dev "${bootstrap_dir}/dev" || true
@@ -161,6 +166,8 @@ then
     umount "${bootstrap_dir}/dev" || true
     umount "${bootstrap_dir}/sys" || true
     umount "${bootstrap_dir}/proc" || true
+
+    trap - 0 1 2 3 15
 
     if [ "${verbose}" -o "${debug}" ]
     then
