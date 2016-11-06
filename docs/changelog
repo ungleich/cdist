@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Type __package_upgrade_all: do not dist-upgrade by default, add apt-clean and apt-dist-upgrade options  (Ander Punnar)
 	* All: Merge install feature from 4.0-pre-not-stable (Darko Poljak)
 
 4.3.2: 2016-10-13
