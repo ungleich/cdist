@@ -12,6 +12,11 @@ _PREOS_NAME = "preos_name"
 _PREOS_EXCLUDE = "preos_exclude"
 _PLUGINS_DIR = "preos"
 _PLUGINS_PATH = [os.path.join(os.path.dirname(__file__), _PLUGINS_DIR), ]
+cdist_home = cdist.home_dir()
+if cdist_home:
+    cdist_home_preos = os.path.join(cdist_home, "preos")
+    if os.path.isdir(cdist_home_preos):
+        _PLUGINS_PATH.append(cdist_home_preos)
 sys.path.extend(_PLUGINS_PATH)
 
 
@@ -30,7 +35,7 @@ def preos_plugin(obj):
         yield obj
 
 
-def find_dir_plugins(dir):
+def scan_preos_dir_plugins(dir):
     for fname in os.listdir(dir):
         if os.path.isfile(os.path.join(dir, fname)):
             fname = os.path.splitext(fname)[0]
@@ -46,14 +51,14 @@ def find_dir_plugins(dir):
             log.warning("Cannot import '{}': {}".format(module_name, e))
 
 
-def find_plugins():
+def find_preos_plugins():
     for dir in _PLUGINS_PATH:
-        yield from find_dir_plugins(dir)
+        yield from scan_preos_dir_plugins(dir)
 
 
 def find_preoses():
     preoses = {}
-    for preos in find_plugins():
+    for preos in find_preos_plugins():
         if hasattr(preos, _PREOS_NAME):
             preos_name = preos.preos_name
         else:

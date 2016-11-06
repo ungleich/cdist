@@ -33,13 +33,6 @@ dist_inventory_db = os.path.abspath(os.path.join(
     os.path.dirname(cdist.__file__), DIST_INVENTORY_DB_NAME))
 
 
-def home_dir():
-    if 'HOME' in os.environ:
-        return os.path.join(os.environ['HOME'], ".cdist", "inventory")
-    else:
-        return None
-
-
 def determine_default_inventory_dir(args):
     # The order of inventory dir setting by decreasing priority
     # 1. inventory_dir argument
@@ -50,7 +43,7 @@ def determine_default_inventory_dir(args):
         if 'CDIST_INVENTORY_DIR' in os.environ:
             args.inventory_dir = os.environ['CDIST_INVENTORY_DIR']
         else:
-            home = home_dir()
+            home = cdist.home_dir()
             if home:
                 args.inventory_dir = home
             else:

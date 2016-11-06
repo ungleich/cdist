@@ -114,3 +114,10 @@ def str_hash(s):
         return hashlib.md5(s.encode('utf-8')).hexdigest()
     else:
         raise Error("Param should be string")
+
+
+def home_dir():
+    if 'HOME' in os.environ:
+        return os.path.join(os.environ['HOME'], ".cdist")
+    else:
+        return None
