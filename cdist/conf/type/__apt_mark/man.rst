@@ -3,7 +3,7 @@ cdist-type__apt_mark(7)
 
 NAME
 ----
-cdist-type__apt_mark - set package state as 'auto', 'manual', 'hold' or 'unhold'
+cdist-type__apt_mark - set package state as 'hold' or 'unhold'
 
 
 DESCRIPTION
@@ -14,7 +14,7 @@ See apt-mark(8) for details.
 REQUIRED PARAMETERS
 -------------------
 state
-   Possible states are 'auto', 'manual', 'hold' and 'unhold'.
+   Either "hold" or "unhold".
 
 
 OPTIONAL PARAMETERS

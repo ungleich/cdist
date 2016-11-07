@@ -33,7 +33,7 @@ if [ "$state_should" = "$state_is" ]; then
 fi
 
 case "$state_should" in
-    auto|manual|hold|unhold)
+    hold|unhold)
         echo "apt-mark $state_should $name"
     ;;
     *)
