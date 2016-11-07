@@ -24,20 +24,4 @@ else
     name="$__object_id"
 fi
 
-state_should="$(cat "$__object/parameter/state")"
-
-state_is="$(cat "$__object/explorer/state")"
-
-if [ "$state_should" = "$state_is" ]; then
-    exit 0
-fi
-
-case "$state_should" in
-    auto|manual|hold|unhold)
-        echo "apt-mark $state_should $name"
-    ;;
-    *)
-        echo "Unknown state: $state_should" >&2
-        exit 1
-    ;;
-esac
+apt-mark showhold | grep -q $name && echo hold || echo unhold
