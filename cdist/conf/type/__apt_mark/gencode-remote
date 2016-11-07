@@ -34,7 +34,7 @@ fi
 
 case "$state_should" in
     hold|unhold)
-        echo "apt-mark $state_should $name"
+        echo "apt-mark $state_should $name > /dev/null"
     ;;
     *)
         echo "Unknown state: $state_should" >&2
