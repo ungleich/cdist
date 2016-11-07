@@ -490,7 +490,8 @@ PREOS DEBIAN/UBUNTU
 
 .. option:: -k [KEYFILE [KEYFILE ...]], --keyfile [KEYFILE [KEYFILE ...]]
 
-    ssh key files that will be added to cdist config
+    ssh key files that will be added to cdist config;
+    '``__ssh_authorized_keys root ...``' type is appended to initial manifest
 
 .. option:: -m MIRROR, --mirror MIRROR
 
@@ -510,7 +511,8 @@ PREOS DEBIAN/UBUNTU
 
 .. option:: -t TRIGGER_COMMAND, --trigger-command TRIGGER_COMMAND
 
-    trigger command that will be added to cdist config
+    trigger command that will be added to cdist config;
+    '``__cdist_preos_trigger http ...``' type is appended to initial manifest
 
 .. option:: -v, --verbose
 

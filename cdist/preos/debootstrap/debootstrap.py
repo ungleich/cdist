@@ -80,7 +80,9 @@ class Debian(object):
             dest='manifest', default=default_init_manifest)
         parser.add_argument(
             '-k', '--keyfile', nargs="*",
-            help='ssh key files that will be added to cdist config',
+            help=("ssh key files that will be added to cdist config; "
+                  "'__ssh_authorized_keys root ...' type is appended to "
+                  "initial manifest"),
             dest='keyfile')
         parser.add_argument(
             '-m', '--mirror',
@@ -96,7 +98,9 @@ class Debian(object):
                             dest='suite', default="stable")
         parser.add_argument(
             '-t', '--trigger-command',
-            help='trigger command that will be added to cdist config',
+            help=("trigger command that will be added to cdist config; "
+                  "'__cdist_preos_trigger http ...' type is appended to "
+                  "initial manifest"),
             dest='trigger_command')
         parser.add_argument(
             '-y', '--remote-copy',
