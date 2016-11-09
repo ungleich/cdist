@@ -115,8 +115,9 @@ class Debian(object):
             '-S', '--script',
             help='use specified script for debootstrap',
             dest='script')
-        parser.add_argument('-s', '--suite', help="suite used for debootstrap, "
-                            "by default '{}'".format(defargs.suite),
+        parser.add_argument('-s', '--suite',
+                            help="suite used for debootstrap, "
+                                 "by default '{}'".format(defargs.suite),
                             dest='suite', default=defargs.suite)
         parser.add_argument(
             '-t', '--trigger-command',
@@ -141,7 +142,7 @@ class Debian(object):
         cdist.argparse.add_beta_command(cls._preos_name)
         args = parser.parse_args(argv)
         if args.script and not args.mirror:
-            raise cdist.Error("script script cannot be used without "
+            raise cdist.Error("script option cannot be used without "
                               "mirror option")
 
         args.command = cls._preos_name
