@@ -71,7 +71,7 @@ then
     fi
     mkdir -p "${bootstrap_dir}"
     debootstrap --include=openssh-server --arch=${arch} ${suite} ${bootstrap_dir} \
-        ${mirror}
+        ${mirror} ${script}
     if [ "${verbose}" -o "${debug}" ]
     then
         echo "bootstrap finished"

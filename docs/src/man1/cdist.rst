@@ -55,14 +55,14 @@ SYNOPSIS
     cdist preos debian [-h] [-d] [-v] [-b] [-a ARCH] [-B] [-C]
                        [-c CDIST_PARAMS] [-e REMOTE_EXEC] [-i MANIFEST]
                        [-k [KEYFILE [KEYFILE ...]]] [-m MIRROR]
-                       [-p PXE_BOOT_DIR] [-r] [-s SUITE]
+                       [-p PXE_BOOT_DIR] [-r] [-S SCRIPT] [-s SUITE]
                        [-t TRIGGER_COMMAND] [-y REMOTE_COPY]
                        target_dir
 
     cdist preos ubuntu [-h] [-d] [-v] [-b] [-a ARCH] [-B] [-C]
                        [-c CDIST_PARAMS] [-e REMOTE_EXEC] [-i MANIFEST]
                        [-k [KEYFILE [KEYFILE ...]]] [-m MIRROR]
-                       [-p PXE_BOOT_DIR] [-r] [-s SUITE]
+                       [-p PXE_BOOT_DIR] [-r] [-S SCRIPT] [-s SUITE]
                        [-t TRIGGER_COMMAND] [-y REMOTE_COPY]
                        target_dir
 
@@ -451,7 +451,7 @@ PREOS DEBIAN
 
 .. option:: -a ARCH, --arch ARCH
 
-    target architecture, by default 'amd64'
+    target debootstrap architecture, by default 'amd64'
 
 .. option:: -B, --bootstrap
 
@@ -495,7 +495,7 @@ PREOS DEBIAN
 
 .. option:: -m MIRROR, --mirror MIRROR
 
-    use specified mirror
+    use specified mirror for debootstrap
 
 .. option:: -p PXE_BOOT_DIR, --pxe-boot-dir PXE_BOOT_DIR
 
@@ -505,9 +505,13 @@ PREOS DEBIAN
 
     remove target directory after finishing
 
+.. option:: -S SCRIPT, --script SCRIPT
+
+    use specified script for debootstrap
+
 .. option:: -s SUITE, --suite SUITE
 
-    suite used, by default 'stable'
+    suite used for debootstrap, by default 'stable'
 
 .. option:: -t TRIGGER_COMMAND, --trigger-command TRIGGER_COMMAND
 
@@ -533,7 +537,7 @@ PREOS UBUNTU
 
 .. option:: -a ARCH, --arch ARCH
 
-    target architecture, by default 'amd64'
+    target debootstrap architecture, by default 'amd64'
 
 .. option:: -B, --bootstrap
 
@@ -577,7 +581,7 @@ PREOS UBUNTU
 
 .. option:: -m MIRROR, --mirror MIRROR
 
-    use specified mirror
+    use specified mirror for debootstrap
 
 .. option:: -p PXE_BOOT_DIR, --pxe-boot-dir PXE_BOOT_DIR
 
@@ -587,9 +591,13 @@ PREOS UBUNTU
 
     remove target directory after finishing
 
+.. option:: -S SCRIPT, --script SCRIPT
+
+    use specified script for debootstrap
+
 .. option:: -s SUITE, --suite SUITE
 
-    suite used, by default 'xenial'
+    suite used for debootstrap, by default 'xenial'
 
 .. option:: -t TRIGGER_COMMAND, --trigger-command TRIGGER_COMMAND
 

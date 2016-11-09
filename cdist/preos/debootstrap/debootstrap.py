@@ -68,7 +68,8 @@ class Debian(object):
                             help=("target directory where PreOS will be "
                                   "bootstrapped"))
         parser.add_argument(
-            '-a', '--arch', help="target architecture, by default '{}'".format(
+            '-a', '--arch',
+            help="target debootstrap architecture, by default '{}'".format(
                 defargs.arch), dest='arch', default=defargs.arch)
         parser.add_argument(
             '-B', '--bootstrap',
@@ -101,7 +102,7 @@ class Debian(object):
             dest='keyfile')
         parser.add_argument(
             '-m', '--mirror',
-            help='use specified mirror',
+            help='use specified mirror for debootstrap',
             dest='mirror')
         parser.add_argument('-p', '--pxe-boot-dir', help='PXE boot directory',
                             dest='pxe_boot_dir')
@@ -110,7 +111,11 @@ class Debian(object):
             help='remove target directory after finishing',
             dest='rm_bootstrap_dir', action='store_true',
             default=defargs.rm_bootstrap_dir)
-        parser.add_argument('-s', '--suite', help="suite used, "
+        parser.add_argument(
+            '-S', '--script',
+            help='use specified script for debootstrap',
+            dest='script')
+        parser.add_argument('-s', '--suite', help="suite used for debootstrap, "
                             "by default '{}'".format(defargs.suite),
                             dest='suite', default=defargs.suite)
         parser.add_argument(
@@ -135,6 +140,10 @@ class Debian(object):
         parser = cls.get_parser()
         cdist.argparse.add_beta_command(cls._preos_name)
         args = parser.parse_args(argv)
+        if 'script' in args and 'mirror' not in args:
+            raise cdist.Error("script script cannot be used without "
+                              "mirror option")
+
         args.command = cls._preos_name
         cdist.argparse.check_beta(vars(args))
 
