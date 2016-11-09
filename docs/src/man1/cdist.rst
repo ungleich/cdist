@@ -442,8 +442,8 @@ Create PreOS. Currently, the following PreOS-es are supported:
 * ubuntu
 
 
-PREOS DEBIAN/UBUNTU
--------------------
+PREOS DEBIAN
+------------
 
 .. option:: target_dir
 
@@ -451,7 +451,7 @@ PREOS DEBIAN/UBUNTU
 
 .. option:: -a ARCH, --arch ARCH
 
-    target architecture
+    target architecture, by default 'amd64'
 
 .. option:: -B, --bootstrap
 
@@ -468,7 +468,7 @@ PREOS DEBIAN/UBUNTU
 .. option:: -c CDIST_PARAMS, --cdist-params CDIST_PARAMS
 
     parameters that will be passed to cdist config, by
-    default only '-v' is used
+    default '-v' is used
 
 .. option:: -d, --debug
 
@@ -507,7 +507,89 @@ PREOS DEBIAN/UBUNTU
 
 .. option:: -s SUITE, --suite SUITE
 
-    suite used
+    suite used, by default 'stable'
+
+.. option:: -t TRIGGER_COMMAND, --trigger-command TRIGGER_COMMAND
+
+    trigger command that will be added to cdist config;
+    '``__cdist_preos_trigger http ...``' type is appended to initial manifest
+
+.. option:: -v, --verbose
+
+    Set log level to info, be more verbose
+
+.. option:: -y REMOTE_COPY, --remote-copy REMOTE_COPY
+
+    remote copy that cdist config will use, by default
+    internal script is used
+
+
+PREOS UBUNTU
+------------
+
+.. option:: target_dir
+
+    target directory where PreOS will be bootstrapped
+
+.. option:: -a ARCH, --arch ARCH
+
+    target architecture, by default 'amd64'
+
+.. option:: -B, --bootstrap
+
+    do bootstrap step
+
+.. option:: -b, --beta
+
+    Enable beta functionalities.
+
+.. option:: -C, --configure
+
+    do configure step
+
+.. option:: -c CDIST_PARAMS, --cdist-params CDIST_PARAMS
+
+    parameters that will be passed to cdist config, by
+    default '-v' is used
+
+.. option:: -d, --debug
+
+    Set log level to debug
+
+.. option:: -e REMOTE_EXEC, --remote-exec REMOTE_EXEC
+
+    remote exec that cdist config will use, by default
+    internal script is used
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -i MANIFEST, --init-manifest MANIFEST
+
+    init manifest that cdist config will use, by default
+    internal init manifest is used
+
+.. option:: -k [KEYFILE [KEYFILE ...]], --keyfile [KEYFILE [KEYFILE ...]]
+
+    ssh key files that will be added to cdist config;
+    '``__ssh_authorized_keys root ...``' type is appended to initial manifest
+
+.. option:: -m MIRROR, --mirror MIRROR
+
+    use specified mirror
+
+.. option:: -p PXE_BOOT_DIR, --pxe-boot-dir PXE_BOOT_DIR
+
+    PXE boot directory
+
+.. option:: -r, --rm-bootstrap-dir
+
+    remove target directory after finishing
+
+.. option:: -s SUITE, --suite SUITE
+
+    suite used, by default 'xenial'
 
 .. option:: -t TRIGGER_COMMAND, --trigger-command TRIGGER_COMMAND
 

@@ -35,17 +35,31 @@ class Debian(object):
     _preos_name = 'debian'
     _cdist_preos = True
 
+    _files_dir = os.path.join(os.path.dirname(__file__), "files")
+
     @classmethod
-    def commandline(cls, argv):
-        log = logging.getLogger(cls.__name__)
-
-        files_dir = os.path.join(os.path.dirname(__file__), "files")
-        default_remote_exec = os.path.join(files_dir, "remote-exec.sh")
-        default_remote_copy = os.path.join(files_dir, "remote-copy.sh")
+    def default_args(cls):
+        default_remote_exec = os.path.join(cls._files_dir, "remote-exec.sh")
+        default_remote_copy = os.path.join(cls._files_dir, "remote-copy.sh")
         default_init_manifest = os.path.join(
-            files_dir, "init-manifest-{}".format(cls._preos_name))
-        cmd = os.path.join(files_dir, "code")
+            cls._files_dir, "init-manifest-{}".format(cls._preos_name))
 
+        defargs = argparse.Namespace()
+        defargs.arch = 'amd64'
+        defargs.bootstrap = False
+        defargs.configure = False
+        defargs.cdist_params = '-v'
+        defargs.rm_bootstrap_dir = False
+        defargs.suite = 'stable'
+        defargs.remote_exec = default_remote_exec
+        defargs.remote_copy = default_remote_copy
+        defargs.manifest = default_init_manifest
+
+        return defargs
+
+    @classmethod
+    def get_parser(cls):
+        defargs = cls.default_args()
         cdist_parser = cdist.argparse.get_parsers()
         parser = argparse.ArgumentParser(
                 prog='cdist preos {}'.format(cls._preos_name),
@@ -53,31 +67,32 @@ class Debian(object):
         parser.add_argument('target_dir', nargs=1,
                             help=("target directory where PreOS will be "
                                   "bootstrapped"))
-        parser.add_argument('-a', '--arch', help='target architecture',
-                            dest='arch', default="amd64")
+        parser.add_argument(
+            '-a', '--arch', help="target architecture, by default '{}'".format(
+                defargs.arch), dest='arch', default=defargs.arch)
         parser.add_argument(
             '-B', '--bootstrap',
             help='do bootstrap step',
-            dest='bootstrap', action='store_true', default=False)
+            dest='bootstrap', action='store_true', default=defargs.bootstrap)
         parser.add_argument(
             '-C', '--configure',
             help='do configure step',
-            dest='configure', action='store_true', default=False)
+            dest='configure', action='store_true', default=defargs.configure)
         parser.add_argument(
             '-c', '--cdist-params',
             help=("parameters that will be passed to cdist config, by default"
-                  " only '-v' is used"),
-            dest='cdist_params', default="-v")
+                  " '{}' is used".format(defargs.cdist_params)),
+            dest='cdist_params', default=defargs.cdist_params)
         parser.add_argument(
             '-e', '--remote-exec',
             help=("remote exec that cdist config will use, by default "
                   "internal script is used"),
-            dest='remote_exec', default=default_remote_exec)
+            dest='remote_exec', default=defargs.remote_exec)
         parser.add_argument(
             '-i', '--init-manifest',
             help=("init manifest that cdist config will use, by default "
                   "internal init manifest is used"),
-            dest='manifest', default=default_init_manifest)
+            dest='manifest', default=defargs.manifest)
         parser.add_argument(
             '-k', '--keyfile', nargs="*",
             help=("ssh key files that will be added to cdist config; "
@@ -93,9 +108,11 @@ class Debian(object):
         parser.add_argument(
             '-r', '--rm-bootstrap-dir',
             help='remove target directory after finishing',
-            dest='rm_bootstrap_dir', action='store_true', default=False)
-        parser.add_argument('-s', '--suite', help='suite used',
-                            dest='suite', default="stable")
+            dest='rm_bootstrap_dir', action='store_true',
+            default=defargs.rm_bootstrap_dir)
+        parser.add_argument('-s', '--suite', help="suite used, "
+                            "by default '{}'".format(defargs.suite),
+                            dest='suite', default=defargs.suite)
         parser.add_argument(
             '-t', '--trigger-command',
             help=("trigger command that will be added to cdist config; "
@@ -106,9 +123,16 @@ class Debian(object):
             '-y', '--remote-copy',
             help=("remote copy that cdist config will use, by default "
                   "internal script is used"),
-            dest='remote_copy', default=default_remote_copy)
+            dest='remote_copy', default=defargs.remote_copy)
         parser.epilog = cdist.argparse.EPILOG
 
+        return parser
+
+    @classmethod
+    def commandline(cls, argv):
+        log = logging.getLogger(cls.__name__)
+
+        parser = cls.get_parser()
         cdist.argparse.add_beta_command(cls._preos_name)
         args = parser.parse_args(argv)
         args.command = cls._preos_name
@@ -147,6 +171,7 @@ class Debian(object):
             env = new_env
             env.update(os.environ)
             log.debug("preos: {} env: {}".format(cls._preos_name, env))
+            cmd = os.path.join(cls._files_dir, "code")
             subprocess.check_call(cmd, env=env, shell=True)
         except subprocess.CalledProcessError as e:
             log.error("preos {} failed: {}".format(cls._preos_name, e))
@@ -154,3 +179,9 @@ class Debian(object):
 
 class Ubuntu(Debian):
     _preos_name = "ubuntu"
+
+    @classmethod
+    def default_args(cls):
+        defargs = super().default_args()
+        defargs.suite = 'xenial'
+        return defargs
