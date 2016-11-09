@@ -140,7 +140,7 @@ class Debian(object):
         parser = cls.get_parser()
         cdist.argparse.add_beta_command(cls._preos_name)
         args = parser.parse_args(argv)
-        if 'script' in args and 'mirror' not in args:
+        if args.script and not args.mirror:
             raise cdist.Error("script script cannot be used without "
                               "mirror option")
 
