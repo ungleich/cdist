@@ -182,6 +182,18 @@ class Debian(object):
             env.update(os.environ)
             log.debug("preos: {} env: {}".format(cls._preos_name, env))
             cmd = os.path.join(cls._files_dir, "code")
+            info_msg = ["Running preos: {}, suite: {}, arch: {}".format(
+                cls._preos_name, args.suite, args.arch), ]
+            if args.mirror:
+                info_msg.append(", mirror: {}".format(args.mirror))
+            if args.script:
+                info_msg.append(", script: {}".format(args.script))
+            if args.bootstrap:
+                info_msg.append(", bootstrapping")
+            if args.configure:
+                info_msg.append(", configuring")
+            if args.pxe_boot_dir:
+                info_msg.append(", creating PXE")
             subprocess.check_call(cmd, env=env, shell=True)
         except subprocess.CalledProcessError as e:
             log.error("preos {} failed: {}".format(cls._preos_name, e))

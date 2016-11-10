@@ -97,6 +97,7 @@ class PreOS(object):
                 func_args = [preos, argv[2:], ]
             else:
                 func_args = [argv[2:], ]
+            log.info("Running preos : {}".format(preos_name))
             func(*func_args)
         else:
             log.error("Unknown preos: {}, available preoses: {}".format(
