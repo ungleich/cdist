@@ -93,7 +93,6 @@ set to ``sys.argv[2:]``.
 
 Simple dummy example preos subcommand
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 Module based preos:
 
 #. Create directory ``~/.cdist/preos/`` if it does not exist
@@ -157,3 +156,13 @@ When you try to run this new preos you will get:
 
 In commandline function/method you have all the freedom to actually create
 PreOS.
+
+Simple tipical use case using PreOS and trigger
+-----------------------------------------------
+TODO:
+    1. creating preos
+    2. starting trigger
+    3. machine boots and triggers install/config
+    4. installation/configuration is running
+    4. machine is installed/configured
+    5. boot into new machine
