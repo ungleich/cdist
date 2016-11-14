@@ -91,9 +91,10 @@ When registered preos subcommand is specified as preos command then ``commandlin
 will be called with first argument set to module/class object and second argument
 set to ``sys.argv[2:]``.
 
-Simple dummy example preos subcommand
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example writing new dummy preos sub-command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Module based preos:
+^^^^^^^^^^^^^^^^^^^
 
 #. Create directory ``~/.cdist/preos/`` if it does not exist
 #. Create ``~/.cdist/preos/netbsd.py`` with the following contents:
@@ -124,6 +125,7 @@ When you try to run this new preos you will get:
     NetBSD PreOS: []
 
 Class based preos:
+^^^^^^^^^^^^^^^^^^
 
 #. Create directory ``~/.cdist/preos/`` if it does not exist
 #. Create ``~/.cdist/preos/freebsd.py`` with the following contents:
@@ -154,15 +156,34 @@ When you try to run this new preos you will get:
     $ cdist preos freebsd
     FreeBSD dummy preos: []
 
-In commandline function/method you have all the freedom to actually create
+In the ``commandline`` function/method you have all the freedom to actually create
 PreOS.
 
-Simple tipical use case using PreOS and trigger
------------------------------------------------
-TODO:
-    1. creating preos
-    2. starting trigger
-    3. machine boots and triggers install/config
-    4. installation/configuration is running
-    4. machine is installed/configured
-    5. boot into new machine
+Simple tipical use case for using PreOS and trigger
+---------------------------------------------------
+Tipical use case for using PreOS and trigger command include the following steps.
+
+#. Create PreOS PXE with ssh key and trigger command for installation.
+
+    .. code-block:: sh
+
+        $ cdist preos ubuntu /preos/ubuntu -b -C \
+            -k ~/.ssh/id_rsa.pub -p /preos/pxe \
+            -t "/usr/bin/curl 192.168.111.5:3000/install/"
+
+#. Configure dhcp server and tftp server.
+
+#. On cdist host (192.168.111.5 from above) start trigger command (it will use
+   default init manifest for installation).
+
+    .. code-block:: sh
+
+        $ cdist trigger -b -v
+
+#. After all is set up start new machines (PXE boot).
+
+#. New machine boots and executes trigger command, i.e. triggers installation.
+
+#. Cdist trigger server starts installing host that has triggered it.
+
+#. After cdist install is finished new host is installed.
