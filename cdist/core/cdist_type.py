@@ -110,12 +110,6 @@ class CdistType(object):
         return os.path.isfile(os.path.join(self.absolute_path, "install"))
 
     @property
-    def is_preos(self):
-        """Check whether a type is used for PreOS
-          (if not: for installation or configuration)"""
-        return os.path.isfile(os.path.join(self.absolute_path, "preos"))
-
-    @property
     def explorers(self):
         """Return a list of available explorers"""
         if not self.__explorers:
