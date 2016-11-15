@@ -75,12 +75,8 @@ class Local(object):
         return os.path.abspath(os.path.join(os.path.dirname(cdist.__file__),
                                             "conf"))
 
-    @property
     def home_dir(self):
-        if 'HOME' in os.environ:
-            return os.path.join(os.environ['HOME'], ".cdist")
-        else:
-            return None
+        return cdist.home_dir()
 
     def _init_log(self):
         self.log = logging.getLogger(self.target_host[0])

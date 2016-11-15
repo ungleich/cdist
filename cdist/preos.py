@@ -1,48 +1,104 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-# 2016 Darko Poljak (darko.poljak at ungleich.ch)
-#
-# This file is part of cdist.
-#
-# cdist is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cdist is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
-#
-#
-
-import cdist.config
-import cdist.core
+import os
+import os.path
+import sys
+import inspect
+import argparse
+import cdist
+import logging
 
 
-class Preos(cdist.config.Config):
-    def object_list(self):
-        """Short name for object list retrieval.
-        In preos mode, we only care about preos objects.
-        """
-        for cdist_object in cdist.core.CdistObject.list_objects(
-                self.local.object_path, self.local.type_path,
-                self.local.object_marker_name):
-            if cdist_object.cdist_type.is_preos:
-                yield cdist_object
+_PREOS_CALL = "commandline"
+_PREOS_NAME = "_preos_name"
+_PREOS_MARKER = "_cdist_preos"
+_PLUGINS_DIR = "preos"
+_PLUGINS_PATH = [os.path.join(os.path.dirname(__file__), _PLUGINS_DIR), ]
+cdist_home = cdist.home_dir()
+if cdist_home:
+    cdist_home_preos = os.path.join(cdist_home, "preos")
+    if os.path.isdir(cdist_home_preos):
+        _PLUGINS_PATH.append(cdist_home_preos)
+sys.path.extend(_PLUGINS_PATH)
+
+
+logging.setLoggerClass(cdist.log.Log)
+logging.basicConfig(format='%(levelname)s: %(message)s')
+log = logging.getLogger("PreOS")
+
+
+def preos_plugin(obj):
+    """It is preos if _PREOS_MARKER is True and has _PREOS_CALL."""
+    if hasattr(obj, _PREOS_MARKER):
+        is_preos = getattr(obj, _PREOS_MARKER)
+    else:
+        is_preos = False
+
+    if is_preos and hasattr(obj, _PREOS_CALL):
+        yield obj
+
+
+def scan_preos_dir_plugins(dir):
+    for fname in os.listdir(dir):
+        if os.path.isfile(os.path.join(dir, fname)):
+            fname = os.path.splitext(fname)[0]
+        module_name = fname
+        try:
+            module = __import__(module_name)
+            yield from preos_plugin(module)
+            clsmembers = inspect.getmembers(module, inspect.isclass)
+            for cm in clsmembers:
+                c = cm[1]
+                yield from preos_plugin(c)
+        except ImportError as e:
+            log.warning("Cannot import '{}': {}".format(module_name, e))
+
+
+def find_preos_plugins():
+    for dir in _PLUGINS_PATH:
+        yield from scan_preos_dir_plugins(dir)
+
+
+def find_preoses():
+    preoses = {}
+    for preos in find_preos_plugins():
+        if hasattr(preos, _PREOS_NAME):
+            preos_name = getattr(preos, _PREOS_NAME)
+        else:
+            preos_name = preos.__name__.lower()
+        preoses[preos_name] = preos
+    return preoses
+
+
+def check_root():
+    if os.geteuid() != 0:
+        raise cdist.Error("Must be run with root privileges")
+
+
+class PreOS(object):
+    preoses = None
+
+    @classmethod
+    def commandline(cls, argv):
+        import cdist.argparse
+
+        if not cls.preoses:
+            cls.preoses = find_preoses()
+
+        parser = argparse.ArgumentParser(
+            description="Create PreOS", prog="cdist preos")
+        parser.add_argument('preos', help='PreOS to create, one of: {}'.format(
+            set(cls.preoses)))
+        args = parser.parse_args(argv[1:2])
+
+        preos_name = args.preos
+        if preos_name in cls.preoses:
+            preos = cls.preoses[preos_name]
+            func = getattr(preos, _PREOS_CALL)
+            if inspect.ismodule(preos):
+                func_args = [preos, argv[2:], ]
             else:
-                self.log.debug("Running in preos mode, ignoring non preos"
-                               "object: {0}".format(cdist_object))
-
-# PreOS interface:
-# commandline #  parsers and sets args
-# init(args)
-# bootstrap(args) # if
-# config(args) # if
-# cleanup(args)
-# pxe(args) # if
-# bootable_drive(args) # if # iso that can be dd-ed to usb
+                func_args = [argv[2:], ]
+            log.info("Running preos : {}".format(preos_name))
+            func(*func_args)
+        else:
+            log.error("Unknown preos: {}, available preoses: {}".format(
+                preos_name, set(cls.preoses.keys())))
