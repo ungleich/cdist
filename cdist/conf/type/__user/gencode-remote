@@ -104,7 +104,7 @@ if [ "$state" = "present" ]; then
        if [ $# -gt 0 ]; then
           echo mod >> "$__messages_out"
           if [ "$os" = "freebsd" ]; then
-             echo pw usermod "$@" "$name"
+             echo pw usermod "$@" -n "$name"
           else
              echo usermod "$@" "$name"
           fi
@@ -125,7 +125,7 @@ if [ "$state" = "present" ]; then
         done
 
        if [ "$os" = "freebsd" ]; then
-          echo pw useradd "$@" "$name"
+          echo pw useradd "$@" -n "$name"
        else
           echo useradd "$@" "$name"
        fi
