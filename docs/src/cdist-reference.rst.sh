@@ -63,6 +63,10 @@ cdist/conf/
     The distribution configuration directory.
     This contains types and explorers to be used.
 
+cdist/inventory/
+    The distribution inventory directory.
+    This path is relative to cdist installation directory.
+
 confdir
     Cdist will use all available configuration directories and create
     a temporary confdir containing links to the real configuration directories.
@@ -273,4 +277,7 @@ CDIST_REMOTE_EXEC
 
 CDIST_REMOTE_COPY
     Use this command for remote copy (should behave like scp).
+
+CDIST_INVENTORY_DIR
+    Use this directory as inventory directory.
 eof
