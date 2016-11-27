@@ -630,9 +630,9 @@ usage. Its primary use is for debugging type parameters.
 TRIGGER
 -------
 Start trigger (simple http server) that waits for connections. When host
-connects then it triggers config or install command, cdist config is then
-executed which configures/installs host.
-Request path recognies following formats:
+connects then it triggers config or install command, cdist config/install is
+then executed which configures/installs host.
+Request path recognizes following requests:
 
 * :strong:`/config/.*` for config
 * :strong:`/install/.*` for install 

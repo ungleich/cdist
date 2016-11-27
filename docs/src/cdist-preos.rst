@@ -41,28 +41,14 @@ proper dhcp, tftp setting).
 Since PreOS is configured with ssh authorized key it can be accessed throguh
 ssh, i.e. it can be further installed and configured with cdist.
 
-Triggering installation/configuration
--------------------------------------
 When installing and configuring new machines using cdist's PreOS concept
-cdist also supports triggering for host installation/configuration.
-At management node you start trigger server as:
-
-.. code-block:: sh
-
-    $ cdist trigger -b -v -i ~/.cdist/manifest/init-for-triggered
-
-This will start cdist trigger server in verbose mode. It accepts simple
-requests for configuration and for installation:
-
-* :strong:`/install/.*` for installation
-* :strong:`/config/.*` for configuration.
+cdist can use triggering for host installation/configuration, which is described
+in the previous chapter.
 
 When new machine is booted with PreOS then trigger command is executed.
 Machine will connect to cdist trigger server. If the request is, for example,
 for installation then cdist trigger server will start install command for the
-client host using parameters specified at trigger server startup. For the
-above example that means that client will be installed using specified initial
-manifest ``~/.cdist/manifest/init-for-triggered``.
+client host using parameters specified at trigger server startup.
 
 Implementing new PreOS sub-command
 ----------------------------------

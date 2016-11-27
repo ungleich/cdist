@@ -25,6 +25,7 @@ Contents:
    cdist-messaging
    cdist-parallelization
    cdist-inventory
+   cdist-trigger
    cdist-preos
    cdist-reference
    cdist-best-practice
