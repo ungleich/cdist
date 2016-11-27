@@ -38,7 +38,7 @@ def commandline():
 
     parser = cdist.argparse.get_parsers()
     # preos subcommand hack
-    if sys.argv[1] == 'preos':
+    if len(sys.argv) > 1 and sys.argv[1] == 'preos':
         return cdist.preos.PreOS.commandline(sys.argv[1:])
 
     args = parser['main'].parse_args(sys.argv[1:])
