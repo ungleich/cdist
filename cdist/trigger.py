@@ -93,11 +93,12 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
 
         self.cdistargs = self.server.cdistargs
 
-        m = re.match("^/(?P<subsystem>cdist|file)/(?P<action>create|delete|config|install)/", "/cdist/install/").group('subsystem')
+        m = re.match("^/(?P<subsystem>cdist|file)/(?P<action>create|delete|config|install)/", "/cdist/install/")
 
         if m:
             subsystem = m.group('subsystem')
             action = m.group('action')
+            log.debug("Calling {} -> {}".format(subsystem, action))
         else:
             code = 404
 
