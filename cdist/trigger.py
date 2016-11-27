@@ -37,13 +37,20 @@ log = logging.getLogger(__name__)
 class Trigger():
     """cdist trigger handling"""
 
+    # Arguments that are only trigger specific
+    triggers_args = [ "http_port", "ipv6", "directory", "content" ]
+
     def __init__(self, http_port=None, dry_run=False, ipv6=False,
-                 cdistargs=None):
+                 directory=None, content=None, cdistargs=None):
         self.log = logging.getLogger("trigger")
         self.dry_run = dry_run
         self.http_port = int(http_port)
         self.ipv6 = ipv6
         self.args = cdistargs
+
+        self.directory = directory
+        self.content = content
+
         log.debug("IPv6: %s", self.ipv6)
 
     def run_httpd(self):
@@ -64,14 +71,19 @@ class Trigger():
         if self.http_port:
             self.run_httpd()
 
-    @staticmethod
-    def commandline(args):
+    @classmethod
+    def commandline(cls, args):
         http_port = args.http_port
         ipv6 = args.ipv6
-        del args.http_port
-        del args.ipv6
-        t = Trigger(http_port=http_port, dry_run=args.dry_run, ipv6=ipv6,
-                    cdistargs=args)
+
+        ownargs = {}
+        for targ in cls.triggers_args:
+            arg = getattr(args, targ)
+            ownargs[targ] = arg
+
+            del arg
+
+        t = cls(**ownargs, dry_run=args.dry_run, cdistargs=args)
         t.run()
 
 
@@ -83,11 +95,14 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
 
         self.cdistargs = self.server.cdistargs
 
-        m = re.match("^/(?P<mode>config|install)/.*", self.path)
+        m = re.match("^/(?P<subsystem>cdist|file)/(?P<action>create|delete|config|install)/", "/cdist/install/").group('subsystem')
+
         if m:
-            mode = m.group('mode')
+            subsystem = m.group('subsystem')
+            action = m.group('action')
         else:
             code = 404
+
         if mode:
             log.debug("Running cdist for %s in mode %s", host, mode)
             if self.server.dry_run:
