@@ -20,11 +20,14 @@
 #
 #
 
+import ipaddress
 import logging
 import re
 import socket
 import http.server
+import os
 import socketserver
+import shutil
 
 import multiprocessing
 
@@ -38,10 +41,11 @@ class Trigger():
     """cdist trigger handling"""
 
     # Arguments that are only trigger specific
-    triggers_args = [ "http_port", "ipv6", "directory", "content" ]
+    triggers_args = [ "http_port", "ipv6", "directory", "source" ]
+
 
     def __init__(self, http_port=None, dry_run=False, ipv6=False,
-                 directory=None, content=None, cdistargs=None):
+                 directory=None, source=None, cdistargs=None):
         self.log = logging.getLogger("trigger")
         self.dry_run = dry_run
         self.http_port = int(http_port)
@@ -49,7 +53,7 @@ class Trigger():
         self.args = cdistargs
 
         self.directory = directory
-        self.content = content
+        self.source = source
 
         log.debug("IPv6: %s", self.ipv6)
 
@@ -60,7 +64,7 @@ class Trigger():
             httpdcls = HTTPServerV6
         else:
             httpdcls = HTTPServerV4
-        httpd = httpdcls(self.args, server_address, TriggerHttp)
+        httpd = httpdcls(self.args, self.directory, self.source, server_address, TriggerHttp)
 
         log.debug("Starting server at port %d", self.http_port)
         if self.dry_run:
@@ -88,44 +92,73 @@ class Trigger():
 
 
 class TriggerHttp(http.server.BaseHTTPRequestHandler):
+    actions = { "cdist": [ "config", "install" ],
+                "file":  [ "present", "absent" ]
+    }
+
+    def do_HEAD(self):
+        self.dispatch_request()
+
+    def do_POST(self):
+        self.dispatch_request()
+
     def do_GET(self):
+        self.dispatch_request()
+
+    def dispatch_request(self):
         host = self.client_address[0]
         code = 200
-        mode = None
 
         self.cdistargs = self.server.cdistargs
 
-        m = re.match("^/(?P<subsystem>cdist|file)/(?P<action>create|delete|config|install)/", "/cdist/install/")
+        # FIXME: generate regexp based on self.actions
+        m = re.match("^/(?P<subsystem>cdist|file)/(?P<action>present|absent|config|install)/", self.path)
 
         if m:
             subsystem = m.group('subsystem')
             action = m.group('action')
-            log.debug("Calling {} -> {}".format(subsystem, action))
+            handler = getattr(self, "handler_" + subsystem)
+
+            if not action in self.actions[subsystem]:
+                code = 404
         else:
             code = 404
 
-        if mode:
-            log.debug("Running cdist for %s in mode %s", host, mode)
-            if self.server.dry_run:
-                log.info("Dry run, skipping cdist execution")
-            else:
-                self.run_cdist(mode, host)
-            log.debug("cdist run finished")
-        else:
-            log.info("Unsupported mode in path %s, ignoring", self.path)
+        if code == 200:
+            log.debug("Calling {} -> {}".format(subsystem, action))
+            handler(action, host)
 
         self.send_response(code)
         self.end_headers()
 
-    def do_HEAD(self):
-        self.do_GET()
+    def handler_file(self, action, host):
+        if not self.server.directory or not self.server.source:
+            log.info("Cannot server file request: directory or source not setup")
+            return
 
-    def do_POST(self):
-        self.do_GET()
+        try:
+            ipaddress.ip_address(host)
+        except ValueError:
+            log.error("Host is not a valid IP address - aborting")
+            return
 
-    def run_cdist(self, mode, host):
-        cname = mode.title()
-        module = getattr(cdist, mode)
+        dst = os.path.join(self.server.directory, host)
+
+        if action == "present":
+            shutil.copyfile(self.server.source, dst)
+        if action == "absent":
+            if os.path.exists(dst):
+                os.remove(dst)
+
+    def handler_cdist(self, action, host):
+        log.debug("Running cdist for %s in mode %s", host, mode)
+
+        if self.server.dry_run:
+            log.info("Dry run, skipping cdist execution")
+            return
+
+        cname = action.title()
+        module = getattr(cdist, action)
         theclass = getattr(module, cname)
 
         if hasattr(self.cdistargs, 'out_path'):
@@ -147,9 +180,12 @@ class HTTPServerV6(socketserver.ForkingMixIn, http.server.HTTPServer):
     """
     address_family = socket.AF_INET6
 
-    def __init__(self, cdistargs, *args, **kwargs):
+    def __init__(self, cdistargs, directory, source, *args, **kwargs):
         self.cdistargs = cdistargs
         self.dry_run = cdistargs.dry_run
+        self.directory = directory
+        self.source = source
+
         http.server.HTTPServer.__init__(self, *args, **kwargs)
 
 

@@ -344,6 +344,13 @@ def get_parsers():
     parser['trigger'].add_argument(
             '-H', '--http-port', action='store', default=3000, required=False,
             help=('Create trigger listener via http on specified port'))
+    parser['trigger'].add_argument(
+            '-D', '--directory', action='store', required=False,
+            help=('Where to create local files'))
+    parser['trigger'].add_argument(
+            '-S', '--source', action='store', required=False,
+            help=('Which file to copy for creation'))
+
     parser['trigger'].set_defaults(func=cdist.trigger.Trigger.commandline)
 
     # Install

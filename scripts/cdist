@@ -24,8 +24,8 @@
 
 def commandline():
     """Parse command line"""
-    import argparse
 
+    import cdist.argparse
     import cdist.banner
     import cdist.config
     import cdist.install
@@ -34,7 +34,7 @@ def commandline():
     import cdist.trigger
     import shutil
     import os
-    import cdist.argparse
+
 
     parser = cdist.argparse.get_parsers()
     # preos subcommand hack
