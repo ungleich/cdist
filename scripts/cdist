@@ -191,6 +191,15 @@ def commandline():
     parser['trigger'].add_argument(
             '-H', '--http-port', action='store', default=3000, required=False,
             help=('Create trigger listener via http on specified port'))
+
+    parser['trigger'].add_argument(
+            '-D', '--directory', action='store', required=False,
+            help=('Where to create local files'))
+
+    parser['trigger'].add_argument(
+            '-C', '--content', action='store', required=False,
+            help=('What to store in created files'))
+
     parser['trigger'].set_defaults(func=cdist.trigger.Trigger.commandline)
 
     # Install
