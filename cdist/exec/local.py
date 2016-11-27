@@ -75,6 +75,7 @@ class Local(object):
         return os.path.abspath(os.path.join(os.path.dirname(cdist.__file__),
                                             "conf"))
 
+    @property
     def home_dir(self):
         return cdist.home_dir()
 
