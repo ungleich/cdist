@@ -197,8 +197,8 @@ def commandline():
             help=('Where to create local files'))
 
     parser['trigger'].add_argument(
-            '-C', '--content', action='store', required=False,
-            help=('What to store in created files'))
+            '-S', '--source', action='store', required=False,
+            help=('Which file to copy for creation'))
 
     parser['trigger'].set_defaults(func=cdist.trigger.Trigger.commandline)
 
