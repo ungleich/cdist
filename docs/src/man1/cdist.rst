@@ -126,6 +126,8 @@ Configure/install one or more hosts.
 
     Enable beta functionalities.
 
+    Can also be enabled using CDIST_BETA env var.
+
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
     Add a configuration directory. Can be specified multiple times.
@@ -225,6 +227,8 @@ Add host(s) to inventory database.
     all options; config sub-command options: -j/--jobs,
     -t/--tag, -a/--all.
 
+    Can also be enabled using CDIST_BETA env var.
+
 .. option:: -f HOSTFILE, --file HOSTFILE
 
     Read additional hosts to add from specified file or
@@ -261,6 +265,8 @@ Add tag(s) to inventory database.
     include inventory command with all sub-commands and
     all options; config sub-command options: -j/--jobs,
     -t/--tag, -a/--all.
+
+    Can also be enabled using CDIST_BETA env var.
 
 .. option:: -f HOSTFILE, --file HOSTFILE
 
@@ -315,6 +321,8 @@ Delete host(s) from inventory database.
     all options; config sub-command options: -j/--jobs,
     -t/--tag, -a/--all.
 
+    Can also be enabled using CDIST_BETA env var.
+
 .. option:: -f HOSTFILE, --file HOSTFILE
 
     Read additional hosts to delete from specified file or
@@ -351,6 +359,8 @@ Delete tag(s) from inventory database.
     include inventory command with all sub-commands and
     all options; config sub-command options: -j/--jobs,
     -t/--tag, -a/--all.
+
+    Can also be enabled using CDIST_BETA env var.
 
 .. option:: -f HOSTFILE, --file HOSTFILE
 
@@ -407,6 +417,8 @@ List inventory database.
     all options; config sub-command options: -j/--jobs,
     -t/--tag, -a/--all.
 
+    Can also be enabled using CDIST_BETA env var.
+
 .. option:: -f HOSTFILE, --file HOSTFILE
 
     Read additional hosts to list from specified file or
@@ -460,6 +472,8 @@ PREOS DEBIAN
 .. option:: -b, --beta
 
     Enable beta functionalities.
+
+    Can also be enabled using CDIST_BETA env var.
 
 .. option:: -C, --configure
 
@@ -546,6 +560,8 @@ PREOS UBUNTU
 .. option:: -b, --beta
 
     Enable beta functionalities.
+
+    Can also be enabled using CDIST_BETA env var.
 
 .. option:: -C, --configure
 
@@ -645,6 +661,8 @@ Request path recognizes following requests:
 .. option:: -b, --beta
 
     Enable beta functionalities.
+
+    Can also be enabled using CDIST_BETA env var.
 
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 

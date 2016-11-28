@@ -280,4 +280,7 @@ CDIST_REMOTE_COPY
 
 CDIST_INVENTORY_DIR
     Use this directory as inventory directory.
+
+CDIST_BETA
+    Enable beta functionalities.
 eof

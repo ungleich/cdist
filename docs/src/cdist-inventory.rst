@@ -7,7 +7,7 @@ Introduction
 cdist comes with simple built-in tag based inventory. It is a simple inventory
 with list of hosts and a host has a list of tags.
 Inventory functionality is still in **beta** so it can be used only if beta
-command line flag is specified (-b, --beta).
+command line flag is specified (-b, --beta) or setting CDIST_BETA env var.
 
 Description
 -----------

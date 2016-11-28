@@ -80,8 +80,9 @@ def get_parsers():
     parser['beta'] = argparse.ArgumentParser(add_help=False)
     parser['beta'].add_argument(
            '-b', '--beta',
-           help=('Enable beta functionalities.'),
-           action='store_true', dest='beta', default=False)
+           help=('Enable beta functionalities. '
+                 'Can also be enabled using CDIST_BETA env var.'),
+           action='store_true', dest='beta', default='CDIST_BETA' in os.environ)
 
     # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(

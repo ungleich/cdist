@@ -68,13 +68,13 @@ class CdistBetaRequired(cdist.Error):
             err_msg = ("\'{}\' command is beta, but beta is "
                        "not enabled. If you want to use it please enable beta "
                        "functionalities by using the -b/--beta command "
-                       "line flag.")
+                       "line flag or setting CDIST_BETA env var.")
             fmt_args = [self.command, ]
         else:
             err_msg = ("\'{}\' argument of \'{}\' command is beta, but beta "
                        "is not enabled. If you want to use it please enable "
                        "beta functionalities by using the -b/--beta "
-                       "command line flag.")
+                       "command line flag or setting CDIST_BETA env var.")
             fmt_args = [self.arg, self.command, ]
         return err_msg.format(*fmt_args)
 
