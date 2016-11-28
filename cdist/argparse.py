@@ -32,8 +32,6 @@ def add_beta_arg(cmd, arg):
 def check_beta(args_dict):
     if 'beta' not in args_dict:
         args_dict['beta'] = False
-    elif 'CDIST_BETA' in os.environ:
-        args_dict['beta'] = True
     # Check only if beta is not enabled: if beta option is specified then
     # raise error.
     if not args_dict['beta']:
@@ -84,7 +82,7 @@ def get_parsers():
            '-b', '--beta',
            help=('Enable beta functionalities. '
                  'Can also be enabled using CDIST_BETA env var.'),
-           action='store_true', dest='beta', default=False)
+           action='store_true', dest='beta', default='CDIST_BETA' in os.environ)
 
     # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(
