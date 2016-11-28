@@ -87,7 +87,7 @@ class Trigger():
 
             del arg
 
-        t = cls(**ownargs, dry_run=args.dry_run, cdistargs=args)
+        t = cls(dry_run=args.dry_run, cdistargs=args, **ownargs)
         t.run()
 
 
