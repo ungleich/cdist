@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Core, types: support IPv6 (Darko Poljak)
 	* Type __consul: add source and cksum files for Consul 0.7.0 and 0.7.1 (Carlos Ortigoza)
 	* Type __user: FreeBSD fix (Kamila Součková)
 	* New type: __apt_mark (Ander Punnar)
