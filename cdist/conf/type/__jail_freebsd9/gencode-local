@@ -40,8 +40,7 @@ basepresent="$(cat "$__object/explorer/basepresent")"
 if [ "$state" = "present" ]; then
    if [ "$basepresent" = "NONE" ]; then
      # IPv6 fix
-     echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$'
-     if [ $? -eq 0 ]
+     if $(echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$')
      then
          my_target_host="[${__target_host}]"
      else

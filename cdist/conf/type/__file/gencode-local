@@ -67,8 +67,7 @@ DONE
       if [ "$upload_file" ]; then
          echo upload >> "$__messages_out"
          # IPv6 fix
-         echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$'
-         if [ $? -eq 0 ]
+         if $(echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$')
          then
              my_target_host="[${__target_host}]"
          else
