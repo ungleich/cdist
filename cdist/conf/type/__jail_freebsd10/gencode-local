@@ -43,7 +43,14 @@ basepresent="$(cat "$__object/explorer/basepresent")"
 
 if [ "$state" = "present" ]; then
    if [ "$basepresent" = "NONE" ]; then
-      echo "$__remote_copy" "${jailbase}" "$__target_host:${remotebase}"
+     # IPv6 fix
+     if $(echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$')
+     then
+         my_target_host="[${__target_host}]"
+     else
+         my_target_host="${__target_host}"
+     fi
+      echo "$__remote_copy" "${jailbase}" "${my_target_host}:${remotebase}"
    fi   # basepresent=NONE
 fi   # state=present
 

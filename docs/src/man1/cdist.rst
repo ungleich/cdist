@@ -157,6 +157,12 @@ cdist/conf
     The distribution configuration directory. It contains official types and
     explorers. This path is relative to cdist installation directory.
 
+NOTES
+-----
+cdist detects if host is specified by IPv6 address. If so then remote_copy
+command is executed with host address enclosed in square brackets 
+(see :strong:`scp`\ (1)).
+
 EXAMPLES
 --------
 

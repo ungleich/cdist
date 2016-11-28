@@ -59,12 +59,20 @@ case $uname in
       ;;
 esac
 
+# IPv6 fix
+if $(echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$')
+then
+    my_target_host="[${__target_host}]"
+else
+    my_target_host="${__target_host}"
+fi
+
 if [ -n "${cksum}" ]; then
    if [ ! "\${currentSum}" = "${cksum}" ]; then
-      $__remote_copy "${source}" "$__target_host:${rcvar}.new"
+      $__remote_copy "${source}" "${my_target_host}:${rcvar}.new"
    fi
 else # File just doesn't exist yet
-   $__remote_copy "${source}" "$__target_host:${rcvar}.new"
+   $__remote_copy "${source}" "${my_target_host}:${rcvar}.new"
 fi
 EOF
 

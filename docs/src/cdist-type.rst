@@ -251,6 +251,12 @@ script, you can write to stderr:
     # Output to be saved by cdist for execution on the target
     echo "touch /etc/cdist-configured"
 
+Notice: if you use __remote_copy or __remote_exec directly in your scripts
+then for IPv6 address with __remote_copy execution you should enclose IPv6
+address in square brackets. The same applies to __remote_exec if it behaves
+the same as ssh for some options where colon is a delimiter, as for -L ssh
+option (see :strong:`ssh`\ (1) and :strong:`scp`\ (1)).
+
 
 Variable access from the generated scripts
 ------------------------------------------
