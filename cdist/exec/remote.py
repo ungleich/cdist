@@ -32,6 +32,43 @@ import cdist
 import cdist.exec.util as exec_util
 
 
+# check whether addr is IPv6
+try:
+    # python 3.3+
+    import ipaddress
+
+    def _is_ipv6(addr):
+        try:
+            return ipaddress.ip_address(addr).version == 6
+        except ValueError:
+            return False
+except ImportError:
+    # fallback for older python versions
+    import socket
+
+    def _is_ipv6(addr):
+        try:
+            socket.inet_aton(addr)
+            return False
+        except socket.error:
+            pass
+        try:
+            socket.inet_pton(socket.AF_INET6, addr)
+            return True
+        except socket.error:
+            pass
+        return False
+
+
+def _wrap_addr(addr):
+    """If addr is IPv6 then return addr wrapped between '[' and ']',
+    otherwise return it intact."""
+    if _is_ipv6(addr):
+        return "".join(("[", addr, "]", ))
+    else:
+        return addr
+
+
 class DecodeError(cdist.Error):
     def __init__(self, command):
         self.command = command
@@ -118,12 +155,12 @@ class Remote(object):
                 command = self._copy.split()
                 path = os.path.join(source, f)
                 command.extend([path, '{0}:{1}'.format(
-                    self.target_host[0], destination)])
+                    _wrap_addr(self.target_host[0]), destination)])
                 self._run_command(command)
         else:
             command = self._copy.split()
             command.extend([source, '{0}:{1}'.format(
-                self.target_host[0], destination)])
+                _wrap_addr(self.target_host[0]), destination)])
             self._run_command(command)
 
     def transfer_dir_parallel(self, source, destination, jobs):
@@ -145,7 +182,7 @@ class Remote(object):
                     command = self._copy.split()
                     path = os.path.join(source, f)
                     command.extend([path, '{0}:{1}'.format(
-                        self.target_host[0], destination)])
+                        _wrap_addr(self.target_host[0]), destination)])
                     commands.append(command)
                 results = [
                     pool.apply_async(self._run_command, (cmd,))
