@@ -32,6 +32,8 @@ def add_beta_arg(cmd, arg):
 def check_beta(args_dict):
     if 'beta' not in args_dict:
         args_dict['beta'] = False
+    elif 'CDIST_BETA' in os.environ:
+        args_dict['beta'] = True
     # Check only if beta is not enabled: if beta option is specified then
     # raise error.
     if not args_dict['beta']:
