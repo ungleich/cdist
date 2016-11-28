@@ -28,6 +28,15 @@ type
     * pacman for Arch Linux
 
 
+BOOLEAN PARAMETERS
+------------------
+apt-dist-upgrade
+    Do dist-upgrade instead of upgrade.
+
+apt-clean
+    Clean out the local repository of retrieved package files.
+
+
 EXAMPLES
 --------
 

@@ -100,9 +100,7 @@ class Code(object):
     """
     # target_host is tuple (target_host, target_hostname, target_fqdn)
     def __init__(self, target_host, local, remote):
-        self.target_host = target_host[0]
-        self.target_hostname = target_host[1]
-        self.target_fqdn = target_host[2]
+        self.target_host = target_host
         self.local = local
         self.remote = remote
         self.env = {
