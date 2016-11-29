@@ -858,6 +858,12 @@ CDIST_REMOTE_EXEC
 CDIST_REMOTE_COPY
     Use this command for remote copy (should behave like scp).
 
+CDIST_INVENTORY_DIR
+    Use this directory as inventory directory.
+
+CDIST_BETA
+    Enable beta functionalities.
+
 EXIT STATUS
 -----------
 The following exit values shall be returned:
@@ -869,7 +875,9 @@ The following exit values shall be returned:
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
+Originally written by Nico Schottelius <nico-cdist--@--schottelius.org>
+and Steven Armstrong <steven-cdist--@--armstrong.cc>.
+
 
 CAVEATS
 -------
