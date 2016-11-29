@@ -245,7 +245,8 @@ The following exit values shall be returned:
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
+Originally written by Nico Schottelius <nico-cdist--@--schottelius.org>
+and Steven Armstrong <steven-cdist--@--armstrong.cc>.
 
 CAVEATS
 -------
