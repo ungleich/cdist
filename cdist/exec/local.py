@@ -29,6 +29,9 @@ import subprocess
 import shutil
 import logging
 import tempfile
+import time
+import datetime
+import functools
 
 import cdist
 import cdist.message
@@ -51,7 +54,8 @@ class Local(object):
                  host_dir_name,
                  exec_path=sys.argv[0],
                  initial_manifest=None,
-                 add_conf_dirs=None):
+                 add_conf_dirs=None,
+                 cache_path_pattern=None):
 
         self.target_host = target_host
         self.hostdir = host_dir_name
@@ -242,8 +246,38 @@ class Local(object):
         return self.run(command=command, env=env, return_output=return_output,
                         message_prefix=message_prefix)
 
-    def save_cache(self):
-        destination = os.path.join(self.cache_path, self.hostdir)
+    def _cache_subpath_repl(self, matchobj):
+        if matchobj.group(2) == '%P':
+            repl = str(os.getpid())
+        elif matchobj.group(2) == '%h':
+            repl = self.hostdir
+
+        return matchobj.group(1) + repl
+
+    def _cache_subpath(self, start_time=time.time(), path_format=None):
+        if path_format:
+            repl_func = self._cache_subpath_repl
+            cache_subpath = re.sub(r'([^%]|^)(%h|%P)', repl_func, path_format)
+            dt = datetime.datetime.fromtimestamp(start_time)
+            cache_subpath = dt.strftime(cache_subpath)
+        else:
+            cache_subpath = self.hostdir
+
+        i = 0
+        while i < len(cache_subpath) and cache_subpath[i] == os.sep:
+            i += 1
+        cache_subpath = cache_subpath[i:]
+        if not cache_subpath:
+            cache_subpath = self.hostdir
+        return cache_subpath
+
+    def save_cache(self, start_time=time.time()):
+        self.log.debug("cache subpath pattern: {}".format(
+            self.cache_path_pattern))
+        cache_subpath = self._cache_subpath(start_time,
+                                            self.cache_path_pattern)
+        self.log.debug("cache subpath: {}".format(cache_subpath))
+        destination = os.path.join(self.cache_path, cache_subpath)
         self.log.debug("Saving " + self.base_path + " to " + destination)
 
         try:
