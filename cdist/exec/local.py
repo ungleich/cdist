@@ -31,7 +31,6 @@ import logging
 import tempfile
 import time
 import datetime
-import functools
 
 import cdist
 import cdist.message
