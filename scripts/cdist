@@ -115,7 +115,8 @@ def commandline():
     parser['config'].add_argument(
             '-C', '--cache_path_pattern',
             help=('Specify custom cache path pattern'),
-            dest='cache_path_pattern', required=False)
+            dest='cache_path_pattern',
+            default=os.environ.get('CDIST_CACHE_PATH_PATTERN'))
     parser['config'].add_argument(
             '-f', '--file',
             help=('Read additional hosts to operate on from specified file '
