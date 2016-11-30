@@ -8,7 +8,8 @@ __file /etc/systemd/system/cdist-preos-trigger.service --owner root \
     --source - << EOF
 [Unit]
 Description=preos trigger
-After=network.target
+Wants=network-online.target
+After=network.target network-online.target
 
 [Service]
 Type=simple
