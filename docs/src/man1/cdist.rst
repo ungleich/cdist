@@ -46,11 +46,12 @@ All commands accept the following options:
 
 .. option:: -d, --debug
 
-    Set log level to debug
+    Set log level to debug (deprecated, use -vvv instead)
 
 .. option:: -v, --verbose
 
-    Set log level to info, be more verbose
+    Increase log level, be more verbose. The order of levels from lowest to
+    greatest are: ERROR, WARNING, INFO, DEBUG.
 
 .. option:: -V, --version
 
