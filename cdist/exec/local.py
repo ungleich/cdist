@@ -64,6 +64,7 @@ class Local(object):
         self.exec_path = exec_path
         self.custom_initial_manifest = initial_manifest
         self._add_conf_dirs = add_conf_dirs
+        self.cache_path_pattern = cache_path_pattern
 
         self._init_log()
         self._init_permissions()
