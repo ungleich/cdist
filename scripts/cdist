@@ -94,8 +94,9 @@ def commandline():
             action='store_true', default=False)
     parser['loglevel'].add_argument(
             '-v', '--verbose',
-            help=('Increase log level, be more verbose. The order of levels '
-                  'from lowest to greatest are: ERROR, WARNING, INFO, DEBUG.'),
+            help=('Increase log level, be more verbose. Use it more than once '
+                  'to increase log level. The order of levels from the lowest '
+                  'to the greatest are: ERROR, WARNING, INFO, DEBUG.'),
             action='count', default=0)
 
     # Main subcommand parser

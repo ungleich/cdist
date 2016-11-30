@@ -50,8 +50,9 @@ All commands accept the following options:
 
 .. option:: -v, --verbose
 
-    Increase log level, be more verbose. The order of levels from lowest to
-    greatest are: ERROR, WARNING, INFO, DEBUG.
+    Increase log level, be more verbose. Use it more than onceto increase
+    log level. The order of levels from the lowest to the greatest are:
+    ERROR, WARNING, INFO, DEBUG.
 
 .. option:: -V, --version
 
