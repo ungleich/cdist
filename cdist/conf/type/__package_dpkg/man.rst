@@ -1,7 +1,5 @@
 cdist-type__package_dpkg(7)
 ==========================
-Tomas Pospisek <tpo_deb--@--sourcepole.ch>
-
 
 NAME
 ----
@@ -18,27 +16,29 @@ The object given to __package_dpkg must be the name of the deb package.
 
 REQUIRED PARAMETERS
 -------------------
-source::
+source
     path to the *.deb package
 
 EXAMPLES
 --------
 
---------------------------------------------------------------------------------
-# Install foo and bar packages
-__package_dpkg --source /tmp/foo_0.1_all.deb foo_0.1_all.deb
-__package_dpkg --source $__type/files/bar_1.4.deb bar_1.4.deb
---------------------------------------------------------------------------------
+.. code-block:: sh
+
+    # Install foo and bar packages
+    __package_dpkg --source /tmp/foo_0.1_all.deb foo_0.1_all.deb
+    __package_dpkg --source $__type/files/bar_1.4.deb bar_1.4.deb
 
 
 SEE ALSO
 --------
-- cdist-type(7)
-- cdist-type__package(7)
+:strong:`cdist-type`\ (7), :strong:`cdist-type__package`\ (7)
 
+AUTHORS
+-------
+Tomas Pospisek <tpo_deb--@--sourcepole.ch>
 
 COPYING
 -------
 Copyright \(C) 2013 Tomas Pospisek. Free use of this software is
 granted under the terms of the GNU General Public License version 3 (GPLv3).
-This type is based on __package_apt
+This type is based on __package_apt.
