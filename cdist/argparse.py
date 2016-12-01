@@ -376,11 +376,6 @@ def get_parsers():
 
     parser['trigger'].set_defaults(func=cdist.trigger.Trigger.commandline)
 
-    # Install
-    parser['install'] = parser['sub'].add_parser('install', add_help=False,
-                                                 parents=[parser['config']])
-    parser['install'].set_defaults(func=cdist.install.Install.commandline)
-
     for p in parser:
         parser[p].epilog = EPILOG
 
