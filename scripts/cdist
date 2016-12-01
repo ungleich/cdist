@@ -21,6 +21,8 @@
 #
 #
 
+import collections
+import logging
 
 # list of beta sub-commands
 BETA_COMMANDS = ['install', ]
@@ -61,6 +63,15 @@ def check_beta(args_dict):
                     raise cdist.CdistBetaRequired(cmd, arg)
 
 
+_verbosity_level = {
+    0: logging.ERROR,
+    1: logging.WARNING,
+    2: logging.INFO,
+}
+_verbosity_level = collections.defaultdict(
+    lambda: logging.DEBUG, _verbosity_level)
+
+
 def commandline():
     """Parse command line"""
     import argparse
@@ -78,11 +89,15 @@ def commandline():
     # Options _all_ parsers have in common
     parser['loglevel'] = argparse.ArgumentParser(add_help=False)
     parser['loglevel'].add_argument(
-            '-d', '--debug', help='Set log level to debug',
+            '-d', '--debug',
+            help=('Set log level to debug (deprecated, use -vvv instead)'),
             action='store_true', default=False)
     parser['loglevel'].add_argument(
-            '-v', '--verbose', help='Set log level to info, be more verbose',
-            action='store_true', default=False)
+            '-v', '--verbose',
+            help=('Increase log level, be more verbose. Use it more than once '
+                  'to increase log level. The order of levels from the lowest '
+                  'to the highest are: ERROR, WARNING, INFO, DEBUG.'),
+            action='count', default=0)
 
     # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(
@@ -179,11 +194,12 @@ def commandline():
 
     args = parser['main'].parse_args(sys.argv[1:])
 
-    # Loglevels are handled globally in here and debug wins over verbose
-    if args.verbose:
-        logging.root.setLevel(logging.INFO)
+    # Loglevels are handled globally in here
     if args.debug:
-        logging.root.setLevel(logging.DEBUG)
+        log.warning("-d/--debug is deprecated, use -vvv instead")
+        args.verbose = 3
+
+    logging.root.setLevel(_verbosity_level[args.verbose])
 
     log.debug(args)
     log.info("version %s" % cdist.VERSION)
@@ -219,7 +235,6 @@ if __name__ == "__main__":
     exit_code = 0
 
     try:
-        import logging
         import os
         import re
         import cdist
