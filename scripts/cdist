@@ -96,7 +96,7 @@ def commandline():
             '-v', '--verbose',
             help=('Increase log level, be more verbose. Use it more than once '
                   'to increase log level. The order of levels from the lowest '
-                  'to the greatest are: ERROR, WARNING, INFO, DEBUG.'),
+                  'to the highest are: ERROR, WARNING, INFO, DEBUG.'),
             action='count', default=0)
 
     # Main subcommand parser
