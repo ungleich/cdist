@@ -292,7 +292,8 @@ class Config(object):
                 base_root_path=host_base_path,
                 host_dir_name=host_dir_name,
                 initial_manifest=args.manifest,
-                add_conf_dirs=args.conf_dir)
+                add_conf_dirs=args.conf_dir,
+                cache_path_pattern=args.cache_path_pattern)
 
             remote = cdist.exec.remote.Remote(
                 target_host=target_host,
@@ -328,7 +329,7 @@ class Config(object):
         self.manifest.run_initial_manifest(self.local.initial_manifest)
         self.iterate_until_finished()
 
-        self.local.save_cache()
+        self.local.save_cache(start_time)
         self.log.info("Finished successful run in %s seconds",
                       time.time() - start_time)
 

@@ -124,6 +124,13 @@ def commandline():
                  'include the following options: -j/--jobs.'),
            action='store_true', dest='beta', default=False)
     parser['config'].add_argument(
+            '-C', '--cache-path-pattern',
+            help=('Specify custom cache path pattern. It can also be set '
+                  'by CDIST_CACHE_PATH_PATTERN environment variable. If '
+                  'it is not set then default hostdir is used.'),
+            dest='cache_path_pattern',
+            default=os.environ.get('CDIST_CACHE_PATH_PATTERN'))
+    parser['config'].add_argument(
             '-c', '--conf-dir',
             help=('Add configuration directory (can be repeated, '
                   'last one wins)'), action='append')

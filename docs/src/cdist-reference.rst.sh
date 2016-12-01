@@ -273,4 +273,7 @@ CDIST_REMOTE_EXEC
 
 CDIST_REMOTE_COPY
     Use this command for remote copy (should behave like scp).
+
+CDIST_CACHE_PATH_PATTERN
+    Custom cache path pattern.
 eof
