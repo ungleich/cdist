@@ -248,13 +248,16 @@ class Local(object):
             repl = str(os.getpid())
         elif matchobj.group(2) == '%h':
             repl = self.hostdir
+        elif matchobj.group(2) == '%N':
+            repl = self.target_host[0]
 
         return matchobj.group(1) + repl
 
     def _cache_subpath(self, start_time=time.time(), path_format=None):
         if path_format:
             repl_func = self._cache_subpath_repl
-            cache_subpath = re.sub(r'([^%]|^)(%h|%P)', repl_func, path_format)
+            cache_subpath = re.sub(r'([^%]|^)(%h|%P|%N)', repl_func,
+                                   path_format)
             dt = datetime.datetime.fromtimestamp(start_time)
             cache_subpath = dt.strftime(cache_subpath)
         else:

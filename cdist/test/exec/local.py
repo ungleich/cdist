@@ -251,6 +251,7 @@ class LocalTestCase(test.CdistTestCase):
              dt.strftime(self.hostdir + '/%Y-%m-%d/%H%M%S-') + pid, ],
             ['%Y-%m-%d/%H%M%S-%P/%h',
              dt.strftime('%Y-%m-%d/%H%M%S-') + pid + os.sep + self.hostdir, ],
+            ['%N', self.local.target_host[0], ],
         ]
         for x in cases:
             x.append(self.local._cache_subpath(start_time, x[0]))

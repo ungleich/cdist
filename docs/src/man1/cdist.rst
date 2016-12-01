@@ -218,9 +218,10 @@ host string is used.
 CACHE PATH PATTERN FORMAT
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Cache path pattern specifies path for a cache directory subdirectory.
-In the path, '%h' will be substituted by the calculated host directory,
-'%P' will be substituted by the current process id. All format codes
-that :strong:`python` :strong:`datetime.strftime()` function supports, except
+In the path, '%N' will be substituted by the target host, '%h' will
+be substituted by the calculated host directory, '%P' will be substituted
+by the current process id. All format codes that
+:strong:`python` :strong:`datetime.strftime()` function supports, except
 '%h', are supported. These date/time directives format cdist config/install
 start time.
 
