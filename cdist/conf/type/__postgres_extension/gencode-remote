@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2013 Tomas Pospisek (tpo_deb at sourcepole.ch)
+#
+# This type was created by Tomas Pospisek based on the
+#__postgres_role type by Steven Armstrong
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+dbname=$(    echo "$__object_id" | cut -d":" -f1 )
+extension=$( echo "$__object_id" | cut -d":" -f2 )
+
+state_should=$( cat "$__object/parameter/state" )
+
+case "$state_should" in
+    present)
+         cmd="CREATE EXTENSION IF NOT EXISTS $extension"
+         echo "su - postgres -c 'psql -c \"$cmd\" \"$dbname\"'"
+    ;;
+    absent)
+         cmd="DROP   EXTENSION IF     EXISTS $extenstion"
+         echo "su - postgres -c 'psql -c \"$cmd\" \"$dbname\"'"
+    ;;
+esac
