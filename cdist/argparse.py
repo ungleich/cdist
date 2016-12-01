@@ -3,6 +3,7 @@ import cdist
 import multiprocessing
 import os
 import logging
+import collections
 
 
 # list of beta sub-commands
@@ -14,6 +15,15 @@ BETA_ARGS = {
 EPILOG = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
 # Parser others can reuse
 parser = None
+
+
+_verbosity_level = {
+    0: logging.ERROR,
+    1: logging.WARNING,
+    2: logging.INFO,
+}
+_verbosity_level = collections.defaultdict(
+    lambda: logging.DEBUG, _verbosity_level)
 
 
 def add_beta_command(cmd):
@@ -51,7 +61,7 @@ def check_positive_int(value):
 
     try:
         val = int(value)
-    except ValueError as e:
+    except ValueError:
         raise argparse.ArgumentTypeError(
                 "{} is invalid int value".format(value))
     if val <= 0:
@@ -71,11 +81,15 @@ def get_parsers():
     # Options _all_ parsers have in common
     parser['loglevel'] = argparse.ArgumentParser(add_help=False)
     parser['loglevel'].add_argument(
-            '-d', '--debug', help='Set log level to debug',
+            '-d', '--debug',
+            help=('Set log level to debug (deprecated, use -vvv instead)'),
             action='store_true', default=False)
     parser['loglevel'].add_argument(
-            '-v', '--verbose', help='Set log level to info, be more verbose',
-            action='store_true', default=False)
+            '-v', '--verbose',
+            help=('Increase log level, be more verbose. Use it more than once '
+                  'to increase log level. The order of levels from the lowest '
+                  'to the highest are: ERROR, WARNING, INFO, DEBUG.'),
+            action='count', default=0)
 
     parser['beta'] = argparse.ArgumentParser(add_help=False)
     parser['beta'].add_argument(
@@ -374,7 +388,12 @@ def get_parsers():
 
 
 def handle_loglevel(args):
-    if args.verbose:
-        logging.root.setLevel(logging.INFO)
     if args.debug:
-        logging.root.setLevel(logging.DEBUG)
+        retval = "-d/--debug is deprecated, use -vvv instead"
+        args.verbose = 3
+    else:
+        retval = None
+
+    logging.root.setLevel(_verbosity_level[args.verbose])
+
+    return retval
