@@ -31,7 +31,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:strong:`cdist-type`\ (7), :strong:`cdist-type__package`\ (7)
+:strong:`cdist-type__package`\ (7)
 
 AUTHORS
 -------
@@ -39,6 +39,8 @@ Tomas Pospisek <tpo_deb--@--sourcepole.ch>
 
 COPYING
 -------
-Copyright \(C) 2013 Tomas Pospisek. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2013 Tomas Pospisek. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 This type is based on __package_apt.
