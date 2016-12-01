@@ -280,14 +280,23 @@ class Local(object):
         destination = os.path.join(self.cache_path, cache_subpath)
         self.log.debug("Saving " + self.base_path + " to " + destination)
 
-        try:
-            if os.path.exists(destination):
-                shutil.rmtree(destination)
-        except PermissionError as e:
-            raise cdist.Error(
-                    "Cannot delete old cache %s: %s" % (destination, e))
+        if not os.path.exists(destination):
+            shutil.move(self.base_path, destination)
+        else:
+            for direntry in os.listdir(self.base_path):
+                srcentry = os.path.join(self.base_path, direntry)
+                destentry = os.path.join(destination, direntry)
+                try:
+                    if os.path.isdir(destentry):
+                        shutil.rmtree(destentry)
+                    elif os.path.exists(destentry):
+                        os.remove(destentry)
+                except (PermissionError, OSError) as e:
+                    raise cdist.Error(
+                            "Cannot delete old cache entry {}: {}".format(
+                                destentry, e))
+                shutil.move(srcentry, destentry)
 
-        shutil.move(self.base_path, destination)
         # add target_host since cache dir can be hash-ed target_host
         host_cache_path = os.path.join(destination, "target_host")
         with open(host_cache_path, 'w') as hostf:
