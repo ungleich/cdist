@@ -15,16 +15,16 @@ SYNOPSIS
 
     cdist banner [-h] [-d] [-v]
 
-    cdist config [-h] [-d] [-v] [-b] [-c CONF_DIR] [-i MANIFEST]
-                 [-j [JOBS]] [-n] [-o OUT_PATH] [--remote-copy REMOTE_COPY]
-                 [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                 [-f HOSTFILE] [-p] [-s] [-t]
+    cdist config [-h] [-d] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
+                 [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
+                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                 [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE] [-p] [-s] [-t]
                  [host [host ...]] 
 
-    cdist install [-h] [-d] [-v] [-b] [-c CONF_DIR] [-i MANIFEST]
-                  [-j [JOBS]] [-n] [-o OUT_PATH] [--remote-copy REMOTE_COPY]
-                  [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                  [-f HOSTFILE] [-p] [-s] [-t]
+    cdist install [-h] [-d] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
+                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
+                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                  [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE] [-p] [-s] [-t]
                   [host [host ...]] 
 
     cdist inventory [-h] [-d] [-v] [-b] [-I INVENTORY_DIR]
@@ -68,8 +68,8 @@ SYNOPSIS
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
-    cdist trigger [-h] [-d] [-v] [-b] [-c CONF_DIR] [-i MANIFEST]
-                  [-j [JOBS]] [-n] [-o OUT_PATH]
+    cdist trigger [-h] [-d] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
+                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                   [-6] [-H HTTP_PORT]
 
@@ -128,6 +128,13 @@ Configure/install one or more hosts.
 
     Can also be enabled using CDIST_BETA env var.
 
+.. option:: -C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN
+
+    Sepcify custom cache path pattern. It can also be set by
+    CDIST_CACHE_PATH_PATTERN environment variable. If it is not set then
+    default hostdir is used. For more info on format see
+    :strong:`CACHE PATH PATTERN FORMAT` below.
+
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
     Add a configuration directory. Can be specified multiple times.
@@ -143,7 +150,8 @@ Configure/install one or more hosts.
     Read additional hosts to operate on from specified file
     or from stdin if '-' (each host on separate line).
     If no host or host file is specified then, by default,
-    read hosts from stdin. For the file format see below.
+    read hosts from stdin. For the file format see
+    :strong:`HOSTFILE FORMAT` below.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
@@ -204,6 +212,23 @@ Hostfile line is processed like the following. First, all comments are
 removed. Then all leading and trailing whitespace characters are stripped.
 If such a line results in empty line it is ignored/skipped. Otherwise,
 host string is used.
+
+CACHE PATH PATTERN FORMAT
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Cache path pattern specifies path for a cache directory subdirectory.
+In the path, '%h' will be substituted by the calculated host directory,
+'%P' will be substituted by the current process id. All format codes
+that :strong:`python` :strong:`datetime.strftime()` function supports, except
+'%h', are supported. These date/time directives format cdist config/install
+start time.
+
+If empty pattern is specified then default calculated host directory
+is used.
+
+Calculated host directory is a hash of a host cdist operates on.
+
+Resulting path is used to specify cache path subdirectory under which
+current host cache data are saved.
 
 
 INVENTORY
@@ -664,6 +689,13 @@ Request path recognizes following requests:
 
     Can also be enabled using CDIST_BETA env var.
 
+.. option:: -C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN
+
+    Sepcify custom cache path pattern. It can also be set by
+    CDIST_CACHE_PATH_PATTERN environment variable. If it is not set then
+    default hostdir is used. For more info on format see
+    :strong:`CACHE PATH PATTERN FORMAT` below.
+
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
     Add configuration directory (can be repeated, last one wins)
@@ -863,6 +895,9 @@ CDIST_INVENTORY_DIR
 
 CDIST_BETA
     Enable beta functionalities.
+
+CDIST_CACHE_PATH_PATTERN
+    Custom cache path pattern.
 
 EXIT STATUS
 -----------

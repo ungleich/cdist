@@ -29,8 +29,6 @@ import os
 import socketserver
 import shutil
 
-import multiprocessing
-
 import cdist.config
 import cdist.install
 
@@ -41,8 +39,7 @@ class Trigger():
     """cdist trigger handling"""
 
     # Arguments that are only trigger specific
-    triggers_args = [ "http_port", "ipv6", "directory", "source" ]
-
+    triggers_args = ["http_port", "ipv6", "directory", "source", ]
 
     def __init__(self, http_port=None, dry_run=False, ipv6=False,
                  directory=None, source=None, cdistargs=None):
@@ -64,7 +61,8 @@ class Trigger():
             httpdcls = HTTPServerV6
         else:
             httpdcls = HTTPServerV4
-        httpd = httpdcls(self.args, self.directory, self.source, server_address, TriggerHttp)
+        httpd = httpdcls(self.args, self.directory, self.source,
+                         server_address, TriggerHttp)
 
         log.debug("Starting server at port %d", self.http_port)
         if self.dry_run:
@@ -77,9 +75,6 @@ class Trigger():
 
     @classmethod
     def commandline(cls, args):
-        http_port = args.http_port
-        ipv6 = args.ipv6
-
         ownargs = {}
         for targ in cls.triggers_args:
             arg = getattr(args, targ)
@@ -92,8 +87,9 @@ class Trigger():
 
 
 class TriggerHttp(http.server.BaseHTTPRequestHandler):
-    actions = { "cdist": [ "config", "install" ],
-                "file":  [ "present", "absent" ]
+    actions = {
+        "cdist": ["config", "install", ],
+        "file":  ["present", "absent", ],
     }
 
     def do_HEAD(self):
@@ -119,7 +115,7 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
             action = m.group('action')
             handler = getattr(self, "handler_" + subsystem)
 
-            if not action in self.actions[subsystem]:
+            if action not in self.actions[subsystem]:
                 code = 404
         else:
             code = 404
@@ -133,7 +129,8 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
 
     def handler_file(self, action, host):
         if not self.server.directory or not self.server.source:
-            log.info("Cannot server file request: directory or source not setup")
+            log.info("Cannot serve file request: directory or source "
+                     "not setup")
             return
 
         try:
@@ -151,7 +148,7 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
                 os.remove(dst)
 
     def handler_cdist(self, action, host):
-        log.debug("Running cdist for %s in mode %s", host, mode)
+        log.debug("Running cdist action %s for %s", action, host)
 
         if self.server.dry_run:
             log.info("Dry run, skipping cdist execution")

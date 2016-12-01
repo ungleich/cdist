@@ -45,7 +45,7 @@ def determine_default_inventory_dir(args):
         else:
             home = cdist.home_dir()
             if home:
-                args.inventory_dir = os.path.join(home,DIST_INVENTORY_DB_NAME)
+                args.inventory_dir = os.path.join(home, DIST_INVENTORY_DB_NAME)
             else:
                 args.inventory_dir = dist_inventory_db
 

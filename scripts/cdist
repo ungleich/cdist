@@ -35,15 +35,13 @@ def commandline():
     import shutil
     import os
 
-
     parser = cdist.argparse.get_parsers()
     # preos subcommand hack
     if len(sys.argv) > 1 and sys.argv[1] == 'preos':
         return cdist.preos.PreOS.commandline(sys.argv[1:])
-
     args = parser['main'].parse_args(sys.argv[1:])
 
-    # Loglevels are handled globally in here and debug wins over verbose
+    # Loglevels are handled globally in here
     cdist.argparse.handle_loglevel(args)
 
     log.debug(args)
@@ -68,7 +66,6 @@ def commandline():
     args.func(args)
 
 if __name__ == "__main__":
-    # Sys is needed for sys.exit()
     import sys
 
     cdistpythonversion = '3.2'

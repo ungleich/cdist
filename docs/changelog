@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Core: support custom cache path pattern (Darko Poljak)
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Add preos functionality (Darko Poljak)
 	* Core: Add inventory functionality (Darko Poljak)
