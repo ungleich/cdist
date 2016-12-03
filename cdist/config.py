@@ -22,15 +22,14 @@
 
 import logging
 import os
-import shutil
 import sys
 import time
-import pprint
 import itertools
 import tempfile
 import socket
 
 import cdist
+import cdist.hostsource
 
 import cdist.exec.local
 import cdist.exec.remote
@@ -62,54 +61,16 @@ class Config(object):
         self.remote.create_files_dirs()
 
     @staticmethod
-    def hostfile_process_line(line):
-        """Return host from read line or None if no host present."""
-        if not line:
-            return None
-        # remove comment if present
-        comment_index = line.find('#')
-        if comment_index >= 0:
-            host = line[:comment_index]
-        else:
-            host = line
-        # remove leading and trailing whitespaces
-        host = host.strip()
-        # skip empty lines
-        if host:
-            return host
-        else:
-            return None
-
-    @staticmethod
     def hosts(source):
-        """Yield hosts from source.
-           Source can be a sequence or filename (stdin if \'-\').
-           In case of filename each line represents one host.
-        """
-        if isinstance(source, str):
-            import fileinput
-            try:
-                for host in fileinput.input(files=(source)):
-                    host = Config.hostfile_process_line(host)
-                    if host:
-                        yield host
-            except (IOError, OSError, UnicodeError) as e:
-                raise cdist.Error(
-                        "Error reading hosts from file \'{}\': {}".format(
-                            source, e))
-        else:
-            if source:
-                for host in source:
-                    yield host
+        try:
+            yield from cdist.hostsource.HostSource(source)()
+        except (IOError, OSError, UnicodeError) as e:
+            raise cdist.Error(
+                    "Error reading hosts from \'{}\': {}".format(
+                        source, e))
 
     @classmethod
-    def commandline(cls, args):
-        """Configure remote system"""
-        import multiprocessing
-
-        # FIXME: Refactor relict - remove later
-        log = logging.getLogger("cdist")
-
+    def _check_and_prepare_args(cls, args):
         if args.manifest == '-' and args.hostfile == '-':
             raise cdist.Error(("Cannot read both, manifest and host file, "
                                "from stdin"))
@@ -134,10 +95,6 @@ class Config(object):
             import atexit
             atexit.register(lambda: os.remove(initial_manifest_temp_path))
 
-        process = {}
-        failed_hosts = []
-        time_start = time.time()
-
         # default remote cmd patterns
         args.remote_exec_pattern = None
         args.remote_copy_pattern = None
@@ -154,10 +111,29 @@ class Config(object):
             if args_dict['remote_copy'] is None:
                 args.remote_copy_pattern = cdist.REMOTE_COPY + mux_opts
 
+    @classmethod
+    def _base_root_path(cls, args):
         if args.out_path:
             base_root_path = args.out_path
         else:
             base_root_path = tempfile.mkdtemp()
+        return base_root_path
+
+    @classmethod
+    def commandline(cls, args):
+        """Configure remote system"""
+        import multiprocessing
+
+        # FIXME: Refactor relict - remove later
+        log = logging.getLogger("cdist")
+
+        cls._check_and_prepare_args(args)
+
+        process = {}
+        failed_hosts = []
+        time_start = time.time()
+
+        base_root_path = cls._base_root_path(args)
 
         hostcnt = 0
         for host in itertools.chain(cls.hosts(args.host),
@@ -200,26 +176,31 @@ class Config(object):
                               " ".join(failed_hosts))
 
     @classmethod
+    def _resolve_remote_cmds(cls, args, host_base_path):
+        control_path = os.path.join(host_base_path, "ssh-control-path")
+        # If we constructed patterns for remote commands then there is
+        # placeholder for ssh ControlPath, format it and we have unique
+        # ControlPath for each host.
+        #
+        # If not then use args.remote_exec/copy that user specified.
+        if args.remote_exec_pattern:
+            remote_exec = args.remote_exec_pattern.format(control_path)
+        else:
+            remote_exec = args.remote_exec
+        if args.remote_copy_pattern:
+            remote_copy = args.remote_copy_pattern.format(control_path)
+        else:
+            remote_copy = args.remote_copy
+        return (remote_exec, remote_copy, )
+
+    @classmethod
     def onehost(cls, host, host_base_path, host_dir_name, args, parallel):
         """Configure ONE system"""
 
         log = logging.getLogger(host)
 
         try:
-            control_path = os.path.join(host_base_path, "ssh-control-path")
-            # If we constructed patterns for remote commands then there is
-            # placeholder for ssh ControlPath, format it and we have unique
-            # ControlPath for each host.
-            #
-            # If not then use args.remote_exec/copy that user specified.
-            if args.remote_exec_pattern:
-                remote_exec = args.remote_exec_pattern.format(control_path)
-            else:
-                remote_exec = args.remote_exec
-            if args.remote_copy_pattern:
-                remote_copy = args.remote_copy_pattern.format(control_path)
-            else:
-                remote_copy = args.remote_copy
+            remote_exec, remote_copy = cls._resolve_remote_cmds(host_base_path)
             log.debug("remote_exec for host \"{}\": {}".format(
                 host, remote_exec))
             log.debug("remote_copy for host \"{}\": {}".format(

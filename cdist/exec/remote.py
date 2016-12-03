@@ -30,40 +30,13 @@ import multiprocessing
 
 import cdist
 import cdist.exec.util as exec_util
-
-
-# check whether addr is IPv6
-try:
-    # python 3.3+
-    import ipaddress
-
-    def _is_ipv6(addr):
-        try:
-            return ipaddress.ip_address(addr).version == 6
-        except ValueError:
-            return False
-except ImportError:
-    # fallback for older python versions
-    import socket
-
-    def _is_ipv6(addr):
-        try:
-            socket.inet_aton(addr)
-            return False
-        except socket.error:
-            pass
-        try:
-            socket.inet_pton(socket.AF_INET6, addr)
-            return True
-        except socket.error:
-            pass
-        return False
+import cdist.util.ipaddr as ipaddr
 
 
 def _wrap_addr(addr):
     """If addr is IPv6 then return addr wrapped between '[' and ']',
     otherwise return it intact."""
-    if _is_ipv6(addr):
+    if ipaddr.is_ipv6(addr):
         return "".join(("[", addr, "]", ))
     else:
         return addr

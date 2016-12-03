@@ -55,3 +55,29 @@ def resolve_target_addresses(host):
         host_fqdn = ''
 
     return (host, host_name, host_fqdn)
+
+
+# check whether addr is IPv6
+try:
+    # python 3.3+
+    import ipaddress
+
+    def is_ipv6(addr):
+        try:
+            return ipaddress.ip_address(addr).version == 6
+        except ValueError:
+            return False
+except ImportError:
+    # fallback for older python versions
+    def is_ipv6(addr):
+        try:
+            socket.inet_aton(addr)
+            return False
+        except socket.error:
+            pass
+        try:
+            socket.inet_pton(socket.AF_INET6, addr)
+            return True
+        except socket.error:
+            pass
+        return False
