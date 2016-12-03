@@ -2,14 +2,14 @@ Changelog
 ---------
 
 4.4.0: 2016-12-03
-	* Core: deprecate -d option and make -v option log level counter (Darko	Poljak)
+	* Core: Deprecate -d option and make -v option log level counter (Darko	Poljak)
 	* New type: __postgres_extension (Tomas Pospisek)
-	* Core, types: support IPv6 (Darko Poljak)
-	* Type __consul: add source and cksum files for Consul 0.7.0 and 0.7.1 (Carlos Ortigoza)
+	* Core, types: Support IPv6 (Darko Poljak)
+	* Type __consul: Add source and cksum files for Consul 0.7.0 and 0.7.1 (Carlos Ortigoza)
 	* Type __user: FreeBSD fix (Kamila Souckova)
 	* New type: __apt_mark (Ander Punnar)
-	* Type __package_upgrade_all: do not dist-upgrade by default, add apt-clean and apt-dist-upgrade options  (Ander Punnar)
-	* Core: fix target_host vars (Darko Poljak)
+	* Type __package_upgrade_all: Do not dist-upgrade by default, add apt-clean and apt-dist-upgrade options  (Ander Punnar)
+	* Core: Correct target_host var in code.py (Darko Poljak)
 	* All: Merge install feature from 4.0-pre-not-stable (Darko Poljak)
 
 4.3.2: 2016-10-13
@@ -20,7 +20,7 @@ Changelog
 	* Type __package_pkg_openbsd: Support --version (Andres Erbsen)
 	* Type __hostname: Support openbsd (Andres Erbsen)
 	* New type: __firewalld_start: start/stop firewalld and/or enable/disable start on boot (Darko Poljak)
-	* Bugfix __consul_agent: config option was misnamed 'syslog' instead of	'enable_syslog' (Steven Armstrong)
+	* Bugfix __consul_agent: Config option was misnamed 'syslog' instead of	'enable_syslog' (Steven Armstrong)
 
 4.3.1: 2016-08-22
 	* Documentation: Spelling fixes (Darko Poljak)
