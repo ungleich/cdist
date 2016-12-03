@@ -1,7 +1,5 @@
 cdist-type__docker(7)
 =====================
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-
 
 NAME
 ----
@@ -25,24 +23,23 @@ None.
 
 BOOLEAN PARAMETERS
 ------------------
-experimentel::
+experimentel
    Install the experimentel docker-engine package instead of the latest stable release.
 
 
 EXAMPLES
 --------
 
---------------------------------------------------------------------------------
-__docker
+.. code-block:: sh
+    __docker
 
-# experimentel
-__docker --experimental
---------------------------------------------------------------------------------
+    # experimentel
+    __docker --experimental
 
 
-SEE ALSO
---------
-- cdist-type(7)
+AUTHORS
+-------
+Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
