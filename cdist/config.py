@@ -34,38 +34,10 @@ import cdist
 
 import cdist.exec.local
 import cdist.exec.remote
+import cdist.util.ipaddr as ipaddr
 
 from cdist import core
-
-
-def inspect_ssh_mux_opts():
-    """Inspect whether or not ssh supports multiplexing options.
-
-       Return string containing multiplexing options if supported.
-       If ControlPath is supported then placeholder for that path is
-       specified and can be used for final string formatting.
-       For example, this function can return string:
-       "-o ControlMaster=auto -o ControlPersist=125 -o ControlPath={}".
-       Then it can be formatted:
-       mux_opts_string.format('/tmp/tmpxxxxxx/ssh-control-path').
-    """
-    import subprocess
-
-    wanted_mux_opts = {
-        "ControlPath": "{}",
-        "ControlMaster": "auto",
-        "ControlPersist": "125",
-    }
-    mux_opts = " ".join([" -o {}={}".format(
-        x, wanted_mux_opts[x]) for x in wanted_mux_opts])
-    try:
-        subprocess.check_output("ssh {}".format(mux_opts),
-                                stderr=subprocess.STDOUT, shell=True)
-    except subprocess.CalledProcessError as e:
-        subproc_output = e.output.decode().lower()
-        if "bad configuration option" in subproc_output:
-            return ""
-    return mux_opts
+from cdist.util.remoteutil import inspect_ssh_mux_opts
 
 
 class Config(object):
@@ -253,38 +225,7 @@ class Config(object):
             log.debug("remote_copy for host \"{}\": {}".format(
                 host, remote_copy))
 
-            try:
-                # getaddrinfo returns a list of 5-tuples:
-                # (family, type, proto, canonname, sockaddr)
-                # where sockaddr is:
-                # (address, port) for AF_INET,
-                # (address, port, flow_info, scopeid) for AF_INET6
-                ip_addr = socket.getaddrinfo(
-                        host, None, type=socket.SOCK_STREAM)[0][4][0]
-                # gethostbyaddr returns triple
-                # (hostname, aliaslist, ipaddrlist)
-                host_name = socket.gethostbyaddr(ip_addr)[0]
-                log.debug("derived host_name for host \"{}\": {}".format(
-                    host, host_name))
-            except (socket.gaierror, socket.herror) as e:
-                log.warn("Could not derive host_name for {}"
-                         ", $host_name will be empty. Error is: {}".format(
-                             host, e))
-                # in case of error provide empty value
-                host_name = ''
-
-            try:
-                host_fqdn = socket.getfqdn(host)
-                log.debug("derived host_fqdn for host \"{}\": {}".format(
-                    host, host_fqdn))
-            except socket.herror as e:
-                log.warn("Could not derive host_fqdn for {}"
-                         ", $host_fqdn will be empty. Error is: {}".format(
-                             host, e))
-                # in case of error provide empty value
-                host_fqdn = ''
-
-            target_host = (host, host_name, host_fqdn)
+            target_host = ipaddr.resolve_target_addresses(host)
             log.debug("target_host: {}".format(target_host))
 
             local = cdist.exec.local.Local(
