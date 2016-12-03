@@ -6,6 +6,8 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Add preos functionality (Darko Poljak)
 	* Core: Add inventory functionality (Darko Poljak)
+
+4.4.0: 2016-12-03
 	* Core: deprecate -d option and make -v option log level counter (Darko	Poljak)
 	* New type: __postgres_extension (Tomas Pospisek)
 	* Core, types: support IPv6 (Darko Poljak)
