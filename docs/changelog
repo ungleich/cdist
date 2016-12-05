@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+next:
+	* New type: __docker (Steven Armstrong)
+	* New type: __package_dpkg (Tomas Pospisek)
+
 4.4.0: 2016-12-03
 	* Core: Deprecate -d option and make -v option log level counter (Darko	Poljak)
 	* New type: __postgres_extension (Tomas Pospisek)
