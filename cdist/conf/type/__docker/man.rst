@@ -23,7 +23,7 @@ None.
 
 BOOLEAN PARAMETERS
 ------------------
-experimentel
+experimental
    Install the experimentel docker-engine package instead of the latest stable release.
 
 
@@ -31,6 +31,7 @@ EXAMPLES
 --------
 
 .. code-block:: sh
+
     __docker
 
     # experimentel
