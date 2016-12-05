@@ -24,7 +24,7 @@ None.
 BOOLEAN PARAMETERS
 ------------------
 experimental
-   Install the experimentel docker-engine package instead of the latest stable release.
+   Install the experimental docker-engine package instead of the latest stable release.
 
 
 EXAMPLES
@@ -34,7 +34,7 @@ EXAMPLES
 
     __docker
 
-    # experimentel
+    # experimental
     __docker --experimental
 
 
