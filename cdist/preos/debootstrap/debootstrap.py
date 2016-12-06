@@ -95,7 +95,7 @@ class Debian(object):
                   "internal init manifest is used"),
             dest='manifest', default=defargs.manifest)
         parser.add_argument(
-            '-k', '--keyfile',
+            '-k', '--keyfile', action="append",
             help=("ssh key files that will be added to cdist config; "
                   "'__ssh_authorized_keys root ...' type is appended to "
                   "initial manifest"),
