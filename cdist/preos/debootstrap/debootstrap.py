@@ -194,6 +194,7 @@ class Debian(object):
                 info_msg.append(", configuring")
             if args.pxe_boot_dir:
                 info_msg.append(", creating PXE")
+            log.debug("cmd={}".format(cmd))
             subprocess.check_call(cmd, env=env, shell=True)
         except subprocess.CalledProcessError as e:
             log.error("preos {} failed: {}".format(cls._preos_name, e))
