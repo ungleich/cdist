@@ -177,7 +177,7 @@ class Debian(object):
                     for i, v in enumerate(val):
                         new_env[key + "_" + str(i)] = v
                 else:
-                    new_env[key] = env[key]
+                    new_env[key] = str(env[key])
             env = new_env
             env.update(os.environ)
             log.debug("preos: {} env: {}".format(cls._preos_name, env))
