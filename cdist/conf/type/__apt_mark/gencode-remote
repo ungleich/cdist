@@ -34,7 +34,6 @@ fi
 package_installed="$(cat "$__object/explorer/package_installed")"
 
 if [ "$package_installed" != '0' ]; then
-    echo "Package $name not installed" >&2
     exit 0
 fi
 
