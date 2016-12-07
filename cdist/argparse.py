@@ -6,11 +6,11 @@ import logging
 import collections
 
 
-# list of beta sub-commands
-BETA_COMMANDS = ['install', ]
-# list of beta arguments for sub-commands
+# set of beta sub-commands
+BETA_COMMANDS = set(('install', ))
+# set of beta arguments for sub-commands
 BETA_ARGS = {
-    'config': ['jobs', ],
+    'config': set(('jobs', )),
 }
 EPILOG = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
 # Parser others can reuse
@@ -27,8 +27,7 @@ _verbosity_level = collections.defaultdict(
 
 
 def add_beta_command(cmd):
-    if cmd not in BETA_COMMANDS:
-        BETA_COMMANDS.append(cmd)
+    BETA_COMMANDS.add(cmd)
 
 
 def add_beta_arg(cmd, arg):
@@ -36,7 +35,7 @@ def add_beta_arg(cmd, arg):
         if arg not in BETA_ARGS[cmd]:
             BETA_ARGS[cmd].append(arg)
     else:
-        BETA_ARGS[cmd] = [arg, ]
+        BETA_ARGS[cmd] = set((arg, ))
 
 
 def check_beta(args_dict):
