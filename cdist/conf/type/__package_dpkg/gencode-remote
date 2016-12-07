@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# 2013 Tomas Pospisek (tpo_deb sourcepole.ch)
+#
+# This file is based on cdist's __file/gencode-local and part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# This __package_dpkg type does not check whether a *.deb package is
+# allready installed. It just copies the *.deb package over to the
+# destination and installs it. We could use __package_apt to check
+# whether a *.deb package is allready installed and only install it
+# if we're given a --force argument or similar (would be clever not
+# to conflict with dpkg's --force options). But currently we don't
+# do any checks or --force'ing.
+#
+
+echo "dpkg -i /var/cache/apt/archives/$__object_id"

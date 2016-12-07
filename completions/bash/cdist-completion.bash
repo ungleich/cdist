@@ -36,7 +36,7 @@ _cdist()
             return 0
             ;;
         config|install)
-            opts="-h --help -d --debug -v --verbose -b --enable-beta \
+            opts="-h --help -d --debug -v --verbose -b --beta \
                 -c --conf-dir -f --file -i --initial-manifest -j --jobs \
                 -n --dry-run -o --out-dir -p --parallel -s --sequential \
                 --remote-copy --remote-exec"
