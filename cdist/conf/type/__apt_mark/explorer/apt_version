@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# 2016 Ander Punnar (cdist at kvlt.ee)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+apt_version_is=$(dpkg-query --show --showformat '${Version}' apt)
+
+# from APT changelog:
+#   apt (0.8.14.2) UNRELEASED; urgency=low
+#   provide a 'dpkg --set-selections' wrapper to set/release holds
+
+apt_version_should=0.8.14.2
+
+dpkg --compare-versions $apt_version_should le $apt_version_is \
+    && echo 0 \
+    || echo 1
