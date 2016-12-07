@@ -320,13 +320,16 @@ class Config(object):
                 # objects_changed = True
                 cargo.append(cdist_object)
 
-        if cargo:
+        if len(cargo) == 1:
+            self.object_prepare(cargo[0])
+            objects_changed = True
+        elif cargo:
             with concurrent.futures.ProcessPoolExecutor(self.jobs) as executor:
                 for x in executor.map(self.object_prepare, cargo):
                     pass  # returns None
             objects_changed = True
 
-        cargo.clear()
+        del cargo[:]
         for cdist_object in self.object_list():
             if cdist_object.requirements_unfinished(cdist_object.requirements):
                 """We cannot do anything for this poor object"""
@@ -344,7 +347,10 @@ class Config(object):
                 # objects_changed = True
                 cargo.append(cdist_object)
 
-        if cargo:
+        if len(cargo) == 1:
+            self.object_run(cargo[0])
+            objects_changed = True
+        elif cargo:
             with concurrent.futures.ProcessPoolExecutor(self.jobs) as executor:
                 for x in executor.map(self.object_run, cargo):
                     pass  # returns None
