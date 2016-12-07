@@ -30,40 +30,13 @@ import multiprocessing
 
 import cdist
 import cdist.exec.util as exec_util
-
-
-# check whether addr is IPv6
-try:
-    # python 3.3+
-    import ipaddress
-
-    def _is_ipv6(addr):
-        try:
-            return ipaddress.ip_address(addr).version == 6
-        except ValueError:
-            return False
-except ImportError:
-    # fallback for older python versions
-    import socket
-
-    def _is_ipv6(addr):
-        try:
-            socket.inet_aton(addr)
-            return False
-        except socket.error:
-            pass
-        try:
-            socket.inet_pton(socket.AF_INET6, addr)
-            return True
-        except socket.error:
-            pass
-        return False
+import cdist.util.ipaddr as ipaddr
 
 
 def _wrap_addr(addr):
     """If addr is IPv6 then return addr wrapped between '[' and ']',
     otherwise return it intact."""
-    if _is_ipv6(addr):
+    if ipaddr.is_ipv6(addr):
         return "".join(("[", addr, "]", ))
     else:
         return addr
@@ -145,57 +118,59 @@ class Remote(object):
         self.log.debug("Remote mkdir: %s", path)
         self.run(["mkdir", "-p", path])
 
-    def transfer(self, source, destination):
+    def transfer(self, source, destination, jobs=None):
         """Transfer a file or directory to the remote side."""
         self.log.debug("Remote transfer: %s -> %s", source, destination)
         self.rmdir(destination)
         if os.path.isdir(source):
             self.mkdir(destination)
-            for f in glob.glob1(source, '*'):
-                command = self._copy.split()
-                path = os.path.join(source, f)
-                command.extend([path, '{0}:{1}'.format(
-                    _wrap_addr(self.target_host[0]), destination)])
-                self._run_command(command)
+            if jobs:
+                self._transfer_dir_parallel(source, destination, jobs)
+            else:
+                self._transfer_dir_sequential(source, destination)
+        elif jobs:
+            raise cdist.Error("Source {} is not a directory".format(source))
         else:
             command = self._copy.split()
             command.extend([source, '{0}:{1}'.format(
                 _wrap_addr(self.target_host[0]), destination)])
             self._run_command(command)
 
-    def transfer_dir_parallel(self, source, destination, jobs):
-        """Transfer a directory to the remote side in parallel mode."""
-        self.log.debug("Remote transfer: %s -> %s", source, destination)
-        self.rmdir(destination)
-        if os.path.isdir(source):
-            self.mkdir(destination)
-            self.log.info("Remote transfer in {} parallel jobs".format(
-                jobs))
-            self.log.debug("Multiprocessing start method is {}".format(
-                multiprocessing.get_start_method()))
-            self.log.debug(("Starting multiprocessing Pool for parallel "
-                           "remote transfer"))
-            with multiprocessing.Pool(jobs) as pool:
-                self.log.debug("Starting async for parallel transfer")
-                commands = []
-                for f in glob.glob1(source, '*'):
-                    command = self._copy.split()
-                    path = os.path.join(source, f)
-                    command.extend([path, '{0}:{1}'.format(
-                        _wrap_addr(self.target_host[0]), destination)])
-                    commands.append(command)
-                results = [
-                    pool.apply_async(self._run_command, (cmd,))
-                    for cmd in commands
-                ]
+    def _transfer_dir_sequential(self, source, destination):
+        for f in glob.glob1(source, '*'):
+            command = self._copy.split()
+            path = os.path.join(source, f)
+            command.extend([path, '{0}:{1}'.format(
+                _wrap_addr(self.target_host[0]), destination)])
+            self._run_command(command)
 
-                self.log.debug("Waiting async results for parallel transfer")
-                for r in results:
-                    r.get()  # self._run_command returns None
-                self.log.debug(("Multiprocessing for parallel transfer "
-                               "finished"))
-        else:
-            raise cdist.Error("Source {} is not a directory".format(source))
+    def _transfer_dir_parallel(self, source, destination, jobs):
+        """Transfer a directory to the remote side in parallel mode."""
+        self.log.info("Remote transfer in {} parallel jobs".format(
+            jobs))
+        self.log.debug("Multiprocessing start method is {}".format(
+            multiprocessing.get_start_method()))
+        self.log.debug(("Starting multiprocessing Pool for parallel "
+                        "remote transfer"))
+        with multiprocessing.Pool(jobs) as pool:
+            self.log.debug("Starting async for parallel transfer")
+            commands = []
+            for f in glob.glob1(source, '*'):
+                command = self._copy.split()
+                path = os.path.join(source, f)
+                command.extend([path, '{0}:{1}'.format(
+                    _wrap_addr(self.target_host[0]), destination)])
+                commands.append(command)
+            results = [
+                pool.apply_async(self._run_command, (cmd,))
+                for cmd in commands
+            ]
+
+            self.log.debug("Waiting async results for parallel transfer")
+            for r in results:
+                r.get()  # self._run_command returns None
+            self.log.debug(("Multiprocessing for parallel transfer "
+                            "finished"))
 
     def run_script(self, script, env=None, return_output=False):
         """Run the given script with the given environment on the remote side.

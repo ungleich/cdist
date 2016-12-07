@@ -236,6 +236,9 @@ CDIST_REMOTE_EXEC
 CDIST_REMOTE_COPY
     Use this command for remote copy (should behave like scp).
 
+CDIST_BETA
+    Enable beta functionalities.
+
 EXIT STATUS
 -----------
 The following exit values shall be returned:
