@@ -1,5 +1,5 @@
 cdist-type__chroot_mount(7)
-===================================
+===========================
 
 NAME
 ----
@@ -21,6 +21,12 @@ OPTIONAL PARAMETERS
 None
 
 
+BOOLEAN PARAMETERS
+------------------
+manage-resolv-conf
+    manage /etc/resolv.conf inside the chroot
+
+
 EXAMPLES
 --------
 
@@ -36,7 +42,7 @@ Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 COPYING
 -------
-Copyright \(C) 2012 Steven Armstrong. You can redistribute it
+Copyright \(C) 2012-2017 Steven Armstrong. You can redistribute it
 and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.

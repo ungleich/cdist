@@ -49,6 +49,8 @@ EXAMPLES
     __install_partition_msdos /dev/sda6 --type 83 --size 50%
     # rest of the extended partition, linux
     __install_partition_msdos /dev/sda7 --type 83 --size +
+    # nvm device partition 2
+    __install_partition_msdos /dev/nvme0n1p2 --device /dev/nvme0n1 --minor 2 --type 83 --size 128M --bootable true
 
 
 AUTHORS
@@ -58,7 +60,7 @@ Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 COPYING
 -------
-Copyright \(C) 2011 Steven Armstrong. You can redistribute it
+Copyright \(C) 2011-2017 Steven Armstrong. You can redistribute it
 and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.

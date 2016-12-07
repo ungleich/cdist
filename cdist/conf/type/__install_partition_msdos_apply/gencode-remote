@@ -18,6 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+#set -x
+
 die() {
    echo "[__install_partition_msdos_apply] $@" >&2
    exit 1
