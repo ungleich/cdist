@@ -28,7 +28,7 @@ apt_version="$(cat "$__object/explorer/apt_version")"
 
 if [ "$apt_version" != '0' ]; then
     echo 'APT version not supported' >&2
-    exit 0
+    exit 1
 fi
 
 package_installed="$(cat "$__object/explorer/package_installed")"
