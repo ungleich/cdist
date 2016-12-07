@@ -200,7 +200,8 @@ class Config(object):
         log = logging.getLogger(host)
 
         try:
-            remote_exec, remote_copy = cls._resolve_remote_cmds(host_base_path)
+            remote_exec, remote_copy = cls._resolve_remote_cmds(
+                args, host_base_path)
             log.debug("remote_exec for host \"{}\": {}".format(
                 host, remote_exec))
             log.debug("remote_copy for host \"{}\": {}".format(

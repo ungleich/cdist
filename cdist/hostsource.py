@@ -60,7 +60,7 @@ class HostSource(object):
                 yield host
 
     def hosts(self):
-        if not source:
+        if not self.source:
             return
 
         if isinstance(self.source, str):
