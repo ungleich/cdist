@@ -69,10 +69,11 @@ CONFIG/INSTALL
 --------------
 Configure/install one or more hosts.
 
-.. option:: -b, --enable-beta
+.. option:: -b, --beta
 
-    Enable beta functionalities. Beta functionalities include the
-    following options: -j/--jobs.
+    Enable beta functionalities.
+    
+    Can also be enabled using CDIST_BETA env var.
 
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
