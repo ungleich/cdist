@@ -267,11 +267,44 @@ class Config(object):
             else:
                 yield cdist_object
 
-    def iterate_once_parallel(self):
+    def iterate_once(self):
         """
             Iterate over the objects once - helper method for
             iterate_until_finished
         """
+        if self.jobs:
+            objects_changed = self._iterate_once_parallel()
+        else:
+            objects_changed = self._iterate_once_sequential()
+        return objects_changed
+
+    def _iterate_once_sequential(self):
+        objects_changed = False
+
+        for cdist_object in self.object_list():
+            if cdist_object.requirements_unfinished(cdist_object.requirements):
+                """We cannot do anything for this poor object"""
+                continue
+
+            if cdist_object.state == core.CdistObject.STATE_UNDEF:
+                """Prepare the virgin object"""
+
+                self.object_prepare(cdist_object)
+                objects_changed = True
+
+            if cdist_object.requirements_unfinished(cdist_object.autorequire):
+                """The previous step created objects we depend on -
+                   wait for them
+                """
+                continue
+
+            if cdist_object.state == core.CdistObject.STATE_PREPARED:
+                self.object_run(cdist_object)
+                objects_changed = True
+
+        return objects_changed
+
+    def _iterate_once_parallel(self):
         objects_changed = False
 
         cargo = []
@@ -300,7 +333,8 @@ class Config(object):
                 continue
 
             if cdist_object.state == core.CdistObject.STATE_PREPARED:
-                if cdist_object.requirements_unfinished(cdist_object.autorequire):
+                if cdist_object.requirements_unfinished(
+                        cdist_object.autorequire):
                     """The previous step created objects we depend on -
                     wait for them
                     """
@@ -327,8 +361,7 @@ class Config(object):
         objects_changed = True
 
         while objects_changed:
-            if self.jobs:
-                objects_changed = self.iterate_once_parallel()
+            objects_changed = self.iterate_once()
 
         # Check whether all objects have been finished
         unfinished_objects = []
