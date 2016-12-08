@@ -28,6 +28,7 @@ import itertools
 import tempfile
 import socket
 import multiprocessing
+from cdist.mputil import mp_pool_run
 
 import cdist
 import cdist.hostsource
@@ -332,20 +333,12 @@ class Config(object):
                 multiprocessing.get_start_method()))
             self.log.debug(("Starting multiprocessing Pool for {} parallel "
                             "objects preparation".format(n)))
-            with multiprocessing.Pool(self.jobs) as pool:
-                self.log.debug(("Starting async for parallel object "
-                                "preparation"))
-                results = [
-                    pool.apply_async(self.object_prepare, (c,))
-                    for c in cargo
-                ]
-
-                self.log.debug(("Waiting async results for parallel object "
-                                "preparation"))
-                for r in results:
-                    r.get()
-                self.log.debug(("Multiprocessing for parallel object "
-                                "preparation finished"))
+            args = [
+                (c, ) for c in cargo
+            ]
+            mp_pool_run(self.object_prepare, args, jobs=self.jobs)
+            self.log.debug(("Multiprocessing for parallel object "
+                            "preparation finished"))
             objects_changed = True
 
         del cargo[:]
@@ -376,19 +369,12 @@ class Config(object):
                 multiprocessing.get_start_method()))
             self.log.debug(("Starting multiprocessing Pool for {} parallel "
                             "object run".format(n)))
-            with multiprocessing.Pool(self.jobs) as pool:
-                self.log.debug(("Starting async for parallel object run"))
-                results = [
-                    pool.apply_async(self.object_run, (c,))
-                    for c in cargo
-                ]
-
-                self.log.debug(("Waiting async results for parallel object "
-                                "run"))
-                for r in results:
-                    r.get()
-                self.log.debug(("Multiprocessing for parallel object "
-                                "run finished"))
+            args = [
+                (c, ) for c in cargo
+            ]
+            mp_pool_run(self.object_run, args, jobs=self.jobs)
+            self.log.debug(("Multiprocessing for parallel object "
+                            "run finished"))
             objects_changed = True
 
         return objects_changed

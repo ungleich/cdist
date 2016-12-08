@@ -24,8 +24,7 @@ import logging
 import os
 import glob
 import multiprocessing
-
-import cdist
+from cdist.mputil import mp_pool_run
 
 '''
 common:
@@ -121,18 +120,12 @@ class Explorer(object):
             multiprocessing.get_start_method()))
         self.log.debug(("Starting multiprocessing Pool for global "
                        "explorers run"))
-        with multiprocessing.Pool(self.jobs) as pool:
-            self.log.debug("Starting async for global explorer run")
-            results = [
-                pool.apply_async(self._run_global_explorer, (e, out_path,))
-                for e in self.list_global_explorer_names()
-            ]
-
-            self.log.debug("Waiting async results for global explorer runs")
-            for r in results:
-                r.get()  # self._run_global_explorer returns None
-            self.log.debug(("Multiprocessing run for global explorers "
-                           "finished"))
+        args = [
+            (e, out_path, ) for e in self.list_global_explorer_names()
+        ]
+        mp_pool_run(self._run_global_explorer, args, jobs=self.jobs)
+        self.log.debug(("Multiprocessing run for global explorers "
+                        "finished"))
 
     # logger is not pickable, so remove it when we pickle
     def __getstate__(self):

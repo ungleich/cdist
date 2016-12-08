@@ -31,6 +31,7 @@ import multiprocessing
 import cdist
 import cdist.exec.util as exec_util
 import cdist.util.ipaddr as ipaddr
+from cdist.mputil import mp_pool_run
 
 
 def _wrap_addr(addr):
@@ -152,25 +153,16 @@ class Remote(object):
             multiprocessing.get_start_method()))
         self.log.debug(("Starting multiprocessing Pool for parallel "
                         "remote transfer"))
-        with multiprocessing.Pool(jobs) as pool:
-            self.log.debug("Starting async for parallel transfer")
-            commands = []
-            for f in glob.glob1(source, '*'):
-                command = self._copy.split()
-                path = os.path.join(source, f)
-                command.extend([path, '{0}:{1}'.format(
-                    _wrap_addr(self.target_host[0]), destination)])
-                commands.append(command)
-            results = [
-                pool.apply_async(self._run_command, (cmd,))
-                for cmd in commands
-            ]
-
-            self.log.debug("Waiting async results for parallel transfer")
-            for r in results:
-                r.get()  # self._run_command returns None
-            self.log.debug(("Multiprocessing for parallel transfer "
-                            "finished"))
+        args = []
+        for f in glob.glob1(source, '*'):
+            command = self._copy.split()
+            path = os.path.join(source, f)
+            command.extend([path, '{0}:{1}'.format(
+                _wrap_addr(self.target_host[0]), destination)])
+            args.append((command, ))
+        mp_pool_run(self._run_command, args, jobs=jobs)
+        self.log.debug(("Multiprocessing for parallel transfer "
+                        "finished"))
 
     def run_script(self, script, env=None, return_output=False):
         """Run the given script with the given environment on the remote side.
