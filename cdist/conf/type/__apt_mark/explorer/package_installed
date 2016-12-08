@@ -24,33 +24,7 @@ else
     name="$__object_id"
 fi
 
-apt_version="$(cat "$__object/explorer/apt_version")"
-
-if [ "$apt_version" != '0' ]; then
-    echo 'APT version not supported' >&2
-    exit 1
-fi
-
-package_installed="$(cat "$__object/explorer/package_installed")"
-
-if [ "$package_installed" != '0' ]; then
-    exit 0
-fi
-
-state_should="$(cat "$__object/parameter/state")"
-
-state_is="$(cat "$__object/explorer/state")"
-
-if [ "$state_should" = "$state_is" ]; then
-    exit 0
-fi
-
-case "$state_should" in
-    hold|unhold)
-        echo "apt-mark $state_should $name > /dev/null"
-    ;;
-    *)
-        echo "Unknown state: $state_should" >&2
-        exit 1
-    ;;
-esac
+dpkg-query --show --showformat '${Status}' $name 2>/dev/null \
+    | grep -q 'ok installed' \
+    && echo 0 \
+    || echo 1
