@@ -79,6 +79,9 @@ class CdistType(object):
 
     _instances = {}
 
+    def __getnewargs__(self):
+        return self.base_path, self.name
+
     def __new__(cls, *args, **kwargs):
         """only one instance of each named type may exist"""
         # name is second argument
