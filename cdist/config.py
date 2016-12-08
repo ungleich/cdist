@@ -279,6 +279,7 @@ class Config(object):
         return objects_changed
 
     def _iterate_once_sequential(self):
+        self.log.info("Iteration in sequential mode")
         objects_changed = False
 
         for cdist_object in self.object_list():
@@ -305,6 +306,8 @@ class Config(object):
         return objects_changed
 
     def _iterate_once_parallel(self):
+        self.log.info("Iteration in parallel mode in {} jobs".format(
+            self.jobs))
         objects_changed = False
 
         cargo = []
@@ -320,13 +323,17 @@ class Config(object):
                 # objects_changed = True
                 cargo.append(cdist_object)
 
-        if len(cargo) == 1:
+        n = len(cargo)
+        if n == 1:
+            self.log.debug("Only one object, preparing sequentially")
             self.object_prepare(cargo[0])
             objects_changed = True
         elif cargo:
+            self.log.debug("Preparing {} objects in parallel".format(n))
             with concurrent.futures.ProcessPoolExecutor(self.jobs) as executor:
                 for x in executor.map(self.object_prepare, cargo):
                     pass  # returns None
+            self.log.debug("Preparation finished")
             objects_changed = True
 
         del cargo[:]
@@ -347,13 +354,17 @@ class Config(object):
                 # objects_changed = True
                 cargo.append(cdist_object)
 
-        if len(cargo) == 1:
+        n = len(cargo)
+        if n == 1:
+            self.log.debug("Only one object, running sequentially")
             self.object_run(cargo[0])
             objects_changed = True
         elif cargo:
+            self.log.debug("Running {} objects in parallel".format(n))
             with concurrent.futures.ProcessPoolExecutor(self.jobs) as executor:
                 for x in executor.map(self.object_run, cargo):
                     pass  # returns None
+            self.log.debug("Running finished")
             objects_changed = True
 
         return objects_changed
