@@ -31,7 +31,7 @@ def mp_pool_run(func, args=None, kwds=None, jobs=multiprocessing.cpu_count()):
         Return list of results.
     """
     if args and kwds:
-        fargs = zip(args, kdws)
+        fargs = zip(args, kwds)
     elif args:
         fargs = zip(args, itertools.repeat({}))
     elif kwds:
