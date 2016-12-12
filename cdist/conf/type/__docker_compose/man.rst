@@ -42,4 +42,4 @@ Dominique Roux <dominique.roux--@--ungleich.ch>
 COPYING
 -------
 Copyright \(C) 2016 Dominique Roux. Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+granted under the terms of the GNU General Public License version 3 or later (GPLv3+).
