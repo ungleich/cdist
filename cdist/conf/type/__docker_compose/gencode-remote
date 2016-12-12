@@ -18,8 +18,11 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+# Variables
+version="$(cat "$__object/parameter/version")"
+
 # Download docker-compose file
-echo 'curl -L "https://github.com/docker/compose/releases/download/1.9.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
+echo 'curl -L "https://github.com/docker/compose/releases/download/'${version}'/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
 
 # Change permissions
 echo 'chmod +x /usr/local/bin/docker-compose'
