@@ -18,7 +18,8 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-None.
+version
+   Define docker_compose version.
 
 
 BOOLEAN PARAMETERS
@@ -32,6 +33,9 @@ EXAMPLES
 .. code-block:: sh
 
     __docker_compose
+
+    # Install version 1.9.0-rc4
+    __docker_compose --version 1.9.0-rc4
 
 
 AUTHORS
