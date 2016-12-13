@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* New type: __docker_compose (Dominique Roux)
 	* Type __apt_mark: Check supported apt version and if package is installed (Ander Punnar)
 	* New type: __docker (Steven Armstrong)
 	* New type: __package_dpkg (Tomas Pospisek)
