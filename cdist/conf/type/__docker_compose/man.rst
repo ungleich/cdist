@@ -8,7 +8,7 @@ cdist-type__docker_compose - install docker-compose
 
 DESCRIPTION
 -----------
-Installs latest docker-compose package from dockerproject.org.
+Installs docker-compose package.
 
 
 REQUIRED PARAMETERS
@@ -19,7 +19,7 @@ None.
 OPTIONAL PARAMETERS
 -------------------
 version
-   Define docker_compose version.
+   Define docker_compose version, defaults to "1.9.0" 
 
 
 BOOLEAN PARAMETERS
