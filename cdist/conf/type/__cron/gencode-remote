@@ -26,7 +26,7 @@ command="$(cat "$__object/parameter/command")"
 
 if [ -f "$__object/parameter/raw" ]; then
    raw="$(cat "$__object/parameter/raw")"
-   entry="$raw $command"
+   entry="$raw $command # $name"
 elif [ -f "$__object/parameter/raw_command" ]; then
    entry="$command"
 else
@@ -35,10 +35,9 @@ else
    day_of_month="$(cat "$__object/parameter/day_of_month" 2>/dev/null || echo "*")"
    month="$(cat "$__object/parameter/month" 2>/dev/null || echo "*")"
    day_of_week="$(cat "$__object/parameter/day_of_week" 2>/dev/null || echo "*")"
-   entry="$minute $hour $day_of_month $month $day_of_week $command"
+   entry="$minute $hour $day_of_month $month $day_of_week $command # $name"
 fi
 
-entry="$entry # $name"
 mkdir "$__object/files"
 echo "$entry" > "$__object/files/entry"
 
@@ -85,7 +84,12 @@ case "$state_should" in
         echo ") | crontab -u $user -"
     ;;
     absent)
-        echo "( crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" 2>/dev/null || true ) | \\"
-        echo "grep -v \"# $name\\$\" | crontab -u $user -"
+        if [ -f "$__object/parameter/raw_command" ]; then
+            echo "( crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" 2>/dev/null || true ) | \\"
+            echo "grep -v \"^$entry\\$\" | crontab -u $user -"
+        else
+            echo "( crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" 2>/dev/null || true ) | \\"
+            echo "grep -v \"# $name\\$\" | crontab -u $user -"
+        fi
     ;;
 esac
