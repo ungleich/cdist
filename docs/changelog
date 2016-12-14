@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Type __cron: no '# marker' for raw_command due to cron security (Daniel Heule)
 	* New type: __docker_compose (Dominique Roux)
 	* Type __apt_mark: Check supported apt version and if package is installed (Ander Punnar)
 	* New type: __docker (Steven Armstrong)
