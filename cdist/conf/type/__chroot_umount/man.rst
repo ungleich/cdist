@@ -1,9 +1,9 @@
-cdist-type__install_chroot_umount(7)
-====================================
+cdist-type__chroot_umount(7)
+============================
 
 NAME
 ----
-cdist-type__install_chroot_umount - unmount a chroot mounted by __chroot_mount
+cdist-type__chroot_umount - unmount a chroot mounted by __chroot_mount
 
 
 DESCRIPTION
@@ -26,7 +26,7 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __install_chroot_umount /path/to/chroot
+    __chroot_umount /path/to/chroot
 
 
 SEE ALSO

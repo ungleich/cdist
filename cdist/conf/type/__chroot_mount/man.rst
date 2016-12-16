@@ -1,9 +1,9 @@
-cdist-type__install_chroot_mount(7)
+cdist-type__chroot_mount(7)
 ===================================
 
 NAME
 ----
-cdist-type__install_chroot_mount - mount a chroot
+cdist-type__chroot_mount - mount a chroot
 
 
 DESCRIPTION
@@ -26,7 +26,7 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __install_chroot_mount /path/to/chroot
+    __chroot_mount /path/to/chroot
 
 
 AUTHORS
