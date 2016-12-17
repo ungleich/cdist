@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.4.1: 2016-12-17
 	* Documentation: Update docs for types that used man.rst as symbolic links (Darko Poljak)
 	* Type __cron: Remove '# marker' for raw_command due to cron security (Daniel Heule)
 	* New type: __docker_compose (Dominique Roux)
