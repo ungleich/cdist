@@ -22,7 +22,6 @@
 version="$(cat "$__object/parameter/version")"
 
 # Download docker-compose file
-echo 'curl -L "https://github.com/docker/compose/releases/download/'${version}'/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
-
+    echo 'if [ ! -e /usr/local/bin/docker-compose ]; then curl -L "https://github.com/docker/compose/releases/download/'${version}'/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose ; fi'
 # Change permissions
 echo 'chmod +x /usr/local/bin/docker-compose'
