@@ -20,38 +20,39 @@
 
 
 os=$(cat "$__global/explorer/os")
+state=$(cat "$__object/parameter/state")
 
 case "$os" in
-   centos)
-      component="main"
+    centos)
+        component="main"
+        if [ -f "$__object/parameter/experimental" ]; then
+          component="experimental"
+        fi
+        __yum_repo docker \
+          --name 'Docker Repository' \
+          --baseurl "https://yum.dockerproject.org/repo/$component/centos/\$releasever/" \
+          --enabled \
+          --gpgcheck 1 \
+          --gpgkey 'https://yum.dockerproject.org/gpg' \
+          --state ${state} 
+        require="__yum_repo/docker" __package docker-engine --state ${state}
+    ;;
+    ubuntu)
+        component="main"
       if [ -f "$__object/parameter/experimental" ]; then
          component="experimental"
       fi
-      export CDIST_ORDER_DEPENDENCY=on
-      __yum_repo docker \
-         --name 'Docker Repository' \
-         --baseurl "https://yum.dockerproject.org/repo/$component/centos/\$releasever/" \
-         --enabled \
-         --gpgcheck \
-         --gpgkey 'https://yum.dockerproject.org/gpg'
-      __package docker-engine
-      unset CDIST_ORDER_DEPENDENCY
-   ;;
-   ubuntu)
-      component="main"
-      if [ -f "$__object/parameter/experimental" ]; then
-         component="experimental"
-      fi
-      __package apparmor
-      __package ca-certificates
-      __package apt-transport-https
-      __apt_key docker --keyid 58118E89F3A912897C070ADBF76221572C52609D
+      __package apparmor --state ${state}
+      __package ca-certificates --state ${state}
+      __package apt-transport-https --state ${state}
+      __apt_key docker --keyid 58118E89F3A912897C070ADBF76221572C52609D --state ${state}
       export CDIST_ORDER_DEPENDENCY=on
       __apt_source docker \
          --uri https://apt.dockerproject.org/repo \
          --distribution "ubuntu-$(cat "$__global/explorer/lsb_codename")" \
+         --state ${state} \
          --component "$component"
-      __package docker-engine
+      __package docker-engine --state ${state}
       unset CDIST_ORDER_DEPENDENCY
    ;;
    debian)
@@ -60,16 +61,17 @@ case "$os" in
          component="experimental"
       fi
 
-      __package apt-transport-https
-      __package ca-certificates
-      __package gnupg2
-      __apt_key docker --keyid 58118E89F3A912897C070ADBF76221572C52609D
+      __package apt-transport-https --state ${state}
+      __package ca-certificates --state ${state}
+      __package gnupg2 --state ${state}
+      __apt_key docker --keyid 58118E89F3A912897C070ADBF76221572C52609D --state ${state}
       export CDIST_ORDER_DEPENDENCY=on
       __apt_source docker \
           --uri https://apt.dockerproject.org/repo \
           --distribution "debian-$(cat "$__global/explorer/lsb_codename")" \
+          --state ${state} \
           --component "$component"
-      __package docker-engine
+      __package docker-engine --state ${state}
       unset CDIST_ORDER_DEPENDENCY
 
    ;;
