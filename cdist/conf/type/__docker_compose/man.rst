@@ -21,6 +21,9 @@ OPTIONAL PARAMETERS
 version
    Define docker_compose version, defaults to "1.9.0" 
 
+state
+   'present' or 'absent', defaults to 'present'
+
 
 BOOLEAN PARAMETERS
 ------------------
@@ -32,10 +35,14 @@ EXAMPLES
 
 .. code-block:: sh
 
+    # Install docker-compose
     __docker_compose
 
     # Install version 1.9.0-rc4
     __docker_compose --version 1.9.0-rc4
+
+    # Remove docker-compose 
+    __docker_compose --state absent
 
 
 AUTHORS
