@@ -9,7 +9,7 @@ cdist-type__docker_compose - install docker-compose
 DESCRIPTION
 -----------
 Installs docker-compose package.
-State 'absent' will not remove docker binary itself
+State 'absent' will not remove docker binary itself,
 only docker-compose binary will be removed
 
 
