@@ -19,6 +19,15 @@
 #
 #
 
+state="$(cat "$__object/parameter/state")"
+
 # Needed packages
-__docker
-__package curl
+if [ ${state} = "present" ]; then
+    __docker
+    __package curl
+elif [ ${state} = "absent" ]; then
+    __file /usr/local/bin/docker-compose --state absent
+else
+    echo "Unknown state: ${state}" >&2
+    exit 1
+fi
