@@ -18,12 +18,4 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os="$($__explorer/os)"
-
-if [ "$os" = "netbsd" ]; then
-    echo netbsd
-elif [ "$os" = "freebsd" ]; then
-    echo freebsd
-else
-    usermod --help | grep -q -- '-A group' && echo true || echo false
-fi
+usermod --help | grep -q -- '-A group' && echo true || echo false
