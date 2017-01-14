@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+next:
+	* Type __user_groups: Support FreeBSD (Andres Erbsen)
+	* Type __cron: Fix filter for new cron on sles12 sp2 (Daniel Heule)
+	* Type __docker: Support absent state (Dominique Roux)
+	* Type __docker_compose: Support absent state (Dominique Roux)
+
 4.4.1: 2016-12-17
 	* Documentation: Update docs for types that used man.rst as symbolic links (Darko Poljak)
 	* Type __cron: Remove '# marker' for raw_command due to cron security (Daniel Heule)
