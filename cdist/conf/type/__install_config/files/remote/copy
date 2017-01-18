@@ -25,7 +25,7 @@
 #
 
 log() {
-   echo "$@" | logger -t "__install_config copy"
+   #echo "$@" | logger -t "__install_config copy"
    :
 }
 
