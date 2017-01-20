@@ -212,7 +212,7 @@ class Local(object):
         try:
             if save_output:
                 output, errout = exec_util.call_get_output(command, env=env)
-                self.log.debug("Local stdout: {}".format(output))
+                self.log.info("Local stdout: {}".format(output))
                 # Currently, stderr is not captured.
                 # self.log.debug("Local stderr: {}".format(errout))
                 if return_output:
@@ -231,7 +231,7 @@ class Local(object):
                 message.merge_messages()
 
     def run_script(self, script, env=None, return_output=False,
-                   message_prefix=None):
+                   message_prefix=None, save_output=True):
         """Run the given script with the given environment.
         Return the output as a string.
 
@@ -240,7 +240,7 @@ class Local(object):
         command.append(script)
 
         return self.run(command=command, env=env, return_output=return_output,
-                        message_prefix=message_prefix)
+                        message_prefix=message_prefix, save_output=save_output)
 
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.hostdir)
