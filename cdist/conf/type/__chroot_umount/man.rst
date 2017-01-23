@@ -18,13 +18,17 @@ None
 
 OPTIONAL PARAMETERS
 -------------------
-None
+manage-resolv-conf
+    manage /etc/resolv.conf inside the chroot.
+    Use the value of this parameter as the suffix to find the backup file
+    that was saved by the __chroot_mount.
+    This is used by the to restore the initial file content when unmounting
+    the chroot.
 
 
 BOOLEAN PARAMETERS
 ------------------
-manage-resolv-conf
-    manage /etc/resolv.conf inside the chroot
+None.
 
 
 EXAMPLES
@@ -33,6 +37,9 @@ EXAMPLES
 .. code-block:: sh
 
     __chroot_umount /path/to/chroot
+
+    __chroot_umount /path/to/chroot \
+      --manage-resolv-conf "some-known-string"
 
 
 SEE ALSO

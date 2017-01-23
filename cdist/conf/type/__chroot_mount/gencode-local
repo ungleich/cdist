@@ -21,8 +21,9 @@
 chroot="/$__object_id"
 
 if [ -f "$__object/parameter/manage-resolv-conf" ]; then
+   suffix="$(cat "$__object/parameter/manage-resolv-conf")"
    resolv_conf="${chroot}/etc/resolv.conf"
-   original_resolv_conf="${resolv_conf}${__cdist_object_marker}"
+   original_resolv_conf="${resolv_conf}.${suffix}"
    cat << DONE
 $__remote_exec $__target_host << EOSSH
 if [ -f "${resolv_conf}" ]; then
