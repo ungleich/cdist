@@ -50,9 +50,10 @@ All commands accept the following options:
 
 .. option:: -v, --verbose
 
-    Increase log level, be more verbose. Use it more than once to increase
-    log level. The order of levels from the lowest to the highest are:
-    ERROR, WARNING, INFO, DEBUG.
+    Increase the verbosity level. Every instance of -v increments the verbosity
+    level by one. Its default value is 0. There are 4 levels of verbosity. The
+    order of levels from the lowest to the highest are: ERROR (0), WARNING (1),
+    INFO (2) and DEBUG (3 or higher).
 
 .. option:: -V, --version
 
