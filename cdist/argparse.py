@@ -4,6 +4,7 @@ import multiprocessing
 import os
 import logging
 import collections
+import functools
 
 
 # set of beta sub-commands
@@ -55,7 +56,7 @@ def check_beta(args_dict):
                     raise cdist.CdistBetaRequired(cmd, arg)
 
 
-def check_positive_int(value):
+def check_int(value, min_value=None, max_value=None):
     import argparse
 
     try:
@@ -63,10 +64,61 @@ def check_positive_int(value):
     except ValueError:
         raise argparse.ArgumentTypeError(
                 "{} is invalid int value".format(value))
-    if val <= 0:
+    if min_value is not None and val < min_value:
         raise argparse.ArgumentTypeError(
-                "{} is invalid positive int value".format(val))
+                "{} must be greater than or equal to {}".format(val, min_value))
+    if max_value is not None and val > max_value:
+        raise argparse.ArgumentTypeError(
+                "{} must be less than or equal to {}".format(val, max_value))
     return val
+
+
+class _StoreOrCountAction(argparse.Action):
+
+    def __init__(self,
+                 option_strings,
+                 dest,
+                 nargs=None,
+                 const=None,
+                 default=None,
+                 type=None,
+                 choices=None,
+                 required=False,
+                 help=None,
+                 metavar=None):
+        self.previous_values = None
+        if const is not None and nargs != argparse.OPTIONAL:
+            raise ValueError('nargs must be %r to supply const'
+                             % argparse.OPTIONAL)
+        super(_StoreOrCountAction, self).__init__(
+            option_strings=option_strings,
+            dest=dest,
+            nargs=nargs,
+            const=const,
+            default=default,
+            type=type,
+            choices=choices,
+            required=required,
+            help=help,
+            metavar=metavar)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        if values is None:
+            if self.previous_values is not None:
+                # reset value
+                if getattr(namespace, self.dest, None) is not None:
+                    setattr(namespace, self.dest, None)
+            self._do_count(parser, namespace, values, option_string)
+        else:
+            self._do_store(parser, namespace, values, option_string)
+        self.previous_values = values
+
+    def _do_count(self, parser, namespace, values, option_string):
+        new_count = argparse._ensure_value(namespace, self.dest, 0) + 1
+        self._do_store(parser, namespace, new_count, option_string)
+
+    def _do_store(self, parser, namespace, values, option_string):
+        setattr(namespace, self.dest, values)
 
 
 def get_parsers():
@@ -85,12 +137,15 @@ def get_parsers():
             action='store_true', default=False)
     parser['loglevel'].add_argument(
             '-v', '--verbose',
-            help=('Increase the verbosity level. Every instance of -v '
+            help=('Increase or set verbosity level. Every instance of -v '
                   'increments the verbosity level by one. Its default value is '
-                  '0. There are 4 levels of verbosity. The order of levels '
+                  '0. You can specify the level directly, for example -v2 or '
+                  ' -v 3. There are 4 levels of verbosity. The order of levels '
                   'from the lowest to the highest are: ERROR (0), WARNING (1), '
                   'INFO (2) and DEBUG (3 or higher).'),
-            action='count', default=0)
+            nargs='?',
+            type=functools.partial(check_int, min_value=0),
+            action=_StoreOrCountAction, dest='verbose', default=0)
 
     parser['beta'] = argparse.ArgumentParser(add_help=False)
     parser['beta'].add_argument(
@@ -126,7 +181,7 @@ def get_parsers():
            dest='manifest', required=False)
     parser['config_main'].add_argument(
            '-j', '--jobs', nargs='?',
-           type=check_positive_int,
+           type=functools.partial(check_int, min_value=1),
            help=('Specify the maximum number of parallel jobs, currently '
                  'only global explorers are supported'),
            action='store', dest='jobs',
@@ -204,6 +259,8 @@ def handle_loglevel(args):
         args.verbose = 3
     else:
         retval = None
+
+    print('args.verbose: ', args.verbose)
 
     logging.root.setLevel(_verbosity_level[args.verbose])
 
