@@ -149,6 +149,7 @@ class Local(object):
         self.mkdir(self.global_explorer_out_path)
         self.mkdir(self.object_path)
         self.mkdir(self.bin_path)
+        self.mkdir(self.cache_path)
 
     def create_files_dirs(self):
         self._init_directories()
