@@ -54,6 +54,7 @@ else
    printf 'mount'
    if [ "$type" = "bind" ]; then
       printf ' --bind'
+      device="${prefix}${device}"
    else
       printf ' -t "%s"' "$type"
    fi
