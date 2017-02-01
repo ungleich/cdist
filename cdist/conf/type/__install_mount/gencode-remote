@@ -47,16 +47,19 @@ fi
    exit 1
 }
 if [ "$type" = "swap" ]; then
-   echo "swapon \"$device\""
+   printf 'swapon "%s"\n' "$device"
 else
-   if [ -f "$__object/parameter/options" ]; then
-      options="$(cat "$__object/parameter/options")"
-   else
-      options=""
-   fi
-   [ -n "$options" ] && options="-o $options"
    mount_point="${prefix}${dir}"
-
-   echo "[ -d \"$mount_point\" ] || mkdir -p \"$mount_point\""
-   echo "mount -t \"$type\" $options \"$device\" \"$mount_point\""
+   printf '[ -d "%s" ] || mkdir -p "%s"\n' "$mount_point" "$mount_point"
+   printf 'mount'
+   if [ "$type" = "bind" ]; then
+      printf ' --bind'
+   else
+      printf ' -t "%s"' "$type"
+   fi
+   if [ -f "$__object/parameter/options" ]; then
+      printf ' -o %s' "$(cat "$__object/parameter/options")"
+   fi
+   printf ' "%s"' "$device"
+   printf ' "%s"\n' "$mount_point"
 fi
