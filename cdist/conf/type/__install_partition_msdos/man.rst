@@ -19,6 +19,12 @@ type
 
 OPTIONAL PARAMETERS
 -------------------
+device
+   the device we're working on. Defaults to the string prefix of --partition
+
+minor
+   the partition number we're working on. Defaults to the numeric suffix of --partition
+
 partition
    defaults to object_id
 
