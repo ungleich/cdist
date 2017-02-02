@@ -22,8 +22,9 @@ chroot="$(cat "$__object/parameter/chroot")"
 remote_exec="$__type/files/remote/exec"
 remote_copy="$__type/files/remote/copy"
 
-cdist_args="-v"
-[ "$__debug" = "yes" ] && cdist_args="$cdist_args -d"
+cdist_args=""
+[ "$__verbose" = "yes" ] && cdist_args="-vv"
+[ "$__debug" = "yes" ] && cdist_args="-d"
 
 cat << DONE
 cdist $cdist_args \
