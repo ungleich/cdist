@@ -499,6 +499,60 @@ class StdinTestCase(test.CdistTestCase):
         self.assertEqual(random_string, stdin_saved_by_emulator)
 
 
+class EmulatorAlreadyExistingRequirementsWarnTestCase(test.CdistTestCase):
+
+    def setUp(self):
+        self.temp_dir = self.mkdtemp()
+        handle, self.script = self.mkstemp(dir=self.temp_dir)
+        os.close(handle)
+        base_path = self.temp_dir
+        hostdir = cdist.str_hash(self.target_host[0])
+        host_base_path = os.path.join(base_path, hostdir)
+
+        self.local = local.Local(
+            target_host=self.target_host,
+            base_root_path=host_base_path,
+            host_dir_name=hostdir,
+            exec_path=test.cdist_exec_path,
+            add_conf_dirs=[conf_dir])
+        self.local.create_files_dirs()
+
+        self.manifest = core.Manifest(self.target_host, self.local)
+        self.env = self.manifest.env_initial_manifest(self.script)
+        self.env['__cdist_object_marker'] = self.local.object_marker_name
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_object_existing_requirements_req_none(self):
+        """Test to show dependency resolver warning message."""
+        argv = ['__directory', 'spam']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', 'eggs']
+        self.env['require'] = '__directory/spam'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', 'eggs']
+        if 'require' in self.env:
+            del self.env['require']
+        emu = emulator.Emulator(argv, env=self.env)
+
+    def test_object_existing_requirements_none_req(self):
+        """Test to show dependency resolver warning message."""
+        argv = ['__directory', 'spam']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', 'eggs']
+        if 'require' in self.env:
+            del self.env['require']
+        emu = emulator.Emulator(argv, env=self.env)
+        emu.run()
+        argv = ['__file', 'eggs']
+        self.env['require'] = '__directory/spam'
+        emu = emulator.Emulator(argv, env=self.env)
+
+
 if __name__ == '__main__':
     import unittest
     unittest.main()

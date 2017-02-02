@@ -29,7 +29,7 @@ immediately.
 
 To install cdist, execute the following commands:
 
-    git clone https://github.com/telmich/cdist.git
+    git clone https://github.com/ungleich/cdist.git
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 

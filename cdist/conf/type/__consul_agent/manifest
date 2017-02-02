@@ -98,7 +98,7 @@ for param in $(ls "$__object/parameter/"); do
          key="$(echo "${param%-*}" | tr '-' '_')"
          printf '   ,"%s": "%s"\n' "$key" "$destination"
       ;;
-      disable-remote-exec|disable-update-check|leave-on-terminate|rejoin-after-leave|server|syslog|verify-incoming|verify-outgoing)
+      disable-remote-exec|disable-update-check|leave-on-terminate|rejoin-after-leave|server|enable-syslog|verify-incoming|verify-outgoing)
          # handle boolean parameters
          key="$(echo "$param" | tr '-' '_')"
          printf '   ,"%s": true\n' "$key"

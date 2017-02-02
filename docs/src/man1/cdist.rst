@@ -11,7 +11,7 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-d] [-v] [-V] {banner,config,shell} ...
+    cdist [-h] [-d] [-v] [-V] {banner,config,shell,install} ...
 
     cdist banner [-h] [-d] [-v]
 
@@ -19,6 +19,11 @@ SYNOPSIS
                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                  [host [host ...]]
+
+    cdist install [-h] [-d] [-v] [-b] [-c CONF_DIR] [-f HOSTFILE]
+                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-p] [-s]
+                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                  [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
 
@@ -41,11 +46,14 @@ All commands accept the following options:
 
 .. option:: -d, --debug
 
-    Set log level to debug
+    Set log level to debug (deprecated, use -vvv instead)
 
 .. option:: -v, --verbose
 
-    Set log level to info, be more verbose
+    Increase the verbosity level. Every instance of -v increments the verbosity
+    level by one. Its default value is 0. There are 4 levels of verbosity. The
+    order of levels from the lowest to the highest are: ERROR (0), WARNING (1),
+    INFO (2) and DEBUG (3 or higher).
 
 .. option:: -V, --version
 
@@ -58,14 +66,15 @@ Displays the cdist banner. Useful for printing
 cdist posters - a must have for every office.
 
 
-CONFIG
-------
-Configure one or more hosts.
+CONFIG/INSTALL
+--------------
+Configure/install one or more hosts.
 
-.. option:: -b, --enable-beta
+.. option:: -b, --beta
 
-    Enable beta functionalities. Beta functionalities include the
-    following options: -j/--jobs.
+    Enable beta functionalities.
+    
+    Can also be enabled using CDIST_BETA env var.
 
 .. option:: -c CONF_DIR, --conf-dir CONF_DIR
 
@@ -82,7 +91,7 @@ Configure one or more hosts.
     Read additional hosts to operate on from specified file
     or from stdin if '-' (each host on separate line).
     If no host or host file is specified then, by default,
-    read hosts from stdin.
+    read hosts from stdin. For the file format see below.
 
 .. option:: -i MANIFEST, --initial-manifest MANIFEST
 
@@ -117,6 +126,20 @@ Configure one or more hosts.
 
     Command to use for remote execution (should behave like ssh)
 
+
+HOSTFILE FORMAT
+~~~~~~~~~~~~~~~
+HOSTFILE contains hosts per line. 
+All characters after and including '#' until the end of line is a comment.
+In a line, all leading and trailing whitespace characters are ignored.
+Empty lines are ignored/skipped.
+
+Hostfile line is processed like the following. First, all comments are
+removed. Then all leading and trailing whitespace characters are stripped.
+If such a line results in empty line it is ignored/skipped. Otherwise,
+host string is used.
+
+
 SHELL
 -----
 This command allows you to spawn a shell that enables access
@@ -137,6 +160,12 @@ FILES
 cdist/conf
     The distribution configuration directory. It contains official types and
     explorers. This path is relative to cdist installation directory.
+
+NOTES
+-----
+cdist detects if host is specified by IPv6 address. If so then remote_copy
+command is executed with host address enclosed in square brackets 
+(see :strong:`scp`\ (1)).
 
 EXAMPLES
 --------
@@ -177,6 +206,8 @@ EXAMPLES
     usage: __git --source SOURCE [--state STATE] [--branch BRANCH]
                  [--group GROUP] [--owner OWNER] [--mode MODE] object_id
 
+    # Install ikq05.ethz.ch with debug enabled
+    % cdist install -d ikq05.ethz.ch
 
 ENVIRONMENT
 -----------
@@ -193,7 +224,7 @@ CDIST_LOCAL_SHELL
     Selects shell for local script execution, defaults to /bin/sh.
 
 CDIST_REMOTE_SHELL
-    Selects shell for remote scirpt execution, defaults to /bin/sh.
+    Selects shell for remote script execution, defaults to /bin/sh.
 
 CDIST_OVERRIDE
     Allow overwriting type parameters.
@@ -207,6 +238,9 @@ CDIST_REMOTE_EXEC
 CDIST_REMOTE_COPY
     Use this command for remote copy (should behave like scp).
 
+CDIST_BETA
+    Enable beta functionalities.
+
 EXIT STATUS
 -----------
 The following exit values shall be returned:
@@ -218,7 +252,8 @@ The following exit values shall be returned:
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
+Originally written by Nico Schottelius <nico-cdist--@--schottelius.org>
+and Steven Armstrong <steven-cdist--@--armstrong.cc>.
 
 CAVEATS
 -------
@@ -231,6 +266,35 @@ when you reach maximum number of open sessions permitted per network
 connection. In this case ssh will disable multiplexing.
 This limit is controlled with sshd :strong:`MaxSessions` configuration
 options. For more details refer to :strong:`sshd_config`\ (5).
+
+When requirements for the same object are defined in different manifests (see
+example below) in init manifest and in some other type manifest and they differs
+then dependency resolver cannot detect dependencies right. This happens because
+cdist cannot prepare all objects first and then run objects because some
+object can depend on the result of type explorer(s) and explorers are executed
+during object run. cdist will detect such case and write warning message.
+Example for such a case:
+
+.. code-block:: sh
+
+    init manifest:
+        __a a
+        require="__e/e" __b b
+        require="__f/f" __c c
+        __e e
+        __f f
+        require="__c/c" __d d
+        __g g
+        __h h
+
+    type __g manifest:
+        require="__c/c __d/d" __a a
+
+    Warning message:
+        WARNING: cdisttesthost: Object __a/a already exists with requirements:
+        /usr/home/darko/ungleich/cdist/cdist/test/config/fixtures/manifest/init-deps-resolver /tmp/tmp.cdist.test.ozagkg54/local/759547ff4356de6e3d9e08522b0d0807/data/conf/type/__g/manifest: set()
+        /tmp/tmp.cdist.test.ozagkg54/local/759547ff4356de6e3d9e08522b0d0807/data/conf/type/__g/manifest: {'__c/c', '__d/d'}
+        Dependency resolver could not handle dependencies as expected.
 
 COPYING
 -------

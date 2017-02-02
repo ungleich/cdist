@@ -136,8 +136,8 @@ class RemoteTestCase(test.CdistTestCase):
             source_file_name = os.path.split(source_file)[-1]
             filenames.append(source_file_name)
         target = self.mkdtemp(dir=self.temp_dir)
-        self.remote.transfer_dir_parallel(source, target,
-                                          multiprocessing.cpu_count())
+        self.remote.transfer(source, target,
+                             multiprocessing.cpu_count())
         # test if the payload files are in the target directory
         for filename in filenames:
             self.assertTrue(os.path.isfile(os.path.join(target, filename)))

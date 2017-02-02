@@ -118,7 +118,7 @@ On line 4 you can see that the instantion of a type "\__link" object needs
 the object "__file/etc/cdist-configured" to be present, before it can proceed.
 
 This also means that the "\__link" command must make sure, that either
-"\__file/etc/cdist-configured" allready is present, or, if it's not, it needs
+"\__file/etc/cdist-configured" already is present, or, if it's not, it needs
 to be created. The task of cdist is to make sure, that the dependency will be
 resolved appropriately and thus "\__file/etc/cdist-configured" be created
 if necessary before "__link" proceeds (or to abort execution with an error).
@@ -216,7 +216,7 @@ How to override objects:
 
 .. code-block:: sh
 
-    # for example in the inital manifest
+    # for example in the initial manifest
 
     # create user account foobar with some hash for password
     __user foobar --password 'some_fancy_hash' --home /home/foobarexample

@@ -138,7 +138,8 @@ class Manifest(object):
         message_prefix = "initialmanifest"
         self.local.run_script(initial_manifest,
                               env=self.env_initial_manifest(initial_manifest),
-                              message_prefix=message_prefix)
+                              message_prefix=message_prefix,
+                              save_output=False)
 
     def env_type_manifest(self, cdist_object):
         type_manifest = os.path.join(self.local.type_path,
@@ -163,4 +164,5 @@ class Manifest(object):
         if os.path.isfile(type_manifest):
             self.local.run_script(type_manifest,
                                   env=self.env_type_manifest(cdist_object),
-                                  message_prefix=message_prefix)
+                                  message_prefix=message_prefix,
+                                  save_output=False)

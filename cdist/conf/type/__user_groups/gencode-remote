@@ -23,19 +23,6 @@ state_should="$(cat "$__object/parameter/state")"
 oldusermod="$(cat "$__object/explorer/oldusermod")"
 os=$(cat "$__global/explorer/os")
 
-if [ "$os" = "netbsd" ]; then
-	# NetBSD does not have a command to remove a user from a group
-	oldusermod="true"
-	addparam="-G"
-	delparam=";;#"
-elif [ "$oldusermod" = "true" ]; then
-        addparam="-A"
-        delparam="-R"
-else
-        addparam="-a"
-        delparam="-d"
-fi
-
 mkdir "$__object/files"
 # file has to be sorted for comparison with `comm`
 sort "$__object/parameter/group" > "$__object/files/group.sorted"
@@ -43,11 +30,9 @@ sort "$__object/parameter/group" > "$__object/files/group.sorted"
 case "$state_should" in
    present)
       changed_groups="$(comm -13 "$__object/explorer/group" "$__object/files/group.sorted")"
-      action="$addparam"
    ;;
    absent)
       changed_groups="$(comm -12 "$__object/explorer/group" "$__object/files/group.sorted")"
-      action="$delparam"
    ;;
 esac
 
@@ -57,9 +42,25 @@ if [ -z "$changed_groups" ]; then
 fi
 
 for group in $changed_groups; do
-   if [ "$oldusermod" = "true" ]; then
-     echo "usermod $action \"$group\" \"$user\""
+   if [ "$os" = "netbsd" ]; then
+      case "$state_should" in
+         present) echo "usermod -G \"$group\" \"$user\"" ;;
+         absent) echo 'NetBSD does not have a command to remove a user from a group' >&2 ; exit 1 ;;
+      esac
+   elif [ "$os" = "freebsd" ]; then
+      case "$state_should" in
+         present) echo "pw groupmod \"$group\" -m \"$user\"" ;;
+         absent) echo "pw groupmod \"$group\" -d \"$user\"" ;;
+      esac
+   elif [ "$oldusermod" = "true" ]; then
+      case "$state_should" in
+         present) echo "usermod -A \"$group\" \"$user\"" ;;
+         absent) echo "usermod -R \"$group\" \"$user\"" ;;
+      esac
    else
-     echo "gpasswd $action \"$user\" \"$group\""
+      case "$state_should" in
+         present) echo "gpasswd -a \"$group\" \"$user\"" ;;
+         absent) echo "gpasswd -d \"$group\" \"$user\"" ;;
+      esac
    fi
 done

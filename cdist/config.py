@@ -22,50 +22,21 @@
 
 import logging
 import os
-import shutil
 import sys
 import time
-import pprint
 import itertools
 import tempfile
 import socket
 
 import cdist
+import cdist.hostsource
 
 import cdist.exec.local
 import cdist.exec.remote
+import cdist.util.ipaddr as ipaddr
 
 from cdist import core
-
-
-def inspect_ssh_mux_opts():
-    """Inspect whether or not ssh supports multiplexing options.
-
-       Return string containing multiplexing options if supported.
-       If ControlPath is supported then placeholder for that path is
-       specified and can be used for final string formatting.
-       For example, this function can return string:
-       "-o ControlMaster=auto -o ControlPersist=125 -o ControlPath={}".
-       Then it can be formatted:
-       mux_opts_string.format('/tmp/tmpxxxxxx/ssh-control-path').
-    """
-    import subprocess
-
-    wanted_mux_opts = {
-        "ControlPath": "{}",
-        "ControlMaster": "auto",
-        "ControlPersist": "125",
-    }
-    mux_opts = " ".join([" -o {}={}".format(
-        x, wanted_mux_opts[x]) for x in wanted_mux_opts])
-    try:
-        subprocess.check_output("ssh {}".format(mux_opts),
-                                stderr=subprocess.STDOUT, shell=True)
-    except subprocess.CalledProcessError as e:
-        subproc_output = e.output.decode().lower()
-        if "bad configuration option" in subproc_output:
-            return ""
-    return mux_opts
+from cdist.util.remoteutil import inspect_ssh_mux_opts
 
 
 class Config(object):
@@ -91,32 +62,15 @@ class Config(object):
 
     @staticmethod
     def hosts(source):
-        """Yield hosts from source.
-           Source can be a sequence or filename (stdin if \'-\').
-           In case of filename each line represents one host.
-        """
-        if isinstance(source, str):
-            import fileinput
-            try:
-                for host in fileinput.input(files=(source)):
-                    # remove leading and trailing whitespace
-                    yield host.strip()
-            except (IOError, OSError) as e:
-                raise cdist.Error("Error reading hosts from \'{}\'".format(
-                    source))
-        else:
-            if source:
-                for host in source:
-                    yield host
+        try:
+            yield from cdist.hostsource.HostSource(source)()
+        except (IOError, OSError, UnicodeError) as e:
+            raise cdist.Error(
+                    "Error reading hosts from \'{}\': {}".format(
+                        source, e))
 
     @classmethod
-    def commandline(cls, args):
-        """Configure remote system"""
-        import multiprocessing
-
-        # FIXME: Refactor relict - remove later
-        log = logging.getLogger("cdist")
-
+    def _check_and_prepare_args(cls, args):
         if args.manifest == '-' and args.hostfile == '-':
             raise cdist.Error(("Cannot read both, manifest and host file, "
                                "from stdin"))
@@ -141,10 +95,6 @@ class Config(object):
             import atexit
             atexit.register(lambda: os.remove(initial_manifest_temp_path))
 
-        process = {}
-        failed_hosts = []
-        time_start = time.time()
-
         # default remote cmd patterns
         args.remote_exec_pattern = None
         args.remote_copy_pattern = None
@@ -161,10 +111,29 @@ class Config(object):
             if args_dict['remote_copy'] is None:
                 args.remote_copy_pattern = cdist.REMOTE_COPY + mux_opts
 
+    @classmethod
+    def _base_root_path(cls, args):
         if args.out_path:
             base_root_path = args.out_path
         else:
             base_root_path = tempfile.mkdtemp()
+        return base_root_path
+
+    @classmethod
+    def commandline(cls, args):
+        """Configure remote system"""
+        import multiprocessing
+
+        # FIXME: Refactor relict - remove later
+        log = logging.getLogger("cdist")
+
+        cls._check_and_prepare_args(args)
+
+        process = {}
+        failed_hosts = []
+        time_start = time.time()
+
+        base_root_path = cls._base_root_path(args)
 
         hostcnt = 0
         for host in itertools.chain(cls.hosts(args.host),
@@ -207,62 +176,39 @@ class Config(object):
                               " ".join(failed_hosts))
 
     @classmethod
+    def _resolve_remote_cmds(cls, args, host_base_path):
+        control_path = os.path.join(host_base_path, "ssh-control-path")
+        # If we constructed patterns for remote commands then there is
+        # placeholder for ssh ControlPath, format it and we have unique
+        # ControlPath for each host.
+        #
+        # If not then use args.remote_exec/copy that user specified.
+        if args.remote_exec_pattern:
+            remote_exec = args.remote_exec_pattern.format(control_path)
+        else:
+            remote_exec = args.remote_exec
+        if args.remote_copy_pattern:
+            remote_copy = args.remote_copy_pattern.format(control_path)
+        else:
+            remote_copy = args.remote_copy
+        return (remote_exec, remote_copy, )
+
+    @classmethod
     def onehost(cls, host, host_base_path, host_dir_name, args, parallel):
         """Configure ONE system"""
 
         log = logging.getLogger(host)
 
         try:
-            control_path = os.path.join(host_base_path, "ssh-control-path")
-            # If we constructed patterns for remote commands then there is
-            # placeholder for ssh ControlPath, format it and we have unique
-            # ControlPath for each host.
-            #
-            # If not then use args.remote_exec/copy that user specified.
-            if args.remote_exec_pattern:
-                remote_exec = args.remote_exec_pattern.format(control_path)
-            else:
-                remote_exec = args.remote_exec
-            if args.remote_copy_pattern:
-                remote_copy = args.remote_copy_pattern.format(control_path)
-            else:
-                remote_copy = args.remote_copy
+            remote_exec, remote_copy = cls._resolve_remote_cmds(
+                args, host_base_path)
             log.debug("remote_exec for host \"{}\": {}".format(
                 host, remote_exec))
             log.debug("remote_copy for host \"{}\": {}".format(
                 host, remote_copy))
 
-            try:
-                # getaddrinfo returns a list of 5-tuples:
-                # (family, type, proto, canonname, sockaddr)
-                # where sockaddr is:
-                # (address, port) for AF_INET,
-                # (address, port, flow_info, scopeid) for AF_INET6
-                ip_addr = socket.getaddrinfo(
-                        host, None, type=socket.SOCK_STREAM)[0][4][0]
-                # gethostbyaddr returns triple
-                # (hostname, aliaslist, ipaddrlist)
-                host_name = socket.gethostbyaddr(ip_addr)[0]
-                log.debug("derived host_name for host \"{}\": {}".format(
-                    host, host_name))
-            except socket.gaierror as e:
-                log.warn("host_name: {}".format(e))
-                # in case of error provide empty value
-                host_name = ''
-            except socket.herror as e:
-                log.warn("host_name: {}".format(e))
-                # in case of error provide empty value
-                host_name = ''
-
-            try:
-                host_fqdn = socket.getfqdn(host)
-                log.debug("derived host_fqdn for host \"{}\": {}".format(
-                    host, host_fqdn))
-            except socket.herror as e:
-                log.warn("host_fqdn: {}".format(e))
-                # in case of error provide empty value
-                host_fqdn = ''
-            target_host = (host, host_name, host_fqdn)
+            target_host = ipaddr.resolve_target_addresses(host)
+            log.debug("target_host: {}".format(target_host))
 
             local = cdist.exec.local.Local(
                 target_host=target_host,

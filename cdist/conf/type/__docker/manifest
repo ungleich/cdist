@@ -1,0 +1,83 @@
+#!/bin/sh
+#
+# 2016 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+os=$(cat "$__global/explorer/os")
+state=$(cat "$__object/parameter/state")
+
+case "$os" in
+    centos)
+        component="main"
+        if [ -f "$__object/parameter/experimental" ]; then
+          component="experimental"
+        fi
+        __yum_repo docker \
+          --name 'Docker Repository' \
+          --baseurl "https://yum.dockerproject.org/repo/$component/centos/\$releasever/" \
+          --enabled \
+          --gpgcheck 1 \
+          --gpgkey 'https://yum.dockerproject.org/gpg' \
+          --state ${state} 
+        require="__yum_repo/docker" __package docker-engine --state ${state}
+    ;;
+    ubuntu)
+        component="main"
+      if [ -f "$__object/parameter/experimental" ]; then
+         component="experimental"
+      fi
+      __package apparmor --state ${state}
+      __package ca-certificates --state ${state}
+      __package apt-transport-https --state ${state}
+      __apt_key docker --keyid 58118E89F3A912897C070ADBF76221572C52609D --state ${state}
+      export CDIST_ORDER_DEPENDENCY=on
+      __apt_source docker \
+         --uri https://apt.dockerproject.org/repo \
+         --distribution "ubuntu-$(cat "$__global/explorer/lsb_codename")" \
+         --state ${state} \
+         --component "$component"
+      __package docker-engine --state ${state}
+      unset CDIST_ORDER_DEPENDENCY
+   ;;
+   debian)
+       component="main"
+      if [ -f "$__object/parameter/experimental" ]; then
+         component="experimental"
+      fi
+
+      __package apt-transport-https --state ${state}
+      __package ca-certificates --state ${state}
+      __package gnupg2 --state ${state}
+      __apt_key docker --keyid 58118E89F3A912897C070ADBF76221572C52609D --state ${state}
+      export CDIST_ORDER_DEPENDENCY=on
+      __apt_source docker \
+          --uri https://apt.dockerproject.org/repo \
+          --distribution "debian-$(cat "$__global/explorer/lsb_codename")" \
+          --state ${state} \
+          --component "$component"
+      __package docker-engine --state ${state}
+      unset CDIST_ORDER_DEPENDENCY
+
+   ;;
+   *)
+      echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+      echo "Please contribute an implementation for it if you can." >&2
+      exit 1
+   ;;
+esac

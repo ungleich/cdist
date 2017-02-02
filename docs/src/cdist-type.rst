@@ -51,6 +51,19 @@ Example:
     __myfancysingleton --colour green
 
 
+Config types
+------------
+By default types are used with config command. These are types that are not
+flagged by any known command flag. If a type is marked then it will be skipped
+with config command.
+
+
+Install types
+-------------
+If a type is flagged with 'install' flag then it is used only with install command.
+With other commands, i.e. config, these types are skipped if used.
+
+
 How to write a new type
 -----------------------
 A type consists of
@@ -126,7 +139,7 @@ Example: (e.g. in cdist/conf/type/__nginx_vhost/manifest)
     # parameter with multiple values
     if [ -f "$__object/parameter/server_alias" ]; then
        for alias in $(cat "$__object/parameter/server_alias"); do
-          echo $alias > /some/where/usefull
+          echo $alias > /some/where/useful
        done
     fi
 
@@ -209,6 +222,18 @@ As you can see, the object ID is omitted, because it does not make any sense,
 if your type can be used only once.
 
 
+Install - type with install command
+-----------------------------------
+If you want a type to be used with install command, you must mark it as
+install: create the (empty) file "install" in your type directory:
+
+.. code-block:: sh
+
+    touch cdist/conf/type/__install_NAME/install
+
+With other commands, i.e. config, it will be skipped if used.
+
+
 The type explorers
 ------------------
 If a type needs to explore specific details, it can provide type specific
@@ -250,6 +275,12 @@ script, you can write to stderr:
 
     # Output to be saved by cdist for execution on the target
     echo "touch /etc/cdist-configured"
+
+Notice: if you use __remote_copy or __remote_exec directly in your scripts
+then for IPv6 address with __remote_copy execution you should enclose IPv6
+address in square brackets. The same applies to __remote_exec if it behaves
+the same as ssh for some options where colon is a delimiter, as for -L ssh
+option (see :strong:`ssh`\ (1) and :strong:`scp`\ (1)).
 
 
 Variable access from the generated scripts

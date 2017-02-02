@@ -58,7 +58,7 @@ you can clone it multiple times::
     machine-b % git clone git://your-git-server/cdist
 
 
-Seperating work by groups
+Separating work by groups
 -------------------------
 If you are working with different groups on one cdist-configuration,
 you can delegate to other manifests and have the groups edit only

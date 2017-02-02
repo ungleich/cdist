@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+chroot="/$__object_id"
+
+cat << DONE
+# Prepare chroot
+[ -d "${chroot}/proc" ] || mkdir "${chroot}/proc"
+mountpoint -q "${chroot}/proc" \
+   || mount -t proc -o nosuid,noexec,nodev proc "${chroot}/proc"
+
+[ -d "${chroot}/sys" ] || mkdir "${chroot}/sys"
+mountpoint -q "${chroot}/sys" \
+   || mount -t sysfs -o nosuid,noexec,nodev sys "${chroot}/sys"
+
+[ -d "${chroot}/dev" ] || mkdir "${chroot}/dev"
+mountpoint -q "${chroot}/dev" \
+   || mount -t devtmpfs -o mode=0755,nosuid udev "${chroot}/dev"
+
+[ -d "${chroot}/dev/pts" ] || mkdir "${chroot}/dev/pts"
+mountpoint -q "${chroot}/dev/pts" \
+   || mount -t devpts -o mode=0620,gid=5,nosuid,noexec devpts "${chroot}/dev/pts"
+
+[ -d "${chroot}/tmp" ] || mkdir -m 1777 "${chroot}/tmp"
+mountpoint -q "${chroot}/tmp" \
+   || mount -t tmpfs -o mode=1777,strictatime,nodev,nosuid tmpfs "${chroot}/tmp"
+
+if [ ! -f "${chroot}/etc/resolv.conf" ]; then
+   cp /etc/resolv.conf "${chroot}/etc/"
+fi
+DONE

@@ -39,6 +39,11 @@ if [ -f /etc/cdist-preos ]; then
    exit 0
 fi
 
+if [ -d /gnu/store ]; then
+   echo guixsd
+   exit 0
+fi
+
 ### Debian and derivatives
 if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
    echo ubuntu

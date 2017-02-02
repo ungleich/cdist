@@ -149,14 +149,9 @@ class Explorer(object):
     def transfer_global_explorers(self):
         """Transfer the global explorers to the remote side."""
         self.remote.mkdir(self.remote.global_explorer_path)
-        if self.jobs is None:
-            self.remote.transfer(self.local.global_explorer_path,
-                                 self.remote.global_explorer_path)
-        else:
-            self.remote.transfer_dir_parallel(
-                    self.local.global_explorer_path,
-                    self.remote.global_explorer_path,
-                    self.jobs)
+        self.remote.transfer(self.local.global_explorer_path,
+                             self.remote.global_explorer_path,
+                             self.jobs)
         self.remote.run(["chmod", "0700",
                          "%s/*" % (self.remote.global_explorer_path)])
 

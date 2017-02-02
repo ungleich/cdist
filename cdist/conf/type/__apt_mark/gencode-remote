@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# 2016 Ander Punnar (cdist at kvlt.ee)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+if [ -f "$__object/parameter/name" ]; then
+    name="$(cat "$__object/parameter/name")"
+else
+    name="$__object_id"
+fi
+
+apt_version="$(cat "$__object/explorer/apt_version")"
+
+if [ "$apt_version" != '0' ]; then
+    echo 'APT version not supported' >&2
+    exit 1
+fi
+
+package_installed="$(cat "$__object/explorer/package_installed")"
+
+if [ "$package_installed" != '0' ]; then
+    exit 0
+fi
+
+state_should="$(cat "$__object/parameter/state")"
+
+state_is="$(cat "$__object/explorer/state")"
+
+if [ "$state_should" = "$state_is" ]; then
+    exit 0
+fi
+
+case "$state_should" in
+    hold|unhold)
+        echo "apt-mark $state_should $name > /dev/null"
+    ;;
+    *)
+        echo "Unknown state: $state_should" >&2
+        exit 1
+    ;;
+esac
