@@ -44,6 +44,11 @@ for object in $(find "$__global/object/__install_mount" -type d -name "$__cdist_
       tmpfs)
          pass=0
       ;;
+      bind)
+         pass=0
+         type=none
+         options="bind,$options"
+      ;;
       *)
          pass=1
       ;;
