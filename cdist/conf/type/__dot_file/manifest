@@ -1,0 +1,65 @@
+#!/bin/sh
+#
+# Copyright (C) 2016  Bogatov Dmitry <KAction@gnu.org>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+set -eu
+
+user="$(cat "${__object}/parameter/user")"
+home="$(cat "${__object}/explorer/home")"
+primary_group="$(cat "${__object}/explorer/primary_group")"
+
+# Create parent directory. Type __directory has flag 'parents', but it
+# will leave us with root-owned directory in user home, which is not
+# acceptable. So we create parent directories one-by-one. XXX: maybe
+# it should be fixed in '__directory'?
+set --
+subpath=${__object_id}
+while subpath="$(dirname "${subpath}")" ; do
+	[ "${subpath}" = . ] && break
+	set -- "${subpath}" "$@"
+done
+unset subpath
+
+export CDIST_ORDER_DEPENDENCY
+for dir ; do
+	__directory "${home}/${dir}"   \
+	    --group "${primary_group}" \
+	    --owner "${user}"
+done
+
+# These parameters are forwarded to __file type. 'mode' is always
+# present, since it have been given default.
+
+set --
+for p in state mode source ; do
+	if [ -f "${__object}/parameter/${p}" ] ; then
+		value="$(cat "${__object}/parameter/${p}")"
+		set -- "$@" "--${p}" "${value}"
+		unset value
+	fi
+done
+
+# If source is `-' we can't just forward it, since stdin is already
+# captured by __dot_file.  So, we replace '-' with "$__object/stdin".
+#
+# It means that it is possible for __file to receive --source
+# parameter twice, but, since latest wins, it is okay.
+source="$(cat "${__object}/parameter/source")"
+if [ "${source}" = "-" ] ; then
+	set -- "$@" --source "${__object}/stdin"
+fi
+unset source
+
+__file "${home}/${__object_id}" --owner "$user" --group "$primary_group" "$@"
