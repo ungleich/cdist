@@ -1,19 +1,8 @@
 from distutils.core import setup
+import cdist
 import os
 import re
 
-
-# Ensure version is present - the bundled/shipped version contains a static version,
-# the git version contains a dynamic version
-try:
-    import cdist.version
-except ImportError:
-    import subprocess
-    version = subprocess.getoutput('git describe')
-    with open('cdist/version.py', 'w') as fd:
-        fd.write('VERSION = "%s"\n' % version)
-
-import cdist
 
 def data_finder(data_dir):
     entries = []
