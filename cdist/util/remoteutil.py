@@ -36,7 +36,7 @@ def inspect_ssh_mux_opts():
     wanted_mux_opts = {
         "ControlPath": "{}",
         "ControlMaster": "auto",
-        "ControlPersist": "125",
+        "ControlPersist": "10",
     }
     mux_opts = " ".join([" -o {}={}".format(
         x, wanted_mux_opts[x]) for x in wanted_mux_opts])
