@@ -15,14 +15,12 @@ OPTIONAL PARAMETERS
 -------------------
 
 state
-
     If state is ``present``, make *object_id* resolve to *ip*. If
     state is ``absent``, *object_id* will no longer resolve via
     */etc/hosts*, if it was previously configured with this type.
     Manually inserted entries are unaffected.
 
 ip
-
     IP address, to which hostname (=\ *object_id*) must resolve. If
     state is ``present``, this parameter is mandatory, if state is
     ``absent``, this parameter is silently ignored.

@@ -20,28 +20,24 @@ REQUIRED PARAMETERS
 -------------------
 
 user
-
     User, for who file is installed
 
 OPTIONAL PARAMETERS
 -------------------
 
 mode
-
-    forwarded to :bold:`__file` type
+    forwarded to :strong:`__file` type
 
 state
-
-    forwarded to :bold:`__file` type
+    forwarded to :strong:`__file` type
 
 source
-
-    forwarded to :bold:`__file` type
+    forwarded to :strong:`__file` type
 
 MESSAGES
 --------
 
-This type inherits all messages from :bold:`file` type, and do not add
+This type inherits all messages from :strong:`file` type, and do not add
 any new.
 
 EXAMPLES
@@ -65,7 +61,7 @@ EXAMPLES
 SEE ALSO
 --------
 
-**cdist-type**\ (7), **cdist-type__file**\ (7)
+**cdist-type__file**\ (7)
 
 COPYING
 -------
