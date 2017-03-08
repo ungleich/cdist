@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.4.2: 2017-03-08
 	* Core: Fix suppression of manifests' outputs (Darko Poljak)
 	* Type __user_groups: Support FreeBSD (Andres Erbsen)
 	* Type __cron: Fix filter for new cron on sles12 sp2 (Daniel Heule)
