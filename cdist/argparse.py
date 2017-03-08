@@ -86,10 +86,10 @@ def get_parsers():
     parser['loglevel'].add_argument(
             '-v', '--verbose',
             help=('Increase the verbosity level. Every instance of -v '
-                  'increments the verbosity level by one. Its default value is '
-                  '0. There are 4 levels of verbosity. The order of levels '
-                  'from the lowest to the highest are: ERROR (0), WARNING (1), '
-                  'INFO (2) and DEBUG (3 or higher).'),
+                  'increments the verbosity level by one. Its default value '
+                  'is 0. There are 4 levels of verbosity. The order of levels '
+                  'from the lowest to the highest are: ERROR (0), '
+                  'WARNING (1), INFO (2) and DEBUG (3 or higher).'),
             action='count', default=0)
 
     parser['beta'] = argparse.ArgumentParser(add_help=False)
