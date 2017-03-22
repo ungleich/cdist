@@ -54,6 +54,9 @@ case "$state_should" in
                         ;;
                     esac
                 ;;
+                devuan)
+                    echo "update-rc.d \"$name\" defaults >/dev/null"
+                ;;
 
                 gentoo)
                     echo rc-update add \"$name\" \"$target_runlevel\"
