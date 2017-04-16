@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# 2014 Thomas Oettli    (otho at sfs.biz)
+# 2014 Daniel Heule     (hda at sfs.biz)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+#
+
+
+repo_path=$(cat "$__object/parameter/repo_path")
+state_should=$(cat "$__object/parameter/state")
+branch=$(cat "$__object/parameter/branch")
+target_path=$(cat "$__object/parameter/target_path")
+comment=$(cat "$__object/parameter/comment")
+file="/$__object_id"
+[ -f "$__object/parameter/file" ] && file="$(cat "$__object/parameter/file")"
+filename="$(basename "$file")"
+
+# Error if repo_path does not contain a git repository
+[ -f "$repo_path/.git/HEAD" ] || exit 1
+
+# Parse HEAD file to get the current branch
+current_branch="$(cat "$repo_path/.git/HEAD")"
+current_branch="${current_branch##*/}"
+if [ "$current_branch" != "$branch" ]; then
+    echo "Please checkout branch $branch on $repo_path" >&2
+    exit 1
+fi
+
+state_is="absent"
+[ -f "$repo_path/$target_path/$filename" ] && state_is="present"
+
+echo "cd \"$repo_path\""
+if [ "$state_should" = "absent" ] && [ "$state_is" = "present" ]; then
+    echo "git rm \"./$target_path/$filename\" >/dev/null"
+    action="removed"
+elif [ "$state_should" = "present" ]; then
+    echo "mkdir -p \"$repo_path/$target_path\""
+    echo "cp \"$__object/explorer/file\" \"./$target_path/$filename\""
+    echo "git add \"./$target_path/$filename\" >/dev/null"
+    action="added"
+    [ "$state_is" == "present" ] && action="updated"
+fi
+
+if [ -f "$__object/parameter/commit" ]; then
+    if [ "$comment" = "" ]; then
+        if [ "$target_path" == "" ]; then
+            comment="cdist: $action $filename"
+        else
+            comment="cdist: $action $target_path/$filename"
+        fi
+    fi
+    echo "git commit -m \"$comment\" >/dev/null || true"
+fi
