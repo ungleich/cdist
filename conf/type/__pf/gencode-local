@@ -1,0 +1,90 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage pf(4) on *BSD
+#
+
+# Debug
+#exec >&2
+#set -x
+
+# Send files to $__target_host via $__remote_copy
+# wait 5 seconds and $__remote_exec $__target_host touch /tmp/pf_test.$__target_host
+
+state="$(cat "$__object/parameter/state")"
+
+if [ "$state" = "absent" ]; then	# Nothing more for this script to do
+   exit 0
+fi
+
+if [ -f "$__object/parameter/ruleset" ]; then
+   ruleset="$(cat "$__object/parameter/ruleset")"
+fi
+
+if [ -f "$__object/parameter/testscript" ]; then
+   testscript="$(cat "$__object/parameter/testscript")"
+fi
+
+rcvar="$(cat "$__object/explorer/rcvar")"
+cksum="$(cat "$__object/explorer/cksum")"
+
+cat <<EOF
+UNAME="$(uname)"
+case \${UNAME} in
+   Darwin )
+      currentSum="\$(cksum -o 1 ${ruleset} | cut '-d ' -f1)"
+      ;;
+   Linux )
+      currentSum="\$(cksum ${ruleset} | cut '-d ' -f1)"
+      ;;
+   FreeBSD )
+      currentSum="\$(cksum -o 1 ${ruleset} | cut -d= -f2 | sed 's/ //g')"
+      ;;
+   * )
+      echo "Sorry, I do not know how to find a cksum on ${UNAME}." >&2
+      exit 1
+      ;;
+esac
+
+if [ ! "${cksum}" = "NOTEXIST" ]; then
+   if [ ! "\${currentSum}" = "${cksum}" ]; then
+      $__remote_copy "${ruleset}" "$__target_host:${rcvar}.new"
+   fi
+else	# File just doesn't even exist yet
+   $__remote_copy "${ruleset}" "$__target_host:${rcvar}.new"
+fi
+if [ -n "${testscript}" ]; then
+   $__remote_copy "${testscript}" "$__target_host:${rcvar}.tests"
+fi
+cat >/tmp/pf.$__target_host <<END
+   sleep 5
+   if [ ! \$(expr "$__remote_exec" : "ssh .*") == 0 ]; then
+      $__remote_exec -S none $__target_host touch /tmp/pf_test.$__target_host
+   else
+      $__remote_exec $__target_host touch /tmp/pf_test.$__target_host
+   fi
+   rm -f /tmp/pf.$__target_host
+END
+sh /tmp/pf.$__target_host &
+EOF
+
+# Debug
+#set +x
+

@@ -1,0 +1,61 @@
+cdist-type__pf(7)
+==================================
+Jake Guffey <jake.guffey--@--eprotex.com>
+
+
+NAME
+----
+cdist-type__pf - Manage pf(4)
+
+
+DESCRIPTION
+-----------
+This type is usually used on *BSD systems to manage the pf firewall.
+
+
+REQUIRED PARAMETERS
+-------------------
+state::
+   Either "present" or "absent".
+
+
+OPTIONAL PARAMETERS
+-------------------
+ruleset::
+   If supplied, use to define the ruleset to load into pf(4). Note that this
+   type is almost useless without a ruleset defined, but it's technically not
+   needed, e.g. for the case of disabling the firewall temporarily.
+
+testscript::
+   If supplied, this script must be successfully executed on the remote system
+   after performing any actions necessary on the client but before making those 
+   changes permanent.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Disable the firewall (for some reason... ;)
+__pf --state absent
+
+# Enable the firewall with the ruleset defined in $__manifest/files/pf.conf
+__pf --state present --ruleset $__manifest/files/pf.conf
+
+# Enable the firewall and make sure you can still talk to it
+__pf --state present --ruleset $__manifest/files/pf.conf \
+   --testscript $__manifest/files/do_tests.sh
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__package(7)
+- pf(4)
+
+
+COPYING
+-------
+Copyright \(C) 2012 Jake Guffey. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

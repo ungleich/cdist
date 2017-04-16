@@ -1,0 +1,103 @@
+#!/bin/sh
+#
+# 2012 Jake Guffey (jake.guffey at eprotex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Manage pf(4) on *BSD
+#
+
+# Debug
+#exec >&2
+#set -x
+
+state="$(cat "$__object/parameter/state")"
+
+if [ -f "$__object/parameter/ruleset" ]; then
+   ruleset="$(cat "$__object/parameter/ruleset")"
+fi
+
+if [ -f "$__object/parameter/testscript" ]; then
+   testscript="$(cat "$__object/parameter/testscript")"
+fi
+
+rcvar="$(cat "$__object/explorer/rcvar")"
+cksum="$(cat "$__object/explorer/cksum")"
+
+cat <<EOF
+# This file is used as a canary later, make sure we don't get a false positive
+if [ -f /tmp/pf_test.$__target_host ]; then
+   rm -f /tmp/pf_test.$__target_host
+fi
+
+currentstate="\$(pfctl -si 2>&1 | grep Status: | sed 's/^Status: \(.*\) for.*$/\1/g')"
+
+if [ "$state" = "present" ]; then
+   if [ ! "\$currentstate" = "Enabled" ]; then
+      pfctl -e 2>&- >&-
+   fi
+else
+   if [ ! "\$currentstate" = "Disabled" ]; then
+      pfctl -d 2>&- >&-
+      exit 0
+   fi
+fi
+
+revert() {
+   pfctl -f "${rcvar}" 2>&- >&-
+   echo "Test(s) failed after applying new ruleset." >&2
+   echo "Reverting back to previous ruleset." >&2
+   exit 255
+}
+
+if [ -f "${rcvar}.new" ]; then
+   pfctl -f "${rcvar}.new" 2>&- >&-
+   pfstatus="\$?"
+fi
+if [ -f "${rcvar}.tests" ]; then
+   sh ${rcvar}.tests
+   teststatus="\$?"
+fi
+
+if [ -z "\$teststatus" ]; then	# no tests executed
+elif [ ! "\$teststatus" -eq "0" ]; then	# tests failed
+   revert
+fi
+if [ -z "\$pfstatus" ]; then	# pfctl wasn't called -- ruleset unchanged
+   exit 0
+elif [ ! "\$pfstatus" -eq "0" ]; then	# pfctl call failed
+   revert
+else	# pfctl call succeeded
+   sleep 10
+   if [ ! -f /tmp/pf_test.$__target_host ]; then
+      # Apparently the upstream cdist server can't get back to us
+      revert
+   else
+      if [ -f "${rcvar}.tests" ]; then
+         rm -f "${rcvar}.tests"
+      fi
+      if [ -f "${rcvar}.new" ]; then
+         rm -f "${rcvar}"
+         mv "${rcvar}.new" "${rcvar}"
+      fi
+   fi
+fi
+EOF
+
+# Debug
+#set +x
+
