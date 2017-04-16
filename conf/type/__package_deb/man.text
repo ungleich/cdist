@@ -1,0 +1,51 @@
+cdist-type__package_deb(7)
+=============================
+Chase Allen James <nx-cdist@nu-ex.com>
+
+
+NAME
+----
+cdist-type__package_deb - Install and manage deb packages
+
+
+DESCRIPTION
+-----------
+Sometimes you need to install a deb package, which is a popular format for Debian-based distributions (like Ubuntu).
+
+
+REQUIRED PARAMETERS
+-------------------
+state::
+   Either "installed" or "removed".
+
+
+OPTIONAL PARAMETERS
+-------------------
+name::
+   If supplied, use the name and not the object id as the package name.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Ensure ruby-enterprise is installed
+__package_deb ruby-enterprise \
+      --source http://rubyenterpriseedition.googlecode.com/files/ruby-enterprise_1.8.7-2011.03_i386_ubuntu10.04.deb \
+      --state installed
+
+# Remove package
+__package_deb ruby-enterprise --state removed
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- cdist-type__package(7)
+
+
+COPYING
+-------
+Copyright \(C) 2011 Chase Allen James. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
