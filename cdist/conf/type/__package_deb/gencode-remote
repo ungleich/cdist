@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# 2013 Chase Allen James (nx-cdist@nu-ex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Install or remove deb packages.
+#
+
+name="$__object_id"
+[ -f "$__object/parameter/name" ] && name="$(cat "$__object/parameter/name")"
+
+source="$(cat "$__object/parameter/source")"
+file="${source##*/}"
+directory="/tmp"
+if [ -f "$__object/parameter/destination_directory" ]; then
+  directory="$(cat "$__object/parameter/destination_directory")"
+fi
+
+deb="${directory}/${file}"
+
+state_should="present"
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+
+state_is="$(cat "$__object/explorer/state")"
+
+case "$state_should" in
+  present) 
+    # Install if absent
+    if [ "$state_is" = "absent" ]; then
+      echo "dpkg -i \"$deb\""
+    fi
+  ;;
+  absent)
+    # Remove if present
+    if [ "$state_is" = "present" ]; then
+      echo "dpkg -r \"$name\""
+    fi
+  ;;
+  *)
+    echo "Unknown state: $state" >&2
+    exit 1
+  ;;
+esac

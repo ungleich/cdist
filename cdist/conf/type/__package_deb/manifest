@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# 2013 Chase Allen James (nx-cdist@nu-ex.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+
+name="$__object_id"
+
+state_should=present
+[ -f "$__object/parameter/state" ] && state_should="$(cat "$__object/parameter/state")"
+
+source="$(cat "$__object/parameter/source")"
+file="${source##*/}"
+
+destination_directory="/tmp"
+if [ -f "$__object/parameter/destination_directory" ]; then
+  destination_directory="$(cat "$__object/parameter/destination_directory")"
+fi
+
+destination="${destination_directory}/${file}"
+
+case "$state_should" in
+  present)
+    __file "$destination" --source "$source"
+  ;;
+
+  absent)
+    __file "$destination" --state absent
+  ;;
+
+  *)
+    echo "Unknown state: $state_should" >&2
+    exit 1
+  ;;
+esac

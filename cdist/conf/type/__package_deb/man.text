@@ -1,0 +1,54 @@
+cdist-type__package_deb(7)
+==========================
+Chase Allen James <nx-cdist@nu-ex.com>
+
+
+NAME
+----
+cdist-type__package_deb - Install and manage deb packages
+
+
+DESCRIPTION
+-----------
+Sometimes you need to install a deb package, which is a popular format for Debian-based distributions (like Ubuntu).
+
+
+REQUIRED PARAMETERS
+-------------------
+name::
+   The name of the package.
+
+source::
+   The path of the local deb package to be uploaded to the target.
+
+
+OPTIONAL PARAMETERS
+-------------------
+state::
+   Either "present" or "absent". Defaults to "present".
+
+destination_directory::
+   The path the deb package will be uploaded to. Defaults to "/tmp".
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+# Ensure your dummy-package is installed
+__package_deb dummy-package \
+      --source ~/custom_packages/dummy-package.deb
+
+# Remove package
+__package_deb dummy-package --state absent
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+
+
+COPYING
+-------
+Copyright \(C) 2013 Chase Allen James. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).
