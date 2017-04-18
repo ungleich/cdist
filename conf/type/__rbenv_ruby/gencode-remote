@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# 2012 Chase Allen James <nx-cdist@nu-ex.com>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+ruby="$__object_id"
+state_is="$(cat "$__object/explorer/state")"
+if [ "$state_is" != "present" ]; then
+  echo "rbenv install ${ruby}"
+  echo "rbenv rehash"
+fi
+
+global_should="$(cat "$__object/parameter/global")"
+
+# If no global parameter defined, default to no
+if [ ! "$global_should" ]; then
+  global_should="no"
+fi
+
+if [ "$global_should" = "yes" ]; then
+  echo "rbenv global ${ruby}"
+  echo "rbenv rehash"
+fi
