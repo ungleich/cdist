@@ -1,0 +1,8 @@
+package=$__object_id
+
+cat<<EOF
+[ -f /etc/environment ] && . /etc/environment
+[ -f /etc/profile     ] && . /etc/profile
+export GOPATH=\${GOPATH:-/opt/gocode}
+go get $package
+EOF
