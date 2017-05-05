@@ -1,0 +1,26 @@
+#!/bin/sh
+
+version=$(cat "$__object/parameter/version")
+
+kernel_name=$(cat "$__global/explorer/kernel_name" | tr '[:upper:]' '[:lower:]')
+machine=$(cat "$__global/explorer/machine")
+case $machine in
+	x86_64|amd64)
+		arch=amd64
+		;;
+	x86)
+		arch=386
+		;;
+	*)
+		arch=$machine  # at least try...
+		;;
+esac
+
+PACKAGE="go${version}.${kernel_name}-${arch}"
+URL="https://storage.googleapis.com/golang/${PACKAGE}.tar.gz"
+cat <<EOF
+[ "x\$(cat /usr/local/go/VERSION 2>/dev/null)" = "xgo$version" ] && exit 0  # already there
+wget --no-verbose "$URL" -O "/tmp/${PACKAGE}.tar.gz"
+rm -rf /usr/local/go
+tar -C /usr/local -xzf /tmp/${PACKAGE}.tar.gz
+EOF
