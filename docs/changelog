@@ -4,7 +4,7 @@ Changelog
 next:
 	* Type __golang_from_vendor: Install golang from https://golang.org/dl/ (Kamila Součková)
 	* Type __go_get: Install go packages using go get (Kamila Součková)
-	* Explorer kernel_name: uname -s
+	* Explorer kernel_name: uname -s (Kamila Součková)
 
 4.4.2: 2017-03-08
 	* Core: Fix suppression of manifests' outputs (Darko Poljak)
