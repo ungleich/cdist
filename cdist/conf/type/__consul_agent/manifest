@@ -23,7 +23,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   scientific|centos|debian|redhat|ubuntu)
+   scientific|centos|debian|devuan|redhat|ubuntu)
       # whitelist safeguard
       :
    ;;
@@ -215,7 +215,11 @@ case "$os" in
         esac
     ;;
 
-   ubuntu)
-      init_upstart
-   ;;
+    devuan)
+        init_sysvinit debian
+    ;;
+
+    ubuntu)
+        init_upstart
+    ;;
 esac
