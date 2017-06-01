@@ -24,6 +24,9 @@ OPTIONAL PARAMETERS
 check-interval
    the interval in which the script given with --check-script should be run
 
+check-http
+   the URL to check for HTTP 200-ish status every --check-interval
+
 check-script
    the shell command to run every --check-interval
 
