@@ -1,0 +1,39 @@
+#!/bin/sh
+
+GOBIN=/opt/gocode/bin  # where to find go binaries
+CONF_DIR=/etc/prometheus
+LOGLEVEL=info
+CONF=$CONF_DIR/alertmanager.yml
+
+### Prometheus server #######################################################
+
+config="$(cat "$__object/parameter/config")"
+storage_path="$(cat "$__object/parameter/storage-path")"
+listen_address="$(cat "$__object/parameter/listen-address")"
+
+ONCHANGE=""
+if [ -f "$__object/parameter/with-daemontools" ]; then
+	__daemontools_service prometheus --run "setuidgid prometheus $GOBIN/prometheus $REAL_FLAGS"
+	ONCHANGE="svc -h /service/prometheus"
+fi
+
+FLAGS="config.file '$CONF'
+storage.path '$storage_path'
+web.listen-address '$listen_address'
+log.level $LOGLEVEL"
+
+REAL_FLAGS="$(echo "$FLAGS" | sed -nE 's/^([^#]+).*/ --\1 \\/p')"
+
+__go_get github.com/prometheus/alertmanager/cmd/...
+
+__user prometheus --system
+__directory "$storage_path" --owner prometheus
+__directory "$CONF_DIR" --owner prometheus
+
+__daemontools_service alertmanager --run "setuidgid prometheus $GOBIN/alertmanager $REAL_FLAGS"
+
+require="$require __directory/$storage_path" \
+__config_file $CONF \
+    --source $config \
+    --group prometheus --mode 640 \
+    --onchange "$ONCHANGE"
