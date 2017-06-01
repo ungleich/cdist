@@ -55,9 +55,16 @@ EXAMPLES
 
 SEE ALSO
 --------
-cdist-type__daemontools
+:strong:`cdist-type__daemontools`\ (7)
 
 
 AUTHORS
 -------
 Kamila Součková <kamila--@--ksp.sk>
+
+COPYING
+-------
+Copyright \(C) 2017 Kamila Součková. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
