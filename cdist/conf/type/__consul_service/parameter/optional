@@ -1,3 +1,4 @@
+check-http
 check-interval
 check-script
 check-ttl

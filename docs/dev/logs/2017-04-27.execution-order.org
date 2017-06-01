@@ -1,0 +1,5 @@
+* After constructs don't exist
+  Flow as implemented on 2013-04-12 has the problem of not allowing
+  *after* constructs.
+* "Type explorer & manifests only" is broken
+  Doesn't catch external dependencies
