@@ -29,6 +29,7 @@ run-file
    File to save as <servicedir>/run. One of run, run-file must be specified.
 
    Example:
+
 .. code-block:: sh
     #!/bin/sh
     exec 2>&1
