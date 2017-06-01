@@ -31,6 +31,7 @@ run-file
    Example:
 
 .. code-block:: sh
+
     #!/bin/sh
     exec 2>&1
     exec my_program
