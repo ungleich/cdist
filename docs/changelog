@@ -8,6 +8,7 @@ next:
 	* Type __sysctl: Add devuan support (Nico Schottelius)
 	* Core: Shorten ssh control path (Darko Poljak)
 	* Type __consul: Add new version and add http check (Kamila Součková)
+	* New types: __daemontools and 	__daemontools_service (Kamila Součková)
 
 4.4.2: 2017-03-08
 	* Core: Fix suppression of manifests' outputs (Darko Poljak)
