@@ -32,6 +32,10 @@ if [ -f "$__object/parameter/check-script" -a ! -f "$__object/parameter/check-in
    echo "When using --check-script you must also define --check-interval" >&2
    exit 1
 fi
+if [ -f "$__object/parameter/check-http" -a ! -f "$__object/parameter/check-interval" ]; then
+   echo "When using --check-http you must also define --check-interval" >&2
+   exit 1
+fi
 
 # Generate json config file
 (
@@ -50,6 +54,12 @@ for param in $(ls "$__object/parameter/"); do
       check-ttl)
          printf '     ,"check": {\n'
          printf '         "ttl": "%s"\n' "$(cat "$__object/parameter/check-ttl")"
+         printf '      }\n'
+      ;;
+      check-http)
+         printf '     ,"check": {\n'
+         printf '         "http": "%s"\n' "$(cat "$__object/parameter/check-http")"
+         printf '         ,"interval": "%s"\n' "$(cat "$__object/parameter/check-interval")"
          printf '      }\n'
       ;;
       tag)

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+pkg=$(cat "$__object/parameter/from-package")
+
+__package $pkg
+
+if [ -f "$__object/parameter/install-init-script" ]; then
+	init=$(cat "$__global/explorer/init")
+	case $init in
+		init)
+			__config_file /etc/init.d/svscan --mode 755 --source "$__type/files/init.d-svscan"
+			require="$require __config_file/etc/init.d/svscan" __start_on_boot svscan
+			require="$require __start_on_boot/svscan" __process svscan --start 'service svscan start'
+		;;
+		*)
+			echo "Your init system ($init) is not supported by this type. Submit a patch at github.com/ungleich/cdist!"
+			exit 1
+		;;
+	esac
+fi

@@ -1,0 +1,38 @@
+#!/bin/sh
+
+RUN_PREFIX="#!/bin/sh
+exec 2>&1
+exec "  # mind the space :D
+
+name=$__object_id
+servicedir=$(cat "$__object/parameter/servicedir")
+run=$(cat "$__object/parameter/run")
+runfile=$(cat "$__object/parameter/run-file")
+logrun=$(cat "$__object/parameter/log-run")
+
+svc=$(cat "$__type/explorer/svc")
+
+if [ -z "$svc" ]; then
+	echo "svc not found! Install daemontools first: see __daemontools"
+	exit 1
+fi
+
+badusage() {
+	echo "__daemontools_service/$__object_id: exactly one of --run, --run-file must be set" >&2
+	exit 1
+}
+
+[ -z "$run$runfile" ] && badusage
+[ -n "$run" ] && [ -n "$runfile" ] && badusage
+
+__directory $servicedir/$name/log/main --parents
+
+echo "$RUN_PREFIX$run" | require="__directory/$servicedir/$name/log/main" __config_file "$servicedir/$name/run" \
+	--onchange "svc -t '$servicedir/$name' 2>/dev/null" \
+	--mode 755 \
+	--source "${runfile:--}"
+
+echo "$RUN_PREFIX$logrun" | require="__directory/$servicedir/$name/log/main" __config_file $servicedir/$name/log/run \
+	--onchange "svc -t '$servicedir/$name/log' 2>/dev/null" \
+	--mode 755 \
+	--source "-"

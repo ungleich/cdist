@@ -1,0 +1,57 @@
+#!/bin/sh
+
+GOBIN=/opt/gocode/bin  # where to find go binaries
+CONF_DIR=/etc/prometheus
+CONF=$CONF_DIR/prometheus.yml
+LOGLEVEL=info
+
+config="$(cat "$__object/parameter/config")"
+retention_days="$(cat "$__object/parameter/retention-days")"
+storage_path="$(cat "$__object/parameter/storage-path")"
+listen_address="$(cat "$__object/parameter/listen-address")"
+alertmanager_url="$(cat "$__object/parameter/alertmanager-url")"
+target_heap_size="$(cat "$__object/parameter/target-heap-size")"
+rule_files="$(cat "$__object/parameter/rule-files")"
+
+# explorer in kB => convert; by default we go with 1/2 RAM
+[ "$target_heap_size" = "auto" ] && target_heap_size=$(($(cat $__global/explorer/memory)*1024/2))
+
+ONCHANGE=""
+if [ -f "$__object/parameter/with-daemontools" ]; then
+	__daemontools_service prometheus --run "setuidgid prometheus $GOBIN/prometheus $REAL_FLAGS"
+	ONCHANGE="&& svc -h /service/prometheus"
+fi
+
+FLAGS="config.file '$CONF'
+storage.local.path '$storage_path'
+storage.local.target-heap-size $(($target_heap_size))  # in bytes; should be 2/3 of available memory because it may be hungry
+storage.local.retention $(($retention_days*24))h  # golang doesn't have days :D
+web.listen-address '$listen_address'
+alertmanager.url '$alertmanager_url'
+log.level $LOGLEVEL"
+
+REAL_FLAGS="$(echo "$FLAGS" | sed -nE 's/^([^#]+).*/ --\1 \\/p')"
+
+__go_get github.com/prometheus/prometheus/cmd/...
+
+__user prometheus --system
+__directory "$storage_path" --owner prometheus
+__directory "$CONF_DIR" --owner prometheus
+
+
+
+require="$require __directory/$storage_path" \
+__config_file $CONF \
+	--source $config \
+	--group prometheus --mode 640 \
+	--onchange "$GOBIN/promtool check-config $CONF $ONCHANGE"
+
+for file in $rule_files; do
+	dest=$CONF_DIR/$(basename $file)
+	require="$require __directory/$CONF_DIR" \
+	__config_file "$dest" \
+		--source "$file" \
+		--owner prometheus \
+		--onchange "$GOBIN/promtool check-rules '$dest' $ONCHANGE"
+done
+
