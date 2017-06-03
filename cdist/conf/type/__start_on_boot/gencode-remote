@@ -93,7 +93,7 @@ case "$state_should" in
 
         else
             case "$os" in
-                debian|ubuntu)
+                debian|ubuntu|devuan)
                     echo update-rc.d -f \"$name\" remove
                 ;;
 

@@ -6,6 +6,7 @@ next:
 	* Type __go_get: Install go packages using go get (Kamila Součková)
 	* Explorer kernel_name: uname -s (Kamila Součková)
 	* Type __sysctl: Add devuan support (Nico Schottelius)
+	* Type __start_on_boot: Add devuan support (Nico Schottelius)
 
 4.4.2: 2017-03-08
 	* Core: Fix suppression of manifests' outputs (Darko Poljak)
