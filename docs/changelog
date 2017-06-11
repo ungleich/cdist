@@ -11,6 +11,7 @@ next:
 	* Type __consul: Add new version and add http check (Kamila Součková)
 	* New types: __daemontools and __daemontools_service (Kamila Součková)
 	* New types: __prometheus_server and __prometheus_alertmanager (Kamila Součková)
+	* New type: __grafana_dashboard (Kamila Součková)
 
 4.4.2: 2017-03-08
 	* Core: Fix suppression of manifests' outputs (Darko Poljak)
