@@ -298,5 +298,5 @@ such case and write warning message. Example for such a case:
 
 COPYING
 -------
-Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2017 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License v3 or later (GPLv3+).
