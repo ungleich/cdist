@@ -1,0 +1,32 @@
+os=$(cat $__global/explorer/os)
+os_version=$(cat $__global/explorer/os_version)
+
+case $os in
+    debian|devuan)
+        case $os_version in
+            8*|jessie)
+                __apt_key_uri grafana \
+                   --name 'Grafana Release Signing Key' \
+                   --uri https://packagecloud.io/gpg.key
+
+                require="__apt_key_uri/grafana" __apt_source grafana \
+                   --uri https://packagecloud.io/grafana/stable/debian/ \
+                   --distribution jessie \
+                   --component main
+
+                __package apt-transport-https
+
+                require="__apt_source/grafana __package/apt-transport-https" __package grafana
+                require="__package/grafana" __start_on_boot grafana-server
+            ;;
+            *)
+                echo "Don't know how to install Grafana on $os $os_version. Send us a pull request!"
+                exit 1
+            ;;
+        esac
+    ;;
+    *)
+        echo "Don't know how to install Grafana on $os. Send us a pull request!"
+        exit 1
+    ;;
+esac

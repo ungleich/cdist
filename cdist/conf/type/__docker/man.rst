@@ -26,16 +26,23 @@ BOOLEAN PARAMETERS
 experimental
    Install the experimental docker-engine package instead of the latest stable release.
 
+state
+   'present' or 'absent', defaults to 'present'
+
 
 EXAMPLES
 --------
 
 .. code-block:: sh
 
+    # Install docker
     __docker
 
-    # experimental
+    # Install experimental
     __docker --experimental
+
+    # Remove docker
+    __docker --state absent
 
 
 AUTHORS

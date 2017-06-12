@@ -14,13 +14,13 @@ The object you need to pass to __postgres_extension consists of
 the database name and the extension name joined by a colon in the
 following form:
 
-.. code-block::
+.. code-block:: sh
 
     dbname:extension
 
 f.ex.
 
-.. code-block::
+.. code-block:: sh
 
     rails_test:unaccent
 

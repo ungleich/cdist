@@ -2,6 +2,30 @@ Changelog
 ---------
 
 next:
+	* Type __golang_from_vendor: Install golang from https://golang.org/dl/ (Kamila Součková)
+	* Type __go_get: Install go packages using go get (Kamila Součková)
+	* Explorer kernel_name: uname -s (Kamila Součková)
+	* Type __sysctl: Add devuan support (Nico Schottelius)
+	* Type __start_on_boot: Add devuan support (Nico Schottelius)
+	* Core: Shorten ssh control path (Darko Poljak)
+	* Type __consul: Add new version and add http check (Kamila Součková)
+	* New types: __daemontools and __daemontools_service (Kamila Součková)
+	* New types: __prometheus_server and __prometheus_alertmanager (Kamila Součková)
+	* New type: __grafana_dashboard (Kamila Součková)
+
+4.4.2: 2017-03-08
+	* Core: Fix suppression of manifests' outputs (Darko Poljak)
+	* Type __user_groups: Support FreeBSD (Andres Erbsen)
+	* Type __cron: Fix filter for new cron on sles12 sp2 (Daniel Heule)
+	* Type __docker: Support absent state (Dominique Roux)
+	* Type __docker_compose: Support absent state (Dominique Roux)
+	* New type: __hosts (Dmitry Bogatov)
+	* New type: __dot_file (Dmitry Bogatov)
+
+4.4.1: 2016-12-17
+	* Documentation: Update docs for types that used man.rst as symbolic links (Darko Poljak)
+	* Type __cron: Remove '# marker' for raw_command due to cron security (Daniel Heule)
+	* New type: __docker_compose (Dominique Roux)
 	* Type __apt_mark: Check supported apt version and if package is installed (Ander Punnar)
 	* New type: __docker (Steven Armstrong)
 	* New type: __package_dpkg (Tomas Pospisek)

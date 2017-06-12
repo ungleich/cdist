@@ -50,9 +50,10 @@ All commands accept the following options:
 
 .. option:: -v, --verbose
 
-    Increase log level, be more verbose. Use it more than once to increase
-    log level. The order of levels from the lowest to the highest are:
-    ERROR, WARNING, INFO, DEBUG.
+    Increase the verbosity level. Every instance of -v increments the verbosity
+    level by one. Its default value is 0. There are 4 levels of verbosity. The
+    order of levels from the lowest to the highest are: ERROR (0), WARNING (1),
+    INFO (2) and DEBUG (3 or higher).
 
 .. option:: -V, --version
 
@@ -267,12 +268,12 @@ This limit is controlled with sshd :strong:`MaxSessions` configuration
 options. For more details refer to :strong:`sshd_config`\ (5).
 
 When requirements for the same object are defined in different manifests (see
-example below) in init manifest and in some other type manifest and they differs
-then dependency resolver cannot detect dependencies right. This happens because
-cdist cannot prepare all objects first and then run objects because some
-object can depend on the result of type explorer(s) and explorers are executed
-during object run. cdist will detect such case and write warning message.
-Example for such a case:
+example below), for example, in init manifest and in some other type manifest
+and those requirements differ then dependency resolver cannot detect
+dependencies right. This happens because cdist cannot prepare all objects first
+and run all objects afterwards. Some object can depend on the result of type
+explorer(s) and explorers are executed during object run. cdist will detect
+such case and write warning message. Example for such a case:
 
 .. code-block:: sh
 
@@ -297,5 +298,5 @@ Example for such a case:
 
 COPYING
 -------
-Copyright \(C) 2011-2013 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2017 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License v3 or later (GPLv3+).

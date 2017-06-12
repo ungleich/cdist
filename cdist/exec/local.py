@@ -149,6 +149,7 @@ class Local(object):
         self.mkdir(self.global_explorer_out_path)
         self.mkdir(self.object_path)
         self.mkdir(self.bin_path)
+        self.mkdir(self.cache_path)
 
     def create_files_dirs(self):
         self._init_directories()
@@ -231,7 +232,7 @@ class Local(object):
                 message.merge_messages()
 
     def run_script(self, script, env=None, return_output=False,
-                   message_prefix=None):
+                   message_prefix=None, save_output=True):
         """Run the given script with the given environment.
         Return the output as a string.
 
@@ -240,7 +241,7 @@ class Local(object):
         command.append(script)
 
         return self.run(command=command, env=env, return_output=return_output,
-                        message_prefix=message_prefix)
+                        message_prefix=message_prefix, save_output=save_output)
 
     def save_cache(self):
         destination = os.path.join(self.cache_path, self.hostdir)

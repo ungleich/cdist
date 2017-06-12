@@ -1,0 +1,63 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          svscan
+# Required-Start:
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: svscan
+# Description:       djb svscan
+### END INIT INFO
+# from https://gist.githubusercontent.com/pacojp/5766990/raw/2ed009ab19515afc9e58291b636d673c5ca864b3/init.d.svscan
+# written by Adam McKenna <adam@debian.org>
+# edited by Kamila Součková <kamila@ksp.sk>
+
+export PATH=$PATH:/usr/local/bin
+
+l=/var/log/svscan
+
+if [ ! -d $l ]; then
+  mkdir $l
+  chown daemon $l
+fi
+
+case "$1" in
+    start)
+        echo -n "Starting daemontools: "
+        if [ ! `pidof svscan` ]; then
+                echo -n "svscan "
+                env - PATH="$PATH" svscan /service 2>&1 | setuidgid daemon multilog t /var/log/svscan &
+                echo "."
+        else
+                echo "already running."
+        fi
+        ;;
+    stop)
+        echo -n "Stopping daemontools: "
+        if [ `pidof svscan` ]; then
+                echo -n "svscan"
+                while [ `pidof svscan` ]; do
+                     kill `pidof svscan`
+                     echo -n "."
+                done
+        fi
+        echo -n " services"
+        for i in `ls -d /service/*`; do
+                svc -dx $i
+                echo -n "."
+        done
+        echo -n " logging "
+        for i in `ls -d /service/*/log`; do
+                svc -dx $i
+                echo -n "."
+        done
+        echo ""
+        ;;
+    restart|force-reload)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo 'Usage: /etc/init.d/svscan {start|stop|restart|force-reload}'
+        exit 1
+esac

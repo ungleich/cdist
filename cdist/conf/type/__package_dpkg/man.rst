@@ -8,16 +8,16 @@ cdist-type__package_dpkg - Manage packages with dpkg
 
 DESCRIPTION
 -----------
-__package_dpkg is used on Debian and variants (like Ubuntu) to
-install packages that are provided locally as *.deb files.
+This type is used on Debian and variants (like Ubuntu) to
+install packages that are provided locally as \*.deb files.
 
-The object given to __package_dpkg must be the name of the deb package.
+The object given to this type must be the name of the deb package.
 
 
 REQUIRED PARAMETERS
 -------------------
 source
-    path to the *.deb package
+    path to the \*.deb package
 
 EXAMPLES
 --------

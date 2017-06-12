@@ -29,6 +29,8 @@ import tempfile
 import socket
 import multiprocessing
 from cdist.mputil import mp_pool_run
+import atexit
+import shutil
 
 import cdist
 import cdist.hostsource
@@ -94,7 +96,6 @@ class Config(object):
                                    "failed: %s" % e))
 
             args.manifest = initial_manifest_temp_path
-            import atexit
             atexit.register(lambda: os.remove(initial_manifest_temp_path))
 
         # default remote cmd patterns
@@ -177,8 +178,15 @@ class Config(object):
                               " ".join(failed_hosts))
 
     @classmethod
-    def _resolve_remote_cmds(cls, args, host_base_path):
-        control_path = os.path.join(host_base_path, "ssh-control-path")
+    def _resolve_ssh_control_path(cls):
+        base_path = tempfile.mkdtemp()
+        control_path = os.path.join(base_path, "s")
+        atexit.register(lambda: shutil.rmtree(base_path))
+        return control_path
+
+    @classmethod
+    def _resolve_remote_cmds(cls, args):
+        control_path = cls._resolve_ssh_control_path()
         # If we constructed patterns for remote commands then there is
         # placeholder for ssh ControlPath, format it and we have unique
         # ControlPath for each host.
@@ -201,8 +209,7 @@ class Config(object):
         log = logging.getLogger(host)
 
         try:
-            remote_exec, remote_copy = cls._resolve_remote_cmds(
-                args, host_base_path)
+            remote_exec, remote_copy = cls._resolve_remote_cmds(args)
             log.debug("remote_exec for host \"{}\": {}".format(
                 host, remote_exec))
             log.debug("remote_copy for host \"{}\": {}".format(
