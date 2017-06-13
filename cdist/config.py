@@ -27,6 +27,8 @@ import time
 import itertools
 import tempfile
 import socket
+import multiprocessing
+from cdist.mputil import mp_pool_run
 import atexit
 import shutil
 
@@ -48,7 +50,7 @@ class Config(object):
 
         self.local = local
         self.remote = remote
-        self.log = logging.getLogger(self.local.target_host[0])
+        self._open_logger()
         self.dry_run = dry_run
         self.jobs = jobs
 
@@ -123,7 +125,6 @@ class Config(object):
     @classmethod
     def commandline(cls, args):
         """Configure remote system"""
-        import multiprocessing
 
         # FIXME: Refactor relict - remove later
         log = logging.getLogger("cdist")
@@ -278,6 +279,14 @@ class Config(object):
             Iterate over the objects once - helper method for
             iterate_until_finished
         """
+        if self.jobs:
+            objects_changed = self._iterate_once_parallel()
+        else:
+            objects_changed = self._iterate_once_sequential()
+        return objects_changed
+
+    def _iterate_once_sequential(self):
+        self.log.info("Iteration in sequential mode")
         objects_changed = False
 
         for cdist_object in self.object_list():
@@ -302,6 +311,95 @@ class Config(object):
                 objects_changed = True
 
         return objects_changed
+
+    def _iterate_once_parallel(self):
+        self.log.info("Iteration in parallel mode in {} jobs".format(
+            self.jobs))
+        objects_changed = False
+
+        cargo = []
+        for cdist_object in self.object_list():
+            if cdist_object.requirements_unfinished(cdist_object.requirements):
+                """We cannot do anything for this poor object"""
+                continue
+
+            if cdist_object.state == core.CdistObject.STATE_UNDEF:
+                """Prepare the virgin object"""
+
+                # self.object_prepare(cdist_object)
+                # objects_changed = True
+                cargo.append(cdist_object)
+
+        n = len(cargo)
+        if n == 1:
+            self.log.debug("Only one object, preparing sequentially")
+            self.object_prepare(cargo[0])
+            objects_changed = True
+        elif cargo:
+            self.log.debug("Multiprocessing start method is {}".format(
+                multiprocessing.get_start_method()))
+            self.log.debug(("Starting multiprocessing Pool for {} parallel "
+                            "objects preparation".format(n)))
+            args = [
+                (c, ) for c in cargo
+            ]
+            mp_pool_run(self.object_prepare, args, jobs=self.jobs)
+            self.log.debug(("Multiprocessing for parallel object "
+                            "preparation finished"))
+            objects_changed = True
+
+        del cargo[:]
+        for cdist_object in self.object_list():
+            if cdist_object.requirements_unfinished(cdist_object.requirements):
+                """We cannot do anything for this poor object"""
+                continue
+
+            if cdist_object.state == core.CdistObject.STATE_PREPARED:
+                if cdist_object.requirements_unfinished(
+                        cdist_object.autorequire):
+                    """The previous step created objects we depend on -
+                    wait for them
+                    """
+                    continue
+
+                # self.object_run(cdist_object)
+                # objects_changed = True
+                cargo.append(cdist_object)
+
+        n = len(cargo)
+        if n == 1:
+            self.log.debug("Only one object, running sequentially")
+            self.object_run(cargo[0])
+            objects_changed = True
+        elif cargo:
+            self.log.debug("Multiprocessing start method is {}".format(
+                multiprocessing.get_start_method()))
+            self.log.debug(("Starting multiprocessing Pool for {} parallel "
+                            "object run".format(n)))
+            args = [
+                (c, ) for c in cargo
+            ]
+            mp_pool_run(self.object_run, args, jobs=self.jobs)
+            self.log.debug(("Multiprocessing for parallel object "
+                            "run finished"))
+            objects_changed = True
+
+        return objects_changed
+
+    def _open_logger(self):
+        self.log = logging.getLogger(self.local.target_host[0])
+
+    # logger is not pickable, so remove it when we pickle
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if 'log' in state:
+            del state['log']
+        return state
+
+    # recreate logger when we unpickle
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._open_logger()
 
     def iterate_until_finished(self):
         """

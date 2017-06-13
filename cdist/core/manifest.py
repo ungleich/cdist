@@ -98,7 +98,7 @@ class Manifest(object):
         self.target_host = target_host
         self.local = local
 
-        self.log = logging.getLogger(self.target_host[0])
+        self._open_logger()
 
         self.env = {
             'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
@@ -113,6 +113,21 @@ class Manifest(object):
 
         if self.log.getEffectiveLevel() == logging.DEBUG:
             self.env.update({'__cdist_debug': "yes"})
+
+    def _open_logger(self):
+        self.log = logging.getLogger(self.target_host[0])
+
+    # logger is not pickable, so remove it when we pickle
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if 'log' in state:
+            del state['log']
+        return state
+
+    # recreate logger when we unpickle
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._open_logger()
 
     def env_initial_manifest(self, initial_manifest):
         env = os.environ.copy()
