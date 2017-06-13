@@ -11,8 +11,9 @@ with :strong:`-p/--parallel` option.
 The other way is to operate in parallel within one host where you specify
 the number of jobs. This is enabled with :strong:`-j/--jobs` option where you
 can specify the number of parallel jobs. By default,
-:strong:`multiprocessing.cpu_count()` is used. For this mode only global
-explorers are currently supported and this option is still in :strong:`beta`.
+:strong:`multiprocessing.cpu_count()` is used. For this mode global explorers,
+object preparation and object run are supported and this option is still in
+:strong:`beta`.
 
 You can, of course, use those two options together. This means that each host
 will be processed by its own process. Within each process cdist will operate

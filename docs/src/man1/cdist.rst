@@ -99,8 +99,9 @@ Configure/install one or more hosts.
 
 .. option:: -j [JOBS], --jobs [JOBS]
 
-    Specify the maximum number of parallel jobs; currently only
-    global explorers are supported (currently in beta)
+    Specify the maximum number of parallel jobs. Global
+    explorers, object prepare and object run are supported
+    (currently in beta).
 
 .. option:: -n, --dry-run
 
