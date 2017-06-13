@@ -38,7 +38,7 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Allow acces from entrance.place4.ungleich.ch
+    # Allow access from entrance.place4.ungleich.ch
     __firewalld_rule entrance \
         --protocol ipv4 \
         --table filter \
