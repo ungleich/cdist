@@ -24,7 +24,7 @@ from-package
 BOOLEAN PARAMETERS
 ------------------
 install-init-script
-   Add an init script and set it to start on boot. Default yes.
+   Add an init script and set it to start on boot.
 
 EXAMPLES
 --------
