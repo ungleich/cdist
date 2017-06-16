@@ -10,6 +10,9 @@ DESCRIPTION
 -----------
 Install and configure Prometheus Alertmanager (https://prometheus.io/docs/alerting/alertmanager/).
 
+This type create a daemontools-compatible service directory under /service/prometheus.
+Daemontools (or something compatible) must be installed (in particular, the command `svc` must be executable).
+
 
 REQUIRED PARAMETERS
 -------------------
@@ -27,10 +30,7 @@ storage-path
 
 BOOLEAN PARAMETERS
 ------------------
-with-daemontools
-   Create a daemontools service directory under /service/prometheus. Default: yes.
-   Note: If you do not use this, Alertmanager will not be launched, and will not reload config on change.
-   If you use this, daemontools (or something compatible) must be installed.
+None
 
 
 EXAMPLES
@@ -44,6 +44,7 @@ EXAMPLES
     __golang_from_vendor --version 1.8.1  # required for prometheus and many exporters
 
     require="__daemontools __golang_from_vendor" __prometheus_alertmanager \
+      --with-daemontools \
       --config "$__manifest/files/alertmanager.yml" \
       --storage-path /data/alertmanager \
       --listen-address "[::]:$ALERTPORT"

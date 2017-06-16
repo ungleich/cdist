@@ -10,6 +10,9 @@ DESCRIPTION
 -----------
 Install and configure Prometheus (https://prometheus.io/).
 
+This type creates a daemontools-compatible service directory under /service/prometheus.
+Daemontools (or something compatible) must be installed (in particular, the command `svc` must be executable).
+
 
 REQUIRED PARAMETERS
 -------------------
@@ -35,10 +38,7 @@ target-heap-size
 
 BOOLEAN PARAMETERS
 ------------------
-with-daemontools
-   Create a daemontools service directory under /service/prometheus. Default: yes.
-   Note: If you do not use this, Prometheus will not be launched, and will not reload config on change.
-   If you use this, daemontools (or something compatible) must be installed.
+None
 
 
 EXAMPLES
@@ -53,6 +53,7 @@ EXAMPLES
     __golang_from_vendor --version 1.8.1  # required for prometheus and many exporters
 
     require="__daemontools __golang_from_vendor" __prometheus_server \
+        --with-daemontools \
         --config "$__manifest/files/prometheus.yml" \
         --retention-days 14 \
         --storage-path /data/prometheus \
