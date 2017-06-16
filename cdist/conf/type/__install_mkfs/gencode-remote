@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2017      Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -22,32 +23,31 @@ device="$(cat "$__object/parameter/device")"
 type="$(cat "$__object/parameter/type")"
 
 case "$type" in
-   swap)
-      echo "mkswap $device"
-   ;;
-   xfs)
-      command="mkfs.xfs -f -q"
-      if [ -f "$__object/parameter/options" ]; then
-         options="$(cat "$__object/parameter/options")"
-         command="$command $options"
-      fi
-      command="$command $device"
-      if [ -f "$__object/parameter/blocks" ]; then
-         blocks="$(cat "$__object/parameter/blocks")"
-         command="$command $blocks"
-      fi
-      echo "$command"
-   ;;
-   *)
-      command="mkfs -t $type -q"
-      if [ -f "$__object/parameter/options" ]; then
-         options="$(cat "$__object/parameter/options")"
-         command="$command $options"
-      fi
-      command="$command $device"
-      if [ -f "$__object/parameter/blocks" ]; then
-         blocks="$(cat "$__object/parameter/blocks")"
-         command="$command $blocks"
-      fi
-      echo "$command"
+    swap)
+        echo "mkswap $device"
+        exit 0
+        ;;
+    xfs)
+        command="mkfs.xfs -f -q"
+        ;;
+
+    vfat)
+        command="mkfs.vfat"
+        ;;
+
+    *)
+        command="mkfs -t $type -q"
+        ;;
 esac
+
+if [ -f "$__object/parameter/options" ]; then
+    options="$(cat "$__object/parameter/options")"
+    command="$command $options"
+fi
+
+command="$command $device"
+if [ -f "$__object/parameter/blocks" ]; then
+    blocks="$(cat "$__object/parameter/blocks")"
+    command="$command $blocks"
+fi
+echo "$command"
