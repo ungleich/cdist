@@ -18,6 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+#set -x
+
 die() {
    echo "[__install_partition_msdos_apply] $@" >&2
    exit 1
@@ -57,7 +59,7 @@ size_to_mb() {
 
 get_objects() {
    objects_file=$(mktemp)
-   for object in $(find "$__global/object/__install_partition_msdos" -path "*.cdist"); do
+   for object in $(find "$__global/object/__install_partition_msdos" -type d -name "$__cdist_object_marker"); do
       object_device="$(cat "$object/parameter/device")"
       object_minor="$(cat "$object/parameter/minor")"
       echo "$object_device $object_minor $object" >> $objects_file
