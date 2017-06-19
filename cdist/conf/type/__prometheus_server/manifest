@@ -16,11 +16,6 @@ rule_files="$(cat "$__object/parameter/rule-files")"
 # explorer in kB => convert; by default we go with 1/2 RAM
 [ "$target_heap_size" = "auto" ] && target_heap_size=$(($(cat $__global/explorer/memory)*1024/2))
 
-ONCHANGE=""
-if [ -f "$__object/parameter/with-daemontools" ]; then
-	__daemontools_service prometheus --run "setuidgid prometheus $GOBIN/prometheus $REAL_FLAGS"
-	ONCHANGE="&& svc -h /service/prometheus"
-fi
 
 FLAGS="config.file '$CONF'
 storage.local.path '$storage_path'
@@ -35,23 +30,23 @@ REAL_FLAGS="$(echo "$FLAGS" | sed -nE 's/^([^#]+).*/ --\1 \\/p')"
 __go_get github.com/prometheus/prometheus/cmd/...
 
 __user prometheus --system
-__directory "$storage_path" --owner prometheus
-__directory "$CONF_DIR" --owner prometheus
+require="__user/prometheus" __directory "$storage_path" --owner prometheus
+require="__user/prometheus" __directory "$CONF_DIR" --owner prometheus
 
+__daemontools_service prometheus --run "setuidgid prometheus $GOBIN/prometheus $REAL_FLAGS"
 
-
-require="$require __directory/$storage_path" \
+require="$require __directory/$storage_path __user/prometheus" \
 __config_file $CONF \
 	--source $config \
 	--group prometheus --mode 640 \
-	--onchange "$GOBIN/promtool check-config $CONF $ONCHANGE"
+	--onchange "$GOBIN/promtool check-config $CONF && svc -h /service/prometheus"
 
 for file in $rule_files; do
 	dest=$CONF_DIR/$(basename $file)
-	require="$require __directory/$CONF_DIR" \
+	require="$require __directory/$CONF_DIR __user/prometheus" \
 	__config_file "$dest" \
 		--source "$file" \
 		--owner prometheus \
-		--onchange "$GOBIN/promtool check-rules '$dest' $ONCHANGE"
+		--onchange "$GOBIN/promtool check-rules '$dest' && svc -h /service/prometheus"
 done
 

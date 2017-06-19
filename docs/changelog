@@ -1,9 +1,10 @@
 Changelog
 ---------
 
-next:
+4.4.4: 2017-06-16
 	* Core: Support -j parallelization for object prepare and object run (Darko Poljak)
 	* Type __install_mkfs: mkfs.vfat does not support -q (Nico Schottelius)
+	* Types __go_get, __daemontools*, __prometheus*: Fix missing dependencies, fix arguments(Kamila Součková)
 
 4.4.3: 2017-06-13
 	* Type __golang_from_vendor: Install golang from https://golang.org/dl/ (Kamila Součková)
