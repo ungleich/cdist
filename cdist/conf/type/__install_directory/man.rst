@@ -1,0 +1,1 @@
+../__directory/man.rst
