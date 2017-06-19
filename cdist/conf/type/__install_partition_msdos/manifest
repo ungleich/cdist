@@ -25,10 +25,15 @@ else
    partition="/$__object_id"
    echo "$partition" > "$__object/parameter/partition"
 fi
-device="$(echo "$partition" | sed 's/[0-9]//g')"
-echo "$device" > "$__object/parameter/device"
-minor="$(echo "$partition" | sed 's/[^0-9]//g')"
-echo "$minor" > "$__object/parameter/minor"
+
+if [ ! -f "$__object/parameter/device" ]; then
+   device="$(echo "$partition" | sed 's/[0-9]//g')"
+   echo "$device" > "$__object/parameter/device"
+fi
+if [ ! -f "$__object/parameter/minor" ]; then
+   minor="$(echo "$partition" | sed 's/[^0-9]//g')"
+   echo "$minor" > "$__object/parameter/minor"
+fi
 
 if [ ! -f "$__object/parameter/bootable" ]; then
    echo "false" > "$__object/parameter/bootable"
