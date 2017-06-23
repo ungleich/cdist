@@ -24,6 +24,12 @@ import logging
 
 
 def resolve_target_addresses(host):
+    host_name = resolve_target_host_name(host)
+    host_fqdn = resolve_target_fqdn(host)
+    return (host, host_name, host_fqdn)
+
+
+def resolve_target_host_name(host):
     log = logging.getLogger(host)
     try:
         # getaddrinfo returns a list of 5-tuples:
@@ -43,7 +49,11 @@ def resolve_target_addresses(host):
                  ", $host_name will be empty. Error is: {}".format(host, e))
         # in case of error provide empty value
         host_name = ''
+    return host_name
 
+
+def resolve_target_fqdn(host):
+    log = logging.getLogger(host)
     try:
         host_fqdn = socket.getfqdn(host)
         log.debug("derived host_fqdn for host \"{}\": {}".format(
@@ -53,8 +63,7 @@ def resolve_target_addresses(host):
                  ", $host_fqdn will be empty. Error is: {}".format(host, e))
         # in case of error provide empty value
         host_fqdn = ''
-
-    return (host, host_name, host_fqdn)
+    return host_fqdn
 
 
 # check whether addr is IPv6
