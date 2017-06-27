@@ -20,4 +20,13 @@
 
 options="$(cat "$__object/parameter/options")"
 
-echo "reboot $options"
+#echo "reboot $options"
+cat << DONE
+echo 1 > /proc/sys/kernel/sysrq
+echo s > /proc/sysrq-trigger
+
+# close file descriptors to detach from ssh
+sh -c 'sleep 3; echo b > /proc/sysrq-trigger' > /dev/null 2>&1 </dev/null &
+
+exit
+DONE

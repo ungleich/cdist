@@ -41,8 +41,4 @@ mountpoint -q "${chroot}/dev/pts" \
 [ -d "${chroot}/tmp" ] || mkdir -m 1777 "${chroot}/tmp"
 mountpoint -q "${chroot}/tmp" \
    || mount -t tmpfs -o mode=1777,strictatime,nodev,nosuid tmpfs "${chroot}/tmp"
-
-if [ ! -f "${chroot}/etc/resolv.conf" ]; then
-   cp /etc/resolv.conf "${chroot}/etc/"
-fi
 DONE

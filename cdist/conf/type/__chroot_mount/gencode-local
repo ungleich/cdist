@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2016 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -18,8 +18,19 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# set defaults
-device="$(cat "$__object/parameter/device" 2>/dev/null \
-   || echo "/$__object_id" | tee "$__object/parameter/device")"
-chroot="$(cat "$__object/parameter/chroot" 2>/dev/null \
-   || echo "/target" | tee "$__object/parameter/chroot")"
+chroot="/$__object_id"
+
+if [ -f "$__object/parameter/manage-resolv-conf" ]; then
+   suffix="$(cat "$__object/parameter/manage-resolv-conf")"
+   resolv_conf="${chroot}/etc/resolv.conf"
+   original_resolv_conf="${resolv_conf}.${suffix}"
+   cat << DONE
+$__remote_exec $__target_host << EOSSH
+if [ -f "${resolv_conf}" ]; then
+   mv "${resolv_conf}" "${original_resolv_conf}"
+fi
+# copy hosts resolv.conf into chroot
+cp /etc/resolv.conf "${resolv_conf}"
+EOSSH
+DONE
+fi
