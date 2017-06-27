@@ -170,6 +170,10 @@ def get_parsers():
            help='operate on multiple hosts in parallel',
            action='store_true', dest='parallel')
     parser['config_args'].add_argument(
+           '-r', '--remote-out-dir',
+           help='Directory to save cdist output in on the target host',
+           dest="remote_out_path")
+    parser['config_args'].add_argument(
            '-s', '--sequential',
            help='operate on multiple hosts sequentially (default)',
            action='store_false', dest='parallel')
