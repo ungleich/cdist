@@ -115,6 +115,10 @@ Configure/install one or more hosts.
 
     Operate on multiple hosts in parallel
 
+.. option:: -r, --remote-out-dir
+
+    Directory to save cdist output in on the target host
+
 .. option:: -s, --sequential
 
     Operate on multiple hosts sequentially (default)
