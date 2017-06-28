@@ -240,7 +240,7 @@ class Emulator(object):
                                                 self.object_source)))
             raise
 
-        self.log.trace("Recording requirement: %s", requirement)
+        self.log.debug("Recording requirement: %s", requirement)
 
         # Save the sanitised version, not the user supplied one
         # (__file//bar => __file/bar)

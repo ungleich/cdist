@@ -145,7 +145,7 @@ class Manifest(object):
         else:
             user_supplied = True
 
-        self.log.trace("Running initial manifest " + initial_manifest)
+        self.log.info("Running initial manifest " + initial_manifest)
 
         if not os.path.isfile(initial_manifest):
             raise NoInitialManifestError(initial_manifest, user_supplied)

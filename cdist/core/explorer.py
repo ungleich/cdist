@@ -95,7 +95,7 @@ class Explorer(object):
         out_path directory.
 
         """
-        self.log.trace("Running global explorers")
+        self.log.info("Running global explorers")
         self.transfer_global_explorers()
         if self.jobs is None:
             self._run_global_explorers_seq(out_path)
