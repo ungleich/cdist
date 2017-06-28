@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2011 Chase Allen James <nx-cdist@nu-ex.com>
 #

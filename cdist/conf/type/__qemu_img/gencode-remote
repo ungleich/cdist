@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 ################################################################################
 # State: absent is handled by manifest - we need only to do stuff if image is

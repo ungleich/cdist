@@ -237,8 +237,14 @@ class Local(object):
         Return the output as a string.
 
         """
-        command = [os.environ.get('CDIST_LOCAL_SHELL', "/bin/sh"), "-e"]
-        command.append(script)
+        if os.access(script, os.X_OK):
+            self.log.debug('%s is executable, running it', script)
+            command=[script]
+        else:
+            command = [os.environ.get('CDIST_LOCAL_SHELL', "/bin/sh"), "-e"]
+            self.log.debug('%s is NOT executable, running it with %s',
+                      script, " ".join(command))
+            command.append(script)
 
         return self.run(command=command, env=env, return_output=return_output,
                         message_prefix=message_prefix, save_output=save_output)

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # Copyright (C) 2016  Bogatov Dmitry <KAction@gnu.org>
 #

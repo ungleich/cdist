@@ -79,6 +79,12 @@ two underscores (__) to prevent collisions with other executables in $PATH.
 
 To implement a new type, create the directory **cdist/conf/type/__NAME**.
 
+Type manifest and gencode can be written in any language. They just need to be
+executable and have a proper shebang. If they are not executable then cdist assumes
+they are written in shell so they are executed using '/bin/sh -e' or 'CDIST_LOCAL_SHELL'.
+
+For executable shell code it is suggested that shebang is '#!/bin/sh -e'.
+
 
 Defining parameters
 -------------------

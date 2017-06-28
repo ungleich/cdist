@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
 # 2016 Darko Poljak (darko.poljak at gmail.com)

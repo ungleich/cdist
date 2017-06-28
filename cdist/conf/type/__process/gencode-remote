@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014 Steven Armstrong (steven-cdist at armstrong.cc)

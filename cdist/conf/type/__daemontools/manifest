@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 pkg=$(cat "$__object/parameter/from-package")
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2011-2015 Steven Armstrong (steven-cdist at armstrong.cc)
 #
