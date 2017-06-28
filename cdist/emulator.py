@@ -98,7 +98,7 @@ class Emulator(object):
         self.save_stdin()
         self.record_requirements()
         self.record_auto_requirements()
-        self.log.debug("Finished %s %s" % (
+        self.log.trace("Finished %s %s" % (
             self.cdist_object.path, self.parameters))
 
     def __init_log(self):
@@ -148,7 +148,7 @@ class Emulator(object):
 
         # And finally parse/verify parameter
         self.args = parser.parse_args(self.argv[1:])
-        self.log.debug('Args: %s' % self.args)
+        self.log.trace('Args: %s' % self.args)
 
     def setup_object(self):
         # Setup object - and ensure it is not in args
@@ -240,7 +240,7 @@ class Emulator(object):
                                                 self.object_source)))
             raise
 
-        self.log.debug("Recording requirement: %s", requirement)
+        self.log.trace("Recording requirement: %s", requirement)
 
         # Save the sanitised version, not the user supplied one
         # (__file//bar => __file/bar)

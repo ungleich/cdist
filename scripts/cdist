@@ -44,8 +44,8 @@ def commandline():
     if retval:
         log.warning(retval)
 
-    log.debug(args)
-    log.info("version %s" % cdist.VERSION)
+    log.trace(args)
+    log.verbose("version %s" % cdist.VERSION)
 
     # Work around python 3.3 bug:
     # http://bugs.python.org/issue16308

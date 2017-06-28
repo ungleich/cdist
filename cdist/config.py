@@ -144,7 +144,7 @@ class Config(object):
 
             hostcnt += 1
             if args.parallel:
-                log.debug("Creating child process for %s", host)
+                log.trace("Creating child process for %s", host)
                 process[host] = multiprocessing.Process(
                         target=cls.onehost,
                         args=(host, host_base_path, hostdir, args, True))
@@ -159,7 +159,7 @@ class Config(object):
         # Catch errors in parallel mode when joining
         if args.parallel:
             for host in process.keys():
-                log.debug("Joining process %s", host)
+                log.trace("Joining process %s", host)
                 process[host].join()
 
                 if not process[host].exitcode == 0:
@@ -300,7 +300,7 @@ class Config(object):
         return objects_changed
 
     def _iterate_once_sequential(self):
-        self.log.info("Iteration in sequential mode")
+        self.log.debug("Iteration in sequential mode")
         objects_changed = False
 
         for cdist_object in self.object_list():
@@ -327,7 +327,7 @@ class Config(object):
         return objects_changed
 
     def _iterate_once_parallel(self):
-        self.log.info("Iteration in parallel mode in {} jobs".format(
+        self.log.debug("Iteration in parallel mode in {} jobs".format(
             self.jobs))
         objects_changed = False
 
@@ -350,15 +350,15 @@ class Config(object):
             self.object_prepare(cargo[0])
             objects_changed = True
         elif cargo:
-            self.log.debug("Multiprocessing start method is {}".format(
+            self.log.trace("Multiprocessing start method is {}".format(
                 multiprocessing.get_start_method()))
-            self.log.debug(("Starting multiprocessing Pool for {} parallel "
+            self.log.trace(("Starting multiprocessing Pool for {} parallel "
                             "objects preparation".format(n)))
             args = [
                 (c, ) for c in cargo
             ]
             mp_pool_run(self.object_prepare, args, jobs=self.jobs)
-            self.log.debug(("Multiprocessing for parallel object "
+            self.log.trace(("Multiprocessing for parallel object "
                             "preparation finished"))
             objects_changed = True
 
@@ -386,15 +386,15 @@ class Config(object):
             self.object_run(cargo[0])
             objects_changed = True
         elif cargo:
-            self.log.debug("Multiprocessing start method is {}".format(
+            self.log.trace("Multiprocessing start method is {}".format(
                 multiprocessing.get_start_method()))
-            self.log.debug(("Starting multiprocessing Pool for {} parallel "
+            self.log.trace(("Starting multiprocessing Pool for {} parallel "
                             "object run".format(n)))
             args = [
                 (c, ) for c in cargo
             ]
             mp_pool_run(self.object_run, args, jobs=self.jobs)
-            self.log.debug(("Multiprocessing for parallel object "
+            self.log.trace(("Multiprocessing for parallel object "
                             "run finished"))
             objects_changed = True
 
@@ -473,7 +473,7 @@ class Config(object):
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
 
-        self.log.debug("Trying to run object %s" % (cdist_object.name))
+        self.log.verbose("Trying to run object %s" % (cdist_object.name))
         if cdist_object.state == core.CdistObject.STATE_DONE:
             raise cdist.Error(("Attempting to run an already finished "
                                "object: %s"), cdist_object)
@@ -500,5 +500,5 @@ class Config(object):
             self.log.info("Skipping code execution due to DRY RUN")
 
         # Mark this object as done
-        self.log.debug("Finishing run of " + cdist_object.name)
+        self.log.trace("Finishing run of " + cdist_object.name)
         cdist_object.state = core.CdistObject.STATE_DONE
