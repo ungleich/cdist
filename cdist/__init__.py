@@ -20,9 +20,9 @@
 #
 
 import os
-import subprocess
 import hashlib
 
+import cdist.log
 import cdist.version
 
 VERSION = cdist.version.VERSION

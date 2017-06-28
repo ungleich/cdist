@@ -17,13 +17,20 @@ EPILOG = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
 parser = None
 
 
+_verbosity_level_off = -2
+_verbosity_level_debug = 3
 _verbosity_level = {
-    0: logging.ERROR,
-    1: logging.WARNING,
-    2: logging.INFO,
+    _verbosity_level_off: logging.OFF,
+    -1: logging.ERROR,
+    0: logging.WARNING,
+    1: logging.INFO,
+    2: logging.VERBOSE,
+    3: logging.DEBUG,
+    4: logging.TRACE,
 }
+# All verbosity levels above 4 are TRACE.
 _verbosity_level = collections.defaultdict(
-    lambda: logging.DEBUG, _verbosity_level)
+    lambda: logging.TRACE, _verbosity_level)
 
 
 def add_beta_command(cmd):
@@ -84,12 +91,17 @@ def get_parsers():
             help=('Set log level to debug (deprecated, use -vvv instead)'),
             action='store_true', default=False)
     parser['loglevel'].add_argument(
+            '-q', '--quiet',
+            help='Quiet mode: disables logging, including WARNING and ERROR',
+            action='store_true', default=False)
+    parser['loglevel'].add_argument(
             '-v', '--verbose',
             help=('Increase the verbosity level. Every instance of -v '
                   'increments the verbosity level by one. Its default value '
-                  'is 0. There are 4 levels of verbosity. The order of levels '
-                  'from the lowest to the highest are: ERROR (0), '
-                  'WARNING (1), INFO (2) and DEBUG (3 or higher).'),
+                  'is 0 which includes ERROR and WARNING levels. '
+                  'The levels, in order from the lowest to the highest, are: '
+                  'ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) '
+                  'TRACE (4 or higher).'),
             action='count', default=0)
 
     parser['beta'] = argparse.ArgumentParser(add_help=False)
@@ -213,9 +225,12 @@ def get_parsers():
 def handle_loglevel(args):
     if args.debug:
         retval = "-d/--debug is deprecated, use -vvv instead"
-        args.verbose = 3
+        args.verbose = _verbosity_level_debug
     else:
         retval = None
+
+    if args.quiet:
+        args.verbose = _verbosity_level_off
 
     logging.root.setLevel(_verbosity_level[args.verbose])
 

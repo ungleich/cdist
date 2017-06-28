@@ -50,12 +50,16 @@ All commands accept the following options:
 
     Set log level to debug (deprecated, use -vvv instead)
 
+.. option:: -q, --quiet
+
+    Quiet mode: disables logging, including WARNING and ERROR
+
 .. option:: -v, --verbose
 
     Increase the verbosity level. Every instance of -v increments the verbosity
-    level by one. Its default value is 0. There are 4 levels of verbosity. The
-    order of levels from the lowest to the highest are: ERROR (0), WARNING (1),
-    INFO (2) and DEBUG (3 or higher).
+    level by one. Its default value is 0 which includes ERROR and WARNING levels.
+    The levels, in order from the lowest to the highest, are: 
+    ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) TRACE (4 or higher).
 
 .. option:: -V, --version
 

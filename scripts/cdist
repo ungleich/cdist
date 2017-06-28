@@ -80,10 +80,7 @@ if __name__ == "__main__":
         import os
         import re
         import cdist
-        import cdist.log
 
-        logging.setLoggerClass(cdist.log.Log)
-        logging.basicConfig(format='%(levelname)s: %(message)s')
         log = logging.getLogger("cdist")
 
         if re.match("__", os.path.basename(sys.argv[0])):

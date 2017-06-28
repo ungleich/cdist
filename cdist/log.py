@@ -23,6 +23,31 @@
 import logging
 
 
+# Define additional cdist logging levels.
+logging.OFF = logging.CRITICAL + 10  # disable logging
+logging.addLevelName(logging.OFF, 'OFF')
+
+logging.VERBOSE = logging.INFO - 5
+logging.addLevelName(logging.VERBOSE, 'VERBOSE')
+
+
+def _verbose(msg, *args, **kwargs):
+    logging.log(logging.VERBOSE, msg, *args, **kwargs)
+
+
+logging.verbose = _verbose
+
+logging.TRACE = logging.DEBUG - 5
+logging.addLevelName(logging.TRACE, 'TRACE')
+
+
+def _trace(msg, *args, **kwargs):
+    logging.log(logging.TRACE, msg, *args, **kwargs)
+
+
+logging.trace = _trace
+
+
 class Log(logging.Logger):
 
     def __init__(self, name):
@@ -37,3 +62,13 @@ class Log(logging.Logger):
         record.msg = self.name + ": " + str(record.msg)
 
         return True
+
+    def verbose(self, msg, *args, **kwargs):
+        self.log(logging.VERBOSE, msg, *args, **kwargs)
+
+    def trace(self, msg, *args, **kwargs):
+        self.log(logging.TRACE, msg, *args, **kwargs)
+
+
+logging.setLoggerClass(Log)
+logging.basicConfig(format='%(levelname)s: %(message)s')
