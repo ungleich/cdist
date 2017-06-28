@@ -1,3 +1,5 @@
+#!/bin/sh
+
 package=$__object_id
 
 cat<<EOF
