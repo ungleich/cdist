@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 go_executable=$(cat "$__object/explorer/go-executable")
 [ -z "$go_executable" ] && echo "__go_get: Cannot find go executable; make sure it is installed and in PATH" >&2 && exit 1

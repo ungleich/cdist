@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2013 Tomas Pospisek (tpo_deb sourcepole.ch)
 #

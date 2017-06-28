@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 GOBIN=/opt/gocode/bin  # where to find go binaries
 CONF_DIR=/etc/prometheus

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2012 Evax Software <contact@evax.fr>
 #

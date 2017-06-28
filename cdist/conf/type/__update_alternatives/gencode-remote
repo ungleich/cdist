@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2013 Nico Schottelius (nico-cdist at schottelius.org)
 #

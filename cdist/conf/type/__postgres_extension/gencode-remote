@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2013 Tomas Pospisek (tpo_deb at sourcepole.ch)

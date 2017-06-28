@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2013 Daniel Heule (hda at sfs.biz)
 #

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2014 Ricardo Catalinas Jiménez (jimenezrick at gmail.com)
 #

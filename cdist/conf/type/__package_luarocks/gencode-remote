@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2012 SwellPath, Inc.
 # Christian G. Warden <cwarden@xerus.org>

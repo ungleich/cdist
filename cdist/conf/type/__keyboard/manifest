@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # Carlos Ortigoza (carlos.ortigoza at ungleich.ch)
 #
