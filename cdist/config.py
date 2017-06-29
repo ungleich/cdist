@@ -220,13 +220,15 @@ class Config(object):
                 host_dir_name=host_dir_name,
                 initial_manifest=args.manifest,
                 add_conf_dirs=args.conf_dir,
-                cache_path_pattern=args.cache_path_pattern)
+                cache_path_pattern=args.cache_path_pattern,
+                quiet_mode=args.quiet)
 
             remote = cdist.exec.remote.Remote(
                 target_host=target_host,
                 remote_exec=remote_exec,
                 remote_copy=remote_copy,
-                base_path=args.remote_out_path)
+                base_path=args.remote_out_path,
+                quiet_mode=args.quiet)
 
             c = cls(local, remote, dry_run=args.dry_run, jobs=args.jobs)
             c.run()

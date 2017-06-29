@@ -62,7 +62,8 @@ class Remote(object):
                  target_host,
                  remote_exec,
                  remote_copy,
-                 base_path=None):
+                 base_path=None,
+                 quiet_mode=None):
         self.target_host = target_host
         self._exec = remote_exec
         self._copy = remote_copy
@@ -71,6 +72,7 @@ class Remote(object):
             self.base_path = base_path
         else:
             self.base_path = "/var/lib/cdist"
+        self.quiet_mode = quiet_mode
 
         self.conf_path = os.path.join(self.base_path, "conf")
         self.object_path = os.path.join(self.base_path, "object")
@@ -228,7 +230,12 @@ class Remote(object):
 
         self.log.trace("Remote run: %s", command)
         try:
-            output, errout = exec_util.call_get_output(command, env=os_environ)
+            if self.quiet_mode:
+                stderr = subprocess.DEVNULL
+            else:
+                stderr = None
+            output, errout = exec_util.call_get_output(
+                command, env=os_environ, stderr=stderr)
             self.log.trace("Remote stdout: {}".format(output))
             # Currently, stderr is not captured.
             # self.log.trace("Remote stderr: {}".format(errout))

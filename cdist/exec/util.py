@@ -116,14 +116,14 @@ import cdist
 #     return (result.stdout, result.stderr)
 
 
-def call_get_output(command, env=None):
+def call_get_output(command, env=None, stderr=None):
     """Run the given command with the given environment.
     Return the tuple of stdout and stderr output as a byte strings.
     """
 
     assert isinstance(command, (list, tuple)), (
             "list or tuple argument expected, got: {}".format(command))
-    return (_call_get_stdout(command, env), None)
+    return (_call_get_stdout(command, env, stderr), None)
 
 
 def handle_called_process_error(err, command):
@@ -140,7 +140,7 @@ def handle_called_process_error(err, command):
                           err.returncode, err.output))
 
 
-def _call_get_stdout(command, env=None):
+def _call_get_stdout(command, env=None, stderr=None):
     """Run the given command with the given environment.
     Return the stdout output as a byte string, stderr is ignored.
     """
@@ -148,7 +148,7 @@ def _call_get_stdout(command, env=None):
         "list or tuple argument expected, got: {}".format(command))
 
     with TemporaryFile() as fout:
-        subprocess.check_call(command, env=env, stdout=fout)
+        subprocess.check_call(command, env=env, stdout=fout, stderr=stderr)
         fout.seek(0)
         output = fout.read()
 

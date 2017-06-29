@@ -54,7 +54,8 @@ class Local(object):
                  exec_path=sys.argv[0],
                  initial_manifest=None,
                  add_conf_dirs=None,
-                 cache_path_pattern=None):
+                 cache_path_pattern=None,
+                 quiet_mode=False):
 
         self.target_host = target_host
         self.hostdir = host_dir_name
@@ -64,6 +65,7 @@ class Local(object):
         self.custom_initial_manifest = initial_manifest
         self._add_conf_dirs = add_conf_dirs
         self.cache_path_pattern = cache_path_pattern
+        self.quiet_mode = quiet_mode
 
         self._init_log()
         self._init_permissions()
@@ -212,8 +214,13 @@ class Local(object):
 
         self.log.trace("Local run: %s", command)
         try:
+            if self.quiet_mode:
+                stderr = subprocess.DEVNULL
+            else:
+                stderr = None
             if save_output:
-                output, errout = exec_util.call_get_output(command, env=env)
+                output, errout = exec_util.call_get_output(
+                    command, env=env, stderr=stderr)
                 self.log.trace("Local stdout: {}".format(output))
                 # Currently, stderr is not captured.
                 # self.log.trace("Local stderr: {}".format(errout))
@@ -223,7 +230,12 @@ class Local(object):
                 # In some cases no output is saved.
                 # This is used for shell command, stdout and stderr
                 # must not be catched.
-                subprocess.check_call(command, env=env)
+                if self.quiet_mode:
+                    stdout = subprocess.DEVNULL
+                else:
+                    stdout = None
+                subprocess.check_call(command, env=env, stderr=stderr,
+                                      stdout=stdout)
         except subprocess.CalledProcessError as e:
             exec_util.handle_called_process_error(e, command)
         except OSError as error:
