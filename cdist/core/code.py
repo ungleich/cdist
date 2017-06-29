@@ -21,12 +21,9 @@
 #
 #
 
-import logging
 import os
 
 import cdist
-
-log = logging.getLogger(__name__)
 
 
 '''

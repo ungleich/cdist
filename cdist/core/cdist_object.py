@@ -22,15 +22,12 @@
 #
 
 import fnmatch
-import logging
 import os
 import collections
 
 import cdist
 import cdist.core
 from cdist.util import fsproperty
-
-log = logging.getLogger(__name__)
 
 
 class IllegalObjectIdError(cdist.Error):

@@ -168,6 +168,8 @@ class Explorer(object):
         in the object.
 
         """
+        self.log.info("Running type explorers for {}".format(
+            cdist_object.cdist_type))
         self.log.trace("Transfering type explorers for type: %s",
                        cdist_object.cdist_type)
         self.transfer_type_explorers(cdist_object.cdist_type)

@@ -192,7 +192,6 @@ class Local(object):
         Return the output as a string.
 
         """
-        self.log.trace("Local run: %s", command)
         assert isinstance(command, (list, tuple)), (
                 "list or tuple argument expected, got: %s" % command)
 
@@ -211,6 +210,7 @@ class Local(object):
             message = cdist.message.Message(message_prefix, self.messages_path)
             env.update(message.env)
 
+        self.log.trace("Local run: %s", command)
         try:
             if save_output:
                 output, errout = exec_util.call_get_output(command, env=env)
