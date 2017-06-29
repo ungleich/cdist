@@ -297,7 +297,8 @@ class Local(object):
                                             self.cache_path_pattern)
         self.log.debug("cache subpath: {}".format(cache_subpath))
         destination = os.path.join(self.cache_path, cache_subpath)
-        self.log.debug("Saving " + self.base_path + " to " + destination)
+        self.log.trace(("Saving cache: " + self.base_path + " to " +
+                        destination))
 
         if not os.path.exists(destination):
             shutil.move(self.base_path, destination)
