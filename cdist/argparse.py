@@ -18,7 +18,6 @@ parser = None
 
 
 _verbosity_level_off = -2
-_verbosity_level_debug = 3
 _verbosity_level = {
     _verbosity_level_off: logging.OFF,
     -1: logging.ERROR,
@@ -86,10 +85,6 @@ def get_parsers():
         parser = {}
     # Options _all_ parsers have in common
     parser['loglevel'] = argparse.ArgumentParser(add_help=False)
-    parser['loglevel'].add_argument(
-            '-d', '--debug',
-            help=('Set log level to debug (deprecated, use -vvv instead)'),
-            action='store_true', default=False)
     parser['loglevel'].add_argument(
             '-q', '--quiet',
             help='Quiet mode: disables logging, including WARNING and ERROR',
@@ -223,15 +218,7 @@ def get_parsers():
 
 
 def handle_loglevel(args):
-    if args.debug:
-        retval = "-d/--debug is deprecated, use -vvv instead"
-        args.verbose = _verbosity_level_debug
-    else:
-        retval = None
-
     if args.quiet:
         args.verbose = _verbosity_level_off
 
     logging.root.setLevel(_verbosity_level[args.verbose])
-
-    return retval

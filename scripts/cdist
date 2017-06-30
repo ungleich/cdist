@@ -40,12 +40,10 @@ def commandline():
     args = parser['main'].parse_args(sys.argv[1:])
 
     # Loglevels are handled globally in here
-    retval = cdist.argparse.handle_loglevel(args)
-    if retval:
-        log.warning(retval)
+    cdist.argparse.handle_loglevel(args)
 
-    log.trace(args)
     log.info("version %s" % cdist.VERSION)
+    log.trace(args)
 
     # Work around python 3.3 bug:
     # http://bugs.python.org/issue16308

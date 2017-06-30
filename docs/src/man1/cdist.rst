@@ -11,23 +11,23 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-d] [-v] [-V] {banner,config,shell,install} ...
+    cdist [-h] [-v] [-V] {banner,config,shell,install} ...
 
-    cdist banner [-h] [-d] [-v]
+    cdist banner [-h] [-v]
 
-    cdist config [-h] [-d] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
+    cdist config [-h] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                  [-f HOSTFILE] [-p] [-r REMOTE_OUT_PATH] [-s]
                  [host [host ...]]
 
-    cdist install [-h] [-d] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
+    cdist install [-h] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
                   [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                   [-f HOSTFILE] [-p] [-r REMOTE_OUT_PATH] [-s]
                   [host [host ...]]
 
-    cdist shell [-h] [-d] [-v] [-s SHELL]
+    cdist shell [-h] [-v] [-s SHELL]
 
 
 DESCRIPTION
@@ -45,10 +45,6 @@ All commands accept the following options:
 .. option:: -h, --help
 
     Show the help screen
-
-.. option:: -d, --debug
-
-    Set log level to debug (deprecated, use -vvv instead)
 
 .. option:: -q, --quiet
 
@@ -211,7 +207,7 @@ EXAMPLES
 .. code-block:: sh
 
     # Configure ikq05.ethz.ch with debug enabled
-    % cdist config -d ikq05.ethz.ch
+    % cdist config -vvv ikq05.ethz.ch
 
     # Configure hosts in parallel and use a different configuration directory
     % cdist config -c ~/p/cdist-nutzung \
@@ -245,7 +241,7 @@ EXAMPLES
                  [--group GROUP] [--owner OWNER] [--mode MODE] object_id
 
     # Install ikq05.ethz.ch with debug enabled
-    % cdist install -d ikq05.ethz.ch
+    % cdist install -vvv ikq05.ethz.ch
 
 ENVIRONMENT
 -----------
