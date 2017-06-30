@@ -8,7 +8,7 @@ Simplicity
 
 Design
     + Type and core cleanly separated
-    + Sticks completly to the KISS (keep it simple and stupid) paradigma
+    + Sticks completely to the KISS (keep it simple and stupid)  paradigm
     + Meaningful error messages - do not lose time debugging error messages
     + Consistency in behaviour, naming and documentation
     + No surprise factor: Only do what is obviously clear, no magic
@@ -40,9 +40,9 @@ Requirements, Simplicity
 UNIX
     Reuse of existing tools like cat, find, mv, ...
 
-UNIX, familar environment, documentation
+UNIX, familiar environment, documentation
     Is available as manpages and HTML
 
-UNIX, simplicity, familar environment
+UNIX, simplicity, familiar environment
     cdist is configured in POSIX shell
 

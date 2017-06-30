@@ -3,8 +3,7 @@ Execution stages
 
 Description
 -----------
-Starting the execution of deployment with cdist, cdist passes
-through different stages.
+When cdist is started, it passes through different stages.
 
 
 Stage 1: target information retrieval
@@ -67,5 +66,5 @@ The cache stores the information from the current run for later use.
 
 Summary
 -------
-If, and only if, all the stages complete without an errors, the configuration
+If, and only if, all the stages complete without errors, the configuration
 will be applied to the target.

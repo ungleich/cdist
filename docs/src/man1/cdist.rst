@@ -72,7 +72,7 @@ Configure/install one or more hosts.
 
 .. option:: -b, --beta
 
-    Enable beta functionalities.
+    Enable beta functionality.
     
     Can also be enabled using CDIST_BETA env var.
 
@@ -244,7 +244,7 @@ CDIST_REMOTE_COPY
     Use this command for remote copy (should behave like scp).
 
 CDIST_BETA
-    Enable beta functionalities.
+    Enable beta functionality.
 
 EXIT STATUS
 -----------

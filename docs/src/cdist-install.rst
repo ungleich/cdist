@@ -7,7 +7,7 @@ Requirements
 Source Host
 ~~~~~~~~~~~
 
-This is the machine you use to configure the target hosts.
+This is the machine from which you will configure target hosts.
 
  * /bin/sh: A posix like shell (for instance bash, dash, zsh)
  * Python >= 3.2

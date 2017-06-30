@@ -40,7 +40,7 @@ call cdist types, the result is always the same.
 Zero dependency configuration management
 ----------------------------------------
 
-Cdist requires very litte on a target system. Even better,
+Cdist requires very little on a target system. Even better,
 in almost all cases all dependencies are usually fulfilled.
 Cdist does not require an agent or a high level programming
 languages on the target host: it will run on any host that

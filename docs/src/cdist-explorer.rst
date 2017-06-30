@@ -3,8 +3,8 @@ Explorer
 
 Description
 -----------
-Explorer are small shell scripts, which will be executed on the target
-host. The aim of the explorer is to give hints to types on how to act on the
+Explorers are small shell scripts, which will be executed on the target
+host. The aim of each explorer is to give hints to types on how to act on the
 target system. An explorer outputs the result to stdout, which is usually
 a one liner, but may be empty or multi line especially in the case of
 type explorers.
