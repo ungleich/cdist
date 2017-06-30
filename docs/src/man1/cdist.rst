@@ -88,8 +88,8 @@ Configure/install one or more hosts.
 
 .. option:: -f HOSTFILE, --file HOSTFILE
 
-    Read additional hosts to operate on from specified file
-    or from stdin if '-' (each host on separate line).
+    Read specified file for a list of additional hosts to operate on
+    or if '-' is given, read stdin (one host per line).
     If no host or host file is specified then, by default,
     read hosts from stdin. For the file format see below.
 
@@ -134,12 +134,13 @@ Configure/install one or more hosts.
 
 HOSTFILE FORMAT
 ~~~~~~~~~~~~~~~
-HOSTFILE contains hosts per line. 
-All characters after and including '#' until the end of line is a comment.
-In a line, all leading and trailing whitespace characters are ignored.
+The HOSTFILE contains one host per line.
+A comment is started with '#' and continues to the end of the line.
+Any leading and trailing whitespace on a line is ignored.
 Empty lines are ignored/skipped.
 
-Hostfile line is processed like the following. First, all comments are
+
+The Hostfile lines are processed as follows. First, all comments are
 removed. Then all leading and trailing whitespace characters are stripped.
 If such a line results in empty line it is ignored/skipped. Otherwise,
 host string is used.
@@ -275,10 +276,10 @@ options. For more details refer to :strong:`sshd_config`\ (5).
 When requirements for the same object are defined in different manifests (see
 example below), for example, in init manifest and in some other type manifest
 and those requirements differ then dependency resolver cannot detect
-dependencies right. This happens because cdist cannot prepare all objects first
+dependencies correctly. This happens because cdist cannot prepare all objects first
 and run all objects afterwards. Some object can depend on the result of type
 explorer(s) and explorers are executed during object run. cdist will detect
-such case and write warning message. Example for such a case:
+such case and display a warning message. An example of such a case:
 
 .. code-block:: sh
 

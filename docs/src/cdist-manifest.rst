@@ -51,7 +51,7 @@ The **initial manifest** is the entry point for cdist to find out, which
 **objects** to configure on the selected host.
 Cdist expects the initial manifest at **cdist/conf/manifest/init**.
 
-Within this initial manifest you define, which objects should be
+Within this initial manifest you define which objects should be
 created on which host. To distinguish between hosts, you can use the
 environment variable **__target_host** and/or **__target_hostname** and/or
 **__target_fqdn**. Let's have a look at a simple example::

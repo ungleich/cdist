@@ -171,7 +171,7 @@ Templating
     }
     EOF
 
-* in the manifest, export the relevant variables and add the following lines in your manifest:
+* in the manifest, export the relevant variables and add the following lines to your manifest:
 
 .. code-block:: console
 
