@@ -95,7 +95,7 @@ def get_parsers():
     parser['beta'] = argparse.ArgumentParser(add_help=False)
     parser['beta'].add_argument(
            '-b', '--beta',
-           help=('Enable beta functionalities. '
+           help=('Enable beta functionality. '
                  'Can also be enabled using CDIST_BETA env var.'),
            action='store_true', dest='beta',
            default='CDIST_BETA' in os.environ)
@@ -160,10 +160,10 @@ def get_parsers():
             'host', nargs='*', help='host(s) to operate on')
     parser['config_args'].add_argument(
             '-f', '--file',
-            help=('Read additional hosts to operate on from specified file '
-                  'or from stdin if \'-\' (each host on separate line). '
-                  'If no host or host file is specified then, by default, '
-                  'read hosts from stdin.'),
+            help=('Read specified file for a list of additional hosts to '
+                  'operate on or if \'-\' is given, read stdin (one host per '
+                  'line). If no host or host file is specified then, by '
+                  'default, read hosts from stdin.'),
             dest='hostfile', required=False)
     parser['config_args'].add_argument(
            '-p', '--parallel',
