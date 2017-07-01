@@ -4,7 +4,7 @@ Hacking
 Welcome
 -------
 Welcome dear hacker! I invite you to a tour of pointers to
-get into the usable configuration mangament system, cdist.
+get into the usable configuration management system, cdist.
 
 The first thing to know is probably that cdist is brought to
 you by people who care about how code looks like and who think
@@ -21,18 +21,18 @@ subject prefixed with "[BUG] " or create an issue on github.
 
 Coding conventions (everywhere)
 -------------------------------
-If something should be better done or needs to fixed, add the word FIXME
+If something should be improved or needs to be fixed, add the word FIXME
 nearby, so grepping for FIXME gives all positions that need to be fixed.
 
-Indention is 4 spaces (welcome to the python world).
+Indentation is 4 spaces (welcome to the python world).
 
 
 How to submit stuff for inclusion into upstream cdist
 -----------------------------------------------------
-If you did some cool changes to cdist, which you value as a benefit for
-everybody using cdist, you're welcome to propose inclusion into upstream.
+If you did some cool changes to cdist, which you think might be of benefit to other
+cdist users, you're welcome to propose inclusion into upstream.
 
-There are though some requirements to ensure your changes don't break others
+There are some requirements to ensure your changes don't break other peoples
 work nor kill the authors brain:
 
 - All files should contain the usual header (Author, Copying, etc.)
@@ -130,7 +130,7 @@ use **git stash** to stash your changes away::
     git fetch -v origin
     git merge origin/master
 
-Similar when you want to develop another new feature, you go back
+Similarly when you want to develop another new feature, you go back
 to the master branch and create another branch based on it::
 
 .. code-block:: sh

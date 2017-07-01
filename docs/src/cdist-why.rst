@@ -40,9 +40,9 @@ call cdist types, the result is always the same.
 Zero dependency configuration management
 ----------------------------------------
 
-Cdist requires very litte on a target system. Even better,
+Cdist requires very little on a target system. Even better,
 in almost all cases all dependencies are usually fulfilled.
-Cdist does not require an agent or a high level programming
+Cdist does not require an agent or high level programming
 languages on the target host: it will run on any host that
 has a **ssh server running** and a posix compatible shell
 (**/bin/sh**). Compared to other configuration management systems,
@@ -52,7 +52,7 @@ Push based distribution
 -----------------------
 
 Cdist uses the push based model for configuration. In this
-scenario, one (or more) computers connect the target hosts
+scenario, one (or more) computers connect to the target hosts
 and apply the configuration. That way the source host has
 very little requirements: Cdist can even run on a sysadmin
 notebook that is loosely connected to the network and has

@@ -51,7 +51,7 @@ The **initial manifest** is the entry point for cdist to find out, which
 **objects** to configure on the selected host.
 Cdist expects the initial manifest at **cdist/conf/manifest/init**.
 
-Within this initial manifest you define, which objects should be
+Within this initial manifest you define which objects should be
 created on which host. To distinguish between hosts, you can use the
 environment variable **__target_host** and/or **__target_hostname** and/or
 **__target_fqdn**. Let's have a look at a simple example::
@@ -114,7 +114,7 @@ requirements can be added white space separated.
 Above the "require" variable is only set for the command that is 
 immediately following it. Dependencies should always be declared that way.
 
-On line 4 you can see that the instantion of a type "\__link" object needs
+On line 4 you can see that the instantiation of a type "\__link" object needs
 the object "__file/etc/cdist-configured" to be present, before it can proceed.
 
 This also means that the "\__link" command must make sure, that either
@@ -149,7 +149,7 @@ All objects that are created in a type manifest are automatically required
 from the type that is calling them. This is called "autorequirement" in
 cdist jargon.
 
-You can find an more in depth description of the flow execution of manifests
+You can find a more in depth description of the flow execution of manifests
 in `cdist execution stages <cdist-stages.html>`_ and of how types work in `cdist type <cdist-type.html>`_.
 
 

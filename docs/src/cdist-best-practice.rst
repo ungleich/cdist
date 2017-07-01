@@ -97,7 +97,7 @@ Including a possible common base that is reused across the different sites::
     git merge common
 
 
-The following **.git/config** is taken from a a real world scenario::
+The following **.git/config** is taken from a real world scenario:
 
     # Track upstream, merge from time to time
     [remote "upstream"]
@@ -142,7 +142,7 @@ implement this scenario with a gateway host and sudo:
 - Setup the ssh-pubkey for this user that has the right to configure all hosts
 - Create a wrapper to update the cdist configuration in ~cdist/cdist
 - Allow every developer to execute this script via sudo as the user cdist
-- Allow run of cdist as user cdist on specific hosts on a per user/group base
+- Allow run of cdist as user cdist on specific hosts on a per user/group basis.
 
     - f.i. nico ALL=(ALL) NOPASSWD: /home/cdist/bin/cdist config hostabc
 
@@ -171,7 +171,7 @@ Templating
     }
     EOF
 
-* in the manifest, export the relevant variables and add the following lines in your manifest:
+* in the manifest, export the relevant variables and add the following lines to your manifest:
 
 .. code-block:: console
 
@@ -213,11 +213,11 @@ Other content in cdist repository
 Usually the cdist repository contains all configuration
 items. Sometimes you may have additional resources that
 you would like to store in your central configuration
-repositiory (like password files from KeepassX,
+repository (like password files from KeepassX,
 Libreoffice diagrams, etc.).
 
 It is recommended to use a subfolder named "non-cdist"
 in the repository for such content: It allows you to
-easily distinguish what is used by cdist and what not
+easily distinguish what is used by cdist and what is not
 and also to store all important files in one
 repository.
