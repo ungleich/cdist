@@ -276,4 +276,7 @@ CDIST_REMOTE_COPY
 
 CDIST_BETA
     Enable beta functionalities.
+
+CDIST_CACHE_PATH_PATTERN
+    Custom cache path pattern.
 eof

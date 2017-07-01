@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2016 Darko Poljak (darko.poljak at gmail.com)
+# 2016-2017 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -22,6 +22,25 @@
 import fileinput
 
 
+def hostfile_process_line(line, strip_func=str.strip):
+    """Return entry from read line or None if no entry present."""
+    if not line:
+        return None
+    # remove comment if present
+    comment_index = line.find('#')
+    if comment_index >= 0:
+        foo = line[:comment_index]
+    else:
+        foo = line
+    # remove leading and trailing whitespaces
+    foo = strip_func(foo)
+    # skip empty lines
+    if foo:
+        return foo
+    else:
+        return None
+
+
 class HostSource(object):
     """
     Host source object.
@@ -32,22 +51,7 @@ class HostSource(object):
         self.source = source
 
     def _process_file_line(self, line):
-        """Return host from read line or None if no host present."""
-        if not line:
-            return None
-        # remove comment if present
-        comment_index = line.find('#')
-        if comment_index >= 0:
-            host = line[:comment_index]
-        else:
-            host = line
-        # remove leading and trailing whitespaces
-        host = host.strip()
-        # skip empty lines
-        if host:
-            return host
-        else:
-            return None
+        return hostfile_process_line(line)
 
     def _hosts_from_sequence(self):
         for host in self.source:

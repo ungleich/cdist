@@ -26,6 +26,8 @@ import getpass
 import shutil
 import string
 import random
+import time
+import datetime
 
 import cdist
 from cdist import test
@@ -223,6 +225,41 @@ class LocalTestCase(test.CdistTestCase):
         self.assertTrue(os.path.isdir(self.local.base_path))
         self.assertTrue(os.path.isdir(self.local.bin_path))
         self.assertTrue(os.path.isdir(self.local.conf_path))
+
+    def test_cache_subpath(self):
+        start_time = time.time()
+        dt = datetime.datetime.fromtimestamp(start_time)
+        pid = str(os.getpid())
+        cases = [
+            ['', self.local.hostdir, ],
+            ['/', self.local.hostdir, ],
+            ['//', self.local.hostdir, ],
+            ['/%%h', '%h', ],
+            ['%%h', '%h', ],
+            ['%P', pid, ],
+            ['x%P', 'x' + pid, ],
+            ['%h', self.hostdir, ],
+            ['%h/%Y-%m-%d/%H%M%S%f%P',
+             dt.strftime(self.hostdir + '/%Y-%m-%d/%H%M%S%f') + pid, ],
+            ['/%h/%Y-%m-%d/%H%M%S%f%P',
+             dt.strftime(self.hostdir + '/%Y-%m-%d/%H%M%S%f') + pid, ],
+            ['%Y-%m-%d/%H%M%S%f%P/%h',
+             dt.strftime('%Y-%m-%d/%H%M%S%f' + pid + os.sep + self.hostdir), ],
+            ['///%Y-%m-%d/%H%M%S%f%P/%h',
+             dt.strftime('%Y-%m-%d/%H%M%S%f' + pid + os.sep + self.hostdir), ],
+            ['%h/%Y-%m-%d/%H%M%S-%P',
+             dt.strftime(self.hostdir + '/%Y-%m-%d/%H%M%S-') + pid, ],
+            ['%Y-%m-%d/%H%M%S-%P/%h',
+             dt.strftime('%Y-%m-%d/%H%M%S-') + pid + os.sep + self.hostdir, ],
+            ['%N', self.local.target_host[0], ],
+        ]
+        for x in cases:
+            x.append(self.local._cache_subpath(start_time, x[0]))
+        # for fmt, expected, actual in cases:
+        #     print('\'{}\' \'{}\' \'{}\''.format(fmt, expected, actual))
+        for fmt, expected, actual in cases:
+            self.assertEqual(expected, actual)
+
 
 if __name__ == "__main__":
     import unittest

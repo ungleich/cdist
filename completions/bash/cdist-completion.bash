@@ -37,7 +37,7 @@ _cdist()
             ;;
         config|install)
             opts="-h --help -d --debug -v --verbose -b --beta \
-                -c --conf-dir -f --file -i --initial-manifest -j --jobs \
+                -C --cache-path-pattern -c --conf-dir -f --file -i --initial-manifest -j --jobs \
                 -n --dry-run -o --out-dir -p --parallel -s --sequential \
                 --remote-copy --remote-exec"
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )

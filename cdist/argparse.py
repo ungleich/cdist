@@ -117,6 +117,13 @@ def get_parsers():
     # Config
     parser['config_main'] = argparse.ArgumentParser(add_help=False)
     parser['config_main'].add_argument(
+            '-C', '--cache-path-pattern',
+            help=('Specify custom cache path pattern. It can also be set '
+                  'by CDIST_CACHE_PATH_PATTERN environment variable. If '
+                  'it is not set then default hostdir is used.'),
+            dest='cache_path_pattern',
+            default=os.environ.get('CDIST_CACHE_PATH_PATTERN'))
+    parser['config_main'].add_argument(
             '-c', '--conf-dir',
             help=('Add configuration directory (can be repeated, '
                   'last one wins)'), action='append')
