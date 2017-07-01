@@ -74,6 +74,24 @@ class Config(object):
                     "Error reading hosts from \'{}\': {}".format(
                         source, e))
 
+    @staticmethod
+    def construct_remote_exec_copy_patterns(args):
+        # default remote cmd patterns
+        args.remote_exec_pattern = None
+        args.remote_copy_pattern = None
+
+        args_dict = vars(args)
+        # if remote-exec and/or remote-copy args are None then user
+        # didn't specify command line options nor env vars:
+        # inspect multiplexing options for default cdist.REMOTE_COPY/EXEC
+        if (args_dict['remote_copy'] is None or
+                args_dict['remote_exec'] is None):
+            mux_opts = inspect_ssh_mux_opts()
+            if args_dict['remote_exec'] is None:
+                args.remote_exec_pattern = cdist.REMOTE_EXEC + mux_opts
+            if args_dict['remote_copy'] is None:
+                args.remote_copy_pattern = cdist.REMOTE_COPY + mux_opts
+
     @classmethod
     def _check_and_prepare_args(cls, args):
         if args.manifest == '-' and args.hostfile == '-':
@@ -99,30 +117,6 @@ class Config(object):
             args.manifest = initial_manifest_temp_path
             atexit.register(lambda: os.remove(initial_manifest_temp_path))
 
-        # default remote cmd patterns
-        args.remote_exec_pattern = None
-        args.remote_copy_pattern = None
-
-        args_dict = vars(args)
-        # if remote-exec and/or remote-copy args are None then user
-        # didn't specify command line options nor env vars:
-        # inspect multiplexing options for default cdist.REMOTE_COPY/EXEC
-        if (args_dict['remote_copy'] is None or
-                args_dict['remote_exec'] is None):
-            mux_opts = inspect_ssh_mux_opts()
-            if args_dict['remote_exec'] is None:
-                args.remote_exec_pattern = cdist.REMOTE_EXEC + mux_opts
-            if args_dict['remote_copy'] is None:
-                args.remote_copy_pattern = cdist.REMOTE_COPY + mux_opts
-
-    @classmethod
-    def _base_root_path(cls, args):
-        if args.out_path:
-            base_root_path = args.out_path
-        else:
-            base_root_path = tempfile.mkdtemp()
-        return base_root_path
-
     @classmethod
     def commandline(cls, args):
         """Configure remote system"""
@@ -136,13 +130,14 @@ class Config(object):
         failed_hosts = []
         time_start = time.time()
 
-        base_root_path = cls._base_root_path(args)
+        cls.construct_remote_exec_copy_patterns(args)
+        base_root_path = cls.create_base_root_path(args.out_path)
 
         hostcnt = 0
         for host in itertools.chain(cls.hosts(args.host),
                                     cls.hosts(args.hostfile)):
-            hostdir = cdist.str_hash(host)
-            host_base_path = os.path.join(base_root_path, hostdir)
+            host_base_path, hostdir = cls.create_host_base_dirs(
+                host, base_root_path)
 
             log.debug("Base root path for target host \"{}\" is \"{}\"".format(
                 host, host_base_path))
@@ -251,6 +246,22 @@ class Config(object):
             # Pass back to controlling code in sequential mode
             else:
                 raise
+
+    @staticmethod
+    def create_base_root_path(out_path=None):
+        if out_path:
+            base_root_path = out_path
+        else:
+            base_root_path = tempfile.mkdtemp()
+
+        return base_root_path
+
+    @staticmethod
+    def create_host_base_dirs(host, base_root_path):
+        hostdir = cdist.str_hash(host)
+        host_base_path = os.path.join(base_root_path, hostdir)
+
+        return (host_base_path, hostdir)
 
     def run(self):
         """Do what is most often done: deploy & cleanup"""
