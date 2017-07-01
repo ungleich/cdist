@@ -16,13 +16,15 @@ SYNOPSIS
     cdist banner [-h] [-d] [-v]
 
     cdist config [-h] [-d] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
-                 [-f HOSTFILE] [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
+                 [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                 [-f HOSTFILE] [-p] [-r REMOTE_OUT_PATH] [-s]
                  [host [host ...]]
 
     cdist install [-h] [-d] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
-                  [-f HOSTFILE] [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
+                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                  [-f HOSTFILE] [-p] [-r REMOTE_OUT_PATH] [-s]
                   [host [host ...]]
 
     cdist shell [-h] [-d] [-v] [-s SHELL]
