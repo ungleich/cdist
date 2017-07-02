@@ -25,6 +25,6 @@ else
 fi
 
 dpkg-query --show --showformat '${Status}' "$name" 2>/dev/null \
-    | grep -q 'ok installed' \
+    | grep -Fq 'ok installed' \
     && echo 0 \
     || echo 1
