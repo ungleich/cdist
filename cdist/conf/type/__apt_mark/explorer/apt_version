@@ -26,6 +26,6 @@ apt_version_is=$(dpkg-query --show --showformat '${Version}' apt)
 
 apt_version_should=0.8.14.2
 
-dpkg --compare-versions $apt_version_should le $apt_version_is \
+dpkg --compare-versions "$apt_version_should" le "$apt_version_is" \
     && echo 0 \
     || echo 1

@@ -24,4 +24,4 @@ else
     name="$__object_id"
 fi
 
-apt-mark showhold | grep -q $name && echo hold || echo unhold
+apt-mark showhold | grep -q "$name" && echo hold || echo unhold
