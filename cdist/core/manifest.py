@@ -149,7 +149,7 @@ class Manifest(object):
             raise NoInitialManifestError(initial_manifest, user_supplied)
 
         message_prefix = "initialmanifest"
-        self.log.info("Running initial manifest " + initial_manifest)
+        self.log.verbose("Running initial manifest " + initial_manifest)
         self.local.run_script(initial_manifest,
                               env=self.env_initial_manifest(initial_manifest),
                               message_prefix=message_prefix,
@@ -176,7 +176,7 @@ class Manifest(object):
                                      cdist_object.cdist_type.manifest_path)
         message_prefix = cdist_object.name
         if os.path.isfile(type_manifest):
-            self.log.info("Running type manifest " + type_manifest)
+            self.log.verbose("Running type manifest " + type_manifest)
             self.local.run_script(type_manifest,
                                   env=self.env_type_manifest(cdist_object),
                                   message_prefix=message_prefix,

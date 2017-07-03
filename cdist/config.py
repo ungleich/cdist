@@ -166,7 +166,7 @@ class Config(object):
                     failed_hosts.append(host)
 
         time_end = time.time()
-        log.info("Total processing time for %s host(s): %s", hostcnt,
+        log.verbose("Total processing time for %s host(s): %s", hostcnt,
                  (time_end - time_start))
 
         if len(failed_hosts) > 0:
@@ -466,8 +466,8 @@ class Config(object):
 
     def object_prepare(self, cdist_object):
         """Prepare object: Run type explorer + manifest"""
-        self.log.info("Preparing object {}".format(cdist_object.name))
-        self.log.info(
+        self.log.verbose("Preparing object {}".format(cdist_object.name))
+        self.log.verbose(
                 "Running manifest and explorers for " + cdist_object.name)
         self.explorer.run_type_explorers(cdist_object)
         self.manifest.run_type_manifest(cdist_object)
@@ -476,8 +476,7 @@ class Config(object):
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
 
-        self.log.info("Running object " + cdist_object.name)
-        self.log.verbose("Trying to run object %s" % (cdist_object.name))
+        self.log.verbose("Running object " + cdist_object.name)
         if cdist_object.state == core.CdistObject.STATE_DONE:
             raise cdist.Error(("Attempting to run an already finished "
                                "object: %s"), cdist_object)
@@ -494,7 +493,7 @@ class Config(object):
         # Execute
         if not self.dry_run:
             if cdist_object.code_local or cdist_object.code_remote:
-                self.log.info("Executing code for %s" % (cdist_object.name))
+                self.log.info("Updating %s" % (cdist_object.name))
             if cdist_object.code_local:
                 self.log.trace("Executing local code for %s"
                                % (cdist_object.name))
@@ -505,7 +504,7 @@ class Config(object):
                 self.code.transfer_code_remote(cdist_object)
                 self.code.run_code_remote(cdist_object)
         else:
-            self.log.info("Skipping code execution due to DRY RUN")
+            self.log.verbose("Skipping code execution due to DRY RUN")
 
         # Mark this object as done
         self.log.trace("Finishing run of " + cdist_object.name)

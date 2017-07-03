@@ -42,7 +42,7 @@ def commandline():
     # Loglevels are handled globally in here
     cdist.argparse.handle_loglevel(args)
 
-    log.info("version %s" % cdist.VERSION)
+    log.verbose("version %s" % cdist.VERSION)
     log.trace(args)
 
     # Work around python 3.3 bug:

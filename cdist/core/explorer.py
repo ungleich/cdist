@@ -95,7 +95,7 @@ class Explorer(object):
         out_path directory.
 
         """
-        self.log.info("Running global explorers")
+        self.log.verbose("Running global explorers")
         self.transfer_global_explorers()
         if self.jobs is None:
             self._run_global_explorers_seq(out_path)
@@ -168,7 +168,7 @@ class Explorer(object):
         in the object.
 
         """
-        self.log.info("Running type explorers for {}".format(
+        self.log.verbose("Running type explorers for {}".format(
             cdist_object.cdist_type))
         self.log.trace("Transfering type explorers for type: %s",
                        cdist_object.cdist_type)
