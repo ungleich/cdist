@@ -31,8 +31,8 @@ if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
    if [ ! -f "$__object/parameter/source" ]; then
       remote_stat="$(cat "$__object/explorer/stat")"
       if [ -z "$remote_stat" ]; then
-          create_file=1
-          echo create >> "$__messages_out"
+         create_file=1
+         echo create >> "$__messages_out"
       fi
    else
       source="$(cat "$__object/parameter/source")"
