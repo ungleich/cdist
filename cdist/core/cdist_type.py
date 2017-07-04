@@ -75,7 +75,9 @@ class CdistType(object):
     @classmethod
     def list_type_names(cls, base_path):
         """Return a list of type names"""
-        return os.listdir(base_path)
+        # Ignore files placed in the types directory by a VCS, package manager,
+        # file manager or the like.
+        return [i for i in os.listdir(base_path) if not i.startswith('.')]
 
     _instances = {}
 
