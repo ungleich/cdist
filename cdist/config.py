@@ -269,6 +269,8 @@ class Config(object):
         """Do what is most often done: deploy & cleanup"""
         start_time = time.time()
 
+        self.log.info("Starting configuration run")
+
         self._init_files_dirs()
 
         self.explorer.run_global_explorers(self.local.global_explorer_out_path)
@@ -276,8 +278,8 @@ class Config(object):
         self.iterate_until_finished()
 
         self.local.save_cache(start_time)
-        self.log.info("Finished successful run in %s seconds",
-                      time.time() - start_time)
+        self.log.info("Finished successful run in {:.2f} seconds".format(
+                      time.time() - start_time))
 
     def object_list(self):
         """Short name for object list retrieval"""
