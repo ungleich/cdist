@@ -26,7 +26,10 @@ def listdir(path='.', include_dot=False):
     """os.listdir but do not include entries whose names begin with a dot('.')
        if include_dot is False.
     """
-    return [x for x in os.listdir(path) if include_dot or not _ishidden(x)]
+    if include_dot:
+        return os.listdir(path)
+    else:
+        return [x for x in os.listdir(path) if not _ishidden(x)]
 
 
 def _ishidden(path):
