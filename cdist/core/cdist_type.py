@@ -23,6 +23,7 @@
 import os
 
 import cdist
+import cdist.core
 
 
 class NoSuchTypeError(cdist.Error):
@@ -75,7 +76,7 @@ class CdistType(object):
     @classmethod
     def list_type_names(cls, base_path):
         """Return a list of type names"""
-        return os.listdir(base_path)
+        return cdist.core.listdir(base_path)
 
     _instances = {}
 
@@ -117,8 +118,8 @@ class CdistType(object):
         """Return a list of available explorers"""
         if not self.__explorers:
             try:
-                self.__explorers = os.listdir(os.path.join(self.absolute_path,
-                                                           "explorer"))
+                self.__explorers = cdist.core.listdir(
+                    os.path.join(self.absolute_path, "explorer"))
             except EnvironmentError:
                 # error ignored
                 self.__explorers = []
@@ -222,7 +223,7 @@ class CdistType(object):
                 defaults_dir = os.path.join(self.absolute_path,
                                             "parameter",
                                             "default")
-                for name in os.listdir(defaults_dir):
+                for name in cdist.core.listdir(defaults_dir):
                     try:
                         with open(os.path.join(defaults_dir, name)) as fd:
                             defaults[name] = fd.read().strip()

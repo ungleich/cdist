@@ -107,7 +107,7 @@ class CdistObject(object):
     @classmethod
     def list_type_names(cls, object_base_path):
         """Return a list of type names"""
-        return os.listdir(object_base_path)
+        return cdist.core.listdir(object_base_path)
 
     @staticmethod
     def split_name(object_name):
