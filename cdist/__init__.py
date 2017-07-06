@@ -20,7 +20,6 @@
 #
 
 import os
-import subprocess
 import hashlib
 
 import cdist.version
@@ -44,6 +43,7 @@ BANNER = """
 
 REMOTE_COPY = "scp -o User=root"
 REMOTE_EXEC = "ssh -o User=root"
+REMOTE_CMDS_CLEANUP_PATTERN = "ssh -o User=root -O exit -S {}"
 
 
 class Error(Exception):
