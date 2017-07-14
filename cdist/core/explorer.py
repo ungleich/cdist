@@ -163,16 +163,21 @@ class Explorer(object):
         except EnvironmentError:
             return []
 
-    def run_type_explorers(self, cdist_object):
+    def run_type_explorers(self, cdist_object, transfer_type_explorers=True):
         """Run the type explorers for the given object and save their output
         in the object.
 
         """
         self.log.verbose("Running type explorers for {}".format(
             cdist_object.cdist_type))
-        self.log.trace("Transfering type explorers for type: %s",
-                       cdist_object.cdist_type)
-        self.transfer_type_explorers(cdist_object.cdist_type)
+        if transfer_type_explorers:
+            self.log.trace("Transfering type explorers for type: %s",
+                           cdist_object.cdist_type)
+            self.transfer_type_explorers(cdist_object.cdist_type)
+        else:
+            self.log.trace(("No need for transfering type explorers for "
+                            "type: %s"),
+                           cdist_object.cdist_type)
         self.log.trace("Transfering object parameters for object: %s",
                        cdist_object.name)
         self.transfer_object_parameters(cdist_object)

@@ -66,6 +66,9 @@ class CdistType(object):
         self.__boolean_parameters = None
         self.__parameter_defaults = None
 
+    def __hash__(self):
+        return hash(self.name)
+
     @classmethod
     def list_types(cls, base_path):
         """Return a list of type instances"""
@@ -111,6 +114,12 @@ class CdistType(object):
         """Check whether a type is used for installation
           (if not: for configuration)"""
         return os.path.isfile(os.path.join(self.absolute_path, "install"))
+
+    @property
+    def is_nonparallel(self):
+        """Check whether a type is a non parallel, i.e. its objects
+           cannot run in parallel."""
+        return os.path.isfile(os.path.join(self.absolute_path, "nonparallel"))
 
     @property
     def explorers(self):

@@ -167,7 +167,7 @@ class Config(object):
 
         time_end = time.time()
         log.verbose("Total processing time for %s host(s): %s", hostcnt,
-                 (time_end - time_start))
+                    (time_end - time_start))
 
         if len(failed_hosts) > 0:
             raise cdist.Error("Failed to configure the following hosts: " +
@@ -356,10 +356,34 @@ class Config(object):
         elif cargo:
             self.log.trace("Multiprocessing start method is {}".format(
                 multiprocessing.get_start_method()))
+
+            self.log.trace("Multiprocessing cargo: %s", cargo)
+
+            cargo_types = set()
+            for c in cargo:
+                cargo_types.add(c.cdist_type)
+            self.log.trace("Multiprocessing cargo_types: %s", cargo_types)
+            nt = len(cargo_types)
+            if nt == 1:
+                self.log.debug(("Only one type, transfering explorers "
+                                "sequentially"))
+                self.explorer.transfer_type_explorers(cargo_types.pop())
+            else:
+                self.log.trace(("Starting multiprocessing Pool for {} "
+                                "parallel transfering types' explorers".format(
+                                    nt)))
+                args = [
+                    (ct, ) for ct in cargo_types
+                ]
+                mp_pool_run(self.explorer.transfer_type_explorers, args,
+                            jobs=self.jobs)
+                self.log.trace(("Multiprocessing for parallel transfering "
+                                "types' explorers finished"))
+
             self.log.trace(("Starting multiprocessing Pool for {} parallel "
                             "objects preparation".format(n)))
             args = [
-                (c, ) for c in cargo
+                (c, False, ) for c in cargo
             ]
             mp_pool_run(self.object_prepare, args, jobs=self.jobs)
             self.log.trace(("Multiprocessing for parallel object "
@@ -382,25 +406,44 @@ class Config(object):
 
                 # self.object_run(cdist_object)
                 # objects_changed = True
-                cargo.append(cdist_object)
 
-        n = len(cargo)
-        if n == 1:
-            self.log.debug("Only one object, running sequentially")
-            self.object_run(cargo[0])
-            objects_changed = True
-        elif cargo:
-            self.log.trace("Multiprocessing start method is {}".format(
-                multiprocessing.get_start_method()))
-            self.log.trace(("Starting multiprocessing Pool for {} parallel "
-                            "object run".format(n)))
-            args = [
-                (c, ) for c in cargo
-            ]
-            mp_pool_run(self.object_run, args, jobs=self.jobs)
-            self.log.trace(("Multiprocessing for parallel object "
-                            "run finished"))
-            objects_changed = True
+                # put objects in chuncks of distinct types
+                # so that there is no more than one object
+                # of the same type in one chunk because there is a
+                # possibility of object's process locking which
+                # prevents parallel execution at remote
+                # and do this only for nonparallel marked types
+                for chunk in cargo:
+                    for obj in chunk:
+                        if (obj.cdist_type == cdist_object.cdist_type and
+                            cdist_object.cdist_type.is_nonparallel):
+                            break
+                    else:
+                        chunk.append(cdist_object)
+                        break
+                else:
+                    chunk = [cdist_object, ]
+                    cargo.append(chunk)
+
+        for chunk in cargo:
+            self.log.trace("Running chunk: %s", chunk)
+            n = len(chunk)
+            if n == 1:
+                self.log.debug("Only one object, running sequentially")
+                self.object_run(chunk[0])
+                objects_changed = True
+            elif chunk:
+                self.log.trace("Multiprocessing start method is {}".format(
+                    multiprocessing.get_start_method()))
+                self.log.trace(("Starting multiprocessing Pool for {} "
+                               "parallel object run".format(n)))
+                args = [
+                    (c, ) for c in chunk
+                ]
+                mp_pool_run(self.object_run, args, jobs=self.jobs)
+                self.log.trace(("Multiprocessing for parallel object "
+                                "run finished"))
+                objects_changed = True
 
         return objects_changed
 
@@ -466,12 +509,12 @@ class Config(object):
                     ("The requirements of the following objects could not be "
                      "resolved:\n%s") % ("\n".join(info_string)))
 
-    def object_prepare(self, cdist_object):
+    def object_prepare(self, cdist_object, transfer_type_explorers=True):
         """Prepare object: Run type explorer + manifest"""
         self.log.verbose("Preparing object {}".format(cdist_object.name))
         self.log.verbose(
                 "Running manifest and explorers for " + cdist_object.name)
-        self.explorer.run_type_explorers(cdist_object)
+        self.explorer.run_type_explorers(cdist_object, transfer_type_explorers)
         self.manifest.run_type_manifest(cdist_object)
         cdist_object.state = core.CdistObject.STATE_PREPARED
 

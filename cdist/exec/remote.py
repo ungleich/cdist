@@ -124,7 +124,7 @@ class Remote(object):
     def transfer(self, source, destination, jobs=None):
         """Transfer a file or directory to the remote side."""
         self.log.trace("Remote transfer: %s -> %s", source, destination)
-        self.rmdir(destination)
+        # self.rmdir(destination)
         if os.path.isdir(source):
             self.mkdir(destination)
             if jobs:
