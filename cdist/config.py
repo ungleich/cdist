@@ -416,7 +416,7 @@ class Config(object):
                 for chunk in cargo:
                     for obj in chunk:
                         if (obj.cdist_type == cdist_object.cdist_type and
-                            cdist_object.cdist_type.is_nonparallel):
+                           cdist_object.cdist_type.is_nonparallel):
                             break
                     else:
                         chunk.append(cdist_object)
