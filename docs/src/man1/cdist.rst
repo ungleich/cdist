@@ -11,23 +11,23 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-d] [-v] [-V] {banner,config,shell,install} ...
+    cdist [-h] [-v] [-V] {banner,config,shell,install} ...
 
-    cdist banner [-h] [-d] [-v]
+    cdist banner [-h] [-v]
 
-    cdist config [-h] [-d] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
+    cdist config [-h] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                  [-f HOSTFILE] [-p] [-r REMOTE_OUT_PATH] [-s]
                  [host [host ...]]
 
-    cdist install [-h] [-d] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
+    cdist install [-h] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
                   [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                   [-f HOSTFILE] [-p] [-r REMOTE_OUT_PATH] [-s]
                   [host [host ...]]
 
-    cdist shell [-h] [-d] [-v] [-s SHELL]
+    cdist shell [-h] [-v] [-s SHELL]
 
 
 DESCRIPTION
@@ -46,16 +46,16 @@ All commands accept the following options:
 
     Show the help screen
 
-.. option:: -d, --debug
+.. option:: -q, --quiet
 
-    Set log level to debug (deprecated, use -vvv instead)
+    Quiet mode: disables logging, including WARNING and ERROR
 
 .. option:: -v, --verbose
 
     Increase the verbosity level. Every instance of -v increments the verbosity
-    level by one. Its default value is 0. There are 4 levels of verbosity. The
-    order of levels from the lowest to the highest are: ERROR (0), WARNING (1),
-    INFO (2) and DEBUG (3 or higher).
+    level by one. Its default value is 0 which includes ERROR and WARNING levels.
+    The levels, in order from the lowest to the highest, are: 
+    ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) TRACE (4 or higher).
 
 .. option:: -V, --version
 
@@ -207,7 +207,7 @@ EXAMPLES
 .. code-block:: sh
 
     # Configure ikq05.ethz.ch with debug enabled
-    % cdist config -d ikq05.ethz.ch
+    % cdist config -vvv ikq05.ethz.ch
 
     # Configure hosts in parallel and use a different configuration directory
     % cdist config -c ~/p/cdist-nutzung \
@@ -241,7 +241,7 @@ EXAMPLES
                  [--group GROUP] [--owner OWNER] [--mode MODE] object_id
 
     # Install ikq05.ethz.ch with debug enabled
-    % cdist install -d ikq05.ethz.ch
+    % cdist install -vvv ikq05.ethz.ch
 
 ENVIRONMENT
 -----------

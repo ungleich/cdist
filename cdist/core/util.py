@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2014-2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2017 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -20,11 +19,18 @@
 #
 #
 
-from cdist.core.cdist_type import CdistType
-from cdist.core.cdist_type import NoSuchTypeError
-from cdist.core.cdist_object import CdistObject
-from cdist.core.cdist_object import IllegalObjectIdError
-from cdist.core.explorer import Explorer
-from cdist.core.manifest import Manifest
-from cdist.core.code import Code
-from cdist.core.util import listdir
+import os
+
+
+def listdir(path='.', include_dot=False):
+    """os.listdir but do not include entries whose names begin with a dot('.')
+       if include_dot is False.
+    """
+    if include_dot:
+        return os.listdir(path)
+    else:
+        return [x for x in os.listdir(path) if not _ishidden(x)]
+
+
+def _ishidden(path):
+    return path[0] in ('.', b'.'[0])

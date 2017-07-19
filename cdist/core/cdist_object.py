@@ -22,15 +22,12 @@
 #
 
 import fnmatch
-import logging
 import os
 import collections
 
 import cdist
 import cdist.core
 from cdist.util import fsproperty
-
-log = logging.getLogger(__name__)
 
 
 class IllegalObjectIdError(cdist.Error):
@@ -107,7 +104,7 @@ class CdistObject(object):
     @classmethod
     def list_type_names(cls, object_base_path):
         """Return a list of type names"""
-        return os.listdir(object_base_path)
+        return cdist.core.listdir(object_base_path)
 
     @staticmethod
     def split_name(object_name):

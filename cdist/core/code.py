@@ -21,12 +21,9 @@
 #
 #
 
-import logging
 import os
 
 import cdist
-
-log = logging.getLogger(__name__)
 
 
 '''
@@ -143,8 +140,7 @@ class Code(object):
                               cdist_object.code_remote_path)
         destination = os.path.join(self.remote.object_path,
                                    cdist_object.code_remote_path)
-        # FIXME: BUG: do not create destination, but top level of destination!
-        self.remote.mkdir(destination)
+        self.remote.mkdir(os.path.dirname(destination))
         self.remote.transfer(source, destination)
 
     def _run_code(self, cdist_object, which, env=None):

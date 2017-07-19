@@ -86,10 +86,10 @@ class Shell(object):
         self._init_files_dirs()
         self._init_environment()
 
-        log.info("Starting shell...")
+        log.trace("Starting shell...")
         # save_output=False -> do not catch stdout and stderr
         self.local.run([self.shell], self.env, save_output=False)
-        log.info("Finished shell.")
+        log.trace("Finished shell.")
 
     @classmethod
     def commandline(cls, args):

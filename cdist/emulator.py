@@ -98,7 +98,7 @@ class Emulator(object):
         self.save_stdin()
         self.record_requirements()
         self.record_auto_requirements()
-        self.log.debug("Finished %s %s" % (
+        self.log.trace("Finished %s %s" % (
             self.cdist_object.path, self.parameters))
 
     def __init_log(self):
@@ -148,7 +148,7 @@ class Emulator(object):
 
         # And finally parse/verify parameter
         self.args = parser.parse_args(self.argv[1:])
-        self.log.debug('Args: %s' % self.args)
+        self.log.trace('Args: %s' % self.args)
 
     def setup_object(self):
         # Setup object - and ensure it is not in args
@@ -256,10 +256,10 @@ class Emulator(object):
         # (this would leed to an circular dependency)
         if ("CDIST_ORDER_DEPENDENCY" in self.env and
                 'CDIST_OVERRIDE' not in self.env):
-            # load object name created bevor this one from typeorder file ...
+            # load object name created befor this one from typeorder file ...
             with open(self.typeorder_path, 'r') as typecreationfile:
                 typecreationorder = typecreationfile.readlines()
-                # get the type created bevore this one ...
+                # get the type created before this one ...
                 try:
                     lastcreatedtype = typecreationorder[-2].strip()
                     if 'require' in self.env:

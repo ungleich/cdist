@@ -40,12 +40,10 @@ def commandline():
     args = parser['main'].parse_args(sys.argv[1:])
 
     # Loglevels are handled globally in here
-    retval = cdist.argparse.handle_loglevel(args)
-    if retval:
-        log.warning(retval)
+    cdist.argparse.handle_loglevel(args)
 
-    log.debug(args)
-    log.info("version %s" % cdist.VERSION)
+    log.verbose("version %s" % cdist.VERSION)
+    log.trace(args)
 
     # Work around python 3.3 bug:
     # http://bugs.python.org/issue16308
@@ -80,10 +78,7 @@ if __name__ == "__main__":
         import os
         import re
         import cdist
-        import cdist.log
 
-        logging.setLoggerClass(cdist.log.Log)
-        logging.basicConfig(format='%(levelname)s: %(message)s')
         log = logging.getLogger("cdist")
 
         if re.match("__", os.path.basename(sys.argv[0])):

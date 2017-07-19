@@ -113,6 +113,16 @@ class TypeTestCase(test.CdistTestCase):
         cdist_type = core.CdistType(base_path, '__not_singleton')
         self.assertFalse(cdist_type.is_singleton)
 
+    def test_nonparallel_is_nonparallel(self):
+        base_path = fixtures
+        cdist_type = core.CdistType(base_path, '__nonparallel')
+        self.assertTrue(cdist_type.is_nonparallel)
+
+    def test_not_nonparallel_is_nonparallel(self):
+        base_path = fixtures
+        cdist_type = core.CdistType(base_path, '__not_nonparallel')
+        self.assertFalse(cdist_type.is_nonparallel)
+
     def test_install_is_install(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__install')

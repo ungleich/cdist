@@ -62,7 +62,8 @@ class Remote(object):
                  target_host,
                  remote_exec,
                  remote_copy,
-                 base_path=None):
+                 base_path=None,
+                 quiet_mode=None):
         self.target_host = target_host
         self._exec = remote_exec
         self._copy = remote_copy
@@ -71,6 +72,7 @@ class Remote(object):
             self.base_path = base_path
         else:
             self.base_path = "/var/lib/cdist"
+        self.quiet_mode = quiet_mode
 
         self.conf_path = os.path.join(self.base_path, "conf")
         self.object_path = os.path.join(self.base_path, "object")
@@ -111,18 +113,18 @@ class Remote(object):
 
     def rmdir(self, path):
         """Remove directory on the remote side."""
-        self.log.debug("Remote rmdir: %s", path)
+        self.log.trace("Remote rmdir: %s", path)
         self.run(["rm", "-rf",  path])
 
     def mkdir(self, path):
         """Create directory on the remote side."""
-        self.log.debug("Remote mkdir: %s", path)
+        self.log.trace("Remote mkdir: %s", path)
         self.run(["mkdir", "-p", path])
 
     def transfer(self, source, destination, jobs=None):
         """Transfer a file or directory to the remote side."""
-        self.log.debug("Remote transfer: %s -> %s", source, destination)
-        self.rmdir(destination)
+        self.log.trace("Remote transfer: %s -> %s", source, destination)
+        # self.rmdir(destination)
         if os.path.isdir(source):
             self.mkdir(destination)
             if jobs:
@@ -147,11 +149,11 @@ class Remote(object):
 
     def _transfer_dir_parallel(self, source, destination, jobs):
         """Transfer a directory to the remote side in parallel mode."""
-        self.log.info("Remote transfer in {} parallel jobs".format(
+        self.log.debug("Remote transfer in {} parallel jobs".format(
             jobs))
-        self.log.debug("Multiprocessing start method is {}".format(
+        self.log.trace("Multiprocessing start method is {}".format(
             multiprocessing.get_start_method()))
-        self.log.debug(("Starting multiprocessing Pool for parallel "
+        self.log.trace(("Starting multiprocessing Pool for parallel "
                         "remote transfer"))
         args = []
         for f in glob.glob1(source, '*'):
@@ -161,7 +163,7 @@ class Remote(object):
                 _wrap_addr(self.target_host[0]), destination)])
             args.append((command, ))
         mp_pool_run(self._run_command, args, jobs=jobs)
-        self.log.debug(("Multiprocessing for parallel transfer "
+        self.log.trace(("Multiprocessing for parallel transfer "
                         "finished"))
 
     def run_script(self, script, env=None, return_output=False):
@@ -226,12 +228,17 @@ class Remote(object):
         os_environ['__target_hostname'] = self.target_host[1]
         os_environ['__target_fqdn'] = self.target_host[2]
 
-        self.log.debug("Remote run: %s", command)
+        self.log.trace("Remote run: %s", command)
         try:
-            output, errout = exec_util.call_get_output(command, env=os_environ)
-            self.log.debug("Remote stdout: {}".format(output))
+            if self.quiet_mode:
+                stderr = subprocess.DEVNULL
+            else:
+                stderr = None
+            output, errout = exec_util.call_get_output(
+                command, env=os_environ, stderr=stderr)
+            self.log.trace("Remote stdout: {}".format(output))
             # Currently, stderr is not captured.
-            # self.log.debug("Remote stderr: {}".format(errout))
+            # self.log.trace("Remote stderr: {}".format(errout))
             if return_output:
                 return output.decode()
         except subprocess.CalledProcessError as e:

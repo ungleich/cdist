@@ -22,6 +22,7 @@
 import os
 import hashlib
 
+import cdist.log
 import cdist.version
 
 VERSION = cdist.version.VERSION

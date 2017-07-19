@@ -54,7 +54,8 @@ class Local(object):
                  exec_path=sys.argv[0],
                  initial_manifest=None,
                  add_conf_dirs=None,
-                 cache_path_pattern=None):
+                 cache_path_pattern=None,
+                 quiet_mode=False):
 
         self.target_host = target_host
         self.hostdir = host_dir_name
@@ -64,6 +65,7 @@ class Local(object):
         self.custom_initial_manifest = initial_manifest
         self._add_conf_dirs = add_conf_dirs
         self.cache_path_pattern = cache_path_pattern
+        self.quiet_mode = quiet_mode
 
         self._init_log()
         self._init_permissions()
@@ -163,7 +165,7 @@ class Local(object):
         with open(self.object_marker_file, 'w') as fd:
             fd.write("%s\n" % self.object_marker_name)
 
-        self.log.debug("Object marker %s saved in %s" % (
+        self.log.trace("Object marker %s saved in %s" % (
             self.object_marker_name, self.object_marker_file))
 
     def _init_cache_dir(self, cache_dir):
@@ -178,12 +180,12 @@ class Local(object):
 
     def rmdir(self, path):
         """Remove directory on the local side."""
-        self.log.debug("Local rmdir: %s", path)
+        self.log.trace("Local rmdir: %s", path)
         shutil.rmtree(path)
 
     def mkdir(self, path):
         """Create directory on the local side."""
-        self.log.debug("Local mkdir: %s", path)
+        self.log.trace("Local mkdir: %s", path)
         os.makedirs(path, exist_ok=True)
 
     def run(self, command, env=None, return_output=False, message_prefix=None,
@@ -192,7 +194,6 @@ class Local(object):
         Return the output as a string.
 
         """
-        self.log.debug("Local run: %s", command)
         assert isinstance(command, (list, tuple)), (
                 "list or tuple argument expected, got: %s" % command)
 
@@ -211,19 +212,30 @@ class Local(object):
             message = cdist.message.Message(message_prefix, self.messages_path)
             env.update(message.env)
 
+        self.log.trace("Local run: %s", command)
         try:
+            if self.quiet_mode:
+                stderr = subprocess.DEVNULL
+            else:
+                stderr = None
             if save_output:
-                output, errout = exec_util.call_get_output(command, env=env)
-                self.log.debug("Local stdout: {}".format(output))
+                output, errout = exec_util.call_get_output(
+                    command, env=env, stderr=stderr)
+                self.log.trace("Local stdout: {}".format(output))
                 # Currently, stderr is not captured.
-                # self.log.debug("Local stderr: {}".format(errout))
+                # self.log.trace("Local stderr: {}".format(errout))
                 if return_output:
                     return output.decode()
             else:
                 # In some cases no output is saved.
                 # This is used for shell command, stdout and stderr
                 # must not be catched.
-                subprocess.check_call(command, env=env)
+                if self.quiet_mode:
+                    stdout = subprocess.DEVNULL
+                else:
+                    stdout = None
+                subprocess.check_call(command, env=env, stderr=stderr,
+                                      stdout=stdout)
         except subprocess.CalledProcessError as e:
             exec_util.handle_called_process_error(e, command)
         except OSError as error:
@@ -279,13 +291,14 @@ class Local(object):
         return cache_subpath
 
     def save_cache(self, start_time=time.time()):
-        self.log.debug("cache subpath pattern: {}".format(
+        self.log.trace("cache subpath pattern: {}".format(
             self.cache_path_pattern))
         cache_subpath = self._cache_subpath(start_time,
                                             self.cache_path_pattern)
         self.log.debug("cache subpath: {}".format(cache_subpath))
         destination = os.path.join(self.cache_path, cache_subpath)
-        self.log.debug("Saving " + self.base_path + " to " + destination)
+        self.log.trace(("Saving cache: " + self.base_path + " to " +
+                        destination))
 
         if not os.path.exists(destination):
             shutil.move(self.base_path, destination)
@@ -340,7 +353,7 @@ class Local(object):
                     if os.path.exists(dst):
                         os.unlink(dst)
 
-                    self.log.debug("Linking %s to %s ..." % (src, dst))
+                    self.log.trace("Linking %s to %s ..." % (src, dst))
                     try:
                         os.symlink(src, dst)
                     except OSError as e:
@@ -352,7 +365,7 @@ class Local(object):
         src = os.path.abspath(self.exec_path)
         for cdist_type in core.CdistType.list_types(self.type_path):
             dst = os.path.join(self.bin_path, cdist_type.name)
-            self.log.debug("Linking emulator: %s to %s", src, dst)
+            self.log.trace("Linking emulator: %s to %s", src, dst)
 
             try:
                 os.symlink(src, dst)
