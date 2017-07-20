@@ -11,23 +11,23 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-v] [-V] {banner,config,shell,install} ...
+    cdist [-h] [-q] [-v] [-V] {banner,config,shell,install} ...
 
-    cdist banner [-h] [-v]
+    cdist banner [-h] [-q] [-v]
 
-    cdist config [-h] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
+    cdist config [-h] [-q] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                  [-f HOSTFILE] [-p] [-r REMOTE_OUT_PATH] [-s]
                  [host [host ...]]
 
-    cdist install [-h] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
+    cdist install [-h] [-q] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
                   [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                   [-f HOSTFILE] [-p] [-r REMOTE_OUT_PATH] [-s]
                   [host [host ...]]
 
-    cdist shell [-h] [-v] [-s SHELL]
+    cdist shell [-h] [-q] [-v] [-s SHELL]
 
 
 DESCRIPTION
