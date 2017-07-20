@@ -125,7 +125,7 @@ Configure/install one or more hosts.
 
     Operate on multiple hosts in parallel
 
-.. option:: -r, --remote-out-dir
+.. option:: -r REMOTE_OUT_PATH, --remote-out-dir REMOTE_OUT_PATH
 
     Directory to save cdist output in on the target host
 
