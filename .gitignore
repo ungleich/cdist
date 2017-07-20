@@ -11,6 +11,9 @@ docs/src/cdist-reference.rst
 # Ignore cdist cache for version control
 /cache/
 
+# Ignore inventory basedir
+cdist/inventory/
+
 # Python: cache, distutils, distribution in general
 __pycache__/
 *.pyc

@@ -44,6 +44,7 @@ class Shell(object):
             "cdist-shell-no-target-host",
             "cdist-shell-no-target-host",
         )
+        self.target_host_tags = ""
 
         host_dir_name = cdist.str_hash(self.target_host[0])
         base_root_path = tempfile.mkdtemp()
@@ -51,6 +52,7 @@ class Shell(object):
 
         self.local = cdist.exec.local.Local(
             target_host=self.target_host,
+            target_host_tags=self.target_host_tags,
             base_root_path=host_base_path,
             host_dir_name=host_dir_name)
 
@@ -77,6 +79,7 @@ class Shell(object):
             '__manifest': self.local.manifest_path,
             '__explorer': self.local.global_explorer_path,
             '__files': self.local.files_path,
+            '__target_host_tags': self.local.target_host_tags,
         }
 
         self.env.update(additional_env)

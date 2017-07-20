@@ -38,6 +38,9 @@ import cdist.hostsource
 
 import cdist.exec.local
 import cdist.exec.remote
+
+from cdist import inventory
+
 import cdist.util.ipaddr as ipaddr
 
 from cdist import core
@@ -134,11 +137,42 @@ class Config(object):
         base_root_path = cls.create_base_root_path(args.out_path)
 
         hostcnt = 0
-        for host in itertools.chain(cls.hosts(args.host),
-                                    cls.hosts(args.hostfile)):
+
+        if args.tag or args.all_tagged_hosts:
+            inventory.determine_default_inventory_dir(args)
+            if args.all_tagged_hosts:
+                inv_list = inventory.InventoryList(
+                    hosts=None, istag=True, hostfile=None,
+                    db_basedir=args.inventory_dir)
+            else:
+                inv_list = inventory.InventoryList(
+                    hosts=args.host, istag=True, hostfile=args.hostfile,
+                    db_basedir=args.inventory_dir,
+                    has_all_tags=args.has_all_tags)
+            it = inv_list.entries()
+        else:
+            it = itertools.chain(cls.hosts(args.host),
+                                 cls.hosts(args.hostfile))
+        for entry in it:
+            if isinstance(entry, tuple):
+                # if configuring by specified tags
+                host = entry[0]
+                host_tags = entry[1]
+            else:
+                # if configuring by host then check inventory for tags
+                host = entry
+                inventory.determine_default_inventory_dir(args)
+                inv_list = inventory.InventoryList(
+                    hosts=(host,), db_basedir=args.inventory_dir)
+                inv = tuple(inv_list.entries())
+                if inv:
+                    # host is present in inventory and has tags
+                    host_tags = inv[0][1]
+                else:
+                    # host is not present in inventory or has no tags
+                    host_tags = None
             host_base_path, hostdir = cls.create_host_base_dirs(
                 host, base_root_path)
-
             log.debug("Base root path for target host \"{}\" is \"{}\"".format(
                 host, host_base_path))
 
@@ -147,11 +181,12 @@ class Config(object):
                 log.trace("Creating child process for %s", host)
                 process[host] = multiprocessing.Process(
                         target=cls.onehost,
-                        args=(host, host_base_path, hostdir, args, True))
+                        args=(host, host_tags, host_base_path, hostdir, args,
+                              True))
                 process[host].start()
             else:
                 try:
-                    cls.onehost(host, host_base_path, hostdir,
+                    cls.onehost(host, host_tags, host_base_path, hostdir,
                                 args, parallel=False)
                 except cdist.Error as e:
                     failed_hosts.append(host)
@@ -199,7 +234,8 @@ class Config(object):
         return (remote_exec, remote_copy, )
 
     @classmethod
-    def onehost(cls, host, host_base_path, host_dir_name, args, parallel):
+    def onehost(cls, host, host_tags, host_base_path, host_dir_name, args,
+                parallel):
         """Configure ONE system"""
 
         log = logging.getLogger(host)
@@ -216,6 +252,7 @@ class Config(object):
 
             local = cdist.exec.local.Local(
                 target_host=target_host,
+                target_host_tags=host_tags,
                 base_root_path=host_base_path,
                 host_dir_name=host_dir_name,
                 initial_manifest=args.manifest,

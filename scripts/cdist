@@ -33,6 +33,7 @@ def commandline():
     import cdist.config
     import cdist.install
     import cdist.shell
+    import cdist.inventory
     import shutil
     import os
 
