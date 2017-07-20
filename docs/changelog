@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.5.0: 2017-07-20
 	* Types: Fix install types (Steven Armstrong)
 	* Core: Add -r command line option for setting remote base path (Steven Armstrong)
 	* Core: Allow manifest and gencode scripts to be written in any language (Darko Poljak)
