@@ -97,7 +97,7 @@ Including a possible common base that is reused across the different sites::
     git merge common
 
 
-The following **.git/config** is taken from a real world scenario:
+The following **.git/config** is taken from a real world scenario::
 
     # Track upstream, merge from time to time
     [remote "upstream"]
