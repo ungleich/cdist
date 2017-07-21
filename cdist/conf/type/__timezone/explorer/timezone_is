@@ -17,4 +17,5 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-cat /etc/timezone
+
+[ -f /etc/timezone ] && cat /etc/timezone
