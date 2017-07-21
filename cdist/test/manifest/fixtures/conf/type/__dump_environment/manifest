@@ -13,4 +13,5 @@ __object: $__object
 __object_id: $__object_id
 __object_name: $__object_name
 __files: $__files
+__target_host_tags: $__target_host_tags
 DONE

@@ -42,6 +42,7 @@ class CdistTestCase(unittest.TestCase):
         'cdisttesthost',
         'cdisttesthost',
     )
+    target_host_tags = "tag1,tag2,tag3"
 
     def mkdtemp(self, **kwargs):
         return tempfile.mkdtemp(prefix='tmp.cdist.test.', **kwargs)

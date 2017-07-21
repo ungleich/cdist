@@ -17,9 +17,9 @@ REQUIRED PARAMETERS
 uri
    The uri from which to fetch the tarball.
    Can be anything understood by curl, e.g:
-     | http://path/to/stage.tgz
-     | tftp:///path/to/stage.tgz
-     | file:///local/path/stage.tgz
+       | http://path/to/stage.tgz
+       | tftp:///path/to/stage.tgz
+       | file:///local/path/stage.tgz
 
 
 OPTIONAL PARAMETERS

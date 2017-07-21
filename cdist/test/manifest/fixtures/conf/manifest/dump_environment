@@ -9,4 +9,5 @@ __global: $__global
 __cdist_type_base_path: $__cdist_type_base_path
 __manifest: $__manifest
 __files: $__files
+__target_host_tags: $__target_host_tags
 DONE

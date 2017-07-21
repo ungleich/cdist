@@ -77,6 +77,7 @@ class Explorer(object):
             '__target_hostname': self.target_host[1],
             '__target_fqdn': self.target_host[2],
             '__explorer': self.remote.global_explorer_path,
+            '__target_host_tags': self.local.target_host_tags,
         }
         self._type_explorers_transferred = []
         self.jobs = jobs

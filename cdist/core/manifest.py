@@ -42,6 +42,7 @@ common:
                                 types are defined for use in type emulator
             == local.type_path
         __files: full qualified path to the files dir
+        __target_host_tags: comma spearated list of host tags
 
 initial manifest is:
     script: full qualified path to the initial manifest
@@ -109,6 +110,7 @@ class Manifest(object):
             '__target_hostname': self.target_host[1],
             '__target_fqdn': self.target_host[2],
             '__files': self.local.files_path,
+            '__target_host_tags': self.local.target_host_tags,
         }
 
         if self.log.getEffectiveLevel() == logging.DEBUG:

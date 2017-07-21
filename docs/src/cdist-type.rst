@@ -64,15 +64,23 @@ If a type is flagged with 'install' flag then it is used only with install comma
 With other commands, i.e. config, these types are skipped if used.
 
 
+Nonparallel types
+-----------------
+If a type is flagged with 'nonparallel' flag then its objects cannot be run in parallel
+when using -j option. Example of such a type is __package_dpkg type where dpkg itself
+prevents to be run in more than one instance.
+
+
 How to write a new type
 -----------------------
 A type consists of
 
-- parameter (optional)
-- manifest  (optional)
-- singleton (optional)
-- explorer  (optional)
-- gencode   (optional)
+- parameter    (optional)
+- manifest     (optional)
+- singleton    (optional)
+- explorer     (optional)
+- gencode      (optional)
+- nonparallel  (optional)
 
 Types are stored below cdist/conf/type/. Their name should always be prefixed with
 two underscores (__) to prevent collisions with other executables in $PATH.
@@ -238,6 +246,19 @@ install: create the (empty) file "install" in your type directory:
     touch cdist/conf/type/__install_NAME/install
 
 With other commands, i.e. config, it will be skipped if used.
+
+
+Nonparallel - only one instance can be run at a time
+----------------------------------------------------
+If objects of a type must not or cannot be run in parallel when using -j
+option, you must mark it as nonparallel: create the (empty) file "nonparallel"
+in your type directory:
+
+.. code-block:: sh
+
+    touch cdist/conf/type/__NAME/nonparallel
+
+For example, package types are nonparallel types.
 
 
 The type explorers

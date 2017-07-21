@@ -53,6 +53,7 @@ class EmulatorTestCase(test.CdistTestCase):
 
         self.local = local.Local(
             target_host=self.target_host,
+            target_host_tags=self.target_host_tags,
             base_root_path=host_base_path,
             host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
@@ -156,6 +157,7 @@ class EmulatorConflictingRequirementsTestCase(test.CdistTestCase):
 
         self.local = local.Local(
             target_host=self.target_host,
+            target_host_tags=self.target_host_tags,
             base_root_path=host_base_path,
             host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
@@ -246,6 +248,7 @@ class AutoRequireEmulatorTestCase(test.CdistTestCase):
 
         self.local = local.Local(
             target_host=self.target_host,
+            target_host_tags=self.target_host_tags,
             base_root_path=host_base_path,
             host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
@@ -279,6 +282,7 @@ class OverrideTestCase(test.CdistTestCase):
 
         self.local = local.Local(
             target_host=self.target_host,
+            target_host_tags=self.target_host_tags,
             base_root_path=host_base_path,
             host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
@@ -322,6 +326,7 @@ class ArgumentsTestCase(test.CdistTestCase):
 
         self.local = local.Local(
             target_host=self.target_host,
+            target_host_tags=self.target_host_tags,
             base_root_path=host_base_path,
             host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
@@ -445,6 +450,7 @@ class StdinTestCase(test.CdistTestCase):
 
         self.local = local.Local(
             target_host=self.target_host,
+            target_host_tags=self.target_host_tags,
             base_root_path=host_base_path,
             host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,
@@ -511,6 +517,7 @@ class EmulatorAlreadyExistingRequirementsWarnTestCase(test.CdistTestCase):
 
         self.local = local.Local(
             target_host=self.target_host,
+            target_host_tags=self.target_host_tags,
             base_root_path=host_base_path,
             host_dir_name=hostdir,
             exec_path=test.cdist_exec_path,

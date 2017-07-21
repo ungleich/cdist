@@ -56,6 +56,7 @@ gencode-local
         __object_fq: full qualified object id, iow: $type.name + / + object_id
         __type: full qualified path to the type's dir
         __files: full qualified path to the files dir
+        __target_host_tags: comma spearated list of host tags
 
     returns: string containing the generated code or None
 
@@ -74,6 +75,7 @@ gencode-remote
         __object_fq: full qualified object id, iow: $type.name + / + object_id
         __type: full qualified path to the type's dir
         __files: full qualified path to the files dir
+        __target_host_tags: comma spearated list of host tags
 
     returns: string containing the generated code or None
 
@@ -106,6 +108,7 @@ class Code(object):
             '__target_fqdn': self.target_host[2],
             '__global': self.local.base_path,
             '__files': self.local.files_path,
+            '__target_host_tags': self.local.target_host_tags,
         }
 
     def _run_gencode(self, cdist_object, which):
