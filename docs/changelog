@@ -4,6 +4,7 @@ Changelog
 next:
 	* Core: Add inventory functionality (Darko Poljak)
 	* Core: Expose inventory host tags in __target_host_tags env var (Darko Poljak)
+	* Type __timezone: Check current timezone before doing anything (Ander Punnar)
 
 4.5.0: 2017-07-20
 	* Types: Fix install types (Steven Armstrong)
