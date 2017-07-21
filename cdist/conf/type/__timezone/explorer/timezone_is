@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2016 Ander Punnar (cdist at kvlt.ee)
 #
 # This file is part of cdist.
 #
@@ -17,19 +17,4 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# This type allows to configure the desired localtime timezone.
-
-timezone_is=$(cat "$__object/explorer/timezone_is")
-timezone_should="$__object_id"
-os=$(cat "$__global/explorer/os")
-
-if [ "$timezone_is" = "$timezone_should" ]; then
-    exit 0
-fi
-
-case "$os" in
-   ubuntu|debian|devuan)
-      echo "echo \"$timezone_should\" > /etc/timezone"
-   ;;
-esac
+cat /etc/timezone
