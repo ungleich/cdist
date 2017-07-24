@@ -186,7 +186,6 @@ class Remote(object):
         cmd = self._exec.split()
         cmd.append(self.target_host[0])
 
-        # FIXME: replace this by -o SendEnv name -o SendEnv name ... to ssh?
         # can't pass environment to remote side, so prepend command with
         # variable declarations
 
