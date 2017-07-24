@@ -152,9 +152,9 @@ def get_parsers():
     parser['config_main'].add_argument(
            '-j', '--jobs', nargs='?',
            type=check_positive_int,
-           help=('Specify the maximum number of parallel jobs. Global'
-                 'explorers, object prepare and object run are supported'
-                 '(currently in beta'),
+           help=('Specify the maximum number of parallel jobs. Global '
+                 'explorers, object prepare and object run are supported '
+                 '(currently in beta)'),
            action='store', dest='jobs',
            const=multiprocessing.cpu_count())
     parser['config_main'].add_argument(
