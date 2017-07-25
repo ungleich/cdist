@@ -129,7 +129,6 @@ class Config(object):
 
         cls._check_and_prepare_args(args)
 
-        process = {}
         failed_hosts = []
         time_start = time.time()
 
@@ -153,6 +152,16 @@ class Config(object):
         else:
             it = itertools.chain(cls.hosts(args.host),
                                  cls.hosts(args.hostfile))
+
+        process_args = []
+        # No new child process if only one host at a time.
+        if args.parallel == 1:
+            log.debug("Only 1 parallel process, doing it sequentially")
+            args.parallel = 0
+        if args.parallel:
+            log.trace("Processing hosts in parallel")
+        else:
+            log.trace("Processing hosts sequentially")
         for entry in it:
             if isinstance(entry, tuple):
                 # if configuring by specified tags
@@ -178,27 +187,37 @@ class Config(object):
 
             hostcnt += 1
             if args.parallel:
-                log.trace("Creating child process for %s", host)
-                process[host] = multiprocessing.Process(
-                        target=cls.onehost,
-                        args=(host, host_tags, host_base_path, hostdir, args,
-                              True))
-                process[host].start()
+                pargs = (host, host_tags, host_base_path, hostdir, args, True)
+                log.trace(("Args for multiprocessing operation "
+                                "for host {}: {}".format(host, pargs)))
+                process_args.append(pargs)
             else:
                 try:
                     cls.onehost(host, host_tags, host_base_path, hostdir,
                                 args, parallel=False)
                 except cdist.Error as e:
                     failed_hosts.append(host)
-
+        if args.parallel and len(process_args) == 1:
+            log.debug("Only 1 host for parallel processing, doing it "
+                      "sequentially")
+            try:
+                cls.onehost(*process_args[0])
+            except cdist.Error as e:
+                failed_hosts.append(host)
         # Catch errors in parallel mode when joining
         if args.parallel:
-            for host in process.keys():
-                log.trace("Joining process %s", host)
-                process[host].join()
+            log.trace("Multiprocessing start method is {}".format(
+                multiprocessing.get_start_method()))
+            log.trace(("Starting multiprocessing Pool for {} "
+                            "parallel host operation".format(args.parallel)))
 
-                if not process[host].exitcode == 0:
-                    failed_hosts.append(host)
+            results = mp_pool_run(cls.onehost, process_args, jobs=args.parallel)
+            log.trace(("Multiprocessing for parallel host operation "
+                            "finished"))
+            log.trace(("Multiprocessing for parallel host operation "
+                            "results: {}", results))
+
+            failed_hosts = [host for host, result in results if not result]
 
         time_end = time.time()
         log.verbose("Total processing time for %s host(s): %s", hostcnt,
@@ -236,7 +255,10 @@ class Config(object):
     @classmethod
     def onehost(cls, host, host_tags, host_base_path, host_dir_name, args,
                 parallel):
-        """Configure ONE system"""
+        """Configure ONE system.
+           If operating in parallel then return tuple (host, True|False, )
+           so that main process knows for which host function was successful.
+        """
 
         log = logging.getLogger(host)
 
@@ -273,8 +295,7 @@ class Config(object):
         except cdist.Error as e:
             log.error(e)
             if parallel:
-                # We are running in our own process here, need to sys.exit!
-                sys.exit(1)
+                return (host, False, )
             else:
                 raise
 
@@ -285,6 +306,8 @@ class Config(object):
             # Pass back to controlling code in sequential mode
             else:
                 raise
+        if parallel:
+            return (host, True, )
 
     @staticmethod
     def create_base_root_path(out_path=None):
