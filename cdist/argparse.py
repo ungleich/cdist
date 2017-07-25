@@ -152,9 +152,10 @@ def get_parsers():
     parser['config_main'].add_argument(
            '-j', '--jobs', nargs='?',
            type=check_positive_int,
-           help=('Specify the maximum number of parallel jobs. Global '
-                 'explorers, object prepare and object run are supported '
-                 '(currently in beta)'),
+           help=('Operate in parallel in specified maximum number of jobs. '
+                 'Global explorers, object prepare and object run are '
+                 'supported. Without argument CPU count is used by default. '
+                 'Currently in beta.'),
            action='store', dest='jobs',
            const=multiprocessing.cpu_count())
     parser['config_main'].add_argument(
@@ -204,13 +205,17 @@ def get_parsers():
                   'default, read hosts from stdin.'),
             dest='hostfile', required=False)
     parser['config_args'].add_argument(
-           '-p', '--parallel',
-           help='operate on multiple hosts in parallel',
-           action='store_true', dest='parallel')
+           '-p', '--parallel', nargs='?', metavar='HOST_MAX',
+           type=check_positive_int,
+           help=('Operate on multiple hosts in parallel for specified maximum '
+                 'hosts at a time. Without argument CPU count is used by '
+                 'default.'),
+           action='store', dest='parallel',
+           const=multiprocessing.cpu_count())
     parser['config_args'].add_argument(
            '-s', '--sequential',
            help='operate on multiple hosts sequentially (default)',
-           action='store_false', dest='parallel')
+           action='store_const', dest='parallel', const=0)
     parser['config_args'].add_argument(
              '-t', '--tag',
              help=('host is specified by tag, not hostname/address; '

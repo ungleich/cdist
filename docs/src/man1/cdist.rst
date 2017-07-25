@@ -19,14 +19,14 @@ SYNOPSIS
                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                  [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
                  [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                 [-f HOSTFILE] [-p] [-s] [-t]
+                 [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                  [host [host ...]] 
 
     cdist install [-h] [-q] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
                   [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
                   [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
                   [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                  [-f HOSTFILE] [-p] [-s] [-t]
+                  [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                   [host [host ...]] 
 
     cdist inventory [-h] [-q] [-v] [-b] [-I INVENTORY_DIR]
@@ -153,9 +153,10 @@ Configure/install one or more hosts.
 
 .. option:: -j [JOBS], --jobs [JOBS]
 
-    Specify the maximum number of parallel jobs. Global
-    explorers, object prepare and object run are supported
-    (currently in beta).
+    Operate in parallel in specified maximum number of
+    jobs. Global explorers, object prepare and object run
+    are supported. Without argument CPU count is used by
+    default. Currently in beta.
 
 .. option:: -n, --dry-run
 
@@ -165,9 +166,11 @@ Configure/install one or more hosts.
 
     Directory to save cdist output in
 
-.. option:: -p, --parallel
+.. option:: -p [HOST_MAX], --parallel [HOST_MAX]
 
-    Operate on multiple hosts in parallel
+    Operate on multiple hosts in parallel for specified
+    maximum hosts at a time. Without argument CPU count is
+    used by default.
 
 .. option:: -r REMOTE_OUT_PATH, --remote-out-dir REMOTE_OUT_PATH
 
