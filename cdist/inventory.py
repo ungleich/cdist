@@ -368,8 +368,8 @@ class InventoryTag(Inventory):
                         tag, host))
                     host_tags.add(tag)
                 elif self.action == "del":
-                    self.log.debug("Deleting tag \'{}\' for host \'{}\'".format(
-                        tag, host))
+                    self.log.debug("Deleting tag \'{}\' for host "
+                                   "\'{}\'".format(tag, host))
                     if tag in host_tags:
                         host_tags.remove(tag)
         self.log.trace("new host tags: {}".format(host_tags))

@@ -189,7 +189,7 @@ class Config(object):
             if args.parallel:
                 pargs = (host, host_tags, host_base_path, hostdir, args, True)
                 log.trace(("Args for multiprocessing operation "
-                                "for host {}: {}".format(host, pargs)))
+                           "for host {}: {}".format(host, pargs)))
                 process_args.append(pargs)
             else:
                 try:
@@ -209,13 +209,15 @@ class Config(object):
             log.trace("Multiprocessing start method is {}".format(
                 multiprocessing.get_start_method()))
             log.trace(("Starting multiprocessing Pool for {} "
-                            "parallel host operation".format(args.parallel)))
+                       "parallel host operation".format(args.parallel)))
 
-            results = mp_pool_run(cls.onehost, process_args, jobs=args.parallel)
+            results = mp_pool_run(cls.onehost,
+                                  process_args,
+                                  jobs=args.parallel)
             log.trace(("Multiprocessing for parallel host operation "
-                            "finished"))
+                       "finished"))
             log.trace(("Multiprocessing for parallel host operation "
-                            "results: {}", results))
+                       "results: {}", results))
 
             failed_hosts = [host for host, result in results if not result]
 
