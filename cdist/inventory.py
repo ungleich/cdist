@@ -86,7 +86,7 @@ class Inventory(object):
         self.init_db()
 
     def init_db(self):
-        self.log.debug("Init db: {}".format(self.db_basedir))
+        self.log.trace("Init db: {}".format(self.db_basedir))
         if not os.path.exists(self.db_basedir):
             os.makedirs(self.db_basedir, exist_ok=True)
         elif not os.path.isdir(self.db_basedir):
@@ -168,14 +168,14 @@ class Inventory(object):
     @classmethod
     def commandline(cls, args):
         """Manipulate inventory db"""
-        log = logging.getLogger("cdist")
+        log = logging.getLogger("inventory")
         if 'taglist' in args:
             args.taglist = cls.strlist_to_list(args.taglist)
         determine_default_inventory_dir(args)
 
-        log.info("Using inventory: {}".format(args.inventory_dir))
-        log.debug("Inventory args: {}".format(vars(args)))
-        log.debug("Inventory command: {}".format(args.subcommand))
+        log.debug("Using inventory: {}".format(args.inventory_dir))
+        log.trace("Inventory args: {}".format(vars(args)))
+        log.trace("Inventory command: {}".format(args.subcommand))
 
         if args.subcommand == "list":
             c = InventoryList(hosts=args.host, istag=args.tag,
@@ -225,22 +225,22 @@ class InventoryList(Inventory):
     def _do_list(self, it_tags, it_hosts, check_func):
         if (it_tags is not None):
             param_tags = set(it_tags)
-            self.log.debug("param_tags: {}".format(param_tags))
+            self.log.trace("param_tags: {}".format(param_tags))
         else:
             param_tags = set()
         for host in it_hosts:
-            self.log.debug("host: {}".format(host))
+            self.log.trace("host: {}".format(host))
             tags = self._get_host_tags(host)
             if tags is None:
-                self.log.info("Host \'{}\' not found, skipped".format(host))
+                self.log.debug("Host \'{}\' not found, skipped".format(host))
                 continue
-            self.log.debug("tags: {}".format(tags))
+            self.log.trace("tags: {}".format(tags))
             if check_func(tags, param_tags):
                 yield host, tags
 
     def entries(self):
         if not self.hosts and not self.hostfile:
-            self.log.info("Listing all hosts")
+            self.log.trace("Listing all hosts")
             it_hosts = self._all_hosts()
             it_tags = None
             check_func = check_always_true
@@ -248,7 +248,7 @@ class InventoryList(Inventory):
             it = itertools.chain(self._input_values(self.hosts),
                                  self._input_values(self.hostfile))
             if self.istag:
-                self.log.info("Listing by tag(s)")
+                self.log.trace("Listing by tag(s)")
                 it_hosts = self._all_hosts()
                 it_tags = it
                 if self.has_all_tags:
@@ -256,7 +256,7 @@ class InventoryList(Inventory):
                 else:
                     check_func = contains_any
             else:
-                self.log.info("Listing by host(s)")
+                self.log.trace("Listing by host(s)")
                 it_hosts = it
                 it_tags = None
                 check_func = check_always_true
@@ -295,11 +295,11 @@ class InventoryHost(Inventory):
 
     def _action(self, host):
         if self.action == "add":
-            self.log.info("Adding host \'{}\'".format(host))
+            self.log.debug("Adding host \'{}\'".format(host))
         elif self.action == "del":
-            self.log.info("Deleting host \'{}\'".format(host))
+            self.log.debug("Deleting host \'{}\'".format(host))
         hostpath = self._host_path(host)
-        self.log.debug("hostpath: {}".format(hostpath))
+        self.log.trace("hostpath: {}".format(hostpath))
         if self.action == "add" and not os.path.exists(hostpath):
                 self._new_hostpath(hostpath)
         else:
@@ -311,10 +311,10 @@ class InventoryHost(Inventory):
 
     def run(self):
         if self.action == "del" and self.all:
-            self.log.debug("Doing for all hosts")
+            self.log.trace("Doing for all hosts")
             it = self._all_hosts()
         else:
-            self.log.debug("Doing for specified hosts")
+            self.log.trace("Doing for specified hosts")
             it = itertools.chain(self._input_values(self.hosts),
                                  self._input_values(self.hostfile))
         for host in it:
@@ -358,30 +358,30 @@ class InventoryTag(Inventory):
             print("Host \'{}\' does not exist, skipping".format(host),
                   file=sys.stderr)
             return
-        self.log.debug("existing host_tags: {}".format(host_tags))
+        self.log.trace("existing host_tags: {}".format(host_tags))
         if self.action == "del" and self.all:
             host_tags = set()
         else:
             for tag in self.input_tags:
                 if self.action == "add":
-                    self.log.info("Adding tag \'{}\' for host \'{}\'".format(
+                    self.log.debug("Adding tag \'{}\' for host \'{}\'".format(
                         tag, host))
                     host_tags.add(tag)
                 elif self.action == "del":
-                    self.log.info("Deleting tag \'{}\' for host \'{}\'".format(
+                    self.log.debug("Deleting tag \'{}\' for host \'{}\'".format(
                         tag, host))
                     if tag in host_tags:
                         host_tags.remove(tag)
-        self.log.debug("new host tags: {}".format(host_tags))
+        self.log.trace("new host tags: {}".format(host_tags))
         if not self._write_host_tags(host, host_tags):
-            self.log.info("{} does not exist, skipped".format(host))
+            self.log.trace("{} does not exist, skipped".format(host))
 
     def run(self):
         if self.allhosts:
-            self.log.debug("Doing for all hosts")
+            self.log.trace("Doing for all hosts")
             it = self._all_hosts()
         else:
-            self.log.debug("Doing for specified hosts")
+            self.log.trace("Doing for specified hosts")
             it = itertools.chain(self._input_values(self.hosts),
                                  self._input_values(self.hostfile))
         if not(self.action == "del" and self.all):
