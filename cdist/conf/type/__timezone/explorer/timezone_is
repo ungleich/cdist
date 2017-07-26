@@ -19,3 +19,5 @@
 #
 
 [ -f /etc/timezone ] && cat /etc/timezone
+
+exit 0
