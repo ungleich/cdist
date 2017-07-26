@@ -124,6 +124,27 @@ class Config(object):
     def commandline(cls, args):
         """Configure remote system"""
 
+        # No new child process if only one host at a time.
+        if args.parallel == 1:
+            log.debug("Only 1 parallel process, doing it sequentially")
+            args.parallel = 0
+
+        if args.parallel or args.jobs:
+            # If parallel execution then also log process id
+            del logging.getLogger().handlers[:]
+            log_format = '%(levelname)s: [%(process)d]: %(message)s'
+            logging.basicConfig(format=log_format)
+
+        if args.parallel:
+            import signal
+
+            def sigterm_handler(signum, frame):
+                log.trace("signal %s, killing whole process group", signum)
+                os.killpg(os.getpgrp(), signal.SIGKILL)
+
+            signal.signal(signal.SIGTERM, sigterm_handler)
+            signal.signal(signal.SIGHUP, sigterm_handler)
+
         # FIXME: Refactor relict - remove later
         log = logging.getLogger("cdist")
 
@@ -154,10 +175,6 @@ class Config(object):
                                  cls.hosts(args.hostfile))
 
         process_args = []
-        # No new child process if only one host at a time.
-        if args.parallel == 1:
-            log.debug("Only 1 parallel process, doing it sequentially")
-            args.parallel = 0
         if args.parallel:
             log.trace("Processing hosts in parallel")
         else:
@@ -216,8 +233,8 @@ class Config(object):
                                   jobs=args.parallel)
             log.trace(("Multiprocessing for parallel host operation "
                        "finished"))
-            log.trace(("Multiprocessing for parallel host operation "
-                       "results: {}", results))
+            log.trace("Multiprocessing for parallel host operation "
+                      "results: %s", results)
 
             failed_hosts = [host for host, result in results if not result]
 
@@ -301,13 +318,6 @@ class Config(object):
             else:
                 raise
 
-        except KeyboardInterrupt:
-            # Ignore in parallel mode, we are existing anyway
-            if parallel:
-                sys.exit(0)
-            # Pass back to controlling code in sequential mode
-            else:
-                raise
         if parallel:
             return (host, True, )
 

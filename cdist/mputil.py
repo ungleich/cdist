@@ -21,14 +21,21 @@
 
 
 import multiprocessing
+import concurrent.futures as cf
 import itertools
+import os
+import signal
+import logging
+
+
+log = logging.getLogger("cdist-mputil")
 
 
 def mp_pool_run(func, args=None, kwds=None, jobs=multiprocessing.cpu_count()):
-    """ Run func using multiprocessing.Pool with jobs jobs and supplied
-        iterable of args and kwds with one entry for each parallel func
-        instance.
-        Return list of results.
+    """Run func using concurrent.futures.ProcessPoolExecutor with jobs jobs
+       and supplied iterables of args and kwds with one entry for each
+       parallel func instance.
+       Return list of results.
     """
     if args and kwds:
         fargs = zip(args, kwds)
@@ -39,10 +46,18 @@ def mp_pool_run(func, args=None, kwds=None, jobs=multiprocessing.cpu_count()):
     else:
         return [func(), ]
 
-    with multiprocessing.Pool(jobs) as pool:
-        results = [
-            pool.apply_async(func, a, k)
-            for a, k in fargs
-        ]
-        retval = [r.get() for r in results]
-    return retval
+    retval = []
+    with cf.ProcessPoolExecutor(jobs) as executor:
+        try:
+            results = [
+                executor.submit(func, *a, **k) for a, k in fargs
+            ]
+            for f in cf.as_completed(results):
+                retval.append(f.result())
+            return retval
+        except KeyboardInterrupt:
+            log.trace("KeyboardInterrupt, killing process group")
+            # When Ctrl+C in terminal then kill whole process group.
+            # Otherwise there remain processes in sleeping state.
+            os.killpg(os.getpgrp(), signal.SIGKILL)
+            raise
