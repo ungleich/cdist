@@ -29,7 +29,7 @@ import itertools
 import tempfile
 import socket
 import multiprocessing
-from cdist.mputil import mp_pool_run
+from cdist.mputil import mp_pool_run, mp_sig_handler
 import atexit
 import shutil
 
@@ -138,12 +138,8 @@ class Config(object):
         if args.parallel:
             import signal
 
-            def sigterm_handler(signum, frame):
-                log.trace("signal %s, killing whole process group", signum)
-                os.killpg(os.getpgrp(), signal.SIGKILL)
-
-            signal.signal(signal.SIGTERM, sigterm_handler)
-            signal.signal(signal.SIGHUP, sigterm_handler)
+            signal.signal(signal.SIGTERM, mp_sig_handler)
+            signal.signal(signal.SIGHUP, mp_sig_handler)
 
         # FIXME: Refactor relict - remove later
         log = logging.getLogger("cdist")
@@ -221,8 +217,7 @@ class Config(object):
                 cls.onehost(*process_args[0])
             except cdist.Error as e:
                 failed_hosts.append(host)
-        # Catch errors in parallel mode when joining
-        if args.parallel:
+        elif args.parallel:
             log.trace("Multiprocessing start method is {}".format(
                 multiprocessing.get_start_method()))
             log.trace(("Starting multiprocessing Pool for {} "

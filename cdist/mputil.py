@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2016 Darko Poljak (darko.poljak at gmail.com)
+# 2016-2017 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -31,6 +31,11 @@ import logging
 log = logging.getLogger("cdist-mputil")
 
 
+def mp_sig_handler(signum, frame):
+    log.trace("signal %s, SIGKILL whole process group", signum)
+    os.killpg(os.getpgrp(), signal.SIGKILL)
+
+
 def mp_pool_run(func, args=None, kwds=None, jobs=multiprocessing.cpu_count()):
     """Run func using concurrent.futures.ProcessPoolExecutor with jobs jobs
        and supplied iterables of args and kwds with one entry for each
@@ -56,8 +61,5 @@ def mp_pool_run(func, args=None, kwds=None, jobs=multiprocessing.cpu_count()):
                 retval.append(f.result())
             return retval
         except KeyboardInterrupt:
-            log.trace("KeyboardInterrupt, killing process group")
-            # When Ctrl+C in terminal then kill whole process group.
-            # Otherwise there remain processes in sleeping state.
-            os.killpg(os.getpgrp(), signal.SIGKILL)
+            mp_sig_handler(signal.SIGINT, None)
             raise
