@@ -124,6 +124,9 @@ class Config(object):
     def commandline(cls, args):
         """Configure remote system"""
 
+        # FIXME: Refactor relict - remove later
+        log = logging.getLogger("cdist")
+
         # No new child process if only one host at a time.
         if args.parallel == 1:
             log.debug("Only 1 parallel process, doing it sequentially")
@@ -134,15 +137,13 @@ class Config(object):
             del logging.getLogger().handlers[:]
             log_format = '%(levelname)s: [%(process)d]: %(message)s'
             logging.basicConfig(format=log_format)
+            log = logging.getLogger("cdist")
 
         if args.parallel:
             import signal
 
             signal.signal(signal.SIGTERM, mp_sig_handler)
             signal.signal(signal.SIGHUP, mp_sig_handler)
-
-        # FIXME: Refactor relict - remove later
-        log = logging.getLogger("cdist")
 
         cls._check_and_prepare_args(args)
 
