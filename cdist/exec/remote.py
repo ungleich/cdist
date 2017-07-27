@@ -139,12 +139,16 @@ class Remote(object):
                 _wrap_addr(self.target_host[0]), destination)])
             self._run_command(command)
 
-    def _transfer_dir_sequential(self, source, destination):
+    def _transfer_dir_commands(self, source, destination):
         for f in glob.glob1(source, '*'):
             command = self._copy.split()
             path = os.path.join(source, f)
             command.extend([path, '{0}:{1}'.format(
                 _wrap_addr(self.target_host[0]), destination)])
+            yield command
+
+    def _transfer_dir_sequential(self, source, destination):
+        for command in self._transfer_dir_commands:
             self._run_command(command)
 
     def _transfer_dir_parallel(self, source, destination, jobs):
@@ -155,14 +159,12 @@ class Remote(object):
             multiprocessing.get_start_method()))
         self.log.trace(("Starting multiprocessing Pool for parallel "
                         "remote transfer"))
-        args = []
-        for f in glob.glob1(source, '*'):
-            command = self._copy.split()
-            path = os.path.join(source, f)
-            command.extend([path, '{0}:{1}'.format(
-                _wrap_addr(self.target_host[0]), destination)])
-            args.append((command, ))
-        mp_pool_run(self._run_command, args, jobs=jobs)
+        args = [(command, ) for command in self._transfer_dir_commands]
+        if len(args) == 1:
+            self.log.debug("Only one dir entry, transfering sequentially")
+            self._run_command(args[0])
+        else:
+            mp_pool_run(self._run_command, args, jobs=jobs)
         self.log.trace(("Multiprocessing for parallel transfer "
                         "finished"))
 
