@@ -148,7 +148,7 @@ class Remote(object):
             yield command
 
     def _transfer_dir_sequential(self, source, destination):
-        for command in self._transfer_dir_commands:
+        for command in self._transfer_dir_commands(source, destination):
             self._run_command(command)
 
     def _transfer_dir_parallel(self, source, destination, jobs):
@@ -159,7 +159,10 @@ class Remote(object):
             multiprocessing.get_start_method()))
         self.log.trace(("Starting multiprocessing Pool for parallel "
                         "remote transfer"))
-        args = [(command, ) for command in self._transfer_dir_commands]
+        args = [
+            (command, )
+            for command in self._transfer_dir_commands(source, destination)
+        ]
         if len(args) == 1:
             self.log.debug("Only one dir entry, transfering sequentially")
             self._run_command(args[0])
