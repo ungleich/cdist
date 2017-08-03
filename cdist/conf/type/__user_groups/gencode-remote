@@ -59,8 +59,8 @@ for group in $changed_groups; do
       esac
    else
       case "$state_should" in
-         present) echo "gpasswd -a \"$group\" \"$user\"" ;;
-         absent) echo "gpasswd -d \"$group\" \"$user\"" ;;
+         present) echo "gpasswd -a \"$user\" \"$group\"" ;;
+         absent) echo "gpasswd -d \"$user\" \"$group\"" ;;
       esac
    fi
 done
