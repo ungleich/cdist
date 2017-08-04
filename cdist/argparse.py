@@ -10,7 +10,7 @@ import collections
 BETA_COMMANDS = set(('install', 'inventory', ))
 # set of beta arguments for sub-commands
 BETA_ARGS = {
-    'config': set(('jobs', 'tag', 'all_tagged_hosts', )),
+    'config': set(('jobs', 'tag', 'all_tagged_hosts', 'use_archiving', )),
 }
 EPILOG = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
 # Parser others can reuse
@@ -164,6 +164,15 @@ def get_parsers():
     parser['config_main'].add_argument(
            '-o', '--out-dir',
            help='directory to save cdist output in', dest="out_path")
+    parser['config_main'].add_argument(
+           '-R', '--use-archiving', nargs='?',
+           choices=('tar', 'tgz', 'tbz2', 'txz',),
+           help=('Operate by using archiving with compression where '
+                 'apropriate. Supported values are: tar - tar archive, '
+                 'tgz - gzip tar archive (the default), '
+                 'tbz2 - bzip2 tar archive and txz - lzma tar archive.'),
+           action='store', dest='use_archiving',
+           const='tgz')
 
     # remote-copy and remote-exec defaults are environment variables
     # if set; if not then None - these will be futher handled after

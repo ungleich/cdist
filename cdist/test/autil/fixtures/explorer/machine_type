@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# 2014 Daniel Heule  (hda at sfs.biz)
+# 2014 Thomas Oettli (otho at sfs.biz)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+# FIXME: other system types (not linux ...)
+
+if [ -d "/proc/vz" -a ! -d "/proc/bc" ]; then
+    echo openvz
+    exit
+fi
+
+if [ -e "/proc/1/environ" ] &&
+    cat "/proc/1/environ" | tr '\000' '\n' | grep -Eiq '^container='; then
+    echo lxc
+    exit
+fi
+
+if [ -r /proc/cpuinfo ]; then
+    # this should only exist on virtual guest machines,
+    # tested on vmware, xen, kvm
+    if grep -q "hypervisor" /proc/cpuinfo; then
+        # this file is aviable in xen guest systems
+        if [ -r /sys/hypervisor/type ]; then
+            if grep -q -i "xen" /sys/hypervisor/type; then
+                echo virtual_by_xen
+                exit 
+            fi
+        else
+            if [ -r /sys/class/dmi/id/product_name ]; then
+                if grep -q -i 'vmware' /sys/class/dmi/id/product_name; then
+                    echo "virtual_by_vmware"
+                    exit
+                elif grep -q -i 'bochs' /sys/class/dmi/id/product_name; then
+                    echo "virtual_by_kvm"
+                    exit 
+                elif grep -q -i 'virtualbox' /sys/class/dmi/id/product_name; then
+                    echo "virtual_by_virtualbox"
+                    exit 
+                fi
+            fi
+        fi
+        echo "virtual_by_unknown"
+    else
+        echo "physical"
+    fi
+else
+    echo "unknown"
+fi

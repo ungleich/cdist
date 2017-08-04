@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# 2014 Daniel Heule  (hda at sfs.biz)
+# 2014 Thomas Oettli (otho at sfs.biz)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+
+# FIXME: other system types (not linux ...)
+
+os=$("$__explorer/os")
+case "$os" in
+    "macosx")
+        echo "$(sysctl -n hw.memsize)/1024" | bc
+    ;;
+
+    *)
+    if [ -r /proc/meminfo ]; then
+        grep "MemTotal:" /proc/meminfo | awk '{print $2}'
+    fi
+    ;;
+esac

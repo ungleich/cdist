@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# All os variables are lower case
+#
+#
+
+case "$($__explorer/os)" in
+   amazon)
+      cat /etc/system-release
+   ;;
+   archlinux)
+      # empty, but well...
+      cat /etc/arch-release
+   ;;
+   debian)
+      cat /etc/debian_version
+   ;;
+   devuan)
+      cat /etc/devuan_version
+   ;;
+   fedora)
+      cat /etc/fedora-release
+   ;;
+   gentoo)
+      cat /etc/gentoo-release
+   ;;
+   macosx)
+      sw_vers -productVersion
+   ;;
+   *bsd|solaris)
+      uname -r
+   ;;
+   openwrt)
+      cat /etc/openwrt_version
+   ;;
+   owl)
+      cat /etc/owl-release
+   ;;
+   redhat|centos|mitel|scientific)
+      cat /etc/redhat-release
+   ;;
+   slackware)
+      cat /etc/slackware-version
+   ;;
+   suse)
+      if [ -f /etc/os-release ]; then
+        cat /etc/os-release
+      else
+        cat /etc/SuSE-release
+      fi
+   ;;
+   ubuntu)
+      lsb_release -sr
+   ;;
+esac

@@ -63,7 +63,8 @@ class Remote(object):
                  remote_exec,
                  remote_copy,
                  base_path=None,
-                 quiet_mode=None):
+                 quiet_mode=None,
+                 archiving_mode=None):
         self.target_host = target_host
         self._exec = remote_exec
         self._copy = remote_copy
@@ -73,6 +74,7 @@ class Remote(object):
         else:
             self.base_path = "/var/lib/cdist"
         self.quiet_mode = quiet_mode
+        self.archiving_mode = archiving_mode
 
         self.conf_path = os.path.join(self.base_path, "conf")
         self.object_path = os.path.join(self.base_path, "object")
@@ -111,6 +113,11 @@ class Remote(object):
         self.run(["chmod", "0700", self.base_path])
         self.mkdir(self.conf_path)
 
+    def rmfile(self, path):
+        """Remove file on the remote side."""
+        self.log.trace("Remote rm: %s", path)
+        self.run(["rm", "-f",  path])
+
     def rmdir(self, path):
         """Remove directory on the remote side."""
         self.log.trace("Remote rmdir: %s", path)
@@ -121,23 +128,76 @@ class Remote(object):
         self.log.trace("Remote mkdir: %s", path)
         self.run(["mkdir", "-p", path])
 
+    def extract_archive(self, path, mode):
+        """Extract archive path on the remote side."""
+        import cdist.autil as autil
+
+        self.log.trace("Remote extract archive: %s", path)
+        command = ["tar", "-x", "-m", "-C", ]
+        directory = os.path.dirname(path)
+        command.append(directory)
+        xopt = autil.get_extract_option(mode)
+        if xopt:
+            command.append(xopt)
+        command.append("-f")
+        command.append(path)
+        self.run(command)
+
+    def _transfer_file(self, source, destination):
+        command = self._copy.split()
+        command.extend([source, '{0}:{1}'.format(
+            _wrap_addr(self.target_host[0]), destination)])
+        self._run_command(command)
+
     def transfer(self, source, destination, jobs=None):
         """Transfer a file or directory to the remote side."""
         self.log.trace("Remote transfer: %s -> %s", source, destination)
         # self.rmdir(destination)
         if os.path.isdir(source):
             self.mkdir(destination)
-            if jobs:
-                self._transfer_dir_parallel(source, destination, jobs)
-            else:
-                self._transfer_dir_sequential(source, destination)
+            used_archiving = False
+            if self.archiving_mode:
+                self.log.trace("Remote transfer in archiving mode")
+                import cdist.autil as autil
+
+                # create archive
+                tarpath, fcnt = autil.tar(source, self.archiving_mode)
+                if tarpath is None:
+                    self.log.trace(("Files count {} is lower than {} limit, "
+                                    "skipping archiving").format(
+                                        fcnt, autil.FILES_LIMIT))
+                else:
+                    self.log.trace(("Archiving mode, tarpath: %s, file count: "
+                                    "%s"), tarpath, fcnt)
+                    # get archive name
+                    tarname = os.path.basename(tarpath)
+                    self.log.trace("Archiving mode tarname: %s", tarname)
+                    # archive path at the remote
+                    desttarpath = os.path.join(destination, tarname)
+                    self.log.trace(
+                        "Archiving mode desttarpath: %s", desttarpath)
+                    # transfer archive to the remote side
+                    self.log.trace("Archiving mode: transfering")
+                    self._transfer_file(tarpath, desttarpath)
+                    # extract archive at the remote
+                    self.log.trace("Archiving mode: extracting")
+                    self.extract_archive(desttarpath, self.archiving_mode)
+                    # remove remote archive
+                    self.log.trace("Archiving mode: removing remote archive")
+                    self.rmfile(desttarpath)
+                    # remove local archive
+                    self.log.trace("Archiving mode: removing local archive")
+                    os.remove(tarpath)
+                    used_archiving = True
+            if not used_archiving:
+                if jobs:
+                    self._transfer_dir_parallel(source, destination, jobs)
+                else:
+                    self._transfer_dir_sequential(source, destination)
         elif jobs:
             raise cdist.Error("Source {} is not a directory".format(source))
         else:
-            command = self._copy.split()
-            command.extend([source, '{0}:{1}'.format(
-                _wrap_addr(self.target_host[0]), destination)])
-            self._run_command(command)
+            self._transfer_file(source, destination)
 
     def _transfer_dir_commands(self, source, destination):
         for f in glob.glob1(source, '*'):
