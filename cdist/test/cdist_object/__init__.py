@@ -147,6 +147,13 @@ class ObjectIdTestCase(test.CdistTestCase):
             core.CdistObject(cdist_type, self.object_base_path,
                              OBJECT_MARKER_NAME, illegal_object_id)
 
+    def test_object_id_equals_slash(self):
+        cdist_type = core.CdistType(type_base_path, '__third')
+        illegal_object_id = '/'
+        with self.assertRaises(core.IllegalObjectIdError):
+            core.CdistObject(cdist_type, self.object_base_path,
+                             OBJECT_MARKER_NAME, illegal_object_id)
+
     def test_object_id_on_singleton_type(self):
         cdist_type = core.CdistType(type_base_path, '__test_singleton')
         illegal_object_id = 'object_id'
