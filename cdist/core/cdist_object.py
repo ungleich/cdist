@@ -21,9 +21,7 @@
 #
 #
 
-import fnmatch
 import os
-import collections
 
 import cdist
 import cdist.core
@@ -142,9 +140,13 @@ class CdistObject(object):
             if '//' in self.object_id:
                 raise IllegalObjectIdError(
                         self.object_id, 'object_id may not contain //')
-            if self.object_id == '.':
-                raise IllegalObjectIdError(
-                        self.object_id, 'object_id may not be a .')
+
+            _invalid_object_ids = ('.', '/', )
+            for ioid in _invalid_object_ids:
+                if self.object_id == ioid:
+                    raise IllegalObjectIdError(
+                        self.object_id,
+                        'object_id may not be a {}'.format(ioid))
 
         # If no object_id and type is not singleton => error out
         if not self.object_id and not self.cdist_type.is_singleton:
