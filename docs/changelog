@@ -6,6 +6,7 @@ next:
 	* Core: Expose inventory host tags in __target_host_tags env var (Darko Poljak)
 	* Type __timezone: Check current timezone before doing anything (Ander Punnar)
 	* Core: Add -p HOST_MAX argument (Darko Poljak)
+	* Core: Add archiving support for transferring directory - new -R beta option (Darko Poljak)
 
 4.5.0: 2017-07-20
 	* Types: Fix install types (Steven Armstrong)
