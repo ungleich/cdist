@@ -7,6 +7,7 @@ next:
 	* Type __timezone: Check current timezone before doing anything (Ander Punnar)
 	* Core: Add -p HOST_MAX argument (Darko Poljak)
 	* Core: Add archiving support for transferring directory - new -R beta option (Darko Poljak)
+	* Core: Fix ssh connection multiplexing race condition (Darko Poljak)
 
 4.5.0: 2017-07-20
 	* Types: Fix install types (Steven Armstrong)
