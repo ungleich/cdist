@@ -1,0 +1,143 @@
+#!/bin/sh
+#
+# 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# All os variables are lower case.  Keep this file in alphabetical
+# order by os variable except in cases where order otherwise matters,
+# in which case keep the primary os and its derivatives together in
+# a block (see Debian and Redhat examples below).
+#
+
+if grep -q ^Amazon /etc/system-release 2>/dev/null; then
+   echo amazon
+   exit 0
+fi
+
+if [ -f /etc/arch-release ]; then
+   echo archlinux
+   exit 0
+fi
+
+if [ -f /etc/cdist-preos ]; then
+   echo cdist-preos
+   exit 0
+fi
+
+if [ -d /gnu/store ]; then
+   echo guixsd
+   exit 0
+fi
+
+### Debian and derivatives
+if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
+   echo ubuntu
+   exit 0
+fi
+
+if [ -f /etc/debian_version ]; then
+   echo debian
+   exit 0
+fi
+
+if [ -f /etc/devuan_version ]; then
+   echo devuan
+   exit 0
+fi
+###
+
+if [ -f /etc/gentoo-release ]; then
+   echo gentoo
+   exit 0
+fi
+
+if [ -f /etc/openwrt_version ]; then
+    echo openwrt
+    exit 0
+fi
+
+if [ -f /etc/owl-release ]; then
+   echo owl
+   exit 0
+fi
+
+### Redhat and derivatives
+if grep -q ^Scientific /etc/redhat-release 2>/dev/null; then
+    echo scientific
+    exit 0
+fi
+
+if grep -q ^CentOS /etc/redhat-release 2>/dev/null; then
+    echo centos
+    exit 0
+fi
+
+if grep -q ^Fedora /etc/redhat-release 2>/dev/null; then
+   echo fedora
+   exit 0
+fi
+
+if grep -q ^Mitel /etc/redhat-release 2>/dev/null; then
+   echo mitel
+   exit 0
+fi
+
+if [ -f /etc/redhat-release ]; then
+   echo redhat
+   exit 0
+fi
+###
+
+if [ -f /etc/SuSE-release ]; then
+   echo suse
+   exit 0
+fi
+
+if [ -f /etc/slackware-version ]; then
+   echo slackware
+   exit 0
+fi
+
+uname_s="$(uname -s)"
+
+# Assume there is no tr on the client -> do lower case ourselves
+case "$uname_s" in
+   Darwin)
+      echo macosx
+      exit 0
+   ;;
+   NetBSD)
+      echo netbsd
+      exit 0
+   ;;
+   FreeBSD)
+      echo freebsd
+      exit 0
+   ;;
+   OpenBSD)
+      echo openbsd
+      exit 0
+   ;;
+   SunOS)
+      echo solaris
+      exit 0
+   ;;
+esac
+
+echo "Unknown OS" >&2
+exit 1

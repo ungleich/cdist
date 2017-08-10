@@ -1,0 +1,51 @@
+#!/bin/sh
+#
+# 2012 Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# List all network interfaces in explorer/ifaces. One interface per line.
+#
+# If your OS is not supported please provide a ifconfig output
+#
+
+# Use ip, if available
+if command -v ip >/dev/null; then
+    ip -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
+    exit 0
+fi
+
+if ! command -v ifconfig >/dev/null; then
+   # no ifconfig, nothing we could do
+   exit 0
+fi
+
+uname_s="$(uname -s)"
+REGEXP='s/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
+
+case "$uname_s" in
+    Darwin)
+	ifconfig -a | sed -n -E "$REGEXP"
+	;;
+    Linux|*BSD)
+	ifconfig -a | sed -n -r "$REGEXP"
+	;;
+    *)
+	echo "Unsupported ifconfig output for $uname_s" >&2
+	exit 1
+	;;
+esac

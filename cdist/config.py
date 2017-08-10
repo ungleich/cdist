@@ -302,7 +302,8 @@ class Config(object):
                 remote_exec=remote_exec,
                 remote_copy=remote_copy,
                 base_path=args.remote_out_path,
-                quiet_mode=args.quiet)
+                quiet_mode=args.quiet,
+                archiving_mode=args.use_archiving)
 
             c = cls(local, remote, dry_run=args.dry_run, jobs=args.jobs)
             c.run()
