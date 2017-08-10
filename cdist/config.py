@@ -308,7 +308,8 @@ class Config(object):
                 initial_manifest=args.manifest,
                 add_conf_dirs=args.conf_dir,
                 cache_path_pattern=args.cache_path_pattern,
-                quiet_mode=args.quiet)
+                quiet_mode=args.quiet,
+                exec_path=sys.argv[0])
 
             remote = cdist.exec.remote.Remote(
                 target_host=target_host,

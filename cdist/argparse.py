@@ -27,6 +27,14 @@ _verbosity_level = {
     3: logging.DEBUG,
     4: logging.TRACE,
 }
+
+
+this_globals = globals()
+for level in _verbosity_level:
+    const = 'VERBOSE_' + logging.getLevelName(_verbosity_level[level])
+    this_globals[const] = level
+
+
 # All verbosity levels above 4 are TRACE.
 _verbosity_level = collections.defaultdict(
     lambda: logging.TRACE, _verbosity_level)
