@@ -1,5 +1,10 @@
 import argparse
 import cdist
+import cdist.banner
+import cdist.config
+import cdist.install
+import cdist.shell
+import cdist.inventory
 import multiprocessing
 import os
 import logging

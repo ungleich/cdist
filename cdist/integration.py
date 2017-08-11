@@ -25,58 +25,58 @@ import cdist.log
 import cdist.config
 import cdist.install
 import cdist.argparse
-import argparse
 import sys
 import os.path
+import collections
 
 
 ACTION_CONFIG = 'config'
 ACTION_INSTALL = 'install'
 
 
-def _process_host(action, host, manifest, verbose):
-    cname = action.title()
-    module = getattr(cdist, action)
-    theclass = getattr(module, cname)
-
-    args = argparse.Namespace()
-    args.manifest = manifest
-    args.parallel = 0
-    args.verbose = verbose
-    args.remote_copy = None
-    args.remote_exec = None
-    args.conf_dir = None
-    args.cache_path_pattern = None
-    args.quiet = False
-    args.all_tagged_hosts = False
-    args.beta = False
-    args.has_all_tags = False
-    args.remote_out_path = None
-    args.use_archiving = None
-    args.dry_run = False
-    args.jobs = None
-
-    cdist.argparse.handle_loglevel(args)
-    theclass.construct_remote_exec_copy_patterns(args)
-
-    base_root_path = theclass.create_base_root_path(None)
-    host_base_path, hostdir = theclass.create_host_base_dirs(host,
-                                                             base_root_path)
-    host_tags = None
+def _process_hosts_simple(action, host, manifest, verbose):
+    if isinstance(host, str):
+        hosts = [host, ]
+    elif isinstance(host, collections.Iterable):
+        hosts = host
+    else:
+        raise cdist.Error('Invalid host argument: {}'.format(host))
 
     # setup sys.argv[0] since cdist relies on command line invocation
     mydir = os.path.dirname(__file__)
     cdist_bin = os.path.abspath(os.path.join(mydir, '..', 'scripts', 'cdist'))
     sys.argv[0] = cdist_bin
-    theclass.onehost(host, host_tags, host_base_path, hostdir, args,
-                     parallel=args.parallel > 0)
+
+    cname = action.title()
+    module = getattr(cdist, action)
+    theclass = getattr(module, cname)
+
+    argv = [action, '-i', manifest, ]
+    for i in range(verbose):
+        argv.append('-v')
+    for x in hosts:
+        argv.append(x)
+
+    parser = cdist.argparse.get_parsers()
+    args = parser['main'].parse_args(argv)
+    cdist.argparse.handle_loglevel(args)
+
+    theclass.construct_remote_exec_copy_patterns(args)
+    base_root_path = theclass.create_base_root_path(None)
+
+    for target_host in args.host:
+        host_base_path, hostdir = theclass.create_host_base_dirs(
+            target_host, base_root_path)
+        theclass.onehost(target_host, None, host_base_path, hostdir, args,
+                         parallel=False)
 
 
-def configure_host(host, manifest, verbose=cdist.argparse.VERBOSE_INFO):
-    _process_host(action=ACTION_CONFIG, host=host, manifest=manifest,
-                  verbose=verbose)
+def configure_hosts_simple(host, manifest,
+                           verbose=cdist.argparse.VERBOSE_INFO):
+    _process_hosts_simple(action=ACTION_CONFIG, host=host, manifest=manifest,
+                          verbose=verbose)
 
 
-def install_host(host, manifest, verbose=cdist.argparse.VERBOSE_INFO):
-    _process_host(action=ACTION_INSTALL, host=host, manifest=manifest,
-                  verbose=verbose)
+def install_hosts_simple(host, manifest, verbose=cdist.argparse.VERBOSE_INFO):
+    _process_hosts_simple(action=ACTION_INSTALL, host=host, manifest=manifest,
+                          verbose=verbose)
