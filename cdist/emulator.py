@@ -28,6 +28,7 @@ import sys
 
 import cdist
 from cdist import core
+from cdist import flock
 
 
 class MissingRequiredEnvironmentVariableError(cdist.Error):
@@ -94,20 +95,25 @@ class Emulator(object):
         """Emulate type commands (i.e. __file and co)"""
 
         self.commandline()
-        self.setup_object()
-        self.save_stdin()
-        self.record_requirements()
-        self.record_auto_requirements()
-        self.log.trace("Finished %s %s" % (
-            self.cdist_object.path, self.parameters))
+        self.init_object()
+
+        # locking for parallel execution
+        with flock.Flock(self.flock_path) as lock:
+            self.setup_object()
+            self.save_stdin()
+            self.record_requirements()
+            self.record_auto_requirements()
+            self.log.trace("Finished %s %s" % (
+                self.cdist_object.path, self.parameters))
 
     def __init_log(self):
         """Setup logging facility"""
 
-        if '__cdist_debug' in self.env:
-            logging.root.setLevel(logging.DEBUG)
+        if '__cdist_loglevel' in self.env:
+            level = int(self.env['__cdist_loglevel'])
         else:
-            logging.root.setLevel(logging.INFO)
+            level = logging.OFF
+        logging.root.setLevel(level)
 
         self.log = logging.getLogger(self.target_host[0])
 
@@ -150,8 +156,8 @@ class Emulator(object):
         self.args = parser.parse_args(self.argv[1:])
         self.log.trace('Args: %s' % self.args)
 
-    def setup_object(self):
-        # Setup object - and ensure it is not in args
+    def init_object(self):
+        # Initialize object - and ensure it is not in args
         if self.cdist_type.is_singleton:
             self.object_id = ''
         else:
@@ -162,7 +168,13 @@ class Emulator(object):
         self.cdist_object = core.CdistObject(
                 self.cdist_type, self.object_base_path, self.object_marker,
                 self.object_id)
+        lockfname = ('.' + self.cdist_type.name +
+                     self.object_id + '_' +
+                     self.object_marker + '.lock')
+        lockfname = lockfname.replace(os.sep, '_')
+        self.flock_path = os.path.join(self.object_base_path, lockfname)
 
+    def setup_object(self):
         # Create object with given parameters
         self.parameters = {}
         for key, value in vars(self.args).items():
