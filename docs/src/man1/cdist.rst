@@ -17,16 +17,18 @@ SYNOPSIS
 
     cdist config [-h] [-q] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
-                 [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
-                 [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                 [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
+                 [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_DIR]
+                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                 [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]]
+                 [-s] [-t]
                  [host [host ...]] 
 
     cdist install [-h] [-q] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
                   [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
-                  [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
-                  [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                  [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
+                  [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_DIR]
+                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                  [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]]
+                  [-s] [-t]
                   [host [host ...]] 
 
     cdist inventory [-h] [-q] [-v] [-b] [-I INVENTORY_DIR]
@@ -171,6 +173,14 @@ Configure/install one or more hosts.
     Operate on multiple hosts in parallel for specified
     maximum hosts at a time. Without argument CPU count is
     used by default.
+
+.. option:: -R [{tar,tgz,tbz2,txz}], --use-archiving [{tar,tgz,tbz2,txz}]
+
+    Operate by using archiving with compression where
+    apropriate. Supported values are: tar - tar archive,
+    tgz - gzip tar archive (the default), tbz2 - bzip2 tar
+    archive and txz - lzma tar archive.
+
 
 .. option:: -r REMOTE_OUT_PATH, --remote-out-dir REMOTE_OUT_PATH
 
