@@ -105,9 +105,12 @@ class Emulator(object):
         """Setup logging facility"""
 
         if '__cdist_loglevel' in self.env:
-            level = int(self.env['__cdist_loglevel'])
+            try:
+                level = int(self.env['__cdist_loglevel'])
+            except:
+                level = logging.WARNING
         else:
-            level = logging.OFF
+            level = logging.WARNING
         logging.root.setLevel(level)
 
         self.log = logging.getLogger(self.target_host[0])
