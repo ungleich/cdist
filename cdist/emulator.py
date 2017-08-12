@@ -104,10 +104,11 @@ class Emulator(object):
     def __init_log(self):
         """Setup logging facility"""
 
-        if '__cdist_debug' in self.env:
-            logging.root.setLevel(logging.DEBUG)
+        if '__cdist_loglevel' in self.env:
+            level = int(self.env['__cdist_loglevel'])
         else:
-            logging.root.setLevel(logging.INFO)
+            level = logging.OFF
+        logging.root.setLevel(level)
 
         self.log = logging.getLogger(self.target_host[0])
 
