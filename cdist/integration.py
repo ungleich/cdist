@@ -42,7 +42,7 @@ def _process_hosts_simple(action, host, manifest, verbose):
     else:
         raise cdist.Error('Invalid host argument: {}'.format(host))
 
-    # setup sys.argv[0] since cdist relies on command line invocation
+    # Setup sys.argv[0] since cdist relies on command line invocation.
     mydir = os.path.dirname(__file__)
     cdist_bin = os.path.abspath(os.path.join(mydir, '..', 'scripts', 'cdist'))
     sys.argv[0] = cdist_bin
@@ -51,6 +51,7 @@ def _process_hosts_simple(action, host, manifest, verbose):
     module = getattr(cdist, action)
     theclass = getattr(module, cname)
 
+    # Build argv for cdist - using argparse for argument parsing.
     argv = [action, '-i', manifest, ]
     for i in range(verbose):
         argv.append('-v')
@@ -73,10 +74,16 @@ def _process_hosts_simple(action, host, manifest, verbose):
 
 def configure_hosts_simple(host, manifest,
                            verbose=cdist.argparse.VERBOSE_INFO):
+    """Configure hosts with specified manifest using default other cdist
+       options. host parameter can be a string or iterbale of hosts.
+    """
     _process_hosts_simple(action=ACTION_CONFIG, host=host, manifest=manifest,
                           verbose=verbose)
 
 
 def install_hosts_simple(host, manifest, verbose=cdist.argparse.VERBOSE_INFO):
+    """Install hosts with specified manifest using default other cdist
+       options. host parameter can be a string or iterbale of hosts.
+    """
     _process_hosts_simple(action=ACTION_INSTALL, host=host, manifest=manifest,
                           verbose=verbose)

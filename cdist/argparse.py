@@ -34,6 +34,9 @@ _verbosity_level = {
 }
 
 
+# Generate verbosity level constants:
+# VERBOSE_OFF, VERBOSE_ERROR, VERBOSE_WARNING, VERBOSE_INFO, VERBOSE_VERBOSE,
+# VERBOSE_DEBUG, VERBOSE_TRACE.
 this_globals = globals()
 for level in _verbosity_level:
     const = 'VERBOSE_' + logging.getLevelName(_verbosity_level[level])
