@@ -113,8 +113,8 @@ class Manifest(object):
             '__target_host_tags': self.local.target_host_tags,
         }
 
-        if self.log.getEffectiveLevel() == logging.DEBUG:
-            self.env.update({'__cdist_debug': "yes"})
+        self.env.update(
+            {'__cdist_loglevel': str(self.log.getEffectiveLevel())})
 
     def _open_logger(self):
         self.log = logging.getLogger(self.target_host[0])

@@ -136,7 +136,7 @@ class ManifestTestCase(test.CdistTestCase):
         current_level = self.log.getEffectiveLevel()
         self.log.setLevel(logging.DEBUG)
         manifest = cdist.core.manifest.Manifest(self.target_host, self.local)
-        self.assertTrue("__cdist_debug" in manifest.env)
+        self.assertTrue("__cdist_loglevel" in manifest.env)
         self.log.setLevel(current_level)
 
 

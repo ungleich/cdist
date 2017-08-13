@@ -41,7 +41,7 @@ class AUtilTestCase(test.CdistTestCase):
         }
         source = explorers_path
         for mode in test_modes:
-            tarpath = autil.tar(source, mode)
+            tarpath, fcnt = autil.tar(source, mode)
             self.assertIsNotNone(tarpath)
             fcnt = 0
             with tarfile.open(tarpath, test_modes[mode]) as tar:

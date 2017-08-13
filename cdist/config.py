@@ -39,11 +39,9 @@ import cdist.hostsource
 import cdist.exec.local
 import cdist.exec.remote
 
-from cdist import inventory
-
 import cdist.util.ipaddr as ipaddr
 
-from cdist import core
+from cdist import core, inventory
 from cdist.util.remoteutil import inspect_ssh_mux_opts
 
 
