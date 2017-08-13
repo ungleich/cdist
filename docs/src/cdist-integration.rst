@@ -17,6 +17,8 @@ Functions require `host` and `manifest` parameters.
 of hosts. `manifest` is a path to initial manifest. For other cdist
 options default values will be used.
 
+In case of cdist error :strong:`cdist.Error` exception is raised.
+
 Examples
 --------
 
