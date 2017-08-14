@@ -80,6 +80,7 @@ class Config(object):
     @staticmethod
     def construct_remote_exec_copy_patterns(args):
         # default remote cmd patterns
+        args.remote_cmds_cleanup_pattern = ""
         args.remote_exec_pattern = None
         args.remote_copy_pattern = None
 
