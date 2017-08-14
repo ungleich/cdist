@@ -270,7 +270,7 @@ class Config(object):
             remote_copy = args.remote_copy_pattern.format(control_path)
         else:
             remote_copy = args.remote_copy
-        if args.remote_cmds_cleanup_pattern:
+        if 'remote_cmds_cleanup_pattern' in args:
             remote_cmds_cleanup = args.remote_cmds_cleanup_pattern.format(
                 control_path)
         else:
