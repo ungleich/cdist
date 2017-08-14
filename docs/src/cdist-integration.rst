@@ -19,6 +19,8 @@ options default values will be used.
 
 In case of cdist error :strong:`cdist.Error` exception is raised.
 
+:strong:`WARNING`: cdist integration helper functions are not yet stable!
+
 Examples
 --------
 
