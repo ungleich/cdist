@@ -80,6 +80,7 @@ class Config(object):
     @staticmethod
     def construct_remote_exec_copy_patterns(args):
         # default remote cmd patterns
+        args.remote_cmds_cleanup_pattern = ""
         args.remote_exec_pattern = None
         args.remote_copy_pattern = None
 
@@ -270,7 +271,7 @@ class Config(object):
             remote_copy = args.remote_copy_pattern.format(control_path)
         else:
             remote_copy = args.remote_copy
-        if 'remote_cmds_cleanup_pattern' in args:
+        if args.remote_cmds_cleanup_pattern:
             remote_cmds_cleanup = args.remote_cmds_cleanup_pattern.format(
                 control_path)
         else:
