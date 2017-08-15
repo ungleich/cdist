@@ -28,8 +28,10 @@ import string
 import random
 import time
 import datetime
+import argparse
 
 import cdist
+import cdist.configuration as cc
 from cdist import test
 from cdist.exec import local
 
@@ -165,6 +167,9 @@ class LocalTestCase(test.CdistTestCase):
 
         os.environ['CDIST_PATH'] = conf_dir
 
+        configuration = cc.Configuration(argparse.Namespace(),
+                                         env=os.environ)
+
         link_test_local = local.Local(
             target_host=(
                 'localhost',
@@ -174,6 +179,7 @@ class LocalTestCase(test.CdistTestCase):
             base_root_path=self.host_base_path,
             host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
+            configuration=configuration
         )
 
         link_test_local._create_conf_path_and_link_conf_dirs()

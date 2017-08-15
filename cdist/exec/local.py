@@ -56,7 +56,8 @@ class Local(object):
                  initial_manifest=None,
                  add_conf_dirs=None,
                  cache_path_pattern=None,
-                 quiet_mode=False):
+                 quiet_mode=False,
+                 configuration={}):
 
         self.target_host = target_host
         if target_host_tags is None:
@@ -71,6 +72,7 @@ class Local(object):
         self._add_conf_dirs = add_conf_dirs
         self.cache_path_pattern = cache_path_pattern
         self.quiet_mode = quiet_mode
+        self.configuration = configuration
 
         self._init_log()
         self._init_permissions()
@@ -143,10 +145,12 @@ class Local(object):
             self.conf_dirs.append(self.home_dir)
 
         # Add directories defined in the CDIST_PATH environment variable
-        if 'CDIST_PATH' in os.environ:
-            cdist_path_dirs = re.split(r'(?<!\\):', os.environ['CDIST_PATH'])
-            cdist_path_dirs.reverse()
-            self.conf_dirs.extend(cdist_path_dirs)
+        # if 'CDIST_PATH' in os.environ:
+        #     cdist_path_dirs = re.split(r'(?<!\\):', os.environ['CDIST_PATH'])
+        #     cdist_path_dirs.reverse()
+        #     self.conf_dirs.extend(cdist_path_dirs)
+        if 'conf_dir' in self.configuration:
+            self.conf_dirs.extend(self.configuration['conf_dir'])
 
         # Add command line supplied directories
         if self._add_conf_dirs:
@@ -176,12 +180,11 @@ class Local(object):
     def _init_cache_dir(self, cache_dir):
         if cache_dir:
             self.cache_path = cache_dir
+        elif self.home_dir:
+            self.cache_path = os.path.join(self.home_dir, "cache")
         else:
-            if self.home_dir:
-                self.cache_path = os.path.join(self.home_dir, "cache")
-            else:
-                raise cdist.Error(
-                        "No homedir setup and no cache dir location given")
+            raise cdist.Error(
+                "No homedir setup and no cache dir location given")
 
     def rmdir(self, path):
         """Remove directory on the local side."""
@@ -259,7 +262,7 @@ class Local(object):
             self.log.debug('%s is executable, running it', script)
             command = [script]
         else:
-            command = [os.environ.get('CDIST_LOCAL_SHELL', "/bin/sh"), "-e"]
+            command = [self.configuration.get('local_shell', "/bin/sh"), "-e"]
             self.log.debug('%s is NOT executable, running it with %s',
                            script, " ".join(command))
             command.append(script)

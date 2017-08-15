@@ -23,6 +23,7 @@
 
 import collections
 import logging
+import cdist.configuration
 
 
 def commandline():
@@ -44,7 +45,14 @@ def commandline():
     cdist.argparse.handle_loglevel(args)
 
     log.verbose("version %s" % cdist.VERSION)
-    log.trace(args)
+
+    cfg = cdist.configuration.Configuration(args)
+    log.trace('configuration: {}'.format(cfg.get_config()))
+
+    log.trace('args: {}'.format(args))
+
+    cfg.adjust_args(args)
+    log.trace('adjusted args: {}'.format(args))
 
     # Work around python 3.3 bug:
     # http://bugs.python.org/issue16308

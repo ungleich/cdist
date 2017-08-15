@@ -32,15 +32,12 @@ import multiprocessing
 from cdist.mputil import mp_pool_run, mp_sig_handler
 import atexit
 import shutil
-
 import cdist
 import cdist.hostsource
-
 import cdist.exec.local
 import cdist.exec.remote
-
 import cdist.util.ipaddr as ipaddr
-
+import cdist.configuration
 from cdist import core, inventory
 from cdist.util.remoteutil import inspect_ssh_mux_opts
 
@@ -80,6 +77,7 @@ class Config(object):
     @staticmethod
     def construct_remote_exec_copy_patterns(args):
         # default remote cmd patterns
+        args.remote_cmds_cleanup_pattern = ""
         args.remote_exec_pattern = None
         args.remote_copy_pattern = None
 
@@ -160,8 +158,11 @@ class Config(object):
 
         hostcnt = 0
 
+        cfg = cdist.configuration.Configuration(args)
+        configuration = cfg.get_config(section='GLOBAL')
+
         if args.tag or args.all_tagged_hosts:
-            inventory.determine_default_inventory_dir(args)
+            inventory.determine_default_inventory_dir(args, configuration)
             if args.all_tagged_hosts:
                 inv_list = inventory.InventoryList(
                     hosts=None, istag=True, hostfile=None,
@@ -189,7 +190,7 @@ class Config(object):
             else:
                 # if configuring by host then check inventory for tags
                 host = entry
-                inventory.determine_default_inventory_dir(args)
+                inventory.determine_default_inventory_dir(args, configuration)
                 inv_list = inventory.InventoryList(
                     hosts=(host,), db_basedir=args.inventory_dir)
                 inv = tuple(inv_list.entries())
@@ -206,14 +207,16 @@ class Config(object):
 
             hostcnt += 1
             if args.parallel:
-                pargs = (host, host_tags, host_base_path, hostdir, args, True)
+                pargs = (host, host_tags, host_base_path, hostdir, args, True,
+                         configuration)
                 log.trace(("Args for multiprocessing operation "
                            "for host {}: {}".format(host, pargs)))
                 process_args.append(pargs)
             else:
                 try:
                     cls.onehost(host, host_tags, host_base_path, hostdir,
-                                args, parallel=False)
+                                args, parallel=False,
+                                configuration=configuration)
                 except cdist.Error as e:
                     failed_hosts.append(host)
         if args.parallel and len(process_args) == 1:
@@ -279,7 +282,7 @@ class Config(object):
 
     @classmethod
     def onehost(cls, host, host_tags, host_base_path, host_dir_name, args,
-                parallel):
+                parallel, configuration):
         """Configure ONE system.
            If operating in parallel then return tuple (host, True|False, )
            so that main process knows for which host function was successful.
@@ -306,7 +309,8 @@ class Config(object):
                 initial_manifest=args.manifest,
                 add_conf_dirs=args.conf_dir,
                 cache_path_pattern=args.cache_path_pattern,
-                quiet_mode=args.quiet)
+                quiet_mode=args.quiet,
+                configuration=configuration)
 
             remote = cdist.exec.remote.Remote(
                 target_host=target_host,
@@ -314,7 +318,8 @@ class Config(object):
                 remote_copy=remote_copy,
                 base_path=args.remote_out_path,
                 quiet_mode=args.quiet,
-                archiving_mode=args.use_archiving)
+                archiving_mode=args.use_archiving,
+                configuration=configuration)
 
             cleanup_cmds = []
             if cleanup_cmd:
