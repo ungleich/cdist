@@ -71,11 +71,11 @@ All commands accept the following options:
 
 .. option:: -h, --help
 
-    Show the help screen
+    Show the help screen.
 
 .. option:: -q, --quiet
 
-    Quiet mode: disables logging, including WARNING and ERROR
+    Quiet mode: disables logging, including WARNING and ERROR.
 
 .. option:: -v, --verbose
 
@@ -86,7 +86,7 @@ All commands accept the following options:
 
 .. option:: -V, --version
 
-   Show version and exit
+   Show version and exit.
 
 
 BANNER
@@ -98,26 +98,24 @@ cdist posters - a must have for every office.
 CONFIG/INSTALL
 --------------
 Configure/install one or more hosts.
+Install command is currently in beta.
 
 .. option:: -A, --all-tagged
 
-    use all hosts present in tags db
+    Use all hosts present in tags db. Currently in beta.
 
 .. option:: -a, --all
 
-    list hosts that have all specified tags, if -t/--tag
-    is specified
+    List hosts that have all specified tags, if -t/--tag
+    is specified.
 
 .. option:: -b, --beta
 
     Enable beta functionality.
-    
-    Can also be enabled using CDIST_BETA env var.
 
 .. option:: -C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN
 
-    Sepcify custom cache path pattern. It can also be set by
-    CDIST_CACHE_PATH_PATTERN environment variable. If it is not set then
+    Sepcify custom cache path pattern. If it is not set then
     default hostdir is used. For more info on format see
     :strong:`CACHE PATH PATTERN FORMAT` below.
 
@@ -125,11 +123,7 @@ Configure/install one or more hosts.
 
     Add a configuration directory. Can be specified multiple times.
     If configuration directories contain conflicting types, explorers or
-    manifests, then the last one found is used. Additionally this can also
-    be configured by setting the CDIST_PATH environment variable to a colon
-    delimited list of config directories. Directories given with the
-    --conf-dir argument have higher precedence over those set through the
-    environment variable.
+    manifests, then the last one found is used.
 
 .. option:: -f HOSTFILE, --file HOSTFILE
 
@@ -151,7 +145,7 @@ Configure/install one or more hosts.
 
 .. option:: -i MANIFEST, --initial-manifest MANIFEST
 
-    Path to a cdist manifest or - to read from stdin
+    Path to a cdist manifest or - to read from stdin.
 
 .. option:: -j [JOBS], --jobs [JOBS]
 
@@ -162,11 +156,11 @@ Configure/install one or more hosts.
 
 .. option:: -n, --dry-run
 
-    Do not execute code
+    Do not execute code.
 
 .. option:: -o OUT_PATH, --out-dir OUT_PATH
 
-    Directory to save cdist output in
+    Directory to save cdist output in.
 
 .. option:: -p [HOST_MAX], --parallel [HOST_MAX]
 
@@ -179,29 +173,29 @@ Configure/install one or more hosts.
     Operate by using archiving with compression where
     apropriate. Supported values are: tar - tar archive,
     tgz - gzip tar archive (the default), tbz2 - bzip2 tar
-    archive and txz - lzma tar archive.
-
+    archive and txz - lzma tar archive. Currently in beta.
 
 .. option:: -r REMOTE_OUT_PATH, --remote-out-dir REMOTE_OUT_PATH
 
-    Directory to save cdist output in on the target host
+    Directory to save cdist output in on the target host.
 
 .. option:: -s, --sequential
 
-    Operate on multiple hosts sequentially (default)
+    Operate on multiple hosts sequentially (default).
 
 .. option:: --remote-copy REMOTE_COPY
 
-    Command to use for remote copy (should behave like scp)
+    Command to use for remote copy (should behave like scp).
 
 .. option:: --remote-exec REMOTE_EXEC
 
-    Command to use for remote execution (should behave like ssh)
+    Command to use for remote execution (should behave like ssh).
 
 .. option:: -t, --tag
 
-    host is specified by tag, not hostname/address; list
-    all hosts that contain any of specified tags
+    Host is specified by tag, not hostname/address; list
+    all hosts that contain any of specified tags.
+    Currently in beta.
 
 HOSTFILE FORMAT
 ~~~~~~~~~~~~~~~
@@ -247,16 +241,11 @@ Add host(s) to inventory database.
 
 .. option:: host
 
-    host(s) to add
+    Host(s) to add.
 
 .. option:: -b, --beta
 
-    Enable beta functionalities. Beta functionalities
-    include inventory command with all sub-commands and
-    all options; config sub-command options: -j/--jobs,
-    -t/--tag, -a/--all.
-
-    Can also be enabled using CDIST_BETA env var.
+    Enable beta functionality.
 
 .. option:: -f HOSTFILE, --file HOSTFILE
 
@@ -265,9 +254,6 @@ Add host(s) to inventory database.
     host or host file is specified then, by default, read
     from stdin. Hostfile format is the same as config hostfile format.
 
-.. option:: -h, --help
-
-    show this help message and exit
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
@@ -286,16 +272,11 @@ Add tag(s) to inventory database.
 
 .. option:: host
 
-    list of host(s) for which tags are added
+    List of host(s) for which tags are added.
 
 .. option:: -b, --beta
 
-    Enable beta functionalities. Beta functionalities
-    include inventory command with all sub-commands and
-    all options; config sub-command options: -j/--jobs,
-    -t/--tag, -a/--all.
-
-    Can also be enabled using CDIST_BETA env var.
+    Enable beta functionality.
 
 .. option:: -f HOSTFILE, --file HOSTFILE
 
@@ -328,7 +309,7 @@ Add tag(s) to inventory database.
 .. option:: -t TAGLIST, --taglist TAGLIST
 
     Tag list to be added for specified host(s), comma
-    separated values
+    separated values.
 
 
 INVENTORY DEL-HOST
@@ -337,20 +318,15 @@ Delete host(s) from inventory database.
 
 .. option:: host
 
-    host(s) to delete
+    Host(s) to delete.
 
 .. option:: -a, --all
 
-    Delete all hosts
+    Delete all hosts.
 
 .. option:: -b, --beta
 
-    Enable beta functionalities. Beta functionalities
-    include inventory command with all sub-commands and
-    all options; config sub-command options: -j/--jobs,
-    -t/--tag, -a/--all.
-
-    Can also be enabled using CDIST_BETA env var.
+    Enable beta functionality.
 
 .. option:: -f HOSTFILE, --file HOSTFILE
 
@@ -376,20 +352,15 @@ Delete tag(s) from inventory database.
 
 .. option:: host
 
-    list of host(s) for which tags are deleted
+    List of host(s) for which tags are deleted.
 
 .. option:: -a, --all
 
-    Delete all tags for specified host(s)
+    Delete all tags for specified host(s).
 
 .. option:: -b, --beta
 
-    Enable beta functionalities. Beta functionalities
-    include inventory command with all sub-commands and
-    all options; config sub-command options: -j/--jobs,
-    -t/--tag, -a/--all.
-
-    Can also be enabled using CDIST_BETA env var.
+    Enable beta functionality.
 
 .. option:: -f HOSTFILE, --file HOSTFILE
 
@@ -423,7 +394,7 @@ Delete tag(s) from inventory database.
 .. option:: -t TAGLIST, --taglist TAGLIST
 
     Tag list to be deleted for specified host(s), comma
-    separated values
+    separated values.
 
 
 INVENTORY LIST
@@ -432,21 +403,16 @@ List inventory database.
 
 .. option::  host
 
-    host(s) to list
+    Host(s) to list.
 
 .. option:: -a, --all
 
-    list hosts that have all specified tags, if -t/--tag
-    is specified
+    List hosts that have all specified tags, if -t/--tag
+    is specified.
 
 .. option:: -b, --beta
 
-    Enable beta functionalities. Beta functionalities
-    include inventory command with all sub-commands and
-    all options; config sub-command options: -j/--jobs,
-    -t/--tag, -a/--all.
-
-    Can also be enabled using CDIST_BETA env var.
+    Enable beta functionality.
 
 .. option:: -f HOSTFILE, --file HOSTFILE
 
@@ -457,7 +423,7 @@ List inventory database.
 
 .. option:: -H, --host-only
 
-    Suppress tags listing
+    Suppress tags listing.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
@@ -471,8 +437,8 @@ List inventory database.
 
 .. option:: -t, --tag
 
-    host is specified by tag, not hostname/address; list
-    all hosts that contain any of specified tags
+    Host is specified by tag, not hostname/address; list
+    all hosts that contain any of specified tags.
 
 
 SHELL
