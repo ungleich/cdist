@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
 #
 # This file is part of cdist.
 #
@@ -138,6 +139,13 @@ case "$uname_s" in
       exit 0
    ;;
 esac
+
+if [ -f /etc/os-release ]; then
+	# already lowercase, according to:
+	# https://www.freedesktop.org/software/systemd/man/os-release.html
+	grep '^ID=' /etc/os-release | sed -e 's|^ID=||'
+	exit 0
+fi
 
 echo "Unknown OS" >&2
 exit 1
