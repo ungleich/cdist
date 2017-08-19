@@ -141,10 +141,10 @@ case "$uname_s" in
 esac
 
 if [ -f /etc/os-release ]; then
-	# already lowercase, according to:
-	# https://www.freedesktop.org/software/systemd/man/os-release.html
-	grep '^ID=' /etc/os-release | sed -e 's|^ID=||'
-	exit 0
+   # already lowercase, according to:
+   # https://www.freedesktop.org/software/systemd/man/os-release.html
+   grep '^ID=' /etc/os-release | sed -e 's|^ID=||'
+   exit 0
 fi
 
 echo "Unknown OS" >&2
