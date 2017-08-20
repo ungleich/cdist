@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2016 Daniel Heule (hda at sfs.biz)
+# Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
 #
 # This file is part of cdist.
 #
@@ -25,7 +26,10 @@
 uname_s="$(uname -s)"
 
 case "$uname_s" in
-    Linux|FreeBSD)
+    Linux)
+        pgrep -P0 -l | awk '/^1[ \t]/ {print $2;}'
+    ;;
+    FreeBSD)
         ps -o comm= -p 1 || true
     ;;
     *)
