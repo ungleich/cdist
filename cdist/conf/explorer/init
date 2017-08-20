@@ -27,7 +27,7 @@ uname_s="$(uname -s)"
 
 case "$uname_s" in
     Linux)
-        pgrep -P0 -l | awk '/^1[ \t]/ {print $2;}'
+        (pgrep -P0 -l | awk '/^1[ \t]/ {print $2;}') || true
     ;;
     FreeBSD)
         ps -o comm= -p 1 || true
