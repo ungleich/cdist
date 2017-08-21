@@ -115,7 +115,7 @@ def get_parsers():
            '-b', '--beta',
            help=('Enable beta functionality. '),
            action='store_true', dest='beta',
-           default='CDIST_BETA' in os.environ)
+           default=False)
 
     # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(
@@ -155,7 +155,7 @@ def get_parsers():
             help=('Specify custom cache path pattern. If '
                   'it is not set then default hostdir is used.'),
             dest='cache_path_pattern',
-            default=os.environ.get('CDIST_CACHE_PATH_PATTERN'))
+            default=None)
     parser['config_main'].add_argument(
             '-c', '--conf-dir',
             help=('Add configuration directory (can be repeated, '
@@ -201,13 +201,13 @@ def get_parsers():
            '--remote-copy',
            help='Command to use for remote copy (should behave like scp).',
            action='store', dest='remote_copy',
-           default=os.environ.get('CDIST_REMOTE_COPY'))
+           default=None)
     parser['config_main'].add_argument(
            '--remote-exec',
            help=('Command to use for remote execution '
                  '(should behave like ssh).'),
            action='store', dest='remote_exec',
-           default=os.environ.get('CDIST_REMOTE_EXEC'))
+           default=None)
 
     # Config
     parser['config_args'] = argparse.ArgumentParser(add_help=False)
