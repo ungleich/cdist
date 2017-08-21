@@ -9,6 +9,8 @@ next:
 	* Core: Add archiving support for transferring directory - new -R beta option (Darko Poljak)
 	* Core: Fix ssh connection multiplexing race condition (Darko Poljak)
 	* Core: Fix emulator race conditions with -j option (Darko Poljak)
+	* Documentation: Cleanup (Darko Poljak)
+	* Explorer os: Get ID from /etc/os-release (Philippe Gregoire)
 
 4.5.0: 2017-07-20
 	* Types: Fix install types (Steven Armstrong)
