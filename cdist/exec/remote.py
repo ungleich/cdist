@@ -63,7 +63,7 @@ class Remote(object):
                  base_path=None,
                  quiet_mode=None,
                  archiving_mode=None,
-                 configuration={}):
+                 configuration=None):
         self.target_host = target_host
         self._exec = remote_exec
         self._copy = remote_copy
@@ -74,7 +74,10 @@ class Remote(object):
             self.base_path = "/var/lib/cdist"
         self.quiet_mode = quiet_mode
         self.archiving_mode = archiving_mode
-        self.configuration = configuration
+        if configuration:
+            self.configuration = configuration
+        else:
+            self.configuration = {}
 
         self.conf_path = os.path.join(self.base_path, "conf")
         self.object_path = os.path.join(self.base_path, "object")

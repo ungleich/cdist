@@ -83,9 +83,12 @@ def rstrip_nl(s):
 class Inventory(object):
     """Inventory main class"""
 
-    def __init__(self, db_basedir=dist_inventory_db, configuration={}):
+    def __init__(self, db_basedir=dist_inventory_db, configuration=None):
         self.db_basedir = db_basedir
-        self.configuration = configuration
+        if configuration:
+            self.configuration = configuration
+        else:
+            self.configuration = {}
         self.log = logging.getLogger("inventory")
         self.init_db()
 
@@ -218,7 +221,7 @@ class Inventory(object):
 class InventoryList(Inventory):
     def __init__(self, hosts=None, istag=False, hostfile=None,
                  list_only_host=False, has_all_tags=False,
-                 db_basedir=dist_inventory_db, configuration={}):
+                 db_basedir=dist_inventory_db, configuration=None):
         super().__init__(db_basedir, configuration)
         self.hosts = hosts
         self.istag = istag
@@ -285,7 +288,7 @@ class InventoryList(Inventory):
 class InventoryHost(Inventory):
     def __init__(self, hosts=None, hostfile=None,
                  db_basedir=dist_inventory_db, all=False, action="add",
-                 configuration={}):
+                 configuration=None):
         super().__init__(db_basedir, configuration)
         self.actions = ("add", "del")
         if action not in self.actions:
@@ -335,7 +338,7 @@ class InventoryHost(Inventory):
 class InventoryTag(Inventory):
     def __init__(self, hosts=None, tags=None, hostfile=None, tagfile=None,
                  db_basedir=dist_inventory_db, all=False, action="add",
-                 configuration={}):
+                 configuration=None):
         super().__init__(db_basedir, configuration)
         self.actions = ("add", "del")
         if action not in self.actions:

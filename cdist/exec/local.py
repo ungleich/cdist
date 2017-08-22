@@ -56,7 +56,7 @@ class Local(object):
                  add_conf_dirs=None,
                  cache_path_pattern=None,
                  quiet_mode=False,
-                 configuration={}):
+                 configuration=None):
 
         self.target_host = target_host
         if target_host_tags is None:
@@ -71,7 +71,10 @@ class Local(object):
         self._add_conf_dirs = add_conf_dirs
         self.cache_path_pattern = cache_path_pattern
         self.quiet_mode = quiet_mode
-        self.configuration = configuration
+        if configuration:
+            self.configuration = configuration
+        else:
+            self.configuration = {}
 
         self._init_log()
         self._init_permissions()
