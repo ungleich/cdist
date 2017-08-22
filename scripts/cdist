@@ -21,7 +21,6 @@
 #
 #
 
-import collections
 import logging
 import cdist.configuration
 
@@ -35,8 +34,6 @@ def commandline():
     import cdist.install
     import cdist.shell
     import cdist.inventory
-    import shutil
-    import os
 
     parser = cdist.argparse.get_parsers()
     args = parser['main'].parse_args(sys.argv[1:])
@@ -71,6 +68,7 @@ def commandline():
 
     cdist.argparse.check_beta(vars(args))
     args.func(args)
+
 
 if __name__ == "__main__":
     import sys

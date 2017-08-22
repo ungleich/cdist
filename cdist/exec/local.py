@@ -21,7 +21,6 @@
 #
 #
 
-import io
 import os
 import sys
 import re
@@ -351,7 +350,6 @@ class Local(object):
                     continue
 
                 for entry in os.listdir(current_dir):
-                    rel_entry_path = os.path.join(sub_dir, entry)
                     src = os.path.abspath(os.path.join(conf_dir,
                                                        sub_dir,
                                                        entry))

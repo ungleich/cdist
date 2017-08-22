@@ -27,7 +27,6 @@ import sys
 import time
 import itertools
 import tempfile
-import socket
 import multiprocessing
 from cdist.mputil import mp_pool_run, mp_sig_handler
 import atexit
@@ -46,14 +45,17 @@ class Config(object):
     """Cdist main class to hold arbitrary data"""
 
     def __init__(self, local, remote, dry_run=False, jobs=None,
-                 cleanup_cmds=[]):
+                 cleanup_cmds=None):
 
         self.local = local
         self.remote = remote
         self._open_logger()
         self.dry_run = dry_run
         self.jobs = jobs
-        self.cleanup_cmds = cleanup_cmds
+        if cleanup_cmds:
+            self.cleanup_cmds = cleanup_cmds
+        else:
+            self.cleanup_cmds = []
 
         self.explorer = core.Explorer(self.local.target_host, self.local,
                                       self.remote, jobs=self.jobs)
@@ -108,7 +110,6 @@ class Config(object):
         if not (args.hostfile or args.host):
             args.hostfile = '-'
 
-        initial_manifest_tempfile = None
         if args.manifest == '-':
             # read initial manifest from stdin
             try:
@@ -626,8 +627,6 @@ class Config(object):
         if cdist_object.state == core.CdistObject.STATE_DONE:
             raise cdist.Error(("Attempting to run an already finished "
                                "object: %s"), cdist_object)
-
-        cdist_type = cdist_object.cdist_type
 
         # Generate
         self.log.debug("Generating code for %s" % (cdist_object.name))

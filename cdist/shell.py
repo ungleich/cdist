@@ -21,7 +21,6 @@
 
 import logging
 import os
-import subprocess
 import tempfile
 
 # initialise cdist
