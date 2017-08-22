@@ -1,7 +1,6 @@
 import argparse
 import cdist
 import multiprocessing
-import os
 import logging
 import collections
 
@@ -414,3 +413,23 @@ def handle_loglevel(args):
         args.verbose = _verbosity_level_off
 
     logging.root.setLevel(_verbosity_level[args.verbose])
+
+
+def parse_and_configure(argv):
+    parser = get_parsers()
+    parser_args = parser['main'].parse_args(argv)
+    cfg = cdist.configuration.Configuration(parser_args)
+    args = cfg.get_args()
+    # Loglevels are handled globally in here
+    handle_loglevel(args)
+
+    log = logging.getLogger("cdist")
+
+    log.verbose("version %s" % cdist.VERSION)
+    log.trace('command line args: {}'.format(cfg.command_line_args))
+    log.trace('configuration: {}'.format(cfg.get_config()))
+    log.trace('configured args: {}'.format(args))
+
+    check_beta(vars(args))
+
+    return parser, cfg

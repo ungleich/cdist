@@ -23,7 +23,6 @@
 import configparser
 import os
 import cdist
-import functools
 import cdist.argparse
 import re
 
@@ -158,9 +157,10 @@ class Configuration(metaclass=Singleton):
         else:
             return None
 
-    def __init__(self, args, env=os.environ,
+    def __init__(self, command_line_args, env=os.environ,
                  config_files=default_config_files):
-        self.args = self._convert_args(args)
+        self.command_line_args = command_line_args
+        self.args = self._convert_args(command_line_args)
         self.env = env
         self.config_files = config_files
         self.config = self._get_config()
@@ -172,8 +172,8 @@ class Configuration(metaclass=Singleton):
             return self.config[section]
         raise ValueError('Unknown section: {}'.format(section))
 
-    def adjust_args(self, args, section='GLOBAL'):
-        args_dict = self._convert_args(args)
+    def get_args(self, section='GLOBAL'):
+        args = self.command_line_args
         cfg = self.get_config(section)
         for option in self.ADJUST_ARG_OPTION_MAPPING:
             if option in cfg:
@@ -182,11 +182,12 @@ class Configuration(metaclass=Singleton):
                     setattr(args, 'quiet', True)
                 else:
                     setattr(args, arg_opt, cfg[option])
+        return args
 
     def _convert_value(self, val, option, converter):
         try:
             newval = converter(val)
-        except:
+        except ValueError:
             raise ValueError("Invalid {} value: {}.".format(option, val))
         if not isinstance(newval, str) or newval:
             return newval

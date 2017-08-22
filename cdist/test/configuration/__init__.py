@@ -275,7 +275,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         configuration._translate_values(d)
         self.assertEqual(d, expected)
 
-    def test_get_and_adjust_config(self):
+    def test_get_config_and_configured_args(self):
         args = argparse.Namespace()
         args.jobs = 8
         args.dry_run = True
@@ -313,7 +313,7 @@ class ConfigurationTestCase(test.CdistTestCase):
 
         args = argparse.Namespace()
         self.assertEqual(vars(args), {})
-        configuration.adjust_args(args)
+        args = configuration.get_args()
         dargs = vars(args)
         expected_args = {
             'beta': True,
@@ -329,6 +329,8 @@ class ConfigurationTestCase(test.CdistTestCase):
             'parallel': 4,
             'verbose': cap.VERBOSE_INFO,
             'use_archiving': 'txz',
+            'dry_run': True,
+            'config_file': self.custom_config_file,
         }
 
         self.assertEqual(dargs, expected_args)
