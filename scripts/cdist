@@ -22,18 +22,17 @@
 #
 
 import logging
-import cdist.configuration
+import cdist
+import cdist.argparse
+import cdist.banner
+import cdist.config
+import cdist.install
+import cdist.shell
+import cdist.inventory
 
 
 def commandline():
     """Parse command line"""
-
-    import cdist.argparse
-    import cdist.banner
-    import cdist.config
-    import cdist.install
-    import cdist.shell
-    import cdist.inventory
 
     parser, cfg = cdist.argparse.parse_and_configure(sys.argv[1:])
     args = cfg.get_args()
@@ -68,9 +67,8 @@ if __name__ == "__main__":
     exit_code = 0
 
     try:
-        import os
         import re
-        import cdist
+        import os
 
         log = logging.getLogger("cdist")
 

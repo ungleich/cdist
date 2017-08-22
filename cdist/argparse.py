@@ -3,6 +3,7 @@ import cdist
 import multiprocessing
 import logging
 import collections
+import cdist.configuration
 
 
 # set of beta sub-commands
