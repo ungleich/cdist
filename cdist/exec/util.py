@@ -20,7 +20,6 @@
 #
 
 import subprocess
-import sys
 from tempfile import TemporaryFile
 
 import cdist

@@ -24,8 +24,6 @@ import os
 import shutil
 import tempfile
 
-import cdist
-
 log = logging.getLogger(__name__)
 
 

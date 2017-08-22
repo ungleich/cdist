@@ -20,8 +20,6 @@
 #
 
 import logging
-import sys
-
 import cdist
 
 log = logging.getLogger(__name__)
