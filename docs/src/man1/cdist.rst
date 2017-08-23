@@ -501,6 +501,8 @@ The possible keywords and their meanings are as follows:
 
 :strong:`conf_dir`
     Comma separated list of configuration directories.
+    Note: values from different sources are accumulated into resulting
+    list of configuration directories.
 
 :strong:`init_manifest`
     Specify default initial manifest.
