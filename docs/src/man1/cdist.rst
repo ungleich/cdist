@@ -540,7 +540,7 @@ The possible keywords and their meanings are as follows:
 
 :strong:`verbosity`
     Set verbosity level. Valid values are: 
-    'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE' and 'QUIET'.
+    'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE' and 'OFF'.
 
 
 FILES

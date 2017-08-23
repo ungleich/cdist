@@ -21,6 +21,7 @@
 
 import configparser
 import os
+import multiprocessing
 import cdist.configuration as cc
 import os.path as op
 import argparse
@@ -30,6 +31,80 @@ import cdist.argparse as cap
 
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
+
+
+class ConfigurationOptionsTestCase(test.CdistTestCase):
+
+    def test_StringOption(self):
+        option = cc.StringOption('test')
+        self.assertIsNone(option.translate(''))
+        self.assertEqual(option.translate('spam'), 'spam')
+        converter = option.converter()
+        self.assertEqual(converter('spam'), 'spam')
+        self.assertIsNone(converter(''))
+
+    def test_BooleanOption(self):
+        option = cc.BooleanOption('test')
+        for x in cc.BooleanOption.BOOLEAN_STATES:
+            self.assertEqual(option.translate(x),
+                             cc.BooleanOption.BOOLEAN_STATES[x])
+        converter = option.converter()
+        self.assertRaises(ValueError, converter, 'of')
+        for x in cc.BooleanOption.BOOLEAN_STATES:
+            self.assertEqual(converter(x), cc.BooleanOption.BOOLEAN_STATES[x])
+
+    def test_IntOption(self):
+        option = cc.IntOption('test')
+        converter = option.converter()
+        self.assertRaises(ValueError, converter, 'x')
+        for x in range(-5, 10):
+            self.assertEqual(converter(str(x)), x)
+
+    def test_LowerBoundIntOption(self):
+        option = cc.LowerBoundIntOption('test', -1)
+        converter = option.converter()
+        self.assertRaises(ValueError, converter, -2)
+        for x in range(-1, 10):
+            self.assertEqual(converter(str(x)), x)
+
+    def test_SpecialCasesLowerBoundIntOption(self):
+        special_cases = {
+            -1: 8,
+            -2: 10,
+        }
+        option = cc.SpecialCasesLowerBoundIntOption('test', -1, special_cases)
+        for x in special_cases:
+            self.assertEqual(option.translate(x), special_cases[x])
+
+    def test_SelectOption(self):
+        valid_values = ('spam', 'eggs', 'ham', )
+        option = cc.SelectOption('test', valid_values)
+        converter = option.converter()
+        self.assertRaises(ValueError, converter, 'spamspam')
+        for x in valid_values:
+            self.assertEqual(converter(x), x)
+
+    def test_DelimitedValuesOption(self):
+        option = cc.DelimitedValuesOption('test', ':')
+        converter = option.converter()
+        value = 'spam:eggs::ham'
+        self.assertEqual(converter(value), ['spam', 'eggs', 'ham', ])
+        self.assertIsNone(converter(''))
+
+    def test_ConfDirOption(self):
+        option = cc.ConfDirOption()
+        test_cases = (
+            ([], [], None, ),
+            (['spam', 'eggs', ], [], ['spam', 'eggs', ], ),
+            ([], ['spam', 'eggs', ], ['spam', 'eggs', ], ),
+            (
+                ['spam', 'eggs', ],
+                ['ham', 'spamspam', ],
+                ['spam', 'eggs', 'ham', 'spamspam', ],
+            ),
+        )
+        for currval, newval, expected in test_cases:
+            self.assertEqual(option.update_value(currval, newval), expected)
 
 
 class ConfigurationTestCase(test.CdistTestCase):
@@ -74,7 +149,7 @@ class ConfigurationTestCase(test.CdistTestCase):
                 'remote_copy': None,
                 'remote_exec': None,
                 'jobs': 0,
-                'parallel': -1,
+                'parallel': multiprocessing.cpu_count(),
                 'verbosity': cap.VERBOSE_INFO,
                 'archiving': None,
             },
@@ -124,33 +199,6 @@ class ConfigurationTestCase(test.CdistTestCase):
         y = cc.Configuration()
         self.assertIs(x, y)
 
-    def test_convert_option_select(self):
-        valid_values = ('spam', 'eggs', )
-        val = 'spam'
-        rv = cc._convert_option_select(val, 'test', valid_values)
-        self.assertEqual(val, rv)
-        val = 'spamandeggs'
-        with self.assertRaises(ValueError):
-            cc._convert_option_select(val, 'test', valid_values)
-
-    def test_convert_conf_dir(self):
-        val = '/usr/local/cdist:~/.cdist:~/dot-cdist'
-        expected = ['/usr/local/cdist', '~/.cdist', '~/dot-cdist', ]
-        rv = cc._convert_conf_dir(val)
-        self.assertEqual(rv, expected)
-
-    def test_convert_verbosity(self):
-        for val in cc.Configuration.VERBOSITY_VALUES:
-            if val == 'QUIET':
-                expected = cap.VERBOSE_OFF
-            else:
-                expected = getattr(cap, 'VERBOSE_' + val)
-            rv = cc._convert_verbosity(val)
-            self.assertEqual(rv, expected)
-        with self.assertRaises(ValueError):
-            val = 'test'
-            cc._convert_verbosity(val)
-
     def test_read_config_file(self):
         config = cc.Configuration(None, env={}, config_files=())
         d = config._read_config_file(self.config_file)
@@ -172,12 +220,13 @@ class ConfigurationTestCase(test.CdistTestCase):
             'beta': True,
             'conf_dir': ['/usr/local/cdist', '~/.cdist', ],
         }
-        d = config._read_env_var_config(env)
+        section = 'GLOBAL'
+        d = config._read_env_var_config(env, section)
         self.assertEqual(d, expected)
 
         del env['CDIST_BETA']
         del expected['beta']
-        d = config._read_env_var_config(env)
+        d = config._read_env_var_config(env, section)
         self.assertEqual(d, expected)
 
     def test_read_args_config(self):
@@ -245,35 +294,6 @@ class ConfigurationTestCase(test.CdistTestCase):
         configuration = cc.Configuration(None, env={}, config_files=())
         configuration._update_config_dict_section('GLOBAL', config, newconfig)
         self.assertEqual(config, expected)
-
-    def test_translate_values(self):
-        import multiprocessing
-
-        config = {
-            'GLOBAL': {
-                'beta': 'on',
-                'jobs': -1,
-                'parallel': 0,
-            },
-        }
-        expected = {
-            'GLOBAL': {
-                'beta': 'on',
-                'jobs': multiprocessing.cpu_count(),
-                'parallel': 0,
-            },
-        }
-        configuration = cc.Configuration(None, env={}, config_files=())
-        d = dict(config)
-        configuration._translate_values(d)
-        self.assertEqual(d, expected)
-
-        config['GLOBAL']['parallel'] = -1
-        expected['GLOBAL']['parallel'] = multiprocessing.cpu_count()
-        configuration = cc.Configuration(None, env={}, config_files=())
-        d = dict(config)
-        configuration._translate_values(d)
-        self.assertEqual(d, expected)
 
     def test_get_config_and_configured_args(self):
         args = argparse.Namespace()

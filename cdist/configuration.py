@@ -25,6 +25,7 @@ import os
 import cdist
 import cdist.argparse
 import re
+import multiprocessing
 
 
 class Singleton(type):
@@ -36,40 +37,190 @@ class Singleton(type):
         return cls.instance
 
 
-def _convert_option_select(val, option, valid_values):
-    if val in valid_values:
+_VERBOSITY_VALUES = (
+    'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE', 'OFF',
+)
+_ARCHIVING_VALUES = (
+    'tar', 'tgz', 'tbz2', 'txz', 'none',
+)
+
+
+class OptionBase:
+    def __init__(self, name):
+        self.name = name
+
+    def converter(self, *args, **kwargs):
+        raise NotImplementedError('Subclass should implement this method')
+
+    def translate(self, val):
         return val
-    else:
-        raise ValueError("Invalid {} value: {}.".format(option, val))
+
+    def update_value(self, currval, newval):
+        return newval
 
 
-def _convert_conf_dir(val):
-    vals = re.split(r'(?<!\\):', val)
-    vals = [x for x in vals if x]
-    if vals:
-        return vals
-    else:
-        return None
+class StringOption(OptionBase):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def converter(self):
+        def string_converter(val):
+            return self.translate(str(val))
+        return string_converter
+
+    def translate(self, val):
+        if val:
+            return val
+        else:
+            return None
 
 
-def _convert_verbosity(val):
-    val = _convert_option_select(
-        val, 'verbosity', Configuration.VERBOSITY_VALUES)
-    if val == 'QUIET':
-        return cdist.argparse.VERBOSE_OFF
-    else:
+class BooleanOption(OptionBase):
+    BOOLEAN_STATES = configparser.ConfigParser.BOOLEAN_STATES
+
+    def __init__(self, name):
+        super().__init__(name)
+
+    def converter(self):
+        def boolean_converter(val):
+            v = val.lower()
+            if v not in self.BOOLEAN_STATES:
+                raise ValueError('Invalid {} boolean value: {}'.format(
+                    self.name, val))
+            return self.translate(v)
+        return boolean_converter
+
+    def translate(self, val):
+        return self.BOOLEAN_STATES[val]
+
+
+class IntOption(OptionBase):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def converter(self):
+        def int_converter(val):
+            return self.translate(int(val))
+        return int_converter
+
+
+class LowerBoundIntOption(IntOption):
+    def __init__(self, name, lower_bound):
+        super().__init__(name)
+        self.lower_bound = lower_bound
+
+    def converter(self):
+        def lower_bound_converter(val):
+            converted = super(LowerBoundIntOption, self).converter()(val)
+            if converted < self.lower_bound:
+                raise ValueError("Invalid {} value: {} < {}".format(
+                    self.name, val, self.lower_bound))
+            return converted
+        return lower_bound_converter
+
+
+class SpecialCasesLowerBoundIntOption(LowerBoundIntOption):
+    def __init__(self, name, lower_bound, special_cases_mapping):
+        super().__init__(name, lower_bound)
+        self.special_cases_mapping = special_cases_mapping
+
+    def translate(self, val):
+        if val in self.special_cases_mapping:
+            return self.special_cases_mapping[val]
+        else:
+            return val
+
+
+class JobsOption(SpecialCasesLowerBoundIntOption):
+    def __init__(self, name):
+        super().__init__(name, -1, {-1: multiprocessing.cpu_count()})
+
+
+class SelectOption(OptionBase):
+    def __init__(self, name, valid_values):
+        super().__init__(name)
+        self.valid_values = valid_values
+
+    def converter(self):
+        def select_converter(val):
+            if val in self.valid_values:
+                return self.translate(val)
+            else:
+                raise ValueError("Invalid {} value: {}.".format(
+                    self.name, val))
+        return select_converter
+
+
+class VerbosityOption(SelectOption):
+    def __init__(self):
+        super().__init__('verbosity', _VERBOSITY_VALUES)
+
+    def translate(self, val):
         name = 'VERBOSE_' + val
         verbose = getattr(cdist.argparse, name)
         return verbose
 
 
-def _convert_archiving(val):
-    val = _convert_option_select(
-        val, 'archiving', Configuration.ARCHIVING_VALUES)
-    if val == 'none':
-        return None
-    else:
-        return val
+class DelimitedValuesOption(OptionBase):
+    def __init__(self, name, delimiter):
+        super().__init__(name)
+        self.delimiter = delimiter
+
+    def converter(self):
+        def delimited_values_converter(val):
+            vals = re.split(r'(?<!\\)' + self.delimiter, val)
+            vals = [x for x in vals if x]
+            return self.translate(vals)
+        return delimited_values_converter
+
+    def translate(self, val):
+        if val:
+            return val
+        else:
+            return None
+
+
+class ConfDirOption(DelimitedValuesOption):
+    def __init__(self):
+        super().__init__('conf_dir', ':')
+
+    def update_value(self, currval, newval):
+        rv = []
+        if currval:
+            rv.extend(currval)
+        if newval:
+            rv.extend(newval)
+        if not rv:
+            rv = None
+        return rv
+
+
+class ArchivingOption(SelectOption):
+    def __init__(self):
+        super().__init__('archiving', _ARCHIVING_VALUES)
+
+    def translate(self, val):
+        if val == 'none':
+            return None
+        else:
+            return val
+
+
+_ARG_OPTION_MAPPING = {
+    'beta': 'beta',
+    'cache_path_pattern': 'cache_path_pattern',
+    'conf_dir': 'conf_dir',
+    'manifest': 'init_manifest',
+    'out_path': 'out_path',
+    'remote_out_path': 'remote_out_path',
+    'remote_copy': 'remote_copy',
+    'remote_exec': 'remote_exec',
+    'inventory_dir': 'inventory_dir',
+    'jobs': 'jobs',
+    'parallel': 'parallel',
+    'verbose': 'verbosity',
+    'use_archiving': 'archiving',
+}
 
 
 class Configuration(metaclass=Singleton):
@@ -78,30 +229,26 @@ class Configuration(metaclass=Singleton):
                                      '.cdist', 'cdist.cfg', )
     default_config_files = (global_config_file, local_config_file, )
 
-    VERBOSITY_VALUES = (
-        'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE', 'QUIET',
-    )
-    ARCHIVING_VALUES = (
-        'tar', 'tgz', 'tbz2', 'txz', 'none',
-    )
+    VERBOSITY_VALUES = _VERBOSITY_VALUES
+    ARCHIVING_VALUES = _ARCHIVING_VALUES
 
     CONFIG_FILE_OPTIONS = {
         'GLOBAL': {
-            'beta': 'boolean',
-            'local_shell': str,
-            'remote_shell': str,
-            'cache_path_pattern': str,
-            'conf_dir': _convert_conf_dir,
-            'init_manifest': str,
-            'out_path': str,
-            'remote_out_path': str,
-            'remote_copy': str,
-            'remote_exec': str,
-            'inventory_dir': str,
-            'jobs': int,
-            'parallel': int,
-            'verbosity': _convert_verbosity,
-            'archiving': _convert_archiving,
+            'beta': BooleanOption('beta'),
+            'local_shell': StringOption('local_shell'),
+            'remote_shell': StringOption('remote_shell'),
+            'cache_path_pattern': StringOption('cache_path_pattern'),
+            'conf_dir': ConfDirOption(),
+            'init_manifest': StringOption('init_manifest'),
+            'out_path': StringOption('out_path'),
+            'remote_out_path': StringOption('remote_out_path'),
+            'remote_copy': StringOption('remote_copy'),
+            'remote_exec': StringOption('remote_exec'),
+            'inventory_dir': StringOption('inventory_dir'),
+            'jobs': JobsOption('jobs'),
+            'parallel': JobsOption('parallel'),
+            'verbosity': VerbosityOption(),
+            'archiving': ArchivingOption(),
         },
     }
 
@@ -115,36 +262,11 @@ class Configuration(metaclass=Singleton):
         'CDIST_INVENTORY_DIR': 'inventory_dir',
         'CDIST_CACHE_PATH_PATTERN': 'cache_path_pattern',
     }
-    BOOL_ENV_VAR_OPTIONS = ('CDIST_BETA', )
-    ARG_OPTION_MAPPING = {
-        'beta': 'beta',
-        'cache_path_pattern': 'cache_path_pattern',
-        'conf_dir': 'conf_dir',
-        'manifest': 'init_manifest',
-        'out_path': 'out_path',
-        'remote_out_path': 'remote_out_path',
-        'remote_copy': 'remote_copy',
-        'remote_exec': 'remote_exec',
-        'inventory_dir': 'inventory_dir',
-        'jobs': 'jobs',
-        'parallel': 'parallel',
-        'verbose': 'verbosity',
-        'use_archiving': 'archiving',
-    }
+    ENV_VAR_BOOLEAN_OPTIONS = ('CDIST_BETA', )
+
+    ARG_OPTION_MAPPING = _ARG_OPTION_MAPPING
     ADJUST_ARG_OPTION_MAPPING = {
-        'beta': 'beta',
-        'cache_path_pattern': 'cache_path_pattern',
-        'conf_dir': 'conf_dir',
-        'init_manifest': 'manifest',
-        'out_path': 'out_path',
-        'remote_out_path': 'remote_out_path',
-        'remote_copy': 'remote_copy',
-        'remote_exec': 'remote_exec',
-        'inventory_dir': 'inventory_dir',
-        'jobs': 'jobs',
-        'parallel': 'parallel',
-        'verbosity': 'verbose',
-        'archiving': 'use_archiving',
+       _ARG_OPTION_MAPPING[key]: key for key in _ARG_OPTION_MAPPING
     }
 
     def _convert_args(self, args):
@@ -172,27 +294,25 @@ class Configuration(metaclass=Singleton):
             return self.config[section]
         raise ValueError('Unknown section: {}'.format(section))
 
+    def _get_args_name_value(self, arg_name, val):
+        if arg_name == 'verbosity' and val == 'OFF':
+            name = 'quiet'
+            rv = True
+        else:
+            name = arg_name
+            rv = val
+        return (name, rv)
+
     def get_args(self, section='GLOBAL'):
         args = self.command_line_args
         cfg = self.get_config(section)
         for option in self.ADJUST_ARG_OPTION_MAPPING:
             if option in cfg:
-                arg_opt = self.ADJUST_ARG_OPTION_MAPPING[option]
-                if option == 'verbosity' and cfg[option] == 'QUIET':
-                    setattr(args, 'quiet', True)
-                else:
-                    setattr(args, arg_opt, cfg[option])
+                arg_name = self.ADJUST_ARG_OPTION_MAPPING[option]
+                val = cfg[option]
+                name, val = self._get_args_name_value(arg_name, val)
+                setattr(args, name, val)
         return args
-
-    def _convert_value(self, val, option, converter):
-        try:
-            newval = converter(val)
-        except ValueError:
-            raise ValueError("Invalid {} value: {}.".format(option, val))
-        if not isinstance(newval, str) or newval:
-            return newval
-        else:
-            return None
 
     def _read_config_file(self, files):
         config_parser = configparser.ConfigParser()
@@ -203,37 +323,39 @@ class Configuration(metaclass=Singleton):
                 raise ValueError("Invalid section: {}.".format(section))
             if section not in d:
                 d[section] = dict()
+
             for option in config_parser[section]:
                 if option not in self.CONFIG_FILE_OPTIONS[section]:
                     raise ValueError("Invalid option: {}.".format(option))
-                converter = self.CONFIG_FILE_OPTIONS[section][option]
-                if converter == 'boolean':
-                    newval = config_parser.getboolean(section, option)
-                else:
-                    val = config_parser[section][option]
-                    newval = self._convert_value(val, option, converter)
+
+                option_object = self.CONFIG_FILE_OPTIONS[section][option]
+                converter = option_object.converter()
+                val = config_parser[section][option]
+                newval = converter(val)
                 d[section][option] = newval
         return d
 
-    def _read_env_var_config(self, env):
+    def _read_env_var_config(self, env, section):
         d = dict()
         for option in self.ENV_VAR_OPTION_MAPPING:
             if option in env:
-                dst_option = self.ENV_VAR_OPTION_MAPPING[option]
-                if option in self.BOOL_ENV_VAR_OPTIONS:
-                    d[dst_option] = True
-                elif dst_option == 'conf_dir':
-                    d[dst_option] = _convert_conf_dir(env[option])
+                dst_opt = self.ENV_VAR_OPTION_MAPPING[option]
+                if option in self.ENV_VAR_BOOLEAN_OPTIONS:
+                    d[dst_opt] = True
                 else:
-                    d[dst_option] = env[option]
+                    option_object = self.CONFIG_FILE_OPTIONS[section][dst_opt]
+                    converter = option_object.converter()
+                    val = env[option]
+                    newval = converter(val)
+                    d[dst_opt] = newval
         return d
 
     def _read_args_config(self, args):
         d = dict()
         for option in self.ARG_OPTION_MAPPING:
             if option in args:
-                dst_option = self.ARG_OPTION_MAPPING[option]
-                d[dst_option] = args[option]
+                dst_opt = self.ARG_OPTION_MAPPING[option]
+                d[dst_opt] = args[option]
         return d
 
     def _update_config_dict(self, config, newconfig):
@@ -245,25 +367,14 @@ class Configuration(metaclass=Singleton):
         if section not in config:
             config[section] = dict()
         for option in newconfig:
-            val = newconfig[option]
-            if option == 'conf_dir':
-                newval = []
-                if option in config[section] and config[section][option]:
-                    newval.extend(config[section][option])
-                if newconfig[option]:
-                    newval.extend(newconfig[option])
+            newval = newconfig[option]
+            if option in config[section]:
+                currval = config[section][option]
             else:
-                newval = val
-            config[section][option] = newval
-
-    def _translate_values(self, config):
-        for section in config:
-            x = config[section]
-            for option in x:
-                if option in ('jobs', 'parallel', ):
-                    if x[option] == -1:
-                        import multiprocessing
-                        x[option] = multiprocessing.cpu_count()
+                currval = None
+            option_object = self.CONFIG_FILE_OPTIONS[section][option]
+            config[section][option] = option_object.update_value(
+                currval, newval)
 
     def _get_config(self):
         # global config file
@@ -272,8 +383,8 @@ class Configuration(metaclass=Singleton):
         # default empty config if needed
         if not config:
             config['GLOBAL'] = dict()
-        # environment variable
-        newconfig = self._read_env_var_config(self.env)
+        # environment variables
+        newconfig = self._read_env_var_config(self.env, 'GLOBAL')
         for section in config:
             self._update_config_dict_section(section, config, newconfig)
         # command line config file
@@ -286,5 +397,4 @@ class Configuration(metaclass=Singleton):
             newconfig = self._read_args_config(self.args)
             for section in config:
                 self._update_config_dict_section(section, config, newconfig)
-        self._translate_values(config)
         return config
