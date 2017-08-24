@@ -55,8 +55,24 @@ class OptionBase:
     def translate(self, val):
         return val
 
-    def update_value(self, currval, newval):
-        return newval
+    def update_value(self, currval, newval, update_appends=False):
+        '''Update current option value currval with new option value newval.
+        If update_appends is True and if currval and newval are lists then
+        resulting list contains all values in currval plus all values in
+        newval. Otherwise, newval is returned.
+        '''
+        if (isinstance(currval, list) and isinstance(newval, list) and
+                update_appends):
+            rv = []
+            if currval:
+                rv.extend(currval)
+            if newval:
+                rv.extend(newval)
+            if not rv:
+                rv = None
+            return rv
+        else:
+            return newval
 
 
 class StringOption(OptionBase):
@@ -184,16 +200,6 @@ class ConfDirOption(DelimitedValuesOption):
     def __init__(self):
         super().__init__('conf_dir', ':')
 
-    def update_value(self, currval, newval):
-        rv = []
-        if currval:
-            rv.extend(currval)
-        if newval:
-            rv.extend(newval)
-        if not rv:
-            rv = None
-        return rv
-
 
 class ArchivingOption(SelectOption):
     def __init__(self):
@@ -226,8 +232,9 @@ _ARG_OPTION_MAPPING = {
 class Configuration(metaclass=Singleton):
     global_config_file = os.path.join('/', 'etc', 'cdist.cfg', )
     local_config_file = os.path.join(os.path.expanduser('~'),
-                                     '.cdist', 'cdist.cfg', )
+                                     '.cdist.cfg', )
     default_config_files = (global_config_file, local_config_file, )
+    ENV_VAR_CONFIG_FILE = 'CDIST_CONFIG_FILE'
 
     VERBOSITY_VALUES = _VERBOSITY_VALUES
     ARCHIVING_VALUES = _ARCHIVING_VALUES
@@ -358,12 +365,13 @@ class Configuration(metaclass=Singleton):
                 d[dst_opt] = args[option]
         return d
 
-    def _update_config_dict(self, config, newconfig):
+    def _update_config_dict(self, config, newconfig, update_appends=False):
         for section in newconfig:
             self._update_config_dict_section(
-                section, config, newconfig[section])
+                section, config, newconfig[section], update_appends)
 
-    def _update_config_dict_section(self, section, config, newconfig):
+    def _update_config_dict_section(self, section, config, newconfig,
+                                    update_appends=False):
         if section not in config:
             config[section] = dict()
         for option in newconfig:
@@ -374,7 +382,7 @@ class Configuration(metaclass=Singleton):
                 currval = None
             option_object = self.CONFIG_FILE_OPTIONS[section][option]
             config[section][option] = option_object.update_value(
-                currval, newval)
+                currval, newval, update_appends)
 
     def _get_config(self):
         # global config file
@@ -387,6 +395,11 @@ class Configuration(metaclass=Singleton):
         newconfig = self._read_env_var_config(self.env, 'GLOBAL')
         for section in config:
             self._update_config_dict_section(section, config, newconfig)
+        # config file in CDIST_CONFIG_FILE env var
+        config_file = os.environ.get(self.ENV_VAR_CONFIG_FILE, None)
+        if config_file:
+            newconfig = self._read_config_file(config_file)
+            self._update_config_dict(config, newconfig)
         # command line config file
         if (self.args and 'config_file' in self.args and
                 self.args['config_file']):
@@ -396,5 +409,6 @@ class Configuration(metaclass=Singleton):
         if self.args:
             newconfig = self._read_args_config(self.args)
             for section in config:
-                self._update_config_dict_section(section, config, newconfig)
+                self._update_config_dict_section(section, config, newconfig,
+                                                 update_appends=True)
         return config

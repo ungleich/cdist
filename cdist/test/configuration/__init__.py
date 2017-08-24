@@ -35,6 +35,38 @@ fixtures = op.join(my_dir, 'fixtures')
 
 class ConfigurationOptionsTestCase(test.CdistTestCase):
 
+    def test_OptionBase(self):
+        option = cc.OptionBase('test')
+        test_cases = (
+            ([], [], True, None, ),
+            (['spam', 'eggs', ], [], True, ['spam', 'eggs', ], ),
+            ([], ['spam', 'eggs', ], True, ['spam', 'eggs', ], ),
+            (
+                ['spam', 'eggs', ],
+                ['ham', 'spamspam', ],
+                True,
+                ['spam', 'eggs', 'ham', 'spamspam', ],
+            ),
+            (['spam', 'eggs', ], 'spam:eggs', True, 'spam:eggs', ),
+            ('spam:eggs', ['spam', 'eggs', ], True, ['spam', 'eggs', ], ),
+            ('spam', 'eggs', True, 'eggs', ),
+
+            (['spam', 'eggs', ], 'spam:eggs', True, 'spam:eggs', ),
+
+            ('spam:eggs', ['spam', 'eggs', ], False,  ['spam', 'eggs', ], ),
+            ('spam', 'eggs', False, 'eggs', ),
+            (
+                ['spam', 'eggs', ],
+                ['ham', 'spamspam', ],
+                False,
+                ['ham', 'spamspam', ],
+            ),
+        )
+        for currval, newval, update_appends, expected in test_cases:
+            self.assertEqual(option.update_value(currval, newval,
+                                                 update_appends=update_appends),
+                             expected)
+
     def test_StringOption(self):
         option = cc.StringOption('test')
         self.assertIsNone(option.translate(''))
@@ -91,21 +123,6 @@ class ConfigurationOptionsTestCase(test.CdistTestCase):
         self.assertEqual(converter(value), ['spam', 'eggs', 'ham', ])
         self.assertIsNone(converter(''))
 
-    def test_ConfDirOption(self):
-        option = cc.ConfDirOption()
-        test_cases = (
-            ([], [], None, ),
-            (['spam', 'eggs', ], [], ['spam', 'eggs', ], ),
-            ([], ['spam', 'eggs', ], ['spam', 'eggs', ], ),
-            (
-                ['spam', 'eggs', ],
-                ['ham', 'spamspam', ],
-                ['spam', 'eggs', 'ham', 'spamspam', ],
-            ),
-        )
-        for currval, newval, expected in test_cases:
-            self.assertEqual(option.update_value(currval, newval), expected)
-
 
 class ConfigurationTestCase(test.CdistTestCase):
 
@@ -133,6 +150,13 @@ class ConfigurationTestCase(test.CdistTestCase):
         config_custom['GLOBAL'] = {
             'parallel': '4',
             'archiving': 'txz',
+        }
+
+        config_custom2 = configparser.ConfigParser()
+        config_custom2['GLOBAL'] = {
+            'parallel': '16',
+            'archiving': 'tbz2',
+            'remote_copy': 'myscp',
         }
 
         self.expected_config_dict = {
@@ -163,6 +187,10 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(self.custom_config_file, 'w') as f:
             config_custom.write(f)
 
+        self.custom_config_file2 = os.path.join(fixtures, 'cdist_custom2.cfg')
+        with open(self.custom_config_file2, 'w') as f:
+            config_custom2.write(f)
+
         config['TEST'] = {}
         self.invalid_config_file1 = os.path.join(fixtures,
                                                  'cdist_invalid1.cfg')
@@ -188,6 +216,7 @@ class ConfigurationTestCase(test.CdistTestCase):
     def tearDown(self):
         os.remove(self.config_file)
         os.remove(self.custom_config_file)
+        os.remove(self.custom_config_file2)
         os.remove(self.invalid_config_file1)
         os.remove(self.invalid_config_file2)
         os.remove(self.invalid_config_file3)
@@ -233,13 +262,13 @@ class ConfigurationTestCase(test.CdistTestCase):
         config = cc.Configuration(None, env={}, config_files=())
         args = argparse.Namespace()
         args.beta = False
-        args.conf_dir = '/usr/local/cdist:~/.cdist'
+        args.conf_dir = ['/usr/local/cdist1', ]
         args.verbose = 3
         args.tag = 'test'
 
         expected = {
             'beta': False,
-            'conf_dir': '/usr/local/cdist:~/.cdist',
+            'conf_dir': ['/usr/local/cdist1', ],
             'verbosity': 3,
         }
         args_dict = vars(args)
@@ -269,7 +298,18 @@ class ConfigurationTestCase(test.CdistTestCase):
             },
         }
         configuration = cc.Configuration(None, env={}, config_files=())
-        configuration._update_config_dict(config, newconfig)
+        configuration._update_config_dict(config, newconfig,
+                                          update_appends=True)
+        self.assertEqual(config, expected)
+        expected = {
+            'GLOBAL': {
+                'conf_dir': ['~/.cdist', ],
+                'parallel': 2,
+                'local_shell': '/usr/local/bin/sh',
+            },
+        }
+        configuration._update_config_dict(config, newconfig,
+                                          update_appends=False)
         self.assertEqual(config, expected)
 
     def test_update_config_dict_section(self):
@@ -292,7 +332,18 @@ class ConfigurationTestCase(test.CdistTestCase):
             },
         }
         configuration = cc.Configuration(None, env={}, config_files=())
-        configuration._update_config_dict_section('GLOBAL', config, newconfig)
+        configuration._update_config_dict_section('GLOBAL', config, newconfig,
+                                                  update_appends=True)
+        self.assertEqual(config, expected)
+        expected = {
+            'GLOBAL': {
+                'conf_dir': ['~/.cdist', ],
+                'parallel': 2,
+                'local_shell': '/usr/local/bin/sh',
+            },
+        }
+        configuration._update_config_dict_section('GLOBAL', config, newconfig,
+                                                  update_appends=False)
         self.assertEqual(config, expected)
 
     def test_get_config_and_configured_args(self):
@@ -300,6 +351,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         args.jobs = 8
         args.dry_run = True
         args.config_file = self.custom_config_file
+        args.conf_dir = ['/usr/local/etc/cdist', ]
 
         env = {
             'CDIST_BETA': '1',
@@ -309,14 +361,19 @@ class ConfigurationTestCase(test.CdistTestCase):
         }
 
         expected = dict(self.expected_config_dict)
-        expected['GLOBAL']['conf_dir'] = ['/usr/local/cdist', '~/.cdist', ]
+        expected['GLOBAL']['conf_dir'] = [
+            '/usr/local/cdist', '~/.cdist', '/usr/local/etc/cdist',
+        ]
         expected['GLOBAL']['remote_shell'] = '/usr/local/bin/sh'
         expected['GLOBAL']['beta'] = True
         expected['GLOBAL']['jobs'] = 8
         expected['GLOBAL']['parallel'] = 4
         expected['GLOBAL']['archiving'] = 'txz'
+        expected['GLOBAL']['remote_copy'] = 'myscp'
 
         config_files = (self.config_file, )
+
+        os.environ['CDIST_CONFIG_FILE'] = self.custom_config_file2
 
         configuration = cc.Configuration(args, env=env,
                                          config_files=config_files)
@@ -339,11 +396,13 @@ class ConfigurationTestCase(test.CdistTestCase):
             'beta': True,
             'inventory_dir': None,
             'cache_path_pattern': None,
-            'conf_dir': ['/usr/local/cdist', '~/.cdist', ],
+            'conf_dir': [
+                '/usr/local/cdist', '~/.cdist', '/usr/local/etc/cdist',
+            ],
             'manifest': None,
             'out_path': None,
             'remote_out_path': None,
-            'remote_copy': None,
+            'remote_copy': 'myscp',
             'remote_exec': None,
             'jobs': 8,
             'parallel': 4,

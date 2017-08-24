@@ -479,9 +479,10 @@ cdist obtains configuration data from the following sources in the following
 order:
 
     #. command-line options
-    #. configuration file specified in command-line
+    #. configuration file specified at command-line
+    #. configuration file specified in CDIST_CONFIG_FILE environment variable
     #. environment variables
-    #. user's configuration file (~/.cdist/cdist.cfg)
+    #. user's configuration file (~/.cdist.cfg)
     #. system-wide configuration file (/etc/cdist.cfg).
 
 cdist configuration file is in the INI file format. Currently it supports
@@ -501,8 +502,8 @@ The possible keywords and their meanings are as follows:
 
 :strong:`conf_dir`
     Comma separated list of configuration directories.
-    Note: values from different sources are accumulated into resulting
-    list of configuration directories.
+    If also specified at command line then values from command line are
+    appended to this value.
 
 :strong:`init_manifest`
     Specify default initial manifest.
@@ -686,6 +687,10 @@ CDIST_BETA
 
 CDIST_CACHE_PATH_PATTERN
     Custom cache path pattern.
+
+CDIST_CONFIG_FILE
+    Custom configuration file.
+
 
 EXIT STATUS
 -----------
