@@ -230,10 +230,11 @@ _ARG_OPTION_MAPPING = {
 
 
 class Configuration(metaclass=Singleton):
-    global_config_file = os.path.join('/', 'etc', 'cdist.cfg', )
-    local_config_file = os.path.join(os.path.expanduser('~'),
-                                     '.cdist.cfg', )
-    default_config_files = (global_config_file, local_config_file, )
+    _config_basename = 'cdist.cfg'
+    _global_config_file = os.path.join('/', 'etc', _config_basename, )
+    _local_config_file = os.path.join(os.path.expanduser('~'),
+                                      '.' + _config_basename, )
+    default_config_files = (_global_config_file, _local_config_file, )
     ENV_VAR_CONFIG_FILE = 'CDIST_CONFIG_FILE'
 
     VERBOSITY_VALUES = _VERBOSITY_VALUES
