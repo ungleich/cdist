@@ -23,8 +23,20 @@ remote_exec="$__type/files/remote/exec"
 remote_copy="$__type/files/remote/copy"
 
 cdist_args=""
-[ "$__verbose" = "yes" ] && cdist_args="-vv"
-[ "$__debug" = "yes" ] && cdist_args="-d"
+case "$__cdist_loglevel" in
+   20)
+      cdist_args="-v"
+   ;;
+   15)
+      cdist_args="-vv"
+   ;;
+   10)
+      cdist_args="-vvv"
+   ;;
+   5)
+      cdist_args="-vvvv"
+   ;;
+esac
 
 cat << DONE
 cdist config \
