@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+next:
+	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)
+	* Explorer init: Use pgrep instead of ps for Linux (Philippe Gregoire)
+
 4.6.0: 2017-08-25
 	* Core: Add inventory functionality (Darko Poljak)
 	* Core: Expose inventory host tags in __target_host_tags env var (Darko Poljak)
