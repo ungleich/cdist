@@ -177,7 +177,7 @@ def get_parsers():
            '-R', '--use-archiving', nargs='?',
            choices=('tar', 'tgz', 'tbz2', 'txz',),
            help=('Operate by using archiving with compression where '
-                 'apropriate. Supported values are: tar - tar archive, '
+                 'appropriate. Supported values are: tar - tar archive, '
                  'tgz - gzip tar archive (the default), '
                  'tbz2 - bzip2 tar archive and txz - lzma tar archive. '
                  'Currently in beta.'),
