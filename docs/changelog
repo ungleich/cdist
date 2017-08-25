@@ -4,6 +4,7 @@ Changelog
 next:
 	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)
 	* Explorer init: Use pgrep instead of ps for Linux (Philippe Gregoire)
+	* Type __apt_key_uri: Redirect stderr of apt-key to /dev/null (Mark Verboom)
 
 4.6.0: 2017-08-25
 	* Core: Add inventory functionality (Darko Poljak)
