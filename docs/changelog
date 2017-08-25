@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.6.0: 2017-08-25
 	* Core: Add inventory functionality (Darko Poljak)
 	* Core: Expose inventory host tags in __target_host_tags env var (Darko Poljak)
 	* Type __timezone: Check current timezone before doing anything (Ander Punnar)
