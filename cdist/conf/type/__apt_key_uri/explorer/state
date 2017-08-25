@@ -27,6 +27,6 @@ else
    name="$__object_id"
 fi
 
-apt-key list | grep -Fqe "$name" \
+apt-key list 2> /dev/null | grep -Fqe "$name" \
    && echo present \
    || echo absent
