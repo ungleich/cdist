@@ -52,6 +52,8 @@ elif [ -n "$version" ]; then
    pkgid="$name-$version"
 elif [ -n "$flavor" ]; then
    pkgid="$name--$flavor"
+elif [ -f "$__object/parameter/flavor" ]; then
+   pkgid="$name--"
 else
    pkgid="$name"
 fi
