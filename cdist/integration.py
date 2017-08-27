@@ -30,11 +30,37 @@ import os.path
 import collections
 
 
+def find_cdist_exec_in_path():
+    paths = os.environ.get('PATH')
+    if paths:
+        for path in paths.split(os.pathsep):
+            cdist_path = os.path.join(path, 'cdist')
+            if os.access(cdist_path, os.X_OK):
+                return cdist_path
+    return None
+
+
+_mydir = os.path.dirname(__file__)
+
+
+def find_cdist_exec():
+    cdist_path = os.path.abspath(os.path.join(_mydir, '..', 'scripts',
+                                              'cdist'))
+    if os.access(cdist_path, os.X_OK):
+        return cdist_path
+    cdist_path = find_cdist_exec_in_path()
+    if not cdist_path:
+        raise cdist.Error('Cannot find cdist executable in local lib '
+                          'directory: {}, nor in PATH: {}.'.format(
+                          _mydir, os.environ.get('PATH')))
+    return cdist_path
+
+
 ACTION_CONFIG = 'config'
 ACTION_INSTALL = 'install'
 
 
-def _process_hosts_simple(action, host, manifest, verbose):
+def _process_hosts_simple(action, host, manifest, verbose, cdist_path=None):
     if isinstance(host, str):
         hosts = [host, ]
     elif isinstance(host, collections.Iterable):
@@ -43,9 +69,9 @@ def _process_hosts_simple(action, host, manifest, verbose):
         raise cdist.Error('Invalid host argument: {}'.format(host))
 
     # Setup sys.argv[0] since cdist relies on command line invocation.
-    mydir = os.path.dirname(__file__)
-    cdist_bin = os.path.abspath(os.path.join(mydir, '..', 'scripts', 'cdist'))
-    sys.argv[0] = cdist_bin
+    if not cdist_path:
+        cdist_path = find_cdist_exec()
+    sys.argv[0] = cdist_path
 
     cname = action.title()
     module = getattr(cdist, action)
@@ -73,17 +99,23 @@ def _process_hosts_simple(action, host, manifest, verbose):
 
 
 def configure_hosts_simple(host, manifest,
-                           verbose=cdist.argparse.VERBOSE_INFO):
+                           verbose=cdist.argparse.VERBOSE_INFO,
+                           cdist_path=None):
     """Configure hosts with specified manifest using default other cdist
        options. host parameter can be a string or iterbale of hosts.
+       cdist_path is path to cdist executable, if it is None then integration
+       lib tries to find it.
     """
     _process_hosts_simple(action=ACTION_CONFIG, host=host, manifest=manifest,
-                          verbose=verbose)
+                          verbose=verbose, cdist_path=cdist_path)
 
 
-def install_hosts_simple(host, manifest, verbose=cdist.argparse.VERBOSE_INFO):
+def install_hosts_simple(host, manifest, verbose=cdist.argparse.VERBOSE_INFO,
+                         cdist_path=None):
     """Install hosts with specified manifest using default other cdist
        options. host parameter can be a string or iterbale of hosts.
+       cdist_path is path to cdist executable, if it is None then integration
+       lib tries to find it.
     """
     _process_hosts_simple(action=ACTION_INSTALL, host=host, manifest=manifest,
-                          verbose=verbose)
+                          verbose=verbose, cdist_path=cdist_path)
