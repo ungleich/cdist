@@ -42,10 +42,10 @@ if [ -z "$changed_groups" ]; then
 fi
 
 for group in $changed_groups; do
-   if [ "$os" = "netbsd" ]; then
+   if [ "$os" = "netbsd" ] || [ "$os" = "openbsd" ]; then
       case "$state_should" in
          present) echo "usermod -G \"$group\" \"$user\"" ;;
-         absent) echo 'NetBSD does not have a command to remove a user from a group' >&2 ; exit 1 ;;
+         absent) echo 'NetBSD and OpenBSD do not have a command to remove a user from a group' >&2 ; exit 1 ;;
       esac
    elif [ "$os" = "freebsd" ]; then
       case "$state_should" in
