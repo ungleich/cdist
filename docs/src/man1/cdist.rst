@@ -482,8 +482,11 @@ order:
     #. configuration file specified at command-line
     #. configuration file specified in CDIST_CONFIG_FILE environment variable
     #. environment variables
-    #. user's configuration file (~/.cdist.cfg)
-    #. system-wide configuration file (/etc/cdist.cfg).
+    #. user's configuration file (first one found of ~/.cdist.cfg,
+           $XDG_CONFIG_HOME/cdist/cdist.cfg, in specified order)
+    #. system-wide configuration file (/etc/cdist.cfg)
+
+if one exists.
 
 cdist configuration file is in the INI file format. Currently it supports
 only [GLOBAL] section.

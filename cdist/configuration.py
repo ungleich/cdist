@@ -234,6 +234,12 @@ class Configuration(metaclass=Singleton):
     _global_config_file = os.path.join('/', 'etc', _config_basename, )
     _local_config_file = os.path.join(os.path.expanduser('~'),
                                       '.' + _config_basename, )
+    if (not (os.path.exists(_local_config_file) and
+             os.path.isfile(_local_config_file))):
+        _local_config_file = os.path.join(
+            os.environ.get('XDG_CONFIG_HOME',
+                           os.path.expanduser('~/.config/cdist')),
+            _config_basename)
     default_config_files = (_global_config_file, _local_config_file, )
     ENV_VAR_CONFIG_FILE = 'CDIST_CONFIG_FILE'
 
