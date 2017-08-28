@@ -50,7 +50,7 @@ def find_cdist_exec():
         return cdist_path
     cdist_path = find_cdist_exec_in_path()
     if not cdist_path:
-        raise cdist.Error('Cannot find cdist executable in local lib '
+        raise cdist.Error('Cannot find cdist executable from local lib '
                           'directory: {}, nor in PATH: {}.'.format(
                           _mydir, os.environ.get('PATH')))
     return cdist_path
