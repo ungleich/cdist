@@ -221,6 +221,17 @@ class ConfigurationTestCase(test.CdistTestCase):
         os.remove(self.invalid_config_file2)
         os.remove(self.invalid_config_file3)
 
+        # remove files from tests
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        local_config_file = os.path.join(fixtures, 'cdist-local.cfg')
+        custom_config_file = os.path.join(fixtures, 'cdist-custom.cfg')
+        if os.path.exists(global_config_file):
+            os.remove(global_config_file)
+        if os.path.exists(local_config_file):
+            os.remove(local_config_file)
+        if os.path.exists(custom_config_file):
+            os.remove(custom_config_file)
+
     def test_singleton(self):
         x = cc.Configuration(None)
         args = argparse.Namespace()
@@ -346,70 +357,714 @@ class ConfigurationTestCase(test.CdistTestCase):
                                                   update_appends=False)
         self.assertEqual(config, expected)
 
-    def test_get_config_and_configured_args(self):
-        args = argparse.Namespace()
-        args.jobs = 8
-        args.dry_run = True
-        args.config_file = self.custom_config_file
-        args.conf_dir = ['/usr/local/etc/cdist', ]
-
+    def test_configuration1(self):
         env = {
-            'CDIST_BETA': '1',
-            'CDIST_PATH': '/usr/local/cdist:~/.cdist',
-            'CDIST_REMOTE_SHELL': '/usr/local/bin/sh',
-            'test': 'test',
+            'PATH': '/usr/local/bin:/usr/bin:/bin',
+            'TEST': 'test',
+        }
+        args = argparse.Namespace()
+        expected_config_dict = {
+            'GLOBAL': {
+            },
         }
 
-        expected = dict(self.expected_config_dict)
-        expected['GLOBAL']['conf_dir'] = [
-            '/usr/local/cdist', '~/.cdist', '/usr/local/etc/cdist',
-        ]
-        expected['GLOBAL']['remote_shell'] = '/usr/local/bin/sh'
-        expected['GLOBAL']['beta'] = True
-        expected['GLOBAL']['jobs'] = 8
-        expected['GLOBAL']['parallel'] = 4
-        expected['GLOBAL']['archiving'] = 'txz'
-        expected['GLOBAL']['remote_copy'] = 'myscp'
-
-        config_files = (self.config_file, )
-
-        os.environ['CDIST_CONFIG_FILE'] = self.custom_config_file2
-
-        configuration = cc.Configuration(args, env=env,
-                                         config_files=config_files)
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+        configuration = cc.Configuration(args, env=env)
         self.assertIsNotNone(configuration.args)
         self.assertIsNotNone(configuration.env)
         self.assertIsNotNone(configuration.config_files)
-        self.assertEqual(configuration.config, expected)
+        self.assertEqual(configuration.config, expected_config_dict)
 
-        got_config = configuration.get_config()
-        self.assertEqual(got_config, expected)
-
-        global_config = configuration.get_config('GLOBAL')
-        self.assertEqual(global_config, expected['GLOBAL'])
-
+    def test_configuration2(self):
+        env = {
+            'PATH': '/usr/local/bin:/usr/bin:/bin',
+            'TEST': 'test',
+        }
         args = argparse.Namespace()
-        self.assertEqual(vars(args), {})
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'off',
+            'local_shell': '/bin/sh',
+            'remote_shell': '/bin/sh',
+            'inventory_dir': '',
+            'cache_path_pattern': '',
+            'conf_dir': '',
+            'init_manifest': '',
+            'out_path': '',
+            'remote_out_path': '',
+            'remote_copy': '',
+            'remote_exec': '',
+            'jobs': '0',
+            'parallel': '-1',
+            'verbosity': 'INFO',
+            'archiving': 'none',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'beta': False,
+                'local_shell': '/bin/sh',
+                'remote_shell': '/bin/sh',
+                'inventory_dir': None,
+                'cache_path_pattern': None,
+                'conf_dir': None,
+                'init_manifest': None,
+                'out_path': None,
+                'remote_out_path': None,
+                'remote_copy': None,
+                'remote_exec': None,
+                'jobs': 0,
+                'parallel': multiprocessing.cpu_count(),
+                'verbosity': cap.VERBOSE_INFO,
+                'archiving': None,
+            },
+        }
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration3(self):
+        env = {
+            'PATH': '/usr/local/bin:/usr/bin:/bin',
+            'TEST': 'test',
+        }
+        args = argparse.Namespace()
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'off',
+            'local_shell': '/bin/sh',
+            'remote_shell': '/bin/sh',
+            'inventory_dir': '',
+            'cache_path_pattern': '',
+            'conf_dir': '',
+            'init_manifest': '',
+            'out_path': '',
+            'remote_out_path': '',
+            'remote_copy': '',
+            'remote_exec': '',
+            'jobs': '0',
+            'parallel': '-1',
+            'verbosity': 'INFO',
+            'archiving': 'none',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'on',
+            'local_shell': '/usr/bin/sh',
+            'remote_shell': '/usr/bin/sh',
+            'inventory_dir': '/var/db/cdist/inventory',
+            'conf_dir': '/opt/cdist',
+            'remote_copy': 'myscp',
+            'remote_exec': 'myexec',
+            'parallel': '-1',
+            'archiving': 'tar',
+        }
+
+        local_config_file = os.path.join(fixtures, 'cdist-local.cfg')
+        with open(local_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'beta': True,
+                'local_shell': '/usr/bin/sh',
+                'remote_shell': '/usr/bin/sh',
+                'inventory_dir': '/var/db/cdist/inventory',
+                'cache_path_pattern': None,
+                'conf_dir': ['/opt/cdist', ],
+                'init_manifest': None,
+                'out_path': None,
+                'remote_out_path': None,
+                'remote_copy': 'myscp',
+                'remote_exec': 'myexec',
+                'jobs': 0,
+                'parallel': multiprocessing.cpu_count(),
+                'verbosity': cap.VERBOSE_INFO,
+                'archiving': 'tar',
+            },
+        }
+        config_files = (global_config_file, local_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration4(self):
+        env = {
+            'PATH': '/usr/local/bin:/usr/bin:/bin',
+            'TEST': 'test',
+            'CDIST_PATH': '/opt/cdist/conf:/usr/local/share/cdist/conf',
+            'REMOTE_COPY': 'scp',
+            'REMOTE_EXEC': 'ssh',
+            'CDIST_BETA': '1',
+            'CDIST_LOCAL_SHELL': '/usr/bin/sh',
+            'CDIST_REMOTE_SHELL': '/usr/bin/sh',
+        }
+        args = argparse.Namespace()
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'off',
+            'local_shell': '/bin/sh',
+            'remote_shell': '/bin/sh',
+            'inventory_dir': '',
+            'cache_path_pattern': '',
+            'conf_dir': '',
+            'init_manifest': '',
+            'out_path': '',
+            'remote_out_path': '',
+            'remote_copy': '',
+            'remote_exec': '',
+            'jobs': '0',
+            'parallel': '-1',
+            'verbosity': 'INFO',
+            'archiving': 'none',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'beta': True,
+                'local_shell': '/usr/bin/sh',
+                'remote_shell': '/usr/bin/sh',
+                'inventory_dir': None,
+                'cache_path_pattern': None,
+                'conf_dir': [
+                    '/opt/cdist/conf',
+                    '/usr/local/share/cdist/conf',
+                ],
+                'init_manifest': None,
+                'out_path': None,
+                'remote_out_path': None,
+                'remote_copy': None,
+                'remote_exec': None,
+                'jobs': 0,
+                'parallel': multiprocessing.cpu_count(),
+                'verbosity': cap.VERBOSE_INFO,
+                'archiving': None,
+            },
+        }
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration5(self):
+        env = {
+            'PATH': '/usr/local/bin:/usr/bin:/bin',
+            'TEST': 'test',
+            'CDIST_PATH': '/opt/cdist/conf:/usr/local/share/cdist/conf',
+            'REMOTE_COPY': 'scp',
+            'REMOTE_EXEC': 'ssh',
+            'CDIST_BETA': '1',
+            'CDIST_LOCAL_SHELL': '/usr/bin/sh',
+            'CDIST_REMOTE_SHELL': '/usr/bin/sh',
+        }
+        args = argparse.Namespace()
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'off',
+            'local_shell': '/bin/sh',
+            'remote_shell': '/bin/sh',
+            'inventory_dir': '',
+            'cache_path_pattern': '',
+            'conf_dir': '',
+            'init_manifest': '',
+            'out_path': '',
+            'remote_out_path': '',
+            'remote_copy': '',
+            'remote_exec': '',
+            'jobs': '0',
+            'parallel': '-1',
+            'verbosity': 'INFO',
+            'archiving': 'none',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'on',
+            'local_shell': '/usr/bin/sh',
+            'remote_shell': '/usr/bin/sh',
+            'inventory_dir': '/var/db/cdist/inventory',
+            'conf_dir': '/opt/cdist',
+            'remote_copy': 'myscp',
+            'remote_exec': 'myexec',
+            'parallel': '-1',
+            'archiving': 'tar',
+        }
+
+        local_config_file = os.path.join(fixtures, 'cdist-local.cfg')
+        with open(local_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'beta': True,
+                'local_shell': '/usr/bin/sh',
+                'remote_shell': '/usr/bin/sh',
+                'inventory_dir': '/var/db/cdist/inventory',
+                'cache_path_pattern': None,
+                'conf_dir': [
+                    '/opt/cdist/conf',
+                    '/usr/local/share/cdist/conf',
+                ],
+                'init_manifest': None,
+                'out_path': None,
+                'remote_out_path': None,
+                'remote_copy': 'myscp',
+                'remote_exec': 'myexec',
+                'jobs': 0,
+                'parallel': multiprocessing.cpu_count(),
+                'verbosity': cap.VERBOSE_INFO,
+                'archiving': 'tar',
+            },
+        }
+        config_files = (global_config_file, local_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration6(self):
+        env = {
+            'PATH': '/usr/local/bin:/usr/bin:/bin',
+            'TEST': 'test',
+            'CDIST_PATH': '/opt/cdist/conf:/usr/local/share/cdist/conf',
+            'REMOTE_COPY': 'scp',
+            'REMOTE_EXEC': 'ssh',
+            'CDIST_BETA': '1',
+            'CDIST_LOCAL_SHELL': '/usr/bin/sh',
+            'CDIST_REMOTE_SHELL': '/usr/bin/sh',
+        }
+        args = argparse.Namespace()
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'off',
+            'local_shell': '/bin/sh',
+            'remote_shell': '/bin/sh',
+            'inventory_dir': '',
+            'cache_path_pattern': '',
+            'conf_dir': '',
+            'init_manifest': '',
+            'out_path': '',
+            'remote_out_path': '',
+            'remote_copy': '',
+            'remote_exec': '',
+            'jobs': '0',
+            'parallel': '-1',
+            'verbosity': 'INFO',
+            'archiving': 'none',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'on',
+            'local_shell': '/usr/bin/sh',
+            'remote_shell': '/usr/bin/sh',
+            'inventory_dir': '/var/db/cdist/inventory',
+            'conf_dir': '/opt/cdist',
+            'remote_copy': 'myscp',
+            'remote_exec': 'myexec',
+            'parallel': '-1',
+            'archiving': 'tar',
+        }
+
+        local_config_file = os.path.join(fixtures, 'cdist-local.cfg')
+        with open(local_config_file, 'w') as f:
+            config.write(f)
+
+        args.inventory_dir = '/opt/sysadmin/cdist/inventory'
+        args.conf_dir = ['/opt/sysadmin/cdist/conf', ]
+        args.manifest = '/opt/sysadmin/cdist/conf/manifest/init'
+        args.jobs = 10
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'beta': True,
+                'local_shell': '/usr/bin/sh',
+                'remote_shell': '/usr/bin/sh',
+                'inventory_dir': '/opt/sysadmin/cdist/inventory',
+                'cache_path_pattern': None,
+                'conf_dir': [
+                    '/opt/cdist/conf',
+                    '/usr/local/share/cdist/conf',
+                    '/opt/sysadmin/cdist/conf',
+                ],
+                'init_manifest': '/opt/sysadmin/cdist/conf/manifest/init',
+                'out_path': None,
+                'remote_out_path': None,
+                'remote_copy': 'myscp',
+                'remote_exec': 'myexec',
+                'jobs': 10,
+                'parallel': multiprocessing.cpu_count(),
+                'verbosity': cap.VERBOSE_INFO,
+                'archiving': 'tar',
+            },
+        }
+        config_files = (global_config_file, local_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration7(self):
+        env = {
+            'PATH': '/usr/local/bin:/usr/bin:/bin',
+            'TEST': 'test',
+            'CDIST_PATH': '/opt/cdist/conf:/usr/local/share/cdist/conf',
+            'REMOTE_COPY': 'scp',
+            'REMOTE_EXEC': 'ssh',
+            'CDIST_BETA': '1',
+            'CDIST_LOCAL_SHELL': '/usr/bin/sh',
+            'CDIST_REMOTE_SHELL': '/usr/bin/sh',
+        }
+        args = argparse.Namespace()
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'off',
+            'local_shell': '/bin/sh',
+            'remote_shell': '/bin/sh',
+            'inventory_dir': '',
+            'cache_path_pattern': '',
+            'conf_dir': '',
+            'init_manifest': '',
+            'out_path': '',
+            'remote_out_path': '',
+            'remote_copy': '',
+            'remote_exec': '',
+            'jobs': '0',
+            'parallel': '-1',
+            'verbosity': 'INFO',
+            'archiving': 'none',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'on',
+            'local_shell': '/usr/bin/sh',
+            'remote_shell': '/usr/bin/sh',
+            'inventory_dir': '/var/db/cdist/inventory',
+            'conf_dir': '/opt/cdist',
+            'remote_copy': 'myscp',
+            'remote_exec': 'myexec',
+            'parallel': '-1',
+            'archiving': 'tar',
+        }
+
+        local_config_file = os.path.join(fixtures, 'cdist-local.cfg')
+        with open(local_config_file, 'w') as f:
+            config.write(f)
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'conf_dir': '/opt/conf/cdist',
+            'remote_copy': 'scpcustom',
+            'remote_exec': 'sshcustom',
+            'parallel': '15',
+            'archiving': 'txz',
+        }
+
+        custom_config_file = os.path.join(fixtures, 'cdist-custom.cfg')
+        with open(custom_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'beta': True,
+                'local_shell': '/usr/bin/sh',
+                'remote_shell': '/usr/bin/sh',
+                'inventory_dir': '/var/db/cdist/inventory',
+                'cache_path_pattern': None,
+                'conf_dir': [
+                    '/opt/conf/cdist',
+                ],
+                'init_manifest': None,
+                'out_path': None,
+                'remote_out_path': None,
+                'remote_copy': 'scpcustom',
+                'remote_exec': 'sshcustom',
+                'jobs': 0,
+                'parallel': 15,
+                'verbosity': cap.VERBOSE_INFO,
+                'archiving': 'txz',
+            },
+        }
+
+        config_files = (global_config_file, local_config_file, )
+
+        args.config_file = custom_config_file
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration8(self):
+        env = {
+            'PATH': '/usr/local/bin:/usr/bin:/bin',
+            'TEST': 'test',
+            'CDIST_PATH': '/opt/cdist/conf:/usr/local/share/cdist/conf',
+            'REMOTE_COPY': 'scp',
+            'REMOTE_EXEC': 'ssh',
+            'CDIST_BETA': '1',
+            'CDIST_LOCAL_SHELL': '/usr/bin/sh',
+            'CDIST_REMOTE_SHELL': '/usr/bin/sh',
+        }
+        args = argparse.Namespace()
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'off',
+            'local_shell': '/bin/sh',
+            'remote_shell': '/bin/sh',
+            'inventory_dir': '',
+            'cache_path_pattern': '',
+            'conf_dir': '',
+            'init_manifest': '',
+            'out_path': '',
+            'remote_out_path': '',
+            'remote_copy': '',
+            'remote_exec': '',
+            'jobs': '0',
+            'parallel': '-1',
+            'verbosity': 'INFO',
+            'archiving': 'none',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'on',
+            'local_shell': '/usr/bin/sh',
+            'remote_shell': '/usr/bin/sh',
+            'inventory_dir': '/var/db/cdist/inventory',
+            'conf_dir': '/opt/cdist',
+            'remote_copy': 'myscp',
+            'remote_exec': 'myexec',
+            'parallel': '-1',
+            'archiving': 'tar',
+        }
+
+        local_config_file = os.path.join(fixtures, 'cdist-local.cfg')
+        with open(local_config_file, 'w') as f:
+            config.write(f)
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'conf_dir': '/opt/conf/cdist',
+            'remote_copy': 'scpcustom',
+            'remote_exec': 'sshcustom',
+            'parallel': '15',
+            'archiving': 'txz',
+        }
+
+        custom_config_file = os.path.join(fixtures, 'cdist-custom.cfg')
+        with open(custom_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'beta': True,
+                'local_shell': '/usr/bin/sh',
+                'remote_shell': '/usr/bin/sh',
+                'inventory_dir': '/var/db/cdist/inventory',
+                'cache_path_pattern': None,
+                'conf_dir': [
+                    '/opt/conf/cdist',
+                ],
+                'init_manifest': None,
+                'out_path': None,
+                'remote_out_path': None,
+                'remote_copy': 'scpcustom',
+                'remote_exec': 'sshcustom',
+                'jobs': 0,
+                'parallel': 15,
+                'verbosity': cap.VERBOSE_INFO,
+                'archiving': 'txz',
+            },
+        }
+
+        config_files = (global_config_file, local_config_file, )
+
+        os.environ['CDIST_CONFIG_FILE'] = custom_config_file
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration_get_args(self):
+        env = {
+            'PATH': '/usr/local/bin:/usr/bin:/bin',
+            'TEST': 'test',
+            'CDIST_PATH': '/opt/cdist/conf:/usr/local/share/cdist/conf',
+            'REMOTE_COPY': 'scp',
+            'REMOTE_EXEC': 'ssh',
+            'CDIST_BETA': '1',
+            'CDIST_LOCAL_SHELL': '/usr/bin/sh',
+            'CDIST_REMOTE_SHELL': '/usr/bin/sh',
+        }
+        args = argparse.Namespace()
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'off',
+            'local_shell': '/bin/sh',
+            'remote_shell': '/bin/sh',
+            'inventory_dir': '',
+            'cache_path_pattern': '',
+            'conf_dir': '',
+            'init_manifest': '',
+            'out_path': '',
+            'remote_out_path': '',
+            'remote_copy': '',
+            'remote_exec': '',
+            'jobs': '0',
+            'parallel': '-1',
+            'verbosity': 'INFO',
+            'archiving': 'none',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'beta': 'on',
+            'local_shell': '/usr/bin/sh',
+            'remote_shell': '/usr/bin/sh',
+            'inventory_dir': '/var/db/cdist/inventory',
+            'conf_dir': '/opt/cdist',
+            'remote_copy': 'myscp',
+            'remote_exec': 'myexec',
+            'parallel': '-1',
+            'archiving': 'tar',
+        }
+
+        local_config_file = os.path.join(fixtures, 'cdist-local.cfg')
+        with open(local_config_file, 'w') as f:
+            config.write(f)
+
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'conf_dir': '/opt/conf/cdist',
+            'remote_copy': 'scpcustom',
+            'remote_exec': 'sshcustom',
+            'parallel': '15',
+            'archiving': 'txz',
+        }
+
+        custom_config_file = os.path.join(fixtures, 'cdist-custom.cfg')
+        with open(custom_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'beta': True,
+                'local_shell': '/usr/bin/sh',
+                'remote_shell': '/usr/bin/sh',
+                'inventory_dir': '/var/db/cdist/inventory',
+                'cache_path_pattern': None,
+                'conf_dir': [
+                    '/opt/conf/cdist',
+                ],
+                'init_manifest': None,
+                'out_path': None,
+                'remote_out_path': None,
+                'remote_copy': 'scpcustom',
+                'remote_exec': 'sshcustom',
+                'jobs': 0,
+                'parallel': 15,
+                'verbosity': cap.VERBOSE_INFO,
+                'archiving': 'txz',
+            },
+        }
+
+        config_files = (global_config_file, local_config_file, )
+
+        os.environ['CDIST_CONFIG_FILE'] = custom_config_file
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
         args = configuration.get_args()
         dargs = vars(args)
         expected_args = {
             'beta': True,
-            'inventory_dir': None,
+            'inventory_dir': '/var/db/cdist/inventory',
             'cache_path_pattern': None,
             'conf_dir': [
-                '/usr/local/cdist', '~/.cdist', '/usr/local/etc/cdist',
+                '/opt/conf/cdist',
             ],
             'manifest': None,
             'out_path': None,
             'remote_out_path': None,
-            'remote_copy': 'myscp',
-            'remote_exec': None,
-            'jobs': 8,
-            'parallel': 4,
+            'remote_copy': 'scpcustom',
+            'remote_exec': 'sshcustom',
+            'jobs': 0,
+            'parallel': 15,
             'verbose': cap.VERBOSE_INFO,
             'use_archiving': 'txz',
-            'dry_run': True,
-            'config_file': self.custom_config_file,
         }
 
         self.assertEqual(dargs, expected_args)
