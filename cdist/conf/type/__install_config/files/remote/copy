@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/sh -e
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -32,8 +32,6 @@ log() {
 chroot="$1"; shift
 target_host="$__target_host"
 
-scp="scp -o User=root -q"
-
 # postfix target_host with chroot location
 code="$(echo "$@" | sed "s|$target_host:|$target_host:$chroot|g")"
 
@@ -43,6 +41,6 @@ log "@: $@"
 log "code: $code"
 
 # copy files into chroot
-$scp $code
+$__remote_copy $code
 
 log "-----"

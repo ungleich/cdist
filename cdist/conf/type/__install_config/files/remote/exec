@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/sh -e
 #
-# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -34,11 +34,9 @@ target_host="$__target_host"
 # In exec mode the first argument is the __target_host which we already got from env. Get rid of it.
 shift
 
-ssh="ssh -o User=root -q $target_host"
-
 # escape ' with '"'"'
 code="$(echo "$@" | sed -e "s/'/'\"'\"'/g")"
-code="$ssh chroot $chroot sh -c '$code'"
+code="chroot $chroot sh -e -c '$code'"
 
 log "target_host: $target_host"
 log "chroot: $chroot"
@@ -46,6 +44,6 @@ log "@: $@"
 log "code: $code"
 
 # Run the code
-$code
+$__remote_exec $target_host $code
 
 log "-----"
