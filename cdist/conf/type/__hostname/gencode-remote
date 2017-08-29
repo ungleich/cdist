@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2014-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2014 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -56,20 +56,23 @@ esac
 #
 echo changed >> "$__messages_out"
 
+# Use the good old way to set the hostname even on machines running systemd.
+case "$os" in
+    archlinux|debian|ubuntu|devuan|centos)
+        echo "printf '%s\n' '$name_should' > /etc/hostname"
+        echo "hostname -F /etc/hostname"
+    ;;
+    openbsd)
+        echo "hostname '$name_should'"
+    ;;
+    suse)
+        echo "hostname '$name_should'"
+        echo "printf '%s\n' '$name_should' > /etc/HOSTNAME"
+    ;;
+esac
+
 if [ "$has_hostnamectl" ]; then
-    echo "hostnamectl set-hostname '$name_should'"
-else
-    case "$os" in
-        archlinux|debian|ubuntu|devuan)
-            echo "hostname '$name_should'"
-            echo "printf '%s\n' '$name_should' > /etc/hostname"
-        ;;
-        centos|openbsd)
-            echo "hostname '$name_should'"
-        ;;
-        suse)
-            echo "hostname '$name_should'"
-            echo "printf '%s\n' '$name_should' > /etc/HOSTNAME"
-        ;;
-    esac
+    # Allow hostnamectl set-hostname to fail silently.
+    # Who the fuck invented a tool that needs dbus to set the hostname anyway ...
+    echo "hostnamectl set-hostname '$name_should' || true"
 fi
