@@ -26,17 +26,16 @@ import cdist.config
 import cdist.install
 import cdist.argparse
 import sys
+import os
 import os.path
 import collections
 
 
 def find_cdist_exec_in_path():
-    paths = os.environ.get('PATH')
-    if paths:
-        for path in paths.split(os.pathsep):
-            cdist_path = os.path.join(path, 'cdist')
-            if os.access(cdist_path, os.X_OK):
-                return cdist_path
+    for path in os.get_exec_path():
+        cdist_path = os.path.join(path, 'cdist')
+        if os.access(cdist_path, os.X_OK):
+            return cdist_path
     return None
 
 
@@ -52,7 +51,7 @@ def find_cdist_exec():
     if not cdist_path:
         raise cdist.Error('Cannot find cdist executable from local lib '
                           'directory: {}, nor in PATH: {}.'.format(
-                          _mydir, os.environ.get('PATH')))
+                              _mydir, os.environ.get('PATH')))
     return cdist_path
 
 
