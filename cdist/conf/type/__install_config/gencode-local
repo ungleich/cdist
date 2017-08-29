@@ -39,6 +39,8 @@ case "$__cdist_loglevel" in
 esac
 
 cat << DONE
+export __default_remote_exec="$__remote_exec"
+export __default_remote_copy="$__remote_copy"
 cdist config \
    $cdist_args \
    --remote-exec="$remote_exec $chroot" \

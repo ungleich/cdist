@@ -44,6 +44,6 @@ log "@: $@"
 log "code: $code"
 
 # Run the code
-$__remote_exec $target_host $code
+$__default_remote_exec $target_host $code
 
 log "-----"
