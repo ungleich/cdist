@@ -198,7 +198,7 @@ class DelimitedValuesOption(OptionBase):
 
 class ConfDirOption(DelimitedValuesOption):
     def __init__(self):
-        super().__init__('conf_dir', ':')
+        super().__init__('conf_dir', os.pathsep)
 
 
 class ArchivingOption(SelectOption):
