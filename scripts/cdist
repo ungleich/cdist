@@ -22,26 +22,20 @@
 #
 
 import logging
+import cdist
+import cdist.argparse
+import cdist.banner
+import cdist.config
+import cdist.install
+import cdist.shell
+import cdist.inventory
 
 
 def commandline():
     """Parse command line"""
 
-    import cdist.argparse
-    import cdist.banner
-    import cdist.config
-    import cdist.install
-    import cdist.shell
-    import cdist.inventory
-
-    parser = cdist.argparse.get_parsers()
-    args = parser['main'].parse_args(sys.argv[1:])
-
-    # Loglevels are handled globally in here
-    cdist.argparse.handle_loglevel(args)
-
-    log.verbose("version %s" % cdist.VERSION)
-    log.trace(args)
+    parser, cfg = cdist.argparse.parse_and_configure(sys.argv[1:])
+    args = cfg.get_args()
 
     # Work around python 3.3 bug:
     # http://bugs.python.org/issue16308
@@ -58,7 +52,6 @@ def commandline():
         parser['main'].print_help()
         sys.exit(0)
 
-    cdist.argparse.check_beta(vars(args))
     args.func(args)
 
 
@@ -74,9 +67,8 @@ if __name__ == "__main__":
     exit_code = 0
 
     try:
-        import os
         import re
-        import cdist
+        import os
 
         log = logging.getLogger("cdist")
 

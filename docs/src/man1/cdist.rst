@@ -15,43 +15,45 @@ SYNOPSIS
 
     cdist banner [-h] [-q] [-v]
 
-    cdist config [-h] [-q] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
-                 [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
-                 [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_DIR]
-                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
-                 [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]]
-                 [-s] [-t]
+    cdist config [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+                 [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
+                 [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
+                 [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
+                 [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
+                 [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                  [host [host ...]] 
 
-    cdist install [-h] [-q] [-v] [-b] [-C CACHE_PATH_PATTERN] [-c CONF_DIR]
-                  [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
-                  [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_DIR]
-                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
-                  [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]]
-                  [-s] [-t]
+    cdist install [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+                  [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
+                  [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
+                  [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
+                  [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
+                  [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                   [host [host ...]] 
 
-    cdist inventory [-h] [-q] [-v] [-b] [-I INVENTORY_DIR]
+    cdist inventory [-h] [-q] [-v] [-b] [-g CONFIG_FILE] [-I INVENTORY_DIR]
                     {add-host,add-tag,del-host,del-tag,list} ...
 
-    cdist inventory add-host [-h] [-q] [-v] [-b] [-I INVENTORY_DIR]
-                             [-f HOSTFILE]
+    cdist inventory add-host [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+                             [-I INVENTORY_DIR] [-f HOSTFILE]
                              [host [host ...]]
 
-    cdist inventory add-tag [-h] [-q] [-v] [-b] [-I INVENTORY_DIR]
-                            [-f HOSTFILE] [-T TAGFILE] [-t TAGLIST]
+    cdist inventory add-tag [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+                            [-I INVENTORY_DIR] [-f HOSTFILE] [-T TAGFILE]
+                            [-t TAGLIST]
                             [host [host ...]]
 
-    cdist inventory del-host [-h] [-q] [-v] [-b] [-I INVENTORY_DIR] [-a]
-                             [-f HOSTFILE]
+    cdist inventory del-host [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+                             [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
                              [host [host ...]]
 
-    cdist inventory del-tag [-h] [-q] [-v] [-b] [-I INVENTORY_DIR] [-a]
-                            [-f HOSTFILE] [-T TAGFILE] [-t TAGLIST]
+    cdist inventory del-tag [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+                            [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
+                            [-T TAGFILE] [-t TAGLIST]
                             [host [host ...]]
 
-    cdist inventory list [-h] [-q] [-v] [-b] [-I INVENTORY_DIR] [-a]
-                         [-f HOSTFILE] [-H] [-t]
+    cdist inventory list [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+                         [-I INVENTORY_DIR] [-a] [-f HOSTFILE] [-H] [-t]
                          [host [host ...]]
 
     cdist shell [-h] [-q] [-v] [-s SHELL]
@@ -112,7 +114,7 @@ Install command is currently in beta.
 .. option:: -b, --beta
 
     Enable beta functionality.
-
+    
 .. option:: -C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN
 
     Sepcify custom cache path pattern. If it is not set then
@@ -133,15 +135,18 @@ Install command is currently in beta.
     read hosts from stdin. For the file format see
     :strong:`HOSTFILE FORMAT` below.
 
+.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
+
+    Use specified custom configuration file.
+
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if this
-    argument is set then specified directory is used, if
-    CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.cdit/inventory is
-    used, otherwise distribution inventory directory is
-    used.
+    directory is set up by the following rules: if cdist 
+    configuration resolves this value then specified
+    directory is used, if HOME env var is set then
+    ~/.cdit/inventory is used, otherwise distribution
+    inventory directory is used.
 
 .. option:: -i MANIFEST, --initial-manifest MANIFEST
 
@@ -254,16 +259,18 @@ Add host(s) to inventory database.
     host or host file is specified then, by default, read
     from stdin. Hostfile format is the same as config hostfile format.
 
+.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
+
+    Use specified custom configuration file.
 
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if this
-    argument is set then specified directory is used, if
-    CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.cdist/inventory is
-    used, otherwise distribution inventory directory is
-    used.
+    directory is set up by the following rules: if cdist 
+    configuration resolves this value then specified
+    directory is used, if HOME env var is set then
+    ~/.cdit/inventory is used, otherwise distribution
+    inventory directory is used.
 
 
 INVENTORY ADD-TAG
@@ -287,15 +294,18 @@ Add tag(s) to inventory database.
     are specified then tags are read from stdin and are
     added to all hosts. Hostfile format is the same as config hostfile format.
 
+.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
+
+    Use specified custom configuration file.
+
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if this
-    argument is set then specified directory is used, if
-    CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.cdist/inventory is
-    used, otherwise distribution inventory directory is
-    used.
+    directory is set up by the following rules: if cdist 
+    configuration resolves this value then specified
+    directory is used, if HOME env var is set then
+    ~/.cdit/inventory is used, otherwise distribution
+    inventory directory is used.
 
 .. option:: -T TAGFILE, --tag-file TAGFILE
 
@@ -335,15 +345,18 @@ Delete host(s) from inventory database.
     host or host file is specified then, by default, read
     from stdin. Hostfile format is the same as config hostfile format.
 
+.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
+
+    Use specified custom configuration file.
+
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if this
-    argument is set then specified directory is used, if
-    CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.cdist/inventory is
-    used, otherwise distribution inventory directory is
-    used.
+    directory is set up by the following rules: if cdist 
+    configuration resolves this value then specified
+    directory is used, if HOME env var is set then
+    ~/.cdit/inventory is used, otherwise distribution
+    inventory directory is used.
 
 
 INVENTORY DEL-TAG
@@ -372,15 +385,18 @@ Delete tag(s) from inventory database.
     from stdin and are deleted from all hosts. Hostfile
     format is the same as config hostfile format.
 
+.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
+
+    Use specified custom configuration file.
+
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if this
-    argument is set then specified directory is used, if
-    CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.cdist/inventory is
-    used, otherwise distribution inventory directory is
-    used.
+    directory is set up by the following rules: if cdist 
+    configuration resolves this value then specified
+    directory is used, if HOME env var is set then
+    ~/.cdit/inventory is used, otherwise distribution
+    inventory directory is used.
 
 .. option:: -T TAGFILE, --tag-file TAGFILE
 
@@ -421,6 +437,10 @@ List inventory database.
     host or host file is specified then, by default, list
     all. Hostfile format is the same as config hostfile format.
 
+.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
+
+    Use specified custom configuration file.
+
 .. option:: -H, --host-only
 
     Suppress tags listing.
@@ -428,12 +448,11 @@ List inventory database.
 .. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
 
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if this
-    argument is set then specified directory is used, if
-    CDIST_INVENTORY_DIR env var is set then its value is
-    used, if HOME env var is set then ~/.cdist/inventory is
-    used, otherwise distribution inventory directory is
-    used.
+    directory is set up by the following rules: if cdist 
+    configuration resolves this value then specified
+    directory is used, if HOME env var is set then
+    ~/.cdit/inventory is used, otherwise distribution
+    inventory directory is used.
 
 .. option:: -t, --tag
 
@@ -454,6 +473,82 @@ usage. Its primary use is for debugging type parameters.
     be POSIX compatible shell.
 
 
+CONFIGURATION FILE
+------------------
+cdist obtains configuration data from the following sources in the following
+order:
+
+    #. command-line options
+    #. configuration file specified at command-line
+    #. configuration file specified in CDIST_CONFIG_FILE environment variable
+    #. environment variables
+    #. user's configuration file (first one found of ~/.cdist.cfg,
+           $XDG_CONFIG_HOME/cdist/cdist.cfg, in specified order)
+    #. system-wide configuration file (/etc/cdist.cfg)
+
+if one exists.
+
+cdist configuration file is in the INI file format. Currently it supports
+only [GLOBAL] section.
+The possible keywords and their meanings are as follows:
+
+:strong:`archiving`
+    Use specified archiving. Valid values include:
+    'none', 'tar', 'tgz', 'tbz2' and 'txz'.
+
+:strong:`beta`
+    Enable beta functionality. It recognizes boolean values from
+    'yes'/'no', 'on'/'off', 'true'/'false' and '1'/'0'
+
+:strong:`cache_path_pattern`
+    Specify cache path pattern.
+
+:strong:`conf_dir`
+    Comma separated list of configuration directories.
+    If also specified at command line then values from command line are
+    appended to this value.
+
+:strong:`init_manifest`
+    Specify default initial manifest.
+
+:strong:`inventory_dir`
+    Specify inventory directory.
+
+:strong:`jobs`
+    Specify number of jobs for parallel processing. If -1 then the default,
+    number of CPU's in the system is used. If 0 then parallel processing in
+    jobs is disabled. If set to positive number then specified maximum
+    number of processes will be used.
+
+:strong:`local_shell`
+    Shell command used for local execution.
+
+:strong:`out_path`
+    Directory to save cdist output in.
+
+:strong:`parallel`
+    Process hosts in parallel. If -1 then the default, number of CPU's in
+    the system is used. If 0 then parallel processing of hosts is disabled.
+    If set to positive number then specified maximum number of processes
+    will be used.
+
+:strong:`remote_copy`
+    Command to use for remote copy (should behave like scp).
+
+:strong:`remote_exec`
+    Command to use for remote execution (should behave like ssh).
+
+:strong:`remote_out_path`
+    Directory to save cdist output in on the target host.
+
+:strong:`remote_shell`
+    Shell command at remote host used for remote execution.
+
+:strong:`verbosity`
+    Set verbosity level. Valid values are: 
+    'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE' and 'OFF'.
+
+
 FILES
 -----
 ~/.cdist
@@ -468,6 +563,10 @@ cdist/conf
 cdist/inventory
     The distribution inventory directory.
     This path is relative to cdist installation directory.
+/etc/cdist.cfg
+    Global cdist configuration file, if exists.
+~/.cdist.cfg or $XDG_CONFIG_HOME/cdist/cdist.cfg
+    Local cdist configuration file, if exists.
 
 NOTES
 -----
@@ -591,6 +690,10 @@ CDIST_BETA
 
 CDIST_CACHE_PATH_PATTERN
     Custom cache path pattern.
+
+CDIST_CONFIG_FILE
+    Custom configuration file.
+
 
 EXIT STATUS
 -----------
