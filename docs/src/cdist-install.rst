@@ -40,6 +40,20 @@ To install cdist, execute the following commands:
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 
+To install cdist with distutils from cloned repository, first you have to
+create version.py:
+
+.. code-block:: sh
+
+    make version
+
+Then, as usual, you execute the following command:
+
+.. code-block:: sh
+
+    python setup.py install
+
+
 Available versions in git
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 

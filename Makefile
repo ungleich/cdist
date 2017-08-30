@@ -198,7 +198,7 @@ archlinux-release: $(ARCHLINUX_FILE)
 # Release
 #
 
-$(PYTHON_VERSION): .git/refs/heads/master
+$(PYTHON_VERSION) version: .git/refs/heads/master
 	$(helper) version
 
 # Code that is better handled in a shell script

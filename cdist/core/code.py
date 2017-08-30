@@ -23,8 +23,6 @@
 
 import os
 
-import cdist
-
 
 '''
 common:

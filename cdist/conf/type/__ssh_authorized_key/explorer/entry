@@ -23,4 +23,4 @@ type_and_key="$(cat "$__object/parameter/key" | tr ' ' '\n' | awk '/^(ssh|ecdsa)
 file="$(cat $__object/parameter/file)"
 
 # get any entries that match the type and key
-grep ".*$type_and_key[ \n]" "$file" || true
+grep ".*$type_and_key\([ \n]\|$\)" "$file" || true

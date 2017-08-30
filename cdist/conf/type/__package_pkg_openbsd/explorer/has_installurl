@@ -1,6 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
 #
-# 2011-2017 Steven Armstrong (steven-cdist at armstrong.cc)
+# Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
 #
 # This file is part of cdist.
 #
@@ -17,30 +17,20 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+
 #
-# __remote_copy script to run cdist against a chroot on a remote host via ssh.
+# Retrieve the installurl(5), as introduced in OpenBSD 6.1
 #
-# Usage:
-#  __remote_copy="/path/to/this/script /path/to/your/chroot" cdist config target-id
+# As of 6.1, the file is supposed to contained a single line
+# with the URL used to install from during install or upgrade.
+#
+# Allow for expansion and take the first non-commented (#) line.
 #
 
-log() {
-   #echo "$@" | logger -t "__install_config copy"
-   :
-}
+if [ -f /etc/installurl ]; then
+	printf 'yes'
+else
+	printf 'no'
+fi
 
-chroot="$1"; shift
-target_host="$__target_host"
-
-# postfix target_host with chroot location
-code="$(echo "$@" | sed "s|$target_host:|$target_host:$chroot|g")"
-
-log "target_host: $target_host"
-log "chroot: $chroot"
-log "@: $@"
-log "code: $code"
-
-# copy files into chroot
-$__default_remote_copy $code
-
-log "-----"
+exit 0

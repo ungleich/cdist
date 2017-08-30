@@ -98,7 +98,7 @@ class Emulator(object):
         self.init_object()
 
         # locking for parallel execution
-        with flock.Flock(self.flock_path) as lock:
+        with flock.Flock(self.flock_path):
             self.setup_object()
             self.save_stdin()
             self.record_requirements()
@@ -112,7 +112,7 @@ class Emulator(object):
         if '__cdist_loglevel' in self.env:
             try:
                 level = int(self.env['__cdist_loglevel'])
-            except:
+            except ValueError:
                 level = logging.WARNING
         else:
             level = logging.WARNING

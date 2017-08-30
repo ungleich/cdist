@@ -2,6 +2,17 @@ Changelog
 ---------
 
 next:
+	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)
+	* Explorer init: Use pgrep instead of ps for Linux (Philippe Gregoire)
+	* Type __apt_key_uri: Redirect stderr of apt-key to /dev/null (Mark Verboom)
+	* Type __package_pkg_openbsd: Support the empty flavor (Philippe Gregoire)
+	* Type __package_pkg_openbsd: Support using /etc/installurl (Philippe Gregoire)
+	* Type __user_groups: Support OpenBSD (Philippe Gregoire)
+	* Type __hostname: Allow hostnamectl to fail silently (Steven Armstrong)
+	* Type __install_config: Use default default __remote_{copy,exec} in custom __remote_{copy,exec} scripts (Steven Armstrong)
+	* Type __ssh_authorized_key: Fix removing ssh key that is last one in the file (Darko Poljak)
+
+4.6.0: 2017-08-25
 	* Core: Add inventory functionality (Darko Poljak)
 	* Core: Expose inventory host tags in __target_host_tags env var (Darko Poljak)
 	* Type __timezone: Check current timezone before doing anything (Ander Punnar)
@@ -9,6 +20,8 @@ next:
 	* Core: Add archiving support for transferring directory - new -R beta option (Darko Poljak)
 	* Core: Fix ssh connection multiplexing race condition (Darko Poljak)
 	* Core: Fix emulator race conditions with -j option (Darko Poljak)
+	* Documentation: Cleanup (Darko Poljak)
+	* Explorer os: Get ID from /etc/os-release (Philippe Gregoire)
 
 4.5.0: 2017-07-20
 	* Types: Fix install types (Steven Armstrong)
