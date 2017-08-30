@@ -21,6 +21,12 @@
 #
 
 import cdist
+# needed for cdist.argparse
+import cdist.banner
+import cdist.config
+import cdist.install
+import cdist.shell
+import cdist.inventory
 import cdist.argparse
 import cdist.log
 import cdist.config
@@ -119,7 +125,7 @@ def _process_hosts_simple(action, host, manifest, verbose, cdist_path=None):
     for x in hosts:
         argv.append(x)
 
-    parser, cfg = cdist.argparse.parse_and_configure(argv[1:])
+    parser, cfg = cdist.argparse.parse_and_configure(argv)
     args = cfg.get_args()
     configuration = cfg.get_config(section='GLOBAL')
 
