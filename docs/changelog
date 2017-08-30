@@ -10,6 +10,7 @@ next:
 	* Type __user_groups: Support OpenBSD (Philippe Gregoire)
 	* Type __hostname: Allow hostnamectl to fail silently (Steven Armstrong)
 	* Type __install_config: Use default default __remote_{copy,exec} in custom __remote_{copy,exec} scripts (Steven Armstrong)
+	* Type __ssh_authorized_key: Fix removing ssh key that is last one in the file (Darko Poljak)
 
 4.6.0: 2017-08-25
 	* Core: Add inventory functionality (Darko Poljak)
