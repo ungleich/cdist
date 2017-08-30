@@ -1,9 +1,9 @@
 import argparse
 import cdist
 import multiprocessing
-import os
 import logging
 import collections
+import cdist.configuration
 
 
 # set of beta sub-commands
@@ -115,7 +115,7 @@ def get_parsers():
            '-b', '--beta',
            help=('Enable beta functionality. '),
            action='store_true', dest='beta',
-           default='CDIST_BETA' in os.environ)
+           default=False)
 
     # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(
@@ -136,11 +136,17 @@ def get_parsers():
            '-I', '--inventory',
            help=('Use specified custom inventory directory. '
                  'Inventory directory is set up by the following rules: '
-                 'if this argument is set then specified directory is used, '
-                 'if CDIST_INVENTORY_DIR env var is set then its value is '
-                 'used, if HOME env var is set then ~/.cdist/inventory is '
+                 'if cdist configuration resolves this value then specified '
+                 'directory is used, '
+                 'if HOME env var is set then ~/.cdist/inventory is '
                  'used, otherwise distribution inventory directory is used.'),
            dest="inventory_dir", required=False)
+
+    parser['common'] = argparse.ArgumentParser(add_help=False)
+    parser['common'].add_argument(
+           '-g', '--config-file',
+           help=('Use specified custom configuration file.'),
+           dest="config_file", required=False)
 
     # Config
     parser['config_main'] = argparse.ArgumentParser(add_help=False)
@@ -149,7 +155,7 @@ def get_parsers():
             help=('Specify custom cache path pattern. If '
                   'it is not set then default hostdir is used.'),
             dest='cache_path_pattern',
-            default=os.environ.get('CDIST_CACHE_PATH_PATTERN'))
+            default=None)
     parser['config_main'].add_argument(
             '-c', '--conf-dir',
             help=('Add configuration directory (can be repeated, '
@@ -195,13 +201,13 @@ def get_parsers():
            '--remote-copy',
            help='Command to use for remote copy (should behave like scp).',
            action='store', dest='remote_copy',
-           default=os.environ.get('CDIST_REMOTE_COPY'))
+           default=None)
     parser['config_main'].add_argument(
            '--remote-exec',
            help=('Command to use for remote execution '
                  '(should behave like ssh).'),
            action='store', dest='remote_exec',
-           default=os.environ.get('CDIST_REMOTE_EXEC'))
+           default=None)
 
     # Config
     parser['config_args'] = argparse.ArgumentParser(add_help=False)
@@ -243,6 +249,7 @@ def get_parsers():
              dest='tag', required=False, action="store_true", default=False)
     parser['config'] = parser['sub'].add_parser(
             'config', parents=[parser['loglevel'], parser['beta'],
+                               parser['common'],
                                parser['config_main'],
                                parser['inventory_common'],
                                parser['config_args']])
@@ -256,12 +263,14 @@ def get_parsers():
     # Inventory
     parser['inventory'] = parser['sub'].add_parser(
            'inventory', parents=[parser['loglevel'], parser['beta'],
+                                 parser['common'],
                                  parser['inventory_common']])
     parser['invsub'] = parser['inventory'].add_subparsers(
             title="Inventory commands", dest="subcommand")
 
     parser['add-host'] = parser['invsub'].add_parser(
             'add-host', parents=[parser['loglevel'], parser['beta'],
+                                 parser['common'],
                                  parser['inventory_common']])
     parser['add-host'].add_argument(
             'host', nargs='*', help='Host(s) to add.')
@@ -275,6 +284,7 @@ def get_parsers():
 
     parser['add-tag'] = parser['invsub'].add_parser(
             'add-tag', parents=[parser['loglevel'], parser['beta'],
+                                parser['common'],
                                 parser['inventory_common']])
     parser['add-tag'].add_argument(
            'host', nargs='*',
@@ -305,6 +315,7 @@ def get_parsers():
 
     parser['del-host'] = parser['invsub'].add_parser(
             'del-host', parents=[parser['loglevel'], parser['beta'],
+                                 parser['common'],
                                  parser['inventory_common']])
     parser['del-host'].add_argument(
             'host', nargs='*', help='Host(s) to delete.')
@@ -321,6 +332,7 @@ def get_parsers():
 
     parser['del-tag'] = parser['invsub'].add_parser(
             'del-tag', parents=[parser['loglevel'], parser['beta'],
+                                parser['common'],
                                 parser['inventory_common']])
     parser['del-tag'].add_argument(
             'host', nargs='*',
@@ -355,6 +367,7 @@ def get_parsers():
 
     parser['list'] = parser['invsub'].add_parser(
             'list', parents=[parser['loglevel'], parser['beta'],
+                             parser['common'],
                              parser['inventory_common']])
     parser['list'].add_argument(
             'host', nargs='*', help='Host(s) to list.')
@@ -401,3 +414,23 @@ def handle_loglevel(args):
         args.verbose = _verbosity_level_off
 
     logging.root.setLevel(_verbosity_level[args.verbose])
+
+
+def parse_and_configure(argv):
+    parser = get_parsers()
+    parser_args = parser['main'].parse_args(argv)
+    cfg = cdist.configuration.Configuration(parser_args)
+    args = cfg.get_args()
+    # Loglevels are handled globally in here
+    handle_loglevel(args)
+
+    log = logging.getLogger("cdist")
+
+    log.verbose("version %s" % cdist.VERSION)
+    log.trace('command line args: {}'.format(cfg.command_line_args))
+    log.trace('configuration: {}'.format(cfg.get_config()))
+    log.trace('configured args: {}'.format(args))
+
+    check_beta(vars(args))
+
+    return parser, cfg

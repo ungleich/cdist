@@ -26,6 +26,7 @@ import os
 import os.path
 import itertools
 import sys
+import cdist.configuration
 from cdist.hostsource import hostfile_process_line
 
 DIST_INVENTORY_DB_NAME = "inventory"
@@ -34,21 +35,23 @@ dist_inventory_db = os.path.abspath(os.path.join(
     os.path.dirname(cdist.__file__), DIST_INVENTORY_DB_NAME))
 
 
-def determine_default_inventory_dir(args):
+def determine_default_inventory_dir(args, configuration):
     # The order of inventory dir setting by decreasing priority
-    # 1. inventory_dir argument
-    # 2. CDIST_INVENTORY_DIR env var if set
-    # 3. ~/.cdist/inventory if HOME env var is set
-    # 4. distribution inventory directory
-    if not args.inventory_dir:
-        if 'CDIST_INVENTORY_DIR' in os.environ:
-            args.inventory_dir = os.environ['CDIST_INVENTORY_DIR']
+    # 1. inventory_dir from configuration
+    # 2. ~/.cdist/inventory if HOME env var is set
+    # 3. distribution inventory directory
+    inventory_dir_set = False
+    if 'inventory_dir' in configuration:
+        val = configuration['inventory_dir']
+        if val:
+            args.inventory_dir = val
+            inventory_dir_set = True
+    if not inventory_dir_set:
+        home = cdist.home_dir()
+        if home:
+            args.inventory_dir = os.path.join(home, DIST_INVENTORY_DB_NAME)
         else:
-            home = cdist.home_dir()
-            if home:
-                args.inventory_dir = os.path.join(home, DIST_INVENTORY_DB_NAME)
-            else:
-                args.inventory_dir = dist_inventory_db
+            args.inventory_dir = dist_inventory_db
 
 
 def contains_all(big, little):
@@ -80,8 +83,12 @@ def rstrip_nl(s):
 class Inventory(object):
     """Inventory main class"""
 
-    def __init__(self, db_basedir=dist_inventory_db):
+    def __init__(self, db_basedir=dist_inventory_db, configuration=None):
         self.db_basedir = db_basedir
+        if configuration:
+            self.configuration = configuration
+        else:
+            self.configuration = {}
         self.log = logging.getLogger("inventory")
         self.init_db()
 
@@ -171,7 +178,10 @@ class Inventory(object):
         log = logging.getLogger("inventory")
         if 'taglist' in args:
             args.taglist = cls.strlist_to_list(args.taglist)
-        determine_default_inventory_dir(args)
+
+        cfg = cdist.configuration.Configuration(args)
+        configuration = cfg.get_config(section='GLOBAL')
+        determine_default_inventory_dir(args, configuration)
 
         log.debug("Using inventory: {}".format(args.inventory_dir))
         log.trace("Inventory args: {}".format(vars(args)))
@@ -182,23 +192,26 @@ class Inventory(object):
                               hostfile=args.hostfile,
                               db_basedir=args.inventory_dir,
                               list_only_host=args.list_only_host,
-                              has_all_tags=args.has_all_tags)
+                              has_all_tags=args.has_all_tags,
+                              configuration=configuration)
         elif args.subcommand == "add-host":
             c = InventoryHost(hosts=args.host, hostfile=args.hostfile,
-                              db_basedir=args.inventory_dir)
+                              db_basedir=args.inventory_dir,
+                              configuration=configuration)
         elif args.subcommand == "del-host":
             c = InventoryHost(hosts=args.host, hostfile=args.hostfile,
                               all=args.all, db_basedir=args.inventory_dir,
-                              action="del")
+                              action="del", configuration=configuration)
         elif args.subcommand == "add-tag":
             c = InventoryTag(hosts=args.host, tags=args.taglist,
                              hostfile=args.hostfile, tagfile=args.tagfile,
-                             db_basedir=args.inventory_dir)
+                             db_basedir=args.inventory_dir,
+                             configuration=configuration)
         elif args.subcommand == "del-tag":
             c = InventoryTag(hosts=args.host, tags=args.taglist,
                              hostfile=args.hostfile, tagfile=args.tagfile,
                              all=args.all, db_basedir=args.inventory_dir,
-                             action="del")
+                             action="del", configuration=configuration)
         else:
             raise cdist.Error("Unknown inventory command \'{}\'".format(
                         args.subcommand))
@@ -208,8 +221,8 @@ class Inventory(object):
 class InventoryList(Inventory):
     def __init__(self, hosts=None, istag=False, hostfile=None,
                  list_only_host=False, has_all_tags=False,
-                 db_basedir=dist_inventory_db):
-        super().__init__(db_basedir)
+                 db_basedir=dist_inventory_db, configuration=None):
+        super().__init__(db_basedir, configuration)
         self.hosts = hosts
         self.istag = istag
         self.hostfile = hostfile
@@ -274,8 +287,9 @@ class InventoryList(Inventory):
 
 class InventoryHost(Inventory):
     def __init__(self, hosts=None, hostfile=None,
-                 db_basedir=dist_inventory_db, all=False, action="add"):
-        super().__init__(db_basedir)
+                 db_basedir=dist_inventory_db, all=False, action="add",
+                 configuration=None):
+        super().__init__(db_basedir, configuration)
         self.actions = ("add", "del")
         if action not in self.actions:
             raise cdist.Error("Invalid action \'{}\', valid actions are:"
@@ -323,8 +337,9 @@ class InventoryHost(Inventory):
 
 class InventoryTag(Inventory):
     def __init__(self, hosts=None, tags=None, hostfile=None, tagfile=None,
-                 db_basedir=dist_inventory_db, all=False, action="add"):
-        super().__init__(db_basedir)
+                 db_basedir=dist_inventory_db, all=False, action="add",
+                 configuration=None):
+        super().__init__(db_basedir, configuration)
         self.actions = ("add", "del")
         if action not in self.actions:
             raise cdist.Error("Invalid action \'{}\', valid actions are:"
