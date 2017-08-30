@@ -241,7 +241,7 @@ class Remote(object):
         """
 
         command = [
-            self.configuration.get('CDIST_REMOTE_SHELL', "/bin/sh"),
+            self.configuration.get('remote_shell', "/bin/sh"),
             "-e"
         ]
         command.append(script)

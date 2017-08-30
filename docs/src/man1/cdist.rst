@@ -565,7 +565,7 @@ cdist/inventory
     This path is relative to cdist installation directory.
 /etc/cdist.cfg
     Global cdist configuration file, if exists.
-~/.cdist/cdist.cfg
+~/.cdist.cfg or $XDG_CONFIG_HOME/cdist/cdist.cfg
     Local cdist configuration file, if exists.
 
 NOTES
