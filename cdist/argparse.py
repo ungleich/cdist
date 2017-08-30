@@ -78,8 +78,6 @@ def check_beta(args_dict):
 
 
 def check_positive_int(value):
-    import argparse
-
     try:
         val = int(value)
     except ValueError:

@@ -21,10 +21,10 @@
 #
 
 import cdist
+import cdist.argparse
 import cdist.log
 import cdist.config
 import cdist.install
-import cdist.argparse
 import sys
 import os
 import os.path
@@ -119,9 +119,9 @@ def _process_hosts_simple(action, host, manifest, verbose, cdist_path=None):
     for x in hosts:
         argv.append(x)
 
-    parser = cdist.argparse.get_parsers()
-    args = parser['main'].parse_args(argv)
-    cdist.argparse.handle_loglevel(args)
+    parser, cfg = cdist.argparse.parse_and_configure(argv[1:])
+    args = cfg.get_args()
+    configuration = cfg.get_config(section='GLOBAL')
 
     theclass.construct_remote_exec_copy_patterns(args)
     base_root_path = theclass.create_base_root_path(None)
@@ -130,7 +130,8 @@ def _process_hosts_simple(action, host, manifest, verbose, cdist_path=None):
         host_base_path, hostdir = theclass.create_host_base_dirs(
             target_host, base_root_path)
         theclass.onehost(target_host, None, host_base_path, hostdir, args,
-                         parallel=False, remove_remote_files_dirs=True)
+                         parallel=False, configuration=configuration,
+                         remove_remote_files_dirs=True)
         remote_out_dir.free(out_dir_index)
 
 
