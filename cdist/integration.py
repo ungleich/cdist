@@ -129,9 +129,8 @@ def _process_hosts_simple(action, host, manifest, verbose, cdist_path=None):
     for target_host in args.host:
         host_base_path, hostdir = theclass.create_host_base_dirs(
             target_host, base_root_path)
-        config_obj = theclass.onehost(target_host, None, host_base_path,
-                                      hostdir, args, parallel=False)
-        config_obj.remote.rmdir(out_dir)
+        theclass.onehost(target_host, None, host_base_path, hostdir, args,
+                         parallel=False, remove_remote_files_dirs=True)
         remote_out_dir.free(out_dir_index)
 
 
