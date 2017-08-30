@@ -32,9 +32,12 @@ class Singleton(type):
     instance = None
 
     def __call__(cls, *args, **kwargs):
-        if not cls.instance:
-            cls.instance = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls.instance
+        if 'singleton' in kwargs and kwargs['singleton'] == False:
+            return super(Singleton, cls).__call__(*args, **kwargs)
+        else:
+            if not cls.instance:
+                cls.instance = super(Singleton, cls).__call__(*args, **kwargs)
+            return cls.instance
 
 
 _VERBOSITY_VALUES = (
@@ -294,7 +297,7 @@ class Configuration(metaclass=Singleton):
             return None
 
     def __init__(self, command_line_args, env=os.environ,
-                 config_files=default_config_files):
+                 config_files=default_config_files, singleton=True):
         self.command_line_args = command_line_args
         self.args = self._convert_args(command_line_args)
         self.env = env

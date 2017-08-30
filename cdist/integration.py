@@ -35,6 +35,7 @@ import sys
 import os
 import os.path
 import collections
+import multiprocessing
 
 
 def find_cdist_exec_in_path():
@@ -74,16 +75,18 @@ class RemoteOutDirDb:
             self.base_name = base_name
         self.index = 0
         self.free_indexes = set()
+        self.lock = multiprocessing.Lock()
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.free_indexes:
-            index = self.free_indexes.pop()
-        else:
-            self.index += 1
-            index = self.index
+        with self.lock:
+            if self.free_indexes:
+                index = self.free_indexes.pop()
+            else:
+                self.index += 1
+                index = self.index
         return index, self.base_name + str(index)
 
     def free(self, index):
@@ -125,7 +128,7 @@ def _process_hosts_simple(action, host, manifest, verbose, cdist_path=None):
     for x in hosts:
         argv.append(x)
 
-    parser, cfg = cdist.argparse.parse_and_configure(argv)
+    parser, cfg = cdist.argparse.parse_and_configure(argv, singleton=False)
     args = cfg.get_args()
     configuration = cfg.get_config(section='GLOBAL')
 
