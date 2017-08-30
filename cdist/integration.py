@@ -59,6 +59,39 @@ ACTION_CONFIG = 'config'
 ACTION_INSTALL = 'install'
 
 
+class RemoteOutDirDb:
+
+    def __init__(self, base_name=None):
+        if base_name is None:
+            self.base_name = os.path.join('/', 'var', 'lib', 'cdist')
+        else:
+            self.base_name = base_name
+        self.index = 0
+        self.free_indexes = set()
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.free_indexes:
+            index = self.free_indexes.pop()
+        else:
+            self.index += 1
+            index = self.index
+        return index, self.base_name + str(index)
+
+    def free(self, index):
+        if index > 0 and index <= self.index:
+            if index not in self.free_indexes:
+                self.free_indexes.add(index)
+        else:
+            raise ValueError('index must be greater than 0 and lower or '
+                             'equal to {}'.format(self.index))
+
+
+remote_out_dir = RemoteOutDirDb()
+
+
 def _process_hosts_simple(action, host, manifest, verbose, cdist_path=None):
     if isinstance(host, str):
         hosts = [host, ]
@@ -80,6 +113,9 @@ def _process_hosts_simple(action, host, manifest, verbose, cdist_path=None):
     argv = [action, '-i', manifest, ]
     for i in range(verbose):
         argv.append('-v')
+    out_dir_index, out_dir = next(remote_out_dir)
+    cache_path_pattern = '%h-' + str(out_dir_index)
+    argv.extend(['-r', out_dir, '-C', cache_path_pattern, ])
     for x in hosts:
         argv.append(x)
 
@@ -93,8 +129,10 @@ def _process_hosts_simple(action, host, manifest, verbose, cdist_path=None):
     for target_host in args.host:
         host_base_path, hostdir = theclass.create_host_base_dirs(
             target_host, base_root_path)
-        theclass.onehost(target_host, None, host_base_path, hostdir, args,
-                         parallel=False)
+        config_obj = theclass.onehost(target_host, None, host_base_path,
+                                      hostdir, args, parallel=False)
+        config_obj.remote.rmdir(out_dir)
+        remote_out_dir.free(out_dir_index)
 
 
 def configure_hosts_simple(host, manifest,

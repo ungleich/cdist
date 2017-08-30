@@ -285,6 +285,7 @@ class Config(object):
         """Configure ONE system.
            If operating in parallel then return tuple (host, True|False, )
            so that main process knows for which host function was successful.
+           If operating in sequential mode then cls instance is returned.
         """
 
         log = logging.getLogger(host)
@@ -335,6 +336,8 @@ class Config(object):
 
         if parallel:
             return (host, True, )
+        else:
+            return c
 
     @staticmethod
     def create_base_root_path(out_path=None):
