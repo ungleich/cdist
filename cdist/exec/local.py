@@ -152,7 +152,9 @@ class Local(object):
         #     cdist_path_dirs.reverse()
         #     self.conf_dirs.extend(cdist_path_dirs)
         if 'conf_dir' in self.configuration:
-            self.conf_dirs.extend(self.configuration['conf_dir'])
+            conf_dirs = self.configuration['conf_dir']
+            if conf_dirs:
+                self.conf_dirs.extend(conf_dirs)
 
         # Add command line supplied directories
         if self._add_conf_dirs:
