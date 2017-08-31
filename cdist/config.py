@@ -299,7 +299,6 @@ class Config(object):
            so that main process knows for which host function was successful.
         """
 
-        print(args.cache_path_pattern)
         log = logging.getLogger(host)
 
         try:
