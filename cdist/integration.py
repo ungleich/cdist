@@ -35,7 +35,7 @@ import sys
 import os
 import os.path
 import collections
-import multiprocessing
+import uuid
 
 
 def find_cdist_exec_in_path():
@@ -66,37 +66,7 @@ ACTION_CONFIG = 'config'
 ACTION_INSTALL = 'install'
 
 
-class InstanceIndexDb:
-
-    def __init__(self, base_name=None):
-        self.index = 0
-        self.free_indexes = set()
-        self.lock = multiprocessing.Lock()
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        with self.lock:
-            if self.free_indexes:
-                index = self.free_indexes.pop()
-            else:
-                self.index += 1
-                index = self.index
-        return index
-
-    def free(self, index):
-        if index > 0 and index <= self.index:
-            self.free_indexes.add(index)
-        else:
-            raise ValueError('index must be greater than 0 and lower or '
-                             'equal to {}'.format(self.index))
-
-
-instance_index = InstanceIndexDb()
-
-
-def _process_hosts_simple(action, host, index, manifest, verbose,
+def _process_hosts_simple(action, host, manifest, verbose,
                           cdist_path=None):
     if isinstance(host, str):
         hosts = [host, ]
@@ -104,16 +74,6 @@ def _process_hosts_simple(action, host, index, manifest, verbose,
         hosts = host
     else:
         raise cdist.Error('Invalid host argument: {}'.format(host))
-
-    remote_out_dir_base = os.path.join('/', 'var', 'lib', 'cdist')
-    if index is not None:
-        out_dir = remote_out_dir_base + str(index)
-        cache_path_pattern = '%h-' + str(index)
-        argv_ext = ['-r', out_dir, '-C', cache_path_pattern, ]
-    else:
-        out_dir = None
-        cache_path_pattern = None
-        argv_ext = []
 
     # Setup sys.argv[0] since cdist relies on command line invocation.
     if not cdist_path:
@@ -124,11 +84,14 @@ def _process_hosts_simple(action, host, index, manifest, verbose,
     module = getattr(cdist, action)
     theclass = getattr(module, cname)
 
-    # Build argv for cdist - using argparse for argument parsing.
-    argv = [action, '-i', manifest, ]
+    # Build argv for cdist and use argparse for argument parsing.
+    remote_out_dir_base = os.path.join('/', 'var', 'lib', 'cdist')
+    uid = str(uuid.uuid1())
+    out_dir = remote_out_dir_base + uid
+    cache_path_pattern = '%h-' + uid
+    argv = [action, '-i', manifest, '-r', out_dir, '-C', cache_path_pattern, ]
     for i in range(verbose):
         argv.append('-v')
-    argv.extend(argv_ext)
     for x in hosts:
         argv.append(x)
 
@@ -147,33 +110,27 @@ def _process_hosts_simple(action, host, index, manifest, verbose,
                          remove_remote_files_dirs=True)
 
 
-def configure_hosts_simple(host, manifest, index=None,
+def configure_hosts_simple(host, manifest,
                            verbose=cdist.argparse.VERBOSE_INFO,
                            cdist_path=None):
     """Configure hosts with specified manifest using default other cdist
        options. host parameter can be a string or iterbale of hosts.
        cdist_path is path to cdist executable, if it is None then integration
        lib tries to find it.
-       If index is not None then this is the index of an instance running
-       for a host. Internally, this is used so that more than one instance
-       of cdist can be run for a specified host.
     """
-    _process_hosts_simple(action=ACTION_CONFIG, host=host, index=index,
+    _process_hosts_simple(action=ACTION_CONFIG, host=host,
                           manifest=manifest, verbose=verbose,
                           cdist_path=cdist_path)
 
 
-def install_hosts_simple(host, manifest, index=None,
+def install_hosts_simple(host, manifest,
                          verbose=cdist.argparse.VERBOSE_INFO,
                          cdist_path=None):
     """Install hosts with specified manifest using default other cdist
        options. host parameter can be a string or iterbale of hosts.
        cdist_path is path to cdist executable, if it is None then integration
        lib tries to find it.
-       If index is not None then this is the index of an instance running
-       for a host. Internally, this is used so that more than one instance
-       of cdist can be run for a specified host.
     """
-    _process_hosts_simple(action=ACTION_INSTALL, host=host, index=index,
+    _process_hosts_simple(action=ACTION_INSTALL, host=host,
                           manifest=manifest, verbose=verbose,
                           cdist_path=cdist_path)
