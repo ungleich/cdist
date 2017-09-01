@@ -34,7 +34,7 @@ Examples
     >>> cdist.integration.configure_hosts_simple('185.203.114.185',
     ...                                          '~/.cdist/manifest/init')
 
-    # configure host from python interactive shell, specifiying verbosity level
+    # configure host from python interactive shell, specifying verbosity level
     >>> import cdist.integration
     >>> cdist.integration.configure_hosts_simple(
     ...     '185.203.114.185', '~/.cdist/manifest/init',
