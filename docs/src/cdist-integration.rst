@@ -15,9 +15,10 @@ functions:
 Functions require `host` and `manifest` parameters.
 `host` can be specified as a string representing host or as iterable
 of hosts. `manifest` is a path to initial manifest. For other cdist
-options default values will be used. `cdist_path` parameter specifies
+options default values will be used. `verbose` is a desired verbosity
+level which defaults to VERBOSE_INFO. `cdist_path` parameter specifies
 path to cdist executable, if it is `None` then functions will try to
-find it first in local lib directory and then in PATH.
+find it first from local lib directory and then in PATH.
 
 In case of cdist error :strong:`cdist.Error` exception is raised.
 
