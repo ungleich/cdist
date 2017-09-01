@@ -39,6 +39,8 @@ import uuid
 
 
 def find_cdist_exec_in_path():
+    """Search cdist executable in os.get_exec_path() entries.
+    """
     for path in os.get_exec_path():
         cdist_path = os.path.join(path, 'cdist')
         if os.access(cdist_path, os.X_OK):
@@ -50,6 +52,13 @@ _mydir = os.path.dirname(__file__)
 
 
 def find_cdist_exec():
+    """Search cdist executable starting from local lib directory.
+
+    Detect if ../scripts/cdist (from local lib direcotry) exists and
+    if it is executable. If not then try to find cdist exec path in
+    os.get_exec_path() entries. If no cdist path is found rasie
+    cdist.Error.
+    """
     cdist_path = os.path.abspath(os.path.join(_mydir, '..', 'scripts',
                                               'cdist'))
     if os.access(cdist_path, os.X_OK):
@@ -68,6 +77,12 @@ ACTION_INSTALL = 'install'
 
 def _process_hosts_simple(action, host, manifest, verbose,
                           cdist_path=None):
+    """Perform cdist action ('config' or 'install') on hosts with specified
+       manifest using default other cdist options. host parameter can be a
+       string or iterbale of hosts. verbose is a desired verbosity level
+       which defaults to VERBOSE_INFO. cdist_path is path to cdist executable,
+       if it is None then integration lib tries to find it.
+    """
     if isinstance(host, str):
         hosts = [host, ]
     elif isinstance(host, collections.Iterable):
@@ -114,7 +129,8 @@ def configure_hosts_simple(host, manifest,
                            verbose=cdist.argparse.VERBOSE_INFO,
                            cdist_path=None):
     """Configure hosts with specified manifest using default other cdist
-       options. host parameter can be a string or iterbale of hosts.
+       options. host parameter can be a string or iterbale of hosts. verbose
+       is a desired verbosity level which defaults to VERBOSE_INFO.
        cdist_path is path to cdist executable, if it is None then integration
        lib tries to find it.
     """
@@ -127,7 +143,8 @@ def install_hosts_simple(host, manifest,
                          verbose=cdist.argparse.VERBOSE_INFO,
                          cdist_path=None):
     """Install hosts with specified manifest using default other cdist
-       options. host parameter can be a string or iterbale of hosts.
+       options. host parameter can be a string or iterbale of hosts. verbose
+       is a desired verbosity level which defaults to VERBOSE_INFO.
        cdist_path is path to cdist executable, if it is None then integration
        lib tries to find it.
     """
