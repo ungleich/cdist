@@ -473,21 +473,20 @@ usage. Its primary use is for debugging type parameters.
     be POSIX compatible shell.
 
 
-CONFIGURATION FILE
-------------------
+CONFIGURATION
+-------------
 cdist obtains configuration data from the following sources in the following
-order:
+order (from higher to lower precedence):
 
     #. command-line options
     #. configuration file specified at command-line
     #. configuration file specified in CDIST_CONFIG_FILE environment variable
     #. environment variables
-    #. user's configuration file (first one found of ~/.cdist.cfg,
-           $XDG_CONFIG_HOME/cdist/cdist.cfg, in specified order)
-    #. system-wide configuration file (/etc/cdist.cfg)
+    #. user's configuration file (first one found of ~/.cdist.cfg, $XDG_CONFIG_HOME/cdist/cdist.cfg, in specified order)
+    #. system-wide configuration file (/etc/cdist.cfg).
 
-if one exists.
-
+CONFIGURATION FILE FORMAT
+~~~~~~~~~~~~~~~~~~~~~~~~~
 cdist configuration file is in the INI file format. Currently it supports
 only [GLOBAL] section.
 The possible keywords and their meanings are as follows:
