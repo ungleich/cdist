@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Core: Add configuration/config file support (Darko Poljak)
+	* Core: Implement simple integration API (unstable) (Darko Poljak)
 
 4.6.1: 2017-08-30
 	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)
