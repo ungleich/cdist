@@ -63,9 +63,10 @@ class ConfigurationOptionsTestCase(test.CdistTestCase):
             ),
         )
         for currval, newval, update_appends, expected in test_cases:
-            self.assertEqual(option.update_value(currval, newval,
-                                                 update_appends=update_appends),
-                             expected)
+            self.assertEqual(
+                option.update_value(currval, newval,
+                                    update_appends=update_appends),
+                expected)
 
     def test_StringOption(self):
         option = cc.StringOption('test')

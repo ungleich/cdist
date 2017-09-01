@@ -32,7 +32,7 @@ class Singleton(type):
     instance = None
 
     def __call__(cls, *args, **kwargs):
-        if 'singleton' in kwargs and kwargs['singleton'] == False:
+        if 'singleton' in kwargs and not kwargs['singleton']:
             return super(Singleton, cls).__call__(*args, **kwargs)
         else:
             if not cls.instance:
