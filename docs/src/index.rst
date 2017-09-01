@@ -18,6 +18,7 @@ Contents:
    cdist-quickstart
    man1/cdist
    cdist-bootstrap
+   cdist-configuration
    cdist-manifest
    cdist-type
    cdist-types
