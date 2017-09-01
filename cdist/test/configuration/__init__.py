@@ -236,8 +236,15 @@ class ConfigurationTestCase(test.CdistTestCase):
         x = cc.Configuration(None)
         args = argparse.Namespace()
         args.a = 'a'
-        y = cc.Configuration()
+        y = cc.Configuration(args)
         self.assertIs(x, y)
+
+    def test_non_singleton(self):
+        x = cc.Configuration(None, singleton=False)
+        args = argparse.Namespace()
+        args.a = 'a'
+        y = cc.Configuration(args, singleton=False)
+        self.assertIsNot(x, y)
 
     def test_read_config_file(self):
         config = cc.Configuration(None, env={}, config_files=())

@@ -73,8 +73,6 @@ def check_beta(args_dict):
 
 
 def check_positive_int(value):
-    import argparse
-
     try:
         val = int(value)
     except ValueError:
@@ -416,10 +414,10 @@ def handle_loglevel(args):
     logging.root.setLevel(_verbosity_level[args.verbose])
 
 
-def parse_and_configure(argv):
+def parse_and_configure(argv, singleton=True):
     parser = get_parsers()
     parser_args = parser['main'].parse_args(argv)
-    cfg = cdist.configuration.Configuration(parser_args)
+    cfg = cdist.configuration.Configuration(parser_args, singleton=singleton)
     args = cfg.get_args()
     # Loglevels are handled globally in here
     handle_loglevel(args)

@@ -45,7 +45,7 @@ class Config(object):
     """Cdist main class to hold arbitrary data"""
 
     def __init__(self, local, remote, dry_run=False, jobs=None,
-                 cleanup_cmds=None):
+                 cleanup_cmds=None, remove_remote_files_dirs=False):
 
         self.local = local
         self.remote = remote
@@ -56,6 +56,7 @@ class Config(object):
             self.cleanup_cmds = cleanup_cmds
         else:
             self.cleanup_cmds = []
+        self.remove_remote_files_dirs = remove_remote_files_dirs
 
         self.explorer = core.Explorer(self.local.target_host, self.local,
                                       self.remote, jobs=self.jobs)
@@ -66,6 +67,15 @@ class Config(object):
         """Prepare files and directories for the run"""
         self.local.create_files_dirs()
         self.remote.create_files_dirs()
+
+    def _remove_remote_files_dirs(self):
+        """Remove remote files and directories for the run"""
+        self.remote.remove_files_dirs()
+
+    def _remove_files_dirs(self):
+        """Remove files and directories for the run"""
+        if self.remove_remote_files_dirs:
+            self._remove_remote_files_dirs()
 
     @staticmethod
     def hosts(source):
@@ -283,7 +293,7 @@ class Config(object):
 
     @classmethod
     def onehost(cls, host, host_tags, host_base_path, host_dir_name, args,
-                parallel, configuration):
+                parallel, configuration, remove_remote_files_dirs=False):
         """Configure ONE system.
            If operating in parallel then return tuple (host, True|False, )
            so that main process knows for which host function was successful.
@@ -311,7 +321,8 @@ class Config(object):
                 add_conf_dirs=args.conf_dir,
                 cache_path_pattern=args.cache_path_pattern,
                 quiet_mode=args.quiet,
-                configuration=configuration)
+                configuration=configuration,
+                exec_path=sys.argv[0])
 
             remote = cdist.exec.remote.Remote(
                 target_host=target_host,
@@ -326,7 +337,8 @@ class Config(object):
             if cleanup_cmd:
                 cleanup_cmds.append(cleanup_cmd)
             c = cls(local, remote, dry_run=args.dry_run, jobs=args.jobs,
-                    cleanup_cmds=cleanup_cmds)
+                    cleanup_cmds=cleanup_cmds,
+                    remove_remote_files_dirs=remove_remote_files_dirs)
             c.run()
 
         except cdist.Error as e:
@@ -367,6 +379,7 @@ class Config(object):
         self.manifest.run_initial_manifest(self.local.initial_manifest)
         self.iterate_until_finished()
         self.cleanup()
+        self._remove_files_dirs()
 
         self.local.save_cache(start_time)
         self.log.info("Finished successful run in {:.2f} seconds".format(

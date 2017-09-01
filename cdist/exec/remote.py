@@ -116,6 +116,9 @@ class Remote(object):
         self.run(["chmod", "0700", self.base_path])
         self.mkdir(self.conf_path)
 
+    def remove_files_dirs(self):
+        self.rmdir(self.base_path)
+
     def rmfile(self, path):
         """Remove file on the remote side."""
         self.log.trace("Remote rm: %s", path)
