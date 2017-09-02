@@ -5,6 +5,9 @@ next:
 	* Core: Add configuration/config file support (Darko Poljak)
 	* Core: Implement simple integration API (unstable) (Darko Poljak)
 	* Explorer machine_type: Detect kvm on proxmox (Sven Wick)
+	* Types __prometheus_server, __prometheus_alertmanager: Bugfixes (Kamila Součková)
+	* New type: __prometheus_exporter (Kamila Součková)
+	* Type __daemontools: Improve it on FreeBSD (Kamila Součková)
 
 4.6.1: 2017-08-30
 	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)
