@@ -16,8 +16,8 @@ if [ -f "$__object/parameter/install-init-script" ]; then
 				freebsd)
 					__config_file /etc/rc.conf.d/svscan --source - <<-EOT
 						svscan_enable="YES"
-        				        svscan_servicedir="$servicedir"
-        				EOT
+						svscan_servicedir="$servicedir"
+					EOT
 					require="$require __package/$pkg __directory/$servicedir __config_file/etc/rc.conf.d/svscan" \
 					__process svscan --start 'service svscan start'
 				;;
