@@ -30,8 +30,8 @@ REAL_FLAGS="$(echo "$FLAGS" | sed -nE 's/^([^#]+).*/ --\1 \\/p')"
 __go_get github.com/prometheus/prometheus/cmd/...
 
 __user prometheus --system
-require="__user/prometheus" __directory "$storage_path" --owner prometheus
-require="__user/prometheus" __directory "$CONF_DIR" --owner prometheus
+require="__user/prometheus" __directory "$storage_path" --owner prometheus --parents
+require="__user/prometheus" __directory "$CONF_DIR"     --owner prometheus --parents
 
 __daemontools_service prometheus --run "setuidgid prometheus $GOBIN/prometheus $REAL_FLAGS"
 
