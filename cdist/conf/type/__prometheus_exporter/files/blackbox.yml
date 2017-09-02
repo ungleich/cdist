@@ -1,0 +1,63 @@
+modules:
+  http_2xx:
+    prober: http
+    timeout: 3s
+    http:
+      method: GET
+      no_follow_redirects: false
+      fail_if_ssl: false
+      fail_if_not_ssl: false
+  # http_post_2xx:
+  #   prober: http
+  #   timeout: 5s
+  #   http:
+  #     method: POST
+  #     headers:
+  #       Content-Type: application/json
+  #     body: '{}'
+  # tcp_connect_v4_example:
+  #   prober: tcp
+  #   timeout: 5s
+  #   tcp:
+  #     protocol: "tcp4"
+  # irc_banner_example:
+  #   prober: tcp
+  #   timeout: 5s
+  #   tcp:
+  #     query_response:
+  #       - send: "NICK prober"
+  #       - send: "USER prober prober prober :prober"
+  #       - expect: "PING :([^ ]+)"
+  #         send: "PONG ${1}"
+  #       - expect: "^:[^ ]+ 001"
+  # icmp_example:
+  #   prober: icmp
+  #   timeout: 5s
+  #   icmp:
+  #     protocol: "icmp"
+  #     preferred_ip_protocol: "ip4"
+  # dns_udp_example:
+  #   prober: dns
+  #   timeout: 5s
+  #   dns:
+  #     query_name: "www.prometheus.io"
+  #     query_type: "A"
+  #     valid_rcodes:
+  #     - NOERROR
+  #     validate_answer_rrs:
+  #       fail_if_matches_regexp:
+  #       - ".*127.0.0.1"
+  #       fail_if_not_matches_regexp:
+  #       - "www.prometheus.io.\t300\tIN\tA\t127.0.0.1"
+  #     validate_authority_rrs:
+  #       fail_if_matches_regexp:
+  #       - ".*127.0.0.1"
+  #     validate_additional_rrs:
+  #       fail_if_matches_regexp:
+  #       - ".*127.0.0.1"
+  # dns_tcp_example:
+  #   prober: dns
+  #   dns:
+  #     protocol: "tcp" # accepts "tcp/tcp4/tcp6/udp/udp4/udp6", defaults to "udp"
+  #     preferred_ip_protocol: "ip4" # used for "udp/tcp", defaults to "ip6"
+  #     query_name: "www.prometheus.io"
