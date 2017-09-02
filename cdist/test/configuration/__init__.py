@@ -1077,6 +1077,34 @@ class ConfigurationTestCase(test.CdistTestCase):
 
         self.assertEqual(dargs, expected_args)
 
+    def test_configuration_empty_value_in_file(self):
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'inventory_dir': '',
+            'conf_dir': '',
+        }
+
+        config_file = os.path.join(fixtures, 'cdist-local.cfg')
+        with open(config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'inventory_dir': None,
+                'conf_dir': None,
+            },
+        }
+
+        config_files = (config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        args = argparse.Namespace()
+        configuration = cc.Configuration(args, env={},
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
 
 if __name__ == "__main__":
     import unittest
