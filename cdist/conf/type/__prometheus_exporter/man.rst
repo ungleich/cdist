@@ -25,7 +25,7 @@ OPTIONAL PARAMETERS
 -------------------
 exporter
    Which exporter to install and configure. Default: $__object_id.
-   Currently supported: node, blackbox, ceph
+   Currently supported: node, blackbox, ceph.
 
 
 BOOLEAN PARAMETERS
@@ -47,8 +47,8 @@ EXAMPLES
 
 SEE ALSO
 --------
-:strong:`cdist-type__prometheus_server`\ (7), :strong:`cdist-type__daemontools`\ (7),
-:strong:`cdist-type__golang_from_vendor`\ (7),
+:strong:`cdist-type__daemontools`\ (7), :strong:`cdist-type__golang_from_vendor`\ (7),
+:strong:`cdist-type__prometheus_server`\ (7),
 Prometheus documentation: https://prometheus.io/docs/introduction/overview/
 
 AUTHORS
