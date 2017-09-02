@@ -21,10 +21,15 @@ OPTIONAL PARAMETERS
 from-package
    Package to install. Must be compatible with the original daemontools. Example: daemontools-encore. Default: daemontools.
 
+servicedir
+   Directory to scan for services. Default: `/service`
+
+
 BOOLEAN PARAMETERS
 ------------------
 install-init-script
    Add an init script and set it to start on boot.
+
 
 EXAMPLES
 --------

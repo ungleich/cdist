@@ -1,17 +1,34 @@
 #!/bin/sh -e
 
 pkg=$(cat "$__object/parameter/from-package")
+servicedir=$(cat "$__object/parameter/servicedir")
 
 __package $pkg
+__directory $servicedir --mode 755
 
 if [ -f "$__object/parameter/install-init-script" ]; then
+	os=$(cat "$__global/explorer/os")
 	init=$(cat "$__global/explorer/init")
+
 	case $init in
 		init)
-			__config_file /etc/init.d/svscan --mode 755 --source "$__type/files/init.d-svscan"
-			require="$require __config_file/etc/init.d/svscan" __start_on_boot svscan
-			require="$require __start_on_boot/svscan" __process svscan --start 'service svscan start'
-		;;
+			case $os in
+				freebsd)
+					__config_file /etc/rc.conf.d/svscan --source - <<-EOT
+						svscan_enable="YES"
+						svscan_servicedir="$servicedir"
+					EOT
+					require="$require __package/$pkg __directory/$servicedir __config_file/etc/rc.conf.d/svscan" \
+					__process svscan --start 'service svscan start'
+				;;
+				*)
+					__config_file /etc/init.d/svscan --mode 755 --source "$__type/files/init.d-svscan"
+					require="$require __config_file/etc/init.d/svscan" __start_on_boot svscan
+					require="$require __package/$pkg __directory/$servicedir __start_on_boot/svscan" \
+					__process svscan --start 'service svscan start'
+				;;
+			esac
+			;;
 		*)
 			echo "Your init system ($init) is not supported by this type. Submit a patch at github.com/ungleich/cdist!"
 			exit 1
