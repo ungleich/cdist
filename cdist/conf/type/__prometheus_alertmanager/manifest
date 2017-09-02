@@ -21,13 +21,14 @@ REAL_FLAGS="$(echo "$FLAGS" | sed -nE 's/^([^#]+).*/ --\1 \\/p')"
 __go_get github.com/prometheus/alertmanager/cmd/...
 
 __user prometheus --system
-require="__user/prometheus" __directory "$storage_path" --owner prometheus
-require="__user/prometheus" __directory "$CONF_DIR" --owner prometheus
+require="__user/prometheus" __directory "$storage_path" --owner prometheus --parents
+require="__user/prometheus" __directory "$CONF_DIR"     --owner prometheus --parents
 
 __daemontools_service alertmanager --run "setuidgid prometheus $GOBIN/alertmanager $REAL_FLAGS"
 
 require="$require __directory/$storage_path __user/prometheus" \
 __config_file $CONF \
-    --source $config \
-    --group prometheus --mode 640 \
-    --onchange "$ONCHANGE"
+	--source $config \
+	--group prometheus --mode 640 \
+	--onchange "svc -h /service/alertmanager"  # TODO when a config-check tool is available, check config here
+
