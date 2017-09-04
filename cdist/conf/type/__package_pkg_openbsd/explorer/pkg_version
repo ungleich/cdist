@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011 Andi Brönnimann (andi-cdist at v-net.ch)
+# Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
 #
 # This file is part of cdist.
 #
@@ -28,4 +29,4 @@ else
 fi
 
 #TODO: Is there a better way?
-pkg_info | grep "$name" | sed 's .*\(-[0-9.][0-9.]*\).* \1 ' | sed 's/-//'
+pkg_info | grep "^$name-[0-9]" | sed 's|.*\(-[0-9][0-9.]*\).*|\1|' | sed 's/-//'
