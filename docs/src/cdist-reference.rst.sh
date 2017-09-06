@@ -198,6 +198,11 @@ Environment variables (for reading)
 -----------------------------------
 The following environment variables are exported by cdist:
 
+__cdist_loglevel
+    Value of cdist log level. One of 60, 40, 30, 20, 15, 10 and 5 where
+    the meaning is OFF, ERROR, WARNING, INFO, VERBOSE, DEBUG and TRACE,
+    respectively.
+    Available for: initial manifest, type manifest, type gencode.
 __explorer
     Directory that contains all global explorers.
     Available for: initial manifest, explorer, type explorer, shell.

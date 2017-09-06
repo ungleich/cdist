@@ -331,6 +331,14 @@ So when you generate a script with the following content, it will work:
     fi
 
 
+Log level in types
+------------------
+cdist log level can be accessed from __cdist_loglevel variable.
+Value is one of 60, 40, 30, 20, 15, 10 and 5 where the meaning is
+OFF, ERROR, WARNING, INFO, VERBOSE, DEBUG and TRACE, respectively.
+It is available for initial manifest, type manifest and type gencode.
+
+
 Hints for typewriters
 ----------------------
 It must be assumed that the target is pretty dumb and thus does not have high
