@@ -10,6 +10,7 @@ next:
 	* Type __daemontools: Improve it on FreeBSD (Kamila Součková)
 	* Type __package_pkg_openbsd: Fix use of --name (Philippe Gregoire)
 	* Type __package_pkg_openbsd: Fix pkg_version explorer (Philippe Gregoire)
+	* Documentation: Document __cdist_loglevel type variable (Darko Poljak)
 
 4.6.1: 2017-08-30
 	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)
