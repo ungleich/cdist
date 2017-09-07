@@ -391,7 +391,12 @@ class Config(object):
             cmd = cleanup_cmd.split()
             cmd.append(self.local.target_host[0])
             try:
-                self.local.run(cmd, return_output=False, save_output=False)
+                if self.log.getEffectiveLevel() <= logging.DEBUG:
+                    quiet_mode = False
+                else:
+                    quiet_mode = True
+                self.local.run(cmd, return_output=False, save_output=False,
+                               quiet_mode=quiet_mode)
             except cdist.Error as e:
                 # Log warning but continue.
                 self.log.warning("Cleanup command failed: %s", e)

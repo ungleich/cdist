@@ -201,7 +201,7 @@ class Local(object):
         os.makedirs(path, exist_ok=True)
 
     def run(self, command, env=None, return_output=False, message_prefix=None,
-            save_output=True):
+            save_output=True, quiet_mode=False):
         """Run the given command with the given environment.
         Return the output as a string.
 
@@ -226,7 +226,7 @@ class Local(object):
 
         self.log.trace("Local run: %s", command)
         try:
-            if self.quiet_mode:
+            if self.quiet_mode or quiet_mode:
                 stderr = subprocess.DEVNULL
             else:
                 stderr = None
@@ -242,7 +242,7 @@ class Local(object):
                 # In some cases no output is saved.
                 # This is used for shell command, stdout and stderr
                 # must not be catched.
-                if self.quiet_mode:
+                if self.quiet_mode or quiet_mode:
                     stdout = subprocess.DEVNULL
                 else:
                     stdout = None
