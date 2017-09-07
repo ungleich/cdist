@@ -649,9 +649,9 @@ class Config(object):
             cdist_object.changed = True
 
         # Execute
+        if cdist_object.code_local or cdist_object.code_remote:
+            self.log.info("Processing %s" % (cdist_object.name))
         if not self.dry_run:
-            if cdist_object.code_local or cdist_object.code_remote:
-                self.log.info("Processing %s" % (cdist_object.name))
             if cdist_object.code_local:
                 self.log.trace("Executing local code for %s"
                                % (cdist_object.name))
