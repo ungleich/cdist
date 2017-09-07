@@ -23,7 +23,7 @@ uri="$(cat "$__object/parameter/uri" 2>/dev/null \
 target="$(cat "$__object/parameter/target")"
 
 case "$__cdist_loglevel" in
-    10|5)  # DEBUG or TRACE
+    DEBUG|TRACE)
         curl="curl"
         tar="tar -xvzp"
     ;;

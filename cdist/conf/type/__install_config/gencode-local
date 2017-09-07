@@ -24,16 +24,16 @@ remote_copy="$__type/files/remote/copy"
 
 cdist_args=""
 case "$__cdist_loglevel" in
-   20)
+   INFO)
       cdist_args="-v"
    ;;
-   15)
+   VERBOSE)
       cdist_args="-vv"
    ;;
-   10)
+   DEBUG)
       cdist_args="-vvv"
    ;;
-   5)
+   TRACE)
       cdist_args="-vvvv"
    ;;
 esac
