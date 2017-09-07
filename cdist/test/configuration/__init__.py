@@ -286,7 +286,6 @@ class ConfigurationTestCase(test.CdistTestCase):
         args.tag = 'test'
 
         expected = {
-            'beta': False,
             'conf_dir': ['/usr/local/cdist1', ],
             'verbosity': 3,
         }
@@ -373,12 +372,13 @@ class ConfigurationTestCase(test.CdistTestCase):
         args = argparse.Namespace()
         expected_config_dict = {
             'GLOBAL': {
+                'verbosity': 0,
             },
         }
 
         # bypass singleton so we can test further
         cc.Configuration.instance = None
-        configuration = cc.Configuration(args, env=env)
+        configuration = cc.Configuration(args, env=env, config_files=('cdist.cfg'))
         self.assertIsNotNone(configuration.args)
         self.assertIsNotNone(configuration.env)
         self.assertIsNotNone(configuration.config_files)
@@ -668,6 +668,20 @@ class ConfigurationTestCase(test.CdistTestCase):
                                          config_files=config_files)
         self.assertEqual(configuration.config, expected_config_dict)
 
+    def test_update_defaults_for_unset(self):
+        config = {
+            'GLOBAL': {
+            },
+        }
+        expected_config = {
+            'GLOBAL': {
+                'verbosity': 0,
+            },
+        }
+        cfg = cc.Configuration(None, env={}, config_files=())
+        cfg._update_defaults_for_unset(config)
+        self.assertEqual(config, expected_config)
+
     def test_configuration6(self):
         env = {
             'PATH': '/usr/local/bin:/usr/bin:/bin',
@@ -725,6 +739,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         args.conf_dir = ['/opt/sysadmin/cdist/conf', ]
         args.manifest = '/opt/sysadmin/cdist/conf/manifest/init'
         args.jobs = 10
+        args.verbose = None
 
         expected_config_dict = {
             'GLOBAL': {
@@ -1092,6 +1107,7 @@ class ConfigurationTestCase(test.CdistTestCase):
             'GLOBAL': {
                 'inventory_dir': None,
                 'conf_dir': None,
+                'verbosity': 0,
             },
         }
 

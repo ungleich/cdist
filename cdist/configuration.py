@@ -285,6 +285,11 @@ class Configuration(metaclass=Singleton):
     ADJUST_ARG_OPTION_MAPPING = {
        _ARG_OPTION_MAPPING[key]: key for key in _ARG_OPTION_MAPPING
     }
+    REQUIRED_DEFAULT_CONFIG_VALUES = {
+        'GLOBAL': {
+            'verbosity': 0,
+        },
+    }
 
     def _convert_args(self, args):
         if args:
@@ -372,7 +377,8 @@ class Configuration(metaclass=Singleton):
         for option in self.ARG_OPTION_MAPPING:
             if option in args:
                 dst_opt = self.ARG_OPTION_MAPPING[option]
-                d[dst_opt] = args[option]
+                if args[option]:
+                    d[dst_opt] = args[option]
         return d
 
     def _update_config_dict(self, config, newconfig, update_appends=False):
@@ -393,6 +399,15 @@ class Configuration(metaclass=Singleton):
             option_object = self.CONFIG_FILE_OPTIONS[section][option]
             config[section][option] = option_object.update_value(
                 currval, newval, update_appends)
+
+    def _update_defaults_for_unset(self, config):
+        defaults = self.REQUIRED_DEFAULT_CONFIG_VALUES
+
+        for section in defaults:
+            section_values = defaults[section]
+            for option in section_values:
+                if option not in config[section]:
+                    config[section][option] = section_values[option]
 
     def _get_config(self):
         # global config file
@@ -421,4 +436,5 @@ class Configuration(metaclass=Singleton):
             for section in config:
                 self._update_config_dict_section(section, config, newconfig,
                                                  update_appends=True)
+        self._update_defaults_for_unset(config)
         return config

@@ -106,7 +106,7 @@ def get_parsers():
                   'The levels, in order from the lowest to the highest, are: '
                   'ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) '
                   'TRACE (4 or higher).'),
-            action='count', default=0)
+            action='count', default=None)
 
     parser['beta'] = argparse.ArgumentParser(add_help=False)
     parser['beta'].add_argument(
@@ -417,8 +417,11 @@ def handle_loglevel(args):
 def parse_and_configure(argv, singleton=True):
     parser = get_parsers()
     parser_args = parser['main'].parse_args(argv)
-    cfg = cdist.configuration.Configuration(parser_args, singleton=singleton)
-    args = cfg.get_args()
+    try:
+        cfg = cdist.configuration.Configuration(parser_args, singleton=singleton)
+        args = cfg.get_args()
+    except ValueError as e:
+        raise cdist.Error(str(e))
     # Loglevels are handled globally in here
     handle_loglevel(args)
 
