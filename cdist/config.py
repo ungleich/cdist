@@ -371,7 +371,8 @@ class Config(object):
         """Do what is most often done: deploy & cleanup"""
         start_time = time.time()
 
-        self.log.info("Starting configuration run")
+        self.log.info("Starting {} run".format(
+            'dry' if self.dry_run else 'configuration'))
 
         self._init_files_dirs()
 
@@ -382,7 +383,8 @@ class Config(object):
         self._remove_files_dirs()
 
         self.local.save_cache(start_time)
-        self.log.info("Finished successful run in {:.2f} seconds".format(
+        self.log.info("Finished {} run in {:.2f} seconds".format(
+                      'dry' if self.dry_run else 'successful',
                       time.time() - start_time))
 
     def cleanup(self):
@@ -666,9 +668,6 @@ class Config(object):
                                % (cdist_object.name))
                 self.code.transfer_code_remote(cdist_object)
                 self.code.run_code_remote(cdist_object)
-        elif cdist_object.code_local or cdist_object.code_remote:
-            self.log.info("Skipping code execution for %s due to DRY RUN",
-                          cdist_object.name)
 
         # Mark this object as done
         self.log.trace("Finishing run of " + cdist_object.name)
