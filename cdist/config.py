@@ -662,7 +662,7 @@ class Config(object):
                 self.code.transfer_code_remote(cdist_object)
                 self.code.run_code_remote(cdist_object)
         else:
-            self.log.verbose("Skipping code execution due to DRY RUN")
+            self.log.info("Skipping code execution due to DRY RUN")
 
         # Mark this object as done
         self.log.trace("Finishing run of " + cdist_object.name)
