@@ -666,8 +666,9 @@ class Config(object):
                                % (cdist_object.name))
                 self.code.transfer_code_remote(cdist_object)
                 self.code.run_code_remote(cdist_object)
-        else:
-            self.log.info("Skipping code execution due to DRY RUN")
+        elif cdist_object.code_local or cdist_object.code_remote:
+            self.log.info("Skipping code execution for %s due to DRY RUN",
+                          cdist_object.name)
 
         # Mark this object as done
         self.log.trace("Finishing run of " + cdist_object.name)
