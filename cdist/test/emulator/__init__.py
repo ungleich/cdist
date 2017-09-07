@@ -27,6 +27,7 @@ import shutil
 import string
 import filecmp
 import random
+import logging
 
 import cdist
 from cdist import test
@@ -63,6 +64,8 @@ class EmulatorTestCase(test.CdistTestCase):
         self.manifest = core.Manifest(self.target_host, self.local)
         self.env = self.manifest.env_initial_manifest(self.script)
         self.env['__cdist_object_marker'] = self.local.object_marker_name
+        if '__cdist_loglevel' in self.env:
+            del self.env['__cdist_loglevel']
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -114,6 +117,31 @@ class EmulatorTestCase(test.CdistTestCase):
         self.env['require'] = '__file/etc/*'
         emu = emulator.Emulator(argv, env=self.env)
         # if we get here all is fine
+
+    def test_loglevel(self):
+        argv = ['__file', '/tmp/foobar']
+        self.env['require'] = '__file/etc/*'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu_loglevel = emu.log.getEffectiveLevel()
+        self.assertEqual(emu_loglevel, logging.WARNING)
+        self.env['__cdist_loglevel'] = logging.getLevelName(logging.DEBUG)
+        emu = emulator.Emulator(argv, env=self.env)
+        emu_loglevel = emu.log.getEffectiveLevel()
+        self.assertEqual(emu_loglevel, logging.DEBUG)
+        del self.env['__cdist_loglevel']
+
+    def test_invalid_loglevel_value(self):
+        argv = ['__file', '/tmp/foobar']
+        self.env['require'] = '__file/etc/*'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu_loglevel = emu.log.getEffectiveLevel()
+        self.assertEqual(emu_loglevel, logging.WARNING)
+        # lowercase is invalid
+        self.env['__cdist_loglevel'] = 'debug'
+        emu = emulator.Emulator(argv, env=self.env)
+        emu_loglevel = emu.log.getEffectiveLevel()
+        self.assertEqual(emu_loglevel, logging.WARNING)
+        del self.env['__cdist_loglevel']
 
     def test_requirement_via_order_dependency(self):
         self.env['CDIST_ORDER_DEPENDENCY'] = 'on'

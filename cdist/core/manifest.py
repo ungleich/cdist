@@ -114,7 +114,7 @@ class Manifest(object):
         }
 
         self.env.update(
-            {'__cdist_loglevel': str(self.log.getEffectiveLevel())})
+            {'__cdist_loglevel': logging.getLevelName(self.log.getEffectiveLevel())})
 
     def _open_logger(self):
         self.log = logging.getLogger(self.target_host[0])
