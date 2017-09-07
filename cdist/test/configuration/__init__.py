@@ -378,7 +378,8 @@ class ConfigurationTestCase(test.CdistTestCase):
 
         # bypass singleton so we can test further
         cc.Configuration.instance = None
-        configuration = cc.Configuration(args, env=env, config_files=('cdist.cfg'))
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=('cdist.cfg'))
         self.assertIsNotNone(configuration.args)
         self.assertIsNotNone(configuration.env)
         self.assertIsNotNone(configuration.config_files)

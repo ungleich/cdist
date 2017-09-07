@@ -418,7 +418,8 @@ def parse_and_configure(argv, singleton=True):
     parser = get_parsers()
     parser_args = parser['main'].parse_args(argv)
     try:
-        cfg = cdist.configuration.Configuration(parser_args, singleton=singleton)
+        cfg = cdist.configuration.Configuration(parser_args,
+                                                singleton=singleton)
         args = cfg.get_args()
     except ValueError as e:
         raise cdist.Error(str(e))
