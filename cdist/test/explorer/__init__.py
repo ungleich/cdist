@@ -233,7 +233,7 @@ class ExplorerClassTestCase(test.CdistTestCase):
                          self.remote.global_explorer_path)
         self.assertEqual(output_dict['__target_host_tags'],
                          self.local.target_host_tags)
-        self.assertEqual(output_dict['__cdist_loglevel'], 'WARNING')
+        self.assertEqual(output_dict['__cdist_log_level'], 'WARNING')
 
 
 if __name__ == '__main__':

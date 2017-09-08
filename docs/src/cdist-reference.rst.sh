@@ -198,7 +198,7 @@ Environment variables (for reading)
 -----------------------------------
 The following environment variables are exported by cdist:
 
-__cdist_loglevel
+__cdist_log_level
     String value of cdist log level. One of OFF, ERROR, WARNING, INFO,
     VERBOSE, DEBUG and TRACE.
     Available for: initial manifest, explorer, type manifest, type explorer,
@@ -265,7 +265,7 @@ The following environment variables influence the behaviour of cdist:
 require
     Setup dependencies between objects (see \`cdist manifest <cdist-manifest.html>\`_).
 
-__cdist_loglevel
+__cdist_log_level
     String value of cdist log level. One of OFF, ERROR, WARNING, INFO,
     VERBOSE, DEBUG and TRACE. If set cdist will set this log level in
     accordance with configuration rules. If cdist invokation is used

@@ -37,5 +37,5 @@ def _ishidden(path):
     return path[0] in ('.', b'.'[0])
 
 
-def loglevel_env_var_val(log):
+def log_level_env_var_val(log):
     return logging.getLevelName(log.getEffectiveLevel())

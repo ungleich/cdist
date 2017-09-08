@@ -278,7 +278,7 @@ class Configuration(metaclass=Singleton):
         'CDIST_REMOTE_COPY': 'remote_copy',
         'CDIST_INVENTORY_DIR': 'inventory_dir',
         'CDIST_CACHE_PATH_PATTERN': 'cache_path_pattern',
-        '__cdist_loglevel': 'verbosity',
+        '__cdist_log_level': 'verbosity',
     }
     ENV_VAR_BOOLEAN_OPTIONS = ('CDIST_BETA', )
 

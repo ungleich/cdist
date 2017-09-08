@@ -112,7 +112,7 @@ class Manifest(object):
             '__target_fqdn': self.target_host[2],
             '__files': self.local.files_path,
             '__target_host_tags': self.local.target_host_tags,
-            '__cdist_loglevel': util.loglevel_env_var_val(self.log),
+            '__cdist_log_level': util.log_level_env_var_val(self.log),
         }
 
     def _open_logger(self):

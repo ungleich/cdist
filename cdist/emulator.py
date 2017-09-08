@@ -109,9 +109,9 @@ class Emulator(object):
     def __init_log(self):
         """Setup logging facility"""
 
-        if '__cdist_loglevel' in self.env:
+        if '__cdist_log_level' in self.env:
             try:
-                loglevel = self.env['__cdist_loglevel']
+                loglevel = self.env['__cdist_log_level']
                 # For a text level it returns its numerical value.
                 level = logging.getLevelName(loglevel)
             except ValueError:
@@ -121,7 +121,7 @@ class Emulator(object):
         try:
             logging.root.setLevel(level)
         except (ValueError, TypeError):
-            # if invalid __cdist_loglevel value
+            # if invalid __cdist_log_level value
             logging.root.setLevel(logging.WARNING)
 
         self.log = logging.getLogger(self.target_host[0])
