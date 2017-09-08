@@ -3,6 +3,7 @@ import cdist
 import multiprocessing
 import logging
 import collections
+import functools
 import cdist.configuration
 
 
@@ -72,27 +73,15 @@ def check_beta(args_dict):
                     raise cdist.CdistBetaRequired(cmd, arg)
 
 
-def check_positive_int(value):
+def check_lower_bounded_int(value, lower_bound, name):
     try:
         val = int(value)
     except ValueError:
         raise argparse.ArgumentTypeError(
                 "{} is invalid int value".format(value))
-    if val <= 0:
+    if val < lower_bound:
         raise argparse.ArgumentTypeError(
-                "{} is invalid positive int value".format(val))
-    return val
-
-
-def check_loglevel(value):
-    try:
-        val = int(value)
-    except ValueError:
-        raise argparse.ArgumentTypeError(
-                "{} is invalid int value".format(value))
-    if val < -1:
-        raise argparse.ArgumentTypeError(
-                "{} is invalid log level value".format(val))
+                "{} is invalid {} value".format(val, name))
     return val
 
 
@@ -108,7 +97,8 @@ def get_parsers():
     parser['loglevel'] = argparse.ArgumentParser(add_help=False)
     parser['loglevel'].add_argument(
             '-l', '--log-level', metavar='LOGLEVEL',
-            type=check_loglevel,
+            type=functools.partial(check_lower_bounded_int, lower_bound=-1,
+                                   name="log level"),
             help=('Set the specified verbosity level. '
                   'The levels, in order from the lowest to the highest, are: '
                   'ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) '
@@ -188,7 +178,8 @@ def get_parsers():
            dest='manifest', required=False)
     parser['config_main'].add_argument(
            '-j', '--jobs', nargs='?',
-           type=check_positive_int,
+           type=functools.partial(check_lower_bounded_int, lower_bound=1,
+                                  name="positive int"),
            help=('Operate in parallel in specified maximum number of jobs. '
                  'Global explorers, object prepare and object run are '
                  'supported. Without argument CPU count is used by default. '
@@ -253,7 +244,8 @@ def get_parsers():
             dest='hostfile', required=False)
     parser['config_args'].add_argument(
            '-p', '--parallel', nargs='?', metavar='HOST_MAX',
-           type=check_positive_int,
+           type=functools.partial(check_lower_bounded_int, lower_bound=1,
+                                  name="positive int"),
            help=('Operate on multiple hosts in parallel for specified maximum '
                  'hosts at a time. Without argument CPU count is used by '
                  'default.'),
