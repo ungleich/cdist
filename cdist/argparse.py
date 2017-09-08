@@ -84,6 +84,18 @@ def check_positive_int(value):
     return val
 
 
+def check_loglevel(value):
+    try:
+        val = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+                "{} is invalid int value".format(value))
+    if val < -1:
+        raise argparse.ArgumentTypeError(
+                "{} is invalid log level value".format(val))
+    return val
+
+
 def get_parsers():
     global parser
 
@@ -95,6 +107,16 @@ def get_parsers():
     # Options _all_ parsers have in common
     parser['loglevel'] = argparse.ArgumentParser(add_help=False)
     parser['loglevel'].add_argument(
+            '-l', '--log-level', metavar='LOGLEVEL',
+            type=check_loglevel,
+            help=('Set the specified verbosity level. '
+                  'The levels, in order from the lowest to the highest, are: '
+                  'ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) '
+                  'TRACE (4 or higher). If used along with -v then -v '
+                  'increases last set value and -l overwrites last set '
+                  'value.'),
+            action='store', dest='verbose', required=False)
+    parser['loglevel'].add_argument(
             '-q', '--quiet',
             help='Quiet mode: disables logging, including WARNING and ERROR.',
             action='store_true', default=False)
@@ -105,7 +127,9 @@ def get_parsers():
                   'is 0 which includes ERROR and WARNING levels. '
                   'The levels, in order from the lowest to the highest, are: '
                   'ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) '
-                  'TRACE (4 or higher).'),
+                  'TRACE (4 or higher). If used along with -l then -l '
+                  'overwrites last set value and -v increases last set '
+                  'value.'),
             action='count', default=None)
 
     parser['beta'] = argparse.ArgumentParser(add_help=False)

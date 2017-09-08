@@ -28,3 +28,4 @@ from cdist.core.explorer import Explorer
 from cdist.core.manifest import Manifest
 from cdist.core.code import Code
 from cdist.core.util import listdir
+from cdist.core.util import loglevel_env_var_val

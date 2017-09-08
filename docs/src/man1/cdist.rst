@@ -11,11 +11,12 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-q] [-v] [-V] {banner,config,install,inventory,shell} ...
+    cdist [-h] [-l LOGLEVEL] [-q] [-v] [-V]
+          {banner,config,install,inventory,shell} ...
 
-    cdist banner [-h] [-q] [-v]
+    cdist banner [-h] [-l LOGLEVEL] [-q] [-v]
 
-    cdist config [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+    cdist config [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
                  [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
                  [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                  [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
@@ -23,7 +24,7 @@ SYNOPSIS
                  [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                  [host [host ...]] 
 
-    cdist install [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+    cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
                   [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
                   [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                   [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
@@ -31,32 +32,35 @@ SYNOPSIS
                   [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                   [host [host ...]] 
 
-    cdist inventory [-h] [-q] [-v] [-b] [-g CONFIG_FILE] [-I INVENTORY_DIR]
+    cdist inventory [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
+                    [-I INVENTORY_DIR]
                     {add-host,add-tag,del-host,del-tag,list} ...
 
-    cdist inventory add-host [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
-                             [-I INVENTORY_DIR] [-f HOSTFILE]
+    cdist inventory add-host [-h] [-l LOGLEVEL] [-q] [-v] [-b]
+                             [-g CONFIG_FILE] [-I INVENTORY_DIR]
+                             [-f HOSTFILE]
                              [host [host ...]]
 
-    cdist inventory add-tag [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
-                            [-I INVENTORY_DIR] [-f HOSTFILE] [-T TAGFILE]
-                            [-t TAGLIST]
+    cdist inventory add-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b]
+                            [-g CONFIG_FILE] [-I INVENTORY_DIR]
+                            [-f HOSTFILE] [-T TAGFILE] [-t TAGLIST]
                             [host [host ...]]
 
-    cdist inventory del-host [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
-                             [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
+    cdist inventory del-host [-h] [-l LOGLEVEL] [-q] [-v] [-b]
+                             [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a]
+                             [-f HOSTFILE]
                              [host [host ...]]
 
-    cdist inventory del-tag [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
-                            [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
-                            [-T TAGFILE] [-t TAGLIST]
+    cdist inventory del-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b]
+                            [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a]
+                            [-f HOSTFILE] [-T TAGFILE] [-t TAGLIST]
                             [host [host ...]]
 
-    cdist inventory list [-h] [-q] [-v] [-b] [-g CONFIG_FILE]
+    cdist inventory list [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
                          [-I INVENTORY_DIR] [-a] [-f HOSTFILE] [-H] [-t]
                          [host [host ...]]
 
-    cdist shell [-h] [-q] [-v] [-s SHELL]
+    cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [-s SHELL]
 
 
 DESCRIPTION
@@ -75,16 +79,28 @@ All commands accept the following options:
 
     Show the help screen.
 
+.. option:: -l LOGLEVEL, --log-level LOGLEVEL
+
+    Set the specified verbosity level. The levels, in
+    order from the lowest to the highest, are: ERROR (-1),
+    WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) TRACE (4
+    or higher). If used along with -v then -v increases
+    last set value and -l overwrites last set value.
+
 .. option:: -q, --quiet
 
     Quiet mode: disables logging, including WARNING and ERROR.
 
 .. option:: -v, --verbose
 
-    Increase the verbosity level. Every instance of -v increments the verbosity
-    level by one. Its default value is 0 which includes ERROR and WARNING levels.
-    The levels, in order from the lowest to the highest, are: 
-    ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) TRACE (4 or higher).
+    Increase the verbosity level. Every instance of -v
+    increments the verbosity level by one. Its default
+    value is 0 which includes ERROR and WARNING levels.
+    The levels, in order from the lowest to the highest,
+    are: ERROR (-1), WARNING (0), INFO (1), VERBOSE (2),
+    DEBUG (3) TRACE (4 or higher). If used along with -l
+    then -l overwrites last set value and -v increases
+    last set value.
 
 .. option:: -V, --version
 

@@ -335,7 +335,8 @@ Log level in types
 ------------------
 cdist log level can be accessed from __cdist_loglevel variable.
 Value is a string, one of OFF, ERROR, WARNING, INFO, VERBOSE, DEBUG and
-TRACE. It is available for initial manifest, type manifest and type gencode.
+TRACE. It is available for initial manifest, explorer, type manifest,
+type explorer, type gencode.
 
 
 Hints for typewriters

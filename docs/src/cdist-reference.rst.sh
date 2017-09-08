@@ -201,7 +201,8 @@ The following environment variables are exported by cdist:
 __cdist_loglevel
     String value of cdist log level. One of OFF, ERROR, WARNING, INFO,
     VERBOSE, DEBUG and TRACE.
-    Available for: initial manifest, type manifest, type gencode.
+    Available for: initial manifest, explorer, type manifest, type explorer,
+    type gencode.
 __explorer
     Directory that contains all global explorers.
     Available for: initial manifest, explorer, type explorer, shell.
@@ -263,6 +264,13 @@ The following environment variables influence the behaviour of cdist:
 
 require
     Setup dependencies between objects (see \`cdist manifest <cdist-manifest.html>\`_).
+
+__cdist_loglevel
+    String value of cdist log level. One of OFF, ERROR, WARNING, INFO,
+    VERBOSE, DEBUG and TRACE. If set cdist will set this log level in
+    accordance with configuration rules. If cdist invokation is used
+    in types then nested cdist will honor this specified log level if
+    not specified otherwise while invoking it.
 
 CDIST_PATH
     Colon delimited list of config directories.

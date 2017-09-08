@@ -24,6 +24,7 @@ import logging
 import os
 
 import cdist
+from . import util
 
 '''
 common:
@@ -111,11 +112,8 @@ class Manifest(object):
             '__target_fqdn': self.target_host[2],
             '__files': self.local.files_path,
             '__target_host_tags': self.local.target_host_tags,
+            '__cdist_loglevel': util.loglevel_env_var_val(self.log),
         }
-
-        self.env.update(
-            {'__cdist_loglevel': logging.getLevelName(
-                self.log.getEffectiveLevel())})
 
     def _open_logger(self):
         self.log = logging.getLogger(self.target_host[0])

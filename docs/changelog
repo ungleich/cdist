@@ -13,6 +13,8 @@ next:
 	* Documentation: Document __cdist_loglevel type variable (Darko Poljak)
 	* Type __install_stage: Fix __debug -> __cdist_loglevel (Darko Poljak)
 	* Core, types: Make __cdist_loglevel value more expressive (Darko Poljak)
+	* Core: Add -l/--log-level option (Darko Poljak)
+	* Core: Make cdist honor __cdist_loglevel env var (Darko Poljak)
 
 4.6.1: 2017-08-30
 	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)

@@ -210,6 +210,31 @@ class ExplorerClassTestCase(test.CdistTestCase):
         self.assertEqual(names, output)
         shutil.rmtree(out_path)
 
+    def test_explorer_environment(self):
+        cdist_type = core.CdistType(self.local.type_path, '__dump_env')
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path,
+                                        self.local.object_marker_name,
+                                        'whatever')
+        self.explorer.transfer_type_explorers(cdist_type)
+        output = self.explorer.run_type_explorer('dump', cdist_object)
+
+        output_dict = {}
+        for line in output.split('\n'):
+            if line:
+                key, value = line.split(': ')
+                output_dict[key] = value
+        self.assertEqual(output_dict['__target_host'],
+                         self.local.target_host[0])
+        self.assertEqual(output_dict['__target_hostname'],
+                         self.local.target_host[1])
+        self.assertEqual(output_dict['__target_fqdn'],
+                         self.local.target_host[2])
+        self.assertEqual(output_dict['__explorer'],
+                         self.remote.global_explorer_path)
+        self.assertEqual(output_dict['__target_host_tags'],
+                         self.local.target_host_tags)
+        self.assertEqual(output_dict['__cdist_loglevel'], 'WARNING')
+
 
 if __name__ == '__main__':
     import unittest

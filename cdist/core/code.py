@@ -22,6 +22,7 @@
 #
 
 import os
+from . import util
 
 
 '''
@@ -107,6 +108,7 @@ class Code(object):
             '__global': self.local.base_path,
             '__files': self.local.files_path,
             '__target_host_tags': self.local.target_host_tags,
+            '__cdist_loglevel': util.loglevel_env_var_val(local.log),
         }
 
     def _run_gencode(self, cdist_object, which):
