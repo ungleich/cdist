@@ -27,7 +27,7 @@ import os.path as op
 import argparse
 from cdist import test
 import cdist.argparse as cap
-
+import logging
 
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
@@ -123,6 +123,18 @@ class ConfigurationOptionsTestCase(test.CdistTestCase):
         value = 'spam:eggs::ham'
         self.assertEqual(converter(value), ['spam', 'eggs', 'ham', ])
         self.assertIsNone(converter(''))
+
+    def test_LogLevelOption(self):
+        option = cc.LogLevelOption()
+        converter = option.converter()
+        value = str(logging.DEBUG)
+        conv_val = converter(value)
+        self.assertEqual(conv_val, cap.VERBOSE_DEBUG)
+        value = str(logging.INFO)
+        conv_val = converter(value)
+        self.assertEqual(conv_val, cap.VERBOSE_INFO)
+        for value in ('11', '80', 'a'):
+            self.assertRaises(ValueError, converter, value)
 
 
 class ConfigurationTestCase(test.CdistTestCase):
@@ -234,17 +246,17 @@ class ConfigurationTestCase(test.CdistTestCase):
             os.remove(custom_config_file)
 
     def test_singleton(self):
-        x = cc.Configuration(None)
+        x = cc.Configuration(None, env={}, config_files=())
         args = argparse.Namespace()
         args.a = 'a'
-        y = cc.Configuration(args)
+        y = cc.Configuration(args, env={}, config_files=())
         self.assertIs(x, y)
 
     def test_non_singleton(self):
-        x = cc.Configuration(None, singleton=False)
+        x = cc.Configuration(None, env={}, config_files=(), singleton=False)
         args = argparse.Namespace()
         args.a = 'a'
-        y = cc.Configuration(args, singleton=False)
+        y = cc.Configuration(args, env={}, config_files=(),  singleton=False)
         self.assertIsNot(x, y)
 
     def test_read_config_file(self):
@@ -1121,6 +1133,39 @@ class ConfigurationTestCase(test.CdistTestCase):
         configuration = cc.Configuration(args, env={},
                                          config_files=config_files)
         self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration_cdist_log_level_env_var(self):
+        env = {
+            '__cdist_log_level': str(logging.DEBUG),
+        }
+        args = argparse.Namespace()
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'verbosity': cap.VERBOSE_DEBUG,
+            },
+        }
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        configuration = cc.Configuration(args, env=env,
+                                         config_files=())
+        self.assertEqual(configuration.config, expected_config_dict)
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+        env['__cdist_log_level'] = '80'
+        with self.assertRaises(ValueError):
+            configuration = cc.Configuration(args, env=env,
+                                             config_files=())
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+        env['__cdist_log_level'] = 'x'
+        with self.assertRaises(ValueError):
+            configuration = cc.Configuration(args, env=env,
+                                             config_files=())
 
 
 if __name__ == "__main__":

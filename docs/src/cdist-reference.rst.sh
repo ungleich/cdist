@@ -198,9 +198,27 @@ Environment variables (for reading)
 -----------------------------------
 The following environment variables are exported by cdist:
 
-__cdist_log_level
-    String value of cdist log level. One of OFF, ERROR, WARNING, INFO,
-    VERBOSE, DEBUG and TRACE.
+__cdist_log_level, __cdist_log_level_name
+    cdist log level value and cdist log level name. One of:
+
+    +----------------+-----------------+
+    | Log level name | Log level value |
+    +================+=================+
+    | OFF            | 60              |
+    +----------------+-----------------+
+    | ERROR          | 40              |
+    +----------------+-----------------+
+    | WARNING        | 30              |
+    +----------------+-----------------+
+    | INFO           | 20              |
+    +----------------+-----------------+
+    | VERBOSE        | 15              |
+    +----------------+-----------------+
+    | DEBUG          | 10              |
+    +----------------+-----------------+
+    | TRACE          | 5               |
+    +----------------+-----------------+
+
     Available for: initial manifest, explorer, type manifest, type explorer,
     type gencode.
 __explorer
@@ -266,8 +284,27 @@ require
     Setup dependencies between objects (see \`cdist manifest <cdist-manifest.html>\`_).
 
 __cdist_log_level
-    String value of cdist log level. One of OFF, ERROR, WARNING, INFO,
-    VERBOSE, DEBUG and TRACE. If set cdist will set this log level in
+    cdist log level value. One of:
+
+    +----------------+-----------------+
+    | Log level      | Log level value |
+    +================+=================+
+    | OFF            | 60              |
+    +----------------+-----------------+
+    | ERROR          | 40              |
+    +----------------+-----------------+
+    | WARNING        | 30              |
+    +----------------+-----------------+
+    | INFO           | 20              |
+    +----------------+-----------------+
+    | VERBOSE        | 15              |
+    +----------------+-----------------+
+    | DEBUG          | 10              |
+    +----------------+-----------------+
+    | TRACE          | 5               |
+    +----------------+-----------------+
+
+    If set cdist will set this log level in
     accordance with configuration rules. If cdist invokation is used
     in types then nested cdist will honor this specified log level if
     not specified otherwise while invoking it.

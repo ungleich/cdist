@@ -99,7 +99,9 @@ class ManifestTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__files'], self.local.files_path)
         self.assertEqual(output_dict['__target_host_tags'],
                          self.local.target_host_tags)
-        self.assertEqual(output_dict['__cdist_log_level'], 'VERBOSE')
+        self.assertEqual(output_dict['__cdist_log_level'],
+                         str(logging.VERBOSE))
+        self.assertEqual(output_dict['__cdist_log_level_name'], 'VERBOSE')
         self.log.setLevel(old_loglevel)
 
     def test_type_manifest_environment(self):
@@ -139,7 +141,9 @@ class ManifestTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__files'], self.local.files_path)
         self.assertEqual(output_dict['__target_host_tags'],
                          self.local.target_host_tags)
-        self.assertEqual(output_dict['__cdist_log_level'], 'VERBOSE')
+        self.assertEqual(output_dict['__cdist_log_level'],
+                         str(logging.VERBOSE))
+        self.assertEqual(output_dict['__cdist_log_level_name'], 'VERBOSE')
         self.log.setLevel(old_loglevel)
 
     def test_loglevel_env_setup(self):
@@ -147,7 +151,10 @@ class ManifestTestCase(test.CdistTestCase):
         self.log.setLevel(logging.DEBUG)
         manifest = cdist.core.manifest.Manifest(self.target_host, self.local)
         self.assertTrue("__cdist_log_level" in manifest.env)
-        self.assertEqual(manifest.env["__cdist_log_level"], 'DEBUG')
+        self.assertTrue("__cdist_log_level_name" in manifest.env)
+        self.assertEqual(manifest.env["__cdist_log_level"],
+                         str(logging.DEBUG))
+        self.assertEqual(manifest.env["__cdist_log_level_name"], 'DEBUG')
         self.log.setLevel(current_level)
 
 

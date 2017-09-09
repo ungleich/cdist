@@ -333,9 +333,28 @@ So when you generate a script with the following content, it will work:
 
 Log level in types
 ------------------
-cdist log level can be accessed from __cdist_log_level variable.
-Value is a string, one of OFF, ERROR, WARNING, INFO, VERBOSE, DEBUG and
-TRACE. It is available for initial manifest, explorer, type manifest,
+cdist log level can be accessed from __cdist_log_level variable.One of:
+
+    +----------------+-----------------+
+    | Log level      | Log level value |
+    +================+=================+
+    | OFF            | 60              |
+    +----------------+-----------------+
+    | ERROR          | 40              |
+    +----------------+-----------------+
+    | WARNING        | 30              |
+    +----------------+-----------------+
+    | INFO           | 20              |
+    +----------------+-----------------+
+    | VERBOSE        | 15              |
+    +----------------+-----------------+
+    | DEBUG          | 10              |
+    +----------------+-----------------+
+    | TRACE          | 5               |
+    +----------------+-----------------+
+
+
+It is available for initial manifest, explorer, type manifest,
 type explorer, type gencode.
 
 

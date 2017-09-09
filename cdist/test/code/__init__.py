@@ -101,7 +101,9 @@ class CodeTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__files'], self.local.files_path)
         self.assertEqual(output_dict['__target_host_tags'],
                          self.local.target_host_tags)
-        self.assertEqual(output_dict['__cdist_log_level'], 'WARNING')
+        self.assertEqual(output_dict['__cdist_log_level'],
+                         str(logging.WARNING))
+        self.assertEqual(output_dict['__cdist_log_level_name'], 'WARNING')
 
     def test_run_gencode_remote_environment(self):
         output_string = self.code.run_gencode_remote(self.cdist_object)
@@ -127,7 +129,9 @@ class CodeTestCase(test.CdistTestCase):
         self.assertEqual(output_dict['__files'], self.local.files_path)
         self.assertEqual(output_dict['__target_host_tags'],
                          self.local.target_host_tags)
-        self.assertEqual(output_dict['__cdist_log_level'], 'WARNING')
+        self.assertEqual(output_dict['__cdist_log_level'],
+                         str(logging.WARNING))
+        self.assertEqual(output_dict['__cdist_log_level_name'], 'WARNING')
 
     def test_transfer_code_remote(self):
         self.cdist_object.code_remote = self.code.run_gencode_remote(

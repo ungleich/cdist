@@ -10,12 +10,13 @@ next:
 	* Type __daemontools: Improve it on FreeBSD (Kamila Součková)
 	* Type __package_pkg_openbsd: Fix use of --name (Philippe Gregoire)
 	* Type __package_pkg_openbsd: Fix pkg_version explorer (Philippe Gregoire)
-	* Documentation: Document __cdist_loglevel type variable (Darko Poljak)
-	* Type __install_stage: Fix __debug -> __cdist_loglevel (Darko Poljak)
-	* Core, types: Make __cdist_loglevel value more expressive (Darko Poljak)
-	* Core: Add -l/--log-level option (Darko Poljak)
-	* Core: __cdist_loglevel -> __cdist_log_level and make cdist honor __cdist_log_level env var (Darko Poljak)
 	* Type __prometheus_exporter: Fixes + go version bump (Kamila Součková)
+	* Core, types: __cdist_loglevel -> __cdist_log_level (Darko Poljak)
+	* Core, types: Add __cdist_log_level_name env var with vlaue of log level name (Darko Poljak)
+	* Core: Make cdist honor __cdist_log_level env var (Darko Poljak)
+	* Core: Add -l/--log-level option (Darko Poljak)
+	* Type __install_stage: Fix __debug -> __cdist_log_level (Darko Poljak)
+	* Documentation: Document __cdist_log_level (Darko Poljak)
 
 4.6.1: 2017-08-30
 	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)
