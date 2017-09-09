@@ -15,6 +15,7 @@ next:
 	* Core, types: Make __cdist_loglevel value more expressive (Darko Poljak)
 	* Core: Add -l/--log-level option (Darko Poljak)
 	* Core: __cdist_loglevel -> __cdist_log_level and make cdist honor __cdist_log_level env var (Darko Poljak)
+	* Type __prometheus_exporter: Fixes + go version bump (Kamila Součková)
 
 4.6.1: 2017-08-30
 	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)
