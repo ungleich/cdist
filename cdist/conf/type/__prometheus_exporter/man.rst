@@ -16,6 +16,13 @@ Daemontools (or something compatible) must be installed (in particular, the comm
 This type installs and builds the latest version from git, using go get. A recent version of golang as well
 as build tools (make, g++, etc.) must be available.
 
+Currently supported exporters:
+
+- node
+- blackbox
+- ceph
+
+
 REQUIRED PARAMETERS
 -------------------
 None
