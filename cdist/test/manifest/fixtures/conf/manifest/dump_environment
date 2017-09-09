@@ -10,4 +10,5 @@ __cdist_type_base_path: $__cdist_type_base_path
 __manifest: $__manifest
 __files: $__files
 __target_host_tags: $__target_host_tags
+__cdist_log_level: $__cdist_log_level
 DONE

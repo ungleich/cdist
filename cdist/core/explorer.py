@@ -25,6 +25,7 @@ import os
 import glob
 import multiprocessing
 from cdist.mputil import mp_pool_run
+from . import util
 
 '''
 common:
@@ -78,6 +79,7 @@ class Explorer(object):
             '__target_fqdn': self.target_host[2],
             '__explorer': self.remote.global_explorer_path,
             '__target_host_tags': self.local.target_host_tags,
+            '__cdist_log_level': util.log_level_env_var_val(self.log),
         }
         self._type_explorers_transferred = []
         self.jobs = jobs

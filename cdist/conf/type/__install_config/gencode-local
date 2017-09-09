@@ -22,27 +22,10 @@ chroot="$(cat "$__object/parameter/chroot")"
 remote_exec="$__type/files/remote/exec"
 remote_copy="$__type/files/remote/copy"
 
-cdist_args=""
-case "$__cdist_loglevel" in
-   INFO)
-      cdist_args="-v"
-   ;;
-   VERBOSE)
-      cdist_args="-vv"
-   ;;
-   DEBUG)
-      cdist_args="-vvv"
-   ;;
-   TRACE)
-      cdist_args="-vvvv"
-   ;;
-esac
-
 cat << DONE
 export __default_remote_exec="$__remote_exec"
 export __default_remote_copy="$__remote_copy"
 cdist config \
-   $cdist_args \
    --remote-exec="$remote_exec $chroot" \
    --remote-copy="$remote_copy $chroot" \
    $__target_host
