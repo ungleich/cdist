@@ -49,6 +49,7 @@ class RemoteTestCase(test.CdistTestCase):
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
+        shutil.rmtree(self.base_path)
 
     # test api
 

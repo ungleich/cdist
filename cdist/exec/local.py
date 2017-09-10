@@ -79,7 +79,6 @@ class Local(object):
         self._init_log()
         self._init_permissions()
         self.mkdir(self.base_path)
-        # FIXME: create dir that does not require moving later
         self._init_cache_dir(None)
         self._init_paths()
         self._init_object_marker()

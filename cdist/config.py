@@ -260,6 +260,10 @@ class Config(object):
         if len(failed_hosts) > 0:
             raise cdist.Error("Failed to configure the following hosts: " +
                               " ".join(failed_hosts))
+        elif not args.out_path:
+            # If tmp out path created then remove it, but only if no failed
+            # hosts.
+            shutil.rmtree(base_root_path)
 
     @classmethod
     def _resolve_ssh_control_path(cls):
