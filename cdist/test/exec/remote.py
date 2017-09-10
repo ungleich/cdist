@@ -22,8 +22,6 @@
 import os
 import getpass
 import shutil
-import string
-import random
 import multiprocessing
 
 import cdist
@@ -40,7 +38,8 @@ class RemoteTestCase(test.CdistTestCase):
             'localhost',
             'localhost',
         )
-        self.base_path = self.temp_dir
+        # another temp dir for remote base path
+        self.base_path = self.mkdtemp()
         user = getpass.getuser()
         remote_exec = "ssh -o User=%s -q" % user
         remote_copy = "scp -o User=%s -q" % user
@@ -113,7 +112,8 @@ class RemoteTestCase(test.CdistTestCase):
         os.close(handle)
         target = self.mkdtemp(dir=self.temp_dir)
         self.remote.transfer(source, target)
-        self.assertTrue(os.path.isfile(target))
+        self.assertTrue(os.path.isfile(
+            os.path.join(target, os.path.basename(source))))
 
     def test_transfer_dir(self):
         source = self.mkdtemp(dir=self.temp_dir)
@@ -205,6 +205,7 @@ class RemoteTestCase(test.CdistTestCase):
                           remote_exec=remote_exec, remote_copy=remote_copy)
         output = r.run_script(script, env=env, return_output=True)
         self.assertEqual(output, "test_object\n")
+
 
 if __name__ == '__main__':
     import unittest

@@ -61,6 +61,7 @@ class LocalTestCase(test.CdistTestCase):
 
         self.local = local.Local(
             target_host=target_host,
+            target_host_tags=None,
             base_root_path=self.host_base_path,
             host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path
@@ -124,6 +125,7 @@ class LocalTestCase(test.CdistTestCase):
                 'localhost',
                 'localhost',
             ),
+            target_host_tags=None,
             base_root_path=self.host_base_path,
             host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
@@ -147,6 +149,7 @@ class LocalTestCase(test.CdistTestCase):
                 'localhost',
                 'localhost',
             ),
+            target_host_tags=None,
             base_root_path=self.host_base_path,
             host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
@@ -176,10 +179,11 @@ class LocalTestCase(test.CdistTestCase):
                 'localhost',
                 'localhost',
             ),
+            target_host_tags=None,
             base_root_path=self.host_base_path,
             host_dir_name=self.hostdir,
             exec_path=test.cdist_exec_path,
-            configuration=configuration
+            configuration=configuration.get_config(section='GLOBAL')
         )
 
         link_test_local._create_conf_path_and_link_conf_dirs()
@@ -191,24 +195,29 @@ class LocalTestCase(test.CdistTestCase):
     # other tests
 
     def test_run_success(self):
+        self.local.create_files_dirs()
         self.local.run([bin_true])
 
     def test_run_fail(self):
+        self.local.create_files_dirs()
         self.assertRaises(cdist.Error, self.local.run, [bin_false])
 
     def test_run_script_success(self):
+        self.local.create_files_dirs()
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", bin_true])
         self.local.run_script(script)
 
     def test_run_script_fail(self):
+        self.local.create_files_dirs()
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", bin_false])
         self.assertRaises(cdist.Error, self.local.run_script, script)
 
     def test_run_script_get_output(self):
+        self.local.create_files_dirs()
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", "echo foobar"])
