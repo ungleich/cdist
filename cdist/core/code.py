@@ -109,6 +109,8 @@ class Code(object):
             '__files': self.local.files_path,
             '__target_host_tags': self.local.target_host_tags,
             '__cdist_log_level': util.log_level_env_var_val(local.log),
+            '__cdist_log_level_name': util.log_level_name_env_var_val(
+                local.log),
         }
 
     def _run_gencode(self, cdist_object, which):

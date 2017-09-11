@@ -38,4 +38,8 @@ def _ishidden(path):
 
 
 def log_level_env_var_val(log):
+    return str(log.getEffectiveLevel())
+
+
+def log_level_name_env_var_val(log):
     return logging.getLevelName(log.getEffectiveLevel())

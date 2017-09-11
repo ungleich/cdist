@@ -26,6 +26,7 @@ import cdist
 import cdist.argparse
 import re
 import multiprocessing
+import logging
 
 
 class Singleton(type):
@@ -215,6 +216,24 @@ class ArchivingOption(SelectOption):
             return val
 
 
+class LogLevelOption(OptionBase):
+    def __init__(self):
+        super().__init__('__cdist_log_level')
+
+    def converter(self):
+        def log_level_converter(val):
+            try:
+                val = logging.getLevelName(int(val))
+                return self.translate(val)
+            except (ValueError, AttributeError):
+                raise ValueError("Invalid {} value: {}.".format(
+                    self.name, val))
+        return log_level_converter
+
+    def translate(self, val):
+        return VerbosityOption().translate(val)
+
+
 _ARG_OPTION_MAPPING = {
     'beta': 'beta',
     'cache_path_pattern': 'cache_path_pattern',
@@ -281,6 +300,9 @@ class Configuration(metaclass=Singleton):
         '__cdist_log_level': 'verbosity',
     }
     ENV_VAR_BOOLEAN_OPTIONS = ('CDIST_BETA', )
+    ENV_VAR_OPTIONS = {
+        '__cdist_log_level': LogLevelOption(),
+    }
 
     ARG_OPTION_MAPPING = _ARG_OPTION_MAPPING
     ADJUST_ARG_OPTION_MAPPING = {
@@ -366,8 +388,11 @@ class Configuration(metaclass=Singleton):
                 if option in self.ENV_VAR_BOOLEAN_OPTIONS:
                     d[dst_opt] = True
                 else:
-                    option_object = self.CONFIG_FILE_OPTIONS[section][dst_opt]
-                    converter = option_object.converter()
+                    if option in self.ENV_VAR_OPTIONS:
+                        opt = self.ENV_VAR_OPTIONS[option]
+                    else:
+                        opt = self.CONFIG_FILE_OPTIONS[section][dst_opt]
+                    converter = opt.converter()
                     val = env[option]
                     newval = converter(val)
                     d[dst_opt] = newval

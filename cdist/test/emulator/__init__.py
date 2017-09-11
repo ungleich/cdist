@@ -124,7 +124,7 @@ class EmulatorTestCase(test.CdistTestCase):
         emu = emulator.Emulator(argv, env=self.env)
         emu_loglevel = emu.log.getEffectiveLevel()
         self.assertEqual(emu_loglevel, logging.WARNING)
-        self.env['__cdist_log_level'] = logging.getLevelName(logging.DEBUG)
+        self.env['__cdist_log_level'] = str(logging.DEBUG)
         emu = emulator.Emulator(argv, env=self.env)
         emu_loglevel = emu.log.getEffectiveLevel()
         self.assertEqual(emu_loglevel, logging.DEBUG)

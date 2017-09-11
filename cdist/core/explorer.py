@@ -80,6 +80,8 @@ class Explorer(object):
             '__explorer': self.remote.global_explorer_path,
             '__target_host_tags': self.local.target_host_tags,
             '__cdist_log_level': util.log_level_env_var_val(self.log),
+            '__cdist_log_level_name': util.log_level_name_env_var_val(
+                self.log),
         }
         self._type_explorers_transferred = []
         self.jobs = jobs

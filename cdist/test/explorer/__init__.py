@@ -31,6 +31,7 @@ from cdist import test
 from cdist.exec import local
 from cdist.exec import remote
 from cdist.core import explorer
+import logging
 
 import os.path as op
 my_dir = op.abspath(op.dirname(__file__))
@@ -233,7 +234,9 @@ class ExplorerClassTestCase(test.CdistTestCase):
                          self.remote.global_explorer_path)
         self.assertEqual(output_dict['__target_host_tags'],
                          self.local.target_host_tags)
-        self.assertEqual(output_dict['__cdist_log_level'], 'WARNING')
+        self.assertEqual(output_dict['__cdist_log_level'],
+                         str(logging.WARNING))
+        self.assertEqual(output_dict['__cdist_log_level_name'], 'WARNING')
 
 
 if __name__ == '__main__':

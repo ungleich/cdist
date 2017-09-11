@@ -22,16 +22,14 @@ uri="$(cat "$__object/parameter/uri" 2>/dev/null \
    || echo "$__object_id")"
 target="$(cat "$__object/parameter/target")"
 
-case "$__cdist_log_level" in
-    DEBUG|TRACE)
-        curl="curl"
-        tar="tar -xvzp"
-    ;;
-    *)
-        curl="curl -s"
-        tar="tar -xzp"
-    ;;
-esac
+if [ "$__cdist_log_level" -le "10" ]
+then
+    curl="curl"
+    tar="tar -xvzp"
+else
+    curl="curl -s"
+    tar="tar -xzp"
+fi
 
 if [ -f "$__object/parameter/insecure" ] ; then
    curl="$curl -k"
