@@ -72,7 +72,7 @@ class ConfigurationOptionsTestCase(test.CdistTestCase):
         option = cc.StringOption('test')
         self.assertIsNone(option.translate(''))
         self.assertEqual(option.translate('spam'), 'spam')
-        converter = option.converter()
+        converter = option.get_converter()
         self.assertEqual(converter('spam'), 'spam')
         self.assertIsNone(converter(''))
 
@@ -81,21 +81,21 @@ class ConfigurationOptionsTestCase(test.CdistTestCase):
         for x in cc.BooleanOption.BOOLEAN_STATES:
             self.assertEqual(option.translate(x),
                              cc.BooleanOption.BOOLEAN_STATES[x])
-        converter = option.converter()
+        converter = option.get_converter()
         self.assertRaises(ValueError, converter, 'of')
         for x in cc.BooleanOption.BOOLEAN_STATES:
             self.assertEqual(converter(x), cc.BooleanOption.BOOLEAN_STATES[x])
 
     def test_IntOption(self):
         option = cc.IntOption('test')
-        converter = option.converter()
+        converter = option.get_converter()
         self.assertRaises(ValueError, converter, 'x')
         for x in range(-5, 10):
             self.assertEqual(converter(str(x)), x)
 
     def test_LowerBoundIntOption(self):
         option = cc.LowerBoundIntOption('test', -1)
-        converter = option.converter()
+        converter = option.get_converter()
         self.assertRaises(ValueError, converter, -2)
         for x in range(-1, 10):
             self.assertEqual(converter(str(x)), x)
@@ -112,21 +112,21 @@ class ConfigurationOptionsTestCase(test.CdistTestCase):
     def test_SelectOption(self):
         valid_values = ('spam', 'eggs', 'ham', )
         option = cc.SelectOption('test', valid_values)
-        converter = option.converter()
+        converter = option.get_converter()
         self.assertRaises(ValueError, converter, 'spamspam')
         for x in valid_values:
             self.assertEqual(converter(x), x)
 
     def test_DelimitedValuesOption(self):
         option = cc.DelimitedValuesOption('test', ':')
-        converter = option.converter()
+        converter = option.get_converter()
         value = 'spam:eggs::ham'
         self.assertEqual(converter(value), ['spam', 'eggs', 'ham', ])
         self.assertIsNone(converter(''))
 
     def test_LogLevelOption(self):
         option = cc.LogLevelOption()
-        converter = option.converter()
+        converter = option.get_converter()
         value = str(logging.DEBUG)
         conv_val = converter(value)
         self.assertEqual(conv_val, cap.VERBOSE_DEBUG)

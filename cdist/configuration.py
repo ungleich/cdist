@@ -53,7 +53,7 @@ class OptionBase:
     def __init__(self, name):
         self.name = name
 
-    def converter(self, *args, **kwargs):
+    def get_converter(self, *args, **kwargs):
         raise NotImplementedError('Subclass should implement this method')
 
     def translate(self, val):
@@ -83,7 +83,7 @@ class StringOption(OptionBase):
     def __init__(self, name):
         super().__init__(name)
 
-    def converter(self):
+    def get_converter(self):
         def string_converter(val):
             return self.translate(str(val))
         return string_converter
@@ -101,7 +101,7 @@ class BooleanOption(OptionBase):
     def __init__(self, name):
         super().__init__(name)
 
-    def converter(self):
+    def get_converter(self):
         def boolean_converter(val):
             v = val.lower()
             if v not in self.BOOLEAN_STATES:
@@ -118,7 +118,7 @@ class IntOption(OptionBase):
     def __init__(self, name):
         super().__init__(name)
 
-    def converter(self):
+    def get_converter(self):
         def int_converter(val):
             return self.translate(int(val))
         return int_converter
@@ -129,9 +129,9 @@ class LowerBoundIntOption(IntOption):
         super().__init__(name)
         self.lower_bound = lower_bound
 
-    def converter(self):
+    def get_converter(self):
         def lower_bound_converter(val):
-            converted = super(LowerBoundIntOption, self).converter()(val)
+            converted = super(LowerBoundIntOption, self).get_converter()(val)
             if converted < self.lower_bound:
                 raise ValueError("Invalid {} value: {} < {}".format(
                     self.name, val, self.lower_bound))
@@ -161,7 +161,7 @@ class SelectOption(OptionBase):
         super().__init__(name)
         self.valid_values = valid_values
 
-    def converter(self):
+    def get_converter(self):
         def select_converter(val):
             if val in self.valid_values:
                 return self.translate(val)
@@ -186,7 +186,7 @@ class DelimitedValuesOption(OptionBase):
         super().__init__(name)
         self.delimiter = delimiter
 
-    def converter(self):
+    def get_converter(self):
         def delimited_values_converter(val):
             vals = re.split(r'(?<!\\)' + self.delimiter, val)
             vals = [x for x in vals if x]
@@ -220,7 +220,7 @@ class LogLevelOption(OptionBase):
     def __init__(self):
         super().__init__('__cdist_log_level')
 
-    def converter(self):
+    def get_converter(self):
         def log_level_converter(val):
             try:
                 val = logging.getLevelName(int(val))
@@ -374,7 +374,7 @@ class Configuration(metaclass=Singleton):
                     raise ValueError("Invalid option: {}.".format(option))
 
                 option_object = self.CONFIG_FILE_OPTIONS[section][option]
-                converter = option_object.converter()
+                converter = option_object.get_converter()
                 val = config_parser[section][option]
                 newval = converter(val)
                 d[section][option] = newval
@@ -392,7 +392,7 @@ class Configuration(metaclass=Singleton):
                         opt = self.ENV_VAR_OPTIONS[option]
                     else:
                         opt = self.CONFIG_FILE_OPTIONS[section][dst_opt]
-                    converter = opt.converter()
+                    converter = opt.get_converter()
                     val = env[option]
                     newval = converter(val)
                     d[dst_opt] = newval
