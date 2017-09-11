@@ -27,7 +27,7 @@ import logging
 import multiprocessing
 
 import cdist
-import cdist.exec.util as exec_util
+import cdist.exec.util as util
 import cdist.util.ipaddr as ipaddr
 from cdist.mputil import mp_pool_run
 
@@ -295,16 +295,6 @@ class Remote(object):
         return self._run_command(cmd, env=env, return_output=return_output,
                                  stdout=stdout, stderr=stderr)
 
-    def _get_std_fd(self, which):
-        if which == 'stdout':
-            base = self.stdout_base_path
-        else:
-            base = self.stderr_base_path
-
-        path = os.path.join(base, 'remote')
-        stdfd = open(path, 'ba+')
-        return stdfd
-
     def _log_std_fd(self, stdfd, which):
         if stdfd is not None and stdfd != subprocess.DEVNULL:
             stdfd.seek(0, 0)
@@ -326,10 +316,10 @@ class Remote(object):
         close_stdout = False
         close_stderr = False
         if not return_output and stdout is None:
-            stdout = self._get_std_fd('stdout')
+            stdout = util._get_std_fd(self, 'stdout')
             close_stdout = True
         if stderr is None:
-            stderr = self._get_std_fd('stderr')
+            stderr = util._get_std_fd(self, 'stderr')
             close_stderr = True
 
         # export target_host, target_hostname, target_fqdn
@@ -354,7 +344,7 @@ class Remote(object):
                 self._log_std_fd(stderr, 'stderr')
                 self._log_std_fd(stdout, 'stdout')
         except subprocess.CalledProcessError as e:
-            exec_util.handle_called_process_error(e, command)
+            util.handle_called_process_error(e, command)
         except OSError as error:
             raise cdist.Error(" ".join(command) + ": " + error.args[1])
         except UnicodeDecodeError:

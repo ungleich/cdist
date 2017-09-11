@@ -34,7 +34,7 @@ import datetime
 import cdist
 import cdist.message
 from cdist import core
-import cdist.exec.util as exec_util
+import cdist.exec.util as util
 
 CONF_SUBDIRS_LINKED = ["explorer", "files", "manifest", "type", ]
 
@@ -203,16 +203,6 @@ class Local(object):
         self.log.trace("Local mkdir: %s", path)
         os.makedirs(path, exist_ok=True)
 
-    def _get_std_fd(self, which):
-        if which == 'stdout':
-            base = self.stdout_base_path
-        else:
-            base = self.stderr_base_path
-
-        path = os.path.join(base, 'remote')
-        stdfd = open(path, 'ba+')
-        return stdfd
-
     def _log_std_fd(self, stdfd, which, quiet, save_output):
         if not quiet and save_output and stdfd is not None:
             stdfd.seek(0, 0)
@@ -233,10 +223,10 @@ class Local(object):
         close_stdout = False
         close_stderr = False
         if not quiet and save_output and not return_output and stdout is None:
-            stdout = self._get_std_fd('stdout')
+            stdout = util._get_std_fd(self, 'stdout')
             close_stdout = True
         if not quiet and save_output and stderr is None:
-            stderr = self._get_std_fd('stderr')
+            stderr = util._get_std_fd(self, 'stderr')
             close_stderr = True
 
         if env is None:
@@ -271,7 +261,7 @@ class Local(object):
                 self._log_std_fd(stderr, 'stderr', quiet, save_output)
                 self._log_std_fd(stdout, 'stdout', quiet, save_output)
         except subprocess.CalledProcessError as e:
-            exec_util.handle_called_process_error(e, command)
+            util.handle_called_process_error(e, command)
         except OSError as error:
             raise cdist.Error(" ".join(command) + ": " + error.args[1])
         finally:
