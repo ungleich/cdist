@@ -203,12 +203,6 @@ class Local(object):
         self.log.trace("Local mkdir: %s", path)
         os.makedirs(path, exist_ok=True)
 
-    def _log_std_fd(self, stdfd, which, quiet, save_output):
-        if not quiet and save_output and stdfd is not None:
-            stdfd.seek(0, 0)
-            self.log.trace("Local {}:\n{}\n".format(
-                which, stdfd.read().decode()))
-
     def run(self, command, env=None, return_output=False, message_prefix=None,
             stdout=None, stderr=None, save_output=True, quiet_mode=False):
         """Run the given command with the given environment.
@@ -219,15 +213,20 @@ class Local(object):
                 "list or tuple argument expected, got: %s" % command)
 
         quiet = self.quiet_mode or quiet_mode
+        do_save_output = save_output and not quiet
 
         close_stdout = False
         close_stderr = False
-        if not quiet and save_output and not return_output and stdout is None:
-            stdout = util._get_std_fd(self, 'stdout')
-            close_stdout = True
-        if not quiet and save_output and stderr is None:
-            stderr = util._get_std_fd(self, 'stderr')
-            close_stderr = True
+        if quiet:
+            stderr = subprocess.DEVNULL
+            stdout = subprocess.DEVNULL
+        elif do_save_output:
+            if not return_output and stdout is None:
+                stdout = util.get_std_fd(self.stdout_base_path, 'local')
+                close_stdout = True
+            if stderr is None:
+                stderr = util.get_std_fd(self.stderr_base_path, 'local')
+                close_stderr = True
 
         if env is None:
             env = os.environ.copy()
@@ -246,20 +245,19 @@ class Local(object):
 
         self.log.trace("Local run: %s", command)
         try:
-            if quiet:
-                stderr = subprocess.DEVNULL
             if return_output:
                 output = subprocess.check_output(
-                    command, env=env, stderr=stderr)
-                self._log_std_fd(stderr, 'stderr', quiet, save_output)
-                return output.decode()
+                    command, env=env, stderr=stderr).decode()
             else:
-                if quiet:
-                    stdout = subprocess.DEVNULL
                 subprocess.check_call(command, env=env, stderr=stderr,
                                       stdout=stdout)
-                self._log_std_fd(stderr, 'stderr', quiet, save_output)
-                self._log_std_fd(stdout, 'stdout', quiet, save_output)
+                output = None
+
+            if do_save_output:
+                util.log_std_fd(self.log, stderr, 'Local stderr')
+                util.log_std_fd(self.log, stdout, 'Local stdout')
+
+            return output
         except subprocess.CalledProcessError as e:
             util.handle_called_process_error(e, command)
         except OSError as error:

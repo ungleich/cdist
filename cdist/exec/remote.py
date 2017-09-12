@@ -295,12 +295,6 @@ class Remote(object):
         return self._run_command(cmd, env=env, return_output=return_output,
                                  stdout=stdout, stderr=stderr)
 
-    def _log_std_fd(self, stdfd, which):
-        if stdfd is not None and stdfd != subprocess.DEVNULL:
-            stdfd.seek(0, 0)
-            self.log.trace("Remote {}: {}".format(
-                which, stdfd.read().decode()))
-
     def _run_command(self, command, env=None, return_output=False, stdout=None,
                      stderr=None):
         """Run the given command with the given environment.
@@ -316,10 +310,10 @@ class Remote(object):
         close_stdout = False
         close_stderr = False
         if not return_output and stdout is None:
-            stdout = util._get_std_fd(self, 'stdout')
+            stdout = util.get_std_fd(self.stdout_base_path, 'remote')
             close_stdout = True
         if stderr is None:
-            stderr = util._get_std_fd(self, 'stderr')
+            stderr = util.get_std_fd(self.stderr_base_path, 'remote')
             close_stderr = True
 
         # export target_host, target_hostname, target_fqdn
@@ -335,14 +329,16 @@ class Remote(object):
                 stderr = subprocess.DEVNULL
             if return_output:
                 output = subprocess.check_output(command, env=os_environ,
-                                                 stderr=stderr)
-                self._log_std_fd(stderr, 'stderr')
-                return output.decode()
+                                                 stderr=stderr).decode()
             else:
                 subprocess.check_call(command, env=os_environ, stdout=stdout,
                                       stderr=stderr)
-                self._log_std_fd(stderr, 'stderr')
-                self._log_std_fd(stdout, 'stdout')
+                output = None
+
+            util.log_std_fd(self.log, stderr, 'Remote stderr')
+            util.log_std_fd(self.log, stdout, 'Remote stdout')
+
+            return output
         except subprocess.CalledProcessError as e:
             util.handle_called_process_error(e, command)
         except OSError as error:
