@@ -163,12 +163,14 @@ def _call_get_stdout(command, env=None, stderr=None):
     return output
 
 
-def _get_std_fd(obj, which):
-    if which == 'stdout':
-        base = obj.stdout_base_path
-    else:
-        base = obj.stderr_base_path
-
-    path = os.path.join(base, 'remote')
+def get_std_fd(base_path, name):
+    path = os.path.join(base_path, name)
     stdfd = open(path, 'ba+')
     return stdfd
+
+
+def log_std_fd(log, stdfd, prefix):
+    if stdfd is not None and stdfd != subprocess.DEVNULL:
+        stdfd.seek(0, 0)
+        log.trace("{}: {}".format(
+            prefix, stdfd.read().decode()))
