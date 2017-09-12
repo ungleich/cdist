@@ -21,6 +21,7 @@
 #
 
 import logging
+import sys
 
 
 # Define additional cdist logging levels.
@@ -48,13 +49,37 @@ def _trace(msg, *args, **kwargs):
 logging.trace = _trace
 
 
-class Log(logging.Logger):
+class DefaultLog(logging.Logger):
+
+    FORMAT = '%(levelname)s: %(message)s'
+
+    class StdoutFilter(logging.Filter):
+        def filter(self, rec):
+            return rec.levelno != logging.ERROR
+
+    class StderrFilter(logging.Filter):
+        def filter(self, rec):
+            return rec.levelno == logging.ERROR
 
     def __init__(self, name):
-
-        self.name = name
         super().__init__(name)
+
+        formatter = logging.Formatter(self.FORMAT)
+
         self.addFilter(self)
+
+        stdout_handler = logging.StreamHandler(sys.stdout)
+        stdout_handler.addFilter(self.StdoutFilter())
+        stdout_handler.setLevel(logging.TRACE)
+        stdout_handler.setFormatter(formatter)
+
+        stderr_handler = logging.StreamHandler(sys.stderr)
+        stderr_handler.addFilter(self.StderrFilter())
+        stderr_handler.setLevel(logging.ERROR)
+        stderr_handler.setFormatter(formatter)
+
+        self.addHandler(stdout_handler)
+        self.addHandler(stderr_handler)
 
     def filter(self, record):
         """Prefix messages with logger name"""
@@ -70,5 +95,18 @@ class Log(logging.Logger):
         self.log(logging.TRACE, msg, *args, **kwargs)
 
 
-logging.setLoggerClass(Log)
-logging.basicConfig(format='%(levelname)s: %(message)s')
+class ParallelLog(DefaultLog):
+    FORMAT = '%(levelname)s: [%(process)d]: %(message)s'
+
+
+def setupDefaultLogging():
+    del logging.getLogger().handlers[:]
+    logging.setLoggerClass(DefaultLog)
+
+
+def setupParallelLogging():
+    del logging.getLogger().handlers[:]
+    logging.setLoggerClass(ParallelLog)
+
+
+setupDefaultLogging()

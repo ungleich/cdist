@@ -148,9 +148,7 @@ class Config(object):
 
         if args.parallel or args.jobs:
             # If parallel execution then also log process id
-            del logging.getLogger().handlers[:]
-            log_format = '%(levelname)s: [%(process)d]: %(message)s'
-            logging.basicConfig(format=log_format)
+            cdist.log.setupParallelLogging()
             log = logging.getLogger("cdist")
 
         if args.parallel:
