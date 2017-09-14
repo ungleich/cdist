@@ -36,6 +36,7 @@ import os
 import os.path
 import collections
 import uuid
+import shutil
 
 
 def find_cdist_exec_in_path():
@@ -123,6 +124,7 @@ def _process_hosts_simple(action, host, manifest, verbose,
         theclass.onehost(target_host, None, host_base_path, hostdir, args,
                          parallel=False, configuration=configuration,
                          remove_remote_files_dirs=True)
+    shutil.rmtree(base_root_path)
 
 
 def configure_hosts_simple(host, manifest,

@@ -44,6 +44,22 @@ from cdist.util.remoteutil import inspect_ssh_mux_opts
 class Config(object):
     """Cdist main class to hold arbitrary data"""
 
+    # list of paths (files and/or directories) that will be removed on finish
+    _paths_for_removal = []
+
+    @classmethod
+    def _register_path_for_removal(cls, path):
+        cls._paths_for_removal.append(path)
+
+    @classmethod
+    def _remove_paths(cls):
+        while cls._paths_for_removal:
+            path = cls._paths_for_removal.pop()
+            if os.path.isfile(path):
+                os.remove(path)
+            else:
+                shutil.rmtree(path)
+
     def __init__(self, local, remote, dry_run=False, jobs=None,
                  cleanup_cmds=None, remove_remote_files_dirs=False):
 
@@ -266,8 +282,8 @@ class Config(object):
     @classmethod
     def _resolve_ssh_control_path(cls):
         base_path = tempfile.mkdtemp()
+        cls._register_path_for_removal(base_path)
         control_path = os.path.join(base_path, "s")
-        atexit.register(lambda: shutil.rmtree(base_path))
         return control_path
 
     @classmethod
@@ -345,6 +361,7 @@ class Config(object):
                     cleanup_cmds=cleanup_cmds,
                     remove_remote_files_dirs=remove_remote_files_dirs)
             c.run()
+            cls._remove_paths()
 
         except cdist.Error as e:
             log.error(e)
