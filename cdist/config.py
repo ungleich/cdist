@@ -272,7 +272,10 @@ class Config(object):
 
     @classmethod
     def _resolve_remote_cmds(cls, args):
-        control_path = cls._resolve_ssh_control_path()
+        if (args.remote_exec_pattern or
+                args.remote_copy_pattern or
+                args.remote_cmds_cleanup_pattern):
+            control_path = cls._resolve_ssh_control_path()
         # If we constructed patterns for remote commands then there is
         # placeholder for ssh ControlPath, format it and we have unique
         # ControlPath for each host.
