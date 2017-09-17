@@ -18,6 +18,7 @@ next:
 	* Type __install_stage: Fix __debug -> __cdist_log_level (Darko Poljak)
 	* Documentation: Document __cdist_log_level (Darko Poljak)
 	* Core: Log ERROR to stderr and rest to stdout (Darko Poljak, Steven Armstrong)
+	* Type __ssh_authorized_key: Bugfix the case where invalid key clears a file and add key validation (Darko Poljak)
 
 4.6.1: 2017-08-30
 	* Type __user: Explore with /etc files (passwd, group, shadow) (Philippe Gregoire)

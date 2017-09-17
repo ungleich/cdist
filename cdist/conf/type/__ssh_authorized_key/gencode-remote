@@ -20,6 +20,15 @@
 
 set -u
 
+the_key="$(cat "$__object/parameter/key")"
+# validate key
+validated_key="$(echo "${the_key}" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
+if [ -z "${validated_key}" ]
+then
+    echo "Key is invalid: \"${the_key}\"" >&2
+    exit 1
+fi
+
 remove_line() {
    file="$1"
    line="$2"
@@ -55,11 +64,11 @@ mkdir "$__object/files"
    fi
    if [ -f "$__object/parameter/comment" ]; then
       # extract the keytype and base64 encoded key ignoring any options and comment
-      printf '%s ' "$(cat "$__object/parameter/key" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
+      printf '%s ' "$(echo "${the_key}" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
       # override the comment with the one explicitly given
       printf '%s' "$(cat "$__object/parameter/comment")"
    else
-      printf '%s' "$(cat "$__object/parameter/key")"
+      printf '%s' "${the_key}"
    fi
    printf '\n'
 ) > "$__object/files/should"

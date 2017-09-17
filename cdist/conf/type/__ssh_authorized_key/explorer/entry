@@ -20,7 +20,12 @@
 
 # extract the keytype and base64 encoded key ignoring any options and comment
 type_and_key="$(cat "$__object/parameter/key" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
-file="$(cat $__object/parameter/file)"
+# If type_and_key is empty, which is the case with an invalid key, do not grep $file because it results
+# in greping everything in file and all entries from file are removed.
+if [ -n "${type_and_key}" ]
+then
+    file="$(cat $__object/parameter/file)"
 
-# get any entries that match the type and key
-grep ".*$type_and_key\([ \n]\|$\)" "$file" || true
+    # get any entries that match the type and key
+    grep ".*$type_and_key\([ \n]\|$\)" "$file" || true
+fi
