@@ -232,7 +232,8 @@ class Local(object):
             if save_output:
                 output, errout = exec_util.call_get_output(
                     command, env=env, stderr=stderr)
-                self.log.trace("Local stdout: {}".format(output))
+                self.log.trace("Command: {}; local stdout: {}".format(
+                    command, output))
                 # Currently, stderr is not captured.
                 # self.log.trace("Local stderr: {}".format(errout))
                 if return_output:

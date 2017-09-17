@@ -331,7 +331,8 @@ class Config(object):
                 host, remote_copy))
 
             target_host = ipaddr.resolve_target_addresses(host)
-            log.debug("target_host: {}".format(target_host))
+            log.debug("target_host for host \"{}\": {}".format(
+                host, target_host))
 
             local = cdist.exec.local.Local(
                 target_host=target_host,

@@ -309,7 +309,8 @@ class Remote(object):
                 stderr = None
             output, errout = exec_util.call_get_output(
                 command, env=os_environ, stderr=stderr)
-            self.log.trace("Remote stdout: {}".format(output))
+            self.log.trace("Command: {}; remote stdout: {}".format(
+                command, output))
             # Currently, stderr is not captured.
             # self.log.trace("Remote stderr: {}".format(errout))
             if return_output:

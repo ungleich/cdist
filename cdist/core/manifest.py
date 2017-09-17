@@ -179,7 +179,8 @@ class Manifest(object):
                                      cdist_object.cdist_type.manifest_path)
         message_prefix = cdist_object.name
         if os.path.isfile(type_manifest):
-            self.log.verbose("Running type manifest " + type_manifest)
+            self.log.verbose("Running type manifest %s for object %s",
+                             type_manifest, cdist_object.name)
             self.local.run_script(type_manifest,
                                   env=self.env_type_manifest(cdist_object),
                                   message_prefix=message_prefix,
