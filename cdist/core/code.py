@@ -161,7 +161,8 @@ class Code(object):
         stdout_path = os.path.join(cdist_object.stdout_path, 'code-' + which)
         with open(stderr_path, 'ba+') as stderr, \
                 open(stdout_path, 'ba+') as stdout:
-            return which_exec.run_script(script, stdout=stdout, stderr=stderr)
+            return which_exec.run_script(script, env=env, stdout=stdout,
+                                         stderr=stderr)
 
     def run_code_local(self, cdist_object):
         """Run the code-local script for the given cdist object."""
