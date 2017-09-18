@@ -125,6 +125,42 @@ type: {o.cdist_type.absolute_path}'''.format(
         return '\n'.join(output)
 
 
+class InitialManifestError(Error):
+    """Something went wrong while executing initial manifest"""
+    def __init__(self, initial_manifest, stdout_path, stderr_path, subject=''):
+        self.initial_manifest = initial_manifest
+        self.stdout_path = stdout_path
+        self.stderr_path = stderr_path
+        if isinstance(subject, Error):
+            self.original_error = subject
+        else:
+            self.original_error = None
+        self.message = str(subject)
+        self.line_length = 74
+
+    @property
+    def stderr(self):
+        output = []
+        label = "init" + ':stderr '
+        if os.path.getsize(self.stderr_path) > 0:
+            output.append('{0:-<{1}}'.format(label, self.line_length))
+            with open(self.stderr_path, 'r') as fd:
+                output.append(fd.read())
+        return '\n'.join(output)
+
+    def __str__(self):
+        output = []
+        output.append(self.message)
+        output.append('''{label:-<{length}}
+initial manifest: {im}'''.format(
+            label='---- initial manifest ',
+            length=self.line_length,
+            im=self.initial_manifest)
+        )
+        output.append(self.stderr)
+        return '\n'.join(output)
+
+
 def file_to_list(filename):
     """Return list from \n seperated file"""
     if os.path.isfile(filename):
