@@ -141,8 +141,8 @@ class InitialManifestError(Error):
     @property
     def stderr(self):
         output = []
-        label = "init" + ':stderr '
         if os.path.getsize(self.stderr_path) > 0:
+            label = "init" + ':stderr '
             output.append('{0:-<{1}}'.format(label, self.line_length))
             with open(self.stderr_path, 'r') as fd:
                 output.append(fd.read())
@@ -152,7 +152,7 @@ class InitialManifestError(Error):
         output = []
         output.append(self.message)
         output.append('''{label:-<{length}}
-initial manifest: {im}'''.format(
+path: {im}'''.format(
             label='---- initial manifest ',
             length=self.line_length,
             im=self.initial_manifest)

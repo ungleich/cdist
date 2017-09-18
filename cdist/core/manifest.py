@@ -158,15 +158,11 @@ class Manifest(object):
         stdout_path = os.path.join(self.local.stdout_base_path, which)
         with open(stderr_path, 'ba+') as stderr, \
                 open(stdout_path, 'ba+') as stdout:
-            try:
-                self.local.run_script(
-                    initial_manifest,
-                    env=self.env_initial_manifest(initial_manifest),
-                    message_prefix=message_prefix,
-                    stdout=stdout, stderr=stderr)
-            except cdist.Error as e:
-                raise cdist.InitialManifestError(initial_manifest, stdout_path,
-                                                 stderr_path, e)
+            self.local.run_script(
+                initial_manifest,
+                env=self.env_initial_manifest(initial_manifest),
+                message_prefix=message_prefix,
+                stdout=stdout, stderr=stderr)
 
     def env_type_manifest(self, cdist_object):
         type_manifest = os.path.join(self.local.type_path,
