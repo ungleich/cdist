@@ -335,8 +335,8 @@ class Remote(object):
                                       stderr=stderr)
                 output = None
 
-            util.log_std_fd(self.log, stderr, 'Remote stderr')
-            util.log_std_fd(self.log, stdout, 'Remote stdout')
+            util.log_std_fd(self.log, command, stderr, 'Remote stderr')
+            util.log_std_fd(self.log, command, stdout, 'Remote stdout')
 
             return output
         except subprocess.CalledProcessError as e:

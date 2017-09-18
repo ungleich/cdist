@@ -169,8 +169,8 @@ def get_std_fd(base_path, name):
     return stdfd
 
 
-def log_std_fd(log, stdfd, prefix):
+def log_std_fd(log, command, stdfd, prefix):
     if stdfd is not None and stdfd != subprocess.DEVNULL:
         stdfd.seek(0, 0)
-        log.trace("{}: {}".format(
-            prefix, stdfd.read().decode()))
+        log.trace("Command: {}; {}: {}".format(
+            command, prefix, stdfd.read().decode()))
