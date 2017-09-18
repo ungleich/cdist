@@ -254,8 +254,8 @@ class Local(object):
                 output = None
 
             if do_save_output:
-                util.log_std_fd(self.log, stderr, 'Local stderr')
-                util.log_std_fd(self.log, stdout, 'Local stdout')
+                util.log_std_fd(self.log, command, stderr, 'Local stderr')
+                util.log_std_fd(self.log, command, stdout, 'Local stdout')
 
             return output
         except subprocess.CalledProcessError as e:
