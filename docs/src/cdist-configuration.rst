@@ -40,7 +40,7 @@ The possible keywords and their meanings are as follows:
 
 :strong:`beta`
     Enable beta functionality. It recognizes boolean values from
-    'yes'/'no', 'on'/'off', 'true'/'false' and '1'/'0'
+    'yes'/'no', 'on'/'off', 'true'/'false' and '1'/'0'.
 
 :strong:`cache_path_pattern`
     Specify cache path pattern.
