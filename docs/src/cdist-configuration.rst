@@ -46,7 +46,9 @@ The possible keywords and their meanings are as follows:
     Specify cache path pattern.
 
 :strong:`conf_dir`
-    Comma separated list of configuration directories.
+    List of configuration directories separated with the character conventionally
+    used by the operating system to separate search path components (as in PATH),
+    such as ':' for POSIX or ';' for Windows.
     If also specified at command line then values from command line are
     appended to this value.
 
