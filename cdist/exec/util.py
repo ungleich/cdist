@@ -134,13 +134,13 @@ def handle_called_process_error(err, command):
     #                    "stderr: {}").format(
     #                       err.returncode, err.output, errout))
     if err.output:
-        output = err.output + '\n'
+        output = err.output
     else:
         output = ''
     raise cdist.Error(("Command failed: '{}'\n"
                       "return code: {}\n"
                        "---- BEGIN stdout ----\n"
-                       "{}"
+                       "{}" + ("\n" if output else "") +
                        "---- END stdout ----").format(
                           " ".join(command), err.returncode, output))
 
