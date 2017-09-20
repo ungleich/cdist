@@ -133,10 +133,16 @@ def handle_called_process_error(err, command):
     #                    "stdout: {}\n"
     #                    "stderr: {}").format(
     #                       err.returncode, err.output, errout))
-    raise cdist.Error("Command failed: " + " ".join(command) +
-                      (" with returncode: {}\n"
-                       "stdout: {}").format(
-                          err.returncode, err.output))
+    if err.output:
+        output = err.output + '\n'
+    else:
+        output = ''
+    raise cdist.Error(("Command failed: '{}'\n"
+                      "return code: {}\n"
+                       "---- BEGIN stdout ----\n"
+                       "{}"
+                       "---- END stdout ----").format(
+                          " ".join(command), err.returncode, output))
 
 
 def _call_get_stdout(command, env=None, stderr=None):
