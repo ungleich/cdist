@@ -81,84 +81,72 @@ class CdistBetaRequired(cdist.Error):
         return err_msg.format(*fmt_args)
 
 
-class CdistObjectError(Error):
-    """Something went wrong while working on a specific cdist object"""
-    def __init__(self, cdist_object, subject=''):
-        self.cdist_object = cdist_object
-        self.object_name = cdist_object.name.center(len(cdist_object.name)+2)
+class CdistEntityError(Error):
+    """Something went wrong while executing cdist entity"""
+    def __init__(self, entity_name, entity_params, stderr_paths, subject=''):
+        self.entity_name = entity_name
+        self.entity_params = entity_params
+        self.stderr_paths = stderr_paths
         if isinstance(subject, Error):
             self.original_error = subject
         else:
             self.original_error = None
         self.message = str(subject)
-        self.line_length = 74
 
     @property
     def stderr(self):
         output = []
-        for stderr_name in os.listdir(self.cdist_object.stderr_path):
-            stderr_path = os.path.join(self.cdist_object.stderr_path,
-                                       stderr_name)
-            # label = '---- '+ stderr_name +':stderr '
-            label = stderr_name + ':stderr '
+        for stderr_name, stderr_path in self.stderr_paths:
             if os.path.getsize(stderr_path) > 0:
-                # output.append(label)
-                # output.append('{0:-^50}'.format(label.center(len(label)+2)))
-                output.append('{0:-<{1}}'.format(label, self.line_length))
+                label_begin = '---- BEGIN ' + stderr_name + ':stderr ----'
+                label_end = '---- END ' + stderr_name + ':stderr ----'
+                output.append('\n' + label_begin)
                 with open(stderr_path, 'r') as fd:
                     output.append(fd.read())
+                output.append(label_end)
         return '\n'.join(output)
 
     def __str__(self):
         output = []
         output.append(self.message)
-        output.append('''{label:-<{length}}
-name: {o.name}
-path: {o.absolute_path}
-source: {o.source}
-type: {o.cdist_type.absolute_path}'''.format(
-            label='---- object ',
-            length=self.line_length,
-            o=self.cdist_object)
-        )
-        output.append(self.stderr)
+        header = '\nError in ' + self.entity_name + ' processing'
+        under_header = '=' * len(header)
+        output.append(header)
+        output.append(under_header)
+        for param_name, param_value in self.entity_params:
+            output.append(param_name + ': ' + str(param_value))
+        output.append(self.stderr + '\n')
         return '\n'.join(output)
 
 
-class InitialManifestError(Error):
+class CdistObjectError(CdistEntityError):
+    """Something went wrong while working on a specific cdist object"""
+    def __init__(self, cdist_object, subject=''):
+        params = [
+            ('name', cdist_object.name, ),
+            ('path', cdist_object.absolute_path, ),
+            ('source', " ".join(cdist_object.source), ),
+            ('type', cdist_object.cdist_type.absolute_path, ),
+        ]
+        stderr_paths = []
+        for stderr_name in os.listdir(cdist_object.stderr_path):
+            stderr_path = os.path.join(cdist_object.stderr_path,
+                                       stderr_name)
+            stderr_paths.append((stderr_name, stderr_path, ))
+        super().__init__('object', params, stderr_paths, subject)
+
+
+class InitialManifestError(CdistEntityError):
     """Something went wrong while executing initial manifest"""
-    def __init__(self, initial_manifest, stdout_path, stderr_path, subject=''):
-        self.initial_manifest = initial_manifest
-        self.stdout_path = stdout_path
-        self.stderr_path = stderr_path
-        if isinstance(subject, Error):
-            self.original_error = subject
-        else:
-            self.original_error = None
-        self.message = str(subject)
-        self.line_length = 74
-
-    @property
-    def stderr(self):
-        output = []
-        if os.path.getsize(self.stderr_path) > 0:
-            label = "init" + ':stderr '
-            output.append('{0:-<{1}}'.format(label, self.line_length))
-            with open(self.stderr_path, 'r') as fd:
-                output.append(fd.read())
-        return '\n'.join(output)
-
-    def __str__(self):
-        output = []
-        output.append(self.message)
-        output.append('''{label:-<{length}}
-path: {im}'''.format(
-            label='---- initial manifest ',
-            length=self.line_length,
-            im=self.initial_manifest)
-        )
-        output.append(self.stderr)
-        return '\n'.join(output)
+    def __init__(self, initial_manifest, stderr_path, subject=''):
+        params = [
+            ('path', initial_manifest, ),
+        ]
+        stderr_paths = []
+        stderr_paths = [
+            ('init', stderr_path, ),
+        ]
+        super().__init__('initial manifest', params, stderr_paths, subject)
 
 
 def file_to_list(filename):
