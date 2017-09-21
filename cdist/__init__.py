@@ -109,7 +109,7 @@ class CdistEntityError(Error):
     def __str__(self):
         output = []
         output.append(self.message)
-        header = '\nError in ' + self.entity_name + ' processing'
+        header = "\nError processing " + self.entity_name
         under_header = '=' * len(header)
         output.append(header)
         output.append(under_header)
@@ -133,7 +133,8 @@ class CdistObjectError(CdistEntityError):
             stderr_path = os.path.join(cdist_object.stderr_path,
                                        stderr_name)
             stderr_paths.append((stderr_name, stderr_path, ))
-        super().__init__('object', params, stderr_paths, subject)
+        super().__init__("object '{}'".format(cdist_object.name),
+                         params, stderr_paths, subject)
 
 
 class InitialManifestError(CdistEntityError):
