@@ -407,10 +407,9 @@ class Config(object):
             self.manifest.run_initial_manifest(self.local.initial_manifest)
         except cdist.Error as e:
             which = "init"
-            stdout_path = os.path.join(self.local.stdout_base_path, which)
             stderr_path = os.path.join(self.local.stderr_base_path, which)
             raise cdist.InitialManifestError(self.local.initial_manifest,
-                                             stdout_path, stderr_path, e)
+                                             stderr_path, e)
         self.iterate_until_finished()
         self.cleanup()
         self._remove_files_dirs()
