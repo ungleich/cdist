@@ -26,6 +26,7 @@ next:
 	* Documentation: Fix documentation for building custom man-pages from non-standard path (Thomas Eckert)
 	* Core: Fix running scripts with execute bit when name without path is specified (Ander Punnar)
 	* Type __process: Add messaging (Thomas Eckert)
+	* Core: Save output streams (Steven Armstrong, Darko Poljak)
 
 4.7.0: 2017-09-22
 	* Core: Add configuration/config file support (Darko Poljak)
