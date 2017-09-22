@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.7.0: 2017-09-22
 	* Core: Add configuration/config file support (Darko Poljak)
 	* Core: Implement simple integration API (unstable) (Darko Poljak)
 	* Explorer machine_type: Detect kvm on proxmox (Sven Wick)
