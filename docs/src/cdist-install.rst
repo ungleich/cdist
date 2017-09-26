@@ -131,7 +131,7 @@ some other custom .cdist directory, e.g. /opt/cdist then use:
 
 .. code-block:: sh
 
-    DOT_CDIST_PATH=/opt/cdist make dotman
+    make DOT_CDIST_PATH=/opt/cdist dotman
 
 Python package
 ~~~~~~~~~~~~~~
