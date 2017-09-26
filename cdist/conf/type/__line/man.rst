@@ -42,10 +42,10 @@ file
 
 MESSAGES
 --------
-line added
+added
         The line was added.
 
-line removed
+removed
         The line was removed.
 
 EXAMPLES

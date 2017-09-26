@@ -60,7 +60,7 @@ case "$state_should" in
         # Only replace ' with '"'"' and keep \ as they are
         line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g")
         printf '%s' "printf '%s\n' '$line_sanitised' >> $file"
-	echo "line added" >> "$__messages_out"
+        echo "added" >> "$__messages_out"
 
     ;;
     absent)
@@ -84,7 +84,7 @@ fi
 grep -v $greparg '$regex' '$file' > \$tmpfile || true
 mv -f "\$tmpfile" "$file"
 eof
-	echo "line removed" >> "$__messages_out"
+        echo "removed" >> "$__messages_out"
     ;;
     *)
        echo "Unknown state: $state_should" >&2
