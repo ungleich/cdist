@@ -32,7 +32,7 @@ elif [ -f "$destination" ]; then
    case "$type" in
       hard)
          link_count=$(ls -l "$destination" | awk '{ print $2 }')
-         if [ $link_count -gt 1 ]; then
+         if [ "$link_count" -gt 1 ]; then
             echo hardlink
             exit 0
          fi

@@ -22,7 +22,7 @@ name="$__object_id"
 state="$(cat "$__object/parameter/state")"
 source="$(cat "$__object/parameter/source")"
 destination="$(cat "$__object/parameter/destination")"
-ccollectconf="$(cat "$__object/parameter/ccollectconf" | sed 's,/$,,')"
+ccollectconf="$(sed 's,/$,,' "$__object/parameter/ccollectconf")"
 
 sourcedir="$ccollectconf/sources"
 basedir="$sourcedir/$name"

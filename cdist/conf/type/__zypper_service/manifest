@@ -47,7 +47,7 @@ fi
 [ "$state_is" = "$state_should" ] && exit 0
 
 # we need this list to remove ids, but we must do this in reverse order
-exp_repos="$(cat "$__object/explorer/repo_ids" | rev)"
+exp_repos="$(rev "$__object/explorer/repo_ids")"
 
 # boolean parameter
 if [ -f "$__object/parameter/remove-all-repos" ]; then

@@ -59,11 +59,11 @@ case "$state_should" in
                 ;;
 
                 gentoo)
-                    echo rc-update add \"$name\" \"$target_runlevel\"
+                    echo "rc-update add \"$name\" \"$target_runlevel\""
                 ;;
 
                 amazon|scientific|centos|fedora|owl|redhat|suse)
-                    echo chkconfig \"$name\" on
+                    echo "chkconfig \"$name\" on"
                 ;;
 
                 openwrt)
@@ -98,15 +98,15 @@ case "$state_should" in
         else
             case "$os" in
                 debian|ubuntu|devuan)
-                    echo update-rc.d -f \"$name\" remove
+                    echo "update-rc.d -f \"$name\" remove"
                 ;;
 
                 gentoo)
-                    echo rc-update del \"$name\"  \"$target_runlevel\"
+                    echo "rc-update del \"$name\"  \"$target_runlevel\""
                 ;;
 
                 centos|fedora|owl|redhat|suse)
-                    echo chkconfig \"$name\" off
+                    echo "chkconfig \"$name\" off"
                 ;;
 
                 openwrt)

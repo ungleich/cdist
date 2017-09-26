@@ -36,7 +36,7 @@ state="$(cat "$__object/parameter/state")"
 
 started="true"
 # If the user wants the jail gone, it implies it shouldn't be started.
-[ -f "$__object/parameter/stopped" -o "$state" = "absent" ] && started="false"
+([ -f "$__object/parameter/stopped" ] || [ "$state" = "absent" ]) && started="false"
 
 if [ -f "$__object/parameter/ip" ]; then
    ip="$(cat "$__object/parameter/ip")"
@@ -66,7 +66,7 @@ devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
 
 # devfs_ruleset being defined without devfs_enable being true
 #     is pointless. Treat this as an error.
-if [ -n "$devfsruleset" -a "$devfsenable" = "false" ]; then
+if [ -n "$devfsruleset" ] && [ "$devfsenable" = "false" ]; then
    exec >&2
    echo "Can't have --devfs-ruleset defined with --devfs-disable"
    exit 1
@@ -83,13 +83,13 @@ present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
 
 # Handle ip="addr, addr" format
-if [ $(expr "${ip}" : ".*, .*") -gt "0" ]; then
+if [ "$(expr "${ip}" : ".*, .*")" -gt "0" ]; then
    SAVE_IFS="$IFS"
    IFS=", "
-   for cur_ip in ${ip}; do
+   # for cur_ip in ${ip}; do
       # Just get the last IP address for SSH to listen on
       mgmt_ip=$(echo "${ip}" | cut '-d ' -f1)   # In case using "ip netmask" format rather than CIDR
-   done
+   # done
    IFS="$SAVE_IFS"
 else
    mgmt_ip=$(echo "${ip}" | cut '-d ' -f1) # In case using "ip netmask" format rather than CIDR

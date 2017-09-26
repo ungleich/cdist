@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-options="$(cat "$__object/parameter/options")"
+# options="$(cat "$__object/parameter/options")"
 
 #echo "reboot $options"
 cat << DONE

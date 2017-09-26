@@ -25,13 +25,13 @@
 os=$("$__explorer/os")
 case "$os" in
     "macosx")
-        echo "$(sysctl -n hw.physicalcpu)"
+        sysctl -n hw.physicalcpu
     ;;
 
     *)
         if [ -r /proc/cpuinfo ]; then
             cores="$(grep "core id" /proc/cpuinfo | sort | uniq | wc -l)"
-            if [ ${cores} -eq 0 ]; then
+            if [ "${cores}" -eq 0 ]; then
                 cores="1"
             fi
             echo "$cores"

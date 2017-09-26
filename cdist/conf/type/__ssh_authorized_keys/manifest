@@ -23,7 +23,7 @@ owner="$(cat "$__object/parameter/owner" 2>/dev/null || echo "$__object_id")"
 state="$(cat "$__object/parameter/state" 2>/dev/null)"
 file="$(cat "$__object/explorer/file")"
 
-if [ ! -f "$__object/parameter/noparent" -o ! -f "$__object/parameter/nofile" ]; then
+if [ ! -f "$__object/parameter/noparent" ] || [ ! -f "$__object/parameter/nofile" ]; then
    group="$(cut -d':' -f 1 "$__object/explorer/group")"
    if [ -z "$group" ]; then
       echo "Failed to get owners group from explorer." >&2
