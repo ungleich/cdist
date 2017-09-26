@@ -54,10 +54,10 @@ aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recomm
 
 case "$state_should" in
     present)
-        echo $aptget install $target_release \"$name\"
+        echo "$aptget" install "$target_release" \""$name"\"
     ;;
     absent)
-        echo $aptget remove \"$name\"
+        echo "$aptget" remove \""$name"\"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

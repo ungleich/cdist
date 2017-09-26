@@ -23,20 +23,12 @@
 
 assert ()                 #  If condition false,
 {                         #+ exit from script with error message.
-	E_PARAM_ERR=98
 	E_ASSERT_FAILED=99
 
-	if [ -z "$2" ]          # Not enough parameters passed.
-	then
-		return $E_PARAM_ERR   # No damage done.
-	fi
-
-	lineno=$2
-
-	if [ ! $1 ] 
+	if [ ! "$1" ] 
 	then
 		echo "Assertion failed:  \"$1\""
-		echo "File \"$0\", line $lineno, called by $(caller 0)"
+		echo "File \"$0\""
 		exit $E_ASSERT_FAILED
 	fi  
 }
@@ -66,7 +58,7 @@ cmd=""
 # FIXME: This is ugly.
 execcmd(){
 	# Set the PACKAGESITE if we're ADDing a new package
-	if [ "$1" = "add" -a -n "$pkgsite" ]; then
+	if [ "$1" = "add" ] && [ -n "$pkgsite" ]; then
 		# Use http.../All/ if we know the exact version we want, use .../Latest/ otherwise
 		pkgsite="export PACKAGESITE=${pkgsite}"
 		[ -n "$version" ] && pkgsite="${pkgsite}/All/" || pkgsite="${pkgsite}/Latest/"
@@ -95,7 +87,7 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
 				exit 0
 			else	# Current version is wrong, fix
 				#updatepkg "$name" "$version"
-				assert "! ${version} = ${curr_version}" $LINENO
+				assert "! ${version} = ${curr_version}"
 				cmd="${rm_cmd} ${name}-${curr_version}"
 				execcmd "remove" "${cmd}"
 				cmd="${add_cmd} -r ${name}-${version}"

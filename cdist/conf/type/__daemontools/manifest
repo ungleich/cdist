@@ -3,8 +3,8 @@
 pkg=$(cat "$__object/parameter/from-package")
 servicedir=$(cat "$__object/parameter/servicedir")
 
-__package $pkg
-__directory $servicedir --mode 755
+__package "$pkg"
+__directory "$servicedir" --mode 755
 
 if [ -f "$__object/parameter/install-init-script" ]; then
 	os=$(cat "$__global/explorer/os")

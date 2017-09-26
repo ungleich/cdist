@@ -1,2 +1,2 @@
-cd /dev
+cd /dev || exit 0
 echo sd? hd? vd?

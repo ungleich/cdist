@@ -58,13 +58,13 @@ case "$state_should" in
         # PS1='[\\t] \\[\\033[1m\\]\\h\\[\\033[0m\\]:\\w\\$ '
 
         # Only replace ' with '"'"' and keep \ as they are
-        line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g")
+        line_sanitised=$(sed -e "s/'/'\"'\"'/g" "$__object/parameter/line")
         printf '%s' "printf '%s\n' '$line_sanitised' >> $file"
         echo "added" >> "$__messages_out"
 
     ;;
     absent)
-        if [ "$regex" -a "$line" ]; then
+        if [ "$regex" ] && [ "$line" ]; then
             echo "Mutally exclusive parameters regex and line given for state absent" >&2
             exit 1
         fi
