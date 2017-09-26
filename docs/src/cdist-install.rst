@@ -133,6 +133,9 @@ some other custom .cdist directory, e.g. /opt/cdist then use:
 
     make DOT_CDIST_PATH=/opt/cdist dotman
 
+Note that `dotman`-target has to be built before a `make docs`-run, otherwise
+the custom man-pages are not picked up.
+
 Python package
 ~~~~~~~~~~~~~~
 
