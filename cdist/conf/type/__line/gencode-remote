@@ -87,7 +87,7 @@ eof
         echo "removed" >> "$__messages_out"
     ;;
     *)
-       echo "Unknown state: $state_should" >&2
-       exit 1
+        echo "Unknown state: $state_should" >&2
+        exit 1
     ;;
 esac
