@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Documentation: Fix documentation for building custom man-pages from non-standard path (Thomas Eckert)
+
 4.7.0: 2017-09-22
 	* Core: Add configuration/config file support (Darko Poljak)
 	* Core: Implement simple integration API (unstable) (Darko Poljak)
