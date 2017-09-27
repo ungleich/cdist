@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Type __line: Add messaging (Thomas Eckert)
 	* Documentation: Fix documentation for building custom man-pages from non-standard path (Thomas Eckert)
 
 4.7.0: 2017-09-22
