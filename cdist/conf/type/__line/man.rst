@@ -40,6 +40,13 @@ file
     If supplied, use this as the destination file.
     Otherwise the object_id is used.
 
+MESSAGES
+--------
+added
+        The line was added.
+
+removed
+        The line was removed.
 
 EXAMPLES
 --------
