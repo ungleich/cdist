@@ -61,7 +61,7 @@ fetch_file() {
 }
 
 fetch_and_prepare_file() {
-   printf 'tmpdir="$(mktemp -d --tmpdir="/tmp" "%s")"\n' "${__type##*/}.XXXXXXXXXX"
+   printf 'tmpdir="$(TMPDIR="/tmp" mktemp -d "%s")"\n' "${__type##*/}.XXXXXXXXXX"
    printf 'cd "$tmpdir"\n'
    printf "$fetch_command > \"%s\"\n" "$source" "$source_file_name"
    prepare_command="$(cat "$__object/parameter/prepare-command")"
