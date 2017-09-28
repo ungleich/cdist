@@ -49,12 +49,12 @@ case "$state_should" in
         echo "started" >> "$__messages_out"
     ;;
     absent)
-         if [ -f "$__object/parameter/stop" ]; then
+        if [ -f "$__object/parameter/stop" ]; then
             cat "$__object/parameter/stop"
-         else
+        else
             echo kill "${runs}"
-         fi
-         echo "stopped" >> "$__messages_out"
+        fi
+        echo "stopped" >> "$__messages_out"
     ;;
     *)
         echo "Unknown state: $state_should" >&2
