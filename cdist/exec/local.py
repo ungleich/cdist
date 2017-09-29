@@ -264,7 +264,7 @@ class Local(object):
         """
         if os.access(script, os.X_OK):
             self.log.debug('%s is executable, running it', script)
-            command = [script]
+            command = [os.path.realpath(script)]
         else:
             command = [self.configuration.get('local_shell', "/bin/sh"), "-e"]
             self.log.debug('%s is NOT executable, running it with %s',
