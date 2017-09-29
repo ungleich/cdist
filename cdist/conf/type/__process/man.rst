@@ -30,6 +30,15 @@ start
     Executable to use for starting the process.
 
 
+MESSAGES
+--------
+started
+    The process was started.
+
+stopped
+    The process was stopped.
+
+
 EXAMPLES
 --------
 
@@ -63,7 +72,8 @@ SEE ALSO
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
+| Nico Schottelius <nico-cdist--@--schottelius.org>
+| Thomas Eckert <tom--@--it-eckert.de>
 
 
 COPYING

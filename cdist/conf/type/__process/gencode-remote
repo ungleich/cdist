@@ -2,6 +2,7 @@
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 # 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2017 Thomas Eckert (tom at it-eckert.de)
 #
 # This file is part of cdist.
 #
@@ -45,13 +46,15 @@ case "$state_should" in
         else
             echo "$name"
         fi
+        echo "started" >> "$__messages_out"
     ;;
     absent)
-         if [ -f "$__object/parameter/stop" ]; then
+        if [ -f "$__object/parameter/stop" ]; then
             cat "$__object/parameter/stop"
-         else
+        else
             echo kill "${runs}"
-         fi
+        fi
+        echo "stopped" >> "$__messages_out"
     ;;
     *)
         echo "Unknown state: $state_should" >&2
