@@ -42,7 +42,7 @@ fi
 echo "{"
 printf '   "service": {\n'
 printf '      "name": "%s"\n' "$name"
-for param in "$__object/parameter/*"; do
+for param in $__object/parameter/*; do
    case "$param" in
       state|name|check-interval) continue ;;
       check-script)
