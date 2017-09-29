@@ -25,7 +25,9 @@ mkdir "$__object/files"
 # get current UUID's from target_host
 $__remote_exec "$__target_host" blkid > "$__object/files/blkid"
 
-for object in $(find "$__global/object/__install_mount" -type d -name "$__cdist_object_marker"); do
+find "$__global/object/__install_mount" -type d -name "$__cdist_object_marker" |
+while IFS= read -r object
+do
    device="$(cat "$object/parameter/device")"
    dir="$(cat "$object/parameter/dir")"
    type="$(cat "$object/parameter/type")"

@@ -20,7 +20,9 @@
 
 get_type_from_mkfs() {
    _device="$1"
-   for mkfs_object in $(find "$__global/object/__install_mkfs" -type d -name "$__cdist_object_marker"); do
+   find "$__global/object/__install_mkfs" -type d -name "$__cdist_object_marker" |
+   while IFS= read -r mkfs_object
+   do
       mkfs_device="$(cat "$mkfs_object/parameter/device")"
       if [ "$_device" = "$mkfs_device" ]; then
          cat "$mkfs_object/parameter/type"

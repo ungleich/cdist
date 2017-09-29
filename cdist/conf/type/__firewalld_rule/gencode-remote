@@ -19,7 +19,7 @@
 #
 #
 
-name="$__object_id"
+# name="$__object_id"
 state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/rule")"
 

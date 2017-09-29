@@ -19,5 +19,6 @@
 #
 
 # set defaults
-target="$(cat "$__object/parameter/target" 2>/dev/null \
-   || echo "/target" | tee "$__object/parameter/target")"
+# target="$(cat "$__object/parameter/target" 2>/dev/null \
+#    || echo "/target" | tee "$__object/parameter/target")"
+cat "$__object/parameter/target" 2>/dev/null 1>/dev/null || echo "/target" > "$__object/parameter/target"
