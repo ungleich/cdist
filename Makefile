@@ -39,6 +39,8 @@ PYTHON_VERSION=cdist/version.py
 SPHINXM=make -C $(DOCS_SRC_DIR) man
 SPHINXH=make -C $(DOCS_SRC_DIR) html
 SPHINXC=make -C $(DOCS_SRC_DIR) clean
+
+SHELLCHECKCMD=shellcheck -s sh -f gcc -x -e SC2154,SC1091
 ################################################################################
 # Manpages
 #
@@ -249,3 +251,22 @@ test:
 
 pep8:
 	$(helper) $@
+
+shellcheck-global-explorers:
+	@find cdist/conf/explorer -type f -exec $(SHELLCHECKCMD) {} + || exit 0
+
+shellcheck-manifests:
+	@find cdist/conf/type -type f -name manifest -exec $(SHELLCHECKCMD) {} + || exit 0
+
+shellcheck-local-gencodes:
+	@find cdist/conf/type -type f -name gencode-local -exec $(SHELLCHECKCMD) {} + || exit 0
+
+shellcheck-remote-gencodes:
+	@find cdist/conf/type -type f -name gencode-remote -exec $(SHELLCHECKCMD) {} + || exit 0
+
+shellcheck-gencodes: shellcheck-local-gencodes shellcheck-remote-gencodes
+
+shellcheck-types: shellcheck-manifests shellcheck-gencodes
+
+shellcheck: shellcheck-global-explorers shellcheck-types
+
