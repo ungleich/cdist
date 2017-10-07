@@ -36,6 +36,15 @@ state
    if the given keys should be 'present' or 'absent', defaults to 'present'.
 
 
+MESSAGES
+--------
+added to `file` (`entry`)
+   The key `entry` (with optional comment) was added to `file`.
+
+removed from `file` (`entry`)
+   The key `entry` (with optional comment) was removed from `file`.
+
+
 EXAMPLES
 --------
 
