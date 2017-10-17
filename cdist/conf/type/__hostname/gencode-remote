@@ -35,7 +35,7 @@ has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
 # If everything is ok -> exit
 #
 case "$os" in
-    archlinux|debian|suse|ubuntu|devuan)
+    archlinux|debian|suse|ubuntu|devuan|coreos)
         if [ "$name_config" = "$name_should" -a "$name_running" = "$name_should" ]; then
             exit 0
         fi
@@ -58,7 +58,7 @@ echo changed >> "$__messages_out"
 
 # Use the good old way to set the hostname even on machines running systemd.
 case "$os" in
-    archlinux|debian|ubuntu|devuan|centos)
+    archlinux|debian|ubuntu|devuan|centos|coreos)
         echo "printf '%s\n' '$name_should' > /etc/hostname"
         echo "hostname -F /etc/hostname"
     ;;
