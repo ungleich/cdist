@@ -29,7 +29,7 @@ if [ "$timezone_is" = "$timezone_should" ]; then
 fi
 
 case "$os" in
-   ubuntu|debian|devuan)
+   ubuntu|debian|devuan|coreos)
       echo "echo \"$timezone_should\" > /etc/timezone"
    ;;
 esac
