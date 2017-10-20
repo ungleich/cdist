@@ -51,15 +51,17 @@ if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
    exit 0
 fi
 
+# devuan ascii has both devuan_version and debian_version, so we need to check devuan_version first!
+if [ -f /etc/devuan_version ]; then
+   echo devuan
+   exit 0
+fi
+
 if [ -f /etc/debian_version ]; then
    echo debian
    exit 0
 fi
 
-if [ -f /etc/devuan_version ]; then
-   echo devuan
-   exit 0
-fi
 ###
 
 if [ -f /etc/gentoo-release ]; then
