@@ -4,6 +4,7 @@ Changelog
 next:
 	* Type __hostname: Add support for CoreOS (Ľubomír Kučera)
 	* Type __timezone: Add support for CoreOS (Ľubomír Kučera)
+	* Explorer os: Fix for devuan ascii (Kamila Součková)
 
 4.7.1: 2017-10-01
 	* Type __line: Add messaging (Thomas Eckert)
