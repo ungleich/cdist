@@ -11,6 +11,7 @@ next:
 	* Type __letsencrypt_cert: Add nonparallel; make admin-email required (Kamila Součková)
 	* Type __package_pkgng_freebsd: Redirect stdout and stderr to /dev/null	instead of closing them (michal-hanu-la)
 	* Type __daemontools: Make it more robust and clean up the code (Kamila Součková)
+	* Core: Save output streams (Steven Armstrong, Darko Poljak)
 
 4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
@@ -32,7 +33,6 @@ next:
 	* Documentation: Fix documentation for building custom man-pages from non-standard path (Thomas Eckert)
 	* Core: Fix running scripts with execute bit when name without path is specified (Ander Punnar)
 	* Type __process: Add messaging (Thomas Eckert)
-	* Core: Save output streams (Steven Armstrong, Darko Poljak)
 
 4.7.0: 2017-09-22
 	* Core: Add configuration/config file support (Darko Poljak)
