@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.7.2: 2017-10-22
 	* Type __hostname: Add support for CoreOS (Ľubomír Kučera)
 	* Type __timezone: Add support for CoreOS (Ľubomír Kučera)
 	* Explorer os: Fix for devuan ascii (Kamila Součková)
