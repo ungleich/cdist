@@ -1,0 +1,39 @@
+#!/bin/sh -e
+#
+# 2017 Ľubomír Kučera <lubomir.kucera.jr at gmail.com>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+name="${__object_id}"
+source=$(cat "${__object}/parameter/source")
+state=$(cat "${__object}/parameter/state")
+
+onchange() {
+    echo -n "systemctl daemon-reload"
+
+    if [ -f "${__object}/parameter/restart" ]; then
+        echo -n " && (systemctl restart ${name} || true)"
+    fi
+
+    echo
+}
+
+__config_file "/etc/systemd/system/${name}" \
+    --mode 644 \
+    --onchange "$(onchange)" \
+    --source "${source}" \
+    --state "${state}"

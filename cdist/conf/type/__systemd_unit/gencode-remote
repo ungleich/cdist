@@ -1,0 +1,62 @@
+#!/bin/sh -e
+#
+# 2017 Ľubomír Kučera <lubomir.kucera.jr at gmail.com>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+systemctl_present=$(cat "${__object}/explorer/systemctl-present")
+
+if [ "${systemctl_present}" -ne 0 ]; then
+    echo "systemctl does not seem to be present on this system" >&2
+
+    exit 1
+fi
+
+name="${__object_id}"
+state=$(cat "${__object}/parameter/state")
+current_enablement_state=$(cat "${__object}/explorer/enablement-state")
+
+if [ "${state}" = "absent" ]; then
+    if [ ! -z "${current_enablement_state}" ]; then
+        echo "systemctl --now disable ${name}"
+    fi
+
+    exit 0
+fi
+
+desired_enablement_state=$(cat "${__object}/parameter/enablement-state")
+
+if [ "${current_enablement_state}" = "${desired_enablement_state}" ]; then
+    exit 0
+fi
+
+case "${desired_enablement_state}" in
+    "")
+        # Do nothing
+        :
+    ;;
+    enabled)
+        echo "systemctl enable ${name}"
+    ;;
+    disabled)
+        echo "systemctl disable ${name}"
+    ;;
+    *)
+        echo "Unsupported unit status: ${desired_enablement_state}" >&2
+        exit 1
+    ;;
+esac
