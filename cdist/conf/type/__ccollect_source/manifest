@@ -53,3 +53,7 @@ if [ -f "$__object/parameter/exclude" ]; then
     __file "$exclude_file" --source - --state "$state" \
         < "$__object/parameter/exclude"
 fi
+
+if [ -f "$__object/parameter/create-destination" ]; then
+    __directory "${destination}" --parents --state ${state}
+fi

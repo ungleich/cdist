@@ -38,6 +38,8 @@ BOOLEAN PARAMETERS
 verbose
     Whether to report backup verbosely
 
+create-destination
+    Create the directory specified in the destination parameter on the remote host
 
 EXAMPLES
 --------
@@ -49,6 +51,13 @@ EXAMPLES
         --destination /backup/doc.ungleich.ch \
         --exclude '/proc/*' --exclude '/sys/*' \
         --verbose
+
+    __ccollect_source doc.ungleich.ch \
+        --source doc.ungleich.ch:/ \
+        --destination /backup/doc.ungleich.ch \
+        --exclude '/proc/*' --exclude '/sys/*' \
+        --verbose \ 
+        --create-destination
 
 
 SEE ALSO
