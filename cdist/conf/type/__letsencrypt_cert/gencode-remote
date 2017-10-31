@@ -10,7 +10,7 @@ fi
 
 cat <<EOF
 if [ ! -d "$webroot" ]; then
-	echo mkdir -p "$webroot"
+	mkdir -p "$webroot"
 fi
 
 certbot certonly -n --agree-tos --email '$admin_email' --quiet --webroot \
