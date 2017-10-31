@@ -1,0 +1,62 @@
+os=$(cat "$__global/explorer/os")
+os_version=$(cat "$__global/explorer/os_version")
+
+case "$os" in
+    debian)
+        case "$os_version" in
+            8*)
+                __apt_source jessie-backports \
+                             --uri http://http.debian.net/debian \
+                             --distribution jessie-backports \
+                             --component main
+
+                require="__apt_source/jessie-backports" __package_apt python-certbot --target-release jessie-backports
+                require="__apt_source/jessie-backports" __package_apt certbot --target-release jessie-backports
+                # Seems to be a missing dependency on debian 8
+                __package python-ndg-httpsclient
+                ;;
+            *)
+                echo "Unsupported OS version: $os_version" >&2
+                exit 1
+                ;;
+        esac
+
+        certbot_fullpath=/usr/bin/certbot
+        ;;
+    devuan)
+        case "$os_version" in
+            jessie)
+                __apt_source jessie-backports \
+                             --uri http://auto.mirror.devuan.org/merged \
+                             --distribution jessie-backports \
+                             --component main
+
+                require="__apt_source/jessie-backports" __package_apt python-certbot --target-release jessie-backports
+                require="__apt_source/jessie-backports" __package_apt certbot --target-release jessie-backports
+                # Seems to be a missing dependency on debian 8
+                __package python-ndg-httpsclient
+                ;;
+            *)
+                echo "Unsupported OS version: $os_version" >&2
+                exit 1
+                ;;
+        esac
+
+        certbot_fullpath=/usr/bin/certbot
+        ;;
+    freebsd)
+        __package py27-certbot
+
+        certbot_fullpath=/usr/local/bin/certbot
+        ;;
+    *)
+        echo "Unsupported os: $os" >&2
+        exit 1
+        ;;
+esac
+
+
+__cron letsencrypt-certbot  \
+    --user root \
+    --command "$certbot_fullpath renew -q" \
+    --hour 0
