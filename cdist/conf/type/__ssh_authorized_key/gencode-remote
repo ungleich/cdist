@@ -111,8 +111,10 @@ fi
 case "$state_should" in
    present)
       add_line "$file" "$entry"
+      echo "added to $file ($entry)" >> "$__messages_out"
    ;;
    absent)
       remove_line "$file" "$entry"
+      echo "removed from $file ($entry)" >> "$__messages_out"
    ;;
 esac
