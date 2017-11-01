@@ -4,6 +4,7 @@ Changelog
 next:
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
 	* Type __ssh_authorized_key: Add messaging (Thomas Eckert)
+	* New type: __letsencrypt_cert (Nico Schottelius, Kamila Součková)
 
 4.7.2: 2017-10-22
 	* Type __hostname: Add support for CoreOS (Ľubomír Kučera)
