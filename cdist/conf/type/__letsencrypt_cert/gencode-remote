@@ -1,0 +1,18 @@
+domain="$__object_id"
+
+exists=$(cat "$__object/explorer/exists")
+webroot="$(cat "$__object/parameter/webroot")"
+admin_email="$(cat "$__object/parameter/admin-email")"
+
+if [ -n "$exists" ]; then
+	exit 0
+fi
+
+cat <<EOF
+if [ ! -d "$webroot" ]; then
+	mkdir -p "$webroot"
+fi
+
+certbot certonly -n --agree-tos --email '$admin_email' --quiet --webroot \
+	-w '$webroot' -d '$domain'
+EOF
