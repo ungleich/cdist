@@ -31,11 +31,11 @@ class InvalidTypeError(cdist.Error):
         self.name = name
         self.type_path = type_path
         self.type_absolute_path = type_absolute_path
+        self.source_path = os.path.realpath(self.type_absolute_path)
 
     def __str__(self):
         return "Invalid type '%s' at '%s' defined at '%s'" % (
-                self.type_path, self.type_absolute_path,
-                os.path.realpath(self.type_absolute_path))
+                self.type_path, self.type_absolute_path, self.source_path)
 
 
 class CdistType(object):
@@ -81,10 +81,11 @@ class CdistType(object):
                 yield cls(base_path, name)
             except InvalidTypeError as e:
                 # ignore invalid type, log warning and continue
-                cls.log.warning(e)
+                msg = "Ignoring invalid type '%s' at '%s' defined at '%s'" % (
+                    e.type_path, e.type_absolute_path, e.source_path)
+                cls.log.warning(msg)
                 # remove invalid from runtime conf dir
-                absolute_path = os.path.join(base_path, name)
-                os.remove(absolute_path)
+                os.remove(e.type_absolute_path)
 
     @classmethod
     def list_type_names(cls, base_path):
