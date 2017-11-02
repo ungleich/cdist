@@ -55,7 +55,7 @@ class TypeTestCase(test.CdistTestCase):
 
     def test_nonexistent_type(self):
         base_path = fixtures
-        self.assertRaises(core.NoSuchTypeError, core.CdistType, base_path,
+        self.assertRaises(core.InvalidTypeError, core.CdistType, base_path,
                           '__i-dont-exist')
 
     def test_name(self):

@@ -76,14 +76,14 @@ class EmulatorTestCase(test.CdistTestCase):
 
     def test_nonexistent_type_exec(self):
         argv = ['__does-not-exist']
-        self.assertRaises(core.cdist_type.NoSuchTypeError, emulator.Emulator,
+        self.assertRaises(core.cdist_type.InvalidTypeError, emulator.Emulator,
                           argv, env=self.env)
 
     def test_nonexistent_type_requirement(self):
         argv = ['__file', '/tmp/foobar']
         self.env['require'] = '__does-not-exist/some-id'
         emu = emulator.Emulator(argv, env=self.env)
-        self.assertRaises(core.cdist_type.NoSuchTypeError, emu.run)
+        self.assertRaises(core.cdist_type.InvalidTypeError, emu.run)
 
     def test_illegal_object_id_requirement(self):
         argv = ['__file', '/tmp/foobar']

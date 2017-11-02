@@ -151,7 +151,7 @@ class ConfigRunTestCase(test.CdistTestCase):
         """Unknown type should be detected in the resolving process"""
         first = self.object_index['__first/man']
         first.requirements = ['__nosuchtype/not/exist']
-        with self.assertRaises(cdist.core.cdist_type.NoSuchTypeError):
+        with self.assertRaises(cdist.core.cdist_type.InvalidTypeError):
             self.config.iterate_until_finished()
 
     def test_requirement_singleton_where_no_singleton(self):

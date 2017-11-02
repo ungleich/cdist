@@ -247,7 +247,7 @@ class Emulator(object):
         # Raises an error, if object cannot be created
         try:
             cdist_object = self.cdist_object.object_from_name(requirement)
-        except core.cdist_type.NoSuchTypeError as e:
+        except core.cdist_type.InvalidTypeError as e:
             self.log.error(("%s requires object %s, but type %s does not"
                             " exist. Defined at %s" % (
                                 self.cdist_object.name,

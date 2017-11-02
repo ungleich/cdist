@@ -32,8 +32,15 @@ class NoSuchTypeError(cdist.Error):
         self.type_absolute_path = type_absolute_path
 
     def __str__(self):
-        return "Type '%s' does not exist at %s" % (
+        return "Type '%s' does not exist at '%s'" % (
                 self.type_path, self.type_absolute_path)
+
+
+class InvalidTypeError(NoSuchTypeError):
+    def __str__(self):
+        return "Invalid type '%s' at '%s' defined at '%s'" % (
+                self.type_path, self.type_absolute_path,
+                os.path.realpath(self.type_absolute_path))
 
 
 class CdistType(object):
@@ -51,7 +58,7 @@ class CdistType(object):
         self.path = self.name
         self.absolute_path = os.path.join(self.base_path, self.path)
         if not os.path.isdir(self.absolute_path):
-            raise NoSuchTypeError(self.name, self.path, self.absolute_path)
+            raise InvalidTypeError(self.name, self.path, self.absolute_path)
         self.manifest_path = os.path.join(self.name, "manifest")
         self.explorer_path = os.path.join(self.name, "explorer")
         self.gencode_local_path = os.path.join(self.name, "gencode-local")
