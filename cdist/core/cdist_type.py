@@ -55,7 +55,6 @@ class CdistType(object):
         self.path = self.name
         self.absolute_path = os.path.join(self.base_path, self.path)
         if not os.path.isdir(self.absolute_path):
-            os.remove(self.absolute_path)
             raise InvalidTypeError(self.name, self.path, self.absolute_path)
         self.manifest_path = os.path.join(self.name, "manifest")
         self.explorer_path = os.path.join(self.name, "explorer")
@@ -83,6 +82,9 @@ class CdistType(object):
             except InvalidTypeError as e:
                 # ignore invalid type, log warning and continue
                 cls.log.warning(e)
+                # remove invalid from runtime conf dir
+                absolute_path = os.path.join(base_path, name)
+                os.remove(absolute_path)
 
     @classmethod
     def list_type_names(cls, base_path):
