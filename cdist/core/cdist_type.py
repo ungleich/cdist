@@ -23,20 +23,15 @@
 import os
 import cdist
 import cdist.core
+import logging
 
 
-class NoSuchTypeError(cdist.Error):
+class InvalidTypeError(cdist.Error):
     def __init__(self, name, type_path, type_absolute_path):
         self.name = name
         self.type_path = type_path
         self.type_absolute_path = type_absolute_path
 
-    def __str__(self):
-        return "Type '%s' does not exist at '%s'" % (
-                self.type_path, self.type_absolute_path)
-
-
-class InvalidTypeError(NoSuchTypeError):
     def __str__(self):
         return "Invalid type '%s' at '%s' defined at '%s'" % (
                 self.type_path, self.type_absolute_path,
@@ -52,12 +47,15 @@ class CdistType(object):
 
     """
 
+    log = logging.getLogger("cdist")
+
     def __init__(self, base_path, name):
         self.base_path = base_path
         self.name = name
         self.path = self.name
         self.absolute_path = os.path.join(self.base_path, self.path)
         if not os.path.isdir(self.absolute_path):
+            os.remove(self.absolute_path)
             raise InvalidTypeError(self.name, self.path, self.absolute_path)
         self.manifest_path = os.path.join(self.name, "manifest")
         self.explorer_path = os.path.join(self.name, "explorer")
@@ -80,7 +78,11 @@ class CdistType(object):
     def list_types(cls, base_path):
         """Return a list of type instances"""
         for name in cls.list_type_names(base_path):
-            yield cls(base_path, name)
+            try:
+                yield cls(base_path, name)
+            except InvalidTypeError as e:
+                # ignore invalid type, log warning and continue
+                cls.log.warning(e)
 
     @classmethod
     def list_type_names(cls, base_path):
