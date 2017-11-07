@@ -15,6 +15,15 @@ case "$os" in
                 # Seems to be a missing dependency on debian 8
                 __package python-ndg-httpsclient
                 ;;
+            9*) 
+                __apt_source stretch-backports \
+                             --uri http://http.debian.net/debian \
+                             --distribution stretch-backports \
+                             --component main
+
+                require="__apt_source/stretch-backports" __package_apt python-certbot --target-release stretch-backports
+                require="__apt_source/stretch-backports" __package_apt certbot --target-release stretch-backports
+                ;;
             *)
                 echo "Unsupported OS version: $os_version" >&2
                 exit 1
