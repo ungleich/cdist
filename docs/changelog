@@ -6,6 +6,8 @@ next:
 	* Type __ssh_authorized_key: Add messaging (Thomas Eckert)
 	* New type: __letsencrypt_cert (Nico Schottelius, Kamila Součková)
 	* Core: Warn about invalid type in conf dir and continue instead of error (Darko Poljak)
+	* New type: __systemd_unit (Ľubomír Kučera)
+	* Type __letsencrypt_cert: Add support for debian stretch (_moep_)
 
 4.7.2: 2017-10-22
 	* Type __hostname: Add support for CoreOS (Ľubomír Kučera)
