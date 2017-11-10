@@ -19,16 +19,9 @@
 #
 
 destination="$__object_id"
-state="$(cat "$__object/parameter/state")"
-
-if [ "$state" = "absent" ]; then
-   # nothing to do
-   exit 0
-fi
 
 if [ -f "$__object/parameter/onchange" ]; then
    if grep -q "^__file/${destination}" "$__messages_in"; then
       cat "$__object/parameter/onchange"
    fi
 fi
-
