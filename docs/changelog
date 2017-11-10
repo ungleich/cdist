@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
 	* Type __ssh_authorized_key: Add messaging (Thomas Eckert)
 	* New type: __letsencrypt_cert (Nico Schottelius, Kamila Součková)
