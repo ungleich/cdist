@@ -9,6 +9,7 @@ next:
 	* New type: __systemd_unit (Ľubomír Kučera)
 	* Type __letsencrypt_cert: Add support for debian stretch (Daniel Tschada)
 	* Type __line: Fix a case for absent when line contains single quotes (Darko Poljak)
+	* Type __config_file: Fix onchange command not being executed (Ľubomír Kučera)
 
 4.7.2: 2017-10-22
 	* Type __hostname: Add support for CoreOS (Ľubomír Kučera)
