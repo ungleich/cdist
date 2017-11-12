@@ -22,7 +22,7 @@
 
 # FIXME: other system types (not linux ...)
 
-os=$("$__explorer/os")
+os=$(sh "$__explorer/os")
 case "$os" in
     "macosx")
         echo "$(sysctl -n hw.memsize)/1024" | bc
