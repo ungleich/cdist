@@ -1,0 +1,398 @@
+#!/bin/sh -e
+#
+# 2017 Daniel Tschada (mail--at--moep.name)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os=$(cat "$__global/explorer/os")
+os_version=$(cat "$__global/explorer/os_version")
+grub_default_path="/etc/default/grub"
+# check os
+case "$os" in
+    devuan)
+        case "$os_version" in
+            jessie) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Devuan`
+                
+                ;;
+            ascii) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Devuan`
+
+                ;;
+            *)  
+                echo "Unsupported version: $os_version" >&2
+                exit 1
+                ;;
+        esac
+        ;;
+    debian)
+	case "$os_version" in
+            6*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+
+                ;;
+            7*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+
+                ;;
+            8*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+
+                ;;
+            9*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+
+                ;;
+	        10*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+
+                ;;
+            *)  
+                echo "Unsupported version: $os_version" >&2
+                exit 1
+                ;;
+        esac
+        ;;
+    ubuntu)
+	case "$os_version" in
+            14*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Ubuntu`
+                
+                ;;
+            15*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Ubuntu`
+
+                ;;
+            16*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Ubuntu`
+
+                ;;
+            17*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Ubuntu`
+
+                ;;
+            18*) GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Ubuntu`
+
+                ;;
+            *)  
+                echo "Unsupported version: $os_version" >&2
+                exit 1
+                ;;
+        esac
+        ;;
+    *)  
+        echo "Unsupported os: $os" >&2
+        exit 1
+        ;;
+esac
+# all parameter
+[ -f "$__object/parameter/GRUB_DEFAULT" ] && GRUB_DEFAULT=$(cat "$__object/parameter/GRUB_DEFAULT")
+[ -f "$__object/parameter/GRUB_TIMEOUT" ] && GRUB_TIMEOUT=$(cat "$__object/parameter/GRUB_TIMEOUT")
+[ -f "$__object/parameter/GRUB_DISTRIBUTOR" ] && GRUB_TIMEOUT=$(cat "$__object/parameter/GRUB_DISTRIBUTOR")
+[ -f "$__object/parameter/GRUB_CMDLINE_LINUX_DEFAULT" ] && GRUB_CMDLINE_LINUX_DEFAULT=$(cat "$__object/parameter/GRUB_CMDLINE_LINUX_DEFAULT")
+[ -f "$__object/parameter/GRUB_CMDLINE_LINUX" ] && GRUB_CMDLINE_LINUX=$(cat "$__object/parameter/GRUB_CMDLINE_LINUX")
+[ -f "$__object/parameter/GRUB_CMDLINE_NETBSD" ] && GRUB_CMDLINE_NETBSD=$(cat "$__object/parameter/GRUB_CMDLINE_NETBSD")
+[ -f "$__object/parameter/GRUB_CMDLINE_NETBSD_DEFAULT" ] && GRUB_CMDLINE_NETBSD_DEFAULT=$(cat "$__object/parameter/GRUB_CMDLINE_NETBSD_DEFAULT")
+[ -f "$__object/parameter/GRUB_CMDLINE_GNUMACH" ] && GRUB_CMDLINE_GNUMACH=$(cat "$__object/parameter/GRUB_CMDLINE_GNUMACH")
+[ -f "$__object/parameter/GRUB_CMDLINE_XEN" ] && GRUB_CMDLINE_XEN=$(cat "$__object/parameter/GRUB_CMDLINE_XEN")
+[ -f "$__object/parameter/GRUB_CMDLINE_XEN_DEFAULT" ] && GRUB_CMDLINE_XEN_DEFAULT=$(cat "$__object/parameter/GRUB_CMDLINE_XEN_DEFAULT")
+[ -f "$__object/parameter/GRUB_CMDLINE_XEN_REPLACE" ] && GRUB_CMDLINE_LINUX_XEN_REPLACE=$(cat "$__object/parameter/GRUB_CMDLINE_LINUX_XEN_REPLACE")
+[ -f "$__object/parameter/GRUB_CMDLINE_XEN_REPLACE_DEFAULT" ] && GRUB_CMDLINE_LINUX_XEN_REPLACE_DEFAULT=$(cat "$__object/parameter/GRUB_CMDLINE_LINUX_XEN_REPLACE_DEFAULT")
+[ -f "$__object/parameter/GRUB_BADRAM" ] && GRUB_BADRAM=$(cat "$__object/parameter/GRUB_BADRAM")
+[ -f "$__object/parameter/GRUB_SAVEDEFAULT" ] && GRUB_SAVEDEFAULT=$(cat "$__object/parameter/GRUB_SAVEDEFAULT")
+[ -f "$__object/parameter/GRUB_TERMINAL" ] && GRUB_TERMINAL=$(cat "$__object/parameter/GRUB_TERMINAL")
+[ -f "$__object/parameter/GRUB_TIMEOUT_STYLE" ] && GRUB_TIMEOUT_STYLE=$(cat "$__object/parameter/GRUB_TIMEOUT_STYLE")
+[ -f "$__object/parameter/GRUB_GFXMODE" ] && GRUB_GFXMODE=$(cat "$__object/parameter/GRUB_GFXMODE")
+[ -f "$__object/parameter/GRUB_INIT_TUNE" ] && GRUB_INIT_TUNE=$(cat "$__object/parameter/GRUB_INIT_TUNE")
+[ -f "$__object/parameter/GRUB_DEFAULT_BUTTON" ] && GRUB_DEFAULT_BUTTON=$(cat "$__object/parameter/GRUB_DEFAULT_BUTTON")
+[ -f "$__object/parameter/GRUB_TIMEOUT_BUTTON" ] && GRUB_TIMEOUT_BUTTON=$(cat "$__object/parameter/GRUB_TIMEOUT_BUTTON")
+[ -f "$__object/parameter/GRUB_TIMEOUT_STYLE_BUTTON" ] && GRUB_TIMEOUT_STYLE_BUTTON=$(cat "$__object/parameter/GRUB_TIMEOUT_STYLE_BUTTON")
+[ -f "$__object/parameter/GRUB_BUTTON_CMOS_ADDRESS" ] && GRUB_BUTTON_CMOS_ADDRESS=$(cat "$__object/parameter/GRUB_BUTTON_CMOS_ADDRESS")
+[ -f "$__object/parameter/GRUB_TERMINAL_INPUT" ] && GRUB_TERMINAL_INPUT=$(cat "$__object/parameter/GRUB_TERMINAL_INPUT")
+[ -f "$__object/parameter/GRUB_TERMINAL_OUTPUT" ] && GRUB_TERMINAL_OUTPUT=$(cat "$__object/parameter/GRUB_TERMINAL_OUTPUT")
+[ -f "$__object/parameter/GRUB_SERIAL_COMMAND" ] && GRUB_SERIAL_COMMAND=$(cat "$__object/parameter/GRUB_SERIAL_COMMAND")
+[ -f "$__object/parameter/GRUB_DISABLE_LINUX_UUID" ] && GRUB_DISABLE_LINUX_UUID=$(cat "$__object/parameter/GRUB_DISABLE_LINUX_UUID")
+[ -f "$__object/parameter/GRUB_DISABLE_RECOVERY" ] && GRUB_DISABLE_RECOVERY=$(cat "$__object/parameter/GRUB_DISABLE_RECOVERY")
+[ -f "$__object/parameter/GRUB_VIDEO_BACKEND" ] && GRUB_VIDEO_BACKEND=$(cat "$__object/parameter/GRUB_VIDEO_BACKEND")
+[ -f "$__object/parameter/GRUB_BACKGROUND" ] && GRUB_BACKGROUND=$(cat "$__object/parameter/GRUB_BACKGROUND")
+[ -f "$__object/parameter/GRUB_THEME" ] && GRUB_THEME=$(cat "$__object/parameter/GRUB_THEME")
+[ -f "$__object/parameter/GRUB_GFXPAYLOAD_LINUX" ] && GRUB_GFXPAYLOAD_LINUX=$(cat "$__object/parameter/GRUB_GFXPAYLOAD_LINUX")
+[ -f "$__object/parameter/GRUB_DISABLE_OS_PROBER" ] && GRUB_DISABLE_OS_PROBER=$(cat "$__object/parameter/GRUB_DISABLE_OS_PROBER")
+[ -f "$__object/parameter/GRUB_OS_PROBER_SKIP_LIST" ] && GRUB_OS_PROBER_SKIP_LIST=$(cat "$__object/parameter/GRUB_OS_PROBER_SKIP_LIST")
+[ -f "$__object/parameter/GRUB_DISABLE_SUBMENU" ] && GRUB_DISABLE_SUBMENU=$(cat "$__object/parameter/GRUB_DISABLE_SUBMENU")
+[ -f "$__object/parameter/GRUB_ENABLE_CRYPTODISK" ] && GRUB_ENABLE_CRYPTODISK=$(cat "$__object/parameter/GRUB_ENABLE_CRYPTODISK")
+[ -f "$__object/parameter/GRUB_PRELOAD_MODULES" ] && GRUB_PRELOAD_MODULES=$(cat "$__object/parameter/GRUB_PRELOAD_MODULES")
+[ -f "$__object/parameter/GRUB_RECORDFAIL_TIMEOUT" ] && GRUB_RECORDFAIL_TIMEOUT=$(cat "$__object/parameter/GRUB_RECORDFAIL_TIMEOUT")
+[ -f "$__object/parameter/GRUB_RECOVERY_TITLE" ] && GRUB_RECOVERY_TITLE=$(cat "$__object/parameter/GRUB_RECOVERY_TITLE")
+[ -f "$__object/parameter/GRUB_HIDDEN_TIMEOUT" ] && GRUB_HIDDEN_TIMEOUT=$(cat "$__object/parameter/GRUB_HIDDEN_TIMEOUT")
+[ -f "$__object/parameter/GRUB_HIDDEN_TIMEOUT_QUIET" ] && GRUB_HIDDEN_TIMEOUT_QUIET=$(cat "$__object/parameter/GRUB_HIDDEN_TIMEOUT_QUIET")
+[ -f "$__object/parameter/GRUB_HIDDEN_TIMEOUT_BUTTON" ] && GRUB_HIDDEN_TIMEOUT_BUTTON=$(cat "$__object/parameter/GRUB_HIDDEN_TIMEOUT_BUTTON")
+
+__file "$grub_default_path" \
+    --source "$__type/files/grub" \
+    --owner root --mode 0644
+
+# Default setttings 
+if [ -n "$GRUB_DEFAULT" ]; then
+__line GRUB_DEFAULT --file "$grub_default_path" \
+    --line GRUB_DEFAULT=\""$GRUB_DEFAULT"\" \
+    --state present 
+fi
+
+if [ -n "$GRUB_TIMEOUT" ]; then
+__line GRUB_TIMEOUT --file "$grub_default_path" \
+    --line GRUB_TIMEOUT=\""$GRUB_TIMEOUT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_DISTRIBUTOR" ]; then
+__line GRUB_DISTRIBUTOR --file "$grub_default_path" \
+    --line GRUB_DISTRIBUTOR=\""$GRUB_DISTRIBUTOR"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_CMDLINE_LINUX_DEFAULT" ]; then
+__line GRUB_CMDLINE_LINUX_DEFAULT --file "$grub_default_path" \
+    --line GRUB_CMDLINE_LINUX_DEFAULT=\""$GRUB_CMDLINE_LINUX_DEFAULT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_CMDLINE_LINUX" ]; then
+__line GRUB_CMDLINE_LINUX --file "$grub_default_path" \
+    --line GRUB_CMDLINE_LINUX=\""$GRUB_CMDLINE_LINUX"\" \
+    --state present
+fi
+
+# no logic implemented, so you have to do it
+if [ -n "$GRUB_CMDLINE_NETBSD" ]; then
+__line GRUB_CMDLINE_NETBSD --file "$grub_default_path" \
+    --line GRUB_CMDLINE_NETBSD=\""$GRUB_CMDLINE_NETBSD"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_CMDLINE_NETBSD_DEFAULT" ]; then
+__line GRUB_CMDLINE_NETBSD_DEFAULT --file "$grub_default_path" \
+    --line GRUB_CMDLINE_NETBSD_DEFAULT=\""$GRUB_CMDLINE_NETBSD_DEFAULT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_CMDLINE_GNUMACH" ]; then
+__line GRUB_CMDLINE_GNUMACH --file "$grub_default_path" \
+    --line GRUB_CMDLINE_GNUMACH=\""$GRUB_CMDLINE_GNUMACH"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_CMDLINE_XEN" ]; then
+__line GRUB_CMDLINE_XEN --file "$grub_default_path" \
+    --line GRUB_CMDLINE_XEN=\""$GRUB_CMDLINE_XEN"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_CMDLINE_XEN_DEFAULT" ]; then
+__line GRUB_CMDLINE_XEN_DEFAULT --file "$grub_default_path" \
+    --line GRUB_CMDLINE_XEN_DEFAULT=\""$GRUB_CMDLINE_XEN_DEFAULT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_CMDLINE_LINUX_XEN_REPLACE" ]; then
+__line GRUB_CMDLINE_LINUX_XEN_REPLACE --file "$grub_default_path" \
+    --line GRUB_CMDLINE_LINUX_XEN_REPLACE=\""$GRUB_CMDLINE_LINUX_XEN_REPLACE"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_CMDLINE_LINUX_XEN_REPLACE_DEFAULT" ]; then
+__line GRUB_CMDLINE_LINUX_XEN_REPLACE_DEFAULT --file "$grub_default_path" \
+    --line GRUB_CMDLINE_LINUX_XEN_REPLACE_DEFAULT=\""$GRUB_CMDLINE_LINUX_XEN_REPLACE_DEFAULT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_BADRAM" ]; then
+__line GRUB_BADRAM --file "$grub_default_path" \
+    --line GRUB_BADRAM=\""$GRUB_BADRAM"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_SAVEDEFAULT" ]; then
+__line GRUB_SAVEDEFAULT --file "$grub_default_path" \
+    --line GRUB_SAVEDEFAULT=\""$GRUB_SAVEDEFAULT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_TERMINAL" ]; then
+__line GRUB_TERMINAL --file "$grub_default_path" \
+    --line GRUB_TERMINAL=\""$GRUB_TERMINAL"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_TIMEOUT_STYLE" ]; then
+__line GRUB_TIMEOUT_STYLE --file "$grub_default_path" \
+    --line GRUB_TIMEOUT_STYLE=\""$GRUB_TIMEOUT_STYLE"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_GFXMODE" ]; then
+__line GRUB_GFXMODE --file "$grub_default_path" \
+    --line GRUB_GFXMODE=\""$GRUB_GFXMODE"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_DISABLE_LINUX_UUID" ]; then
+__line GRUB_DISABLE_LINUX_UUID --file "$grub_default_path" \
+    --line GRUB_DISABLE_LINUX_UUID=\""$GRUB_DISABLE_LINUX_UUID"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_DISABLE_RECOVERY" ]; then
+__line GRUB_DISABLE_RECOVERY --file "$grub_default_path" \
+    --line GRUB_DISABLE_RECOVERY=\""$GRUB_DISABLE_RECOVERY"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_INIT_TUNE" ]; then
+__line GRUB_INIT_TUNE --file "$grub_default_path" \
+    --line GRUB_INIT_TUNE=\""$GRUB_INIT_TUNE"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_DEFAULT_BUTTON" ]; then
+__line GRUB_DEFAULT_BUTTON --file "$grub_default_path" \
+    --line GRUB_DEFAULT_BUTTON=\""$GRUB_DEFAULT_BUTTON"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_TIMEOUT_BUTTON" ]; then
+__line GRUB_TIMEOUT_BUTTON --file "$grub_default_path" \
+    --line GRUB_TIMEOUT_BUTTON=\""$GRUB_TIMEOUT_BUTTON"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_TIMEOUT_STYLE_BUTTON" ]; then
+__line GRUB_TIMEOUT_STYLE_BUTTON --file "$grub_default_path" \
+    --line GRUB_TIMEOUT_STYLE_BUTTON=\""$GRUB_TIMEOUT_STYLE_BUTTON"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_BUTTON_CMOS_ADDRESS" ]; then
+__line GRUB_BUTTON_CMOS_ADDRESS --file "$grub_default_path" \
+    --line GRUB_BUTTON_CMOS_ADDRESS=\""$GRUB_BUTTON_CMOS_ADDRESS"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_TERMINAL_INPUT" ]; then
+__line GRUB_TERMINAL_INPUT --file "$grub_default_path" \
+    --line GRUB_TERMINAL_INPUT=\""$GRUB_TERMINAL_INPUT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_TERMINAL_OUTPUT" ]; then
+__line GRUB_TERMINAL_OUTPUT --file "$grub_default_path" \
+    --line GRUB_TERMINAL_OUTPUT\="$GRUB_TERMINAL_OUTPUT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_SERIAL_COMMAND" ]; then
+__line GRUB_SERIAL_COMMAND --file "$grub_default_path" \
+    --line GRUB_SERIAL_COMMAND=\""$GRUB_SERIAL_COMMAND"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_DISABLE_LINUX_UUID" ]; then
+__line GRUB_DISABLE_LINUX_UUID --file "$grub_default_path" \
+    --line GRUB_DISABLE_LINUX_UUID=\""$GRUB_DISABLE_LINUX_UUID"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_DISABLE_RECOVERY" ]; then
+__line GRUB_DISABLE_RECOVERY --file "$grub_default_path" \
+    --line GRUB_DISABLE_RECOVERY=\""$GRUB_DISABLE_RECOVERY"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_VIDEO_BACKEND" ]; then
+__line GRUB_VIDEO_BACKEND --file "$grub_default_path" \
+    --line GRUB_VIDEO_BACKEND=\""$GRUB_VIDEO_BACKEND"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_BACKGROUND" ]; then
+__line GRUB_BACKGROUND --file "$grub_default_path" \
+    --line GRUB_BACKGROUND=\""$GRUB_BACKGROUND"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_THEME" ]; then
+__line GRUB_THEME --file "$grub_default_path" \
+    --line GRUB_THEME=\""$GRUB_THEME"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_GFXPAYLOAD_LINUX" ]; then
+__line GRUB_GFXPAYLOAD_LINUX --file "$grub_default_path" \
+    --line GRUB_GFXPAYLOAD_LINUX=\""$GRUB_GFXPAYLOAD_LINUX"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_DISABLE_OS_PROBER" ]; then
+__line GRUB_DISABLE_OS_PROBER --file "$grub_default_path" \
+    --line GRUB_DISABLE_OS_PROBER=\""$GRUB_DISABLE_OS_PROBER"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_OS_PROBER_SKIP_LIST" ]; then
+__line GRUB_OS_PROBER_SKIP_LIST --file "$grub_default_path" \
+    --line GRUB_OS_PROBER_SKIP_LIST=\""$GRUB_OS_PROBER_SKIP_LIST"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_DISABLE_SUBMENU" ]; then
+__line GRUB_DISABLE_SUBMENU --file "$grub_default_path" \
+    --line GRUB_DISABLE_SUBMENU=\""$GRUB_DISABLE_SUBMENU"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_ENABLE_CRYPTODISK" ]; then
+__line GRUB_ENABLE_CRYPTODISK --file "$grub_default_path" \
+    --line GRUB_ENABLE_CRYPTODISK=\""$GRUB_ENABLE_CRYPTODISK"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_PRELOAD_MODULES" ]; then
+__line GRUB_PRELOAD_MODULES --file "$grub_default_path" \
+    --line GRUB_PRELOAD_MODULES=\""$GRUB_PRELOAD_MODULES"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_RECORDFAIL_TIMEOUT" ]; then
+__line GRUB_RECORDFAIL_TIMEOUT --file "$grub_default_path" \
+    --line GRUB_RECORDFAIL_TIMEOUT=\""$GRUB_RECORDFAIL_TIMEOUT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_RECOVERY_TITLE" ]; then
+__line GRUB_RECOVERY_TITLE --file "$grub_default_path" \
+    --line GRUB_RECOVERY_TITLE=\""$GRUB_RECOVERY_TITLE"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_HIDDEN_TIMEOUT" ]; then
+__line GRUB_HIDDEN_TIMEOUT --file "$grub_default_path" \
+    --line GRUB_HIDDEN_TIMEOUT=\""$GRUB_HIDDEN_TIMEOUT"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_HIDDEN_TIMEOUT_QUIET" ]; then
+__line GRUB_HIDDEN_TIMEOUT_QUIET --file "$grub_default_path" \
+    --line GRUB_HIDDEN_TIMEOUT_QUIET=\""$GRUB_HIDDEN_TIMEOUT_QUIET"\" \
+    --state present
+fi
+
+if [ -n "$GRUB_HIDDEN_TIMEOUT_BUTTON" ]; then
+__line HIDDEN_TIMEOUT_BUTTON --file "$grub_default_path" \
+    --line \""$GRUB_HIDDEN_TIMEOUT_BUTTON"\" \
+    --state present
+fi
+
+
