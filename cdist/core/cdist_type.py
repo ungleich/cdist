@@ -155,7 +155,9 @@ class CdistType(object):
                                        "parameter",
                                        "required")) as fd:
                     for line in fd:
-                        parameters.append(line.strip())
+                        line = line.strip()
+                        if line:
+                            parameters.append(line)
             except EnvironmentError:
                 # error ignored
                 pass
@@ -173,7 +175,9 @@ class CdistType(object):
                                        "parameter",
                                        "required_multiple")) as fd:
                     for line in fd:
-                        parameters.append(line.strip())
+                        line = line.strip()
+                        if line:
+                            parameters.append(line)
             except EnvironmentError:
                 # error ignored
                 pass
@@ -191,7 +195,9 @@ class CdistType(object):
                                        "parameter",
                                        "optional")) as fd:
                     for line in fd:
-                        parameters.append(line.strip())
+                        line = line.strip()
+                        if line:
+                            parameters.append(line)
             except EnvironmentError:
                 # error ignored
                 pass
@@ -209,7 +215,9 @@ class CdistType(object):
                                        "parameter",
                                        "optional_multiple")) as fd:
                     for line in fd:
-                        parameters.append(line.strip())
+                        line = line.strip()
+                        if line:
+                            parameters.append(line)
             except EnvironmentError:
                 # error ignored
                 pass
@@ -227,7 +235,9 @@ class CdistType(object):
                                        "parameter",
                                        "boolean")) as fd:
                     for line in fd:
-                        parameters.append(line.strip())
+                        line = line.strip()
+                        if line:
+                            parameters.append(line)
             except EnvironmentError:
                 # error ignored
                 pass
