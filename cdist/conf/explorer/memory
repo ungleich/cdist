@@ -2,6 +2,7 @@
 #
 # 2014 Daniel Heule  (hda at sfs.biz)
 # 2014 Thomas Oettli (otho at sfs.biz)
+# Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
 #
 # This file is part of cdist.
 #
@@ -26,6 +27,10 @@ os=$("$__explorer/os")
 case "$os" in
     "macosx")
         echo "$(sysctl -n hw.memsize)/1024" | bc
+    ;;
+
+    "openbsd")
+        echo "$(sysctl -n hw.physmem) / 1048576" | bc
     ;;
 
     *)
