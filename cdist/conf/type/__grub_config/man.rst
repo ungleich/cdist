@@ -94,7 +94,8 @@ EXAMPLES
         --GRUB_CMDLINE_LINUX_DEFAULT quiet /
         --GRUB_BADRAM 0x01234567
 
-    # if you don't like the naming of the new devices names and if you have a space then escape it
+    # if you don't like the naming of the new device names (PredictableNetworkInterfacesNames)
+    # if you have a space then its nessecary to escape it
     __grub_config object_id --GRUB_DEFAULT 0 --GRUB_TIMEOUT 1 /
         --GRUB_CMDLINE_LINUX_DEFAULT quiet /
         --GRUB_CMDLINE_LINUX='net.ifnames=0 biosdevname=0'
