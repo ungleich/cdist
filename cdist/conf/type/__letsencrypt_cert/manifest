@@ -68,4 +68,5 @@ esac
 __cron letsencrypt-certbot  \
     --user root \
     --command "$certbot_fullpath renew -q" \
-    --hour 0
+    --hour 0 \
+    --minute 47
