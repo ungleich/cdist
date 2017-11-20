@@ -201,7 +201,6 @@ class Emulator(object):
                               self.cdist_object.parameters,
                               self.object_source,
                               self.parameters))
-                self.log.error(errmsg)
                 raise cdist.Error(errmsg)
         else:
             if self.cdist_object.exists:
