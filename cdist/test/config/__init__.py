@@ -183,7 +183,7 @@ class ConfigRunTestCase(test.CdistTestCase):
         first = self.object_index['__first/man']
         first.requirements = ['__nosuchtype/not/exist']
         self.assertRaisesCdistObjectError(
-            cdist.core.cdist_type.NoSuchTypeError,
+            cdist.core.cdist_type.InvalidTypeError,
             self.config.iterate_until_finished)
 
     def test_requirement_singleton_where_no_singleton(self):
