@@ -22,4 +22,4 @@
 #chroot="$(cat "$__object/parameter/chroot" 2>/dev/null \
 #   || echo "/target" | tee "$__object/parameter/chroot")"
 
-cat "$__object/parameter/chroot" 2>/dev/null 1>/dev/null || echo "/target" > "$__object/parameter/chroot"
+[ -f "$__object/parameter/chroot" ] || echo "/target" > "$__object/parameter/chroot"
