@@ -31,18 +31,18 @@ state_should="$(cat "$__object/parameter/state")"
 case "$state_should" in
     present)
         cat << DONE
-su - "$user" -c "source ~/.rvm/scripts/rvm; rvm $gemset --create"
+su -l "$user" -c "source ~/.rvm/scripts/rvm; rvm $gemset --create"
 DONE
         if -f "$__object/parameter/default"; then
             cat << DONE
-su - "$user" -c "source ~/.rvm/scripts/rvm; rvm use --default $gemset"
+su -l "$user" -c "source ~/.rvm/scripts/rvm; rvm use --default $gemset"
 DONE
         fi
 
     ;;
     absent)
         cat << DONE
-su - "$user" -c "source ~/.rvm/scripts/rvm; rvm use $ruby; rvm --force gemset delete $gemsetname"
+su -l "$user" -c "source ~/.rvm/scripts/rvm; rvm use $ruby; rvm --force gemset delete $gemsetname"
 DONE
     ;;
 esac

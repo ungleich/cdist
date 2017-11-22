@@ -44,7 +44,7 @@ else
     esac
 fi
 
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold"
 
 case "$type" in
     yum)

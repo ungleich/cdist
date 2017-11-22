@@ -135,11 +135,11 @@ deleteJail() {
       fi
 EOF
 # Remove the jail's rw mountpoints
-   echo "rm -rf \"${jaildir}/rw/${name}\""
+   echo "rm -rf '${jaildir}/rw/${name}'"
 # Remove the jail directory
-   echo "rm -rf \"${jaildir}/${name}\""
+   echo "rm -rf '${jaildir}/${name}'"
 # Remove the jail's fstab
-   echo "rm -f \"/etc/fstab.${name}\""
+   echo "rm -f '/etc/fstab.${name}'"
 # Remove jail_$name_* lines from rc.conf
    cat <<EOF
       sed -i '.bak' "/^jail_${name}_/d" /etc/rc.conf

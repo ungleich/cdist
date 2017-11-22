@@ -25,7 +25,7 @@ the_key="$(cat "$__object/parameter/key")"
 validated_key="$(echo "${the_key}" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
 if [ -z "${validated_key}" ]
 then
-    echo "Key is invalid: \"${the_key}\"" >&2
+    echo "Key is invalid: '${the_key}'" >&2
     exit 1
 fi
 

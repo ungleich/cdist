@@ -20,11 +20,11 @@
 
 ruby="$__object_id"
 user="$(cat "$__object/parameter/user")"
-if su - "$user" -c "[ ! -d \"\$HOME/.rvm\" ]" ; then
+if su -l "$user" -c "[ ! -d \"\$HOME/.rvm\" ]" ; then
     echo "absent"
     exit 0
 fi
-if su - "$user" -c "source \"\$HOME/.rvm/scripts/rvm\"
+if su -l "$user" -c "source \"\$HOME/.rvm/scripts/rvm\"
 rvm list | grep -q $ruby"; then
    echo "present"
 else

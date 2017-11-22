@@ -71,14 +71,14 @@ fi
 
 case "$state_should" in
    present)
-         echo zypper $zypper_def_opts addservice -t "$stype" "$uri" \"$desc\"
-         echo zypper $zypper_def_opts refs
-         echo zypper $zypper_def_opts ref
+         echo "zypper $zypper_def_opts addservice -t '$stype' '$uri' '$desc'"
+         echo "zypper $zypper_def_opts refs"
+         echo "zypper $zypper_def_opts ref"
    ;;
    absent)
-         echo zypper $zypper_def_opts removeservice "$service_id"
-         echo zypper $zypper_def_opts refs
-         echo zypper $zypper_def_opts ref
+         echo "zypper $zypper_def_opts removeservice '$service_id'"
+         echo "zypper $zypper_def_opts refs"
+         echo "zypper $zypper_def_opts ref"
    ;;
    *)
       echo "Unknown state: $state_should" >&2

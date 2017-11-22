@@ -34,9 +34,9 @@ fi
 case "$state_should" in
    present)
       keyserver="$(cat "$__object/parameter/keyserver")"
-      echo "apt-key adv --keyserver \"$keyserver\" --recv-keys \"$keyid\""
+      echo "apt-key adv --keyserver '$keyserver' --recv-keys '$keyid'"
    ;;
    absent)
-      echo "apt-key del \"$keyid\""
+      echo "apt-key del '$keyid'"
    ;;
 esac

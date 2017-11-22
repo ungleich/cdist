@@ -45,10 +45,10 @@ fi
 
 case "$state_should" in
    present)
-         echo pacman --needed --noconfirm --noprogressbar -S \""$name"\"
+         echo "pacman --needed --noconfirm --noprogressbar -S '$name'"
    ;;
    absent)
-         echo pacman --noconfirm --noprogressbar -R \""$name"\"
+         echo "pacman --noconfirm --noprogressbar -R '$name'"
    ;;
    *)
       echo "Unknown state: $state_should" >&2

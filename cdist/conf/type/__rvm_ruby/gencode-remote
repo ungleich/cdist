@@ -27,15 +27,15 @@ state_should="$(cat "$__object/parameter/state")"
 
 case "$state_should" in
     present)
-        echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
+        echo "su -l \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
             "rvm install $ruby\""
         if [ -f "$__object/parameter/default" ]; then
-            echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
+            echo "su -l \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
                 "rvm use --default $ruby\""
         fi
     ;;
     absent)
-        echo "su - \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
+        echo "su -l \"$user\" -c \"source \\\$HOME/.rvm/scripts/rvm;"\
             "rvm remove $ruby\""
     ;;
 
