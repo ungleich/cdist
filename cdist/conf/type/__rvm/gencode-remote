@@ -28,12 +28,12 @@ state_should="$(cat "$__object/parameter/state")"
 case "$state_should" in
     present)
         cat << DONE
-su - $user -c "unset rvm_path; unset rvm_bin_path; unset rvm_prefix; unset rvm_version; curl -L get.rvm.io | bash -s stable"
+su -l $user -c "unset rvm_path; unset rvm_bin_path; unset rvm_prefix; unset rvm_version; curl -L get.rvm.io | bash -s stable"
 DONE
     ;;
     absent)
         cat << DONE
-su - $user -c "rm -Rf \"\\\$HOME/.rvm\";
+su -l $user -c "rm -Rf \"\\\$HOME/.rvm\";
 sed '/rvm\/scripts\/rvm/d' \"\\\$HOME/.bashrc\" > \"\\\$HOME/.bashrc.cdist-tmp\"
 mv \"\\\$HOME/.bashrc.cdist-tmp\" \"\\\$HOME/.bashrc\""
 DONE

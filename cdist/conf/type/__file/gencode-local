@@ -40,7 +40,7 @@ if [ "$state_should" = "present" ] || [ "$state_should" = "exists" ]; then
          source="$__object/stdin"
       fi
       if [ ! -f "$source" ]; then
-         echo "Source \"$source\" does not exist." >&2
+         echo "Source '$source' does not exist." >&2
          exit 1
       else
          if [ "$type" != "file" ]; then
@@ -82,7 +82,7 @@ DONE
       fi
 # move uploaded file into place
 cat << DONE
-$__remote_exec $__target_host "rm -rf \"$destination\"; mv \"\$destination_upload\" \"$destination\""
+$__remote_exec $__target_host "rm -rf '$destination'; mv \"\$destination_upload\" '$destination'"
 DONE
    fi
 fi

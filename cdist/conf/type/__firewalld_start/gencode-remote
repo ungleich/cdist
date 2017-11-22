@@ -1,4 +1,4 @@
-#!/bin/sh -e
+"#!/bin/sh -2
 #
 # 2016 Darko Poljak(darko.poljak at ungleich.ch)
 #
@@ -42,16 +42,16 @@ esac
 if [ "$init" = 'systemd' ]; then
     # this handles ALL linux distros with systemd
     # e.g. archlinux, gentoo in some cases, new RHEL and SLES versions
-    echo "systemctl \"$cmd\" \"$name\""
+    echo "systemctl '$cmd' '$name'"
 else
     case "$os" in
         debian)
             case "$os_version" in
                 [1-7]*)
-                    echo "service \"$name\" \"$cmd\""
+                    echo "service '$name' '$cmd'"
                 ;;
                 8*)
-                    echo "systemctl \"$cmd\" \"$name\""
+                    echo "systemctl '$cmd' '$name'"
                 ;;
                 *)
                     echo "Unsupported version $os_version of $os" >&2
@@ -61,19 +61,19 @@ else
         ;;
 
         gentoo)
-            echo service \"$name\" \"$cmd\"
+            echo "service '$name' '$cmd'"
         ;;
 
         amazon|scientific|centos|fedora|owl|redhat|suse)
-            echo service \"$name\" \"$cmd\"
+            echo "service '$name' '$cmd'"
         ;;
 
         openwrt)
-            echo "/etc/init.d/\"$name\" \"$cmd\""
+            echo "'/etc/init.d/$name' '$cmd'"
         ;;
 
         ubuntu)
-            echo "service \"$name\" \"$cmd\""
+            echo "service '$name' '$cmd'"
         ;;
 
         *)

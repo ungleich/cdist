@@ -48,16 +48,16 @@ esac
 
 # Hint if we need to avoid questions at some point:
 # DEBIAN_PRIORITY=critical can reduce the number of questions
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold"
 
 [ "$state_is" = "$state_should" ] && exit 0
 
 case "$state_should" in
     present)
-        echo "$aptget" install "$target_release" \""$name"\"
+        echo "$aptget install '$target_release' '$name'"
     ;;
     absent)
-        echo "$aptget" remove \""$name"\"
+        echo "$aptget remove '$name'"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

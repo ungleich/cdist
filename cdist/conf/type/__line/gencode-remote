@@ -35,7 +35,7 @@ state_is="$(cat "$__object/explorer/state")"
 case "$state_should" in
     present)
         if [ ! "$line" ]; then
-            echo "Required parameter \"line\" is missing" >&2
+            echo "Required parameter 'line' is missing" >&2
             exit 1
         fi
 
