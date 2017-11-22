@@ -19,7 +19,7 @@
 #
 
 set -- "/${__object_id}"
-for param in $__object/parameter/*; do
+for param in $(ls "$__object/parameter/"); do
    case "$param" in
       source)
          source="$(cat "$__object/parameter/source")"
