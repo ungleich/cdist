@@ -29,7 +29,7 @@ state="$(cat "$__object/parameter/state")"
 echo "{"
 printf '   "watches": [{\n'
 printf '      "type": "%s"\n' "$watch_type"
-for param in $__object/parameter/*; do
+for param in $(ls "$__object/parameter/"); do
    case "$param" in
       state) continue ;;
       passingonly)
