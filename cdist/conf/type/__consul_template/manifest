@@ -75,7 +75,7 @@ require="__directory/etc/consul-template" \
 
 # Generate hcl config file
 (
-for param in $__object/parameter/*; do
+for param in $(ls "$__object/parameter/"); do
    case "$param" in
       auth-password|state|ssl-*|syslog-*|version|vault-token|vault-ssl*) continue ;;
       auth-username)
