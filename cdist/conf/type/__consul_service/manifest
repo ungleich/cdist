@@ -24,15 +24,15 @@ conf_file="service_${name}.json"
 state="$(cat "$__object/parameter/state")"
 
 # Sanity checks
-if [ -f "$__object/parameter/check-script" -a -f "$__object/parameter/check-ttl" ]; then
+if [ -f "$__object/parameter/check-script" ] && [ -f "$__object/parameter/check-ttl" ]; then
    echo "Use either --check-script together with --check-interval OR --check-ttl, but not both" >&2
    exit 1
 fi
-if [ -f "$__object/parameter/check-script" -a ! -f "$__object/parameter/check-interval" ]; then
+if [ -f "$__object/parameter/check-script" ] && [ ! -f "$__object/parameter/check-interval" ]; then
    echo "When using --check-script you must also define --check-interval" >&2
    exit 1
 fi
-if [ -f "$__object/parameter/check-http" -a ! -f "$__object/parameter/check-interval" ]; then
+if [ -f "$__object/parameter/check-http" ] && [ ! -f "$__object/parameter/check-interval" ]; then
    echo "When using --check-http you must also define --check-interval" >&2
    exit 1
 fi

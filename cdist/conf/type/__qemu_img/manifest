@@ -4,7 +4,7 @@
 # Default settings
 #
 
-format="$(cat "$__object/parameter/format")"
+# format="$(cat "$__object/parameter/format")"
 state_should="$(cat "$__object/parameter/state")"
 
 diskimage="/$__object_id"

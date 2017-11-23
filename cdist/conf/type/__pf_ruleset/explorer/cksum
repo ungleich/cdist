@@ -33,7 +33,7 @@ TMP="$(grep '^pf_rules=' ${RC} | cut -d= -f2 | sed 's/"//g')"
 PFCONF="${TMP:-"/etc/pf.conf"}"
 
 if [ -f "${PFCONF}" ]; then	# The pf config file exists, find its cksum.
-	cksum -o 1 ${PFCONF} | cut -d= -f2 | awk '{print $1}'
+	cksum -o 1 "${PFCONF}" | cut -d= -f2 | awk '{print $1}'
 fi
 
 # Debug

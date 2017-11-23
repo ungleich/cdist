@@ -29,7 +29,7 @@
 
 RC="/etc/rc.conf"
 PFCONF="$(grep '^pf_rules=' ${RC} | cut -d= -f2 | sed 's/"//g')"
-echo ${PFCONF:-"/etc/pf.conf"}
+echo "${PFCONF:-"/etc/pf.conf"}"
 
 # Debug
 #set +x

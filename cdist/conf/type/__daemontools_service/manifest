@@ -25,14 +25,14 @@ badusage() {
 [ -z "$run$runfile" ] && badusage
 [ -n "$run" ] && [ -n "$runfile" ] && badusage
 
-__directory $servicedir/$name/log/main --parents
+__directory "$servicedir/$name/log/main" --parents
 
 echo "$RUN_PREFIX$run" | require="__directory/$servicedir/$name/log/main" __config_file "$servicedir/$name/run" \
 	--onchange "svc -t '$servicedir/$name' 2>/dev/null" \
 	--mode 755 \
 	--source "${runfile:--}"
 
-echo "$RUN_PREFIX$logrun" | require="__directory/$servicedir/$name/log/main" __config_file $servicedir/$name/log/run \
+echo "$RUN_PREFIX$logrun" | require="__directory/$servicedir/$name/log/main" __config_file "$servicedir/$name/log/run" \
 	--onchange "svc -t '$servicedir/$name/log' 2>/dev/null" \
 	--mode 755 \
 	--source "-"

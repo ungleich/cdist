@@ -36,7 +36,7 @@ state="$(cat "$__object/parameter/state")"
 
 started="true"
 # If the user wants the jail gone, it implies it shouldn't be started.
-[ -f "$__object/parameter/stopped" -o "$state" = "absent" ] && started="false"
+([ -f "$__object/parameter/stopped" ] || [ "$state" = "absent" ]) && started="false"
 
 if [ -f "$__object/parameter/ip" ]; then
    ip="$(cat "$__object/parameter/ip")"
@@ -70,7 +70,7 @@ devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
 
 # devfs_ruleset being defined without devfs_enable being true
 #     is pointless. Treat this as an error.
-if [ -n "$devfsruleset" -a "$devfsenable" = "false" ]; then
+if [ -n "$devfsruleset" ] && [ "$devfsenable" = "false" ]; then
    exec >&2
    echo "Can't have --devfs-ruleset defined with --devfs-disable"
    exit 1
@@ -86,15 +86,15 @@ present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
 
 # Handle ip="iface|addr, iface|addr" format
-if [ $(expr "${ip}" : ".*|.*") -gt "0" ]; then
+if [ "$(expr "${ip}" : ".*|.*")" -gt "0" ]; then
    # If we have multiple IPs defined, $interface doesn't make sense because ip="iface|addr, iface|addr" implies it
    interface=""
    SAVE_IFS="$IFS"
    IFS=", "
-   for cur_ip in ${ip}; do
+   # for cur_ip in ${ip}; do
       # Just get the last IP address for SSH to listen on
       mgmt_ip=$(echo "${ip}" | sed -E -e 's/^.*\|(.*)\/[0-9]+$/\1/')
-   done
+   # done
    IFS="$SAVE_IFS"
 else
    mgmt_ip=$(echo "${ip}" | cut '-d ' -f1)
@@ -135,14 +135,15 @@ deleteJail() {
       fi
 EOF
 # Remove the jail's rw mountpoints
-   echo "rm -rf \"${jaildir}/rw/${name}\""
+   echo "rm -rf '${jaildir}/rw/${name}'"
 # Remove the jail directory
-   echo "rm -rf \"${jaildir}/${name}\""
+   echo "rm -rf '${jaildir}/${name}'"
 # Remove the jail's fstab
-   echo "rm -f \"/etc/fstab.${name}\""
+   echo "rm -f '/etc/fstab.${name}'"
 # Remove jail_$name_* lines from rc.conf
    cat <<EOF
-      sed -i '.bak' "/^jail_${name}_/d" /etc/rc.conf
+      mv /etc/rc.conf /etc/rc.conf.bak
+      sed "/^jail_${name}_/d" /etc/rc.conf.bak > /etc/rc.conf
       if [ -f "/etc/rc.conf.bak" ]; then
          rm -f /etc/rc.conf.bak
       fi
@@ -158,7 +159,8 @@ EOF
       done
       jail_list="\${new_list}"
       
-      sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+      mv /etc/rc.conf /etc/rc.conf.bak
+      sed "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf.bak > /etc/rc.conf
       unset jail_list
       if [ -f "/etc/rc.conf.bak" ]; then
          rm -f /etc/rc.conf.bak
@@ -241,7 +243,8 @@ cat <<EOF
    if [ -z "\$jail_enable" ]; then	# no jail_enable line in rc.conf at all
       echo "jail_enable=\"YES\"" >>/etc/rc.conf
    elif [ ! "\$(echo \$jail_enable | tr '[a-z]' '[A-Z]')" = "YES" ]; then	# jail_enable="NO"
-      sed -i '.bak' 's/^jail_enable=.*$/jail_enable="YES"/g' /etc/rc.conf	# fix this -^
+      mv /etc/rc.conf /etc/rc.conf.bak
+      sed 's/^jail_enable=.*$/jail_enable="YES"/g' /etc/rc.conf.bak > /etc/rc.conf	# fix this -^
       rm -f /etc/rc.conf.bak
    fi
    cat >>/etc/rc.conf <<END
@@ -309,7 +312,8 @@ if [ "$onboot" = "yes" ]; then
          echo "jail_list=\"${name}\"" >>/etc/rc.conf
       else
          jail_list="\${jail_list} ${name}"
-         sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+         mv /etc/rc.conf /etc/rc.conf.bak
+         sed "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf.bak > /etc/rc.conf
          rm -f /etc/rc.conf.bak
       fi
       unset jail_list

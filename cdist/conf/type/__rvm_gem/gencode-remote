@@ -20,8 +20,6 @@
 
 gem="$__object_id"
 gemset="$(cat "$__object/parameter/gemset")"
-ruby="$(echo "$gemset" | cut -d '@' -f 1)"
-gemsetname="$(echo "$gemset" | cut -d '@' -f 2)"
 state_is="$(cat "$__object/explorer/state")"
 user="$(cat "$__object/parameter/user")"
 state_should="$(cat "$__object/parameter/state")"
@@ -31,12 +29,12 @@ state_should="$(cat "$__object/parameter/state")"
 case "$state_should" in
     present)
         cat << DONE
-su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm use "$gemset"; gem install "$gem"'
+su -l "$user" -c 'source ~/.rvm/scripts/rvm; rvm use "$gemset"; gem install "$gem"'
 DONE
     ;;
     absent)
         cat << DONE
-su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm use "$gemset"; gem uninstall "$gem"'
+su -l "$user" -c 'source ~/.rvm/scripts/rvm; rvm use "$gemset"; gem uninstall "$gem"'
 DONE
     ;;
 esac

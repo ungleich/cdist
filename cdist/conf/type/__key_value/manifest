@@ -21,7 +21,7 @@
 
 state_should="$(cat "$__object/parameter/state")"
 
-if [ "$state_should" = "present" -a ! -f "$__object/parameter/value" ]; then
+if [ "$state_should" = "present" ] && [ ! -f "$__object/parameter/value" ]; then
    echo "Missing required parameter 'value'" >&2
    exit 1
 fi 

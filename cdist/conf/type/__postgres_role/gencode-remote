@@ -34,16 +34,16 @@ case "$state_should" in
             if [ ! -f "$__object/parameter/$boolean" ]; then
                 boolean="no${boolean}"
             fi
-            upper=$(echo $boolean | tr '[a-z]' '[A-Z]')
+            upper=$(echo $boolean | tr '[:lower:]' '[:upper:]')
             booleans="$booleans $upper"
         done
 
          [ -n "$password" ] && password="PASSWORD '$password'"
 
          cmd="CREATE ROLE $name WITH $password $booleans"
-         echo "su - postgres -c \"psql -c \\\"$cmd\\\"\""
+         echo "su -l postgres -c \"psql -c \\\"$cmd\\\"\""
     ;;
     absent)
-        echo "su - postgres -c \"dropuser \\\"$name\\\"\""
+        echo "su -l postgres -c \"dropuser \\\"$name\\\"\""
     ;;
 esac

@@ -25,7 +25,7 @@ the_key="$(cat "$__object/parameter/key")"
 validated_key="$(echo "${the_key}" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
 if [ -z "${validated_key}" ]
 then
-    echo "Key is invalid: \"${the_key}\"" >&2
+    echo "Key is invalid: '${the_key}'" >&2
     exit 1
 fi
 
@@ -59,7 +59,7 @@ mkdir "$__object/files"
 (
    if [ -f "$__object/parameter/option" ]; then
       # comma seperated list of options
-      options="$(cat "$__object/parameter/option" | tr '\n' ',')"
+      options="$(tr '\n' ',' < "$__object/parameter/option")"
       printf '%s ' "${options%*,}"
    fi
    if [ -f "$__object/parameter/comment" ]; then
@@ -78,7 +78,7 @@ if [ -s "$__object/explorer/entry" ]; then
    # Note that the files have to be sorted for comparison with `comm`.
    sort "$__object/explorer/entry" > "$__object/files/is"
    comm -13 "$__object/files/should" "$__object/files/is" | {
-      while read entry; do
+      while read -r entry; do
          remove_line "$file" "$entry"
       done
    }
@@ -88,7 +88,7 @@ fi
 entry="$(cat "$__object/files/should")"
 state_should="$(cat "$__object/parameter/state")"
 num_existing_entries=$(grep -c -F -x "$entry" "$__object/explorer/entry" || true)
-if [ $num_existing_entries -eq 1 ]; then
+if [ "$num_existing_entries" -eq 1 ]; then
    state_is="present"
 else
    # Posix grep does not define the -m option, so we can not remove a single

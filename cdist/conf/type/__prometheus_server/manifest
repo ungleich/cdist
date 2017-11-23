@@ -14,13 +14,13 @@ target_heap_size="$(cat "$__object/parameter/target-heap-size")"
 rule_files="$(cat "$__object/parameter/rule-files")"
 
 # explorer in kB => convert; by default we go with 1/2 RAM
-[ "$target_heap_size" = "auto" ] && target_heap_size=$(($(cat $__global/explorer/memory)*1024/2))
+[ "$target_heap_size" = "auto" ] && target_heap_size=$(( "$(cat "$__global/explorer/memory")" * 1024 / 2 ))
 
 
 FLAGS="config.file '$CONF'
 storage.local.path '$storage_path'
-storage.local.target-heap-size $(($target_heap_size))  # in bytes; should be 2/3 of available memory because it may be hungry
-storage.local.retention $(($retention_days*24))h  # golang doesn't have days :D
+storage.local.target-heap-size $target_heap_size  # in bytes; should be 2/3 of available memory because it may be hungry
+storage.local.retention $(( retention_days * 24 ))h  # golang doesn't have days :D
 web.listen-address '$listen_address'
 alertmanager.url '$alertmanager_url'
 log.level $LOGLEVEL"
@@ -37,12 +37,12 @@ __daemontools_service prometheus --run "setuidgid prometheus $GOBIN/prometheus $
 
 require="$require __directory/$storage_path __user/prometheus" \
 __config_file $CONF \
-	--source $config \
+	--source "$config" \
 	--group prometheus --mode 640 \
 	--onchange "$GOBIN/promtool check-config $CONF && svc -h /service/prometheus"
 
 for file in $rule_files; do
-	dest=$CONF_DIR/$(basename $file)
+	dest="$CONF_DIR/$(basename "$file")"
 	require="$require __directory/$CONF_DIR __user/prometheus" \
 	__config_file "$dest" \
 		--source "$file" \

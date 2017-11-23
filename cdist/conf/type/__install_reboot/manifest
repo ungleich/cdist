@@ -19,5 +19,6 @@
 #
 
 # set defaults
-options="$(cat "$__object/parameter/options" 2>/dev/null \
-   || echo "" | tee "$__object/parameter/options")"
+# options="$(cat "$__object/parameter/options" 2>/dev/null \
+#   || echo "" | tee "$__object/parameter/options")"
+[ -f "$__object/parameter/options" ] || touch "$__object/parameter/options"

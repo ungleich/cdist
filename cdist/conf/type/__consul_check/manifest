@@ -40,7 +40,7 @@ if [ ! -f "$__object/parameter/interval" ]; then
       fi
    done
 fi
-if [ -f "$__object/parameter/docker-container-id" -a ! -f "$__object/parameter/script" ]; then
+if [ -f "$__object/parameter/docker-container-id" ] && [ ! -f "$__object/parameter/script" ]; then
    echo "When using --docker-container-id you must also define --script." >&2
    exit 1
 fi

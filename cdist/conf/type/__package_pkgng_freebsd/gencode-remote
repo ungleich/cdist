@@ -52,7 +52,7 @@ cmd=""
 # Parms: $1 -- mode, "rm", "add", or "upg"
 #        $2 -- the command to be echoed
 execcmd(){
-   local _cmd=""
+   _cmd=""
 
    case "$1" in
       add)
@@ -70,12 +70,14 @@ execcmd(){
          ;;
    esac
 
-   echo "$_cmd 2>&- >&-"   # Silence the output of the command
-   echo "status=\$?"
-   echo "if [ \"\$status\" -ne \"0\" ]; then"
-   echo "	echo \"Error: ${_cmd} exited nonzero with \$status\"'!' >&2"
-   echo "	exit 1"
-   echo "fi"
+   cat <<EOF
+$_cmd 2>&- >&-  # Silence the output of the command
+status=\$?
+if [ "\$status" -ne "0" ]; then
+	echo "Error: ${_cmd} exited nonzero with \$status!" >&2
+	exit 1
+fi
+EOF
 }
 
 if [ -n "$curr_version" ]; then  # PKG *is* installed
