@@ -137,7 +137,8 @@ EOF
    echo "rm -f '/etc/fstab.${name}'"
 # Remove jail entry from jail.conf
    cat <<EOF
-      sed -i .bak -E -e "/^${name} {\$/,/^}\\\$/d" /etc/jail.conf
+      mv /etc/jail.conf /etc/jail.conf.bak
+      sed -E -e "/^${name} {\$/,/^}\\\$/d" /etc/jail.conf.bak > /etc/jail.conf
       if [ -f "/etc/jail.conf.bak" ]; then
          rm -f "/etc/jail.conf.bak"
       fi
@@ -153,7 +154,8 @@ EOF
       done
       jail_list="\${new_list}"
       
-      sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+      mv /etc/rc.conf /etc/rc.conf.bak
+      sed "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf.bak > /etc/rc.conf
       unset jail_list
       if [ -f "/etc/rc.conf.bak" ]; then
          rm -f /etc/rc.conf.bak
@@ -239,7 +241,8 @@ cat <<EOF
    if [ -z "\$jail_enable" ]; then	# no jail_enable line in rc.conf at all
       echo "jail_enable=\"YES\"" >>/etc/rc.conf
    elif [ ! "\$(echo \$jail_enable | tr '[a-z]' '[A-Z]' | tr -d '"')" = "YES" ]; then	# jail_enable="NO"
-      sed -i '.bak' 's/^jail_enable=.*$/jail_enable="YES"/g' /etc/rc.conf	# fix this -^
+      mv /etc/rc.conf /etc/rc.conf.bak
+      sed 's/^jail_enable=.*$/jail_enable="YES"/g' /etc/rc.conf.bak > /etc/rc.conf	# fix this -^
       rm -f /etc/rc.conf.bak
    fi
 
@@ -313,7 +316,8 @@ if [ "$onboot" = "yes" ]; then
          echo "jail_list=\"${name}\"" >>/etc/rc.conf
       else
          jail_list="\${jail_list} ${name}"
-         sed -i '.bak' "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf
+         mv /etc/rc.conf /etc/rc.conf.bak
+         sed "s/^jail_list=\".*\"/jail_list=\"\${jail_list}\"/" /etc/rc.conf.bak > /etc/rc.conf
          rm -f /etc/rc.conf.bak
       fi
       unset jail_list
