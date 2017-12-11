@@ -23,6 +23,7 @@ remote_exec="$__type/files/remote/exec"
 remote_copy="$__type/files/remote/copy"
 
 cat << DONE
+export __cdist_log_level=$__cdist_log_level
 export __default_remote_exec="$__remote_exec"
 export __default_remote_copy="$__remote_copy"
 cdist config \
