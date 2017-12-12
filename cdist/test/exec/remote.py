@@ -40,12 +40,24 @@ class RemoteTestCase(test.CdistTestCase):
         )
         # another temp dir for remote base path
         self.base_path = self.mkdtemp()
+        self.remote = self.create_remote()
+
+    def create_remote(self, *args, **kwargs):
+        if not args:
+            args = (self.target_host,)
+        kwargs.setdefault('base_path', self.base_path)
         user = getpass.getuser()
-        remote_exec = "ssh -o User=%s -q" % user
-        remote_copy = "scp -o User=%s -q" % user
-        self.remote = remote.Remote(self.target_host, base_path=self.base_path,
-                                    remote_exec=remote_exec,
-                                    remote_copy=remote_copy)
+        kwargs.setdefault('remote_exec', 'ssh -o User=%s -q' % user)
+        kwargs.setdefault('remote_copy', 'scp -o User=%s -q' % user)
+        if 'stdout_base_path' not in kwargs:
+            stdout_path = os.path.join(self.temp_dir, 'stdout')
+            os.makedirs(stdout_path, exist_ok=True)
+            kwargs['stdout_base_path'] = stdout_path
+        if 'stderr_base_path' not in kwargs:
+            stderr_path = os.path.join(self.temp_dir, 'stderr')
+            os.makedirs(stderr_path, exist_ok=True)
+            kwargs['stderr_base_path'] = stderr_path
+        return remote.Remote(*args, **kwargs)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -155,8 +167,8 @@ class RemoteTestCase(test.CdistTestCase):
         os.chmod(remote_exec_path, 0o755)
         remote_exec = remote_exec_path
         remote_copy = "echo"
-        r = remote.Remote(self.target_host, base_path=self.base_path,
-                          remote_exec=remote_exec, remote_copy=remote_copy)
+        r = self.create_remote(remote_exec=remote_exec,
+                               remote_copy=remote_copy)
         self.assertEqual(r.run('true', return_output=True),
                          "%s\n" % self.target_host[0])
 
@@ -167,8 +179,8 @@ class RemoteTestCase(test.CdistTestCase):
         os.chmod(remote_exec_path, 0o755)
         remote_exec = remote_exec_path
         remote_copy = "echo"
-        r = remote.Remote(self.target_host, base_path=self.base_path,
-                          remote_exec=remote_exec, remote_copy=remote_copy)
+        r = self.create_remote(remote_exec=remote_exec,
+                               remote_copy=remote_copy)
         handle, script = self.mkstemp(dir=self.temp_dir)
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", "true"])
@@ -189,8 +201,8 @@ class RemoteTestCase(test.CdistTestCase):
         os.chmod(remote_exec_path, 0o755)
         remote_exec = remote_exec_path
         remote_copy = "echo"
-        r = remote.Remote(self.target_host, base_path=self.base_path,
-                          remote_exec=remote_exec, remote_copy=remote_copy)
+        r = self.create_remote(remote_exec=remote_exec,
+                               remote_copy=remote_copy)
         output = r.run_script(script, return_output=True)
         self.assertEqual(output, "no_env\n")
 
@@ -202,8 +214,8 @@ class RemoteTestCase(test.CdistTestCase):
         env = {
             '__object': 'test_object',
         }
-        r = remote.Remote(self.target_host, base_path=self.base_path,
-                          remote_exec=remote_exec, remote_copy=remote_copy)
+        r = self.create_remote(remote_exec=remote_exec,
+                               remote_copy=remote_copy)
         output = r.run_script(script, env=env, return_output=True)
         self.assertEqual(output, "test_object\n")
 

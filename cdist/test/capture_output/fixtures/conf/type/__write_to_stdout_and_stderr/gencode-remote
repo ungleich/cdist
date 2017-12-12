@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo "gencode-remote: stderr" >&2
+
+echo "echo \"code-remote: stdout\""
+echo "echo \"code-remote: stderr\" >&2"

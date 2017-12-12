@@ -5,6 +5,7 @@ next:
 	* Core: Skip empty lines in parameter files (Darko Poljak)
 	* Explorer memory: Support OpenBSD (Philippe Gregoire)
 	* Type __install_config: re-export cdist log level during installation (Steven Armstrong)
+	* Core: Save output streams (Steven Armstrong, Darko Poljak)
 
 4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)

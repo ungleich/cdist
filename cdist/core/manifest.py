@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
@@ -153,10 +153,16 @@ class Manifest(object):
 
         message_prefix = "initialmanifest"
         self.log.verbose("Running initial manifest " + initial_manifest)
-        self.local.run_script(initial_manifest,
-                              env=self.env_initial_manifest(initial_manifest),
-                              message_prefix=message_prefix,
-                              save_output=False)
+        which = "init"
+        stderr_path = os.path.join(self.local.stderr_base_path, which)
+        stdout_path = os.path.join(self.local.stdout_base_path, which)
+        with open(stderr_path, 'ba+') as stderr, \
+                open(stdout_path, 'ba+') as stdout:
+            self.local.run_script(
+                initial_manifest,
+                env=self.env_initial_manifest(initial_manifest),
+                message_prefix=message_prefix,
+                stdout=stdout, stderr=stderr)
 
     def env_type_manifest(self, cdist_object):
         type_manifest = os.path.join(self.local.type_path,
@@ -178,10 +184,16 @@ class Manifest(object):
         type_manifest = os.path.join(self.local.type_path,
                                      cdist_object.cdist_type.manifest_path)
         message_prefix = cdist_object.name
+        which = 'manifest'
         if os.path.isfile(type_manifest):
             self.log.verbose("Running type manifest %s for object %s",
                              type_manifest, cdist_object.name)
-            self.local.run_script(type_manifest,
-                                  env=self.env_type_manifest(cdist_object),
-                                  message_prefix=message_prefix,
-                                  save_output=False)
+            stderr_path = os.path.join(cdist_object.stderr_path, which)
+            stdout_path = os.path.join(cdist_object.stdout_path, which)
+            with open(stderr_path, 'ba+') as stderr, \
+                    open(stdout_path, 'ba+') as stdout:
+                self.local.run_script(
+                    type_manifest,
+                    env=self.env_type_manifest(cdist_object),
+                    message_prefix=message_prefix,
+                    stdout=stdout, stderr=stderr)

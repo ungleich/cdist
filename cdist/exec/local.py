@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2011-2015 Nico Schottelius (nico-cdist at schottelius.org)
 # 2016-2017 Darko Poljak (darko.poljak at gmail.com)
 #
@@ -34,7 +34,7 @@ import datetime
 import cdist
 import cdist.message
 from cdist import core
-import cdist.exec.util as exec_util
+import cdist.exec.util as util
 
 CONF_SUBDIRS_LINKED = ["explorer", "files", "manifest", "type", ]
 
@@ -120,9 +120,11 @@ class Local(object):
                                                      "explorer")
         self.object_path = os.path.join(self.base_path, "object")
         self.messages_path = os.path.join(self.base_path, "messages")
-        self.files_path = os.path.join(self.conf_path, "files")
+        self.stdout_base_path = os.path.join(self.base_path, "stdout")
+        self.stderr_base_path = os.path.join(self.base_path, "stderr")
 
         # Depending on conf_path
+        self.files_path = os.path.join(self.conf_path, "files")
         self.global_explorer_path = os.path.join(self.conf_path, "explorer")
         self.manifest_path = os.path.join(self.conf_path, "manifest")
         self.initial_manifest = (self.custom_initial_manifest or
@@ -165,6 +167,8 @@ class Local(object):
         self.mkdir(self.object_path)
         self.mkdir(self.bin_path)
         self.mkdir(self.cache_path)
+        self.mkdir(self.stdout_base_path)
+        self.mkdir(self.stderr_base_path)
 
     def create_files_dirs(self):
         self._init_directories()
@@ -200,13 +204,29 @@ class Local(object):
         os.makedirs(path, exist_ok=True)
 
     def run(self, command, env=None, return_output=False, message_prefix=None,
-            save_output=True, quiet_mode=False):
+            stdout=None, stderr=None, save_output=True, quiet_mode=False):
         """Run the given command with the given environment.
         Return the output as a string.
 
         """
         assert isinstance(command, (list, tuple)), (
                 "list or tuple argument expected, got: %s" % command)
+
+        quiet = self.quiet_mode or quiet_mode
+        do_save_output = save_output and not quiet
+
+        close_stdout = False
+        close_stderr = False
+        if quiet:
+            stderr = subprocess.DEVNULL
+            stdout = subprocess.DEVNULL
+        elif do_save_output:
+            if not return_output and stdout is None:
+                stdout = util.get_std_fd(self.stdout_base_path, 'local')
+                close_stdout = True
+            if stderr is None:
+                stderr = util.get_std_fd(self.stderr_base_path, 'local')
+                close_stderr = True
 
         if env is None:
             env = os.environ.copy()
@@ -225,39 +245,33 @@ class Local(object):
 
         self.log.trace("Local run: %s", command)
         try:
-            if self.quiet_mode or quiet_mode:
-                stderr = subprocess.DEVNULL
+            if return_output:
+                output = subprocess.check_output(
+                    command, env=env, stderr=stderr).decode()
             else:
-                stderr = None
-            if save_output:
-                output, errout = exec_util.call_get_output(
-                    command, env=env, stderr=stderr)
-                self.log.trace("Command: {}; local stdout: {}".format(
-                    command, output))
-                # Currently, stderr is not captured.
-                # self.log.trace("Local stderr: {}".format(errout))
-                if return_output:
-                    return output.decode()
-            else:
-                # In some cases no output is saved.
-                # This is used for shell command, stdout and stderr
-                # must not be catched.
-                if self.quiet_mode or quiet_mode:
-                    stdout = subprocess.DEVNULL
-                else:
-                    stdout = None
                 subprocess.check_call(command, env=env, stderr=stderr,
                                       stdout=stdout)
+                output = None
+
+            if do_save_output:
+                util.log_std_fd(self.log, command, stderr, 'Local stderr')
+                util.log_std_fd(self.log, command, stdout, 'Local stdout')
+
+            return output
         except subprocess.CalledProcessError as e:
-            exec_util.handle_called_process_error(e, command)
+            util.handle_called_process_error(e, command)
         except OSError as error:
             raise cdist.Error(" ".join(command) + ": " + error.args[1])
         finally:
             if message_prefix:
                 message.merge_messages()
+            if close_stdout:
+                stdout.close()
+            if close_stderr:
+                stderr.close()
 
     def run_script(self, script, env=None, return_output=False,
-                   message_prefix=None, save_output=True):
+                   message_prefix=None, stdout=None, stderr=None):
         """Run the given script with the given environment.
         Return the output as a string.
 
@@ -271,8 +285,9 @@ class Local(object):
                            script, " ".join(command))
             command.append(script)
 
-        return self.run(command=command, env=env, return_output=return_output,
-                        message_prefix=message_prefix, save_output=save_output)
+        return self.run(command, env=env, return_output=return_output,
+                        message_prefix=message_prefix, stdout=stdout,
+                        stderr=stderr)
 
     def _cache_subpath_repl(self, matchobj):
         if matchobj.group(2) == '%P':
