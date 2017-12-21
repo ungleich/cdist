@@ -45,7 +45,7 @@ BOOLEAN PARAMETERS
 ------------------
 
 restart
-    Restart the unit on change.
+    Restart the unit on unit file change or when the unit is inactive.
 
 MESSAGES
 --------
