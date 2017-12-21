@@ -18,14 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-systemctl_present=$(cat "${__object}/explorer/systemctl-present")
-
-if [ "${systemctl_present}" -ne 0 ]; then
-    echo "systemctl does not seem to be present on this system" >&2
-
-    exit 1
-fi
-
 name="${__object_id}"
 state=$(cat "${__object}/parameter/state")
 current_enablement_state=$(cat "${__object}/explorer/enablement-state")
