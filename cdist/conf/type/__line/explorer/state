@@ -35,7 +35,7 @@ else
 fi
 
 # Allow missing file - thus 2>/dev/null
-if grep -q $greparg "$regex" "$file" 2>/dev/null; then
+if grep -q $greparg -- "$regex" "$file" 2>/dev/null; then
     echo present
 else
     echo absent
