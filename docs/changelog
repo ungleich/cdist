@@ -6,6 +6,9 @@ next:
 	* Explorer memory: Support OpenBSD (Philippe Gregoire)
 	* Type __install_config: re-export cdist log level during installation (Steven Armstrong)
 	* Type __sysctl: Add support for CoreOS (Ľubomír Kučera)
+	* Type __systemd_unit: Various improvements (Ľubomír Kučera)
+	* Type __line: Support regex beginning with '-' (Philippe Gregoire)
+	* Type __letsencrypt_cert: Add nonparallel; make admin-email required (Kamila Součková)
 
 4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
