@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 #
 # 2017 Ľubomír Kučera <lubomir.kucera.jr at gmail.com>
 #
@@ -18,24 +18,4 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-systemctl_present=$(cat "${__object}/explorer/systemctl-present")
-
-if [ "${systemctl_present}" -ne 0 ]; then
-    echo "systemctl does not seem to be present on this system" >&2
-
-    exit 1
-fi
-
-name="${__object_id}"
-source=$(cat "${__object}/parameter/source")
-state=$(cat "${__object}/parameter/state")
-
-if [ -z "${source}" ] && [ "${state}" != "absent" ]; then
-    exit 0
-fi
-
-__config_file "/etc/systemd/system/${name}" \
-    --mode 644 \
-    --onchange "systemctl daemon-reload" \
-    --source "${source}" \
-    --state "${state}"
+systemctl is-active "${__object_id}" || true
