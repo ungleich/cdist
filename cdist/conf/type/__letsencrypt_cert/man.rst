@@ -17,12 +17,13 @@ REQUIRED PARAMETERS
 webroot
    The path to your webroot, as set up in your webserver config.
 
+admin-email
+   Where to send Let's Encrypt emails like "certificate needs renewal".
+
 
 OPTIONAL PARAMETERS
 -------------------
-admin-email
-   Where to send Let's Encrypt emails like "certificate needs renewal". Defaults to root@localhost.
-
+None.
 
 EXAMPLES
 --------
