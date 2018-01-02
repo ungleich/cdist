@@ -70,7 +70,7 @@ execcmd(){
          ;;
    esac
 
-   echo "$_cmd 2>&- >&-"   # Silence the output of the command
+   echo "$_cmd >/dev/null 2>&1"   # Silence the output of the command
    echo "status=\$?"
    echo "if [ \"\$status\" -ne \"0\" ]; then"
    echo "	echo \"Error: ${_cmd} exited nonzero with \$status\"'!' >&2"
