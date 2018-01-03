@@ -9,6 +9,7 @@ next:
 	* Type __systemd_unit: Various improvements (Ľubomír Kučera)
 	* Type __line: Support regex beginning with '-' (Philippe Gregoire)
 	* Type __letsencrypt_cert: Add nonparallel; make admin-email required (Kamila Součková)
+	* Type __package_pkgng_freebsd: Redirect stdout and stderr to /dev/null	instead of closing them (michal-hanu-la)
 
 4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
