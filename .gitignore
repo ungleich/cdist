@@ -20,6 +20,7 @@ __pycache__/
 MANIFEST
 dist/
 cdist/version.py
+cdist.egg-info/
 
 # sphinx build dirs, cache
 _build/
