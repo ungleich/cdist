@@ -109,6 +109,7 @@ class ManifestTestCase(test.CdistTestCase):
         cdist_object = core.CdistObject(cdist_type, self.local.object_path,
                                         self.local.object_marker_name,
                                         'whatever')
+        cdist_object.create()
         handle, output_file = self.mkstemp(dir=self.temp_dir)
         os.close(handle)
         os.environ['__cdist_test_out'] = output_file

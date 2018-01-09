@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo "gencode-local: stderr" >&2
+
+echo "echo \"code-local: stdout\""
+echo "echo \"code-local: stderr\" >&2"

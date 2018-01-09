@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2016 Darko Poljak (darko.poljak at gmail.com)
+# 2016-2017 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -20,6 +20,7 @@
 #
 
 import subprocess
+import os
 from tempfile import TemporaryFile
 
 import cdist
@@ -115,6 +116,7 @@ import cdist
 #     return (result.stdout, result.stderr)
 
 
+# Currently not used.
 def call_get_output(command, env=None, stderr=None):
     """Run the given command with the given environment.
     Return the tuple of stdout and stderr output as a byte strings.
@@ -145,6 +147,7 @@ def handle_called_process_error(err, command):
                           " ".join(command), err.returncode, output))
 
 
+# Currently not used.
 def _call_get_stdout(command, env=None, stderr=None):
     """Run the given command with the given environment.
     Return the stdout output as a byte string, stderr is ignored.
@@ -158,3 +161,16 @@ def _call_get_stdout(command, env=None, stderr=None):
         output = fout.read()
 
     return output
+
+
+def get_std_fd(base_path, name):
+    path = os.path.join(base_path, name)
+    stdfd = open(path, 'ba+')
+    return stdfd
+
+
+def log_std_fd(log, command, stdfd, prefix):
+    if stdfd is not None and stdfd != subprocess.DEVNULL:
+        stdfd.seek(0, 0)
+        log.trace("Command: {}; {}: {}".format(
+            command, prefix, stdfd.read().decode()))
