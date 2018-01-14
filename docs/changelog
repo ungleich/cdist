@@ -12,6 +12,7 @@ next:
 	* Type __package_pkgng_freebsd: Redirect stdout and stderr to /dev/null	instead of closing them (michal-hanu-la)
 	* Type __daemontools: Make it more robust and clean up the code (Kamila Součková)
 	* Core: Save output streams (Steven Armstrong, Darko Poljak)
+	* Documentation: Add local cache overview (Darko Poljak)
 
 4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
