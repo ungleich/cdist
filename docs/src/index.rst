@@ -30,6 +30,7 @@ Contents:
    cdist-reference
    cdist-best-practice
    cdist-stages
+   cdist-cache
    cdist-remote-exec-copy
    cdist-hacker
    cdist-troubleshooting

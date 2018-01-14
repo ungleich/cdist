@@ -571,6 +571,8 @@ FILES
 ~/.cdist
     Your personal cdist config directory. If exists it will be
     automatically used.
+~/.cdist/cache
+    Local cache directory.
 ~/.cdist/inventory
     The home inventory directory. If ~/.cdist exists it will be used as
     default inventory directory.
