@@ -13,6 +13,7 @@ next:
 	* Type __daemontools: Make it more robust and clean up the code (Kamila Součková)
 	* Core: Save output streams (Steven Armstrong, Darko Poljak)
 	* Documentation: Add local cache overview (Darko Poljak)
+	* Type __systemd_unit: Fix handling stdin (Jonas Weber)
 
 4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
