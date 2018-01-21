@@ -34,6 +34,11 @@ if [ -z "${source}" ] && [ "${state}" != "absent" ]; then
     exit 0
 fi
 
+# stdin is not propagated automatically to sub-objects
+if [ "${source}" = "-" ]; then
+    source="${__object}/stdin"
+fi
+
 __config_file "/etc/systemd/system/${name}" \
     --mode 644 \
     --onchange "systemctl daemon-reload" \
