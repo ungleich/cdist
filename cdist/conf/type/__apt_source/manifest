@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2018 Thomas Eckert (tom at it-eckert.de)
 #
 # This file is part of cdist.
 #
@@ -51,4 +52,4 @@ __file "/etc/apt/sources.list.d/${name}.list" \
    --owner root --group root --mode 0644 \
    --state "$state"
 
-require="$__object_name" __apt_update_index
+require="__file/etc/apt/sources.list.d/${name}.list" __apt_update_index "$__object_id"

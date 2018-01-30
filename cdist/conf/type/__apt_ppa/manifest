@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2011-2016 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2018 Thomas Eckert (tom at it-eckert.de)
 #
 # This file is part of cdist.
 #
@@ -27,4 +28,4 @@ require="__package/software-properties-common" \
    --source "$__type/files/remove-apt-repository" \
    --mode 0755
 
-require="$__object_name" __apt_update_index
+require="$__object_name" __apt_update_index "$__object_id"

@@ -9,6 +9,7 @@ cdist-type__apt_update_index - Update apt's package index
 DESCRIPTION
 -----------
 This cdist type runs apt-get update whenever any apt sources have changed.
+Should not be called directly (is used by `__apt_source` and `__apt_ppa`).
 
 
 REQUIRED PARAMETERS
@@ -25,7 +26,7 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __apt_update_index
+    __apt_update_index "$__object_id"
 
 
 AUTHORS
