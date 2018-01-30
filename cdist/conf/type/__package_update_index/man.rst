@@ -27,6 +27,9 @@ type
     * yum for Red Hat
     * pacman for Arch Linux
 
+maxage
+    Available for package manager apt, max time in seconds since last update.
+    Repo update is skipped if maxage is not reached yet.
 
 EXAMPLES
 --------
@@ -39,10 +42,15 @@ EXAMPLES
     # Force use of a specific package manager
     __package_update_index --type apt
 
+    # Only update every hour:
+    __package_update_index --maxage 3600 --type apt
+    # same as avove (on apt-type systems):
+    __package_update_index --maxage 3600
 
 AUTHORS
 -------
-Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
+| Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
+| Thomas Eckert <tom--@--it-eckert.de>
 
 
 COPYING

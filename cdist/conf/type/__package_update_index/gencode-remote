@@ -22,6 +22,10 @@
 #
 
 type="$__object/parameter/type"
+if [ -f "$__object/parameter/maxage" ]; then
+    maxage="$(cat "$__object/parameter/maxage")"
+    currage="$(cat "$__object/explorer/currage")"
+fi
 
 if [ -f "$type" ]; then
     type="$(cat "$type")"
@@ -39,9 +43,23 @@ else
     esac
 fi
 
+if [ -n "$maxage" ] && [ "$type" != "apt" ]; then
+    echo "ERROR: \"--maxage\" only supported for \"apt\" pkg-manager." >&2
+    exit 1
+fi
+
 case "$type" in
     yum) ;;
-    apt) echo "apt-get --quiet update" ;;
+    apt) if [ -n "$maxage" ]; then
+             ## check if we need to update:
+             if [ $currage -ge $maxage ]; then
+                echo "apt-get --quiet update"
+             fi
+         else
+                echo "apt-get --quiet update"
+         fi
+         echo "apt-cache updated (age was: $currage)" >> "$__messages_out"
+         ;;
     pacman) echo "pacman --noprogressbar --sync --refresh" ;;
     *)
         echo "Don't know how to manage packages on: $os" >&2
