@@ -31,6 +31,13 @@ maxage
     Available for package manager apt, max time in seconds since last update.
     Repo update is skipped if maxage is not reached yet.
 
+MESSAGES
+--------
+apt-cache updated (age was: currage)
+        apt-cache was updated (run of `apt-get update`). `currage` is the time
+        in seconds since the previous run.
+
+
 EXAMPLES
 --------
 
@@ -44,7 +51,7 @@ EXAMPLES
 
     # Only update every hour:
     __package_update_index --maxage 3600 --type apt
-    # same as avove (on apt-type systems):
+    # same as above (on apt-type systems):
     __package_update_index --maxage 3600
 
 AUTHORS
