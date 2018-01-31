@@ -14,6 +14,8 @@ next:
 	* Core: Save output streams (Steven Armstrong, Darko Poljak)
 	* Documentation: Add local cache overview (Darko Poljak)
 	* Type __systemd_unit: Fix handling stdin (Jonas Weber)
+	* Type __package_apt: Add --purge-if-absent parameter (Jonas Weber)
+	* Type __package_update_index: Add --maxage parameter for apt and add message if index was updated(Thomas Eckert)
 
 4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
