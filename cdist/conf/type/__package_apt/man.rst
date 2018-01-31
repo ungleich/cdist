@@ -28,9 +28,18 @@ state
 target-release
     Passed on to apt-get install, see apt-get(8).
     Essentially allows you to retrieve packages from a different release
+
+version
+    The version of the package to install. Default is to install the version
+    chosen by the local package manager.
+
+
+BOOLEAN PARAMETERS
+------------------
 purge-if-absent
     If this parameter is given when state is `absent`, the package is
     purged from the system (using `--purge`).
+
 
 EXAMPLES
 --------
