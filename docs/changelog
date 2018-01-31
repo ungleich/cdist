@@ -18,6 +18,7 @@ next:
 	* Type __package_update_index: Add --maxage parameter for apt and add message if index was updated(Thomas Eckert)
 	* Type __motd: Support reading from stdin (Jonas Weber)
 	* Type __issue: Support reading from stdin (Jonas Weber)
+	* Type __package_apt: Add support for --version parameter (Darko Poljak)
 
 4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
