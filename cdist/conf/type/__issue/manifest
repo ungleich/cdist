@@ -25,6 +25,9 @@ os="$(cat "$__global/explorer/os")"
 
 if [ -f "$__object/parameter/source" ]; then
     source="$(cat "$__object/parameter/source")"
+    if [ "$source" = "-" ]; then
+        source="${__object}/stdin"
+    fi
 else
     case "$os" in
         archlinux|redhat)
