@@ -29,6 +29,13 @@ fi
 
 state_should="$(cat "$__object/parameter/state")"
 
+version_param="$__object/parameter/version"
+
+version=""
+if [ -f "$version_param" ]; then
+    version="$(cat "$version_param")"
+fi
+
 if [ -f "$__object/parameter/target-release" ]; then
    target_release="--target-release $(cat "$__object/parameter/target-release")"
 else
@@ -47,7 +54,11 @@ state_is="$(cat "$__object/explorer/state")"
 case "$state_is" in
     present*)
        name="$(echo "$state_is" | cut -d ' ' -f 2)"
+       version_is="$(echo "$state_is" | cut -d ' ' -f 3)"
        state_is="present"
+    ;;
+    *)
+       version_is=""
     ;;
 esac
 
@@ -55,10 +66,17 @@ esac
 # DEBIAN_PRIORITY=critical can reduce the number of questions
 aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes --no-install-recommends -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
 
-[ "$state_is" = "$state_should" ] && exit 0
+if [ "$state_is" = "$state_should" ]; then
+    if [ -z "$version" ] || [ "$version" = "$version_is" ]; then
+        exit 0;
+    fi
+fi
 
 case "$state_should" in
     present)
+        if [ -n "$version" ]; then
+            name="${name}=${version}"
+        fi
         echo $aptget install $target_release \"$name\"
     ;;
     absent)
