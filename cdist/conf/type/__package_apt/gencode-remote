@@ -35,6 +35,11 @@ else
    target_release=""
 fi
 
+if [ -f "$__object/parameter/purge-if-absent" ]; then
+	purgeparam="--purge"
+else
+	purgeparam=""
+fi
 
 
 # FIXME: use grep directly, state is a list, not a line!
@@ -57,7 +62,7 @@ case "$state_should" in
         echo $aptget install $target_release \"$name\"
     ;;
     absent)
-        echo $aptget remove \"$name\"
+        echo $aptget remove $purgeparam \"$name\"
     ;;
     *)
         echo "Unknown state: $state_should" >&2
