@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# 2018 Thomas Eckert (tom at it-eckert.de)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+
+os="$("$__explorer/os")"
+
+case "$os" in
+    debian|ubuntu|devuan)
+        if [ -f "/var/cache/apt/pkgcache.bin" ]; then
+            echo $(($(date +"%s")-$(stat --format '%Y' /var/cache/apt/pkgcache.bin)))
+        else
+            echo 0
+        fi
+        ;;
+    *)  echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+        echo "Please contribute an implementation for it if you can." >&2
+        exit 1
+        ;;
+esac
