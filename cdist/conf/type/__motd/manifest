@@ -22,6 +22,9 @@
 # Select motd source
 if [ -f "$__object/parameter/source" ]; then
    source="$(cat "$__object/parameter/source")"
+    if [ "$source" = "-" ]; then
+        source="${__object}/stdin"
+    fi
 else
    source="$__type/files/motd"
 fi
