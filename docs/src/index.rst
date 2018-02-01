@@ -31,6 +31,7 @@ Contents:
    cdist-best-practice
    cdist-stages
    cdist-cache
+   cdist-saving-output-streams
    cdist-remote-exec-copy
    cdist-hacker
    cdist-troubleshooting

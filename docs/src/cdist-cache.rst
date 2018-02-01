@@ -87,10 +87,12 @@ state
     this type execution state ('done' when finished)
 
 stderr
-  directory containing type's gencode-* and code-* stderr stream outputs
+  directory containing type's manifest, gencode-* and code-* stderr stream
+  outputs
 
 stdin
     this type stdin content
 
 stdout
-  directory containing type's gencode-* and code-* stdout stream outputs.
+  directory containing type's manifest, gencode-* and code-* stdout stream
+  outputs.
