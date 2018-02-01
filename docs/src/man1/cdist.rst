@@ -21,7 +21,7 @@ SYNOPSIS
                  [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                  [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
                  [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                 [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
+                 [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
                  [host [host ...]] 
 
     cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
@@ -29,7 +29,7 @@ SYNOPSIS
                   [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                   [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
                   [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                  [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
+                  [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
                   [host [host ...]] 
 
     cdist inventory [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
@@ -199,6 +199,10 @@ Install command is currently in beta.
 .. option:: -r REMOTE_OUT_PATH, --remote-out-dir REMOTE_OUT_PATH
 
     Directory to save cdist output in on the target host.
+
+.. option:: -S, --disable-saving-output-streams
+
+    Disable saving output streams.
 
 .. option:: -s, --sequential
 
@@ -560,6 +564,11 @@ The possible keywords and their meanings are as follows:
 
 :strong:`remote_shell`
     Shell command at remote host used for remote execution.
+
+:strong:`save_output_streams`
+    Enable/disable saving output streams (enabled by default).
+    It recognizes boolean values from 'yes'/'no', 'on'/'off', 'true'/'false'
+    and '1'/'0'.
 
 :strong:`verbosity`
     Set verbosity level. Valid values are: 

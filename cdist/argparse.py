@@ -252,6 +252,10 @@ def get_parsers():
            action='store', dest='parallel',
            const=multiprocessing.cpu_count())
     parser['config_args'].add_argument(
+           '-S', '--disable-saving-output-streams',
+           help='Disable saving output streams.',
+           action='store_false', dest='save_output_streams', default=True)
+    parser['config_args'].add_argument(
            '-s', '--sequential',
            help='Operate on multiple hosts sequentially (default).',
            action='store_const', dest='parallel', const=0)

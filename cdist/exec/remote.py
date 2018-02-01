@@ -65,7 +65,8 @@ class Remote(object):
                  archiving_mode=None,
                  configuration=None,
                  stdout_base_path=None,
-                 stderr_base_path=None):
+                 stderr_base_path=None,
+                 save_output_streams=True):
         self.target_host = target_host
         self._exec = remote_exec
         self._copy = remote_copy
@@ -80,6 +81,7 @@ class Remote(object):
             self.configuration = configuration
         else:
             self.configuration = {}
+        self.save_output_streams = save_output_streams
 
         self.stdout_base_path = stdout_base_path
         self.stderr_base_path = stderr_base_path
@@ -309,12 +311,13 @@ class Remote(object):
 
         close_stdout = False
         close_stderr = False
-        if not return_output and stdout is None:
-            stdout = util.get_std_fd(self.stdout_base_path, 'remote')
-            close_stdout = True
-        if stderr is None:
-            stderr = util.get_std_fd(self.stderr_base_path, 'remote')
-            close_stderr = True
+        if self.save_output_streams:
+            if not return_output and stdout is None:
+                stdout = util.get_std_fd(self.stdout_base_path, 'remote')
+                close_stdout = True
+            if stderr is None:
+                stderr = util.get_std_fd(self.stderr_base_path, 'remote')
+                close_stderr = True
 
         # export target_host, target_hostname, target_fqdn
         # for use in __remote_{exec,copy} scripts
@@ -335,8 +338,9 @@ class Remote(object):
                                       stderr=stderr)
                 output = None
 
-            util.log_std_fd(self.log, command, stderr, 'Remote stderr')
-            util.log_std_fd(self.log, command, stdout, 'Remote stdout')
+            if self.save_output_streams:
+                util.log_std_fd(self.log, command, stderr, 'Remote stderr')
+                util.log_std_fd(self.log, command, stdout, 'Remote stdout')
 
             return output
         except subprocess.CalledProcessError as e:

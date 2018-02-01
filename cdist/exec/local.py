@@ -56,7 +56,8 @@ class Local(object):
                  add_conf_dirs=None,
                  cache_path_pattern=None,
                  quiet_mode=False,
-                 configuration=None):
+                 configuration=None,
+                 save_output_streams=True):
 
         self.target_host = target_host
         if target_host_tags is None:
@@ -75,6 +76,7 @@ class Local(object):
             self.configuration = configuration
         else:
             self.configuration = {}
+        self.save_output_streams = save_output_streams
 
         self._init_log()
         self._init_permissions()
@@ -213,7 +215,7 @@ class Local(object):
                 "list or tuple argument expected, got: %s" % command)
 
         quiet = self.quiet_mode or quiet_mode
-        do_save_output = save_output and not quiet
+        do_save_output = save_output and not quiet and self.save_output_streams
 
         close_stdout = False
         close_stderr = False
@@ -256,7 +258,6 @@ class Local(object):
             if do_save_output:
                 util.log_std_fd(self.log, command, stderr, 'Local stderr')
                 util.log_std_fd(self.log, command, stdout, 'Local stdout')
-
             return output
         except subprocess.CalledProcessError as e:
             util.handle_called_process_error(e, command)

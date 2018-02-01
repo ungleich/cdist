@@ -248,6 +248,7 @@ _ARG_OPTION_MAPPING = {
     'parallel': 'parallel',
     'verbose': 'verbosity',
     'use_archiving': 'archiving',
+    'save_output_streams': 'save_output_streams',
 }
 
 
@@ -285,6 +286,7 @@ class Configuration(metaclass=Singleton):
             'parallel': JobsOption('parallel'),
             'verbosity': VerbosityOption(),
             'archiving': ArchivingOption(),
+            'save_output_streams': BooleanOption('save_output_streams'),
         },
     }
 
@@ -328,7 +330,10 @@ class Configuration(metaclass=Singleton):
                  config_files=default_config_files, singleton=True):
         self.command_line_args = command_line_args
         self.args = self._convert_args(command_line_args)
-        self.env = env
+        if env is None:
+            self.env = {}
+        else:
+            self.env = env
         self.config_files = config_files
         self.config = self._get_config()
 
@@ -403,7 +408,8 @@ class Configuration(metaclass=Singleton):
         for option in self.ARG_OPTION_MAPPING:
             if option in args:
                 dst_opt = self.ARG_OPTION_MAPPING[option]
-                if args[option]:
+                option_object = self.CONFIG_FILE_OPTIONS['GLOBAL'][dst_opt]
+                if args[option] or isinstance(option_object, BooleanOption):
                     d[dst_opt] = args[option]
         return d
 

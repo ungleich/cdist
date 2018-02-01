@@ -300,6 +300,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         expected = {
             'conf_dir': ['/usr/local/cdist1', ],
             'verbosity': 3,
+            'beta': False,
         }
         args_dict = vars(args)
         d = config._read_args_config(args_dict)
@@ -1166,6 +1167,118 @@ class ConfigurationTestCase(test.CdistTestCase):
         with self.assertRaises(ValueError):
             configuration = cc.Configuration(args, env=env,
                                              config_files=())
+
+    def test_configuration_disable_saving_output_streams1(self):
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'save_output_streams': 'True',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'save_output_streams': True,
+                'verbosity': 0,
+            },
+        }
+
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        args = argparse.Namespace()
+        args.save_output_streams = True
+        configuration = cc.Configuration(args, env=None,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration_disable_saving_output_streams2(self):
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'save_output_streams': 'False',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'save_output_streams': True,
+                'verbosity': 0,
+            },
+        }
+
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        args = argparse.Namespace()
+        args.save_output_streams = True
+        configuration = cc.Configuration(args, env=None,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration_disable_saving_output_streams3(self):
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'save_output_streams': 'False',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'save_output_streams': False,
+                'verbosity': 0,
+            },
+        }
+
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        args = argparse.Namespace()
+        args.save_output_streams = False
+        configuration = cc.Configuration(args, env=None,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration_disable_saving_output_streams4(self):
+        config = configparser.ConfigParser()
+        config['GLOBAL'] = {
+            'save_output_streams': 'True',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'save_output_streams': False,
+                'verbosity': 0,
+            },
+        }
+
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        args = argparse.Namespace()
+        args.save_output_streams = False
+        configuration = cc.Configuration(args, env=None,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
 
 
 if __name__ == "__main__":
