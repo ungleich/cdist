@@ -64,9 +64,16 @@ case "$os" in
         ;;
 esac
 
+renew_hook_param="$__object/parameter/renew-hook"
+renew_hook=""
+if [ -f "$renew_hook_param" ]; then
+    while read hook; do
+        renew_hook="$renew_hook --renew-hook \"$hook\""
+    done < "$renew_hook_param"
+fi
 
 __cron letsencrypt-certbot  \
     --user root \
-    --command "$certbot_fullpath renew -q" \
+    --command "$certbot_fullpath renew -q $renew_hook" \
     --hour 0 \
     --minute 47
