@@ -20,6 +20,7 @@ next:
 	* Type __issue: Support reading from stdin (Jonas Weber)
 	* Type __package_apt: Add support for --version parameter (Darko Poljak)
 	* Type __letsencrypt_cert: Add --renew-hook parameter(Darko Poljak)
+	* Core: Support disabling saving output streams (Darko Poljak)
 
 4.7.3: 2017-11-10
 	* Type __ccollect_source: Add create destination parameter (Dominique Roux)
