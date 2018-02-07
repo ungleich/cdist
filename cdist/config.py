@@ -345,7 +345,8 @@ class Config(object):
                 cache_path_pattern=args.cache_path_pattern,
                 quiet_mode=args.quiet,
                 configuration=configuration,
-                exec_path=sys.argv[0])
+                exec_path=sys.argv[0],
+                save_output_streams=args.save_output_streams)
 
             remote = cdist.exec.remote.Remote(
                 target_host=target_host,
@@ -356,7 +357,8 @@ class Config(object):
                 archiving_mode=args.use_archiving,
                 configuration=configuration,
                 stdout_base_path=local.stdout_base_path,
-                stderr_base_path=local.stderr_base_path)
+                stderr_base_path=local.stderr_base_path,
+                save_output_streams=args.save_output_streams)
 
             cleanup_cmds = []
             if cleanup_cmd:

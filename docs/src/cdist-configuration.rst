@@ -88,6 +88,11 @@ The possible keywords and their meanings are as follows:
 :strong:`remote_shell`
     Shell command at remote host used for remote execution.
 
+:strong:`save_output_streams`
+    Enable/disable saving output streams (enabled by default).
+    It recognizes boolean values from 'yes'/'no', 'on'/'off', 'true'/'false'
+    and '1'/'0'.
+
 :strong:`verbosity`
     Set verbosity level. Valid values are: 
     'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE' and 'OFF'.

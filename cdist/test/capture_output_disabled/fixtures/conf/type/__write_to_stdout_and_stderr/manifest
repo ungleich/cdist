@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "manifest: stdout"
+echo "manifest: stderr" >&2
