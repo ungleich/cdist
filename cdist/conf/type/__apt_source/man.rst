@@ -8,7 +8,8 @@ cdist-type__apt_source - Manage apt sources
 
 DESCRIPTION
 -----------
-This cdist type allows you to manage apt sources.
+This cdist type allows you to manage apt sources. It invokes index update
+internally when needed so call of index updating type is not needed.
 
 
 REQUIRED PARAMETERS
@@ -63,7 +64,7 @@ Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 COPYING
 -------
-Copyright \(C) 2011-2014 Steven Armstrong. You can redistribute it
+Copyright \(C) 2011-2018 Steven Armstrong. You can redistribute it
 and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
