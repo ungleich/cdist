@@ -1,7 +1,5 @@
 #!/bin/sh -e
 #
-# 2015 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2016 Nico Schottelius (nico-cdist at schottelius.org)
 # 2018 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
@@ -20,32 +18,37 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+#set -x
 
-os=$(cat "$__global/explorer/os")
+state=$(cat "$__object/parameter/state")
+destination="/usr/local/bin/consul"
 
-case "$os" in
-   scientific|centos|redhat|ubuntu|debian|devuan|archlinux|gentoo)
-      # any linux should work
-      :
-   ;;
-   *)
-      echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
-      echo "Please contribute an implementation for it if you can." >&2
-      exit 1
-   ;;
-esac
+if [ "$state" = "absent" ]; then
+    printf 'rm -f "%s"' "$destination"
+    exit 0
+fi
 
 versions_dir="$__type/files/versions"
 version="$(cat "$__object/parameter/version")"
 version_dir="$versions_dir/$version"
 
-if [ ! -d "$version_dir" ]; then
-   echo "Unknown consul version '$version'. Expected one of:" >&2
-   ls "$versions_dir" >&2
-   exit 1
-fi
+source=$(cat "$version_dir/source")
+source_file_name="${source##*/}"
+cksum_should=$(cat "$version_dir/cksum" | cut -d' ' -f1,2)
 
-state="$(cat "$__object/parameter/state")"
+cat << eof
+    tmpdir=\$(mktemp -d --tmpdir="/tmp" "${__type##*/}.XXXXXXXXXX")
+    curl -s -L "$source" > "\$tmpdir/$source_file_name"
+    unzip -p "\$tmpdir/$source_file_name" > "$destination"
+    rm -rf "\$tmpdir"
 
-__package unzip
-
+    cksum_is=\$(cksum "$destination" | cut -d' ' -f1,2)
+    if [ "\$cksum_is" = "$cksum_should" ]; then
+        chown root:root "$destination"
+        chmod 755 "$destination"
+    else
+        rm -f "$destination"
+        echo "Failed to verify checksum for $__object_name" >&2
+        exit 1
+    fi
+eof
