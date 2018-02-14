@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.8.0: 2018-02-14
 	* Core: Skip empty lines in parameter files (Darko Poljak)
 	* Explorer memory: Support OpenBSD (Philippe Gregoire)
 	* Type __install_config: re-export cdist log level during installation (Steven Armstrong)
