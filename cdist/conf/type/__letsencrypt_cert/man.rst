@@ -43,9 +43,9 @@ EXAMPLES
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
-Kamila Součková <kamila--@--ksp.sk>
-Darko Poljak <darko.poljak--@--gmail.com>
+| Nico Schottelius <nico-cdist--@--schottelius.org>
+| Kamila Součková <kamila--@--ksp.sk>
+| Darko Poljak <darko.poljak--@--gmail.com>
 
 
 COPYING
