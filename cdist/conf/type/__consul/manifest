@@ -45,7 +45,5 @@ if [ ! -d "$version_dir" ]; then
    exit 1
 fi
 
-state="$(cat "$__object/parameter/state")"
-
 __package unzip
 
