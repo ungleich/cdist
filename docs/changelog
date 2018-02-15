@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Type __consul: Add option for directly downloading on target host (Darko Poljak)
+	* Core: Add -4 and -6 params to force IPv4, IPv6 addresses respectively (Darko Poljak)
 
 4.8.0: 2018-02-14
 	* Core: Skip empty lines in parameter files (Darko Poljak)
