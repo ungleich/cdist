@@ -2,6 +2,7 @@
 #
 # 2015 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2016 Nico Schottelius (nico-cdist at schottelius.org)
+# 2018 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -44,12 +45,16 @@ if [ ! -d "$version_dir" ]; then
    exit 1
 fi
 
-__staged_file /usr/local/bin/consul \
-   --source "$(cat "$version_dir/source")" \
-   --cksum "$(cat "$version_dir/cksum")" \
-   --fetch-command 'curl -s -L "%s"' \
-   --prepare-command 'unzip -p "%s"' \
-   --state "$(cat "$__object/parameter/state")" \
-   --group root \
-   --owner root \
-   --mode 755
+if [ -f "$__object/parameter/direct" ]; then
+    __package unzip
+else
+    __staged_file /usr/local/bin/consul \
+       --source "$(cat "$version_dir/source")" \
+       --cksum "$(cat "$version_dir/cksum")" \
+       --fetch-command 'curl -s -L "%s"' \
+       --prepare-command 'unzip -p "%s"' \
+       --state "$(cat "$__object/parameter/state")" \
+       --group root \
+       --owner root \
+       --mode 755
+fi
