@@ -23,13 +23,13 @@ import socket
 import logging
 
 
-def resolve_target_addresses(host):
-    host_name = resolve_target_host_name(host)
+def resolve_target_addresses(host, family=0):
+    host_name = resolve_target_host_name(host, family)
     host_fqdn = resolve_target_fqdn(host)
     return (host, host_name, host_fqdn)
 
 
-def resolve_target_host_name(host):
+def resolve_target_host_name(host, family=0):
     log = logging.getLogger(host)
     try:
         # getaddrinfo returns a list of 5-tuples:
@@ -38,7 +38,7 @@ def resolve_target_host_name(host):
         # (address, port) for AF_INET,
         # (address, port, flow_info, scopeid) for AF_INET6
         ip_addr = socket.getaddrinfo(
-                host, None, type=socket.SOCK_STREAM)[0][4][0]
+                host, None, family=family, type=socket.SOCK_STREAM)[0][4][0]
         # gethostbyaddr returns triple
         # (hostname, aliaslist, ipaddrlist)
         host_name = socket.gethostbyaddr(ip_addr)[0]

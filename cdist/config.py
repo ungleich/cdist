@@ -32,6 +32,7 @@ import multiprocessing
 from cdist.mputil import mp_pool_run, mp_sig_handler
 import atexit
 import shutil
+import socket
 import cdist
 import cdist.hostsource
 import cdist.exec.local
@@ -110,6 +111,13 @@ class Config(object):
         args.remote_exec_pattern = None
         args.remote_copy_pattern = None
 
+        # Determine forcing IPv4/IPv6 options if any, only for
+        # default remote commands.
+        if args.force_ipv:
+            force_addr_opt = " -{}".format(args.force_ipv)
+        else:
+            force_addr_opt = ""
+
         args_dict = vars(args)
         # if remote-exec and/or remote-copy args are None then user
         # didn't specify command line options nor env vars:
@@ -118,9 +126,11 @@ class Config(object):
                 args_dict['remote_exec'] is None):
             mux_opts = inspect_ssh_mux_opts()
             if args_dict['remote_exec'] is None:
-                args.remote_exec_pattern = cdist.REMOTE_EXEC + mux_opts
+                args.remote_exec_pattern = (cdist.REMOTE_EXEC +
+                                            force_addr_opt + mux_opts)
             if args_dict['remote_copy'] is None:
-                args.remote_copy_pattern = cdist.REMOTE_COPY + mux_opts
+                args.remote_copy_pattern = (cdist.REMOTE_COPY +
+                                            force_addr_opt + mux_opts)
             if mux_opts:
                 cleanup_pattern = cdist.REMOTE_CMDS_CLEANUP_PATTERN
             else:
@@ -313,6 +323,16 @@ class Config(object):
             remote_cmds_cleanup = ""
         return (remote_exec, remote_copy, remote_cmds_cleanup, )
 
+    @staticmethod
+    def _address_family(args):
+        if args.force_ipv == 4:
+            family = socket.AF_INET
+        elif args.force_ipv == 6:
+            family = socket.AF_INET6
+        else:
+            family = 0
+        return family
+
     @classmethod
     def onehost(cls, host, host_tags, host_base_path, host_dir_name, args,
                 parallel, configuration, remove_remote_files_dirs=False):
@@ -331,7 +351,9 @@ class Config(object):
             log.debug("remote_copy for host \"{}\": {}".format(
                 host, remote_copy))
 
-            target_host = ipaddr.resolve_target_addresses(host)
+            family = cls._address_family(args)
+            log.debug("address family: {}".format(family))
+            target_host = ipaddr.resolve_target_addresses(host, family)
             log.debug("target_host for host \"{}\": {}".format(
                 host, target_host))
 

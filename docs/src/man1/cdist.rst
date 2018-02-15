@@ -20,16 +20,16 @@ SYNOPSIS
                  [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
                  [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                  [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
-                 [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                 [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
+                 [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-4] [-6]
+                 [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
                  [host [host ...]] 
 
     cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
                   [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
                   [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                   [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
-                  [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-A] [-a]
-                  [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
+                  [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-4] [-6]
+                  [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
                   [host [host ...]] 
 
     cdist inventory [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
@@ -117,6 +117,16 @@ CONFIG/INSTALL
 --------------
 Configure/install one or more hosts.
 Install command is currently in beta.
+
+.. option:: -4, --force-ipv4
+
+    Force to use IPv4 addresses only. No influence for
+    custom remote commands.
+
+.. option:: -6, --force-ipv6
+
+    Force to use IPv6 addresses only. No influence for
+    custom remote commands.
 
 .. option:: -A, --all-tagged
 
