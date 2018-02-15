@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Type __consul: Add option for directly downloading on target host (Darko Poljak)
+
 4.8.0: 2018-02-14
 	* Core: Skip empty lines in parameter files (Darko Poljak)
 	* Explorer memory: Support OpenBSD (Philippe Gregoire)
