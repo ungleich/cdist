@@ -45,5 +45,16 @@ if [ ! -d "$version_dir" ]; then
    exit 1
 fi
 
-__package unzip
-
+if [ -f "$__object/parameter/direct" ]; then
+    __package unzip
+else
+    __staged_file /usr/local/bin/consul \
+       --source "$(cat "$version_dir/source")" \
+       --cksum "$(cat "$version_dir/cksum")" \
+       --fetch-command 'curl -s -L "%s"' \
+       --prepare-command 'unzip -p "%s"' \
+       --state "$(cat "$__object/parameter/state")" \
+       --group root \
+       --owner root \
+       --mode 755
+fi

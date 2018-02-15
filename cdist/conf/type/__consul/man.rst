@@ -10,7 +10,8 @@ DESCRIPTION
 -----------
 Downloads and installs the consul binary from https://dl.bintray.com/mitchellh/consul.
 Note that the consul binary is downloaded on the server (the machine running
-cdist) and then deployed to the target host using the __file type.
+cdist) and then deployed to the target host using the __file type unless --direct
+parameter is used.
 
 
 REQUIRED PARAMETERS
@@ -28,6 +29,12 @@ version
    supported versions. Defaults to the latest known version.
 
 
+BOOLEAN PARAMETERS
+------------------
+direct
+    Download and deploy consul binary directly on the target machine.
+
+
 EXAMPLES
 --------
 
@@ -36,6 +43,9 @@ EXAMPLES
     # just install using defaults
     __consul
 
+    # install by downloading consul binary directly on the target machine
+    __consul --direct
+
     # specific version
     __consul \
        --version 0.4.1
@@ -43,7 +53,8 @@ EXAMPLES
 
 AUTHORS
 -------
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+| Steven Armstrong <steven-cdist--@--armstrong.cc>
+| Darko Poljak <darko.poljak--@--gmail.com>
 
 
 COPYING

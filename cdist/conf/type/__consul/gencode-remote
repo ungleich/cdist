@@ -20,6 +20,11 @@
 
 #set -x
 
+if [ ! -f "$__object/parameter/direct" ]; then
+    # Nothing here, staged file is used.
+    exit 0
+fi
+
 state=$(cat "$__object/parameter/state")
 destination="/usr/local/bin/consul"
 
