@@ -51,6 +51,7 @@ cat << eof
     if [ "\$cksum_is" = "$cksum_should" ]; then
         chown root:root "$destination"
         chmod 755 "$destination"
+        echo "__consul/usr/local/bin/consul" >> "$__messages_out"
     else
         rm -f "$destination"
         echo "Failed to verify checksum for $__object_name" >&2
