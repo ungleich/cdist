@@ -225,6 +225,16 @@ def get_parsers():
     # Config
     parser['config_args'] = argparse.ArgumentParser(add_help=False)
     parser['config_args'].add_argument(
+           '-4', '--force-ipv4',
+           help=('Force to use IPv4 addresses only. No influence for custom'
+                 ' remote commands.'),
+           action='store_const', dest='force_ipv', const=4)
+    parser['config_args'].add_argument(
+           '-6', '--force-ipv6',
+           help=('Force to use IPv6 addresses only. No influence for custom'
+                 ' remote commands.'),
+           action='store_const', dest='force_ipv', const=6)
+    parser['config_args'].add_argument(
              '-A', '--all-tagged',
              help=('Use all hosts present in tags db. Currently in beta.'),
              action="store_true", dest="all_tagged_hosts", default=False)
