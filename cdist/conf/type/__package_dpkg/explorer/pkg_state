@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+package=$( basename "$__object_id" )
+
+dpkg_status="$(dpkg-query --show --showformat='${db:Status-Abbrev} ${binary:Package}_${Version}_${Architecture}.deb\n' "${package%%_*}" 2>/dev/null || true)"
+
+if echo "$dpkg_status" | grep -q '^ii'; then
+	echo "${dpkg_status##* }"
+fi
+
+

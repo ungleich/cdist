@@ -25,10 +25,16 @@
 # do any checks or --force'ing.
 
 
+state=$( cat "$__object/parameter/state" )
 package_path=$( cat "$__object/parameter/source" )
 package=$( basename "$__object_id" )
+state_is="$(cat "$__object/explorer/pkg_state")"
+state_should=""
+
+[ "$state" = "absent" ] || state_should="$package"
+[ "$state_is" = "$state_should" ] && exit 0
 
 __file "/var/cache/apt/archives/$package" \
-       --source "$package_path"           \
-       --state  present
+    --source "$package_path" \
+    --state  "$state"
 

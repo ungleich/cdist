@@ -12,12 +12,52 @@ This type is used on Debian and variants (like Ubuntu) to
 install packages that are provided locally as \*.deb files.
 
 The object given to this type must be the name of the deb package.
+The filename of the deb package has to follow Debian naming conventions, i.e.
+`${binary:Package}_${Version}_${Architecture}.deb` (see `dpkg-query(1)` for
+details).
 
+
+OPTIONAL PARAMETERS
+-------------------
+state
+    `present` or `absent`, defaults to `present`.
 
 REQUIRED PARAMETERS
 -------------------
 source
     path to the \*.deb package
+
+
+BOOLEAN PARAMETERS
+-------------------
+purge-if-absent
+    use `--purge` instead of just `--remove` for state=absent.
+
+
+BOOLEAN PARAMETERS
+------------------
+purge-if-absent
+    If this parameter is given when state is `absent`, the package is
+    purged from the system (using `--purge`).
+
+
+EXPLORER
+--------
+pkg_state
+    Returns the full package name if package is installed, empty otherwise.
+
+
+MESSAGES
+--------
+installed
+    The deb-file was installed.
+
+removed (--remove)
+    The package was removed, keeping config.
+
+removed (--purge)
+    The package was removed including config (purged).
+
 
 EXAMPLES
 --------
@@ -25,17 +65,31 @@ EXAMPLES
 .. code-block:: sh
 
     # Install foo and bar packages
-    __package_dpkg --source /tmp/foo_0.1_all.deb foo_0.1_all.deb
-    __package_dpkg --source $__type/files/bar_1.4.deb bar_1.4.deb
+    __package_dpkg foo_0.1_all.deb --source /tmp/foo_0.1_all.deb
+    __package_dpkg bar_1.4.deb --source $__type/files/bar_1.4.deb
+
+    # uninstall baz:
+    __package_dpkg baz_1.4_amd64.deb \
+        --source $__type/files/baz_1.4_amd64.deb \
+        --state "absent"
+    # uninstall baz and also purge config-files:
+    __package_dpkg baz_1.4_amd64.deb \
+        --source $__type/files/baz_1.4_amd64.deb \
+        --purge-if-absent \
+        --state "absent"
 
 
 SEE ALSO
 --------
 :strong:`cdist-type__package`\ (7)
+:strong:`dpkg-query`\ (1)
+
 
 AUTHORS
 -------
-Tomas Pospisek <tpo_deb--@--sourcepole.ch>
+| Tomas Pospisek <tpo_deb--@--sourcepole.ch>
+| Thomas Eckert <tom--@--it-eckert.de>
+
 
 COPYING
 -------
