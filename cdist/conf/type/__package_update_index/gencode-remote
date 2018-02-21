@@ -54,11 +54,12 @@ case "$type" in
              ## check if we need to update:
              if [ $currage -ge $maxage ]; then
                 echo "apt-get --quiet update"
+                echo "apt-cache updated (age was: $currage)" >> "$__messages_out"
              fi
          else
                 echo "apt-get --quiet update"
+                echo "apt-cache updated (age was: $currage)" >> "$__messages_out"
          fi
-         echo "apt-cache updated (age was: $currage)" >> "$__messages_out"
          ;;
     pacman) echo "pacman --noprogressbar --sync --refresh" ;;
     *)
