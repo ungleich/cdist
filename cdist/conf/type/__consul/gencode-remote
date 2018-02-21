@@ -58,4 +58,4 @@ cat << eof
     fi
 eof
 
-echo "__consul/usr/local/bin/consul" >> "$__messages_out"
+echo "/usr/local/bin/consul created" >> "$__messages_out"
