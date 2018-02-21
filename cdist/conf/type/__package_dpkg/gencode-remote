@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2013 Tomas Pospisek (tpo_deb sourcepole.ch)
+# 2018 Thomas Eckert (tom at it-eckert.de)
 #
 # This file is based on cdist's __file/gencode-local and part of cdist.
 #
@@ -26,5 +27,25 @@
 # to conflict with dpkg's --force options). But currently we don't
 # do any checks or --force'ing.
 #
+state=$( cat "$__object/parameter/state" )
+package=$( basename "$__object_id" )
+state_is="$(cat "$__object/explorer/pkg_state")"
+state_should=""
 
-echo "dpkg -i /var/cache/apt/archives/$__object_id"
+[ "$state" = "absent" ] || state_should="$package"
+[ "$state_is" = "$state_should" ] && exit 0
+
+case "$state" in
+    present)
+        echo "dpkg --install /var/cache/apt/archives/$__object_id"
+        echo "installed" >> "$__messages_out"
+        ;;
+    absent)
+        [ -f "$__object/parameter/purge-if-absent" ] \
+            && action="--purge" \
+            || action="--remove"
+        echo "dpkg $action ${__object_id%%_*}"
+        echo "removed ($action)" >> "$__messages_out"
+        ;;
+    *)  echo "ERROR: unknown state '$state'" >&2 ;;
+esac
