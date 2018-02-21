@@ -29,12 +29,6 @@ source
 
 
 BOOLEAN PARAMETERS
--------------------
-purge-if-absent
-    use `--purge` instead of just `--remove` for state=absent.
-
-
-BOOLEAN PARAMETERS
 ------------------
 purge-if-absent
     If this parameter is given when state is `absent`, the package is
@@ -81,8 +75,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:strong:`cdist-type__package`\ (7)
-:strong:`dpkg-query`\ (1)
+:strong:`cdist-type__package`\ (7), :strong:`dpkg-query`\ (1)
 
 
 AUTHORS
