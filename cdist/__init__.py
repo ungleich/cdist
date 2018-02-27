@@ -175,6 +175,11 @@ def str_hash(s):
 
 def home_dir():
     if 'HOME' in os.environ:
-        return os.path.join(os.environ['HOME'], ".cdist")
+        home = os.environ['HOME']
+        if home:
+            rv = os.path.join(home, ".cdist")
+        else:
+            rv = None
     else:
-        return None
+        rv = None
+    return rv

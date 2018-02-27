@@ -6,6 +6,7 @@ next:
 	* Core: Add -4 and -6 params to force IPv4, IPv6 addresses respectively (Darko Poljak)
 	* Type __package_update_index: Fix messaging (Thomas Eckert)
 	* Type __package_dpkg: Add state parameter and messaging (Thomas Eckert)
+	* Core: Fix a case when HOME is set but empty (Darko Poljak)
 
 4.8.0: 2018-02-14
 	* Core: Skip empty lines in parameter files (Darko Poljak)
