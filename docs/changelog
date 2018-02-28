@@ -7,6 +7,8 @@ next:
 	* Type __package_update_index: Fix messaging (Thomas Eckert)
 	* Type __package_dpkg: Add state parameter and messaging (Thomas Eckert)
 	* Core: Fix a case when HOME is set but empty (Darko Poljak)
+	* Core: Fix non-existent manifest non graceful handling (Darko Poljak)
+	* Core: Fix main and inventory parent argparse options (Darko Poljak)
 
 4.8.0: 2018-02-14
 	* Core: Skip empty lines in parameter files (Darko Poljak)
