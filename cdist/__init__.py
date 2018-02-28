@@ -97,7 +97,7 @@ class CdistEntityError(Error):
     def stderr(self):
         output = []
         for stderr_name, stderr_path in self.stderr_paths:
-            if os.path.getsize(stderr_path) > 0:
+            if os.path.exists(stderr_path) and os.path.getsize(stderr_path) > 0:
                 label_begin = '---- BEGIN ' + stderr_name + ':stderr ----'
                 label_end = '---- END ' + stderr_name + ':stderr ----'
                 output.append('\n' + label_begin)
