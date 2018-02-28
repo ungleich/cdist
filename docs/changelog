@@ -9,6 +9,7 @@ next:
 	* Core: Fix a case when HOME is set but empty (Darko Poljak)
 	* Core: Fix non-existent manifest non graceful handling (Darko Poljak)
 	* Core: Fix main and inventory parent argparse options (Darko Poljak)
+	* Core: Fix lost error info with parallel jobs (option -j) (Darko Poljak)
 
 4.8.0: 2018-02-14
 	* Core: Skip empty lines in parameter files (Darko Poljak)
