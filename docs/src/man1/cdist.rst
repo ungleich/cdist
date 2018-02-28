@@ -11,8 +11,7 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-l LOGLEVEL] [-q] [-v] [-V]
-          {banner,config,install,inventory,shell} ...
+    cdist [-h] [-V] {banner,config,install,inventory,shell} ...
 
     cdist banner [-h] [-l LOGLEVEL] [-q] [-v]
 
@@ -32,9 +31,7 @@ SYNOPSIS
                   [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
                   [host [host ...]] 
 
-    cdist inventory [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
-                    [-I INVENTORY_DIR]
-                    {add-host,add-tag,del-host,del-tag,list} ...
+    cdist inventory [-h] {add-host,add-tag,del-host,del-tag,list} ...
 
     cdist inventory add-host [-h] [-l LOGLEVEL] [-q] [-v] [-b]
                              [-g CONFIG_FILE] [-I INVENTORY_DIR]

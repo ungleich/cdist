@@ -131,7 +131,7 @@ def get_parsers():
 
     # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(
-            description='cdist ' + cdist.VERSION, parents=[parser['loglevel']])
+            description='cdist ' + cdist.VERSION)
     parser['main'].add_argument(
             '-V', '--version', help='Show version.', action='version',
             version='%(prog)s ' + cdist.VERSION)
@@ -289,10 +289,7 @@ def get_parsers():
     parser['install'].set_defaults(func=cdist.install.Install.commandline)
 
     # Inventory
-    parser['inventory'] = parser['sub'].add_parser(
-           'inventory', parents=[parser['loglevel'], parser['beta'],
-                                 parser['common'],
-                                 parser['inventory_common']])
+    parser['inventory'] = parser['sub'].add_parser('inventory')
     parser['invsub'] = parser['inventory'].add_subparsers(
             title="Inventory commands", dest="subcommand")
 
