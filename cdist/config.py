@@ -486,30 +486,27 @@ class Config(object):
         objects_changed = False
 
         for cdist_object in self.object_list():
-            try:
-                if cdist_object.requirements_unfinished(
-                        cdist_object.requirements):
-                    """We cannot do anything for this poor object"""
-                    continue
+            if cdist_object.requirements_unfinished(
+                    cdist_object.requirements):
+                """We cannot do anything for this poor object"""
+                continue
 
-                if cdist_object.state == core.CdistObject.STATE_UNDEF:
-                    """Prepare the virgin object"""
+            if cdist_object.state == core.CdistObject.STATE_UNDEF:
+                """Prepare the virgin object"""
 
-                    self.object_prepare(cdist_object)
-                    objects_changed = True
+                self.object_prepare(cdist_object)
+                objects_changed = True
 
-                if cdist_object.requirements_unfinished(
-                        cdist_object.autorequire):
-                    """The previous step created objects we depend on -
-                       wait for them
-                    """
-                    continue
+            if cdist_object.requirements_unfinished(
+                    cdist_object.autorequire):
+                """The previous step created objects we depend on -
+                    wait for them
+                """
+                continue
 
-                if cdist_object.state == core.CdistObject.STATE_PREPARED:
-                    self.object_run(cdist_object)
-                    objects_changed = True
-            except cdist.Error as e:
-                raise cdist.CdistObjectError(cdist_object, e)
+            if cdist_object.state == core.CdistObject.STATE_PREPARED:
+                self.object_run(cdist_object)
+                objects_changed = True
 
         return objects_changed
 
@@ -694,42 +691,49 @@ class Config(object):
 
     def object_prepare(self, cdist_object, transfer_type_explorers=True):
         """Prepare object: Run type explorer + manifest"""
-        self.log.verbose("Preparing object {}".format(cdist_object.name))
-        self.log.verbose(
-                "Running manifest and explorers for " + cdist_object.name)
-        self.explorer.run_type_explorers(cdist_object, transfer_type_explorers)
-        self.manifest.run_type_manifest(cdist_object)
-        cdist_object.state = core.CdistObject.STATE_PREPARED
+        try:
+            self.log.verbose("Preparing object {}".format(cdist_object.name))
+            self.log.verbose(
+                    "Running manifest and explorers for " + cdist_object.name)
+            self.explorer.run_type_explorers(cdist_object,
+                                             transfer_type_explorers)
+            self.manifest.run_type_manifest(cdist_object)
+            cdist_object.state = core.CdistObject.STATE_PREPARED
+        except cdist.Error as e:
+            raise cdist.CdistObjectError(cdist_object, e)
 
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
+        try:
+            self.log.verbose("Running object " + cdist_object.name)
+            if cdist_object.state == core.CdistObject.STATE_DONE:
+                raise cdist.Error(("Attempting to run an already finished "
+                                   "object: %s"), cdist_object)
 
-        self.log.verbose("Running object " + cdist_object.name)
-        if cdist_object.state == core.CdistObject.STATE_DONE:
-            raise cdist.Error(("Attempting to run an already finished "
-                               "object: %s"), cdist_object)
+            # Generate
+            self.log.debug("Generating code for %s" % (cdist_object.name))
+            cdist_object.code_local = self.code.run_gencode_local(cdist_object)
+            cdist_object.code_remote = self.code.run_gencode_remote(
+                cdist_object)
+            if cdist_object.code_local or cdist_object.code_remote:
+                cdist_object.changed = True
 
-        # Generate
-        self.log.debug("Generating code for %s" % (cdist_object.name))
-        cdist_object.code_local = self.code.run_gencode_local(cdist_object)
-        cdist_object.code_remote = self.code.run_gencode_remote(cdist_object)
-        if cdist_object.code_local or cdist_object.code_remote:
-            cdist_object.changed = True
+            # Execute
+            if cdist_object.code_local or cdist_object.code_remote:
+                self.log.info("Processing %s" % (cdist_object.name))
+            if not self.dry_run:
+                if cdist_object.code_local:
+                    self.log.trace("Executing local code for %s"
+                                   % (cdist_object.name))
+                    self.code.run_code_local(cdist_object)
+                if cdist_object.code_remote:
+                    self.log.trace("Executing remote code for %s"
+                                   % (cdist_object.name))
+                    self.code.transfer_code_remote(cdist_object)
+                    self.code.run_code_remote(cdist_object)
 
-        # Execute
-        if cdist_object.code_local or cdist_object.code_remote:
-            self.log.info("Processing %s" % (cdist_object.name))
-        if not self.dry_run:
-            if cdist_object.code_local:
-                self.log.trace("Executing local code for %s"
-                               % (cdist_object.name))
-                self.code.run_code_local(cdist_object)
-            if cdist_object.code_remote:
-                self.log.trace("Executing remote code for %s"
-                               % (cdist_object.name))
-                self.code.transfer_code_remote(cdist_object)
-                self.code.run_code_remote(cdist_object)
-
-        # Mark this object as done
-        self.log.trace("Finishing run of " + cdist_object.name)
-        cdist_object.state = core.CdistObject.STATE_DONE
+            # Mark this object as done
+            self.log.trace("Finishing run of " + cdist_object.name)
+            cdist_object.state = core.CdistObject.STATE_DONE
+        except cdist.Error as e:
+            raise cdist.CdistObjectError(cdist_object, e)

@@ -24,6 +24,7 @@ import logging
 import os
 import glob
 import multiprocessing
+import cdist
 from cdist.mputil import mp_pool_run
 from . import util
 
@@ -213,19 +214,22 @@ class Explorer(object):
     def transfer_type_explorers(self, cdist_type):
         """Transfer the type explorers for the given type to the
            remote side."""
-        if cdist_type.explorers:
-            if cdist_type.name in self._type_explorers_transferred:
-                self.log.trace("Skipping retransfer of type explorers for: %s",
-                               cdist_type)
-            else:
-                source = os.path.join(self.local.type_path,
-                                      cdist_type.explorer_path)
-                destination = os.path.join(self.remote.type_path,
-                                           cdist_type.explorer_path)
-                self.remote.mkdir(destination)
-                self.remote.transfer(source, destination)
-                self.remote.run(["chmod", "0700", "%s/*" % (destination)])
-                self._type_explorers_transferred.append(cdist_type.name)
+        try:
+            if cdist_type.explorers:
+                if cdist_type.name in self._type_explorers_transferred:
+                    self.log.trace(("Skipping retransfer of type explorers "
+                                    "for: %s"), cdist_type)
+                else:
+                    source = os.path.join(self.local.type_path,
+                                          cdist_type.explorer_path)
+                    destination = os.path.join(self.remote.type_path,
+                                               cdist_type.explorer_path)
+                    self.remote.mkdir(destination)
+                    self.remote.transfer(source, destination)
+                    self.remote.run(["chmod", "0700", "%s/*" % (destination)])
+                    self._type_explorers_transferred.append(cdist_type.name)
+        except cdist.Error as e:
+            raise cdist.CdistObjectError(cdist_object, e)
 
     def transfer_object_parameters(self, cdist_object):
         """Transfer the parameters for the given object to the remote side."""
