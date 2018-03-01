@@ -25,6 +25,20 @@ type="$(cat "$__object/explorer/type")"
 
 [ "$state_should" = "exists" -a "$type" = "file" ] && exit 0 # nothing to do
 
+if [ "$state_should" = "pre-exists" ]; then
+   if [ -f "$__object/parameter/source" ]; then
+      echo "--source cannot be used with --state pre-exists"
+      exit 1
+   fi
+
+   if [ "$type" = "file" ]; then
+      exit 0 # nothing to do
+   else
+      echo "File \"$destination\" does not exist"
+      exit 1
+   fi
+fi
+
 upload_file=
 create_file=
 if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
