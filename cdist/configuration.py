@@ -409,7 +409,12 @@ class Configuration(metaclass=Singleton):
             if option in args:
                 dst_opt = self.ARG_OPTION_MAPPING[option]
                 option_object = self.CONFIG_FILE_OPTIONS['GLOBAL'][dst_opt]
-                if args[option] or isinstance(option_object, BooleanOption):
+                # If option is in args.
+                # Also if it is boolean but only if not None - this allows
+                # False to override True.
+                if (args[option] or
+                    (isinstance(option_object, BooleanOption) and
+                                args[option] is not None)):
                     d[dst_opt] = args[option]
         return d
 

@@ -126,8 +126,7 @@ def get_parsers():
     parser['beta'].add_argument(
            '-b', '--beta',
            help=('Enable beta functionality. '),
-           action='store_true', dest='beta',
-           default=False)
+           action='store_true', dest='beta', default=None)
 
     # Main subcommand parser
     parser['main'] = argparse.ArgumentParser(
