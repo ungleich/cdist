@@ -1208,7 +1208,7 @@ class ConfigurationTestCase(test.CdistTestCase):
 
         expected_config_dict = {
             'GLOBAL': {
-                'save_output_streams': True,
+                'save_output_streams': False,
                 'verbosity': 0,
             },
         }

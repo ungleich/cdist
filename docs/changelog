@@ -11,6 +11,7 @@ next:
 	* Core: Fix main and inventory parent argparse options (Darko Poljak)
 	* Core: Fix lost error info with parallel jobs (option -j) (Darko Poljak)
 	* Core: Fix determining beta value through configuration (Darko Poljak)
+	* Core: Fix determining save_output_streams value through configuration (Darko Poljak)
 
 4.8.0: 2018-02-14
 	* Core: Skip empty lines in parameter files (Darko Poljak)

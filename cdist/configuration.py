@@ -78,6 +78,9 @@ class OptionBase:
         else:
             return newval
 
+    def should_override(self, currval, newval):
+        return True
+
 
 class StringOption(OptionBase):
     def __init__(self, name):
@@ -98,8 +101,12 @@ class StringOption(OptionBase):
 class BooleanOption(OptionBase):
     BOOLEAN_STATES = configparser.ConfigParser.BOOLEAN_STATES
 
-    def __init__(self, name):
+    # If default_overrides is False then previous config value will not be
+    # overriden with default_value.
+    def __init__(self, name, default_overrides=True, default_value=True):
         super().__init__(name)
+        self.default_overrides = default_overrides
+        self.default_value = default_value
 
     def get_converter(self):
         def boolean_converter(val):
@@ -112,6 +119,11 @@ class BooleanOption(OptionBase):
 
     def translate(self, val):
         return self.BOOLEAN_STATES[val]
+
+    def should_override(self, currval, newval):
+        if not self.default_overrides:
+            return newval != self.default_value
+        return True
 
 
 class IntOption(OptionBase):
@@ -286,7 +298,8 @@ class Configuration(metaclass=Singleton):
             'parallel': JobsOption('parallel'),
             'verbosity': VerbosityOption(),
             'archiving': ArchivingOption(),
-            'save_output_streams': BooleanOption('save_output_streams'),
+            'save_output_streams': BooleanOption('save_output_streams',
+                                                 default_overrides=False),
         },
     }
 
@@ -414,7 +427,7 @@ class Configuration(metaclass=Singleton):
                 # False to override True.
                 if (args[option] or
                     (isinstance(option_object, BooleanOption) and
-                                args[option] is not None)):
+                        args[option] is not None)):
                     d[dst_opt] = args[option]
         return d
 
@@ -434,8 +447,9 @@ class Configuration(metaclass=Singleton):
             else:
                 currval = None
             option_object = self.CONFIG_FILE_OPTIONS[section][option]
-            config[section][option] = option_object.update_value(
-                currval, newval, update_appends)
+            if option_object.should_override(currval, newval):
+                config[section][option] = option_object.update_value(
+                    currval, newval, update_appends)
 
     def _update_defaults_for_unset(self, config):
         defaults = self.REQUIRED_DEFAULT_CONFIG_VALUES
