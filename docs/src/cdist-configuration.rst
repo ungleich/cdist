@@ -11,6 +11,7 @@ order:
     #. configuration file specified in CDIST_CONFIG_FILE environment variable
     #. environment variables
     #. user's configuration file (first one found of ~/.cdist.cfg, $XDG_CONFIG_HOME/cdist/cdist.cfg, in specified order)
+    #. in-distribution configuration file (cdist/conf/cdist.cfg)
     #. system-wide configuration file (/etc/cdist.cfg)
 
 if one exists.
