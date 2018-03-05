@@ -30,7 +30,7 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __apt_default_release stretch
+    __apt_default_release --release stretch
 
 
 AUTHORS
