@@ -9,13 +9,15 @@ cdist-type__apt_default_release - Configure the default release for apt
 DESCRIPTION
 -----------
 Configure the default release for apt, using the APT::Default-Release
-configuration value. The name of the object sets the default release
-and can contain release name, codename or release version. Examples:
-'stable', 'testing', 'unstable', 'stretch', 'buster', '4.0', '5.0*'.
+configuration value.
 
 REQUIRED PARAMETERS
 -------------------
-None.
+release
+   The value to set APT::Default-Release to.
+
+   This can contain release name, codename or release version. Examples:
+   'stable', 'testing', 'unstable', 'stretch', 'buster', '4.0', '5.0*'.
 
 
 OPTIONAL PARAMETERS
