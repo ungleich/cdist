@@ -37,7 +37,7 @@ None.
 OPTIONAL PARAMETERS
 -------------------
 state
-   'present', 'absent' or 'exists', defaults to 'present' where:
+   'present', 'absent', 'exists' or 'pre-exists', defaults to 'present' where:
 
    present
       the file is exactly the one from source
