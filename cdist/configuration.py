@@ -278,7 +278,8 @@ class Configuration(metaclass=Singleton):
     _dist_config_file = os.path.join(
         os.path.abspath(os.path.join(os.path.dirname(cdist.__file__), "conf")),
         'cdist.cfg')
-    default_config_files = (_global_config_file, _dist_config_file, _local_config_file, )
+    default_config_files = (_global_config_file, _dist_config_file,
+                            _local_config_file, )
     ENV_VAR_CONFIG_FILE = 'CDIST_CONFIG_FILE'
 
     VERBOSITY_VALUES = _VERBOSITY_VALUES
