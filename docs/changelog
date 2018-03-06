@@ -15,6 +15,7 @@ next:
 	* Core: Support in-distribution config file (Darko Poljak)
 	* New type: __apt_default_release (Matthijs Kooijman)
 	* Type __file: Add pre-exists state (Matthijs Kooijman)
+	* Type __grafana_dashboard: Add support for stretch + ascii (Nico Schottelius)
 
 4.8.0: 2018-02-14
 	* Core: Skip empty lines in parameter files (Darko Poljak)
