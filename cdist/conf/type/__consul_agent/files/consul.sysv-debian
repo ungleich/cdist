@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2015-2018 Nico Schottelius (nico-cdist at schottelius.org)
 # 2015 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
@@ -18,6 +18,17 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+### BEGIN INIT INFO
+# Provides:          consul
+# Required-Start:    $remote_fs
+# Required-Stop:     $remote_fs
+# Should-Start:      $all
+# Should-Stop:       $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: consul
+# Description:       consul agent
+### END INIT INFO
 
 if [ -f "/etc/default/consul" ]; then
     . /etc/default/consul
