@@ -59,7 +59,7 @@ set_mode() {
 
 set_attributes=
 case "$state_should" in
-    present|exists)
+    present|exists|pre-exists)
     # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
     #  clearing S_ISUID and S_ISGID bits (see chown(2))
     for attribute in group owner mode; do
