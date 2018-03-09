@@ -333,6 +333,15 @@ class Config(object):
             family = 0
         return family
 
+    @staticmethod
+    def resolve_target_addresses(host, family):
+        try:
+            return ipaddr.resolve_target_addresses(host, family)
+        except:
+            e = sys.exc_info()[1]
+            raise cdist.Error(("Error resolving target addresses for host '{}'"
+                               ": {}").format(host, e))
+
     @classmethod
     def onehost(cls, host, host_tags, host_base_path, host_dir_name, args,
                 parallel, configuration, remove_remote_files_dirs=False):
@@ -353,7 +362,7 @@ class Config(object):
 
             family = cls._address_family(args)
             log.debug("address family: {}".format(family))
-            target_host = ipaddr.resolve_target_addresses(host, family)
+            target_host = cls.resolve_target_addresses(host, family)
             log.debug("target_host for host \"{}\": {}".format(
                 host, target_host))
 
