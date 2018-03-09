@@ -247,5 +247,8 @@ pub:
 test:
 	$(helper) $@
 
+test-remote:
+	$(helper) $@
+
 pep8:
 	$(helper) $@

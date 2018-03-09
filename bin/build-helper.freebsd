@@ -421,6 +421,11 @@ eof
         fi
     ;;
 
+    test-remote)
+        export PYTHONPATH="$(pwd -P)"
+        python3 -m cdist.test.exec.remote
+    ;;
+
     pep8)
         pep8 "${basedir}" "${basedir}/scripts/cdist" | less
     ;;
