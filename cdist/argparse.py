@@ -434,7 +434,7 @@ def get_parsers():
 
 
 def handle_loglevel(args):
-    if args.quiet:
+    if hasattr(args, 'quiet') and args.quiet:
         args.verbose = _verbosity_level_off
 
     logging.root.setLevel(_verbosity_level[args.verbose])

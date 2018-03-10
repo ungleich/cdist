@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Core: Fix quiet argument access for bare cdist command (Darko Poljak)
+
 4.8.1: 2018-03-09
 	* Type __consul: Add option for directly downloading on target host (Darko Poljak)
 	* Core: Add -4 and -6 params to force IPv4, IPv6 addresses respectively (Darko Poljak)
