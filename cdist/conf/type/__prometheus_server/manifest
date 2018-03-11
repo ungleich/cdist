@@ -49,7 +49,9 @@ FLAGS="--storage.tsdb.path $storage_path --storage.tsdb.retention $(($retention_
 
 # TODO it would be neat to restart prometheus on change -- __key_value really should have an --onchange parameter
 require="$require $require_pkg" \
-__key_value prometheus_args --file /etc/default/prometheus --key "ARGS" --value "\"$FLAGS\"" --delimiter "="
+__key_value prometheus_args --file /etc/default/prometheus \
+	--key "ARGS" --value "\"$FLAGS\"" --delimiter "=" \
+	--onchange "service prometheus restart"
 
 require="$require __directory/$storage_path $require_pkg" \
 __config_file $CONF \

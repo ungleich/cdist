@@ -42,14 +42,18 @@ require="$require $require_pkg" __directory "$storage_path" --owner prometheus -
 
 # TODO this is a bug in the init script, patching it like this is awful and it should be reported
 require="$require $require_pkg" \
-__key_value alertmanager_fix_init_script --file /etc/init.d/prometheus-alertmanager --key="NAME" --value="prometheus-alertmanager" --delimiter "="
+__key_value alertmanager_fix_init_script --file /etc/init.d/prometheus-alertmanager \
+	--key "NAME" --value "prometheus-alertmanager" --delimiter "=" \
+	--onchange "service prometheus-alertmanager restart"
 
 ##### CONFIGURE #############################################################
 
 FLAGS="--storage.path $storage_path --data.retention $(($retention_days*24))h --web.listen-address [::]:9093"
 
 require="$require $require_pkg" \
-__key_value alertmanager_args --file /etc/default/prometheus-alertmanager --key="ARGS" --value="\"$FLAGS\"" --delimiter "="
+__key_value alertmanager_args --file /etc/default/prometheus-alertmanager \
+	--key "ARGS" --value "\"$FLAGS\"" --delimiter "=" \
+	--onchange "service prometheus-alertmanager restart"
 
 require="$require __directory/$storage_path $require_pkg" \
 __config_file $CONF \
