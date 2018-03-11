@@ -1,34 +1,63 @@
 #!/bin/sh -e
 
-GOBIN=/opt/gocode/bin  # where to find go binaries
+##### HARD-CODED CONFIG #####################################################
+
 CONF_DIR=/etc/prometheus
-LOGLEVEL=info
 CONF=$CONF_DIR/alertmanager.yml
 
-### Prometheus server #######################################################
+##### GET SETTINGS ##########################################################
 
 config="$(cat "$__object/parameter/config")"
+retention_days="$(cat "$__object/parameter/retention-days")"
 storage_path="$(cat "$__object/parameter/storage-path")"
-listen_address="$(cat "$__object/parameter/listen-address")"
+# listen_address="$(cat "$__object/parameter/listen-address")"
 
-FLAGS="config.file '$CONF'
-storage.path '$storage_path'
-web.listen-address '$listen_address'
-log.level $LOGLEVEL"
+##### INSTALL THE PACKAGE ###################################################
 
-REAL_FLAGS="$(echo "$FLAGS" | sed -nE 's/^([^#]+).*/ --\1 \\/p')"
+require_pkg=""  # what to require if I want to require "the package"
+if [ -f "$__object/parameter/install-from-backports" ]; then
+	os=$(cat "$__global/explorer/os")
+	os_version=$(cat "$__global/explorer/os_version")
 
-__go_get github.com/prometheus/alertmanager/cmd/...
+	case $os in
+		devuan)
+			[ "$os_version" = "ascii/ceres" ] && os_version='ascii'  # "ascii" used in the repo URLs
+			__apt_source backports --uri http://auto.mirror.devuan.org/merged --distribution $os_version-backports --component main
+			require="$require __apt_source/backports" __package_apt prometheus-alertmanager --target-release $os_version-backports
+			require_pkg="__package_apt/prometheus-alertmanager"
+		;;
+		*)
+			echo "--install-from-backports is only supported on Devuan -- ignoring." >&2
+			echo "Send a pull request if you require it." >&2
+		;;
+	esac
+else
+	__package prometheus-alertmanager
+	require_pkg="__package/prometheus-alertmanager"
+fi
 
-__user prometheus --system
-require="__user/prometheus" __directory "$storage_path" --owner prometheus --parents
-require="__user/prometheus" __directory "$CONF_DIR"     --owner prometheus --parents
+##### PREPARE PATHS AND SUCH ################################################
 
-__daemontools_service alertmanager --run "setuidgid prometheus $GOBIN/alertmanager $REAL_FLAGS"
+require="$require $require_pkg" __directory "$storage_path" --owner prometheus --parents
 
-require="$require __directory/$storage_path __user/prometheus" \
+# TODO this is a bug in the init script, patching it like this is awful and it should be reported
+require="$require $require_pkg" \
+__key_value alertmanager_fix_init_script --file /etc/init.d/prometheus-alertmanager \
+	--key "NAME" --value "prometheus-alertmanager" --delimiter "=" \
+	--onchange "service prometheus-alertmanager restart"
+
+##### CONFIGURE #############################################################
+
+FLAGS="--storage.path $storage_path --data.retention $(($retention_days*24))h --web.listen-address [::]:9093"
+
+require="$require $require_pkg" \
+__key_value alertmanager_args --file /etc/default/prometheus-alertmanager \
+	--key "ARGS" --value "\"$FLAGS\"" --delimiter "=" \
+	--onchange "service prometheus-alertmanager restart"
+
+require="$require __directory/$storage_path $require_pkg" \
 __config_file $CONF \
 	--source $config \
 	--group prometheus --mode 640 \
-	--onchange "svc -h /service/alertmanager"  # TODO when a config-check tool is available, check config here
+	--onchange "service prometheus-alertmanager reload"  # TODO when a config-check tool is available, check config here
 
