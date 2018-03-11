@@ -34,6 +34,8 @@ comment
     but only if the key or value must be changed.
     You need to ensure yourself that the line is prefixed with the correct
     comment sign. (for example # or ; or wathever ..)
+onchange
+   The code to run if the key or value changes (i.e. is inserted, removed or replaced).
 
 
 BOOLEAN PARAMETERS
