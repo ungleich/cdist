@@ -23,13 +23,14 @@
 
 state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/state")"
+fire_onchange=''
 
 if [  "$state_is" = "$state_should" ]; then
     exit 0
 fi
 
 # here we check only if the states are valid,
-# emmit messages and 
+# emit messages and
 # let awk do the work ...
 case "$state_should" in
     absent)
@@ -39,6 +40,7 @@ case "$state_should" in
             ;;
             wrongformat|wrongvalue|present)
                 echo "remove" >> "$__messages_out"
+                fire_onchange=1
             ;;
             *)
                 echo "Unknown explorer state: $state_is" >&2
@@ -50,12 +52,15 @@ case "$state_should" in
         case "$state_is" in
             nosuchfile)
                 echo "create" >> "$__messages_out"
+                fire_onchange=1
             ;;
             absent)
                 echo "insert" >> "$__messages_out"
+                fire_onchange=1
             ;;
             wrongformated|wrongvalue)
                 echo "change" >> "$__messages_out"
+                fire_onchange=1
             ;;
             present)
                 # nothing to do
@@ -67,9 +72,13 @@ case "$state_should" in
         esac
     ;;
     *)
-       echo "Unknown state: $state_should" >&2
-       exit 1
+        echo "Unknown state: $state_should" >&2
+        exit 1
     ;;
 esac
 
 cat "$__type/files/remote_script.sh"
+
+if [ -n "$fire_onchange" ]; then
+    cat "$__object/parameter/onchange"
+fi
