@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* __key_value: Add onchange parameter (Kamila Součková)
+
 4.8.2: 2018-03-10
 	* Core: Fix quiet argument access for bare cdist command (Darko Poljak)
 
