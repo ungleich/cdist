@@ -18,19 +18,20 @@ REQUIRED PARAMETERS
 -------------------
 config
    Alertmanager configuration file. It will be saved as /etc/alertmanager/alertmanager.yml on the target.
-listen-address
-   Passed as web.listen-address.
 
 
 OPTIONAL PARAMETERS
 -------------------
 storage-path
    Where to put data. Default: /data/alertmanager. (Directory will be created if needed.)
+retention-days
+   How long to retain data. Default: 90 days.
 
 
 BOOLEAN PARAMETERS
 ------------------
-None
+install-from-backports
+   Valid on Devuan only. Will enable the backports apt source and install the package from there. Useful for getting a newer version.
 
 
 EXAMPLES
@@ -38,21 +39,15 @@ EXAMPLES
 
 .. code-block:: sh
 
-    ALERTPORT=9093
-
-    __daemontools
-    __golang_from_vendor --version 1.8.1  # required for prometheus and many exporters
-
-    require="__daemontools __golang_from_vendor" __prometheus_alertmanager \
-      --with-daemontools \
-      --config "$__manifest/files/alertmanager.yml" \
-      --storage-path /data/alertmanager \
-      --listen-address "[::]:$ALERTPORT"
+    __prometheus_alertmanager \
+        --install-from-backports \
+        --config "$__manifest/files/alertmanager.yml" \
+        --storage-path /data/alertmanager
 
 
 SEE ALSO
 --------
-:strong:`cdist-type__prometheus_server`\ (7), :strong:`cdist-type__daemontools`\ (7),
+:strong:`cdist-type__prometheus_server`\ (7), :strong:`cdist-type__grafana_dashboard`\ (7),
 Prometheus alerting documentation: https://prometheus.io/docs/alerting/overview/
 
 AUTHORS
@@ -61,7 +56,7 @@ Kamila Součková <kamila--@--ksp.sk>
 
 COPYING
 -------
-Copyright \(C) 2017 Kamila Součková. You can redistribute it
+Copyright \(C) 2018 Kamila Součková. You can redistribute it
 and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.

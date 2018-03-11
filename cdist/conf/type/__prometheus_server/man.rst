@@ -30,7 +30,8 @@ storage-path
 
 BOOLEAN PARAMETERS
 ------------------
-None
+install-from-backports
+   Valid on Devuan only. Will enable the backports apt source and install the package from there. Useful for getting a newer version.
 
 
 EXAMPLES
@@ -42,6 +43,7 @@ EXAMPLES
     ALERTPORT=9093
 
     __prometheus_server \
+        --install-from-backports \
         --config "$__manifest/files/prometheus.yml" \
         --retention-days 14 \
         --storage-path /data/prometheus \

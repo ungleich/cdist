@@ -48,7 +48,6 @@ require="$require $require_pkg" __directory "$storage_path" --owner prometheus -
 require="$require $require_pkg" \
 __key_value alertmanager_fix_init_script --file /etc/init.d/prometheus-alertmanager --key="NAME" --value="prometheus-alertmanager" --delimiter "="
 
-
 ##### CONFIGURE #############################################################
 
 FLAGS="--storage.path $storage_path --data.retention $(($retention_days*24))h --web.listen-address [::]:9093"
