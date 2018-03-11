@@ -10,8 +10,7 @@ DESCRIPTION
 -----------
 Install and configure Prometheus Alertmanager (https://prometheus.io/docs/alerting/alertmanager/).
 
-This type create a daemontools-compatible service directory under /service/prometheus.
-Daemontools (or something compatible) must be installed (in particular, the command `svc` must be executable).
+Note that due to significant differences between Prometheus 1.x and 2.x, only 2.x is supported. It is your responsibility to make sure that your package manager installs 2.x. (On Devuan Ascii, the parameter `--install-from-backports` helps.)
 
 
 REQUIRED PARAMETERS

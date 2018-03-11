@@ -10,7 +10,7 @@ DESCRIPTION
 -----------
 Install and configure Prometheus (https://prometheus.io/).
 
-Note that due to significant differences between Prometheus 1.x and 2.x, only 2.x is supported.
+Note that due to significant differences between Prometheus 1.x and 2.x, only 2.x is supported. It is your responsibility to make sure that your package manager installs 2.x. (On Devuan Ascii, the parameter `--install-from-backports` helps.)
 
 REQUIRED PARAMETERS
 -------------------
