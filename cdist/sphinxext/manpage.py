@@ -27,13 +27,12 @@ class ManualPageWriter(sphinx.writers.manpage.ManualPageWriter):
 
     def __init__(self, builder):
         super().__init__(builder)
-        self.translator_class = (
-                self.builder.translator_class or ManualPageTranslator)
 
 
 class ManualPageBuilder(sphinx.builders.manpage.ManualPageBuilder):
 
     name = 'cman'
+    default_translator_class = ManualPageTranslator
 
     def write(self, *ignored):
         docwriter = ManualPageWriter(self)
