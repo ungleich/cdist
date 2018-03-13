@@ -6,6 +6,7 @@ next:
 	* __prometheus_server, __prometheus_alertmanager, __grafana_dashboard:
 	  Work with packages instead of go get, remove __daemontools dependency and clean up (Kamila Součková)
 	* Documentation: Fix manpage generation (Darko Poljak)
+	* New type: __docker_swarm (Ľubomír Kučera)
 
 4.8.2: 2018-03-10
 	* Core: Fix quiet argument access for bare cdist command (Darko Poljak)
