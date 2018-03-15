@@ -1,0 +1,5 @@
+.gitignore export-ignore
+.gitattributes export-ignore
+.gitkeep export-ignore
+docs/speeches export-ignore
+docs/video export-ignore
