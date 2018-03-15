@@ -9,7 +9,7 @@ during a config run, hidden in all other output.
 Now all created output is bound to the context where it was produced.
 
 Saving output streams include stdout and stderr of init manifest, remote
-commands and for each object stdout and stderr of manifest, gencode-* and code-*.
+commands and for each object stdout and stderr of manifest, gencode-\* and code-\*.
 Output stream files are created only if some output is produced. For more info
 on these cache files see `Local cache overview <cdist-cache.html>`_.
 

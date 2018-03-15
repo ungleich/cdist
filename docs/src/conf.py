@@ -161,11 +161,6 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # The empty string is equivalent to '%b %d, %Y'.
 # html_last_updated_fmt = None
 
-# If true, SmartyPants will be used to convert quotes and dashes to
-# typographically correct entities.
-# html_use_smartypants = True
-html_use_smartypants = False
-
 # Custom sidebar templates, maps document names to template names.
 # html_sidebars = {}
 
