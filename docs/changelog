@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.8.3: 2018-03-16
 	* Type __key_value: Add onchange parameter (Kamila Součková)
 	* Types __prometheus_server, __prometheus_alertmanager, __grafana_dashboard:
 	  Work with packages instead of go get, remove __daemontools dependency and clean up (Kamila Součková)
