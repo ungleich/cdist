@@ -28,7 +28,7 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Initalizes a swarm
+    # Initializes a swarm
     __docker_swarm
 
     # Leaves a swarm

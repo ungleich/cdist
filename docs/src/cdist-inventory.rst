@@ -64,7 +64,7 @@ Examples
     # Delete hosts from file old-hosts from inventory
     $ cdist inventory del-host -b -f old-hosts
 
-    # Add tags to specifed hosts
+    # Add tags to specified hosts
     $ cdist inventory add-tag -b -t europe,croatia,web,static web1 web2
 
     # Add tag to all hosts in inventory
