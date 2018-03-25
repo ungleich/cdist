@@ -11,7 +11,7 @@ os=$(cat "$__global/explorer/os")
 
 case "$os" in
     freebsd)
-	if [ "$state_should" == 'present' ]; then
+	if [ "$state_should" = 'present' ]; then
 	    value='YES'
 	else
 	    value='NO'
