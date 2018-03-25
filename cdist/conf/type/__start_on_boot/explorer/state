@@ -64,6 +64,10 @@ else
             state="present"
             [ -f "/etc/runlevels/${target_runlevel}/${name}" ] || state="absent"
         ;;
+        freebsd)
+            state="absent"
+            service -e | grep "/$name$" && state="present"
+        ;;
         *)
            echo "Unsupported os: $os" >&2
            exit 1
