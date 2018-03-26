@@ -26,5 +26,15 @@ if [ "$value_should" = "$value_is" ]; then
    exit 0
 fi
 
+os=$(cat "$__global/explorer/os")
+case "$os" in
+    redhat|centos|ubuntu|debian|devuan|archlinux|coreos)
+        flag='-w'
+    ;;
+    frebsd)
+        flag=''
+    ;;
+esac
+
 # set the current runtime value
-printf 'sysctl -w %s="%s"\n' "$__object_id" "$value_should"
+printf 'sysctl %s %s="%s"\n' "$flag" "$__object_id" "$value_should"

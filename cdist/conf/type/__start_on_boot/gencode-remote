@@ -77,6 +77,10 @@ case "$state_should" in
                     echo "update-rc.d \"$name\" defaults >/dev/null"
                 ;;
 
+                freebsd)
+                    :  # handled in manifest
+                ;;
+
                 *)
                    echo "Unsupported os: $os" >&2
                    exit 1

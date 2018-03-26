@@ -22,7 +22,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   redhat|centos|ubuntu|debian|devuan|archlinux|coreos)
+   redhat|centos|ubuntu|debian|devuan|archlinux|coreos|freebsd)
       :
    ;;
    *)

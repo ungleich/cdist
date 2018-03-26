@@ -52,6 +52,13 @@ case "$os" in
             --key HOSTNAME \
             --value "$name_should" --exact_delimiter
     ;;
+    freebsd)
+        __key_value rcconf-hostname \
+            --file /etc/rc.conf \
+            --delimiter '=' \
+            --key 'hostname' \
+            --value "$name_should"
+    ;;
     openbsd)
         echo "$name_should" | __file /etc/myname --source -
     ;;
