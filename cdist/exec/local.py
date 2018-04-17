@@ -259,10 +259,8 @@ class Local(object):
                 util.log_std_fd(self.log, command, stderr, 'Local stderr')
                 util.log_std_fd(self.log, command, stdout, 'Local stdout')
             return output
-        except subprocess.CalledProcessError as e:
-            util.handle_called_process_error(e, command)
-        except OSError as error:
-            raise cdist.Error(" ".join(command) + ": " + error.args[1])
+        except (OSError, subprocess.CalledProcessError) as error:
+            raise cdist.Error(" ".join(command) + ": " + str(error.args[1]))
         finally:
             if message_prefix:
                 message.merge_messages()
