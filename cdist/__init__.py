@@ -158,7 +158,8 @@ class CdistObjectError(CdistEntityError):
             ('name', cdist_object.name, ),
             ('path', cdist_object.absolute_path, ),
             ('source', " ".join(cdist_object.source), ),
-            ('type', os.path.realpath(cdist_object.cdist_type.absolute_path), ),
+            ('type', os.path.realpath(
+                cdist_object.cdist_type.absolute_path), ),
         ]
         stderr_paths = []
         for stderr_name in os.listdir(cdist_object.stderr_path):

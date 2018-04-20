@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.8.4: 2018-04-20
 	* Documentation, type manpages: Fix spelling (Dmitry Bogatov)
 	* New explorer: is-freebsd-jail (Kamila Součková)
 	* Types __hostname, __start_on_boot, __sysctl: Support FreeBSD (Kamila Součková)
