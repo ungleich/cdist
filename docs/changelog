@@ -6,7 +6,7 @@ next:
 	* New explorer: is-freebsd-jail (Kamila Součková)
 	* Types __hostname, __start_on_boot, __sysctl: Support FreeBSD (Kamila Součková)
 	* Type __install_config: set environment variable to distinguish between
-	install-config and regular config (Steven Armstrong)
+	  install-config and regular config (Steven Armstrong)
 	* Core: Improve error reporting (Darko Poljak)
 
 4.8.3: 2018-03-16
