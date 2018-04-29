@@ -50,7 +50,7 @@ case "${state}" in
 		eof
 
 		docker stack deploy --compose-file "\${compose_file}" \
-			--prune ${stack}
+			--prune --with-registry-auth ${stack}
 
 		rm "\${compose_file}"
 		EOF
