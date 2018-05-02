@@ -3,6 +3,8 @@ Changelog
 
 next:
 	* Type __docker_stack: Use --with-registry-auth option (Ľubomír Kučera)
+	* New type: __docker_config (Ľubomír Kučera)
+	* New type: __docker_secret (Ľubomír Kučera)
 
 4.8.4: 2018-04-20
 	* Documentation, type manpages: Fix spelling (Dmitry Bogatov)
