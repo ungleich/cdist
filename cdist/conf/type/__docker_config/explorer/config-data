@@ -18,4 +18,5 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-docker config inspect "${__object_id:?}" | jq -r '.[0].Spec.Data' | base64 -d
+docker config inspect "${__object_id:?}" --format '{{json .Spec.Data}}' \
+	2>/dev/null | tr -d '"' | base64 -d
