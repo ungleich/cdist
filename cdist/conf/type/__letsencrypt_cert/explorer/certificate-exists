@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+if certbot certificates | grep -q "  Certificate Name: ${__object_id:?}$"; then
+	echo yes
+else
+	echo no
+fi

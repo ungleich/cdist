@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+if certbot certificates --cert-name "${__object_id:?}" | \
+	grep -q 'INVALID: TEST_CERT'; then
+	echo yes
+else
+	echo no
+fi

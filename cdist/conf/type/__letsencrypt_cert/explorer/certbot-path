@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+command -v certbot 2>/dev/null || true
