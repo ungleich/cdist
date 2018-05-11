@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+certbot certificates --cert-name "${__object_id:?}" | grep '    Domains: ' | \
+	cut -d ' ' -f 6- | tr ' ' '\n'

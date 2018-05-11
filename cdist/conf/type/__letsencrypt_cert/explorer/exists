@@ -1,5 +1,0 @@
-domain=$__object_id
-
-if [ -f "/etc/letsencrypt/live/$domain/fullchain.pem" ]; then
-   echo yes
-fi

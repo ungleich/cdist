@@ -1,79 +1,93 @@
-os=$(cat "$__global/explorer/os")
-os_version=$(cat "$__global/explorer/os_version")
+#!/bin/sh
 
-case "$os" in
-    debian)
-        case "$os_version" in
-            8*)
-                __apt_source jessie-backports \
-                             --uri http://http.debian.net/debian \
-                             --distribution jessie-backports \
-                             --component main
+certbot_fullpath="$(cat "${__object:?}/explorer/certbot-path")"
 
-                require="__apt_source/jessie-backports" __package_apt python-certbot --target-release jessie-backports
-                require="__apt_source/jessie-backports" __package_apt certbot --target-release jessie-backports
-                # Seems to be a missing dependency on debian 8
-                __package python-ndg-httpsclient
-                ;;
-            9*) 
-                __apt_source stretch-backports \
-                             --uri http://http.debian.net/debian \
-                             --distribution stretch-backports \
-                             --component main
+if [ -z "${certbot_fullpath}" ]; then
+	os="$(cat "${__global:?}/explorer/os")"
+	os_version="$(cat "${__global}/explorer/os_version")"
 
-                require="__apt_source/stretch-backports" __package_apt python-certbot --target-release stretch-backports
-                require="__apt_source/stretch-backports" __package_apt certbot --target-release stretch-backports
-                ;;
-            *)
-                echo "Unsupported OS version: $os_version" >&2
-                exit 1
-                ;;
-        esac
+	case "$os" in
+		debian)
+			case "$os_version" in
+				8*)
+					__apt_source jessie-backports \
+						--uri http://http.debian.net/debian \
+						--distribution jessie-backports \
+						--component main
 
-        certbot_fullpath=/usr/bin/certbot
-        ;;
-    devuan)
-        case "$os_version" in
-            jessie)
-                __apt_source jessie-backports \
-                             --uri http://auto.mirror.devuan.org/merged \
-                             --distribution jessie-backports \
-                             --component main
+					require="__apt_source/jessie-backports" __package_apt python-certbot \
+						--target-release jessie-backports
+					require="__apt_source/jessie-backports" __package_apt certbot \
+						--target-release jessie-backports
+					# Seems to be a missing dependency on debian 8
+					__package python-ndg-httpsclient
+				;;
+				9*)
+					__apt_source stretch-backports \
+						--uri http://http.debian.net/debian \
+						--distribution stretch-backports \
+						--component main
 
-                require="__apt_source/jessie-backports" __package_apt python-certbot --target-release jessie-backports
-                require="__apt_source/jessie-backports" __package_apt certbot --target-release jessie-backports
-                # Seems to be a missing dependency on debian 8
-                __package python-ndg-httpsclient
-                ;;
-            *)
-                echo "Unsupported OS version: $os_version" >&2
-                exit 1
-                ;;
-        esac
+					require="__apt_source/stretch-backports" __package_apt python-certbot \
+						--target-release stretch-backports
+					require="__apt_source/stretch-backports" __package_apt certbot \
+						--target-release stretch-backports
+				;;
+				*)
+					echo "Unsupported OS version: $os_version" >&2
+					exit 1
+				;;
+			esac
 
-        certbot_fullpath=/usr/bin/certbot
-        ;;
-    freebsd)
-        __package py27-certbot
+			certbot_fullpath=/usr/bin/certbot
+			;;
+		devuan)
+			case "$os_version" in
+				jessie)
+					__apt_source jessie-backports \
+								 --uri http://auto.mirror.devuan.org/merged \
+								 --distribution jessie-backports \
+								 --component main
 
-        certbot_fullpath=/usr/local/bin/certbot
-        ;;
-    *)
-        echo "Unsupported os: $os" >&2
-        exit 1
-        ;;
-esac
+					require="__apt_source/jessie-backports" __package_apt python-certbot \
+						--target-release jessie-backports
+					require="__apt_source/jessie-backports" __package_apt certbot \
+						--target-release jessie-backports
+					# Seems to be a missing dependency on debian 8
+					__package python-ndg-httpsclient
+				;;
+				*)
+					echo "Unsupported OS version: $os_version" >&2
+					exit 1
+				;;
+			esac
 
-renew_hook_param="$__object/parameter/renew-hook"
-renew_hook=""
-if [ -f "$renew_hook_param" ]; then
-    while read hook; do
-        renew_hook="$renew_hook --renew-hook \"$hook\""
-    done < "$renew_hook_param"
+			certbot_fullpath=/usr/bin/certbot
+		;;
+		freebsd)
+			__package py27-certbot
+
+			certbot_fullpath=/usr/local/bin/certbot
+		;;
+		*)
+			echo "Unsupported os: $os" >&2
+			exit 1
+		;;
+	esac
 fi
 
-__cron letsencrypt-certbot  \
-    --user root \
-    --command "$certbot_fullpath renew -q $renew_hook" \
-    --hour 0 \
-    --minute 47
+if [ -f "${__object}/parameter/automatic-renewal" ]; then
+	renew_hook_param="${__object}/parameter/renew-hook"
+	renew_hook=""
+	if [ -f "${renew_hook_param}" ]; then
+		while read hook; do
+			renew_hook="${renew_hook} --renew-hook \"${hook}\""
+		done < "${renew_hook_param}"
+	fi
+
+	__cron letsencrypt-certbot  \
+		--user root \
+		--command "${certbot_fullpath} renew -q ${renew_hook}" \
+		--hour 0 \
+		--minute 47
+fi
