@@ -6,6 +6,7 @@ next:
 	* New type: __docker_config (Ľubomír Kučera)
 	* New type: __docker_secret (Ľubomír Kučera)
 	* Type __letsencrypt_cert: Rewritten; WARN: breaks backward compatibility (Ľubomír Kučera)
+	* Core: Fix NameError: name 'cdist_object' is not defined (Darko Poljak)
 
 4.8.4: 2018-04-20
 	* Documentation, type manpages: Fix spelling (Dmitry Bogatov)
