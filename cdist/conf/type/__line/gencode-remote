@@ -1,7 +1,6 @@
 #!/bin/sh -e
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
-# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2018 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -18,76 +17,101 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
 
-file="/$__object_id"
-regex=""
-state_should="present"
-[ -f "$__object/parameter/file" ]  && file=$(cat "$__object/parameter/file")
-[ -f "$__object/parameter/regex" ] && regex=$(cat "$__object/parameter/regex")
-[ -f "$__object/parameter/state" ] && state_should=$(cat "$__object/parameter/state")
-[ -f "$__object/parameter/line" ]  && line=$(cat "$__object/parameter/line")
+if [ -f "$__object/parameter/before" -a -f "$__object/parameter/after" ]; then
+   echo "Use either --before OR --after but not both." >&2
+   exit 1
+fi
 
+state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/state")"
 
-[ "$state_should" = "$state_is" ] && exit 0
+if [ "$state_should" = "$state_is" ]; then
+   # nothing to do
+   exit 0
+fi
 
+if [ -f "$__object/parameter/before" ]; then
+   position="before"
+elif [ -f "$__object/parameter/after" ]; then
+   position="after"
+else
+   # By default we append to the end of the file.
+   position="end"
+fi
+
+if [ -f "$__object/parameter/regex" ]; then
+   needle="regex"
+else
+   needle="line"
+fi
+
+if [ -f "$__object/parameter/file" ]; then
+   file="$(cat "$__object/parameter/file")"
+else
+   file="/$__object_id"
+fi
+
+add=0
+remove=0
 case "$state_should" in
-    present)
-        if [ ! "$line" ]; then
-            echo "Required parameter \"line\" is missing" >&2
-            exit 1
-        fi
+   present)
+      if [ "$state_is" = "wrongposition" ]; then
+         echo updated >> "$__messages_out"
+         remove=1
+      else
+         echo added >> "$__messages_out"
+      fi
+      add=1
+   ;;
+   absent)
+      echo removed >> "$__messages_out"
+      remove=1
+   ;;
+esac
 
-        #echo "echo \"$line\" >> $file"
-        #line_sanitised=$(cat "$__object/parameter/line" | sed 's/"/\"/g')
-        # Idea: replace ' in the string:
-        # '"'"'
-        # |------> ': end the string
-        #  |-|---> "'": create ' in the output string
-        #     |--> ': continue the string
-        #
-        # Replace all \ so \t and other combinations are not interpreted
-        #
-
-
-        # line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g" -e 's/\\/\\\\/g')
-        # The one above does not work:
-        #     --line "PS1='[\t] \[\033[1m\]\h\[\033[0m\]:\w\\$ '"
-        # becomes
-        # PS1='[\\t] \\[\\033[1m\\]\\h\\[\\033[0m\\]:\\w\\$ '
-
-        # Only replace ' with '"'"' and keep \ as they are
-        line_sanitised=$(cat "$__object/parameter/line" | sed -e "s/'/'\"'\"'/g")
-        printf '%s' "printf '%s\n' '$line_sanitised' >> $file"
-        echo "added" >> "$__messages_out"
-
-    ;;
-    absent)
-        if [ "$regex" -a "$line" ]; then
-            echo "Mutally exclusive parameters regex and line given for state absent" >&2
-            exit 1
-        fi
-
-        greparg=""
-        if [ "$line" ]; then
-            regex="$line"
-            greparg="-F -x"
-        fi
-
-        cat << eof
+cat << DONE
 tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
 # preserve ownership and permissions of existing file
 if [ -f "$file" ]; then
    cp -p "$file" "\$tmpfile"
 fi
-grep -v $greparg "$regex" '$file' > \$tmpfile || true
+
+awk -v position="$position" -v needle="$needle" -v remove=$remove -v add=$add '
+BEGIN {
+   line_file = ENVIRON["__object"] "/parameter/line"
+   getline line < line_file
+   # Need to close line file as it may be re-read as pattern below.
+   close(line_file)
+   getline pattern < (ENVIRON["__object"] "/parameter/" needle)
+   getline anchor < (ENVIRON["__object"] "/parameter/" position)
+}
+{
+   if (remove) {
+      if (match(\$0, pattern)) {
+         # skip over this line -> remove it
+         next
+      }
+   }
+   if (add) {
+      if (anchor && match(\$0, anchor)) {
+         if (position == "before") {
+            print line
+            print
+         } else if (position == "after") {
+            print
+            print line
+         }
+         next
+      }
+   }
+   print
+}
+END {
+   if (add && position == "end") {
+      print line
+   }
+}
+' "$file" > "\$tmpfile"
 mv -f "\$tmpfile" "$file"
-eof
-        echo "removed" >> "$__messages_out"
-    ;;
-    *)
-        echo "Unknown state: $state_should" >&2
-        exit 1
-    ;;
-esac
+DONE

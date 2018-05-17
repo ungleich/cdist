@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/sh -e
 #
-# 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2018 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,26 +17,64 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
 
-file="/$__object_id"
-[ -f "$__object/parameter/file" ] && file=$(cat "$__object/parameter/file")
+if [ -f "$__object/parameter/before" ]; then
+   position="before"
+elif [ -f "$__object/parameter/after" ]; then
+   position="after"
+fi
 
 if [ -f "$__object/parameter/regex" ]; then
-    regex=$(cat "$__object/parameter/regex")
-    greparg=""
+   needle="regex"
 else
-    if [ ! -f "$__object/parameter/line" ]; then
-        echo "Parameter line and regex missing - cannot explore" >&2
-        exit 1
-    fi
-    regex="$(cat "$__object/parameter/line")"
-    greparg="-F -x"
+   needle="line"
 fi
 
-# Allow missing file - thus 2>/dev/null
-if grep -q $greparg -- "$regex" "$file" 2>/dev/null; then
-    echo present
+if [ -f "$__object/parameter/file" ]; then
+   file="$(cat "$__object/parameter/file")"
 else
-    echo absent
+   file="/$__object_id"
 fi
+
+awk -v position="$position" -v needle="$needle" '
+BEGIN {
+   getline anchor < (ENVIRON["__object"] "/parameter/" position)
+   getline pattern < (ENVIRON["__object"] "/parameter/" needle)
+   state = "absent"
+}
+{
+   if (position == "after") {
+      if (match($0, anchor)) {
+         getline
+         if (match($0, pattern)) {
+            state = "present"
+         }
+         else {
+            state = "wrongposition"
+         }
+         exit 0
+      }
+   }
+   else if (position == "before") {
+      if (match($0, pattern)) {
+         getline
+         if (match($0, anchor)) {
+            state = "present"
+         }
+         else {
+            state = "wrongposition"
+         }
+         exit 0
+      }
+   }
+   else {
+      if (match($0, pattern)) {
+         state = "present"
+         exit 0
+      }
+   }
+}
+END {
+   print state
+}
+' "$file"
