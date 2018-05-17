@@ -220,9 +220,9 @@ class Explorer(object):
                                 "for: %s"), cdist_type)
             else:
                 source = os.path.join(self.local.type_path,
-                                        cdist_type.explorer_path)
+                                      cdist_type.explorer_path)
                 destination = os.path.join(self.remote.type_path,
-                                            cdist_type.explorer_path)
+                                           cdist_type.explorer_path)
                 self.remote.mkdir(destination)
                 self.remote.transfer(source, destination)
                 self.remote.run(["chmod", "0700", "%s/*" % (destination)])
