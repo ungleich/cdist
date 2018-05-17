@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.9.0: 2018-05-17
 	* Type __docker_stack: Use --with-registry-auth option (Ľubomír Kučera)
 	* New type: __docker_config (Ľubomír Kučera)
 	* New type: __docker_secret (Ľubomír Kučera)
