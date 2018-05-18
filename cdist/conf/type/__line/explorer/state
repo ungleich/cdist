@@ -37,6 +37,13 @@ else
 fi
 
 awk -v position="$position" -v needle="$needle" '
+function _find(_text, _pattern) {
+   if (needle == "regex") {
+      return match(_text, _pattern)
+   } else {
+      return index(_text, _pattern)
+   }
+}
 BEGIN {
    getline anchor < (ENVIRON["__object"] "/parameter/" position)
    getline pattern < (ENVIRON["__object"] "/parameter/" needle)
@@ -46,7 +53,7 @@ BEGIN {
    if (position == "after") {
       if (match($0, anchor)) {
          getline
-         if (match($0, pattern)) {
+         if (_find($0, pattern)) {
             state = "present"
          }
          else {
@@ -56,7 +63,7 @@ BEGIN {
       }
    }
    else if (position == "before") {
-      if (match($0, pattern)) {
+      if (_find($0, pattern)) {
          getline
          if (match($0, anchor)) {
             state = "present"
@@ -68,7 +75,7 @@ BEGIN {
       }
    }
    else {
-      if (match($0, pattern)) {
+      if (_find($0, pattern)) {
          state = "present"
          exit 0
       }

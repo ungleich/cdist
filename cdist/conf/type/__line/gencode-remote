@@ -78,6 +78,13 @@ if [ -f "$file" ]; then
 fi
 
 awk -v position="$position" -v needle="$needle" -v remove=$remove -v add=$add '
+function _find(_text, _pattern) {
+   if (needle == "regex") {
+      return match(_text, _pattern)
+   } else {
+      return index(_text, _pattern)
+   }
+}
 BEGIN {
    line_file = ENVIRON["__object"] "/parameter/line"
    getline line < line_file
@@ -88,7 +95,7 @@ BEGIN {
 }
 {
    if (remove) {
-      if (match(\$0, pattern)) {
+      if (_find(\$0, pattern)) {
          # skip over this line -> remove it
          next
       }
