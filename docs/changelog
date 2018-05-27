@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* New type: __install_coreos (Ľubomír Kučera)
+	* Type __consul_agent: Add LSB init header (Nico Schottelius)
 
 4.9.0: 2018-05-17
 	* Type __docker_stack: Use --with-registry-auth option (Ľubomír Kučera)
