@@ -14,14 +14,12 @@ Automatically obtain a Let's Encrypt SSL certificate using Certbot.
 REQUIRED PARAMETERS
 -------------------
 
+object id
+    A cert name. If domain parameter is not specified then it is used
+    as a domain to be included in the certificate.
+
 admin-email
     Where to send Let's Encrypt emails like "certificate needs renewal".
-
-REQUIRED MULTIPLE PARAMETERS
-----------------------------
-
-domain
-    A domain to be included in the certificate.
 
 OPTIONAL PARAMETERS
 -------------------
@@ -43,6 +41,10 @@ OPTIONAL MULTIPLE PARAMETERS
 
 renew-hook
     Renew hook command directly passed to Certbot in cron job.
+
+domain
+    Domains to be included in the certificate. When specified then object id
+    is not used as a domain.
 
 BOOLEAN PARAMETERS
 ------------------
@@ -70,6 +72,17 @@ EXAMPLES
 
 .. code-block:: sh
 
+    # use object id as domain
+    __letsencrypt_cert example.com \
+        --admin-email root@example.com \
+        --automatic-renewal \
+        --renew-hook "service nginx reload" \
+        --webroot /data/letsencrypt/root
+
+.. code-block:: sh
+
+    # domain parameter is specified so object id is not used as domain
+    # and example.com needs to be included again with domain parameter
     __letsencrypt_cert example.com \
         --admin-email root@example.com \
         --automatic-renewal \
@@ -78,7 +91,6 @@ EXAMPLES
         --domain bar.example.com \
         --renew-hook "service nginx reload" \
         --webroot /data/letsencrypt/root
-
 
 AUTHORS
 -------

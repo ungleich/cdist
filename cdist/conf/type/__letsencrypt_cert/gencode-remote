@@ -15,7 +15,13 @@ case "${state}" in
 		echo remove >> "${__messages_out:?}"
 	;;
 	present)
-		requested_domains="${__object}/parameter/domain"
+		domain_param_file="${__object}/parameter/domain"
+		requested_domains=$(mktemp domain.cdist.XXXXXXXXXX)
+		if [ -f "${domain_param_file}" ]; then
+			cp "${domain_param_file}" "${requested_domains}"
+		else
+			echo "$__object_id" >> "${requested_domains}"
+		fi
 
 		staging=no
 		if [ -f "${__object}/parameter/staging" ]; then
