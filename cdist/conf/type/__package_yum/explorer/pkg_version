@@ -27,4 +27,4 @@ else
    name="$__object_id"
 fi
 
-rpm -q --whatprovides "$name" 2>/dev/null || true
+rpm -q "$name" 2>/dev/null || rpm -q --whatprovides "$name" 2>/dev/null || true

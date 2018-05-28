@@ -43,10 +43,15 @@ else
     opts="--assumeyes --quiet"
 fi
 
-not_installed="^no package provides"
+not_provided="^no package provides"
+not_installed='is not installed$'
 
-if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-    state_is="absent"
+if grep -q "$not_provided" "$__object/explorer/pkg_version"; then
+    if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
+        state_is="absent"
+    else
+        state_is="present"
+    fi
 else
     state_is="present"
 fi
