@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.9.1: 2018-05-30
 	* New type: __install_coreos (Ľubomír Kučera)
 	* Type __consul_agent: Add LSB init header (Nico Schottelius)
 	* Type __package_yum: Fix explorer when name contains package name with exact version specified (Aleksandr Dinu)
