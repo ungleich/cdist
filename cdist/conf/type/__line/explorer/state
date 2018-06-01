@@ -22,6 +22,9 @@ if [ -f "$__object/parameter/before" ]; then
    position="before"
 elif [ -f "$__object/parameter/after" ]; then
    position="after"
+else
+   # By default we append to the end of the file.
+   position="end"
 fi
 
 if [ -f "$__object/parameter/regex" ]; then
