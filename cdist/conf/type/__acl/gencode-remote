@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os="$( "$__explorer/os" )"
+os="$( cat "$__global/explorer/os" )"
 
 acl_path="/$__object_id"
 
