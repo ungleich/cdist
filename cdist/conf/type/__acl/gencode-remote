@@ -1,0 +1,81 @@
+#!/bin/sh -e
+#
+# 2018 Ander Punnar (ander-at-kvlt-dot-ee)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os="$( cat "$__global/explorer/os" )"
+
+acl_path="/$__object_id"
+
+acl_is="$( cat "$__object/explorer/acl_is" )"
+
+acl_should="$( for parameter in user group
+do
+    if [ ! -f "$__object/parameter/$parameter" ]
+    then continue
+    fi
+    while read -r l
+    do
+        echo "$parameter:$l"
+
+        if [ -f "$__object/parameter/default" ]
+        then echo "default:$parameter:$l"
+        fi
+    done < "$__object/parameter/$parameter"
+done )"
+
+setfacl_exec='setfacl'
+
+if [ -f "$__object/parameter/recursive" ]
+then
+    if echo "$os" | grep -E 'macosx|netbsd|freebsd|openbsd'
+    then
+        echo "$os setfacl do not support recursive operations" >&2
+    else
+        setfacl_exec="$setfacl_exec -R"
+    fi
+fi
+
+if [ -f "$__object/parameter/remove" ]
+then
+    if echo "$os" | grep 'solaris'
+    then
+        # Solaris setfacl behaves differently.
+        # We will not support Solaris for now, because no way to test it.
+        # But adding support should be easy (use -s instead of -m on modify).
+        echo "$os setfacl do not support -x flag for ACL remove" >&2
+    else
+        echo "$acl_is" | while read -r acl
+        do
+            if echo "$acl_should" | grep -Fq "$acl"
+            then continue
+            fi
+
+            no_bits="$( echo "$acl" | sed -r 's/:[rwx-]+$//' )"
+
+            echo "$setfacl_exec -x \"$no_bits\" \"$acl_path\""
+        done
+    fi
+fi
+
+for acl in $acl_should
+do
+    if ! echo "$acl_is" | grep -Eq "^$acl"
+    then echo "$setfacl_exec -m \"$acl\" \"$acl_path\""
+    fi
+done
