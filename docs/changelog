@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* New type: __acl (Ander Punnar)
+
 4.9.1: 2018-05-30
 	* New type: __install_coreos (Ľubomír Kučera)
 	* Type __consul_agent: Add LSB init header (Nico Schottelius)
