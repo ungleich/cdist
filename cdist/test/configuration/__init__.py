@@ -31,6 +31,11 @@ import logging
 
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
+interpolation_config_file = op.join(fixtures, "interpolation-test.cfg")
+
+
+def newConfigParser():
+    return configparser.ConfigParser(interpolation=None)
 
 
 class ConfigurationOptionsTestCase(test.CdistTestCase):
@@ -141,7 +146,7 @@ class ConfigurationTestCase(test.CdistTestCase):
 
     def setUp(self):
         # Create test config file.
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'off',
             'local_shell': '/bin/sh',
@@ -159,13 +164,13 @@ class ConfigurationTestCase(test.CdistTestCase):
             'verbosity': 'INFO',
             'archiving': 'none',
         }
-        config_custom = configparser.ConfigParser()
+        config_custom = newConfigParser()
         config_custom['GLOBAL'] = {
             'parallel': '4',
             'archiving': 'txz',
         }
 
-        config_custom2 = configparser.ConfigParser()
+        config_custom2 = newConfigParser()
         config_custom2['GLOBAL'] = {
             'parallel': '16',
             'archiving': 'tbz2',
@@ -405,7 +410,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         }
         args = argparse.Namespace()
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'off',
             'local_shell': '/bin/sh',
@@ -463,7 +468,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         }
         args = argparse.Namespace()
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'off',
             'local_shell': '/bin/sh',
@@ -486,7 +491,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(global_config_file, 'w') as f:
             config.write(f)
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'on',
             'local_shell': '/usr/bin/sh',
@@ -544,7 +549,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         }
         args = argparse.Namespace()
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'off',
             'local_shell': '/bin/sh',
@@ -611,7 +616,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         }
         args = argparse.Namespace()
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'off',
             'local_shell': '/bin/sh',
@@ -634,7 +639,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(global_config_file, 'w') as f:
             config.write(f)
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'on',
             'local_shell': '/usr/bin/sh',
@@ -709,7 +714,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         }
         args = argparse.Namespace()
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'off',
             'local_shell': '/bin/sh',
@@ -732,7 +737,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(global_config_file, 'w') as f:
             config.write(f)
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'on',
             'local_shell': '/usr/bin/sh',
@@ -800,7 +805,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         }
         args = argparse.Namespace()
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'off',
             'local_shell': '/bin/sh',
@@ -823,7 +828,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(global_config_file, 'w') as f:
             config.write(f)
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'on',
             'local_shell': '/usr/bin/sh',
@@ -840,7 +845,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(local_config_file, 'w') as f:
             config.write(f)
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'conf_dir': '/opt/conf/cdist',
             'remote_copy': 'scpcustom',
@@ -899,7 +904,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         }
         args = argparse.Namespace()
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'off',
             'local_shell': '/bin/sh',
@@ -922,7 +927,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(global_config_file, 'w') as f:
             config.write(f)
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'on',
             'local_shell': '/usr/bin/sh',
@@ -939,7 +944,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(local_config_file, 'w') as f:
             config.write(f)
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'conf_dir': '/opt/conf/cdist',
             'remote_copy': 'scpcustom',
@@ -998,7 +1003,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         }
         args = argparse.Namespace()
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'off',
             'local_shell': '/bin/sh',
@@ -1021,7 +1026,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(global_config_file, 'w') as f:
             config.write(f)
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'beta': 'on',
             'local_shell': '/usr/bin/sh',
@@ -1038,7 +1043,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         with open(local_config_file, 'w') as f:
             config.write(f)
 
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'conf_dir': '/opt/conf/cdist',
             'remote_copy': 'scpcustom',
@@ -1107,7 +1112,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         self.assertEqual(dargs, expected_args)
 
     def test_configuration_empty_value_in_file(self):
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'inventory_dir': '',
             'conf_dir': '',
@@ -1169,7 +1174,7 @@ class ConfigurationTestCase(test.CdistTestCase):
                                              config_files=())
 
     def test_configuration_disable_saving_output_streams1(self):
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'save_output_streams': 'True',
         }
@@ -1197,7 +1202,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         self.assertEqual(configuration.config, expected_config_dict)
 
     def test_configuration_disable_saving_output_streams2(self):
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'save_output_streams': 'False',
         }
@@ -1225,7 +1230,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         self.assertEqual(configuration.config, expected_config_dict)
 
     def test_configuration_disable_saving_output_streams3(self):
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'save_output_streams': 'False',
         }
@@ -1253,7 +1258,7 @@ class ConfigurationTestCase(test.CdistTestCase):
         self.assertEqual(configuration.config, expected_config_dict)
 
     def test_configuration_disable_saving_output_streams4(self):
-        config = configparser.ConfigParser()
+        config = newConfigParser()
         config['GLOBAL'] = {
             'save_output_streams': 'True',
         }
@@ -1279,6 +1284,17 @@ class ConfigurationTestCase(test.CdistTestCase):
         configuration = cc.Configuration(args, env=None,
                                          config_files=config_files)
         self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_read_config_file_with_interpolation(self):
+        try:
+            config = cc.Configuration(None, env={}, config_files=())
+            d = config._read_config_file(interpolation_config_file)
+            val = d['GLOBAL']['cache_path_pattern']
+            self.assertIsNotNone(val)
+            self.assertEqual(val, '%N')
+        except configparser.InterpolationSyntaxError as e:
+            self.fail("Exception should not have been raised: {}".format(
+                e))
 
 
 if __name__ == "__main__":

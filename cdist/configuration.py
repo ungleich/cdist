@@ -382,7 +382,7 @@ class Configuration(metaclass=Singleton):
         return args
 
     def _read_config_file(self, files):
-        config_parser = configparser.ConfigParser()
+        config_parser = configparser.ConfigParser(interpolation=None)
         config_parser.read(files)
         d = dict()
         for section in config_parser.sections():

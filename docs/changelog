@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* New type: __acl (Ander Punnar)
+	* Core: Disable config parser interpolation (Darko Poljak)
 
 4.9.1: 2018-05-30
 	* New type: __install_coreos (Ľubomír Kučera)
