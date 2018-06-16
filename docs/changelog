@@ -4,6 +4,8 @@ Changelog
 next:
 	* New type: __acl (Ander Punnar)
 	* Core: Disable config parser interpolation (Darko Poljak)
+	* Type __sysctl: Use sysctl.d location if exists (Darko Poljak)
+	* Type __line: Rewrite and support --before and --after (Steven Armstrong)
 
 4.9.1: 2018-05-30
 	* New type: __install_coreos (Ľubomír Kučera)
