@@ -1,6 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
 #
-# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2018 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -18,24 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-os=$(cat "$__global/explorer/os")
-
-case "$os" in
-   redhat|centos|ubuntu|debian|devuan|archlinux|coreos|freebsd)
-      :
-   ;;
-   *)
-      echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
-      echo "Please contribute an implementation for it if you can." >&2
-      exit 1
-   ;;
-esac
-
-conf_path=$(cat "$__object/explorer/conf-path")
-
-__key_value "$__object_name" \
-   --key "$__object_id" \
-   --file "${conf_path}" \
-   --value "$(cat "$__object/parameter/value")" \
-   --delimiter '='
+if [ -d "/etc/sysctl.d" ]; then
+    echo "/etc/sysctl.d/99-Z-sysctl-cdist.conf";
+else
+    echo "/etc/sysctl.conf";
+fi
