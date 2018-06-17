@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.10.0: 2018-06-17
 	* New type: __acl (Ander Punnar)
 	* Core: Disable config parser interpolation (Darko Poljak)
 	* Type __sysctl: Use sysctl.d location if exists (Darko Poljak)
