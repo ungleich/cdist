@@ -16,7 +16,7 @@ case "${state}" in
 	;;
 	present)
 		domain_param_file="${__object}/parameter/domain"
-		requested_domains=$(mktemp domain.cdist.XXXXXXXXXX)
+		requested_domains=$(mktemp "${TMPDIR:-/tmp}/domain.cdist.XXXXXXXXXX")
 		if [ -f "${domain_param_file}" ]; then
 			cp "${domain_param_file}" "${requested_domains}"
 		else
@@ -66,6 +66,7 @@ case "${state}" in
 				echo "--domain '${domain}' \\"
 			done < "${requested_domains}")
 		EOF
+		rm -f "${requested_domains}"
 
 		if [ "${certificate_exists}" = "no" ]; then
 			echo create >> "${__messages_out}"
