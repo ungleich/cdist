@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Type __letsencrypt_cert: Fix temp file location and removal (Darko Poljak)
+
 4.10.0: 2018-06-17
 	* New type: __acl (Ander Punnar)
 	* Core: Disable config parser interpolation (Darko Poljak)
