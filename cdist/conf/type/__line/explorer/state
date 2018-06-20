@@ -39,6 +39,11 @@ else
    file="/$__object_id"
 fi
 
+if [ ! -f "$file" ]; then
+  echo "file_missing"
+  exit 0
+fi
+
 awk -v position="$position" -v needle="$needle" '
 function _find(_text, _pattern) {
    if (needle == "regex") {
