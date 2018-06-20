@@ -331,6 +331,19 @@ So when you generate a script with the following content, it will work:
     fi
 
 
+Environment variable usage idiom
+--------------------------------
+In type scripts you can support environment variables with default values if
+environment variable is unset or null by using **${parameter:-[word]}**
+parameter expansion.
+
+Example using mktemp in a portable way that supports TMPDIR environment variable.
+
+.. code-block:: sh
+
+    tempfile=$(mktemp "${TMPDIR:-/tmp}/cdist.XXXXXXXXXX")
+
+
 Log level in types
 ------------------
 cdist log level can be accessed from __cdist_log_level variable.One of:
