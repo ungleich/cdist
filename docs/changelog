@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.10.1: 2018-06-21
 	* Type __letsencrypt_cert: Fix temp file location and removal (Darko Poljak)
 	* Type __line: Handle missing file in __line explorer gracefully (Jonas Weber)
 	* Documentation: Add env vars usage idiom for writing types (Darko Poljak)
