@@ -56,6 +56,17 @@ if [ -z "${certbot_fullpath}" ]; then
 					# Seems to be a missing dependency on debian 8
 					__package python-ndg-httpsclient
 				;;
+				ascii*)
+					__apt_source ascii-backports \
+								 --uri http://auto.mirror.devuan.org/merged \
+								 --distribution ascii-backports \
+								 --component main
+
+					require="__apt_source/ascii-backports" __package_apt python-certbot \
+						--target-release ascii-backports
+					require="__apt_source/ascii-backports" __package_apt certbot \
+						--target-release ascii-backports
+				;;
 				*)
 					echo "Unsupported OS version: $os_version" >&2
 					exit 1
