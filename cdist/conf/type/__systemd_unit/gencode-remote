@@ -33,15 +33,23 @@ if [ "${state}" = "absent" ]; then
 fi
 
 unit_status=$(cat "${__object}/explorer/unit-status")
+desired_enablement_state=$(cat "${__object}/parameter/enablement-state")
+
+if [ "${current_enablement_state}" = "masked" ] && \
+    [ "${desired_enablement_state}" != "masked" ]; then
+    echo "systemctl unmask ${name}"
+fi
 
 if [ -f "${__object}/parameter/restart" ]; then
-    if grep -q "^__file/etc/systemd/system/${name}" "${__messages_in}" || \
+    if [ "${desired_enablement_state}" = "masked" ]; then
+        if [ "${unit_status}" = "active" ]; then
+            echo "systemctl stop ${name}"
+        fi
+    elif grep -q "^__file/etc/systemd/system/${name}" "${__messages_in}" || \
         [ "${unit_status}" != "active" ]; then
         echo "systemctl restart ${name} || true"
     fi
 fi
-
-desired_enablement_state=$(cat "${__object}/parameter/enablement-state")
 
 if [ "${current_enablement_state}" = "${desired_enablement_state}" ]; then
     exit 0
@@ -57,6 +65,9 @@ case "${desired_enablement_state}" in
     ;;
     disabled)
         echo "systemctl disable ${name}"
+    ;;
+    masked)
+        echo "systemctl mask ${name}"
     ;;
     *)
         echo "Unsupported unit status: ${desired_enablement_state}" >&2
