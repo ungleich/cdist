@@ -9,9 +9,10 @@ cdist-type__systemd_unit - Install a systemd unit
 DESCRIPTION
 -----------
 
-This type can install, enable and start a systemd unit. This is particularly
-useful on systems which take advantage of systemd heavily (e.g., CoreOS). For
-more information about systemd units, see SYSTEMD.UNIT(5).
+This type manages systemd units in ``/etc/systemd/system/``. It can install,
+enable and start a systemd unit. This is particularly useful on systems which
+take advantage of systemd heavily (e.g., CoreOS). For more information about
+systemd units, see SYSTEMD.UNIT(5).
 
 REQUIRED PARAMETERS
 -------------------
@@ -37,7 +38,7 @@ state
     'present' or 'absent', defaults to 'present' where:
 
     present
-        the unit is installed, enabled and started
+        the unit is installed
     absent
         the unit is stopped, disabled and uninstalled
 
