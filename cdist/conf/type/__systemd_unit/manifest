@@ -30,7 +30,9 @@ name="${__object_id}"
 source=$(cat "${__object}/parameter/source")
 state=$(cat "${__object}/parameter/state")
 
-if [ -z "${source}" ] && [ "${state}" != "absent" ]; then
+# The unit must be disabled before removing its unit file. The unit file is
+# therefore removed by gencode-remote of this type, not here.
+if [ -z "${source}" ] || [ "${state}" = "absent" ]; then
     exit 0
 fi
 
