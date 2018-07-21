@@ -3,12 +3,12 @@ cdist-type__docker(7)
 
 NAME
 ----
-cdist-type__docker - install docker-engine
+cdist-type__docker - install Docker CE
 
 
 DESCRIPTION
 -----------
-Installs latest docker-engine package from dockerproject.org.
+Installs latest Docker Community Edition package.
 
 
 REQUIRED PARAMETERS
@@ -18,16 +18,13 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
-None.
+state
+   'present' or 'absent', defaults to 'present'
 
 
 BOOLEAN PARAMETERS
 ------------------
-experimental
-   Install the experimental docker-engine package instead of the latest stable release.
-
-state
-   'present' or 'absent', defaults to 'present'
+None.
 
 
 EXAMPLES
@@ -37,9 +34,6 @@ EXAMPLES
 
     # Install docker
     __docker
-
-    # Install experimental
-    __docker --experimental
 
     # Remove docker
     __docker --state absent
