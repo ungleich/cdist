@@ -9,7 +9,7 @@ case $os in
             8*|jessie)
                 apt_source_distribution=jessie
                 ;;
-            9*|ascii/ceres)
+            9*|ascii/ceres|ascii)
                 apt_source_distribution=stretch
                 ;;
             *)
