@@ -20,6 +20,7 @@
 
 name="$__object_id"
 state="$(cat "$__object/parameter/state")"
+mode="$(cat "$__object/parameter/mode")"
 uri="$(cat "$__object/parameter/uri")"
 
 if [ -f "$__object/parameter/distribution" ]; then
@@ -48,5 +49,5 @@ mkdir "$__object/files"
 "$__type/files/source.list.template" > "$__object/files/source.list"
 __file "/etc/apt/sources.list.d/${name}.list" \
    --source "$__object/files/source.list" \
-   --owner root --group root --mode 0644 \
+   --owner root --group root --mode "$mode" \
    --state "$state"
