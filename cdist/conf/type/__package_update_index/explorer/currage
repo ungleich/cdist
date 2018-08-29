@@ -27,6 +27,13 @@ case "$type" in
             echo 0
         fi
         ;;
+    pacman)
+        if [ -d "/var/lib/pacman/sync" ]; then
+            echo $(($(date +"%s")-$(stat --format '%Y' /var/lib/pacman/sync)))
+        else
+            echo 0
+        fi
+        ;;
     *)  echo "Your specified type ($type) is currently not supported." >&2
         echo "Please contribute an implementation for it if you can." >&2
         ;;
