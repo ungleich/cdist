@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2018 Thomas Eckert (tom at it-eckert.de)
+# 2018 Stu Zhao (z12y12l12 at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -17,17 +17,18 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 
-type="$($__type_explorer/type)"
-
-case "$type" in
-    apt)
-        if [ -f "/var/cache/apt/pkgcache.bin" ]; then
-            echo $(($(date +"%s")-$(stat --format '%Y' /var/cache/apt/pkgcache.bin)))
-        else
-            echo 0
-        fi
-        ;;
-    *)  echo "Your specified type ($type) is currently not supported." >&2
-        echo "Please contribute an implementation for it if you can." >&2
-        ;;
-esac
+if [ -f "$__object/parameter/type" ]; then
+    cat "$__object/parameter/type"
+else
+    # By default determine package manager based on operating system
+    os="$($__explorer/os)"
+    case "$os" in
+        amazon|scientific|centos|fedora|redhat) echo "yum" ;;
+        debian|ubuntu|devuan) echo "apt" ;;
+        archlinux) echo "pacman" ;;
+        *)
+            echo "Don't know how to manage packages on: $os" >&2
+            exit 1
+            ;;
+    esac
+fi
