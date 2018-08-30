@@ -5,6 +5,7 @@ next:
 	* Type __letsencrypt_cert: Add support for devuan ascii (Darko Poljak)
 	* Type __systemd_unit: Fix minor issues and add masking unit files support (Adam Dej)
 	* Type __grafana_dashboard: Fix devuan ascii support (Dominique Roux)
+	* Type __apt_source: Add nonparallel marker (Darko Poljak)
 
 4.10.1: 2018-06-21
 	* Type __letsencrypt_cert: Fix temp file location and removal (Darko Poljak)
