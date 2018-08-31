@@ -6,7 +6,7 @@ next:
 	* Type __systemd_unit: Fix minor issues and add masking unit files support (Adam Dej)
 	* Type __grafana_dashboard: Fix devuan ascii support (Dominique Roux)
 	* Type __apt_source: Add nonparallel marker (Darko Poljak)
-  * Type __package_update_index: Fix error when using OS not using apt (Stu Zhao)
+	* Type __package_update_index: Fix error when using OS not using apt (Stu Zhao)
 	* Type __package_update_index: Support --maxage for type pacman (Stu Zhao)
 
 4.10.1: 2018-06-21
