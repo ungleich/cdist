@@ -8,6 +8,7 @@ next:
 	* Type __apt_source: Add nonparallel marker (Darko Poljak)
 	* Type __package_update_index: Fix error when using OS not using apt (Stu Zhao)
 	* Type __package_update_index: Support --maxage for type pacman (Stu Zhao)
+	* Type __letsencrypt_cert: Fix explorers: check that certbot exists before using it (Darko Poljak)
 
 4.10.1: 2018-06-21
 	* Type __letsencrypt_cert: Fix temp file location and removal (Darko Poljak)
