@@ -100,17 +100,23 @@ class CdistEntityError(Error):
         for name, path in stdpaths:
             if name not in result:
                 result[name] = []
-            if os.path.exists(path) and os.path.getsize(path) > 0:
-                output = []
-                label_begin = name + ":" + header_name
-                output.append(label_begin)
-                output.append('\n')
-                output.append('-' * len(label_begin))
-                output.append('\n')
-                with open(path, 'r') as fd:
-                    output.append(fd.read())
-                output.append('\n')
-                result[name].append(''.join(output))
+            try:
+                if os.path.exists(path) and os.path.getsize(path) > 0:
+                    output = []
+                    label_begin = name + ":" + header_name
+                    output.append(label_begin)
+                    output.append('\n')
+                    output.append('-' * len(label_begin))
+                    output.append('\n')
+                    with open(path, 'r') as fd:
+                        output.append(fd.read())
+                    output.append('\n')
+                    result[name].append(''.join(output))
+            except UnicodeError as ue:
+                result[name].append(('Cannot output {}:{} due to: {}.\n'
+                                     'You can try to read the error file "{}"'
+                                     ' yourself.').format(
+                                         name, header_name, ue, path))
         return result
 
     def _stderr(self):
