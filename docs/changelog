@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+next:
+	* New global explorer: os_release (Ľubomír Kučera)
+	* Type __docker: Update type, install docker CE (Ľubomír Kučera)
+
 4.10.2: 2018-09-06
 	* Type __letsencrypt_cert: Add support for devuan ascii (Darko Poljak)
 	* Type __systemd_unit: Fix minor issues and add masking unit files support (Adam Dej)
