@@ -4,6 +4,7 @@ Changelog
 next:
 	* New global explorer: os_release (Ľubomír Kučera)
 	* Type __docker: Update type, install docker CE (Ľubomír Kučera)
+	* Type __package_apt: Write a message when a package is installed or removed; shellcheck (Jonas Weber)
 
 4.10.2: 2018-09-06
 	* Type __letsencrypt_cert: Add support for devuan ascii (Darko Poljak)
