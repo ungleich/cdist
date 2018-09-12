@@ -30,7 +30,7 @@ fi
 # Except dpkg failing, if package is not known / installed
 packages="$(apt-cache showpkg "$name" | sed -e "1,/Reverse Provides:/d" | cut -d ' ' -f 1) $name"
 for p in $packages; do
-    if [ -n "$(dpkg -s "$p" 2>/dev/null | grep "^Status: install ok installed$")" ]; then
+    if dpkg -s "$p" 2>/dev/null | grep --quiet "^Status: install ok installed$" ; then
        version=$(dpkg -s "$p" 2>/dev/null | grep "^Version:" | cut -d ' ' -f 2)
        echo "present $p $version"
        exit 0
