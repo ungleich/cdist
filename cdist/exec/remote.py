@@ -203,46 +203,20 @@ class Remote(object):
                     os.remove(tarpath)
                     used_archiving = True
             if not used_archiving:
-                if jobs:
-                    self._transfer_dir_parallel(source, destination, jobs)
-                else:
-                    self._transfer_dir_sequential(source, destination)
+                self._transfer_dir(source, destination)
         elif jobs:
             raise cdist.Error("Source {} is not a directory".format(source))
         else:
             self._transfer_file(source, destination)
 
-    def _transfer_dir_commands(self, source, destination):
+    def _transfer_dir(self, source, destination):
+        command = self._copy.split()
         for f in glob.glob1(source, '*'):
-            command = self._copy.split()
             path = os.path.join(source, f)
-            command.extend([path, '{0}:{1}'.format(
-                _wrap_addr(self.target_host[0]), destination)])
-            yield command
-
-    def _transfer_dir_sequential(self, source, destination):
-        for command in self._transfer_dir_commands(source, destination):
-            self._run_command(command)
-
-    def _transfer_dir_parallel(self, source, destination, jobs):
-        """Transfer a directory to the remote side in parallel mode."""
-        self.log.debug("Remote transfer in {} parallel jobs".format(
-            jobs))
-        self.log.trace("Multiprocessing start method is {}".format(
-            multiprocessing.get_start_method()))
-        self.log.trace(("Starting multiprocessing Pool for parallel "
-                        "remote transfer"))
-        args = [
-            (command, )
-            for command in self._transfer_dir_commands(source, destination)
-        ]
-        if len(args) == 1:
-            self.log.debug("Only one dir entry, transfering sequentially")
-            self._run_command(args[0])
-        else:
-            mp_pool_run(self._run_command, args, jobs=jobs)
-        self.log.trace(("Multiprocessing for parallel transfer "
-                        "finished"))
+            command.extend([path])
+        command.extend(['{0}:{1}'.format(
+            _wrap_addr(self.target_host[0]), destination)])
+        self._run_command(command)
 
     def run_script(self, script, env=None, return_output=False, stdout=None,
                    stderr=None):
