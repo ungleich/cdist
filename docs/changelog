@@ -6,6 +6,7 @@ next:
 	* Type __docker: Update type, install docker CE (Ľubomír Kučera)
 	* Type __package_apt: Write a message when a package is installed or removed; shellcheck (Jonas Weber)
 	* Documentation: Add 'Dive into real world cdist' walkthrough chapter (Darko Poljak)
+	* Core: Remove duplicate remote mkdir calls in explorer transfer (myeisha)
 
 4.10.2: 2018-09-06
 	* Type __letsencrypt_cert: Add support for devuan ascii (Darko Poljak)
