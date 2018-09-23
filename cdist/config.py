@@ -165,24 +165,19 @@ class Config(object):
     def commandline(cls, args):
         """Configure remote system"""
 
-        # FIXME: Refactor relict - remove later
-        log = logging.getLogger("cdist")
+        if (args.parallel and args.parallel != 1) or args.jobs:
+            if args.timestamp:
+                cdist.log.setupTimestampingParallelLogging()
+            else:
+                cdist.log.setupParallelLogging()
+        elif args.timestamp:
+            cdist.log.setupTimestampingLogging()
+        log = logging.getLogger("config")
 
         # No new child process if only one host at a time.
         if args.parallel == 1:
             log.debug("Only 1 parallel process, doing it sequentially")
             args.parallel = 0
-
-        if args.parallel or args.jobs:
-            # If parallel execution then also log process id
-            if args.timestamp:
-                cdist.log.setupTimestampingParallelLogging()
-            else:
-                cdist.log.setupParallelLogging()
-            log = logging.getLogger("cdist")
-        elif args.timestamp:
-            cdist.log.setupTimestampingLogging()
-            log = logging.getLogger("cdist")
 
         if args.parallel:
             import signal
