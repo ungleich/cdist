@@ -175,7 +175,13 @@ class Config(object):
 
         if args.parallel or args.jobs:
             # If parallel execution then also log process id
-            cdist.log.setupParallelLogging()
+            if args.timestamp:
+                cdist.log.setupTimestampingParallelLogging()
+            else:
+                cdist.log.setupParallelLogging()
+            log = logging.getLogger("cdist")
+        elif args.timestamp:
+            cdist.log.setupTimestampingLogging()
             log = logging.getLogger("cdist")
 
         if args.parallel:

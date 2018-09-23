@@ -20,7 +20,8 @@ SYNOPSIS
                  [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                  [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
                  [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-4] [-6]
-                 [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
+                 [-A] [-a] [-f HOSTFILE] [-P] [-p [HOST_MAX]] [-S] [-s]
+                 [-t]
                  [host [host ...]] 
 
     cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
@@ -28,7 +29,8 @@ SYNOPSIS
                   [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                   [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
                   [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-4] [-6]
-                  [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
+                  [-A] [-a] [-f HOSTFILE] [-P] [-p [HOST_MAX]] [-S] [-s]
+                  [-t]
                   [host [host ...]] 
 
     cdist inventory [-h] {add-host,add-tag,del-host,del-tag,list} ...
@@ -170,6 +172,10 @@ Install command is currently in beta.
 
 **-o OUT_PATH, --out-dir OUT_PATH**
     Directory to save cdist output in.
+
+**-P, --timestamp**
+    Timestamp log messages with the current local date and time
+    in the format: YYYYMMDDHHMMSS.us.
 
 **-p [HOST_MAX], --parallel [HOST_MAX]**
     Operate on multiple hosts in parallel for specified

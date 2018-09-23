@@ -252,6 +252,11 @@ def get_parsers():
                   'default, read hosts from stdin.'),
             dest='hostfile', required=False)
     parser['config_args'].add_argument(
+           '-P', '--timestamp',
+           help=('Timestamp log messages with the current local date and time '
+                 'in the format: YYYYMMDDHHMMSS.us.'),
+           action='store_true', dest='timestamp')
+    parser['config_args'].add_argument(
            '-p', '--parallel', nargs='?', metavar='HOST_MAX',
            type=functools.partial(check_lower_bounded_int, lower_bound=1,
                                   name="positive int"),
