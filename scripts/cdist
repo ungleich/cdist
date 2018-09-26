@@ -69,8 +69,6 @@ if __name__ == "__main__":
         import re
         import os
 
-        log = logging.getLogger("cdist")
-
         if re.match("__", os.path.basename(sys.argv[0])):
             import cdist.emulator
             emulator = cdist.emulator.Emulator(sys.argv)
@@ -82,6 +80,7 @@ if __name__ == "__main__":
         exit_code = 2
 
     except cdist.Error as e:
+        log = logging.getLogger("cdist")
         log.error(e)
         exit_code = 1
 

@@ -47,7 +47,7 @@ class CdistType(object):
 
     """
 
-    log = logging.getLogger("cdist")
+    log = logging.getLogger("cdist-type")
 
     def __init__(self, base_path, name):
         self.base_path = base_path
