@@ -1296,6 +1296,118 @@ class ConfigurationTestCase(test.CdistTestCase):
             self.fail("Exception should not have been raised: {}".format(
                 e))
 
+    def test_configuration_timestamping_log_1(self):
+        config = newConfigParser()
+        config['GLOBAL'] = {
+            'timestamp': 'True',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'timestamp': True,
+                'verbosity': 0,
+            },
+        }
+
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        args = argparse.Namespace()
+        args.timestamp = True
+        configuration = cc.Configuration(args, env=None,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration_timestamping_log_2(self):
+        config = newConfigParser()
+        config['GLOBAL'] = {
+            'timestamp': 'False',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'timestamp': True,
+                'verbosity': 0,
+            },
+        }
+
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        args = argparse.Namespace()
+        args.timestamp = True
+        configuration = cc.Configuration(args, env=None,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration_timestamping_log_3(self):
+        config = newConfigParser()
+        config['GLOBAL'] = {
+            'timestamp': 'False',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'timestamp': False,
+                'verbosity': 0,
+            },
+        }
+
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        args = argparse.Namespace()
+        args.timestamp = False
+        configuration = cc.Configuration(args, env=None,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
+    def test_configuration_timestamping_log_4(self):
+        config = newConfigParser()
+        config['GLOBAL'] = {
+            'timestamp': 'True',
+        }
+
+        global_config_file = os.path.join(fixtures, 'cdist-global.cfg')
+        with open(global_config_file, 'w') as f:
+            config.write(f)
+
+        expected_config_dict = {
+            'GLOBAL': {
+                'timestamp': False,
+                'verbosity': 0,
+            },
+        }
+
+        config_files = (global_config_file, )
+
+        # bypass singleton so we can test further
+        cc.Configuration.instance = None
+
+        args = argparse.Namespace()
+        args.timestamp = False
+        configuration = cc.Configuration(args, env=None,
+                                         config_files=config_files)
+        self.assertEqual(configuration.config, expected_config_dict)
+
 
 if __name__ == "__main__":
     import unittest

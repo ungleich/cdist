@@ -261,6 +261,7 @@ _ARG_OPTION_MAPPING = {
     'verbose': 'verbosity',
     'use_archiving': 'archiving',
     'save_output_streams': 'save_output_streams',
+    'timestamp': 'timestamp',
 }
 
 
@@ -304,6 +305,7 @@ class Configuration(metaclass=Singleton):
             'archiving': ArchivingOption(),
             'save_output_streams': BooleanOption('save_output_streams',
                                                  default_overrides=False),
+            'timestamp': BooleanOption('timestamp'),
         },
     }
 
