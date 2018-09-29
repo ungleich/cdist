@@ -3,3 +3,4 @@
 .gitkeep export-ignore
 docs/speeches export-ignore
 docs/video export-ignore
+docs/src/man7 export-ignore
