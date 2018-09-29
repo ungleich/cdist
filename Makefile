@@ -54,6 +54,7 @@ MANTYPES=$(subst /man.rst,.rst,$(MANTYPEPREFIX))
 
 # Link manpage: do not create man.html but correct named file
 $(MAN7DSTDIR)/cdist-type%.rst: $(TYPEDIR)/%/man.rst
+	mkdir -p $(MAN7DSTDIR)
 	ln -sf "../../../$^" $@
 
 # Manpages #2: reference
