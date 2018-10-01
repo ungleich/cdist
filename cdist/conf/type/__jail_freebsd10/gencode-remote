@@ -36,7 +36,7 @@ state="$(cat "$__object/parameter/state")"
 
 started="true"
 # If the user wants the jail gone, it implies it shouldn't be started.
-[ -f "$__object/parameter/stopped" -o "$state" = "absent" ] && started="false"
+{ [ -f "$__object/parameter/stopped" ] || [ "$state" = "absent" ]; } && started="false"
 
 if [ -f "$__object/parameter/ip" ]; then
    ip="$(cat "$__object/parameter/ip")"
@@ -66,7 +66,7 @@ devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
 
 # devfs_ruleset being defined without devfs_enable being true
 #     is pointless. Treat this as an error.
-if [ -n "$devfsruleset" -a "$devfsenable" = "false" ]; then
+if [ -n "$devfsruleset" ] && [ "$devfsenable" = "false" ]; then
    exec >&2
    echo "Can't have --devfs-ruleset defined with --devfs-disable"
    exit 1

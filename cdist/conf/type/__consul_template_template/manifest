@@ -26,11 +26,11 @@ template_dir="/etc/consul-template/template"
 require=""
 
 # Sanity checks
-if [ -f "$__object/parameter/source" -a -f "$__object/parameter/source-file" ]; then
+if [ -f "$__object/parameter/source" ] && [ -f "$__object/parameter/source-file" ]; then
    echo "Use either --source OR --source-file, but not both." >&2
    exit 1
 fi
-if [ ! -f "$__object/parameter/source" -a ! -f "$__object/parameter/source-file" ]; then
+if [ ! -f "$__object/parameter/source" ] && [ ! -f "$__object/parameter/source-file" ]; then
    echo "Either --source OR --source-file must be given." >&2
    exit 1
 fi

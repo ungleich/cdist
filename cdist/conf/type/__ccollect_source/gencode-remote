@@ -71,7 +71,7 @@ case "$state_should" in
             fi
             
             value_is="$(get_current_value "$attribute" "$value_should")"
-            if [ -f "$__object/files/set-attributes" -o "$value_should" != "$value_is" ]; then
+            if [ -f "$__object/files/set-attributes" ] || [ "$value_should" != "$value_is" ]; then
                 "set_$attribute" "$value_should"
             fi
         fi
