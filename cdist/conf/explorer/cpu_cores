@@ -25,7 +25,7 @@
 os=$("$__explorer/os")
 case "$os" in
     "macosx")
-        echo "$(sysctl -n hw.physicalcpu)"
+        sysctl -n hw.physicalcpu
     ;;
 
     *)
