@@ -25,7 +25,7 @@
 os=$("$__explorer/os")
 case "$os" in
     "macosx")
-        echo "$(system_profiler SPHardwareDataType | grep "Number of Processors" | awk -F': ' '{print $2}')"
+        system_profiler SPHardwareDataType | grep "Number of Processors" | awk -F': ' '{print $2}'
     ;;
 
     *)
