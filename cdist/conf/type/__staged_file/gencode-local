@@ -74,7 +74,7 @@ fetch_and_prepare_file() {
 cat << DONE
 verify_cksum() {
    cksum_is="\$(cksum "$stage_file" | cut -d' ' -f1,2)"
-   cksum_should="$(cat "$__object/parameter/cksum" | cut -d' ' -f1,2)"
+   cksum_should="$(cut -d' ' -f1,2 "$__object/parameter/cksum")"
    if [ "\$cksum_is" = "\$cksum_should" ]; then
       return 0
    else

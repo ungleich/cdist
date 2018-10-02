@@ -2,7 +2,7 @@
 
 version=$(cat "$__object/parameter/version")
 
-kernel_name=$(cat "$__global/explorer/kernel_name" | tr '[:upper:]' '[:lower:]')
+kernel_name=$(tr '[:upper:]' '[:lower:]' < "$__global/explorer/kernel_name")
 machine=$(cat "$__global/explorer/machine")
 case $machine in
 	x86_64|amd64)
