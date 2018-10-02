@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/before" -a -f "$__object/parameter/after" ]; then
+if [ -f "$__object/parameter/before" ] && [ -f "$__object/parameter/after" ]; then
    echo "Use either --before OR --after but not both." >&2
    exit 1
 fi

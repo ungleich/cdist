@@ -28,7 +28,7 @@ if [ -f "$__object/parameter/maxage" ]; then
 fi
 
 if [ -n "$maxage" ]; then
-    if [ "$type" != "apt" -a "$type" != "pacman" ]; then
+    if [ "$type" != "apt" ] && [ "$type" != "pacman" ]; then
         echo "ERROR: \"--maxage\" only supported for \"apt\" or \"pacman\" pkg-manager." >&2
         exit 1
     elif [ $currage -lt $maxage ]; then

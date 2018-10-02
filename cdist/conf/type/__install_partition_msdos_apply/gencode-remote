@@ -127,7 +127,7 @@ for object in $objects; do
    if [ "${minor}" -lt "5" ]; then
       # Primary partitions
       available_device_size=$available_size
-      if [ "$type" = "extended" -o "$type" = "5" ]; then
+      if [ "$type" = "extended" ] || [ "$type" = "5" ]; then
          # Extended partition
          available_extended_size=$partition_size
       fi

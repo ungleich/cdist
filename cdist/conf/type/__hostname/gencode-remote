@@ -36,12 +36,12 @@ has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
 #
 case "$os" in
     archlinux|debian|suse|ubuntu|devuan|coreos)
-        if [ "$name_config" = "$name_should" -a "$name_running" = "$name_should" ]; then
+        if [ "$name_config" = "$name_should" ] && [ "$name_running" = "$name_should" ]; then
             exit 0
         fi
     ;;
     scientific|centos|freebsd|openbsd)
-        if [ "$name_sysconfig" = "$name_should" -a "$name_running" = "$name_should" ]; then
+        if [ "$name_sysconfig" = "$name_should" ] && [ "$name_running" = "$name_should" ]; then
             exit 0
         fi
     ;;
