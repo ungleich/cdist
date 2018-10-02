@@ -31,7 +31,7 @@ case "$os" in
     *)
     if [ -r /proc/cpuinfo ]; then
         sockets="$(grep "physical id" /proc/cpuinfo | sort -u | wc -l)"
-        if [ ${sockets} -eq 0 ]; then
+        if [ "${sockets}" -eq 0 ]; then
             sockets="$(grep -c "processor" /proc/cpuinfo)"
         fi
         echo "${sockets}"

@@ -42,18 +42,18 @@ get_current_value() {
 }
 
 set_group() {
-    echo chgrp \"$1\" \"$destination\"
-    echo chgrp $1 >> "$__messages_out"
+    echo chgrp \""$1"\" \""$destination"\"
+    echo chgrp "$1" >> "$__messages_out"
 }
 
 set_owner() {
-    echo chown \"$1\" \"$destination\"
-    echo chown $1 >> "$__messages_out"
+    echo chown \""$1"\" \""$destination"\"
+    echo chown "$1" >> "$__messages_out"
 }
 
 set_mode() {
-   echo chmod \"$1\" \"$destination\"
-   echo chmod $1 >> "$__messages_out"
+   echo chmod \""$1"\" \""$destination"\"
+   echo chmod "$1" >> "$__messages_out"
 }
 
 set_attributes=
@@ -67,7 +67,7 @@ case "$state_should" in
 
             # change 0xxx format to xxx format => same as stat returns
             if [ "$attribute" = mode ]; then
-                value_should="$(echo $value_should | sed 's/^0\(...\)/\1/')"
+                value_should="$(echo "$value_should" | sed 's/^0\(...\)/\1/')"
             fi
             
             value_is="$(get_current_value "$attribute" "$value_should")"
@@ -81,7 +81,7 @@ case "$state_should" in
 
     absent)
         if [ "$type" = "file" ]; then
-            echo rm -f \"$destination\"
+            echo rm -f \""$destination"\"
             echo remove >> "$__messages_out"
         fi
     ;;

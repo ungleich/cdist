@@ -25,7 +25,7 @@ chain="$(cat "$__object/parameter/chain")"
 priority="$(cat "$__object/parameter/priority")"
 rule="$(cat "$__object/parameter/rule")"
 
-if firewall-cmd --permanent --direct --query-rule "$protocol" "$table" "$chain" "$priority" $rule >/dev/null; then
+if firewall-cmd --permanent --direct --query-rule "$protocol" "$table" "$chain" "$priority" "$rule" >/dev/null; then
     echo present
 else
     echo absent

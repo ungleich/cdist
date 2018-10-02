@@ -33,7 +33,7 @@ assert ()                 #  If condition false,
 
 	lineno=$2
 
-	if [ ! $1 ] 
+	if [ ! "$1" ]
 	then
 		echo "Assertion failed:  \"$1\""
 		echo "File \"$0\", line $lineno, called by $(caller 0)"

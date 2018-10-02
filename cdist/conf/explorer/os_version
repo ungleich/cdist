@@ -22,7 +22,7 @@
 #
 #
 
-case "$($__explorer/os)" in
+case "$("$__explorer/os")" in
    amazon)
       cat /etc/system-release
    ;;

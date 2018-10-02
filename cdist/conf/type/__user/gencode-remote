@@ -97,7 +97,7 @@ if [ "$state" = "present" ]; then
           fi
 
           if [ "$new_value" != "$current_value" ]; then
-              set -- "$@" "$(shorten_property $property)" \'$new_value\'
+              set -- "$@" "$(shorten_property "$property")" \'"$new_value"\'
           fi
        done
 
@@ -118,9 +118,9 @@ if [ "$state" = "present" ]; then
             [ "$property" = "remove-home" ] && continue
             new_value="$(cat "$property")"
             if [ -z "$new_value" ];then       # Boolean values have no value
-              set -- "$@" "$(shorten_property $property)"
+              set -- "$@" "$(shorten_property "$property")"
             else
-              set -- "$@" "$(shorten_property $property)" \'$new_value\'
+              set -- "$@" "$(shorten_property "$property")" \'"$new_value"\'
             fi
         done
 

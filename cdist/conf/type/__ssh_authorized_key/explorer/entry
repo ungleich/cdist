@@ -24,7 +24,7 @@ type_and_key="$(tr ' ' '\n' < "$__object/parameter/key"| awk '/^(ssh|ecdsa)-[^ ]
 # in greping everything in file and all entries from file are removed.
 if [ -n "${type_and_key}" ]
 then
-    file="$(cat $__object/parameter/file)"
+    file="$(cat "$__object/parameter/file")"
 
     # get any entries that match the type and key
     grep ".*$type_and_key\([ \n]\|$\)" "$file" || true

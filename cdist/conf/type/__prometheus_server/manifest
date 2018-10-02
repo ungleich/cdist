@@ -13,7 +13,7 @@ storage_path="$(cat "$__object/parameter/storage-path")"
 rule_files="$(cat "$__object/parameter/rule-files")"
 
 # explorer in kB => convert; by default we go with 1/2 RAM
-[ "$target_heap_size" = "auto" ] && target_heap_size=$(($(cat $__global/explorer/memory)*1024/2))
+[ "$target_heap_size" = "auto" ] && target_heap_size=$(($(cat "$__global/explorer/memory")*1024/2))
 
 ##### INSTALL THE PACKAGE ###################################################
 
@@ -55,12 +55,12 @@ __key_value prometheus_args --file /etc/default/prometheus \
 
 require="$require __directory/$storage_path $require_pkg" \
 __config_file $CONF \
-	--source $config \
+	--source "$config" \
 	--group prometheus --mode 640 \
 	--onchange "promtool check config $CONF && service prometheus reload"
 
 for file in $rule_files; do
-	dest=$CONF_DIR/$(basename $file)
+	dest=$CONF_DIR/$(basename "$file")
 	require="$require $require_pkg" \
 	__config_file "$dest" \
 		--source "$file" \

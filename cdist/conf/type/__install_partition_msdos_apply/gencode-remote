@@ -34,9 +34,9 @@ size_to_mb() {
    size=$1
    available_size="$2"
 
-   number_suffix="$(echo ${size} | sed -e 's:\.[0-9]\+::' -e 's:\([0-9]\+\)\([KkMmGg%]\)[Bb]\?:\1|\2:')"
-   number="$(echo ${number_suffix} | cut -d '|' -f1)"
-   suffix="$(echo ${number_suffix} | cut -d '|' -f2)"
+   number_suffix="$(echo "${size}" | sed -e 's:\.[0-9]\+::' -e 's:\([0-9]\+\)\([KkMmGg%]\)[Bb]\?:\1|\2:')"
+   number="$(echo "${number_suffix}" | cut -d '|' -f1)"
+   suffix="$(echo "${number_suffix}" | cut -d '|' -f2)"
 
    case "$suffix" in
       K|k)
@@ -62,10 +62,10 @@ get_objects() {
    for object in $(find "$__global/object/__install_partition_msdos" -type d -name "$__cdist_object_marker"); do
       object_device="$(cat "$object/parameter/device")"
       object_minor="$(cat "$object/parameter/minor")"
-      echo "$object_device $object_minor $object" >> $objects_file
+      echo "$object_device $object_minor $object" >> "$objects_file"
    done
-   sort -k 1,2 $objects_file | cut -d' ' -f 3
-   rm $objects_file
+   sort -k 1,2 "$objects_file" | cut -d' ' -f 3
+   rm "$objects_file"
    unset objects_file
    unset object
    unset object_device
@@ -87,7 +87,7 @@ for object in $objects; do
    if [ "$current_device" != "$device" ]; then
       echo "create_disklabel \"$device\" || die 'Failed to create disklabel for $device'"
       current_device="$device"
-      device_name=$(echo ${device} | sed -e 's:^/dev/::;s:/:\\/:g')
+      device_name=$(echo "${device}" | sed -e 's:^/dev/::;s:/:\\/:g')
       available_device_size=$(( $(awk "/${device_name}\$/ { print \$3; }" "$partitions") / 1024))
       # make sure we don't go past the end of the drive
       available_device_size=$((available_device_size - 2))

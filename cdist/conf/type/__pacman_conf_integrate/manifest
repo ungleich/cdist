@@ -18,16 +18,16 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-state=$(cat $__object/parameter/state 2>/dev/null)
+state=$(cat "$__object/parameter/state" 2>/dev/null)
 
 path="/etc/"
 
 if [ "${state}" = "present" ]; then
     __file /etc/pacman.conf\
-        --owner root --group root --mode 644 --source $__type/files/pacman.conf.cdist
+        --owner root --group root --mode 644 --source "$__type/files/pacman.conf.cdist"
 
     __file /etc/pacman.d/options\
-        --owner root --group root --mode 644 --source $__type/files/options
+        --owner root --group root --mode 644 --source "$__type/files/options"
 
     __file /etc/pacman.d/repo_empty_placeholder\
         --owner root --group root --mode 644
@@ -38,10 +38,10 @@ if [ "${state}" = "present" ]; then
 elif [ "${state}" = "absent" ]; then
 
     __file /etc/pacman.conf\
-        --owner root --group root --mode 644 --source $__type/files/pacman.conf.pacman
+        --owner root --group root --mode 644 --source "$__type/files/pacman.conf.pacman"
 
     __file /etc/pacman.d/mirrorlist\
-        --owner root --group root --mode 644 --source $__type/files/mirrorlist
+        --owner root --group root --mode 644 --source "$__type/files/mirrorlist"
 
     __file /etc/pacman.d/options\
         --state absent
