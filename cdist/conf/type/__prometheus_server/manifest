@@ -45,7 +45,7 @@ require="$require $require_pkg" __directory "$storage_path" --owner prometheus -
 
 ##### CONFIGURE #############################################################
 
-FLAGS="--storage.tsdb.path $storage_path --storage.tsdb.retention $(($retention_days*24))h --web.listen-address [::]:9090"
+FLAGS="--storage.tsdb.path $storage_path --storage.tsdb.retention $((retention_days*24))h --web.listen-address [::]:9090"
 
 # TODO it would be neat to restart prometheus on change -- __key_value really should have an --onchange parameter
 require="$require $require_pkg" \

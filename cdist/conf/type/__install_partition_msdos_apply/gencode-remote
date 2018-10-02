@@ -40,16 +40,16 @@ size_to_mb() {
 
    case "$suffix" in
       K|k)
-         size="$(( $number / 1024 ))"
+         size="$(( number / 1024 ))"
          ;;
       M|m)
          size="$number"
          ;;
       G|g)
-         size="$(( $number * 1024 ))"
+         size="$(( number * 1024 ))"
          ;;
       %)
-         size="$(( $available_size * $number / 100 ))"
+         size="$(( available_size * number / 100 ))"
          ;;
       *)
          size="-1"
@@ -108,7 +108,7 @@ for object in $objects; do
 
    if [ "${minor}" -lt "5" ]; then
       # Primary partitions
-      primary_count=$(( $primary_count + 1 ))
+      primary_count=$(( primary_count + 1 ))
       available_size=$available_device_size
    else
       # Logical partitions
@@ -121,7 +121,7 @@ for object in $objects; do
       available_size=0
    else
       partition_size=$(size_to_mb "$size" "$available_size")
-      available_size="$(( $available_size - $partition_size ))"
+      available_size="$(( available_size - partition_size ))"
    fi
 
    if [ "${minor}" -lt "5" ]; then
