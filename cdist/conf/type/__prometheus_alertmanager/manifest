@@ -48,7 +48,7 @@ __key_value alertmanager_fix_init_script --file /etc/init.d/prometheus-alertmana
 
 ##### CONFIGURE #############################################################
 
-FLAGS="--storage.path $storage_path --data.retention $(($retention_days*24))h --web.listen-address [::]:9093"
+FLAGS="--storage.path $storage_path --data.retention $((retention_days*24))h --web.listen-address [::]:9093"
 
 require="$require $require_pkg" \
 __key_value alertmanager_args --file /etc/default/prometheus-alertmanager \
