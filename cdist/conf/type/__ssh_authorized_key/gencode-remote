@@ -88,7 +88,7 @@ fi
 entry="$(cat "$__object/files/should")"
 state_should="$(cat "$__object/parameter/state")"
 num_existing_entries=$(grep -c -F -x "$entry" "$__object/explorer/entry" || true)
-if [ $num_existing_entries -eq 1 ]; then
+if [ "$num_existing_entries" -eq 1 ]; then
    state_is="present"
 else
    # Posix grep does not define the -m option, so we can not remove a single

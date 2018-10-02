@@ -55,5 +55,5 @@ if [ -f "$__object/parameter/exclude" ]; then
 fi
 
 if [ -f "$__object/parameter/create-destination" ]; then
-    __directory "${destination}" --parents --state ${state}
+    __directory "${destination}" --parents --state "${state}"
 fi

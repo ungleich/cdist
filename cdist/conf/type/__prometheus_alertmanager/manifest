@@ -57,7 +57,7 @@ __key_value alertmanager_args --file /etc/default/prometheus-alertmanager \
 
 require="$require __directory/$storage_path $require_pkg" \
 __config_file $CONF \
-	--source $config \
+	--source "$config" \
 	--group prometheus --mode 640 \
 	--onchange "service prometheus-alertmanager reload"  # TODO when a config-check tool is available, check config here
 
