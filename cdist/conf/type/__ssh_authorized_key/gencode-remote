@@ -59,7 +59,7 @@ mkdir "$__object/files"
 (
    if [ -f "$__object/parameter/option" ]; then
       # comma seperated list of options
-      options="$(cat "$__object/parameter/option" | tr '\n' ',')"
+      options="$(tr '\n' ',' < "$__object/parameter/option")"
       printf '%s ' "${options%*,}"
    fi
    if [ -f "$__object/parameter/comment" ]; then

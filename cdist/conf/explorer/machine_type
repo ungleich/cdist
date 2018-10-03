@@ -28,7 +28,7 @@ if [ -d "/proc/vz" -a ! -d "/proc/bc" ]; then
 fi
 
 if [ -e "/proc/1/environ" ] &&
-    cat "/proc/1/environ" | tr '\000' '\n' | grep -Eiq '^container='; then
+    tr '\000' '\n' < "/proc/1/environ" | grep -Eiq '^container='; then
     echo lxc
     exit
 fi
