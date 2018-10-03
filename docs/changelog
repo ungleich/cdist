@@ -7,6 +7,7 @@ next:
 	* Explorers, manifests, gencodes: Fix SC2166: and/or operators in test (shellcheck) (Jonas Weber)
 	* Explorers and types: Fix SC2004: $/${} is unnecessary on arithmetic variables (shellcheck) (Darko Poljak)
 	* Explorers and types: Fix SC2005: Useless echo? Instead of echo $(cmd), just use cmd (shellcheck) (Darko Poljak)
+	* Explorers and types: Fix SC2002: Useless cat. Consider 'cmd < file | ..' or 'cmd file | ..' instead (shellcheck) (Darko Poljak)
 
 4.10.3: 2018-09-23
 	* New global explorer: os_release (Ľubomír Kučera)
