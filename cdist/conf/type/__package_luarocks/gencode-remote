@@ -42,10 +42,10 @@ fi
 
 case "$state_should" in
     present)
-        echo luarocks install \""$name"\"
+        echo "luarocks install '$name'"
     ;;
     absent)
-        echo luarocks remove \""$name"\"
+        echo "luarocks remove '$name'"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

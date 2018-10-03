@@ -85,7 +85,7 @@ primary_count=0
 for object in $objects; do
    device="$(cat "$object/parameter/device")"
    if [ "$current_device" != "$device" ]; then
-      echo "create_disklabel \"$device\" || die 'Failed to create disklabel for $device'"
+      echo "create_disklabel '$device' || die 'Failed to create disklabel for $device'"
       current_device="$device"
       device_name=$(echo "${device}" | sed -e 's:^/dev/::;s:/:\\/:g')
       available_device_size=$(( $(awk "/${device_name}\$/ { print \$3; }" "$partitions") / 1024))

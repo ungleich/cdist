@@ -29,9 +29,9 @@ fi
 
 case "$state_should" in
    present)
-      echo "add-apt-repository \"$name\""
+      echo "add-apt-repository '$name'"
    ;;
    absent)
-      echo "remove-apt-repository \"$name\""
+      echo "remove-apt-repository '$name'"
    ;;
 esac

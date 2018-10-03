@@ -61,15 +61,15 @@ case "$state_should" in
     present)
         if [ -z "$version_should" ]; then
             [ "$state_is" = "present" ] && exit 0 # if state is present, we dont need to do anything
-            echo "zypper $globalopts install --type \"$ptype\" --auto-agree-with-licenses \"$name\" >/dev/null"
+            echo "zypper $globalopts install --type '$ptype' --auto-agree-with-licenses '$name' >/dev/null"
         else
             [ "$state_is" = "present" ] && [ "$version_should" = "$version_is" ] && exit 0 # if state is present and version is correct, we dont need to do anything
-            echo "zypper $globalopts install --oldpackage --type \"$ptype\" --auto-agree-with-licenses \"$name\" = \"$version_should\" >/dev/null"
+            echo "zypper $globalopts install --oldpackage --type '$ptype' --auto-agree-with-licenses '$name' = '$version_should' >/dev/null"
         fi
     ;;
     absent)
         [ "$state_is" = "absent" ] && exit 0 # if state is absent, we dont need to do anything
-        echo "zypper $globalopts remove --type \"$ptype\" \"$name\" >/dev/null"
+        echo "zypper $globalopts remove --type '$ptype' '$name' >/dev/null"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

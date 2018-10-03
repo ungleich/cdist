@@ -60,10 +60,10 @@ fi
 
 case "$state_should" in
     present)
-        echo "yum $opts install \"$install_name\""
+        echo "yum $opts install '$install_name'"
     ;;
     absent)
-        echo "yum $opts remove \"$name\""
+        echo "yum $opts remove '$name'"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

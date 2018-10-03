@@ -53,7 +53,7 @@ case "$state_should" in
     present)
         if [ "$runas" ]
         then
-            echo "su -c \"$pip install -q $name\" $runas"
+            echo "su -c '$pip install -q $name' $runas"
         else
             echo $pip install -q "$name"
         fi
@@ -61,7 +61,7 @@ case "$state_should" in
     absent)
         if [ "$runas" ]
         then
-            echo "su -c \"$pip uninstall -q -y $name\" $runas"
+            echo "su -c '$pip uninstall -q -y $name' $runas"
         else
             echo $pip uninstall -q -y "$name"
         fi
