@@ -19,5 +19,7 @@
 #
 
 # set defaults
-options="$(cat "$__object/parameter/options" 2>/dev/null \
-   || echo "" | tee "$__object/parameter/options")"
+# TODO is this neccesary or should this be handled using the usual parameter/default workflow?
+if [ ! -f "$__object/parameter/options" ]; then
+	touch "$__object/parameter/options"
+fi

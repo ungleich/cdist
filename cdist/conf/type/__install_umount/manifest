@@ -19,5 +19,7 @@
 #
 
 # set defaults
-target="$(cat "$__object/parameter/target" 2>/dev/null \
-   || echo "/target" | tee "$__object/parameter/target")"
+# TODO is this neccesary or should this be handled using the usual parameter/default workflow?
+if [ ! -f "$__object/parameter/target" ]; then
+	echo "/target" > "$__object/parameter/target"
+fi

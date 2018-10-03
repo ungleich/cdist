@@ -28,7 +28,6 @@ $__remote_exec $__target_host blkid > "$__object/files/blkid"
 for object in $(find "$__global/object/__install_mount" -type d -name "$__cdist_object_marker"); do
    device="$(cat "$object/parameter/device")"
    dir="$(cat "$object/parameter/dir")"
-   prefix="$(cat "$object/parameter/prefix")"
    type="$(cat "$object/parameter/type")"
    if [ -f "$object/parameter/options" ]; then
       options="$(cat "$object/parameter/options")"

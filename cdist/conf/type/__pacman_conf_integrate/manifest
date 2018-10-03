@@ -20,8 +20,6 @@
 
 state=$(cat $__object/parameter/state 2>/dev/null)
 
-path="/etc/"
-
 if [ "${state}" = "present" ]; then
     __file /etc/pacman.conf\
         --owner root --group root --mode 644 --source $__type/files/pacman.conf.cdist

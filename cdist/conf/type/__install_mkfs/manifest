@@ -19,13 +19,7 @@
 #
 
 # set defaults
-if [ -f "$__object/parameter/device" ]; then
-   device="(cat "$__object/parameter/device")"
-else
+if [ ! -f "$__object/parameter/device" ]; then
    device="/$__object_id"
    echo "$device" > "$__object/parameter/device"
 fi
-
-type="(cat "$__object/parameter/type")"
-
-options="(cat "$__object/parameter/options")"

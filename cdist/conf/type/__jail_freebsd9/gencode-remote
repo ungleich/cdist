@@ -92,6 +92,7 @@ if [ $(expr "${ip}" : ".*|.*") -gt "0" ]; then
    SAVE_IFS="$IFS"
    IFS=", "
    for cur_ip in ${ip}; do
+      # TODO BUG? Why is cur_ip unused in the following line?
       # Just get the last IP address for SSH to listen on
       mgmt_ip=$(echo "${ip}" | sed -E -e 's/^.*\|(.*)\/[0-9]+$/\1/')
    done
