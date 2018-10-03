@@ -23,7 +23,7 @@ cat "$__type/files/fstab.header" > "$destination"
 
 mkdir "$__object/files"
 # get current UUID's from target_host
-$__remote_exec $__target_host blkid > "$__object/files/blkid"
+$__remote_exec "$__target_host" blkid > "$__object/files/blkid"
 
 for object in $(find "$__global/object/__install_mount" -type d -name "$__cdist_object_marker"); do
    device="$(cat "$object/parameter/device")"
@@ -54,7 +54,7 @@ for object in $(find "$__global/object/__install_mount" -type d -name "$__cdist_
       ;;
    esac
    if [ -f "$__object/parameter/uuid" ]; then
-      uuid="$(grep -w $device "$__object/files/blkid" | awk '{print $2}')"
+      uuid="$(grep -w "$device" "$__object/files/blkid" | awk '{print $2}')"
       if [ -n "$uuid" ]; then
          echo "# $dir was on $device during installation" >> "$destination"
          device="$uuid"

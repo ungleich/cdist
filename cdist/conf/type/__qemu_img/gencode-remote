@@ -18,4 +18,4 @@ format="$(cat "$__object/parameter/format")"
 size="$(cat "$__object/parameter/size")"
 diskimage="/$__object_id"
 
-echo qemu-img create -f \"$format\" \"$diskimage\" \"$size\"
+echo "qemu-img create -f \"$format\" \"$diskimage\" \"$size\""
