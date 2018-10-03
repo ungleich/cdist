@@ -52,7 +52,7 @@ cmd=""
 # Parms: $1 -- mode, "rm", "add", or "upg"
 #        $2 -- the command to be echoed
 execcmd(){
-   local _cmd=""
+   _cmd=""
 
    case "$1" in
       add)

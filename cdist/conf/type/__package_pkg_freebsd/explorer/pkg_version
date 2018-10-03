@@ -30,7 +30,7 @@ fi
 # Don't produce "no pkgs installed" output -- breaks things
 PKG_OUTPUT=$(pkg_info 2>&1)
 if [ ! "$PKG_OUTPUT" = "pkg_info: no packages installed" ]; then
-	echo -n "$(echo "$PKG_OUTPUT" \
+	printf "%s" "$(echo "$PKG_OUTPUT" \
 		| awk '{print $1}' \
 		| sed 's/^\(.*\)-\([^-]*\)$/name:\1 ver:\2/g' \
 		| grep "name:$name ver:" \
