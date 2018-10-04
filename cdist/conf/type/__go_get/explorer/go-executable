@@ -1,3 +1,4 @@
+#!/bin/sh -e
 [ -f /etc/environment ] && . /etc/environment
 [ -f /etc/profile     ] && . /etc/profile
 go version 2>/dev/null || true

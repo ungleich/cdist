@@ -1,1 +1,2 @@
+#!/bin/sh -e
 command -v svc || true
