@@ -60,7 +60,7 @@ if [ "$state" = "present" ]; then
 
           case "$property" in
              gid)
-                if $(echo "$new_value" | grep -q '^[0-9][0-9]*$'); then
+                if echo "$new_value" | grep -q '^[0-9][0-9]*$'; then
                    field=4
                 else
                    # We were passed a group name.  Compare the gid in
