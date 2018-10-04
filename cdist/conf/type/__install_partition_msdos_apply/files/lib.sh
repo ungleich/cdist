@@ -8,8 +8,8 @@ debug() {
 }
 
 fdisk_command() {
-   local device="$1"
-   local cmd="$2"
+   device="$1"
+   cmd="$2"
 
    debug fdisk_command "running fdisk command '${cmd}' on device ${device}"
    printf "${cmd}\nw\n" | fdisk -c -u "$device"
@@ -20,7 +20,7 @@ fdisk_command() {
 }
 
 create_disklabel() {
-   local device=$1
+   device=$1
 
    debug create_disklabel "creating new msdos disklabel"
    fdisk_command ${device} "o"
@@ -28,18 +28,18 @@ create_disklabel() {
 }
 
 toggle_bootable() {
-   local device="$1"
-   local minor="$2"
+   device="$1"
+   minor="$2"
    fdisk_command ${device} "a\n${minor}\n"
    return $?
 }
 
 create_partition() {
-  local device="$1"
-  local minor="$2"
-  local size="$3"
-  local type="$4"
-  local primary_count="$5"
+  device="$1"
+  minor="$2"
+  size="$3"
+  type="$4"
+  primary_count="$5"
 
   if [ "$type" = "extended" -o "$type" = "5" ]; then
     # Extended partition

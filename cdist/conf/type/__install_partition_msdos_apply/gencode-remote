@@ -31,12 +31,12 @@ debug() {
 
 # Convert a size specifier 1G 100M or 50% into the corresponding numeric MB.
 size_to_mb() {
-   local size=$1
-   local available_size="$2"
+   size=$1
+   available_size="$2"
 
-   local number_suffix="$(echo ${size} | sed -e 's:\.[0-9]\+::' -e 's:\([0-9]\+\)\([KkMmGg%]\)[Bb]\?:\1|\2:')"
-   local number="$(echo ${number_suffix} | cut -d '|' -f1)"
-   local suffix="$(echo ${number_suffix} | cut -d '|' -f2)"
+   number_suffix="$(echo ${size} | sed -e 's:\.[0-9]\+::' -e 's:\([0-9]\+\)\([KkMmGg%]\)[Bb]\?:\1|\2:')"
+   number="$(echo ${number_suffix} | cut -d '|' -f1)"
+   suffix="$(echo ${number_suffix} | cut -d '|' -f2)"
 
    case "$suffix" in
       K|k)
