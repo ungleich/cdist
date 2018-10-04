@@ -9,6 +9,7 @@ next:
 	* Explorers and types: Fix SC2005: Useless echo? Instead of echo $(cmd), just use cmd (shellcheck) (Darko Poljak)
 	* Explorers and types: Fix SC2002: Useless cat. Consider 'cmd < file | ..' or 'cmd file | ..' instead (shellcheck) (Darko Poljak)
 	* Explorers and types: Fix SC2039: In POSIX sh, something is undefined (shellcheck) (Darko Poljak)
+	* Explorers and types: Fix SC2045: Iterating over ls output is fragile. Use globs. (shellcheck) (Thomas Eckert)
 
 4.10.3: 2018-09-23
 	* New global explorer: os_release (Ľubomír Kučera)
