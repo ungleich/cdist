@@ -32,4 +32,5 @@ else
    name="$__object_id"
 fi
 
+# shellcheck disable=SC2016
 equery -q l -F '$cp $fullversion' "$name" || true
