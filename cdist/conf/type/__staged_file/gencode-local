@@ -56,6 +56,7 @@ get_file() {
 }
 
 fetch_file() {
+   # shellcheck disable=SC2059
    printf "$fetch_command" "$source"
    printf ' > "%s"\n' "$stage_file"
 }
@@ -63,8 +64,10 @@ fetch_file() {
 fetch_and_prepare_file() {
    printf 'tmpdir="$(mktemp -d --tmpdir="/tmp" "%s")"\n' "${__type##*/}.XXXXXXXXXX"
    printf 'cd "$tmpdir"\n'
+   # shellcheck disable=SC2059
    printf "$fetch_command > \"%s\"\n" "$source" "$source_file_name"
    prepare_command="$(cat "$__object/parameter/prepare-command")"
+   # shellcheck disable=SC2059
    printf "$prepare_command > \"%s\"\n" "$source_file_name" "$stage_file"
    printf 'cd - >/dev/null\n'
    printf 'rm -rf "$tmpdir"\n'
