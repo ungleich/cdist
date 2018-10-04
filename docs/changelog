@@ -11,6 +11,9 @@ next:
 	* Explorers and types: Fix SC2039: In POSIX sh, something is undefined (shellcheck) (Darko Poljak)
 	* Explorers and types: Fix SC2045: Iterating over ls output is fragile. Use globs. (shellcheck) (Thomas Eckert)
 	* Explorers and types: Fix SC2148: Tips depend on target shell and yours is unknown. Add a shebang. (shellcheck) (Thomas Eckert)
+	* Explorers and types: Fix SC2069: To redirect stdout+stderr, 2>&1 must be last (or use '{ cmd > file; } 2>&1' to clarify). (shellcheck) (Jonas Weber)
+	* Explorers and types: Fix SC2034: foo appears unused. Verify it or export it. (shellcheck) (Jonas Weber)
+	* Explorers and types: Fix SC2215, SC2059, SC2155, SC2091. (shellcheck) (Jonas Weber)
 
 4.10.3: 2018-09-23
 	* New global explorer: os_release (Ľubomír Kučera)
