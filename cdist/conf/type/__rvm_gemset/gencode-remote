@@ -33,7 +33,7 @@ case "$state_should" in
         cat << DONE
 su - "$user" -c "source ~/.rvm/scripts/rvm; rvm $gemset --create"
 DONE
-        if -f "$__object/parameter/default"; then
+        if [ -f "$__object/parameter/default" ]; then
             cat << DONE
 su - "$user" -c "source ~/.rvm/scripts/rvm; rvm use --default $gemset"
 DONE
