@@ -35,7 +35,8 @@ fi
 echo "{"
 printf '   "watches": [{\n'
 printf '      "type": "%s"\n' "$watch_type"
-for param in $(ls "$__object/parameter/"); do
+cd "$__object/parameter/"
+for param in *; do
    case "$param" in
       state) continue ;;
       filter-*)

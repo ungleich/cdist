@@ -84,7 +84,8 @@ echo "{"
 # parameters we define ourself
 printf '   "data_dir": "%s"\n' "$data_dir"
 
-for param in $(ls "$__object/parameter/"); do
+cd "$__object/parameter/"
+for param in *; do
    case "$param" in
       state|user|group|json-config) continue ;;
       ca-file-source|cert-file-source|key-file-source)

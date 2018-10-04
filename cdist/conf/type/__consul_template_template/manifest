@@ -38,7 +38,8 @@ fi
 # Generate hcl config file
 (
 printf 'template {\n'
-for param in $(ls "$__object/parameter/"); do
+cd "$__object/parameter/"
+for param in *; do
    case "$param" in
       source-file)
          source="$(cat "$__object/parameter/$param")"

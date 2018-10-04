@@ -39,7 +39,7 @@ __directory ${jaildir} --parents
 
 set -- "$@" "$__object_id" "--state" "$state"
 cd "$__object/parameter"
-for property in $(ls .); do
+for property in *; do
 	set -- "$@" "--$property" "$(cat "$property")"
 done
 
