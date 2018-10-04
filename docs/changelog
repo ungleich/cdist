@@ -4,7 +4,7 @@ Changelog
 next:
 	* Core: Transfer all files of a directory at once instead of calling copy once per file (myeisha)
 	* Core: Add timestamp (optional) to log messages (Darko Poljak)
-	* Explorers, manifests, gencodes: Fix SC2166: and/or operators in test (shellcheck) (Jonas Weber)
+	* Explorers, manifests, gencodes: Fix SC2166: and/or operators in test (shellcheck) (Jonas Weber, Thomas Eckert)
 	* Explorers and types: Fix SC2004: $/${} is unnecessary on arithmetic variables (shellcheck) (Darko Poljak)
 	* Explorers and types: Fix SC2005: Useless echo? Instead of echo $(cmd), just use cmd (shellcheck) (Darko Poljak)
 	* Explorers and types: Fix SC2002: Useless cat. Consider 'cmd < file | ..' or 'cmd file | ..' instead (shellcheck) (Darko Poljak)
