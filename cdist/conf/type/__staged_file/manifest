@@ -19,11 +19,7 @@
 #
 
 destination="$__object_id"
-source="$(cat "$__object/parameter/source")"
-cksum="$(cat "$__object/parameter/cksum")"
 stage_dir="$(cat "$__object/parameter/stage-dir")"
-state="$(cat "$__object/parameter/state")"
-fetch_command="$(cat "$__object/parameter/fetch-command")"
 stage_file="${stage_dir}/${destination}"
 
 set -- "/${destination}"

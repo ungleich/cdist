@@ -18,8 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="$__object_id"
-
 __package software-properties-common
 
 require="__package/software-properties-common" \

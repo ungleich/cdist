@@ -88,7 +88,7 @@ if [ $(expr "${ip}" : ".*, .*") -gt "0" ]; then
    IFS=", "
    for cur_ip in ${ip}; do
       # Just get the last IP address for SSH to listen on
-      mgmt_ip=$(echo "${ip}" | cut '-d ' -f1)   # In case using "ip netmask" format rather than CIDR
+      mgmt_ip=$(echo "${cur_ip}" | cut '-d ' -f1)   # In case using "ip netmask" format rather than CIDR
    done
    IFS="$SAVE_IFS"
 else

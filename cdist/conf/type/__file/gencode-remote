@@ -57,7 +57,6 @@ set_mode() {
    echo chmod $1 >> "$__messages_out"
 }
 
-set_attributes=
 case "$state_should" in
     present|exists|pre-exists)
     # Note: Mode - needs to happen last as a chown/chgrp can alter mode by

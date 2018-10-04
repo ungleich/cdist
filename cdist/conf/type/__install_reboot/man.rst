@@ -18,8 +18,7 @@ None
 
 OPTIONAL PARAMETERS
 -------------------
-options
-   options to pass to the reboot command. e.g. -f
+None
 
 
 EXAMPLES

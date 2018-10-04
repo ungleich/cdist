@@ -93,7 +93,7 @@ if [ $(expr "${ip}" : ".*|.*") -gt "0" ]; then
    IFS=", "
    for cur_ip in ${ip}; do
       # Just get the last IP address for SSH to listen on
-      mgmt_ip=$(echo "${ip}" | sed -E -e 's/^.*\|(.*)\/[0-9]+$/\1/')
+      mgmt_ip=$(echo "${cur_ip}" | sed -E -e 's/^.*\|(.*)\/[0-9]+$/\1/')
    done
    IFS="$SAVE_IFS"
 else

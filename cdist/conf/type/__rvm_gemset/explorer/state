@@ -18,9 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-gemset="$__object_id"
-ruby="$(echo "$gemset" | cut -d '@' -f 1)"
-gemsetname="$(echo "$gemset" | cut -d '@' -f2)"
 user="$(cat "$__object/parameter/user")"
 
 if [ ! -e "~$user/.rvm/scripts/rvm" ] ; then

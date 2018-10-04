@@ -40,11 +40,9 @@ shorten_property() {
 if [ "$state" = "present" ]; then
    case "$os" in
       freebsd)
-         supported_add_properties="gid"
          supported_change_properties="gid"
       ;;
       *)
-         supported_add_properties="gid password system"
          supported_change_properties="gid password"
       ;;
    esac

@@ -21,7 +21,6 @@
 ruby="$__object_id"
 state_is="$(cat "$__object/explorer/state")"
 user="$(cat "$__object/parameter/user")"
-default="$(cat "$__object/parameter/default" 2>/dev/null || true)"
 state_should="$(cat "$__object/parameter/state")"
 
 [ "$state_is" = "$state_should" ] && exit 0

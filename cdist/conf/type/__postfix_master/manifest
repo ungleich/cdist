@@ -36,7 +36,6 @@ __postfix
 
 # Default to object_id
 service="$(cat "$__object/parameter/service" 2>/dev/null || echo "$__object_id")"
-state="$(cat "$__object/parameter/state")"
 
 # NOTE: keep variables in sync in manifest,explorer,gencode-*
 prefix="#cdist:$__object_name"

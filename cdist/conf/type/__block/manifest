@@ -18,8 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-file="$(cat "$__object/parameter/file" 2>/dev/null || echo "/$__object_id")"
 prefix=$(cat "$__object/parameter/prefix" 2>/dev/null || echo "#cdist:__block/$__object_id")
 suffix=$(cat "$__object/parameter/suffix" 2>/dev/null || echo "#/cdist:__block/$__object_id")
 text=$(cat "$__object/parameter/text")
