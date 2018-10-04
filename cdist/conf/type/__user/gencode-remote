@@ -52,7 +52,7 @@ shorten_property() {
 if [ "$state" = "present" ]; then
     cd "$__object/parameter"
     if grep -q "^${name}:" "$__object/explorer/passwd"; then
-       for property in $(ls .); do
+       for property in *; do
           new_value="$(cat "$property")"
           unset current_value
 
@@ -113,7 +113,7 @@ if [ "$state" = "present" ]; then
        fi
     else
         echo add >> "$__messages_out"
-        for property in $(ls .); do
+        for property in *; do
             [ "$property" = "state" ] && continue
             [ "$property" = "remove-home" ] && continue
             new_value="$(cat "$property")"

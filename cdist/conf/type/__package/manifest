@@ -55,7 +55,7 @@ state="$(cat "$__object/parameter/state")"
 
 set -- "$@" "$__object_id" "--state" "$state"
 cd "$__object/parameter"
-for property in $(ls .); do
+for property in *; do
    if [ "$property" != "type" ] && [ "$property" != "state" ]; then
       set -- "$@" "--$property" "$(cat "$property")"
    fi
