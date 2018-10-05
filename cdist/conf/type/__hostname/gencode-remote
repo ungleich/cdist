@@ -59,8 +59,7 @@ echo changed >> "$__messages_out"
 # Use the good old way to set the hostname even on machines running systemd.
 case "$os" in
     archlinux|debian|ubuntu|devuan|centos|coreos)
-        # shellcheck disable=SC2028
-        echo "printf '%s\n' '$name_should' > /etc/hostname"
+        printf "printf '%s\\n' '$name_should' > /etc/hostname\\n"
         echo "hostname -F /etc/hostname"
     ;;
     freebsd|openbsd)
@@ -68,8 +67,7 @@ case "$os" in
     ;;
     suse)
         echo "hostname '$name_should'"
-        # shellcheck disable=SC2028
-        echo "printf '%s\n' '$name_should' > /etc/HOSTNAME"
+        printf "printf '%s\\n' '$name_should' > /etc/HOSTNAME\\n"
     ;;
 esac
 
