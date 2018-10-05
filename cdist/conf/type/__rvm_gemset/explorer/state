@@ -25,7 +25,9 @@ if [ ! -e "~$user/.rvm/scripts/rvm" ] ; then
    exit 0
 fi
 
+# shellcheck disable=SC2016
 if su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm list strings | grep -q "^$ruby\$"'; then
+    # shellcheck disable=SC2016
     if su - "$user" -c 'source ~/.rvm/scripts/rvm; rvm use "$ruby" > /dev/null; rvm gemset list strings | cut -f 1 -d " " | grep -q "^$gemsetname\$"'; then
       echo "present"
       exit 0
