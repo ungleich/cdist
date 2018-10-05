@@ -52,6 +52,7 @@ for param in *; do
                --owner root --group root --mode 640 \
                --source "$source" \
                --state "$state"
+         # shellcheck disable=SC2030
          export require="__file${destination}"
          printf '   source = "%s"\n' "$destination"
 
