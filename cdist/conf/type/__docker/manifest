@@ -31,8 +31,8 @@ case "$os" in
             --enabled \
             --gpgcheck 1 \
             --gpgkey 'https://download.docker.com/linux/centos/gpg' \
-            --state ${state}
-          require="__yum_repo/docker-ce-stable" __package docker-ce --state ${state}
+            --state "${state}"
+          require="__yum_repo/docker-ce-stable" __package docker-ce --state "${state}"
         else
           echo "CentOS version 7 is required!" >&2
           exit 1
@@ -45,14 +45,14 @@ case "$os" in
         __package gnupg2
       fi
       __apt_key_uri docker --name "Docker Release (CE deb) <docker@docker.com>" \
-        --uri "https://download.docker.com/linux/${os}/gpg" --state ${state}
+        --uri "https://download.docker.com/linux/${os}/gpg" --state "${state}"
       export CDIST_ORDER_DEPENDENCY=on
       __apt_source docker \
          --uri "https://download.docker.com/linux/${os}" \
          --distribution "$(cat "$__global/explorer/lsb_codename")" \
-         --state ${state} \
+         --state "${state}" \
          --component "stable"
-      __package docker-ce --state ${state}
+      __package docker-ce --state "${state}"
       unset CDIST_ORDER_DEPENDENCY
    ;;
    *)

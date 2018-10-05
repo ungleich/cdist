@@ -28,7 +28,7 @@ install_script="$__object/files/install_script"
 # Link file descriptor #6 with stdout
 exec 6>&1
 # Link stdout with $install_script
-exec > $install_script
+exec > "$install_script"
 
 # Generate script to install bootloader on distro
 printf '#!/bin/sh -l\n'

@@ -35,7 +35,7 @@ fi
 
 jaildir="$(cat "$__object/parameter/jaildir")"
 
-__directory ${jaildir} --parents
+__directory "${jaildir}" --parents
 
 set -- "$@" "$__object_id" "--state" "$state"
 cd "$__object/parameter"

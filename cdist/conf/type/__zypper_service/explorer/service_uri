@@ -25,4 +25,4 @@ if [ -f "$__object/parameter/uri" ]; then
 else
    uri="/$__object_id"
 fi
-zypper ls -u | awk 'BEGIN { FS = "[ ]+\\|[ ]+" } ; $4 == "Yes" && $NF == "'$uri'" {print $NF}'
+zypper ls -u | awk 'BEGIN { FS = "[ ]+\\|[ ]+" } ; $4 == "Yes" && $NF == "'"$uri"'" {print $NF}'

@@ -22,9 +22,9 @@
 version="$(cat "$__object/parameter/version")"
 state="$(cat "$__object/parameter/state")"
 
-if [ ${state} = "present" ]; then
+if [ "${state}" = "present" ]; then
     # Download docker-compose file
-        echo 'curl -L "https://github.com/docker/compose/releases/download/'${version}'/docker-compose-$(uname -s)-$(uname -m)" -o /tmp/docker-compose'
+        echo 'curl -L "https://github.com/docker/compose/releases/download/'"${version}"'/docker-compose-$(uname -s)-$(uname -m)" -o /tmp/docker-compose'
         echo 'mv /tmp/docker-compose /usr/local/bin/docker-compose'
     # Change permissions
     echo 'chmod +x /usr/local/bin/docker-compose'

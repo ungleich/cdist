@@ -59,13 +59,13 @@ if [ "${file}" ]; then
 
     if [ "${state}" = "present" ]; then
 
-        require="__file/${sec_path}/plain_file_${file}" __key_value ${file}_${key}\
-            --file ${sec_path}/plain_file_${file} --key ${key} --value ${value} --delimiter ' = '
+        require="__file/${sec_path}/plain_file_${file}" __key_value "${file}_${key}" \
+            --file "${sec_path}/plain_file_${file}" --key "${key}" --value "${value}" --delimiter ' = '
 
         exit 0
 
     elif [ "${state}" = "absent" ]; then
-        require="__file/${sec_path}/plain_file_${file}" __key_value ${file}_${key}\
+        require="__file/${sec_path}/plain_file_${file}" __key_value "${file}_${key}" \
                 --state absent
         exit 0
 
@@ -87,19 +87,19 @@ eof
 
     if [ "${MATCH}" -eq 1 ]; then
         if [ "${value}" = "on" ]; then
-            require="__file/${sec_path}/${section}" __line ${key}_${value}\
-                --file ${sec_path}/${section} --line ${key}
+            require="__file/${sec_path}/${section}" __line "${key}_${value}" \
+                --file "${sec_path}/${section}" --line "${key}"
         elif [ "${value}" = "off" ]; then
-            require="__file/${sec_path}/${section}" __line ${key}_${value}\
-                --file ${sec_path}/${section} --line ${key} --state absent
+            require="__file/${sec_path}/${section}" __line "${key}_${value}" \
+                --file "${sec_path}/${section}" --line "${key}" --state absent
         fi
         
     else
         contains_element "${key}" "${allowed_option_keys}"
 
         if [ "${MATCH}" -eq 1 ]; then
-            require="__file/${sec_path}/${section}" __key_value ${section}_${key}\
-                    --file ${sec_path}/${section} --key ${key} --value ${value} --delimiter ' = '
+            require="__file/${sec_path}/${section}" __key_value "${section}_${key}" \
+                    --file "${sec_path}/${section}" --key "${key}" --value "${value}" --delimiter ' = '
         else
             echo "Key: ${key} is not valid. Have a look at man pacman.conf" >&2
         fi
@@ -118,12 +118,12 @@ eof
             exit
         fi
     
-        require="__file/${sec_path}/repo_${section}" __key_value ${section}_${key}\
-                --file ${sec_path}/repo_${section} --key ${key} --value ${value} --delimiter ' = '
+        require="__file/${sec_path}/repo_${section}" __key_value "${section}_${key}" \
+                --file "${sec_path}/repo_${section}" --key "${key}" --value "${value}" --delimiter ' = '
 
     elif [ "${state}" = "absent" ]; then
 
-        require="__file/${sec_path}/repo_${section}" __key_value ${section}_${key}\
+        require="__file/${sec_path}/repo_${section}" __key_value "${section}_${key}" \
             --state absent
 
     else

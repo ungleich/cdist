@@ -16,7 +16,7 @@ case "$os" in
 	else
 	    value='NO'
 	fi
-	__key_value rcconf-$name-enable \
+	__key_value "rcconf-$name-enable" \
 	    --file /etc/rc.conf \
 	    --key "${name}_enable" \
 	    --value "\"$value\"" \

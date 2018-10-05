@@ -24,7 +24,7 @@ user="$(cat "$__object/parameter/user")"
 
 if [ -f "$__object/parameter/raw_command" ]; then
     command="$(cat "$__object/parameter/command")"
-    crontab -u $user -l 2>/dev/null | grep "^$command\$" || true
+    crontab -u "$user" -l 2>/dev/null | grep "^$command\$" || true
 else
-    crontab -u $user -l 2>/dev/null | grep "# $name\$" || true
+    crontab -u "$user" -l 2>/dev/null | grep "# $name\$" || true
 fi

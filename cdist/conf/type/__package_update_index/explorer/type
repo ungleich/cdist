@@ -21,7 +21,7 @@ if [ -f "$__object/parameter/type" ]; then
     cat "$__object/parameter/type"
 else
     # By default determine package manager based on operating system
-    os="$($__explorer/os)"
+    os="$("$__explorer/os")"
     case "$os" in
         amazon|scientific|centos|fedora|redhat) echo "yum" ;;
         debian|ubuntu|devuan) echo "apt" ;;

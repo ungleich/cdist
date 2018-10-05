@@ -32,13 +32,13 @@ rule="$(cat "$__object/parameter/rule")"
 
 case "$state_should" in
     present)
-        echo firewall-cmd --quiet --permanent --direct --add-rule \"$protocol\" \"$table\" \"$chain\" \"$priority\" $rule
-        echo firewall-cmd --quiet --direct --add-rule \"$protocol\" \"$table\" \"$chain\" \"$priority\" $rule
+        echo "firewall-cmd --quiet --permanent --direct --add-rule '$protocol' '$table' '$chain' '$priority' $rule"
+        echo "firewall-cmd --quiet --direct --add-rule '$protocol' '$table' '$chain' '$priority' $rule"
     ;;
 
     absent)
-        echo firewall-cmd --quiet --permanent --direct --remove-rule \"$protocol\" \"$table\" \"$chain\" \"$priority\" $rule
-        echo firewall-cmd --quiet --direct --remove-rule \"$protocol\" \"$table\" \"$chain\" \"$priority\" $rule
+        echo "firewall-cmd --quiet --permanent --direct --remove-rule '$protocol' '$table' '$chain' '$priority' $rule"
+        echo "firewall-cmd --quiet --direct --remove-rule '$protocol' '$table' '$chain' '$priority' $rule"
     ;;
     *)
         echo "Unknown state $state_should" >&2

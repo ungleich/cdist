@@ -47,7 +47,7 @@ fi
 case $state_should in
     present)
         if [ "$state_should" != "$state_is" ]; then
-            echo $pyvenv $venvparams "$destination"
+            echo "$pyvenv $venvparams $destination"
         fi
         if { [ -n "$owner" ] && [ "$owner_is" != "$owner" ]; } || \
            { [ -n "$group" ] && [ "$group_is" != "$group" ]; }; then
