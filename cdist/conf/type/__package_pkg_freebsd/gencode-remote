@@ -36,6 +36,7 @@ assert ()                 #  If condition false,
 	if [ ! "$1" ]
 	then
 		echo "Assertion failed:  \"$1\""
+		# shellcheck disable=SC2039
 		echo "File \"$0\", line $lineno, called by $(caller 0)"
 		exit $E_ASSERT_FAILED
 	fi  
@@ -95,6 +96,7 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
 				exit 0
 			else	# Current version is wrong, fix
 				#updatepkg "$name" "$version"
+				# shellcheck disable=SC2039
 				assert "! ${version} = ${curr_version}" $LINENO
 				cmd="${rm_cmd} ${name}-${curr_version}"
 				execcmd "remove" "${cmd}"
