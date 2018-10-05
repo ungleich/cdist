@@ -86,7 +86,7 @@ present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
 
 # Handle ip="iface|addr, iface|addr" format
-if [ $(expr "${ip}" : ".*|.*") -gt "0" ]; then
+if [ "$(expr "${ip}" : ".*|.*")" -gt "0" ]; then
    # If we have multiple IPs defined, $interface doesn't make sense because ip="iface|addr, iface|addr" implies it
    interface=""
    SAVE_IFS="$IFS"

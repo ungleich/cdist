@@ -83,7 +83,7 @@ present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
 
 # Handle ip="addr, addr" format
-if [ $(expr "${ip}" : ".*, .*") -gt "0" ]; then
+if [ "$(expr "${ip}" : ".*, .*")" -gt "0" ]; then
    SAVE_IFS="$IFS"
    IFS=", "
    for cur_ip in ${ip}; do
