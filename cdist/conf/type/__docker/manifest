@@ -24,6 +24,7 @@ state=$(cat "$__object/parameter/state")
 
 case "$os" in
     centos)
+        # shellcheck source=/dev/null
         if (. "$__global/explorer/os_release" && [ "${VERSION_ID}" = "7" ]); then
           __yum_repo docker-ce-stable \
             --name 'Docker CE Stable' \
