@@ -44,7 +44,7 @@ for property in *; do
 done
 
 ver="$(cat "$__global/explorer/os_version")"
-if [ -n "$(echo "$ver" | grep '^10\.' )" ]; then   # Version is 10.x
+if echo "$ver" | grep -q '^10\.'; then   # Version is 10.x
    __jail_freebsd10 "$@"
 else
    __jail_freebsd9 "$@"
