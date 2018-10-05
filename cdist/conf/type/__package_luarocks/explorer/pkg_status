@@ -28,4 +28,4 @@ else
 fi
 
 # Accept luarocks failing if package is not known/installed
-luarocks list "$name" | egrep -A1 "^$name$" || exit 0
+luarocks list "$name" | grep -E -A1 "^$name$" || exit 0
