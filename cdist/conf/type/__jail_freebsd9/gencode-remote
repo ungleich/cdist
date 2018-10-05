@@ -116,6 +116,7 @@ startJail() {
    fi
 }
 
+# shellcheck disable=SC2120
 deleteJail() {
 # Unmount the jail's mountpoints if necessary
    cat <<EOF
@@ -342,6 +343,7 @@ if [ "$present" = "EXISTS" ]; then   # The jail currently exists
       exit 0
    else   # The jail is not supposed to exist
       stopJail
+      # shellcheck disable=SC2119
       deleteJail
       exit 0
    fi
