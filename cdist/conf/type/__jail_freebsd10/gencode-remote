@@ -298,7 +298,7 @@ END
    fi
 
 EOF
-
+   # shellcheck disable=SC2028
    echo "printf \"%s\\n%s\n%s\n\" \"\$jailheader\" \"\$jaildata\" \"\$jailtrailer\" >>\"\$jailfile\""
 
 # Add $name to jail_list if $onboot=yes
