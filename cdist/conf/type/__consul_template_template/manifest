@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+# shellcheck disable=SC2031
 
 name="$(cat "$__object/parameter/name" 2>/dev/null || echo "$__object_id")"
 state="$(cat "$__object/parameter/state")"
