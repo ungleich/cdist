@@ -41,6 +41,8 @@ SPHINXH=make -C $(DOCS_SRC_DIR) html
 SPHINXC=make -C $(DOCS_SRC_DIR) clean
 
 SHELLCHECKCMD=shellcheck -s sh -f gcc -x
+# Skip SC2154 for variables starting with __ since such variables are cdist
+# environment variables.
 SHELLCHECK_SKIP=grep -v ': __.*is referenced but not assigned.*\[SC2154\]'
 ################################################################################
 # Manpages
