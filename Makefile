@@ -39,6 +39,11 @@ PYTHON_VERSION=cdist/version.py
 SPHINXM=make -C $(DOCS_SRC_DIR) man
 SPHINXH=make -C $(DOCS_SRC_DIR) html
 SPHINXC=make -C $(DOCS_SRC_DIR) clean
+
+SHELLCHECKCMD=shellcheck -s sh -f gcc -x
+# Skip SC2154 for variables starting with __ since such variables are cdist
+# environment variables.
+SHELLCHECK_SKIP=grep -v ': __.*is referenced but not assigned.*\[SC2154\]'
 ################################################################################
 # Manpages
 #
@@ -253,3 +258,20 @@ test-remote:
 
 pep8:
 	$(helper) $@
+
+shellcheck-global-explorers:
+	@find cdist/conf/explorer -type f -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP)
+shellcheck-manifests:
+	@find cdist/conf/type -type f -name manifest -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP)
+
+shellcheck-local-gencodes:
+	@find cdist/conf/type -type f -name gencode-local -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP)
+
+shellcheck-remote-gencodes:
+	@find cdist/conf/type -type f -name gencode-remote -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP)
+
+shellcheck-gencodes: shellcheck-local-gencodes shellcheck-remote-gencodes
+
+shellcheck-types: shellcheck-manifests shellcheck-gencodes
+
+shellcheck: shellcheck-global-explorers shellcheck-types
