@@ -21,11 +21,11 @@
 #set -x
 
 die() {
-   echo "[__install_partition_msdos_apply] $@" >&2
+   echo "[__install_partition_msdos_apply] $*" >&2
    exit 1
 }
 debug() {
-   #echo "[__install_partition_msdos_apply] $@" >&2
+   #echo "[__install_partition_msdos_apply] $*" >&2
    :
 }
 

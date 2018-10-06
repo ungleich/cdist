@@ -54,7 +54,7 @@ case $uname in
       currentSum=\$(cksum -o 1 ${source} | cut -d= -f2 | sed 's/ //g')
       ;;
    *)
-      echo "Sorry, I do not know how to find a cksum on ${UNAME}." >&2
+      echo "Sorry, I do not know how to find a cksum on ${uname}." >&2
       exit 1
       ;;
 esac

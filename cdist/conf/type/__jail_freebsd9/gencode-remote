@@ -86,7 +86,7 @@ present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
 
 # Handle ip="iface|addr, iface|addr" format
-if [ $(expr "${ip}" : ".*|.*") -gt "0" ]; then
+if [ "$(expr "${ip}" : ".*|.*")" -gt "0" ]; then
    # If we have multiple IPs defined, $interface doesn't make sense because ip="iface|addr, iface|addr" implies it
    interface=""
    SAVE_IFS="$IFS"
@@ -126,12 +126,12 @@ deleteJail() {
       output="\$(mount | grep "\/rw\/${name}\/")" || true
       if [ -n "\${output}" ]; then # >=1 rw mount is mounted still
          for DIR in "${output}"; do
-            umount -F "/etc/fstab.${name}" "\$(echo "${DIR}" | awk '{print $3}')"
+            umount -F "/etc/fstab.${name}" "\$(echo "${DIR}" | awk '{print \$3}')"
          done
       fi
       output="\$(mount | grep "\/${name} (")" || true
       if [ -n "\${output}" ]; then # ro mount is mounted still
-         umount -F "/etc/fstab.${name}" "\$(echo "${output}" | awk '{print $3}')"
+         umount -F "/etc/fstab.${name}" "\$(echo "${output}" | awk '{print \$3}')"
       fi
 EOF
 # Remove the jail's rw mountpoints

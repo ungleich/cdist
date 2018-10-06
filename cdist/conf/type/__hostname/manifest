@@ -25,10 +25,10 @@ if [ -f "$__object/parameter/name" ]; then
 else
     case "$os" in
     openbsd)
-        name_should="$(echo "${__target_host}")"
+        name_should="${__target_host}"
     ;;
     *)
-        name_should="$(echo "${__target_host%%.*}")"
+        name_should="${__target_host%%.*}"
     ;;
     esac
 fi
