@@ -18,6 +18,7 @@ next:
 	* Explorers and types: Fix SC2164: Use cd ... || exit in case cd fails. (shellcheck) (Darko Poljak)
 	* Explorers and types: Disable SC2016 where it is intended: Expressions don't expand in single quotes, use double quotes for that. (shellcheck) (Darko Poljak)
 	* Explorers and types: Fix SC2044: For loops over find output are fragile. Use find -exec or a while read loop. (shellcheck) (Darko Poljak)
+	* Explorers and types: Fix SC1090,SC2021,SC2028,SC2030,SC2031,SC2039,SC2046,SC2116,SC2119,SC2120,SC2143,SC2145,SC2153,SC2162,SC2196,SC2230,SC2235. (shellcheck) (Darko Poljak)
 
 4.10.3: 2018-09-23
 	* New global explorer: os_release (Ľubomír Kučera)
