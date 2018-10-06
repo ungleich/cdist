@@ -12,7 +12,7 @@ eof
 
 coreos-install -d "${device}" \
 	\$(if [ -s "\${ignition_file}" ]; then
-		printf -- "-i \${ignition_file}\n"
+		printf -- "-i \${ignition_file}\\n"
 	fi)
 
 rm "\${ignition_file}"

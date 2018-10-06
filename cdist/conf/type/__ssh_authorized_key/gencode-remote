@@ -48,7 +48,7 @@ add_line() {
    line="$2"
    # escape single quotes
    line_sanitised=$(echo "$line" | sed -e "s/'/'\"'\"'/g")
-   printf '%s' "printf '%s\n' '$line_sanitised' >> $file"
+   printf '%s' "printf '%s\\n' '$line_sanitised' >> $file"
 }
 
 

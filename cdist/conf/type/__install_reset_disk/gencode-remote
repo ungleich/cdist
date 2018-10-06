@@ -67,5 +67,5 @@ fi
 
 # erase partition table
 dd if=/dev/zero of=$disk bs=512 count=1
-printf 'w\n' | fdisk -u -c $disk || true
+printf 'w\\n' | fdisk -u -c $disk || true
 DONE

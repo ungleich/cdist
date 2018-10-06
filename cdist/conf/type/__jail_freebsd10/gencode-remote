@@ -45,7 +45,7 @@ else
 #    when $state=present, it's required. Enforce this.
    if [ "$state" = "present" ]; then
       exec >&2
-      echo "If --state is 'present,' --ip must be given\!"
+      echo "If --state is 'present,' --ip must be given\\!"
       exit 1
    fi
 fi
@@ -114,17 +114,17 @@ startJail() {
 deleteJail() {
 # Unmount the jail's mountpoints if necessary
    cat <<EOF
-      output="\$(mount | grep "\/${name}\/dev")" || true
+      output="\$(mount | grep "\\/${name}\\/dev")" || true
       if [ -n "\${output}" ]; then # /dev is still mounted...jail still running?
          /etc/rc.d/jail stop "${name}"
       fi
-      output="\$(mount | grep "\/rw\/${name}\/")" || true
+      output="\$(mount | grep "\\/rw\\/${name}\\/")" || true
       if [ -n "\${output}" ]; then # >=1 rw mount is mounted still
          for DIR in "${output}"; do
             umount -F "/etc/fstab.${name}" "\$(echo "${DIR}" | awk '{print \$3}')"
          done
       fi
-      output="\$(mount | grep "\/${name} (")" || true
+      output="\$(mount | grep "\\/${name} (")" || true
       if [ -n "\${output}" ]; then # ro mount is mounted still
          umount -F "/etc/fstab.${name}" "\$(echo "${output}" | awk '{print \$3}')"
       fi
@@ -275,9 +275,9 @@ cat <<EOF
       if [ ! -f /etc/devfs.rules ]; then
          touch /etc/devfs.rules
       fi
-      if [ -z "\$(grep '\[jailrules=' /etc/devfs.rules)" ]; then   # The default ruleset doesn't exist
+      if [ -z "\$(grep '\\[jailrules=' /etc/devfs.rules)" ]; then   # The default ruleset doesn't exist
          # Get the highest-numbered ruleset
-         highest="\$(sed -n 's/\[.*=\([0-9]*\)\]/\1/pg' /etc/devfs.rules | sort -u | tail -n 1)" || true
+         highest="\$(sed -n 's/\\[.*=\\([0-9]*\\)\\]/\\1/pg' /etc/devfs.rules | sort -u | tail -n 1)" || true
          # increment by 1
          [ -z "\$highest" ] && highest=10
          let num="\${highest}+1" 2>&1 >/dev/null   # Close the FD==fail...
@@ -290,7 +290,7 @@ add include \\\$devfsrules_unhide_basic
 add include \\\$devfsrules_unhide_login
 END
       fi
-      devfsruleset_num=\$(grep "\[${devfsruleset}=" /etc/devfs.rules | sed -n 's/\[.*=\([0-9]*\)\]/\1/pg')
+      devfsruleset_num=\$(grep "\\[${devfsruleset}=" /etc/devfs.rules | sed -n 's/\\[.*=\\([0-9]*\\)\\]/\\1/pg')
       if [ -n "\$devfsruleset_num" ]; then
          jaildata="\$jaildata
          devfs_ruleset=\"\${devfsruleset_num}\";"
@@ -299,7 +299,7 @@ END
 
 EOF
    # shellcheck disable=SC2028
-   echo "printf \"%s\\n%s\n%s\n\" \"\$jailheader\" \"\$jaildata\" \"\$jailtrailer\" >>\"\$jailfile\""
+   echo "printf \"%s\\n%s\\n%s\\n\" \"\$jailheader\" \"\$jaildata\" \"\$jailtrailer\" >>\"\$jailfile\""
 
 # Add $name to jail_list if $onboot=yes
 if [ "$onboot" = "yes" ]; then

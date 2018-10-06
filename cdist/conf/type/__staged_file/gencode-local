@@ -67,10 +67,10 @@ fetch_and_prepare_file() {
    # shellcheck disable=SC2016
    printf 'cd "$tmpdir"\n'
    # shellcheck disable=SC2059
-   printf "$fetch_command > \"%s\"\n" "$source" "$source_file_name"
+   printf "$fetch_command > \"%s\"\\n" "$source" "$source_file_name"
    prepare_command="$(cat "$__object/parameter/prepare-command")"
    # shellcheck disable=SC2059
-   printf "$prepare_command > \"%s\"\n" "$source_file_name" "$stage_file"
+   printf "$prepare_command > \"%s\"\\n" "$source_file_name" "$stage_file"
    printf 'cd - >/dev/null\n'
    # shellcheck disable=SC2016
    printf 'rm -rf "$tmpdir"\n'

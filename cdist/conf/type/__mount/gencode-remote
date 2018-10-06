@@ -39,7 +39,7 @@ case "$state_should" in
             printf ' -o %s' "$(cat "$__object/parameter/options")"
          fi
          printf ' %s' "$(cat "$__object/parameter/device")"
-         printf " %s\n" "$path"
+         printf " %s\\n" "$path"
       else
          # mount using existing fstab entry
          printf 'mount "%s"\n' "$path"

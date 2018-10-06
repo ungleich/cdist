@@ -95,7 +95,7 @@ if [ -n "$curr_version" ]; then  # PKG *is* installed
       if [ "$upgrade" = "true" ]; then
          execcmd "upg" "${cmd}"
       else
-         printf "Version %s is already installed and pkg-ng can't upgrade directly to version %s.\nTo upgrade to the latest version, use the --upgrade flag.\n" "$curr_version" "$version" >&2
+         printf "Version %s is already installed and pkg-ng can't upgrade directly to version %s.\\nTo upgrade to the latest version, use the --upgrade flag.\\n" "$curr_version" "$version" >&2
          exit 1
       fi
    # PKG is supposed to be installed to the latest version
