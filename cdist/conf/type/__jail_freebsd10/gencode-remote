@@ -120,13 +120,13 @@ deleteJail() {
       fi
       output="\$(mount | grep "\\/rw\\/${name}\\/")" || true
       if [ -n "\${output}" ]; then # >=1 rw mount is mounted still
-         for DIR in "${output}"; do
+         for DIR in "\${output}"; do
             umount -F "/etc/fstab.${name}" "\$(echo "${DIR}" | awk '{print \$3}')"
          done
       fi
       output="\$(mount | grep "\\/${name} (")" || true
       if [ -n "\${output}" ]; then # ro mount is mounted still
-         umount -F "/etc/fstab.${name}" "\$(echo "${output}" | awk '{print \$3}')"
+         umount -F "/etc/fstab.${name}" "\$(echo "\${output}" | awk '{print \$3}')"
       fi
 EOF
 # Remove the jail's rw mountpoints
