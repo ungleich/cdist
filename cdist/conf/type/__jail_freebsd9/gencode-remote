@@ -45,7 +45,7 @@ else
 #    when $state=present, it's required. Enforce this.
    if [ "$state" = "present" ]; then
       exec >&2
-      echo "If --state is 'present,' --ip must be given\\!"
+      printf 'If --state is "present", --ip must be given\!\n'
       exit 1
    fi
 fi
