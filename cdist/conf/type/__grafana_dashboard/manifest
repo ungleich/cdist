@@ -3,6 +3,7 @@
 os=$(cat "$__global/explorer/os")
 os_version=$(cat "$__global/explorer/os_version")
 
+require=""
 case $os in
     debian|devuan)
         case $os_version in

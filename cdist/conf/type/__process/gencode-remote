@@ -52,8 +52,7 @@ case "$state_should" in
         if [ -f "$__object/parameter/stop" ]; then
             cat "$__object/parameter/stop"
         else
-            # TODO: what should be runs variable?
-            echo kill "${runs}"
+            echo kill "$(cat "$__object/parameter/runs")"
         fi
         echo "stopped" >> "$__messages_out"
     ;;

@@ -50,7 +50,6 @@ entry="$__object/files/entry"
       echo "# $(cat "$__object/parameter/comment")"
    fi
    printf "%s " "$service"
-   printf "%s " "$type"
    for parameter in type private unpriv chroot wakeup maxproc; do
       printf "%s " "$(cat "$__object/parameter/$parameter")"
    done

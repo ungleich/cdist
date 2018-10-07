@@ -37,7 +37,7 @@ jaildir="$(cat "$__object/parameter/jaildir")"
 
 __directory "${jaildir}" --parents
 
-set -- "$@" "$__object_id" "--state" "$state"
+set -- "$@" "$__object_id"
 cd "$__object/parameter"
 for property in *; do
 	set -- "$@" "--$property" "$(cat "$property")"
