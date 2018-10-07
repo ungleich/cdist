@@ -24,14 +24,14 @@ case $1 in
         iptables-save > "$status"
 
         # Apply our ruleset
-        cd "$basedir"
+        cd "$basedir" || exit
         count="$(ls -1 | wc -l)"
 
         # Only do something if there are rules
         if [ "$count" -ge 1 ]; then
             for rule in *; do
                 echo "Applying iptables rule $rule ..."
-                iptables $(cat "$rule")
+                iptables "$(cat "$rule")"
             done
         fi
     ;;

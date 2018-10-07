@@ -37,10 +37,10 @@ code="$(echo "$@" | sed "s|$target_host:|$target_host:$chroot|g")"
 
 log "target_host: $target_host"
 log "chroot: $chroot"
-log "@: $@"
+log "@: $*"
 log "code: $code"
 
 # copy files into chroot
-$__default_remote_copy $code
+"$__default_remote_copy" "$code"
 
 log "-----"

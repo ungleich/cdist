@@ -40,10 +40,10 @@ code="chroot $chroot sh -e -c '$code'"
 
 log "target_host: $target_host"
 log "chroot: $chroot"
-log "@: $@"
+log "@: $*"
 log "code: $code"
 
 # Run the code
-$__default_remote_exec $target_host $code
+"$__default_remote_exec" "$target_host" "$code"
 
 log "-----"

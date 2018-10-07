@@ -23,9 +23,9 @@ fi
 
 case "$1" in
     start)
-        echo -n "Starting daemontools: "
-        if [ ! `pidof svscan` ]; then
-                echo -n "svscan "
+        printf "Starting daemontools: "
+        if [ ! "$(pidof svscan)" ]; then
+                printf "svscan "
                 env - PATH="$PATH" svscan /service 2>&1 | setuidgid daemon multilog t /var/log/svscan &
                 echo "."
         else
@@ -33,23 +33,23 @@ case "$1" in
         fi
         ;;
     stop)
-        echo -n "Stopping daemontools: "
-        if [ `pidof svscan` ]; then
-                echo -n "svscan"
-                while [ `pidof svscan` ]; do
-                     kill `pidof svscan`
-                     echo -n "."
+        printf "Stopping daemontools: "
+        if [ "$(pidof svscan)" ]; then
+                printf "svscan"
+                while [ "$(pidof svscan)" ]; do
+                     kill "$(pidof svscan)"
+                     printf "."
                 done
         fi
-        echo -n " services"
-        for i in `ls -d /service/*`; do
-                svc -dx $i
-                echo -n "."
+        printf " services"
+        for i in /service/*; do
+                svc -dx "$i"
+                printf "."
         done
-        echo -n " logging "
-        for i in `ls -d /service/*/log`; do
-                svc -dx $i
-                echo -n "."
+        printf " logging "
+        for i in /service/*/log; do
+                svc -dx "$i"
+                printf "."
         done
         echo ""
         ;;
