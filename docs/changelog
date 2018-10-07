@@ -4,21 +4,7 @@ Changelog
 next:
 	* Core: Transfer all files of a directory at once instead of calling copy once per file (myeisha)
 	* Core: Add timestamp (optional) to log messages (Darko Poljak)
-	* Explorers, manifests, gencodes: Fix SC2166: and/or operators in test (shellcheck) (Jonas Weber, Thomas Eckert)
-	* Explorers and types: Fix SC2004: $/${} is unnecessary on arithmetic variables (shellcheck) (Darko Poljak)
-	* Explorers and types: Fix SC2005: Useless echo? Instead of echo $(cmd), just use cmd (shellcheck) (Darko Poljak)
-	* Explorers and types: Fix SC2002: Useless cat. Consider 'cmd < file | ..' or 'cmd file | ..' instead (shellcheck) (Darko Poljak)
-	* Explorers and types: Fix SC2039: In POSIX sh, something is undefined (shellcheck) (Darko Poljak)
-	* Explorers and types: Fix SC2045: Iterating over ls output is fragile. Use globs. (shellcheck) (Thomas Eckert)
-	* Explorers and types: Fix SC2148: Tips depend on target shell and yours is unknown. Add a shebang. (shellcheck) (Thomas Eckert)
-	* Explorers and types: Fix SC2069: To redirect stdout+stderr, 2>&1 must be last (or use '{ cmd > file; } 2>&1' to clarify). (shellcheck) (Jonas Weber)
-	* Explorers and types: Fix SC2034: foo appears unused. Verify it or export it. (shellcheck) (Jonas Weber)
-	* Explorers and types: Fix SC2215, SC2059, SC2155, SC2091. (shellcheck) (Jonas Weber)
-	* Explorers and types: Fix SC2086: Double quote to prevent globbing and word splitting. (shellcheck) (Jonas Weber)
-	* Explorers and types: Fix SC2164: Use cd ... || exit in case cd fails. (shellcheck) (Darko Poljak)
-	* Explorers and types: Disable SC2016 where it is intended: Expressions don't expand in single quotes, use double quotes for that. (shellcheck) (Darko Poljak)
-	* Explorers and types: Fix SC2044: For loops over find output are fragile. Use find -exec or a while read loop. (shellcheck) (Darko Poljak)
-	* Explorers and types: Fix SC1090,SC2021,SC2028,SC2030,SC2031,SC2039,SC2046,SC2116,SC2119,SC2120,SC2143,SC2145,SC2153,SC2162,SC2196,SC2230,SC2235. (shellcheck) (Darko Poljak)
+	* Explorers and types: Fix shellcheck found problems and encountered bugs (Jonas Weber, Thomas Eckert, Darko Poljak)
 	* Build: Add shellcheck makefile target and check when doing release (Darko Poljak)
 
 4.10.3: 2018-09-23
