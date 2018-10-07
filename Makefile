@@ -260,15 +260,16 @@ pep8:
 	$(helper) $@
 
 shellcheck-global-explorers:
-	@find cdist/conf/explorer -type f -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP)
+	@find cdist/conf/explorer -type f -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
+
 shellcheck-manifests:
-	@find cdist/conf/type -type f -name manifest -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP)
+	@find cdist/conf/type -type f -name manifest -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
 
 shellcheck-local-gencodes:
-	@find cdist/conf/type -type f -name gencode-local -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP)
+	@find cdist/conf/type -type f -name gencode-local -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
 
 shellcheck-remote-gencodes:
-	@find cdist/conf/type -type f -name gencode-remote -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP)
+	@find cdist/conf/type -type f -name gencode-remote -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
 
 shellcheck-gencodes: shellcheck-local-gencodes shellcheck-remote-gencodes
 
