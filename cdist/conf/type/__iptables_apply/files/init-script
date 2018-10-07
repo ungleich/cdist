@@ -25,7 +25,7 @@ case $1 in
 
         # Apply our ruleset
         cd "$basedir" || exit
-        count="$(ls -1 | wc -l)"
+        count="$(find . ! -name . -prune | wc -l)"
 
         # Only do something if there are rules
         if [ "$count" -ge 1 ]; then
