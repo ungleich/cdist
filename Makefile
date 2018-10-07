@@ -262,6 +262,9 @@ pep8:
 shellcheck-global-explorers:
 	@find cdist/conf/explorer -type f -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
 
+shellcheck-type-explorers:
+	@find cdist/conf/type -type f -path "*/explorer/*" -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
+
 shellcheck-manifests:
 	@find cdist/conf/type -type f -name manifest -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
 
@@ -273,6 +276,11 @@ shellcheck-remote-gencodes:
 
 shellcheck-gencodes: shellcheck-local-gencodes shellcheck-remote-gencodes
 
-shellcheck-types: shellcheck-manifests shellcheck-gencodes
+shellcheck-types: shellcheck-type-explorers shellcheck-manifests shellcheck-gencodes
 
 shellcheck: shellcheck-global-explorers shellcheck-types
+
+shellcheck-type-files:
+	@find cdist/conf/type -type f -path "*/files/*" -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
+
+shellcheck-with-files: shellcheck shellcheck-type-files
