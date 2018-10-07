@@ -31,6 +31,7 @@ elif [ -f "$destination" ]; then
    type="$(cat "$__object/parameter/type")"
    case "$type" in
       hard)
+         # TODO SC2012: use stat?
          link_count=$(ls -l "$destination" | awk '{ print $2 }')
          if [ "$link_count" -gt 1 ]; then
             echo hardlink

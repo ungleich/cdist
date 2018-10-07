@@ -33,6 +33,7 @@ destination_dir="${destination%/*}"
 case "$type" in
    symbolic)
       cd "$destination_dir" || exit 1
+      # TODO SC2012: use readlink or something?
       source_is=$(ls -l "$destination" | sed 's/.*-> //g')
       if [ -h "$destination" ]; then
          # ignore trailing slashes for comparison
@@ -52,7 +53,9 @@ case "$type" in
          echo sourcemissing
          exit 0
       fi
+      # TODO SC2012: use stat?
       destination_inode=$(ls -i "$destination" | awk '{print $1}')
+      # TODO SC2012: use stat?
       source_inode=$(ls -i "$source" | awk '{print $1}')
       if [ "$destination_inode" -eq "$source_inode" ]; then
          echo present
