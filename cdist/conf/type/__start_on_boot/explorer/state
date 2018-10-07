@@ -38,12 +38,27 @@ if [ "$init" = 'systemd' ]; then
 else
     case "$os" in
         debian|openwrt|devuan)
-            state="present"
-            [ -f "/etc/rc$runlevel.d/S"??"$name" ] || state="absent"
+            state="absent"
+            for file in "/etc/rc$runlevel.d/S"??"$name"
+            do
+                if [ -f "$file" ]
+                then
+                    state="present"
+                    break
+                fi
+            done
         ;;
         ubuntu)
             state="absent"
-            [ -f "/etc/rc$runlevel.d/S"??"$name" ] && state="present"
+            for file in "/etc/rc$runlevel.d/S"??"$name"
+            do
+                if [ -f "$file" ]
+                then
+                    state="present"
+                    break
+                fi
+            done
+
             [ -f "/etc/init/${name}.conf" ] && state="present"
         ;;
 

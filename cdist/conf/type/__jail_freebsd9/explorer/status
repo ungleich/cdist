@@ -39,7 +39,7 @@ fi
 # backslash-escaped $jaildir
 sjaildir="$(echo ${jaildir} | sed 's#/#\\/#g')"
 
-jls_output="$(jls | grep "[ 	]${sjaildir}\/${name}\$")" || true
+jls_output="$(jls | grep "[ 	]${sjaildir}\\/${name}\$")" || true
 
 if [ -n "${jls_output}" ]; then
    echo "STARTED"

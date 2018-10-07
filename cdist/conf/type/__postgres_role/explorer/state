@@ -20,7 +20,7 @@
 
 name="$__object_id"
 
-if su - postgres -c "psql -c '\du' | grep -q '^ *$name *|'"; then
+if su - postgres -c "psql -c '\\du' | grep -q '^ *$name *|'"; then
    echo "present"
 else
    echo "absent"
