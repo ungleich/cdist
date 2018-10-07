@@ -33,7 +33,7 @@ case "$state_should" in
          echo "su - postgres -c 'psql -c \"$cmd\" \"$dbname\"'"
     ;;
     absent)
-         cmd="DROP   EXTENSION IF     EXISTS $extenstion"
+         cmd="DROP   EXTENSION IF     EXISTS $extension"
          echo "su - postgres -c 'psql -c \"$cmd\" \"$dbname\"'"
     ;;
 esac

@@ -69,10 +69,10 @@ fi
 
 if [ -n "${cksum}" ]; then
    if [ ! "\${currentSum}" = "${cksum}" ]; then
-      $__remote_copy "${source}" "${my_target_host}:${rcvar}.new"
+      $__remote_copy "${source}" "\${my_target_host}:${rcvar}.new"
    fi
 else # File just doesn't exist yet
-   $__remote_copy "${source}" "${my_target_host}:${rcvar}.new"
+   $__remote_copy "${source}" "\${my_target_host}:${rcvar}.new"
 fi
 EOF
 

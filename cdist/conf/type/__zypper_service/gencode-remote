@@ -76,7 +76,7 @@ case "$state_should" in
          echo "zypper $zypper_def_opts ref"
    ;;
    absent)
-         echo "zypper $zypper_def_opts removeservice $service_id"
+         echo "zypper $zypper_def_opts removeservice $exp_id"
          echo "zypper $zypper_def_opts refs"
          echo "zypper $zypper_def_opts ref"
    ;;

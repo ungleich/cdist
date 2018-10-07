@@ -61,7 +61,7 @@ _cksum() {
    echo "$1" | cksum | cut -d' ' -f 1
 }
 
-while read key; do
+while read -r key; do
    type_and_key="$(echo "$key" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
    object_id="$(_cksum "$file")-$(_cksum "$type_and_key")"
    set -- "$object_id"

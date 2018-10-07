@@ -18,6 +18,7 @@ rule_files="$(cat "$__object/parameter/rule-files")"
 ##### INSTALL THE PACKAGE ###################################################
 
 require_pkg=""  # what to require if I want to require "the package"
+require=""
 if [ -f "$__object/parameter/install-from-backports" ]; then
 	os=$(cat "$__global/explorer/os")
 	os_version=$(cat "$__global/explorer/os_version")

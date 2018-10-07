@@ -91,7 +91,7 @@ if [ -f "${__object}/parameter/automatic-renewal" ]; then
 	renew_hook_param="${__object}/parameter/renew-hook"
 	renew_hook=""
 	if [ -f "${renew_hook_param}" ]; then
-		while read hook; do
+		while read -r hook; do
 			renew_hook="${renew_hook} --renew-hook \"${hook}\""
 		done < "${renew_hook_param}"
 	fi

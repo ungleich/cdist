@@ -31,7 +31,7 @@ printf " %s" "$type"
 options="$(cat "$__object/parameter/options")"
 printf " %s" "$options"
 printf " %s" "$(cat "$__object/parameter/dump")"
-printf " %s\n" "$(cat "$__object/parameter/pass")"
+printf ' %s\n' "$(cat "$__object/parameter/pass")"
 ) | \
 __block "$__object_name" \
    --file "/etc/fstab" \
