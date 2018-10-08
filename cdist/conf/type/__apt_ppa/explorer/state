@@ -23,10 +23,11 @@
 
 name="$__object_id"
 
+# shellcheck disable=SC1091
 . /etc/lsb-release
 
 repo_name="${name#ppa:}"
-repo_file_name="$(echo "$repo_name" | sed -e "s|[/:]|-|" -e "s|\.|_|")-${DISTRIB_CODENAME}.list"
+repo_file_name="$(echo "$repo_name" | sed -e 's|[/:]|-|' -e 's|\.|_|')-${DISTRIB_CODENAME}.list"
 
 [ -s "/etc/apt/sources.list.d/${repo_file_name}" ] \
    && echo present || echo absent

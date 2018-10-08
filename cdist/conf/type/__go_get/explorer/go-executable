@@ -1,4 +1,6 @@
 #!/bin/sh
+# shellcheck disable=SC1091
 [ -f /etc/environment ] && . /etc/environment
+# shellcheck disable=SC1091
 [ -f /etc/profile     ] && . /etc/profile
 go version 2>/dev/null || true

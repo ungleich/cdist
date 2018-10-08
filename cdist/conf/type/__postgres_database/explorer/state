@@ -20,7 +20,7 @@
 
 name="$__object_id"
 
-if su - postgres -c "echo '\q' | psql '$name'" 2>/dev/null; then
+if su - postgres -c "echo '\\q' | psql '$name'" 2>/dev/null; then
    echo "present"
 else
    echo "absent"

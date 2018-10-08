@@ -27,5 +27,5 @@ then
     file="$(cat "$__object/parameter/file")"
 
     # get any entries that match the type and key
-    grep ".*$type_and_key\([ \n]\|$\)" "$file" || true
+    grep ".*$type_and_key\\([ \\n]\\|$\\)" "$file" || true
 fi
