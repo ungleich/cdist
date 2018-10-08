@@ -24,24 +24,26 @@
 destination="/$__object_id"
 
 if [ ! -e "$destination" ]; then
-   echo none
+    echo none
 elif [ -h "$destination" ]; then
-   echo symlink
+    echo symlink
 elif [ -f "$destination" ]; then
-   type="$(cat "$__object/parameter/type")"
-   case "$type" in
-      hard)
-         # TODO SC2012: use stat?
-         link_count=$(ls -l "$destination" | awk '{ print $2 }')
-         if [ "$link_count" -gt 1 ]; then
-            echo hardlink
-            exit 0
-         fi
-      ;;
-   esac
-   echo file
+    type="$(cat "$__object/parameter/type")"
+    case "$type" in
+        hard)
+            # Currently not worth the effor to change it, stat is not defined by POSIX
+            # and different OSes has different implementations for it.
+            # shellcheck disable=SC2012
+            ink_count=$(ls -l "$destination" | awk '{ print $2 }')
+            if [ "$link_count" -gt 1 ]; then
+                echo hardlink
+                exit 0
+            fi
+        ;;
+    esac
+    echo file
 elif [ -d "$destination" ]; then
-   echo directory
+    echo directory
 else
-   echo unknown
+    echo unknown
 fi
