@@ -34,7 +34,7 @@ elif [ -f "$destination" ]; then
             # Currently not worth the effor to change it, stat is not defined by POSIX
             # and different OSes has different implementations for it.
             # shellcheck disable=SC2012
-            ink_count=$(ls -l "$destination" | awk '{ print $2 }')
+            link_count=$(ls -l "$destination" | awk '{ print $2 }')
             if [ "$link_count" -gt 1 ]; then
                 echo hardlink
                 exit 0
