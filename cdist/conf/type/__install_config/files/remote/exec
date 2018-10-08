@@ -36,6 +36,7 @@ shift
 
 # escape ' with '"'"'
 code="$(echo "$@" | sed -e "s/'/'\"'\"'/g")"
+# shellcheck disable=SC2089
 code="chroot $chroot sh -e -c '$code'"
 
 log "target_host: $target_host"
@@ -44,6 +45,8 @@ log "@: $*"
 log "code: $code"
 
 # Run the code
-"$__default_remote_exec" "$target_host" "$code"
+# code should be split on spaces
+# shellcheck disable=SC2086,SC2090
+"$__default_remote_exec" "$target_host" $code
 
 log "-----"

@@ -41,6 +41,8 @@ log "@: $*"
 log "code: $code"
 
 # copy files into chroot
-"$__default_remote_copy" "$code"
+# code should be split on spaces
+# shellcheck disable=SC2086
+"$__default_remote_copy" $code
 
 log "-----"
