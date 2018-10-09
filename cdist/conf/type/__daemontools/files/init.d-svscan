@@ -24,7 +24,7 @@ fi
 case "$1" in
     start)
         printf "Starting daemontools: "
-        if [ ! "$(pidof svscan)" ]; then
+        if  ! pidof svscan > /dev/null 2>&1; then
                 printf "svscan "
                 env - PATH="$PATH" svscan /service 2>&1 | setuidgid daemon multilog t /var/log/svscan &
                 echo "."
@@ -34,11 +34,16 @@ case "$1" in
         ;;
     stop)
         printf "Stopping daemontools: "
-        if [ "$(pidof svscan)" ]; then
+        pids="$(pidof svscan)"
+        if [ -n "${pids}" ]
+        then
                 printf "svscan"
-                while [ "$(pidof svscan)" ]; do
-                     kill "$(pidof svscan)"
-                     printf "."
+                while [ -n "${pids}" ]
+                do
+                    # shellcheck disable=SC2086
+                    kill ${pids}
+                    printf "."
+                    pids="$(pidof svscan)"
                 done
         fi
         printf " services"
