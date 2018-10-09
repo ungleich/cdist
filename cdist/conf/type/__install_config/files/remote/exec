@@ -45,8 +45,8 @@ log "@: $*"
 log "code: $code"
 
 # Run the code
-# code should be split on spaces
+# __default_remote_exec and code should be split
 # shellcheck disable=SC2086,SC2090
-"$__default_remote_exec" "$target_host" $code
+$__default_remote_exec "$target_host" $code
 
 log "-----"
