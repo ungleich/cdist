@@ -16,6 +16,7 @@ Contents:
    cdist-support
    cdist-features
    cdist-quickstart
+   cdist-real-world
    man1/cdist
    cdist-bootstrap
    cdist-configuration

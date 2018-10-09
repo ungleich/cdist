@@ -43,10 +43,15 @@ else
     opts="--assumeyes --quiet"
 fi
 
-not_installed="^no package provides"
+not_provided="^no package provides"
+not_installed='is not installed$'
 
-if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-    state_is="absent"
+if grep -q "$not_provided" "$__object/explorer/pkg_version"; then
+    if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
+        state_is="absent"
+    else
+        state_is="present"
+    fi
 else
     state_is="present"
 fi
@@ -55,10 +60,10 @@ fi
 
 case "$state_should" in
     present)
-        echo yum $opts install \"$install_name\"
+        echo "yum $opts install '$install_name'"
     ;;
     absent)
-        echo yum $opts remove \"$name\"
+        echo "yum $opts remove '$name'"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

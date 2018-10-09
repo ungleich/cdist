@@ -3,12 +3,13 @@
 pkg=$(cat "$__object/parameter/from-package")
 servicedir=$(cat "$__object/parameter/servicedir")
 
-__package $pkg
-__directory $servicedir --mode 700
+__package "$pkg"
+__directory "$servicedir" --mode 700
 
 os=$(cat "$__global/explorer/os")
 init=$(cat "$__global/explorer/init")
 
+require=""
 case $os in
 	freebsd)
 		# TODO change to __start_on_boot once it supports freebsd

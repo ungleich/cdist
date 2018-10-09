@@ -46,7 +46,7 @@ else
    name="$__object_id"
 fi
 
-if [ -n "$version" -a -n "$flavor" ]; then
+if [ -n "$version" ] && [ -n "$flavor" ]; then
    pkgid="$name-$version-$flavor"
 elif [ -n "$version" ]; then
    pkgid="$name-$version"

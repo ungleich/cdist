@@ -54,7 +54,7 @@ case $uname in
       currentSum=\$(cksum -o 1 ${source} | cut -d= -f2 | sed 's/ //g')
       ;;
    *)
-      echo "Sorry, I do not know how to find a cksum on ${UNAME}." >&2
+      echo "Sorry, I do not know how to find a cksum on ${uname}." >&2
       exit 1
       ;;
 esac
@@ -69,10 +69,10 @@ fi
 
 if [ -n "${cksum}" ]; then
    if [ ! "\${currentSum}" = "${cksum}" ]; then
-      $__remote_copy "${source}" "${my_target_host}:${rcvar}.new"
+      $__remote_copy "${source}" "\${my_target_host}:${rcvar}.new"
    fi
 else # File just doesn't exist yet
-   $__remote_copy "${source}" "${my_target_host}:${rcvar}.new"
+   $__remote_copy "${source}" "\${my_target_host}:${rcvar}.new"
 fi
 EOF
 

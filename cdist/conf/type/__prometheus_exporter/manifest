@@ -2,11 +2,12 @@
 
 export GOBIN=/opt/gocode/bin  # where to find go binaries
 
-exporter="$(cat $__object/parameter/exporter)"
+exporter="$(cat "$__object/parameter/exporter")"
 [ -z "$exporter" ] && exporter="$__object_id"
 
 __user prometheus --system
 
+require=""
 case $exporter in
 	node)
 		TEXTFILES=/service/node-exporter/textfiles  # path for the textfiles collector
@@ -18,7 +19,7 @@ case $exporter in
 	;;
 	blackbox)
 		require="$require __daemontools_service/${exporter}-exporter __user/prometheus" __config_file "/service/${exporter}-exporter/blackbox.yml" \
-			--source $__type/files/blackbox.yml \
+			--source "$__type/files/blackbox.yml" \
 			--group prometheus --mode 640 \
 			--onchange "svc -h /service/${exporter}-exporter"
 		require="$require __golang_from_vendor" __go_get github.com/prometheus/blackbox_exporter
@@ -39,9 +40,9 @@ case $exporter in
 	;;
 esac
 
-require="$require __daemontools" __daemontools_service ${exporter}-exporter --run "$run"
+require="$require __daemontools" __daemontools_service "${exporter}-exporter" --run "$run"
 if [ -f "$__object/parameter/add-consul-service" ]; then
-	__consul_service ${exporter}-exporter --port $port --check-http "http://localhost:$port/metrics" --check-interval 10s
+	__consul_service "${exporter}-exporter" --port "$port" --check-http "http://localhost:$port/metrics" --check-interval 10s
 fi
 
 #__daemontools --install-init-script

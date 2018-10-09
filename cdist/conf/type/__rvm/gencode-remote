@@ -34,7 +34,7 @@ DONE
     absent)
         cat << DONE
 su - $user -c "rm -Rf \"\\\$HOME/.rvm\";
-sed '/rvm\/scripts\/rvm/d' \"\\\$HOME/.bashrc\" > \"\\\$HOME/.bashrc.cdist-tmp\"
+sed '/rvm\\/scripts\\/rvm/d' \"\\\$HOME/.bashrc\" > \"\\\$HOME/.bashrc.cdist-tmp\"
 mv \"\\\$HOME/.bashrc.cdist-tmp\" \"\\\$HOME/.bashrc\""
 DONE
     ;;

@@ -21,7 +21,7 @@
 # Retrieve the status of a package - parsed dpkg output
 #
 
-if [ "$($__explorer/os)" = "freebsd" ]; then
+if [ "$("$__explorer/os")" = "freebsd" ]; then
    command -v pkg
 fi
 

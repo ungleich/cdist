@@ -66,7 +66,7 @@ require="__directory/etc/consul" \
    __directory "$conf_dir" \
       --owner root --group "$group" --mode 750 --state "$state"
 
-if [ -f "$__object/parameter/ca-file-source" -o -f "$__object/parameter/cert-file-source" -o -f "$__object/parameter/key-file-source" ]; then
+if [ -f "$__object/parameter/ca-file-source" ] || [ -f "$__object/parameter/cert-file-source" ] || [ -f "$__object/parameter/key-file-source" ]; then
    # create directory for ssl certs
    require="__directory/etc/consul" \
       __directory /etc/consul/ssl \
@@ -84,7 +84,8 @@ echo "{"
 # parameters we define ourself
 printf '   "data_dir": "%s"\n' "$data_dir"
 
-for param in $(ls "$__object/parameter/"); do
+cd "$__object/parameter/"
+for param in *; do
    case "$param" in
       state|user|group|json-config) continue ;;
       ca-file-source|cert-file-source|key-file-source)

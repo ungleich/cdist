@@ -45,13 +45,13 @@ case "$state_should" in
         if [ "$present" = "notpresent" ]; then
             echo opkg --verbosity=0 update
         fi
-        echo opkg --verbosity=0 install \"$name\"
+        echo "opkg --verbosity=0 install '$name'"
     ;;
     absent)
-        echo opkg --verbosity=0 remove \"$name\"
+        echo "opkg --verbosity=0 remove '$name'"
     ;;
     *)
-        echo "Unknown state: $state" >&2
+        echo "Unknown state: ${state_should}" >&2
         exit 1
     ;;
 esac

@@ -19,7 +19,7 @@ set -eu
 
 user="$(cat "${__object}/parameter/user")"
 
-if which getent >/dev/null 2>&1; then
+if command -v getent >/dev/null 2>&1; then
 	line=$(getent passwd "${user}")
 else
 	line=$(grep "^${user}:" /etc/passwd)

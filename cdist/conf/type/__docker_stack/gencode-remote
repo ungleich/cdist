@@ -1,0 +1,63 @@
+#!/bin/sh -e
+#
+# 2018 Ľubomír Kučera <lubomir.kucera.jr at gmail.com>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+stack="${__object_id:?}"
+state=$(cat "${__object:?}/parameter/state")
+
+case "${state}" in
+	absent)
+		stack_exists=$(cat "${__object:?}/explorer/stack-exists")
+
+		if [ "${stack_exists}" -ne 1 ]; then
+			exit 0
+		fi
+
+		echo "docker stack rm ${stack}"
+	;;
+	present)
+		compose_file=$(cat "${__object}/parameter/compose-file")
+
+		if [ -z "${compose_file}" ]; then
+			exit 0
+		fi
+
+		if [ "${compose_file}" = "-" ]; then
+			compose_file="${__object}/stdin"
+		fi
+
+		cat <<-EOF
+		compose_file="\$(mktemp cdist.XXXXXXXXXX)"
+
+		base64 -d > "\${compose_file}" << eof
+		$(base64 "${compose_file}")
+		eof
+
+		docker stack deploy --compose-file "\${compose_file}" \
+			--prune --with-registry-auth ${stack}
+
+		rm "\${compose_file}"
+		EOF
+	;;
+	*)
+		echo "Unsupported state: ${state}" >&2
+
+		exit 1
+	;;
+esac

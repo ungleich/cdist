@@ -40,8 +40,10 @@ MESSAGES
 If consul binary is created using __staged_file then underlaying __file type messages are emitted.
 
 If consul binary is created by direct method then the following messages are emitted:
+
 /usr/local/bin/consul created
     consul binary was created
+
 
 EXAMPLES
 --------

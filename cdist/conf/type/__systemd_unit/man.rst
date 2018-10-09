@@ -9,9 +9,10 @@ cdist-type__systemd_unit - Install a systemd unit
 DESCRIPTION
 -----------
 
-This type can install, enable and start a systemd unit. This is particularly
-useful on systems which take advantage of systemd heavily (e.g., CoreOS). For
-more information about systemd units, see SYSTEMD.UNIT(5).
+This type manages systemd units in ``/etc/systemd/system/``. It can install,
+enable and start a systemd unit. This is particularly useful on systems which
+take advantage of systemd heavily (e.g., CoreOS). For more information about
+systemd units, see SYSTEMD.UNIT(5).
 
 REQUIRED PARAMETERS
 -------------------
@@ -22,12 +23,14 @@ OPTIONAL PARAMETERS
 -------------------
 
 enablement-state
-    'enabled' or 'disabled', where:
+    'enabled', 'disabled' or 'masked', where:
 
     enabled
         enables the unit
     disabled
         disables the unit
+    masked
+        masks the unit
 
 source
     Path to the config file. If source is '-' (dash), take what was written to
@@ -37,15 +40,17 @@ state
     'present' or 'absent', defaults to 'present' where:
 
     present
-        the unit is installed, enabled and started
+        the unit (or its mask) is installed
     absent
-        the unit is stopped, disabled and uninstalled
+        The unit is stopped, disabled and uninstalled. If the unit was masked,
+        the mask is removed.
 
 BOOLEAN PARAMETERS
 ------------------
 
 restart
-    Restart the unit on unit file change or when the unit is inactive.
+    Start the unit if it was inactive. Restart the unit if the unit file
+    changed. Stop the unit if new ``enablement-state`` is ``masked``.
 
 MESSAGES
 --------

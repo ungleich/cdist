@@ -36,7 +36,7 @@ state="$(cat "$__object/parameter/state")"
 
 started="true"
 # If the user wants the jail gone, it implies it shouldn't be started.
-[ -f "$__object/parameter/stopped" -o "$state" = "absent" ] && started="false"
+{ [ -f "$__object/parameter/stopped" ] || [ "$state" = "absent" ]; } && started="false"
 
 if [ -f "$__object/parameter/ip" ]; then
    ip="$(cat "$__object/parameter/ip")"
@@ -45,7 +45,7 @@ else
 #    when $state=present, it's required. Enforce this.
    if [ "$state" = "present" ]; then
       exec >&2
-      echo "If --state is 'present,' --ip must be given\!"
+      printf 'If --state is "present", --ip must be given\!\n'
       exit 1
    fi
 fi
@@ -70,7 +70,7 @@ devfsruleset="$(cat "$__object/parameter/devfs-ruleset")"
 
 # devfs_ruleset being defined without devfs_enable being true
 #     is pointless. Treat this as an error.
-if [ -n "$devfsruleset" -a "$devfsenable" = "false" ]; then
+if [ -n "$devfsruleset" ] && [ "$devfsenable" = "false" ]; then
    exec >&2
    echo "Can't have --devfs-ruleset defined with --devfs-disable"
    exit 1
@@ -86,14 +86,14 @@ present="$(cat "$__object/explorer/present")"
 status="$(cat "$__object/explorer/status")"
 
 # Handle ip="iface|addr, iface|addr" format
-if [ $(expr "${ip}" : ".*|.*") -gt "0" ]; then
+if [ "$(expr "${ip}" : ".*|.*")" -gt "0" ]; then
    # If we have multiple IPs defined, $interface doesn't make sense because ip="iface|addr, iface|addr" implies it
    interface=""
    SAVE_IFS="$IFS"
    IFS=", "
    for cur_ip in ${ip}; do
       # Just get the last IP address for SSH to listen on
-      mgmt_ip=$(echo "${ip}" | sed -E -e 's/^.*\|(.*)\/[0-9]+$/\1/')
+      mgmt_ip=$(echo "${cur_ip}" | sed -E -e 's/^.*\|(.*)\/[0-9]+$/\1/')
    done
    IFS="$SAVE_IFS"
 else
@@ -119,19 +119,19 @@ startJail() {
 deleteJail() {
 # Unmount the jail's mountpoints if necessary
    cat <<EOF
-      output="\$(mount | grep "\/${name}\/dev")" || true
+      output="\$(mount | grep "\\/${name}\\/dev")" || true
       if [ -n "\${output}" ]; then # /dev is still mounted...jail still running?
          /etc/rc.d/jail stop "${name}"
       fi
-      output="\$(mount | grep "\/rw\/${name}\/")" || true
+      output="\$(mount | grep "\\/rw\\/${name}\\/")" || true
       if [ -n "\${output}" ]; then # >=1 rw mount is mounted still
-         for DIR in "${output}"; do
-            umount -F "/etc/fstab.${name}" "\$(echo "${DIR}" | awk '{print $3}')"
+         for DIR in "\${output}"; do
+            umount -F "/etc/fstab.${name}" "\$(echo "${DIR}" | awk '{print \$3}')"
          done
       fi
-      output="\$(mount | grep "\/${name} (")" || true
+      output="\$(mount | grep "\\/${name} (")" || true
       if [ -n "\${output}" ]; then # ro mount is mounted still
-         umount -F "/etc/fstab.${name}" "\$(echo "${output}" | awk '{print $3}')"
+         umount -F "/etc/fstab.${name}" "\$(echo "\${output}" | awk '{print \$3}')"
       fi
 EOF
 # Remove the jail's rw mountpoints
@@ -279,9 +279,9 @@ END
       if [ ! -f /etc/devfs.rules ]; then
          touch /etc/devfs.rules
       fi
-      if [ -z "\$(grep '\[jailrules=' /etc/devfs.rules)" ]; then   # The default ruleset doesn't exist
+      if [ -z "\$(grep '\\[jailrules=' /etc/devfs.rules)" ]; then   # The default ruleset doesn't exist
          # Get the highest-numbered ruleset
-	 highest="\$(sed -n 's/\[.*=\([0-9]*\)\]/\1/pg' /etc/devfs.rules | sort -u | tail -n 1)" || true
+	 highest="\$(sed -n 's/\\[.*=\\([0-9]*\\)\\]/\\1/pg' /etc/devfs.rules | sort -u | tail -n 1)" || true
          # increment by 1
          let num="\${highest}+1" 2>&- >&-
          # add default ruleset

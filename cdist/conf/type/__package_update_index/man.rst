@@ -28,8 +28,8 @@ type
     * pacman for Arch Linux
 
 maxage
-    Available for package manager apt, max time in seconds since last update.
-    Repo update is skipped if maxage is not reached yet.
+    Available for package manager apt and pacman, max time in seconds since
+    last update. Repo update is skipped if maxage is not reached yet.
 
 MESSAGES
 --------
@@ -51,6 +51,7 @@ EXAMPLES
 
     # Only update every hour:
     __package_update_index --maxage 3600 --type apt
+
     # same as above (on apt-type systems):
     __package_update_index --maxage 3600
 
@@ -58,6 +59,7 @@ AUTHORS
 -------
 | Ricardo Catalinas Jiménez <jimenezrick--@--gmail.com>
 | Thomas Eckert <tom--@--it-eckert.de>
+| Stu Zhao <z12y12l12--@--gmail.com>
 
 
 COPYING

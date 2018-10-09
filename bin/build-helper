@@ -250,6 +250,7 @@ eof
         "$0" check-date
         "$0" check-unittest
         "$0" check-pep8
+        "$0" shellcheck
 
         # Generate version file to be included in packaging
         "$0" target-version
@@ -359,13 +360,40 @@ eof
         fi
     ;;
 
+    test-remote)
+        export PYTHONPATH="$(pwd -P)"
+        python3 -m cdist.test.exec.remote
+    ;;
+
     pep8)
         pep8 "${basedir}" "${basedir}/scripts/cdist" | less
     ;;
 
     check-pep8)
         "$0" pep8
-        echo "Please review pep8 report."
+        printf "\\nPlease review pep8 report.\\n"
+        while true
+        do
+            echo "Continue (yes/no)?"
+            any=
+            read any
+            case "$any" in
+                yes)
+                    break
+                ;;
+                no)
+                    exit 1
+                ;;
+                *)
+                    echo "Please answer with 'yes' or 'no' explicitly."
+                ;;
+        esac
+        done
+    ;;
+
+    shellcheck)
+        make helper=${helper} WEBDIR=${WEBDIR} shellcheck
+        printf "\\nPlease review shellcheck report.\\n"
         while true
         do
             echo "Continue (yes/no)?"

@@ -20,7 +20,8 @@ SYNOPSIS
                  [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                  [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
                  [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-4] [-6]
-                 [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
+                 [-A] [-a] [-f HOSTFILE] [-P] [-p [HOST_MAX]] [-S] [-s]
+                 [-t]
                  [host [host ...]] 
 
     cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
@@ -28,7 +29,8 @@ SYNOPSIS
                   [-j [JOBS]] [-n] [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
                   [-r REMOTE_OUT_DIR] [--remote-copy REMOTE_COPY]
                   [--remote-exec REMOTE_EXEC] [-I INVENTORY_DIR] [-4] [-6]
-                  [-A] [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-S] [-s] [-t]
+                  [-A] [-a] [-f HOSTFILE] [-P] [-p [HOST_MAX]] [-S] [-s]
+                  [-t]
                   [host [host ...]] 
 
     cdist inventory [-h] {add-host,add-tag,del-host,del-tag,list} ...
@@ -72,24 +74,20 @@ GENERAL
 -------
 All commands accept the following options:
 
-.. option:: -h, --help
-
+**-h, --help**
     Show the help screen.
 
-.. option:: -l LOGLEVEL, --log-level LOGLEVEL
-
+**-l LOGLEVEL, --log-level LOGLEVEL**
     Set the specified verbosity level. The levels, in
     order from the lowest to the highest, are: ERROR (-1),
     WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) TRACE (4
     or higher). If used along with -v then -v increases
     last set value and -l overwrites last set value.
 
-.. option:: -q, --quiet
-
+**-q, --quiet**
     Quiet mode: disables logging, including WARNING and ERROR.
 
-.. option:: -v, --verbose
-
+**-v, --verbose**
     Increase the verbosity level. Every instance of -v
     increments the verbosity level by one. Its default
     value is 0 which includes ERROR and WARNING levels.
@@ -99,8 +97,7 @@ All commands accept the following options:
     then -l overwrites last set value and -v increases
     last set value.
 
-.. option:: -V, --version
-
+**-V, --version**
    Show version and exit.
 
 
@@ -115,55 +112,45 @@ CONFIG/INSTALL
 Configure/install one or more hosts.
 Install command is currently in beta.
 
-.. option:: -4, --force-ipv4
-
+**-4, --force-ipv4**
     Force to use IPv4 addresses only. No influence for
     custom remote commands.
 
-.. option:: -6, --force-ipv6
-
+**-6, --force-ipv6**
     Force to use IPv6 addresses only. No influence for
     custom remote commands.
 
-.. option:: -A, --all-tagged
-
+**-A, --all-tagged**
     Use all hosts present in tags db. Currently in beta.
 
-.. option:: -a, --all
-
+**-a, --all**
     List hosts that have all specified tags, if -t/--tag
     is specified.
 
-.. option:: -b, --beta
-
+**-b, --beta**
     Enable beta functionality.
     
-.. option:: -C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN
-
-    Sepcify custom cache path pattern. If it is not set then
+**-C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN**
+    Specify custom cache path pattern. If it is not set then
     default hostdir is used. For more info on format see
     :strong:`CACHE PATH PATTERN FORMAT` below.
 
-.. option:: -c CONF_DIR, --conf-dir CONF_DIR
-
+**-c CONF_DIR, --conf-dir CONF_DIR**
     Add a configuration directory. Can be specified multiple times.
     If configuration directories contain conflicting types, explorers or
     manifests, then the last one found is used.
 
-.. option:: -f HOSTFILE, --file HOSTFILE
-
+**-f HOSTFILE, --file HOSTFILE**
     Read specified file for a list of additional hosts to operate on
     or if '-' is given, read stdin (one host per line).
     If no host or host file is specified then, by default,
     read hosts from stdin. For the file format see
     :strong:`HOSTFILE FORMAT` below.
 
-.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
-
+**-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
 
-.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
-
+**-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
     directory is set up by the following rules: if cdist 
     configuration resolves this value then specified
@@ -171,60 +158,52 @@ Install command is currently in beta.
     ~/.cdit/inventory is used, otherwise distribution
     inventory directory is used.
 
-.. option:: -i MANIFEST, --initial-manifest MANIFEST
-
+**-i MANIFEST, --initial-manifest MANIFEST**
     Path to a cdist manifest or - to read from stdin.
 
-.. option:: -j [JOBS], --jobs [JOBS]
-
+**-j [JOBS], --jobs [JOBS]**
     Operate in parallel in specified maximum number of
     jobs. Global explorers, object prepare and object run
     are supported. Without argument CPU count is used by
     default. Currently in beta.
 
-.. option:: -n, --dry-run
-
+**-n, --dry-run**
     Do not execute code.
 
-.. option:: -o OUT_PATH, --out-dir OUT_PATH
-
+**-o OUT_PATH, --out-dir OUT_PATH**
     Directory to save cdist output in.
 
-.. option:: -p [HOST_MAX], --parallel [HOST_MAX]
+**-P, --timestamp**
+    Timestamp log messages with the current local date and time
+    in the format: YYYYMMDDHHMMSS.us.
 
+**-p [HOST_MAX], --parallel [HOST_MAX]**
     Operate on multiple hosts in parallel for specified
     maximum hosts at a time. Without argument CPU count is
     used by default.
 
-.. option:: -R [{tar,tgz,tbz2,txz}], --use-archiving [{tar,tgz,tbz2,txz}]
-
+**-R [{tar,tgz,tbz2,txz}], --use-archiving [{tar,tgz,tbz2,txz}]**
     Operate by using archiving with compression where
     appropriate. Supported values are: tar - tar archive,
     tgz - gzip tar archive (the default), tbz2 - bzip2 tar
     archive and txz - lzma tar archive. Currently in beta.
 
-.. option:: -r REMOTE_OUT_PATH, --remote-out-dir REMOTE_OUT_PATH
-
+**-r REMOTE_OUT_PATH, --remote-out-dir REMOTE_OUT_PATH**
     Directory to save cdist output in on the target host.
 
-.. option:: -S, --disable-saving-output-streams
-
+**-S, --disable-saving-output-streams**
     Disable saving output streams.
 
-.. option:: -s, --sequential
-
+**-s, --sequential**
     Operate on multiple hosts sequentially (default).
 
-.. option:: --remote-copy REMOTE_COPY
-
+**--remote-copy REMOTE_COPY**
     Command to use for remote copy (should behave like scp).
 
-.. option:: --remote-exec REMOTE_EXEC
-
+**--remote-exec REMOTE_EXEC**
     Command to use for remote execution (should behave like ssh).
 
-.. option:: -t, --tag
-
+**-t, --tag**
     Host is specified by tag, not hostname/address; list
     all hosts that contain any of specified tags.
     Currently in beta.
@@ -271,27 +250,22 @@ INVENTORY ADD-HOST
 ------------------
 Add host(s) to inventory database.
 
-.. option:: host
-
+**host**
     Host(s) to add.
 
-.. option:: -b, --beta
-
+**-b, --beta**
     Enable beta functionality.
 
-.. option:: -f HOSTFILE, --file HOSTFILE
-
+**-f HOSTFILE, --file HOSTFILE**
     Read additional hosts to add from specified file or
     from stdin if '-' (each host on separate line). If no
     host or host file is specified then, by default, read
     from stdin. Hostfile format is the same as config hostfile format.
 
-.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
-
+**-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
 
-.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
-
+**-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
     directory is set up by the following rules: if cdist 
     configuration resolves this value then specified
@@ -304,16 +278,13 @@ INVENTORY ADD-TAG
 -----------------
 Add tag(s) to inventory database.
 
-.. option:: host
-
+**host**
     List of host(s) for which tags are added.
 
-.. option:: -b, --beta
-
+**-b, --beta**
     Enable beta functionality.
 
-.. option:: -f HOSTFILE, --file HOSTFILE
-
+**-f HOSTFILE, --file HOSTFILE**
     Read additional hosts to add tags from specified file
     or from stdin if '-' (each host on separate line). If
     no host or host file is specified then, by default,
@@ -321,12 +292,10 @@ Add tag(s) to inventory database.
     are specified then tags are read from stdin and are
     added to all hosts. Hostfile format is the same as config hostfile format.
 
-.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
-
+**-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
 
-.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
-
+**-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
     directory is set up by the following rules: if cdist 
     configuration resolves this value then specified
@@ -334,8 +303,7 @@ Add tag(s) to inventory database.
     ~/.cdit/inventory is used, otherwise distribution
     inventory directory is used.
 
-.. option:: -T TAGFILE, --tag-file TAGFILE
-
+**-T TAGFILE, --tag-file TAGFILE**
     Read additional tags to add from specified file or
     from stdin if '-' (each tag on separate line). If no
     tag or tag file is specified then, by default, read
@@ -343,8 +311,7 @@ Add tag(s) to inventory database.
     specified then tags are read from stdin and are added
     to all hosts. Tagfile format is the same as config hostfile format.
 
-.. option:: -t TAGLIST, --taglist TAGLIST
-
+**-t TAGLIST, --taglist TAGLIST**
     Tag list to be added for specified host(s), comma
     separated values.
 
@@ -353,31 +320,25 @@ INVENTORY DEL-HOST
 ------------------
 Delete host(s) from inventory database.
 
-.. option:: host
-
+**host**
     Host(s) to delete.
 
-.. option:: -a, --all
-
+**-a, --all**
     Delete all hosts.
 
-.. option:: -b, --beta
-
+**-b, --beta**
     Enable beta functionality.
 
-.. option:: -f HOSTFILE, --file HOSTFILE
-
+**-f HOSTFILE, --file HOSTFILE**
     Read additional hosts to delete from specified file or
     from stdin if '-' (each host on separate line). If no
     host or host file is specified then, by default, read
     from stdin. Hostfile format is the same as config hostfile format.
 
-.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
-
+**-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
 
-.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
-
+**-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
     directory is set up by the following rules: if cdist 
     configuration resolves this value then specified
@@ -390,20 +351,16 @@ INVENTORY DEL-TAG
 -----------------
 Delete tag(s) from inventory database.
 
-.. option:: host
-
+**host**
     List of host(s) for which tags are deleted.
 
-.. option:: -a, --all
-
+**-a, --all**
     Delete all tags for specified host(s).
 
-.. option:: -b, --beta
-
+**-b, --beta**
     Enable beta functionality.
 
-.. option:: -f HOSTFILE, --file HOSTFILE
-
+**-f HOSTFILE, --file HOSTFILE**
     Read additional hosts to delete tags for from
     specified file or from stdin if '-' (each host on
     separate line). If no host or host file is specified
@@ -412,12 +369,10 @@ Delete tag(s) from inventory database.
     from stdin and are deleted from all hosts. Hostfile
     format is the same as config hostfile format.
 
-.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
-
+**-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
 
-.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
-
+**-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
     directory is set up by the following rules: if cdist 
     configuration resolves this value then specified
@@ -425,8 +380,7 @@ Delete tag(s) from inventory database.
     ~/.cdit/inventory is used, otherwise distribution
     inventory directory is used.
 
-.. option:: -T TAGFILE, --tag-file TAGFILE
-
+**-T TAGFILE, --tag-file TAGFILE**
     Read additional tags from specified file or from stdin
     if '-' (each tag on separate line). If no tag or tag
     file is specified then, by default, read from stdin.
@@ -434,8 +388,7 @@ Delete tag(s) from inventory database.
     then tags are read from stdin and are added to all
     hosts. Tagfile format is the same as config hostfile format.
 
-.. option:: -t TAGLIST, --taglist TAGLIST
-
+**-t TAGLIST, --taglist TAGLIST**
     Tag list to be deleted for specified host(s), comma
     separated values.
 
@@ -444,36 +397,29 @@ INVENTORY LIST
 --------------
 List inventory database.
 
-.. option::  host
-
+**host**
     Host(s) to list.
 
-.. option:: -a, --all
-
+**-a, --all**
     List hosts that have all specified tags, if -t/--tag
     is specified.
 
-.. option:: -b, --beta
-
+**-b, --beta**
     Enable beta functionality.
 
-.. option:: -f HOSTFILE, --file HOSTFILE
-
+**-f HOSTFILE, --file HOSTFILE**
     Read additional hosts to list from specified file or
     from stdin if '-' (each host on separate line). If no
     host or host file is specified then, by default, list
     all. Hostfile format is the same as config hostfile format.
 
-.. option:: -g CONFIG_FILE, --config-file CONFIG_FILE
-
+**-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
 
-.. option:: -H, --host-only
-
+**-H, --host-only**
     Suppress tags listing.
 
-.. option:: -I INVENTORY_DIR, --inventory INVENTORY_DIR
-
+**-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
     directory is set up by the following rules: if cdist 
     configuration resolves this value then specified
@@ -481,8 +427,7 @@ List inventory database.
     ~/.cdit/inventory is used, otherwise distribution
     inventory directory is used.
 
-.. option:: -t, --tag
-
+**-t, --tag**
     Host is specified by tag, not hostname/address; list
     all hosts that contain any of specified tags.
 
@@ -494,8 +439,7 @@ to the types as commands. It can be thought as an
 "interactive manifest" environment. See below for example
 usage. Its primary use is for debugging type parameters.
 
-.. option:: -s SHELL, --shell SHELL
-
+**-s SHELL, --shell SHELL**
     Select shell to use, defaults to current shell. Used shell should
     be POSIX compatible shell.
 
@@ -576,6 +520,10 @@ The possible keywords and their meanings are as follows:
     Enable/disable saving output streams (enabled by default).
     It recognizes boolean values from 'yes'/'no', 'on'/'off', 'true'/'false'
     and '1'/'0'.
+
+:strong:`timestamp`
+    Timestamp log messages with the current local date and time
+    in the format: YYYYMMDDHHMMSS.us.
 
 :strong:`verbosity`
     Set verbosity level. Valid values are: 
@@ -666,7 +614,7 @@ EXAMPLES
     # Delete hosts from file old-hosts from inventory
     % cdist inventory del-host -b -f old-hosts
 
-    # Add tags to specifed hosts
+    # Add tags to specified hosts
     % cdist inventory add-tag -b -t europe,croatia,web,static web1 web2
 
     # Add tag to all hosts in inventory

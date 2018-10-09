@@ -34,7 +34,7 @@ case "$state_should" in
             if [ ! -f "$__object/parameter/$boolean" ]; then
                 boolean="no${boolean}"
             fi
-            upper=$(echo $boolean | tr '[a-z]' '[A-Z]')
+            upper=$(echo $boolean | tr '[:lower:]' '[:upper:]')
             booleans="$booleans $upper"
         done
 

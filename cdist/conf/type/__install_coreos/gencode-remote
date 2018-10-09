@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+device=$(cat "${__object:?}/parameter/device")
+ignition=$(cat "${__object}/parameter/ignition")
+
+cat <<EOF
+ignition_file="\$(mktemp /tmp/cdist.XXXXXXXXXX)"
+
+base64 -d > "\${ignition_file}" << eof
+$(base64 "${ignition}")
+eof
+
+coreos-install -d "${device}" \
+	\$(if [ -s "\${ignition_file}" ]; then
+		printf -- "-i \${ignition_file}\\n"
+	fi)
+
+rm "\${ignition_file}"
+EOF

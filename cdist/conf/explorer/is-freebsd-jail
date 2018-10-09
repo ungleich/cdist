@@ -1,0 +1,2 @@
+#!/bin/sh
+sysctl -n security.jail.jailed 2>/dev/null | grep "1" || true

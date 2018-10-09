@@ -22,7 +22,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   redhat|centos|ubuntu|debian|devuan|archlinux|coreos)
+   redhat|centos|ubuntu|debian|devuan|archlinux|coreos|freebsd)
       :
    ;;
    *)
@@ -32,8 +32,10 @@ case "$os" in
    ;;
 esac
 
+conf_path=$(cat "$__object/explorer/conf-path")
+
 __key_value "$__object_name" \
    --key "$__object_id" \
-   --file /etc/sysctl.conf \
+   --file "${conf_path}" \
    --value "$(cat "$__object/parameter/value")" \
    --delimiter '='

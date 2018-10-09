@@ -33,9 +33,10 @@ assert ()                 #  If condition false,
 
 	lineno=$2
 
-	if [ ! $1 ] 
+	if [ ! "$1" ]
 	then
 		echo "Assertion failed:  \"$1\""
+		# shellcheck disable=SC2039
 		echo "File \"$0\", line $lineno, called by $(caller 0)"
 		exit $E_ASSERT_FAILED
 	fi  
@@ -66,7 +67,7 @@ cmd=""
 # FIXME: This is ugly.
 execcmd(){
 	# Set the PACKAGESITE if we're ADDing a new package
-	if [ "$1" = "add" -a -n "$pkgsite" ]; then
+	if [ "$1" = "add" ] && [ -n "$pkgsite" ]; then
 		# Use http.../All/ if we know the exact version we want, use .../Latest/ otherwise
 		pkgsite="export PACKAGESITE=${pkgsite}"
 		[ -n "$version" ] && pkgsite="${pkgsite}/All/" || pkgsite="${pkgsite}/Latest/"
@@ -95,6 +96,7 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
 				exit 0
 			else	# Current version is wrong, fix
 				#updatepkg "$name" "$version"
+				# shellcheck disable=SC2039
 				assert "! ${version} = ${curr_version}" $LINENO
 				cmd="${rm_cmd} ${name}-${curr_version}"
 				execcmd "remove" "${cmd}"

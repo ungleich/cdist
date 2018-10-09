@@ -52,7 +52,7 @@ shorten_property() {
 if [ "$state" = "present" ]; then
     cd "$__object/parameter"
     if grep -q "^${name}:" "$__object/explorer/passwd"; then
-       for property in $(ls .); do
+       for property in *; do
           new_value="$(cat "$property")"
           unset current_value
 
@@ -60,7 +60,7 @@ if [ "$state" = "present" ]; then
 
           case "$property" in
              gid)
-                if $(echo "$new_value" | grep -q '^[0-9][0-9]*$'); then
+                if echo "$new_value" | grep -q '^[0-9][0-9]*$'; then
                    field=4
                 else
                    # We were passed a group name.  Compare the gid in
@@ -97,7 +97,7 @@ if [ "$state" = "present" ]; then
           fi
 
           if [ "$new_value" != "$current_value" ]; then
-              set -- "$@" "$(shorten_property $property)" \'$new_value\'
+              set -- "$@" "$(shorten_property "$property")" \'"$new_value"\'
           fi
        done
 
@@ -113,14 +113,14 @@ if [ "$state" = "present" ]; then
        fi
     else
         echo add >> "$__messages_out"
-        for property in $(ls .); do
+        for property in *; do
             [ "$property" = "state" ] && continue
             [ "$property" = "remove-home" ] && continue
             new_value="$(cat "$property")"
             if [ -z "$new_value" ];then       # Boolean values have no value
-              set -- "$@" "$(shorten_property $property)"
+              set -- "$@" "$(shorten_property "$property")"
             else
-              set -- "$@" "$(shorten_property $property)" \'$new_value\'
+              set -- "$@" "$(shorten_property "$property")" \'"$new_value"\'
             fi
         done
 

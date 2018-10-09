@@ -25,14 +25,14 @@
 os=$("$__explorer/os")
 case "$os" in
     "macosx")
-        echo "$(system_profiler SPHardwareDataType | grep "Number of Processors" | awk -F': ' '{print $2}')"
+        system_profiler SPHardwareDataType | grep "Number of Processors" | awk -F': ' '{print $2}'
     ;;
 
     *)
     if [ -r /proc/cpuinfo ]; then
-        sockets="$(grep "physical id" /proc/cpuinfo | sort | uniq | wc -l)"
-        if [ ${sockets} -eq 0 ]; then
-            sockets="$(cat /proc/cpuinfo | grep "processor" | wc -l)"
+        sockets="$(grep "physical id" /proc/cpuinfo | sort -u | wc -l)"
+        if [ "${sockets}" -eq 0 ]; then
+            sockets="$(grep -c "processor" /proc/cpuinfo)"
         fi
         echo "${sockets}"
     fi

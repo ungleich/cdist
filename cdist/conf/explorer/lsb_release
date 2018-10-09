@@ -20,8 +20,9 @@
 #
 
 set +e
-case "$($__explorer/os)" in
+case "$("$__explorer/os")" in
    openwrt)
+      # shellcheck disable=SC1091
       (. /etc/openwrt_release && echo "$DISTRIB_RELEASE")
    ;;
    *)

@@ -83,41 +83,78 @@ class CdistBetaRequired(cdist.Error):
 
 class CdistEntityError(Error):
     """Something went wrong while executing cdist entity"""
-    def __init__(self, entity_name, entity_params, stderr_paths, subject=''):
+    def __init__(self, entity_name, entity_params, stdout_paths,
+                 stderr_paths, subject=''):
         self.entity_name = entity_name
         self.entity_params = entity_params
         self.stderr_paths = stderr_paths
+        self.stdout_paths = stdout_paths
         if isinstance(subject, Error):
             self.original_error = subject
         else:
             self.original_error = None
         self.message = str(subject)
 
+    def _stdpath(self, stdpaths, header_name):
+        result = {}
+        for name, path in stdpaths:
+            if name not in result:
+                result[name] = []
+            try:
+                if os.path.exists(path) and os.path.getsize(path) > 0:
+                    output = []
+                    label_begin = name + ":" + header_name
+                    output.append(label_begin)
+                    output.append('\n')
+                    output.append('-' * len(label_begin))
+                    output.append('\n')
+                    with open(path, 'r') as fd:
+                        output.append(fd.read())
+                    output.append('\n')
+                    result[name].append(''.join(output))
+            except UnicodeError as ue:
+                result[name].append(('Cannot output {}:{} due to: {}.\n'
+                                     'You can try to read the error file "{}"'
+                                     ' yourself.').format(
+                                         name, header_name, ue, path))
+        return result
+
+    def _stderr(self):
+        return self._stdpath(self.stderr_paths, 'stderr')
+
+    def _stdout(self):
+        return self._stdpath(self.stdout_paths, 'stdout')
+
+    def _update_dict_list(self, target, source):
+        for x in source:
+            if x not in target:
+                target[x] = []
+            target[x].extend(source[x])
+
     @property
-    def stderr(self):
-        output = []
-        for stderr_name, stderr_path in self.stderr_paths:
-            if (os.path.exists(stderr_path) and
-                    os.path.getsize(stderr_path) > 0):
-                label_begin = '---- BEGIN ' + stderr_name + ':stderr ----'
-                label_end = '---- END ' + stderr_name + ':stderr ----'
-                output.append('\n' + label_begin)
-                with open(stderr_path, 'r') as fd:
-                    output.append(fd.read())
-                output.append(label_end)
-        return '\n'.join(output)
+    def std_streams(self):
+        std_dict = {}
+        self._update_dict_list(std_dict, self._stdout())
+        self._update_dict_list(std_dict, self._stderr())
+        return std_dict
 
     def __str__(self):
         output = []
         output.append(self.message)
-        header = "\nError processing " + self.entity_name
+        output.append('\n\n')
+        header = "Error processing " + self.entity_name
         under_header = '=' * len(header)
         output.append(header)
+        output.append('\n')
         output.append(under_header)
+        output.append('\n')
         for param_name, param_value in self.entity_params:
             output.append(param_name + ': ' + str(param_value))
-        output.append(self.stderr + '\n')
-        return '\n'.join(output)
+            output.append('\n')
+        output.append('\n')
+        for x in self.std_streams:
+            output.append(''.join(self.std_streams[x]))
+        return ''.join(output)
 
 
 class CdistObjectError(CdistEntityError):
@@ -127,28 +164,39 @@ class CdistObjectError(CdistEntityError):
             ('name', cdist_object.name, ),
             ('path', cdist_object.absolute_path, ),
             ('source', " ".join(cdist_object.source), ),
-            ('type', cdist_object.cdist_type.absolute_path, ),
+            ('type', os.path.realpath(
+                cdist_object.cdist_type.absolute_path), ),
         ]
         stderr_paths = []
         for stderr_name in os.listdir(cdist_object.stderr_path):
             stderr_path = os.path.join(cdist_object.stderr_path,
                                        stderr_name)
             stderr_paths.append((stderr_name, stderr_path, ))
+        stdout_paths = []
+        for stdout_name in os.listdir(cdist_object.stdout_path):
+            stdout_path = os.path.join(cdist_object.stdout_path,
+                                       stdout_name)
+            stdout_paths.append((stdout_name, stdout_path, ))
         super().__init__("object '{}'".format(cdist_object.name),
-                         params, stderr_paths, subject)
+                         params, stdout_paths, stderr_paths, subject)
 
 
 class InitialManifestError(CdistEntityError):
     """Something went wrong while executing initial manifest"""
-    def __init__(self, initial_manifest, stderr_path, subject=''):
+    def __init__(self, initial_manifest, stdout_path, stderr_path, subject=''):
         params = [
             ('path', initial_manifest, ),
+        ]
+        stdout_paths = []
+        stdout_paths = [
+            ('init', stdout_path, ),
         ]
         stderr_paths = []
         stderr_paths = [
             ('init', stderr_path, ),
         ]
-        super().__init__('initial manifest', params, stderr_paths, subject)
+        super().__init__('initial manifest', params, stdout_paths,
+                         stderr_paths, subject)
 
 
 def file_to_list(filename):

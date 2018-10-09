@@ -17,18 +17,24 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 
-os="$("$__explorer/os")"
+type="$("$__type_explorer/type")"
 
-case "$os" in
-    debian|ubuntu|devuan)
+case "$type" in
+    apt)
         if [ -f "/var/cache/apt/pkgcache.bin" ]; then
             echo $(($(date +"%s")-$(stat --format '%Y' /var/cache/apt/pkgcache.bin)))
         else
             echo 0
         fi
         ;;
-    *)  echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+    pacman)
+        if [ -d "/var/lib/pacman/sync" ]; then
+            echo $(($(date +"%s")-$(stat --format '%Y' /var/lib/pacman/sync)))
+        else
+            echo 0
+        fi
+        ;;
+    *)  echo "Your specified type ($type) is currently not supported." >&2
         echo "Please contribute an implementation for it if you can." >&2
-        exit 1
         ;;
 esac

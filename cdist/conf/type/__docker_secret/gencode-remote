@@ -1,0 +1,65 @@
+#!/bin/sh -e
+#
+# 2018 Ľubomír Kučera <lubomir.kucera.jr at gmail.com>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+secret="${__object_id:?}"
+secret_exists=$(cat "${__object:?}/explorer/secret-exists")
+state=$(cat "${__object:?}/parameter/state")
+
+case "${state}" in
+	absent)
+		if [ "${secret_exists}" != "yes" ]; then
+			exit 0
+		fi
+
+		echo "docker secret rm ${secret}"
+	;;
+	present)
+		if [ "${secret_exists}" = "yes" ]; then
+			exit 0
+		fi
+
+		source=$(cat "${__object}/parameter/source")
+
+		if [ -z "${source}" ]; then
+			exit 0
+		fi
+
+		if [ "${source}" = "-" ]; then
+			source="${__object}/stdin"
+		fi
+
+		cat <<-EOF
+		source_file="\$(mktemp cdist.XXXXXXXXXX)"
+
+		base64 -d > "\${source_file}" << eof
+		$(base64 "${source}")
+		eof
+
+		docker secret create "${secret}" "\${source_file}"
+
+		rm "\${source_file}"
+		EOF
+	;;
+	*)
+		echo "Unsupported state: ${state}" >&2
+
+		exit 1
+	;;
+esac

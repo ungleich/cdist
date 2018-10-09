@@ -1,50 +1,41 @@
 #!/bin/sh -e
 
-os=$(cat $__global/explorer/os)
-os_version=$(cat $__global/explorer/os_version)
+os=$(cat "$__global/explorer/os")
+os_version=$(cat "$__global/explorer/os_version")
 
+require=""
 case $os in
     debian|devuan)
         case $os_version in
             8*|jessie)
-                __apt_key_uri grafana \
-                   --name 'Grafana Release Signing Key' \
-                   --uri https://packagecloud.io/gpg.key
-
-                require="__apt_key_uri/grafana" __apt_source grafana \
-                   --uri https://packagecloud.io/grafana/stable/debian/ \
-                   --distribution jessie \
-                   --component main
-
-                __package apt-transport-https
-
-                require="__apt_source/grafana __package/apt-transport-https" __package grafana
-                require="__package/grafana" __start_on_boot grafana-server
+                apt_source_distribution=jessie
                 ;;
-            9*|ascii/ceres)
-                __apt_key_uri grafana \
-                   --name 'Grafana Release Signing Key' \
-                   --uri https://packagecloud.io/gpg.key
-
-                require="__apt_key_uri/grafana" __apt_source grafana \
-                   --uri https://packagecloud.io/grafana/stable/debian/ \
-                   --distribution stretch \
-                   --component main
-
-                __package apt-transport-https
-
-                require="__apt_source/grafana __package/apt-transport-https" __package grafana
-                require="__package/grafana" __start_on_boot grafana-server
+            9*|ascii/ceres|ascii)
+                apt_source_distribution=stretch
                 ;;
-
             *)
-                echo "Don't know how to install Grafana on $os $os_version. Send us a pull request!"
+                echo "Don't know how to install Grafana on $os $os_version. Send us a pull request!" >&2
                 exit 1
-            ;;
+                ;;
         esac
-    ;;
+
+        __apt_key_uri grafana \
+            --name 'Grafana Release Signing Key' \
+            --uri https://packagecloud.io/gpg.key
+
+        require="$require __apt_key_uri/grafana" __apt_source grafana \
+                    --uri https://packagecloud.io/grafana/stable/debian/ \
+                    --distribution $apt_source_distribution \
+                    --component main
+
+        __package apt-transport-https
+
+        require="$require __apt_source/grafana __package/apt-transport-https" __package grafana
+        require="$require __package/grafana" __start_on_boot grafana-server
+        require="$require __start_on_boot/grafana-server" __process grafana-server --start "service grafana-server start"
+        ;;
     *)
-        echo "Don't know how to install Grafana on $os. Send us a pull request!"
+        echo "Don't know how to install Grafana on $os. Send us a pull request!" >&2
         exit 1
-    ;;
+        ;;
 esac

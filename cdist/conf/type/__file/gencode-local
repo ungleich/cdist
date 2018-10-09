@@ -23,7 +23,7 @@ destination="/$__object_id"
 state_should="$(cat "$__object/parameter/state")"
 type="$(cat "$__object/explorer/type")"
 
-[ "$state_should" = "exists" -a "$type" = "file" ] && exit 0 # nothing to do
+[ "$state_should" = "exists" ] && [ "$type" = "file" ] && exit 0 # nothing to do
 
 if [ "$state_should" = "pre-exists" ]; then
    if [ -f "$__object/parameter/source" ]; then
@@ -41,7 +41,7 @@ fi
 
 upload_file=
 create_file=
-if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
+if [ "$state_should" = "present" ] || [ "$state_should" = "exists" ]; then
    if [ ! -f "$__object/parameter/source" ]; then
       remote_stat="$(cat "$__object/explorer/stat")"
       if [ -z "$remote_stat" ]; then
@@ -70,7 +70,7 @@ if [ "$state_should" = "present" -o "$state_should" = "exists" ]; then
          fi
       fi
    fi
-   if [ "$create_file" -o "$upload_file" ]; then
+   if [ "$create_file" ] || [ "$upload_file" ]; then
       # tell gencode-remote that we created or uploaded a file and that it must
       # set all attributes no matter what the explorer retreived
       mkdir "$__object/files"
@@ -84,7 +84,7 @@ DONE
       if [ "$upload_file" ]; then
          echo upload >> "$__messages_out"
          # IPv6 fix
-         if $(echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$')
+         if echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$'
          then
              my_target_host="[${__target_host}]"
          else

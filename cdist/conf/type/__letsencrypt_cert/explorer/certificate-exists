@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+certbot_path=$("${__type_explorer}/certbot-path")
+if [ -n "${certbot_path}" ]
+then
+	if certbot certificates | grep -q "  Certificate Name: ${__object_id:?}$"; then
+		echo yes
+	else
+		echo no
+	fi
+else
+	echo no
+fi

@@ -18,8 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-options="$(cat "$__object/parameter/options")"
-
 #echo "reboot $options"
 cat << DONE
 echo 1 > /proc/sys/kernel/sysrq

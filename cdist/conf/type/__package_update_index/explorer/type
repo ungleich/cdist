@@ -1,6 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2018 Stu Zhao (z12y12l12 at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -16,8 +16,19 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
-#
 
-# set defaults
-target="$(cat "$__object/parameter/target" 2>/dev/null \
-   || echo "/target" | tee "$__object/parameter/target")"
+if [ -f "$__object/parameter/type" ]; then
+    cat "$__object/parameter/type"
+else
+    # By default determine package manager based on operating system
+    os="$("$__explorer/os")"
+    case "$os" in
+        amazon|scientific|centos|fedora|redhat) echo "yum" ;;
+        debian|ubuntu|devuan) echo "apt" ;;
+        archlinux) echo "pacman" ;;
+        *)
+            echo "Don't know how to manage packages on: $os" >&2
+            exit 1
+            ;;
+    esac
+fi

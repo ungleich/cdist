@@ -46,7 +46,7 @@ exp_uri="$(cat "$__object/explorer/service_uri")"
 exp_id="$(cat "$__object/explorer/service_id")"
 
 # we need this list to remove ids, but we must do this in reverse order
-exp_ids="$(cat "$__object/explorer/service_ids" | rev)"
+exp_ids="$(rev "$__object/explorer/service_ids")"
 
 if [ "$uri" = "$exp_uri" ] ; then
     state_is="present"
@@ -59,10 +59,10 @@ if [ -f "$__object/parameter/remove-all-other-services" ]; then
    # file exists -> True
    for i in $exp_ids; do
      if [ "$i" != "$exp_id" ] ; then
-       echo zypper $zypper_def_opts  removeservice "$i" "&>/dev/null"
+       echo "zypper $zypper_def_opts  removeservice $i &>/dev/null"
      fi
    done 
-   echo zypper $zypper_def_opts refs "&>/dev/null"
+   echo "zypper $zypper_def_opts refs &>/dev/null"
 fi
 
 
@@ -71,14 +71,14 @@ fi
 
 case "$state_should" in
    present)
-         echo zypper $zypper_def_opts addservice -t "$stype" "$uri" \"$desc\"
-         echo zypper $zypper_def_opts refs
-         echo zypper $zypper_def_opts ref
+         echo "zypper $zypper_def_opts addservice -t $stype $uri '$desc'"
+         echo "zypper $zypper_def_opts refs"
+         echo "zypper $zypper_def_opts ref"
    ;;
    absent)
-         echo zypper $zypper_def_opts removeservice "$service_id"
-         echo zypper $zypper_def_opts refs
-         echo zypper $zypper_def_opts ref
+         echo "zypper $zypper_def_opts removeservice $exp_id"
+         echo "zypper $zypper_def_opts refs"
+         echo "zypper $zypper_def_opts ref"
    ;;
    *)
       echo "Unknown state: $state_should" >&2

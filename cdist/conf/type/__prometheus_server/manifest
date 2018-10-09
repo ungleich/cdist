@@ -1,52 +1,71 @@
 #!/bin/sh -e
 
-GOBIN=/opt/gocode/bin  # where to find go binaries
+##### HARD-CODED CONFIG #####################################################
+
 CONF_DIR=/etc/prometheus
 CONF=$CONF_DIR/prometheus.yml
-LOGLEVEL=info
+
+##### GET SETTINGS ##########################################################
 
 config="$(cat "$__object/parameter/config")"
 retention_days="$(cat "$__object/parameter/retention-days")"
 storage_path="$(cat "$__object/parameter/storage-path")"
-listen_address="$(cat "$__object/parameter/listen-address")"
-alertmanager_url="$(cat "$__object/parameter/alertmanager-url")"
-target_heap_size="$(cat "$__object/parameter/target-heap-size")"
 rule_files="$(cat "$__object/parameter/rule-files")"
 
 # explorer in kB => convert; by default we go with 1/2 RAM
-[ "$target_heap_size" = "auto" ] && target_heap_size=$(($(cat $__global/explorer/memory)*1024/2))
+[ "$target_heap_size" = "auto" ] && target_heap_size=$(($(cat "$__global/explorer/memory")*1024/2))
 
+##### INSTALL THE PACKAGE ###################################################
 
-FLAGS="config.file '$CONF'
-storage.local.path '$storage_path'
-storage.local.target-heap-size $(($target_heap_size))  # in bytes; should be 2/3 of available memory because it may be hungry
-storage.local.retention $(($retention_days*24))h  # golang doesn't have days :D
-web.listen-address '$listen_address'
-alertmanager.url '$alertmanager_url'
-log.level $LOGLEVEL"
+require_pkg=""  # what to require if I want to require "the package"
+require=""
+if [ -f "$__object/parameter/install-from-backports" ]; then
+	os=$(cat "$__global/explorer/os")
+	os_version=$(cat "$__global/explorer/os_version")
 
-REAL_FLAGS="$(echo "$FLAGS" | sed -nE 's/^([^#]+).*/ --\1 \\/p')"
+	case $os in
+		devuan)
+			[ "$os_version" = "ascii/ceres" ] && os_version='ascii'  # "ascii" used in the repo URLs
+			__apt_source backports --uri http://auto.mirror.devuan.org/merged --distribution $os_version-backports --component main
+			require="$require __apt_source/backports" __package_apt prometheus --target-release $os_version-backports
+			require_pkg="__package_apt/prometheus"
+		;;
+		*)
+			echo "--install-from-backports is only supported on Devuan -- ignoring." >&2
+			echo "Send a pull request if you require it." >&2
+		;;
+	esac
+else
+	__package prometheus
+	require_pkg="__package/prometheus"
+fi
 
-__go_get github.com/prometheus/prometheus/cmd/...
+##### PREPARE PATHS AND SUCH ################################################
 
-__user prometheus --system
-require="__user/prometheus" __directory "$storage_path" --owner prometheus --parents
-require="__user/prometheus" __directory "$CONF_DIR"     --owner prometheus --parents
+require="$require $require_pkg" __directory "$storage_path" --owner prometheus --parents
 
-__daemontools_service prometheus --run "setuidgid prometheus $GOBIN/prometheus $REAL_FLAGS"
+##### CONFIGURE #############################################################
 
-require="$require __directory/$storage_path __user/prometheus" \
+FLAGS="--storage.tsdb.path $storage_path --storage.tsdb.retention $((retention_days*24))h --web.listen-address [::]:9090"
+
+# TODO it would be neat to restart prometheus on change -- __key_value really should have an --onchange parameter
+require="$require $require_pkg" \
+__key_value prometheus_args --file /etc/default/prometheus \
+	--key "ARGS" --value "\"$FLAGS\"" --delimiter "=" \
+	--onchange "service prometheus restart"
+
+require="$require __directory/$storage_path $require_pkg" \
 __config_file $CONF \
-	--source $config \
+	--source "$config" \
 	--group prometheus --mode 640 \
-	--onchange "$GOBIN/promtool check-config $CONF && svc -h /service/prometheus"
+	--onchange "promtool check config $CONF && service prometheus reload"
 
 for file in $rule_files; do
-	dest=$CONF_DIR/$(basename $file)
-	require="$require __directory/$CONF_DIR __user/prometheus" \
+	dest=$CONF_DIR/$(basename "$file")
+	require="$require $require_pkg" \
 	__config_file "$dest" \
 		--source "$file" \
 		--owner prometheus \
-		--onchange "$GOBIN/promtool check-rules '$dest' && svc -h /service/prometheus"
+		--onchange "promtool check rules '$dest' && service prometheus reload"
 done
 

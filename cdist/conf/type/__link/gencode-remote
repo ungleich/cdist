@@ -61,7 +61,7 @@ case "$state_should" in
     ;;
     absent)
         # only delete if it is a sym/hard link
-        if [ "$file_type" = "symlink" -o "$file_type" = "hardlink" ]; then
+        if [ "$file_type" = "symlink" ] || [ "$file_type" = "hardlink" ]; then
             printf 'rm -f "%s"\n' "$destination"
         fi
     ;;

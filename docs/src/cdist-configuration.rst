@@ -94,6 +94,10 @@ The possible keywords and their meanings are as follows:
     It recognizes boolean values from 'yes'/'no', 'on'/'off', 'true'/'false'
     and '1'/'0'.
 
+:strong:`timestamp`
+    Timestamp log messages with the current local date and time
+    in the format: YYYYMMDDHHMMSS.us.
+
 :strong:`verbosity`
     Set verbosity level. Valid values are: 
     'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE' and 'OFF'.

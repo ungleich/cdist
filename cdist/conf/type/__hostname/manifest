@@ -25,10 +25,10 @@ if [ -f "$__object/parameter/name" ]; then
 else
     case "$os" in
     openbsd)
-        name_should="$(echo "${__target_host}")"
+        name_should="${__target_host}"
     ;;
     *)
-        name_should="$(echo "${__target_host%%.*}")"
+        name_should="${__target_host%%.*}"
     ;;
     esac
 fi
@@ -51,6 +51,13 @@ case "$os" in
             --delimiter '=' \
             --key HOSTNAME \
             --value "$name_should" --exact_delimiter
+    ;;
+    freebsd)
+        __key_value rcconf-hostname \
+            --file /etc/rc.conf \
+            --delimiter '=' \
+            --key 'hostname' \
+            --value "$name_should"
     ;;
     openbsd)
         echo "$name_should" | __file /etc/myname --source -

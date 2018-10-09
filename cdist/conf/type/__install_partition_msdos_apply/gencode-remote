@@ -21,35 +21,35 @@
 #set -x
 
 die() {
-   echo "[__install_partition_msdos_apply] $@" >&2
+   echo "[__install_partition_msdos_apply] $*" >&2
    exit 1
 }
 debug() {
-   #echo "[__install_partition_msdos_apply] $@" >&2
+   #echo "[__install_partition_msdos_apply] $*" >&2
    :
 }
 
 # Convert a size specifier 1G 100M or 50% into the corresponding numeric MB.
 size_to_mb() {
-   local size=$1
-   local available_size="$2"
+   size=$1
+   available_size="$2"
 
-   local number_suffix="$(echo ${size} | sed -e 's:\.[0-9]\+::' -e 's:\([0-9]\+\)\([KkMmGg%]\)[Bb]\?:\1|\2:')"
-   local number="$(echo ${number_suffix} | cut -d '|' -f1)"
-   local suffix="$(echo ${number_suffix} | cut -d '|' -f2)"
+   number_suffix="$(echo "${size}" | sed -e 's:\.[0-9]\+::' -e 's:\([0-9]\+\)\([KkMmGg%]\)[Bb]\?:\1|\2:')"
+   number="$(echo "${number_suffix}" | cut -d '|' -f1)"
+   suffix="$(echo "${number_suffix}" | cut -d '|' -f2)"
 
    case "$suffix" in
       K|k)
-         size="$(( $number / 1024 ))"
+         size="$(( number / 1024 ))"
          ;;
       M|m)
          size="$number"
          ;;
       G|g)
-         size="$(( $number * 1024 ))"
+         size="$(( number * 1024 ))"
          ;;
       %)
-         size="$(( $available_size * $number / 100 ))"
+         size="$(( available_size * number / 100 ))"
          ;;
       *)
          size="-1"
@@ -59,13 +59,15 @@ size_to_mb() {
 
 get_objects() {
    objects_file=$(mktemp)
-   for object in $(find "$__global/object/__install_partition_msdos" -type d -name "$__cdist_object_marker"); do
+   find "$__global/object/__install_partition_msdos" -type d -name "$__cdist_object_marker" |
+   while IFS= read -r object
+   do
       object_device="$(cat "$object/parameter/device")"
       object_minor="$(cat "$object/parameter/minor")"
-      echo "$object_device $object_minor $object" >> $objects_file
+      echo "$object_device $object_minor $object" >> "$objects_file"
    done
-   sort -k 1,2 $objects_file | cut -d' ' -f 3
-   rm $objects_file
+   sort -k 1,2 "$objects_file" | cut -d' ' -f 3
+   rm "$objects_file"
    unset objects_file
    unset object
    unset object_device
@@ -85,9 +87,9 @@ primary_count=0
 for object in $objects; do
    device="$(cat "$object/parameter/device")"
    if [ "$current_device" != "$device" ]; then
-      echo "create_disklabel \"$device\" || die 'Failed to create disklabel for $device'"
+      echo "create_disklabel '$device' || die 'Failed to create disklabel for $device'"
       current_device="$device"
-      device_name=$(echo ${device} | sed -e 's:^/dev/::;s:/:\\/:g')
+      device_name=$(echo "${device}" | sed -e 's:^/dev/::;s:/:\\/:g')
       available_device_size=$(( $(awk "/${device_name}\$/ { print \$3; }" "$partitions") / 1024))
       # make sure we don't go past the end of the drive
       available_device_size=$((available_device_size - 2))
@@ -108,7 +110,7 @@ for object in $objects; do
 
    if [ "${minor}" -lt "5" ]; then
       # Primary partitions
-      primary_count=$(( $primary_count + 1 ))
+      primary_count=$(( primary_count + 1 ))
       available_size=$available_device_size
    else
       # Logical partitions
@@ -121,13 +123,13 @@ for object in $objects; do
       available_size=0
    else
       partition_size=$(size_to_mb "$size" "$available_size")
-      available_size="$(( $available_size - $partition_size ))"
+      available_size="$(( available_size - partition_size ))"
    fi
 
    if [ "${minor}" -lt "5" ]; then
       # Primary partitions
       available_device_size=$available_size
-      if [ "$type" = "extended" -o "$type" = "5" ]; then
+      if [ "$type" = "extended" ] || [ "$type" = "5" ]; then
          # Extended partition
          available_extended_size=$partition_size
       fi

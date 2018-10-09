@@ -1,0 +1,28 @@
+#!/bin/sh -e
+
+state_should="$(cat "$__object/parameter/state")"
+state_is=$(cat "$__object/explorer/state")
+name="$__object_id"
+
+# Short circuit if nothing is to be done
+[ "$state_should" = "$state_is" ] && exit 0
+
+os=$(cat "$__global/explorer/os")
+
+case "$os" in
+    freebsd)
+	if [ "$state_should" = 'present' ]; then
+	    value='YES'
+	else
+	    value='NO'
+	fi
+	__key_value "rcconf-$name-enable" \
+	    --file /etc/rc.conf \
+	    --key "${name}_enable" \
+	    --value "\"$value\"" \
+	    --delimiter '='
+    ;;
+    *)
+        : # handled in gencode-remote
+    ;;
+esac

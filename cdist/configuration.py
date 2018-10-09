@@ -261,6 +261,7 @@ _ARG_OPTION_MAPPING = {
     'verbose': 'verbosity',
     'use_archiving': 'archiving',
     'save_output_streams': 'save_output_streams',
+    'timestamp': 'timestamp',
 }
 
 
@@ -304,6 +305,7 @@ class Configuration(metaclass=Singleton):
             'archiving': ArchivingOption(),
             'save_output_streams': BooleanOption('save_output_streams',
                                                  default_overrides=False),
+            'timestamp': BooleanOption('timestamp'),
         },
     }
 
@@ -382,7 +384,7 @@ class Configuration(metaclass=Singleton):
         return args
 
     def _read_config_file(self, files):
-        config_parser = configparser.ConfigParser()
+        config_parser = configparser.ConfigParser(interpolation=None)
         config_parser.read(files)
         d = dict()
         for section in config_parser.sections():

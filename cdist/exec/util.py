@@ -127,6 +127,7 @@ def call_get_output(command, env=None, stderr=None):
     return (_call_get_stdout(command, env, stderr), None)
 
 
+# Currently not used.
 def handle_called_process_error(err, command):
     # Currently, stderr is not captured.
     # errout = None

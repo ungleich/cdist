@@ -29,8 +29,11 @@ fi
 name="${__object_id}"
 source=$(cat "${__object}/parameter/source")
 state=$(cat "${__object}/parameter/state")
+enablement_state=$(cat "${__object}/parameter/enablement-state")
 
-if [ -z "${source}" ] && [ "${state}" != "absent" ]; then
+# The unit must be disabled before removing its unit file. The unit file is
+# therefore removed by gencode-remote of this type, not here.
+if [ -z "${source}" ] || [ "${state}" = "absent" ]; then
     exit 0
 fi
 
@@ -39,8 +42,17 @@ if [ "${source}" = "-" ]; then
     source="${__object}/stdin"
 fi
 
+unitfile_state="${state}"
+if [ "${enablement_state}" = "masked" ]; then
+    # Masking creates a symlink from /etc/systemd/system/<unit> to /dev/null.
+    # This process fails with "Failed to execute operation: Invalid argument"
+    # if file /etc/systemd/system/<unit> already exists. We must therefore
+    # remove it.
+    unitfile_state="absent"
+fi
+
 __config_file "/etc/systemd/system/${name}" \
     --mode 644 \
     --onchange "systemctl daemon-reload" \
     --source "${source}" \
-    --state "${state}"
+    --state "${unitfile_state}"

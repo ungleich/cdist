@@ -20,8 +20,6 @@
 
 gem="$__object_id"
 gemset="$(cat "$__object/parameter/gemset")"
-ruby="$(echo "$gemset" | cut -d '@' -f 1)"
-gemsetname="$(echo "$gemset" | cut -d '@' -f 2)"
 state_is="$(cat "$__object/explorer/state")"
 user="$(cat "$__object/parameter/user")"
 state_should="$(cat "$__object/parameter/state")"

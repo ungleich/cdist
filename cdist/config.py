@@ -165,18 +165,19 @@ class Config(object):
     def commandline(cls, args):
         """Configure remote system"""
 
-        # FIXME: Refactor relict - remove later
-        log = logging.getLogger("cdist")
+        if (args.parallel and args.parallel != 1) or args.jobs:
+            if args.timestamp:
+                cdist.log.setupTimestampingParallelLogging()
+            else:
+                cdist.log.setupParallelLogging()
+        elif args.timestamp:
+            cdist.log.setupTimestampingLogging()
+        log = logging.getLogger("config")
 
         # No new child process if only one host at a time.
         if args.parallel == 1:
             log.debug("Only 1 parallel process, doing it sequentially")
             args.parallel = 0
-
-        if args.parallel or args.jobs:
-            # If parallel execution then also log process id
-            cdist.log.setupParallelLogging()
-            log = logging.getLogger("cdist")
 
         if args.parallel:
             import signal
@@ -333,6 +334,15 @@ class Config(object):
             family = 0
         return family
 
+    @staticmethod
+    def resolve_target_addresses(host, family):
+        try:
+            return ipaddr.resolve_target_addresses(host, family)
+        except:
+            e = sys.exc_info()[1]
+            raise cdist.Error(("Error resolving target addresses for host '{}'"
+                               ": {}").format(host, e))
+
     @classmethod
     def onehost(cls, host, host_tags, host_base_path, host_dir_name, args,
                 parallel, configuration, remove_remote_files_dirs=False):
@@ -353,7 +363,7 @@ class Config(object):
 
             family = cls._address_family(args)
             log.debug("address family: {}".format(family))
-            target_host = ipaddr.resolve_target_addresses(host, family)
+            target_host = cls.resolve_target_addresses(host, family)
             log.debug("target_host for host \"{}\": {}".format(
                 host, target_host))
 
@@ -431,9 +441,10 @@ class Config(object):
             self.manifest.run_initial_manifest(self.local.initial_manifest)
         except cdist.Error as e:
             which = "init"
+            stdout_path = os.path.join(self.local.stdout_base_path, which)
             stderr_path = os.path.join(self.local.stderr_base_path, which)
             raise cdist.InitialManifestError(self.local.initial_manifest,
-                                             stderr_path, e)
+                                             stdout_path, stderr_path, e)
         self.iterate_until_finished()
         self.cleanup()
         self._remove_files_dirs()

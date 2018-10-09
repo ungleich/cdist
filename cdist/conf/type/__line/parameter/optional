@@ -1,4 +1,6 @@
-state
-regex
+after
+before
 file
 line
+regex
+state

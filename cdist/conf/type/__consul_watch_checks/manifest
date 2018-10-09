@@ -25,7 +25,7 @@ conf_file="watch_${watch_type}_${__object_id}.json"
 state="$(cat "$__object/parameter/state")"
 
 # Sanity checks
-if [ -f "$__object/parameter/filter-service" -a -f "$__object/parameter/filter-state" ]; then
+if [ -f "$__object/parameter/filter-service" ] && [ -f "$__object/parameter/filter-state" ]; then
    echo "Use either --filter-service or --filter-state but not both." >&2
    exit 1
 fi
@@ -35,7 +35,8 @@ fi
 echo "{"
 printf '   "watches": [{\n'
 printf '      "type": "%s"\n' "$watch_type"
-for param in $(ls "$__object/parameter/"); do
+cd "$__object/parameter/"
+for param in *; do
    case "$param" in
       state) continue ;;
       filter-*)

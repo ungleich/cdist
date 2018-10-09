@@ -32,8 +32,8 @@ destination_dir="${destination%/*}"
 
 case "$type" in
    symbolic)
-      cd "$destination_dir"
-      source_is=$(ls -l "$destination" | sed 's/.*-> //g')
+      cd "$destination_dir" || exit 1
+      source_is=$(readlink "$destination")
       if [ -h "$destination" ]; then
          # ignore trailing slashes for comparison
          if [ "${source_is%/}" = "${source%/}" ]; then
@@ -46,13 +46,19 @@ case "$type" in
       fi
    ;;
    hard)
-      cd "$destination_dir"
+      cd "$destination_dir" || exit 1
       # check source relative to destination_dir
       if [ ! -e "$source" ]; then
          echo sourcemissing
          exit 0
       fi
+      # Currently not worth the effor to change it, stat is not defined by POSIX
+      # and different OSes has different implementations for it.
+      # shellcheck disable=SC2012
       destination_inode=$(ls -i "$destination" | awk '{print $1}')
+      # Currently not worth the effor to change it, stat is not defined by POSIX
+      # and different OSes has different implementations for it.
+      # shellcheck disable=SC2012
       source_inode=$(ls -i "$source" | awk '{print $1}')
       if [ "$destination_inode" -eq "$source_inode" ]; then
          echo present

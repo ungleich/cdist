@@ -22,6 +22,7 @@
 
 import logging
 import sys
+import datetime
 
 
 # Define additional cdist logging levels.
@@ -95,13 +96,40 @@ class DefaultLog(logging.Logger):
         self.log(logging.TRACE, msg, *args, **kwargs)
 
 
+class TimestampingLog(DefaultLog):
+
+    def filter(self, record):
+        """Add timestamp to messages"""
+
+        super().filter(record)
+        now = datetime.datetime.now()
+        timestamp = now.strftime("%Y%m%d%H%M%S.%f")
+        record.msg = "[" + timestamp + "] " + str(record.msg)
+
+        return True
+
+
 class ParallelLog(DefaultLog):
     FORMAT = '%(levelname)s: [%(process)d]: %(message)s'
+
+
+class TimestampingParallelLog(TimestampingLog, ParallelLog):
+    pass
 
 
 def setupDefaultLogging():
     del logging.getLogger().handlers[:]
     logging.setLoggerClass(DefaultLog)
+
+
+def setupTimestampingLogging():
+    del logging.getLogger().handlers[:]
+    logging.setLoggerClass(TimestampingLog)
+
+
+def setupTimestampingParallelLogging():
+    del logging.getLogger().handlers[:]
+    logging.setLoggerClass(TimestampingParallelLog)
 
 
 def setupParallelLogging():

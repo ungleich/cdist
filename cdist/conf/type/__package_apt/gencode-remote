@@ -77,10 +77,12 @@ case "$state_should" in
         if [ -n "$version" ]; then
             name="${name}=${version}"
         fi
-        echo $aptget install $target_release \"$name\"
+        echo "$aptget install $target_release '$name'"
+        echo "installed" >> "$__messages_out"
     ;;
     absent)
-        echo $aptget remove $purgeparam \"$name\"
+        echo "$aptget remove $purgeparam '$name'"
+        echo "removed" >> "$__messages_out"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

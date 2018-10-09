@@ -2,6 +2,71 @@ Changelog
 ---------
 
 next:
+	* Core: Transfer all files of a directory at once instead of calling copy once per file (myeisha)
+	* Core: Add timestamp (optional) to log messages (Darko Poljak)
+	* Explorers and types: Fix shellcheck found problems and encountered bugs (Jonas Weber, Thomas Eckert, Darko Poljak)
+	* Build: Add shellcheck makefile target and check when doing release (Darko Poljak)
+
+4.10.3: 2018-09-23
+	* New global explorer: os_release (Ľubomír Kučera)
+	* Type __docker: Update type, install docker CE (Ľubomír Kučera)
+	* Type __package_apt: Write a message when a package is installed or removed; shellcheck (Jonas Weber)
+	* Documentation: Add 'Dive into real world cdist' walkthrough chapter (Darko Poljak)
+	* Core: Remove duplicate remote mkdir calls in explorer transfer (myeisha)
+
+4.10.2: 2018-09-06
+	* Type __letsencrypt_cert: Add support for devuan ascii (Darko Poljak)
+	* Type __systemd_unit: Fix minor issues and add masking unit files support (Adam Dej)
+	* Type __grafana_dashboard: Fix devuan ascii support (Dominique Roux)
+	* Type __apt_source: Add nonparallel marker (Darko Poljak)
+	* Type __package_update_index: Fix error when using OS not using apt (Stu Zhao)
+	* Type __package_update_index: Support --maxage for type pacman (Stu Zhao)
+	* Type __letsencrypt_cert: Fix explorers: check that certbot exists before using it (Darko Poljak)
+
+4.10.1: 2018-06-21
+	* Type __letsencrypt_cert: Fix temp file location and removal (Darko Poljak)
+	* Type __line: Handle missing file in __line explorer gracefully (Jonas Weber)
+	* Documentation: Add env vars usage idiom for writing types (Darko Poljak)
+
+4.10.0: 2018-06-17
+	* New type: __acl (Ander Punnar)
+	* Core: Disable config parser interpolation (Darko Poljak)
+	* Type __sysctl: Use sysctl.d location if exists (Darko Poljak)
+	* Type __line: Rewrite and support --before and --after (Steven Armstrong)
+
+4.9.1: 2018-05-30
+	* New type: __install_coreos (Ľubomír Kučera)
+	* Type __consul_agent: Add LSB init header (Nico Schottelius)
+	* Type __package_yum: Fix explorer when name contains package name with exact version specified (Aleksandr Dinu)
+	* Type __letsencrypt_cert: Use object id as domain if domain param is not specified (Darko Poljak)
+
+4.9.0: 2018-05-17
+	* Type __docker_stack: Use --with-registry-auth option (Ľubomír Kučera)
+	* New type: __docker_config (Ľubomír Kučera)
+	* New type: __docker_secret (Ľubomír Kučera)
+	* Type __letsencrypt_cert: Rewritten; WARN: breaks backward compatibility (Ľubomír Kučera)
+	* Core: Fix NameError: name 'cdist_object' is not defined (Darko Poljak)
+
+4.8.4: 2018-04-20
+	* Documentation, type manpages: Fix spelling (Dmitry Bogatov)
+	* New explorer: is-freebsd-jail (Kamila Součková)
+	* Types __hostname, __start_on_boot, __sysctl: Support FreeBSD (Kamila Součková)
+	* Type __install_config: set environment variable to distinguish between
+	  install-config and regular config (Steven Armstrong)
+	* Core: Improve error reporting (Darko Poljak)
+
+4.8.3: 2018-03-16
+	* Type __key_value: Add onchange parameter (Kamila Součková)
+	* Types __prometheus_server, __prometheus_alertmanager, __grafana_dashboard:
+	  Work with packages instead of go get, remove __daemontools dependency and clean up (Kamila Součková)
+	* Documentation: Fix manpage generation (Darko Poljak)
+	* New type: __docker_swarm (Ľubomír Kučera)
+	* New type: __docker_stack (Ľubomír Kučera)
+
+4.8.2: 2018-03-10
+	* Core: Fix quiet argument access for bare cdist command (Darko Poljak)
+
+4.8.1: 2018-03-09
 	* Type __consul: Add option for directly downloading on target host (Darko Poljak)
 	* Core: Add -4 and -6 params to force IPv4, IPv6 addresses respectively (Darko Poljak)
 	* Type __package_update_index: Fix messaging (Thomas Eckert)
@@ -16,7 +81,7 @@ next:
 	* New type: __apt_default_release (Matthijs Kooijman)
 	* Type __file: Add pre-exists state (Matthijs Kooijman)
 	* Type __grafana_dashboard: Add support for stretch + ascii (Nico Schottelius)
-	* Type __consul_agent: Update Debian Sys-V-Init script (Nico Schottelius)
+	* Core: Fix idna (getaddrinfo) unicode tracebak for invalid host name (Darko Poljak)
 
 4.8.0: 2018-02-14
 	* Core: Skip empty lines in parameter files (Darko Poljak)

@@ -48,7 +48,7 @@ add_line() {
    line="$2"
    # escape single quotes
    line_sanitised=$(echo "$line" | sed -e "s/'/'\"'\"'/g")
-   printf '%s' "printf '%s\n' '$line_sanitised' >> $file"
+   printf '%s' "printf '%s\\n' '$line_sanitised' >> $file"
 }
 
 
@@ -59,7 +59,7 @@ mkdir "$__object/files"
 (
    if [ -f "$__object/parameter/option" ]; then
       # comma seperated list of options
-      options="$(cat "$__object/parameter/option" | tr '\n' ',')"
+      options="$(tr '\n' ',' < "$__object/parameter/option")"
       printf '%s ' "${options%*,}"
    fi
    if [ -f "$__object/parameter/comment" ]; then
@@ -78,7 +78,7 @@ if [ -s "$__object/explorer/entry" ]; then
    # Note that the files have to be sorted for comparison with `comm`.
    sort "$__object/explorer/entry" > "$__object/files/is"
    comm -13 "$__object/files/should" "$__object/files/is" | {
-      while read entry; do
+      while read -r entry; do
          remove_line "$file" "$entry"
       done
    }
@@ -88,7 +88,7 @@ fi
 entry="$(cat "$__object/files/should")"
 state_should="$(cat "$__object/parameter/state")"
 num_existing_entries=$(grep -c -F -x "$entry" "$__object/explorer/entry" || true)
-if [ $num_existing_entries -eq 1 ]; then
+if [ "$num_existing_entries" -eq 1 ]; then
    state_is="present"
 else
    # Posix grep does not define the -m option, so we can not remove a single

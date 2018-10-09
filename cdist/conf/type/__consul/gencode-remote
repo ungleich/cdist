@@ -39,7 +39,7 @@ version_dir="$versions_dir/$version"
 
 source=$(cat "$version_dir/source")
 source_file_name="${source##*/}"
-cksum_should=$(cat "$version_dir/cksum" | cut -d' ' -f1,2)
+cksum_should=$(cut -d' ' -f1,2 "$version_dir/cksum")
 
 cat << eof
     tmpdir=\$(mktemp -d --tmpdir="/tmp" "${__type##*/}.XXXXXXXXXX")
