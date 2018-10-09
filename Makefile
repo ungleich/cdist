@@ -250,7 +250,7 @@ distclean: clean
 pub:
 	git push --mirror
 
-test:
+test: $(PYTHON_VERSION)
 	$(helper) $@
 
 test-remote:
