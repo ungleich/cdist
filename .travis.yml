@@ -12,6 +12,9 @@ matrix:
 
 python: "3.6"
 
+git:
+  depth: false
+
 install:
   - |
       if [ "$TARGET" = "shellcheck" ]; then
