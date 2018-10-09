@@ -35,9 +35,11 @@ script:
       fi
   - |
       if [ "$TARGET" = "docs" ]; then
+        git branch master origin/master # for reference docs
         make docs
       fi
   - |
       if [ "$TARGET" = "test" ]; then
+        git branch master origin/master # for version information
         make test
       fi
