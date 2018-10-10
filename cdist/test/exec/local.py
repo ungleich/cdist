@@ -170,6 +170,9 @@ class LocalTestCase(test.CdistTestCase):
 
         os.environ['CDIST_PATH'] = conf_dir
 
+        # bypass singleton from other tests if any
+        cc.Configuration.instance = None
+
         configuration = cc.Configuration(argparse.Namespace(),
                                          env=os.environ)
 
