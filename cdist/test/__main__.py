@@ -45,4 +45,5 @@ for test_module in test_modules:
     suites.append(suite)
 
 all_suites = unittest.TestSuite(suites)
-unittest.TextTestRunner(verbosity=2).run(all_suites)
+rv = unittest.TextTestRunner(verbosity=2).run(all_suites).wasSuccessful()
+sys.exit(not rv)
