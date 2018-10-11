@@ -136,8 +136,10 @@ elif [ "$state" = "absent" ]; then
         #user exists, but state != present, so delete it
         if [ -f "$__object/parameter/remove-home" ]; then
             echo userdel -r "${name}"
+	    echo "userdel -r" >> "$__messages_out"
         else
             echo userdel "${name}"
+	    echo "userdel" >> "$__messages_out"
         fi
     fi
 else
