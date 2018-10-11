@@ -135,10 +135,10 @@ elif [ "$state" = "absent" ]; then
     if grep -q "^${name}:" "$__object/explorer/passwd"; then
         #user exists, but state != present, so delete it
         if [ -f "$__object/parameter/remove-home" ]; then
-            printf "userdel -r %s >/dev/null 2>&1\n" "${name}"
+            printf "userdel -r '%s' >/dev/null 2>&1\n" "${name}"
 	    echo "userdel -r" >> "$__messages_out"
         else
-            printf "userdel %s >/dev/null 2>&1\n" "${name}"
+            printf "userdel '%s' >/dev/null 2>&1\n" "${name}"
 	    echo "userdel" >> "$__messages_out"
         fi
     fi
