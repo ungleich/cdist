@@ -43,7 +43,7 @@ for key in baseurl gpgkey; do
    if [ -f "$__object/parameter/$key" ]; then
       printf '%s=' "$key"
       prefix=''
-      while read line; do
+      while read -r line; do
          printf '%s%s\n' "$prefix" "$line"
          prefix='   '
       done < "$__object/parameter/$key"

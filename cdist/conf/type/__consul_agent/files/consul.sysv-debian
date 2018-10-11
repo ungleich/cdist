@@ -31,9 +31,11 @@
 ### END INIT INFO
 
 if [ -f "/etc/default/consul" ]; then
+    # shellcheck disable=SC1091
     . /etc/default/consul
 fi
 
+# shellcheck disable=SC1091
 . /lib/lsb/init-functions
 
 NAME=consul

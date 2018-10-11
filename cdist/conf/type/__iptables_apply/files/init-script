@@ -24,13 +24,15 @@ case $1 in
         iptables-save > "$status"
 
         # Apply our ruleset
-        cd "$basedir"
-        count="$(ls -1 | wc -l)"
+        cd "$basedir" || exit
+        count="$(find . ! -name . -prune | wc -l)"
 
         # Only do something if there are rules
         if [ "$count" -ge 1 ]; then
             for rule in *; do
                 echo "Applying iptables rule $rule ..."
+                # Rule should be split.
+                # shellcheck disable=SC2046
                 iptables $(cat "$rule")
             done
         fi
