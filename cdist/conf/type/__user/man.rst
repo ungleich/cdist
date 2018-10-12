@@ -60,6 +60,11 @@ mod
 add
     New user added
 
+userdel -r
+    If user was deleted with homedir
+
+userdel
+    If user was deleted (keeping homedir)
 
 EXAMPLES
 --------
