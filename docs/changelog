@@ -7,6 +7,7 @@ next:
 	* Explorers and types: Fix shellcheck found problems and encountered bugs (Jonas Weber, Thomas Eckert, Darko Poljak)
 	* Build: Add shellcheck makefile target and check when doing release (Darko Poljak)
 	* Type __consul: Add newest versions (Dominique Roux)
+	* Type __user: Remove annoying output, handle state param gracefully, add messages for removal (Thomas Eckert)
 
 4.10.3: 2018-09-23
 	* New global explorer: os_release (Ľubomír Kučera)
