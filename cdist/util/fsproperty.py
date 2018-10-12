@@ -58,7 +58,7 @@ class FileList(collections.MutableSequence):
             with open(self.path) as fd:
                 for line in fd:
                     lines.append(line.rstrip('\n'))
-        except EnvironmentError as e:
+        except EnvironmentError:
             # error ignored
             pass
         return lines
@@ -127,7 +127,16 @@ class DirectoryDict(collections.MutableMapping):
     def __getitem__(self, key):
         try:
             with open(os.path.join(self.path, key), "r") as fd:
-                return fd.read().rstrip('\n')
+                value = fd.read().splitlines()
+                # if there is no value/empty line then return ''
+                # if there is only one value then return that value
+                # if there are multiple lines in file then return list
+                if not value:
+                    return ''
+                elif len(value) == 1:
+                    return value[0]
+                else:
+                    return value
         except EnvironmentError:
             raise KeyError(key)
 
