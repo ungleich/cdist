@@ -420,6 +420,27 @@ class ArgumentsTestCase(test.CdistTestCase):
         self.assertEqual(cdist_object.parameters['required1'], value)
         self.assertEqual(cdist_object.parameters['required2'], value)
 
+    def test_required_multiple_arguments(self):
+        """check whether assigning required multiple parameter works"""
+
+        type_name = '__arguments_required_multiple'
+        object_id = 'some-id'
+        value1 = 'value1'
+        value2 = 'value2'
+        argv = [type_name, object_id, '--required1', value1,
+                '--required1', value2]
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        cdist_type = core.CdistType(self.local.type_path, type_name)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path,
+                                        self.local.object_marker_name,
+                                        object_id)
+        self.assertTrue('required1' in cdist_object.parameters)
+        self.assertTrue(value1 in cdist_object.parameters['required1'])
+        self.assertTrue(value2 in cdist_object.parameters['required1'])
+
 #    def test_required_missing(self):
 #        type_name = '__arguments_required'
 #        object_id = 'some-id'
@@ -447,6 +468,25 @@ class ArgumentsTestCase(test.CdistTestCase):
         self.assertFalse('optional2' in cdist_object.parameters)
         self.assertEqual(cdist_object.parameters['optional1'], value)
 
+    def test_optional_multiple(self):
+        type_name = '__arguments_optional_multiple'
+        object_id = 'some-id'
+        value1 = 'value1'
+        value2 = 'value2'
+        argv = [type_name, object_id, '--optional1', value1, '--optional1',
+                value2]
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        cdist_type = core.CdistType(self.local.type_path, type_name)
+        cdist_object = core.CdistObject(cdist_type, self.local.object_path,
+                                        self.local.object_marker_name,
+                                        object_id)
+        self.assertTrue('optional1' in cdist_object.parameters)
+        self.assertTrue(value1 in cdist_object.parameters['optional1'])
+        self.assertTrue(value2 in cdist_object.parameters['optional1'])
+
     def test_argument_defaults(self):
         type_name = '__argument_defaults'
         object_id = 'some-id'
@@ -463,6 +503,29 @@ class ArgumentsTestCase(test.CdistTestCase):
         self.assertTrue('optional1' in cdist_object.parameters)
         self.assertFalse('optional2' in cdist_object.parameters)
         self.assertEqual(cdist_object.parameters['optional1'], value)
+
+    def test_object_params_in_context(self):
+        type_name = '__arguments_all'
+        object_id = 'some-id'
+        argv = [type_name, object_id, '--opt', 'opt', '--req', 'req',
+                '--bool', '--optmul', 'val1', '--optmul', 'val2',
+                '--reqmul', 'val3', '--reqmul', 'val4',
+                '--optmul1', 'val5', '--reqmul1', 'val6']
+        os.environ.update(self.env)
+        emu = emulator.Emulator(argv)
+        emu.run()
+
+        obj_params = emu._object_params_in_context()
+        obj_params_expected = {
+            'bool': '',
+            'opt': 'opt',
+            'optmul1': ['val5', ],
+            'optmul': ['val1', 'val2', ],
+            'req': 'req',
+            'reqmul1': ['val6', ],
+            'reqmul': ['val3', 'val4', ],
+        }
+        self.assertEqual(obj_params, obj_params_expected)
 
 
 class StdinTestCase(test.CdistTestCase):

@@ -182,6 +182,29 @@ class Emulator(object):
         lockfname = lockfname.replace(os.sep, '_')
         self.flock_path = os.path.join(self.object_base_path, lockfname)
 
+    def _object_params_in_context(self):
+        ''' Get cdist_object parameters dict adopted by context.
+        Context consists of cdist_type boolean, optional, required,
+        optional_multiple and required_multiple parameters. If parameter
+        is multiple parameter then its value is a list.
+        This adaptation works on cdist_object.parameters which are read from
+        directory based dict where it is unknown what kind of data is in
+        file. If there is only one line in the file it is unknown if this
+        is a value of required/optional parameter or if it is one value of
+        multiple values parameter.
+        '''
+        params = {}
+        if self.cdist_object.exists:
+            for param in self.cdist_object.parameters:
+                value = ('' if param in self.cdist_type.boolean_parameters
+                         else self.cdist_object.parameters[param])
+                if ((param in self.cdist_type.required_multiple_parameters or
+                     param in self.cdist_type.optional_multiple_parameters) and
+                        not isinstance(value, list)):
+                    value = [value]
+                params[param] = value
+        return params
+
     def setup_object(self):
         # Create object with given parameters
         self.parameters = {}
@@ -193,12 +216,13 @@ class Emulator(object):
             # Make existing requirements a set so that we can compare it
             # later with new requirements.
             self._existing_reqs = set(self.cdist_object.requirements)
-            if self.cdist_object.parameters != self.parameters:
+            obj_params = self._object_params_in_context()
+            if obj_params != self.parameters:
                 errmsg = ("Object %s already exists with conflicting "
                           "parameters:\n%s: %s\n%s: %s" % (
                               self.cdist_object.name,
                               " ".join(self.cdist_object.source),
-                              self.cdist_object.parameters,
+                              obj_params,
                               self.object_source,
                               self.parameters))
                 raise cdist.Error(errmsg)
@@ -252,7 +276,7 @@ class Emulator(object):
                                 self.cdist_object.name,
                                 requirement, e.name, self.object_source)))
             raise
-        except core.cdist_object.MissingObjectIdError as e:
+        except core.cdist_object.MissingObjectIdError:
             self.log.error(("%s requires object %s without object id."
                             " Defined at %s" % (self.cdist_object.name,
                                                 requirement,
