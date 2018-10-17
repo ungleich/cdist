@@ -1,0 +1,48 @@
+language: python
+sudo: false
+
+matrix:
+  include:
+    - name: "Shellcheck"
+      env: TARGET=shellcheck
+    - name: "Unit Tests"
+      env: TARGET=test
+    - name: "Docs"
+      env: TARGET=docs
+
+python: "3.6"
+
+git:
+  depth: false
+
+install:
+  - |
+      if [ "$TARGET" = "shellcheck" ]; then
+        export scversion="v0.4.7" # or "stable", or "latest"
+        wget "https://storage.googleapis.com/shellcheck/shellcheck-${scversion}.linux.x86_64.tar.xz"
+        tar --xz -xvf shellcheck-"${scversion}".linux.x86_64.tar.xz
+        cp shellcheck-"${scversion}"/shellcheck /tmp/
+        /tmp/shellcheck --version # for reference
+      fi
+  - |
+      if [ "$TARGET" = "docs" ]; then
+        pip install sphinx sphinx_rtd_theme
+      fi
+
+script:
+  - |
+      if [ "$TARGET" = "shellcheck" ]; then
+        export PATH=/tmp:$PATH
+        make shellcheck | tee shellcheck-results.log
+        test "$(wc -c < shellcheck-results.log)" -eq 0
+      fi
+  - |
+      if [ "$TARGET" = "docs" ]; then
+        git branch master origin/master # for reference docs
+        make docs
+      fi
+  - |
+      if [ "$TARGET" = "test" ]; then
+        git branch master origin/master # for version information
+        make test
+      fi
