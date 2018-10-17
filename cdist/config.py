@@ -556,19 +556,19 @@ class Config(object):
             self.log.trace("Multiprocessing cargo_types: %s", cargo_types)
             nt = len(cargo_types)
             if nt == 1:
-                self.log.debug(("Only one type, transfering explorers "
+                self.log.debug(("Only one type, transferring explorers "
                                 "sequentially"))
                 self.explorer.transfer_type_explorers(cargo_types.pop())
             else:
                 self.log.trace(("Starting multiprocessing Pool for {} "
-                                "parallel transfering types' explorers".format(
+                                "parallel types explorers transferring".format(
                                     nt)))
                 args = [
                     (ct, ) for ct in cargo_types
                 ]
                 mp_pool_run(self.explorer.transfer_type_explorers, args,
                             jobs=self.jobs)
-                self.log.trace(("Multiprocessing for parallel transfering "
+                self.log.trace(("Multiprocessing for parallel transferring "
                                 "types' explorers finished"))
 
             self.log.trace(("Starting multiprocessing Pool for {} parallel "

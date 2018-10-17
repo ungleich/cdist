@@ -176,14 +176,14 @@ class Explorer(object):
         self.log.verbose("Running type explorers for {}".format(
             cdist_object.cdist_type))
         if transfer_type_explorers:
-            self.log.trace("Transfering type explorers for type: %s",
+            self.log.trace("Transferring type explorers for type: %s",
                            cdist_object.cdist_type)
             self.transfer_type_explorers(cdist_object.cdist_type)
         else:
-            self.log.trace(("No need for transfering type explorers for "
+            self.log.trace(("No need for transferring type explorers for "
                             "type: %s"),
                            cdist_object.cdist_type)
-        self.log.trace("Transfering object parameters for object: %s",
+        self.log.trace("Transferring object parameters for object: %s",
                        cdist_object.name)
         self.transfer_object_parameters(cdist_object)
         for explorer in self.list_type_explorer_names(cdist_object.cdist_type):

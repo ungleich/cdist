@@ -190,7 +190,7 @@ class Remote(object):
                     self.log.trace(
                         "Archiving mode desttarpath: %s", desttarpath)
                     # transfer archive to the remote side
-                    self.log.trace("Archiving mode: transfering")
+                    self.log.trace("Archiving mode: transferring")
                     self._transfer_file(tarpath, desttarpath)
                     # extract archive at the remote
                     self.log.trace("Archiving mode: extracting")
@@ -248,15 +248,15 @@ class Remote(object):
         # variable declarations
 
         # cdist command prepended with variable assignments expects
-        # posix shell (bourne, bash) at the remote as user default shell.
-        # If remote user shell isn't poxis shell, but for e.g. csh/tcsh
+        # POSIX shell (bourne, bash) at the remote as user default shell.
+        # If remote user shell isn't POSIX shell, but for e.g. csh/tcsh
         # then these var assignments are not var assignments for this
         # remote shell, it tries to execute it as a command and fails.
         # So really do this by default:
         # /bin/sh -c 'export <var assignments>; command'
         # so that constructed remote command isn't dependent on remote
         # shell. Do this only if env is not None. env breaks this.
-        # Explicitly use /bin/sh, because var assignments assume poxis
+        # Explicitly use /bin/sh, because var assignments assume POSIX
         # shell already.
         # This leaves the posibility to write script that needs to be run
         # remotely in e.g. csh and setting up CDIST_REMOTE_SHELL to e.g.
