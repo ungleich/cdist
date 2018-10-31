@@ -13,15 +13,18 @@ See sshd_config(5) and ssh-keygen(1).
 Speeding up ssh connections
 ---------------------------
 When connecting to a new host, the initial delay with ssh connections
-is pretty big. You can work around this by
-"sharing of multiple sessions over a single network connection"
-(quote from ssh_config(5)). The following code is suitable for
-inclusion into your ~/.ssh/config::
+is pretty big. As cdist makes many connections to each host successive
+connections can be sped up by "sharing of multiple sessions over a single
+network connection" (quote from ssh_config(5)). This is also called "connection
+multiplexing".
 
-    Host *
-      ControlPath ~/.ssh/master-%l-%r@%h:%p
-      ControlMaster auto
-      ControlPersist 10
+Cdist implements this since v4.0.0 by executing ssh with the appropriate
+options (`-o ControlMaster=auto  -o ControlPath=/tmp/<tmpdir>/s  -o
+ControlPersist=2h`).
+
+Note that the sshd_config on the server can configure the maximum number of
+parallel multiplexed connections this with `MaxSessions N` (N defaults to 10
+for OpenSSH v7.4).
 
 
 Speeding up shell execution
