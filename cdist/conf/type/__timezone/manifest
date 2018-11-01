@@ -34,7 +34,11 @@ case "$os" in
         __package timezone
         export require="__package/timezone"
     ;;
-    freebsd|netbsd|coreos)
+    freebsd|netbsd|openbsd)
+        # whitelist
+        :
+    ;;
+    coreos)
         # whitelist
         :
     ;;
