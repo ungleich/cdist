@@ -18,6 +18,17 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+case "$(cat "${__global}/explorer/os")"
+in
+	openbsd)
+		postgres_user='_postgresql'
+		;;
+	*)
+		postgres_user='postgres'
+		;;
+esac
+
+
 name="$__object_id"
 state_is="$(cat "$__object/explorer/state")"
 state_should="$(cat "$__object/parameter/state")"
@@ -41,9 +52,9 @@ case "$state_should" in
          [ -n "$password" ] && password="PASSWORD '$password'"
 
          cmd="CREATE ROLE $name WITH $password $booleans"
-         echo "su - postgres -c \"psql -c \\\"$cmd\\\"\""
+         echo "su - '$postgres_user' -c \"psql postgres -c '$cmd'\""
     ;;
     absent)
-        echo "su - postgres -c \"dropuser \\\"$name\\\"\""
+        echo "su - '$postgres_user' -c \"dropuser '$name'\""
     ;;
 esac
