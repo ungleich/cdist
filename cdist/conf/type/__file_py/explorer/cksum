@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
+#!/bin/sh
 #
-# 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2014-2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -19,14 +18,17 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Retrieve the md5sum of a file to be created, if it is already existing.
+#
 
-from cdist.core.cdist_type import CdistType
-from cdist.core.python_type import PythonType, ManifestEntry
-from cdist.core.cdist_type import InvalidTypeError
-from cdist.core.cdist_object import CdistObject
-from cdist.core.cdist_object import IllegalObjectIdError
-from cdist.core.explorer import Explorer
-from cdist.core.manifest import Manifest
-from cdist.core.code import Code
-from cdist.core.util import listdir
-from cdist.core.util import log_level_env_var_val, log_level_name_env_var_val
+destination="/$__object_id"
+
+if [ -e "$destination" ]; then
+    if [ -f  "$destination" ]; then
+        cksum < "$destination"
+    else
+        echo "NO REGULAR FILE"
+    fi
+else
+    echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
+fi

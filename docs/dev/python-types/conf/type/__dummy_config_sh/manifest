@@ -1,0 +1,6 @@
+printf 'dummy manifest stdout\n'
+printf 'dummy manifest stderr\n' >&2
+
+printf "dummy=1\\n" | __file /root/dummy1.conf --mode 0640 --owner root --group root --source -
+
+__file /root/dummy2.conf --mode 0600 --owner root --group root --source  "$__type/files/dummy.conf"

@@ -1,0 +1,376 @@
+# sh type, no file at remote
+echo 'x=0; while [ $x -lt 50 ]; do head -c 102400 /dev/random | __file /root/foo${x}.bin --source - --mode 0640 --owner root --group root; x=$((x + 1)); done' | ./bin/cdist config -v -P -i - 185.203.112.26
+
+INFO: [20181121125154.045799] 185.203.112.26: Starting configuration run
+INFO: [20181121125237.029892] 185.203.112.26: Processing __file/root/foo0.bin
+INFO: [20181121125239.881529] 185.203.112.26: Processing __file/root/foo1.bin
+INFO: [20181121125243.265672] 185.203.112.26: Processing __file/root/foo2.bin
+INFO: [20181121125246.929903] 185.203.112.26: Processing __file/root/foo3.bin
+INFO: [20181121125251.811258] 185.203.112.26: Processing __file/root/foo4.bin
+INFO: [20181121125257.784416] 185.203.112.26: Processing __file/root/foo5.bin
+INFO: [20181121125302.686275] 185.203.112.26: Processing __file/root/foo6.bin
+INFO: [20181121125306.394030] 185.203.112.26: Processing __file/root/foo7.bin
+INFO: [20181121125308.610023] 185.203.112.26: Processing __file/root/foo8.bin
+INFO: [20181121125310.868538] 185.203.112.26: Processing __file/root/foo9.bin
+INFO: [20181121125313.017972] 185.203.112.26: Processing __file/root/foo10.bin
+INFO: [20181121125315.201342] 185.203.112.26: Processing __file/root/foo11.bin
+INFO: [20181121125317.333055] 185.203.112.26: Processing __file/root/foo12.bin
+INFO: [20181121125319.463929] 185.203.112.26: Processing __file/root/foo13.bin
+INFO: [20181121125321.595410] 185.203.112.26: Processing __file/root/foo14.bin
+INFO: [20181121125323.689697] 185.203.112.26: Processing __file/root/foo15.bin
+INFO: [20181121125325.768283] 185.203.112.26: Processing __file/root/foo16.bin
+INFO: [20181121125327.814793] 185.203.112.26: Processing __file/root/foo17.bin
+INFO: [20181121125329.873073] 185.203.112.26: Processing __file/root/foo18.bin
+INFO: [20181121125331.953886] 185.203.112.26: Processing __file/root/foo19.bin
+INFO: [20181121125334.118290] 185.203.112.26: Processing __file/root/foo20.bin
+INFO: [20181121125336.390849] 185.203.112.26: Processing __file/root/foo21.bin
+INFO: [20181121125338.576698] 185.203.112.26: Processing __file/root/foo22.bin
+INFO: [20181121125340.819044] 185.203.112.26: Processing __file/root/foo23.bin
+INFO: [20181121125343.680419] 185.203.112.26: Processing __file/root/foo24.bin
+INFO: [20181121125346.044907] 185.203.112.26: Processing __file/root/foo25.bin
+INFO: [20181121125348.179574] 185.203.112.26: Processing __file/root/foo26.bin
+INFO: [20181121125350.314970] 185.203.112.26: Processing __file/root/foo27.bin
+INFO: [20181121125352.447394] 185.203.112.26: Processing __file/root/foo28.bin
+INFO: [20181121125354.586637] 185.203.112.26: Processing __file/root/foo29.bin
+INFO: [20181121125356.722699] 185.203.112.26: Processing __file/root/foo30.bin
+INFO: [20181121125358.883538] 185.203.112.26: Processing __file/root/foo31.bin
+INFO: [20181121125401.020967] 185.203.112.26: Processing __file/root/foo32.bin
+INFO: [20181121125403.160146] 185.203.112.26: Processing __file/root/foo33.bin
+INFO: [20181121125405.289048] 185.203.112.26: Processing __file/root/foo34.bin
+INFO: [20181121125407.423994] 185.203.112.26: Processing __file/root/foo35.bin
+INFO: [20181121125409.530135] 185.203.112.26: Processing __file/root/foo36.bin
+INFO: [20181121125411.659683] 185.203.112.26: Processing __file/root/foo37.bin
+INFO: [20181121125413.786177] 185.203.112.26: Processing __file/root/foo38.bin
+INFO: [20181121125415.919152] 185.203.112.26: Processing __file/root/foo39.bin
+INFO: [20181121125418.051496] 185.203.112.26: Processing __file/root/foo40.bin
+INFO: [20181121125420.204577] 185.203.112.26: Processing __file/root/foo41.bin
+INFO: [20181121125422.339697] 185.203.112.26: Processing __file/root/foo42.bin
+INFO: [20181121125424.450966] 185.203.112.26: Processing __file/root/foo43.bin
+INFO: [20181121125426.487831] 185.203.112.26: Processing __file/root/foo44.bin
+INFO: [20181121125428.585516] 185.203.112.26: Processing __file/root/foo45.bin
+INFO: [20181121125430.749002] 185.203.112.26: Processing __file/root/foo46.bin
+INFO: [20181121125432.865290] 185.203.112.26: Processing __file/root/foo47.bin
+INFO: [20181121125435.004009] 185.203.112.26: Processing __file/root/foo48.bin
+INFO: [20181121125437.228566] 185.203.112.26: Processing __file/root/foo49.bin
+INFO: [20181121125439.429440] 185.203.112.26: Finished successful run in 165.38 seconds
+
+# sh type, files exist at remote but content changes
+echo 'x=0; while [ $x -lt 50 ]; do head -c 102400 /dev/random | __file /root/foo${x}.bin --source - --mode 0640 --owner root --group root; x=$((x + 1)); done' | ./bin/cdist config -v -P -i - 185.203.112.26
+
+INFO: [20181121125529.952800] 185.203.112.26: Starting configuration run
+INFO: [20181121125541.175180] 185.203.112.26: Processing __file/root/foo0.bin
+INFO: [20181121125543.219561] 185.203.112.26: Processing __file/root/foo1.bin
+INFO: [20181121125545.116073] 185.203.112.26: Processing __file/root/foo2.bin
+INFO: [20181121125547.011359] 185.203.112.26: Processing __file/root/foo3.bin
+INFO: [20181121125548.916288] 185.203.112.26: Processing __file/root/foo4.bin
+INFO: [20181121125550.821351] 185.203.112.26: Processing __file/root/foo5.bin
+INFO: [20181121125552.723887] 185.203.112.26: Processing __file/root/foo6.bin
+INFO: [20181121125554.635662] 185.203.112.26: Processing __file/root/foo7.bin
+INFO: [20181121125556.568639] 185.203.112.26: Processing __file/root/foo8.bin
+INFO: [20181121125558.508852] 185.203.112.26: Processing __file/root/foo9.bin
+INFO: [20181121125600.464475] 185.203.112.26: Processing __file/root/foo10.bin
+INFO: [20181121125602.429261] 185.203.112.26: Processing __file/root/foo11.bin
+INFO: [20181121125604.428942] 185.203.112.26: Processing __file/root/foo12.bin
+INFO: [20181121125606.442193] 185.203.112.26: Processing __file/root/foo13.bin
+INFO: [20181121125608.474473] 185.203.112.26: Processing __file/root/foo14.bin
+INFO: [20181121125610.535252] 185.203.112.26: Processing __file/root/foo15.bin
+INFO: [20181121125612.609560] 185.203.112.26: Processing __file/root/foo16.bin
+INFO: [20181121125614.708507] 185.203.112.26: Processing __file/root/foo17.bin
+INFO: [20181121125616.824721] 185.203.112.26: Processing __file/root/foo18.bin
+INFO: [20181121125618.924521] 185.203.112.26: Processing __file/root/foo19.bin
+INFO: [20181121125621.007543] 185.203.112.26: Processing __file/root/foo20.bin
+INFO: [20181121125623.133204] 185.203.112.26: Processing __file/root/foo21.bin
+INFO: [20181121125625.333471] 185.203.112.26: Processing __file/root/foo22.bin
+INFO: [20181121125627.396334] 185.203.112.26: Processing __file/root/foo23.bin
+INFO: [20181121125629.526492] 185.203.112.26: Processing __file/root/foo24.bin
+INFO: [20181121125631.628454] 185.203.112.26: Processing __file/root/foo25.bin
+INFO: [20181121125633.743142] 185.203.112.26: Processing __file/root/foo26.bin
+INFO: [20181121125635.952547] 185.203.112.26: Processing __file/root/foo27.bin
+INFO: [20181121125637.986746] 185.203.112.26: Processing __file/root/foo28.bin
+INFO: [20181121125640.020415] 185.203.112.26: Processing __file/root/foo29.bin
+INFO: [20181121125642.081373] 185.203.112.26: Processing __file/root/foo30.bin
+INFO: [20181121125644.174744] 185.203.112.26: Processing __file/root/foo31.bin
+INFO: [20181121125646.286532] 185.203.112.26: Processing __file/root/foo32.bin
+INFO: [20181121125648.396447] 185.203.112.26: Processing __file/root/foo33.bin
+INFO: [20181121125650.460107] 185.203.112.26: Processing __file/root/foo34.bin
+INFO: [20181121125652.557125] 185.203.112.26: Processing __file/root/foo35.bin
+INFO: [20181121125654.667456] 185.203.112.26: Processing __file/root/foo36.bin
+INFO: [20181121125656.746960] 185.203.112.26: Processing __file/root/foo37.bin
+INFO: [20181121125658.854229] 185.203.112.26: Processing __file/root/foo38.bin
+INFO: [20181121125700.968145] 185.203.112.26: Processing __file/root/foo39.bin
+INFO: [20181121125703.109376] 185.203.112.26: Processing __file/root/foo40.bin
+INFO: [20181121125705.318163] 185.203.112.26: Processing __file/root/foo41.bin
+INFO: [20181121125707.440575] 185.203.112.26: Processing __file/root/foo42.bin
+INFO: [20181121125709.551261] 185.203.112.26: Processing __file/root/foo43.bin
+INFO: [20181121125711.657753] 185.203.112.26: Processing __file/root/foo44.bin
+INFO: [20181121125713.774819] 185.203.112.26: Processing __file/root/foo45.bin
+INFO: [20181121125715.887428] 185.203.112.26: Processing __file/root/foo46.bin
+INFO: [20181121125717.995104] 185.203.112.26: Processing __file/root/foo47.bin
+INFO: [20181121125720.110196] 185.203.112.26: Processing __file/root/foo48.bin
+INFO: [20181121125722.232932] 185.203.112.26: Processing __file/root/foo49.bin
+INFO: [20181121125724.451523] 185.203.112.26: Finished successful run in 114.50 seconds
+
+# py type, no file at remote
+echo 'x=0; while [ $x -lt 50 ]; do head -c 102400 /dev/random | __file_py /root/foo${x}.bin --source - --mode 0640 --owner root --group root; x=$((x + 1)); done' | ./bin/cdist config -v -P -i - 185.203.112.26
+
+INFO: [20181121125812.034197] 185.203.112.26: Starting configuration run
+INFO: [20181121125823.927353] 185.203.112.26: Processing __file_py/root/foo0.bin
+INFO: [20181121125825.715361] 185.203.112.26: Processing __file_py/root/foo1.bin
+INFO: [20181121125827.511296] 185.203.112.26: Processing __file_py/root/foo2.bin
+INFO: [20181121125829.293455] 185.203.112.26: Processing __file_py/root/foo3.bin
+INFO: [20181121125831.086696] 185.203.112.26: Processing __file_py/root/foo4.bin
+INFO: [20181121125832.867582] 185.203.112.26: Processing __file_py/root/foo5.bin
+INFO: [20181121125834.652511] 185.203.112.26: Processing __file_py/root/foo6.bin
+INFO: [20181121125836.450393] 185.203.112.26: Processing __file_py/root/foo7.bin
+INFO: [20181121125838.255152] 185.203.112.26: Processing __file_py/root/foo8.bin
+INFO: [20181121125840.065808] 185.203.112.26: Processing __file_py/root/foo9.bin
+INFO: [20181121125841.889049] 185.203.112.26: Processing __file_py/root/foo10.bin
+INFO: [20181121125843.719280] 185.203.112.26: Processing __file_py/root/foo11.bin
+INFO: [20181121125845.560165] 185.203.112.26: Processing __file_py/root/foo12.bin
+INFO: [20181121125847.416138] 185.203.112.26: Processing __file_py/root/foo13.bin
+INFO: [20181121125849.289851] 185.203.112.26: Processing __file_py/root/foo14.bin
+INFO: [20181121125851.180203] 185.203.112.26: Processing __file_py/root/foo15.bin
+INFO: [20181121125853.074978] 185.203.112.26: Processing __file_py/root/foo16.bin
+INFO: [20181121125855.086107] 185.203.112.26: Processing __file_py/root/foo17.bin
+INFO: [20181121125857.041100] 185.203.112.26: Processing __file_py/root/foo18.bin
+INFO: [20181121125859.025581] 185.203.112.26: Processing __file_py/root/foo19.bin
+INFO: [20181121125901.072067] 185.203.112.26: Processing __file_py/root/foo20.bin
+INFO: [20181121125903.026711] 185.203.112.26: Processing __file_py/root/foo21.bin
+INFO: [20181121125904.994824] 185.203.112.26: Processing __file_py/root/foo22.bin
+INFO: [20181121125906.956296] 185.203.112.26: Processing __file_py/root/foo23.bin
+INFO: [20181121125908.929231] 185.203.112.26: Processing __file_py/root/foo24.bin
+INFO: [20181121125910.882672] 185.203.112.26: Processing __file_py/root/foo25.bin
+INFO: [20181121125912.839834] 185.203.112.26: Processing __file_py/root/foo26.bin
+INFO: [20181121125914.789904] 185.203.112.26: Processing __file_py/root/foo27.bin
+INFO: [20181121125916.743930] 185.203.112.26: Processing __file_py/root/foo28.bin
+INFO: [20181121125918.698258] 185.203.112.26: Processing __file_py/root/foo29.bin
+INFO: [20181121125920.657118] 185.203.112.26: Processing __file_py/root/foo30.bin
+INFO: [20181121125922.618898] 185.203.112.26: Processing __file_py/root/foo31.bin
+INFO: [20181121125924.567847] 185.203.112.26: Processing __file_py/root/foo32.bin
+INFO: [20181121125926.524617] 185.203.112.26: Processing __file_py/root/foo33.bin
+INFO: [20181121125928.396400] 185.203.112.26: Processing __file_py/root/foo34.bin
+INFO: [20181121125930.209237] 185.203.112.26: Processing __file_py/root/foo35.bin
+INFO: [20181121125931.998377] 185.203.112.26: Processing __file_py/root/foo36.bin
+INFO: [20181121125933.786883] 185.203.112.26: Processing __file_py/root/foo37.bin
+INFO: [20181121125935.579348] 185.203.112.26: Processing __file_py/root/foo38.bin
+INFO: [20181121125937.366197] 185.203.112.26: Processing __file_py/root/foo39.bin
+INFO: [20181121125939.155643] 185.203.112.26: Processing __file_py/root/foo40.bin
+INFO: [20181121125941.052837] 185.203.112.26: Processing __file_py/root/foo41.bin
+INFO: [20181121125942.953670] 185.203.112.26: Processing __file_py/root/foo42.bin
+INFO: [20181121125944.781567] 185.203.112.26: Processing __file_py/root/foo43.bin
+INFO: [20181121125946.622485] 185.203.112.26: Processing __file_py/root/foo44.bin
+INFO: [20181121125948.470701] 185.203.112.26: Processing __file_py/root/foo45.bin
+INFO: [20181121125950.356949] 185.203.112.26: Processing __file_py/root/foo46.bin
+INFO: [20181121125952.232014] 185.203.112.26: Processing __file_py/root/foo47.bin
+INFO: [20181121125954.128887] 185.203.112.26: Processing __file_py/root/foo48.bin
+INFO: [20181121125956.037541] 185.203.112.26: Processing __file_py/root/foo49.bin
+INFO: [20181121125957.514738] 185.203.112.26: Finished successful run in 105.48 seconds
+
+# py type, files exist at remote but content changes
+echo 'x=0; while [ $x -lt 50 ]; do head -c 102400 /dev/random | __file_py /root/foo${x}.bin --source - --mode 0640 --owner root --group root; x=$((x + 1)); done' | ./bin/cdist config -v -P -i - 185.203.112.26
+
+INFO: [20181121130056.484643] 185.203.112.26: Starting configuration run
+INFO: [20181121130108.545059] 185.203.112.26: Processing __file_py/root/foo0.bin
+INFO: [20181121130110.339217] 185.203.112.26: Processing __file_py/root/foo1.bin
+INFO: [20181121130112.136448] 185.203.112.26: Processing __file_py/root/foo2.bin
+INFO: [20181121130113.923820] 185.203.112.26: Processing __file_py/root/foo3.bin
+INFO: [20181121130115.715667] 185.203.112.26: Processing __file_py/root/foo4.bin
+INFO: [20181121130117.508696] 185.203.112.26: Processing __file_py/root/foo5.bin
+INFO: [20181121130119.300839] 185.203.112.26: Processing __file_py/root/foo6.bin
+INFO: [20181121130124.296312] 185.203.112.26: Processing __file_py/root/foo7.bin
+INFO: [20181121130131.109195] 185.203.112.26: Processing __file_py/root/foo8.bin
+INFO: [20181121130133.303817] 185.203.112.26: Processing __file_py/root/foo9.bin
+INFO: [20181121130136.396440] 185.203.112.26: Processing __file_py/root/foo10.bin
+INFO: [20181121130138.443128] 185.203.112.26: Processing __file_py/root/foo11.bin
+INFO: [20181121130140.462868] 185.203.112.26: Processing __file_py/root/foo12.bin
+INFO: [20181121130142.476196] 185.203.112.26: Processing __file_py/root/foo13.bin
+INFO: [20181121130145.937900] 185.203.112.26: Processing __file_py/root/foo14.bin
+INFO: [20181121130148.013672] 185.203.112.26: Processing __file_py/root/foo15.bin
+INFO: [20181121130150.042588] 185.203.112.26: Processing __file_py/root/foo16.bin
+INFO: [20181121130152.050793] 185.203.112.26: Processing __file_py/root/foo17.bin
+INFO: [20181121130154.083089] 185.203.112.26: Processing __file_py/root/foo18.bin
+INFO: [20181121130156.100091] 185.203.112.26: Processing __file_py/root/foo19.bin
+INFO: [20181121130158.103005] 185.203.112.26: Processing __file_py/root/foo20.bin
+INFO: [20181121130200.188390] 185.203.112.26: Processing __file_py/root/foo21.bin
+INFO: [20181121130202.197574] 185.203.112.26: Processing __file_py/root/foo22.bin
+INFO: [20181121130205.269102] 185.203.112.26: Processing __file_py/root/foo23.bin
+INFO: [20181121130208.457011] 185.203.112.26: Processing __file_py/root/foo24.bin
+INFO: [20181121130211.574321] 185.203.112.26: Processing __file_py/root/foo25.bin
+INFO: [20181121130213.719894] 185.203.112.26: Processing __file_py/root/foo26.bin
+INFO: [20181121130215.762977] 185.203.112.26: Processing __file_py/root/foo27.bin
+INFO: [20181121130217.778624] 185.203.112.26: Processing __file_py/root/foo28.bin
+INFO: [20181121130219.840477] 185.203.112.26: Processing __file_py/root/foo29.bin
+INFO: [20181121130221.852389] 185.203.112.26: Processing __file_py/root/foo30.bin
+INFO: [20181121130223.850898] 185.203.112.26: Processing __file_py/root/foo31.bin
+INFO: [20181121130225.858812] 185.203.112.26: Processing __file_py/root/foo32.bin
+INFO: [20181121130227.855295] 185.203.112.26: Processing __file_py/root/foo33.bin
+INFO: [20181121130229.952673] 185.203.112.26: Processing __file_py/root/foo34.bin
+INFO: [20181121130231.956904] 185.203.112.26: Processing __file_py/root/foo35.bin
+INFO: [20181121130233.961954] 185.203.112.26: Processing __file_py/root/foo36.bin
+INFO: [20181121130236.012158] 185.203.112.26: Processing __file_py/root/foo37.bin
+INFO: [20181121130238.024422] 185.203.112.26: Processing __file_py/root/foo38.bin
+INFO: [20181121130241.238800] 185.203.112.26: Processing __file_py/root/foo39.bin
+INFO: [20181121130243.463237] 185.203.112.26: Processing __file_py/root/foo40.bin
+INFO: [20181121130245.610314] 185.203.112.26: Processing __file_py/root/foo41.bin
+INFO: [20181121130247.661385] 185.203.112.26: Processing __file_py/root/foo42.bin
+INFO: [20181121130250.399845] 185.203.112.26: Processing __file_py/root/foo43.bin
+INFO: [20181121130252.832133] 185.203.112.26: Processing __file_py/root/foo44.bin
+INFO: [20181121130254.955658] 185.203.112.26: Processing __file_py/root/foo45.bin
+INFO: [20181121130257.039587] 185.203.112.26: Processing __file_py/root/foo46.bin
+INFO: [20181121130259.178847] 185.203.112.26: Processing __file_py/root/foo47.bin
+INFO: [20181121130301.357922] 185.203.112.26: Processing __file_py/root/foo48.bin
+INFO: [20181121130303.356299] 185.203.112.26: Processing __file_py/root/foo49.bin
+INFO: [20181121130305.144393] 185.203.112.26: Finished successful run in 128.66 seconds
+
+
+
+# init test file content
+head -c 102400 /dev/random > /tmp/test.file
+
+# sh type, no file at remote
+echo 'x=0; while [ $x -lt 50 ]; do __file /root/foo${x}.bin --source /tmp/test.file --mode 0640 --owner root --group root; x=$((x + 1)); done' | ./bin/cdist config -v -P -i - 185.203.112.26
+
+INFO: [20181121130612.519698] 185.203.112.26: Starting configuration run
+INFO: [20181121130624.219344] 185.203.112.26: Processing __file/root/foo0.bin
+INFO: [20181121130626.980052] 185.203.112.26: Processing __file/root/foo1.bin
+INFO: [20181121130631.200669] 185.203.112.26: Processing __file/root/foo2.bin
+INFO: [20181121130642.790229] 185.203.112.26: Processing __file/root/foo3.bin
+INFO: [20181121130646.565599] 185.203.112.26: Processing __file/root/foo4.bin
+INFO: [20181121130648.724875] 185.203.112.26: Processing __file/root/foo5.bin
+INFO: [20181121130651.464686] 185.203.112.26: Processing __file/root/foo6.bin
+INFO: [20181121130653.639581] 185.203.112.26: Processing __file/root/foo7.bin
+INFO: [20181121130655.773987] 185.203.112.26: Processing __file/root/foo8.bin
+INFO: [20181121130657.933136] 185.203.112.26: Processing __file/root/foo9.bin
+INFO: [20181121130700.065158] 185.203.112.26: Processing __file/root/foo10.bin
+INFO: [20181121130702.216456] 185.203.112.26: Processing __file/root/foo11.bin
+INFO: [20181121130704.429030] 185.203.112.26: Processing __file/root/foo12.bin
+INFO: [20181121130706.562114] 185.203.112.26: Processing __file/root/foo13.bin
+INFO: [20181121130708.696584] 185.203.112.26: Processing __file/root/foo14.bin
+INFO: [20181121130710.830002] 185.203.112.26: Processing __file/root/foo15.bin
+INFO: [20181121130712.966631] 185.203.112.26: Processing __file/root/foo16.bin
+INFO: [20181121130715.151833] 185.203.112.26: Processing __file/root/foo17.bin
+INFO: [20181121130717.355196] 185.203.112.26: Processing __file/root/foo18.bin
+INFO: [20181121130719.486316] 185.203.112.26: Processing __file/root/foo19.bin
+INFO: [20181121130721.619933] 185.203.112.26: Processing __file/root/foo20.bin
+INFO: [20181121130723.786670] 185.203.112.26: Processing __file/root/foo21.bin
+INFO: [20181121130725.924736] 185.203.112.26: Processing __file/root/foo22.bin
+INFO: [20181121130728.060224] 185.203.112.26: Processing __file/root/foo23.bin
+INFO: [20181121130730.178729] 185.203.112.26: Processing __file/root/foo24.bin
+INFO: [20181121130732.309264] 185.203.112.26: Processing __file/root/foo25.bin
+INFO: [20181121130734.479895] 185.203.112.26: Processing __file/root/foo26.bin
+INFO: [20181121130736.653085] 185.203.112.26: Processing __file/root/foo27.bin
+INFO: [20181121130738.814291] 185.203.112.26: Processing __file/root/foo28.bin
+INFO: [20181121130741.029646] 185.203.112.26: Processing __file/root/foo29.bin
+INFO: [20181121130743.128717] 185.203.112.26: Processing __file/root/foo30.bin
+INFO: [20181121130745.233272] 185.203.112.26: Processing __file/root/foo31.bin
+INFO: [20181121130747.364681] 185.203.112.26: Processing __file/root/foo32.bin
+INFO: [20181121130749.491793] 185.203.112.26: Processing __file/root/foo33.bin
+INFO: [20181121130751.620492] 185.203.112.26: Processing __file/root/foo34.bin
+INFO: [20181121130753.743519] 185.203.112.26: Processing __file/root/foo35.bin
+INFO: [20181121130755.862169] 185.203.112.26: Processing __file/root/foo36.bin
+INFO: [20181121130758.000172] 185.203.112.26: Processing __file/root/foo37.bin
+INFO: [20181121130800.090405] 185.203.112.26: Processing __file/root/foo38.bin
+INFO: [20181121130802.211849] 185.203.112.26: Processing __file/root/foo39.bin
+INFO: [20181121130804.356363] 185.203.112.26: Processing __file/root/foo40.bin
+INFO: [20181121130806.548412] 185.203.112.26: Processing __file/root/foo41.bin
+INFO: [20181121130808.671279] 185.203.112.26: Processing __file/root/foo42.bin
+INFO: [20181121130810.752813] 185.203.112.26: Processing __file/root/foo43.bin
+INFO: [20181121130812.844502] 185.203.112.26: Processing __file/root/foo44.bin
+INFO: [20181121130814.950501] 185.203.112.26: Processing __file/root/foo45.bin
+INFO: [20181121130817.040587] 185.203.112.26: Processing __file/root/foo46.bin
+INFO: [20181121130819.175850] 185.203.112.26: Processing __file/root/foo47.bin
+INFO: [20181121130821.332900] 185.203.112.26: Processing __file/root/foo48.bin
+INFO: [20181121130823.543119] 185.203.112.26: Processing __file/root/foo49.bin
+INFO: [20181121130825.833163] 185.203.112.26: Finished successful run in 133.31 seconds
+
+# sh type, files exist at remote
+echo 'x=0; while [ $x -lt 50 ]; do __file /root/foo${x}.bin --source /tmp/test.file --mode 0640 --owner root --group root; x=$((x + 1)); done' | ./bin/cdist config -v -P -i - 185.203.112.26
+
+INFO: [20181121130854.980007] 185.203.112.26: Starting configuration run
+INFO: [20181121130957.927705] 185.203.112.26: Finished successful run in 62.95 seconds
+
+# py type, no file at remote
+echo 'x=0; while [ $x -lt 50 ]; do __file_py /root/foo${x}.bin --source /tmp/test.file --mode 0640 --owner root --group root; x=$((x + 1)); done' | ./bin/cdist config -v -P -i - 185.203.112.26
+
+INFO: [20181121131110.179480] 185.203.112.26: Starting configuration run
+INFO: [20181121131122.086849] 185.203.112.26: Processing __file_py/root/foo0.bin
+INFO: [20181121131123.876029] 185.203.112.26: Processing __file_py/root/foo1.bin
+INFO: [20181121131125.668664] 185.203.112.26: Processing __file_py/root/foo2.bin
+INFO: [20181121131127.460721] 185.203.112.26: Processing __file_py/root/foo3.bin
+INFO: [20181121131129.591229] 185.203.112.26: Processing __file_py/root/foo4.bin
+INFO: [20181121131131.390379] 185.203.112.26: Processing __file_py/root/foo5.bin
+INFO: [20181121131133.195275] 185.203.112.26: Processing __file_py/root/foo6.bin
+INFO: [20181121131135.006282] 185.203.112.26: Processing __file_py/root/foo7.bin
+INFO: [20181121131136.834448] 185.203.112.26: Processing __file_py/root/foo8.bin
+INFO: [20181121131138.659301] 185.203.112.26: Processing __file_py/root/foo9.bin
+INFO: [20181121131140.496856] 185.203.112.26: Processing __file_py/root/foo10.bin
+INFO: [20181121131142.367813] 185.203.112.26: Processing __file_py/root/foo11.bin
+INFO: [20181121131144.239817] 185.203.112.26: Processing __file_py/root/foo12.bin
+INFO: [20181121131146.133314] 185.203.112.26: Processing __file_py/root/foo13.bin
+INFO: [20181121131148.049380] 185.203.112.26: Processing __file_py/root/foo14.bin
+INFO: [20181121131149.974696] 185.203.112.26: Processing __file_py/root/foo15.bin
+INFO: [20181121131151.929083] 185.203.112.26: Processing __file_py/root/foo16.bin
+INFO: [20181121131153.923590] 185.203.112.26: Processing __file_py/root/foo17.bin
+INFO: [20181121131155.874910] 185.203.112.26: Processing __file_py/root/foo18.bin
+INFO: [20181121131157.857904] 185.203.112.26: Processing __file_py/root/foo19.bin
+INFO: [20181121131159.902006] 185.203.112.26: Processing __file_py/root/foo20.bin
+INFO: [20181121131201.859840] 185.203.112.26: Processing __file_py/root/foo21.bin
+INFO: [20181121131203.810875] 185.203.112.26: Processing __file_py/root/foo22.bin
+INFO: [20181121131205.763291] 185.203.112.26: Processing __file_py/root/foo23.bin
+INFO: [20181121131207.710932] 185.203.112.26: Processing __file_py/root/foo24.bin
+INFO: [20181121131209.658154] 185.203.112.26: Processing __file_py/root/foo25.bin
+INFO: [20181121131211.615374] 185.203.112.26: Processing __file_py/root/foo26.bin
+INFO: [20181121131213.569721] 185.203.112.26: Processing __file_py/root/foo27.bin
+INFO: [20181121131215.522624] 185.203.112.26: Processing __file_py/root/foo28.bin
+INFO: [20181121131217.471128] 185.203.112.26: Processing __file_py/root/foo29.bin
+INFO: [20181121131219.421712] 185.203.112.26: Processing __file_py/root/foo30.bin
+INFO: [20181121131221.375699] 185.203.112.26: Processing __file_py/root/foo31.bin
+INFO: [20181121131223.327672] 185.203.112.26: Processing __file_py/root/foo32.bin
+INFO: [20181121131225.281373] 185.203.112.26: Processing __file_py/root/foo33.bin
+INFO: [20181121131227.256711] 185.203.112.26: Processing __file_py/root/foo34.bin
+INFO: [20181121131229.209255] 185.203.112.26: Processing __file_py/root/foo35.bin
+INFO: [20181121131231.170170] 185.203.112.26: Processing __file_py/root/foo36.bin
+INFO: [20181121131233.123407] 185.203.112.26: Processing __file_py/root/foo37.bin
+INFO: [20181121131235.077713] 185.203.112.26: Processing __file_py/root/foo38.bin
+INFO: [20181121131237.017138] 185.203.112.26: Processing __file_py/root/foo39.bin
+INFO: [20181121131238.988189] 185.203.112.26: Processing __file_py/root/foo40.bin
+INFO: [20181121131241.026849] 185.203.112.26: Processing __file_py/root/foo41.bin
+INFO: [20181121131242.978335] 185.203.112.26: Processing __file_py/root/foo42.bin
+INFO: [20181121131244.934562] 185.203.112.26: Processing __file_py/root/foo43.bin
+INFO: [20181121131246.885320] 185.203.112.26: Processing __file_py/root/foo44.bin
+INFO: [20181121131248.835008] 185.203.112.26: Processing __file_py/root/foo45.bin
+INFO: [20181121131250.789727] 185.203.112.26: Processing __file_py/root/foo46.bin
+INFO: [20181121131252.738686] 185.203.112.26: Processing __file_py/root/foo47.bin
+INFO: [20181121131254.691465] 185.203.112.26: Processing __file_py/root/foo48.bin
+INFO: [20181121131256.640896] 185.203.112.26: Processing __file_py/root/foo49.bin
+INFO: [20181121131258.194372] 185.203.112.26: Finished successful run in 108.01 seconds
+
+# py type, files exist at remote
+echo 'x=0; while [ $x -lt 50 ]; do __file_py /root/foo${x}.bin --source /tmp/test.file --mode 0640 --owner root --group root; x=$((x + 1)); done' | ./bin/cdist config -v -P -i - 185.203.112.26
+
+INFO: [20181121131327.054523] 185.203.112.26: Starting configuration run
+INFO: [20181121131428.031761] 185.203.112.26: Finished successful run in 60.98 seconds
+
+
+# Summary
+
+# sh type, no file at remote
+INFO: [20181121125439.429440] 185.203.112.26: Finished successful run in 165.38 seconds
+# py type, no file at remote
+INFO: [20181121125957.514738] 185.203.112.26: Finished successful run in 105.48 seconds
+
+# sh type, files exist at remote but content changes
+INFO: [20181121125724.451523] 185.203.112.26: Finished successful run in 114.50 seconds
+# py type, files exist at remote but content changes
+INFO: [20181121130305.144393] 185.203.112.26: Finished successful run in 128.66 seconds
+
+
+# sh type, no file at remote
+INFO: [20181121130825.833163] 185.203.112.26: Finished successful run in 133.31 seconds
+# py type, no file at remote
+INFO: [20181121131258.194372] 185.203.112.26: Finished successful run in 108.01 seconds
+
+# sh type, files exist at remote
+INFO: [20181121130957.927705] 185.203.112.26: Finished successful run in 62.95 seconds
+# py type, files exist at remote
+INFO: [20181121131428.031761] 185.203.112.26: Finished successful run in 60.98 seconds
