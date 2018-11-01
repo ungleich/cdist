@@ -18,10 +18,21 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+case "$("${__explorer}/os")"
+in
+    openbsd)
+        postgres_user='_postgresql'
+        ;;
+    *)
+        postgres_user='postgres'
+        ;;
+esac
+
+
 name="$__object_id"
 
-if su - postgres -c "echo '\\q' | psql '$name'" 2>/dev/null; then
-   echo "present"
+if su - "$postgres_user" -c "echo '\\q' | psql '$name'" 2>/dev/null; then
+    echo 'present'
 else
-   echo "absent"
+    echo 'absent'
 fi
