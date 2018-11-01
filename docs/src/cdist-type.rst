@@ -522,3 +522,89 @@ How to include a type into upstream cdist
 If you think your type may be useful for others, ensure it works with the
 current master branch of cdist and have a look at `cdist hacking <cdist-hacker.html>`_ on
 how to submit it.
+
+
+Python types
+------------
+From version/branch **beta** cdist support python types, types that are written
+in python language with cdist's core support. cdist detects such type if type is
+detectable as a python package, i.e. if **__init__.py** file is present in type's
+root directory. Upon that detection cdist will try to run such type as core python
+type.
+
+Note that this differs from plain cdist type where scripts are written in pure
+python and have a proper shebang.
+
+Core python types replace manifest and gencode scripts. Parameters, singleton,
+nonparallel are still defined as for common types. Explorer code is also written
+in shell, since this is the code that is directly executed at target host.
+
+When writing python type you can extend **cdist.core.pytypes.PythonType** class.
+You need to implement the following methods:
+
+* **type_manifest**: implementation should yield **cdist.core.pytypes.<type-name>**
+  attribute function call result, or **yield from ()** if type does not use other types
+* **type_gencode**: implementation should return a string consisting of lines
+  of shell code that will be executed at target host.
+
+**cdist.core.pytypes.<type-name>** attributes correspond to detected python types.
+**Note** that double underscore ('__') at the beginning of type name is removed.
+
+Example:
+
+.. code-block:: sh
+
+    import os
+    import sys
+    from cdist.core.pytypes import *
+
+
+    class DummyConfig(PythonType):
+        def type_manifest(self):
+            print('dummy manifest stdout')
+            print('dummy manifest stderr\n', file=sys.stderr)
+            yield file_py('/root/dummy1.conf',
+                          mode='0640',
+                          owner='root',
+                          group='root',
+                          source='-').feed_stdin('dummy=1\n')
+
+            self_path = os.path.dirname(os.path.realpath(__file__))
+            conf_path = os.path.join(self_path, 'files', 'dummy.conf')
+            yield file_py('/root/dummy2.conf',
+                          mode='0640',
+                          owner='root',
+                          group='root',
+                          source=conf_path)
+
+**cdist.core.PythonType** class provides the following methods:
+
+* **get_parameter**: get type parameter
+* **get_explorer_file**: get path to file for specified explorer
+* **get_explorer**: get value for specified explorer
+* **run_local**: run specified command locally
+* **run_remote**: run specified command remotely
+* **transfer**: transfer specified source to the remote
+* **die**: raise error
+* **send_message**: send message
+* **receive_message**: get message.
+
+When running python type, cdist will save output streams to **gencode-py**,
+stdout and stderr output files.
+
+As a reference implementation you can take a look at **__file_py** type,
+which is re-implementation of **__file** type.
+
+Furthermore, under **docs/dev/python-types** there are sample cdist conf directory,
+init manifests and scripts for running and measuring duration of samples.
+There, under **conf/type/__dummy_config** you can find another example of
+python type, which (unlike **__file_py** type) also uses new manifest implementation
+that yields **cdist.core.pytypes.<type-name>** attribute function call results.
+
+**NOTE** that python types implementation is under the beta, not directly controled by
+the **-b/--beta** option. It is controled by the explicit usage of python types in
+your config.
+
+Also, this documenation is only an introduction, and not a complete guide to python
+types. Currently, it is just a short introduction so one can start to write and use
+python types.

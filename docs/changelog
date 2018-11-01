@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
+	* Core: Implement core support for python types (Darko Poljak)
 
 6.5.1: 2020-02-15
 	* Type __consul_agent: Add Debian 10 support (Nico Schottelius)

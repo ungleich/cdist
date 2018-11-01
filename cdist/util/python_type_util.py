@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 2010-2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2014-2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2019 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -20,13 +19,9 @@
 #
 #
 
-from cdist.core.cdist_type import CdistType
-from cdist.core.cdist_type import InvalidTypeError
-from cdist.core.cdist_object import CdistObject
-from cdist.core.cdist_object import IllegalObjectIdError
-from cdist.core.explorer import Explorer
-from cdist.core.manifest import Manifest
-from cdist.core.code import Code
-from cdist.core.util import listdir
-from cdist.core.util import log_level_env_var_val, log_level_name_env_var_val
-import cdist.core.pytypes
+import os
+
+
+def is_python_type(cdist_type):
+    init_path = os.path.join(cdist_type.absolute_path, '__init__.py')
+    return os.path.exists(init_path)

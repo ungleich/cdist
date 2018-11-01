@@ -22,9 +22,13 @@
 
 import logging
 import os
-
+import importlib.util
+import inspect
 import cdist
+import cdist.emulator
 from . import util
+from cdist.core.pytypes import PythonType, Command
+
 
 '''
 common:
@@ -226,3 +230,72 @@ class Manifest(object):
                 pass
         _rm_file(Manifest.ORDER_DEP_STATE_NAME)
         _rm_file(Manifest.TYPEORDER_DEP_NAME)
+
+    def env_py_type_manifest(self, cdist_object):
+        env = os.environ.copy()
+        env.update(self.env)
+        env.update({
+            '__cdist_object_marker': self.local.object_marker_name,
+            '__cdist_manifest': cdist_object.cdist_type,
+            '__manifest': self.local.manifest_path,
+            '__object': cdist_object.absolute_path,
+            '__object_id': cdist_object.object_id,
+            '__object_name': cdist_object.name,
+            '__type': cdist_object.cdist_type.absolute_path,
+        })
+
+        return env
+
+    def run_py_type_manifest(self, cdist_object):
+        cdist_type = cdist_object.cdist_type
+        module_name = cdist_type.name
+        file_path = os.path.join(cdist_type.absolute_path, '__init__.py')
+        message_prefix = cdist_object.name
+        if os.path.isfile(file_path):
+            self.log.verbose("Running python type manifest for object %s",
+                             cdist_object.name)
+            spec = importlib.util.spec_from_file_location(module_name,
+                                                          file_path)
+            m = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(m)
+            classes = inspect.getmembers(m, inspect.isclass)
+            type_class = None
+            for _, cl in classes:
+                if cl != PythonType and issubclass(cl, PythonType):
+                    if type_class:
+                        raise cdist.Error("Only one python type class is "
+                                          "supported, but at least two "
+                                          "found: {}".format((type_class,
+                                                              cl, )))
+                    else:
+                        type_class = cl
+            env = self.env_py_type_manifest(cdist_object)
+            type_obj = type_class(env=env, cdist_object=cdist_object,
+                                  local=self.local, remote=None,
+                                  message_prefix=message_prefix)
+            if self.local.save_output_streams:
+                which = 'manifest'
+                stderr_path = os.path.join(cdist_object.stderr_path, which)
+                stdout_path = os.path.join(cdist_object.stdout_path, which)
+                with open(stderr_path, 'a+') as stderr, \
+                        open(stdout_path, 'a+') as stdout:
+                    self._process_py_type_manifest_entries(
+                        type_obj, env, stdout=stdout, stderr=stderr)
+            else:
+                self._process_py_type_manifest_entries(type_obj, env)
+
+    def _process_py_type_manifest_entries(self, type_obj, env, stdout=None,
+                                          stderr=None):
+        if hasattr(type_obj, 'manifest') and \
+                inspect.ismethod(type_obj.manifest):
+            for cmd in type_obj.manifest(stdout=stdout, stderr=stderr):
+                if not isinstance(cmd, Command):
+                    raise TypeError("Manifest command must be of type Command")
+                kwargs = {
+                    'argv': cmd.cmd_line(),
+                    'env': env,
+                }
+                if cmd.stdin:
+                    kwargs['stdin'] = cmd.stdin
+                emulator = cdist.emulator.Emulator(**kwargs)
+                emulator.run()

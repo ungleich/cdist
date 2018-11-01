@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+destination="/$__object_id"
+
+# nothing to work with, nothing we could do
+[ -e "$destination" ] || exit 0
+
+os=$("$__explorer/os")
+case "$os" in
+   "freebsd"|"netbsd"|"openbsd")
+      # FIXME: should be something like this based on man page, but can not test
+      stat -f "type: %ST
+owner: %Du %Su
+group: %Dg %Sg
+mode: %Op %Sp
+size: %Dz
+links: %Dl
+" "$destination"
+   ;;
+   "macosx")
+     stat -f "type: %HT
+owner: %Du %Su
+group: %Dg %Sg
+mode: %Lp %Sp
+size: %Dz
+links: %Dl
+" "$destination"
+   ;;
+   *)
+      stat --printf="type: %F
+owner: %u %U
+group: %g %G
+mode: %a %A
+size: %s
+links: %h
+" "$destination"
+   ;;
+esac

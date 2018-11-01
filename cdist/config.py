@@ -38,6 +38,7 @@ import cdist.hostsource
 import cdist.exec.local
 import cdist.exec.remote
 import cdist.util.ipaddr as ipaddr
+import cdist.util.python_type_util as pytype_util
 import cdist.configuration
 from cdist import core, inventory
 from cdist.util.remoteutil import inspect_ssh_mux_opts
@@ -90,13 +91,15 @@ class Config(object):
                 shutil.rmtree(path)
 
     def __init__(self, local, remote, dry_run=False, jobs=None,
-                 cleanup_cmds=None, remove_remote_files_dirs=False):
+                 cleanup_cmds=None, remove_remote_files_dirs=False,
+                 timestamp=False):
 
         self.local = local
         self.remote = remote
         self._open_logger()
         self.dry_run = dry_run
         self.jobs = jobs
+        self.timestamp = timestamp
         if cleanup_cmds:
             self.cleanup_cmds = cleanup_cmds
         else:
@@ -428,7 +431,8 @@ class Config(object):
                 cleanup_cmds.append(cleanup_cmd)
             c = cls(local, remote, dry_run=args.dry_run, jobs=args.jobs,
                     cleanup_cmds=cleanup_cmds,
-                    remove_remote_files_dirs=remove_remote_files_dirs)
+                    remove_remote_files_dirs=remove_remote_files_dirs,
+                    timestamp=args.timestamp)
             c.run()
             cls._remove_paths()
 
@@ -466,6 +470,7 @@ class Config(object):
             'dry' if self.dry_run else 'configuration'))
 
         self._init_files_dirs()
+        self.local.collect_python_types()
 
         self.explorer.run_global_explorers(self.local.global_explorer_out_path)
         try:
@@ -779,15 +784,41 @@ class Config(object):
                     args = [param, cdist_type.name]
                 self.log.warning(format, *args)
 
+    def _timeit(self, func, msg_prefix):
+        def wrapper_func(*args, **kwargs):
+            loglevel = self.log.getEffectiveLevel()
+            if loglevel >= logging.VERBOSE and self.timestamp:
+                start_time = time.time()
+                rv = func(*args, **kwargs)
+                end_time = time.time()
+                duration = end_time - start_time
+                self.log.verbose("%s duration: %.6f seconds",
+                                 msg_prefix, duration)
+            else:
+                rv = func(*args, **kwargs)
+            return rv
+        return wrapper_func
+
     def object_prepare(self, cdist_object, transfer_type_explorers=True):
         """Prepare object: Run type explorer + manifest"""
         self._handle_deprecation(cdist_object)
         self.log.verbose("Preparing object {}".format(cdist_object.name))
         self.log.verbose(
             "Running manifest and explorers for " + cdist_object.name)
-        self.explorer.run_type_explorers(cdist_object, transfer_type_explorers)
         try:
-            self.manifest.run_type_manifest(cdist_object)
+            self.log.verbose("Preparing object {}".format(cdist_object.name))
+            self.log.verbose(
+                    "Running manifest and explorers for " + cdist_object.name)
+            self.explorer.run_type_explorers(cdist_object,
+                                             transfer_type_explorers)
+            if pytype_util.is_python_type(cdist_object.cdist_type):
+                self._timeit(self.manifest.run_py_type_manifest,
+                             "Python type manifest for {}".format(
+                                 cdist_object.name))(cdist_object)
+            else:
+                self._timeit(self.manifest.run_type_manifest,
+                             "Type manifest for {}".format(
+                                 cdist_object.name))(cdist_object)
             self.log.trace("[ORDER_DEP] Removing order dep files for %s",
                            cdist_object)
             cdist_object.cleanup()
@@ -805,9 +836,21 @@ class Config(object):
 
             # Generate
             self.log.debug("Generating code for %s" % (cdist_object.name))
-            cdist_object.code_local = self.code.run_gencode_local(cdist_object)
-            cdist_object.code_remote = self.code.run_gencode_remote(
-                cdist_object)
+            if pytype_util.is_python_type(cdist_object.cdist_type):
+                cdist_object.code_local = ''
+                cdist_object.code_remote = self._timeit(
+                    self.code.run_py,
+                    "Python type generate code for {}".format(
+                        cdist_object.name))(cdist_object)
+            else:
+                cdist_object.code_local = self._timeit(
+                    self.code.run_gencode_local,
+                    "Type generate code local for {}".format(
+                        cdist_object.name))(cdist_object)
+                cdist_object.code_remote = self._timeit(
+                    self.code.run_gencode_remote,
+                    "Type generate code remote for {}".format(
+                        cdist_object.name))(cdist_object)
             if cdist_object.code_local or cdist_object.code_remote:
                 cdist_object.changed = True
 
@@ -818,12 +861,16 @@ class Config(object):
                 if cdist_object.code_local:
                     self.log.trace("Executing local code for %s"
                                    % (cdist_object.name))
-                    self.code.run_code_local(cdist_object)
+                    self._timeit(self.code.run_code_local,
+                                 "Type run code local for {}".format(
+                                     cdist_object.name))(cdist_object)
                 if cdist_object.code_remote:
                     self.log.trace("Executing remote code for %s"
                                    % (cdist_object.name))
                     self.code.transfer_code_remote(cdist_object)
-                    self.code.run_code_remote(cdist_object)
+                    self._timeit(self.code.run_code_remote,
+                                 "Type run code remote for {}".format(
+                                     cdist_object.name))(cdist_object)
 
             # Mark this object as done
             self.log.trace("Finishing run of " + cdist_object.name)

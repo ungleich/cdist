@@ -22,6 +22,10 @@
 #
 
 import os
+import importlib.util
+import inspect
+import cdist
+from cdist.core.pytypes import PythonType
 from . import util
 
 
@@ -115,6 +119,44 @@ class Code(object):
 
         if dry_run:
             self.env['__cdist_dry_run'] = '1'
+
+    def run_py(self, cdist_object):
+        cdist_type = cdist_object.cdist_type
+        module_name = cdist_type.name
+        file_path = os.path.join(cdist_type.absolute_path, '__init__.py')
+
+        if os.path.isfile(file_path):
+            spec = importlib.util.spec_from_file_location(module_name,
+                                                          file_path)
+            m = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(m)
+            classes = inspect.getmembers(m, inspect.isclass)
+            type_class = None
+            for _, cl in classes:
+                if cl != PythonType and issubclass(cl, PythonType):
+                    if type_class:
+                        raise cdist.Error("Only one python type class is "
+                                          "supported, but at least two "
+                                          "found: {}".format((type_class,
+                                                              cl, )))
+                    else:
+                        type_class = cl
+            env = os.environ.copy()
+            env.update(self.env)
+            message_prefix = cdist_object.name
+            type_obj = type_class(env=env, cdist_object=cdist_object,
+                                  local=self.local, remote=self.remote,
+                                  message_prefix=message_prefix)
+            if hasattr(type_obj, 'run') and inspect.ismethod(type_obj.run):
+                if self.local.save_output_streams:
+                    which = 'gencode-py'
+                    stderr_path = os.path.join(cdist_object.stderr_path, which)
+                    stdout_path = os.path.join(cdist_object.stdout_path, which)
+                    with open(stderr_path, 'a+') as stderr, \
+                            open(stdout_path, 'a+') as stdout:
+                        return type_obj.run(stdout=stdout, stderr=stderr)
+                else:
+                    return type_obj.run()
 
     def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.cdist_type

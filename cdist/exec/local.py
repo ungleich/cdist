@@ -35,6 +35,9 @@ import cdist
 import cdist.message
 from cdist import core
 import cdist.exec.util as util
+import cdist.util.python_type_util as pytype_util
+from cdist.core import pytypes
+import functools
 
 CONF_SUBDIRS_LINKED = ["explorer", "files", "manifest", "type", ]
 
@@ -370,3 +373,16 @@ class Local(object):
                 raise cdist.Error(
                         "Linking emulator from %s to %s failed: %s" % (
                             src, dst, e.__str__()))
+
+    def collect_python_types(self):
+        for cdist_type in core.CdistType.list_types(self.type_path):
+            if pytype_util.is_python_type(cdist_type):
+                self.log.trace("Detected python type %s, collecting it".format(
+                    cdist_type.name))
+                f = functools.partial(pytypes.command, cdist_type.name)
+                if cdist_type.name.startswith('__'):
+                    attr_name = cdist_type.name.replace('__', '', 1)
+                else:
+                    attr_name = cdist_type.name
+                setattr(pytypes, attr_name, f)
+                pytypes.__all__.append(attr_name)
