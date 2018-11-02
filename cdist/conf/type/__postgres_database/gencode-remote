@@ -20,12 +20,15 @@
 
 case "$(cat "${__global}/explorer/os")"
 in
-	openbsd)
-		postgres_user='_postgresql'
-		;;
-	*)
-		postgres_user='postgres'
-		;;
+   netbsd)
+      postgres_user='pgsql'
+      ;;
+   openbsd)
+      postgres_user='_postgresql'
+      ;;
+   *)
+      postgres_user='postgres'
+      ;;
 esac
 
 

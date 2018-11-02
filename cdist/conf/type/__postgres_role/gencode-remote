@@ -20,12 +20,15 @@
 
 case "$(cat "${__global}/explorer/os")"
 in
-	openbsd)
-		postgres_user='_postgresql'
-		;;
-	*)
-		postgres_user='postgres'
-		;;
+    netbsd)
+        postgres_user='pgsql'
+        ;;
+    openbsd)
+        postgres_user='_postgresql'
+        ;;
+    *)
+        postgres_user='postgres'
+        ;;
 esac
 
 
@@ -49,10 +52,10 @@ case "$state_should" in
             booleans="$booleans $upper"
         done
 
-         [ -n "$password" ] && password="PASSWORD '$password'"
+        [ -n "$password" ] && password="PASSWORD '$password'"
 
-         cmd="CREATE ROLE $name WITH $password $booleans"
-         echo "su - '$postgres_user' -c \"psql postgres -c '$cmd'\""
+        cmd="CREATE ROLE $name WITH $password $booleans"
+        echo "su - '$postgres_user' -c \"psql postgres -c '$cmd'\""
     ;;
     absent)
         echo "su - '$postgres_user' -c \"dropuser '$name'\""

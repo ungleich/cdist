@@ -20,6 +20,9 @@
 
 case "$("${__explorer}/os")"
 in
+    netbsd)
+        postgres_user='pgsql'
+        ;;
     openbsd)
         postgres_user='_postgresql'
         ;;
