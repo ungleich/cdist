@@ -59,10 +59,9 @@ How to submit a new type
 For detailed information about types, see `cdist type <cdist-type.html>`_.
 
 Submitting a type works as described above, with the additional requirement
-that a corresponding manpage named man.text in asciidoc format with
+that a corresponding manpage named man.rst in ReSTructured text format with
 the manpage-name "cdist-type__NAME" is included in the type directory
-AND asciidoc is able to compile it (i.e. do NOT have to many "=" in the second
-line).
+AND the manpage builds (`make man`).
 
 Warning: Submitting "exec" or "run" types that simply echo their parameter in
 **gencode** will not be accepted, because they are of no use. Every type can output
