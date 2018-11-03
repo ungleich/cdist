@@ -22,6 +22,20 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+case "$(cat "${__global}/explorer/os")"
+in
+   netbsd)
+      postgres_user='pgsql'
+      ;;
+   openbsd)
+      postgres_user='_postgresql'
+      ;;
+   *)
+      postgres_user='postgres'
+      ;;
+esac
+
+
 dbname=$(    echo "$__object_id" | cut -d":" -f1 )
 extension=$( echo "$__object_id" | cut -d":" -f2 )
 
@@ -30,10 +44,10 @@ state_should=$( cat "$__object/parameter/state" )
 case "$state_should" in
     present)
          cmd="CREATE EXTENSION IF NOT EXISTS $extension"
-         echo "su - postgres -c 'psql -c \"$cmd\" \"$dbname\"'"
+         echo "su - '$postgres_user' -c 'psql -c \"$cmd\" \"$dbname\"'"
     ;;
     absent)
-         cmd="DROP   EXTENSION IF     EXISTS $extension"
-         echo "su - postgres -c 'psql -c \"$cmd\" \"$dbname\"'"
+         cmd="DROP EXTENSION IF EXISTS $extension"
+         echo "su - '$postgres_user' -c 'psql -c \"$cmd\" \"$dbname\"'"
     ;;
 esac

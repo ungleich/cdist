@@ -81,6 +81,11 @@ case "$state_should" in
                     :  # handled in manifest
                 ;;
 
+                openbsd)
+                    # OpenBSD 5.7 and phigher
+                    echo "rcctl enable '$name'"
+                ;;
+
                 *)
                    echo "Unsupported os: $os" >&2
                    exit 1
