@@ -87,6 +87,7 @@ else
             state='absent'
             # OpenBSD 5.7 and higher
             rcctl ls on | grep "^${name}$" && state='present'
+        ;;
         *)
            echo "Unsupported os: $os" >&2
            exit 1
