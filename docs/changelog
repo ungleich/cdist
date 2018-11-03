@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.10.4: 2018-11-03
 	* Core: Transfer all files of a directory at once instead of calling copy once per file (myeisha)
 	* Core: Add timestamp (optional) to log messages (Darko Poljak)
 	* Explorers and types: Fix shellcheck found problems and encountered bugs (Jonas Weber, Thomas Eckert, Darko Poljak)
