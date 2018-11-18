@@ -30,9 +30,9 @@ state="$(cat "$__object/parameter/state")"
 # Use short option names for portability
 shorten_property() {
    case "$1" in
-      gid) echo -- "-g";;
-      password) echo -- "-p";;
-      system) echo -- "-r";;
+      gid) echo " -g";;
+      password) echo " -p";;
+      system) echo " -r";;
    esac
 }
 
