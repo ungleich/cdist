@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Type __group: Fix/remove '--' from echo command (Dimitrios Apostolou)
+	* New type: __ping (Olliver Schinagl)
 
 4.10.4: 2018-11-03
 	* Core: Transfer all files of a directory at once instead of calling copy once per file (myeisha)
