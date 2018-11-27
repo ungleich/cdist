@@ -1,0 +1,12 @@
+#!/bin/sh -e
+#
+# Copyright (C) 2018 Olliver Schinagl <oliver@schinagl.nl>
+#
+# SPDX-License-Identifier: GPL-3.0+
+#
+
+set -eu
+
+echo "echo 'pong'"
+
+exit 0
