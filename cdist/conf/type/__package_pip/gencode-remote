@@ -57,6 +57,7 @@ case "$state_should" in
         else
             echo $pip install -q "$name"
         fi
+        echo "installed" >> "$__messages_out"
     ;;
     absent)
         if [ "$runas" ]
@@ -65,6 +66,7 @@ case "$state_should" in
         else
             echo $pip uninstall -q -y "$name"
         fi
+        echo "removed" >> "$__messages_out"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

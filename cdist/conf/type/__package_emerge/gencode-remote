@@ -64,9 +64,11 @@ fi
 case "$state_should" in
    present)
         echo "emerge '$name' &>/dev/null || exit 1"
+        echo "installed" >> "$__messages_out"
         ;;
    absent)
         echo "emerge -C '$name' &>/dev/null || exit 1"
+        echo "removed" >> "$__messages_out"
         ;;
    *)
         echo "Unknown state: $state_should" >&2
