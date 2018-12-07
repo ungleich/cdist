@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# 2011 Andi Brönnimann (andi-cdist at v-net.ch)
-# Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
 # Copyright 2018, Takashi Yoshi <takashi@yoshi.email>
 #
 # This file is part of cdist.
@@ -20,19 +18,32 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the version of a package - parsed pkg_info output
+# Retrieve the status of a package - parsed pkg_info output
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object}/parameter/name" ]
+then
+	pkgid="$(cat "${__object}/parameter/name")"
 else
-   name="$__object_id"
+	pkgid="${__object_id}"
 fi
 
-# Extract version number from pkg_info.
-# Refer to packages-specs(7) for more information regarding the format.
+if [ -f "${__object}/parameter/version" ]
+then
+	pkgid="${pkgid}-$(cat "${__object}/parameter/version")"
+fi
 
-# ATTENTION: If $name is just a stem (e.g. "php" or "python"), there may be
-#            multiple results. pkg_info prints a line for each version.
+if [ -f "${__object}/parameter/flavor" ]
+then
+	# If a flavor but no version is given we need to add another -,
+	# otherwise pkg_info confuses the flavor with the version.
+	[ -f "${__object}/parameter/version" ] || pkgid="${pkgid}-"
 
-pkg_info -q -I "inst:$name" | sed -e 's/^\([^-]*-\)*\([0-9][^-]*\).*$/\2/'
+	pkgid="${pkgid}-$(cat "${__object}/parameter/flavor")"
+fi
+
+
+pkg_info -q -I "inst:${pkgid}" >/dev/null 2>&1 \
+	&& echo 'present' || echo 'absent'
+
+exit 0

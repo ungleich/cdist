@@ -2,6 +2,7 @@
 #
 # 2011 Andi Brönnimann (andi-cdist at v-net.ch)
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2018 Takashi Yoshi <takashi@yoshi.email>
 #
 # This file is part of cdist.
 #
@@ -72,12 +73,7 @@ else
   fi
 fi                                                                              
 
-if [ "$pkg_version" ]; then
-    state_is="present"
-else
-    state_is="absent"
-fi
-
+state_is="$(cat "$__object/explorer/pkg_state")"
 [ "$state_is" = "$state_should" ] && exit 0
 
 case "$state_should" in
@@ -88,7 +84,7 @@ if [ X != X"${pkg_path}" ]; then
     PKG_PATH="${pkg_path}"; export PKG_PATH
 fi
 status=\$(pkg_add "$pkgopts" "$pkgid" 2>&1)
-pkg_info | grep "^${name}.*${version}.*${flavor}" > /dev/null 2>&1
+pkg_info -q -I "inst:$pkgid" | grep -q "^${name}-${version}.*${flavor}$" 2>/dev/null
 
 # We didn't find the package in the list of 'installed packages', so it failed
 # This is necessary because pkg_add doesn't return properly
@@ -106,7 +102,7 @@ eof
         # use this because pkg_add doesn't properly handle errors
         cat << eof
 status=\$(pkg_delete "$pkgopts" "$pkgid")
-pkg_info | grep "^${name}.*${version}.*${flavor}" > /dev/null 2>&1
+pkg_info -q -I "inst:$pkgid" | grep -q "^${name}-${version}.*${flavor}" 2>/dev/null
 
 # We found the package in the list of 'installed packages'
 # This would indicate that pkg_delete failed, send the output of pkg_delete
