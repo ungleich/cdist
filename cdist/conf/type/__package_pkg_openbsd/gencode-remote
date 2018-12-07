@@ -96,7 +96,7 @@ if [ \$? -ne 0 ]; then
     if [ -z "\${status}" ]; then
       status="Failed to add package, uncaught exception."
     fi
-    echo "Error: \$status"
+    echo "Error: \$status" >&2
     exit 1
 fi
 echo "installed" >> "$__messages_out"
@@ -115,7 +115,7 @@ if [ \$? -eq 0 ]; then
     if [ -z "\${status}" ]; then
       status="Failed to remove package, uncaught exception."
     fi
-    echo "Error: \$status"
+    echo "Error: \$status" >&2
     exit 1
 fi
 echo "removed" >> "$__messages_out"
