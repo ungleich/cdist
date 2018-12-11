@@ -206,7 +206,7 @@ case "$os" in
             [567])
                 init_sysvinit debian
             ;;
-            8)
+            [89])
                 init_systemd
             ;;
             *)
