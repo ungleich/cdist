@@ -21,6 +21,7 @@
 
 os=$(cat "$__global/explorer/os")
 state=$(cat "$__object/parameter/state")
+version=$(cat "$__object/parameter/version")
 
 case "$os" in
     centos)
@@ -33,7 +34,11 @@ case "$os" in
             --gpgcheck 1 \
             --gpgkey 'https://download.docker.com/linux/centos/gpg' \
             --state "${state}"
-          require="__yum_repo/docker-ce-stable" __package docker-ce --state "${state}"
+          if [ "$version" != "latest" ]; then
+            require="__yum_repo/docker-ce-stable" __package docker-ce --version "${version}" --state "${state}"
+          else
+            require="__yum_repo/docker-ce-stable" __package docker-ce --state "${state}"
+          fi
         else
           echo "CentOS version 7 is required!" >&2
           exit 1
@@ -53,7 +58,11 @@ case "$os" in
          --distribution "$(cat "$__global/explorer/lsb_codename")" \
          --state "${state}" \
          --component "stable"
-      __package docker-ce --state "${state}"
+      if [ "$version" != "latest" ]; then
+        __package docker-ce --version "${version}" --state "${state}"
+      else
+        __package docker-ce --state "${state}"
+      fi
       unset CDIST_ORDER_DEPENDENCY
    ;;
    *)
