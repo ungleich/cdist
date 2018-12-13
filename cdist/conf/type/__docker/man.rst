@@ -20,6 +20,9 @@ OPTIONAL PARAMETERS
 -------------------
 state
    'present' or 'absent', defaults to 'present'
+version
+   The specific version to install. Defaults to the special value 'latest',
+   meaning the version the package manager will install by default.
 
 
 BOOLEAN PARAMETERS
@@ -38,6 +41,8 @@ EXAMPLES
     # Remove docker
     __docker --state absent
 
+    # Install specific version
+    __docker --state present --version 18.03.0.ce
 
 AUTHORS
 -------
