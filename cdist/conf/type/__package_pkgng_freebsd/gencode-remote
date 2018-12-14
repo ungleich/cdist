@@ -57,12 +57,15 @@ execcmd(){
    case "$1" in
       add)
          _cmd="${add_cmd} $2"
+         echo "installed" >> "$__messages_out"
          ;;
       rm)
          _cmd="${rm_cmd} $2"
+         echo "removed" >> "$__messages_out"
          ;;
       upg)
          _cmd="${upg_cmd} $2"
+         echo "installed" >> "$__messages_out"
          ;;
       *)
          printf "Error. Don't understand command: %s" "$1" >&2

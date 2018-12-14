@@ -76,7 +76,7 @@ case "${state_should}" in
 		fi
 
 		# Use this because pkg_add doesn't properly handle errors
-		cat << EOF
+		cat <<EOF
 status=\$(pkg_add ${pkgopts} '${pkgid}' 2>&1 || true)
 
 if ! pkg_info -q -I 'inst:${pkgid}' | grep -q '^${name}-${version}.*${flavor}$' 2>/dev/null
@@ -96,8 +96,8 @@ EOF
 
 	absent)
 		# Use this because pkg_delete doesn't properly handle errors
-		cat << EOF
-status=\$(pkg_delete ${pkgopts} '${pkgid}' || true)
+		cat <<EOF
+status=\$(pkg_delete ${pkgopts} '${pkgid}' 2>&1 || true)
 
 if pkg_info -q -I 'inst:${pkgid}' | grep -q '^${name}-${version}.*${flavor}' 2>/dev/null
 then

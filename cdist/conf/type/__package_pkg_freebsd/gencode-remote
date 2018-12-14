@@ -39,7 +39,7 @@ assert ()                 #  If condition false,
 		# shellcheck disable=SC2039
 		echo "File \"$0\", line $lineno, called by $(caller 0)"
 		exit $E_ASSERT_FAILED
-	fi  
+	fi
 }
 
 # Debug
@@ -89,6 +89,7 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
 			cmd="${rm_cmd} ${name}-${curr_version}"
 		fi
 		execcmd "remove" "${cmd}"
+		echo "removed" >> "$__messages_out"
 		exit 0
 	else	# Should be installed
 		if [ -n "$version" ]; then	# Want a specific version
@@ -102,6 +103,7 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
 				execcmd "remove" "${cmd}"
 				cmd="${add_cmd} -r ${name}-${version}"
 				execcmd "add" "${cmd}"
+				echo "installed" >> "$__messages_out"
 			fi
 		else	# Don't care what version to use
 			exit 0
@@ -120,6 +122,7 @@ else	# PKG *isn't* installed
 			cmd="${cmd}-${version}"
 		fi
 		execcmd "add" "${cmd}"
+		echo "installed" >> "$__messages_out"
 		exit 0
 	fi
 fi

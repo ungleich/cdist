@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2018 Takashi Yoshi (takashi at yoshi.email)
 #
 # This file is part of cdist.
 #
@@ -28,12 +29,26 @@ fi
 
 os=$(cat "$__global/explorer/os")
 case "$os" in
-    redhat|centos|ubuntu|debian|devuan|archlinux|coreos)
-        flag='-w'
-    ;;
-    frebsd)
-        flag=''
-    ;;
+   # Linux
+   redhat|centos|ubuntu|debian|devuan|archlinux|gentoo|coreos)
+      flag='-w'
+      ;;
+   # BusyBox
+   alpine|openwrt)
+      flag='-w'
+      ;;
+   macosx)
+      # NOTE: Older versions of Mac OS X require the -w option.
+      #       Even though the flag is not mentioned in new man pages anymore,
+      #       it still works.
+      flag='-w'
+      ;;
+   netbsd)
+      flag='-w'
+      ;;
+   freebsd|openbsd)
+      flag=''
+   ;;
 esac
 
 # set the current runtime value
