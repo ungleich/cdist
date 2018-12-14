@@ -28,7 +28,7 @@ case "$os" in
       :
    ;;
    # BSD
-   freebsd|netbsd|openbsd)
+   freebsd|macosx|netbsd|openbsd)
       :
    ;;
    *)
