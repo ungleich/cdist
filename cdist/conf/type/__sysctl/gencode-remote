@@ -29,7 +29,7 @@ fi
 
 os=$(cat "$__global/explorer/os")
 case "$os" in
-    redhat|centos|ubuntu|debian|devuan|archlinux|coreos|netbsd)
+    redhat|centos|ubuntu|debian|devuan|alpine|archlinux|gentoo|openwrt|coreos|netbsd)
         flag='-w'
 		;;
 	macosx)
