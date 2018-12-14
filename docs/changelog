@@ -8,6 +8,7 @@ next:
 	* Type __consul_agent: Add Debian 9 support (Jin-Guk Kwon)
 	* Documentation: Fix broken links (Rage <OxR463>)
 	* Type __docker: Add version parameter (Jonas Weber)
+	* Type __sysctl: Refactor for better OS support (Takashi Yoshi)
 
 4.10.4: 2018-11-03
 	* Core: Transfer all files of a directory at once instead of calling copy once per file (myeisha)
