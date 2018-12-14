@@ -62,15 +62,15 @@ state_should="$(cat "$__object/parameter/state")"
 
 pkg_version="$(cat "$__object/explorer/pkg_version")"
 
-if [ -f "$__object/parameter/pkg_path" ]; then                                  
-  pkg_path="$(cat "$__object/parameter/pkg_path")"                              
+if [ -f "$__object/parameter/pkg_path" ]; then
+  pkg_path="$(cat "$__object/parameter/pkg_path")"
 else
   has_installurl=$(cat "${__object}/explorer/has_installurl")
   if [ Xyes != X"${has_installurl}" ]; then
       # there is no default PKG_PATH, try to provide one
       pkg_path="ftp://ftp.openbsd.org/pub/OpenBSD/$os_version/packages/$machine/"
   fi
-fi                                                                              
+fi
 
 if [ "$pkg_version" ]; then
     state_is="present"
@@ -99,11 +99,12 @@ if [ \$? -ne 0 ]; then
     echo "Error: \$status"
     exit 1
 fi
+echo "installed" >> "$__messages_out"
 eof
     ;;
 
     absent)
-        # use this because pkg_add doesn't properly handle errors
+        # use this because pkg_delete doesn't properly handle errors
         cat << eof
 status=\$(pkg_delete "$pkgopts" "$pkgid")
 pkg_info | grep "^${name}.*${version}.*${flavor}" > /dev/null 2>&1
@@ -117,6 +118,7 @@ if [ \$? -eq 0 ]; then
     echo "Error: \$status"
     exit 1
 fi
+echo "removed" >> "$__messages_out"
 eof
    ;;
    *)

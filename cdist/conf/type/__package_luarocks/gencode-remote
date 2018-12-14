@@ -43,9 +43,11 @@ fi
 case "$state_should" in
     present)
         echo "luarocks install '$name'"
+        echo "installed" >> "$__messages_out"
     ;;
     absent)
         echo "luarocks remove '$name'"
+        echo "removed" >> "$__messages_out"
     ;;
     *)
         echo "Unknown state: $state_should" >&2
