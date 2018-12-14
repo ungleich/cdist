@@ -99,8 +99,8 @@ if [ \$? -ne 0 ]; then
     echo "Error: \$status"
     exit 1
 fi
-echo "installed" >> "$__messages_out"
 eof
+echo "installed" >> "$__messages_out"
     ;;
 
     absent)
@@ -118,8 +118,8 @@ if [ \$? -eq 0 ]; then
     echo "Error: \$status"
     exit 1
 fi
-echo "removed" >> "$__messages_out"
 eof
+echo "removed" >> "$__messages_out"
    ;;
    *)
 		echo "Unknown state: $state_should" >&2
