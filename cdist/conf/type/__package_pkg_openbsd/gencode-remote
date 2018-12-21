@@ -54,8 +54,6 @@ fi
 
 state_should=$(cat "${__object}/parameter/state")
 
-pkg_version=$(cat "${__object}/explorer/pkg_version")
-
 if [ -f "${__object}/parameter/pkg_path" ]; then
 	pkg_path=$(cat "${__object}/parameter/pkg_path")
 else
