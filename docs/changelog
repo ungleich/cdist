@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.10.5: 2018-12-21
 	* Type __group: Fix/remove '--' from echo command (Dimitrios Apostolou)
 	* New type: __ping (Olliver Schinagl)
 	* Type __postgres_role: Fix broken syntax (Nico Schottelius, Darko Poljak)
