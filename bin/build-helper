@@ -209,35 +209,30 @@ eof
         fi
         gpg --armor --detach-sign "${archivename}" || exit 1
 
-        # make github release
-        curl -H "Authorization: token ${token}" \
-            --request POST \
-            --data "{ \"tag_name\":\"${tag}\", \
-                      \"target_commitish\":\"master\", \
-                      \"name\": \"${tag}\", \
-                      \"body\":\"${tag}\", \
-                      \"draft\":false, \
-                      \"prerelease\": false}" \
-            "https://api.github.com/repos/ungleich/cdist/releases" || exit 1
+        project="ungleich-public%2Fcdist"
+        sed_cmd='s/^.*"markdown":"\([^"]*\)".*$/\1/'
 
-        # get release ID
-        repoid=$(curl "https://api.github.com/repos/ungleich/cdist/releases/tags/${tag}" \
-            | python3 -c 'import json; import sys; print(json.loads(sys.stdin.read())["id"])') \
+        # upload archive
+        response_archive=$(curl -f -X POST \
+             -H "PRIVATE-TOKEN: ${token}" \
+             -F "file=@${archivename}" \
+             "https://code.ungleich.ch/api/v4/projects/${project}/uploads" \
+             | sed "${sed_cmd}") || exit 1
+
+        # upload archive signature
+        response_archive_sig=$(curl -f -X POST \
+             -H "PRIVATE-TOKEN: ${token}" \
+             -F "file=@${archivename}.asc" \
+            "https://code.ungleich.ch/api/v4/projects/${project}/uploads" \
+             | sed "${sed_cmd}") || exit 1
+
+        # make release
+        curl -f -X POST \
+             -H "PRIVATE-TOKEN: ${token}" \
+             -F "description=Release ${tag}<br/>${response_archive}<br/>${response_archive_sig}" \
+            "https://code.ungleich.ch/api/v4/projects/${project}/repository/tags/${tag}/release" \
             || exit 1
 
-        # upload archive and then signature
-        curl -H "Authorization: token ${token}" \
-             -H "Accept: application/vnd.github.manifold-preview" \
-             -H "Content-Type: application/x-gtar" \
-             --data-binary @${archivename} \
-            "https://uploads.github.com/repos/ungleich/cdist/releases/${repoid}/assets?name=${archivename}" \
-            || exit 1
-        curl -H "Authorization: token ${token}" \
-             -H "Accept: application/vnd.github.manifold-preview" \
-             -H "Content-Type: application/pgp-signature" \
-             --data-binary @${archivename}.asc \
-            "https://uploads.github.com/repos/ungleich/cdist/releases/${repoid}/assets?name=${archivename}.asc" \
-            || exit 1
 
         # remove generated files (archive and asc)
         if [ $# -eq 2 ]
@@ -314,7 +309,7 @@ eof
         "$0" release-git-tag
 
         # sign git tag
-        printf "Enter github authentication token: "
+        printf "Enter upstream repository authentication token: "
         read token
         "$0" sign-git-release "${target_version}" "${token}"
 

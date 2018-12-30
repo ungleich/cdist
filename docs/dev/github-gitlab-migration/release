@@ -1,0 +1,50 @@
+#!/bin/sh -e
+
+set -x
+
+printf "Enter tag name: "
+read tag
+printf "Enter repository authentication token: "
+read token
+
+git tag -d "${tag}" || :
+
+git tag "${tag}" -m "Release ${tag}"
+git push origin "${tag}"
+
+echo 'foo' > foo
+echo 'foo signature' > foo.asc
+
+archivename="foo"
+
+project="poljakowski%2Fmy-cdist-testing"
+sed_cmd='s/^.*"markdown":"\([^"]*\)".*$/\1/'
+
+# upload archive
+response_archive=$(curl -f -X POST \
+     -H "PRIVATE-TOKEN: ${token}" \
+     -F "file=@${archivename}" \
+     "https://code.ungleich.ch/api/v4/projects/${project}/uploads" \
+     | sed "${sed_cmd}") || exit 1
+
+# upload archive signature
+response_archive_sig=$(curl -f -X POST \
+     -H "PRIVATE-TOKEN: ${token}" \
+     -F "file=@${archivename}.asc" \
+    "https://code.ungleich.ch/api/v4/projects/${project}/uploads" \
+     | sed "${sed_cmd}") || exit 1
+
+# make release
+curl -f -X POST \
+     -H "PRIVATE-TOKEN: ${token}" \
+     -F "description=Release ${tag}<br/>${response_archive}<br/>${response_archive_sig}" \
+    "https://code.ungleich.ch/api/v4/projects/${project}/repository/tags/${tag}/release" \
+    || exit 1
+
+# get tag
+curl -f -X GET \
+     -H "PRIVATE-TOKEN: ${token}" \
+    "https://code.ungleich.ch/api/v4/projects/${project}/repository/tags/${tag}" \
+    || exit 1
+
+rm -f foo foo.asc

@@ -44,7 +44,7 @@ EXAMPLES
     __git /home/services/dokuwiki --source git://github.com/splitbrain/dokuwiki.git
 
     # Checkout cdist, stay on branch 2.1
-    __git /home/nico/cdist --source git://github.com/ungleich/cdist.git --branch 2.1
+    __git /home/nico/cdist --source git://code.ungleich.ch/ungleich-public/cdist.git --branch 2.1
 
 
 AUTHORS
