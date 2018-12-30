@@ -36,11 +36,11 @@ To install cdist, execute the following commands:
 
 .. code-block:: sh
 
-    git clone https://github.com/ungleich/cdist.git
+    git clone https://code.ungleich.ch/ungleich-public/cdist.git
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 
-From version 4.2.0 cdist tags and github releases are signed.
+From version 4.2.0 cdist tags and releases are signed.
 You can get GPG public key used for signing `here <_static/pgp-key-EFD2AE4EC36B6901.asc>`_.
 
 To install cdist with distutils from cloned repository, first you have to
@@ -76,14 +76,6 @@ So for instance if you want to use and stay with version 4.1, you can use
 .. code-block:: sh
 
     git checkout -b 4.1 origin/4.1
-
-Git mirrors
-^^^^^^^^^^^
-
-If the main site is down, you can acquire cdist from one of the following sites:
-
- * git://github.com/telmich/cdist.git `github <https://github.com/telmich/cdist>`_
- * git://git.code.sf.net/p/cdist/code `sourceforge <https://sourceforge.net/p/cdist/code>`_
 
 Building and using documentation (man and html)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

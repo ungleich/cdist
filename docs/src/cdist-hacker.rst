@@ -16,7 +16,7 @@ Reporting bugs
 --------------
 If you believe you've found a bug and verified that it is
 in the latest version, drop a mail to the cdist mailing list,
-subject prefixed with "[BUG] " or create an issue on github.
+subject prefixed with "[BUG] " or create an issue on code.ungleich.ch.
 
 
 Coding conventions (everywhere)
@@ -51,7 +51,7 @@ work nor kill the authors brain:
 
 As soon as your work meets these requirements, write a mail
 for inclusion to the mailinglist **cdist-configuration-management at googlegroups.com**
-or open a pull request at http://github.com/ungleich/cdist.
+or open a merge request at https://code.ungleich.ch/ungleich-public/cdist.
 
 
 How to submit a new type
@@ -76,7 +76,7 @@ The following workflow works fine for most developers
 .. code-block:: sh
 
     # get latest upstream master branch
-    git clone https://github.com/ungleich/cdist.git
+    git clone https://code.ungleich.ch/ungleich-public/cdist.git
 
     # update if already existing
     cd cdist; git fetch -v; git merge origin/master
@@ -88,22 +88,22 @@ The following workflow works fine for most developers
     # *hack*
     *hack*
 
-    # clone the cdist repository on github if you haven't done so
+    # clone the cdist repository on code.ungleich.ch if you haven't done so
 
     # configure your repo to know about your clone (only once)
-    git remote add github git@github.com:YOURUSERNAME/cdist.git
+    git remote add ungleich git@code.ungleich.ch:YOURUSERNAME/cdist.git
 
-    # push the new branch to github 
-    git push github documentation_cleanup
+    # push the new branch to ungleich gitlab
+    git push ungleich documentation_cleanup
 
     # (or everything)
-    git push --mirror github
+    git push --mirror ungleich
 
-    # create a pull request at github (use a browser)
+    # create a merge request at ungleich gitlab (use a browser)
     # *fixthingsbecausequalityassurancefoundissuesinourpatch*
     *hack*
 
-    # push code to github again
+    # push code to ungleich gitlab again
     git push ... # like above
 
     # add comment that everything should be green now (use a browser)
