@@ -127,6 +127,13 @@ then
         exit 1
     fi
 
+    if [ "${trigger_command}" ]
+    then
+        trigger_line="__cdist_preos_trigger http --trigger-command '${trigger_command}'\n"
+    else
+        trigger_line=""
+    fi
+
     if [ "${keyfile_cnt}" -a "${keyfile_cnt}" -gt 0 ]
     then
         i="$((keyfile_cnt - 1))"
@@ -174,7 +181,7 @@ then
     fi
     grub_lines="${grub_manifest_line}${grub_kern_params_line}"
 
-    printf "${ssh_auth_keys_line}${grub_lines}" \
+    printf "${trigger_line}${ssh_auth_keys_line}${grub_lines}" \
         | cat "${manifest}" - |\
         cdist config \
             ${cdist_params} -i - \

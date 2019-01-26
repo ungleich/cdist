@@ -128,6 +128,12 @@ class Debian(object):
                                  "by default '{}'".format(defargs.suite),
                             dest='suite', default=defargs.suite)
         parser.add_argument(
+            '-t', '--trigger-command',
+            help=("trigger command that will be added to cdist config; "
+                  "'__cdist_preos_trigger http ...' type is appended to "
+                  "initial manifest"),
+            dest='trigger_command')
+        parser.add_argument(
             '-y', '--remote-copy',
             help=("remote copy that cdist config will use, by default "
                   "internal script is used"),

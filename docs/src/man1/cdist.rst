@@ -11,7 +11,7 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-V] {banner,config,install,inventory,preos,shell,info} ...
+    cdist [-h] [-V] {banner,config,install,inventory,preos,shell,info,trigger} ...
 
     cdist banner [-h] [-l LOGLEVEL] [-q] [-v]
 
@@ -67,26 +67,36 @@ SYNOPSIS
                                        [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
                                        [-i MANIFEST] [-k KEYFILE ] [-m MIRROR]
                                        [-P ROOT_PASSWORD] [-p PXE_BOOT_DIR] [-r]
-                                       [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
+                                       [-S SCRIPT] [-s SUITE] [-t TRIGGER_COMMAND]
+                                       [-y REMOTE_COPY]
                                        target_dir
 
     cdist preos [preos-options] devuan [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
                                        [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
                                        [-i MANIFEST] [-k KEYFILE ] [-m MIRROR]
                                        [-P ROOT_PASSWORD] [-p PXE_BOOT_DIR] [-r]
-                                       [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
+                                       [-S SCRIPT] [-s SUITE] [-t TRIGGER_COMMAND]
+                                       [-y REMOTE_COPY]
                                        target_dir
 
     cdist preos [preos-options] ubuntu [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
                                        [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
                                        [-i MANIFEST] [-k KEYFILE ] [-m MIRROR]
                                        [-P ROOT_PASSWORD] [-p PXE_BOOT_DIR] [-r]
-                                       [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
+                                       [-S SCRIPT] [-s SUITE] [-t TRIGGER_COMMAND]
+                                       [-y REMOTE_COPY]
                                        target_dir
 
     cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [-s SHELL]
 
     cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-g CONFIG_FILE] [-t] [pattern]
+
+    cdist trigger [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-C CACHE_PATH_PATTERN]
+                  [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [-n]
+                  [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
+                  [-r REMOTE_OUT_PATH] [--remote-copy REMOTE_COPY]
+                  [--remote-exec REMOTE_EXEC] [-6] [-D DIRECTORY]
+                  [-H HTTP_PORT] [-S SOURCE]
 
 
 DESCRIPTION
@@ -534,6 +544,10 @@ PREOS DEBIAN/DEVUAN
 **-s SUITE, --suite SUITE**
     suite used for debootstrap, by default 'stable'
 
+**-t TRIGGER_COMMAND, --trigger-command TRIGGER_COMMAND**
+    trigger command that will be added to cdist config;
+    '``__cdist_preos_trigger http ...``' type is appended to initial manifest
+
 **-y REMOTE_COPY, --remote-copy REMOTE_COPY**
     remote copy that cdist config will use, by default
     internal script is used
@@ -594,6 +608,10 @@ PREOS UBUNTU
 **-s SUITE, --suite SUITE**
     suite used for debootstrap, by default 'xenial'
 
+**-t TRIGGER_COMMAND, --trigger-command TRIGGER_COMMAND**
+    trigger command that will be added to cdist config;
+    '``__cdist_preos_trigger http ...``' type is appended to initial manifest
+
 **-y REMOTE_COPY, --remote-copy REMOTE_COPY**
     remote copy that cdist config will use, by default
     internal script is used
@@ -643,6 +661,83 @@ Display information for cdist (global explorers, types).
 **-t, --types**
     Display info for types.
 
+TRIGGER
+-------
+Start trigger (simple http server) that waits for connections. When host
+connects then it triggers config or install command and then cdist
+config/install is executed which configures/installs host.
+When triggered cdist will try to reverse DNS lookup for host name and if
+host name is dervied then it is used for running cdist config. If no
+host name is resolved then IP address is used.
+Request path recognizes following requests:
+
+* :strong:`/cdist/config/.*` for config
+* :strong:`/cdist/install/.*` for install.
+
+This command returns the following response codes to client requests:
+
+* 200 for success
+* 599 for cdist run errors
+* 500 for cdist/server errors.
+
+
+**-6, --ipv6**
+
+    Listen to both IPv4 and IPv6 (instead of only IPv4)
+
+**-b, --beta**
+
+    Enable beta functionality.
+
+**-C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN**
+
+    Sepcify custom cache path pattern. It can also be set by
+    CDIST_CACHE_PATH_PATTERN environment variable. If it is not set then
+    default hostdir is used. For more info on format see
+    :strong:`CACHE PATH PATTERN FORMAT` below.
+
+**-c CONF_DIR, --conf-dir CONF_DIR**
+
+    Add configuration directory (can be repeated, last one wins)
+
+**-D DIRECTORY, --directory DIRECTORY**
+    Where to create local files
+
+**-H HTTP_PORT, --http-port HTTP_PORT**
+
+    Create trigger listener via http on specified port
+
+**-i MANIFEST, --initial-manifest MANIFEST**
+
+    path to a cdist manifest or '-' to read from stdin.
+
+**-j [JOBS], --jobs [JOBS]**
+
+    Specify the maximum number of parallel jobs, currently
+    only global explorers are supported
+
+**-n, --dry-run**
+
+    do not execute code
+
+**-o OUT_PATH, --out-dir OUT_PATH**
+
+    directory to save cdist output in
+
+**-r REMOTE_OUT_PATH, --remote-out-dir REMOTE_OUT_PATH**
+
+    Directory to save cdist output in on the target host
+
+**--remote-copy REMOTE_COPY**
+
+    Command to use for remote copy (should behave like scp)
+
+**--remote-exec REMOTE_EXEC**
+
+    Command to use for remote execution (should behave like ssh)
+
+**-S SOURCE, --source SOURCE**
+    Which file to copy for creation
 
 CONFIGURATION
 -------------
@@ -838,19 +933,27 @@ EXAMPLES
     # Configure all hosts from inventory db
     $ cdist config -b -A
 
-    # Create default debian PreOS in debug mode
+    # Create default debian PreOS in debug mode with config
+    # trigger command
     $ cdist preos debian /preos/preos-debian -vvvv -C \
-        -k ~/.ssh/id_rsa.pub -p /preos/pxe-debian
+        -k ~/.ssh/id_rsa.pub -p /preos/pxe-debian \
+        -t "/usr/bin/curl 192.168.111.5:3000/config/"
 
-    # Create ubuntu PreOS
+    # Create ubuntu PreOS with install trigger command
     $ cdist preos ubuntu /preos/preos-ubuntu -C \
-        -k ~/.ssh/id_rsa.pub -p /preos/pxe-ubuntu
+        -k ~/.ssh/id_rsa.pub -p /preos/pxe-ubuntu \
+        -t "/usr/bin/curl 192.168.111.5:3000/install/"
 
-    # Create ubuntu PreOS on drive /dev/sdb
+    # Create ubuntu PreOS on drive /dev/sdb with install trigger command
     # and set root password to 'password'.
     $ cdist preos ubuntu /mnt -B -C \
         -k ~/.ssh/id_rsa.pub -D /dev/sdb \
+        -t "/usr/bin/curl 192.168.111.5:3000/install/" \
         -P password
+
+    # Start trigger in verbose mode that will configure host using specified
+    # init manifest
+    % cdist trigger -v -i ~/.cdist/manifest/init-for-triggered
 
 
 ENVIRONMENT

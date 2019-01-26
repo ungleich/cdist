@@ -25,15 +25,16 @@ For example, to create an ubuntu PreOS:
 .. code-block:: sh
 
     $ cdist preos ubuntu /preos/preos-ubuntu -B -C \
-        -k ~/.ssh/id_rsa.pub -p /preos/pxe-ubuntu
+        -k ~/.ssh/id_rsa.pub -p /preos/pxe-ubuntu \
+        -t "/usr/bin/curl 192.168.111.5:3000/install/"
 
 For more info about the available options see the cdist manual page.
 
-This will bootstrap (``-B``) ubuntu PreOS in the ``/preos/preos-ubuntu``
-directory, it will be configured (``-C``) using default the built-in initial
-manifest and with specified ssh authorized key (``-k``).
-After bootstrapping and configuration, the PXE boot directory will be
-created (``-p``) in ``/preos/pxe-ubuntu``.
+This will bootstrap (``-B``) ubuntu PreOS in ``/preos/preos-ubuntu`` directory, it
+will be configured (``-C``) using default built-in initial manifest and with
+specified ssh authorized key (``-k``) and with specified trigger command (``-t``).
+After bootstrapping and configuration PXE
+boot directory will be created (``-p``) in ``/preos/pxe-ubuntu``.
 
 After PreOS is created, new machines can be booted using the created PXE
 (after proper dhcp and tftp settings).
@@ -41,8 +42,17 @@ After PreOS is created, new machines can be booted using the created PXE
 Since PreOS is configured with ssh authorized key it can be accessed through
 ssh, i.e. it can be further installed and configured with cdist.
 
-Implementing a new PreOS sub-command
-------------------------------------
+When installing and configuring new machines using cdist's PreOS concept
+cdist can use triggering for host installation/configuration, which is described
+in the previous chapter.
+
+When new machine is booted with PreOS then trigger command is executed.
+Machine will connect to cdist trigger server. If the request is, for example,
+for installation then cdist trigger server will start install command for the
+client host using parameters specified at trigger server startup.
+
+Implementing new PreOS sub-command
+----------------------------------
 preos command is implemented as a plugin system. This plugin system scans for
 preos subcommands in the ``cdist/preos/`` distribution directory and also in
 ``~/.cdist/preos/`` directory if it exists.
@@ -127,3 +137,32 @@ When you try to run this new preos you will get:
 
 In the ``commandline`` function/method you have all the freedom to actually create
 a PreOS.
+
+Simple tipical use case for using PreOS and trigger
+---------------------------------------------------
+Tipical use case for using PreOS and trigger command include the following steps.
+
+#. Create PreOS PXE with ssh key and trigger command for installation.
+
+    .. code-block:: sh
+
+        $ cdist preos ubuntu /preos/ubuntu -b -C \
+            -k ~/.ssh/id_rsa.pub -p /preos/pxe \
+            -t "/usr/bin/curl 192.168.111.5:3000/install/"
+
+#. Configure dhcp server and tftp server.
+
+#. On cdist host (192.168.111.5 from above) start trigger command (it will use
+   default init manifest for installation).
+
+    .. code-block:: sh
+
+        $ cdist trigger -b -v
+
+#. After all is set up start new machines (PXE boot).
+
+#. New machine boots and executes trigger command, i.e. triggers installation.
+
+#. Cdist trigger server starts installing host that has triggered it.
+
+#. After cdist install is finished new host is installed.

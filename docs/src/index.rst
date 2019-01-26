@@ -33,6 +33,7 @@ It natively supports IPv6 since the first release.
    cdist-messaging
    cdist-parallelization
    cdist-inventory
+   cdist-trigger
    cdist-preos
    cdist-integration
    cdist-reference

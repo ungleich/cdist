@@ -5,12 +5,13 @@ import logging
 import collections
 import functools
 import cdist.configuration
+import cdist.trigger
 import cdist.preos
 import cdist.info
 
 
 # set of beta sub-commands
-BETA_COMMANDS = set(('install', 'inventory', ))
+BETA_COMMANDS = set(('install', 'inventory', 'preos', 'trigger', ))
 # set of beta arguments for sub-commands
 BETA_ARGS = {
     'config': set(('tag', 'all_tagged_hosts', 'use_archiving', )),
@@ -467,6 +468,27 @@ def get_parsers():
     parser['info'].add_argument(
             'pattern', nargs='?', help='Glob pattern.')
     parser['info'].set_defaults(func=cdist.info.Info.commandline)
+
+    # Trigger
+    parser['trigger'] = parser['sub'].add_parser(
+            'trigger', parents=[parser['loglevel'],
+                                parser['beta'],
+                                parser['config_main']])
+    parser['trigger'].add_argument(
+            '-6', '--ipv6', default=False,
+            help=('Listen to both IPv4 and IPv6 (instead of only IPv4)'),
+            action='store_true')
+    parser['trigger'].add_argument(
+            '-D', '--directory', action='store', required=False,
+            help=('Where to create local files'))
+    parser['trigger'].add_argument(
+            '-H', '--http-port', action='store', default=3000, required=False,
+            help=('Create trigger listener via http on specified port'))
+    parser['trigger'].add_argument(
+            '-S', '--source', action='store', required=False,
+            help=('Which file to copy for creation'))
+
+    parser['trigger'].set_defaults(func=cdist.trigger.Trigger.commandline)
 
     for p in parser:
         parser[p].epilog = EPILOG
