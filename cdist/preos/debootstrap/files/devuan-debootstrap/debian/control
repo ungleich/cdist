@@ -1,0 +1,26 @@
+Source: debootstrap
+Section: admin
+Priority: extra
+Maintainer: Franco (nextime) Lanza <nextime@devuan.org>
+Uploaders: Franco (nextime) Lanza <nextime@devuan.org>, Daniel Reurich <daniel@centurion.net.nz>
+Build-Depends: debhelper (>= 9), makedev (>= 2.3.1-69) [linux-any], git
+Standards-Version: 3.9.8
+Vcs-Browser: https://git.devuan.org/devuan-packages/debootstrap
+Vcs-Git: https://git.devuan.org/devuan-packages/debootstrap.git
+
+Package: debootstrap
+Architecture: all
+Depends: ${misc:Depends}, wget
+Recommends: gnupg, ${keyring}, devuan-keyring
+Description: Bootstrap a basic Devuan system
+ debootstrap is used to create a Devuan base system from scratch,
+ without requiring the availability of dpkg or apt. It does this by
+ downloading .deb files from a mirror site, and carefully unpacking them
+ into a directory which can eventually be chrooted into.
+
+Package: debootstrap-udeb
+Section: debian-installer
+Package-Type: udeb
+Architecture: all
+Depends: ${misc:Depends}, mounted-partitions
+Description: Bootstrap the Devuan system

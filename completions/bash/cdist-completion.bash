@@ -6,7 +6,7 @@ _cdist()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     prevprev="${COMP_WORDS[COMP_CWORD-2]}"
     opts="-h --help -q --quiet -v --verbose -V --version"
-    cmds="banner config install inventory shell"
+    cmds="banner config install inventory preos shell trigger"
 
     case "${prevprev}" in
         shell)
@@ -77,6 +77,14 @@ _cdist()
                 -j --jobs -n --dry-run -o --out-dir -p --parallel \
                 -r --remote-out-dir \
                 -s --sequential --remote-copy --remote-exec -t --tag -a --all"
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        trigger)
+            opts="-h --help -d --debug -v --verbose -b --beta \
+                -C --cache-path-pattern -c --conf-dir -i --initial-manifest \
+                -j --jobs -n --dry-run -o --out-dir --remote-copy \
+                --remote-exec -6 --ipv6 -H --http-port -D --directory -S --source"
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
             return 0
             ;;

@@ -1,0 +1,15 @@
+To sync up with debians source for inspiration you should run the following:
+
+	`git remote add alioth-git git://anonscm.debian.org/d-i/debootstrap.git`
+	`git fetch alioth-git`
+
+After that you can either cherry-pick or merge releases from debian.  To
+merge a release, it's do:
+	`git tag` to list the release tags
+and
+	`git merge <tag>`
+followed by all the fixups and then commit with an appropriate message like
+	"Merging Release <tag> from debian"
+
+Copyright 2016 Daniel Reurich <daniel@centurion.net.nz>
+

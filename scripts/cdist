@@ -35,6 +35,9 @@ import cdist.inventory
 def commandline():
     """Parse command line"""
 
+    # preos subcommand hack
+    if len(sys.argv) > 1 and sys.argv[1] == 'preos':
+        return cdist.preos.PreOS.commandline(sys.argv[1:])
     parser, cfg = cdist.argparse.parse_and_configure(sys.argv[1:])
     args = cfg.get_args()
 
