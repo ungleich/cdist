@@ -1,0 +1,12 @@
+#!/bin/sh
+
+os=$(cat "$__global/explorer/os")
+
+case "$os" in
+    devuan)
+        echo "update-rc.d cdist-preos-trigger defaults > /dev/null"
+    ;;
+    *)
+    ;;
+esac
+

@@ -25,6 +25,7 @@ def data_finder(data_dir):
 
     return entries
 
+
 cur = os.getcwd()
 os.chdir("cdist")
 package_data = data_finder("conf")

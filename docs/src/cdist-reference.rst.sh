@@ -67,6 +67,9 @@ cdist/inventory/
     The distribution inventory directory.
     This path is relative to cdist installation directory.
 
+cdist/preos/
+    The distribution PreOS plugins directory.
+
 confdir
     Cdist will use all available configuration directories and create
     a temporary confdir containing links to the real configuration directories.

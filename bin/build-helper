@@ -366,7 +366,7 @@ eof
     ;;
 
     pep8)
-        pep8 "${basedir}" "${basedir}/scripts/cdist" | less
+        pycodestyle "${basedir}" "${basedir}/scripts/cdist" | less
     ;;
 
     check-pep8)

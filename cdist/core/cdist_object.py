@@ -108,7 +108,8 @@ class CdistObject(object):
 
     @staticmethod
     def split_name(object_name):
-        """split_name('__type_name/the/object_id') -> ('__type_name', 'the/object_id')
+        """split_name('__type_name/the/object_id')
+        -> ('__type_name', 'the/object_id')
 
         Split the given object name into it's type and object_id parts.
 
@@ -119,7 +120,8 @@ class CdistObject(object):
 
     @staticmethod
     def join_name(type_name, object_id):
-        """join_name('__type_name', 'the/object_id') -> __type_name/the/object_id'
+        """join_name('__type_name', 'the/object_id')
+        -> __type_name/the/object_id'
 
         Join the given type_name and object_id into an object name.
 
@@ -162,7 +164,8 @@ class CdistObject(object):
         # (parameters: %s)" % (self.cdist_type.name, self.parameters))
 
     def object_from_name(self, object_name):
-        """Convenience method for creating an object instance from an object name.
+        """Convenience method for creating an object instance from an object
+        name.
 
         Mainly intended to create objects when resolving requirements.
 
