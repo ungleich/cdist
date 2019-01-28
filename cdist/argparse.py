@@ -164,6 +164,16 @@ def get_parsers():
     # Config
     parser['config_main'] = argparse.ArgumentParser(add_help=False)
     parser['config_main'].add_argument(
+           '-4', '--force-ipv4',
+           help=('Force to use IPv4 addresses only. No influence for custom'
+                 ' remote commands.'),
+           action='store_const', dest='force_ipv', const=4)
+    parser['config_main'].add_argument(
+           '-6', '--force-ipv6',
+           help=('Force to use IPv6 addresses only. No influence for custom'
+                 ' remote commands.'),
+           action='store_const', dest='force_ipv', const=6)
+    parser['config_main'].add_argument(
             '-C', '--cache-path-pattern',
             help=('Specify custom cache path pattern. If '
                   'it is not set then default hostdir is used.'),
@@ -194,6 +204,11 @@ def get_parsers():
            '-o', '--out-dir',
            help='Directory to save cdist output in.', dest="out_path")
     parser['config_main'].add_argument(
+           '-P', '--timestamp',
+           help=('Timestamp log messages with the current local date and time '
+                 'in the format: YYYYMMDDHHMMSS.us.'),
+           action='store_true', dest='timestamp')
+    parser['config_main'].add_argument(
            '-R', '--use-archiving', nargs='?',
            choices=('tar', 'tgz', 'tbz2', 'txz',),
            help=('Operate by using archiving with compression where '
@@ -222,19 +237,13 @@ def get_parsers():
                  '(should behave like ssh).'),
            action='store', dest='remote_exec',
            default=None)
+    parser['config_main'].add_argument(
+           '-S', '--disable-saving-output-streams',
+           help='Disable saving output streams.',
+           action='store_false', dest='save_output_streams', default=True)
 
     # Config
     parser['config_args'] = argparse.ArgumentParser(add_help=False)
-    parser['config_args'].add_argument(
-           '-4', '--force-ipv4',
-           help=('Force to use IPv4 addresses only. No influence for custom'
-                 ' remote commands.'),
-           action='store_const', dest='force_ipv', const=4)
-    parser['config_args'].add_argument(
-           '-6', '--force-ipv6',
-           help=('Force to use IPv6 addresses only. No influence for custom'
-                 ' remote commands.'),
-           action='store_const', dest='force_ipv', const=6)
     parser['config_args'].add_argument(
              '-A', '--all-tagged',
              help=('Use all hosts present in tags db. Currently in beta.'),
@@ -245,19 +254,12 @@ def get_parsers():
                    'if -t/--tag is specified.'),
              action="store_true", dest="has_all_tags", default=False)
     parser['config_args'].add_argument(
-            'host', nargs='*', help='Host(s) to operate on.')
-    parser['config_args'].add_argument(
             '-f', '--file',
             help=('Read specified file for a list of additional hosts to '
                   'operate on or if \'-\' is given, read stdin (one host per '
                   'line). If no host or host file is specified then, by '
                   'default, read hosts from stdin.'),
             dest='hostfile', required=False)
-    parser['config_args'].add_argument(
-           '-P', '--timestamp',
-           help=('Timestamp log messages with the current local date and time '
-                 'in the format: YYYYMMDDHHMMSS.us.'),
-           action='store_true', dest='timestamp')
     parser['config_args'].add_argument(
            '-p', '--parallel', nargs='?', metavar='HOST_MAX',
            type=functools.partial(check_lower_bounded_int, lower_bound=1,
@@ -268,10 +270,6 @@ def get_parsers():
            action='store', dest='parallel',
            const=multiprocessing.cpu_count())
     parser['config_args'].add_argument(
-           '-S', '--disable-saving-output-streams',
-           help='Disable saving output streams.',
-           action='store_false', dest='save_output_streams', default=True)
-    parser['config_args'].add_argument(
            '-s', '--sequential',
            help='Operate on multiple hosts sequentially (default).',
            action='store_const', dest='parallel', const=0)
@@ -281,6 +279,8 @@ def get_parsers():
                    'list all hosts that contain any of specified tags. '
                    'Currently in beta.'),
              dest='tag', required=False, action="store_true", default=False)
+    parser['config_args'].add_argument(
+            'host', nargs='*', help='Host(s) to operate on.')
     parser['config'] = parser['sub'].add_parser(
             'config', parents=[parser['loglevel'], parser['beta'],
                                parser['common'],
@@ -441,11 +441,8 @@ def get_parsers():
     parser['trigger'] = parser['sub'].add_parser(
             'trigger', parents=[parser['loglevel'],
                                 parser['beta'],
+                                parser['common'],
                                 parser['config_main']])
-    parser['trigger'].add_argument(
-            '-6', '--ipv6', default=False,
-            help=('Listen to both IPv4 and IPv6 (instead of only IPv4)'),
-            action='store_true')
     parser['trigger'].add_argument(
             '-D', '--directory', action='store', required=False,
             help=('Where to create local files'))
@@ -453,7 +450,11 @@ def get_parsers():
             '-H', '--http-port', action='store', default=3000, required=False,
             help=('Create trigger listener via http on specified port'))
     parser['trigger'].add_argument(
-            '-S', '--source', action='store', required=False,
+            '--ipv6', default=False,
+            help=('Listen to both IPv4 and IPv6 (instead of only IPv4)'),
+            action='store_true')
+    parser['trigger'].add_argument(
+            '-O', '--source', action='store', required=False,
             help=('Which file to copy for creation'))
 
     parser['trigger'].set_defaults(func=cdist.trigger.Trigger.commandline)
