@@ -140,7 +140,7 @@ class Config(object):
 
         # Determine forcing IPv4/IPv6 options if any, only for
         # default remote commands.
-        if hasattr(args, 'force_ipv') and args.force_ipv:
+        if args.force_ipv:
             force_addr_opt = " -{}".format(args.force_ipv)
         else:
             force_addr_opt = ""
@@ -353,13 +353,10 @@ class Config(object):
 
     @staticmethod
     def _address_family(args):
-        if hasattr(args, 'force_ipv'):
-            if args.force_ipv == 4:
-                family = socket.AF_INET
-            elif args.force_ipv == 6:
-                family = socket.AF_INET6
-            else:
-                family = 0
+        if args.force_ipv == 4:
+            family = socket.AF_INET
+        elif args.force_ipv == 6:
+            family = socket.AF_INET6
         else:
             family = 0
         return family
