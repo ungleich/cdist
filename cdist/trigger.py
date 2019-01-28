@@ -200,8 +200,11 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
         log.debug("Executing cdist onehost with params: %s, %s, %s, %s, %s, ",
                   target_host, host_tags, host_base_path, hostdir,
                   self.cdistargs)
+        cfg = cdist.configuration.Configuration(self.cdistargs)
+        configuration = cfg.get_config(section='GLOBAL')
         theclass.onehost(target_host, host_tags, host_base_path, hostdir,
-                         self.cdistargs, parallel=False)
+                         self.cdistargs, parallel=False,
+                         configuration=configuration)
 
 
 class HTTPServerV6(socketserver.ForkingMixIn, http.server.HTTPServer):
