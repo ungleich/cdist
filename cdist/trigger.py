@@ -145,6 +145,7 @@ class TriggerHttp(http.server.BaseHTTPRequestHandler):
                 message = str(e)
             except Exception as e:
                 # cdist/trigger server is broken
+                log.exception(e)
                 code = 500
 
         self.send_response(code=code, message=message)
