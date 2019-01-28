@@ -91,12 +91,12 @@ SYNOPSIS
 
     cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-g CONFIG_FILE] [-t] [pattern]
 
-    cdist trigger [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-C CACHE_PATH_PATTERN]
-                  [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [-n]
-                  [-o OUT_PATH] [-R [{tar,tgz,tbz2,txz}]]
-                  [-r REMOTE_OUT_PATH] [--remote-copy REMOTE_COPY]
-                  [--remote-exec REMOTE_EXEC] [-6] [-D DIRECTORY]
-                  [-H HTTP_PORT] [-S SOURCE]
+    cdist trigger [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE] [-4]
+                  [-6] [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
+                  [-j [JOBS]] [-n] [-o OUT_PATH] [-P]
+                  [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
+                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
+                  [-S] [-D DIRECTORY] [-H HTTP_PORT] [--ipv6] [-O SOURCE]
 
 
 DESCRIPTION
@@ -680,64 +680,76 @@ This command returns the following response codes to client requests:
 * 599 for cdist run errors
 * 500 for cdist/server errors.
 
+**-4, -force-ipv4**
+    Force to use IPv4 addresses only. No influence for
+    custom remote commands.
 
-**-6, --ipv6**
-
-    Listen to both IPv4 and IPv6 (instead of only IPv4)
-
-**-b, --beta**
-
-    Enable beta functionality.
+**-6, --force-ipv6**
+    Force to use IPv6 addresses only. No influence for
+    custom remote commands.
 
 **-C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN**
-
-    Sepcify custom cache path pattern. It can also be set by
-    CDIST_CACHE_PATH_PATTERN environment variable. If it is not set then
-    default hostdir is used. For more info on format see
-    :strong:`CACHE PATH PATTERN FORMAT` below.
+    Specify custom cache path pattern. If it is not set
+    then default hostdir is used.
 
 **-c CONF_DIR, --conf-dir CONF_DIR**
-
-    Add configuration directory (can be repeated, last one wins)
+    Add configuration directory (can be repeated, last one
+    wins).
 
 **-D DIRECTORY, --directory DIRECTORY**
     Where to create local files
 
-**-H HTTP_PORT, --http-port HTTP_PORT**
+**-g CONFIG_FILE, --config-file CONFIG_FILE**
+    Use specified custom configuration file.
 
+**-H HTTP_PORT, --http-port HTTP_PORT**
     Create trigger listener via http on specified port
 
 **-i MANIFEST, --initial-manifest MANIFEST**
+    Path to a cdist manifest or '-' to read from stdin.
 
-    path to a cdist manifest or '-' to read from stdin.
+**--ipv6**
+    Listen to both IPv4 and IPv6 (instead of only IPv4)
 
 **-j [JOBS], --jobs [JOBS]**
-
-    Specify the maximum number of parallel jobs, currently
-    only global explorers are supported
+    Operate in parallel in specified maximum number of
+    jobs. Global explorers, object prepare and object run
+    are supported. Without argument CPU count is used by
+    default. Currently in beta.
 
 **-n, --dry-run**
+    Do not execute code.
 
-    do not execute code
+**-O SOURCE, --source SOURCE**
+    Which file to copy for creation
 
 **-o OUT_PATH, --out-dir OUT_PATH**
+    Directory to save cdist output in.
 
-    directory to save cdist output in
+**-P, --timestamp**
+    Timestamp log messages with the current local date and
+    time in the format: YYYYMMDDHHMMSS.us.
+
+**-R [{tar,tgz,tbz2,txz}], --use-archiving [{tar,tgz,tbz2,txz}]**
+    Operate by using archiving with compression where
+    appropriate. Supported values are: tar - tar archive,
+    tgz - gzip tar archive (the default), tbz2 - bzip2 tar
+    archive and txz - lzma tar archive. Currently in beta.
 
 **-r REMOTE_OUT_PATH, --remote-out-dir REMOTE_OUT_PATH**
-
-    Directory to save cdist output in on the target host
+    Directory to save cdist output in on the target host.
 
 **--remote-copy REMOTE_COPY**
-
-    Command to use for remote copy (should behave like scp)
+    Command to use for remote copy (should behave like
+    scp).
 
 **--remote-exec REMOTE_EXEC**
+    Command to use for remote execution (should behave
+    like ssh).
 
-    Command to use for remote execution (should behave like ssh)
+**-S, --disable-saving-output-streams**
+    Disable saving output streams.
 
-**-S SOURCE, --source SOURCE**
-    Which file to copy for creation
 
 CONFIGURATION
 -------------

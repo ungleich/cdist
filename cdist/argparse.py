@@ -473,11 +473,8 @@ def get_parsers():
     parser['trigger'] = parser['sub'].add_parser(
             'trigger', parents=[parser['loglevel'],
                                 parser['beta'],
+                                parser['common'],
                                 parser['config_main']])
-    parser['trigger'].add_argument(
-            '-6', '--ipv6', default=False,
-            help=('Listen to both IPv4 and IPv6 (instead of only IPv4)'),
-            action='store_true')
     parser['trigger'].add_argument(
             '-D', '--directory', action='store', required=False,
             help=('Where to create local files'))
@@ -485,7 +482,11 @@ def get_parsers():
             '-H', '--http-port', action='store', default=3000, required=False,
             help=('Create trigger listener via http on specified port'))
     parser['trigger'].add_argument(
-            '-S', '--source', action='store', required=False,
+            '--ipv6', default=False,
+            help=('Listen to both IPv4 and IPv6 (instead of only IPv4)'),
+            action='store_true')
+    parser['trigger'].add_argument(
+            '-O', '--source', action='store', required=False,
             help=('Which file to copy for creation'))
 
     parser['trigger'].set_defaults(func=cdist.trigger.Trigger.commandline)
