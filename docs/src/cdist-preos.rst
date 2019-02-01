@@ -26,7 +26,7 @@ For example, to create ubuntu PreOS:
 
     $ cdist preos ubuntu /preos/preos-ubuntu -b -C \
         -k ~/.ssh/id_rsa.pub -p /preos/pxe-ubuntu \
-        -t "/usr/bin/curl 192.168.111.5:3000/install/"
+        -t "/usr/bin/curl 192.168.111.5:3000/cdist/install/"
 
 For more info about available options see cdist manual page.
 
@@ -156,7 +156,7 @@ Tipical use case for using PreOS and trigger command include the following steps
 
         $ cdist preos ubuntu /preos/ubuntu -b -C \
             -k ~/.ssh/id_rsa.pub -p /preos/pxe \
-            -t "/usr/bin/curl 192.168.111.5:3000/install/"
+            -t "/usr/bin/curl 192.168.111.5:3000/cdist/install/"
 
 #. Configure dhcp server and tftp server.
 
