@@ -13,8 +13,10 @@ This command starts trigger server at management node, for example:
 This will start cdist trigger server in verbose mode. cdist trigger server accepts
 simple requests for configuration and for installation:
 
-* :strong:`/cdist/install/.*` for installation
-* :strong:`/cdist/config/.*` for configuration.
+* :strong:`/cdist/install/` for installation
+* :strong:`/cdist/config/` for configuration.
+
+Other configuration parameters are the same as in like cdist config (See `cdist <man1/cdist.html>`_).
 
 Machines can then trigger cdist trigger server with appropriate requests.
 If the request is, for example, for installation (:strong:`/cdist/install/`)
