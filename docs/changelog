@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Type __prometheus_alertmanager: Add startup flag (Dominique Roux)
+	* Types __zypper_repo, __zypper_service: Re-add the use of echo in explorers (Daniel Heule)
 
 4.10.5: 2018-12-21
 	* Type __group: Fix/remove '--' from echo command (Dimitrios Apostolou)
