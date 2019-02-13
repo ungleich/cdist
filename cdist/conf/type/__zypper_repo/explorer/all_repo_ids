@@ -21,4 +21,5 @@
 # Retrieve all repo id nummbers - parsed zypper output
 #
 #
-zypper lr | cut -d'|' -f 1 | grep -E '^[0-9]'
+# shellcheck disable=SC2005
+echo $(zypper lr | cut -d'|' -f 1 | grep -E '^[0-9]')

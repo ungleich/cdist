@@ -26,4 +26,5 @@ if [ -f "$__object/parameter/uri" ]; then
 else
    uri="$__object_id"
 fi
-zypper lr -u | grep -F "$uri" | cut -d'|' -f 1 | grep -E '^[0-9]'
+# shellcheck disable=SC2005
+echo $(zypper lr -u | grep -F "$uri" | cut -d'|' -f 1 | grep -E '^[0-9]')
