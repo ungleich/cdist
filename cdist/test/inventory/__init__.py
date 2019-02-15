@@ -472,5 +472,6 @@ class InventoryTestCase(test.CdistTestCase):
             self.assertEqual(htags, ())
         os.remove(hostfile)
 
+
 if __name__ == "__main__":
     unittest.main()
