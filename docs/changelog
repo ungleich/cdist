@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.10.6: 2019-02-15
 	* Type __prometheus_alertmanager: Add startup flag (Dominique Roux)
 	* Types __zypper_repo, __zypper_service: Re-add the use of echo in explorers (Daniel Heule)
 
