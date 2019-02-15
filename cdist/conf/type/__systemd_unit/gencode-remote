@@ -23,7 +23,7 @@ state=$(cat "${__object}/parameter/state")
 current_enablement_state=$(cat "${__object}/explorer/enablement-state")
 
 if [ "${state}" = "absent" ]; then
-    if [ ! -z "${current_enablement_state}" ]; then
+    if [ -n "${current_enablement_state}" ]; then
         echo "systemctl --now disable ${name}"
         echo "rm -f /etc/systemd/system/${name}"
         echo "systemctl daemon-reload"
