@@ -28,5 +28,5 @@ fi
 # simpler command which works only on SLES11 SP3 or newer:
 # echo $(zypper ls -u -E | grep -E "\<$uri\>" | cut -d'|' -f 1 )
 #
-# shellcheck disable=SC2005
+# shellcheck disable=SC2005,SC2046
 echo $(zypper ls -u | grep -E '^([^|]+\|){3,3} Yes' | grep -E "\\<$uri\\>" | cut -d'|' -f 1)
