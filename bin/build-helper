@@ -249,7 +249,7 @@ eof
         # First check everything is sane
         "$0" check-date
         "$0" check-unittest
-        "$0" check-pep8
+        "$0" check-pycodestyle
         "$0" shellcheck
 
         # Generate version file to be included in packaging
@@ -365,13 +365,13 @@ eof
         python3 -m cdist.test.exec.remote
     ;;
 
-    pep8)
-        pep8 "${basedir}" "${basedir}/scripts/cdist" | less
+    pycodestyle|pep8)
+        pycodestyle "${basedir}" "${basedir}/scripts/cdist" | less
     ;;
 
-    check-pep8)
-        "$0" pep8
-        printf "\\nPlease review pep8 report.\\n"
+    check-pycodestyle)
+        "$0" pycodestyle
+        printf "\\nPlease review pycodestyle report.\\n"
         while true
         do
             echo "Continue (yes/no)?"

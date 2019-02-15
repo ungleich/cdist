@@ -256,7 +256,7 @@ test:
 test-remote:
 	$(helper) $@
 
-pep8:
+pycodestyle pep8:
 	$(helper) $@
 
 shellcheck-global-explorers:
