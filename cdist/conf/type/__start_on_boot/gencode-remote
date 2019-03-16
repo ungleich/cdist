@@ -82,7 +82,7 @@ case "$state_should" in
                 ;;
 
                 openbsd)
-                    # OpenBSD 5.7 and phigher
+                    # OpenBSD 5.7 and higher
                     echo "rcctl enable '$name'"
                 ;;
 
@@ -116,6 +116,11 @@ case "$state_should" in
 
                 openwrt)
                     echo "'/etc/init.d/$name' disable"
+                    ;;
+
+                openbsd)
+                    # OpenBSD 5.7 and higher
+                    echo "rcctl disable '$name'"
                 ;;
 
                 *)
