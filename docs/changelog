@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Build: Migrate from pep8 to pycodestyle (Darko Poljak)
+	* Type __start_on_boot: Implement state absent for OpenBSD (Daniel Néri)
 
 4.10.6: 2019-02-15
 	* Type __prometheus_alertmanager: Add startup flag (Dominique Roux)
