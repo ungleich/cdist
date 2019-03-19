@@ -28,6 +28,10 @@ case "$os" in
         sysctl -n hw.physicalcpu
     ;;
 
+    "openbsd")
+        sysctl -n hw.ncpuonline
+    ;;
+
     *)
         if [ -r /proc/cpuinfo ]; then
             cores="$(grep "core id" /proc/cpuinfo | sort | uniq | wc -l)"
