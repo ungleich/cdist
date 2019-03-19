@@ -1,3 +1,16 @@
-#!/bin/sh
-cd /dev || exit 0
-echo sd? hd? vd?
+#!/bin/sh -e
+
+os=$("$__explorer/os")
+case "$os" in
+    openbsd)
+        IFS=',' disks=$(sysctl -n hw.disknames)
+        for d in $disks; do
+            echo "${d%%:*}"
+        done | sed -n '/^[sw]d[0-9][0-9]*/p'
+    ;;
+
+    *)
+        cd /dev || exit 0
+        echo sd? hd? vd?
+    ;;
+esac
