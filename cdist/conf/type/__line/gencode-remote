@@ -122,3 +122,7 @@ END {
 ' "$file" > "\$tmpfile"
 mv -f "\$tmpfile" "$file"
 DONE
+
+if [ -f "$__object/parameter/onchange" ]; then
+   cat "$__object/parameter/onchange"
+fi

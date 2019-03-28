@@ -46,6 +46,8 @@ regex
 state
     'present' or 'absent', defaults to 'present'
 
+onchange
+    The code to run if line is added, removed or updated.
 
 
 BOOLEAN PARAMETERS
