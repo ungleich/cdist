@@ -63,6 +63,9 @@ source
    If not supplied, an empty file or directory will be created.
    If source is '-' (dash), take what was written to stdin as the file content.
 
+onchange
+   The code to run if file is modified.
+
 MESSAGES
 --------
 chgrp <group>
