@@ -6,6 +6,7 @@ next:
 	* Type __start_on_boot: Implement state absent for OpenBSD (Daniel Néri)
 	* Explorers cpu_cores, disks: Add support for OpenBSD (Daniel Néri)
 	* Type __staged_file: Use portable -p instead of --tmpdir for mktemp (Silas Silva)
+	* Type __line: Add onchange parameter (Ander Punnar)
 
 4.10.6: 2019-02-15
 	* Type __prometheus_alertmanager: Add startup flag (Dominique Roux)
