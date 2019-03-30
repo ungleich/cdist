@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.10.7: 2019-03-30
 	* Build: Migrate from pep8 to pycodestyle (Darko Poljak)
 	* Type __start_on_boot: Implement state absent for OpenBSD (Daniel Néri)
 	* Explorers cpu_cores, disks: Add support for OpenBSD (Daniel Néri)
