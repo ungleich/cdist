@@ -1,0 +1,62 @@
+#!/bin/sh -e
+#
+# 2019 Mark Polyakov (mark--@--markasoftware.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+state="$(cat "$__object/parameter/state")"
+
+case "$state" in
+    enabled)
+        echo 'ufw --force enable'
+        ;;
+
+    present)
+        echo 'ufw --force disable'
+        ;;
+    # absent will be uninstalled in manifest
+esac
+
+if [ "$state" != absent ]; then
+    if [ -f "$__object/parameter/logging" ]; then
+        logging="$(cat "$__object/parameter/logging")"
+        case "$logging" in
+            off|low|medium|high|full)
+                echo "ufw --force logging $logging"
+                ;;
+            *)
+                echo 'Logging parameter must be off, low, medium, high, or full!' >&2
+                exit 1
+                ;;
+        esac
+    fi
+
+    for direction in incoming outgoing routed; do
+        if [ -f "$__object/parameter/default_$direction" ]; then
+            treatment="$(cat "$__object/parameter/default_$direction")"
+            case "$treatment" in
+                allow|deny|reject)
+                    echo "ufw --force default $treatment $direction"
+                    ;;
+                *)
+                    echo 'UFW default policies must be either "allow", "deny", or "reject".' >&2
+                    exit 1
+                    ;;
+            esac
+        fi
+    done
+fi
