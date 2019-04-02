@@ -20,11 +20,7 @@
 
 path="/$__object_id"
 
-if [ ! -d "$path" ]
-then
-    echo "$path is not a directory" >&2
-    exit 1
-fi
+[ ! -d "$path" ] && exit 0
 
 pattern="$( cat "$__object/parameter/pattern" )"
 
