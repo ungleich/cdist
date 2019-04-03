@@ -23,7 +23,7 @@ For more information about dependencies and execution order see
 REQUIRED PARAMETERS
 -------------------
 pattern
-   Search pattern (passed to ``grep -E``).
+   Extended regular expression pattern for search (passed to ``grep -E``).
 
 execute
    Command to execute on pattern match.
