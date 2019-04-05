@@ -36,7 +36,7 @@ setup(
     name="cdist",
     packages=["cdist", "cdist.core", "cdist.exec", "cdist.util", ],
     package_data={'cdist': package_data},
-    scripts=["scripts/cdist"],
+    scripts=["scripts/cdist", "scripts/debug-dump.sh"],
     version=cdist.version.VERSION,
     description="A Usable Configuration Management System",
     author="Nico Schottelius",
