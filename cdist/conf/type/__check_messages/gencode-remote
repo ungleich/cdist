@@ -22,6 +22,5 @@ if grep -Eq \
     "$( cat "$__object/parameter/pattern" )" \
     "$__messages_in"
 then
-    cat "$__object/parameter/execute" \
-        | tee "$__messages_out"
+    tee "$__messages_out" < "$__object/parameter/execute"
 fi
