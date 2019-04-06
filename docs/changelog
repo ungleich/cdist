@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Type __clean_path: Fix list explorer exit code if path not directory or does not exist (Ander Punnar)
+	* New type: __check_messages (Ander Punnar)
 
 4.10.7: 2019-03-30
 	* Build: Migrate from pep8 to pycodestyle (Darko Poljak)
