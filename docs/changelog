@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Type __ssh_authorized_keys: Properly handle multiple --option params (Steven Armstrong)
+
 4.10.8: 2019-04-06
 	* Type __clean_path: Fix list explorer exit code if path not directory or does not exist (Ander Punnar)
 	* New type: __check_messages (Ander Punnar)
