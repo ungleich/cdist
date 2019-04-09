@@ -79,6 +79,10 @@ case "$state_should" in
             fi
         fi
     done
+    if [ -f "$__object/files/set-attributes" ]; then
+        # set-attributes is created if file is created or uploaded in gencode-local
+        fire_onchange=1
+    fi
 
     ;;
 
