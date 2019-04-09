@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.10.9: 2019-04-09
 	* Type __ssh_authorized_keys: Properly handle multiple --option params (Steven Armstrong)
 	* Debugging: Add debug dump helper script (Darko Poljak)
 	* Type __file: Bugfix: fire onchange for present and exists states if no attribute is changed (Darko Poljak)
