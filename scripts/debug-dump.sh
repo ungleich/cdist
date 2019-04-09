@@ -204,7 +204,7 @@ or=
 
 print_verbose()
 {
-    if [ ${verbose} -ge $1 ]
+    if [ "${verbose}" -ge "$1" ]
     then
         printf "%s\n" "$2"
     fi
@@ -214,7 +214,7 @@ hor_line()
 {
     if [ $# -gt 0 ]
     then
-        c=$1
+        c="$1"
     else
         c='='
     fi
@@ -289,7 +289,7 @@ set -- '.' "$@" -exec awk -v prefix="${filename_prefix}" "{print prefix ${ln} \$
 print_verbose 2 "Using cache dir: ${cache_dir}"
 
 OLD_PWD=$(pwd)
-cd "${cache_dir}"
+cd "${cache_dir}" || exit
 
 # If no host is specified then search all.
 [ -z "${hosts}" ] && hosts="-"
@@ -310,16 +310,16 @@ do
     do
         dir=$(dirname "${d}")
 
-        print_verbose 0 "target host: $(cat ${dir}/target_host), host directory: ${dir}"
-        hor_line
+        print_verbose 0 "target host: $(cat "${dir}/target_host"), host directory: ${dir}"
+        hor_line '='
 
         PREV_PWD=$(pwd)
-        cd "${dir}"
+        cd "${dir}" || exit
         # set -x
         find "$@"
         # set +x
-        cd "${PREV_PWD}"
+        cd "${PREV_PWD}" || exit
     done
     IFS="${OLD_IFS}"
 done
-cd "${OLD_PWD}"
+cd "${OLD_PWD}" || exit

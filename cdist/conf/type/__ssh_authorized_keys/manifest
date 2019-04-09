@@ -69,6 +69,7 @@ while read -r key; do
    set -- "$@" --key "$key"
    set -- "$@" --state "$state"
    if [ -f "$__object/parameter/option" ]; then
+      # shellcheck disable=SC2046
       set -- "$@" $(printf -- '--option %s ' $(cat "$__object/parameter/option"))
    fi
    if [ -f "$__object/parameter/comment" ]; then
