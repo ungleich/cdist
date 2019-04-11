@@ -50,7 +50,7 @@ Options
  -a             dump all
  -C CACHE-DIR   use specified CACHE-DIR (default: ~/.cdist/cache)
  -c             dump code-*
- -d             delimiter used for filename and line number prefix (default: ':')
+ -d DELIMITER   delimiter used for filename and line number prefix (default: ':')
  -E             dump global explorers
  -e             dump type explorers
  -F             disable filename prefix (enabled by default)
