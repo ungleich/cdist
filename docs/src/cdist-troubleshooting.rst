@@ -53,11 +53,11 @@ For more info see:
 
 .. code-block:: sh
 
-    debug-dump.sh -h
+    cdist-dump -h
 
 Or from cdist git cloned directory:
 
 .. code-block:: sh
 
-    ./scripts/debug-dump.sh -h
+    ./scripts/cdist-dump -h
 

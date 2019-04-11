@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Debugging: Rename debug-dump.sh to cdist-dump(Darko Poljak)
 	* Type __link: Add messaging (Ander Punnar)
 	* New types: __ufw and __ufw_rule (Mark Polyakov)
 

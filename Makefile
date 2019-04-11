@@ -275,7 +275,7 @@ shellcheck-remote-gencodes:
 	@find cdist/conf/type -type f -name gencode-remote -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
 
 shellcheck-scripts:
-	@$(SHELLCHECKCMD) scripts/debug-dump.sh || exit 0
+	@$(SHELLCHECKCMD) scripts/cdist-dump || exit 0
 
 shellcheck-gencodes: shellcheck-local-gencodes shellcheck-remote-gencodes
 
