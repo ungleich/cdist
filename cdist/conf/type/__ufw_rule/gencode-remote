@@ -1,0 +1,45 @@
+#!/bin/sh -e
+#
+# 2019 Mark Polyakov (mark@markasoftware.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# This type does not bother with checking the current state of the rules.
+# While it is possible to retrieve the list of rules in a consistent format from
+# `ufw status`, it is a completely different format than the one used on the
+# command line. I also do not suspect it is any faster.
+
+ufw='ufw --force rule'
+
+case "$(cat "$__object/parameter/state")" in
+    present) ;;
+    absent)
+        ufw="$ufw delete"
+        ;;
+    *)
+        echo 'State must be "present" or "absent".' >&2
+        exit 1
+        ;;
+esac
+
+if [ -f "$__object/parameter/rule" ]; then
+    ufw="$ufw $(cat "$__object/parameter/rule")"
+else
+    ufw="$ufw allow $__object_id"
+fi
+
+echo "$ufw"

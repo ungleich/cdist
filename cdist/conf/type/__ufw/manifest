@@ -1,0 +1,67 @@
+#!/bin/sh -e
+#
+# 2019 Mark Polyakov (mark--@--markasoftware.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+state="$(cat "$__object/parameter/state")"
+
+case "$state" in
+    present|enabled)
+        os="$(cat "$__global/explorer/os")"
+
+        case "$os" in
+            centos)
+                # shellcheck source=/dev/null
+                if (. "$__global/explorer/os_release" && [ "${VERSION_ID}" = "7" ]); then
+                    __package epel-release
+                    require='__package/epel-release' __package ufw
+                else
+                    echo 'CentOS version 7 is required!'
+                    exit 1
+                fi
+                ;;
+            *)
+                __package ufw
+                ;;
+        esac
+
+        # ufw expects to always be enabled, then uses a switch in /etc to
+        # determine whether to "actually start" after the init system calls it.
+        # So, we have to both enable on bootup through init and run `ufw enable`
+
+        # operators ae left-associative, so if !enabled it will never run
+        if [ "$(cat "$__global/explorer/os")" != ubuntu ] || \
+           [ "$(cat "$__global/explorer/init")" != init ] && \
+           [ "$state" = enabled ]; then
+            # Why don't we disable start_on_boot when state=present|absent?
+            # Because UFW should always be enabled at boot -- /etc/ufw/ufw.conf
+            # will stop it from "really" starting
+            require='__package/ufw' __start_on_boot ufw
+        fi
+        ;;
+
+    absent)
+        __package ufw --state absent
+        ;;
+
+    *)
+        echo 'State must be "enabled", "present", or "absent".'
+        exit 1
+        ;;
+esac
+
