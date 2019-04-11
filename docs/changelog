@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.10.10: 2019-04-11
 	* New types: __ufw and __ufw_rule (Mark Polyakov)
 	* Type __link: Add messaging (Ander Punnar)
 	* Debugging: Rename debug-dump.sh to cdist-dump (Darko Poljak)
