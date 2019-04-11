@@ -11,7 +11,7 @@ case "$os" in
     ;;
     *)
         # hopefully everything else is linux
-        if which lsblk > /dev/null
+        if command -v lsblk > /dev/null
         then
             # exclude ram disks and cdroms 
             lsblk -e 1,11 -dno name | xargs
