@@ -18,6 +18,7 @@ Contents:
    cdist-quickstart
    cdist-real-world
    man1/cdist
+   man1/cdist-dump
    cdist-bootstrap
    cdist-configuration
    cdist-manifest

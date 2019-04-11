@@ -2,9 +2,10 @@ Changelog
 ---------
 
 next:
-	* Debugging: Rename debug-dump.sh to cdist-dump(Darko Poljak)
-	* Type __link: Add messaging (Ander Punnar)
 	* New types: __ufw and __ufw_rule (Mark Polyakov)
+	* Type __link: Add messaging (Ander Punnar)
+	* Debugging: Rename debug-dump.sh to cdist-dump (Darko Poljak)
+	* Documentation: Add cdist-dump man page (Darko Poljak)
 
 4.10.9: 2019-04-09
 	* Type __ssh_authorized_keys: Properly handle multiple --option params (Steven Armstrong)
