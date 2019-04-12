@@ -10,7 +10,7 @@ case "$os" in
         sysctl -n hw.disknames | grep -Eo '[sw]d[0-9]+' | xargs
     ;;
     netbsd)
-        sysctl -n hw.disknames | grep -Eo 'ld[0-9]' | xargs
+        sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]' | xargs
     ;;
     *)
         # hopefully everything else is linux
