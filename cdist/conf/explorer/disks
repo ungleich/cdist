@@ -14,6 +14,7 @@ case "$os" in
         if command -v lsblk > /dev/null
         then
             # exclude ram disks, floppies and cdroms 
+            # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
             lsblk -e 1,2,11 -dno name | xargs
         else
             # fallback
