@@ -1,16 +1,30 @@
 #!/bin/sh -e
 
-os=$("$__explorer/os")
-case "$os" in
-    openbsd)
-        IFS=',' disks=$(sysctl -n hw.disknames)
-        for d in $disks; do
-            echo "${d%%:*}"
-        done | sed -n '/^[sw]d[0-9][0-9]*/p'
-    ;;
+os="$( "$__explorer/os" )"
 
+case "$os" in
+    freebsd)
+        sysctl -n kern.disks
+    ;;
+    openbsd)
+        sysctl -n hw.disknames | grep -Eo '[sw]d[0-9]+' | xargs
+    ;;
+    netbsd)
+        sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]' | xargs
+    ;;
     *)
-        cd /dev || exit 0
-        echo sd? hd? vd?
+        # hopefully everything else is linux
+        if command -v lsblk > /dev/null
+        then
+            # exclude ram disks, floppies and cdroms 
+            # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
+            lsblk -e 1,2,11 -dno name | xargs
+        else
+            # fallback
+            find /dev \
+                -type b \
+                -regex '/dev/\(hd\|sd\|vd\)[a-z]+' \
+                -printf '%f '
+        fi
     ;;
 esac
