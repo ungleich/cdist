@@ -4,6 +4,7 @@ Changelog
 next:
 	* Core: Fix broken quiet mode (Darko Poljak)
 	* Build: Add version.py into generated raw source archive (Darko Poljak)
+	* Explorer disks: Fix detecting disks, fix/add support for BSDs (Ander Punnar)
 
 4.10.10: 2019-04-11
 	* New types: __ufw and __ufw_rule (Mark Polyakov)
