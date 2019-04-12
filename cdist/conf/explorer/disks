@@ -13,7 +13,7 @@ case "$os" in
         # hopefully everything else is linux
         if command -v lsblk > /dev/null
         then
-            # exclude ram disks and cdroms 
+            # exclude ram disks, floppies and cdroms 
             lsblk -e 1,2,11 -dno name | xargs
         else
             # fallback
