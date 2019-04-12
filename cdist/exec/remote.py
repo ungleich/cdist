@@ -304,6 +304,7 @@ class Remote(object):
         try:
             if self.quiet_mode:
                 stderr = subprocess.DEVNULL
+                close_stderr = False
             if return_output:
                 output = subprocess.check_output(command, env=os_environ,
                                                  stderr=stderr).decode()

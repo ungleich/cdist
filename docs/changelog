@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Core: Fix broken quiet mode (Darko Poljak)
+
 4.10.10: 2019-04-11
 	* New types: __ufw and __ufw_rule (Mark Polyakov)
 	* Type __link: Add messaging (Ander Punnar)
