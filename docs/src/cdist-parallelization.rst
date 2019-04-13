@@ -12,8 +12,7 @@ The other way is to operate in parallel within one host where you specify
 the number of jobs. This is enabled with :strong:`-j/--jobs` option where you
 can specify the number of parallel jobs. By default,
 :strong:`multiprocessing.cpu_count()` is used. For this mode global explorers,
-object preparation and object run are supported and this option is still in
-:strong:`beta`.
+object preparation and object run are supported.
 
 You can, of course, use those two options together. This means that each host
 will be processed by its own process. Within each process cdist will operate
@@ -32,11 +31,11 @@ Examples
 
     # Configure hosts read from file hosts.file sequentially but using default
     # number of parallel jobs
-    $ cdist config -b -j -f hosts.file
+    $ cdist config -j -f hosts.file
 
     # Configure hosts read from file hosts.file in parallel using 16
     # parallel jobs
-    $ cdist config -b -j 16 -p -f hosts.file
+    $ cdist config -j 16 -p -f hosts.file
 
 
 Caveats

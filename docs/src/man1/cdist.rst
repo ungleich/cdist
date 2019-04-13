@@ -165,7 +165,7 @@ Install command is currently in beta.
     Operate in parallel in specified maximum number of
     jobs. Global explorers, object prepare and object run
     are supported. Without argument CPU count is used by
-    default. Currently in beta.
+    default.
 
 **-n, --dry-run**
     Do not execute code.

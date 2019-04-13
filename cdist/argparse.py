@@ -11,7 +11,7 @@ import cdist.configuration
 BETA_COMMANDS = set(('install', 'inventory', ))
 # set of beta arguments for sub-commands
 BETA_ARGS = {
-    'config': set(('jobs', 'tag', 'all_tagged_hosts', 'use_archiving', )),
+    'config': set(('tag', 'all_tagged_hosts', 'use_archiving', )),
 }
 EPILOG = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
 # Parser others can reuse
@@ -191,8 +191,7 @@ def get_parsers():
                                   name="positive int"),
            help=('Operate in parallel in specified maximum number of jobs. '
                  'Global explorers, object prepare and object run are '
-                 'supported. Without argument CPU count is used by default. '
-                 'Currently in beta.'),
+                 'supported. Without argument CPU count is used by default. '),
            action='store', dest='jobs',
            const=multiprocessing.cpu_count())
     parser['config_main'].add_argument(
