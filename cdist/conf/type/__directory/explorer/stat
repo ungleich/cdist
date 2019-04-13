@@ -25,21 +25,13 @@ destination="/$__object_id"
 
 os=$("$__explorer/os")
 case "$os" in
-   "freebsd"|"netbsd"|"openbsd")
-      # FIXME: should be something like this based on man page, but can not test
-      stat -f "type: %ST
+   "freebsd"|"netbsd"|"openbsd"|"macosx")
+      stat -f "type: %HT
 owner: %Du %Su
 group: %Dg %Sg
-mode: %Op %Sp
-" "$destination"
+mode: %Lp %Sp
+" "$destination" | awk '/^type/ { print tolower($0); next; } { print; }'
    ;;
-    "macosx")
-       stat -f "type: %HT
- owner: %Du %Su
- group: %Dg %Sg
- mode: %Lp %Sp
- " "$destination"
-    ;;
    *)
       stat --printf="type: %F
 owner: %u %U
