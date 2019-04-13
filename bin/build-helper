@@ -200,7 +200,10 @@ eof
                 || exit 1
             # make sure target version is generated
             "$0" target-version
-            tar -r -f "${archivename}" cdist/version.py || exit 1
+            tar -x -f "${archivename}" || exit 1
+            cp cdist/version.py "cdist-${tag}/cdist/version.py" || exit 1
+            tar -c -f "${archivename}" "cdist-${tag}/" || exit 1
+            rm -r -f "cdist-${tag}/"
             gzip "${archivename}" || exit 1
             archivename="${archivename}.gz"
         fi
