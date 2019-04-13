@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.10.11: 2019-04-13
 	* Core: Fix broken quiet mode (Darko Poljak)
 	* Build: Add version.py into generated raw source archive (Darko Poljak)
 	* Explorer disks: Fix detecting disks, fix/add support for BSDs (Ander Punnar)
