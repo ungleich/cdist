@@ -75,9 +75,14 @@ else
             state=$(chkconfig --check "$name" "$runlevel" || echo absent)
             [ "$state" ] || state="present"
         ;;
-        gentoo)
-            state="present"
-            [ -f "/etc/runlevels/${target_runlevel}/${name}" ] || state="absent"
+        gentoo|alpine)
+            state="absent"
+            for d in /etc/runlevels/*; do
+                if [ -f "/etc/runlevels/${d}/${name}" ];then
+                    state="present"
+                    break
+                fi
+            done
         ;;
         freebsd)
             state="absent"
@@ -87,10 +92,6 @@ else
             state='absent'
             # OpenBSD 5.7 and higher
             rcctl ls on | grep "^${name}$" && state='present'
-        ;;
-        alpine)
-            state="$(rc-update show | sed 's/ *//' | grep -q "^${name} |" && echo present)"
-            [ "$state" ] || state="absent"
         ;;
 
         *)
