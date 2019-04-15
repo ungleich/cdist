@@ -8,7 +8,8 @@ cdist-type__locale - Configure locales
 
 DESCRIPTION
 -----------
-This cdist type allows you to setup locales.
+This cdist type allows you to setup locales. On systems that don't
+support locale setting like alpine/musl libc, it is a no-op.
 
 
 OPTIONAL PARAMETERS
@@ -44,6 +45,6 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 COPYING
 -------
-Copyright \(C) 2013-2016 Nico Schottelius. Free use of this software is
+Copyright \(C) 2013-2019 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License version 3 or
 later (GPLv3+).

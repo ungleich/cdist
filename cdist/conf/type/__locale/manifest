@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2013-2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013-2019 Nico Schottelius (nico-cdist at schottelius.org)
 # 2015 David Hürlimann (david at ungleich.ch)
 #
 # This file is part of cdist.
@@ -19,7 +19,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Install required packages 
+# Install required packages
 #
 
 os=$(cat "$__global/explorer/os")
@@ -30,7 +30,7 @@ case "$os" in
         # Debian needs a seperate package
         __package locales --state present
     ;;
-    archlinux|suse|ubuntu|scientific|centos)
+    archlinux|suse|ubuntu|scientific|centos|alpine)
         :
     ;;
     *)
