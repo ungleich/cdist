@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012-2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2019 Nico Schottelius (nico-cdist at schottelius.org)
 # 2013 Daniel Heule (hda at sfs.biz)
 #
 # This file is part of cdist.
@@ -88,6 +88,9 @@ else
             # OpenBSD 5.7 and higher
             rcctl ls on | grep "^${name}$" && state='present'
         ;;
+        alpine)
+            state="absent"
+            rc-update show | sed 's/ *//' | grep -q "^${name} |" && state="present"
         *)
            echo "Unsupported os: $os" >&2
            exit 1

@@ -55,7 +55,7 @@ Nico Schottelius <nico-cdist--@--schottelius.org>
 
 COPYING
 -------
-Copyright \(C) 2012 Nico Schottelius. You can redistribute it
+Copyright \(C) 2012-2019 Nico Schottelius. You can redistribute it
 and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
