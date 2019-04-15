@@ -43,6 +43,7 @@ _build/
 docs/dist
 
 # Ignore temp files used for signing
+cdist-*.tar
 cdist-*.tar.gz
 cdist-*.tar.gz.asc
 
