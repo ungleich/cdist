@@ -37,6 +37,15 @@ locale_remove=$(echo "$locale" | sed 's/UTF-8/utf8/')
 
 state=$(cat "$__object/parameter/state")
 
+os=$(cat "$__global/explorer/os")
+
+# Nothing to be done on alpine
+case "$os" in
+    alpine)
+        exit 0
+        ;;
+esac
+
 case "$state" in
     present)
         echo localedef -A "$alias" -f "$charmap" -i "$input" "$locale"
