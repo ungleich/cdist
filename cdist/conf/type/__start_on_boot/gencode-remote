@@ -40,6 +40,9 @@ case "$state_should" in
             echo "systemctl -q enable '$name'"
         else
             case "$os" in
+                alpine)
+                    echo "rc-update -q add '${name}'"
+                ;;
                 debian)
                     case "$os_version" in
                         [1-7]*)
@@ -102,6 +105,9 @@ case "$state_should" in
 
         else
             case "$os" in
+                alpine)
+                    echo "rc-update -q del '${name}'"
+                ;;
                 debian|ubuntu|devuan)
                     echo "update-rc.d -f '$name' remove"
                 ;;
