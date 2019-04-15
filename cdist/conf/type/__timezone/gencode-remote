@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2019 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -29,7 +30,7 @@ if [ "$timezone_is" = "$timezone_should" ]; then
 fi
 
 case "$os" in
-   ubuntu|debian|devuan|coreos)
+   ubuntu|debian|devuan|coreos|alpine)
       echo "echo \"$timezone_should\" > /etc/timezone"
    ;;
 esac

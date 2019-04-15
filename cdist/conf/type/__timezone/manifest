@@ -2,7 +2,7 @@
 #
 # 2011 Ramon Salvadó (rsalvado at gnuine dot com)
 # 2012-2015 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2012-2019 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -26,7 +26,7 @@ timezone="$__object_id"
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-    archlinux|debian|ubuntu|devuan)
+    archlinux|debian|ubuntu|devuan|alpine)
         __package tzdata
         export require="__package/tzdata"
     ;;
