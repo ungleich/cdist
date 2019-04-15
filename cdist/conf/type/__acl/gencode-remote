@@ -37,7 +37,18 @@ do
         then echo "default:$parameter:$l"
         fi
     done < "$__object/parameter/$parameter"
-done )"
+done
+if [ -f "$__object/parameter/mask" ]
+then
+    l=$( cat "$__object/parameter/mask" )
+
+    echo "mask::$l"
+
+    if [ -f "$__object/parameter/default" ]
+    then echo "default:mask::$l"
+    fi
+fi
+)"
 
 setfacl_exec='setfacl'
 

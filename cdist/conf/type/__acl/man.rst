@@ -13,6 +13,12 @@ ACL must be defined as 3-symbol combination, using `r`, `w`, `x` and `-`.
 See setfacl(1) and acl(5) for more details.
 
 
+OPTIONAL PARAMETERS
+-------------------
+mask
+   Add mask ACL entry.
+
+
 OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
 user
@@ -46,7 +52,8 @@ EXAMPLES
         --user alice:rwx \
         --user bob:r-x \
         --group project-group:rwx \
-        --group some-other-group:r-x
+        --group some-other-group:r-x \
+        --mask r-x
 
 
 AUTHORS

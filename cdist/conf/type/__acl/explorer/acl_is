@@ -19,5 +19,8 @@
 #
 
 if [ -e "/$__object_id" ]
-then getfacl "/$__object_id" | grep -E '^((default:|)(user|group)):[a-z]' || true
+then
+    getfacl "/$__object_id" \
+        | grep -E '^((default:)?(user|group):[^:]|(default:)?mask::)' \
+        || true
 fi
