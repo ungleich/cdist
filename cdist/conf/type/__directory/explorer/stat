@@ -31,9 +31,16 @@ owner: %Du %Su
 group: %Dg %Sg
 mode: %Lp %Sp
 " "$destination" | awk '/^type/ { print tolower($0); next; } { print; }'
-   ;;
+      ;;
+   alpine)
+      stat -c "type: %F
+owner: %u %U
+group: %g %G
+mode: %a %A
+" "$destination"
+      ;;
    *)
-      stat --printf="type: %F
+       stat --printf="type: %F
 owner: %u %U
 group: %g %G
 mode: %a %A
