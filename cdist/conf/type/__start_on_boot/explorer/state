@@ -89,8 +89,10 @@ else
             rcctl ls on | grep "^${name}$" && state='present'
         ;;
         alpine)
-            state="absent"
-            rc-update show | sed 's/ *//' | grep -q "^${name} |" && state="present"
+            state="$(rc-update show | sed 's/ *//' | grep -q "^${name} |" && echo present)"
+            [ "$state" ] || state="absent"
+        ;;
+
         *)
            echo "Unsupported os: $os" >&2
            exit 1
