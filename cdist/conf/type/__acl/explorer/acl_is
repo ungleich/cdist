@@ -20,7 +20,7 @@
 
 if [ -e "/$__object_id" ]
 then
-    getfacl "/$__object_id" \
+    getfacl "/$__object_id" 2>/dev/null \
         | grep -E '^((default:)?(user|group):[^:]|(default:)?mask::)' \
         || true
 fi
