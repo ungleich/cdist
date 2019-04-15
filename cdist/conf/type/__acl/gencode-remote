@@ -54,7 +54,7 @@ setfacl_exec='setfacl'
 
 if [ -f "$__object/parameter/recursive" ]
 then
-    if echo "$os" | grep -E 'macosx|netbsd|freebsd|openbsd'
+    if echo "$os" | grep -Eq 'macosx|netbsd|freebsd|openbsd'
     then
         echo "$os setfacl do not support recursive operations" >&2
     else
@@ -64,7 +64,7 @@ fi
 
 if [ -f "$__object/parameter/remove" ]
 then
-    if echo "$os" | grep 'solaris'
+    if echo "$os" | grep -Fq 'solaris'
     then
         # Solaris setfacl behaves differently.
         # We will not support Solaris for now, because no way to test it.
