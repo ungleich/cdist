@@ -3,9 +3,11 @@ Changelog
 
 next:
 	* Type __package: Add __package_apk support (Nico Schottelius)
+	* Type __file: Add alpine support (Nico Schottelius)
+	* Type __hostname: Add alpine support (Nico Schottelius)
+	* Type __locale: Add alpine support (Nico Schottelius)
 	* Type __start_on_boot: Add alpine support (Nico Schottelius)
 	* Type __timezone: Add alpine support (Nico Schottelius)
-	* Type __hostname: Add alpine support (Nico Schottelius)
 	* Type __start_on_boot: gentoo: check all runlevels in explorer (Nico Schottelius)
 	* New type: __package_apk (Nico Schottelius)
 

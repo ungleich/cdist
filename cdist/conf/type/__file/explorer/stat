@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2019 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -33,7 +34,17 @@ mode: %Lp %Sp
 size: %Dz
 links: %Dl
 " "$destination" | awk '/^type/ { print tolower($0); next; } { print; }'
-   ;;
+      ;;
+   alpine)
+       # busybox stat
+      stat -c "type: %F
+owner: %u %U
+group: %g %G
+mode: %a %A
+size: %s
+links: %h
+" "$destination"
+      ;;
    *)
       stat --printf="type: %F
 owner: %u %U
@@ -42,5 +53,5 @@ mode: %a %A
 size: %s
 links: %h
 " "$destination"
-   ;;
+      ;;
 esac
