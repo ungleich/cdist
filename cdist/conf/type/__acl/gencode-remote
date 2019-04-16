@@ -37,7 +37,7 @@ do
 
     while read -r acl
     do
-        if echo "$acl" | grep -Fq 'X'
+        if echo "$acl" | sed -r 's/(.*)://' | grep -Fq 'X'
         then
             if [ "$is_dir" = '1' ]
             then
