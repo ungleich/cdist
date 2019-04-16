@@ -18,6 +18,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+if ! command -v getfacl 2>/dev/null
+then
+    echo 'getfacl not available' >&2
+    exit 1
+fi
+
 if [ -e "/$__object_id" ]
 then
     getfacl "/$__object_id" 2>/dev/null \
