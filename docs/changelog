@@ -11,6 +11,7 @@ next:
 	* Type __timezone: Add alpine support (Nico Schottelius)
 	* Type __start_on_boot: gentoo: check all runlevels in explorer (Nico Schottelius)
 	* New type: __package_apk (Nico Schottelius)
+	* Type __acl: Add support for ACL mask (Dimitrios Apostolou)
 
 4.10.11: 2019-04-13
 	* Core: Fix broken quiet mode (Darko Poljak)
