@@ -22,7 +22,7 @@ acl_path="/$__object_id"
 
 [ ! -e "$acl_path" ] && exit 0
 
-if ! command -v getfacl 2>/dev/null
+if ! command -v getfacl > /dev/null
 then
     echo 'getfacl not available' >&2
     exit 1
