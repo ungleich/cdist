@@ -24,7 +24,7 @@ acl_path="/$__object_id"
 
 os="$( cat "$__global/explorer/os" )"
 
-file_type="$( cat "$__object/explorer/file_type" )"
+is_dir="$( cat "$__object/explorer/is_dir" )"
 
 acl_is="$( cat "$__object/explorer/acl_is" )"
 
@@ -38,7 +38,7 @@ do
         echo "$parameter:$l"
 
         if [ -f "$__object/parameter/default" ] \
-            && [ "$file_type" = 'd' ]
+            && [ "$is_dir" = '1' ]
         then echo "default:$parameter:$l"
         fi
     done < "$__object/parameter/$parameter"
@@ -50,7 +50,7 @@ then
     echo "mask::$l"
 
     if [ -f "$__object/parameter/default" ] \
-        && [ "$file_type" = 'd' ]
+        && [ "$is_dir" = '1' ]
     then echo "default:mask::$l"
     fi
 fi

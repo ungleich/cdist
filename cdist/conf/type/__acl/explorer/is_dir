@@ -23,7 +23,6 @@ acl_path="/$__object_id"
 [ ! -e "$acl_path" ] && exit 0
 
 if [ -d "$acl_path" ]
-then echo d
-elif [ -f "$acl_path" ]
-then echo f
+then echo 1
+else echo 0
 fi
