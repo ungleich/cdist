@@ -37,13 +37,24 @@ do
         then echo "default:$parameter:$l"
         fi
     done < "$__object/parameter/$parameter"
-done )"
+done
+if [ -f "$__object/parameter/mask" ]
+then
+    l=$( cat "$__object/parameter/mask" )
+
+    echo "mask::$l"
+
+    if [ -f "$__object/parameter/default" ]
+    then echo "default:mask::$l"
+    fi
+fi
+)"
 
 setfacl_exec='setfacl'
 
 if [ -f "$__object/parameter/recursive" ]
 then
-    if echo "$os" | grep -E 'macosx|netbsd|freebsd|openbsd'
+    if echo "$os" | grep -Eq 'macosx|netbsd|freebsd|openbsd'
     then
         echo "$os setfacl do not support recursive operations" >&2
     else
@@ -53,7 +64,7 @@ fi
 
 if [ -f "$__object/parameter/remove" ]
 then
-    if echo "$os" | grep 'solaris'
+    if echo "$os" | grep -Fq 'solaris'
     then
         # Solaris setfacl behaves differently.
         # We will not support Solaris for now, because no way to test it.
