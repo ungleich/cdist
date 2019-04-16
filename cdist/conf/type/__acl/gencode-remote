@@ -28,57 +28,42 @@ acl_is="$( cat "$__object/explorer/acl_is" )"
 
 acl_path="/$__object_id"
 
-acl_should="$(
-for parameter in user group
+acl_should="$( for parameter in user group mask other
 do
     if [ ! -f "$__object/parameter/$parameter" ]
-    then continue
+    then
+        continue
     fi
-    while read -r l
+
+    while read -r acl
     do
-        if echo "$l" | grep -Fq 'X'
+        if echo "$acl" | grep -Fq 'X'
         then
             if [ "$is_dir" = '1' ]
             then
-                l="$( echo "$l" | sed 's/X$/x/' )"
+                acl="$( echo "$acl" | sed 's/X$/x/' )"
             else
-                l="$( echo "$l" | sed 's/X$/-/' )"
+                acl="$( echo "$acl" | sed 's/X$/-/' )"
             fi
         fi
 
-        echo "$parameter:$l"
+        if echo "$parameter" | grep -Eq '(mask|other)'
+        then
+            sep=::
+        else
+            sep=:
+        fi
+
+        echo "$parameter$sep$acl"
 
         if [ -f "$__object/parameter/default" ] \
             && [ "$is_dir" = '1' ]
-        then echo "default:$parameter:$l"
+        then
+            echo "default:$parameter$sep$acl"
         fi
-    done < "$__object/parameter/$parameter"
-done
-
-if [ -f "$__object/parameter/mask" ]
-then
-    l=$( cat "$__object/parameter/mask" )
-
-    echo "mask::$l"
-
-    if [ -f "$__object/parameter/default" ] \
-        && [ "$is_dir" = '1' ]
-    then echo "default:mask::$l"
-    fi
-fi
-
-if [ -f "$__object/parameter/other" ]
-then
-    l=$( cat "$__object/parameter/other" )
-
-    echo "other::$l"
-
-    if [ -f "$__object/parameter/default" ] \
-        && [ "$is_dir" = '1' ]
-    then echo "default:other::$l"
-    fi
-fi
-)"
+    done \
+        < "$__object/parameter/$parameter"
+done )"
 
 setfacl_exec='setfacl'
 
