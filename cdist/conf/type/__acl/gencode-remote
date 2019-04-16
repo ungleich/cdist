@@ -39,9 +39,9 @@ do
         then
             if [ "$is_dir" = '1' ]
             then
-                l="$( echo "$l" | sed 's/X/x/' )"
+                l="$( echo "$l" | sed 's/X$/x/' )"
             else
-                l="$( echo "$l" | sed 's/X/-/' )"
+                l="$( echo "$l" | sed 's/X$/-/' )"
             fi
         fi
 
