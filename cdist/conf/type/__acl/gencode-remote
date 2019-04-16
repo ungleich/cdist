@@ -35,6 +35,16 @@ do
     fi
     while read -r l
     do
+        if echo "$l" | grep -Fq 'X'
+        then
+            if [ "$is_dir" = '1' ]
+            then
+                l="$( echo "$l" | sed 's/X/x/' )"
+            else
+                l="$( echo "$l" | sed 's/X/-/' )"
+            fi
+        fi
+
         echo "$parameter:$l"
 
         if [ -f "$__object/parameter/default" ] \
