@@ -54,7 +54,7 @@ setfacl_exec='setfacl'
 
 if [ -f "$__object/parameter/recursive" ]
 then
-    if echo "$os" | grep -Eq 'macosx|netbsd|freebsd|openbsd'
+    if echo "$os" | grep -Eq 'macosx|freebsd'
     then
         echo "$os setfacl do not support recursive operations" >&2
     else
