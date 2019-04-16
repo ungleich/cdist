@@ -89,7 +89,8 @@ then
     else
         echo "$acl_is" | while read -r acl
         do
-            if echo "$acl_should" | grep -Fq "$acl"
+            if echo "$acl_should" | grep -Fq "$acl" \
+                || echo "$acl" | grep -Eq '^(default:)?mask'
             then continue
             fi
 
