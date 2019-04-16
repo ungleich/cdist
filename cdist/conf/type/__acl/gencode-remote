@@ -41,10 +41,12 @@ do
         then
             if [ "$is_dir" = '1' ]
             then
-                acl="$( echo "$acl" | sed 's/X$/x/' )"
+                rep=x
             else
-                acl="$( echo "$acl" | sed 's/X$/-/' )"
+                rep=-
             fi
+
+            acl="$( echo "$acl" | sed -r "s/(.*)X/\1$rep/" )"
         fi
 
         if echo "$parameter" | grep -Eq '(mask|other)'
