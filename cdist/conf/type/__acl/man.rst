@@ -18,6 +18,9 @@ OPTIONAL PARAMETERS
 mask
    Add mask ACL entry.
 
+other
+   Add other ACL entry.
+
 
 OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
@@ -53,7 +56,8 @@ EXAMPLES
         --user bob:r-x \
         --group project-group:rwx \
         --group some-other-group:r-x \
-        --mask r-x
+        --mask r-x \
+        --other r-x
 
 
 AUTHORS

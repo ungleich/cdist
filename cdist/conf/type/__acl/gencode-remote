@@ -28,7 +28,8 @@ acl_is="$( cat "$__object/explorer/acl_is" )"
 
 acl_path="/$__object_id"
 
-acl_should="$( for parameter in user group
+acl_should="$(
+for parameter in user group
 do
     if [ ! -f "$__object/parameter/$parameter" ]
     then continue
@@ -53,6 +54,7 @@ do
         fi
     done < "$__object/parameter/$parameter"
 done
+
 if [ -f "$__object/parameter/mask" ]
 then
     l=$( cat "$__object/parameter/mask" )
@@ -62,6 +64,18 @@ then
     if [ -f "$__object/parameter/default" ] \
         && [ "$is_dir" = '1' ]
     then echo "default:mask::$l"
+    fi
+fi
+
+if [ -f "$__object/parameter/other" ]
+then
+    l=$( cat "$__object/parameter/other" )
+
+    echo "other::$l"
+
+    if [ -f "$__object/parameter/default" ] \
+        && [ "$is_dir" = '1' ]
+    then echo "default:other::$l"
     fi
 fi
 )"
@@ -89,8 +103,11 @@ then
     else
         echo "$acl_is" | while read -r acl
         do
+            # Skip wanted ACL entries which already exist
+            # and skip mask and other entries, because we
+            # can't actually remove them, but only change.
             if echo "$acl_should" | grep -Eq "^$acl" \
-                || echo "$acl" | grep -Eq '^(default:)?mask'
+                || echo "$acl" | grep -Eq '^(default:)?(mask|other)'
             then continue
             fi
 
