@@ -18,15 +18,16 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+acl_path="/$__object_id"
+
+[ ! -e "$acl_path" ] && exit 0
+
 if ! command -v getfacl 2>/dev/null
 then
     echo 'getfacl not available' >&2
     exit 1
 fi
 
-if [ -e "/$__object_id" ]
-then
-    getfacl "/$__object_id" 2>/dev/null \
-        | grep -E '^((default:)?(user|group):[^:]|(default:)?mask::)' \
-        || true
-fi
+getfacl "$acl_path" 2>/dev/null \
+    | grep -E '^((default:)?(user|group):[^:]|(default:)?mask::)' \
+    || true

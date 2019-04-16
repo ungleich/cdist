@@ -18,11 +18,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+acl_path="/$__object_id"
+
+[ ! -e "$acl_path" ] && exit 0
+
 os="$( cat "$__global/explorer/os" )"
 
 file_type="$( cat "$__object/explorer/file_type" )"
-
-acl_path="/$__object_id"
 
 acl_is="$( cat "$__object/explorer/acl_is" )"
 

@@ -18,11 +18,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -e "/$__object_id" ]
-then
-    if [ -d "/$__object_id" ]
-    then echo d
-    elif [ -f "/$__object_id" ]
-    then echo f
-    fi
+acl_path="/$__object_id"
+
+[ ! -e "$acl_path" ] && exit 0
+
+if [ -d "$acl_path" ]
+then echo d
+elif [ -f "$acl_path" ]
+then echo f
 fi
