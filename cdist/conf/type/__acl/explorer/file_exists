@@ -18,9 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-[ ! -e "/$__object_id" ] && exit 0
-
-if [ -d "/$__object_id" ]
+if [ -e "/$__object_id" ]
 then echo 1
 else echo 0
 fi

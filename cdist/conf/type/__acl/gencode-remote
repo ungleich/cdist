@@ -18,15 +18,15 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-acl_path="/$__object_id"
-
-[ ! -e "$acl_path" ] && exit 0
+[ "$( cat "$__object/explorer/file_exists" )" = '0' ] && exit 0
 
 os="$( cat "$__global/explorer/os" )"
 
 is_dir="$( cat "$__object/explorer/is_dir" )"
 
 acl_is="$( cat "$__object/explorer/acl_is" )"
+
+acl_path="/$__object_id"
 
 acl_should="$( for parameter in user group
 do
