@@ -16,15 +16,12 @@ case "$os" in
         # hopefully everything else is linux
         if command -v lsblk > /dev/null
         then
-            # exclude ram disks, floppies and cdroms 
+            # exclude ram disks, floppies and cdroms
             # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
             lsblk -e 1,2,11 -dno name | xargs
         else
             # fallback
-            find /dev \
-                -type b \
-                -regex '/dev/\(hd\|sd\|vd\)[a-z]+' \
-                -printf '%f '
+            cd /dev && echo [vsh]d?
         fi
     ;;
 esac
