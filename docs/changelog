@@ -12,6 +12,7 @@ next:
 	* Type __start_on_boot: gentoo: check all runlevels in explorer (Nico Schottelius)
 	* New type: __package_apk (Nico Schottelius)
 	* Type __acl: Add support for ACL mask (Dimitrios Apostolou)
+	* Core: Fix circular dependency for CDIST_ORDER_DEPENDENCY (Darko Poljak)
 
 4.10.11: 2019-04-13
 	* Core: Fix broken quiet mode (Darko Poljak)
