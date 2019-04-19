@@ -28,6 +28,13 @@ acl_is="$( cat "$__object/explorer/acl_is" )"
 
 acl_path="/$__object_id"
 
+if [ -f "$__object/parameter/default" ] && [ "$is_dir" = '1' ]
+then
+    set_default=1
+else
+    set_default=0
+fi
+
 acl_should="$( for parameter in user group mask other
 do
     if [ ! -f "$__object/parameter/$parameter" ]
@@ -39,30 +46,16 @@ do
     do
         if echo "$acl" | awk -F: '{ print $NF }' | grep -Fq 'X'
         then
-            if [ "$is_dir" = '1' ]
-            then
-                rep=x
-            else
-                rep=-
-            fi
+            [ "$is_dir" = '1' ] && rep=x || rep=-
 
             acl="$( echo "$acl" | sed "s/\(.*\)X/\1$rep/" )"
         fi
 
-        if echo "$parameter" | grep -Eq '(mask|other)'
-        then
-            sep=::
-        else
-            sep=:
-        fi
+        echo "$parameter" | grep -Eq '(mask|other)' && sep=:: || sep=:
 
         echo "$parameter$sep$acl"
 
-        if [ -f "$__object/parameter/default" ] \
-            && [ "$is_dir" = '1' ]
-        then
-            echo "default:$parameter$sep$acl"
-        fi
+        [ "$set_default" = '1' ] && echo "default:$parameter$sep$acl"
     done \
         < "$__object/parameter/$parameter"
 done )"
