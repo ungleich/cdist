@@ -29,7 +29,7 @@ do
 
     while read -r acl
     do
-		check="$( echo "$acl" | awk -F: '{print $1}' )"
+        check="$( echo "$acl" | awk -F: '{print $1}' )"
 
         if [ "$parameter" = 'user' ]
         then
@@ -38,10 +38,10 @@ do
             getent_db="$parameter"
         fi
 
-		if ! getent "$getent_db" "$check" > /dev/null
-		then
-			echo "missing $parameter '$check'"
-		fi
+        if ! getent "$getent_db" "$check" > /dev/null
+        then
+            echo "missing $parameter '$check'"
+        fi
     done \
         < "$__object/parameter/$parameter"
 done
