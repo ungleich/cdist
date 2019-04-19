@@ -283,7 +283,8 @@ class Emulator(object):
                                                 self.object_source)))
             raise
 
-        self.log.debug("Recording requirement: %s", requirement)
+        self.log.debug("Recording requirement %s for %s",
+                       requirement, self.cdist_object.name)
 
         # Save the sanitised version, not the user supplied one
         # (__file//bar => __file/bar)
@@ -305,13 +306,26 @@ class Emulator(object):
                 # get the type created before this one ...
                 try:
                     lastcreatedtype = typecreationorder[-2].strip()
-                    if 'require' in self.env:
-                        self.env['require'] += " " + lastcreatedtype
+                    # __object_name is the name of the object whose type
+                    # manifest is currently executed
+                    __object_name = self.env.get('__object_name', None)
+                    if lastcreatedtype == __object_name:
+                        self.log.debug(("Not injecting require for "
+                                        "CDIST_ORDER_DEPENDENCY: %s for %s,"
+                                        " %s's type manifest is currently"
+                                        " being executed"),
+                                       lastcreatedtype,
+                                       self.cdist_object.name,
+                                       lastcreatedtype)
                     else:
-                        self.env['require'] = lastcreatedtype
-                    self.log.debug(("Injecting require for "
-                                    "CDIST_ORDER_DEPENDENCY: %s for %s"),
-                                   lastcreatedtype, self.cdist_object.name)
+                        if 'require' in self.env:
+                            self.env['require'] += " " + lastcreatedtype
+                        else:
+                            self.env['require'] = lastcreatedtype
+                        self.log.debug(("Injecting require for "
+                                        "CDIST_ORDER_DEPENDENCY: %s for %s"),
+                                       lastcreatedtype,
+                                       self.cdist_object.name)
                 except IndexError:
                     # if no second last line, we are on the first type,
                     # so do not set a requirement
@@ -360,4 +374,6 @@ class Emulator(object):
             # But only if the user hasn't said otherwise.
             # Must prevent circular dependencies.
             if parent.name not in current_object.requirements:
+                self.log.debug("Recording autorequirement %s for %s",
+                               current_object.name, parent.name)
                 parent.autorequire.append(current_object.name)
