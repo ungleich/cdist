@@ -99,10 +99,15 @@ then
             then continue
             fi
 
-            no_bits="$( echo "$acl" | sed 's/:...$//' )"
+            if echo "$os" | grep -Eq 'macosx|freebsd'
+            then
+                remove="$acl"
+            else
+                remove="$( echo "$acl" | sed 's/:...$//' )"
+            fi
 
-            echo "$setfacl_exec -x \"$no_bits\" \"$acl_path\""
-            echo "removed '$no_bits'" >> "$__messages_out"
+            echo "$setfacl_exec -x \"$remove\" \"$acl_path\""
+            echo "removed '$remove'" >> "$__messages_out"
         done
     fi
 fi
