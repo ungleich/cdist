@@ -102,6 +102,7 @@ then
             no_bits="$( echo "$acl" | sed 's/:...$//' )"
 
             echo "$setfacl_exec -x \"$no_bits\" \"$acl_path\""
+            echo "removed '$no_bits'" >> "$__messages_out"
         done
     fi
 fi
@@ -116,6 +117,7 @@ do
             echo "setting default ACL in $os is currently not supported. sorry :(" >&2
         else
             echo "$setfacl_exec -m \"$acl\" \"$acl_path\""
+            echo "added '$acl'" >> "$__messages_out"
         fi
     fi
 done
