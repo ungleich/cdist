@@ -3,20 +3,20 @@ cdist-type__acl(7)
 
 NAME
 ----
-cdist-type__acl - Basic wrapper around `setfacl`
+cdist-type__acl - Set ACL entries
 
 
 DESCRIPTION
 -----------
-ACL must be defined as 3-symbol combination, using `r`, `w`, `x` and `-`.
+ACL must be defined as 3-symbol combination, using ``r``, ``w``, ``x`` and ``-``.
 
-See setfacl(1) and acl(5) for more details.
+Fully supported on Linux (tested on Debian and CentOS).
 
+Partial support for FreeBSD, OSX and Solaris.
 
-OPTIONAL PARAMETERS
--------------------
-mask
-   Add mask ACL entry.
+OpenBSD and NetBSD support is not possible.
+
+See ``setfacl`` and ``acl`` manpages for more details.
 
 
 OPTIONAL MULTIPLE PARAMETERS
@@ -28,16 +28,26 @@ group
    Add group ACL entry.
 
 
+OPTIONAL PARAMETERS
+-------------------
+mask
+   Add mask ACL entry.
+
+other
+   Add other ACL entry.
+
+
 BOOLEAN PARAMETERS
 ------------------
 recursive
-   Operate recursively (Linux only).
+   Make ``setfacl`` recursive (Linux only), but not ``getfacl`` in explorer.
 
 default
-   Add default ACL entries.
+   Add default ACL entries (FreeBSD not supported).
 
 remove
    Remove undefined ACL entries (Solaris not supported).
+   ACL entries for ``mask`` and ``other`` can't be removed.
 
 
 EXAMPLES
@@ -53,7 +63,8 @@ EXAMPLES
         --user bob:r-x \
         --group project-group:rwx \
         --group some-other-group:r-x \
-        --mask r-x
+        --mask r-x \
+        --other r-x
 
 
 AUTHORS

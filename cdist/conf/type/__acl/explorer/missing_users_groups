@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2018 Ander Punnar (ander-at-kvlt-dot-ee)
+# 2019 Ander Punnar (ander-at-kvlt-dot-ee)
 #
 # This file is part of cdist.
 #
@@ -20,12 +20,28 @@
 
 [ ! -e "/$__object_id" ] && exit 0
 
-if ! command -v getfacl > /dev/null
-then
-    echo 'getfacl not available' >&2
-    exit 1
-fi
+for parameter in user group
+do
+    if [ ! -f "$__object/parameter/$parameter" ]
+    then
+        continue
+    fi
 
-getfacl "/$__object_id" 2>/dev/null \
-    | grep -Eo '^(default:)?(user|group|(mask|other):):[^:][[:graph:]]+' \
-    || true
+    while read -r acl
+    do
+        check="$( echo "$acl" | awk -F: '{print $1}' )"
+
+        if [ "$parameter" = 'user' ]
+        then
+            getent_db=passwd
+        else
+            getent_db="$parameter"
+        fi
+
+        if ! getent "$getent_db" "$check" > /dev/null
+        then
+            echo "missing $parameter '$check'"
+        fi
+    done \
+        < "$__object/parameter/$parameter"
+done

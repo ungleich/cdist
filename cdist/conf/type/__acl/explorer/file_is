@@ -18,14 +18,14 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-[ ! -e "/$__object_id" ] && exit 0
-
-if ! command -v getfacl > /dev/null
+if [ -e "/$__object_id" ]
 then
-    echo 'getfacl not available' >&2
-    exit 1
+    if [ -d "/$__object_id" ]
+    then echo directory
+    elif [ -f "/$__object_id" ]
+    then echo regular
+    else echo other
+    fi
+else
+    echo missing
 fi
-
-getfacl "/$__object_id" 2>/dev/null \
-    | grep -Eo '^(default:)?(user|group|(mask|other):):[^:][[:graph:]]+' \
-    || true
