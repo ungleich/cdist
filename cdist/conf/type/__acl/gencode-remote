@@ -108,6 +108,13 @@ fi
 for acl in $acl_should
 do
     if ! echo "$acl_is" | grep -Eq "^$acl"
-    then echo "$setfacl_exec -m \"$acl\" \"$acl_path\""
+    then
+        if echo "$os" | grep -Eq 'macosx|freebsd' \
+            && echo "$acl" | grep -Eq '^default:'
+        then
+            echo "setting default ACL in $os is currently not supported. sorry :(" >&2
+        else
+            echo "$setfacl_exec -m \"$acl\" \"$acl_path\""
+        fi
     fi
 done
