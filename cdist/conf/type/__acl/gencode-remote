@@ -18,17 +18,17 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-[ "$( cat "$__object/explorer/file_exists" )" = '0' ] && exit 0
+file_is="$( cat "$__object/explorer/file_is" )"
+
+[ "$file_is" = 'missing' ] && exit 0
 
 os="$( cat "$__global/explorer/os" )"
-
-is_dir="$( cat "$__object/explorer/is_dir" )"
 
 acl_is="$( cat "$__object/explorer/acl_is" )"
 
 acl_path="/$__object_id"
 
-if [ -f "$__object/parameter/default" ] && [ "$is_dir" = '1' ]
+if [ -f "$__object/parameter/default" ] && [ "$file_is" = 'directory' ]
 then
     set_default=1
 else
@@ -46,7 +46,7 @@ do
     do
         if echo "$acl" | awk -F: '{ print $NF }' | grep -Fq 'X'
         then
-            [ "$is_dir" = '1' ] && rep=x || rep=-
+            [ "$file_is" = 'directory' ] && rep=x || rep=-
 
             acl="$( echo "$acl" | sed "s/\(.*\)X/\1$rep/" )"
         fi
