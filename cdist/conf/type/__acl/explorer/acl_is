@@ -26,7 +26,7 @@ then
     exit 1
 fi
 
-getfacl -E "/$__object_id" 2>/dev/null \
+getfacl "/$__object_id" 2>/dev/null \
     | grep -E '^(default:)?(user|group|(mask|other):):[^:]' \
     | sed -r 's/\s*#.+$//' \
     || true
