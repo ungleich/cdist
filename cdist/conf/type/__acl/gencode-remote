@@ -37,7 +37,7 @@ do
 
     while read -r acl
     do
-        if echo "$acl" | sed -r 's/(.*)://' | grep -Fq 'X'
+        if echo "$acl" | awk -F: '{ print $NF }' | grep -Fq 'X'
         then
             if [ "$is_dir" = '1' ]
             then
@@ -46,7 +46,7 @@ do
                 rep=-
             fi
 
-            acl="$( echo "$acl" | sed -r "s/(.*)X/\1$rep/" )"
+            acl="$( echo "$acl" | sed "s/\(.*\)X/\1$rep/" )"
         fi
 
         if echo "$parameter" | grep -Eq '(mask|other)'
@@ -98,7 +98,7 @@ then
             then continue
             fi
 
-            no_bits="$( echo "$acl" | sed -r 's/:[rwx-]+$//' )"
+            no_bits="$( echo "$acl" | sed 's/:...$//' )"
 
             echo "$setfacl_exec -x \"$no_bits\" \"$acl_path\""
         done

@@ -27,6 +27,5 @@ then
 fi
 
 getfacl "/$__object_id" 2>/dev/null \
-    | grep -E '^(default:)?(user|group|(mask|other):):[^:]' \
-    | sed -r 's/\s*#.+$//' \
+    | grep -Eo '^(default:)?(user|group|(mask|other):):[^:][[:graph:]]+' \
     || true
