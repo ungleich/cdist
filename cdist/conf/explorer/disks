@@ -1,27 +1,27 @@
 #!/bin/sh -e
 
-os="$( "$__explorer/os" )"
+uname_s="$(uname -s)"
 
-case "$os" in
-    freebsd)
+case "${uname_s}" in
+    FreeBSD)
         sysctl -n kern.disks
     ;;
-    openbsd)
-        sysctl -n hw.disknames | grep -Eo '[sw]d[0-9]+' | xargs
+    OpenBSD|NetBSD)
+        sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]+' | xargs
     ;;
-    netbsd)
-        sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]' | xargs
-    ;;
-    *)
-        # hopefully everything else is linux
+    Linux)
         if command -v lsblk > /dev/null
         then
             # exclude ram disks, floppies and cdroms
             # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
             lsblk -e 1,2,11 -dno name | xargs
         else
-            # fallback
-            cd /dev && echo [vsh]d?
+            printf "%s operating system without lsblk is not supported, if you can please submit a patch\n" "${uname_s}" >&2
+            exit 1
         fi
+    ;;
+    *)
+        printf "%s operating system is not supported, if you can please submit a patch\n" "${uname_s}" >&2
+        exit 1
     ;;
 esac
