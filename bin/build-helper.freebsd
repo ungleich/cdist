@@ -372,18 +372,18 @@ eof
             ;;
         esac
 
+        # Ensure that pypi release has the right version
+        "$0" version
+
+        # Create and publish package for pypi
+        make helper=${helper} WEBDIR=${WEBDIR} pypi-release
+
         # publish man, speeches, website
         if [ "$masterbranch" = yes ]; then
             make helper=${helper} WEBDIR=${WEBDIR} web-release-all
         else
             make helper=${helper} WEBDIR=${WEBDIR} web-release-all-no-latest
         fi
-
-        # Ensure that pypi release has the right version
-        "$0" version
-
-        # Create and publish package for pypi
-        make helper=${helper} WEBDIR=${WEBDIR} pypi-release
 
         case "$run_as" in
             freebsd)
@@ -396,28 +396,6 @@ eof
 
         # Announce change on ML
         make helper=${helper} WEBDIR=${WEBDIR} ml-release
-
-        cat << eof
-Manual steps post release:
-
-    - linkedin
-    - hackernews
-    - reddit
-    - twitter
-
-eof
-
-        case "$run_as" in
-            freebsd)
-                cat <<eof
-Additional steps post release:
-    - archlinux release
-eof
-            ;;
-            *)
-            ;;
-        esac
-
     ;;
 
     test)
