@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.11.0: 2019-04-20
 	* Type __package: Add __package_apk support (Nico Schottelius)
 	* Type __directory: Add alpine support (Nico Schottelius)
 	* Type __file: Add alpine support (Nico Schottelius)
