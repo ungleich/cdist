@@ -702,12 +702,11 @@ class Config(object):
 
     def object_prepare(self, cdist_object, transfer_type_explorers=True):
         """Prepare object: Run type explorer + manifest"""
+        self.log.verbose("Preparing object {}".format(cdist_object.name))
+        self.log.verbose(
+            "Running manifest and explorers for " + cdist_object.name)
+        self.explorer.run_type_explorers(cdist_object, transfer_type_explorers)
         try:
-            self.log.verbose("Preparing object {}".format(cdist_object.name))
-            self.log.verbose(
-                    "Running manifest and explorers for " + cdist_object.name)
-            self.explorer.run_type_explorers(cdist_object,
-                                             transfer_type_explorers)
             self.manifest.run_type_manifest(cdist_object)
             cdist_object.state = core.CdistObject.STATE_PREPARED
         except cdist.Error as e:

@@ -181,22 +181,59 @@ class CdistObjectError(CdistEntityError):
                          params, stdout_paths, stderr_paths, subject)
 
 
+class CdistObjectExplorerError(CdistEntityError):
+    """
+    Something went wrong while working on a specific
+    cdist object explorer
+    """
+    def __init__(self, cdist_object, explorer_name, explorer_path,
+                 stderr_path, subject=''):
+        params = [
+            ('object name', cdist_object.name, ),
+            ('object path', cdist_object.absolute_path, ),
+            ('object source', " ".join(cdist_object.source), ),
+            ('object type', os.path.realpath(
+                cdist_object.cdist_type.absolute_path), ),
+            ('explorer name', explorer_name, ),
+            ('explorer path', explorer_path, ),
+        ]
+        stdout_paths = []
+        stderr_paths = [
+            ('remote', stderr_path, ),
+        ]
+        super().__init__("explorer '{}' of object '{}'".format(
+            explorer_name, cdist_object.name), params, stdout_paths,
+            stderr_paths, subject)
+
+
 class InitialManifestError(CdistEntityError):
     """Something went wrong while executing initial manifest"""
     def __init__(self, initial_manifest, stdout_path, stderr_path, subject=''):
         params = [
             ('path', initial_manifest, ),
         ]
-        stdout_paths = []
         stdout_paths = [
             ('init', stdout_path, ),
         ]
-        stderr_paths = []
         stderr_paths = [
             ('init', stderr_path, ),
         ]
         super().__init__('initial manifest', params, stdout_paths,
                          stderr_paths, subject)
+
+
+class GlobalExplorerError(CdistEntityError):
+    """Something went wrong while executing global explorer"""
+    def __init__(self, name, path, stderr_path, subject=''):
+        params = [
+            ('name', name, ),
+            ('path', path, ),
+        ]
+        stderr_paths = [
+            ('remote', stderr_path, ),
+        ]
+        super().__init__("global explorer '{}'".format(name),
+                         params, [], stderr_paths, subject)
 
 
 def file_to_list(filename):
