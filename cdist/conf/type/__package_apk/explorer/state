@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the status of a package - parsed dpkg output
+# Retrieve the status of a package - parsed apk output
 #
 
 if [ -f "$__object/parameter/name" ]; then
@@ -26,8 +26,6 @@ if [ -f "$__object/parameter/name" ]; then
 else
    name="$__object_id"
 fi
-
-output=
 
 if [ "$(apk list -I "$name")" ]; then
     echo present
