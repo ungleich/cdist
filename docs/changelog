@@ -15,6 +15,7 @@ next:
 	* Core: Fix circular dependency for CDIST_ORDER_DEPENDENCY (Darko Poljak)
 	* Type __acl: Improve the type (Ander Punnar)
 	* Explorer interfaces: Simplify code, be more compatible (Ander Punnar)
+	* Explorer disks: Remove assumable default/fallback, for now explicitly support only Linux and BSDs (Ander Punnar, Darko Poljak)
 
 4.10.11: 2019-04-13
 	* Core: Fix broken quiet mode (Darko Poljak)
