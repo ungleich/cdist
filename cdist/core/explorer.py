@@ -109,10 +109,17 @@ class Explorer(object):
             self._run_global_explorers_parallel(out_path)
 
     def _run_global_explorer(self, explorer, out_path):
-        output = self.run_global_explorer(explorer)
-        path = os.path.join(out_path, explorer)
-        with open(path, 'w') as fd:
-            fd.write(output)
+        try:
+            path = os.path.join(out_path, explorer)
+            output = self.run_global_explorer(explorer)
+            with open(path, 'w') as fd:
+                fd.write(output)
+        except cdist.Error as e:
+            local_path = os.path.join(self.local.global_explorer_path,
+                                      explorer)
+            stderr_path = os.path.join(self.local.stderr_base_path, "remote")
+            raise cdist.GlobalExplorerError(explorer, local_path, stderr_path,
+                                            e)
 
     def _run_global_explorers_seq(self, out_path):
         self.log.debug("Running global explorers sequentially")
@@ -186,11 +193,20 @@ class Explorer(object):
         self.log.trace("Transferring object parameters for object: %s",
                        cdist_object.name)
         self.transfer_object_parameters(cdist_object)
-        for explorer in self.list_type_explorer_names(cdist_object.cdist_type):
-            output = self.run_type_explorer(explorer, cdist_object)
+        cdist_type = cdist_object.cdist_type
+        for explorer in self.list_type_explorer_names(cdist_type):
             self.log.trace("Running type explorer '%s' for object '%s'",
                            explorer, cdist_object.name)
-            cdist_object.explorers[explorer] = output
+            try:
+                output = self.run_type_explorer(explorer, cdist_object)
+                cdist_object.explorers[explorer] = output
+            except cdist.Error as e:
+                path = os.path.join(self.local.type_path,
+                                    cdist_type.explorer_path,
+                                    explorer)
+                stderr_path = os.path.join(self.local.stderr_base_path, "remote")
+                raise cdist.CdistObjectExplorerError(
+                    cdist_object, explorer, path, stderr_path, e)
 
     def run_type_explorer(self, explorer, cdist_object):
         """Run the given type explorer for the given object and return
