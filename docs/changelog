@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+4.11.1: 2019-04-22
 	* Core: Improve explorer error reporting (Darko Poljak)
 	* Type __directory: explorer stat: add support for Solaris (Ander Punnar)
 	* Type __file: explorer stat: add support for Solaris (Ander Punnar)
