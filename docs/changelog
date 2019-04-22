@@ -3,6 +3,9 @@ Changelog
 
 next:
 	* Core: Improve explorer error reporting (Darko Poljak)
+	* Type __directory: explorer stat: add support for Solaris (Ander Punnar)
+	* Type __file: explorer stat: add support for Solaris (Ander Punnar)
+	* Type __ssh_authorized_keys: Remove legacy code (Ander Punnar)
 
 4.11.0: 2019-04-20
 	* Type __package: Add __package_apk support (Nico Schottelius)
