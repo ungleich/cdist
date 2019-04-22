@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 uname_s="$(uname -s)"
 
@@ -16,12 +16,12 @@ case "${uname_s}" in
             # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
             lsblk -e 1,2,11 -dno name | xargs
         else
-            printf "%s operating system without lsblk is not supported, if you can please submit a patch\n" "${uname_s}" >&2
-            exit 1
+            printf "Don't know how to list disks for %s operating system without lsblk, if you can please submit a patch\n" "${uname_s}" >&2
         fi
     ;;
     *)
-        printf "%s operating system is not supported, if you can please submit a patch\n" "${uname_s}" >&2
-        exit 1
+        printf "Don't know how to list disks for %s operating system, if you can please submit a patch\n" "${uname_s}" >&2
     ;;
 esac
+
+exit 0
