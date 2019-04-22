@@ -6,6 +6,9 @@ next:
 	* Type __directory: explorer stat: add support for Solaris (Ander Punnar)
 	* Type __file: explorer stat: add support for Solaris (Ander Punnar)
 	* Type __ssh_authorized_keys: Remove legacy code (Ander Punnar)
+	* Explorer disks: Bugfix: do not break config in case of unsupported OS
+	  which was introduced in 4.11.0, print message to stderr and empty disk list
+	  to stdout instead (Darko Poljak)
 
 4.11.0: 2019-04-20
 	* Type __package: Add __package_apk support (Nico Schottelius)
