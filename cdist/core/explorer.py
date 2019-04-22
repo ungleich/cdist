@@ -204,7 +204,8 @@ class Explorer(object):
                 path = os.path.join(self.local.type_path,
                                     cdist_type.explorer_path,
                                     explorer)
-                stderr_path = os.path.join(self.local.stderr_base_path, "remote")
+                stderr_path = os.path.join(self.local.stderr_base_path,
+                                           "remote")
                 raise cdist.CdistObjectExplorerError(
                     cdist_object, explorer, path, stderr_path, e)
 
