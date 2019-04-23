@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Type __zypper_service: Fix spelling error in manpage (Dmitry Bogatov)
+
 4.11.1: 2019-04-22
 	* Core: Improve explorer error reporting (Darko Poljak)
 	* Type __directory: explorer stat: add support for Solaris (Ander Punnar)
