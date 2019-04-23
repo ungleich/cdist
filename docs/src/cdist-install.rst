@@ -40,6 +40,9 @@ To install cdist, execute the following commands:
     cd cdist
     export PATH=$PATH:$(pwd -P)/bin
 
+From version 4.2.0 cdist tags and github releases are signed.
+You can get GPG public key used for signing `here <_static/pgp-key-EFD2AE4EC36B6901.asc>`_.
+
 To install cdist with distutils from cloned repository, first you have to
 create version.py:
 
