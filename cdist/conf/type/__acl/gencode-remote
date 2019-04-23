@@ -64,7 +64,7 @@ setfacl_exec='setfacl'
 
 if [ -f "$__object/parameter/recursive" ]
 then
-    if echo "$os" | grep -Eq 'macosx|freebsd'
+    if echo "$os" | grep -Fq 'freebsd'
     then
         echo "$os setfacl do not support recursive operations" >&2
     else
@@ -84,7 +84,7 @@ then
         then continue
         fi
 
-        if echo "$os" | grep -Eq 'macosx|freebsd'
+        if echo "$os" | grep -Fq 'freebsd'
         then
             remove="$acl"
         else
@@ -100,7 +100,7 @@ for acl in $acl_should
 do
     if ! echo "$acl_is" | grep -Eq "^$acl"
     then
-        if echo "$os" | grep -Eq 'macosx|freebsd' \
+        if echo "$os" | grep -Fq 'freebsd' \
             && echo "$acl" | grep -Eq '^default:'
         then
             echo "setting default ACL in $os is currently not supported. sorry :(" >&2
