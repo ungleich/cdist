@@ -46,10 +46,10 @@ EXAMPLES
     # Ensure that internal SLES11 SP3 RIS is in installed and all other services and repos are discarded
     __zypper_service INTERNAL_SLES11_SP3 --service_desc "Internal SLES11 SP3 RIS" --uri "http://path/to/your/ris/dir" --remove-all-other-services --remove-all-repos
 
-    # Ensure that internal SLES11 SP3 RIS is in installed, no changes to ohter services or repos
+    # Ensure that internal SLES11 SP3 RIS is in installed, no changes to other services or repos
     __zypper_service INTERNAL_SLES11_SP3 --service_desc "Internal SLES11 SP3 RIS" --uri "http://path/to/your/ris/dir"
 
-    # Drop service by uri, no changes to ohter services or repos
+    # Drop service by uri, no changes to other services or repos
     __zypper_service INTERNAL_SLES11_SP3 --state absent --uri "http://path/to/your/ris/dir"
 
 
