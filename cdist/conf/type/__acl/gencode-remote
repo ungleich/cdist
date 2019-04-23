@@ -74,34 +74,26 @@ fi
 
 if [ -f "$__object/parameter/remove" ]
 then
-    if echo "$os" | grep -Fq 'solaris'
-    then
-        # Solaris setfacl behaves differently.
-        # We will not support Solaris for now, because no way to test it.
-        # But adding support should be easy (use -s instead of -m on modify).
-        echo "$os setfacl do not support -x flag for ACL remove" >&2
-    else
-        echo "$acl_is" | while read -r acl
-        do
-            # Skip wanted ACL entries which already exist
-            # and skip mask and other entries, because we
-            # can't actually remove them, but only change.
-            if echo "$acl_should" | grep -Eq "^$acl" \
-                || echo "$acl" | grep -Eq '^(default:)?(mask|other)'
-            then continue
-            fi
+    echo "$acl_is" | while read -r acl
+    do
+        # Skip wanted ACL entries which already exist
+        # and skip mask and other entries, because we
+        # can't actually remove them, but only change.
+        if echo "$acl_should" | grep -Eq "^$acl" \
+            || echo "$acl" | grep -Eq '^(default:)?(mask|other)'
+        then continue
+        fi
 
-            if echo "$os" | grep -Eq 'macosx|freebsd'
-            then
-                remove="$acl"
-            else
-                remove="$( echo "$acl" | sed 's/:...$//' )"
-            fi
+        if echo "$os" | grep -Eq 'macosx|freebsd'
+        then
+            remove="$acl"
+        else
+            remove="$( echo "$acl" | sed 's/:...$//' )"
+        fi
 
-            echo "$setfacl_exec -x \"$remove\" \"$acl_path\""
-            echo "removed '$remove'" >> "$__messages_out"
-        done
-    fi
+        echo "$setfacl_exec -x \"$remove\" \"$acl_path\""
+        echo "removed '$remove'" >> "$__messages_out"
+    done
 fi
 
 for acl in $acl_should
