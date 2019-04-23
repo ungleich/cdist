@@ -40,7 +40,8 @@ do
 
         if ! getent "$getent_db" "$check" > /dev/null
         then
-            echo "missing $parameter '$check'"
+            echo "missing $parameter '$check'" >&2
+            exit 1
         fi
     done \
         < "$__object/parameter/$parameter"

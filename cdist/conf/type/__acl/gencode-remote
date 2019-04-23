@@ -22,14 +22,6 @@ file_is="$( cat "$__object/explorer/file_is" )"
 
 [ "$file_is" = 'missing' ] && exit 0
 
-missing_users_groups="$( cat "$__object/explorer/missing_users_groups" )"
-
-if [ -n "$missing_users_groups" ]
-then
-    echo "$missing_users_groups" >&2
-    exit 1
-fi
-
 os="$( cat "$__global/explorer/os" )"
 
 acl_is="$( cat "$__object/explorer/acl_is" )"
