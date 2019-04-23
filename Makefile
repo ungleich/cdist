@@ -24,13 +24,6 @@ DOCS_SRC_DIR=docs/src
 SPEECHDIR=docs/speeches
 TYPEDIR=cdist/conf/type
 
-WEBSRCDIR=docs/web
-
-WEBDIR=$$HOME/vcs/www.nico.schottelius.org
-WEBBLOG=$(WEBDIR)/blog
-WEBBASE=$(WEBDIR)/software/cdist
-WEBPAGE=$(WEBBASE).mdwn
-
 CHANGELOG_VERSION=$(shell $(helper) changelog-version)
 CHANGELOG_FILE=docs/changelog
 
@@ -47,7 +40,6 @@ SHELLCHECK_SKIP=grep -v ': __.*is referenced but not assigned.*\[SC2154\]'
 ################################################################################
 # Manpages
 #
-MAN1DSTDIR=$(DOCS_SRC_DIR)/man1
 MAN7DSTDIR=$(DOCS_SRC_DIR)/man7
 
 # Manpages #1: Types
@@ -81,24 +73,6 @@ docs: man html
 docs-clean:
 	$(SPHINXC)
 
-# Manpages #5: release part
-MANWEBDIR=$(WEBBASE)/man/$(CHANGELOG_VERSION)
-HTMLBUILDDIR=docs/dist/html
-
-docs-dist: html
-	rm -rf "${MANWEBDIR}"
-	mkdir -p "${MANWEBDIR}"
-	# mkdir -p "${MANWEBDIR}/man1" "${MANWEBDIR}/man7"
-	# cp ${MAN1DSTDIR}/*.html ${MAN1DSTDIR}/*.css ${MANWEBDIR}/man1
-	# cp ${MAN7DSTDIR}/*.html ${MAN7DSTDIR}/*.css ${MANWEBDIR}/man7
-	cp -R ${HTMLBUILDDIR}/* ${MANWEBDIR}
-	cd ${MANWEBDIR} && git add . && git commit -m "cdist manpages update: $(CHANGELOG_VERSION)" || true
-
-man-latest-link: web-pub
-	# Fix ikiwiki, which does not like symlinks for pseudo security
-	ssh staticweb.ungleich.ch \
-		"cd /home/services/www/nico/nico.schottelius.org/www/software/cdist/man/ && rm -f latest && ln -sf "$(CHANGELOG_VERSION)" latest"
-
 # Manpages: .cdist Types
 DOT_CDIST_PATH=${HOME}/.cdist
 DOTMAN7DSTDIR=$(MAN7DSTDIR)
@@ -111,7 +85,6 @@ DOTMANTYPES=$(subst /man.rst,.rst,$(DOTMANTYPEPREFIX))
 $(DOTMAN7DSTDIR)/cdist-type%.rst: $(DOTTYPEDIR)/%/man.rst
 	ln -sf "$^" $@
 
-# Manpages #3: generic part
 dotman: $(DOTMANTYPES)
 	$(SPHINXM)
 
@@ -120,7 +93,6 @@ dotman: $(DOTMANTYPES)
 #
 SPEECHESOURCES=$(SPEECHDIR)/*.tex
 SPEECHES=$(SPEECHESOURCES:.tex=.pdf)
-SPEECHESWEBDIR=$(WEBBASE)/speeches
 
 # Create speeches and ensure Toc is up-to-date
 $(SPEECHDIR)/%.pdf: $(SPEECHDIR)/%.tex
@@ -129,36 +101,6 @@ $(SPEECHDIR)/%.pdf: $(SPEECHDIR)/%.tex
 	pdflatex -output-directory $(SPEECHDIR) $^
 
 speeches: $(SPEECHES)
-
-speeches-dist: speeches
-	rm -rf "${SPEECHESWEBDIR}"
-	mkdir -p "${SPEECHESWEBDIR}"
-	cp ${SPEECHES} "${SPEECHESWEBDIR}"
-	cd ${SPEECHESWEBDIR} && git add . && git commit -m "cdist speeches updated" || true
-
-################################################################################
-# Website
-#
-
-BLOGFILE=$(WEBBLOG)/cdist-$(CHANGELOG_VERSION)-released.mdwn
-
-$(BLOGFILE): $(CHANGELOG_FILE)
-	$(helper) blog $(CHANGELOG_VERSION) $(BLOGFILE)
-
-web-blog: $(BLOGFILE)
-
-web-doc:
-	# Go to top level, because of cdist.mdwn
-	rsync -av "$(WEBSRCDIR)/" "${WEBBASE}/.."
-	cd "${WEBBASE}/.." && git add cdist* && git commit -m "cdist doc update" cdist* || true
-
-web-dist: web-blog web-doc
-
-web-pub: web-dist docs-dist speeches-dist
-	cd "${WEBDIR}" && make pub
-
-web-release-all: man-latest-link
-web-release-all-no-latest: web-pub
 
 ################################################################################
 # Release: Mailinglist
@@ -238,6 +180,9 @@ clean:
 	# Signed release
 	rm -f cdist-*.tar.gz
 	rm -f cdist-*.tar.gz.asc
+
+	# Temp files
+	rm -f *.tmp
 
 distclean: clean
 	rm -f cdist/version.py

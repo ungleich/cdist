@@ -76,33 +76,6 @@ case "$option" in
         "$0" test
     ;;
 
-    blog)
-        version=$1; shift
-        blogfile=$1; shift
-        dir=${blogfile%/*}
-        file=${blogfile##*/}
-
-
-        cat << eof > "$blogfile"
-[[!meta title="Cdist $version released"]]
-
-Here's a short overview about the changes found in version ${version}:
-
-eof
-
-        $0 changelog-changes "$version" >> "$blogfile"
-
-        cat << eof >> "$blogfile"
-For more information visit the [[cdist homepage|software/cdist]].
-
-[[!tag cdist config unix]]
-eof
-        cd "$dir"
-        git add "$file"
-        # Allow git commit to fail if there are no changes
-        git commit -m "cdist blog update: $version" "$blogfile" || true
-    ;;
-
     ml-release)
         if [ $# -ne 1 ]; then
             echo "$0 ml-release version" >&2
@@ -324,13 +297,6 @@ eof
         # Publish git changes
         make pub
 
-        # publish man, speeches, website
-        if [ "$masterbranch" = yes ]; then
-            make web-release-all
-        else
-            make web-release-all-no-latest
-        fi
-
         # Ensure that pypi release has the right version
         "$0" version
 
@@ -351,6 +317,7 @@ eof
         cat << eof
 Manual steps post release:
 
+    - cdist-web
     - linkedin
     - hackernews
     - reddit

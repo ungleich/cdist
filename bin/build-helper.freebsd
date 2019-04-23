@@ -31,30 +31,13 @@ basedir=${0%/*}/../
 # .freebsd - run as freebsd
 basename=${0##*/}
 run_as=${basename#*.}
-case "$run_as" in
-    freebsd)
-        to_a=cdist-configuration-management
-        to_d=googlegroups.com
-        from_a=darko.poljak
-        from_d=gmail.com
-        ml_name="Darko Poljak"
-        ml_sig_name="Darko"
 
-        # vars for make
-        WEBDIR=../vcs/www.nico.schottelius.org
-    ;;
-    *)
-        to_a=cdist
-        to_d=l.schottelius.org
-        from_a=nico-cdist
-        from_d=schottelius.org
-        ml_name="Nico -telmich- Schottelius"
-        ml_sig_name="Nico"
-
-        # vars for make
-        WEBDIR=$$HOME/vcs/www.nico.schottelius.org
-    ;;
-esac
+to_a=cdist-configuration-management
+to_d=googlegroups.com
+from_a=darko.poljak
+from_d=gmail.com
+ml_name="Darko Poljak"
+ml_sig_name="Darko"
 
 # Change to checkout directory
 cd "$basedir"
@@ -66,7 +49,6 @@ option=$1; shift
 case "$option" in
     print-make-vars)
         printf "helper: ${helper}\n"
-        printf "WEBDIR: ${WEBDIR}\n"
     ;;
     print-runas)
         printf "run_as: $run_as\n"
@@ -117,33 +99,6 @@ case "$option" in
         "$0" test
     ;;
 
-    blog)
-        version=$1; shift
-        blogfile=$1; shift
-        dir=${blogfile%/*}
-        file=${blogfile##*/}
-
-
-        cat << eof > "$blogfile"
-[[!meta title="Cdist $version released"]]
-
-Here's a short overview about the changes found in version ${version}:
-
-eof
-
-        $0 changelog-changes "$version" >> "$blogfile"
-
-        cat << eof >> "$blogfile"
-For more information visit the [[cdist homepage|software/cdist]].
-
-[[!tag cdist config unix]]
-eof
-        cd "$dir"
-        git add "$file"
-        # Allow git commit to fail if there are no changes
-        git commit -m "cdist blog update: $version" "$blogfile" || true
-    ;;
-
     ml-release)
         if [ $# -ne 1 ]; then
             echo "$0 ml-release version" >&2
@@ -159,7 +114,7 @@ eof
         cat << eof
 From: ${ml_name} <$from>
 To: cdist mailing list <$to>
-Subject: cdist $version released
+Subject: cdist $version has been released
 
 Hello .*,
 
@@ -177,7 +132,7 @@ ${ml_sig_name}
 -- 
 Automatisation at its best level. With cdist.
 eof
-        ) | /usr/sbin/sendmail -f "$from" "$to"
+        ) > mailinglist.tmp
     ;;
 
     release-git-tag)
@@ -337,11 +292,11 @@ eof
 
         # Generate documentation (man and html)
         # First, clean old generated docs
-        make helper=${helper} WEBDIR=${WEBDIR} docs-clean
-        make helper=${helper} WEBDIR=${WEBDIR} docs
+        make helper=${helper} docs-clean
+        make helper=${helper} docs
 
         # Generate speeches (indirect check if they build)
-        make helper=${helper} WEBDIR=${WEBDIR} speeches
+        make helper=${helper} speeches
 
         ############################################################# 
         # Everything green, let's do the release
@@ -364,7 +319,7 @@ eof
                 git push -u origin "${target_branch}"
             ;;
             *)
-                make helper=${helper} WEBDIR=${WEBDIR} pub
+                make helper=${helper} pub
             ;;
         esac
 
@@ -372,23 +327,7 @@ eof
         "$0" version
 
         # Create and publish package for pypi
-        make helper=${helper} WEBDIR=${WEBDIR} pypi-release
-
-        # publish man, speeches, website
-        if [ "$masterbranch" = yes ]; then
-            make helper=${helper} WEBDIR=${WEBDIR} web-release-all
-        else
-            make helper=${helper} WEBDIR=${WEBDIR} web-release-all-no-latest
-        fi
-
-        case "$run_as" in
-            freebsd)
-            ;;
-            *)
-                # Archlinux release is based on pypi
-                make archlinux-release
-            ;;
-        esac
+        make helper=${helper} pypi-release
 
         # sign git tag
         printf "Enter upstream repository authentication token: "
@@ -396,7 +335,15 @@ eof
         "$0" sign-git-release "${target_version}" "${token}"
 
         # Announce change on ML
-        make helper=${helper} WEBDIR=${WEBDIR} ml-release
+        make helper=${helper} ml-release
+
+        cat << eof
+Manual steps post release:
+
+    - cdist-web
+    - twitter
+
+eof
     ;;
 
     test)
@@ -441,7 +388,7 @@ eof
     ;;
 
     shellcheck)
-        make helper=${helper} WEBDIR=${WEBDIR} shellcheck
+        make helper=${helper} shellcheck
         printf "\\nPlease review shellcheck report.\\n"
         while true
         do
