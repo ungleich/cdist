@@ -3,6 +3,10 @@ Changelog
 
 next:
 	* Type __zypper_service: Fix spelling error in manpage (Dmitry Bogatov)
+	* Explorer init: Add support for OpenBSD (sideeffect42)
+	* Type __postgres_database: Run psql with -w (no-password) (sideeffect42)
+	* Type __postgres_role: Run psql with -w (no-password) (sideeffect42)
+	* Type __block: Quote prefix/suffix - fix when prefix/suffix contains quotes (sideeffect42)
 
 4.11.1: 2019-04-22
 	* Core: Improve explorer error reporting (Darko Poljak)
