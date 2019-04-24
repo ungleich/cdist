@@ -18,6 +18,11 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+# quote function from http://www.etalabs.net/sh_tricks.html
+quote() {
+   printf '%s\n' "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
+}
+
 file="$(cat "$__object/parameter/file" 2>/dev/null || echo "/$__object_id")"
 state_should=$(cat "$__object/parameter/state")
 prefix=$(cat "$__object/parameter/prefix" 2>/dev/null || echo "#cdist:__block/$__object_id")
@@ -46,7 +51,7 @@ tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
 if [ -f "$file" ]; then
    cp -p "$file" "\$tmpfile"
 fi
-awk -v prefix="^$prefix\$" -v suffix="^$suffix\$" '
+awk -v prefix=^$(quote "$prefix")\$ -v suffix=^$(quote "$suffix")\$ '
 {
    if (match(\$0,prefix)) {
       triggered=1
