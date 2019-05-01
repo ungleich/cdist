@@ -319,7 +319,9 @@ class Emulator(object):
                                        lastcreatedtype)
                     else:
                         if 'require' in self.env:
-                            self.env['require'] += " " + lastcreatedtype
+                            appendix = " " + lastcreatedtype
+                            if appendix not in self.env['require']:
+                                self.env['require'] += appendix
                         else:
                             self.env['require'] = lastcreatedtype
                         self.log.debug(("Injecting require for "
