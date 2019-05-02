@@ -279,9 +279,6 @@ eof
         make docs-clean
         make docs
 
-        # Generate speeches (indirect check if they build)
-        make speeches
-
         ############################################################# 
         # Everything green, let's do the release
 

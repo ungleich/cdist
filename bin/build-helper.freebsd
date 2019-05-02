@@ -295,9 +295,6 @@ eof
         make helper=${helper} docs-clean
         make helper=${helper} docs
 
-        # Generate speeches (indirect check if they build)
-        make helper=${helper} speeches
-
         ############################################################# 
         # Everything green, let's do the release
 
