@@ -214,6 +214,7 @@ eof
 
         # upload archive
         response_archive=$(curl -f -X POST \
+             --http1.1 \
              -H "PRIVATE-TOKEN: ${token}" \
              -F "file=@${archivename}" \
              "https://code.ungleich.ch/api/v4/projects/${project}/uploads" \
@@ -221,6 +222,7 @@ eof
 
         # upload archive signature
         response_archive_sig=$(curl -f -X POST \
+             --http1.1 \
              -H "PRIVATE-TOKEN: ${token}" \
              -F "file=@${archivename}.asc" \
             "https://code.ungleich.ch/api/v4/projects/${project}/uploads" \
