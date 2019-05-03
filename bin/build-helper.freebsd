@@ -347,11 +347,6 @@ eof
         # Tag the current commit
         "$0" release-git-tag
 
-        # sign git tag
-        printf "Enter upstream repository authentication token: "
-        read token
-        "$0" sign-git-release "${target_version}" "${token}"
-
         # Also merge back the version branch
         if [ "$masterbranch" = yes ]; then
             git checkout master
@@ -392,6 +387,11 @@ eof
                 make archlinux-release
             ;;
         esac
+
+        # sign git tag
+        printf "Enter upstream repository authentication token: "
+        read token
+        "$0" sign-git-release "${target_version}" "${token}"
 
         # Announce change on ML
         make helper=${helper} WEBDIR=${WEBDIR} ml-release
