@@ -227,9 +227,14 @@ eof
              | sed "${sed_cmd}") || exit 1
 
         # make release
+        changelog=$("$0" changelog-changes "$1" | sed 's/^[[:space:]]*//')
+        release_notes=$(
+            printf "Release %s\n\n%s\n\n%s\n\n**Changelog**\n\n%s\n" \
+                "${tag}" "${response_archive}" "${response_archive_sig}" "${changelog}"
+        )
         curl -f -X POST \
              -H "PRIVATE-TOKEN: ${token}" \
-             -F "description=Release ${tag}<br/>${response_archive}<br/>${response_archive_sig}" \
+             -F "description=${release_notes}" \
             "https://code.ungleich.ch/api/v4/projects/${project}/repository/tags/${tag}/release" \
             || exit 1
 
