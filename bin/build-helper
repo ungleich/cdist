@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2016-2019 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -18,10 +19,36 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# This file contains the heavy lifting found usually in the Makefile
+# This file contains the heavy lifting found usually in the Makefile.
 #
 
+# vars for make
+helper=$0
+
 basedir=${0%/*}/../
+# run_as is used to check how the script is called (by $0 value)
+# currently supported sufixes for $0 are:
+# .darko - run as darko
+basename=${0##*/}
+run_as=${basename#*.}
+
+to_a=cdist-configuration-management
+to_d=googlegroups.com
+case "$run_as" in
+    darko)
+        from_a=darko.poljak
+        from_d=gmail.com
+        ml_name="Darko Poljak"
+        ml_sig_name="Darko"
+    ;;
+    *)
+        from_a=nico.schottelius
+        from_d=ungleich.ch
+        ml_name="Nico Schottelius"
+        ml_sig_name="Nico"
+    ;;
+esac
+
 # Change to checkout directory
 cd "$basedir"
 
@@ -30,6 +57,12 @@ version=$(git describe)
 option=$1; shift
 
 case "$option" in
+    print-make-vars)
+        printf "helper: ${helper}\n"
+    ;;
+    print-runas)
+        printf "run_as: $run_as\n"
+    ;;
     changelog-changes)
         if [ "$#" -eq 1 ]; then
             start=$1
@@ -84,19 +117,14 @@ case "$option" in
 
         version=$1; shift
 
-        to_a=cdist
-        to_d=l.schottelius.org
         to=${to_a}@${to_d}
-
-        from_a=nico-cdist
-        from_d=schottelius.org
         from=${from_a}@${from_d}
 
         ( 
         cat << eof
-From: Nico -telmich- Schottelius <$from>
+From: ${ml_name} <$from>
 To: cdist mailing list <$to>
-Subject: cdist $version released
+Subject: cdist $version has been released
 
 Hello .*,
 
@@ -108,15 +136,18 @@ eof
         cat << eof
 
 Cheers,
-
-Nico
+${ml_sig_name}
 
 -- 
 Automatisation at its best level. With cdist.
 eof
-        ) | /usr/sbin/sendmail -f "$from" "$to"
-    ;;
+        ) > mailinglist.tmp
 
+        if [ "$run_as" = "build-helper" ]
+        then
+            /usr/sbin/sendmail -f "$from" "$to" < mailinglist.tmp && rm -f mailinglist.tmp
+        fi
+    ;;
 
     release-git-tag)
         target_version=$($0 changelog-version)
@@ -213,7 +244,6 @@ eof
             "https://code.ungleich.ch/api/v4/projects/${project}/repository/tags/${tag}/release" \
             || exit 1
 
-
         # remove generated files (archive and asc)
         if [ $# -eq 2 ]
         then
@@ -276,8 +306,8 @@ eof
 
         # Generate documentation (man and html)
         # First, clean old generated docs
-        make docs-clean
-        make docs
+        make helper=${helper} docs-clean
+        make helper=${helper} docs
 
         ############################################################# 
         # Everything green, let's do the release
@@ -292,16 +322,27 @@ eof
         fi
 
         # Publish git changes
-        make pub
+        if [ "$run_as" = "build-helper" ]
+        then
+            make helper=${helper} pub
+        else
+            # if we are not Nico :) then just push, no mirror
+            git push
+            # push also new branch and set up tracking
+            git push -u origin "${target_branch}"
+        fi
 
         # Ensure that pypi release has the right version
         "$0" version
 
         # Create and publish package for pypi
-        make pypi-release
+        make helper=${helper} pypi-release
 
-        # Archlinux release is based on pypi
-        make archlinux-release
+        if [ "$run_as" = "build-helper" ]
+        then
+            # Archlinux release is based on pypi
+            make helper=${helper} archlinux-release
+        fi
 
         # sign git tag
         printf "Enter upstream repository authentication token: "
@@ -309,19 +350,13 @@ eof
         "$0" sign-git-release "${target_version}" "${token}"
 
         # Announce change on ML
-        make ml-release
+        make helper=${helper} ml-release
 
         cat << eof
 Manual steps post release:
-
     - cdist-web
-    - linkedin
-    - hackernews
-    - reddit
     - twitter
-
 eof
-
     ;;
 
     test)
@@ -366,7 +401,7 @@ eof
     ;;
 
     shellcheck)
-        make shellcheck
+        make helper=${helper} shellcheck
         printf "\\nPlease review shellcheck report.\\n"
         while true
         do
