@@ -9,6 +9,7 @@ next:
 	* Type __block: Quote prefix/suffix - fix when prefix/suffix contains quotes (sideeffect42)
 	* Build: Update due to migration to code.ungleich.ch (Darko Poljak)
 	* Documentation: Update due to migration to code.ungleich.ch (Darko Poljak)
+	* Core: Detect and report dependency cycle as soon as possible (Darko Poljak)
 
 4.11.1: 2019-04-22
 	* Core: Improve explorer error reporting (Darko Poljak)
