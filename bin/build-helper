@@ -400,7 +400,7 @@ eof
     ;;
 
     shellcheck)
-        make helper=${helper} WEBDIR=${WEBDIR} shellcheck
+        make shellcheck
         printf "\\nPlease review shellcheck report.\\n"
         while true
         do
