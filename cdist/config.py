@@ -48,7 +48,7 @@ def graph_check_cycle(graph):
     for node in graph:
         # Cycle path.
         path = [node]
-        has_cycle = _graph_dfs_cycle( graph, node, path)
+        has_cycle = _graph_dfs_cycle(graph, node, path)
         if has_cycle:
             return has_cycle, path
     return False, None
