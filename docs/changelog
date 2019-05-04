@@ -10,6 +10,9 @@ next:
 	* Build: Update due to migration to code.ungleich.ch (Darko Poljak)
 	* Documentation: Update due to migration to code.ungleich.ch (Darko Poljak)
 	* Core: Detect and report dependency cycle as soon as possible (Darko Poljak)
+	* Core, documentation: Release -j/--jobs option, i.e. make it non-beta (Darko Poljak)
+	* Documentation: Update due to new cdist website (Darko Poljak)
+	* Build: Update due to new cdist website (Darko Poljak)
 
 4.11.1: 2019-04-22
 	* Core: Improve explorer error reporting (Darko Poljak)
