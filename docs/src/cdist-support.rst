@@ -1,11 +1,9 @@
 Support
 -------
 
-IRC
-~~~
-
-You can join the development ***IRC channel***
-`#cstar on irc.freenode.net <irc://irc.freenode.org/#cstar>`_.
+Chat
+~~~~
+Chat with us: `ungleich chat <https://chat.ungleich.ch/ungleich/channels/cdist>`_.
 
 Mailing list
 ~~~~~~~~~~~~
@@ -25,4 +23,4 @@ Commercial support
 ~~~~~~~~~~~~~~~~~~
 
 You can request commercial support for cdist from
-`my company <http://www.ungleich.ch/>`_.
+`ungleich <http://www.ungleich.ch/>`_.

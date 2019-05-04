@@ -1,20 +1,23 @@
-Welcome to cdist documentation
-==============================
+cdist - usable configuration management
+=======================================
 
-Contents:
+cdist is a usable configuration management system.
+It adheres to the KISS principle and 
+is being used in small up to enterprise grade environments.
+
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :glob:
    :numbered:
+   :hidden:
 
-   cdist-intro
    cdist-why
+   cdist-features
    cdist-os
    cdist-install
-   cdist-update
+   cdist-upgrade
    cdist-support
-   cdist-features
    cdist-quickstart
    cdist-real-world
    man1/cdist
