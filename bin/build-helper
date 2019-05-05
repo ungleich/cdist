@@ -235,8 +235,8 @@ eof
         # make release
         changelog=$("$0" changelog-changes "$1" | sed 's/^[[:space:]]*//')
         release_notes=$(
-            printf "Release %s\n\n%s\n\n%s\n\n**Changelog**\n\n%s\n" \
-                "${tag}" "${response_archive}" "${response_archive_sig}" "${changelog}"
+            printf "%s\n\n%s\n\n**Changelog**\n\n%s\n" \
+                "${response_archive}" "${response_archive_sig}" "${changelog}"
         )
         curl -f -X POST \
              -H "PRIVATE-TOKEN: ${token}" \
