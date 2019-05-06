@@ -224,3 +224,140 @@ in the repository for such content: It allows you to
 easily distinguish what is used by cdist and what is not
 and also to store all important files in one
 repository.
+
+
+Perils of CDIST_ORDER_DEPENDENCY
+--------------------------------
+With CDIST_ORDER_DEPENDENCY all types are executed in the order in which they
+are created in the manifest. The current created object automatically depends
+on the previously created object.
+
+It essentially helps you to build up blocks of code that build upon each other
+(like first creating the directory xyz than the file below the directory).
+
+This can be helpful, but it can also be the source of *evil*.
+
+
+CDIST_ORDER_DEPENDENCY easily causes unobvious dependency cycles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let's see an example. Suppose you have special init manifest where among other
+things you are assuring that remote host has packages `sudo` and `curl`
+installed.
+
+**init1**
+
+.. code-block:: sh
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+
+   for p in sudo curl
+   do
+      __package "${p}"
+   done
+
+Then you have some other special init manifest where among other things you are
+assuring `sudo` package is installed.
+
+**init2**
+
+.. code-block:: sh
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+
+   __package sudo
+
+Then you have third init manifest where you combine those two init manifests,
+by including them:
+
+**init**
+
+.. code-block:: sh
+
+   sh -e "$__manifest/init1"
+   sh -e "$__manifest/init2"
+
+The resulting init manifest is then equal to:
+
+.. code-block:: sh
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+
+   for p in sudo curl
+   do
+      __package "${p}"
+   done
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+
+   __package sudo
+
+In the end you get the following dependencies:
+
+* `__package/curl` depends on `__package/sudo`
+* `__package/sudo` depends on `__package/curl`
+
+And here you have a circular dependency!
+
+In the real world manifest can be quite complex, dependencies can become
+complicated and circual dependencies are not so obvious. Resolving it can
+become cumbersome.
+
+**Practical solution?**
+
+Instead of managing complex init manifests you can write custom types.
+Each custom type can do one thing, it has well defined dependencies that will
+not leak into init manifest. In custom type you can also add special explorers
+and gencode.
+
+Then, in init manifest you combine your complex types. It is:  
+
+* cleaner
+* easier to follow
+* easier to maintain
+* easier to debug.
+
+
+CDIST_ORDER_DEPENDENCY kills parallelization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Suppose you have defined CDIST_ORDER_DEPENDENCY and then, among other things,
+you specify creation of three, by nature independent, files.
+
+**init**
+
+.. code-block:: sh
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+
+   ...
+   __file /tmp/file1
+   __file /tmp/file2
+   __file /tmp/file3
+   ...
+
+Due to defined CDIST_ORDER_DEPENDENCY cdist will execute them in specified order.
+It is better to use CDIST_ORDER_DEPENDENCY in well defined blocks:
+
+**init**
+
+.. code-block:: sh
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+   ...
+   unset CDIST_ORDER_DEPENDENCY
+
+   __file /tmp/file1
+   __file /tmp/file2
+   __file /tmp/file3
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+   ...
+   unset CDIST_ORDER_DEPENDENCY

@@ -163,6 +163,8 @@ automatically depends on the previously created object.
 It essentially helps you to build up blocks of code that build upon each other
 (like first creating the directory xyz than the file below the directory).
 
+Read also about `perils of CDIST_ORDER_DEPENDENCY <cdist-best-practice.html#perils-of-cdist-order-dependency>`_.
+
 
 Overrides
 ---------
