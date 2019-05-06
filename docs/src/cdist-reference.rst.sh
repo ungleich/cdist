@@ -323,6 +323,7 @@ CDIST_OVERRIDE
 
 CDIST_ORDER_DEPENDENCY
     Create dependencies based on the execution order (see  \`cdist manifest <cdist-manifest.html>\`_).
+    Read also about \`perils of CDIST_ORDER_DEPENDENCY <cdist-best-practice.html#perils-of-cdist-order-dependency>\`_.
 
 CDIST_REMOTE_EXEC
     Use this command for remote execution (should behave like ssh).
