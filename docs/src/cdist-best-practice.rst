@@ -237,6 +237,10 @@ It essentially helps you to build up blocks of code that build upon each other
 
 This can be helpful, but it can also be the source of *evil*.
 
+
+CDIST_ORDER_DEPENDENCY easily causes unobvious dependency cycles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Let's see an example. Suppose you have special init manifest where among other
 things you are assuring that remote host has packages `sudo` and `curl`
 installed.
@@ -316,3 +320,44 @@ Then, in init manifest you combine your complex types. It is:
 * easier to follow
 * easier to maintain
 * easier to debug.
+
+
+CDIST_ORDER_DEPENDENCY kills parallelization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Suppose you have defined CDIST_ORDER_DEPENDENCY and then, among other things,
+you specify creation of three, by nature independent, files.
+
+**init**
+
+.. code-block:: sh
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+
+   ...
+   __file /tmp/file1
+   __file /tmp/file2
+   __file /tmp/file3
+   ...
+
+Due to defined CDIST_ORDER_DEPENDENCY cdist will execute them in specified order.
+It is better to use CDIST_ORDER_DEPENDENCY in well defined blocks:
+
+**init**
+
+.. code-block:: sh
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+   ...
+   unset CDIST_ORDER_DEPENDENCY
+
+   __file /tmp/file1
+   __file /tmp/file2
+   __file /tmp/file3
+
+   CDIST_ORDER_DEPENDENCY=1
+   export CDIST_ORDER_DEPENDENCY
+   ...
+   unset CDIST_ORDER_DEPENDENCY
