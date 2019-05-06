@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Documentation: Add 'Perils of CDIST_ORDER_DEPENDENCY' sub-section (Darko Poljak)
+
 5.0.0: 2019-05-05
 	* Type __zypper_service: Fix spelling error in manpage (Dmitry Bogatov)
 	* Explorer init: Add support for OpenBSD (sideeffect42)
