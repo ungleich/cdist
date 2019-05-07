@@ -22,47 +22,101 @@
 # This file contains the heavy lifting found usually in the Makefile.
 #
 
-# vars for make
-helper=$0
+usage() {
+    printf "usage: %s TARGET [RUN-AS]
+    Available targets:
+        print-runas
+        changelog-changes
+        changelog-version
+        check-date
+        check-unittest
+        ml-release
+        archlinux-release
+        pypi-release
+        release-git-tag
+        sign-git-release
+        release
+        test
+        test-remote
+        pycodestyle
+        pep8
+        check-pycodestyle
+        shellcheck-global-explorers
+        shellcheck-type-explorers
+        shellcheck-manifests
+        shellcheck-local-gencodes
+        shellcheck-remote-gencodes
+        shellcheck-scripts
+        shellcheck-gencodes
+        shellcheck-types
+        shellcheck
+        shellcheck-type-files
+        shellcheck-with-files
+        shellcheck-build-helper
+        check-shellcheck
+        version-branch
+        version
+        target-version
+        clean
+        distclean
+    Run as:
+        nico
+        darko - default, if not specified\n" "$1"
+}
 
-basedir=${0%/*}/../
-# run_as is used to check how the script is called (by $0 value)
-# currently supported sufixes for $0 are:
-# .darko - run as darko
-basename=${0##*/}
-run_as=${basename#*.}
+basename="${0##*/}"
 
-to_a=cdist-configuration-management
-to_d=googlegroups.com
+if [ $# -lt 1 ]
+then
+    usage "${basename}"
+    exit 1
+fi
+
+option=$1; shift
+if [ $# -ge 1 ]
+then
+    run_as="$1"
+else
+    run_as="darko"
+fi
+
 case "$run_as" in
-    darko)
+    nico)
+        from_a=nico.schottelius
+        from_d=ungleich.ch
+        ml_name="Nico Schottelius"
+        ml_sig_name="Nico"
+    ;;
+    darko|'')
         from_a=darko.poljak
         from_d=gmail.com
         ml_name="Darko Poljak"
         ml_sig_name="Darko"
     ;;
     *)
-        from_a=nico.schottelius
-        from_d=ungleich.ch
-        ml_name="Nico Schottelius"
-        ml_sig_name="Nico"
+        printf "Unsupported RUN-AS value: '%s'.\n" "${run_as}" >&2
+        usage "${basename}"
+        exit 1
     ;;
 esac
 
+SHELLCHECKCMD="shellcheck -s sh -f gcc -x"
+# Skip SC2154 for variables starting with __ since such variables are cdist
+# environment variables.
+SHELLCHECK_SKIP=': __.*is referenced but not assigned.*\[SC2154\]'
+
+to_a="cdist-configuration-management"
+to_d="googlegroups.com"
+
 # Change to checkout directory
+basedir="${0%/*}/../"
 cd "$basedir"
 
-version=$(git describe)
-
-option=$1; shift
-
 case "$option" in
-    print-make-vars)
-        printf "helper: ${helper}\n"
-    ;;
     print-runas)
-        printf "run_as: $run_as\n"
+        printf "run_as: '%s'\n" "$run_as"
     ;;
+
     changelog-changes)
         if [ "$#" -eq 1 ]; then
             start=$1
@@ -99,8 +153,8 @@ case "$option" in
         date_changelog=$(grep '^[[:digit:]]' "$basedir/docs/changelog" | head -n1 | sed 's/.*: //')
 
         if [ "$date_today" != "$date_changelog" ]; then
-            echo "Date in changelog is not today"
-            echo "Changelog: $date_changelog"
+            printf "Date in changelog is not today\n"
+            printf "Changelog date: %s\n" "${date_changelog}"
             exit 1
         fi
     ;;
@@ -111,9 +165,14 @@ case "$option" in
 
     ml-release)
         if [ $# -ne 1 ]; then
-            echo "$0 ml-release version" >&2
+            printf "%s ml-release version\n" "$0" >&2
             exit 1
         fi
+
+        # Send mail only once - lock until new changelog things happened.
+        [ ! -f .lock-ml ] && touch .lock-ml
+        x=$(find 'docs' -name changelog -type f -newer .lock-ml)
+        [ -z "${x}" ] && exit 0
 
         version=$1; shift
 
@@ -143,20 +202,45 @@ Automatisation at its best level. With cdist.
 eof
         ) > mailinglist.tmp
 
-        if [ "$run_as" = "build-helper" ]
+        if [ "$run_as" = "nico" ]
         then
             /usr/sbin/sendmail -f "$from" "$to" < mailinglist.tmp && rm -f mailinglist.tmp
         fi
+
+        touch .lock-ml
+    ;;
+
+    archlinux-release)
+        if [ $# -ne 1 ]; then
+            printf "%s archlinux-release version\n" "$0" >&2
+            exit 1
+        fi
+        version=$1; shift
+
+        ARCHLINUXTAR="cdist-${version}-1.src.tar.gz"
+        ./PKGBUILD.in "${version}"
+        umask 022
+        mkaurball
+        burp -c system "${ARCHLINUXTAR}"
+    ;;
+
+    pypi-release)
+        # Ensure that pypi release has the right version
+        "$0" version
+
+        make docs-clean
+        make docs
+        python3 setup.py sdist upload
     ;;
 
     release-git-tag)
         target_version=$($0 changelog-version)
-        if git rev-parse --verify refs/tags/$target_version 2>/dev/null; then
-            echo "Tag for $target_version exists, aborting"
+        if git rev-parse --verify "refs/tags/${target_version}" 2>/dev/null; then
+            printf "Tag for %s exists, aborting\n" "${target_version}"
             exit 1
         fi
-        printf "Enter tag description for ${target_version}: "
-        read tagmessage
+        printf "Enter tag description for %s: " "${target_version}"
+        read -r tagmessage
 
         # setup for signed tags:
         # gpg --fulL-gen-key
@@ -174,7 +258,8 @@ eof
         # gpg --verify <asc-file> <file>
         # gpg --no-default-keyring --keyring <pubkey.gpg> --verify <asc-file> <file>
         # Ensure gpg-agent is running.
-        export GPG_TTY=$(tty)
+        GPG_TTY=$(tty)
+        export GPG_TTY
         gpg-agent
 
         git tag -s "$target_version" -m "$tagmessage"
@@ -184,14 +269,14 @@ eof
     sign-git-release)
         if [ $# -lt 2 ]
         then
-            printf "usage: $0 sign-git-release TAG TOKEN [ARCHIVE]\n"
+            printf "usage: %s sign-git-release TAG TOKEN [ARCHIVE]\n" "$0"
             printf "    if ARCHIVE is not specified then it is created\n"
             exit 1
         fi
         tag="$1"
         if ! git rev-parse -q --verify "${tag}" >/dev/null 2>&1
         then
-            printf "Tag \"${tag}\" not found.\n"
+            printf "Tag \"%s\" not found.\n" "${tag}"
             exit 1
         fi
         token="$2"
@@ -257,30 +342,30 @@ eof
         target_version=$($0 changelog-version)
         target_branch=$($0 version-branch)
 
-        echo "Beginning release process for $target_version"
+        printf "Beginning release process for %s\n" "${target_version}"
 
         # First check everything is sane
         "$0" check-date
         "$0" check-unittest
         "$0" check-pycodestyle
-        "$0" shellcheck
+        "$0" check-shellcheck
 
         # Generate version file to be included in packaging
         "$0" target-version
 
         # Ensure the git status is clean, else abort
         if ! git diff-index --name-only --exit-code HEAD ; then
-            echo "Unclean tree, see files above, aborting"
+            printf "Unclean tree, see files above, aborting.\n"
             exit 1
         fi
 
         # Ensure we are on the master branch
         masterbranch=yes
         if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
-            echo "Releases are happening from the master branch, aborting"
+            printf "Releases are happening from the master branch, aborting.\n"
 
-            echo "Enter the magic word to release anyway"
-            read magicword
+            printf "Enter the magic word to release anyway:"
+            read -r magicword
 
             if [ "$magicword" = "iknowwhatido" ]; then
                 masterbranch=no
@@ -291,7 +376,7 @@ eof
 
         if [ "$masterbranch" = yes ]; then
             # Ensure version branch exists
-            if ! git rev-parse --verify refs/heads/$target_branch 2>/dev/null; then
+            if ! git rev-parse --verify "refs/heads/${target_branch}" 2>/dev/null; then
                 git branch "$target_branch"
             fi
 
@@ -306,8 +391,8 @@ eof
 
         # Generate documentation (man and html)
         # First, clean old generated docs
-        make helper=${helper} docs-clean
-        make helper=${helper} docs
+        make docs-clean
+        make docs
 
         ############################################################# 
         # Everything green, let's do the release
@@ -322,35 +407,33 @@ eof
         fi
 
         # Publish git changes
-        if [ "$run_as" = "build-helper" ]
-        then
-            make helper=${helper} pub
-        else
+        # if you want to have mirror locally then uncomment this support
+        # if [ "$run_as" = "nico" ]
+        # then
+        #     git push --mirror
+        # else
             # if we are not Nico :) then just push, no mirror
             git push
             # push also new branch and set up tracking
             git push -u origin "${target_branch}"
-        fi
-
-        # Ensure that pypi release has the right version
-        "$0" version
+        # fi
 
         # Create and publish package for pypi
-        make helper=${helper} pypi-release
+        "$0" pypi-release
 
-        if [ "$run_as" = "build-helper" ]
+        if [ "$run_as" = "nico" ]
         then
             # Archlinux release is based on pypi
-            make helper=${helper} archlinux-release
+            "$0" archlinux-release
         fi
 
         # sign git tag
         printf "Enter upstream repository authentication token: "
-        read token
+        read -r token
         "$0" sign-git-release "${target_version}" "${token}"
 
         # Announce change on ML
-        make helper=${helper} ml-release
+        "$0" ml-release "${target_version}"
 
         cat << eof
 Manual steps post release:
@@ -360,7 +443,14 @@ eof
     ;;
 
     test)
-        export PYTHONPATH="$(pwd -P)"
+        if [ ! -f "cdist/version.py" ]
+        then
+            printf "cdist/version.py is missing, generate it first.\n"
+            exit 1
+        fi
+
+        PYTHONPATH="$(pwd -P)"
+        export PYTHONPATH
 
         if [ $# -lt 1 ]; then
             python3 -m cdist.test
@@ -370,7 +460,15 @@ eof
     ;;
 
     test-remote)
-        export PYTHONPATH="$(pwd -P)"
+        if [ ! -f "cdist/version.py" ]
+        then
+            printf "cdist/version.py is missing, generate it first.\n"
+            exit 1
+        fi
+
+        PYTHONPATH="$(pwd -P)"
+        export PYTHONPATH
+
         python3 -m cdist.test.exec.remote
     ;;
 
@@ -383,9 +481,9 @@ eof
         printf "\\nPlease review pycodestyle report.\\n"
         while true
         do
-            echo "Continue (yes/no)?"
+            printf "Continue (yes/no)?\n"
             any=
-            read any
+            read -r any
             case "$any" in
                 yes)
                     break
@@ -394,20 +492,74 @@ eof
                     exit 1
                 ;;
                 *)
-                    echo "Please answer with 'yes' or 'no' explicitly."
+                    printf "Please answer with 'yes' or 'no' explicitly.\n"
                 ;;
         esac
         done
     ;;
 
+    shellcheck-global-explorers)
+        find cdist/conf/explorer -type f -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+    ;;
+
+    shellcheck-type-explorers)
+        find cdist/conf/type -type f -path "*/explorer/*" -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+    ;;
+
+    shellcheck-manifests)
+        find cdist/conf/type -type f -name manifest -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+    ;;
+
+    shellcheck-local-gencodes)
+        find cdist/conf/type -type f -name gencode-local -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+    ;;
+
+    shellcheck-remote-gencodes)
+        find cdist/conf/type -type f -name gencode-remote -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+    ;;
+
+    shellcheck-scripts)
+        ${SHELLCHECKCMD} scripts/cdist-dump || exit 0
+    ;;
+
+    shellcheck-gencodes)
+        "$0" shellcheck-local-gencodes
+        "$0" shellcheck-remote-gencodes
+    ;;
+
+    shellcheck-types)
+        "$0" shellcheck-type-explorers
+        "$0" shellcheck-manifests
+        "$0" shellcheck-gencodes
+    ;;
+
     shellcheck)
-        make helper=${helper} shellcheck
+        "$0" shellcheck-global-explorers
+        "$0" shellcheck-types
+        "$0" shellcheck-scripts
+    ;;
+
+    shellcheck-type-files)
+        find cdist/conf/type -type f -path "*/files/*" -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+    ;;
+
+    shellcheck-with-files)
+        "$0" shellcheck
+        "$0" shellcheck-type-files
+    ;;
+
+    shellcheck-build-helper)
+        ${SHELLCHECKCMD} ./bin/build-helper
+    ;;
+
+    check-shellcheck)
+        "$0" shellcheck
         printf "\\nPlease review shellcheck report.\\n"
         while true
         do
-            echo "Continue (yes/no)?"
+            printf "Continue (yes/no)?\n"
             any=
-            read any
+            read -r any
             case "$any" in
                 yes)
                     break
@@ -416,7 +568,7 @@ eof
                     exit 1
                 ;;
                 *)
-                    echo "Please answer with 'yes' or 'no' explicitly."
+                    printf "Please answer with 'yes' or 'no' explicitly.\n"
                 ;;
         esac
         done
@@ -427,16 +579,39 @@ eof
     ;;
 
     version)
-        echo "VERSION = \"$(git describe)\"" > cdist/version.py
+        printf "VERSION = \"%s\"\n" "$(git describe)" > cdist/version.py
     ;;
 
     target-version)
         target_version=$($0 changelog-version)
-        echo "VERSION = \"${target_version}\"" > cdist/version.py
+        printf "VERSION = \"%s\"\n" "${target_version}" > cdist/version.py
     ;;
 
+    clean)
+        make clean
+
+        # Archlinux
+        rm -f cdist-*.pkg.tar.xz cdist-*.tar.gz
+        rm -rf pkg/ src/
+
+        rm -f MANIFEST PKGBUILD
+        rm -rf dist/
+
+        # Signed release
+        rm -f cdist-*.tar.gz
+        rm -f cdist-*.tar.gz.asc
+
+        # Temp files
+        rm -f ./*.tmp
+    ;;
+
+    distclean)
+        "$0" clean
+        rm -f cdist/version.py
+    ;;
     *)
-        echo "Unknown helper target $@ - aborting"
+        printf "Unknown target: '%s'.\n" "${option}" >&2
+        usage "${basename}"
         exit 1
     ;;
 

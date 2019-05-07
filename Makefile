@@ -18,25 +18,27 @@
 #
 #
 
-helper=./bin/build-helper
+.PHONY: help
+help:
+	@echo "Please use \`make <target>' where <target> is one of"
+	@echo "man             build only man user documentation"
+	@echo "html            build only html user documentation"
+	@echo "docs            build both man and html user documentation"
+	@echo "dotman          build man pages for types in your ~/.cdist directory"
+	@echo "speeches        build speeches pdf files"
+	@echo "install         install in the system site-packages directory"
+	@echo "install-user    install in the user site-packages directory"
+	@echo "docs-clean      clean documentation"
+	@echo "clean           clean"
 
 DOCS_SRC_DIR=docs/src
 SPEECHDIR=docs/speeches
 TYPEDIR=cdist/conf/type
 
-CHANGELOG_VERSION=$(shell $(helper) changelog-version)
-CHANGELOG_FILE=docs/changelog
-
-PYTHON_VERSION=cdist/version.py
-
 SPHINXM=make -C $(DOCS_SRC_DIR) man
 SPHINXH=make -C $(DOCS_SRC_DIR) html
 SPHINXC=make -C $(DOCS_SRC_DIR) clean
 
-SHELLCHECKCMD=shellcheck -s sh -f gcc -x
-# Skip SC2154 for variables starting with __ since such variables are cdist
-# environment variables.
-SHELLCHECK_SKIP=grep -v ': __.*is referenced but not assigned.*\[SC2154\]'
 ################################################################################
 # Manpages
 #
@@ -61,11 +63,16 @@ DOCSREFSH=$(DOCS_SRC_DIR)/cdist-reference.rst.sh
 $(DOCSREF): $(DOCSREFSH)
 	$(DOCSREFSH)
 
+version:
+	@[ -f "cdist/version.py" ] || { \
+		printf "Missing 'cdist/version.py', please generate it first.\n" && exit 1; \
+	}
+
 # Manpages #3: generic part
-man: $(MANTYPES) $(DOCSREF) $(PYTHON_VERSION)
+man: version $(MANTYPES) $(DOCSREF)
 	$(SPHINXM)
 
-html: $(MANTYPES) $(DOCSREF) $(PYTHON_VERSION)
+html: version $(MANTYPES) $(DOCSREF)
 	$(SPHINXH)
 
 docs: man html
@@ -85,7 +92,7 @@ DOTMANTYPES=$(subst /man.rst,.rst,$(DOTMANTYPEPREFIX))
 $(DOTMAN7DSTDIR)/cdist-type%.rst: $(DOTTYPEDIR)/%/man.rst
 	ln -sf "$^" $@
 
-dotman: $(DOTMANTYPES)
+dotman: version $(DOTMANTYPES)
 	$(SPHINXM)
 
 ################################################################################
@@ -103,132 +110,25 @@ $(SPEECHDIR)/%.pdf: $(SPEECHDIR)/%.tex
 speeches: $(SPEECHES)
 
 ################################################################################
-# Release: Mailinglist
+# Misc
 #
-ML_FILE=.lock-ml
-
-# Only send mail once - lock until new changelog things happened
-$(ML_FILE): $(CHANGELOG_FILE)
-	$(helper) ml-release $(CHANGELOG_VERSION)
-	touch $@
-
-ml-release: $(ML_FILE)
-
-
-################################################################################
-# pypi
-#
-PYPI_FILE=.pypi-release
-$(PYPI_FILE): man $(PYTHON_VERSION)
-	python3 setup.py sdist upload
-	touch $@
-
-pypi-release: $(PYPI_FILE)
-################################################################################
-# archlinux
-#
-ARCHLINUX_FILE=.lock-archlinux
-ARCHLINUXTAR=cdist-$(CHANGELOG_VERSION)-1.src.tar.gz
-
-$(ARCHLINUXTAR): PKGBUILD
-	umask 022; mkaurball
-
-PKGBUILD: PKGBUILD.in $(PYTHON_VERSION)
-	./PKGBUILD.in $(CHANGELOG_VERSION)
-
-$(ARCHLINUX_FILE): $(ARCHLINUXTAR) $(PYTHON_VERSION)
-	burp -c system $(ARCHLINUXTAR)
-	touch $@
-
-archlinux-release: $(ARCHLINUX_FILE)
-
-################################################################################
-# Release
-#
-
-$(PYTHON_VERSION) version: .git/refs/heads/master
-	$(helper) version
-
-# Code that is better handled in a shell script
-check-%:
-	$(helper) $@
-
-release:
-	$(helper) $@
-
-################################################################################
-# Cleanup
-#
-
-clean:
+clean: docs-clean
 	rm -f $(DOCS_SRC_DIR)/cdist-reference.rst
 
 	find "$(DOCS_SRC_DIR)" -mindepth 2 -type l \
 	| xargs rm -f
 
-	make -C $(DOCS_SRC_DIR) clean
-
 	find * -name __pycache__  | xargs rm -rf
 
-	# Archlinux
-	rm -f cdist-*.pkg.tar.xz cdist-*.tar.gz
-	rm -rf pkg/ src/
-
-	rm -f MANIFEST PKGBUILD
-	rm -rf dist/
-
-	# Signed release
-	rm -f cdist-*.tar.gz
-	rm -f cdist-*.tar.gz.asc
-
-	# Temp files
-	rm -f *.tmp
-
-distclean: clean
-	rm -f cdist/version.py
+	# distutils
+	rm -rf ./build
 
 ################################################################################
-# Misc
+# install
 #
 
-# The pub is Nico's "push to all git remotes" way ("make pub")
-pub:
-	git push --mirror
+install:
+	python3 setup.py install
 
-test:
-	$(helper) $@
-
-test-remote:
-	$(helper) $@
-
-pycodestyle pep8:
-	$(helper) $@
-
-shellcheck-global-explorers:
-	@find cdist/conf/explorer -type f -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
-
-shellcheck-type-explorers:
-	@find cdist/conf/type -type f -path "*/explorer/*" -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
-
-shellcheck-manifests:
-	@find cdist/conf/type -type f -name manifest -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
-
-shellcheck-local-gencodes:
-	@find cdist/conf/type -type f -name gencode-local -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
-
-shellcheck-remote-gencodes:
-	@find cdist/conf/type -type f -name gencode-remote -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
-
-shellcheck-scripts:
-	@$(SHELLCHECKCMD) scripts/cdist-dump || exit 0
-
-shellcheck-gencodes: shellcheck-local-gencodes shellcheck-remote-gencodes
-
-shellcheck-types: shellcheck-type-explorers shellcheck-manifests shellcheck-gencodes
-
-shellcheck: shellcheck-global-explorers shellcheck-types shellcheck-scripts
-
-shellcheck-type-files:
-	@find cdist/conf/type -type f -path "*/files/*" -exec $(SHELLCHECKCMD) {} + | $(SHELLCHECK_SKIP) || exit 0
-
-shellcheck-with-files: shellcheck shellcheck-type-files
+install-user:
+	python3 setup.py install --user

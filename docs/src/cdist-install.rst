@@ -48,13 +48,28 @@ create version.py:
 
 .. code-block:: sh
 
-    make version
+    ./bin/build-helper version
 
-Then, as usual, you execute the following command:
+Then you install it with:
+
+.. code-block:: sh
+
+   make install
+
+or with:
+
+.. code-block:: sh
+
+   make install-user
+
+to install it into user *site-packages* directory.
+Or directly with distutils:
 
 .. code-block:: sh
 
     python setup.py install
+
+Note that `bin/build-helper` script is intended for cdist maintainers.
 
 
 Available versions in git
