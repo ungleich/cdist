@@ -41,7 +41,7 @@ setup(
     description="A Usable Configuration Management System",
     author="Nico Schottelius",
     author_email="nico-cdist-pypi@schottelius.org",
-    url="http://www.nico.schottelius.org/software/cdist/",
+    url="https://www.cdi.st/",
     classifiers=[
         "Development Status :: 6 - Mature",
         "Environment :: Console",
