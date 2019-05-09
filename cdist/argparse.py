@@ -13,7 +13,7 @@ BETA_COMMANDS = set(('install', 'inventory', ))
 BETA_ARGS = {
     'config': set(('tag', 'all_tagged_hosts', 'use_archiving', )),
 }
-EPILOG = "Get cdist at http://www.nico.schottelius.org/software/cdist/"
+EPILOG = "Get cdist at https://code.ungleich.ch/ungleich-public/cdist"
 # Parser others can reuse
 parser = None
 

@@ -4,6 +4,9 @@ Changelog
 next:
 	* Documentation: Add 'Perils of CDIST_ORDER_DEPENDENCY' sub-section (Darko Poljak)
 	* Build: Clean and separate end user targets into Makefile and maintainer targets into build-helper (Darko Poljak)
+	* Core: Update residual references to old cdist homepage (Darko Poljak)
+	* Documentation: Update residual references to old cdist homepage and git source (Darko Poljak)
+	* Type __cdist: Fix non working 'git://' protocol source (Darko Poljak)
 
 5.0.0: 2019-05-05
 	* Type __zypper_service: Fix spelling error in manpage (Dmitry Bogatov)

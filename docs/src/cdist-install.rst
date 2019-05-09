@@ -43,6 +43,8 @@ To install cdist, execute the following commands:
 From version 4.2.0 cdist tags and releases are signed.
 You can get GPG public key used for signing `here <_static/pgp-key-EFD2AE4EC36B6901.asc>`_.
 
+You can also get cdist from `github mirror <https://github.com/ungleich/cdist>`_.
+
 To install cdist with distutils from cloned repository, first you have to
 create version.py:
 

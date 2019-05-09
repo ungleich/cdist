@@ -54,9 +54,7 @@ we can use cdist to configure it. You can copy and paste the following
 code into your shell to get started and configure localhost::
 
     # Get cdist 
-    # Mirrors can be found on
-    # http://www.nico.schottelius.org/software/cdist/install/#index2h4
-    git clone git://code.ungleich.ch/ungleich-public/cdist
+    git clone git@code.ungleich.ch:ungleich-public/cdist.git
 
     # Create manifest (maps configuration to host(s)
     cd cdist

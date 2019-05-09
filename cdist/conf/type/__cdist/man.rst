@@ -30,7 +30,7 @@ username
 
 source
     Select the source from which to clone cdist from.
-    Defaults to "git://code.ungleich.ch/ungleich-public/cdist.git".
+    Defaults to "git@code.ungleich.ch:ungleich-public/cdist.git".
 
 
 branch
@@ -47,7 +47,7 @@ EXAMPLES
     __cdist /home/cdist/cdist
 
     # Use alternative source
-    __cdist --source "git://code.ungleich.ch/ungleich-public/cdist" /home/cdist/cdist
+    __cdist --source "git@code.ungleich.ch:ungleich-public/cdist.git" /home/cdist/cdist
 
 
 AUTHORS
