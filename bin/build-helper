@@ -23,7 +23,7 @@
 #
 
 usage() {
-    printf "usage: %s TARGET [RUN-AS]
+    printf "usage: %s TARGET RUN-AS
     Available targets:
         print-runas
         changelog-changes
@@ -61,24 +61,19 @@ usage() {
         distclean
     Run as:
         nico
-        darko - default, if not specified\n" "$1"
+        darko - default, if empty string specified\n" "$1"
 }
 
 basename="${0##*/}"
 
-if [ $# -lt 1 ]
+if [ $# -lt 2 ]
 then
     usage "${basename}"
     exit 1
 fi
 
 option=$1; shift
-if [ $# -ge 1 ]
-then
-    run_as="$1"
-else
-    run_as="darko"
-fi
+run_as="$1"; shift
 
 case "$run_as" in
     nico)
@@ -92,6 +87,10 @@ case "$run_as" in
         from_d=gmail.com
         ml_name="Darko Poljak"
         ml_sig_name="Darko"
+        if [ -z "${run_as}" ]
+        then
+            run_as="darko"
+        fi
     ;;
     *)
         printf "Unsupported RUN-AS value: '%s'.\n" "${run_as}" >&2
@@ -160,7 +159,7 @@ case "$option" in
     ;;
 
     check-unittest)
-        "$0" test
+        "$0" test "${run_as}"
     ;;
 
     ml-release)
@@ -191,7 +190,7 @@ cdist $version has been released with the following changes:
 
 eof
 
-        "$0" changelog-changes "$version"
+        "$0" changelog-changes "${run_as}" "$version"
         cat << eof
 
 Cheers,
@@ -226,7 +225,7 @@ eof
 
     pypi-release)
         # Ensure that pypi release has the right version
-        "$0" version
+        "$0" version "${run_as}"
 
         make docs-clean
         make docs
@@ -234,7 +233,7 @@ eof
     ;;
 
     release-git-tag)
-        target_version=$($0 changelog-version)
+        target_version=$($0 changelog-version "${run_as}")
         if git rev-parse --verify "refs/tags/${target_version}" 2>/dev/null; then
             printf "Tag for %s exists, aborting\n" "${target_version}"
             exit 1
@@ -288,7 +287,7 @@ eof
             git archive --prefix="cdist-${tag}/" -o "${archivename}" "${tag}" \
                 || exit 1
             # make sure target version is generated
-            "$0" target-version
+            "$0" target-version "${run_as}"
             tar -x -f "${archivename}" || exit 1
             cp cdist/version.py "cdist-${tag}/cdist/version.py" || exit 1
             tar -c -f "${archivename}" "cdist-${tag}/" || exit 1
@@ -318,7 +317,7 @@ eof
              | sed "${sed_cmd}") || exit 1
 
         # make release
-        changelog=$("$0" changelog-changes "$1" | sed 's/^[[:space:]]*//')
+        changelog=$("$0" changelog-changes "${run_as}" "$1" | sed 's/^[[:space:]]*//')
         release_notes=$(
             printf "%s\n\n%s\n\n**Changelog**\n\n%s\n" \
                 "${response_archive}" "${response_archive_sig}" "${changelog}"
@@ -339,19 +338,19 @@ eof
 
     release)
         set -e
-        target_version=$($0 changelog-version)
-        target_branch=$($0 version-branch)
+        target_version=$($0 changelog-version "${run_as}")
+        target_branch=$($0 version-branch "${run_as}")
 
         printf "Beginning release process for %s\n" "${target_version}"
 
         # First check everything is sane
-        "$0" check-date
-        "$0" check-unittest
-        "$0" check-pycodestyle
-        "$0" check-shellcheck
+        "$0" check-date "${run_as}"
+        "$0" check-unittest "${run_as}"
+        "$0" check-pycodestyle "${run_as}"
+        "$0" check-shellcheck "${run_as}"
 
         # Generate version file to be included in packaging
-        "$0" target-version
+        "$0" target-version "${run_as}"
 
         # Ensure the git status is clean, else abort
         if ! git diff-index --name-only --exit-code HEAD ; then
@@ -386,8 +385,8 @@ eof
         fi
 
         # Verify that after the merge everything works
-        "$0" check-date
-        "$0" check-unittest
+        "$0" check-date "${run_as}"
+        "$0" check-unittest "${run_as}"
 
         # Generate documentation (man and html)
         # First, clean old generated docs
@@ -398,7 +397,7 @@ eof
         # Everything green, let's do the release
 
         # Tag the current commit
-        "$0" release-git-tag
+        "$0" release-git-tag "${run_as}"
 
         # Also merge back the version branch
         if [ "$masterbranch" = yes ]; then
@@ -419,21 +418,21 @@ eof
         # fi
 
         # Create and publish package for pypi
-        "$0" pypi-release
+        "$0" pypi-release "${run_as}"
 
         if [ "$run_as" = "nico" ]
         then
             # Archlinux release is based on pypi
-            "$0" archlinux-release
+            "$0" archlinux-release "${run_as}"
         fi
 
         # sign git tag
         printf "Enter upstream repository authentication token: "
         read -r token
-        "$0" sign-git-release "${target_version}" "${token}"
+        "$0" sign-git-release "${run_as}" "${target_version}" "${token}"
 
         # Announce change on ML
-        "$0" ml-release "${target_version}"
+        "$0" ml-release "${run_as}" "${target_version}"
 
         cat << eof
 Manual steps post release:
@@ -477,7 +476,7 @@ eof
     ;;
 
     check-pycodestyle)
-        "$0" pycodestyle
+        "$0" pycodestyle "${run_as}"
         printf "\\nPlease review pycodestyle report.\\n"
         while true
         do
@@ -523,20 +522,20 @@ eof
     ;;
 
     shellcheck-gencodes)
-        "$0" shellcheck-local-gencodes
-        "$0" shellcheck-remote-gencodes
+        "$0" shellcheck-local-gencodes "${run_as}"
+        "$0" shellcheck-remote-gencodes "${run_as}"
     ;;
 
     shellcheck-types)
-        "$0" shellcheck-type-explorers
-        "$0" shellcheck-manifests
-        "$0" shellcheck-gencodes
+        "$0" shellcheck-type-explorers "${run_as}"
+        "$0" shellcheck-manifests "${run_as}"
+        "$0" shellcheck-gencodes "${run_as}"
     ;;
 
     shellcheck)
-        "$0" shellcheck-global-explorers
-        "$0" shellcheck-types
-        "$0" shellcheck-scripts
+        "$0" shellcheck-global-explorers "${run_as}"
+        "$0" shellcheck-types "${run_as}"
+        "$0" shellcheck-scripts "${run_as}"
     ;;
 
     shellcheck-type-files)
@@ -544,8 +543,8 @@ eof
     ;;
 
     shellcheck-with-files)
-        "$0" shellcheck
-        "$0" shellcheck-type-files
+        "$0" shellcheck "${run_as}"
+        "$0" shellcheck-type-files "${run_as}"
     ;;
 
     shellcheck-build-helper)
@@ -553,7 +552,7 @@ eof
     ;;
 
     check-shellcheck)
-        "$0" shellcheck
+        "$0" shellcheck "${run_as}"
         printf "\\nPlease review shellcheck report.\\n"
         while true
         do
@@ -575,7 +574,7 @@ eof
     ;;
 
     version-branch)
-        "$0" changelog-version | cut -d. -f '1,2'
+        "$0" changelog-version "${run_as}" | cut -d. -f '1,2'
     ;;
 
     version)
@@ -583,7 +582,7 @@ eof
     ;;
 
     target-version)
-        target_version=$($0 changelog-version)
+        target_version=$($0 changelog-version "${run_as}")
         printf "VERSION = \"%s\"\n" "${target_version}" > cdist/version.py
     ;;
 
@@ -606,7 +605,7 @@ eof
     ;;
 
     distclean)
-        "$0" clean
+        "$0" clean "${run_as}"
         rm -f cdist/version.py
     ;;
     *)
