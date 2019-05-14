@@ -20,8 +20,6 @@
 
 # TODO check if filesystem has ACL turned on etc
 
-[ ! -e "/$__object_id" ] && exit 0
-
 for parameter in user group
 do
     if [ ! -f "$__object/parameter/$parameter" ]
