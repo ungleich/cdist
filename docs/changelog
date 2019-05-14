@@ -5,6 +5,7 @@ next:
 	* Type __package_apk: Fix @repo handling in explorer (Nico Schottelius)
 	* Type __postfix: Add alpine support (Nico Schottelius)
 	* Type __postfix_postconf: Add alpine support (Nico Schottelius)
+	* Type __user: Add alpine support (Nico Schottelius)
 
 5.0.1: 2019-05-09
 	* Documentation: Add 'Perils of CDIST_ORDER_DEPENDENCY' sub-section (Darko Poljak)
