@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Type __package_apk: Fix @repo handling in explorer (Nico Schottelius)
+
 5.0.1: 2019-05-09
 	* Documentation: Add 'Perils of CDIST_ORDER_DEPENDENCY' sub-section (Darko Poljak)
 	* Build: Clean and separate end user targets into Makefile and maintainer targets into build-helper (Darko Poljak)
