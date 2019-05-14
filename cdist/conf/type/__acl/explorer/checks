@@ -18,6 +18,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+# TODO check if filesystem has ACL turned on etc
+
 [ ! -e "/$__object_id" ] && exit 0
 
 for parameter in user group
