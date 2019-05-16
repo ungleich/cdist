@@ -97,7 +97,7 @@ class Code(object):
 
     """
     # target_host is tuple (target_host, target_hostname, target_fqdn)
-    def __init__(self, target_host, local, remote):
+    def __init__(self, target_host, local, remote, dry_run=False):
         self.target_host = target_host
         self.local = local
         self.remote = remote
@@ -112,6 +112,9 @@ class Code(object):
             '__cdist_log_level_name': util.log_level_name_env_var_val(
                 local.log),
         }
+
+        if dry_run:
+            self.env['__cdist_dry_run'] = '1'
 
     def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.cdist_type

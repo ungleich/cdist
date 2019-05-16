@@ -96,7 +96,7 @@ class Manifest(object):
     """Executes cdist manifests.
 
     """
-    def __init__(self, target_host, local):
+    def __init__(self, target_host, local, dry_run=False):
         self.target_host = target_host
         self.local = local
 
@@ -116,6 +116,9 @@ class Manifest(object):
             '__cdist_log_level_name': util.log_level_name_env_var_val(
                 self.log),
         }
+
+        if dry_run:
+            self.env['__cdist_dry_run'] = '1'
 
     def _open_logger(self):
         self.log = logging.getLogger(self.target_host[0])

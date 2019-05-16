@@ -371,6 +371,15 @@ It is available for initial manifest, explorer, type manifest,
 type explorer, type gencode.
 
 
+Detecting dry run
+-----------------
+
+If ``$__cdist_dry_run`` environment variable is set, then it's dry run.
+
+It is available for initial manifest, explorer, type manifest,
+type explorer, type gencode.
+
+
 Hints for typewriters
 ----------------------
 It must be assumed that the target is pretty dumb and thus does not have high
