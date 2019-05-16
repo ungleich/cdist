@@ -67,7 +67,7 @@ class Explorer(object):
     """Executes cdist explorers.
 
     """
-    def __init__(self, target_host, local, remote, jobs=None):
+    def __init__(self, target_host, local, remote, jobs=None, dry_run=False):
         self.target_host = target_host
 
         self._open_logger()
@@ -84,6 +84,10 @@ class Explorer(object):
             '__cdist_log_level_name': util.log_level_name_env_var_val(
                 self.log),
         }
+
+        if dry_run:
+            self.env['__cdist_dry_run'] = '1'
+
         self._type_explorers_transferred = []
         self.jobs = jobs
 

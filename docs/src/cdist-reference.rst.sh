@@ -221,6 +221,10 @@ __cdist_log_level, __cdist_log_level_name
 
     Available for: initial manifest, explorer, type manifest, type explorer,
     type gencode.
+__cdist_dry_run
+    Is set only when doing dry run (``-n`` flag).
+    Available for: initial manifest, explorer, type manifest, type explorer,
+    type gencode.
 __explorer
     Directory that contains all global explorers.
     Available for: initial manifest, explorer, type explorer, shell.

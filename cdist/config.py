@@ -104,9 +104,12 @@ class Config(object):
         self.remove_remote_files_dirs = remove_remote_files_dirs
 
         self.explorer = core.Explorer(self.local.target_host, self.local,
-                                      self.remote, jobs=self.jobs)
-        self.manifest = core.Manifest(self.local.target_host, self.local)
-        self.code = core.Code(self.local.target_host, self.local, self.remote)
+                                      self.remote, jobs=self.jobs,
+                                      dry_run=self.dry_run)
+        self.manifest = core.Manifest(self.local.target_host, self.local,
+                                      dry_run=self.dry_run)
+        self.code = core.Code(self.local.target_host, self.local, self.remote,
+                              dry_run=self.dry_run)
 
     def _init_files_dirs(self):
         """Prepare files and directories for the run"""
