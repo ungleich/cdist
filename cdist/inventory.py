@@ -315,7 +315,7 @@ class InventoryHost(Inventory):
         hostpath = self._host_path(host)
         self.log.trace("hostpath: {}".format(hostpath))
         if self.action == "add" and not os.path.exists(hostpath):
-                self._new_hostpath(hostpath)
+            self._new_hostpath(hostpath)
         else:
             if not os.path.isfile(hostpath):
                 raise cdist.Error(("Host path \'{}\' is"
