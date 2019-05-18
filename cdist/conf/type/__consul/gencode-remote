@@ -42,7 +42,7 @@ source_file_name="${source##*/}"
 cksum_should=$(cut -d' ' -f1,2 "$version_dir/cksum")
 
 cat << eof
-    tmpdir=\$(mktemp -d --tmpdir="/tmp" "${__type##*/}.XXXXXXXXXX")
+    tmpdir=\$(mktemp -d -p /tmp "${__type##*/}.XXXXXXXXXX")
     curl -s -L "$source" > "\$tmpdir/$source_file_name"
     unzip -p "\$tmpdir/$source_file_name" > "${destination}.tmp"
     rm -rf "\$tmpdir"

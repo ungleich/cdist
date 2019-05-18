@@ -1,0 +1,38 @@
+#!/sbin/openrc-run
+# 2019 Nico Schottelius (nico-cdist at schottelius.org)
+
+description="consul agent"
+
+pidfile="${CONSUL_PIDFILE:-"/var/run/$RC_SVCNAME/pidfile"}"
+command="${CONSUL_BINARY:-"/usr/local/bin/consul"}"
+
+
+checkconfig() {
+	if [ ! -d /var/run/consul ] ; then
+		mkdir -p /var/run/consul || return 1
+        chown consul:consul /var/run/$NAME || return 1
+        chmod 2770 /var/run/$NAME || return 1
+	fi
+}
+
+start() {
+    need net
+
+    start-stop-daemon --start --quiet --oknodo \
+            --pidfile "$pidfile" --background \
+            --exec $command -- agent -pid-file="$pidfile" -config-dir /etc/consul/conf.d
+}
+start_pre() {
+	checkconfig
+}
+
+stop() {
+	if [ "${RC_CMD}" = "restart" ] ; then
+		checkconfig || return 1
+	fi
+
+	ebegin "Stopping $RC_SVCNAME"
+	start-stop-daemon --stop --exec "$command" \
+		--pidfile "$pidfile" --quiet
+	eend $?
+}

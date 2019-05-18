@@ -24,7 +24,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   scientific|centos|redhat|ubuntu|debian|devuan|archlinux|gentoo)
+   alpine|scientific|centos|redhat|ubuntu|debian|devuan|archlinux|gentoo)
       # any linux should work
       :
    ;;
@@ -47,6 +47,7 @@ fi
 
 if [ -f "$__object/parameter/direct" ]; then
     __package unzip
+    __package curl
 else
     __staged_file /usr/local/bin/consul \
        --source "$(cat "$version_dir/source")" \

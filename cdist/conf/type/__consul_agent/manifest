@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2015 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2015 Nico Schottelius (nico-cdist at schottelius.org)
+# 2015-2019 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -23,7 +23,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-   scientific|centos|debian|devuan|redhat|ubuntu)
+   alpine|scientific|centos|debian|devuan|redhat|ubuntu)
       # whitelist safeguard
       :
    ;;
@@ -181,22 +181,25 @@ init_upstart()
 
 # Install init script to start on boot
 case "$os" in
-   centos|redhat)
-      os_version="$(sed 's/[^0-9.]//g' "$__global/explorer/os_version")"
-      major_version="${os_version%%.*}"
-      case "$major_version" in
-         [456])
-            init_sysvinit redhat
-         ;;
-         7)
-            init_systemd
-         ;;
-         *)
-            echo "Unsupported CentOS/Redhat version: $os_version" >&2
-            exit 1
-         ;;
-      esac
-   ;;
+    alpine|devuan)
+        init_sysvinit debian
+        ;;
+    centos|redhat)
+        os_version="$(sed 's/[^0-9.]//g' "$__global/explorer/os_version")"
+        major_version="${os_version%%.*}"
+        case "$major_version" in
+            [456])
+                init_sysvinit redhat
+                ;;
+            7)
+                init_systemd
+                ;;
+            *)
+                echo "Unsupported CentOS/Redhat version: $os_version" >&2
+                exit 1
+                ;;
+        esac
+        ;;
 
     debian)
         os_version=$(cat "$__global/explorer/os_version")
@@ -214,13 +217,9 @@ case "$os" in
                 exit 1
             ;;
         esac
-    ;;
-
-    devuan)
-        init_sysvinit debian
-    ;;
+        ;;
 
     ubuntu)
         init_upstart
-    ;;
+        ;;
 esac
