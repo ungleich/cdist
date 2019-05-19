@@ -22,6 +22,7 @@ is being used in small up to enterprise grade environments.
    cdist-real-world
    man1/cdist
    man1/cdist-dump
+   man1/cdist-new-type
    cdist-bootstrap
    cdist-configuration
    cdist-manifest

@@ -1,0 +1,159 @@
+#!/bin/sh
+
+basename="${0##*/}"
+
+if [ $# -lt 3 ]
+then
+    printf "usage: %s TYPE-NAME AUTHOR-NAME AUTHOR-EMAIL [TYPE-BASE-PATH]
+    TYPE-NAME       Name of the type.
+    AUTHOR-NAME     Type author's full name.
+    AUTHOR-EMAIL    Type author's email.
+    TYPE-BASE-PATH  Path to the base directory of the type. If not set it defaults
+                    to '\$PWD/type'.\n" "${basename}"
+    exit 1
+fi
+
+type_name="$1"
+shift
+author_name="$1"
+shift
+author_email="$1"
+shift
+
+if [ $# -ge 1 ]
+then
+    type_base_path="$1"
+    shift
+else
+    #type_base_path=~/.cdist/type
+    type_base_path="$PWD/type"
+fi
+
+error() {
+   printf "%s\n" "$*" >&2
+}
+
+die() {
+   error "$@"
+   exit 1
+}
+
+cd "$type_base_path" || die "Could not change to type directory: $type_base_path.
+You have to specify type base path or run me from within a cdist conf directory,
+e.g. ~/.cdist."
+
+year=$(date +%Y)
+copyright="# $year $author_name ($author_email)"
+
+license="# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+"
+
+set -e
+
+mkdir "$type_name"
+cd "$type_name"
+
+### man page
+header="cdist-type${type_name}(7)"
+header_length="${#header}"
+cat >> man.rst << DONE
+$header
+$(while [ "${header_length}" -gt 0 ]; do printf "="; header_length=$((header_length - 1)); done; printf "\n";)
+
+NAME
+----
+cdist-type${type_name} - TODO
+
+
+DESCRIPTION
+-----------
+This space intentionally left blank.
+
+
+REQUIRED PARAMETERS
+-------------------
+None.
+
+
+OPTIONAL PARAMETERS
+-------------------
+None.
+
+
+BOOLEAN PARAMETERS
+------------------
+None.
+
+
+EXAMPLES
+--------
+
+.. code-block:: sh
+
+    # TODO
+    ${type_name}
+
+
+SEE ALSO
+--------
+:strong:\`TODO\`\\ (7)
+
+
+AUTHORS
+-------
+$author_name <$author_email>
+
+
+COPYING
+-------
+Copyright \(C) $year $author_name. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+DONE
+
+### manifest
+cat >> manifest << DONE
+#!/bin/sh -e
+#
+${copyright}
+#
+${license}
+
+os=\$(cat "\$__global/explorer/os")
+
+case "\$os" in
+   *)
+      printf "Your operating system (%s) is currently not supported by this type (%s)\n" "\$os" "\${__type##*/}" >&2
+      printf "Please contribute an implementation for it if you can.\n" >&2
+      exit 1
+   ;;
+esac
+DONE
+chmod +x manifest
+
+# gencode-remote
+cat >> gencode-remote << DONE
+#!/bin/sh -e
+#
+${copyright}
+#
+${license}
+DONE
+chmod +x gencode-remote
+
+printf "%s/%s\n" "$type_base_path" "$type_name"

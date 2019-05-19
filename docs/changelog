@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* New helper script: cdist-new-type (Steven Armstrong, Darko Poljak)
+
 5.0.2: 2019-05-17
 	* Type __package_apk: Fix @repo handling in explorer (Nico Schottelius)
 	* Type __postfix: Add alpine support (Nico Schottelius)
