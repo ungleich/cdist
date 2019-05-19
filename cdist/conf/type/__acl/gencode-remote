@@ -48,7 +48,7 @@ do
         then
             [ "$file_is" = 'directory' ] && rep=x || rep=-
 
-            acl="$( echo "$acl" | sed "s/\(.*\)X/\1$rep/" )"
+            acl="$( echo "$acl" | sed "s/\\(.*\\)X/\\1$rep/" )"
         fi
 
         echo "$parameter" | grep -Eq '(mask|other)' && sep=:: || sep=:
