@@ -10,9 +10,7 @@ DESCRIPTION
 -----------
 ACL must be defined as 3-symbol combination, using ``r``, ``w``, ``x`` and ``-``.
 
-Fully supported and tested on Linux, partial support for FreeBSD.
-
-OpenBSD, NetBSD and Solaris support is not possible.
+Fully supported and tested on Linux (ext4 filesystem), partial support for FreeBSD.
 
 See ``setfacl`` and ``acl`` manpages for more details.
 
