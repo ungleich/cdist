@@ -134,6 +134,17 @@ class CdistType(object):
         return os.path.isfile(os.path.join(self.absolute_path, "nonparallel"))
 
     @property
+    def deprecated(self):
+        """Get type deprecation message. If message is None then type
+        is not deprecated."""
+        deprecated_path = os.path.join(self.absolute_path, "deprecated")
+        try:
+            with open(deprecated_path, 'r') as f:
+                return f.read()
+        except FileNotFoundError:
+            return None
+
+    @property
     def explorers(self):
         """Return a list of available explorers"""
         if not self.__explorers:

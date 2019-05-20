@@ -71,6 +71,31 @@ when using -j option. Example of such a type is __package_dpkg type where dpkg i
 prevents to be run in more than one instance.
 
 
+Deprecated types
+-----------------
+If a type is flagged with 'deprecated' marker then it is considered deprecated.
+Upon it's usage cdist writes warning line. If 'deprecated' marker has content
+then this content is printed as a deprecation messages, e.g.:
+
+.. code-block:: sh
+
+    $ ls -l deprecated 
+    -rw-r--r--  1 darko  darko  71 May 20 18:30 deprecated
+    $ cat deprecated 
+    This type is deprecated. It will be removed in the next minor release.
+    $ echo '__foo foo' | ./bin/cdist config -i - 185.203.112.26
+    WARNING: 185.203.112.26: Type __foo is deprecated: This type is deprecated. It will be removed in the next minor release.
+
+If 'deprecated' marker has no content then general message is printed, e.g.:
+
+.. code-block:: sh
+
+    $ ls -l deprecated 
+    -rw-r--r--  1 darko  darko  0 May 20 18:36 deprecated
+    $ echo '__bar foo' | ./bin/cdist config -i - 185.203.112.26
+    WARNING: 185.203.112.26: Type __bar is deprecated.
+
+
 How to write a new type
 -----------------------
 A type consists of

@@ -123,6 +123,16 @@ class TypeTestCase(test.CdistTestCase):
         cdist_type = core.CdistType(base_path, '__not_nonparallel')
         self.assertFalse(cdist_type.is_nonparallel)
 
+    def test_deprecated(self):
+        base_path = fixtures
+        cdist_type = core.CdistType(base_path, '__deprecated')
+        self.assertIsNotNone(cdist_type.deprecated)
+
+    def test_not_deprecated(self):
+        base_path = fixtures
+        cdist_type = core.CdistType(base_path, '__not_deprecated')
+        self.assertIsNone(cdist_type.deprecated)
+
     def test_install_is_install(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__install')

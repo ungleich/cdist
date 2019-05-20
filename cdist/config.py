@@ -758,8 +758,19 @@ class Config(object):
                     ("The requirements of the following objects could not be "
                      "resolved:\n%s") % ("\n".join(info_string)))
 
+    def _handle_deprecation(self, cdist_object):
+        cdist_type = cdist_object.cdist_type
+        deprecated = cdist_type.deprecated
+        if deprecated is not None:
+            if deprecated:
+                self.log.warning("Type %s is deprecated: %s", cdist_type.name,
+                                 deprecated)
+            else:
+                self.log.warning("Type %s is deprecated.", cdist_type.name)
+
     def object_prepare(self, cdist_object, transfer_type_explorers=True):
         """Prepare object: Run type explorer + manifest"""
+        self._handle_deprecation(cdist_object)
         self.log.verbose("Preparing object {}".format(cdist_object.name))
         self.log.verbose(
             "Running manifest and explorers for " + cdist_object.name)
