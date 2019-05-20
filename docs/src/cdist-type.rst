@@ -93,6 +93,9 @@ they are written in shell so they are executed using '/bin/sh -e' or 'CDIST_LOCA
 
 For executable shell code it is suggested that shebang is '#!/bin/sh -e'.
 
+For creating type skeleton you can use helper script
+`cdist-new-type <man1/cdist-new-type.html>`_.
+
 
 Defining parameters
 -------------------

@@ -451,7 +451,7 @@ eof
     ;;
 
     shellcheck-scripts)
-        ${SHELLCHECKCMD} scripts/cdist-dump || exit 0
+        ${SHELLCHECKCMD} scripts/cdist-dump scripts/cdist-new-type || exit 0
     ;;
 
     shellcheck-gencodes)
