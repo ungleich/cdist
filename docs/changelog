@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+5.1.0: 2019-05-22
 	* Type __consul: Add alpine support (Nico Schottelius)
 	* Type __consul: Add version 1.5.0 (Nico Schottelius)
 	* Type __consul_agent: Add alpine support (Nico Schottelius)
