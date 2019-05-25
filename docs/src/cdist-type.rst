@@ -216,6 +216,73 @@ In the __file type, stdin is used as source for the file, if - is used for sourc
     ....
 
 
+Stdin inside a loop
+~~~~~~~~~~~~~~~~~~~
+Since cdist saves type's stdin content in the object as **$__object/stdin**,
+so it can be accessed in manifest and gencode-* scripts, this can lead to
+unexpected behavior. For example, suppose you have some type with the following
+in its manifest:
+
+.. code-block:: sh
+
+    if [ -f "$__object/parameter/foo" ]
+    then
+        while read -r l
+        do
+            __file "$l"
+            echo "$l" >&2
+        done < "$__object/parameter/foo"
+    fi
+
+and init manifest:
+
+.. code-block:: sh
+
+    __foo foo --foo a --foo b --foo c
+
+You expect that manifest stderr content is:
+
+.. code-block:: sh
+
+    a
+    b
+    c
+
+and that files *a*, *b* and *c* are created. But all you get in manifest stderr
+is:
+
+.. code-block:: sh
+
+    a
+
+and only *a* file is created.
+
+When redirecting parameter *foo* file content to while's stdin that means that all
+commands in while body have this same stdin. So when *__file* type gets executed,
+cdist saves its stdin which means it gets the remaining content of parameter *foo*
+file, i.e.:
+
+.. code-block:: sh
+
+    b
+    c
+
+The solution is to make sure that your types inside such loops get their stdin
+from somewhere else, e.g. for the above problem *__file* type can get empty
+stdin from */dev/null*:
+
+.. code-block:: sh
+
+    if [ -f "$__object/parameter/foo" ]
+    then
+        while read -r l
+        do
+            __file "$l" < /dev/null
+            echo "$l" >&2
+        done < "$__object/parameter/foo"
+    fi
+
+
 Writing the manifest
 --------------------
 In the manifest of a type you can use other types, so your type extends
