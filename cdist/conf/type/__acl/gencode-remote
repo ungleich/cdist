@@ -20,15 +20,7 @@
 
 file_is="$( cat "$__object/explorer/file_is" )"
 
-[ "$file_is" = 'missing' ] && exit 0
-
-missing_users_groups="$( cat "$__object/explorer/missing_users_groups" )"
-
-if [ -n "$missing_users_groups" ]
-then
-    echo "$missing_users_groups" >&2
-    exit 1
-fi
+[ "$file_is" = 'missing' ] && [ -z "$__cdist_dry_run" ] && exit 0
 
 os="$( cat "$__global/explorer/os" )"
 
@@ -56,7 +48,7 @@ do
         then
             [ "$file_is" = 'directory' ] && rep=x || rep=-
 
-            acl="$( echo "$acl" | sed "s/\(.*\)X/\1$rep/" )"
+            acl="$( echo "$acl" | sed "s/\\(.*\\)X/\\1$rep/" )"
         fi
 
         echo "$parameter" | grep -Eq '(mask|other)' && sep=:: || sep=:
@@ -72,7 +64,7 @@ setfacl_exec='setfacl'
 
 if [ -f "$__object/parameter/recursive" ]
 then
-    if echo "$os" | grep -Eq 'macosx|freebsd'
+    if echo "$os" | grep -Fq 'freebsd'
     then
         echo "$os setfacl do not support recursive operations" >&2
     else
@@ -82,41 +74,33 @@ fi
 
 if [ -f "$__object/parameter/remove" ]
 then
-    if echo "$os" | grep -Fq 'solaris'
-    then
-        # Solaris setfacl behaves differently.
-        # We will not support Solaris for now, because no way to test it.
-        # But adding support should be easy (use -s instead of -m on modify).
-        echo "$os setfacl do not support -x flag for ACL remove" >&2
-    else
-        echo "$acl_is" | while read -r acl
-        do
-            # Skip wanted ACL entries which already exist
-            # and skip mask and other entries, because we
-            # can't actually remove them, but only change.
-            if echo "$acl_should" | grep -Eq "^$acl" \
-                || echo "$acl" | grep -Eq '^(default:)?(mask|other)'
-            then continue
-            fi
+    echo "$acl_is" | while read -r acl
+    do
+        # Skip wanted ACL entries which already exist
+        # and skip mask and other entries, because we
+        # can't actually remove them, but only change.
+        if echo "$acl_should" | grep -Eq "^$acl" \
+            || echo "$acl" | grep -Eq '^(default:)?(mask|other)'
+        then continue
+        fi
 
-            if echo "$os" | grep -Eq 'macosx|freebsd'
-            then
-                remove="$acl"
-            else
-                remove="$( echo "$acl" | sed 's/:...$//' )"
-            fi
+        if echo "$os" | grep -Fq 'freebsd'
+        then
+            remove="$acl"
+        else
+            remove="$( echo "$acl" | sed 's/:...$//' )"
+        fi
 
-            echo "$setfacl_exec -x \"$remove\" \"$acl_path\""
-            echo "removed '$remove'" >> "$__messages_out"
-        done
-    fi
+        echo "$setfacl_exec -x \"$remove\" \"$acl_path\""
+        echo "removed '$remove'" >> "$__messages_out"
+    done
 fi
 
 for acl in $acl_should
 do
     if ! echo "$acl_is" | grep -Eq "^$acl"
     then
-        if echo "$os" | grep -Eq 'macosx|freebsd' \
+        if echo "$os" | grep -Fq 'freebsd' \
             && echo "$acl" | grep -Eq '^default:'
         then
             echo "setting default ACL in $os is currently not supported. sorry :(" >&2

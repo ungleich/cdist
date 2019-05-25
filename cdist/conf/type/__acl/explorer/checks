@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-[ ! -e "/$__object_id" ] && exit 0
+# TODO check if filesystem has ACL turned on etc
 
 for parameter in user group
 do
@@ -40,7 +40,8 @@ do
 
         if ! getent "$getent_db" "$check" > /dev/null
         then
-            echo "missing $parameter '$check'"
+            echo "missing $parameter '$check'" >&2
+            exit 1
         fi
     done \
         < "$__object/parameter/$parameter"
