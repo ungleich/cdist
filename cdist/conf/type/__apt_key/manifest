@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+__package gnupg
+
+if [ -f "$__object/parameter/uri" ]
+then __package curl
+else __package dirmngr
+fi
