@@ -1,3 +1,5 @@
 state
 keyid
 keyserver
+keydir
+uri

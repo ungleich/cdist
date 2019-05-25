@@ -27,6 +27,18 @@ else
    keyid="$__object_id"
 fi
 
-apt-key export "$keyid" | head -n 1 | grep -Fqe "BEGIN PGP PUBLIC KEY BLOCK" \
-   && echo present \
-   || echo absent
+keydir="$(cat "$__object/parameter/keydir")"
+keyfile="$keydir/$__object_id.gpg"
+
+if [ -d "$keydir" ]
+then
+   if [ -f "$keyfile" ]
+   then echo present
+   else echo absent
+   fi
+else
+   # fallback to deprecated apt-key
+   apt-key export "$keyid" | head -n 1 | grep -Fqe "BEGIN PGP PUBLIC KEY BLOCK" \
+      && echo present \
+      || echo absent
+fi

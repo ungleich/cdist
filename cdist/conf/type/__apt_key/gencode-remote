@@ -31,12 +31,84 @@ if [ "$state_should" = "$state_is" ]; then
    exit 0
 fi
 
+keydir="$(cat "$__object/parameter/keydir")"
+keyfile="$keydir/$__object_id.gpg"
+
 case "$state_should" in
    present)
       keyserver="$(cat "$__object/parameter/keyserver")"
-      echo "apt-key adv --keyserver \"$keyserver\" --recv-keys \"$keyid\""
+
+      if [ -f "$__object/parameter/uri" ]; then
+         uri="$(cat "$__object/parameter/uri")"
+
+         if [ -d "$keydir" ]; then
+            cat << EOF
+
+curl -s -L \\
+    -o "$keyfile" \\
+    "$uri"
+
+if grep -Fq 'BEGIN PGP PUBLIC KEY BLOCK' \\
+    "$keyfile"
+then
+    cat "$keyfile" \\
+        | gpg --export > "$keyfile"
+fi
+
+EOF
+         else
+            # fallback to deprecated apt-key
+            echo "curl -s -L '$uri' | apt-key add -"
+         fi
+      elif [ -d "$keydir" ]; then
+         tmp='/tmp/cdist_apt_key_tmp'
+
+         # we need to kill gpg after 30 seconds, because gpg
+         # can get stuck if keyserver is not responding.
+         # exporting env var and not exit 1,
+         # because we need to clean up and kill dirmngr.
+         cat << EOF
+
+mkdir -m 700 -p "$tmp"
+
+if timeout 30s \\
+    gpg --homedir "$tmp" \\
+        --keyserver "$keyserver" \\
+        --recv-keys "$keyid"
+then
+    gpg --homedir "$tmp" \\
+        --export "$keyid" \\
+        > "$keyfile"
+else
+    export GPG_GOT_STUCK=1
+fi
+
+GNUPGHOME="$tmp" gpgconf --kill dirmngr
+
+rm -rf "$tmp"
+
+if [ -n "\$GPG_GOT_STUCK" ]
+then
+    echo "GPG GOT STUCK - no response from keyserver after 30 seconds" >&2
+    exit 1
+fi
+
+EOF
+      else
+         # fallback to deprecated apt-key
+         echo "apt-key adv --keyserver \"$keyserver\" --recv-keys \"$keyid\""
+      fi
+
+      echo "added '$keyid'" >> "$__messages_out"
    ;;
    absent)
-      echo "apt-key del \"$keyid\""
+      if [ -f "$keyfile" ]; then
+         echo "rm '$keyfile'"
+      else
+         # fallback to deprecated apt-key
+         echo "apt-key del \"$keyid\""
+      fi
+
+      echo "removed '$keyid'" >> "$__messages_out"
    ;;
 esac
