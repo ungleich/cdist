@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+next:
+	* Type __apt_key: Use gpg key, fallback to deprecated apt-key (Ander Punnar)
+	* Type __acl: Fix and improve (Ander Punnar)
+
 5.1.0: 2019-05-22
 	* Type __consul: Add alpine support (Nico Schottelius)
 	* Type __consul: Add version 1.5.0 (Nico Schottelius)
