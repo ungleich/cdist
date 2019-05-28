@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+5.1.1: 2019-05-28
 	* Type __apt_key: Use gpg key, fallback to deprecated apt-key (Ander Punnar)
 	* Type __acl: Fix and improve (Ander Punnar)
 	* Documentation: Document type stdin inside loop caveats (Darko Poljak)
