@@ -24,41 +24,35 @@ file_is="$( cat "$__object/explorer/file_is" )"
 
 os="$( cat "$__global/explorer/os" )"
 
-acl_is="$( cat "$__object/explorer/acl_is" )"
-
 acl_path="/$__object_id"
 
-if [ -f "$__object/parameter/default" ] && [ "$file_is" = 'directory' ]
+acl_is="$( cat "$__object/explorer/acl_is" )"
+
+acl_should="$( cat "$__object/parameter/acl" )"
+
+if [ -f "$__object/parameter/default" ]
 then
-    set_default=1
-else
-    set_default=0
+    acl_should="$( echo "$acl_should" \
+        | sed 's/^default://' \
+        | sort -u \
+        | sed 's/\(.*\)/default:\1\n\1/' )"
 fi
 
-acl_should="$( for parameter in user group mask other
-do
-    if [ ! -f "$__object/parameter/$parameter" ]
-    then
-        continue
-    fi
+if [ "$file_is" = 'regular' ] \
+    && echo "$acl_should" | grep -Eq '^default:'
+then
+    # only directories can have default ACLs,
+    # but instead of error,
+    # let's just remove default entries
+    acl_should="$( echo "$acl_should" | grep -Ev '^default:' )"
+fi
 
-    while read -r acl
-    do
-        if echo "$acl" | awk -F: '{ print $NF }' | grep -Fq 'X'
-        then
-            [ "$file_is" = 'directory' ] && rep=x || rep=-
+if echo "$acl_should" | awk -F: '{ print $NF }' | grep -Fq 'X'
+then
+    [ "$file_is" = 'directory' ] && rep=x || rep=-
 
-            acl="$( echo "$acl" | sed "s/\\(.*\\)X/\\1$rep/" )"
-        fi
-
-        echo "$parameter" | grep -Eq '(mask|other)' && sep=:: || sep=:
-
-        echo "$parameter$sep$acl"
-
-        [ "$set_default" = '1' ] && echo "default:$parameter$sep$acl"
-    done \
-        < "$__object/parameter/$parameter"
-done )"
+    acl_should="$( echo "$acl_should" | sed "s/\\(.*\\)X/\\1$rep/" )"
+fi
 
 setfacl_exec='setfacl'
 
@@ -76,7 +70,7 @@ if [ -f "$__object/parameter/remove" ]
 then
     echo "$acl_is" | while read -r acl
     do
-        # Skip wanted ACL entries which already exist
+        # skip wanted ACL entries which already exist
         # and skip mask and other entries, because we
         # can't actually remove them, but only change.
         if echo "$acl_should" | grep -Eq "^$acl" \
@@ -103,7 +97,7 @@ do
         if echo "$os" | grep -Fq 'freebsd' \
             && echo "$acl" | grep -Eq '^default:'
         then
-            echo "setting default ACL in $os is currently not supported. sorry :(" >&2
+            echo "setting default ACL in $os is currently not supported" >&2
         else
             echo "$setfacl_exec -m \"$acl\" \"$acl_path\""
             echo "added '$acl'" >> "$__messages_out"

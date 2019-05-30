@@ -8,42 +8,30 @@ cdist-type__acl - Set ACL entries
 
 DESCRIPTION
 -----------
-ACL must be defined as 3-symbol combination, using ``r``, ``w``, ``x`` and ``-``.
-
 Fully supported and tested on Linux (ext4 filesystem), partial support for FreeBSD.
 
 See ``setfacl`` and ``acl`` manpages for more details.
 
 
-OPTIONAL MULTIPLE PARAMETERS
+REQUIRED MULTIPLE PARAMETERS
 ----------------------------
-user
-   Add user ACL entry.
-
-group
-   Add group ACL entry.
-
-
-OPTIONAL PARAMETERS
--------------------
-mask
-   Add mask ACL entry.
-
-other
-   Add other ACL entry.
+acl
+   Set ACL entry following ``getfacl`` output syntax.
 
 
 BOOLEAN PARAMETERS
 ------------------
+default
+   Set all ACL entries as default too.
+   Only directories can have default ACLs.
+   Setting default ACL in FreeBSD is currently not supported.
+
 recursive
    Make ``setfacl`` recursive (Linux only), but not ``getfacl`` in explorer.
 
-default
-   Add default ACL entries (FreeBSD not supported).
-
 remove
-   Remove undefined ACL entries (Solaris not supported).
-   ACL entries for ``mask`` and ``other`` can't be removed.
+   Remove undefined ACL entries.
+   ``mask`` and ``other`` entries can't be removed, but only changed.
 
 
 EXAMPLES
@@ -52,15 +40,30 @@ EXAMPLES
 .. code-block:: sh
 
     __acl /srv/project \
+        --default \
         --recursive \
+        --remove \
+        --acl user:alice:rwx \
+        --acl user:bob:r-x \
+        --acl group:project-group:rwx \
+        --acl group:some-other-group:r-x \
+        --acl mask::r-x \
+        --acl other::r-x
+
+    # give Alice read-only access to subdir,
+    # but don't allow her to see parent content.
+
+    __acl /srv/project2 \
+        --remove \
+        --acl default:group:secret-project:rwx \
+        --acl group:secret-project:rwx \
+        --acl user:alice:--x
+
+    __acl /srv/project2/subdir \
         --default \
         --remove \
-        --user alice:rwx \
-        --user bob:r-x \
-        --group project-group:rwx \
-        --group some-other-group:r-x \
-        --mask r-x \
-        --other r-x
+        --acl group:secret-project:rwx \
+        --acl user:alice:r-x
 
 
 AUTHORS
