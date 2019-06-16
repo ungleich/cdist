@@ -20,17 +20,20 @@
 
 # TODO check if filesystem has ACL turned on etc
 
-grep -E '^(default:)?(user|group):' "$__object/parameter/acl" \
-| while read -r acl
-do
-    param="$( echo "$acl" | awk -F: '{print $(NF-2)}' )"
-    check="$( echo "$acl" | awk -F: '{print $(NF-1)}' )"
+if [ -f "$__object/parameter/acl" ]
+then
+    grep -E '^(default:)?(user|group):' "$__object/parameter/acl" \
+    | while read -r acl
+    do
+        param="$( echo "$acl" | awk -F: '{print $(NF-2)}' )"
+        check="$( echo "$acl" | awk -F: '{print $(NF-1)}' )"
 
-    [ "$param" = 'user' ] && db=passwd || db="$param"
+        [ "$param" = 'user' ] && db=passwd || db="$param"
 
-    if ! getent "$db" "$check" > /dev/null
-    then
-        echo "missing $param '$check'" >&2
-        exit 1
-    fi
-done
+        if ! getent "$db" "$check" > /dev/null
+        then
+            echo "missing $param '$check'" >&2
+            exit 1
+        fi
+    done
+fi

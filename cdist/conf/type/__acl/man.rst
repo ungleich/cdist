@@ -34,6 +34,12 @@ remove
    ``mask`` and ``other`` entries can't be removed, but only changed.
 
 
+DEPRECATED PARAMETERS
+---------------------
+Parameters ``user``, ``group``, ``mask`` and ``other`` are deprecated and they
+will be removed in future versions. Please use ``acl`` parameter instead.
+
+
 EXAMPLES
 --------
 
