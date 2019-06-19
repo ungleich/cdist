@@ -69,6 +69,7 @@ class CdistType(object):
         self.__optional_multiple_parameters = None
         self.__boolean_parameters = None
         self.__parameter_defaults = None
+        self.__deprecated_parameters = None
 
     def __hash__(self):
         return hash(self.name)
@@ -275,3 +276,23 @@ class CdistType(object):
             finally:
                 self.__parameter_defaults = defaults
         return self.__parameter_defaults
+
+    @property
+    def deprecated_parameters(self):
+        """Return a list of deprecated parameters"""
+        if not self.__deprecated_parameters:
+            parameters = []
+            try:
+                with open(os.path.join(self.absolute_path,
+                                       "parameter",
+                                       "deprecated")) as fd:
+                    for line in fd:
+                        line = line.strip()
+                        if line:
+                            parameters.append(line)
+            except EnvironmentError:
+                # error ignored
+                pass
+            finally:
+                self.__deprecated_parameters = parameters
+        return self.__deprecated_parameters

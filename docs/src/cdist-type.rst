@@ -74,7 +74,7 @@ prevents to be run in more than one instance.
 Deprecated types
 -----------------
 If a type is flagged with 'deprecated' marker then it is considered deprecated.
-Upon it's usage cdist writes warning line. If 'deprecated' marker has content
+When it is used cdist writes warning line. If 'deprecated' marker has content
 then this content is printed as a deprecation messages, e.g.:
 
 .. code-block:: sh
@@ -184,6 +184,28 @@ Example: (e.g. in cdist/conf/type/__nginx_vhost/manifest)
           echo $alias > /some/where/useful
        done
     fi
+
+
+Deprecated parameters
+---------------------
+To deprecate type parameters one can declare a newline separated file
+**parameter/deprecated** where each line contains deprecated parameter.
+When it is used cdist writes warning line, e.g.:
+
+.. code-block:: sh
+
+    $ cat parameter/optional_multiple
+    foo
+    spam
+    eggs
+    $ cat parameter/deprecated
+    spam
+    eggs
+    $ echo '__foo foo --foo foo --spam spam' | ./bin/cdist config -i - 185.203.112.26
+    WARNING: 185.203.112.26: spam parameter of type __foo is deprecated, see man page for details
+    $ echo '__foo foo --foo foo --eggs eggs --spam spam' | ./bin/cdist config -i - 185.203.112.26
+    WARNING: 185.203.112.26: spam parameter of type __foo is deprecated, see man page for details
+    WARNING: 185.203.112.26: eggs parameter of type __foo is deprecated, see man page for details
 
 
 Input from stdin
