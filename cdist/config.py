@@ -769,9 +769,14 @@ class Config(object):
                 self.log.warning("Type %s is deprecated.", cdist_type.name)
         for param in cdist_object.parameters:
             if param in cdist_type.deprecated_parameters:
-                self.log.warning(("%s parameter of type %s is deprecated, "
-                                  "see man page for details"),
-                                 param, cdist_type.name)
+                msg = cdist_type.deprecated_parameters[param]
+                if msg:
+                    format = "%s parameter of type %s is deprecated: %s"
+                    args = [param, cdist_type.name, msg]
+                else:
+                    format = "%s parameter of type %s is deprecated."
+                    args = [param, cdist_type.name]
+                self.log.warning(format, *args)
 
     def object_prepare(self, cdist_object, transfer_type_explorers=True):
         """Prepare object: Run type explorer + manifest"""

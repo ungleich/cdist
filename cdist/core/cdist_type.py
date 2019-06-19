@@ -279,20 +279,20 @@ class CdistType(object):
 
     @property
     def deprecated_parameters(self):
-        """Return a list of deprecated parameters"""
         if not self.__deprecated_parameters:
-            parameters = []
+            deprecated = {}
             try:
-                with open(os.path.join(self.absolute_path,
-                                       "parameter",
-                                       "deprecated")) as fd:
-                    for line in fd:
-                        line = line.strip()
-                        if line:
-                            parameters.append(line)
+                deprecated_dir = os.path.join(self.absolute_path,
+                                              "parameter",
+                                              "deprecated")
+                for name in cdist.core.listdir(deprecated_dir):
+                    try:
+                        with open(os.path.join(deprecated_dir, name)) as fd:
+                            deprecated[name] = fd.read().strip()
+                    except EnvironmentError:
+                        pass  # Swallow errors raised by open() or read()
             except EnvironmentError:
-                # error ignored
-                pass
+                pass  # Swallow error raised by os.listdir()
             finally:
-                self.__deprecated_parameters = parameters
+                self.__deprecated_parameters = deprecated
         return self.__deprecated_parameters

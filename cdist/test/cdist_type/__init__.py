@@ -205,10 +205,13 @@ class TypeTestCase(test.CdistTestCase):
         base_path = fixtures
         cdist_type = core.CdistType(base_path,
                                     '__without_deprecated_parameters')
-        self.assertEqual(cdist_type.deprecated_parameters, [])
+        self.assertEqual(cdist_type.deprecated_parameters, {})
 
     def test_with_deprecated_parameters(self):
         base_path = fixtures
         cdist_type = core.CdistType(base_path, '__with_deprecated_parameters')
-        self.assertEqual(cdist_type.deprecated_parameters,
-                         ['eggs', 'spam'])
+        self.assertTrue('eggs' in cdist_type.deprecated_parameters)
+        self.assertTrue('spam' in cdist_type.deprecated_parameters)
+        self.assertEqual(cdist_type.deprecated_parameters['eggs'],
+                         'Deprecated')
+        self.assertEqual(cdist_type.deprecated_parameters['spam'], '')

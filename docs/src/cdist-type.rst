@@ -188,24 +188,27 @@ Example: (e.g. in cdist/conf/type/__nginx_vhost/manifest)
 
 Deprecated parameters
 ---------------------
-To deprecate type parameters one can declare a newline separated file
-**parameter/deprecated** where each line contains deprecated parameter.
-When it is used cdist writes warning line, e.g.:
+To deprecate type parameters one can declare a file for each deprecated
+parameter under **parameter/deprecated** directory.
+
+When such parameter is used cdist writes warning line with deprecation message.
+If such file has content then this content is printed as deprecation message.
+If there is no content then generic parameter deprecation message is printed.
+
+Example:
 
 .. code-block:: sh
 
-    $ cat parameter/optional_multiple
-    foo
-    spam
-    eggs
-    $ cat parameter/deprecated
-    spam
-    eggs
-    $ echo '__foo foo --foo foo --spam spam' | ./bin/cdist config -i - 185.203.112.26
-    WARNING: 185.203.112.26: spam parameter of type __foo is deprecated, see man page for details
+    $ ls parameter/deprecated/
+    eggs    spam
+    $ cat parameter/deprecated/eggs
+    eggs parameter is deprecated, please use multiple egg parameter.
+    $ cat parameter/deprecated/spam
+    $ echo '__foo foo --foo foo --eggs eggs' | ./bin/cdist config -i - 185.203.112.26
+    WARNING: 185.203.112.26: eggs parameter of type __foo is deprecated: eggs parameter is deprecated, please use multiple egg parameter.
     $ echo '__foo foo --foo foo --eggs eggs --spam spam' | ./bin/cdist config -i - 185.203.112.26
-    WARNING: 185.203.112.26: spam parameter of type __foo is deprecated, see man page for details
-    WARNING: 185.203.112.26: eggs parameter of type __foo is deprecated, see man page for details
+    WARNING: 185.203.112.26: spam parameter of type __foo is deprecated.
+    WARNING: 185.203.112.26: eggs parameter of type __foo is deprecated: eggs parameter is deprecated, please use multiple egg parameter.
 
 
 Input from stdin
