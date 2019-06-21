@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+5.1.2: 2019-06-21
 	* Core: Add support for type parameters deprecation (Darko Poljak)
 	* Type __acl: Rewrite and improve (Ander Punnar)
 
