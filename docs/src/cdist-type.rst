@@ -542,6 +542,9 @@ in shell, since this is the code that is directly executed at target host.
 When writing python type you can extend **cdist.core.pytypes.PythonType** class.
 You need to implement the following methods:
 
+* **get_args_parser**: implementation should return **argparse.ArgumentParser** and if
+  it is undefined or returned None then cdist falls back to classic type parameter
+  definition and argument parsing
 * **type_manifest**: implementation should yield **cdist.core.pytypes.<type-name>**
   attribute function call result, or **yield from ()** if type does not use other types
 * **type_gencode**: implementation should return a string consisting of lines

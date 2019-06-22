@@ -1,7 +1,7 @@
 import os
 import re
-import sys
 from cdist.core.pytypes import *
+import argparse
 
 
 class FileType(PythonType):
@@ -101,3 +101,15 @@ class FileType(PythonType):
             self.die('Unknown state {}'.format(state_should))
 
         return "\n".join(code)
+
+    def get_args_parser(self):
+        parser = argparse.ArgumentParser(add_help=False,
+                                         argument_default=argparse.SUPPRESS)
+        parser.add_argument('--state', dest='state', action='store',
+                            required=False, default='present')
+        for param in ('group', 'mode', 'owner', 'source'):
+            parser.add_argument('--' + param, dest=param, action='store',
+                                required=False, default=None)
+
+        parser.add_argument("object_id", nargs=1)
+        return parser

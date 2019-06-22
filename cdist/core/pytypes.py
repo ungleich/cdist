@@ -4,6 +4,9 @@ import io
 import sys
 import re
 from cdist import message, Error
+import importlib.util
+import inspect
+import cdist
 
 
 __all__ = ["PythonType", "Command", "command"]
@@ -13,18 +16,20 @@ class PythonType:
     def __init__(self, env, cdist_object, local, remote, message_prefix=None):
         self.env = env
         self.cdist_object = cdist_object
-        self.object_id = cdist_object.object_id
-        self.object_name = cdist_object.name
-        self.cdist_type = cdist_object.cdist_type
         self.local = local
         self.remote = remote
-        self.object_path = cdist_object.absolute_path
-        self.type_path = cdist_object.cdist_type.absolute_path
-        self.explorer_path = os.path.join(self.object_path, 'explorer')
-        self.parameters = cdist_object.parameters
-        self.stdin_path = os.path.join(self.object_path, 'stdin')
-        self.log = logging.getLogger(
-            self.local.target_host[0] + ':' + self.object_name)
+        if self.cdist_object:
+            self.object_id = cdist_object.object_id
+            self.object_name = cdist_object.name
+            self.cdist_type = cdist_object.cdist_type
+            self.object_path = cdist_object.absolute_path
+            self.explorer_path = os.path.join(self.object_path, 'explorer')
+            self.type_path = cdist_object.cdist_type.absolute_path
+            self.parameters = cdist_object.parameters
+            self.stdin_path = os.path.join(self.object_path, 'stdin')
+        if self.local:
+            self.log = logging.getLogger(
+                self.local.target_host[0] + ':' + self.object_name)
 
         self.message_prefix = message_prefix
         self.message = None
@@ -61,12 +66,6 @@ class PythonType:
 
     def die(self, msg):
         raise Error("{}: {}".format(self.cdist_object, msg))
-
-    def type_manifest(self):
-        pass
-
-    def type_gencode(self):
-        pass
 
     def manifest(self, stdout=None, stderr=None):
         try:
@@ -123,6 +122,15 @@ class PythonType:
                         return match
         return None
 
+    def get_args_parser(self):
+        pass
+
+    def type_manifest(self):
+        pass
+
+    def type_gencode(self):
+        pass
+
 
 class Command:
     def __init__(self, name, *args, **kwargs):
@@ -160,3 +168,23 @@ class Command:
 
 def command(name, *args, **kwargs):
     return Command(name, *args, **kwargs)
+
+
+def get_pytype_class(cdist_type):
+    module_name = cdist_type.name
+    file_path = os.path.join(cdist_type.absolute_path, '__init__.py')
+    type_class = None
+    if os.path.isfile(file_path):
+        spec = importlib.util.spec_from_file_location(module_name, file_path)
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        classes = inspect.getmembers(m, inspect.isclass)
+        for _, cl in classes:
+            if cl != PythonType and issubclass(cl, PythonType):
+                if type_class:
+                    raise cdist.Error(
+                        "Only one python type class is supported, but at least"
+                        " two found: {}".format((type_class, cl, )))
+                else:
+                    type_class = cl
+    return type_class

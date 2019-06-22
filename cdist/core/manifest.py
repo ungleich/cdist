@@ -22,12 +22,11 @@
 
 import logging
 import os
-import importlib.util
 import inspect
 import cdist
 import cdist.emulator
 from . import util
-from cdist.core.pytypes import PythonType, Command
+from cdist.core.pytypes import Command, get_pytype_class
 
 
 '''
@@ -248,27 +247,11 @@ class Manifest(object):
 
     def run_py_type_manifest(self, cdist_object):
         cdist_type = cdist_object.cdist_type
-        module_name = cdist_type.name
-        file_path = os.path.join(cdist_type.absolute_path, '__init__.py')
-        message_prefix = cdist_object.name
-        if os.path.isfile(file_path):
+        type_class = get_pytype_class(cdist_type)
+        if type_class is not None:
             self.log.verbose("Running python type manifest for object %s",
                              cdist_object.name)
-            spec = importlib.util.spec_from_file_location(module_name,
-                                                          file_path)
-            m = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(m)
-            classes = inspect.getmembers(m, inspect.isclass)
-            type_class = None
-            for _, cl in classes:
-                if cl != PythonType and issubclass(cl, PythonType):
-                    if type_class:
-                        raise cdist.Error("Only one python type class is "
-                                          "supported, but at least two "
-                                          "found: {}".format((type_class,
-                                                              cl, )))
-                    else:
-                        type_class = cl
+            message_prefix = cdist_object.name
             env = self.env_py_type_manifest(cdist_object)
             type_obj = type_class(env=env, cdist_object=cdist_object,
                                   local=self.local, remote=None,

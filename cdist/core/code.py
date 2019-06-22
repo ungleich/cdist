@@ -22,10 +22,8 @@
 #
 
 import os
-import importlib.util
 import inspect
-import cdist
-from cdist.core.pytypes import PythonType
+from cdist.core.pytypes import get_pytype_class
 from . import util
 
 
@@ -122,25 +120,8 @@ class Code(object):
 
     def run_py(self, cdist_object):
         cdist_type = cdist_object.cdist_type
-        module_name = cdist_type.name
-        file_path = os.path.join(cdist_type.absolute_path, '__init__.py')
-
-        if os.path.isfile(file_path):
-            spec = importlib.util.spec_from_file_location(module_name,
-                                                          file_path)
-            m = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(m)
-            classes = inspect.getmembers(m, inspect.isclass)
-            type_class = None
-            for _, cl in classes:
-                if cl != PythonType and issubclass(cl, PythonType):
-                    if type_class:
-                        raise cdist.Error("Only one python type class is "
-                                          "supported, but at least two "
-                                          "found: {}".format((type_class,
-                                                              cl, )))
-                    else:
-                        type_class = cl
+        type_class = get_pytype_class(cdist_type)
+        if type_class is not None:
             env = os.environ.copy()
             env.update(self.env)
             message_prefix = cdist_object.name

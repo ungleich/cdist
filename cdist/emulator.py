@@ -30,6 +30,9 @@ import cdist
 from cdist import core
 from cdist import flock
 from cdist.core.manifest import Manifest
+import cdist.util.python_type_util as pytype_util
+from cdist.core.pytypes import get_pytype_class
+import inspect
 
 
 class MissingRequiredEnvironmentVariableError(cdist.Error):
@@ -100,7 +103,28 @@ class Emulator(object):
     def run(self):
         """Emulate type commands (i.e. __file and co)"""
 
-        self.commandline()
+        args_parser = None
+        if pytype_util.is_python_type(self.cdist_type):
+            type_class = get_pytype_class(self.cdist_type)
+            if type_class is not None:
+                # We only need to call parse_args so we need plain instance.
+                type_obj = type_class(env=None, cdist_object=None, local=None,
+                                      remote=None)
+                if (hasattr(type_obj, 'get_args_parser') and
+                        inspect.ismethod(type_obj.get_args_parser)):
+                    args_parser = type_obj.get_args_parser()
+                    self.log.trace("Using python type argument parser")
+                    print("Using python type argument parser")
+            if args_parser is None:
+                # Fallback to classic way.
+                args_parser = self.get_args_parser()
+                self.log.trace("Fallback to classic argument parser")
+                print("Fallback to classic argument parser")
+        else:
+            args_parser = self.get_args_parser()
+            self.log.trace("Using emulator classic argument parser")
+            print("Using emulator classic argument parser")
+        self.commandline(args_parser)
         self.init_object()
 
         # locking for parallel execution
@@ -131,9 +155,7 @@ class Emulator(object):
 
         self.log = logging.getLogger(self.target_host[0])
 
-    def commandline(self):
-        """Parse command line"""
-
+    def get_args_parser(self):
         parser = argparse.ArgumentParser(add_help=False,
                                          argument_default=argparse.SUPPRESS)
 
@@ -165,8 +187,10 @@ class Emulator(object):
         # If not singleton support one positional parameter
         if not self.cdist_type.is_singleton:
             parser.add_argument("object_id", nargs=1)
+        return parser
 
-        # And finally parse/verify parameter
+    def commandline(self, parser):
+        """Parse command line"""
         self.args = parser.parse_args(self.argv[1:])
         self.log.trace('Args: %s' % self.args)
 
