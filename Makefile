@@ -31,9 +31,9 @@ help:
 	@echo "docs-clean      clean documentation"
 	@echo "clean           clean"
 
-DOCS_SRC_DIR=docs/src
-SPEECHDIR=docs/speeches
-TYPEDIR=cdist/conf/type
+DOCS_SRC_DIR=./docs/src
+SPEECHDIR=./docs/speeches
+TYPEDIR=./cdist/conf/type
 
 SPHINXM=make -C $(DOCS_SRC_DIR) man
 SPHINXH=make -C $(DOCS_SRC_DIR) html
