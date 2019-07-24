@@ -8,10 +8,12 @@ case $os in
     debian|devuan)
         case $os_version in
             8*|jessie)
-                apt_source_distribution=jessie
+                # Differntation not needed anymore
+                apt_source_distribution=stable
                 ;;
             9*|ascii/ceres|ascii)
-                apt_source_distribution=stretch
+                # Differntation not needed anymore
+                apt_source_distribution=stable
                 ;;
             *)
                 echo "Don't know how to install Grafana on $os $os_version. Send us a pull request!" >&2
