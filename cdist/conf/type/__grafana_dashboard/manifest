@@ -21,10 +21,10 @@ case $os in
 
         __apt_key_uri grafana \
             --name 'Grafana Release Signing Key' \
-            --uri https://packagecloud.io/gpg.key
+            --uri https://packages.grafana.com/gpg.key
 
         require="$require __apt_key_uri/grafana" __apt_source grafana \
-                    --uri https://packagecloud.io/grafana/stable/debian/ \
+                    --uri https://packages.grafana.com/oss/deb \
                     --distribution $apt_source_distribution \
                     --component main
 
