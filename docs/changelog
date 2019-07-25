@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Build: Overcome bash CDPATH when building docs (Dmitry Bogatov)
+	* Type __grafana_dashboard: Update distribution name, package signing key URI and repository URI (Dominique Roux)
 
 5.1.2: 2019-06-21
 	* Core: Add support for type parameters deprecation (Darko Poljak)
