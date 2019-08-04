@@ -64,6 +64,43 @@ case "$os" in
         require="__apt_source/docker" __package docker-ce --state "${state}"
       fi
    ;;
+   devuan)
+      os_version="$(cat "$__global/explorer/os_version")"
+
+      case "$os_version" in
+        ascii)
+          distributione="stretch"
+        ;;
+        jessie)
+          distribution="jessie"
+        ;;
+        *)
+          echo "Your devuan release ($os_version) is currently not supported by this type (${__type##*/}).">&2
+          echo "Please contribute an implementation for it if you can." >&2
+          exit 1
+        ;;
+      esac
+
+      if [ "${state}" = "present" ]; then
+        __package apt-transport-https
+        __package ca-certificates
+        __package gnupg2
+      fi
+      __apt_key_uri docker --name "Docker Release (CE deb) <docker@docker.com>" \
+        --uri "https://download.docker.com/linux/${os}/gpg" --state "${state}"
+
+      require="__apt_key_uri/docker" __apt_source docker \
+         --uri "https://download.docker.com/linux/${os}" \
+         --distribution "${distribution}" \
+         --state "${state}" \
+         --component "stable"
+      if [ "$version" != "latest" ]; then
+        require="__apt_source/docker" __package docker-ce --version "${version}" --state "${state}"
+      else
+        require="__apt_source/docker" __package docker-ce --state "${state}"
+      fi
+
+   ;;
    *)
       echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
       echo "Please contribute an implementation for it if you can." >&2
