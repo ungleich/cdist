@@ -86,6 +86,9 @@ case "$os" in
         echo "hostname '$name_should'"
         printf "printf '%%s\\\\n' '$name_should' > /etc/HOSTNAME\\n"
     ;;
+    macosx)
+        echo "scutil --set HostName '$name_should'"
+    ;;
     *)
         echo "echo 'Unsupported OS: $os' >&2; exit 1"
     ;;

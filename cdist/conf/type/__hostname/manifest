@@ -42,7 +42,7 @@ not_supported() {
 }
 
 case "$os" in
-    archlinux|debian|suse|ubuntu|devuan|coreos|alpine)
+    archlinux|debian|suse|ubuntu|devuan|coreos|alpine|macosx)
         # handled in gencode-remote
         :
     ;;
