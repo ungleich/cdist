@@ -2,6 +2,7 @@
 #
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2014 Nico Schottelius (nico-cdist at schottelius.org)
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -63,6 +64,7 @@ case "$os" in
         echo "$name_should" | __file /etc/myname --source -
     ;;
     *)
-        not_supported
+        # On other operating systems we fall back to hostnamectl if available…
+        test -n "$(cat "$__object/explorer/has_hostnamectl")" || not_supported
     ;;
 esac

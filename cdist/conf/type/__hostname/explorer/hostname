@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Retrieve the running hostname
+#
+
+# Firstly, check hostnamectl if available.
+if command -v hostnamectl >/dev/null
+then
+    hostnamectl --static && exit 0
+fi
+
+
+# Almost any distribution
+if [ -f /etc/hostname ]; then
+    cat /etc/hostname
+# SuSE
+elif [ -f /etc/HOSTNAME ]; then
+    cat /etc/HOSTNAME
+# OpenBSD
+elif [ -f /etc/myname ]; then
+    cat /etc/myname
+# FreeBSD
+elif [ "$(uname -s)" == FreeBSD ]; then
+    (. /etc/rc.conf && echo $hostname)
+# Mac OS X
+elif [ "$(uname -s)" == Darwin -a -f "$(command -v scutil)" ]; then
+    scutil --get HostName 2>/dev/null || hostname -s
+else
+    command -v hostname && hostname -s
+fi

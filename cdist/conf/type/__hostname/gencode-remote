@@ -2,6 +2,7 @@
 #
 # 2014-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2014 Nico Schottelius (nico-cdist at schottelius.org)
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -46,8 +47,9 @@ case "$os" in
         fi
     ;;
     *)
-        echo "Unsupported os: $os" >&2
-        exit 1
+        if [ "$name_running" -a "$name_running" = "$name_should" ]; then
+            exit 0
+        fi
     ;;
 esac
 
@@ -56,23 +58,35 @@ esac
 #
 echo changed >> "$__messages_out"
 
-# Use the good old way to set the hostname even on machines running systemd.
+
+# First try to set the hostname using hostnamectl, if available.
+if [ "$has_hostnamectl" ]; then
+    # Allow hostnamectl to fail silently.
+    # Who the fuck invented a tool that needs dbus to set the hostname anyway ...
+
+    cat <<EOF
+if hostnamectl set-hostname '$name_should'; then
+    printf '%s\\n' '$name_should' > /etc/hostname
+    exit 0
+fi
+EOF
+fi
+
+# Use the good old way to set the hostname. Also if hostnamectl fails.
 case "$os" in
     archlinux|debian|ubuntu|devuan|centos|coreos|alpine)
         printf "printf '%%s\\\\n' '$name_should' > /etc/hostname\\n"
         echo "hostname -F /etc/hostname"
     ;;
     freebsd|openbsd)
+        # NOTE: Writing the hostname to file is done in the manifest.
         echo "hostname '$name_should'"
     ;;
     suse)
         echo "hostname '$name_should'"
         printf "printf '%%s\\\\n' '$name_should' > /etc/HOSTNAME\\n"
     ;;
+    *)
+        echo "echo 'Unsupported OS: $os' >&2; exit 1"
+    ;;
 esac
-
-if [ "$has_hostnamectl" ]; then
-    # Allow hostnamectl set-hostname to fail silently.
-    # Who the fuck invented a tool that needs dbus to set the hostname anyway ...
-    echo "hostnamectl set-hostname '$name_should' || true"
-fi
