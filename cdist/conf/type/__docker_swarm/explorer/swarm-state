@@ -18,4 +18,4 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-docker info 2>/dev/null | grep "^Swarm: " | cut -d " " -f 2-
+docker info 2>/dev/null | grep '^ *Swarm: ' | awk '{print $2}'
