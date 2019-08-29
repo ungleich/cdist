@@ -7,6 +7,7 @@ next:
 	* Type __letsencrypt_cert: Add Devuan Beowulf support (Nico Schottelius)
 	* Type __letsencrypt_cert: Fix Devuan Ascii: support (Nico Schottelius)
 	* Type __docker: Add devuan support (Dominique Roux)
+	* Type __docker_swarm: Fix for Docker 19.03 (Ľubomír Kučera)
 
 5.1.2: 2019-06-21
 	* Core: Add support for type parameters deprecation (Darko Poljak)
