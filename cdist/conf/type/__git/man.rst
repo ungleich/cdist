@@ -35,6 +35,8 @@ mode
 owner
    User to chown to.
 
+recursive
+   Recursive clone...
 
 EXAMPLES
 --------
