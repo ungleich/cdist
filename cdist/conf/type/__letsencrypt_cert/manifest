@@ -65,7 +65,7 @@ if [ -z "${certbot_fullpath}" ]; then
 					require="__apt_source/ascii-backports" __package_apt certbot \
 						--target-release ascii-backports
 				;;
-				bewoulf*)
+				beowulf*)
 					__package_apt certbot
 				;;
 				*)
