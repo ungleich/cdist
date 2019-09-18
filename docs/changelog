@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Type __letsencrypt_cert: Fix beowulf's spelling (Mondi Ravi)
+
 5.1.3: 2019-08-30
 	* Build: Overcome bash CDPATH when building docs (Dmitry Bogatov)
 	* Type __grafana_dashboard: Update distribution name, package signing key URI and repository URI (Dominique Roux)
