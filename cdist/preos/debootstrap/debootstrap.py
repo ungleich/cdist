@@ -145,7 +145,6 @@ class Debian(object):
         log = logging.getLogger(cls.__name__)
 
         parser = cls.get_parser()
-        cdist.argparse.add_beta_command(cls._preos_name)
         args = parser.parse_args(argv)
         if args.script and not args.mirror:
             raise cdist.Error("script option cannot be used without "
@@ -174,10 +173,10 @@ class Debian(object):
             new_env = {}
             for key in env:
                 if key == 'verbose' and env[key]:
-                        if env[key] >= 3:
-                            new_env['debug'] = "yes"
-                        elif env[key] == 2:
-                            new_env['verbose'] = "yes"
+                    if env[key] >= 3:
+                        new_env['debug'] = "yes"
+                    elif env[key] == 2:
+                        new_env['verbose'] = "yes"
                 elif not env[key]:
                     new_env[key] = ''
                 elif isinstance(env[key], bool) and env[key]:

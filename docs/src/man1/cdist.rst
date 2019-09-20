@@ -734,8 +734,7 @@ EXAMPLES
     % cdist config -f loadbalancers
 
     # Configure hosts read from file web.hosts using 16 parallel jobs
-    # (beta functionality)
-    % cdist config -b -j 16 -f web.hosts
+    % cdist config -j 16 -f web.hosts
 
     # Display banner
     cdist banner
@@ -792,16 +791,16 @@ EXAMPLES
     $ cdist config -b -A
 
     # Create default debian PreOS in debug mode
-    $ cdist preos debian /preos/preos-debian -b -vvvv -C \
+    $ cdist preos debian /preos/preos-debian -vvvv -C \
         -k ~/.ssh/id_rsa.pub -p /preos/pxe-debian
 
     # Create ubuntu PreOS
-    $ cdist preos ubuntu /preos/preos-ubuntu -b -C \
+    $ cdist preos ubuntu /preos/preos-ubuntu -C \
         -k ~/.ssh/id_rsa.pub -p /preos/pxe-ubuntu
 
     # Create ubuntu PreOS on drive /dev/sdb
     # and set root password to 'password'.
-    $ cdist preos ubuntu /mnt -b -B -C \
+    $ cdist preos ubuntu /mnt -B -C \
         -k ~/.ssh/id_rsa.pub -D /dev/sdb \
         -P password
 

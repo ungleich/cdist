@@ -9,7 +9,7 @@ import cdist.preos
 
 
 # set of beta sub-commands
-BETA_COMMANDS = set(('install', 'inventory', 'preos', ))
+BETA_COMMANDS = set(('install', 'inventory', ))
 # set of beta arguments for sub-commands
 BETA_ARGS = {
     'config': set(('tag', 'all_tagged_hosts', 'use_archiving', )),

@@ -24,12 +24,12 @@ For example, to create ubuntu PreOS:
 
 .. code-block:: sh
 
-    $ cdist preos ubuntu /preos/preos-ubuntu -b -C \
+    $ cdist preos ubuntu /preos/preos-ubuntu -B -C \
         -k ~/.ssh/id_rsa.pub -p /preos/pxe-ubuntu
 
 For more info about available options see cdist manual page.
 
-This will bootstrap (``-b``) ubuntu PreOS in ``/preos/preos-ubuntu`` directory, it
+This will bootstrap (``-B``) ubuntu PreOS in ``/preos/preos-ubuntu`` directory, it
 will be configured (``-C``) using default built-in initial manifest and with
 specified ssh authorized key (``-k``).
 After bootstrapping and configuration PXE
