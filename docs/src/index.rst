@@ -32,6 +32,7 @@ is being used in small up to enterprise grade environments.
    cdist-messaging
    cdist-parallelization
    cdist-inventory
+   cdist-preos
    cdist-integration
    cdist-reference
    cdist-best-practice

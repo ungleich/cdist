@@ -11,7 +11,7 @@ _cdist()
 
     case $state in
         opts_cmds)
-            _arguments '1:Options and commands:(banner config install inventory shell -h --help -q --quiet -v --verbose -V --version)'
+            _arguments '1:Options and commands:(banner config install inventory preos shell -h --help -q --quiet -v --verbose -V --version)'
             ;;
         *)
             case $words[2] in

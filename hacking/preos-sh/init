@@ -1,0 +1,32 @@
+#!/bin/sh
+
+for pkg in \
+    file \
+    linux-image-amd64 \
+    lsb-release \
+    openssh-server curl \
+    pxelinux syslinux-common grub2 \
+    gdisk util-linux lvm2 mdadm \
+    btrfs-tools e2fsprogs jfsutils reiser4progs xfsprogs; do
+    __package $pkg --state present
+done
+
+# initramfs requires /init
+__link /init --source /sbin/init --type symbolic
+
+__file /etc/network/interfaces --source - --mode 0644 << eof
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+allow-hotplug eth0
+iface eth0 inet dhcp
+eof
+
+# Steven found this out - coyping it 1:1
+# fix the bloody 'stdin: is not a tty' problem
+__line /root/.profile --line 'mesg n' --state absent
+
+__hostname --name preos

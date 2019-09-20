@@ -6,7 +6,7 @@ _cdist()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     prevprev="${COMP_WORDS[COMP_CWORD-2]}"
     opts="-h --help -q --quiet -v --verbose -V --version"
-    cmds="banner config install inventory shell"
+    cmds="banner config install inventory preos shell"
 
     case "${prevprev}" in
         shell)

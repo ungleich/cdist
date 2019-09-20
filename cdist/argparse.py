@@ -5,10 +5,11 @@ import logging
 import collections
 import functools
 import cdist.configuration
+import cdist.preos
 
 
 # set of beta sub-commands
-BETA_COMMANDS = set(('install', 'inventory', ))
+BETA_COMMANDS = set(('install', 'inventory', 'preos', ))
 # set of beta arguments for sub-commands
 BETA_ARGS = {
     'config': set(('tag', 'all_tagged_hosts', 'use_archiving', )),
@@ -421,6 +422,9 @@ def get_parsers():
 
     parser['inventory'].set_defaults(
             func=cdist.inventory.Inventory.commandline)
+
+    # PreOs
+    parser['preos'] = parser['sub'].add_parser('preos', add_help=False)
 
     # Shell
     parser['shell'] = parser['sub'].add_parser(
