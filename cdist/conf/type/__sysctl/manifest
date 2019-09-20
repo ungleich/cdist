@@ -2,6 +2,7 @@
 #
 # 2014 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2018 Takashi Yoshi (takashi at yoshi.email)
+# 2019 Nico Schottelius (nico-cdist at schottelius.org)
 #
 # This file is part of cdist.
 #
@@ -24,7 +25,7 @@ os=$(cat "$__global/explorer/os")
 
 case "$os" in
    # Linux
-   redhat|centos|ubuntu|debian|devuan|archlinux|coreos)
+   alpine|redhat|centos|ubuntu|debian|devuan|archlinux|coreos)
       :
    ;;
    # BSD

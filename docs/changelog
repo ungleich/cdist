@@ -4,6 +4,7 @@ Changelog
 next:
 	* Type __letsencrypt_cert: Fix beowulf's spelling (Mondi Ravi)
 	* Core: Add preos functionality (Darko Poljak)
+	* Type __sysctl: Add alpine support (Nico Schottelius)
 
 5.1.3: 2019-08-30
 	* Build: Overcome bash CDPATH when building docs (Dmitry Bogatov)
