@@ -173,11 +173,11 @@ class Debian(object):
             env = vars(args)
             new_env = {}
             for key in env:
-                if key == 'verbose':
-                    if env[key] >= 3:
-                        new_env['debug'] = "yes"
-                    elif env[key] == 2:
-                        new_env['verbose'] = "yes"
+                if key == 'verbose' and env[key]:
+                        if env[key] >= 3:
+                            new_env['debug'] = "yes"
+                        elif env[key] == 2:
+                            new_env['verbose'] = "yes"
                 elif not env[key]:
                     new_env[key] = ''
                 elif isinstance(env[key], bool) and env[key]:

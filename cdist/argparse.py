@@ -21,6 +21,7 @@ parser = None
 
 _verbosity_level_off = -2
 _verbosity_level = {
+    None: logging.WARNING,
     _verbosity_level_off: logging.OFF,
     -1: logging.ERROR,
     0: logging.WARNING,
