@@ -1,0 +1,88 @@
+#!/bin/sh
+#
+# 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2019 Nico Schottelius (nico-cdist at schottelius.org)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+destination="/$__object_id"
+
+# nothing to work with, nothing we could do
+[ -e "$destination" ] || exit 0
+
+os=$("$__explorer/os")
+case "$os" in
+   "freebsd"|"netbsd"|"openbsd"|"macosx")
+      stat -f "type: %HT
+owner: %Du %Su
+group: %Dg %Sg
+mode: %Lp %Sp
+size: %Dz
+links: %Dl
+" "$destination" | awk '/^type/ { print tolower($0); next; } { print; }'
+      ;;
+   alpine)
+       # busybox stat
+      stat -c "type: %F
+owner: %u %U
+group: %g %G
+mode: %a %A
+size: %s
+links: %h
+" "$destination"
+      ;;
+    solaris)
+        ls1="$( ls -ld "$destination" )"
+        ls2="$( ls -ldn "$destination" )"
+
+        if [ -f "$__object/parameter/mode" ]
+        then mode_should="$( cat "$__object/parameter/mode" )"
+        fi
+
+        # yes, it is ugly hack, but if you know better way...
+        if [ -z "$( find "$destination" -perm "$mode_should" )" ]
+        then octets=888
+        else octets="$( echo "$mode_should" | sed 's/^0//' )"
+        fi
+
+        case "$( echo "$ls1" | cut -c1-1 )" in
+            -) echo 'type: regular file' ;;
+            d) echo 'type: directory' ;;
+        esac
+
+        echo "owner: $( echo "$ls2" \
+            | awk '{print $3}' ) $( echo "$ls1" \
+                | awk '{print $3}' )"
+
+        echo "group: $( echo "$ls2" \
+            | awk '{print $4}' ) $( echo "$ls1" \
+                | awk '{print $4}' )"
+
+        echo "mode: $octets $( echo "$ls1" | awk '{print $1}' )"
+        echo "size: $( echo "$ls1" | awk '{print $5}' )"
+        echo "links: $( echo "$ls1" | awk '{print $2}' )"
+    ;;
+   *)
+      stat --printf="type: %F
+owner: %u %U
+group: %g %G
+mode: %a %A
+size: %s
+links: %h
+" "$destination"
+      ;;
+esac
