@@ -41,8 +41,8 @@ elif [ -f /etc/myname ]; then
 elif [ "$(uname -s)" == FreeBSD ]; then
     (. /etc/rc.conf && echo $hostname)
 # Mac OS X
-elif [ "$(uname -s)" == Darwin -a -x "$(command -v scutil)" ]; then
-    scutil --get HostName 2>/dev/null || hostname -s
+elif [ "$(uname -s)" == Darwin ]; then
+    [ -x "$(command -v scutil)" ] && scutil --get HostName 2>/dev/null || hostname -s
 else
     command -v hostname && hostname -s
 fi
