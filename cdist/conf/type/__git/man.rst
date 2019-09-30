@@ -36,7 +36,7 @@ owner
    User to chown to.
 
 recursive
-   Recursive clone...
+   Passes the --recursive flag to git when cloning the repository.
 
 EXAMPLES
 --------
