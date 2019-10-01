@@ -35,6 +35,8 @@ mode
 owner
    User to chown to.
 
+recursive
+   Passes the --recursive flag to git when cloning the repository.
 
 EXAMPLES
 --------

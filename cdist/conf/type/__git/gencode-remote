@@ -19,32 +19,31 @@
 #
 #
 
-state_is="$(cat "$__object/explorer/state")"
-owner_is="$(cat "$__object/explorer/owner")"
-group_is="$(cat "$__object/explorer/group")"
+state_is=$(cat "$__object/explorer/state")
+owner_is=$(cat "$__object/explorer/owner")
+group_is=$(cat "$__object/explorer/group")
 
-state_should="$(cat "$__object/parameter/state")"
+state_should=$(cat "$__object/parameter/state")
 
-branch="$(cat "$__object/parameter/branch")"
+branch=$(cat "$__object/parameter/branch")
 
-source="$(cat "$__object/parameter/source")"
+source=$(cat "$__object/parameter/source")
 
 destination="/$__object_id"
 
-owner="$(cat "$__object/parameter/owner")"
-group="$(cat "$__object/parameter/group")"
-mode="$(cat "$__object/parameter/mode")"
+owner=$(cat "$__object/parameter/owner")
+group=$(cat "$__object/parameter/group")
+mode=$(cat "$__object/parameter/mode")
 
-[  "$state_should" = "$state_is" ] && \
-[  "$owner" = "$owner_is" ] && \
-[  "$group" = "$group_is" ] && \
-[  -n "$mode" ] && exit 0
+[ "$state_should" = "$state_is" ] \
+ && [ "$owner" = "$owner_is" ] \
+ && [ "$group" = "$group_is" ] \
+ && [ -n "$mode" ] && exit 0
 
 case $state_should in
     present)
-
         if [ "$state_should" != "$state_is" ]; then
-            echo git clone --quiet --branch "$branch" "$source" "$destination"
+            echo git clone --quiet $([ -f "$__object/parameter/recursive" ] && echo '--recursive') --branch "$branch" "$source" "$destination"
         fi
         if { [ -n "$owner" ] && [ "$owner_is" != "$owner" ]; } || \
            { [ -n "$group" ] && [ "$group_is" != "$group" ]; }; then
@@ -54,8 +53,9 @@ case $state_should in
             echo chmod -R "$mode" "$destination"
         fi
     ;;
-    # Handled in manifest
+
     absent)
+        # Handled in manifest
     ;;
 
     *)
