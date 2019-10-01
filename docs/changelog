@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.0.0: 2019-10-01
 	* Type __letsencrypt_cert: Fix beowulf's spelling (Mondi Ravi)
 	* Core: Add preos functionality (Darko Poljak)
 	* Type __sysctl: Add alpine support (Nico Schottelius)
