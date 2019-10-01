@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+next:
+	* Type __group: Support OSes without getent (Dennis Camera)
+	* Type __user: Support OSes without getent (Dennis Camera)
+	* Type __ssh_authorized_keys: Support OSes without getent (Dennis Camera)
+	* Type __ssh_dot_ssh: Support OSes without getent (Dennis Camera)
+
 6.0.0: 2019-10-01
 	* Type __letsencrypt_cert: Fix beowulf's spelling (Mondi Ravi)
 	* Core: Add preos functionality (Darko Poljak)
