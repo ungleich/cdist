@@ -20,30 +20,42 @@
 #
 
 if [ -f "$__object/parameter/file" ]; then
-   cat "$__object/parameter/file"
+	cat "$__object/parameter/file"
 else
-   if [ -s "$__object/parameter/owner" ]
-   then
-	   owner=$(cat "$__object/parameter/owner")
-   else
-	   owner="$__object_id"
-   fi
+	if [ -s "$__object/parameter/owner" ]
+	then
+		owner=$(cat "$__object/parameter/owner")
+	else
+		owner="$__object_id"
+	fi
 
-   if command -v getent >/dev/null
-   then
-      owner_line=$(getent passwd "$owner")
-   else
-      case $owner
-      in
-         [0-9][0-9]*)
-            owner_line=$(awk -F: "\$3 == \"${owner}\" { print }" /etc/passwd)
-            ;;
-         *)
-            owner_line=$(awk -F: "\$1 == \"${owner}\" { print }" /etc/passwd)
-            ;;
-      esac
-   fi
+	if command -v getent >/dev/null
+	then
+		owner_line=$(getent passwd "$owner")
+	elif [ -f /etc/passwd ]
+	then
+		case $owner
+		in
+			[0-9][0-9]*)
+				owner_line=$(awk -F: "\$3 == \"${owner}\" { print }" /etc/passwd)
+				;;
+			*)
+				owner_line=$(awk -F: "\$1 == \"${owner}\" { print }" /etc/passwd)
+				;;
+		esac
+	fi
 
-   home=$(echo "$owner_line" | cut -d':' -f6)
-   echo "$home/.ssh/authorized_keys"
+	if [ "$owner_line" ]
+	then
+		home=$(echo "$owner_line" | cut -d':' -f6)
+	fi
+
+	if [ ! -d "$home" ]
+	then
+		# Don't know how to determine user's home directory, fall back to ~
+		home="~$owner"
+		command -v realpath >/dev/null && home=$(realpath "$home")
+	fi
+
+	[ -d "$home" ] && echo "$home/.ssh/authorized_keys"
 fi
