@@ -52,6 +52,7 @@ class FileType(PythonType):
         create_file = False
         upload_file = False
         set_attributes = False
+        fire_onchange = False
         code = []
         if state_should == 'present' or state_should == 'exists':
             if source is None:
@@ -72,6 +73,7 @@ class FileType(PythonType):
                     self.die('Source {} does not exist'.format(source))
             if create_file or upload_file:
                 set_attributes = True
+                fire_onchange = True
                 tempfile_template = '{}.cdist.XXXXXXXXXX'.format(destination)
                 destination_upload = self.run_remote(
                     ["mktemp", tempfile_template, ])
@@ -90,6 +92,7 @@ class FileType(PythonType):
                     value_is = self.get_attribute(stat_file, attribute,
                                                   value_should)
                     if set_attributes or value_should != value_is:
+                        fire_onchange = True
                         code.append(self.set_attribute(attribute,
                                                        value_should,
                                                        destination))
@@ -97,8 +100,14 @@ class FileType(PythonType):
             if typeis == 'file':
                 code.append('rm -f {}'.format(destination))
                 self.send_message('remove')
+                fire_onchange = True
         else:
             self.die('Unknown state {}'.format(state_should))
+
+        if fire_onchange:
+            onchange = self.get_parameter('onchange')
+            if onchange:
+                code.append(onchange)
 
         return "\n".join(code)
 
@@ -107,7 +116,7 @@ class FileType(PythonType):
                                          argument_default=argparse.SUPPRESS)
         parser.add_argument('--state', dest='state', action='store',
                             required=False, default='present')
-        for param in ('group', 'mode', 'owner', 'source'):
+        for param in ('group', 'mode', 'owner', 'source', 'onchange'):
             parser.add_argument('--' + param, dest=param, action='store',
                                 required=False, default=None)
 
