@@ -48,11 +48,11 @@ curl -s -L \\
     -o "$keyfile" \\
     "$uri"
 
-if grep -Fq 'BEGIN PGP PUBLIC KEY BLOCK' \\
-    "$keyfile"
+key="\$( cat "$keyfile" )"
+
+if echo "\$key" | grep -Fq 'BEGIN PGP PUBLIC KEY BLOCK'
 then
-    cat "$keyfile" \\
-        | gpg --export > "$keyfile"
+    echo "\$key" | gpg --dearmor > "$keyfile"
 fi
 
 EOF
