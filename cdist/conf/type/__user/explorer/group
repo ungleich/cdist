@@ -23,11 +23,9 @@
 
 if [ -f "$__object/parameter/gid" ]; then
    gid=$(cat "$__object/parameter/gid")
-   getent=$(command -v getent)
-   if [ X != X"${getent}" ]; then
-      "${getent}" group "$gid" || true
+   if command -v getent >/dev/null; then
+      getent group "$gid" || true
    elif [ -f /etc/group ]; then
       grep -E "^(${gid}|([^:]+:){2}${gid}):" /etc/group || true
    fi
 fi
-
