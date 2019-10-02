@@ -5,9 +5,11 @@ export GOBIN=/opt/gocode/bin  # where to find go binaries
 exporter="$(cat "$__object/parameter/exporter")"
 [ -z "$exporter" ] && exporter="$__object_id"
 
-__user prometheus --system
+__user prometheus
+require="__user/prometheus" __group prometheus
+require="__group/prometheus" __user_groups prometheus --group prometheus
 
-require=""
+require="__user_groups/prometheus"
 case $exporter in
 	node)
 		TEXTFILES=/service/node-exporter/textfiles  # path for the textfiles collector
