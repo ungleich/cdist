@@ -25,6 +25,10 @@ ip
     state is ``present``, this parameter is mandatory, if state is
     ``absent``, this parameter is silently ignored.
 
+alias
+    An alias for the hostname.
+    This parameter can be specified multiple times (once per alias).
+
 EXAMPLES
 --------
 
@@ -36,6 +40,8 @@ EXAMPLES
     # previously configured via __hosts.
     __hosts happy --state absent
 
+    __hosts srv1.example.com --ip 192.168.0.42 --alias srv1
+
 SEE ALSO
 --------
 
@@ -43,13 +49,14 @@ SEE ALSO
 
 AUTHORS
 -------
-
-Dmitry Bogatov <KAction@gnu.org>
+| Dmitry Bogatov <KAction@gnu.org>
+| Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
 
 
 COPYING
 -------
 
-Copyright (C) 2015,2016 Dmitry Bogatov. Free use of this software is granted
-under the terms of the GNU General Public License version 3 or later
-(GPLv3+).
+Copyright \(C) 2015-2016 Dmitry Bogatov, 2019 Dennis Camera.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
