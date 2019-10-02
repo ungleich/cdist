@@ -1,0 +1,97 @@
+#!/bin/sh
+#
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Check if the given editor is present on the target system and determine its
+# absolute path.
+#
+
+case $("${__explorer}/os")
+in
+	debian|devuan|ubuntu)
+		:  # supported
+		;;
+	*)
+		exit 0  # will produce an error message in the manifest
+		;;
+esac
+
+
+editor=$(cat "${__object}/parameter/editor")
+editors=$(update-alternatives --list editor)
+
+if test $(echo "${editors}" | wc -l) -lt 1
+then
+	echo 'No editors have been found on this system.' >&2
+	exit 1
+fi
+
+case $editor
+in
+	/*)
+		is_path=true
+		;;
+	*/*)
+		echo 'Relative editor paths are not supported' >&2
+		exit 1
+		;;
+	*)
+		is_path=false
+		;;
+esac
+
+
+IFS='
+'
+if $is_path
+then
+	if ! test -f "${editor}"
+	then
+		echo "Editor ${editor} is missing on the target system." >&2
+		exit 1
+	fi
+
+	for e in $editors
+	do
+		if test "${editor}" = "${e}"
+		then
+			# Editor is present and part of the alternatives list -> use it!
+			echo "${editor}"
+			exit 0
+		fi
+	done
+
+	echo "Editor ${editor} is not in the alternatives list of the target system." >&2
+	exit 1
+else
+	for e in $editors
+	do
+		if test "$(basename "${e}")" = "${editor}"
+		then
+			# Editor could be found by basename in the alternatives list -> use it!
+			echo "${e}"
+			exit 0
+		fi
+	done
+
+	echo "Editor ${editor} is missing on the target system." >&2
+	exit 1
+fi
+
+exit 1

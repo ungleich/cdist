@@ -1,0 +1,59 @@
+#!/bin/sh -e
+# -*- mode: sh; indent-tabs-mode: t -*-
+#
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os=$(cat "${__global}/explorer/os")
+
+state=$(cat "${__object}/parameter/state")
+user=$__object_id
+
+editor_path=$(cat "${__object}/explorer/editor_path")
+user_home=$(cat "${__object}/explorer/user_home")
+group=$(cat "${__object}/explorer/group")
+
+case $os
+in
+	debian|devuan|ubuntu)
+		test "${state}" = 'present' && __package_apt sensible-utils --state present
+		;;
+	*)
+		echo "OS ${os} does not support select-editor." >&2
+		exit 1
+		;;
+esac
+
+if test -z "${user_home}"
+then
+	echo "Could not find ${user}'s home directory." >&2
+	exit 1
+fi
+
+if test -z "${editor_path}"
+then
+	echo "Editor \"$(cat "${__object}/parameter/editor")\" is missing on the target system." >&2
+	exit 1
+fi
+
+__file "${user_home}/.selected_editor" --state "${state}" \
+	--owner "${user}" --group "${group}" --mode 0644 \
+	--source - <<EOF
+# Managed by cdist
+SELECTED_EDITOR="${editor_path}"
+EOF
