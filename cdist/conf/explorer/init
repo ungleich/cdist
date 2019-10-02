@@ -23,14 +23,22 @@
 # for example at linux this value is "init" or "systemd" in most cases
 #
 
-uname_s="$(uname -s)"
-
-case "$uname_s" in
+case $(uname -s) in
     Linux)
-        (pgrep -P0 -l | awk '/^1[ \t]/ {print $2;}') || true
+        if command -v pgrep >/dev/null
+        then
+            # BusyBox's version of ps does not support some options.
+            # On Linux systems, we prefer pgrep to get the name of PID1.
+            (pgrep -P0 -l | awk '/^1[ \t]/ {print $2;}') || true
+        else
+            ps -o comm= -p 1 2>/dev/null || cat /proc/1/comm
+        fi
     ;;
     FreeBSD|OpenBSD)
-        ps -o comm= -p 1 || true
+        ps -o comm= -p 1 2>/dev/null || true
+    ;;
+    Darwin)
+        basename "$(ps -o comm= -p 1 2>/dev/null)"
     ;;
     *)
         # return a empty string as unknown value
