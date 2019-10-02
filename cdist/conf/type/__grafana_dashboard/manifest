@@ -15,6 +15,10 @@ case $os in
                 # Differntation not needed anymore
                 apt_source_distribution=stable
                 ;;
+            10*)
+                # Differntation not needed anymore
+                apt_source_distribution=stable
+                ;;
             *)
                 echo "Don't know how to install Grafana on $os $os_version. Send us a pull request!" >&2
                 exit 1
