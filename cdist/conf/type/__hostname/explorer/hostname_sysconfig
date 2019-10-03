@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the contents of /etc/hostname
+# Retrieve the contents of /etc/sysconfig/network
 #
 
 if [ -f /etc/sysconfig/network ]; then

@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-# 2010-2014 Nico Schottelius (nico-cdist at schottelius.org)
-# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -19,7 +18,24 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Retrieve the running hostname
+#
 
-if command -v uname >/dev/null; then
-   uname -n
+# Firstly, check hostnamectl if available.
+if command -v hostnamectl >/dev/null
+then
+	hostnamectl status --static && exit 0
+fi
+
+# In case hostnamectl is missing or failed:
+# We fall back to alternative approaches
+if [ "$(uname -s)" = Darwin ] && command -v scutil >/dev/null
+then
+	# Mac OS X
+	scutil --get HostName 2>/dev/null
+elif command -v hostname >/dev/null
+then
+	hostname -s
+else
+	uname -n
 fi
