@@ -33,25 +33,18 @@ name_sysconfig=$(cat "$__object/explorer/hostname_sysconfig")
 has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
 
 ################################################################################
-# If everything is ok -> exit
+# Check if the hostname is already correct
 #
-case "$os" in
-    archlinux|debian|suse|ubuntu|devuan|coreos|alpine)
-        if [ "$name_config" = "$name_should" ] && [ "$name_running" = "$name_should" ]; then
-            exit 0
-        fi
-    ;;
-    scientific|centos|freebsd|openbsd)
-        if [ "$name_sysconfig" = "$name_should" ] && [ "$name_running" = "$name_should" ]; then
-            exit 0
-        fi
-    ;;
-    *)
-        if [ "$name_running" -a "$name_running" = "$name_should" ]; then
-            exit 0
-        fi
-    ;;
-esac
+if [ "$name_running" = "$name_should" ]; then
+    case "$os" in
+        archlinux|debian|suse|ubuntu|devuan|coreos|alpine)
+            [ "$name_config" != "$name_should" ] || exit 0
+        ;;
+        scientific|centos|freebsd|openbsd)
+            [ "$name_sysconfig" != "$name_should" ] || exit 0
+        ;;
+    esac
+fi
 
 ################################################################################
 # Setup hostname
