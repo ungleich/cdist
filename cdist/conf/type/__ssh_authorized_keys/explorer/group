@@ -35,10 +35,10 @@ else
 	case $owner
 	in
 		[0-9][0-9]*)
-			gid=$(awk -F: "\$3 == \"${owner}\" { print $4 }" /etc/passwd)
+			gid=$(awk -F: "\$3 == \"${owner}\" { print \$4 }" /etc/passwd)
 			;;
 		*)
-			gid=$(awk -F: "\$1 == \"${owner}\" { print $4 }" /etc/passwd)
+			gid=$(awk -F: "\$1 == \"${owner}\" { print \$4 }" /etc/passwd)
 			;;
 	esac
 
