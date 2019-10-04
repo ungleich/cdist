@@ -21,19 +21,7 @@
 # Retrieve the running hostname
 #
 
-# Firstly, check hostnamectl if available.
-if command -v hostnamectl >/dev/null
-then
-	hostnamectl status --static && exit 0
-fi
-
-# In case hostnamectl is missing or failed:
-# We fall back to alternative approaches
-if [ "$(uname -s)" = Darwin ] && command -v scutil >/dev/null
-then
-	# Mac OS X
-	scutil --get HostName 2>/dev/null
-elif command -v hostname >/dev/null
+if command -v hostname >/dev/null
 then
 	hostname -s
 else
