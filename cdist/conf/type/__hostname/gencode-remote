@@ -28,22 +28,14 @@ fi
 
 os=$(cat "$__global/explorer/os")
 name_running=$(cat "$__global/explorer/hostname")
-name_config=$(cat "$__object/explorer/hostname_file")
-name_sysconfig=$(cat "$__object/explorer/hostname_sysconfig")
+name_config=$(cat "$__object/explorer/persistent_hostname")
 has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
 
 ################################################################################
 # Check if the hostname is already correct
 #
-if [ "$name_running" = "$name_should" ]; then
-    case "$os" in
-        archlinux|debian|suse|ubuntu|devuan|coreos|alpine)
-            [ "$name_config" != "$name_should" ] || exit 0
-        ;;
-        scientific|centos|freebsd|openbsd)
-            [ "$name_sysconfig" != "$name_should" ] || exit 0
-        ;;
-    esac
+if [ "$name_running" = "$name_should" ] && [ ! "$name_config" -o "$name_config" = "$name_should" ]; then
+    exit 0
 fi
 
 ################################################################################
