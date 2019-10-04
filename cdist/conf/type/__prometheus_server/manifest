@@ -33,11 +33,13 @@ if [ -f "$__object/parameter/install-from-backports" ]; then
 		*)
 			echo "--install-from-backports is only supported on Devuan -- ignoring." >&2
 			echo "Send a pull request if you require it." >&2
+			exit 1
 		;;
 	esac
 else
 	__package prometheus
-	require_pkg="__package/prometheus"
+	__package prometheus-blackbox-exporter
+	require_pkg="__package/prometheus __package/prometheus-blackbox-exporter"
 fi
 
 ##### PREPARE PATHS AND SUCH ################################################
@@ -58,7 +60,7 @@ require="$require __directory/$storage_path $require_pkg" \
 __config_file $CONF \
 	--source "$config" \
 	--group prometheus --mode 640 \
-	--onchange "promtool check config $CONF && service prometheus reload"
+	--onchange "promtool check config $CONF && service prometheus restart"
 
 for file in $rule_files; do
 	dest=$CONF_DIR/$(basename "$file")
@@ -66,6 +68,6 @@ for file in $rule_files; do
 	__config_file "$dest" \
 		--source "$file" \
 		--owner prometheus \
-		--onchange "promtool check rules '$dest' && service prometheus reload"
+		--onchange "promtool check rules '$dest' && service prometheus restart"
 done
 
