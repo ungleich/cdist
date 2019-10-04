@@ -34,7 +34,7 @@ cdist/inventory/
 # Python: cache, distutils, distribution in general
 __pycache__/
 *.pyc
-MANIFEST
+/MANIFEST
 dist/
 cdist/version.py
 cdist.egg-info/
