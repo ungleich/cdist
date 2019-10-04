@@ -1,9 +1,9 @@
-cdist-type__select_editor(7)
+cdist-type__sensible_editor(7)
 ============================
 
 NAME
 ----
-cdist-type__select_editor - Select the sensible-editor
+cdist-type__sensible_editor - Select the sensible-editor
 
 
 DESCRIPTION
@@ -21,7 +21,7 @@ editor
 OPTIONAL PARAMETERS
 -------------------
 state
-    either "present" or "absent". Defaults to "present".
+    Either "present" or "absent". Defaults to "present".
 
 
 EXAMPLES
@@ -29,8 +29,8 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __select_editor root --editor /bin/ed  # ed(1) is the standard
-    __select_editor noob --editor nano
+    __sensible_editor root --editor /bin/ed  # ed(1) is the standard
+    __sensible_editor noob --editor nano
 
 
 SEE ALSO
