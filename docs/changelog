@@ -9,6 +9,7 @@ next:
 	* Explorer interfaces: Always sort output (Dennis Camera)
 	* Explorer os: Unquote value from os-release file (Dennis Camera)
 	* Type __letsencrypt_cert: Support Debian 10* (Ahmed Bilal Khalid)
+	* Type __prometheus_server: Add missing exit after unsupported error message (Dominique Roux)
 
 6.0.0: 2019-10-01
 	* Type __letsencrypt_cert: Fix beowulf's spelling (Mondi Ravi)
