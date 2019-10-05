@@ -60,6 +60,15 @@ case "$os" in
             --key 'hostname' \
             --value "$name_should"
     ;;
+    netbsd)
+        __key_value rcconf-hostname \
+            --file /etc/rc.conf \
+            --delimiter '=' \
+            --key 'hostname' \
+            --value "\"$name_should\""
+        # To avoid confusion, ensure that the hostname is only stored once
+        __file /etc/myname --state absent
+    ;;
     openbsd)
         echo "$name_should" | __file /etc/myname --source -
     ;;

@@ -43,6 +43,16 @@ in
 	freebsd)
 		(. /etc/rc.conf && echo "$hostname")
 		;;
+	netbsd)
+		if grep -q '^hostname=' /etc/rc.conf
+		then
+			(. /etc/rc.conf && echo "$hostname")
+		elif [ -f /etc/myname ]
+		then
+			# Fall back to /etc/myname file
+			cat /etc/myname
+		fi
+		;;
 	openbsd)
 		cat /etc/myname
 		;;
