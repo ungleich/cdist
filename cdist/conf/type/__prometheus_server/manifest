@@ -33,6 +33,7 @@ if [ -f "$__object/parameter/install-from-backports" ]; then
 		*)
 			echo "--install-from-backports is only supported on Devuan -- ignoring." >&2
 			echo "Send a pull request if you require it." >&2
+			exit 1
 		;;
 	esac
 else
