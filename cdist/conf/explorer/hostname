@@ -23,7 +23,7 @@
 
 if command -v hostname >/dev/null
 then
-	hostname -s
+	hostname
 else
 	uname -n
 fi
