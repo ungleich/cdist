@@ -24,7 +24,8 @@ os=$(cat "$__global/explorer/os")
 if [ -f "$__object/parameter/name" ]; then
     name_should="$(cat "$__object/parameter/name")"
 else
-    case $os in
+    case $os
+    in
         # RedHat-derivatives and BSDs
         centos|fedora|redhat|scientific|freebsd|netbsd|openbsd)
             # Hostname is FQDN
@@ -44,7 +45,8 @@ not_supported() {
    exit 1
 }
 
-case "$os" in
+case $os
+in
     archlinux|debian|suse|ubuntu|devuan|coreos|alpine|macosx)
         # handled in gencode-remote
         :
