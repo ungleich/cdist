@@ -63,7 +63,7 @@ in
             --file /etc/rc.conf \
             --delimiter '=' --exact_delimiter \
             --key 'hostname' \
-            --value "$name_should"
+            --value "\"$name_should\""
     ;;
     netbsd)
         __key_value rcconf-hostname \
