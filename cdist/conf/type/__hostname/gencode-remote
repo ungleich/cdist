@@ -58,12 +58,12 @@ EOF
 fi
 
 # Use the good old way to set the hostname. Also if hostnamectl fails.
-case "$os" in
-    archlinux|debian|ubuntu|devuan|centos|coreos|alpine)
+case $os in
+    archlinux|debian|ubuntu|devuan|coreos|alpine)
         printf "printf '%%s\\\\n' '$name_should' > /etc/hostname\\n"
         echo "hostname -F /etc/hostname"
     ;;
-    freebsd|openbsd)
+    centos|fedora|redhat|scientific|freebsd|openbsd)
         # NOTE: Writing the hostname to file is done in the manifest.
         echo "hostname '$name_should'"
     ;;
