@@ -25,10 +25,13 @@ if [ -f "$__object/parameter/name" ]; then
     name_should="$(cat "$__object/parameter/name")"
 else
     case "$os" in
-    openbsd)
+    # RedHat-derivatives and BSDs
+    centos|fedora|redhat|scientific|freebsd|netbsd|openbsd)
+        # Hostname is FQDN
         name_should="${__target_host}"
     ;;
     *)
+        # Hostname is only first component of FQDN
         name_should="${__target_host%%.*}"
     ;;
     esac
