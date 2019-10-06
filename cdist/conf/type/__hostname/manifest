@@ -49,21 +49,21 @@ case "$os" in
     centos|fedora|redhat|scientific)
         __key_value sysconfig-hostname \
             --file /etc/sysconfig/network \
-            --delimiter '=' \
+            --delimiter '=' --exact_delimiter \
             --key HOSTNAME \
-            --value "$name_should" --exact_delimiter
+            --value "\"$name_should\""
     ;;
     freebsd)
         __key_value rcconf-hostname \
             --file /etc/rc.conf \
-            --delimiter '=' \
+            --delimiter '=' --exact_delimiter \
             --key 'hostname' \
             --value "$name_should"
     ;;
     netbsd)
         __key_value rcconf-hostname \
             --file /etc/rc.conf \
-            --delimiter '=' \
+            --delimiter '=' --exact_delimiter \
             --key 'hostname' \
             --value "\"$name_should\""
         # To avoid confusion, ensure that the hostname is only stored once
