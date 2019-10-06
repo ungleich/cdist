@@ -41,6 +41,9 @@ in
 	freebsd)
 		(. /etc/rc.conf && echo "$hostname")
 		;;
+	gentoo)
+		(. /etc/conf.d/hostname && echo "$hostname")
+		;;
 	macosx)
 		scutil --get HostName 2>/dev/null
 		;;

@@ -74,13 +74,9 @@ fi
 # Use the good old way to set the hostname. Also if hostnamectl fails.
 case $os
 in
-    archlinux|debian|ubuntu|devuan|coreos|alpine)
+    alpine|archlinux|coreos|debian|devuan|ubuntu)
         echo "printf '%s\\n' '$name_should' > /etc/hostname"
         echo "hostname -F /etc/hostname"
-    ;;
-    centos|fedora|redhat|scientific|freebsd|openbsd)
-        # NOTE: Writing the hostname to file is done in the manifest.
-        echo "hostname '$name_should'"
     ;;
     macosx)
         echo "scutil --set HostName '$name_should'"
@@ -90,6 +86,10 @@ in
         # has hostnamectl anyway and symlinks /etc/HOSTNAME to /etc/hostname.
         echo "printf '%s\\n' '$name_should' > /etc/HOSTNAME"
         echo 'hostname -F /etc/HOSTNAME'
+    ;;
+    centos|fedora|freebsd|gentoo|netbsd|openbsd|redhat|scientific)
+        # NOTE: Writing the hostname to file is done in the manifest.
+        echo "hostname '$name_should'"
     ;;
     *)
         echo "echo 'Unsupported OS: $os' >&2; exit 1"

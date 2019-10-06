@@ -58,6 +58,13 @@ in
             --key HOSTNAME \
             --value "\"$name_should\""
     ;;
+    gentoo)
+        __key_value confd-hostname \
+            --file /etc/conf.d/hostname \
+            --delimiter '=' --exact_delimiter \
+            --key 'hostname' \
+            --value "\"$name_should\""
+    ;;
     freebsd)
         __key_value rcconf-hostname \
             --file /etc/rc.conf \
