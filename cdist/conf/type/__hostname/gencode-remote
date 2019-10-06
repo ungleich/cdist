@@ -75,19 +75,21 @@ fi
 case $os
 in
     archlinux|debian|ubuntu|devuan|coreos|alpine)
-        printf "printf '%%s\\\\n' '$name_should' > /etc/hostname\\n"
+        echo "printf '%s\\n' '$name_should' > /etc/hostname"
         echo "hostname -F /etc/hostname"
     ;;
     centos|fedora|redhat|scientific|freebsd|openbsd)
         # NOTE: Writing the hostname to file is done in the manifest.
         echo "hostname '$name_should'"
     ;;
-    suse)
-        echo "hostname '$name_should'"
-        printf "printf '%%s\\\\n' '$name_should' > /etc/HOSTNAME\\n"
-    ;;
     macosx)
         echo "scutil --set HostName '$name_should'"
+    ;;
+    suse)
+        # We write into /etc/HOSTNAME for backwards-compatibility.  Modern SuSE
+        # has hostnamectl anyway and symlinks /etc/HOSTNAME to /etc/hostname.
+        echo "printf '%s\\n' '$name_should' > /etc/HOSTNAME"
+        echo 'hostname -F /etc/HOSTNAME'
     ;;
     *)
         echo "echo 'Unsupported OS: $os' >&2; exit 1"

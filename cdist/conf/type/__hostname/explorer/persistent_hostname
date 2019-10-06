@@ -31,11 +31,8 @@ fi
 # Fall back to alternative OS-specific approaches.
 case $("$__explorer/os")
 in
-	alpine|archlinux|coreos|debian|devuan|suse|ubuntu)
+	alpine|archlinux|coreos|debian|devuan|ubuntu)
 		[ -f /etc/hostname ] && cat /etc/hostname
-		;;
-	suse)
-		[ -f /etc/HOSTNAME ] && cat /etc/HOSTNAME
 		;;
 	centos|fedora|redhat|scientific)
 		[ -f /etc/sysconfig/network ] \
@@ -43,6 +40,9 @@ in
 		;;
 	freebsd)
 		(. /etc/rc.conf && echo "$hostname")
+		;;
+	macosx)
+		scutil --get HostName 2>/dev/null
 		;;
 	netbsd)
 		if grep -q '^hostname=' /etc/rc.conf
@@ -57,7 +57,7 @@ in
 	openbsd)
 		cat /etc/myname
 		;;
-	macosx)
-		scutil --get HostName 2>/dev/null
+	suse)
+		cat /etc/HOSTNAME 2>/dev/null
 		;;
 esac
