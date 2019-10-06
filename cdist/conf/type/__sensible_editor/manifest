@@ -24,10 +24,6 @@ os=$(cat "${__global}/explorer/os")
 state=$(cat "${__object}/parameter/state")
 user=$__object_id
 
-editor_path=$(cat "${__object}/explorer/editor_path")
-user_home=$(cat "${__object}/explorer/user_home")
-group=$(cat "${__object}/explorer/group")
-
 case $os
 in
 	debian|devuan|ubuntu)
@@ -39,17 +35,9 @@ in
 		;;
 esac
 
-if test -z "${user_home}"
-then
-	echo "Could not find ${user}'s home directory." >&2
-	exit 1
-fi
-
-if test -z "${editor_path}"
-then
-	echo "Editor \"$(cat "${__object}/parameter/editor")\" is missing on the target system." >&2
-	exit 1
-fi
+editor_path=$(cat "${__object}/explorer/editor_path")
+user_home=$(cat "${__object}/explorer/user_home")
+group=$(cat "${__object}/explorer/group")
 
 __file "${user_home}/.selected_editor" --state "${state}" \
 	--owner "${user}" --group "${group}" --mode 0644 \

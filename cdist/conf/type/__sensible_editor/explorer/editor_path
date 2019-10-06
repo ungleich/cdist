@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #

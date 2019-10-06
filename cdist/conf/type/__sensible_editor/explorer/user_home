@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
@@ -22,5 +22,12 @@
 #
 
 user=$__object_id
+home=$(getent passwd "${user}" | cut -d':' -f6)
 
-getent passwd "${user}" | cut -d':' -f6
+if ! test -d "${home}"
+then
+	echo "Cannot find home directory of user ${user}" >&2
+	exit 1
+fi
+
+echo "${home}"
