@@ -20,16 +20,27 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-    name_should="$(cat "$__object/parameter/name")"
-else
-    name_should="${__target_host%%.*}"
-fi
-
 os=$(cat "$__global/explorer/os")
 name_running=$(cat "$__global/explorer/hostname")
 name_config=$(cat "$__object/explorer/persistent_hostname")
 has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
+
+
+if [ -f "$__object/parameter/name" ]; then
+    name_should="$(cat "$__object/parameter/name")"
+else
+    case $os in
+        # RedHat-derivatives and BSDs
+        centos|fedora|redhat|scientific|freebsd|netbsd|openbsd)
+            # Hostname is FQDN
+            name_should="${__target_host}"
+        ;;
+        *)
+            # Hostname is only first component of FQDN
+            name_should="${__target_host%%.*}"
+        ;;
+    esac
+fi
 
 ################################################################################
 # Check if the hostname is already correct
