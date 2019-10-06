@@ -38,7 +38,8 @@ in
 		[ -f /etc/HOSTNAME ] && cat /etc/HOSTNAME
 		;;
 	centos|fedora|redhat|scientific)
-		[ -f /etc/sysconfig/network ] && awk -F= '/^HOSTNAME=/ { print $2 }' /etc/sysconfig/network
+		[ -f /etc/sysconfig/network ] \
+			&& (. /etc/sysconfig/network && echo "$HOSTNAME")
 		;;
 	freebsd)
 		(. /etc/rc.conf && echo "$hostname")
