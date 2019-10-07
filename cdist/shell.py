@@ -78,6 +78,7 @@ class Shell(object):
             '__manifest': self.local.manifest_path,
             '__explorer': self.local.global_explorer_path,
             '__files': self.local.files_path,
+            '__lib': self.local.lib_path,
             '__target_host_tags': self.local.target_host_tags,
         }
 

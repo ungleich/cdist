@@ -56,6 +56,7 @@ gencode-local
         __type: full qualified path to the type's dir
         __files: full qualified path to the files dir
         __target_host_tags: comma spearated list of host tags
+        __lib: full qualified path to the lib dir
 
     returns: string containing the generated code or None
 
@@ -75,6 +76,7 @@ gencode-remote
         __type: full qualified path to the type's dir
         __files: full qualified path to the files dir
         __target_host_tags: comma spearated list of host tags
+        __lib: full qualified path to the lib dir
 
     returns: string containing the generated code or None
 
@@ -107,6 +109,7 @@ class Code(object):
             '__target_fqdn': self.target_host[2],
             '__global': self.local.base_path,
             '__files': self.local.files_path,
+            '__lib': self.local.lib_path,
             '__target_host_tags': self.local.target_host_tags,
             '__cdist_log_level': util.log_level_env_var_val(local.log),
             '__cdist_log_level_name': util.log_level_name_env_var_val(

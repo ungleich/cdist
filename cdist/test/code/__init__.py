@@ -101,6 +101,7 @@ class CodeTestCase(test.CdistTestCase):
                          self.cdist_object.object_id)
         self.assertEqual(output_dict['__object_name'], self.cdist_object.name)
         self.assertEqual(output_dict['__files'], self.local.files_path)
+        self.assertEqual(output_dict['__lib'], self.local.lib_path)
         self.assertEqual(output_dict['__target_host_tags'],
                          self.local.target_host_tags)
         self.assertEqual(output_dict['__cdist_log_level'],
@@ -129,6 +130,7 @@ class CodeTestCase(test.CdistTestCase):
                          self.cdist_object.object_id)
         self.assertEqual(output_dict['__object_name'], self.cdist_object.name)
         self.assertEqual(output_dict['__files'], self.local.files_path)
+        self.assertEqual(output_dict['__lib'], self.local.lib_path)
         self.assertEqual(output_dict['__target_host_tags'],
                          self.local.target_host_tags)
         self.assertEqual(output_dict['__cdist_log_level'],

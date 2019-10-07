@@ -36,7 +36,7 @@ import cdist.message
 from cdist import core
 import cdist.exec.util as util
 
-CONF_SUBDIRS_LINKED = ["explorer", "files", "manifest", "type", ]
+CONF_SUBDIRS_LINKED = ["explorer", "files", "manifest", "type", "lib", ]
 
 
 class Local(object):
@@ -133,6 +133,7 @@ class Local(object):
                                  os.path.join(self.manifest_path, "init"))
 
         self.type_path = os.path.join(self.conf_path, "type")
+        self.lib_path = os.path.join(self.conf_path, "lib")
 
     def _init_object_marker(self):
         self.object_marker_file = os.path.join(self.base_path, "object_marker")

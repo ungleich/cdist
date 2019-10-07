@@ -81,6 +81,10 @@ confdir/files/
     Cdist does not care about this directory besides providing access to it.
     It is thought to be a general file storage area.
 
+confdir/lib/
+    Cdist does not care about this directory besides providing access to it.
+    It is thought to be a general storage for shell library files.
+
 confdir/manifest/init
     This is the central entry point.
     It is an executable (+x bit set) shell script that can use
@@ -140,6 +144,10 @@ confdir/type/<name>/files
     This directory is reserved for user data and will not be used
     by cdist at any time. It can be used for storing supplementary
     files (like scripts to act as a template or configuration files).
+
+confdir/type/<name>/lib
+    This directory is reserved for user shell library files and will
+    not be used by cdist at any time.
 
 out/
     This directory contains output of cdist and is usually located
@@ -233,6 +241,10 @@ __explorer
     Available for: initial manifest, explorer, type explorer, shell.
 __files
     Directory that contains content from the "files" subdirectories
+    from the configuration directories.
+    Available for: initial manifest, type manifest, type gencode, shell.
+__lib
+    Directory that contains content from the "lib" subdirectories
     from the configuration directories.
     Available for: initial manifest, type manifest, type gencode, shell.
 __manifest
