@@ -18,8 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 
 ## "move" user-modified dirs to /etc/xymon to be managed by __xymon_config:
-if [ ! -L /usr/lib/xymon/server/ext ]; then
-	echo "mv /usr/lib/xymon/server/ext /etc/xymon"
-	echo "ln -s /etc/xymon/ext /usr/lib/xymon/server/"
-	echo "ext-dir moved and symlinked" >> "$__messages_out"
-fi	
+cat <<-EOT
+	if [ ! -L /usr/lib/xymon/server/ext ]; then
+		mv /usr/lib/xymon/server/ext /etc/xymon
+		ln -s /etc/xymon/ext /usr/lib/xymon/server/
+	fi	
+EOT
