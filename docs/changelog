@@ -10,6 +10,8 @@ next:
 	* Explorer os: Unquote value from os-release file (Dennis Camera)
 	* Type __letsencrypt_cert: Support Debian 10* (Ahmed Bilal Khalid)
 	* Type __prometheus_server: Add missing exit after unsupported error message (Dominique Roux)
+	* Type __git: Use --recurse-submodules instead of --recursive (Jonas Hagen)
+	* Type __git: Add --shallow option (Jonas Hagen)
 
 6.0.0: 2019-10-01
 	* Type __letsencrypt_cert: Fix beowulf's spelling (Mondi Ravi)
