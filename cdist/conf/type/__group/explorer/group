@@ -23,7 +23,7 @@
 #
 
 not_supported() {
-	echo "Your operating system ($(cat "$__explorer/os")) is currently not supported." >&2
+	echo "Your operating system ($("$__explorer/os")) is currently not supported." >&2
 	echo "Cannot extract group information." >&2
 	echo "Please contribute an implementation for it if you can." >&2
 	exit 1
