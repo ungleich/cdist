@@ -1,0 +1,56 @@
+#!/bin/sh -e
+#
+# 2018-2019 Thomas Eckert (tom at it-eckert.de)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+
+state=$(cat "$__object/parameter/state")
+
+os=$(cat "$__global/explorer/os")
+case "$os" in
+	debian|ubuntu)
+		:
+	;;
+	*)
+		echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+		echo "Please contribute an implementation for it if you can." >&2
+		exit 1
+	;;
+esac
+
+if [ "$state" = "present"  ]; then
+	if ! grep -q ^rewrite "$__object/explorer/active-modules"; then
+		echo "a2enmod rewrite >/dev/null"
+		echo "mod:rewrite enabled" >> "$__messages_out"
+	fi
+	if ! grep -q "^cgi$" "$__object/explorer/active-modules"; then
+		echo "a2enmod cgi >/dev/null"
+		echo "mod:cgi enabled" >> "$__messages_out"
+	fi
+
+	if ! grep -q ^xymon.conf "$__object/explorer/active-conf"; then
+		echo "a2enconf xymon >/dev/null"
+		echo "conf:xymon enabled" >> "$__messages_out"
+	fi
+fi
+
+if grep -q "^mod:.* enabled" "$__messages_out"; then
+	echo "systemctl restart apache2.service"
+	echo "apache restarted" >> "$__messages_out"
+elif grep -q "^conf:xymon enabled" "$__messages_out"; then
+	echo "systemctl reload apache2.service"
+	echo "apache reloaded" >> "$__messages_out"
+fi
