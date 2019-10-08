@@ -22,76 +22,92 @@
 # absolute path.
 #
 
+die() {
+	echo "$@" >&2
+	exit 1
+}
+
+editor_missing() { die "Editor '$1' is missing on the target system."; }
+editor_no_alternative() { die "Editor '$1' is not in the alternatives list of the target system."; }
+
+
 case $("${__explorer}/os")
 in
 	debian|devuan|ubuntu)
-		:  # supported
+		has_alternatives=true
+		editors=$(update-alternatives --list editor)
 		;;
 	*)
-		exit 0  # will produce an error message in the manifest
+		# NOTE: RedHat has an alternatives system but it doesn't usually track
+		#       editors and it is a pain to extract the list.
+		has_alternatives=false
 		;;
 esac
 
-
 editor=$(cat "${__object}/parameter/editor")
-editors=$(update-alternatives --list editor)
-
-if test $(echo "${editors}" | wc -l) -lt 1
-then
-	echo 'No editors have been found on this system.' >&2
-	exit 1
-fi
 
 case $editor
 in
 	/*)
-		is_path=true
+		is_abspath=true
 		;;
 	*/*)
-		echo 'Relative editor paths are not supported' >&2
-		exit 1
+		die 'Relative editor paths are not supported'
 		;;
 	*)
-		is_path=false
+		is_abspath=false
 		;;
 esac
 
 
-IFS='
-'
-if $is_path
+if $has_alternatives && test "$(echo "${editors}" | wc -l)" -gt 0
 then
-	if ! test -f "${editor}"
+	IFS='
+'
+	if ! $is_abspath
 	then
-		echo "Editor ${editor} is missing on the target system." >&2
-		exit 1
+		# First, try to resolve the absolute path using $editors.
+		for e in $editors
+		do
+			if test "$(basename "${e}")" = "${editor}"
+			then
+				editor="${e}"
+				break
+			fi
+		done
 	fi
+
+	# Check if path is present
+	test -f "${editor}" || editor_missing "${editor}"
 
 	for e in $editors
 	do
 		if test "${editor}" = "${e}"
 		then
-			# Editor is present and part of the alternatives list -> use it!
+			# Editor is part of the alternatives list -> use it!
 			echo "${editor}"
 			exit 0
 		fi
 	done
 
-	echo "Editor ${editor} is not in the alternatives list of the target system." >&2
-	exit 1
+	editor_no_alternative "${editor}"
 else
-	for e in $editors
-	do
-		if test "$(basename "${e}")" = "${editor}"
-		then
-			# Editor could be found by basename in the alternatives list -> use it!
-			echo "${e}"
-			exit 0
-		fi
-	done
+	# NOTE: This branch is mostly for RedHat-based systems which do
+	#       not track editor alternatives.  To make this type useful
+	#       on RedHat at all we allow an absoloute path to be provided
+	#       in any case.
 
-	echo "Editor ${editor} is missing on the target system." >&2
-	exit 1
+	if $is_abspath
+	then
+		test -x "${editor}" || editor_missing "${editor}"
+
+		echo "${editor}"
+		exit 0
+	else
+		die "The target doesn't list any editor alternatives. " \
+		    "Please specify an absolute path or populate the alternatives list."
+	fi
 fi
 
+# The script should never reach this statement!
 exit 1

@@ -27,13 +27,27 @@ user=$__object_id
 case $os
 in
 	debian|devuan|ubuntu)
-		test "${state}" = 'present' && __package_apt sensible-utils --state present
+		test "${state}" != 'absent' \
+			&& __package sensible-utils --state present --type apt
+		;;
+	centos|fedora|redhat|scientific)
+		test "${state}" != 'absent' \
+			&& __package sensible-utils --state present --type yum
 		;;
 	*)
-		echo "OS ${os} does not support select-editor." >&2
+		echo "OS ${os} does not support sensible-editor." >&2
+		echo "If it does, please provide a patch." >&2
 		exit 1
 		;;
 esac
+
+if test "${state}" != 'present' && test "${state}" != 'absent'
+then
+	echo 'Only "present" and "absent" are allowed for --state' >&2
+	exit 1
+fi
+
+test "${state}" = 'absent' || export __require='__package/sensible-utils'
 
 editor_path=$(cat "${__object}/explorer/editor_path")
 user_home=$(cat "${__object}/explorer/user_home")

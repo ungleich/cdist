@@ -8,14 +8,15 @@ cdist-type__sensible_editor - Select the sensible-editor
 
 DESCRIPTION
 -----------
-This cdist type allows you to select the sensible-editor on Debian-based systems
-for a given user.
+This cdist type allows you to select the :strong:`sensible-editor` for
+a given user.
 
 
 REQUIRED PARAMETERS
 -------------------
 editor
     Name or path of the editor to be selected.
+    On systems other than Debian derivatives an absolute path is required.
 
 
 OPTIONAL PARAMETERS
@@ -33,9 +34,17 @@ EXAMPLES
     __sensible_editor noob --editor nano
 
 
+LIMITATIONS
+-----------
+This type only works on operating systems on which the sensible-utils package
+is available.
+
+Hint: On RedHat-based systems setting up the EPEL repo might be necessary.
+
+
 SEE ALSO
 --------
-none
+:strong:`select-editor`\ (1), :strong:`sensible-editor`\ (1).
 
 
 AUTHOR
