@@ -35,7 +35,7 @@ owner=$(cat "$__object/parameter/owner")
 group=$(cat "$__object/parameter/group")
 mode=$(cat "$__object/parameter/mode")
 
-[ -f "$__object/parameter/recursive" ] && recursive='--recursive' || recursive=''
+[ -f "$__object/parameter/recursive" ] && recursive='--recurse-submodules' || recursive=''
 
 [ "$state_should" = "$state_is" ] \
  && [ "$owner" = "$owner_is" ] \
