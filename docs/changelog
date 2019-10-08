@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.0.1: 2019-10-08
 	* Type __group: Support OSes without getent (Dennis Camera)
 	* Type __user: Support OSes without getent (Dennis Camera)
 	* Type __ssh_authorized_keys: Support OSes without getent (Dennis Camera)
