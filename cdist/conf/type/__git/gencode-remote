@@ -36,6 +36,7 @@ group=$(cat "$__object/parameter/group")
 mode=$(cat "$__object/parameter/mode")
 
 [ -f "$__object/parameter/recursive" ] && recursive='--recurse-submodules' || recursive=''
+[ -f "$__object/parameter/shallow" ] && shallow='--depth 1 --shallow-submodules' || shallow=''
 
 [ "$state_should" = "$state_is" ] \
  && [ "$owner" = "$owner_is" ] \
@@ -45,7 +46,7 @@ mode=$(cat "$__object/parameter/mode")
 case $state_should in
     present)
         if [ "$state_should" != "$state_is" ]; then
-            echo git clone --quiet "$recursive" --branch "$branch" "$source" "$destination"
+            echo git clone --quiet "$recursive" "$shallow" --branch "$branch" "$source" "$destination"
         fi
         if { [ -n "$owner" ] && [ "$owner_is" != "$owner" ]; } || \
            { [ -n "$group" ] && [ "$group_is" != "$group" ]; }; then

@@ -38,6 +38,10 @@ owner
 recursive
    Passes the --recurse-submodules flag to git when cloning the repository.
 
+shallow
+   Sets --depth=1 and --shallow-submodules for cloning repositories with big history.
+
+
 EXAMPLES
 --------
 
