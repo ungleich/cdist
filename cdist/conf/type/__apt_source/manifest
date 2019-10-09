@@ -45,6 +45,7 @@ export forcedarch
 
 # generate file from template
 mkdir "$__object/files"
+chmod 755 "$__type/files/source.list.template"
 "$__type/files/source.list.template" > "$__object/files/source.list"
 __file "/etc/apt/sources.list.d/${name}.list" \
    --source "$__object/files/source.list" \
