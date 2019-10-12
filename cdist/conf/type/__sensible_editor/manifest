@@ -19,6 +19,21 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+version_ge() {
+	awk -F '[^0-9.]' -v target="${1:?}" '
+	function max(x, y) { return x > y ? x : y; }
+	BEGIN {
+		getline;
+		nx = split($1, x, ".");
+		ny = split(target, y, ".");
+		for (i = 1; i <= max(nx, ny); ++i) {
+			if (x[i] < y[i]) exit 1;
+			else if (x[i] > y[i]) exit 0;
+			else continue;
+		}
+	}'
+}
+
 not_supported() {
 	echo "OS ${os} does not support __sensible_editor." >&2
 	echo 'If it does, please provide a patch.' >&2
@@ -26,6 +41,7 @@ not_supported() {
 }
 
 os=$(cat "${__global}/explorer/os")
+os_version=$(cat "${__global}/explorer/os_version")
 
 state=$(cat "${__object}/parameter/state")
 user=$__object_id
@@ -36,6 +52,8 @@ then
 	exit 1
 fi
 
+package_name='sensible-utils'
+
 case $os
 in
 	debian)
@@ -45,6 +63,7 @@ in
 		pkg_type='apt'
 		;;
 	ubuntu)
+		"${os_version}" | version_ge 10.04 || package_name='debianutils'
 		pkg_type='apt'
 		;;
 	centos|fedora|redhat|scientific)
@@ -57,8 +76,9 @@ esac
 
 if test "${state}" != 'absent'
 then
-	__package sensible-utils --state present --type "${pkg_type}"
-	export __require='__package/sensible-utils'
+	__package "${package_name}" --state present \
+		--type "${pkg_type}"
+	export __require="__package/${package_name}"
 fi
 
 editor_path=$(cat "${__object}/explorer/editor_path")
