@@ -19,27 +19,16 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+not_supported() {
+	echo "OS ${os} does not support __sensible_editor." >&2
+	echo 'If it does, please provide a patch.' >&2
+	exit 1
+}
+
 os=$(cat "${__global}/explorer/os")
 
 state=$(cat "${__object}/parameter/state")
 user=$__object_id
-
-case $os
-in
-	debian|devuan|ubuntu)
-		test "${state}" != 'absent' \
-			&& __package sensible-utils --state present --type apt
-		;;
-	centos|fedora|redhat|scientific)
-		test "${state}" != 'absent' \
-			&& __package sensible-utils --state present --type yum
-		;;
-	*)
-		echo "OS ${os} does not support sensible-editor." >&2
-		echo "If it does, please provide a patch." >&2
-		exit 1
-		;;
-esac
 
 if test "${state}" != 'present' && test "${state}" != 'absent'
 then
@@ -47,7 +36,30 @@ then
 	exit 1
 fi
 
-test "${state}" = 'absent' || export __require='__package/sensible-utils'
+case $os
+in
+	debian)
+		pkg_type='apt'
+		;;
+	devuan)
+		pkg_type='apt'
+		;;
+	ubuntu)
+		pkg_type='apt'
+		;;
+	centos|fedora|redhat|scientific)
+		pkg_type='yum'
+		;;
+	*)
+		not_supported
+		;;
+esac
+
+if test "${state}" != 'absent'
+then
+	__package sensible-utils --state present --type "${pkg_type}"
+	export __require='__package/sensible-utils'
+fi
 
 editor_path=$(cat "${__object}/explorer/editor_path")
 user_home=$(cat "${__object}/explorer/user_home")

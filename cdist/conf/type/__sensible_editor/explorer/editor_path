@@ -35,7 +35,10 @@ case $("${__explorer}/os")
 in
 	debian|devuan|ubuntu)
 		has_alternatives=true
-		editors=$(update-alternatives --list editor)
+
+		# NOTE: Old versions do not support `--list`, in this case ignore the errors.
+		#       This will require an absolute path to be provided, though.
+		editors=$(update-alternatives --list editor 2>/dev/null)
 		;;
 	*)
 		# NOTE: RedHat has an alternatives system but it doesn't usually track
