@@ -78,6 +78,11 @@ in
         echo "printf '%s\\n' '$name_should' > /etc/hostname"
         echo "hostname -F /etc/hostname"
     ;;
+    gentoo)
+        # NOTE: Writing the hostname to file is done in the manifest for OpenRC.
+        #       For systemd hostnamectl should take care of that.
+        echo "hostname '$name_should'"
+    ;;
     macosx)
         echo "scutil --set HostName '$name_should'"
     ;;
@@ -87,7 +92,7 @@ in
         echo "printf '%s\\n' '$name_should' > /etc/HOSTNAME"
         echo 'hostname -F /etc/HOSTNAME'
     ;;
-    centos|fedora|freebsd|gentoo|netbsd|openbsd|redhat|scientific)
+    centos|fedora|freebsd|netbsd|openbsd|redhat|scientific)
         # NOTE: Writing the hostname to file is done in the manifest.
         echo "hostname '$name_should'"
     ;;

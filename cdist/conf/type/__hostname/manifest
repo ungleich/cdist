@@ -52,18 +52,28 @@ in
         :
     ;;
     centos|fedora|redhat|scientific)
-        __key_value sysconfig-hostname \
-            --file /etc/sysconfig/network \
-            --delimiter '=' --exact_delimiter \
-            --key HOSTNAME \
-            --value "\"$name_should\""
+        if test -z "$(cat "$__object/explorer/has_hostnamectl")"
+        then
+            # Only write to /etc/sysconfig/network on non-systemd versions.
+            # On systemd-based versions this entry is ignored.
+            __key_value sysconfig-hostname \
+                --file /etc/sysconfig/network \
+                --delimiter '=' --exact_delimiter \
+                --key HOSTNAME \
+                --value "\"$name_should\""
+        fi
     ;;
     gentoo)
-        __key_value confd-hostname \
-            --file /etc/conf.d/hostname \
-            --delimiter '=' --exact_delimiter \
-            --key 'hostname' \
-            --value "\"$name_should\""
+        if test -z "$(cat "$__object/explorer/has_hostnamectl")"
+        then
+            # Only write to /etc/conf.d/hostname on OpenRC-based installations.
+            # On systemd use hostnamectl(1) in gencode-remote.
+            __key_value confd-hostname \
+                --file /etc/conf.d/hostname \
+                --delimiter '=' --exact_delimiter \
+                --key 'hostname' \
+                --value "\"$name_should\""
+        fi
     ;;
     freebsd)
         __key_value rcconf-hostname \
