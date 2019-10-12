@@ -61,23 +61,29 @@ echo 'changed' >> "$__messages_out"
 # First try to set the hostname using hostnamectl, if available.
 if [ "$has_hostnamectl" ]; then
     # Allow hostnamectl to fail silently.
-    # Who the fuck invented a tool that needs dbus to set the hostname anyway ...
+    # Who the fuck invented a tool that needs dbus to set the hostname anyway…
 
-    cat <<EOF
-if hostnamectl set-hostname '$name_should'; then
-    printf '%s\\n' '$name_should' > /etc/hostname
-    exit 0
-fi
-EOF
+    # NOTE: We write the static hostname to /etc/hostname first in case
+    #       hostnamectl fails. Fallback-code below will then adjust the running
+    #       hostname below.
+    echo "printf '%s\\n' '$name_should' > /etc/hostname"
+
+    echo "hostnamectl set-hostname '$name_should' && exit 0"
 fi
 
 # Use the good old way to set the hostname. Also if hostnamectl fails.
 case $os
 in
-    alpine|archlinux|coreos|debian|devuan|ubuntu)
+    alpine|archlinux|debian|devuan|ubuntu)
         echo "printf '%s\\n' '$name_should' > /etc/hostname"
         echo "hostname -F /etc/hostname"
     ;;
+    coreos|openbmc-phosphor)
+        # NOTE: systemd-only distros have the hostname already written above.
+        #       But since hostamectl failed, we update the running hostname
+        #       manually.
+        echo "hostname -F /etc/hostname"
+        ;;
     gentoo)
         # NOTE: Writing the hostname to file is done in the manifest for OpenRC.
         #       For systemd hostnamectl should take care of that.
