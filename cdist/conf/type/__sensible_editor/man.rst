@@ -36,11 +36,19 @@ EXAMPLES
 
 LIMITATIONS
 -----------
-This type only works on operating systems on which the sensible-utils package
-is available.
 
-Hint: On RedHat-based systems setting up the EPEL repo might be necessary.
+This type supports the following operating systems:
+* Debian 8 (jessie) or later
+* Devuan
+* Ubuntu 8.10 (intrepid) or later
+* RHEL/CentOS 7 or later (EPEL repo required)
+* Fedora 21 or later
 
+In general, this type could work on operating systems on which the
+sensible-utils package is available.
+
+On old versions of Ubuntu the sensible-* utils are part of the
+debianutils package.
 
 SEE ALSO
 --------
