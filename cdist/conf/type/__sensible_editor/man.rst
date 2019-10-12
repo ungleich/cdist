@@ -37,17 +37,17 @@ EXAMPLES
 LIMITATIONS
 -----------
 
-This type supports the following operating systems:
-* Debian 8 (jessie) or later
-* Devuan
-* Ubuntu 8.10 (intrepid) or later
-* RHEL/CentOS 7 or later (EPEL repo required)
-* Fedora 21 or later
+This type depends upon the :strong:`sensible-editor`\ (1) script which
+is part of the sensible-utils package.
 
-In general, this type could work on operating systems on which the
-sensible-utils package is available.
+Therefore, the following operating systems are supported:
+  * Debian 8 (jessie) or later
+  * Devuan
+  * Ubuntu 8.10 (intrepid) or later
+  * RHEL/CentOS 7 or later (EPEL repo required)
+  * Fedora 21 or later
 
-On old versions of Ubuntu the sensible-* utils are part of the
+Note: on old versions of Ubuntu the sensible-* utils are part of the
 debianutils package.
 
 SEE ALSO
