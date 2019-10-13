@@ -47,9 +47,9 @@ os_version=$(cat "${__global}/explorer/os_version")
 state=$(cat "${__object}/parameter/state")
 user=$__object_id
 
-if test "${state}" != 'present' && test "${state}" != 'absent'
+if test "${state}" != 'present' && test "${state}" != 'exists' && test "${state}" != 'absent'
 then
-	echo 'Only "present" and "absent" are allowed for --state' >&2
+	echo 'Only "present", "exists", and "absent" are allowed for --state' >&2
 	exit 1
 fi
 

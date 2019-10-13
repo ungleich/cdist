@@ -24,7 +24,15 @@ editor
 OPTIONAL PARAMETERS
 -------------------
 state
-    Either "present" or "absent". Defaults to "present".
+    'present', 'absent', or 'exists'. Defaults to 'present', where:
+
+    present
+        the sensible-editor is exactly what is specified in --editor.
+    absent
+        no sensible-editor configuration is present.
+    exists
+        the sensible-editor will be set to what is specified in --editor,
+        unless there already is a configuration on the target system.
 
 
 EXAMPLES
