@@ -7,6 +7,9 @@ if [ -z "${certbot_fullpath}" ]; then
 	os_version="$(cat "${__global}/explorer/os_version")"
 
 	case "$os" in
+        archlinux)
+            __package certbot
+            ;;
 		debian)
 			case "$os_version" in
 				8*)
