@@ -18,6 +18,8 @@ editor
     Name or path of the editor to be selected.
     On systems other than Debian derivatives an absolute path is required.
 
+	It is permissible to omit this parameter if --state is absent.
+
 
 OPTIONAL PARAMETERS
 -------------------

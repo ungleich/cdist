@@ -33,6 +33,9 @@ editor_no_alternative() {
 		"$(test "${editors}" && echo "\nPlease choose one of:\n\n${editors}")"
 }
 
+# No need to check for the path if the file is supposed to be removed.
+test "$(cat "${__object}/parameter/state")" != 'absent' || exit 0
+
 
 case $("${__explorer}/os")
 in
@@ -50,7 +53,9 @@ in
 		;;
 esac
 
-editor=$(cat "${__object}/parameter/editor")
+# Read --editor parameter and check its value since it is "optional"
+editor=$(cat "${__object}/parameter/editor" 2>/dev/null) || true
+test -n "${editor}" || die 'Please provide an --editor to configure.'
 
 case $editor
 in
