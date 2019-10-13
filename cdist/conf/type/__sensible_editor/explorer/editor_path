@@ -78,17 +78,24 @@ then
 	if ! $is_abspath
 	then
 		# First, try to resolve the absolute path using $editors.
-		for e in $editors
+		while true
 		do
-			if test "$(basename "${e}")" = "${editor}"
-			then
-				editor="${e}"
-				break
-			fi
+			for e in $editors
+			do
+				if test "$(basename "${e}")" = "${editor}"
+				then
+					editor="${e}"
+					break 2  # break out of both loops
+				fi
+			done
+
+			# Iterating through alternatives did not yield a result
+			editor_no_alternative "${editor}"
+			break
 		done
 	fi
 
-	# Check if path is present
+	# Check if editor is present
 	test -f "${editor}" || editor_missing "${editor}"
 
 	for e in $editors
