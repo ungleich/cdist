@@ -63,7 +63,7 @@ in
 		pkg_type='apt'
 		;;
 	ubuntu)
-		"${os_version}" | version_ge 10.04 || package_name='debianutils'
+		(echo "${os_version}" | version_ge 10.04) || package_name='debianutils'
 		pkg_type='apt'
 		;;
 	centos|fedora|redhat|scientific)
