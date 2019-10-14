@@ -1,0 +1,33 @@
+#!/bin/sh -e
+#
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Determines the home folder of the target user.
+#
+
+user=$__object_id
+home=$(getent passwd "${user}" | cut -d':' -f6)
+
+if ! test -d "${home}"
+then
+	echo "Cannot find home directory of user ${user}" >&2
+	exit 1
+fi
+
+echo "${home}"

@@ -1,0 +1,131 @@
+#!/bin/sh -e
+#
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Check if the given editor is present on the target system and determine its
+# absolute path.
+#
+
+die() {
+	echo "$@" >&2
+	exit 1
+}
+
+editor_missing() { die "Editor '$1' is missing on the target system."; }
+editor_no_alternative() {
+	die "Editor '$1' is not in the alternatives list of the target system." \
+		"$(test -n "${editors}" && printf '\nPlease choose one of:\n\n%s\n' "${editors}")"
+}
+
+# No need to check for the path if the file is supposed to be removed.
+test "$(cat "${__object}/parameter/state")" != 'absent' || exit 0
+
+
+case $("${__explorer}/os")
+in
+	debian|devuan|ubuntu)
+		has_alternatives=true
+
+		# NOTE: Old versions do not support `--list`, in this case ignore the errors.
+		#       This will require an absolute path to be provided, though.
+		editors=$(update-alternatives --list editor 2>/dev/null)
+		;;
+	*)
+		# NOTE: RedHat has an alternatives system but it doesn't usually track
+		#       editors and it is a pain to extract the list.
+		has_alternatives=false
+		;;
+esac
+
+# Read --editor parameter and check its value since it is "optional"
+editor=$(cat "${__object}/parameter/editor" 2>/dev/null) || true
+test -n "${editor}" || die 'Please provide an --editor to configure.'
+
+case $editor
+in
+	/*)
+		is_abspath=true
+		;;
+	*/*)
+		die 'Relative editor paths are not supported'
+		;;
+	*)
+		is_abspath=false
+		;;
+esac
+
+
+if $has_alternatives && test -n "${editors}"
+then
+	IFS='
+'
+	if ! $is_abspath
+	then
+		# First, try to resolve the absolute path using $editors.
+		while true
+		do
+			for e in $editors
+			do
+				if test "$(basename "${e}")" = "${editor}"
+				then
+					editor="${e}"
+					break 2  # break out of both loops
+				fi
+			done
+
+			# Iterating through alternatives did not yield a result
+			editor_no_alternative "${editor}"
+			break
+		done
+	fi
+
+	# Check if editor is present
+	test -f "${editor}" || editor_missing "${editor}"
+
+	for e in $editors
+	do
+		if test "${editor}" = "${e}"
+		then
+			# Editor is part of the alternatives list -> use it!
+			echo "${editor}"
+			exit 0
+		fi
+	done
+
+	editor_no_alternative "${editor}"
+else
+	# NOTE: This branch is mostly for RedHat-based systems which do
+	#       not track editor alternatives.  To make this type useful
+	#       on RedHat at all we allow an absoloute path to be provided
+	#       in any case.
+
+	if $is_abspath
+	then
+		test -x "${editor}" || editor_missing "${editor}"
+
+		echo "${editor}"
+		exit 0
+	else
+		die "The target doesn't list any editor alternatives. " \
+		    "Please specify an absolute path or populate the alternatives list."
+	fi
+fi
+
+# The script should never reach this statement!
+exit 1
