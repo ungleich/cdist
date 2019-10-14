@@ -79,7 +79,7 @@ if test "${state}" != 'absent'
 then
 	__package "${package_name}" --state present \
 		--type "${pkg_type}"
-	export __require="__package/${package_name}"
+	export require="__package/${package_name}"
 fi
 
 editor_path=$(cat "${__object}/explorer/editor_path")
