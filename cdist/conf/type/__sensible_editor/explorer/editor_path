@@ -30,7 +30,7 @@ die() {
 editor_missing() { die "Editor '$1' is missing on the target system."; }
 editor_no_alternative() {
 	die "Editor '$1' is not in the alternatives list of the target system." \
-		"$(test "${editors}" && echo "\nPlease choose one of:\n\n${editors}")"
+		"$(test -n "${editors}" && printf '\nPlease choose one of:\n\n%s\n' "${editors}")"
 }
 
 # No need to check for the path if the file is supposed to be removed.
