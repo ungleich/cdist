@@ -15,6 +15,10 @@ case $os in
                 # Differntation not needed anymore
                 apt_source_distribution=stable
                 ;;
+            10*)
+                # Differntation not needed anymore
+                apt_source_distribution=stable
+                ;;
             *)
                 echo "Don't know how to install Grafana on $os $os_version. Send us a pull request!" >&2
                 exit 1
@@ -29,10 +33,9 @@ case $os in
                     --uri https://packages.grafana.com/oss/deb \
                     --distribution $apt_source_distribution \
                     --component main
-
         __package apt-transport-https
-
-        require="$require __apt_source/grafana __package/apt-transport-https" __package grafana
+        require="$require __apt_source/grafana" __apt_update_index
+        require="$require  __package/apt-transport-https __apt_update_index" __package grafana
         require="$require __package/grafana" __start_on_boot grafana-server
         require="$require __start_on_boot/grafana-server" __process grafana-server --start "service grafana-server start"
         ;;
