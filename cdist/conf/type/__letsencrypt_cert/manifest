@@ -39,6 +39,7 @@ if [ -z "${certbot_fullpath}" ]; then
 				10*)
 					__package_apt certbot
 				;;
+
 				*)
 					echo "Unsupported OS version: $os_version" >&2
 					exit 1

@@ -30,6 +30,7 @@ if [ -f "$__object/parameter/install-from-backports" ]; then
 		*)
 			echo "--install-from-backports is only supported on Devuan -- ignoring." >&2
 			echo "Send a pull request if you require it." >&2
+			exit 1
 		;;
 	esac
 else
@@ -60,5 +61,5 @@ require="$require __directory/$storage_path $require_pkg" \
 __config_file $CONF \
 	--source "$config" \
 	--group prometheus --mode 640 \
-	--onchange "service prometheus-alertmanager reload"  # TODO when a config-check tool is available, check config here
+	--onchange "service prometheus-alertmanager restart"  # TODO when a config-check tool is available, check config here
 
