@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.0.2: 2019-10-17
 	* New types: __xymon_server, __xymon_apache, __xymon_config, __xymon_client (Thomas Eckert)
 	* Type __letsencrypt_cert: Add Arch Linux support (Nico Schottelius)
 	* New type: __sensible_editor (Dennis Camera)
