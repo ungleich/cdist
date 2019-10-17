@@ -1,7 +1,14 @@
 from distutils.core import setup
-import cdist
 import os
 import re
+import subprocess
+
+
+if not os.path.exists(os.path.join('cdist', 'version.py')):
+    subprocess.run([os.path.join('bin', 'build-helper'), 'version', ])
+
+
+import cdist
 
 
 def data_finder(data_dir):
