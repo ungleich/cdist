@@ -2,9 +2,13 @@ Changelog
 ---------
 
 next:
+	* Type __letsencrypt_cert: Add Alpine support (Nico Schottelius)
+
+6.0.2: 2019-10-17
 	* New types: __xymon_server, __xymon_apache, __xymon_config, __xymon_client (Thomas Eckert)
 	* Type __letsencrypt_cert: Add Arch Linux support (Nico Schottelius)
-	* Type __letsencrypt_cert: Add Alpine support (Nico Schottelius)
+	* New type: __sensible_editor (Dennis Camera)
+	* Types __grafana_dashboard, __prometheus_alertmanager, __prometheus_exporter, __prometheus_server: Support Debian 10 (Ahmed Bilal Khalid)
 
 6.0.1: 2019-10-08
 	* Type __group: Support OSes without getent (Dennis Camera)
