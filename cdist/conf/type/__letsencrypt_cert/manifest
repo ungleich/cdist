@@ -10,6 +10,9 @@ if [ -z "${certbot_fullpath}" ]; then
         archlinux)
             __package certbot
             ;;
+        alpine)
+            __package certbot
+            ;;
 		debian)
 			case "$os_version" in
 				8*)
