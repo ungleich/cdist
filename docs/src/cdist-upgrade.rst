@@ -11,7 +11,7 @@ To upgrade cdist in the current branch use
     git pull
 
     # Also update the manpages
-    ./build man
+    make man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
 If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
