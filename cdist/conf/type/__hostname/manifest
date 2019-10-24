@@ -20,6 +20,13 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+not_supported() {
+   echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+   echo "Please contribute an implementation for it if you can." >&2
+   exit 1
+}
+
+
 os=$(cat "$__global/explorer/os")
 if [ -f "$__object/parameter/name" ]; then
     name_should="$(cat "$__object/parameter/name")"
@@ -38,12 +45,11 @@ else
     esac
 fi
 
-
-not_supported() {
-   echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
-   echo "Please contribute an implementation for it if you can." >&2
-   exit 1
-}
+if test -n "${max_len}" -a "$(wc -c "${name_should}")" -gt "${max_len}"a
+then
+	printf "Host name too long. Up to %u characters allowed.\n" "${max_len}" >&2
+	exit 1
+fi
 
 case $os
 in
