@@ -22,7 +22,7 @@
 #
 
 # Firstly, check hostnamectl if available.
-if command -v hostnamectl >/dev/null
+if command -v hostnamectl >/dev/null 2>&1
 then
 	hostnamectl status --static && exit 0
 fi
@@ -32,10 +32,10 @@ fi
 case $("$__explorer/os")
 in
 	alpine|archlinux|coreos|debian|devuan|ubuntu)
-		[ -f /etc/hostname ] && cat /etc/hostname
+		test -f /etc/hostname && cat /etc/hostname
 		;;
 	centos|fedora|redhat|scientific)
-		[ -f /etc/sysconfig/network ] \
+		test -f /etc/sysconfig/network \
 			&& (. /etc/sysconfig/network && echo "$HOSTNAME")
 		;;
 	freebsd)

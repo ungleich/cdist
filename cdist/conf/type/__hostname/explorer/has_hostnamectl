@@ -21,4 +21,4 @@
 # Check whether system has hostnamectl
 #
 
-command -v hostnamectl || true
+command -v hostnamectl 2>/dev/null || true
