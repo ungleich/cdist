@@ -20,8 +20,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-onchange_cmd="echo changed >>'$__messages_out'"
-
 not_supported() {
     echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
     echo "Please contribute an implementation for it if you can." >&2
@@ -29,7 +27,7 @@ not_supported() {
 }
 
 set_hostname_systemd() {
-    echo "$1" | __file /etc/hostname --source - --onchange "$onchange_cmd"
+    echo "$1" | __file /etc/hostname --source -
 }
 
 os=$(cat "$__global/explorer/os")
@@ -64,7 +62,7 @@ case $os
 in
     alpine|debian|devuan|ubuntu)
         echo "$name_should" \
-            | __file /etc/hostname --source - --onchange "$onchange_cmd"
+            | __file /etc/hostname --source -
     ;;
     macosx)
         # handled in gencode-remote
@@ -81,8 +79,7 @@ in
                 --file /etc/rc.conf \
                 --delimiter '=' --exact_delimiter \
                 --key 'HOSTNAME' \
-                --value "\"$name_should\"" \
-                --onchange "$onchange_cmd"
+                --value "\"$name_should\""
         fi
         ;;
     centos|fedora|redhat|scientific)
@@ -94,8 +91,7 @@ in
                 --file /etc/sysconfig/network \
                 --delimiter '=' --exact_delimiter \
                 --key HOSTNAME \
-                --value "\"$name_should\"" \
-                --onchange "$onchange_cmd"
+                --value "\"$name_should\""
         else
             set_hostname_systemd "$name_should"
         fi
@@ -119,29 +115,27 @@ in
             --file /etc/rc.conf \
             --delimiter '=' --exact_delimiter \
             --key 'hostname' \
-            --value "\"$name_should\"" \
-            --onchange "$onchange_cmd"
+            --value "\"$name_should\""
     ;;
     netbsd)
         __key_value rcconf-hostname \
             --file /etc/rc.conf \
             --delimiter '=' --exact_delimiter \
             --key 'hostname' \
-            --value "\"$name_should\"" \
-            --onchange "$onchange_cmd"
+            --value "\"$name_should\""
 
         # To avoid confusion, ensure that the hostname is only stored once
         __file /etc/myname --state absent
     ;;
     openbsd)
         echo "$name_should" \
-            | __file /etc/myname --source - --onchange "$onchange_cmd"
+            | __file /etc/myname --source -
     ;;
     suse)
         # We write into /etc/HOSTNAME for backwards-compatibility.  Modern SuSE
         # has hostnamectl anyway and symlinks /etc/HOSTNAME to /etc/hostname.
         echo "$name_should" \
-            | __file /etc/HOSTNAME --source - --onchange "$onchange_cmd"
+            | __file /etc/HOSTNAME --source -
     ;;
     *)
         # On other operating systems we fall back to systemd's hostnamectl if available…
