@@ -60,7 +60,7 @@ fi
 
 case $os
 in
-    alpine|debian|devuan|ubuntu)
+    alpine|debian|devuan|ubuntu|void)
         echo "$name_should" \
             | __file /etc/hostname --source -
     ;;
