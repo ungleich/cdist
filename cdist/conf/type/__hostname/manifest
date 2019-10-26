@@ -20,18 +20,25 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+onchange_cmd="echo changed >>'$__messages_out'"
+
 not_supported() {
-   echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
-   echo "Please contribute an implementation for it if you can." >&2
-   exit 1
+    echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+    echo "Please contribute an implementation for it if you can." >&2
+    exit 1
 }
 
+set_hostname_systemd() {
+    echo "$1" | __file /etc/hostname --source - --onchange "$onchange_cmd"
+}
 
 os=$(cat "$__global/explorer/os")
 max_len=$(cat "$__object/explorer/max_len")
+has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
 
-if [ -f "$__object/parameter/name" ]; then
-    name_should="$(cat "$__object/parameter/name")"
+if test -s "$__object/parameter/name"
+then
+    name_should=$(cat "$__object/parameter/name")
 else
     case $os
     in
@@ -49,18 +56,37 @@ fi
 
 if test -n "${max_len}" -a "$(printf '%s' "${name_should}" | wc -c)" -gt "${max_len}"
 then
-	printf "Host name too long. Up to %u characters allowed.\n" "${max_len}" >&2
-	exit 1
+    printf "Host name too long. Up to %u characters allowed.\n" "${max_len}" >&2
+    exit 1
 fi
 
 case $os
 in
-    archlinux|debian|suse|ubuntu|devuan|coreos|alpine|macosx)
+    alpine|debian|devuan|ubuntu)
+        echo "$name_should" \
+            | __file /etc/hostname --source - --onchange "$onchange_cmd"
+    ;;
+    macosx)
         # handled in gencode-remote
         :
     ;;
+    archlinux)
+        if test -n "$has_hostnamectl"
+        then
+            set_hostname_systemd "$name_should"
+        else
+            # Only for ancient ArchLinux, write to /etc/rc.conf on pre-systemd
+            # versions.
+            __key_value sysconfig-hostname \
+                --file /etc/rc.conf \
+                --delimiter '=' --exact_delimiter \
+                --key 'HOSTNAME' \
+                --value "\"$name_should\"" \
+                --onchange "$onchange_cmd"
+        fi
+        ;;
     centos|fedora|redhat|scientific)
-        if test -z "$(cat "$__object/explorer/has_hostnamectl")"
+        if test -z "$has_hostnamectl"
         then
             # Only write to /etc/sysconfig/network on non-systemd versions.
             # On systemd-based versions this entry is ignored.
@@ -68,11 +94,14 @@ in
                 --file /etc/sysconfig/network \
                 --delimiter '=' --exact_delimiter \
                 --key HOSTNAME \
-                --value "\"$name_should\""
+                --value "\"$name_should\"" \
+                --onchange "$onchange_cmd"
+        else
+            set_hostname_systemd "$name_should"
         fi
     ;;
     gentoo)
-        if test -z "$(cat "$__object/explorer/has_hostnamectl")"
+        if test -z "$has_hostnamectl"
         then
             # Only write to /etc/conf.d/hostname on OpenRC-based installations.
             # On systemd use hostnamectl(1) in gencode-remote.
@@ -81,6 +110,8 @@ in
                 --delimiter '=' --exact_delimiter \
                 --key 'hostname' \
                 --value "\"$name_should\""
+        else
+            set_hostname_systemd "$name_should"
         fi
     ;;
     freebsd)
@@ -88,22 +119,37 @@ in
             --file /etc/rc.conf \
             --delimiter '=' --exact_delimiter \
             --key 'hostname' \
-            --value "\"$name_should\""
+            --value "\"$name_should\"" \
+            --onchange "$onchange_cmd"
     ;;
     netbsd)
         __key_value rcconf-hostname \
             --file /etc/rc.conf \
             --delimiter '=' --exact_delimiter \
             --key 'hostname' \
-            --value "\"$name_should\""
+            --value "\"$name_should\"" \
+            --onchange "$onchange_cmd"
+
         # To avoid confusion, ensure that the hostname is only stored once
         __file /etc/myname --state absent
     ;;
     openbsd)
-        echo "$name_should" | __file /etc/myname --source -
+        echo "$name_should" \
+            | __file /etc/myname --source - --onchange "$onchange_cmd"
+    ;;
+    suse)
+        # We write into /etc/HOSTNAME for backwards-compatibility.  Modern SuSE
+        # has hostnamectl anyway and symlinks /etc/HOSTNAME to /etc/hostname.
+        echo "$name_should" \
+            | __file /etc/HOSTNAME --source - --onchange "$onchange_cmd"
     ;;
     *)
-        # On other operating systems we fall back to hostnamectl if available…
-        test -n "$(cat "$__object/explorer/has_hostnamectl")" || not_supported
+        # On other operating systems we fall back to systemd's hostnamectl if available…
+        if test -n "$has_hostnamectl"
+        then
+            set_hostname_systemd "$name_should"
+        else
+            not_supported
+        fi
     ;;
 esac

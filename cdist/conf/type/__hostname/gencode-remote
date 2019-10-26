@@ -22,17 +22,17 @@
 
 os=$(cat "$__global/explorer/os")
 name_running=$(cat "$__global/explorer/hostname")
-name_config=$(cat "$__object/explorer/persistent_hostname")
 has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
 
 
-if [ -f "$__object/parameter/name" ]; then
-    name_should="$(cat "$__object/parameter/name")"
+if test -s "$__object/parameter/name"
+then
+    name_should=$(cat "$__object/parameter/name")
 else
     case $os
     in
         # RedHat-derivatives and BSDs
-        centos|fedora|redhat|scientific|freebsd|netbsd|openbsd)
+        centos|fedora|redhat|scientific|freebsd|macosx|netbsd|openbsd)
             # Hostname is FQDN
             name_should="${__target_host}"
         ;;
@@ -43,66 +43,49 @@ else
     esac
 fi
 
+
 ################################################################################
-# Check if the hostname is already correct
+# Check if the (running) hostname is already correct
 #
-if [ "$name_running" = "$name_should" ] \
-  && [ -z "$name_config" -o "$name_config" = "$name_should" ]
-then
-    exit 0
-fi
+test "$name_running" != "$name_should" || exit 0
+
 
 ################################################################################
 # Setup hostname
 #
 echo 'changed' >>"$__messages_out"
 
-
-# First try to set the hostname using hostnamectl, if available.
-if [ -n "$has_hostnamectl" ]; then
-    # Allow hostnamectl to fail silently.
-    # Who the fuck invented a tool that needs dbus to set the hostname anyway…
-
-    # NOTE: We write the static hostname to /etc/hostname first in case
-    #       hostnamectl fails. Fallback-code below will then adjust the running
-    #       hostname below.
-    echo "echo '$name_should' >/etc/hostname"
-
-    echo "hostnamectl set-hostname '$name_should' && exit 0"
-fi
-
-# Use the good old way to set the hostname. Also if hostnamectl fails.
+# Use the good old way to set the hostname.
 case $os
 in
-    alpine|archlinux|debian|devuan|ubuntu)
-        echo "echo '$name_should' >/etc/hostname"
-        echo "hostname -F /etc/hostname"
+    alpine|debian|devuan|ubuntu)
+        echo 'hostname -F /etc/hostname'
     ;;
-    coreos|openbmc-phosphor)
-        # NOTE: systemd-only distros have the hostname already written above.
-        #       But since hostamectl failed, we update the running hostname
-        #       manually.
-        echo "hostname -F /etc/hostname"
-        ;;
-    gentoo)
-        # NOTE: Writing the hostname to file is done in the manifest for OpenRC.
-        #       For systemd hostnamectl should take care of that.
+    archlinux|centos|fedora|redhat|scientific|freebsd|netbsd|gentoo)
         echo "hostname '$name_should'"
     ;;
     macosx)
         echo "scutil --set HostName '$name_should'"
     ;;
+    openbsd)
+        echo 'hostname -F /etc/myname'
+    ;;
     suse)
-        # We write into /etc/HOSTNAME for backwards-compatibility.  Modern SuSE
-        # has hostnamectl anyway and symlinks /etc/HOSTNAME to /etc/hostname.
-        echo "echo '$name_should' >/etc/HOSTNAME"
         echo 'hostname -F /etc/HOSTNAME'
     ;;
-    centos|fedora|freebsd|netbsd|openbsd|redhat|scientific)
-        # NOTE: Writing the hostname to file is done in the manifest.
-        echo "hostname '$name_should'"
-    ;;
     *)
-        echo "echo 'Unsupported OS: $os' >&2; exit 1"
+        # Fall back to set the hostname using hostnamectl, if available.
+        if test -n "$has_hostnamectl"
+        then
+            # Don't use hostnamectl as the primary means to set the hostname for
+            # systemd systems, because it cannot be trusted to work reliably and
+            # exit with non-zero when it fails.
+            # Who invented a tool that needs dbus to set the hostname anyway…
+
+            echo "hostnamectl set-hostname \"\$(cat /etc/hostname)\""
+            echo "test \"\$(hostname)\" = \"\$(cat /etc/hostname)\" || hostname -F /etc/hostname"
+        else
+            printf "echo 'Unsupported OS: %s' >&2\nexit 1\n" "$os"
+        fi
     ;;
 esac
