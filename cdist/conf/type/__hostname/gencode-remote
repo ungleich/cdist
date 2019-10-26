@@ -61,7 +61,12 @@ in
     alpine|debian|devuan|ubuntu)
         echo 'hostname -F /etc/hostname'
     ;;
-    archlinux|centos|fedora|redhat|scientific|freebsd|netbsd|gentoo)
+    archlinux)
+        echo 'command -v hostnamectl >/dev/null 2>&1' \
+            "&& hostnamectl set-hostname '$name_should'" \
+            "|| hostname '$name_should'"
+    ;;
+    centos|fedora|redhat|scientific|freebsd|netbsd|gentoo)
         echo "hostname '$name_should'"
     ;;
     macosx)
