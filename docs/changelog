@@ -2,10 +2,28 @@ Changelog
 ---------
 
 next:
+	* Type __letsencrypt_cert: Add Alpine support (Nico Schottelius)
+	* Type __xymon_client: Fix spelling error in manpage (Dmitry Bogatov)
+	* Build: Support pip from git (Darko Poljak, Ľubomír Kučera)
+	* Type __package_update_index: Add Alpine support (Ahmed Bilal Khalid)
+
+6.0.2: 2019-10-17
+	* New types: __xymon_server, __xymon_apache, __xymon_config, __xymon_client (Thomas Eckert)
+	* Type __letsencrypt_cert: Add Arch Linux support (Nico Schottelius)
+	* New type: __sensible_editor (Dennis Camera)
+	* Types __grafana_dashboard, __prometheus_alertmanager, __prometheus_exporter, __prometheus_server: Support Debian 10 (Ahmed Bilal Khalid)
+
+6.0.1: 2019-10-08
 	* Type __group: Support OSes without getent (Dennis Camera)
 	* Type __user: Support OSes without getent (Dennis Camera)
 	* Type __ssh_authorized_keys: Support OSes without getent (Dennis Camera)
 	* Type __ssh_dot_ssh: Support OSes without getent (Dennis Camera)
+	* Explorer interfaces: Always sort output (Dennis Camera)
+	* Explorer os: Unquote value from os-release file (Dennis Camera)
+	* Type __letsencrypt_cert: Support Debian 10* (Ahmed Bilal Khalid)
+	* Type __prometheus_server: Add missing exit after unsupported error message (Dominique Roux)
+	* Type __git: Use --recurse-submodules instead of --recursive (Jonas Hagen)
+	* Type __git: Add --shallow option (Jonas Hagen)
 
 6.0.0: 2019-10-01
 	* Type __letsencrypt_cert: Fix beowulf's spelling (Mondi Ravi)

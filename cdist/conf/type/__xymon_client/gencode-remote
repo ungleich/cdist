@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2019 Ander Punnar (ander-at-kvlt-dot-ee)
+# 2018-2019 Thomas Eckert (tom at it-eckert.de)
 #
 # This file is part of cdist.
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
-#
 
-if command -v ip >/dev/null
-then
-	ip -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
-elif command -v ifconfig >/dev/null
-then
-	ifconfig -a | sed -n -E 's/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
-fi \
- | sort -u
+servers=$(cat "$__object/parameter/servers")
+
+if grep -q ^__key_value/CLIENTHOSTNAME "$__messages_in" || grep -q ^__key_value/XYMONSERVERS "$__messages_in" ; then
+	echo "systemctl restart xymon-client"
+	echo "restarted" >> "$__messages_out"
+	cat <<-EOT
+		echo "xymon-client xymon-client/XYMONSERVERS string $servers" | debconf-set-selections
+	EOT
+fi	

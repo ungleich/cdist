@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2019 Ander Punnar (ander-at-kvlt-dot-ee)
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -11,18 +11,23 @@
 #
 # cdist is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+#
+# Determines the home folder of the target user.
+#
 
-if command -v ip >/dev/null
+user=$__object_id
+home=$(getent passwd "${user}" | cut -d':' -f6)
+
+if ! test -d "${home}"
 then
-	ip -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
-elif command -v ifconfig >/dev/null
-then
-	ifconfig -a | sed -n -E 's/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
-fi \
- | sort -u
+	echo "Cannot find home directory of user ${user}" >&2
+	exit 1
+fi
+
+echo "${home}"

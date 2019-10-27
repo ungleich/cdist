@@ -7,6 +7,12 @@ if [ -z "${certbot_fullpath}" ]; then
 	os_version="$(cat "${__global}/explorer/os_version")"
 
 	case "$os" in
+        archlinux)
+            __package certbot
+            ;;
+        alpine)
+            __package certbot
+            ;;
 		debian)
 			case "$os_version" in
 				8*)
@@ -33,6 +39,10 @@ if [ -z "${certbot_fullpath}" ]; then
 					require="__apt_source/stretch-backports" __package_apt certbot \
 						--target-release stretch-backports
 				;;
+				10*)
+					__package_apt certbot
+				;;
+
 				*)
 					echo "Unsupported OS version: $os_version" >&2
 					exit 1

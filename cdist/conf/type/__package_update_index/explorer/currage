@@ -34,6 +34,9 @@ case "$type" in
             echo 0
         fi
         ;;
+    alpine)
+        echo 0
+        ;;
     *)  echo "Your specified type ($type) is currently not supported." >&2
         echo "Please contribute an implementation for it if you can." >&2
         ;;

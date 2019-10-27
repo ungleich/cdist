@@ -145,7 +145,7 @@ esac
 if [ -f /etc/os-release ]; then
    # already lowercase, according to:
    # https://www.freedesktop.org/software/systemd/man/os-release.html
-   awk -F= '/^ID=/ {print $2;}' /etc/os-release
+   awk -F= '/^ID=/ { if ($2 ~ /^'"'"'(.*)'"'"'$/ || $2 ~ /^"(.*)"$/) { print substr($2, 2, length($2) - 2) } else { print $2 } }' /etc/os-release
    exit 0
 fi
 

@@ -47,6 +47,10 @@ case "$type" in
         echo "pacman --noprogressbar --sync --refresh"
         echo "pacman package database synced (age was: $currage)" >> "$__messages_out"
         ;;
+    alpine)
+        echo "apk update"
+        echo "apk package database updated."
+        ;;
     *)
         echo "Don't know how to manage packages for type: $type" >&2
         exit 1
