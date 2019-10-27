@@ -61,12 +61,7 @@ fi
 case $os
 in
     alpine|debian|devuan|ubuntu|void)
-        echo "$name_should" \
-            | __file /etc/hostname --source -
-    ;;
-    macosx)
-        # handled in gencode-remote
-        :
+        echo "$name_should" | __file /etc/hostname --source -
     ;;
     archlinux)
         if test -n "$has_hostnamectl"
@@ -75,7 +70,8 @@ in
         else
             # Only for ancient ArchLinux, write to /etc/rc.conf on pre-systemd
             # versions.
-            __key_value sysconfig-hostname \
+			# There are some versions which use /etc/hostname but not systemd. It is unclear which ones these are.
+            __key_value '/etc/rc.conf:HOSTNAME' \
                 --file /etc/rc.conf \
                 --delimiter '=' --exact_delimiter \
                 --key 'HOSTNAME' \
@@ -87,7 +83,7 @@ in
         then
             # Only write to /etc/sysconfig/network on non-systemd versions.
             # On systemd-based versions this entry is ignored.
-            __key_value sysconfig-hostname \
+            __key_value '/etc/sysconfig/network:HOSTNAME' \
                 --file /etc/sysconfig/network \
                 --delimiter '=' --exact_delimiter \
                 --key HOSTNAME \
@@ -101,7 +97,7 @@ in
         then
             # Only write to /etc/conf.d/hostname on OpenRC-based installations.
             # On systemd use hostnamectl(1) in gencode-remote.
-            __key_value confd-hostname \
+            __key_value '/etc/conf.d/hostname:hostname' \
                 --file /etc/conf.d/hostname \
                 --delimiter '=' --exact_delimiter \
                 --key 'hostname' \
@@ -111,14 +107,18 @@ in
         fi
     ;;
     freebsd)
-        __key_value rcconf-hostname \
+        __key_value '/etc/rc.conf:hostname' \
             --file /etc/rc.conf \
             --delimiter '=' --exact_delimiter \
             --key 'hostname' \
             --value "\"$name_should\""
     ;;
+    macosx)
+        # handled in gencode-remote
+        :
+    ;;
     netbsd)
-        __key_value rcconf-hostname \
+        __key_value '/etc/rc.conf:hostname' \
             --file /etc/rc.conf \
             --delimiter '=' --exact_delimiter \
             --key 'hostname' \
@@ -128,14 +128,12 @@ in
         __file /etc/myname --state absent
     ;;
     openbsd)
-        echo "$name_should" \
-            | __file /etc/myname --source -
+        echo "$name_should" | __file /etc/myname --source -
     ;;
     suse)
         # We write into /etc/HOSTNAME for backwards-compatibility.  Modern SuSE
         # has hostnamectl anyway and symlinks /etc/HOSTNAME to /etc/hostname.
-        echo "$name_should" \
-            | __file /etc/HOSTNAME --source -
+        echo "$name_should" | __file /etc/HOSTNAME --source -
     ;;
     *)
         # On other operating systems we fall back to systemd's hostnamectl if available…
