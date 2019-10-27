@@ -41,7 +41,7 @@ else
     case $os
     in
         # RedHat-derivatives and BSDs
-        centos|fedora|redhat|scientific|freebsd|netbsd|openbsd)
+        centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|slackware)
             # Hostname is FQDN
             name_should="${__target_host}"
         ;;
@@ -129,6 +129,12 @@ in
     ;;
     openbsd)
         echo "$name_should" | __file /etc/myname --source -
+    ;;
+    slackware)
+        # We write the FQDN into /etc/HOSTNAME.
+        # But /etc/rc.d/rc.M will only read the first component from this file
+        # and set it as the running hostname on boot.
+        echo "$name_should" | __file /etc/HOSTNAME --source -
     ;;
     suse)
         # We write into /etc/HOSTNAME for backwards-compatibility.  Modern SuSE
