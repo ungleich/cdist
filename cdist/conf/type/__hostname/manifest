@@ -52,7 +52,7 @@ else
     esac
 fi
 
-if test -n "${max_len}" -a "$(printf '%s' "${name_should}" | wc -c)" -gt "${max_len}"
+if test -n "${max_len}" && test "$(printf '%s' "${name_should}" | wc -c)" -gt "${max_len}"
 then
     printf "Host name too long. Up to %u characters allowed.\n" "${max_len}" >&2
     exit 1
@@ -69,8 +69,8 @@ in
             set_hostname_systemd "$name_should"
         else
             # Only for ancient ArchLinux, write to /etc/rc.conf on pre-systemd
-            # versions.
-			# There are some versions which use /etc/hostname but not systemd. It is unclear which ones these are.
+            # versions.  There are some versions which use /etc/hostname but not
+			# systemd. It is unclear which ones these are.
             __key_value '/etc/rc.conf:HOSTNAME' \
                 --file /etc/rc.conf \
                 --delimiter '=' --exact_delimiter \

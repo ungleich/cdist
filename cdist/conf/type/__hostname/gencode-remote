@@ -66,14 +66,11 @@ in
             "&& hostnamectl set-hostname '$name_should'" \
             "|| hostname '$name_should'"
     ;;
-    centos|fedora|redhat|scientific|freebsd|netbsd|gentoo|slackware|void)
+    centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|gentoo|slackware|void)
         echo "hostname '$name_should'"
     ;;
     macosx)
         echo "scutil --set HostName '$name_should'"
-    ;;
-    openbsd)
-        echo 'hostname -F /etc/myname'
     ;;
     suse)
         echo 'hostname -F /etc/HOSTNAME'
