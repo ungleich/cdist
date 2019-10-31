@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.0.3: 2019-10-31
 	* Type __letsencrypt_cert: Add Alpine support (Nico Schottelius)
 	* Type __xymon_client: Fix spelling error in manpage (Dmitry Bogatov)
 	* Build: Support pip from git (Darko Poljak, Ľubomír Kučera)
