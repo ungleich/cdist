@@ -27,7 +27,7 @@ for that. This type will:
 - configure nginx.
 
 Our type will not create the actual python application. Its intention is only
-to configure hosing for specified user and project. It is up to the user to
+to configure hosting for specified user and project. It is up to the user to
 create his/her applications.
 
 So let's start.
@@ -480,7 +480,7 @@ Creating python bottle application
 
 We now need to create Bottle application. As you remember from the beginning
 of this walkthrough our type does not create the actual python application,
-its intention is only to configure hosing for specified user and project.
+its intention is only to configure hosting for specified user and project.
 It is up to the user to create his/her applications.
 
 Become app user::
