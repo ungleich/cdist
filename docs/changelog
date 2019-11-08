@@ -1,8 +1,11 @@
 Changelog
 ---------
 
-next:
+6.0.3: 2019-10-31
 	* Type __letsencrypt_cert: Add Alpine support (Nico Schottelius)
+	* Type __xymon_client: Fix spelling error in manpage (Dmitry Bogatov)
+	* Build: Support pip from git (Darko Poljak, Ľubomír Kučera)
+	* Type __package_update_index: Add Alpine support (Ahmed Bilal Khalid)
 
 6.0.2: 2019-10-17
 	* New types: __xymon_server, __xymon_apache, __xymon_config, __xymon_client (Thomas Eckert)

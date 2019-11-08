@@ -23,7 +23,7 @@ state
    'present', 'absent', defaults to 'present'.
 
 servers
-   One or more IP adresses (space separated) of the Xymon server(s) to report
+   One or more IP addresses (space separated) of the Xymon server(s) to report
    to. While DNS-names are ok it is discouraged, defaults to 127.0.0.1.
 
 

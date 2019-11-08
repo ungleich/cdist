@@ -1,7 +1,27 @@
 from distutils.core import setup
-import cdist
+from distutils.errors import DistutilsError
 import os
 import re
+import subprocess
+
+
+# We have it only if it is a git cloned repo.
+build_helper = os.path.join('bin', 'build-helper')
+# Version file path.
+version_file = os.path.join('cdist', 'version.py')
+# If we have build-helper we could be a git repo.
+if os.path.exists(build_helper):
+    # Try to generate version.py.
+    rv = subprocess.run([build_helper, 'version', ])
+    if rv.returncode != 0:
+        raise DistutilsError("Failed to generate {}".format(version_file))
+else:
+    # Otherwise, version.py should be present.
+    if not os.path.exists(version_file):
+        raise DistutilsError("Missing version file {}".format(version_file))
+
+
+import cdist
 
 
 def data_finder(data_dir):
