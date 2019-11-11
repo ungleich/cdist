@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2013 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2013-2019 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -20,11 +20,32 @@
 #
 #
 
+import os
+import logging
+import tempfile
+
 import cdist.config
 import cdist.core
 
 
 class Install(cdist.config.Config):
+
+    @classmethod
+    def onehost(cls, host, host_tags, host_base_path, host_dir_name, args,
+                parallel, configuration, remove_remote_files_dirs=False):
+        # Start a log server so nested `cdist config` runs have a place to
+        # send their logs to.
+        log_server_socket_dir = tempfile.mkdtemp()
+        log_server_socket = os.path.join(log_server_socket_dir, 'log-server')
+        cls._register_path_for_removal(log_server_socket_dir)
+        log = logging.getLogger(host)
+        log.debug('Starting logging server on: %s', log_server_socket)
+        os.environ['__cdist_log_server_socket_to_export'] = log_server_socket
+        cdist.log.setupLogServer(log_server_socket)
+
+        super().onehost(host, host_tags, host_base_path, host_dir_name, args,
+                parallel, configuration, remove_remote_files_dirs=False)
+
     def object_list(self):
         """Short name for object list retrieval.
         In install mode, we only care about install objects.

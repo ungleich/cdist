@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # 2010-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2019-2020 Steven Armstrong
 #
 # This file is part of cdist.
 #
@@ -20,9 +21,17 @@
 #
 #
 
-import logging
-import sys
+import asyncio
+import contextlib
 import datetime
+import logging
+import logging.handlers
+import os
+import pickle
+import struct
+import sys
+import threading
+import time
 
 
 # Define additional cdist logging levels.
@@ -89,20 +98,25 @@ class DefaultLog(logging.Logger):
         super().__init__(name)
         self.propagate = False
 
-        formatter = CdistFormatter(self.FORMAT)
+        if '__cdist_log_server_socket' in os.environ:
+            log_server_socket = os.environ['__cdist_log_server_socket']
+            socket_handler = logging.handlers.SocketHandler(log_server_socket, None)
+            self.addHandler(socket_handler)
+        else:
+            formatter = CdistFormatter(self.FORMAT)
 
-        stdout_handler = logging.StreamHandler(sys.stdout)
-        stdout_handler.addFilter(self.StdoutFilter())
-        stdout_handler.setLevel(logging.TRACE)
-        stdout_handler.setFormatter(formatter)
+            stdout_handler = logging.StreamHandler(sys.stdout)
+            stdout_handler.addFilter(self.StdoutFilter())
+            stdout_handler.setLevel(logging.TRACE)
+            stdout_handler.setFormatter(formatter)
 
-        stderr_handler = logging.StreamHandler(sys.stderr)
-        stderr_handler.addFilter(self.StderrFilter())
-        stderr_handler.setLevel(logging.ERROR)
-        stderr_handler.setFormatter(formatter)
+            stderr_handler = logging.StreamHandler(sys.stderr)
+            stderr_handler.addFilter(self.StderrFilter())
+            stderr_handler.setLevel(logging.ERROR)
+            stderr_handler.setFormatter(formatter)
 
-        self.addHandler(stdout_handler)
-        self.addHandler(stderr_handler)
+            self.addHandler(stdout_handler)
+            self.addHandler(stderr_handler)
 
     def verbose(self, msg, *args, **kwargs):
         self.log(logging.VERBOSE, msg, *args, **kwargs)
@@ -150,6 +164,43 @@ def setupTimestampingParallelLogging():
 def setupParallelLogging():
     del logging.getLogger().handlers[:]
     logging.setLoggerClass(ParallelLog)
+
+
+async def handle_log_client(reader, writer):
+    while True:
+        chunk = await reader.read(4)
+        if len(chunk) < 4:
+            return
+
+        data_size = struct.unpack('>L', chunk)[0]
+        data = bytearray(data_size)
+        view = memoryview(data)
+        data_pending = data_size
+        data = await reader.read(data_size)
+
+        obj = pickle.loads(data)
+        record = logging.makeLogRecord(obj)
+        logger = logging.getLogger(record.name)
+        logger.handle(record)
+
+
+def run_log_server(server_address):
+    # Get a new loop inside the current thread to run the log server.
+    loop = asyncio.new_event_loop()
+    loop.create_task(asyncio.start_unix_server(handle_log_client, server_address))
+    loop.run_forever()
+
+
+def setupLogServer(log_server_socket):
+    """Run a asyncio based unix socket log server in a background thread.
+    """
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(log_server_socket)
+    t = threading.Thread(target=run_log_server, args=(log_server_socket,))
+    # Deamonizing the thread means we don't have to care about stoping it.
+    # It will die together with the main process.
+    t.daemon = True
+    t.start()
 
 
 setupDefaultLogging()
