@@ -173,9 +173,6 @@ async def handle_log_client(reader, writer):
             return
 
         data_size = struct.unpack('>L', chunk)[0]
-        data = bytearray(data_size)
-        view = memoryview(data)
-        data_pending = data_size
         data = await reader.read(data_size)
 
         obj = pickle.loads(data)
