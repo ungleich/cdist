@@ -136,6 +136,9 @@ in
         # and set it as the running hostname on boot.
         echo "$name_should" | __file /etc/HOSTNAME --source -
     ;;
+    solaris)
+        echo "$name_should" | __file /etc/nodename --source -
+    ;;
     suse)
         # We write into /etc/HOSTNAME for backwards-compatibility.  Modern SuSE
         # has hostnamectl anyway and symlinks /etc/HOSTNAME to /etc/hostname.

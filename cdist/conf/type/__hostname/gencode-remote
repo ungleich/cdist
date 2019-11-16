@@ -72,6 +72,9 @@ in
     macosx)
         echo "scutil --set HostName '$name_should'"
     ;;
+    solaris)
+        echo "uname -S '$name_should'"
+    ;;
     suse)
         echo 'hostname -F /etc/HOSTNAME'
     ;;
