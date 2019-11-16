@@ -52,7 +52,7 @@ else
     esac
 fi
 
-if test -n "${max_len}" && test "$(printf '%s' "${name_should}" | wc -c)" -gt "${max_len}"
+if test -n "$max_len" && test "$(printf '%s' "$name_should" | wc -c)" -gt "$max_len"
 then
     printf "Host name too long. Up to %u characters allowed.\n" "${max_len}" >&2
     exit 1
@@ -93,10 +93,10 @@ in
         fi
     ;;
     gentoo)
+        # Only write to /etc/conf.d/hostname on OpenRC-based installations.
+        # On systemd use hostnamectl(1) in gencode-remote.
         if test -z "$has_hostnamectl"
         then
-            # Only write to /etc/conf.d/hostname on OpenRC-based installations.
-            # On systemd use hostnamectl(1) in gencode-remote.
             __key_value '/etc/conf.d/hostname:hostname' \
                 --file /etc/conf.d/hostname \
                 --delimiter '=' --exact_delimiter \
