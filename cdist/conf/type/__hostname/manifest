@@ -68,14 +68,17 @@ in
         then
             set_hostname_systemd "$name_should"
         else
+            echo 'Ancient ArchLinux variants without hostnamectl are not supported.' >&2
+            exit 1
             # Only for ancient ArchLinux, write to /etc/rc.conf on pre-systemd
             # versions.  There are some versions which use /etc/hostname but not
-			# systemd. It is unclear which ones these are.
-            __key_value '/etc/rc.conf:HOSTNAME' \
-                --file /etc/rc.conf \
-                --delimiter '=' --exact_delimiter \
-                --key 'HOSTNAME' \
-                --value "\"$name_should\""
+            # systemd. It is unclear which ones these are.
+
+            # __key_value '/etc/rc.conf:HOSTNAME' \
+            #     --file /etc/rc.conf \
+            #     --delimiter '=' --exact_delimiter \
+            #     --key 'HOSTNAME' \
+            #     --value "\"$name_should\""
         fi
         ;;
     centos|fedora|redhat|scientific)
