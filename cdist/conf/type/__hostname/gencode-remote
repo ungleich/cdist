@@ -66,7 +66,7 @@ in
             "&& hostnamectl set-hostname '$name_should'" \
             "|| hostname '$name_should'"
     ;;
-    centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|gentoo|slackware|void)
+    centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|gentoo|void)
         echo "hostname '$name_should'"
     ;;
     macosx)
@@ -75,8 +75,11 @@ in
     solaris)
         echo "uname -S '$name_should'"
     ;;
-    suse)
-        echo 'hostname -F /etc/HOSTNAME'
+    slackware|suse|opensuse-leap)
+        # We do not read from /etc/HOSTNAME, because the running
+        # hostname is the first component only while the file contains
+        # the FQDN.
+        echo "hostname '$name_should'"
     ;;
     *)
         # Fall back to set the hostname using hostnamectl, if available.
@@ -84,11 +87,12 @@ in
         then
             # Don't use hostnamectl as the primary means to set the hostname for
             # systemd systems, because it cannot be trusted to work reliably and
-            # exit with non-zero when it fails.
-            # Who invented a tool that needs dbus to set the hostname anyway…
+            # exit with non-zero when it fails (e.g. hostname too long,
+            # D-Bus failure, etc.).
 
             echo "hostnamectl set-hostname \"\$(cat /etc/hostname)\""
-            echo "test \"\$(hostname)\" = \"\$(cat /etc/hostname)\" || hostname -F /etc/hostname"
+            echo "test \"\$(hostname)\" = \"\$(cat /etc/hostname)\"" \
+                 " || hostname -F /etc/hostname"
         else
             printf "echo 'Unsupported OS: %s' >&2\nexit 1\n" "$os"
         fi

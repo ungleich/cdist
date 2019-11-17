@@ -31,6 +31,9 @@ set_hostname_systemd() {
 }
 
 os=$(cat "$__global/explorer/os")
+os_version=$(cat "$__global/explorer/os_version")
+os_major=$(echo "$os_version" | grep -o '^[0-9][0-9]*')
+
 max_len=$(cat "$__object/explorer/max_len")
 has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
 
@@ -45,8 +48,21 @@ else
             # Hostname is FQDN
             name_should="${__target_host}"
         ;;
+        suse|opensuse-leap)
+            # Classic SuSE stores the FQDN in /etc/HOSTNAME, while
+            # systemd does not. The running hostname is the first
+            # component in both cases.
+            # In versions before 15.x, the FQDN is stored in /etc/hostname.
+            if test -n "$has_hostnamectl" && test "$os_major" -ge 15 \
+                    && test "$os_major" -ne 42
+            then
+                name_should="${__target_host%%.*}"
+            else
+                name_should="${__target_host}"
+            fi
+        ;;
         *)
-            # Hostname is only first component of FQDN
+            # Hostname is only first component of FQDN on all other systems.
             name_should="${__target_host%%.*}"
         ;;
     esac
@@ -127,28 +143,42 @@ in
             --key 'hostname' \
             --value "\"$name_should\""
 
-        # To avoid confusion, ensure that the hostname is only stored once
+        # To avoid confusion, ensure that the hostname is only stored once.
         __file /etc/myname --state absent
     ;;
     openbsd)
         echo "$name_should" | __file /etc/myname --source -
     ;;
     slackware)
-        # We write the FQDN into /etc/HOSTNAME.
-        # But /etc/rc.d/rc.M will only read the first component from this file
-        # and set it as the running hostname on boot.
+        # We write the FQDN into /etc/HOSTNAME.  But /etc/rc.d/rc.M will only
+        # read the first component from this file and set it as the running
+        # hostname on boot.
         echo "$name_should" | __file /etc/HOSTNAME --source -
     ;;
     solaris)
         echo "$name_should" | __file /etc/nodename --source -
     ;;
-    suse)
-        # We write into /etc/HOSTNAME for backwards-compatibility.  Modern SuSE
-        # has hostnamectl anyway and symlinks /etc/HOSTNAME to /etc/hostname.
-        echo "$name_should" | __file /etc/HOSTNAME --source -
+    suse|opensuse-leap)
+        # Modern SuSE provides /etc/HOSTNAME as a symlink for
+        # backwards-compatibility. Unfortunately it cannot be used
+        # here as __file does not follow the symlink.
+        # Therefore, we use the presence of the hostnamectl binary as
+        # an indication of which file to use.  This unfortunately does
+        # not work correctly on openSUSE 12.x which provides
+        # hostnamectl but not /etc/hostname.
+
+        if test -n "$has_hostnamectl" -a "$os_major" -gt 12
+        then
+            hostname_file='/etc/hostname'
+        else
+            hostname_file='/etc/HOSTNAME'
+        fi
+
+        echo "$name_should" | __file "$hostname_file" --source -
     ;;
     *)
-        # On other operating systems we fall back to systemd's hostnamectl if available…
+        # On other operating systems we fall back to systemd's
+        # hostnamectl if available…
         if test -n "$has_hostnamectl"
         then
             set_hostname_systemd "$name_should"
