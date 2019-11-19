@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+command -v getconf >/dev/null || exit 0
+
+val=$(getconf HOST_NAME_MAX 2>/dev/null) || exit 0
+
+if test -n "${val}" -a "${val}" != 'undefined'
+then
+	echo "${val}"
+fi

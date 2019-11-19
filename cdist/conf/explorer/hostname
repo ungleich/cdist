@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-# 2010-2014 Nico Schottelius (nico-cdist at schottelius.org)
-# 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -19,7 +18,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Retrieve the running hostname
+#
 
-if command -v uname >/dev/null; then
-   uname -n
+if command -v hostname >/dev/null
+then
+	hostname
+else
+	uname -n
 fi

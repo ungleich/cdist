@@ -8,7 +8,10 @@ cdist-type__hostname - Set the hostname
 
 DESCRIPTION
 -----------
-Set's the hostname on various operating systems.
+Sets the hostname on various operating systems.
+
+**Tip:** For advice on choosing a hostname, see
+`RFC 1178 <https://tools.ietf.org/html/rfc1178>`_.
 
 
 REQUIRED PARAMETERS
@@ -18,7 +21,7 @@ None.
 OPTIONAL PARAMETERS
 -------------------
 name
-   The hostname to set. Defaults to the first segment of __target_host 
+   The hostname to set. Defaults to the first segment of __target_host
    (${__target_host%%.*})
 
 
