@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.1.0: 2019-11-19
 	* Explorer hostname, type __hostname: Support more operating systems, rewrite type and hostname explorer (Dennis Camera)
 
 6.0.4: 2019-11-19
