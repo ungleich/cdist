@@ -27,21 +27,30 @@ servers
    to. While DNS-names are ok it is discouraged, defaults to 127.0.0.1.
 
 
+BOOLEAN PARAMETERS
+------------------
+msgcache
+    Enable xymon `msgcache`. Note: XYMONSERVER has to be `127.0.0.1` for using
+    `msgcache` (see `msgcache (8)` of the xymon documentation for details).
+
 EXAMPLES
 --------
 
 .. code-block:: sh
 
-    # minmal, report to 127.0.0.1
+    # minimal, report to 127.0.0.1
     __xymon_client
 
     # specify server:
     __xymon_client --servers "192.168.1.1"
 
+    # activate `msgcache` for passive client:
+    __xymon_client --msgcache
+
 
 SEE ALSO
 --------
-:strong:`cdist__xymon_server`\ (7), :strong:`xymon`\ (7)
+:strong:`cdist__xymon_server`\ (7), :strong:`xymon`\ (7), :strong:`msgcache`\ (8)
 
 
 AUTHORS
