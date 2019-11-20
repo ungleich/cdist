@@ -23,6 +23,21 @@ confdir
    deployed.
 
 
+OPTIONAL PARAMETERS
+-------------------
+owner
+   passed as-is as `--owner` to `__rsync`
+
+group
+   passed as-is as `--group` to `__rsync`
+
+
+OPTIONAL MULTIPLE PARAMETERS
+----------------------------
+rsync-opts
+   identical to __rsync type, only `--`-options are supported
+
+
 REQUIRED FILES
 --------------
 The directory specified by `confdir` has to contain a valid xymon-configuration
@@ -39,10 +54,16 @@ EXAMPLES
     # this will replace /etc/xymon/ on the target host with
     # the contents from __xymon_config/files/xymon.example.com/
 
+    ## the same but set ownership to `xymon:xymon` and exclude
+    ## the `netrc`-file:
+    __xymon_config --confdir=xymon.example.com \
+       --owner xymon --group xymon \
+       --rsync-opts "exclude=netrc"
+
 
 SEE ALSO
 --------
-:strong:`cdist__xymon_server`\ (7), :strong:`xymon`\ (7)
+:strong:`cdist__xymon_server`\ (7), :strong:`cdist__rsync`\ (7), :strong:`xymon`\ (7)
 
 AUTHORS
 -------

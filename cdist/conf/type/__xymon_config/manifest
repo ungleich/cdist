@@ -18,7 +18,26 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 
 confdir=$(cat "$__object/parameter/confdir")
+set --
+if [ -f "$__object/parameter/owner" ]; then
+	owner=$(cat "$__object/parameter/owner")
+	set -- "$@" "--owner $owner"
+fi
+if [ -f "$__object/parameter/group" ]; then
+	group=$(cat "$__object/parameter/group")
+	set -- "$@" "--group $group"
+fi
 
+## pass `--rsync-opts` as-is to `__rsync`:
+if [ -f "$__object/parameter/rsync-opts" ]; then
+	while read -r opts; do
+		# shellcheck disable=SC2089
+		set -- "$@" "--rsync-opts '$opts'"
+	done < "$__object/parameter/rsync-opts"
+fi
+
+# shellcheck disable=SC2068,SC2090
 __rsync /etc/xymon/ \
 	--source "$__type/files/$confdir/" \
-	--rsync-opts "delete"
+	--rsync-opts "delete" \
+	$@
