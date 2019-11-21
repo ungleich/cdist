@@ -61,31 +61,29 @@ EOF
             echo "curl -s -L '$uri' | apt-key add -"
          fi
       elif [ -d "$keydir" ]; then
-         tmp='/tmp/cdist_apt_key_tmp'
-
          # we need to kill gpg after 30 seconds, because gpg
          # can get stuck if keyserver is not responding.
          # exporting env var and not exit 1,
          # because we need to clean up and kill dirmngr.
          cat << EOF
 
-mkdir -m 700 -p "$tmp"
+gpgtmphome="\$( mktemp -d )"
 
 if timeout 30s \\
-    gpg --homedir "$tmp" \\
+    gpg --homedir "\$gpgtmphome" \\
         --keyserver "$keyserver" \\
         --recv-keys "$keyid"
 then
-    gpg --homedir "$tmp" \\
+    gpg --homedir "\$gpgtmphome" \\
         --export "$keyid" \\
         > "$keyfile"
 else
     export GPG_GOT_STUCK=1
 fi
 
-GNUPGHOME="$tmp" gpgconf --kill dirmngr
+GNUPGHOME="\$gpgtmphome" gpgconf --kill dirmngr
 
-rm -rf "$tmp"
+rm -rf "\$gpgtmphome"
 
 if [ -n "\$GPG_GOT_STUCK" ]
 then
