@@ -4,6 +4,7 @@ Changelog
 next:
 	* Type __xymon_config: Add parameters for ownership and generic rsync options (Thomas Eckert)
 	* Type __xymon_client: Add msgcache parameter to support passive clients (Thomas Eckert)
+	* Type __apt_key: Use mktemp for unique temporary gpg home (Ander Punnar)
 
 6.1.0: 2019-11-19
 	* Explorer hostname, type __hostname: Support more operating systems, rewrite type and hostname explorer (Dennis Camera)
