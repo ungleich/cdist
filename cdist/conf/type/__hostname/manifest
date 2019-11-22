@@ -32,7 +32,7 @@ set_hostname_systemd() {
 
 os=$(cat "$__global/explorer/os")
 os_version=$(cat "$__global/explorer/os_version")
-os_major=$(echo "$os_version" | grep -o '^[0-9][0-9]*')
+os_major=$(echo "$os_version" | grep -o '^[0-9][0-9]*' || true)
 
 max_len=$(cat "$__object/explorer/max_len")
 has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
