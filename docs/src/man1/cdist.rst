@@ -827,6 +827,8 @@ CDIST_OVERRIDE
 
 CDIST_ORDER_DEPENDENCY
     Create dependencies based on the execution order.
+    Note that in version 6.2.0 semantic of this processing mode is
+    finally fixed and well defined.
 
 CDIST_REMOTE_EXEC
     Use this command for remote execution (should behave like ssh).

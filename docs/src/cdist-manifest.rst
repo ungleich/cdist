@@ -163,7 +163,126 @@ automatically depends on the previously created object.
 It essentially helps you to build up blocks of code that build upon each other
 (like first creating the directory xyz than the file below the directory).
 
-Read also about `perils of CDIST_ORDER_DEPENDENCY <cdist-best-practice.html#perils-of-cdist-order-dependency>`_.
+Read also about `notes on CDIST_ORDER_DEPENDENCY <cdist-best-practice.html#notes-on-cdist-order-dependency>`_.
+
+In version 6.2.0 semantic CDIST_ORDER_DEPENDENCY is finally fixed and well defined.
+
+CDIST_ORDER_DEPENDENCY defines type order dependency context. Order dependency context
+starts when CDIST_ORDER_DEPENDENCY is set, and ends when it is unset. After each
+manifest execution finishes, any existing order dependency context is automatically
+unset. This ensures that CDIST_ORDER_DEPENDENCY is valid within the manifest where it
+is used. When order dependency context is defined then cdist executes types in the
+order in which they are created in the manifest inside order dependency context.
+
+Sometimes the best way to see how something works is to see examples.
+
+Suppose you have defined **initial manifest**:
+
+.. code-block:: sh
+
+    __cycle1 cycle1
+    export CDIST_ORDER_DEPENDENCY=1
+    __cycle2 cycle2
+    __cycle3 cycle3
+
+with types **__cycle1**:
+
+.. code-block:: sh
+
+    export CDIST_ORDER_DEPENDENCY=1
+    __file /tmp/cycle11
+    __file /tmp/cycle12
+    __file /tmp/cycle13
+
+**__cycle2**:
+
+.. code-block:: sh
+
+    __file /tmp/cycle21
+    export CDIST_ORDER_DEPENDENCY=1
+    __file /tmp/cycle22
+    __file /tmp/cycle23
+    unset CDIST_ORDER_DEPENDENCY
+    __file /tmp/cycle24
+
+**__cycle3**:
+
+.. code-block:: sh
+
+    __file /tmp/cycle31
+    __file /tmp/cycle32
+    export CDIST_ORDER_DEPENDENCY=1
+    __file /tmp/cycle33
+    __file /tmp/cycle34
+
+For the above config, cdist results in the following expected *dependency graph*
+(type *__cycleX* is shown as *cX*, *__file/tmp/cycleXY* is shown as *fcXY*):
+
+::
+
+    c1---->fc11
+    |      /\
+    |       |
+    +----->fc12
+    |      /\
+    |       |
+    +----->fc13
+
+    c2--+--->fc21
+    /\  |
+    |   |
+    |   +----->fc22
+    |   |      /\
+    |   |       |
+    |   +----->fc23
+    |   |
+    |   |
+    |   +----->fc24
+    |
+    |
+    c3---->fc31
+    |
+    |
+    +----->fc32
+    |
+    |
+    +----->fc33
+    |      /\
+    |       |
+    +----->fc34
+
+Before version 6.2.0 the above configuration would result in cycle:
+
+::
+
+    ERROR: 185.203.112.26: Cycle detected in object dependencies:
+    __file/tmp/cycle11 -> __cycle3/cycle3 -> __cycle2/cycle2 -> __cycle1/cycle1 -> __file/tmp/cycle11!
+
+The following manifest shows an example for order dependency contexts:
+
+.. code-block:: sh
+
+    __file /tmp/fileA
+    export CDIST_ORDER_DEPENDENCY=1
+    __file /tmp/fileB
+    __file /tmp/fileC
+    __file /tmp/fileD
+    unset CDIST_ORDER_DEPENDENCY
+    __file /tmp/fileE
+    __file /tmp/fileF
+    export CDIST_ORDER_DEPENDENCY=1
+    __file /tmp/fileG
+    __file /tmp/fileH
+    unset CDIST_ORDER_DEPENDENCY
+    __file /tmp/fileI
+
+This means:
+
+* C depends on B
+* D depends on C
+* H depends on G
+
+and there are no other dependencies from this manifest.
 
 
 Overrides
