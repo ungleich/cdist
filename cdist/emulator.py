@@ -29,6 +29,7 @@ import sys
 import cdist
 from cdist import core
 from cdist import flock
+from cdist.core.manifest import Manifest
 
 
 class MissingRequiredEnvironmentVariableError(cdist.Error):
@@ -81,6 +82,11 @@ class Emulator(object):
 
         self.object_base_path = os.path.join(self.global_path, "object")
         self.typeorder_path = os.path.join(self.global_path, "typeorder")
+
+        self.typeorder_dep_path = os.path.join(self.global_path,
+                                               Manifest.TYPEORDER_DEP_NAME)
+        self.order_dep_state_path = os.path.join(self.global_path,
+                                                 Manifest.ORDER_DEP_STATE_NAME)
 
         self.type_name = os.path.basename(argv[0])
         self.cdist_type = core.CdistType(self.type_base_path, self.type_name)
@@ -206,6 +212,14 @@ class Emulator(object):
         return params
 
     def setup_object(self):
+        # CDIST_ORDER_DEPENDENCY state
+        order_dep_on = self._order_dep_on()
+        order_dep_defined = "CDIST_ORDER_DEPENDENCY" in self.env
+        if not order_dep_defined and order_dep_on:
+            self._set_order_dep_state_off()
+        if order_dep_defined and not order_dep_on:
+            self._set_order_dep_state_on()
+
         # Create object with given parameters
         self.parameters = {}
         for key, value in vars(self.args).items():
@@ -237,6 +251,20 @@ class Emulator(object):
             # record the created object in typeorder file
             with open(self.typeorder_path, 'a') as typeorderfile:
                 print(self.cdist_object.name, file=typeorderfile)
+            # record the created object in parent object typeorder file
+            __object_name = self.env.get('__object_name', None)
+            depname = self.cdist_object.name
+            if __object_name:
+                parent = self.cdist_object.object_from_name(__object_name)
+                parent.typeorder.append(self.cdist_object.name)
+                if self._order_dep_on():
+                    self.log.trace(('[ORDER_DEP] Adding %s to typeorder dep'
+                                    ' for %s'), depname, parent.name)
+                    parent.typeorder_dep.append(depname)
+            elif self._order_dep_on():
+                self.log.trace('[ORDER_DEP] Adding %s to global typeorder dep',
+                               depname)
+                self._add_typeorder_dep(depname)
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
@@ -293,45 +321,73 @@ class Emulator(object):
 
         return cdist_object.name
 
+    def _order_dep_on(self):
+        return os.path.exists(self.order_dep_state_path)
+
+    def _set_order_dep_state_on(self):
+        self.log.trace('[ORDER_DEP] Setting order dep state on')
+        with open(self.order_dep_state_path, 'w'):
+            pass
+
+    def _set_order_dep_state_off(self):
+        self.log.trace('[ORDER_DEP] Setting order dep state off')
+        # remove order dep state file
+        try:
+            os.remove(self.order_dep_state_path)
+        except FileNotFoundError:
+            pass
+        # remove typeorder dep file
+        try:
+            os.remove(self.typeorder_dep_path)
+        except FileNotFoundError:
+            pass
+
+    def _add_typeorder_dep(self, name):
+        with open(self.typeorder_dep_path, 'a') as f:
+            print(name, file=f)
+
+    def _read_typeorder_dep(self):
+        try:
+            with open(self.typeorder_dep_path, 'r') as f:
+                return f.readlines()
+        except FileNotFoundError:
+            return []
+
     def record_requirements(self):
         """Record requirements."""
 
+        order_dep_on = self._order_dep_on()
+
         # Inject the predecessor, but not if its an override
         # (this would leed to an circular dependency)
-        if ("CDIST_ORDER_DEPENDENCY" in self.env and
-                'CDIST_OVERRIDE' not in self.env):
-            # load object name created befor this one from typeorder file ...
-            with open(self.typeorder_path, 'r') as typecreationfile:
-                typecreationorder = typecreationfile.readlines()
-                # get the type created before this one ...
-                try:
-                    lastcreatedtype = typecreationorder[-2].strip()
-                    # __object_name is the name of the object whose type
-                    # manifest is currently executed
-                    __object_name = self.env.get('__object_name', None)
-                    if lastcreatedtype == __object_name:
-                        self.log.debug(("Not injecting require for "
-                                        "CDIST_ORDER_DEPENDENCY: %s for %s,"
-                                        " %s's type manifest is currently"
-                                        " being executed"),
-                                       lastcreatedtype,
-                                       self.cdist_object.name,
-                                       lastcreatedtype)
-                    else:
-                        if 'require' in self.env:
-                            appendix = " " + lastcreatedtype
-                            if appendix not in self.env['require']:
-                                self.env['require'] += appendix
-                        else:
-                            self.env['require'] = lastcreatedtype
-                        self.log.debug(("Injecting require for "
-                                        "CDIST_ORDER_DEPENDENCY: %s for %s"),
-                                       lastcreatedtype,
-                                       self.cdist_object.name)
-                except IndexError:
-                    # if no second last line, we are on the first type,
-                    # so do not set a requirement
-                    pass
+        if (order_dep_on and 'CDIST_OVERRIDE' not in self.env):
+            try:
+                # __object_name is the name of the object whose type
+                # manifest is currently executed
+                __object_name = self.env.get('__object_name', None)
+                # load object name created befor this one from typeorder
+                # dep file
+                if __object_name:
+                    parent = self.cdist_object.object_from_name(
+                        __object_name)
+                    typeorder = parent.typeorder_dep
+                else:
+                    typeorder = self._read_typeorder_dep()
+                # get the type created before this one
+                lastcreatedtype = typeorder[-2].strip()
+                if 'require' in self.env:
+                    if lastcreatedtype not in self.env['require']:
+                        self.env['require'] += " " + lastcreatedtype
+                else:
+                    self.env['require'] = lastcreatedtype
+                self.log.debug(("Injecting require for "
+                                "CDIST_ORDER_DEPENDENCY: %s for %s"),
+                               lastcreatedtype,
+                               self.cdist_object.name)
+            except IndexError:
+                # if no second last line, we are on the first type,
+                # so do not set a requirement
+                pass
 
         reqs = set()
         if "require" in self.env:

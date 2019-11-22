@@ -124,6 +124,7 @@ class Config(object):
         """Remove files and directories for the run"""
         if self.remove_remote_files_dirs:
             self._remove_remote_files_dirs()
+        self.manifest.cleanup()
 
     @staticmethod
     def hosts(source):
@@ -787,6 +788,9 @@ class Config(object):
         self.explorer.run_type_explorers(cdist_object, transfer_type_explorers)
         try:
             self.manifest.run_type_manifest(cdist_object)
+            self.log.trace("[ORDER_DEP] Removing order dep files for %s",
+                           cdist_object)
+            cdist_object.cleanup()
             cdist_object.state = core.CdistObject.STATE_PREPARED
         except cdist.Error as e:
             raise cdist.CdistObjectError(cdist_object, e)
