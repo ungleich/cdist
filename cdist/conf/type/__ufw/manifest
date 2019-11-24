@@ -31,7 +31,7 @@ case "$state" in
                     __package epel-release
                     require='__package/epel-release' __package ufw
                 else
-                    echo 'CentOS version 7 is required!'
+                    echo 'CentOS version 7 is required!' >&2
                     exit 1
                 fi
                 ;;
