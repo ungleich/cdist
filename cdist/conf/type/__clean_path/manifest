@@ -18,7 +18,16 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/explorer/list" ] && [ -f "$__object/parameter/onchange" ]
-then
-    cat "$__object/parameter/onchange"
-fi
+[ ! -f "$__object/explorer/list" ] && exit 0
+
+for l in $( cat "$__object/explorer/list" )
+do
+    if echo "$l" | grep -Eq '/$'
+    then
+        __directory "$l" --state absent
+        echo "removed directory '$l'" >> "$__messages_out"
+    else
+        __file "$l" --state absent
+        echo "removed file '$l'" >> "$__messages_out"
+    fi
+done
