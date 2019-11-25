@@ -7,6 +7,7 @@ next:
 	* Type __apt_key: Use mktemp for unique temporary gpg home (Ander Punnar)
 	* Type __hostname: Silence grep exit 1 when os_version is not numeric (Ander Punnar)
 	* Type __ufw: Print error message to stderr (Daniel Tschada)
+	* Type __clean_path: Use __directory and __file types for better clarity (Ander Punnar)
 
 6.1.0: 2019-11-19
 	* Explorer hostname, type __hostname: Support more operating systems, rewrite type and hostname explorer (Dennis Camera)
