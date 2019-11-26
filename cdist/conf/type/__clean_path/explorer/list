@@ -29,9 +29,7 @@ then
     exclude="$( cat "$__object/parameter/exclude" )"
 
     find "$path" -mindepth 1 -maxdepth 1 -regex "$pattern" \
-        -and -not -regex "$exclude" \
-        \( -type d -printf '%p/\n' , -type f -print \)
+        -and -not -regex "$exclude"
 else
-    find "$path" -mindepth 1 -maxdepth 1 -regex "$pattern" \
-        \( -type d -printf '%p/\n' , -type f -print \)
+    find "$path" -mindepth 1 -maxdepth 1 -regex "$pattern"
 fi

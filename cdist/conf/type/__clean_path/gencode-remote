@@ -18,7 +18,31 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/explorer/list" ] && [ -f "$__object/parameter/onchange" ]
+[ ! -s "$__object/explorer/list" ] && exit 0
+
+path="/$__object_id"
+
+pattern="$( cat "$__object/parameter/pattern" )"
+
+if [ -f "$__object/parameter/exclude" ]
+then
+    exclude="$( cat "$__object/parameter/exclude" )"
+
+    echo "find '$path' -mindepth 1 -maxdepth 1 -regex '$pattern'" \
+        "-and -not -regex '$exclude'" \
+        '-exec rm -rf {} \;'
+else
+    echo "find '$path' -mindepth 1 -maxdepth 1 -regex '$pattern'" \
+        '-exec rm -rf {} \;'
+fi
+
+while read -r f
+do
+    echo "removed '$f'" >> "$__messages_out"
+done \
+< "$__object/explorer/list"
+
+if [ -f "$__object/parameter/onchange" ]
 then
     cat "$__object/parameter/onchange"
 fi
