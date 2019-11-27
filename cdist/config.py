@@ -368,7 +368,7 @@ class Config(object):
     def resolve_target_addresses(host, family):
         try:
             return ipaddr.resolve_target_addresses(host, family)
-        except:
+        except:  # noqa
             e = sys.exc_info()[1]
             raise cdist.Error(("Error resolving target addresses for host '{}'"
                                ": {}").format(host, e))

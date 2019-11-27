@@ -21,7 +21,7 @@ else:
         raise DistutilsError("Missing version file {}".format(version_file))
 
 
-import cdist
+import cdist  # noqa
 
 
 def data_finder(data_dir):
@@ -66,7 +66,7 @@ setup(
         "Development Status :: 6 - Mature",
         "Environment :: Console",
         "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",  # noqa
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX",
         "Operating System :: POSIX :: BSD",

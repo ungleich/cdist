@@ -44,7 +44,7 @@ class MissingRequiredEnvironmentVariableError(cdist.Error):
 class DefaultList(list):
     """Helper class to allow default values for optional_multiple parameters.
 
-       @see https://groups.google.com/forum/#!msg/comp.lang.python/sAUvkJEDpRc/RnRymrzJVDYJ
+       @see https://groups.google.com/forum/#!msg/comp.lang.python/sAUvkJEDpRc/RnRymrzJVDYJ  # noqa
     """
     def __copy__(self):
         return []
