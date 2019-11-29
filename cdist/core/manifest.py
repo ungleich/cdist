@@ -96,6 +96,10 @@ class Manifest(object):
     """Executes cdist manifests.
 
     """
+
+    ORDER_DEP_STATE_NAME = 'order_dep_state'
+    TYPEORDER_DEP_NAME = 'typeorder_dep'
+
     def __init__(self, target_host, local, dry_run=False):
         self.target_host = target_host
         self.local = local
@@ -212,3 +216,13 @@ class Manifest(object):
                     type_manifest,
                     env=self.env_type_manifest(cdist_object),
                     message_prefix=message_prefix)
+
+    def cleanup(self):
+        def _rm_file(fname):
+            try:
+                self.log.trace("[ORDER_DEP] Removing %s", fname)
+                os.remove(os.path.join(self.local.base_path, fname))
+            except FileNotFoundError:
+                pass
+        _rm_file(Manifest.ORDER_DEP_STATE_NAME)
+        _rm_file(Manifest.TYPEORDER_DEP_NAME)

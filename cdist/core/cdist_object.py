@@ -243,6 +243,16 @@ class CdistObject(object):
             lambda obj: os.path.join(obj.base_path, obj.code_local_path))
     code_remote = fsproperty.FileStringProperty(
             lambda obj: os.path.join(obj.base_path, obj.code_remote_path))
+    typeorder = fsproperty.FileListProperty(
+            lambda obj: os.path.join(obj.absolute_path, 'typeorder'))
+    typeorder_dep = fsproperty.FileListProperty(
+            lambda obj: os.path.join(obj.absolute_path, 'typeorder_dep'))
+
+    def cleanup(self):
+        try:
+            os.remove(os.path.join(self.absolute_path, 'typeorder_dep'))
+        except FileNotFoundError:
+            pass
 
     @property
     def exists(self):
