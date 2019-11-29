@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Core: Redefine/reimplement/fix CDIST_ORDER_DEPENDENCY (Darko Poljak)
+
 6.1.1: 2019-11-26
 	* Type __xymon_config: Add parameters for ownership and generic rsync options (Thomas Eckert)
 	* Type __xymon_client: Add msgcache parameter to support passive clients (Thomas Eckert)
