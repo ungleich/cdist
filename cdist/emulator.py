@@ -29,7 +29,6 @@ import sys
 import cdist
 from cdist import core
 from cdist import flock
-from cdist.core.manifest import Manifest
 import cdist.util.python_type_util as pytype_util
 from cdist.core.pytypes import get_pytype_class
 import inspect
@@ -87,9 +86,9 @@ class Emulator(object):
         self.typeorder_path = os.path.join(self.global_path, "typeorder")
 
         self.typeorder_dep_path = os.path.join(self.global_path,
-                                               Manifest.TYPEORDER_DEP_NAME)
+                                               cdist.TYPEORDER_DEP_NAME)
         self.order_dep_state_path = os.path.join(self.global_path,
-                                                 Manifest.ORDER_DEP_STATE_NAME)
+                                                 cdist.ORDER_DEP_STATE_NAME)
 
         self.type_name = os.path.basename(argv[0])
         self.cdist_type = core.CdistType(self.type_base_path, self.type_name)

@@ -47,6 +47,9 @@ REMOTE_COPY = "scp -o User=root -q"
 REMOTE_EXEC = "ssh -o User=root"
 REMOTE_CMDS_CLEANUP_PATTERN = "ssh -o User=root -O exit -S {}"
 
+ORDER_DEP_STATE_NAME = 'order_dep_state'
+TYPEORDER_DEP_NAME = 'typeorder_dep'
+
 
 class Error(Exception):
     """Base exception class for this project"""

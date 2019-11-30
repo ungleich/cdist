@@ -100,9 +100,6 @@ class Manifest(object):
 
     """
 
-    ORDER_DEP_STATE_NAME = 'order_dep_state'
-    TYPEORDER_DEP_NAME = 'typeorder_dep'
-
     def __init__(self, target_host, local, dry_run=False):
         self.target_host = target_host
         self.local = local
@@ -227,8 +224,8 @@ class Manifest(object):
                 os.remove(os.path.join(self.local.base_path, fname))
             except FileNotFoundError:
                 pass
-        _rm_file(Manifest.ORDER_DEP_STATE_NAME)
-        _rm_file(Manifest.TYPEORDER_DEP_NAME)
+        _rm_file(cdist.ORDER_DEP_STATE_NAME)
+        _rm_file(cdist.TYPEORDER_DEP_NAME)
 
     def env_py_type_manifest(self, cdist_object):
         env = os.environ.copy()
