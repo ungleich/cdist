@@ -10,6 +10,7 @@ unit_tests:
 pycodestyle:
     stage: test
     script:
+        - $(command -v pycodestyle)
         - ls -l $(command -v pycodestyle)
         - ./bin/build-helper pycodestyle
 
