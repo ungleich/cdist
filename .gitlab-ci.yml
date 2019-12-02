@@ -10,9 +10,7 @@ unit_tests:
 pycodestyle:
     stage: test
     script:
-        - $(command -v pycodestyle3)
-        - $(command -v pycodestyle)
-        - ls -l $(command -v pycodestyle)
+        - pep8=$(command -v pycodestyle-3) && ln -s -f "${pep8}" /usr/bin/pycodestyle
         - ./bin/build-helper pycodestyle
 
 shellcheck:
