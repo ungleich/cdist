@@ -2,6 +2,9 @@ Changelog
 ---------
 
 next:
+	* Type __package_update_index: Fix Alpine part (Dominique Roux)
+
+6.2.0: 2019-11-30
 	* Core: Redefine/reimplement/fix CDIST_ORDER_DEPENDENCY (Darko Poljak)
 
 6.1.1: 2019-11-26

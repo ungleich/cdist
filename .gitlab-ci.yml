@@ -3,26 +3,16 @@ stages:
 
 unit_tests:
     stage: test
-    before_script:
-        - 'apk update'
-        - 'apk add python3'
     script:
         - ./bin/build-helper version
         - ./bin/build-helper test
 
 pycodestyle:
     stage: test
-    before_script:
-        - 'apk update'
-        - 'apk add python3 py3-pycodestyle'
-        - 'ln -f -s /usr/bin/pycodestyle-3 /usr/bin/pycodestyle'
     script:
         - ./bin/build-helper pycodestyle
 
 shellcheck:
     stage: test
-    before_script:
-        - 'wget https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz'
-        - 'tar xf shellcheck-stable.linux.x86_64.tar.xz && mv shellcheck-stable/shellcheck /usr/bin/'
     script:
         - ./bin/build-helper shellcheck
