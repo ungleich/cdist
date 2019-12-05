@@ -424,7 +424,7 @@ def get_parsers():
     parser['inventory'].set_defaults(
             func=cdist.inventory.Inventory.commandline)
 
-    # PreOs
+    # PreOS
     parser['preos'] = parser['sub'].add_parser('preos', add_help=False)
 
     # Shell
