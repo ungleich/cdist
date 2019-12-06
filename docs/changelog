@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Type __package_update_index: Fix Alpine part (Dominique Roux)
+	* Documentation: Fix man pages for install types (Darko Poljak)
 
 6.2.0: 2019-11-30
 	* Core: Redefine/reimplement/fix CDIST_ORDER_DEPENDENCY (Darko Poljak)

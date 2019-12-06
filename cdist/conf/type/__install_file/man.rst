@@ -23,6 +23,10 @@ symlink
 directory
   replace it with the source file
 
+One exception is that when state is pre-exists, an error is raised if
+the file would have been created otherwise (e.g. it is not present or
+not a regular file).
+
 In any case, make sure that the file attributes are as specified.
 
 
@@ -33,7 +37,7 @@ None.
 OPTIONAL PARAMETERS
 -------------------
 state
-   'present', 'absent' or 'exists', defaults to 'present' where:
+   'present', 'absent', 'exists' or 'pre-exists', defaults to 'present' where:
 
    present
       the file is exactly the one from source
@@ -41,6 +45,9 @@ state
       the file does not exist
    exists
       the file from source but only if it doesn't already exist
+   pre-exists
+      check that the file exists and is a regular file, but do not
+      create or modify it
 
 group
    Group to chgrp to.
@@ -55,6 +62,9 @@ source
    If supplied, copy this file from the host running cdist to the target.
    If not supplied, an empty file or directory will be created.
    If source is '-' (dash), take what was written to stdin as the file content.
+
+onchange
+   The code to run if file is modified.
 
 MESSAGES
 --------
@@ -93,6 +103,8 @@ EXAMPLES
     __install_file /home/frodo/.bashrc --source "/etc/skel/.bashrc" \
        --state exists \
        --owner frodo --mode 0600
+    # Check that the file is present, show an error when it is not
+    __install_file /etc/somefile --state pre-exists
     # Take file content from stdin
     __install_file /tmp/whatever --owner root --group root --mode 644 --source - << DONE
         Here goes the content for /tmp/whatever
