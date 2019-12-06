@@ -6,6 +6,7 @@ next:
 	* Documentation: Fix man pages for install types (Darko Poljak)
 	* Documentation: Embed config skeleton instead of rewriting it (Darko Poljak)
 	* Documentation: Remove cdist-type prefix and man page reference from type list in html (Darko Poljak)
+	* Documentation: PreOS english nitpicking (Evil Ham)
 
 6.2.0: 2019-11-30
 	* Core: Redefine/reimplement/fix CDIST_ORDER_DEPENDENCY (Darko Poljak)
