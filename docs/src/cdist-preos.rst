@@ -88,16 +88,12 @@ When you try to run this new preos you will get:
 
 .. code-block:: sh
 
-    $ cdist preos -h
-    usage: cdist preos [-h] preos
-
-    Create PreOS
-
-    positional arguments:
-      preos       PreOS to create, one of: {'netbsd', 'debian', 'ubuntu'}
-
-    optional arguments:
-      -h, --help  show this help message and exit
+    $ cdist preos -L
+    Available PreOS-es:
+        - debian
+        - devuan
+        - netbsd
+        - ubuntu
     $ cdist preos netbsd
     NetBSD PreOS: []
 
@@ -121,15 +117,11 @@ When you try to run this new preos you will get:
 .. code-block:: sh
 
     $ cdist preos -h
-    usage: cdist preos [-h] preos
-
-    Create PreOS
-
-    positional arguments:
-      preos       PreOS to create, one of: {'freebsd', 'debian', 'ubuntu'}
-
-    optional arguments:
-      -h, --help  show this help message and exit
+    Available PreOS-es:
+        - debian
+        - devuan
+        - freebsd
+        - ubuntu
     $ cdist preos freebsd
     FreeBSD dummy preos: []
 
