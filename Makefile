@@ -63,6 +63,11 @@ DOCSREFSH=$(DOCS_SRC_DIR)/cdist-reference.rst.sh
 $(DOCSREF): $(DOCSREFSH)
 	$(DOCSREFSH)
 
+DOCSCFGSKEL=./configuration/cdist.cfg.skeleton
+
+configskel: $(DOCSCFGSKEL)
+	cp -f "$(DOCSCFGSKEL)" "$(DOCS_SRC_DIR)/"
+
 version:
 	@[ -f "cdist/version.py" ] || { \
 		printf "Missing 'cdist/version.py', please generate it first.\n" && exit 1; \
@@ -72,7 +77,7 @@ version:
 man: version $(MANTYPES) $(DOCSREF)
 	$(SPHINXM)
 
-html: version $(MANTYPES) $(DOCSREF)
+html: version configskel $(MANTYPES) $(DOCSREF)
 	$(SPHINXH)
 
 docs: man html
@@ -114,6 +119,7 @@ speeches: $(SPEECHES)
 #
 clean: docs-clean
 	rm -f $(DOCS_SRC_DIR)/cdist-reference.rst
+	rm -f $(DOCS_SRC_DIR)/cdist.cfg.skeleton
 
 	find "$(DOCS_SRC_DIR)" -mindepth 2 -type l \
 	| xargs rm -f

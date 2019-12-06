@@ -31,73 +31,11 @@ can be used.
 
 Config file format
 ------------------
+
 cdist configuration file is in the INI file format. Currently it supports
 only [GLOBAL] section.
-The possible keywords and their meanings are as follows:
 
-:strong:`archiving`
-    Use specified archiving. Valid values include:
-    'none', 'tar', 'tgz', 'tbz2' and 'txz'.
+Here you can find configuration file skeleton:
 
-:strong:`beta`
-    Enable beta functionality. It recognizes boolean values from
-    'yes'/'no', 'on'/'off', 'true'/'false' and '1'/'0'.
-
-:strong:`cache_path_pattern`
-    Specify cache path pattern.
-
-:strong:`conf_dir`
-    List of configuration directories separated with the character conventionally
-    used by the operating system to separate search path components (as in PATH),
-    such as ':' for POSIX or ';' for Windows.
-    If also specified at command line then values from command line are
-    appended to this value.
-
-:strong:`init_manifest`
-    Specify default initial manifest.
-
-:strong:`inventory_dir`
-    Specify inventory directory.
-
-:strong:`jobs`
-    Specify number of jobs for parallel processing. If -1 then the default,
-    number of CPU's in the system is used. If 0 then parallel processing in
-    jobs is disabled. If set to positive number then specified maximum
-    number of processes will be used.
-
-:strong:`local_shell`
-    Shell command used for local execution.
-
-:strong:`out_path`
-    Directory to save cdist output in.
-
-:strong:`parallel`
-    Process hosts in parallel. If -1 then the default, number of CPU's in
-    the system is used. If 0 then parallel processing of hosts is disabled.
-    If set to positive number then specified maximum number of processes
-    will be used.
-
-:strong:`remote_copy`
-    Command to use for remote copy (should behave like scp).
-
-:strong:`remote_exec`
-    Command to use for remote execution (should behave like ssh).
-
-:strong:`remote_out_path`
-    Directory to save cdist output in on the target host.
-
-:strong:`remote_shell`
-    Shell command at remote host used for remote execution.
-
-:strong:`save_output_streams`
-    Enable/disable saving output streams (enabled by default).
-    It recognizes boolean values from 'yes'/'no', 'on'/'off', 'true'/'false'
-    and '1'/'0'.
-
-:strong:`timestamp`
-    Timestamp log messages with the current local date and time
-    in the format: YYYYMMDDHHMMSS.us.
-
-:strong:`verbosity`
-    Set verbosity level. Valid values are: 
-    'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE' and 'OFF'.
+.. literalinclude:: cdist.cfg.skeleton
+    :language: ini
