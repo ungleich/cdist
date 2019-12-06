@@ -24,6 +24,7 @@ docs/src/man1/*.1
 docs/src/man7/*.7
 docs/src/man7/cdist-type__*.rst
 docs/src/cdist-reference.rst
+docs/src/cdist-types.rst
 docs/src/cdist.cfg.skeleton
 
 # Ignore cdist cache for version control

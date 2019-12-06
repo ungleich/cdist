@@ -63,6 +63,13 @@ DOCSREFSH=$(DOCS_SRC_DIR)/cdist-reference.rst.sh
 $(DOCSREF): $(DOCSREFSH)
 	$(DOCSREFSH)
 
+# Html types list with references
+DOCSTYPESREF=$(MAN7DSTDIR)/cdist-types.rst
+DOCSTYPESREFSH=$(DOCS_SRC_DIR)/cdist-types.rst.sh
+
+$(DOCSTYPESREF): $(DOCSTYPESREFSH)
+	$(DOCSTYPESREFSH)
+
 DOCSCFGSKEL=./configuration/cdist.cfg.skeleton
 
 configskel: $(DOCSCFGSKEL)
@@ -77,7 +84,7 @@ version:
 man: version $(MANTYPES) $(DOCSREF)
 	$(SPHINXM)
 
-html: version configskel $(MANTYPES) $(DOCSREF)
+html: version configskel $(MANTYPES) $(DOCSREF) $(DOCSTYPESREF)
 	$(SPHINXH)
 
 docs: man html
@@ -119,6 +126,7 @@ speeches: $(SPEECHES)
 #
 clean: docs-clean
 	rm -f $(DOCS_SRC_DIR)/cdist-reference.rst
+	rm -f $(DOCS_SRC_DIR)/cdist-types.rst
 	rm -f $(DOCS_SRC_DIR)/cdist.cfg.skeleton
 
 	find "$(DOCS_SRC_DIR)" -mindepth 2 -type l \
