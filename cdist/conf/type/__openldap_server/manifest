@@ -9,11 +9,10 @@ slapd_modules=$(cat "${__object}/parameter/module" || true)
 schemas=$(cat "${__object}/parameter/schema")
 
 
-OS="$(cat "${__global}/explorer/os")"
+os="$(cat "${__global}/explorer/os")"
 
 # Setup OS-dependent vars
-# TODO: treat other OS better, defaulting to Debian-like
-case "${OS}" in
+case "${os}" in
     freebsd)
         PKGS="openldap-server"
         ETC="/usr/local/etc"
@@ -26,7 +25,7 @@ case "${OS}" in
             slapd_modules="back_mdb back_monitor"
         fi
         ;;
-    *)
+    debian|ubuntu|devuan)
         PKGS="slapd ldap-utils"
         ETC="/etc"
         SLAPD_DIR="/etc/ldap"
@@ -36,6 +35,10 @@ case "${OS}" in
         if [ -z "${slapd_modules}" ]; then
             slapd_modules="back_mdb ppolicy syncprov back_monitor"
         fi
+        ;;
+    *)
+        echo "Don't know the openldap defaults for: $os" >&2
+        exit 1
         ;;
 esac
 
@@ -106,28 +109,32 @@ done
 # TODO: Implement __start_on_boot for BSD
 require="__package/slapd" __start_on_boot slapd
 
-# TODO: treat other OS better. Defaulting to Debian-like.
-if [ "${OS}" != "freebsd" ]; then
-    require="__package/slapd" __line rm_slapd_conf \
-       --file ${ETC}/default/slapd \
-       --regex 'SLAPD_CONF=.*' \
-       --state absent
+case "${os}" in
+    debian|ubuntu|devuan)
+        require="__package/slapd" __line rm_slapd_conf \
+               --file ${ETC}/default/slapd \
+               --regex 'SLAPD_CONF=.*' \
+               --state absent
 
-    require="__package/slapd" __line rm_slapd_services \
-       --file ${ETC}/default/slapd \
-       --regex 'SLAPD_SERVICES=.*' \
-       --state absent
+        require="__package/slapd" __line rm_slapd_services \
+               --file ${ETC}/default/slapd \
+               --regex 'SLAPD_SERVICES=.*' \
+               --state absent
 
-    require="__line/rm_slapd_conf" __line add_slapd_conf \
-       --file ${ETC}/default/slapd \
-       --line 'SLAPD_CONF=${SLAPD_DIR}/slapd.conf' \
-       --state present
+        require="__line/rm_slapd_conf" __line add_slapd_conf \
+               --file ${ETC}/default/slapd \
+               --line 'SLAPD_CONF=${SLAPD_DIR}/slapd.conf' \
+               --state present
 
-    require="__line/rm_slapd_services" __line add_slapd_services \
-       --file ${ETC}/default/slapd \
-       --line "SLAPD_SERVICES=\"ldap://localhost/ ldap://${name}/\"" \
-       --state present
-fi
+        require="__line/rm_slapd_services" __line add_slapd_services \
+               --file ${ETC}/default/slapd \
+               --line "SLAPD_SERVICES=\"ldap://localhost/ ldap://${name}/\"" \
+               --state present
+        ;;
+    *)
+        # Nothing to do here, move on.
+        ;;
+esac
 
 
 if [ -z "${_skip_letsencrypt_cert}" ]; then
