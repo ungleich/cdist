@@ -8,6 +8,7 @@ next:
 	* Documentation: Remove cdist-type prefix and man page reference from type list in html (Darko Poljak)
 	* Documentation: PreOS english nitpicking (Evil Ham)
 	* Documentation: Add installing from source with signature verification (Darko Poljak)
+	* Core: preos: Support top command logging options, custom conf-dir option and CDIST_PATH env var (Darko Poljak)
 
 6.2.0: 2019-11-30
 	* Core: Redefine/reimplement/fix CDIST_ORDER_DEPENDENCY (Darko Poljak)
