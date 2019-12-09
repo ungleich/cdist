@@ -59,28 +59,28 @@ SYNOPSIS
                          [-I INVENTORY_DIR] [-a] [-f HOSTFILE] [-H] [-t]
                          [host [host ...]]
 
-    cdist preos [-h] preos
+    cdist preos [-h] [-l LOGLEVEL] [-q] [-v] [-c CONF_DIR] [-L] [preos] ...
 
-    cdist preos debian [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
-                       [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
-                       [-i MANIFEST] [-k KEYFILE ] [-m MIRROR]
-                       [-P ROOT_PASSWORD] [-p PXE_BOOT_DIR] [-r]
-                       [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
-                       target_dir
+    cdist preos [preos-options] debian [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
+                                       [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
+                                       [-i MANIFEST] [-k KEYFILE ] [-m MIRROR]
+                                       [-P ROOT_PASSWORD] [-p PXE_BOOT_DIR] [-r]
+                                       [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
+                                       target_dir
 
-    cdist preos devuan [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
-                       [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
-                       [-i MANIFEST] [-k KEYFILE ] [-m MIRROR]
-                       [-P ROOT_PASSWORD] [-p PXE_BOOT_DIR] [-r]
-                       [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
-                       target_dir
+    cdist preos [preos-options] devuan [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
+                                       [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
+                                       [-i MANIFEST] [-k KEYFILE ] [-m MIRROR]
+                                       [-P ROOT_PASSWORD] [-p PXE_BOOT_DIR] [-r]
+                                       [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
+                                       target_dir
 
-    cdist preos ubuntu [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
-                       [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
-                       [-i MANIFEST] [-k KEYFILE ] [-m MIRROR]
-                       [-P ROOT_PASSWORD] [-p PXE_BOOT_DIR] [-r]
-                       [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
-                       target_dir
+    cdist preos [preos-options] ubuntu [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
+                                       [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
+                                       [-i MANIFEST] [-k KEYFILE ] [-m MIRROR]
+                                       [-P ROOT_PASSWORD] [-p PXE_BOOT_DIR] [-r]
+                                       [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
+                                       target_dir
 
     cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [-s SHELL]
 
@@ -103,7 +103,7 @@ All commands accept the following options:
 **-l LOGLEVEL, --log-level LOGLEVEL**
     Set the specified verbosity level. The levels, in
     order from the lowest to the highest, are: ERROR (-1),
-    WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) TRACE (4
+    WARNING (0), INFO (1), VERBOSE (2), DEBUG (3), TRACE (4
     or higher). If used along with -v then -v increases
     last set value and -l overwrites last set value.
 
@@ -116,7 +116,7 @@ All commands accept the following options:
     value is 0 which includes ERROR and WARNING levels.
     The levels, in order from the lowest to the highest,
     are: ERROR (-1), WARNING (0), INFO (1), VERBOSE (2),
-    DEBUG (3) TRACE (4 or higher). If used along with -l
+    DEBUG (3), TRACE (4 or higher). If used along with -l
     then -l overwrites last set value and -v increases
     last set value.
 
@@ -457,7 +457,15 @@ List inventory database.
 
 PREOS
 -----
-Create PreOS. Currently, the following PreOS-es are supported:
+Create PreOS.
+
+**-c CONF_DIR, --conf-dir CONF_DIR**
+    Add configuration directory (one that contains "preos" subdirectory).
+
+**-L, --list-preoses**
+    List available PreOS-es.
+
+Currently, the following PreOS-es are supported:
 
 * debian
 * ubuntu

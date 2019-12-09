@@ -5,6 +5,8 @@ import inspect
 import argparse
 import cdist
 import logging
+import re
+import cdist.argparse
 
 
 _PREOS_CALL = "commandline"
@@ -12,15 +14,24 @@ _PREOS_NAME = "_preos_name"
 _PREOS_MARKER = "_cdist_preos"
 _PLUGINS_DIR = "preos"
 _PLUGINS_PATH = [os.path.join(os.path.dirname(__file__), _PLUGINS_DIR), ]
+log = logging.getLogger("PreOS")
+
+
+def extend_plugins_path(dirs):
+    for dir in dirs:
+        preos_dir = os.path.expanduser(os.path.join(dir, "preos"))
+        if os.path.isdir(preos_dir):
+            _PLUGINS_PATH.append(preos_dir)
+
+
 cdist_home = cdist.home_dir()
 if cdist_home:
-    cdist_home_preos = os.path.join(cdist_home, "preos")
-    if os.path.isdir(cdist_home_preos):
-        _PLUGINS_PATH.append(cdist_home_preos)
-sys.path.extend(_PLUGINS_PATH)
-
-
-log = logging.getLogger("PreOS")
+    extend_plugins_path((cdist_home, ))
+x = 'CDIST_PATH'
+if x in os.environ:
+    vals = re.split(r'(?<!\\):', os.environ[x])
+    vals = [x for x in vals if x]
+    extend_plugins_path(vals)
 
 
 def preos_plugin(obj):
@@ -71,31 +82,54 @@ def check_root():
         raise cdist.Error("Must be run with root privileges")
 
 
+def get_available_preoses_string(cls):
+    preoses = ['    - {}'.format(x) for x in sorted(set(cls.preoses))]
+    return "Available PreOS-es:\n{}".format("\n".join(preoses))
+
+
 class PreOS(object):
     preoses = None
 
     @classmethod
     def commandline(cls, argv):
-
-        if not cls.preoses:
-            cls.preoses = find_preoses()
-
+        cdist_parser = cdist.argparse.get_parsers()
         parser = argparse.ArgumentParser(
-            description="Create PreOS", prog="cdist preos")
-        parser.add_argument('preos', help='PreOS to create, one of: {}'.format(
-            set(cls.preoses)))
-        args = parser.parse_args(argv[1:2])
+            description="Create PreOS", prog="cdist preos",
+            parents=[cdist_parser['loglevel'], ])
+        parser.add_argument('preos', help='PreOS to create',
+                            nargs='?', default=None)
+        parser.add_argument('-c', '--conf-dir',
+                            help=('Add configuration directory (one that '
+                                  'contains "preos" subdirectory)'),
+                            action='append')
+        parser.add_argument('-L', '--list-preoses',
+                            help='List available PreOS-es',
+                            action='store_true', default=False)
+        parser.add_argument('remainder_args', nargs=argparse.REMAINDER)
+        args = parser.parse_args(argv[1:])
+        cdist.argparse.handle_loglevel(args)
+        log.debug("preos args : {}".format(args))
+
+        if args.conf_dir:
+            extend_plugins_path(args.conf_dir)
+        sys.path.extend(_PLUGINS_PATH)
+        cls.preoses = find_preoses()
+
+        if args.list_preoses or not args.preos:
+            print(get_available_preoses_string(cls))
+            sys.exit(0)
 
         preos_name = args.preos
         if preos_name in cls.preoses:
             preos = cls.preoses[preos_name]
             func = getattr(preos, _PREOS_CALL)
             if inspect.ismodule(preos):
-                func_args = [preos, argv[2:], ]
+                func_args = [preos, args.remainder_args, ]
             else:
-                func_args = [argv[2:], ]
+                func_args = [args.remainder_args, ]
             log.info("Running preos : {}".format(preos_name))
             func(*func_args)
         else:
-            log.error("Unknown preos: {}, available preoses: {}".format(
-                preos_name, set(cls.preoses.keys())))
+            raise cdist.Error(
+                "Invalid PreOS {}. {}".format(
+                    preos_name, get_available_preoses_string(cls)))

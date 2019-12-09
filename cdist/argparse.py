@@ -103,7 +103,7 @@ def get_parsers():
                                    name="log level"),
             help=('Set the specified verbosity level. '
                   'The levels, in order from the lowest to the highest, are: '
-                  'ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3) '
+                  'ERROR (-1), WARNING (0), INFO (1), VERBOSE (2), DEBUG (3), '
                   'TRACE (4 or higher). If used along with -v then -v '
                   'increases last set value and -l overwrites last set '
                   'value.'),
