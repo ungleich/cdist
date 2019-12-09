@@ -1,5 +1,6 @@
 syncrepl-credentials
 syncrepl-searchbase
+admin-email
 tls-cert
 tls-privkey
 tls-ca

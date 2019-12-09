@@ -48,6 +48,11 @@ syncrepl-searchbase
     The searchbase to use for replication.
     E.g. `dc=ungleich,dc=ch`. See `slapd.conf(5)`.
 
+admin-email
+    Passed to `cdist-type__letsencrypt_cert`; has otherwise no use.
+    Required if using `__letsencrypt_cert`.
+    Where to send Let's Encrypt emails like "certificate needs renewal".
+
 tls-cert
     If defined, `__letsencrypt_cert` is not used and this must be the path in
     the remote hosts to the PEM-encoded TLS certificate.

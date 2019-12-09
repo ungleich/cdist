@@ -58,6 +58,12 @@ if [ -f "${__object}/parameter/tls-cert" ]; then
 
     _skip_letsencrypt_cert="YES"
 else
+    if [ ! -f "${__object}/parameter/admin-email" ]; then
+        echo "When using __letsencrypt_cert, admin-email is also required." >&2
+        exit 1
+    fi
+    admin_email=$(cat "${__object}/parameter/admin-email")
+
     tls_cert="${SLAPD_DIR}/sasl2/cert.pem"
     tls_privkey="${SLAPD_DIR}/sasl2/privkey.pem"
     tls_ca="${SLAPD_DIR}/sasl2/chain.pem"
@@ -131,7 +137,7 @@ if [ -z "${_skip_letsencrypt_cert}" ]; then
         staging=""
     fi
 
-    __letsencrypt_cert "${name}" --admin-email technik@ungleich.ch \
+    __letsencrypt_cert "${name}" --admin-email "${admin_email}" \
         --renew-hook "cp ${ETC}/letsencrypt/live/${name}/*.pem ${SLAPD_DIR}/sasl2 && chown -R openldap:openldap ${SLAPD_DIR}/sasl2 && service slapd restart" \
         --automatic-renewal ${staging}
 fi
