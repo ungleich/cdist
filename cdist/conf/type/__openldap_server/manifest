@@ -1,0 +1,235 @@
+#!/bin/sh
+
+name="${__target_host}"
+manager_dn=$(cat "${__object}/parameter/manager-dn")
+manager_password_hash=$(cat "${__object}/parameter/manager-password-hash")
+serverid=$(cat "${__object}/parameter/serverid")
+suffix=$(cat "${__object}/parameter/suffix")
+slapd_modules=$(cat "${__object}/parameter/module" || true)
+
+
+OS="$(cat "${__global}/explorer/os")"
+
+# Setup OS-dependent vars
+# TODO: treat other OS better, defaulting to Debian-like
+case "${OS}" in
+    freebsd)
+	      PKGS="openldap-server"
+	      ETC="/usr/local/etc"
+        SLAPD_DIR="/usr/local/etc/openldap"
+        SLAPD_DATA_DIR="/var/db/openldap-data"
+        SLAPD_RUN_DIR="/var/run/openldap"
+        SLAPD_MODULE_PATH="/usr/local/libexec/openldap"
+        if [ -z "${slapd_modules}" ]; then
+            # It looks like ppolicy and syncprov must be compiled
+            slapd_modules="back_mdb back_monitor"
+        fi
+        ;;
+    *)
+        PKGS="slapd ldap-utils"
+	      ETC="/etc"
+        SLAPD_DIR="/etc/ldap"
+        SLAPD_DATA_DIR="/var/lib/ldap"
+        SLAPD_RUN_DIR="/var/run/slapd"
+        SLAPD_MODULE_PATH="/usr/lib/ldap"
+        if [ -z "${slapd_modules}" ]; then
+            slapd_modules="back_mdb ppolicy syncprov back_monitor"
+        fi
+        ;;
+esac
+
+
+
+# Determine if __letsencrypt_cert is to be used and setup vars accordingly
+if [ -f "${__object}/parameter/tls-cert" ]; then
+    tls_cert=$(cat "${__object}/parameter/tls-cert")
+
+    if [ ! -f "${__object}/parameter/tls-privkey" ]; then
+        echo "When tls-cert is defined, tls-privkey is also required." >&2
+        exit 1
+    fi
+    tls_privkey=$(cat "${__object}/parameter/tls-privkey")
+
+    if [ ! -f "${__object}/parameter/tls-ca" ]; then
+        echo "When tls-cert is defined, tls-ca is also required." >&2
+        exit 1
+    fi
+    tls_ca=$(cat "${__object}/parameter/tls-ca")
+
+    _skip_letsencrypt_cert="YES"
+else
+    tls_cert="${SLAPD_DIR}/sasl2/cert.pem"
+    tls_privkey="${SLAPD_DIR}/sasl2/privkey.pem"
+    tls_ca="${SLAPD_DIR}/sasl2/chain.pem"
+fi
+
+mkdir "${__object}/files"
+ldapconf="${__object}/files/ldapconf"
+
+replication=""
+if [ -f "${__object}/parameter/replicate" ]; then
+    replication=yes
+
+    if [ ! -f "${__object}/parameter/syncrepl-searchbase" ]; then
+        echo "Requiring the searchbase for replication" >&2
+        exit 1
+    fi
+    syncrepl_searchbase=$(cat "${__object}/parameter/syncrepl-searchbase")
+
+    if [ ! -f "${__object}/parameter/syncrepl-credentials" ]; then
+        echo "Requiring credentials for replication" >&2
+        exit 1
+    fi
+
+    syncrepl_credentials=$(cat "${__object}/parameter/syncrepl-credentials")
+
+    if [ ! -f "${__object}/parameter/syncrepl-host" ]; then
+        echo "Requiring host(s) for replication" >&2
+        exit 1
+    fi
+    syncrepl_hosts=$(cat "${__object}/parameter/syncrepl-host")
+
+fi
+
+# Install required packages
+for pkg in ${PKGS}; do
+    __package ${pkg}
+done
+
+
+# TODO: Implement __start_on_boot for BSD
+require="__package/slapd" __start_on_boot slapd
+
+# TODO: treat other OS better. Defaulting to Debian-like.
+if [ "${OS}" != "freebsd" ]; then
+    require="__package/slapd" __line rm_slapd_conf \
+       --file ${ETC}/default/slapd \
+       --regex 'SLAPD_CONF=.*' \
+       --state absent
+
+    require="__package/slapd" __line rm_slapd_services \
+       --file ${ETC}/default/slapd \
+       --regex 'SLAPD_SERVICES=.*' \
+       --state absent
+
+    require="__line/rm_slapd_conf" __line add_slapd_conf \
+       --file ${ETC}/default/slapd \
+       --line 'SLAPD_CONF=${SLAPD_DIR}/slapd.conf' \
+       --state present
+
+    require="__line/rm_slapd_services" __line add_slapd_services \
+       --file ${ETC}/default/slapd \
+       --line "SLAPD_SERVICES=\"ldap://localhost/ ldap://${name}/\"" \
+       --state present
+fi
+
+
+if [ -z "${_skip_letsencrypt_cert}" ]; then
+    if [ -f "${__object}/parameter/staging" ]; then
+        staging="--staging"
+    else
+        staging=""
+    fi
+
+    __letsencrypt_cert "${name}" --admin-email technik@ungleich.ch \
+        --renew-hook "cp ${ETC}/letsencrypt/live/${name}/*.pem ${SLAPD_DIR}/sasl2 && chown -R openldap:openldap ${SLAPD_DIR}/sasl2 && service slapd restart" \
+        --automatic-renewal ${staging}
+fi
+
+require="__package/slapd" __directory ${SLAPD_DIR}/slapd.d --state absent
+
+if [ -z "${_skip_letsencrypt_cert}" ]; then
+    require="__package/slapd __letsencrypt_cert/${name}" \
+           __file ${SLAPD_DIR}/slapd.conf --owner root --group root --mode 644 \
+           --source "${ldapconf}"
+else
+    require="__package/slapd" \
+           __file ${SLAPD_DIR}/slapd.conf --owner root --group root --mode 644 \
+           --source "${ldapconf}"
+fi
+
+# Start slapd.conf
+cat << EOF > "${ldapconf}"
+pidfile ${SLAPD_RUN_DIR}/slapd.pid
+argsfile ${SLAPD_RUN_DIR}/slapd.args
+
+TLSCipherSuite NORMAL
+TLSCertificateFile ${tls_cert}
+TLSCertificateKeyFile ${tls_privkey}
+TLSCACertificateFile ${tls_ca}
+
+disallow bind_anon
+require bind
+security tls=1
+
+include ${SLAPD_DIR}/schema/corba.schema
+include ${SLAPD_DIR}/schema/core.schema
+include ${SLAPD_DIR}/schema/cosine.schema
+include ${SLAPD_DIR}/schema/duaconf.schema
+include ${SLAPD_DIR}/schema/dyngroup.schema
+include ${SLAPD_DIR}/schema/inetorgperson.schema
+include ${SLAPD_DIR}/schema/java.schema
+include ${SLAPD_DIR}/schema/misc.schema
+include ${SLAPD_DIR}/schema/nis.schema
+include ${SLAPD_DIR}/schema/openldap.schema
+include ${SLAPD_DIR}/schema/ppolicy.schema
+include ${SLAPD_DIR}/schema/collective.schema
+
+modulepath ${SLAPD_MODULE_PATH}
+EOF
+
+# Add specified modules
+for module in ${slapd_modules}; do
+    echo "moduleload ${module}.la" >> "${ldapconf}"
+done
+
+# Rest of the config
+cat << EOF >> "${ldapconf}"
+loglevel 1024
+
+database mdb
+maxsize 1073741824
+
+suffix "${suffix}"
+directory ${SLAPD_DATA_DIR}
+rootdn "${manager_dn}"
+rootpw "${manager_password_hash}"
+
+index objectClass eq,pres
+index ou,cn,mail,surname,givenname eq,pres,sub
+index uidNumber,gidNumber,loginShell eq,pres
+index uid,memberUid eq,pres,sub
+index nisMapName,nisMapEntry eq,pres,sub
+index entryCSN,entryUUID eq
+
+serverid ${serverid}
+EOF
+
+# Setup replication
+if [ "${replication}" ]; then
+    rid=1;
+    for syncrepl in ${syncrepl_hosts}; do
+    cat <<EOF >> "${ldapconf}"
+syncrepl rid=${rid}
+ provider=ldap://${syncrepl}
+ bindmethod=simple
+ starttls=yes
+ binddn="${manager_dn}"
+ credentials=${syncrepl_credentials}
+ searchbase="${syncrepl_searchbase}"
+ type=refreshAndPersist
+ retry="5 + 5 +"
+ interval=00:00:00:05
+EOF
+    rid=$((rid + 1))
+    done
+    cat <<EOF >> "${ldapconf}"
+mirrormode true
+overlay syncprov
+syncprov-checkpoint 100 5
+syncprov-sessionlog 100
+
+database monitor
+limits dn.exact="${manager_dn}" time=unlimited size=unlimited
+EOF
+fi
