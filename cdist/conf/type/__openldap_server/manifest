@@ -6,6 +6,7 @@ manager_password_hash=$(cat "${__object}/parameter/manager-password-hash")
 serverid=$(cat "${__object}/parameter/serverid")
 suffix=$(cat "${__object}/parameter/suffix")
 slapd_modules=$(cat "${__object}/parameter/module" || true)
+schemas=$(cat "${__object}/parameter/schema")
 
 
 OS="$(cat "${__global}/explorer/os")"
@@ -14,8 +15,8 @@ OS="$(cat "${__global}/explorer/os")"
 # TODO: treat other OS better, defaulting to Debian-like
 case "${OS}" in
     freebsd)
-	      PKGS="openldap-server"
-	      ETC="/usr/local/etc"
+        PKGS="openldap-server"
+        ETC="/usr/local/etc"
         SLAPD_DIR="/usr/local/etc/openldap"
         SLAPD_DATA_DIR="/var/db/openldap-data"
         SLAPD_RUN_DIR="/var/run/openldap"
@@ -27,7 +28,7 @@ case "${OS}" in
         ;;
     *)
         PKGS="slapd ldap-utils"
-	      ETC="/etc"
+        ETC="/etc"
         SLAPD_DIR="/etc/ldap"
         SLAPD_DATA_DIR="/var/lib/ldap"
         SLAPD_RUN_DIR="/var/run/slapd"
@@ -37,7 +38,6 @@ case "${OS}" in
         fi
         ;;
 esac
-
 
 
 # Determine if __letsencrypt_cert is to be used and setup vars accordingly
@@ -161,24 +161,15 @@ TLSCACertificateFile ${tls_ca}
 disallow bind_anon
 require bind
 security tls=1
-
-include ${SLAPD_DIR}/schema/corba.schema
-include ${SLAPD_DIR}/schema/core.schema
-include ${SLAPD_DIR}/schema/cosine.schema
-include ${SLAPD_DIR}/schema/duaconf.schema
-include ${SLAPD_DIR}/schema/dyngroup.schema
-include ${SLAPD_DIR}/schema/inetorgperson.schema
-include ${SLAPD_DIR}/schema/java.schema
-include ${SLAPD_DIR}/schema/misc.schema
-include ${SLAPD_DIR}/schema/nis.schema
-include ${SLAPD_DIR}/schema/openldap.schema
-include ${SLAPD_DIR}/schema/ppolicy.schema
-include ${SLAPD_DIR}/schema/collective.schema
-
-modulepath ${SLAPD_MODULE_PATH}
 EOF
 
+# Add specified schemas
+for schema in ${schemas}; do
+    echo "include ${SLAPD_DIR}/schema/${schema}.schema" >> "${ldapconf}"
+done
+
 # Add specified modules
+echo "modulepath ${SLAPD_MODULE_PATH}" >> "${ldapconf}"
 for module in ${slapd_modules}; do
     echo "moduleload ${module}.la" >> "${ldapconf}"
 done

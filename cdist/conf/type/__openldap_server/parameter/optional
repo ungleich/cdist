@@ -1,4 +1,5 @@
-description
 syncrepl-credentials
 syncrepl-searchbase
 tls-cert
+tls-privkey
+tls-ca

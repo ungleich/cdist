@@ -74,6 +74,13 @@ module
     LDAP module to load. See `slapd.conf(5)`.
     Default value is OS-dependent, see manifest.
 
+schema
+    Name of LDAP schema to load. Must be the name without extension of a
+    `.schema` file in slapd's schema directory (usually `/etc/slapd/schema` or
+    `/usr/local/etc/openldap/schema`).
+    Example value: `inetorgperson`
+    The type user must ensure that the schema file is deployed.
+    This defaults to a sensible subset, for details see the type definition.
 
 BOOLEAN PARAMETERS
 ------------------
