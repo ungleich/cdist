@@ -9,6 +9,8 @@ next:
 	* Documentation: PreOS english nitpicking (Evil Ham)
 	* Documentation: Add installing from source with signature verification (Darko Poljak)
 	* Core: preos: Support top command logging options, custom conf-dir option and CDIST_PATH env var (Darko Poljak)
+	* Type __start_on_boot: Docs: remove unsupported *BSD claim (Evil Ham)
+	* New type: __openldap_server (Evil Ham)
 
 6.2.0: 2019-11-30
 	* Core: Redefine/reimplement/fix CDIST_ORDER_DEPENDENCY (Darko Poljak)
