@@ -5,13 +5,17 @@ manager_dn=$(cat "${__object}/parameter/manager-dn")
 manager_password_hash=$(cat "${__object}/parameter/manager-password-hash")
 serverid=$(cat "${__object}/parameter/serverid")
 suffix=$(cat "${__object}/parameter/suffix")
-slapd_modules=$(cat "${__object}/parameter/module" || true)
+slapd_modules=$(cat "${__object}/parameter/module" 2>/dev/null || true)
 schemas=$(cat "${__object}/parameter/schema")
+slapd_urls=$(cat "${__object}/parameter/slapd-url" | tr '\n' ' ')
+tls_cipher_suite=$(cat "${__object}/parameter/tls-cipher-suite" 2>/dev/null || true)
 
 
 os="$(cat "${__global}/explorer/os")"
 
 # Setup OS-dependent vars
+CONF_OWNER="root"
+CONF_GROUP="root"
 case "${os}" in
     freebsd)
         PKGS="openldap-server"
@@ -24,6 +28,12 @@ case "${os}" in
             # It looks like ppolicy and syncprov must be compiled
             slapd_modules="back_mdb back_monitor"
         fi
+        CONF_OWNER="ldap"
+        CONF_GROUP="ldap"
+        if [ -z "${tls_cipher_suite}" ]; then
+            # TODO: research default for FreeBSD. 'NORMAL' appears to not work
+            tls_cipher_suite="HIGH:MEDIUM:+SSLv2"
+        fi
         ;;
     debian|ubuntu|devuan)
         PKGS="slapd ldap-utils"
@@ -35,12 +45,17 @@ case "${os}" in
         if [ -z "${slapd_modules}" ]; then
             slapd_modules="back_mdb ppolicy syncprov back_monitor"
         fi
+        if [ -z "${tls_cipher_suite}" ]; then
+            tls_cipher_suite="NORMAL"
+        fi
         ;;
     *)
         echo "Don't know the openldap defaults for: $os" >&2
         exit 1
         ;;
 esac
+
+PKG_MAIN=$(echo ${PKGS} | awk '{print $1;}')
 
 
 # Determine if __letsencrypt_cert is to be used and setup vars accordingly
@@ -106,17 +121,26 @@ for pkg in ${PKGS}; do
 done
 
 
-# TODO: Implement __start_on_boot for BSD
-require="__package/slapd" __start_on_boot slapd
+require="__package/${PKG_MAIN}" __start_on_boot slapd
 
+# Setup -h flag for the listeners. See man slapd (-h flag).
 case "${os}" in
+    freebsd)
+        require="__package/${PKG_MAIN}" __key_value \
+               --file "/etc/rc.conf" \
+               --key "slapd_flags" \
+               --value "\"-h '${slapd_urls}'\"" \
+               --delimiter "=" \
+               --comment "# LDAP Listener URLs" \
+               "${__target_host}__slapd_flags"
+        ;;
     debian|ubuntu|devuan)
-        require="__package/slapd" __line rm_slapd_conf \
+        require="__package/${PKG_MAIN}" __line rm_slapd_conf \
                --file ${ETC}/default/slapd \
                --regex 'SLAPD_CONF=.*' \
                --state absent
 
-        require="__package/slapd" __line rm_slapd_services \
+        require="__package/${PKG_MAIN}" __line rm_slapd_services \
                --file ${ETC}/default/slapd \
                --regex 'SLAPD_SERVICES=.*' \
                --state absent
@@ -128,7 +152,7 @@ case "${os}" in
 
         require="__line/rm_slapd_services" __line add_slapd_services \
                --file ${ETC}/default/slapd \
-               --line "SLAPD_SERVICES=\"ldap://localhost/ ldap://${name}/\"" \
+               --line "SLAPD_SERVICES=\"${slapd_urls}\"" \
                --state present
         ;;
     *)
@@ -149,15 +173,15 @@ if [ -z "${_skip_letsencrypt_cert}" ]; then
         --automatic-renewal ${staging}
 fi
 
-require="__package/slapd" __directory ${SLAPD_DIR}/slapd.d --state absent
+require="__package/${PKG_MAIN}" __directory ${SLAPD_DIR}/slapd.d --state absent
 
 if [ -z "${_skip_letsencrypt_cert}" ]; then
-    require="__package/slapd __letsencrypt_cert/${name}" \
-           __file ${SLAPD_DIR}/slapd.conf --owner root --group root --mode 644 \
+    require="__package/${PKG_MAIN} __letsencrypt_cert/${name}" \
+           __file ${SLAPD_DIR}/slapd.conf --owner ${CONF_OWNER} --group ${CONF_GROUP} --mode 644 \
            --source "${ldapconf}"
 else
-    require="__package/slapd" \
-           __file ${SLAPD_DIR}/slapd.conf --owner root --group root --mode 644 \
+    require="__package/${PKG_MAIN}" \
+           __file ${SLAPD_DIR}/slapd.conf --owner ${CONF_OWNER} --group ${CONF_GROUP} --mode 644 \
            --source "${ldapconf}"
 fi
 
@@ -166,7 +190,7 @@ cat << EOF > "${ldapconf}"
 pidfile ${SLAPD_RUN_DIR}/slapd.pid
 argsfile ${SLAPD_RUN_DIR}/slapd.args
 
-TLSCipherSuite NORMAL
+TLSCipherSuite ${tls_cipher_suite}
 TLSCertificateFile ${tls_cert}
 TLSCertificateKeyFile ${tls_privkey}
 TLSCACertificateFile ${tls_ca}
