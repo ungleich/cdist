@@ -133,8 +133,8 @@ EXAMPLES
 .. code-block:: sh
 
     # Example of a simple server with manual certificate management.
-    pki_prefix="/usr/local/etc/pki/realms/ldap.camilion.cloud" \
-      __openldap_server \
+    pki_prefix="/usr/local/etc/pki/realms/ldap.camilion.cloud"
+    __openldap_server \
         --manager-dn 'cn=manager,dc=camilion,dc=cloud' \
         --manager-password "foo" \
         --manager-password-hash '{SSHA}foo' \
