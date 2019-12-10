@@ -141,9 +141,9 @@ EXAMPLES
         --serverid 0 \
         --suffix 'dc=camilion,dc=cloud' \
         --slapd-url 'ldaps://ldap.camilion.cloud' \
-        --tls-cert '${pki_prefix}/default.crt' \
-        --tls-privkey '${pki_prefix}/default.key' \
-        --tls-ca '${pki_prefix}/CA.crt'
+        --tls-cert "${pki_prefix}/default.crt" \
+        --tls-privkey "${pki_prefix}/default.key" \
+        --tls-ca "${pki_prefix}/CA.crt"
 
     # The created basedn looks as follows:
     #

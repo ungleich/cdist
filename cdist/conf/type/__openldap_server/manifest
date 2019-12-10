@@ -126,7 +126,7 @@ require="__package/${PKG_MAIN}" __start_on_boot slapd
 # Setup -h flag for the listeners. See man slapd (-h flag).
 case "${os}" in
     freebsd)
-        require="__package/${PKG_MAIN}" __key_value \
+        require="__start_on_boot/slapd" __key_value \
                --file "/etc/rc.conf" \
                --key "slapd_flags" \
                --value "\"-h '${slapd_urls}'\"" \
