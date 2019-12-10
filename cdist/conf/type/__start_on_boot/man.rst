@@ -12,7 +12,7 @@ This cdist type allows you to enable or disable stuff to be started
 at boot of your operating system.
 
 Warning: This type has not been tested intensively and is not fully
-supported (i.e. \*BSD are not implemented).
+supported.
 
 
 REQUIRED PARAMETERS
