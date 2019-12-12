@@ -74,6 +74,7 @@ SHELLCHECKCMD="shellcheck -s sh -f gcc -x"
 # Skip SC2154 for variables starting with __ since such variables are cdist
 # environment variables.
 SHELLCHECK_SKIP=': __.*is referenced but not assigned.*\[SC2154\]'
+SHELLCHECKTMP=".shellcheck.tmp"
 
 # Change to checkout directory
 basedir="${0%/*}/../"
@@ -431,53 +432,67 @@ eof
     ;;
 
     shellcheck-global-explorers)
-        find cdist/conf/explorer -type f -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+        # shellcheck disable=SC2086
+        find cdist/conf/explorer -type f -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" > "${SHELLCHECKTMP}"
+        test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
     shellcheck-type-explorers)
-        find cdist/conf/type -type f -path "*/explorer/*" -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+        # shellcheck disable=SC2086
+        find cdist/conf/type -type f -path "*/explorer/*" -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" > "${SHELLCHECKTMP}"
+        test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
     shellcheck-manifests)
-        find cdist/conf/type -type f -name manifest -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+        # shellcheck disable=SC2086
+        find cdist/conf/type -type f -name manifest -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" > "${SHELLCHECKTMP}"
+        test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
     shellcheck-local-gencodes)
-        find cdist/conf/type -type f -name gencode-local -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+        # shellcheck disable=SC2086
+        find cdist/conf/type -type f -name gencode-local -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" > "${SHELLCHECKTMP}"
+        test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
     shellcheck-remote-gencodes)
-        find cdist/conf/type -type f -name gencode-remote -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+        # shellcheck disable=SC2086
+        find cdist/conf/type -type f -name gencode-remote -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" > "${SHELLCHECKTMP}"
+        test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
     shellcheck-scripts)
-        ${SHELLCHECKCMD} scripts/cdist-dump scripts/cdist-new-type || exit 0
+        # shellcheck disable=SC2086
+        ${SHELLCHECKCMD} scripts/cdist-dump scripts/cdist-new-type > "${SHELLCHECKTMP}"
+        test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
     shellcheck-gencodes)
-        "$0" shellcheck-local-gencodes
-        "$0" shellcheck-remote-gencodes
+        "$0" shellcheck-local-gencodes || exit 1
+        "$0" shellcheck-remote-gencodes || exit 1
     ;;
 
     shellcheck-types)
-        "$0" shellcheck-type-explorers
-        "$0" shellcheck-manifests
-        "$0" shellcheck-gencodes
+        "$0" shellcheck-type-explorers || exit 1
+        "$0" shellcheck-manifests || exit 1
+        "$0" shellcheck-gencodes || exit 1
     ;;
 
     shellcheck)
-        "$0" shellcheck-global-explorers
-        "$0" shellcheck-types
-        "$0" shellcheck-scripts
+        "$0" shellcheck-global-explorers || exit 1
+        "$0" shellcheck-types || exit 1
+        "$0" shellcheck-scripts || exit 1
     ;;
 
     shellcheck-type-files)
-        find cdist/conf/type -type f -path "*/files/*" -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" || exit 0
+        # shellcheck disable=SC2086
+        find cdist/conf/type -type f -path "*/files/*" -exec ${SHELLCHECKCMD} {} + | grep -v "${SHELLCHECK_SKIP}" > "${SHELLCHECKTMP}"
+        test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
     shellcheck-with-files)
-        "$0" shellcheck
-        "$0" shellcheck-type-files
+        "$0" shellcheck || exit 1
+        "$0" shellcheck-type-files || exit 1
     ;;
 
     shellcheck-build-helper)
@@ -535,6 +550,7 @@ eof
 
         # Temp files
         rm -f ./*.tmp
+        rm -f ./.*.tmp
     ;;
 
     distclean)
