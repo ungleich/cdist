@@ -7,7 +7,7 @@ serverid=$(cat "${__object}/parameter/serverid")
 suffix=$(cat "${__object}/parameter/suffix")
 slapd_modules=$(cat "${__object}/parameter/module" 2>/dev/null || true)
 schemas=$(cat "${__object}/parameter/schema")
-slapd_urls=$(cat "${__object}/parameter/slapd-url" | tr '\n' ' ')
+slapd_urls=$(tr '\n' ' ' < "${__object}/parameter/slapd-url")
 tls_cipher_suite=$(cat "${__object}/parameter/tls-cipher-suite" 2>/dev/null || true)
 
 
@@ -55,7 +55,7 @@ case "${os}" in
         ;;
 esac
 
-PKG_MAIN=$(echo ${PKGS} | awk '{print $1;}')
+PKG_MAIN=$(echo "${PKGS}" | awk '{print $1;}')
 
 
 # Determine if __letsencrypt_cert is to be used and setup vars accordingly
@@ -117,7 +117,7 @@ fi
 
 # Install required packages
 for pkg in ${PKGS}; do
-    __package ${pkg}
+    __package "${pkg}"
 done
 
 
@@ -147,7 +147,7 @@ case "${os}" in
 
         require="__line/rm_slapd_conf" __line add_slapd_conf \
                --file ${ETC}/default/slapd \
-               --line 'SLAPD_CONF=${SLAPD_DIR}/slapd.conf' \
+               --line "SLAPD_CONF=${SLAPD_DIR}/slapd.conf" \
                --state present
 
         require="__line/rm_slapd_services" __line add_slapd_services \
