@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.3.0: 2019-12-12
 	* Type __package_update_index: Fix Alpine part (Dominique Roux)
 	* Documentation: Fix man pages for install types (Darko Poljak)
 	* Documentation: Embed config skeleton instead of rewriting it (Darko Poljak)
