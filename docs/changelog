@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+next:
+	* Type __consul_agent: don't deploy init script on Alpine anymore,
+	it ships with one itself (Nico Schottelius)
+
 6.3.0: 2019-12-12
 	* Type __package_update_index: Fix Alpine part (Dominique Roux)
 	* Documentation: Fix man pages for install types (Darko Poljak)

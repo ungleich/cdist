@@ -181,7 +181,7 @@ init_upstart()
 
 # Install init script to start on boot
 case "$os" in
-    alpine|devuan)
+    devuan)
         init_sysvinit debian
         ;;
     centos|redhat)
