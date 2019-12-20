@@ -11,17 +11,17 @@ SYNOPSIS
 
 ::
 
-    cdist-dump [options] [host...]
+    cdist dump [options] [host...]
 
 
 
 DESCRIPTION
 -----------
-cdist-dump is a helper script that dumps data from local cdist cache for
+cdist dump is a helper script that dumps data from local cdist cache for
 specified hosts. If host is not specified then all data from cache directory
 is dumped. Default cache directory is '~/.cdist/cache'.
 
-cdist-dump can be used for debugging existing types, host configuration and
+cdist dump can be used for debugging existing types, host configuration and
 new types. 
 
 
@@ -88,10 +88,10 @@ EXAMPLES
 .. code-block:: sh
 
     # Dump all
-    % cdist-dump -a
+    % cdist dump -a
 
     # Dump only code-* output
-    % cdist-dump -c
+    % cdist dump -c
 
 
 SEE ALSO

@@ -6,6 +6,7 @@ import collections
 import functools
 import cdist.configuration
 import cdist.preos
+import cdist.libexec as libexec
 
 
 # set of beta sub-commands
@@ -435,6 +436,9 @@ def get_parsers():
             help=('Select shell to use, defaults to current shell. Used shell'
                   ' should be POSIX compatible shell.'))
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
+
+    # Libexec
+    libexec.create_parsers(parser, parser['sub'])
 
     for p in parser:
         parser[p].epilog = EPILOG
