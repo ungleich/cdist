@@ -2,6 +2,7 @@ import os
 import os.path
 import cdist.argparse
 import subprocess
+import sys
 
 
 libexec_delimiter = '-'
@@ -38,4 +39,7 @@ def run(name, argv):
     lib_path = os.path.join(libexec_path, lib_name)
     args = [lib_path, ]
     args.extend(argv)
-    subprocess.check_call(args)
+    try:
+        subprocess.check_call(args)
+    except subprocess.CalledProcessError as e:
+        sys.exit(e.returncode)
