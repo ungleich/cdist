@@ -1,0 +1,391 @@
+#!/bin/sh
+
+VERSION="0.0.1"
+RELEASE=""
+
+set -u
+# set -x
+
+verbose=0
+myname=${0##*/}
+mydir=${0%/$myname}
+dist_conf=${mydir%/libexec}
+
+print_version()
+{
+    printf "%s %s %s\n" "${myname}" "${VERSION}" "${RELEASE}"
+}
+
+usage()
+{
+    cat << eof
+${myname}: [options]
+eof
+
+    print_version
+
+    cat << eof
+
+Display information for cdist types and explorers.
+
+Options
+ -b GLOB        use GLOB as name pattern
+ -C             display only config types
+ -c CONF_DIR    add configuration directory (can be repeated)
+ -D             display only nondeprecated types
+ -d             display only deprecated types
+ -E             display only types without explorers
+ -e             display only types with explorers
+ -G             display global explorers (turns displaying types off,
+                unless -t is explicitly specified)
+ -h             display this help screen and exit
+ -i             display only install types
+ -l             display only types with gencode-local
+ -M             display only types with man page
+ -m             display only types with manifest
+ -P             display only nonparallel types
+ -p             display only parallel types
+ -R             display type parameters
+ -r             display only types with gencode-remote
+ -S             display only nonsingleton types
+ -s             display only singleton types
+ -t             display types (by default, unless -G is specified)
+ -V             display version and exit
+ -v             increase verbosity
+ -x             display type explorers
+ 
+Notes:
+
+By default, distribution and home dot cdist directories are used for
+configuration directories list.
+
+This helper tool does not parse cdist configuration files. Configuration
+directories should be specifed by command line options and/or CDIST_PATH
+environment variable.
+eof
+}
+
+exit_err()
+{
+    printf "%s\n" "$1"
+    exit 1
+}
+
+print_verbose()
+{
+    if [ "${verbose}" -ge "$1" ]
+    then
+        printf "%s\n" "$2"
+    fi
+}
+
+print_parameters()
+{
+    param_title=$1
+    param_fname=$2
+
+    if test -f "${param_fname}"
+    then
+        printf "  %s\n" "${param_title}"
+        sed "s/^\(.*\)$/    \1/" < "${param_fname}"
+    fi
+}
+
+conf_dirs="${dist_conf}:${HOME}/.cdist"
+glob="*"
+manifest_only=0
+gencode_local_only=0
+gencode_remote_only=0
+install_only=0
+config_only=0
+parallel_only=0
+nonparallel_only=0
+singleton_only=0
+nonsingleton_only=0
+man_only=0
+explorers_only=0
+nonexplorers_only=0
+deprecated_only=0
+nondeprecated_only=0
+display_global_explorers=0
+display_types=1
+display_type_params=0
+display_type_explorers=0
+# parse options
+while [ "$#" -ge 1 ]
+do
+    case "$1" in
+        -b)
+            if [ "$#" -ge 2 ]
+            then
+                case "$2" in
+                    -*)
+                        exit_err "Missing glob argument"
+                        ;;
+                    *)
+                        glob="$2"
+                        shift
+                        ;;
+                esac
+            else
+                exit_err "Missing glob argument"
+            fi
+            ;;
+        -C)
+            config_only=1
+            ;;
+        -c)
+            if [ "$#" -ge 2 ]
+            then
+                case "$2" in
+                    -*)
+                        exit_err "Missing configuration directory argument"
+                        ;;
+                    *)
+                        conf_dirs="${conf_dirs}:$2"
+                        shift
+                        ;;
+                esac
+            else
+                exit_err "Missing configuration directory argument"
+            fi
+            ;;
+        -D)
+            nondeprecated_only=1
+            ;;
+        -d)
+            deprecated_only=1
+            ;;
+        -E)
+            nonexplorers_only=1
+            ;;
+        -e)
+            explorers_only=1
+            ;;
+        -G)
+            display_types=0
+            display_global_explorers=1
+            ;;
+        -h)
+            usage
+            exit 0
+            ;;
+        -i)
+            install_only=1
+            ;;
+        -l)
+            gencode_local_only=1
+            ;;
+        -M)
+            man_only=1
+            ;;
+        -m)
+            manifest_only=1
+            ;;
+        -P)
+            nonparallel_only=1
+            ;;
+        -p)
+            parallel_only=1
+            ;;
+        -R)
+            display_type_params=1
+            ;;
+        -r)
+            gencode_remote_only=1
+            ;;
+        -S)
+            nonsingleton_only=1
+            ;;
+        -s)
+            singleton_only=1
+            ;;
+        -t)
+            display_types=1
+            ;;
+        -V)
+            print_version
+            exit 0
+            ;;
+        -v)
+            verbose=$((verbose + 1))
+            ;;
+        -x)
+            display_type_explorers=1
+            ;;
+        *)
+            exit_err "Unknown argument $1"
+            ;;
+    esac
+    shift
+done
+
+if test "${CDIST_PATH:-}"
+then
+    conf_dirs="${conf_dirs}:${CDIST_PATH}"
+fi
+
+print_verbose 2 "conf_dirs=${conf_dirs}"
+
+OLD_IFS="${IFS}"
+IFS=':'
+for x in ${conf_dirs}
+do
+    if test "${display_global_explorers}" -eq "1"
+    then
+        find "${x}" '(' -path "*/explorer/*" -a ! -path "*/type/*/explorer/*" -a ! -path "*/cache/*/explorer/*" ')' -type f -name "${glob}"
+    fi
+
+    if test "${display_types}" -eq "1"
+    then
+        find "${x}" -path "*/type/*" -type d -prune | \
+            while read -r fname
+            do
+                display_type=1
+                if test "${glob}" != "*"
+                then
+                    type_name=$(basename "${fname}")
+                    case "${type_name}" in
+                        ${glob})
+                            ;;
+                        *)
+                            display_type=0
+                            ;;
+                    esac
+                fi
+
+                if test "${manifest_only}" -eq "1"
+                then
+                    if ! test -f "${fname}/manifest"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${gencode_local_only}" -eq "1"
+                then
+                    if ! test -f "${fname}/gencode-local"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${gencode_remote_only}" -eq "1"
+                then
+                    if ! test -f "${fname}/gencode-remote"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${config_only}" -eq "1"
+                then
+                    if test -f "${fname}/install"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${install_only}" -eq "1"
+                then
+                    if ! test -f "${fname}/install"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${parallel_only}" -eq "1"
+                then
+                    if test -f "${fname}/nonparallel"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${nonparallel_only}" -eq "1"
+                then
+                    if ! test -f "${fname}/nonparallel"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${singleton_only}" -eq "1"
+                then
+                    if ! test -f "${fname}/singleton"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${nonsingleton_only}" -eq "1"
+                then
+                    if test -f "${fname}/singleton"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${man_only}" -eq "1"
+                then
+                    if ! test -f "${fname}/man.rst"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${deprecated_only}" -eq "1"
+                then
+                    if ! test -f "${fname}/deprecated"
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${nondeprecated_only}" -eq "1"
+                then
+                    if test -f "${fname}/deprecated"
+                    then
+                        display_type=0
+                    fi
+                fi
+
+                if test "${explorers_only}" -eq "1"
+                then
+                    if ! test -d "${fname}/explorer"
+                    then
+                        display_type=0
+                    elif ! [ "$(ls -A "${fname}/explorer")" ]
+                    then
+                        display_type=0
+                    fi
+                fi
+                if test "${nonexplorers_only}" -eq "1"
+                then
+                    if test -d "${fname}/explorer"
+                    then
+                        if [ "$(ls -A "${fname}/explorer")" ]
+                        then
+                            display_type=0
+                        fi
+                    fi
+                fi
+
+                if test "${display_type}" -eq "1"
+                then
+                    printf "%s\n" "${fname}"
+
+                    if test "${display_type_params}" -eq "1"
+                    then
+                        print_parameters "required parameters:" "${fname}/parameter/required"
+                        print_parameters "required multiple parameters:" "${fname}/parameter/required_multiple"
+                        print_parameters "optional parameters:" "${fname}/parameter/optional"
+                        print_parameters "optional multiple parameters:" "${fname}/parameter/optional_multiple"
+                        print_parameters "boolean parameters:" "${fname}/parameter/boolean"
+                        param_deprecated="${fname}/parameter/deprecated"
+                        if test -d "${param_deprecated}"
+                        then
+                            printf "  deprecated parameters:\n"
+                            # shellcheck disable=SC2012
+                            ls -1 "${param_deprecated}" | sed "s/^\(.*\)$/    \1/"
+                        fi
+                    fi
+
+                    if test "${display_type_explorers}" -eq "1"
+                    then
+                        find "${fname}" -path "*/explorer/*" -type f
+                    fi
+                fi
+            done
+    fi
+done
+IFS="${OLD_IFS}"

@@ -463,7 +463,7 @@ eof
 
     shellcheck-scripts)
         # shellcheck disable=SC2086
-        ${SHELLCHECKCMD} scripts/cdist-dump scripts/cdist-new-type > "${SHELLCHECKTMP}"
+        ${SHELLCHECKCMD} cdist/conf/libexec/cdist-dump cdist/conf/libexec/cdist-new-type > "${SHELLCHECKTMP}"
         test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
