@@ -29,7 +29,6 @@ eof
 Display information for cdist types and explorers.
 
 Options
- -b GLOB        use GLOB as name pattern
  -C             display only config types
  -c CONF_DIR    add configuration directory (can be repeated)
  -D             display only nondeprecated types
@@ -38,6 +37,7 @@ Options
  -e             display only types with explorers
  -G             display global explorers (turns displaying types off,
                 unless -t is explicitly specified)
+ -g GLOB        use GLOB as name pattern
  -h             display this help screen and exit
  -i             display only install types
  -l             display only types with gencode-local
@@ -51,7 +51,8 @@ Options
  -s             display only singleton types
  -t             display types (by default, unless -G is specified)
  -V             display version and exit
- -v             increase verbosity
+ -v             increase verbosity (verbose output goes to stderr)
+                if verbosity is greater than 2 then 'set -x' is used
  -x             display type explorers
  
 Notes:
@@ -75,7 +76,7 @@ print_verbose()
 {
     if [ "${verbose}" -ge "$1" ]
     then
-        printf "%s\n" "$2"
+        printf "%s\n" "$2" >&2
     fi
 }
 
@@ -89,6 +90,127 @@ print_parameters()
         printf "  %s\n" "${param_title}"
         sed "s/^\(.*\)$/    \1/" < "${param_fname}"
     fi
+}
+
+type_name_matches()
+{
+    if test "$2" == "*"
+    then
+        return 0
+    else
+        case "$(basename "$1")" in
+            $2)
+                return 0
+                ;;
+            *)
+                return 1
+                ;;
+        esac
+    fi
+}
+
+# $1 - do check flag.
+# $2 - file path.
+# Return false only if check flag is 1 and file does not exist.
+type_file_exists()
+{
+    if test "$1" -eq "1"
+    then
+        test -f "$2"
+    else
+        return 0
+    fi
+}
+
+# $1 - do check flag.
+# $2 - file path.
+# Return false only if check flag is 1 and file does exist.
+type_file_not_exists()
+{
+    if test "$1" -eq "1"
+    then
+        test ! -f "$2"
+    else
+        return 0
+    fi
+}
+
+type_dir_empty()
+{
+    if test "$1" -eq "1"
+    then
+        if test ! -d "$2"
+        then
+            return 1
+        elif ! [ "$(ls -1 "${fname}/explorer")" ]
+        then
+            return 1
+        else
+            return 0
+        fi
+    else
+        return 0
+    fi
+}
+
+type_dir_not_empty()
+{
+    if test "$1" -eq "1"
+    then
+        if test -d "$2"
+        then
+            if [ "$(ls -1 "${fname}/explorer")" ]
+            then
+                return 1
+            fi
+        else
+            return 0
+        fi
+    else
+        return 0
+    fi
+}
+
+print_type_params()
+{
+    if test "$1" -eq "1"
+    then
+        print_parameters "required parameters:" "$2/parameter/required"
+        print_parameters "required multiple parameters:" "$2/parameter/required_multiple"
+        print_parameters "optional parameters:" "$2/parameter/optional"
+        print_parameters "optional multiple parameters:" "$2/parameter/optional_multiple"
+        print_parameters "boolean parameters:" "$2/parameter/boolean"
+        param_deprecated="$2/parameter/deprecated"
+        if test -d "${param_deprecated}"
+        then
+            printf "  deprecated parameters:\n"
+            # shellcheck disable=SC2012
+            ls -1 "${param_deprecated}" | sed "s/^\(.*\)$/    \1/"
+        fi
+    fi
+}
+
+print_type_explorers()
+{
+    if test "$1" -eq "1"
+    then
+        find "$2" -path "*/explorer/*" -type f
+    fi
+}
+
+print_type()
+{
+    if test "$1" -eq "1"
+    then
+        printf "%s\n" "$2"
+        print_type_params "${display_type_params}" "$2"
+        print_type_explorers "${display_type_explorers}" "$2"
+    fi
+}
+
+print_global_explorers()
+{
+    find "$1" '(' -path "*/explorer/*" -a ! -path "*/type/*/explorer/*" -a ! -path "*/cache/*/explorer/*" ')' -type f -name "$2"
 }
 
 conf_dirs="${dist_conf}:${HOME}/.cdist"
@@ -115,22 +237,6 @@ display_type_explorers=0
 while [ "$#" -ge 1 ]
 do
     case "$1" in
-        -b)
-            if [ "$#" -ge 2 ]
-            then
-                case "$2" in
-                    -*)
-                        exit_err "Missing glob argument"
-                        ;;
-                    *)
-                        glob="$2"
-                        shift
-                        ;;
-                esac
-            else
-                exit_err "Missing glob argument"
-            fi
-            ;;
         -C)
             config_only=1
             ;;
@@ -165,6 +271,22 @@ do
         -G)
             display_types=0
             display_global_explorers=1
+            ;;
+        -g)
+            if [ "$#" -ge 2 ]
+            then
+                case "$2" in
+                    -*)
+                        exit_err "Missing glob argument"
+                        ;;
+                    *)
+                        glob="$2"
+                        shift
+                        ;;
+                esac
+            else
+                exit_err "Missing glob argument"
+            fi
             ;;
         -h)
             usage
@@ -220,6 +342,11 @@ do
     shift
 done
 
+if test "${verbose}" -gt "2"
+then
+    set -x
+fi
+
 if test "${CDIST_PATH:-}"
 then
     conf_dirs="${conf_dirs}:${CDIST_PATH}"
@@ -231,160 +358,41 @@ OLD_IFS="${IFS}"
 IFS=':'
 for x in ${conf_dirs}
 do
+    print_verbose 1 "Processing conf dir '${x}'"
+
     if test "${display_global_explorers}" -eq "1"
     then
-        find "${x}" '(' -path "*/explorer/*" -a ! -path "*/type/*/explorer/*" -a ! -path "*/cache/*/explorer/*" ')' -type f -name "${glob}"
+        print_verbose 1 "Printing global explorers"
+        print_global_explorers "${x}" "${glob}"
     fi
 
     if test "${display_types}" -eq "1"
     then
+        print_verbose 1 "Printing types"
         find "${x}" -path "*/type/*" -type d -prune | \
             while read -r fname
             do
+                print_verbose 2 "Printing type '${fname}'"
+
                 display_type=1
-                if test "${glob}" != "*"
-                then
-                    type_name=$(basename "${fname}")
-                    case "${type_name}" in
-                        ${glob})
-                            ;;
-                        *)
-                            display_type=0
-                            ;;
-                    esac
-                fi
 
-                if test "${manifest_only}" -eq "1"
-                then
-                    if ! test -f "${fname}/manifest"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${gencode_local_only}" -eq "1"
-                then
-                    if ! test -f "${fname}/gencode-local"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${gencode_remote_only}" -eq "1"
-                then
-                    if ! test -f "${fname}/gencode-remote"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${config_only}" -eq "1"
-                then
-                    if test -f "${fname}/install"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${install_only}" -eq "1"
-                then
-                    if ! test -f "${fname}/install"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${parallel_only}" -eq "1"
-                then
-                    if test -f "${fname}/nonparallel"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${nonparallel_only}" -eq "1"
-                then
-                    if ! test -f "${fname}/nonparallel"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${singleton_only}" -eq "1"
-                then
-                    if ! test -f "${fname}/singleton"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${nonsingleton_only}" -eq "1"
-                then
-                    if test -f "${fname}/singleton"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${man_only}" -eq "1"
-                then
-                    if ! test -f "${fname}/man.rst"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${deprecated_only}" -eq "1"
-                then
-                    if ! test -f "${fname}/deprecated"
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${nondeprecated_only}" -eq "1"
-                then
-                    if test -f "${fname}/deprecated"
-                    then
-                        display_type=0
-                    fi
-                fi
+                type_name_matches "${fname}" "${glob}" || display_type=0
+                type_file_exists "${manifest_only}" "${fname}/manifest" || display_type=0
+                type_file_exists "${gencode_local_only}" "${fname}/gencode-local" || display_type=0
+                type_file_exists "${gencode_remote_only}" "${fname}/gencode-remote" || display_type=0
+                type_file_not_exists "${config_only}" "${fname}/install" || display_type=0
+                type_file_exists "${install_only}" "${fname}/install" || display_type=0
+                type_file_not_exists "${parallel_only}" "${fname}/nonparallel" || display_type=0
+                type_file_exists "${nonparallel_only}" "${fname}/nonparallel" || display_type=0
+                type_file_exists "${singleton_only}" "${fname}/singleton" || display_type=0
+                type_file_not_exists "${nonsingleton_only}" "${fname}/singleton" || display_type=0
+                type_file_exists "${man_only}" "${fname}/man.rst" || display_type=0
+                type_file_exists "${deprecated_only}" "${fname}/deprecated" || display_type=0
+                type_file_not_exists "${nondeprecated_only}" "${fname}/deprecated" || display_type=0
+                type_dir_empty "${explorers_only}" "${fname}/explorer" || display_type=0
+                type_dir_not_empty "${nonexplorers_only}" "${fname}/explorer" || display_type=0
 
-                if test "${explorers_only}" -eq "1"
-                then
-                    if ! test -d "${fname}/explorer"
-                    then
-                        display_type=0
-                    elif ! [ "$(ls -A "${fname}/explorer")" ]
-                    then
-                        display_type=0
-                    fi
-                fi
-                if test "${nonexplorers_only}" -eq "1"
-                then
-                    if test -d "${fname}/explorer"
-                    then
-                        if [ "$(ls -A "${fname}/explorer")" ]
-                        then
-                            display_type=0
-                        fi
-                    fi
-                fi
-
-                if test "${display_type}" -eq "1"
-                then
-                    printf "%s\n" "${fname}"
-
-                    if test "${display_type_params}" -eq "1"
-                    then
-                        print_parameters "required parameters:" "${fname}/parameter/required"
-                        print_parameters "required multiple parameters:" "${fname}/parameter/required_multiple"
-                        print_parameters "optional parameters:" "${fname}/parameter/optional"
-                        print_parameters "optional multiple parameters:" "${fname}/parameter/optional_multiple"
-                        print_parameters "boolean parameters:" "${fname}/parameter/boolean"
-                        param_deprecated="${fname}/parameter/deprecated"
-                        if test -d "${param_deprecated}"
-                        then
-                            printf "  deprecated parameters:\n"
-                            # shellcheck disable=SC2012
-                            ls -1 "${param_deprecated}" | sed "s/^\(.*\)$/    \1/"
-                        fi
-                    fi
-
-                    if test "${display_type_explorers}" -eq "1"
-                    then
-                        find "${fname}" -path "*/explorer/*" -type f
-                    fi
-                fi
+                print_type "${display_type}" "${fname}"
             done
     fi
 done
