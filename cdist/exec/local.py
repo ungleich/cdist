@@ -69,7 +69,6 @@ class Local(object):
 
         self.exec_path = exec_path
         self.custom_initial_manifest = initial_manifest
-        self._add_conf_dirs = add_conf_dirs
         self.cache_path_pattern = cache_path_pattern
         self.quiet_mode = quiet_mode
         if configuration:
@@ -84,16 +83,7 @@ class Local(object):
         self._init_cache_dir(None)
         self._init_paths()
         self._init_object_marker()
-        self._init_conf_dirs()
-
-    @property
-    def dist_conf_dir(self):
-        return os.path.abspath(os.path.join(os.path.dirname(cdist.__file__),
-                                            "conf"))
-
-    @property
-    def home_dir(self):
-        return cdist.home_dir()
+        self._init_conf_dirs(add_conf_dirs)
 
     def _init_log(self):
         self.log = logging.getLogger(self.target_host[0])
@@ -140,28 +130,9 @@ class Local(object):
         # Does not need to be secure - just randomly different from .cdist
         self.object_marker_name = tempfile.mktemp(prefix='.cdist-', dir='')
 
-    def _init_conf_dirs(self):
-        self.conf_dirs = []
-
-        self.conf_dirs.append(self.dist_conf_dir)
-
-        # Is the default place for user created explorer, type and manifest
-        if self.home_dir:
-            self.conf_dirs.append(self.home_dir)
-
-        # Add directories defined in the CDIST_PATH environment variable
-        # if 'CDIST_PATH' in os.environ:
-        #     cdist_path_dirs = re.split(r'(?<!\\):', os.environ['CDIST_PATH'])
-        #     cdist_path_dirs.reverse()
-        #     self.conf_dirs.extend(cdist_path_dirs)
-        if 'conf_dir' in self.configuration:
-            conf_dirs = self.configuration['conf_dir']
-            if conf_dirs:
-                self.conf_dirs.extend(conf_dirs)
-
-        # Add command line supplied directories
-        if self._add_conf_dirs:
-            self.conf_dirs.extend(self._add_conf_dirs)
+    def _init_conf_dirs(self, add_conf_dirs):
+        self.conf_dirs = util.resolve_conf_dirs(
+            self.configuration, add_conf_dirs=add_conf_dirs)
 
     def _init_directories(self):
         self.mkdir(self.conf_path)
@@ -187,10 +158,11 @@ class Local(object):
             self.object_marker_name, self.object_marker_file))
 
     def _init_cache_dir(self, cache_dir):
+        home_dir = cdist.home_dir()
         if cache_dir:
             self.cache_path = cache_dir
-        elif self.home_dir:
-            self.cache_path = os.path.join(self.home_dir, "cache")
+        elif home_dir:
+            self.cache_path = os.path.join(home_dir, "cache")
         else:
             raise cdist.Error(
                 "No homedir setup and no cache dir location given")

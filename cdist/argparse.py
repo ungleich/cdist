@@ -6,6 +6,7 @@ import collections
 import functools
 import cdist.configuration
 import cdist.preos
+import cdist.info
 
 
 # set of beta sub-commands
@@ -435,6 +436,37 @@ def get_parsers():
             help=('Select shell to use, defaults to current shell. Used shell'
                   ' should be POSIX compatible shell.'))
     parser['shell'].set_defaults(func=cdist.shell.Shell.commandline)
+
+    # Info
+    parser['info'] = parser['sub'].add_parser('info')
+    parser['info'].add_argument(
+            '-a', '--all', help='Display all info. This is the default.',
+            action='store_true', default=False)
+    parser['info'].add_argument(
+            '-c', '--conf-dir',
+            help='Add configuration directory (can be repeated).',
+            action='append')
+    parser['info'].add_argument(
+            '-e', '--global-explorers',
+            help='Display info for global explorers.', action='store_true',
+            default=False)
+    parser['info'].add_argument(
+            '-F', '--fixed-string',
+            help='Interpret pattern as a fixed string.', action='store_true',
+            default=False)
+    parser['info'].add_argument(
+            '-f', '--full', help='Display full details.',
+            action='store_true', default=False)
+    parser['info'].add_argument(
+           '-g', '--config-file',
+           help='Use specified custom configuration file.',
+           dest="config_file", required=False)
+    parser['info'].add_argument(
+            '-t', '--types', help='Display info for types.',
+            action='store_true', default=False)
+    parser['info'].add_argument(
+            'pattern', nargs='?', help='Glob pattern.')
+    parser['info'].set_defaults(func=cdist.info.Info.commandline)
 
     for p in parser:
         parser[p].epilog = EPILOG
