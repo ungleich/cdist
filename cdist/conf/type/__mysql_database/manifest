@@ -1,0 +1,26 @@
+#!/bin/sh -e
+
+if [ -f "$__object/parameter/user" ]
+then
+    user="$( cat "$__object/parameter/user" )"
+fi
+
+if [ -f "$__object/parameter/password" ]
+then
+    password="$( cat "$__object/parameter/password" )"
+fi
+
+if [ -n "$user" ] && [ -n "$password" ]
+then
+    if [ -f "$__object/parameter/name" ]
+    then
+        database="$( cat "$__object/parameter/name" )"
+    else
+        database="$__object_id"
+    fi
+
+    __mysql_user "$user" --password "$password"
+
+    require="__mysql_user/$user" \
+        __mysql_privileges "$database/$user" --database "$database" --user "$user"
+fi

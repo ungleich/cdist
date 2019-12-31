@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+if [ -f "$__object/parameter/name" ]
+then
+    name="$( cat "$__object/parameter/name" )"
+else
+    name="$__object_id"
+fi
+
+if [ -n "$( mysql -B -N -e "show databases like '$name'" )" ]
+then
+    echo 'present'
+else
+    echo 'absent'
+fi
