@@ -41,12 +41,12 @@ if [ "$state_should" != "$state_is" ]; then
       present)
          owner=""
          if [ -f "$__object/parameter/owner" ]; then
-            owner="-O '$(cat "$__object/parameter/owner")'"
+            owner="-O \"$(cat "$__object/parameter/owner")\""
          fi
-         echo "su - '$postgres_user' -c \"createdb $owner '$name'\""
+         echo "su - '$postgres_user' -c \"createdb $owner \"$name\"\""
       ;;
       absent)
-         echo "su - '$postgres_user' -c \"dropdb '$name'\""
+         echo "su - '$postgres_user' -c \"dropdb \"$name\"\""
       ;;
    esac
 fi

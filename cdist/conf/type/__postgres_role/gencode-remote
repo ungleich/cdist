@@ -54,7 +54,7 @@ case "$state_should" in
 
         [ -n "$password" ] && password="PASSWORD '$password'"
 
-        cmd="CREATE ROLE $name WITH $password $booleans"
+        cmd="CREATE ROLE \"$name\" WITH $password $booleans"
         echo "su - '$postgres_user' -c \"psql postgres -wc \\\"$cmd\\\"\""
     ;;
     absent)
