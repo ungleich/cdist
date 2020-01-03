@@ -37,8 +37,16 @@ then
         database="$__object_id"
     fi
 
-    __mysql_user "$user" --password "$password"
+    state_should="$( cat "$__object/parameter/state" )"
 
+    __mysql_user "$user" \
+        --password "$password" \
+        --state "$state_should"
+
+    # removing user should remove all user's privileges
     require="__mysql_user/$user" \
-        __mysql_privileges "$database/$user" --database "$database" --user "$user"
+        __mysql_privileges "$database/$user" \
+            --database "$database" \
+            --user "$user" \
+            --state "$state_should"
 fi
