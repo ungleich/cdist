@@ -6,6 +6,8 @@ next:
 	* Type __install_chroot_umount: Bugfix: type was not using __chroot_umount/manifest (Steven Armstrong)
 	* Types __postgres_*: Use double quoted identifiers in generated SQL (Timothée Floure)
 	* Core: Add cdist info command (Darko Poljak)
+	* New types: __mysql_user, __mysql_privileges (Ander Punnar)
+	* Type __mysql_database: Rewrite (Ander Punnar)
 
 6.3.0: 2019-12-12
 	* Type __package_update_index: Fix Alpine part (Dominique Roux)
