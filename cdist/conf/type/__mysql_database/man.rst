@@ -8,24 +8,24 @@ cdist-type__mysql_database - Manage a MySQL database
 
 DESCRIPTION
 -----------
-This cdist type allows you to install a MySQL database.
 
+Create MySQL database and optionally user with all privileges.
 
-REQUIRED PARAMETERS
--------------------
-None.
 
 OPTIONAL PARAMETERS
 -------------------
 name
-   The name of the database to install
-   defaults to the object id
+   Name of database. Defaults to object id.
 
 user
-   A user that should have access to the database
+   Create user and give all privileges to database.
 
 password
-   The password for the user who manages the database
+   Password for user.
+
+state
+   Defaults to present.
+   If absent and user is also set, both will be removed (with privileges).
 
 
 EXAMPLES
@@ -33,17 +33,23 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __mysql_database "cdist" --name "cdist" --user "myuser" --password "mypwd"
+    # just create database
+    __mysql_database foo
+
+    # create database with respective user with all privileges to database
+    __mysql_database bar \
+        --user name \
+        --password secret
 
 
 AUTHORS
 -------
-Benedikt Koeppel <code@benediktkoeppel.ch>
+Ander Punnar <ander-at-kvlt-dot-ee>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Benedikt Koeppel. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2020 Ander Punnar. You can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.

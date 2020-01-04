@@ -18,15 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-state_is="$( cat "$__object/explorer/state" )"
-
-state_should="$( cat "$__object/parameter/state" )"
-
-if [ "$state_is" = "$state_should" ]
-then
-    exit 0
-fi
-
 if [ -f "$__object/parameter/name" ]
 then
     name="$( cat "$__object/parameter/name" )"
@@ -34,13 +25,30 @@ else
     name="$__object_id"
 fi
 
-case "$state_should" in
-    present)
-        echo "mysql -e 'create database \`$name\`'"
-        echo "create database $name" >> "$__messages_out"
-    ;;
-    absent)
-        echo "mysql -e 'drop database \`$name\`'"
-        echo "drop database $name" >> "$__messages_out"
-    ;;
-esac
+if [ -f "$__object/parameter/password" ]
+then
+    password="$( cat "$__object/parameter/password" )"
+else
+    password=''
+fi
+
+host="$( cat "$__object/parameter/host" )"
+
+check_user="$( mysql -B -N -e "select user from mysql.user where user = '$name' and host = '$host'" )"
+
+if [ -n "$check_user" ]
+then
+    if [ -n "$password" ]
+    then
+        check_password="$( mysql -B -N -e "select user from mysql.user where user = '$name' and host = '$host' and password = password( '$password' )" )"
+    fi
+
+    if [ -n "$password" ] && [ -z "$check_password" ]
+    then
+        echo 'change-password'
+    else
+        echo 'present'
+    fi
+else
+    echo 'absent'
+fi

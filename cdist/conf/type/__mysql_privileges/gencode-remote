@@ -27,20 +27,23 @@ then
     exit 0
 fi
 
-if [ -f "$__object/parameter/name" ]
-then
-    name="$( cat "$__object/parameter/name" )"
-else
-    name="$__object_id"
-fi
+privileges="$( cat "$__object/parameter/privileges" )"
+
+database="$( cat "$__object/parameter/database" )"
+
+table="$( cat "$__object/parameter/table" )"
+
+user="$( cat "$__object/parameter/user" )"
+
+host="$( cat "$__object/parameter/host" )"
 
 case "$state_should" in
     present)
-        echo "mysql -e 'create database \`$name\`'"
-        echo "create database $name" >> "$__messages_out"
+        echo "mysql -e 'grant $privileges on \`$database\`.\`$table\` to \`$user\`@\`$host\`'"
+        echo "grant $privileges on $database.$table to $user@$host" >> "$__messages_out"
     ;;
     absent)
-        echo "mysql -e 'drop database \`$name\`'"
-        echo "drop database $name" >> "$__messages_out"
+        echo "mysql -e 'revoke $privileges on \`$database\`.\`$table\` from \`$user\`@\`$host\`'"
+        echo "revoke $privileges on $database.$table from $user@$host" >> "$__messages_out"
     ;;
 esac

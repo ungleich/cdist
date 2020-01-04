@@ -18,15 +18,6 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-state_is="$( cat "$__object/explorer/state" )"
-
-state_should="$( cat "$__object/parameter/state" )"
-
-if [ "$state_is" = "$state_should" ]
-then
-    exit 0
-fi
-
 if [ -f "$__object/parameter/name" ]
 then
     name="$( cat "$__object/parameter/name" )"
@@ -34,13 +25,9 @@ else
     name="$__object_id"
 fi
 
-case "$state_should" in
-    present)
-        echo "mysql -e 'create database \`$name\`'"
-        echo "create database $name" >> "$__messages_out"
-    ;;
-    absent)
-        echo "mysql -e 'drop database \`$name\`'"
-        echo "drop database $name" >> "$__messages_out"
-    ;;
-esac
+if [ -n "$( mysql -B -N -e "show databases like '$name'" )" ]
+then
+    echo 'present'
+else
+    echo 'absent'
+fi
