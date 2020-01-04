@@ -370,7 +370,7 @@ eof
         cat << eof
 Manual steps post release:
     - cdist-web
-    - send mail body generated in mailinglist.tmp and inform Dmitry for deb
+    - send generated mailinglist.tmp mail
     - twitter
 eof
     ;;
