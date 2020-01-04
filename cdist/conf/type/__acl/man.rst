@@ -15,7 +15,7 @@ See ``setfacl`` and ``acl`` manpages for more details.
 
 REQUIRED MULTIPLE PARAMETERS
 ----------------------------
-acl
+entry
    Set ACL entry following ``getfacl`` output syntax.
 
 
@@ -36,8 +36,8 @@ remove
 
 DEPRECATED PARAMETERS
 ---------------------
-Parameters ``user``, ``group``, ``mask`` and ``other`` are deprecated and they
-will be removed in future versions. Please use ``acl`` parameter instead.
+Parameters ``acl``, ``user``, ``group``, ``mask`` and ``other`` are deprecated and they
+will be removed in future versions. Please use ``entry`` parameter instead.
 
 
 EXAMPLES
@@ -49,27 +49,27 @@ EXAMPLES
         --default \
         --recursive \
         --remove \
-        --acl user:alice:rwx \
-        --acl user:bob:r-x \
-        --acl group:project-group:rwx \
-        --acl group:some-other-group:r-x \
-        --acl mask::r-x \
-        --acl other::r-x
+        --entry user:alice:rwx \
+        --entry user:bob:r-x \
+        --entry group:project-group:rwx \
+        --entry group:some-other-group:r-x \
+        --entry mask::r-x \
+        --entry other::r-x
 
     # give Alice read-only access to subdir,
     # but don't allow her to see parent content.
 
     __acl /srv/project2 \
         --remove \
-        --acl default:group:secret-project:rwx \
-        --acl group:secret-project:rwx \
-        --acl user:alice:--x
+        --entry default:group:secret-project:rwx \
+        --entry group:secret-project:rwx \
+        --entry user:alice:--x
 
     __acl /srv/project2/subdir \
         --default \
         --remove \
-        --acl group:secret-project:rwx \
-        --acl user:alice:r-x
+        --entry group:secret-project:rwx \
+        --entry user:alice:r-x
 
 
 AUTHORS
