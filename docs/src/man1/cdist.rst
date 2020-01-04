@@ -84,7 +84,7 @@ SYNOPSIS
 
     cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [-s SHELL]
 
-    cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-t] [pattern]
+    cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-g CONFIG_FILE] [-t] [pattern]
 
 
 DESCRIPTION
