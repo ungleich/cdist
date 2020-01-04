@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.4.0: 2020-01-04
 	* Type __consul_agent: Don't deploy init script on Alpine anymore, it ships with one itself (Nico Schottelius)
 	* Type __install_chroot_umount: Bugfix: type was not using __chroot_umount/manifest (Steven Armstrong)
 	* Types __postgres_*: Use double quoted identifiers in generated SQL (Timothée Floure)
