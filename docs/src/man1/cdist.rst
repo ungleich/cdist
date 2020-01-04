@@ -11,7 +11,7 @@ SYNOPSIS
 
 ::
 
-    cdist [-h] [-V] {banner,config,install,inventory,preos,shell} ...
+    cdist [-h] [-V] {banner,config,install,inventory,preos,shell,info} ...
 
     cdist banner [-h] [-l LOGLEVEL] [-q] [-v]
 
@@ -83,6 +83,8 @@ SYNOPSIS
                                        target_dir
 
     cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [-s SHELL]
+
+    cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-t] [pattern]
 
 
 DESCRIPTION
@@ -602,6 +604,39 @@ usage. Its primary use is for debugging type parameters.
 **-s SHELL, --shell SHELL**
     Select shell to use, defaults to current shell. Used shell should
     be POSIX compatible shell.
+
+
+INFO
+----
+Display information for cdist (global explorers, types).
+
+**pattern**
+    Glob pattern. If it contains special characters('?', '*', '[') then it is
+    used as specified, otherwise it is translated to `*pattern*`.
+
+**-h, --help**
+    Show help message and exit.
+
+**-a, --all**
+    Display all info. This is the default.
+
+**-c CONF_DIR, --conf-dir CONF_DIR**
+    Add configuration directory (can be repeated).
+
+**-e, --global-explorers**
+    Display info for global explorers.
+
+**-F, --fixed-string**
+    Interpret pattern as a fixed string.
+
+**-f, --full**
+    Display full details.
+
+**-g CONFIG_FILE, --config-file CONFIG_FILE**
+    Use specified custom configuration file.
+
+**-t, --types**
+    Display info for types.
 
 
 CONFIGURATION
