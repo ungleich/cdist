@@ -1,0 +1,43 @@
+#!/bin/sh -e
+# explorer/state
+#
+# 2020 Matthias Stecher <matthiasstecher at gmx.de>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Check if the service is running or stopped.
+#
+# The explorer must check before if the service exist, because 'systemctl is-active'
+# will return "inactive" even if there is no service there:
+#   systemctl cat foo        # does not exist
+#   systemctl is-active foo  # is "inactive"
+
+
+# get name of the service
+if [ -f "$__object/parameter/name" ]; then
+    name="$(cat "$__object/parameter/name")"
+else
+    name="$__object_id"
+fi
+
+
+# check if the service exist, else exit without output (also if systemd doesn't exist)
+# do not exit here with an error code, will be done in the gencode-remote script
+systemctl cat "$name" > /dev/null 2>&1 || exit 0
+
+# print if the service is running or not
+systemctl is-active -q "$name" && printf "running" || printf "stopped"
