@@ -250,6 +250,12 @@ def get_parsers():
            '-S', '--disable-saving-output-streams',
            help='Disable saving output streams.',
            action='store_false', dest='save_output_streams', default=True)
+    parser['config_main'].add_argument(
+           '--log-server',
+           action='store_true',
+           help=('Start a log server for sub processes to use.'
+            'This is mainly usefull when running cdist nested'
+            'from a code-local script.'))
 
     # Config
     parser['config_args'] = argparse.ArgumentParser(add_help=False)

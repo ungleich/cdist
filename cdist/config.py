@@ -385,6 +385,16 @@ class Config(object):
 
         log = logging.getLogger(host)
 
+        if args.log_server:
+            # Start a log server so that nested `cdist config` runs have a place
+            # to send their logs to.
+            log_server_socket_dir = tempfile.mkdtemp()
+            log_server_socket = os.path.join(log_server_socket_dir, 'log-server')
+            cls._register_path_for_removal(log_server_socket_dir)
+            log.debug('Starting logging server on: %s', log_server_socket)
+            os.environ['__cdist_log_server_socket_to_export'] = log_server_socket
+            cdist.log.setupLogServer(log_server_socket)
+
         try:
             remote_exec, remote_copy, cleanup_cmd = cls._resolve_remote_cmds(
                 args)
