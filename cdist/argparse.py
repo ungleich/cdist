@@ -7,10 +7,11 @@ import functools
 import cdist.configuration
 import cdist.preos
 import cdist.info
+import cdist.process
 
 
 # set of beta sub-commands
-BETA_COMMANDS = set(('install', 'inventory', ))
+BETA_COMMANDS = set(('install', 'inventory', 'process', ))
 # set of beta arguments for sub-commands
 BETA_ARGS = {
     'config': set(('tag', 'all_tagged_hosts', 'use_archiving', )),
@@ -467,6 +468,14 @@ def get_parsers():
     parser['info'].add_argument(
             'pattern', nargs='?', help='Glob pattern.')
     parser['info'].set_defaults(func=cdist.info.Info.commandline)
+
+    # Process
+    parser['process'] = parser['sub'].add_parser(
+        'process', parents=[parser['loglevel'], parser['beta'], ])
+    parser['process_sub'] = parser['process'].add_subparsers(title="Processes")
+    parser['process'].set_defaults(func=functools.partial(
+        cdist.process.commandline, parser=parser['process']))
+    cdist.process.setup(parser['process_sub'])
 
     for p in parser:
         parser[p].epilog = EPILOG
