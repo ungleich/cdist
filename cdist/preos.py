@@ -101,13 +101,10 @@ class PreOS(object):
                             action='store_true', default=False)
         parser.add_argument('remainder_args', nargs=argparse.REMAINDER)
         args = parser.parse_args(argv[1:])
-        cdist.argparse.handle_loglevel(args)
+        st.argparse.handle_loglevel(args)
         log.debug("preos args : {}".format(args))
 
-        cfg = cdist.configuration.Configuration(args)
-        configuration = cfg.get_config(section='GLOBAL')
-        conf_dirs = util.resolve_conf_dirs(configuration,
-                                           args.conf_dir)
+        conf_dirs = util.resolve_conf_dirs_from_config_and_args(args)
 
         extend_plugins_path(conf_dirs)
         sys.path.extend(_PLUGINS_PATH)

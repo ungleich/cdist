@@ -4,6 +4,7 @@ Changelog
 next:
 	* Type __acl: Add --entry parameter to replace --acl, deprecate --acl (Ander Punnar)
 	* Core: preos: Fix missing configuration file usage, support -g, --config-file option (Darko Poljak)
+	* Core info command: Support tilde expansion of conf directories (Darko Poljak)
 
 6.4.0: 2020-01-04
 	* Type __consul_agent: Don't deploy init script on Alpine anymore, it ships with one itself (Nico Schottelius)
