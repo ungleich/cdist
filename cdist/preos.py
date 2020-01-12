@@ -101,7 +101,7 @@ class PreOS(object):
                             action='store_true', default=False)
         parser.add_argument('remainder_args', nargs=argparse.REMAINDER)
         args = parser.parse_args(argv[1:])
-        st.argparse.handle_loglevel(args)
+        cdist.argparse.handle_loglevel(args)
         log.debug("preos args : {}".format(args))
 
         conf_dirs = util.resolve_conf_dirs_from_config_and_args(args)
