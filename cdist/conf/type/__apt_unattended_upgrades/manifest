@@ -34,80 +34,40 @@ APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOF
 
-conf='# this file is managed by cdist'
-
-if [ -f "$__object/parameter/mail" ]
-then
-    conf="$(
-        printf \
-            '%s\nUnattended-Upgrade::Mail "%s";\n' \
-            "$conf" \
-            "$( cat "$__object/parameter/mail" )"
-        )"
-fi
-
-if [ -f "$__object/parameter/mail-only-on-error" ]
-then
-    conf="$(
-        printf \
-            '%s\nUnattended-Upgrade::MailOnlyOnError "true";\n' \
-            "$conf"
-        )"
-fi
-
-if [ -f "$__object/parameter/no-auto-fix-interrupted-dpkg" ]
-then
-    conf="$(
-        printf \
-            '%s\nUnattended-Upgrade::AutoFixInterruptedDpkg "false";\n' \
-            "$conf"
-        )"
-fi
-
-if [ -f "$__object/parameter/no-minimal-steps" ]
-then
-    conf="$(
-        printf \
-            '%s\nUnattended-Upgrade::MinimalSteps "false";\n' \
-            "$conf"
-        )"
-fi
-
-if [ -f "$__object/parameter/install-on-shutdown" ]
-then
-    conf="$(
-        printf \
-            '%s\nUnattended-Upgrade::InstallOnShutdown "true";\n' \
-            "$conf"
-        )"
-fi
-
-if [ -f "$__object/parameter/automatic-reboot" ]
-then
-    conf="$(
-        printf \
-            '%s\nUnattended-Upgrade::Automatic-Reboot "true";\n' \
-            "$conf"
-        )"
-fi
-
-if [ -f "$__object/parameter/blacklist" ]
-then
-    bl='Unattended-Upgrade::Package-Blacklist {';
-
-    while read -r l
-    do
-        bl="$( printf '%s\n"%s";\n' "$bl" "$l" )"
-    done \
-        < "$__object/parameter/blacklist"
-
-    conf="$( printf '%s\n%s\n}\n' "$conf" "$bl" )"
-fi
-
 # lets not write into upstream 50unattended-upgrades file,
 # but use our own config file to avoid clashes
 
 conf_file='/etc/apt/apt.conf.d/51unattended-upgrades-cdist'
+
+conf='# this file is managed by cdist'
+
+if [ -f "$__object/parameter/option" ]
+then
+    o=''
+
+    while read -r l
+    do
+        k="$( echo "$l" | awk -F= '{print $1}' )"
+        v="$( echo "$l" | awk -F= '{print $2}' )"
+        o="$( printf '%s\nUnattended-Upgrade::%s "%s";\n' "$o" "$k" "$v" )"
+    done \
+        < "$__object/parameter/option"
+
+    conf="$( printf '%s\n%s\n' "$conf" "$o" )"
+fi
+
+if [ -f "$__object/parameter/blacklist" ]
+then
+    b='Unattended-Upgrade::Package-Blacklist {'
+
+    while read -r l
+    do
+        b="$( printf '%s\n"%s";\n' "$b" "$l" )"
+    done \
+        < "$__object/parameter/blacklist"
+
+    conf="$( printf '%s\n%s\n}\n' "$conf" "$b" )"
+fi
 
 if [ "$( echo "$conf" | wc -l )" -gt 1 ]
 then
