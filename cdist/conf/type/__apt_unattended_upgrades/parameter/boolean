@@ -1,1 +1,5 @@
 mail-on-error
+no-auto-fix
+no-minimal-steps
+on-shutdown
+reboot

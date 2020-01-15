@@ -34,39 +34,61 @@ APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOF
 
-# lets not write into upstream 50unattended-upgrades file,
-# but use our own config files to avoid clashes
-
-ml_conf='/etc/apt/apt.conf.d/51unattended-upgrades-mail'
-bl_conf='/etc/apt/apt.conf.d/51unattended-upgrades-blacklist'
+conf='# this file is managed by cdist'
 
 if [ -f "$__object/parameter/mail" ]
 then
-    mail="$( cat "$__object/parameter/mail" )"
-else
-    mail=''
+    conf="$(
+        printf \
+            '%s\nUnattended-Upgrade::Mail "%s";\n' \
+            "$conf" \
+            "$( cat "$__object/parameter/mail" )"
+        )"
 fi
 
-if [ -n "$mail" ]
+if [ -f "$__object/parameter/mail-on-error" ]
 then
-    if [ -f "$__object/parameter/mail-on-error" ]
-    then
-        mail_on_error='true'
-    else
-        mail_on_error='false'
-    fi
+    conf="$(
+        printf \
+            '%s\nUnattended-Upgrade::MailOnlyOnError "true";\n' \
+            "$conf"
+        )"
+fi
 
-    __file "$ml_conf" \
-        --owner root \
-        --group root \
-        --mode 644 \
-        --source - << EOF
-Unattended-Upgrade::Mail "$mail";
-Unattended-Upgrade::MailOnlyOnError "$mail_on_error";
-EOF
+if [ -f "$__object/parameter/no-auto-fix" ]
+then
+    conf="$(
+        printf \
+            '%s\nUnattended-Upgrade::AutoFixInterruptedDpkg "false";\n' \
+            "$conf"
+        )"
+fi
 
-else
-    __file "$ml_conf" --state absent
+if [ -f "$__object/parameter/no-minimal-steps" ]
+then
+    conf="$(
+        printf \
+            '%s\nUnattended-Upgrade::MinimalSteps "false";\n' \
+            "$conf"
+        )"
+fi
+
+if [ -f "$__object/parameter/on-shutdown" ]
+then
+    conf="$(
+        printf \
+            '%s\nUnattended-Upgrade::InstallOnShutdown "true";\n' \
+            "$conf"
+        )"
+fi
+
+if [ -f "$__object/parameter/reboot" ]
+then
+    conf="$(
+        printf \
+            '%s\nUnattended-Upgrade::Automatic-Reboot "true";\n' \
+            "$conf"
+        )"
 fi
 
 if [ -f "$__object/parameter/blacklist" ]
@@ -79,14 +101,22 @@ then
     done \
         < "$__object/parameter/blacklist"
 
-    bl="$( printf '%s\n}' "$bl" )"
+    conf="$( printf '%s\n%s\n}\n' "$conf" "$bl" )"
+fi
 
-    echo "$bl" \
-        | __file "$bl_conf" \
+# lets not write into upstream 50unattended-upgrades file,
+# but use our own config files to avoid clashes
+
+conf_file='/etc/apt/apt.conf.d/51unattended-upgrades-cdist'
+
+if [ "$( echo "$conf" | wc -l )" -gt 1 ]
+then
+    echo "$conf" \
+        | __file "$conf_file" \
             --owner root \
             --group root \
             --mode 644 \
             --source -
 else
-    __file "$bl_conf" --state absent
+    __file "$conf_file" --state absent
 fi
