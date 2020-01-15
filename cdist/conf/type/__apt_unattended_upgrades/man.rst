@@ -11,6 +11,8 @@ DESCRIPTION
 
 Install and configure unattended-upgrades package.
 
+For more information see https://wiki.debian.org/UnattendedUpgrades.
+
 
 OPTIONAL PARAMETERS
 -------------------

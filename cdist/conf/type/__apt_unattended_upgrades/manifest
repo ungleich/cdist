@@ -24,7 +24,6 @@ export require='__package/unattended-upgrades'
 
 # in normal circumstances 20auto-upgrades is managed
 # by debconf and it can only contain these lines
-# https://wiki.debian.org/UnattendedUpgrades
 
 __file /etc/apt/apt.conf.d/20auto-upgrades \
     --owner root \
