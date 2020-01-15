@@ -25,10 +25,7 @@ else
    file="/$__object_id"
 fi
 
-if [ ! -f "$file" ]; then
-  echo "file_missing"
-  exit 0
-fi
+[ -f "$file" ] || exit 0
 
 if [ -f "$__object/parameter/before" ]; then
    position="before"

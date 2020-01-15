@@ -24,8 +24,19 @@ if [ -f "$__object/parameter/before" ] && [ -f "$__object/parameter/after" ]; th
    exit 1
 fi
 
+if [ -f "$__object/parameter/file" ]; then
+   file="$(cat "$__object/parameter/file")"
+else
+   file="/$__object_id"
+fi
+
 state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/state")"
+
+if [ -z "$state_is" ]; then
+   printf 'The file "%s" is missing. Please create it before using %s on it.\n' "$file" "${__type##*/}" >&2
+   exit 1
+fi
 
 if [ "$state_should" = "$state_is" ]; then
    # nothing to do
@@ -45,12 +56,6 @@ if [ -f "$__object/parameter/regex" ]; then
    needle="regex"
 else
    needle="line"
-fi
-
-if [ -f "$__object/parameter/file" ]; then
-   file="$(cat "$__object/parameter/file")"
-else
-   file="/$__object_id"
 fi
 
 add=0
