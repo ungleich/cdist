@@ -118,7 +118,7 @@ BEGIN {
    print
 }
 END {
-   if (add && position == "end") {
+   if (add) {
       print line
    }
 }
