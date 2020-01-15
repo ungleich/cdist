@@ -1,5 +1,5 @@
-mail-on-error
-no-auto-fix
+mail-only-on-error
+no-auto-fix-interrupted-dpkg
 no-minimal-steps
-on-shutdown
-reboot
+install-on-shutdown
+automatic-reboot

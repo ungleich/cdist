@@ -46,7 +46,7 @@ then
         )"
 fi
 
-if [ -f "$__object/parameter/mail-on-error" ]
+if [ -f "$__object/parameter/mail-only-on-error" ]
 then
     conf="$(
         printf \
@@ -55,7 +55,7 @@ then
         )"
 fi
 
-if [ -f "$__object/parameter/no-auto-fix" ]
+if [ -f "$__object/parameter/no-auto-fix-interrupted-dpkg" ]
 then
     conf="$(
         printf \
@@ -73,7 +73,7 @@ then
         )"
 fi
 
-if [ -f "$__object/parameter/on-shutdown" ]
+if [ -f "$__object/parameter/install-on-shutdown" ]
 then
     conf="$(
         printf \
@@ -82,7 +82,7 @@ then
         )"
 fi
 
-if [ -f "$__object/parameter/reboot" ]
+if [ -f "$__object/parameter/automatic-reboot" ]
 then
     conf="$(
         printf \
