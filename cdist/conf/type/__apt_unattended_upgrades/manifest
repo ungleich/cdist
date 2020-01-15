@@ -105,7 +105,7 @@ then
 fi
 
 # lets not write into upstream 50unattended-upgrades file,
-# but use our own config files to avoid clashes
+# but use our own config file to avoid clashes
 
 conf_file='/etc/apt/apt.conf.d/51unattended-upgrades-cdist'
 
