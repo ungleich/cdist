@@ -20,16 +20,17 @@
 
 __package unattended-upgrades
 
+export require='__package/unattended-upgrades'
+
 # in normal circumstances 20auto-upgrades is managed
 # by debconf and it can only contain these lines
 # https://wiki.debian.org/UnattendedUpgrades
 
-require='__package/unattended-upgrades' \
-    __file /etc/apt/apt.conf.d/20auto-upgrades \
-        --owner root \
-        --group root \
-        --mode 644 \
-        --source - << EOF
+__file /etc/apt/apt.conf.d/20auto-upgrades \
+    --owner root \
+    --group root \
+    --mode 644 \
+    --source - << EOF
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOF
