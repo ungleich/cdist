@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2018 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -104,10 +105,12 @@ BEGIN {
       if (anchor && match(\$0, anchor)) {
          if (position == "before") {
             print line
+            add = 0
             print
          } else if (position == "after") {
             print
             print line
+            add = 0
          }
          next
       }

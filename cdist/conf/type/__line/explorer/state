@@ -18,6 +18,17 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+if [ -f "$__object/parameter/file" ]; then
+   file="$(cat "$__object/parameter/file")"
+else
+   file="/$__object_id"
+fi
+
+if [ ! -f "$file" ]; then
+  echo "file_missing"
+  exit 0
+fi
+
 if [ -f "$__object/parameter/before" ]; then
    position="before"
 elif [ -f "$__object/parameter/after" ]; then
@@ -31,17 +42,6 @@ if [ -f "$__object/parameter/regex" ]; then
    needle="regex"
 else
    needle="line"
-fi
-
-if [ -f "$__object/parameter/file" ]; then
-   file="$(cat "$__object/parameter/file")"
-else
-   file="/$__object_id"
-fi
-
-if [ ! -f "$file" ]; then
-  echo "file_missing"
-  exit 0
 fi
 
 awk -v position="$position" -v needle="$needle" '
