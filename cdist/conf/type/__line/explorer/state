@@ -49,7 +49,7 @@ function _find(_text, _pattern) {
    if (needle == "regex") {
       return match(_text, _pattern)
    } else {
-      return index(_text, _pattern)
+      return index(_text, _pattern) == 1
    }
 }
 BEGIN {
