@@ -7,6 +7,12 @@ next:
 	* Core info command: Support tilde expansion of conf directories (Darko Poljak)
 	* Types __postgres_*: Fix edge cases in quoted identifiers (Timothée Floure)
 	* New type: __apt_unattended_upgrades (Ander Punnar)
+	* Type __line: Bugfixes: (Dennis Camera)
+		- ensure the line is only added once
+		- always add line to end if anchor is not found
+		- match line at the beginning when not regex
+		- fix incorrect 'wrongposition' in state explorer
+		- produce error when file does not exist
 
 6.4.0: 2020-01-04
 	* Type __consul_agent: Don't deploy init script on Alpine anymore, it ships with one itself (Nico Schottelius)
