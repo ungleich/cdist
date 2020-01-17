@@ -47,9 +47,7 @@ then
 
     while read -r l
     do
-        k="$( echo "$l" | awk -F= '{print $1}' )"
-        v="$( echo "$l" | awk -F= '{print $2}' )"
-        o="$( printf '%s\nUnattended-Upgrade::%s "%s";\n' "$o" "$k" "$v" )"
+        o="$( printf '%s\nUnattended-Upgrade::%s "%s";\n' "$o" "${l%%=*}" "${l#*=}" )"
     done \
         < "$__object/parameter/option"
 
