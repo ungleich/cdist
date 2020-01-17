@@ -1,0 +1,80 @@
+#!/bin/sh -e
+#
+# 2020 Ander Punnar (ander-at-kvlt-dot-ee)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+__package unattended-upgrades
+
+export require='__package/unattended-upgrades'
+
+# in normal circumstances 20auto-upgrades is managed
+# by debconf and it can only contain these lines
+
+__file /etc/apt/apt.conf.d/20auto-upgrades \
+    --owner root \
+    --group root \
+    --mode 644 \
+    --source - << EOF
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+EOF
+
+# lets not write into upstream 50unattended-upgrades file,
+# but use our own config file to avoid clashes
+
+conf_file='/etc/apt/apt.conf.d/51unattended-upgrades-cdist'
+
+conf='# this file is managed by cdist'
+
+if [ -f "$__object/parameter/option" ]
+then
+    o=''
+
+    while read -r l
+    do
+        o="$( printf '%s\nUnattended-Upgrade::%s "%s";\n' "$o" "${l%%=*}" "${l#*=}" )"
+    done \
+        < "$__object/parameter/option"
+
+    conf="$( printf '%s\n%s\n' "$conf" "$o" )"
+fi
+
+if [ -f "$__object/parameter/blacklist" ]
+then
+    b='Unattended-Upgrade::Package-Blacklist {'
+
+    while read -r l
+    do
+        b="$( printf '%s\n"%s";\n' "$b" "$l" )"
+    done \
+        < "$__object/parameter/blacklist"
+
+    conf="$( printf '%s\n%s\n}\n' "$conf" "$b" )"
+fi
+
+if [ "$( echo "$conf" | wc -l )" -gt 1 ]
+then
+    echo "$conf" \
+        | __file "$conf_file" \
+            --owner root \
+            --group root \
+            --mode 644 \
+            --source -
+else
+    __file "$conf_file" --state absent
+fi
