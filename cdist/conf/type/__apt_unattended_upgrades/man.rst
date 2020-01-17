@@ -14,22 +14,33 @@ Install and configure unattended-upgrades package.
 For more information see https://wiki.debian.org/UnattendedUpgrades.
 
 
-OPTIONAL PARAMETERS
--------------------
-mail
-   Send email to this address for problems or packages upgrades.
-
-
 OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
+option
+   Set options for unattended-upgrades. See examples.
+
+   Supported options with default values (as of 2020-01-17) are:
+
+   - AutoFixInterruptedDpkg, default is "true"
+   - MinimalSteps, default is "true"
+   - InstallOnShutdown, default is "false"
+   - Mail, default is "" (empty)
+   - MailOnlyOnError, default is "false"
+   - Remove-Unused-Kernel-Packages, default is "true"
+   - Remove-New-Unused-Dependencies, default is "true"
+   - Remove-Unused-Dependencies, default is "false"
+   - Automatic-Reboot, default is "false"
+   - Automatic-Reboot-WithUsers, default is "true"
+   - Automatic-Reboot-Time, default is "02:00"
+   - SyslogEnable, default is "false"
+   - SyslogFacility, default is "daemon"
+   - OnlyOnACPower, default is "true"
+   - Skip-Updates-On-Metered-Connections, default is "true"
+   - Verbose, default is "false"
+   - Debug, default is "false"
+
 blacklist
    Python regular expressions, matching packages to exclude from upgrading.
-
-
-BOOLEAN PARAMETERS
-------------------
-mail-on-error
-   Get emails only on errors.
 
 
 EXAMPLES
@@ -38,10 +49,11 @@ EXAMPLES
 .. code-block:: sh
 
     __apt_unattended_upgrades \
-        --mail root \
-        --mail-on-error \
+        --option Mail=root \
+        --option MailOnlyOnError=true \
         --blacklist multipath-tools \
         --blacklist open-iscsi
+
 
 AUTHORS
 -------
