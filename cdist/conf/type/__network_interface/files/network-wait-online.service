@@ -1,0 +1,17 @@
+[Unit]
+Description=Wait for network to be configured
+Documentation=man:ifup(8)
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=%NETWORK_SERVICE_NAME%
+Before=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutStartSec=3min
+ExecStart=/bin/sh -ec 'while [ "$(ls -1 /run/network-online-interfaces/)" ]; do sleep 1; done'
+
+[Install]
+WantedBy=network-online.target
+

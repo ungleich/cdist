@@ -1,0 +1,240 @@
+#!/bin/sh
+#
+
+set -e
+
+error() {
+   echo "[ERROR] $@" >&2
+}
+die() {
+   error "$@"
+   exit 1
+}
+info() {
+   echo "[INFO] $@" >&2
+}
+debug() {
+   if [ "$DEBUG" ]; then
+      echo "[DEBUG] $@" >&2
+   fi
+}
+
+usage() {
+   cat << EOS 1>&2
+Usage: ${0##*/} [OPTIONS] ACTION INTERFACE IP_ADDRESS SUBNET_MASK_OR_PREFIX [GATEWAY]
+(see -h for more information)
+EOS
+}
+
+help() {
+   usage 2>&1 | head -n -1 1>&2
+
+   cat << EOS 1>&2
+
+Setup policy based routing for the given interface
+to ensure symmetric routing.
+
+ACTION must be either 'up' or 'down' to add respectively remove the
+routing table entries.
+
+Options:
+    -h    show this help message
+    -d    run in debug mode
+    -x    run with 'set -x' set
+    -n    no action, just show what would be done without doing it
+
+Examples:
+   ${0##*/} up eth1 192.168.42.23 255.255.255.0 192.168.0.1
+   ${0##*/} down eth1 192.168.42.23 255.255.255.0 192.168.0.1
+   # gateway is optional
+   ${0##*/} up eth1 192.168.42.23 255.255.255.0
+   ${0##*/} down eth1 192.168.42.23 255.255.255.0
+   # same but using prefix instead of subnet mask
+   ${0##*/} up eth1 192.168.42.23 24 192.168.0.1
+   ${0##*/} down eth1 192.168.42.23 24 192.168.0.1
+
+EOS
+}
+
+die_usage() {
+   error "$@"
+   usage
+   exit 1
+}
+
+
+### Utility functions
+
+# Convert ip to int.
+ip2int() {
+   _ip="$1"
+   { IFS=. read _a _b _c _d; } << _done
+$_ip
+_done
+   echo $(((((((_a << 8) | _b) << 8) | _c) << 8) | _d))
+   unset _ip _a _b _c _d
+}
+
+# Convert int to ip.
+int2ip() {
+   _ui32=$1; shift
+   _ip=
+   for _n in 1 2 3 4; do
+      _ip=$((_ui32 & 0xff))${_ip:+.}$_ip
+      _ui32=$((_ui32 >> 8))
+   done
+   echo $_ip
+   unset _ui32 _ip _n
+}
+
+# Convert the given prefix into a subnet mask.
+mask_from_prefix() {
+   _prefix="$1"
+   _mask=$((0xffffffff << (32 - $_prefix)))
+   int2ip $_mask
+   unset _prefix _mask
+}
+
+# Calculate network number from the given ip and prefix.
+network_from_ip_and_prefix() {
+   _ip="$1"
+   _prefix="$2"
+   _addr=$(ip2int $_ip)
+   _mask=$((0xffffffff << (32 - $_prefix)))
+   int2ip $((_addr & _mask))
+   unset _ip _prefix _addr _mask
+}
+
+# Calculate number of bits in the given subnet mask.
+prefix_from_mask() {
+   # Assumes there's no "255." after a non-255 byte in the mask
+   _mask="$1"
+   _x=${_mask##*255.}
+   set -- 0^^^128^192^224^240^248^252^254^ $(( (${#1} - ${#_x})*2 )) ${_x%%.*}
+   _x=${1%%$3*}
+   echo $(( $2 + (${#_x}/4) ))
+   unset _mask _x
+}
+
+rt_tables=/etc/iproute2/rt_tables
+#rt_tables=/tmp/rt_tables
+# Get and if required create a routing table for the given table name.
+table_id_from_name() {
+   _interface="$1"
+   _table_id=$(awk -vname=$_interface '{ if ($2 == name) print $1 }' "$rt_tables")
+   if [ -z "$_table_id" ]; then
+      # find unused table id and create a new table for this interface
+      _used_ids=$(awk '$1 !~ /^(#| |255|254|253|0)/ { print $1 }' "$rt_tables")
+      for _tid in $(seq 1 252); do
+         if echo "$_used_ids" | grep -q "$_tid"; then
+            continue
+         else
+            _table_id="$_tid"
+            [ $NOACTION ] || printf '%s %s\n' "$_table_id" "$_interface" >> "$rt_tables"
+            break
+         fi
+      done
+   fi
+   echo "$_table_id"
+   unset _interface _table_id _used_ids _tid
+}
+
+
+### Parse command line arguments
+
+NOACTION=
+DEBUG=
+SETX=
+while getopts "ndxh" options
+do
+   #echo "$flag" $OPTIND $OPTARG
+   case $options in
+      n) NOACTION=1;;
+      d) DEBUG=1;;
+      x) SETX=1;;
+      ?|h) help
+         exit 0
+      ;;
+      *) usage
+         exit 1
+      ;;
+   esac
+done
+# Strip arguments allready handled by getopts
+shift $((OPTIND-1))
+
+[ "$SETX" ] && set -x
+
+# Validate arguments
+[ "$#" -ge 4 ] || die_usage "Expected at least 4 arguments, got: $#"
+
+action="$1" # up | down
+interface="$2"
+ip_address="$3"
+subnet_mask_or_prefix="$4"
+gateway="$5"
+
+debug "action: $action"
+debug "interface: $interface"
+debug "ip_address: $ip_address"
+debug "subnet_mask_or_prefix: $subnet_mask_or_prefix"
+debug "gateway: $gateway"
+
+
+case "$subnet_mask_or_prefix" in
+   *.*)
+      # has a dot, must be a subnet mask
+      subnet_mask="$subnet_mask_or_prefix"
+      prefix=$(prefix_from_mask "$subnet_mask")
+      network="$(network_from_ip_and_prefix "$ip_address" "$prefix")"
+   ;;
+   *)
+      # no dot, must be prefix
+      prefix="$subnet_mask_or_prefix"
+      subnet_mask="$(mask_from_prefix "$prefix")"
+      network="$(network_from_ip_and_prefix "$ip_address" "$prefix")"
+   ;;
+esac
+
+table_name="$interface"
+table_id="$(table_id_from_name "$table_name")"
+
+debug "subnet_mask: $subnet_mask"
+debug "prefix: $prefix"
+debug "network: $network"
+debug "table_name: $table_name"
+debug "table_id: $table_id"
+
+(
+case "$action" in
+   up)
+      # setup routing table for interface
+      printf 'ip route add "%s/%s" dev "%s" proto static src "%s" table "%s"\n' \
+         "$network" "$prefix" "$interface" "$ip_address" "$table_name"
+      if [ -n "$gateway" ]; then
+         printf 'ip route add default via "%s" table "%s"\n' "$gateway" "$table_name"
+      fi
+      printf 'ip rule add from "%s" table "%s"\n' "$ip_address" "$table_name"
+   ;;
+   down)
+      printf 'ip rule del from "%s" table "%s"\n' "$ip_address" "$table_name"
+      if [ -n "$gateway" ]; then
+         printf 'ip route del default via "%s" table "%s"\n' "$gateway" "$table_name"
+      fi
+      printf 'ip route del "%s/%s" dev "%s" proto static src "%s" table "%s"\n' \
+         "$network" "$prefix" "$interface" "$ip_address" "$table_name"
+   ;;
+   *)
+      echo "Unknown action: $action" >&2
+      exit 1
+   ;;
+esac
+# tell the kernel that it needs to re-parse the policy database
+printf 'ip route flush cache\n'
+) | (
+   if [ "$NOACTION" ]; then
+      cat
+   else
+      /bin/sh -s
+   fi
+)

@@ -1,0 +1,167 @@
+cdist-type__network_interface(7)
+================================
+Steven Armstrong <steven-cdist--@--armstrong.cc>
+
+
+NAME
+----
+cdist-type__network_interface - configure network interfaces
+
+
+DESCRIPTION
+-----------
+Configures network interfaces on debian an redhat based systems.
+Interface names containing a dot are assumed to be vlan tagged sub interfaces.
+e.g. eth0.10 is vlan 10 on physical device eth0
+
+
+REQUIRED PARAMETERS
+-------------------
+
+
+OPTIONAL PARAMETERS
+-------------------
+name::
+   The name of the physical or logical network device.
+   Defaults to __object_id.
+method::
+   The method for determining an IP address for the interface.
+   'dhcp', 'static' or 'manual'.
+   Defaults to 'dhcp'.
+address::
+   The IP address of the network interface.
+   Only used if --method is not 'dhcp'
+broadcast::
+   Only used if --method is not 'dhcp'
+comment::
+extra-config::
+   additional config that is added to the generated interfaces file verbatim
+gateway::
+   Default gateway (dotted quad)
+   Only used if --method is not 'dhcp'
+netmask::
+   The subnet mask to apply to the interface
+   Only used if --method is not 'dhcp'
+metric::
+   Routing metric for the default gateway
+mtu::
+   The Maximum Transmission Unit size to use for the interface
+state::
+   'present' or 'absent', defaults to 'present'
+bond-arp-interval::
+   Specifies (in milliseconds) how often ARP monitoring occurs.
+bond-arp-ip-target::
+   Specifies the target IP address of ARP requests when the arp_interval parameter is enabled.
+   Can be specified up to 16 times.
+bond-master::
+   The name of the master (bonding) interface to which this slave should be enslaved.
+bond-miimon::
+   Specifies (in milliseconds) how often MII link monitoring occurs.
+bond-mode::
+   Allows you to specify the bonding policy. The value can be one of:
+      balance-rr (0)
+      active-backup (1)
+      balance-xor (2)
+      broadcast (3)
+      802.3ad (4)
+      balance-tlb (5)
+      balance-alb (6)
+bond-primary::
+   Specifies the interface name, such as eth0, of the primary device.
+bond-slaves::
+   The slave interfaces that form this bonding.
+linkdelay::
+   Only useable on Redhat based systems.
+   Time in seconds that the system should pause after the specific interface
+   is enabled.  This may be useful if one interface is connected to a
+   switch which has spanning tree enabled and must wait for STP to
+   converge before the interface should be considered usable.
+
+
+BOOLEAN PARAMETERS
+------------------
+onboot:
+   Whether to bring the interface up on boot
+hotplug::
+   Allow/disallow hotplug support for this interface
+nodns::
+   Do not configure nameservers in /etc/resolv.conf.
+noroute::
+   Do not set default route.
+no-network-wait-online::
+   Do not consider this network interface in the network-wait-online.service unit.
+symmetric-routing::
+   Manage routing tables and rules to ensure symmetric routing.
+
+
+EXAMPLES
+--------
+
+--------------------------------------------------------------------------------
+__network_interface eth0 --onboot
+# Same thing, but explicitly define method
+__network_interface eth0 --method dhcp --onboot
+
+__network_interface eth1 \
+   --method static \
+   --address 192.168.42.23 \
+   --netmask 255.255.255.0 \
+   --gateway 192.168.42.1 \
+   --onboot
+
+__network_interface eth3 --method dhcp --hotplug
+
+
+# Don't wait for Infiniband interface to be up before reaching systemd network-online.target
+__network_interface ib0 --method dhcp --no-network-wait-online
+
+# active-backup bonding with 2 slaves
+__network_interface bond0 \
+   --onboot \
+   --method static \
+   --bond-mode active-backup \
+   --bond-miimon 500 \
+   --bond-primary eth5 \
+   --address 10.205.9.65 \
+   --netmask 255.255.224.0
+
+__network_interface eth5 \
+   --onboot \
+   --method manual \
+   --bond-master bond0
+
+__network_interface eth6 \
+   --onboot \
+   --method manual \
+   --bond-master bond0
+
+
+# extra config
+__network_interface eth0 \
+   --method dhcp \
+   --extra-config - << DONE
+post-up ip route add 10.205.0.0/19 via 10.205.161.1
+post-up ip route add 10.205.96.0/19 via 10.205.161.1
+pre-down ip route del 10.205.0.0/19 via 10.205.161.1
+pre-down ip route del 10.205.96.0/19 via 10.205.161.1
+DONE
+--------------------------------------------------------------------------------
+
+
+SEE ALSO
+--------
+- cdist-type(7)
+- Redhat bonding documentation
+   https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/sec-Using_Channel_Bonding.html
+   https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Networking_Guide/sec-Using_Channel_Bonding.html
+   https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/s2-networkscripts-interfaces-chan.html
+- Debian bonding documentation
+   /usr/share/doc/ifenslave-2.6/README.Debian.gz
+- Symmetric routing
+   http://www.microhowto.info/howto/ensure_symmetric_routing_on_a_server_with_multiple_default_gateways.html
+
+
+COPYING
+-------
+Copyright \(C) 2012-2016 Steven Armstrong. Free use of this software is
+granted under the terms of the GNU General Public License version 3 (GPLv3).

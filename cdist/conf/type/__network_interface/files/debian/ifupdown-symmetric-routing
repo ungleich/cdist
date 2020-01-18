@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# See 'IFACE OPTIONS' in interfaces(5) for available variables.
+#
+
+DEBUG=
+#DEBUG=1
+debug() {
+   if [ "$DEBUG" ]; then
+      echo "[DEBUG] $@" >&2
+   fi
+}
+
+interface="$IFACE"
+
+# noop for loopback
+[ "$interface" = "lo" ] && exit 0
+
+# only work with ipv4
+[ "$ADDRFAM" = "inet" ] || exit 0
+
+# Interface must be explicitly configured to do symmetric routing.
+[ "${IF_SYMMETRIC_ROUTING:-no}" = "no" ] && exit 0
+
+
+case "$MODE" in
+   start)
+      action="up"
+   ;;
+   stop)
+      action="down"
+   ;;
+esac
+
+case "$METHOD" in
+   dhcp)
+      LEASEFILE="/var/lib/dhcp/dhclient.${interface}.leases"
+      ip_address="$(awk '/fixed-address/ {sub(/;$/,""); print $2}' "$LEASEFILE" | tail -1)"
+      subnet_mask_or_prefix="$(awk '/option subnet-mask/ {sub(/;$/,""); print $3}' "$LEASEFILE" | tail -1)"
+      gateway="$(awk '/option routers/ {sub(/;$/,""); print $3}' "$LEASEFILE" | tail -1)"
+   ;;
+   static)
+      [ -n "$IF_ADDRESS" ] && ip_address="$IF_ADDRESS"
+      [ -n "$IF_NETMASK" ] && subnet_mask_or_prefix="$IF_NETMASK"
+      [ -n "$IF_GATEWAY" ] && gateway="$IF_GATEWAY"
+   ;;
+   *)
+      echo "Unknown/unsupported METHOD: $METHOD" >&2
+      exit 1
+   ;;
+esac
+
+debug "$interface -----"
+debug "action: $action"
+debug "interface: $interface"
+debug "ip_address: $ip_address"
+debug "subnet_mask_or_prefix: $subnet_mask_or_prefix"
+debug "gateway: $gateway"
+debug "/$interface -----"
+
+if [ -n "$action" -a -n "$interface" -a -n "$ip_address" -a -n "$subnet_mask_or_prefix" ]; then
+   symmetric-routing "$action" "$interface" "$ip_address" "$subnet_mask_or_prefix" "$gateway"
+fi
+

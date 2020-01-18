@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# workaround the bloody upstart race conditions
+# by delaying the emission of the net-device-up signal until the interface is
+# really up and configured.
+#
+# environment variables:
+# METHOD=dhcp
+# MODE=start
+# LOGICAL=eth0
+# PHASE=post-up
+# ADDRFAM=inet
+# VERBOSITY=0
+# PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# IF_METRIC=100
+# IFACE=eth0
+# PWD=/root
+
+# nothing to do for loopback
+[ "$IFACE" = lo ] && exit 0
+
+LOG_FILE="/tmp/wait-for-ip-${IFACE}.log"
+cp /dev/null $LOG_FILE
+RETRY=20
+index=0
+
+if [ "$ADDRFAM" = "inet" -a "$METHOD" = "dhcp" ]; then
+   until [ -n "$ip" -o $index -eq $RETRY ]; do
+      ip=$(ip -o -family inet addr show dev $IFACE | awk '{split($4, a, "/"); print a[1]}')
+      index=$((index+1))
+      sleep 0.5
+   done
+   if [ -n "$ip" ]; then
+      echo "Interface $IFACE is up with ip $ip after $index of $RETRY tries." >> $LOG_FILE
+   else
+      echo "Interface $IFACE failed to come up with an ip address, giving up after $RETRY tries." >> $LOG_FILE
+   fi
+fi

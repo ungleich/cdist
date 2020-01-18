@@ -1,0 +1,39 @@
+#!/bin/sh
+
+#echo "/sbin/ifup-pre-local" >&2
+#set -x
+
+config="$1"
+interface="$1"
+
+cd /etc/sysconfig/network-scripts
+. ./network-functions
+
+[ -f ../network ] && . ../network
+
+need_config "$config"
+
+source_config
+
+# If not started at boot we don't care
+[ "${ONBOOT:-no}" = "no" ] && exit 0
+
+# noop for loopback
+[ "$DEVICE" = "lo" ] && exit 0
+
+state_dir=/run/network-online-interfaces
+mkdir -p "$state_dir"
+
+if [ "${NO_NETWORK_WAIT_ONLINE:-no}" = "no" ]; then
+   # remember device for later use in network-wait-online.service
+   touch "$state_dir/$DEVICE"
+fi
+
+# hackaround bugs in /etc/sysconfig/network-scripts/ifup
+wait_for_device=20
+index=0
+until [ -d "/sys/class/net/$DEVICE" -o $index -eq $wait_for_device ]; do
+   echo "waiting for /sys/class/net/$DEVICE $index/$wait_for_device" >&2
+   sleep 1
+   index=$(($index + 1))
+done

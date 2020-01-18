@@ -1,0 +1,86 @@
+#!/bin/sh -e
+#
+# 2012-2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2020 Adapted for upstream cdist by Darko Poljak (darko.poljak at gmail.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os=$(cat "$__global/explorer/os")
+osv="$(cat "$__global/explorer/os_version")"
+
+not_supported() {
+   echo "Your operating system ($os $osv) is currently not supported by this type (${__type##*/})." >&2
+   echo "Please contribute an implementation for it if you can." >&2
+   exit 1
+}
+
+case "$os" in
+   ubuntu)
+      osv_int="$(echo "$osv" | tr -d .)"
+      if [ "$osv_int" -lt 1110 ]; then
+         not_supported
+      fi
+      manifest_file="$__type/files/debian/manifest"
+      systemd_network_service_name="networking.service"
+   ;;
+   debian)
+      manifest_file="$__type/files/debian/manifest"
+      systemd_network_service_name="networking.service"
+   ;;
+   centos|redhat)
+      manifest_file="$__type/files/redhat/manifest"
+      systemd_network_service_name="network.service"
+   ;;
+   *)
+      not_supported
+   ;;
+esac
+
+name="$(cat "$__object/parameter/name" 2>/dev/null || echo "$__object_id")"
+method="$(cat "$__object/parameter/method")"
+state="$(cat "$__object/parameter/state")"
+
+device=
+vlan=
+case "$name" in
+   *.*)
+      device="${name%.*}"
+      vlan="${name#*.}"
+   ;;
+esac
+
+
+# export variables
+export name
+export device
+export vlan
+export method
+export state
+
+# run os specific manifest
+"$manifest_file"
+
+
+if grep -q systemd "$__global/explorer/init"; then
+   sed -e "s|%NETWORK_SERVICE_NAME%|${systemd_network_service_name}|" \
+      "$__type/files/network-wait-online.service" | \
+      __file /etc/systemd/system/network-wait-online.service \
+         --owner root --group root --mode 0644 \
+         --source -
+   require="__file/etc/systemd/system/network-wait-online.service" \
+      __service network-wait-online --no-start
+fi

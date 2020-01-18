@@ -1,0 +1,6 @@
+hotplug
+nodns
+noroute
+onboot
+no-network-wait-online
+symmetric-routing

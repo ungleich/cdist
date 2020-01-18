@@ -1,0 +1,84 @@
+#!/bin/sh
+
+myname="${0##*/}"
+
+case "$myname" in
+   ifup-local)
+      action="up"
+   ;;
+   ifdown-local|ifdown-pre-local)
+      action="down"
+   ;;
+   *)
+      echo "Unable to determine action from script name: $myname" >&2
+      exit 1
+   ;;
+esac
+
+DEBUG=
+#DEBUG=1
+debug() {
+   if [ "$DEBUG" ]; then
+      echo "[DEBUG] $@" >&2
+   fi
+}
+
+interface="$1"
+
+# noop for loopback
+[ "$interface" = "lo" ] && exit 0
+
+
+cd /etc/sysconfig/network-scripts
+. ./network-functions
+
+[ -f ../network ] && . ../network
+
+need_config "$interface"
+source_config
+
+case "${BOOTPROTO}" in
+   bootp|dhcp)
+      generate_lease_file_name
+      ip_address="$(awk '/fixed-address/ {sub(/;$/,""); print $2}' "$LEASEFILE" | tail -1)"
+      subnet_mask_or_prefix="$(awk '/option subnet-mask/ {sub(/;$/,""); print $3}' "$LEASEFILE" | tail -1)"
+      gateway="$(awk '/option routers/ {sub(/;$/,""); print $3}' "$LEASEFILE" | tail -1)"
+   ;;
+   none)
+      # No ip address set -> nothing we could do
+      [ -n "$IPADDR" ] && ip_address="$IPADDR"
+      [ -n "$PREFIX" ] && subnet_mask_or_prefix="$PREFIX" || {
+         [ -n "$NETMASK" ] && subnet_mask_or_prefix="$NETMASK"
+      }
+      [ -n "$GATEWAY" ] && gateway="$GATEWAY"
+   ;;
+   *)
+      echo "Unknown/unsupported BOOTPROTO: $BOOTPROTO" >&2
+      exit 1
+   ;;
+esac
+
+debug "$interface -----"
+debug "action: $action"
+debug "interface: $interface"
+debug "ip_address: $ip_address"
+debug "subnet_mask_or_prefix: $subnet_mask_or_prefix"
+debug "gateway: $gateway"
+debug "/$interface -----"
+
+# Interface must be explicitly configured to do symmetric routing.
+if [ "${SYMMETRIC_ROUTING:-no}" = "yes" ]; then
+   if [ -n "$action" -a -n "$interface" -a -n "$ip_address" -a -n "$subnet_mask_or_prefix" ]; then
+      symmetric-routing "$action" "$interface" "$ip_address" "$subnet_mask_or_prefix" "$gateway"
+   fi
+fi
+
+case "$action" in
+   up)
+      # This interface is up!
+      # Remove the flag file that was created in /sbin/ifup-pre-local
+      # so that the network-wait-online.service can reach the network-online.target
+      state_dir=/run/network-online-interfaces
+      rm -rf "$state_dir/$interface"
+   ;;
+esac

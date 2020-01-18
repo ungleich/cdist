@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# See 'IFACE OPTIONS' in interfaces(5) for available variables.
+#
+
+DEBUG=
+#DEBUG=1
+debug() {
+   if [ "$DEBUG" ]; then
+      echo "[DEBUG] $@" >&2
+   fi
+}
+
+interface="$IFACE"
+
+# noop for loopback
+[ "$interface" = "lo" ] && exit 0
+
+# nothing usefull we could do for '--all'
+[ "$interface" = "--all" ] && exit 0
+
+# Interface is configured to not be considered by network-wait-online.service
+[ "${IF_NO_NETWORK_WAIT_ONLINE:-no}" = "yes" ] && exit 0
+
+
+case "$MODE" in
+   start)
+      action="up"
+   ;;
+   stop)
+      action="down"
+   ;;
+esac
+
+state_dir=/run/network-online-interfaces
+mkdir -p "$state_dir"
+
+case "$PHASE" in
+   pre-up)
+      # Create flag file to wait for in network-wait-online.service
+      touch "$state_dir/$interface"
+   ;;
+   post-up)
+      # This interface is up!
+      # Remove the flag file that was created in /sbin/ifup-pre-local
+      # so that the network-wait-online.service can reach the network-online.target
+      rm -rf "$state_dir/$interface"
+   ;;
+esac

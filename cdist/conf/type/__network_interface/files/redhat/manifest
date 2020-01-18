@@ -1,0 +1,171 @@
+#!/bin/sh -e
+#
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+type_files="$__type/files/redhat"
+mkdir "$__object/files"
+interface_filename="ifcfg-${name}"
+
+(
+cat << DONE
+# Created by cdist ${__type##*/}
+# Do not change. Changes will be overwritten.
+#
+
+DONE
+
+if [ -f "$__object/parameter/comment" ]; then
+   cat "$__object/parameter/comment" | awk '{ print "# "$0 }'
+fi
+
+printf 'DEVICE="%s"\n' "$name"
+printf 'NM_CONTROLLED=no\n'
+printf 'USERCTL=no\n'
+
+if [ -f "$__object/parameter/onboot" ]; then
+   printf 'ONBOOT=yes\n'
+else
+   printf 'ONBOOT=no\n'
+fi
+if [ -f "$__object/parameter/hotplug" ]; then
+   printf 'HOTPLUG=yes\n'
+else
+   printf 'HOTPLUG=no\n'
+fi
+if [ -f "$__object/parameter/nodns" ]; then
+   printf 'PEERDNS=no\n'
+else
+   printf 'PEERDNS=yes\n'
+fi
+if [ -f "$__object/parameter/noroute" ]; then
+   printf 'DEFROUTE=no\n'
+else
+   printf 'DEFROUTE=yes\n'
+fi
+if [ -f "$__object/parameter/no-network-wait-online" ]; then
+   printf 'NO_NETWORK_WAIT_ONLINE=yes\n'
+fi
+if [ -f "$__object/parameter/symmetric-routing" ]; then
+   # Deploy scripts that implement the feature ...
+   __file /sbin/symmetric-routing \
+      --owner root --group root --mode 0755 \
+      --source "$__type/files/symmetric-routing"
+   # ... then enable it in interface cfg file.
+   printf 'SYMMETRIC_ROUTING=yes\n'
+fi
+
+ignored_parameters=""
+manually_handled_parameters="name comment extra-config state method onboot hotplug nodns noroute no-network-wait-online symmetric-routing"
+case "$method" in
+   dhcp)
+      printf 'BOOTPROTO=dhcp\n'
+      ignored_parameters="$ignored_parameters address broadcast gateway netmask"
+   ;;
+   static|manual)
+      printf 'BOOTPROTO=none\n'
+   ;;
+   *)
+      echo "Unsupported value for parameter --method. Got '$method'. See man page for supported values." >&2
+      exit 1
+   ;;
+esac
+
+for param in $(ls "$__object/parameter/"); do
+   if echo "$ignored_parameters" | grep -w -q "$param"; then
+      continue
+   fi
+   if echo "$manually_handled_parameters" | grep -w -q "$param"; then
+      continue
+   fi
+
+   case "$param" in
+      bond-master)
+         # if someone is my master, I am a slave
+         printf 'SLAVE=yes\n'
+         printf 'MASTER=%s\n' "$(cat "$__object/parameter/$param")"
+      ;;
+      bond-*)
+         key="$(echo "${param#*bond-}" | tr - _)"
+         if [ "$param" = "bond-arp-ip-target" ]; then
+            value="$(cat "$__object/parameter/$param" | tr '\n' ,)"
+            # strip trailing comma
+            value="${value%,}"
+         else
+            value="$(cat "$__object/parameter/$param")"
+         fi
+         printf '%s=%s\n' "$key" "$value" >> "$__object/files/bonding_opts"
+      ;;
+      *)
+         # check for redhat specific name for this parameter
+         if [ -f "$type_files/name-map" ]; then
+            key="$(awk -v param=$param '{ if ($1 == param) {print $2;} else { print param;} }' "$type_files/name-map")"
+         else
+            key="$param"
+         fi
+         # redhat likes things uppercase
+         key="$(echo "$key" | tr '[:lower:]' '[:upper:]')"
+         printf '%s=%s\n' "$key" "$(cat "$__object/parameter/$param")"
+      ;;
+   esac
+done
+if [ -f "$__object/files/bonding_opts" ]; then
+   value="$(cat "$__object/files/bonding_opts" | tr '\n' ' ')"
+   # strip trailing space
+   value="${value% }"
+   printf 'BONDING_OPTS="%s"\n' "$value"
+fi
+
+if [ -n "$vlan" -a -n "$device" ]; then
+   # Enable vlan for this interface
+   printf 'VLAN=yes\n'
+fi
+
+if [ -f "$__object/parameter/extra-config" ]; then
+   extra_config="$(cat "$__object/parameter/extra-config")"
+   if [ "$extra_config" = "-" ]; then
+      extra_config="$__object/stdin"
+   fi
+   cat "$extra_config"
+fi
+
+
+) >> "$__object/files/$interface_filename"
+
+__file "/etc/sysconfig/network-scripts/$interface_filename" \
+   --owner root \
+   --group root \
+   --mode 644 \
+   --source "$__object/files/$interface_filename" \
+   --state "$state"
+
+# Deploy helper scripts
+__file /sbin/ifupdown-local \
+   --owner root --group root --mode 0755 \
+   --source "$__type/files/redhat/ifupdown-local"
+require="__file/sbin/ifupdown-local" \
+   __link /sbin/ifup-local \
+      --type symbolic \
+      --source ./ifupdown-local
+require="__file/sbin/ifupdown-local" \
+   __link /sbin/ifdown-pre-local \
+      --type symbolic \
+      --source ./ifupdown-local
+__file /sbin/ifup-pre-local \
+   --owner root --group root --mode 0755 \
+   --source "$__type/files/redhat/ifup-pre-local"
