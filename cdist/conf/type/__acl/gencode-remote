@@ -20,7 +20,13 @@
 
 file_is="$( cat "$__object/explorer/file_is" )"
 
-[ "$file_is" = 'missing' ] && [ -z "$__cdist_dry_run" ] && exit 0
+if [ "$file_is" = 'missing' ] \
+    && [ -z "$__cdist_dry_run" ] \
+    && \( [ ! -f "$__object/parameter/file" ] \
+        || [ ! -f "$__object/parameter/directory" ] \)
+then
+    exit 0
+fi
 
 os="$( cat "$__global/explorer/os" )"
 
