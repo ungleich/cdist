@@ -13,6 +13,7 @@ next:
 		- match line at the beginning when not regex
 		- fix incorrect 'wrongposition' in state explorer
 		- produce error when file does not exist
+	* Type __acl: Add --source parameter (Ander Punnar)
 
 6.4.0: 2020-01-04
 	* Type __consul_agent: Don't deploy init script on Alpine anymore, it ships with one itself (Nico Schottelius)
