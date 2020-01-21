@@ -6,3 +6,4 @@ server
 enable-syslog
 verify-incoming
 verify-outgoing
+use-distribution-package
