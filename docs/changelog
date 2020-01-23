@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.5.0: 2020-01-23
 	* Type __acl: Add --entry parameter to replace --acl, deprecate --acl (Ander Punnar)
 	* Core: preos: Fix missing configuration file usage, support -g, --config-file option (Darko Poljak)
 	* Core info command: Support tilde expansion of conf directories (Darko Poljak)
