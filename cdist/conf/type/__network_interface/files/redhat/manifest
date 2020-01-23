@@ -20,6 +20,7 @@
 
 type_files="$__type/files/redhat"
 mkdir "$__object/files"
+# shellcheck disable=SC2154
 interface_filename="ifcfg-${name}"
 
 (
@@ -31,7 +32,7 @@ cat << DONE
 DONE
 
 if [ -f "$__object/parameter/comment" ]; then
-   cat "$__object/parameter/comment" | awk '{ print "# "$0 }'
+    awk '{ print "# "$0 }' < "$__object/parameter/comment"
 fi
 
 printf 'DEVICE="%s"\n' "$name"
@@ -72,6 +73,7 @@ fi
 
 ignored_parameters=""
 manually_handled_parameters="name comment extra-config state method onboot hotplug nodns noroute no-network-wait-online symmetric-routing"
+# shellcheck disable=SC2154
 case "$method" in
    dhcp)
       printf 'BOOTPROTO=dhcp\n'
@@ -86,7 +88,7 @@ case "$method" in
    ;;
 esac
 
-for param in $(ls "$__object/parameter/"); do
+for param in "$__object"/parameter/*; do
    if echo "$ignored_parameters" | grep -w -q "$param"; then
       continue
    fi
@@ -103,7 +105,7 @@ for param in $(ls "$__object/parameter/"); do
       bond-*)
          key="$(echo "${param#*bond-}" | tr - _)"
          if [ "$param" = "bond-arp-ip-target" ]; then
-            value="$(cat "$__object/parameter/$param" | tr '\n' ,)"
+            value="$(tr '\n' , < "$__object/parameter/$param")"
             # strip trailing comma
             value="${value%,}"
          else
@@ -114,7 +116,7 @@ for param in $(ls "$__object/parameter/"); do
       *)
          # check for redhat specific name for this parameter
          if [ -f "$type_files/name-map" ]; then
-            key="$(awk -v param=$param '{ if ($1 == param) {print $2;} else { print param;} }' "$type_files/name-map")"
+            key="$(awk -v param="$param" '{ if ($1 == param) {print $2;} else { print param;} }' "$type_files/name-map")"
          else
             key="$param"
          fi
@@ -125,13 +127,14 @@ for param in $(ls "$__object/parameter/"); do
    esac
 done
 if [ -f "$__object/files/bonding_opts" ]; then
-   value="$(cat "$__object/files/bonding_opts" | tr '\n' ' ')"
+   value="$(tr '\n' ' ' < "$__object/files/bonding_opts")"
    # strip trailing space
    value="${value% }"
    printf 'BONDING_OPTS="%s"\n' "$value"
 fi
 
-if [ -n "$vlan" -a -n "$device" ]; then
+# shellcheck disable=SC2154
+if [ -n "$vlan" ] && [ -n "$device" ]; then
    # Enable vlan for this interface
    printf 'VLAN=yes\n'
 fi
@@ -147,6 +150,7 @@ fi
 
 ) >> "$__object/files/$interface_filename"
 
+# shellcheck disable=SC2154
 __file "/etc/sysconfig/network-scripts/$interface_filename" \
    --owner root \
    --group root \

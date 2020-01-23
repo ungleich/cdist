@@ -37,17 +37,20 @@ cat << DONE
 DONE
 
 if [ -f "$__object/parameter/comment" ]; then
-   cat "$__object/parameter/comment" | awk '{ print "# "$0 }'
+    awk '{ print "# "$0 }' < "$__object/parameter/comment"
 fi
 
 if [ -f "$__object/parameter/onboot" ]; then
+   # shellcheck disable=SC2154
    printf "auto %s\n" "$name"
 elif [ -f "$__object/parameter/hotplug" ]; then
+   # shellcheck disable=SC2154
    printf "allow-hotplug %s\n" "$name"
 fi
 
 ignored_parameters="linkdelay"
 manually_handled_parameters="name comment extra-config state method onboot hotplug nodns noroute no-network-wait-online symmetric-routing bond-slaves"
+# shellcheck disable=SC2154
 case "$method" in
    dhcp)
       printf "iface %s inet %s\n" "$name" "$method"
@@ -62,7 +65,7 @@ case "$method" in
    ;;
 esac
 
-for param in $(ls "$__object/parameter/"); do
+for param in "$__object"/parameter/*; do
    if echo "$ignored_parameters" | grep -w -q "$param"; then
       continue
    fi
@@ -71,14 +74,14 @@ for param in $(ls "$__object/parameter/"); do
    fi
 
    if [ -f "$type_files/name-map" ]; then
-      key="$(awk -v param=$param '{ if ($1 == param) {print $2;} else { print param;} }' "$type_files/name-map")"
+      key="$(awk -v param="$param" '{ if ($1 == param) {print $2;} else { print param;} }' "$type_files/name-map")"
    else
       key="$param"
    fi
    printf "  %s %s\n" "$key" "$(cat "$__object/parameter/$param")"
 done
 
-if [ -f "$__object/parameter/bond-mode" -o -f "$__object/parameter/bond-primary" ]; then
+if [ -f "$__object/parameter/bond-mode" ] || [ -f "$__object/parameter/bond-primary" ]; then
    # Note: ifenslave is not needed when using ifupdown2
    # install package required for bonding
    __package ifenslave
@@ -112,7 +115,8 @@ if [ -f "$__object/parameter/symmetric-routing" ]; then
    printf '  symmetric-routing yes\n'
 fi
 
-if [ -n "$vlan" -a -n "$device" ]; then
+# shellcheck disable=SC2154
+if [ -n "$vlan" ] && [ -n "$device" ]; then
    # Explicit parent interface for vlans
    printf '  vlan-raw-device %s\n' "$device"
 fi
@@ -147,6 +151,7 @@ require="__directory/etc/network" \
       --group root \
       --mode 644
 
+# shellcheck disable=SC2154
 require="__file/etc/network/interfaces __directory/etc/network/interfaces.d" \
    __file "/etc/network/interfaces.d/$interface_filename" \
       --owner root \
@@ -156,7 +161,7 @@ require="__file/etc/network/interfaces __directory/etc/network/interfaces.d" \
       --state "$state"
 
 
-if [ "$method" = "dhcp" -a -f "$__object/parameter/noroute" ]; then
+if [ "$method" = "dhcp" ] && [ -f "$__object/parameter/noroute" ]; then
 (
 cat << DONE
 # Created by cdist ${__type##*/}
@@ -183,7 +188,7 @@ __file "/etc/dhcp/dhclient-enter-hooks.d/cdist-__network_interface-${name}-norou
    --state "$state"
 fi # end noroute
 
-if [ "$method" = "dhcp" -a -f "$__object/parameter/nodns" ]; then
+if [ "$method" = "dhcp" ] && [ -f "$__object/parameter/nodns" ]; then
 (
 cat << DONE
 # Created by cdist ${__type##*/}
