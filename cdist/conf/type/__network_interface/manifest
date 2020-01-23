@@ -82,5 +82,5 @@ if grep -q systemd "$__global/explorer/init"; then
          --owner root --group root --mode 0644 \
          --source -
    require="__file/etc/systemd/system/network-wait-online.service" \
-      __service network-wait-online --no-start
+      __start_on_boot network-wait-online
 fi
