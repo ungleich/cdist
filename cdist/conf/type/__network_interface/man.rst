@@ -12,6 +12,8 @@ Configures network interfaces on debian an redhat based systems.
 Interface names containing a dot are assumed to be vlan tagged sub interfaces.
 e.g. eth0.10 is vlan 10 on physical device eth0.
 
+Note that this type rewrites network interface files.
+
 
 REQUIRED PARAMETERS
 -------------------
