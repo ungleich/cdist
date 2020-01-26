@@ -2,7 +2,7 @@
 
 check_dir () {
   if [ -d "$1" ]; then
-    echo -n "$1"
+    printf '%s' "$1"
     exit
   fi
 }

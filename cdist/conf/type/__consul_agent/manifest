@@ -49,7 +49,7 @@ distribution_setup () {
      debian)
        # consul is only available starting Debian 10 (buster).
        # See https://packages.debian.org/buster/consul
-       if [ $release -lt 10 ]; then
+       if [ "$release" -lt 10 ]; then
          echo "Consul is not available for your debian release." >&2
          echo "Please use the 'manual' (i.e. non-package) installation or \
            upgrade the target system." >&2
@@ -59,7 +59,7 @@ distribution_setup () {
        # Override previously defined environment to match debian packaging.
        conf_dir='/etc/consul.d'
        user='consul'
-       grou='consul'
+       group='consul'
      ;;
      *)
         echo "Your operating system ($os) is currently not supported with the \
@@ -71,7 +71,7 @@ distribution_setup () {
   esac
 
   # Install consul package.
-  __package consul --state $state
+  __package consul --state "$state"
 
   export config_deployment_requires="__package/consul"
 }
@@ -139,7 +139,7 @@ manual_setup () {
   esac
 
   # Create data directory.
-  require="__user/consul"__directory "$data_dir" \
+  require="__user/consul" __directory "$data_dir" \
     --owner "$user" --group "$group" --mode 770 --state "$state"
 
   # Create config directory.
@@ -203,7 +203,22 @@ else
 fi
 
 ###
+# Install TLS certificates.
+
+if [ -f "$__object/parameter/ca-file-source" ] || \
+   [ -f "$__object/parameter/cert-file-source" ] || \
+   [ -f "$__object/parameter/key-file-source" ]; then
+
+   requires="$config_deployment_requires" __directory $tls_dir \
+     --owner root --group "$group" --mode 750 --state "$state"
+
+   # Append to service restart requirements.
+   restart_requires="$restart_requires __directory/$conf_dir/tls"
+fi
+
+###
 # Generate and deploy configuration.
+
 json_configuration=$(
   echo "{"
 
@@ -216,8 +231,8 @@ json_configuration=$(
         state|user|group|json-config|use-distribution-package) continue ;;
         ca-file-source|cert-file-source|key-file-source)
            source="$(cat "$__object/parameter/$param")"
-           destination="/etc/consul/ssl/${source##*/}"
-           require="__directory/etc/consul/ssl" \
+           destination="$tls_dir/${source##*/}"
+           require="__directory/$tls_dir" \
               __file "$destination" \
                  --owner root --group consul --mode 640 \
                  --source "$source" \
@@ -275,19 +290,6 @@ echo "$json_configuration" | require="$config_deployment_requires" \
 
 # Set configuration deployment as requirement for service restart.
 restart_requires="__file/$conf_dir/$conf_file"
-
-###
-# Install TLS certificates.
-if [ -f "$__object/parameter/ca-file-source" ] || \
-   [ -f "$__object/parameter/cert-file-source" ] || \
-   [ -f "$__object/parameter/key-file-source" ]; then
-
-   requires="__file/$conf_dir/$conf_file" __directory $conf_dir/tls \
-     --owner root --group "$group" --mode 750 --state "$state"
-
-   # Append to service restart requirements.
-   restart_requires="$restart_requires __directory/$conf_dir/tls"
-fi
 
 ###
 # Restart consul agent after everything else.
