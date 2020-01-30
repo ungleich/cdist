@@ -25,14 +25,48 @@
 
 case $(uname -s) in
     Linux)
-        if command -v pgrep >/dev/null
+        if test -d /proc/1/
         then
-            # BusyBox's version of ps does not support some options.
-            # On Linux systems, we prefer pgrep to get the name of PID1.
-            (pgrep -P0 -l | awk '/^1[ \t]/ {print $2;}') || true
+            comm_name=$(cat /proc/1/comm)
         else
-            ps -o comm= -p 1 2>/dev/null || cat /proc/1/comm
+            # BusyBox's versions of ps and pgrep do not support some options
+            # depending on which compile-time options have been used.
+            # Both pgrep and ps are tried to get the command name
+            comm_name=$(
+                pgrep -P0 -l 2>/dev/null | awk '/^1[ \t]/ { print $2 }'
+                || ps -o comm= -p 1 2>/dev/null)
         fi
+
+        case $comm_name
+        in
+            systemd)
+                echo systemd
+            ;;
+            init)
+                # It could be anything...
+
+                if test -h /proc/1/exe
+                then
+                    init_exe=/proc/1/exe
+                else
+                    init_exe=$(command -v "$comm_name")
+                fi
+
+                test -x "$comm_exe" || exit 1
+
+                case $("$comm_exe" --version | head -n 1)
+                in
+                    *SysV*)
+                        echo init
+                    ;;
+                    *upstart*)
+                        echo upstart
+                    ;;
+                    *)
+                        echo ""
+                    ;;
+                esac
+        esac
     ;;
     FreeBSD|OpenBSD)
         ps -o comm= -p 1 2>/dev/null || true
