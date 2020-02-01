@@ -42,8 +42,12 @@ fi
 mkdir "$__object/files"
 echo "$entry" > "$__object/files/entry"
 
-if diff -q "$__object/files/entry" "$__object/explorer/entry" >/dev/null; then
-    state_is=present
+if [ -s "$__object/explorer/entry" ]; then
+    if diff -q "$__object/files/entry" "$__object/explorer/entry" >/dev/null; then
+        state_is=present
+    else
+        state_is=modified
+    fi
 else
     state_is=absent
 fi
