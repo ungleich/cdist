@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -20,24 +21,43 @@
 
 destination="/$__object_id"
 
+fallback() {
+   # Patch the output together, manually
+
+   ls_line=$(ls -ldn "$destination")
+
+   uid=$(echo "$ls_line" | awk '{ print $3 }')
+   gid=$(echo "$ls_line" | awk '{ print $4 }')
+
+   owner=$(awk -F: -v uid="$uid" '$3 == uid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/passwd)
+   group=$(awk -F: -v uid="$uid" '$3 == uid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/group)
+
+   mode_text=$(echo "$ls_line" | awk '{ print $1 }')
+   mode=$(echo "$mode_text" | awk '{ k=0; for (i=0; i<=8; i++) k += ((substr($1, i+2, 1) ~ /[rwx]/) * 2^(8-i)); printf("%0o", k) }')
+
+   printf 'type: %s\nowner: %d %s\ngroup: %d %s\nmode: %s %s\n' \
+      "$("$__type_explorer/type")" \
+      "$uid" "$owner" \
+      "$gid" "$group" \
+      "$mode" "$mode_text"
+}
+
 # nothing to work with, nothing we could do
 [ -e "$destination" ] || exit 0
 
-os=$("$__explorer/os")
-case "$os" in
+if ! command -v stat >/dev/null
+then
+   fallback
+   exit
+fi
+
+case $("$__explorer/os") in
    "freebsd"|"netbsd"|"openbsd"|"macosx")
       stat -f "type: %HT
 owner: %Du %Su
 group: %Dg %Sg
 mode: %Lp %Sp
-" "$destination" | awk '/^type/ { print tolower($0); next; } { print; }'
-      ;;
-   alpine)
-      stat -c "type: %F
-owner: %u %U
-group: %g %G
-mode: %a %A
-" "$destination"
+" "$destination" | awk '/^type/ { print tolower($0); next } { print }'
       ;;
     solaris)
         ls1="$( ls -ld "$destination" )"
@@ -69,10 +89,12 @@ mode: %a %A
         echo "mode: $octets $( echo "$ls1" | awk '{print $1}' )"
     ;;
    *)
-       stat --printf="type: %F
+      # NOTE: Do not use --printf here as it is not supported by BusyBox stat.
+      # NOTE: BusyBox's stat might not support the "-c" option, in which case
+      #       we fall through to the shell fallback.
+       stat -c "type: %F
 owner: %u %U
 group: %g %G
-mode: %a %A
-" "$destination"
+mode: %a %A" "$destination" 2>/dev/null || fallback
    ;;
 esac
