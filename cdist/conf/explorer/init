@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2016 Daniel Heule (hda at sfs.biz)
 # Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -23,59 +24,181 @@
 # for example at linux this value is "init" or "systemd" in most cases
 #
 
+set -e
+
+# Expected values:
+# Linux:
+#  Gentoo:
+#	 sysvinit, openrc-init
+
+# GNU:
+#	Debian:
+#	  hurd-init, sysvinit
+
+# [root@fedora-12 ~]# readlink /proc/1/exe
+# /sbin/init (deleted)
+# [root@fedora-12 ~]# ls -l /proc/1/exe
+# lrwxrwxrwx. 1 root root 0 2020-01-30 23:00 /proc/1/exe -> /sbin/init (deleted)
+
+# inspired by https://stackoverflow.com/a/33266819
+shreadlink() (
+	CDPATH=
+	target=$1 fname= targetDir=
+
+	# Resolve potential symlinks until the ultimate target is found.
+	while :
+	do
+		if ! test -e "$target"
+		then
+			printf 'ERROR: %s does not exist.\n' "'$target'" >&2
+			return 1
+		fi
+
+		# Change to target dir; necessary for correct resolution of target path.
+		cd "$(dirname -- "$target")"
+
+		fname=$(basename -- "$target") # Extract filename.
+		[ "$fname" = '/' ] && fname='' # !! curiously, `basename /` returns '/'
+
+		[ -L "$fname" ] || break
+
+		# Extract [next] target path, which may be defined
+		# *relative* to the symlink's own directory.
+		# Note: We parse `ls -l` output to find the symlink target
+		#		which is the only POSIX-compliant, albeit somewhat fragile, way.
+		# FIXME: Will break if one of the filenames contain ’ -> ’
+		target=$(ls -l "$fname" | sed -e 's/^.* -> //')
+	done
+
+	# Get canonical dir. path
+	targetDir=$(pwd -P)
+
+	# Output the ultimate target's canonical path.
+	# Note that we manually resolve paths ending in /. and /.. to make sure we have a normalized path.
+	if test "$fname" = '.'
+	then
+		printf '%s\n' "${targetDir%/}"
+	elif test "$fname" = '..'
+	then
+		# Caveat: something like /var/.. will resolve to /private (assuming /var@ -> /private/var), i.e. the '..' is applied
+		# AFTER canonicalization.
+		printf '%s\n' "$(dirname -- "${targetDir}")"
+	else
+		printf '%s/%s\n' "${targetDir%/}" "$fname"
+	fi
+)
+
+
 case $(uname -s) in
-    Linux)
-        if test -d /proc/1/
-        then
-            comm_name=$(cat /proc/1/comm)
-        else
-            # BusyBox's versions of ps and pgrep do not support some options
-            # depending on which compile-time options have been used.
-            # Both pgrep and ps are tried to get the command name
-            comm_name=$(
-                pgrep -P0 -l 2>/dev/null | awk '/^1[ \t]/ { print $2 }'
-                || ps -o comm= -p 1 2>/dev/null)
-        fi
+	Linux|GNU)
+		# if test -f /proc/1/comm
+		# then
+		#	  comm_name=$(cat /proc/1/comm)
+		# else
+			# BusyBox's versions of ps and pgrep do not support some options
+			# depending on which compile-time options have been used.
+			# Both pgrep and ps are tried to get the command name
+		#	  comm_name=$(
+		#		  pgrep -P0 -l 2>/dev/null | awk '/^1[ \t]/ { print $2 }'
+		#		  || ps -o comm= -p 1 2>/dev/null)
+		# fi
 
-        case $comm_name
-        in
-            systemd)
-                echo systemd
-            ;;
-            init)
-                # It could be anything...
+		init_exe=$(shreadlink /proc/1/exe)
 
-                if test -h /proc/1/exe
-                then
-                    init_exe=/proc/1/exe
-                else
-                    init_exe=$(command -v "$comm_name")
-                fi
+		if ! test -x "$init_exe"
+		then
+			# On some rare occasions it can happen that the
+			# running init's binary has been replaced. In this
+			# case Linux adjusts the symlink to "X (deleted)"
+			case $init_exe
+			in
+				*' (deleted)')
+					init_exe=${init_exe% (deleted)}
+					test -x "$init_exe" || exit 1
+					;;
+				*)
+					exit 1
+					;;
+			esac
+		fi
 
-                test -x "$comm_exe" || exit 1
+		if test "$init_exe" = '/hurd/init'
+		then
+			# XXX: Could maybe be removed
+			echo hurd-init
+			exit 0
+		fi
 
-                case $("$comm_exe" --version | head -n 1)
-                in
-                    *SysV*)
-                        echo init
-                    ;;
-                    *upstart*)
-                        echo upstart
-                    ;;
-                    *)
-                        echo ""
-                    ;;
-                esac
-        esac
-    ;;
-    FreeBSD|OpenBSD)
-        ps -o comm= -p 1 2>/dev/null || true
-    ;;
-    Darwin)
-        basename "$(ps -o comm= -p 1 2>/dev/null)"
-    ;;
-    *)
-        # return a empty string as unknown value
-        echo ""
-    ;;
+		comm_name=$(basename "$init_exe")
+		case $comm_name
+		in
+			init)
+				:  # handled below
+				;;
+			systemd)
+				# NOTE: sd_booted(3)
+				if test -d /run/systemd/system/
+				then
+					echo systemd
+					exit 0
+				fi
+				# otherwise: treat like "init"
+				;;
+			*)
+				echo "$comm_name"
+				exit 0
+				;;
+		esac
+
+		# init: it could be anything...
+		case $("$init_exe" --version 2>/dev/null | head -n 1)
+		in
+			SysV*)
+				# This is a little bit more specific than init
+				echo sysvinit
+				exit 0
+				;;
+			*'GNU Hurd'*)
+				echo hurd-init
+				;;
+			*upstart*)
+				echo upstart
+				exit 0
+				;;
+		esac
+		case $("$init_exe" --help 2>/dev/null | head -n 1)
+		in
+			BusyBox*)
+				echo busybox
+				exit 0
+				;;
+		esac
+
+		echo init
+		;;
+	FreeBSD|OpenBSD)
+		ps -o comm= -p 1 2>/dev/null || true
+		;;
+	Darwin)
+		basename "$(ps -o comm= -p 1 2>/dev/null)"
+		;;
+	SunOS)
+		comm_name=$(ps -o comm= -p 1 2>/dev/null)
+		if test "$(basename "$comm_name")" != 'init'
+		then
+			echo "${comm_name}"
+			exit 0
+		fi
+
+		# XXX: Is this the correct way??
+		if test -f /etc/svc/volatile/svc_nonpersist.db
+		then
+			echo smf
+			exit 0
+		fi
+		;;
+	*)
+		# return a empty string as unknown value
+		echo ""
+		;;
 esac
