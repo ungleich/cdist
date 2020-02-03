@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2018 Adam Dej (dejko.a at gmail.com)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -21,6 +22,17 @@
 
 # See os-release(5) and http://0pointer.de/blog/projects/os-release
 
-set +e
+if test -f /etc/os-release
+then
+	# Linux and FreeBSD (usually a symlink)
+	cat /etc/os-release
+elif test -f /usr/lib/os-release
+then
+	# systemd
+	cat /usr/lib/os-release
+elif test -f /var/run/os-release
+then
+	# FreeBSD (created by os-release service)
+	cat /var/run/os-release
+fi
 
-cat /etc/os-release || cat /usr/lib/os-release || true
