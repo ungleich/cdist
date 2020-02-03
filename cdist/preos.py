@@ -5,8 +5,9 @@ import inspect
 import argparse
 import cdist
 import logging
-import re
 import cdist.argparse
+import cdist.configuration
+import cdist.exec.util as util
 
 
 _PREOS_CALL = "commandline"
@@ -22,16 +23,6 @@ def extend_plugins_path(dirs):
         preos_dir = os.path.expanduser(os.path.join(dir, "preos"))
         if os.path.isdir(preos_dir):
             _PLUGINS_PATH.append(preos_dir)
-
-
-cdist_home = cdist.home_dir()
-if cdist_home:
-    extend_plugins_path((cdist_home, ))
-x = 'CDIST_PATH'
-if x in os.environ:
-    vals = re.split(r'(?<!\\):', os.environ[x])
-    vals = [x for x in vals if x]
-    extend_plugins_path(vals)
 
 
 def preos_plugin(obj):
@@ -102,6 +93,9 @@ class PreOS(object):
                             help=('Add configuration directory (one that '
                                   'contains "preos" subdirectory)'),
                             action='append')
+        parser.add_argument('-g', '--config-file',
+                            help='Use specified custom configuration file.',
+                            dest="config_file", required=False)
         parser.add_argument('-L', '--list-preoses',
                             help='List available PreOS-es',
                             action='store_true', default=False)
@@ -110,8 +104,9 @@ class PreOS(object):
         cdist.argparse.handle_loglevel(args)
         log.debug("preos args : {}".format(args))
 
-        if args.conf_dir:
-            extend_plugins_path(args.conf_dir)
+        conf_dirs = util.resolve_conf_dirs_from_config_and_args(args)
+
+        extend_plugins_path(conf_dirs)
         sys.path.extend(_PLUGINS_PATH)
         cls.preoses = find_preoses()
 

@@ -59,7 +59,9 @@ SYNOPSIS
                          [-I INVENTORY_DIR] [-a] [-f HOSTFILE] [-H] [-t]
                          [host [host ...]]
 
-    cdist preos [-h] [-l LOGLEVEL] [-q] [-v] [-c CONF_DIR] [-L] [preos] ...
+    cdist preos [-h] [-l LOGLEVEL] [-q] [-v] [-c CONF_DIR] [-g CONFIG_FILE]
+                [-L]
+                [preos] ...
 
     cdist preos [preos-options] debian [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
                                        [-C] [-c CDIST_PARAMS] [-D DRIVE] [-e REMOTE_EXEC]
@@ -463,6 +465,9 @@ Create PreOS.
 
 **-c CONF_DIR, --conf-dir CONF_DIR**
     Add configuration directory (one that contains "preos" subdirectory).
+
+**-g CONFIG_FILE, --config-file CONFIG_FILE**
+    Use specified custom configuration file.
 
 **-L, --list-preoses**
     List available PreOS-es.

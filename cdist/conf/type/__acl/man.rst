@@ -15,8 +15,22 @@ See ``setfacl`` and ``acl`` manpages for more details.
 
 REQUIRED MULTIPLE PARAMETERS
 ----------------------------
-acl
+entry
    Set ACL entry following ``getfacl`` output syntax.
+
+
+OPTIONAL PARAMETERS
+-------------------
+source
+   Read ACL entries from stdin or file.
+   Ordering of entries is not important.
+   When reading from file, comments and empty lines are ignored.
+
+file
+   Create/change file with ``__file`` using ``user:group:mode`` pattern.
+
+directory
+   Create/change directory with ``__directory`` using ``user:group:mode`` pattern.
 
 
 BOOLEAN PARAMETERS
@@ -36,8 +50,8 @@ remove
 
 DEPRECATED PARAMETERS
 ---------------------
-Parameters ``user``, ``group``, ``mask`` and ``other`` are deprecated and they
-will be removed in future versions. Please use ``acl`` parameter instead.
+Parameters ``acl``, ``user``, ``group``, ``mask`` and ``other`` are deprecated and they
+will be removed in future versions. Please use ``entry`` parameter instead.
 
 
 EXAMPLES
@@ -49,27 +63,38 @@ EXAMPLES
         --default \
         --recursive \
         --remove \
-        --acl user:alice:rwx \
-        --acl user:bob:r-x \
-        --acl group:project-group:rwx \
-        --acl group:some-other-group:r-x \
-        --acl mask::r-x \
-        --acl other::r-x
+        --entry user:alice:rwx \
+        --entry user:bob:r-x \
+        --entry group:project-group:rwx \
+        --entry group:some-other-group:r-x \
+        --entry mask::r-x \
+        --entry other::r-x
 
     # give Alice read-only access to subdir,
     # but don't allow her to see parent content.
 
     __acl /srv/project2 \
         --remove \
-        --acl default:group:secret-project:rwx \
-        --acl group:secret-project:rwx \
-        --acl user:alice:--x
+        --entry default:group:secret-project:rwx \
+        --entry group:secret-project:rwx \
+        --entry user:alice:--x
 
     __acl /srv/project2/subdir \
         --default \
         --remove \
-        --acl group:secret-project:rwx \
-        --acl user:alice:r-x
+        --entry group:secret-project:rwx \
+        --entry user:alice:r-x
+
+    # read acl from stdin
+    echo 'user:alice:rwx' \
+        | __acl /path/to/directory --source -
+
+    # create/change directory too
+    __acl /path/to/directory \
+        --default \
+        --remove \
+        --directory root:root:770 \
+        --entry user:nobody:rwx
 
 
 AUTHORS

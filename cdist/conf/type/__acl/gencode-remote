@@ -20,7 +20,13 @@
 
 file_is="$( cat "$__object/explorer/file_is" )"
 
-[ "$file_is" = 'missing' ] && [ -z "$__cdist_dry_run" ] && exit 0
+if [ "$file_is" = 'missing' ] \
+    && [ -z "$__cdist_dry_run" ] \
+    && \( [ ! -f "$__object/parameter/file" ] \
+        || [ ! -f "$__object/parameter/directory" ] \)
+then
+    exit 0
+fi
 
 os="$( cat "$__global/explorer/os" )"
 
@@ -28,7 +34,20 @@ acl_path="/$__object_id"
 
 acl_is="$( cat "$__object/explorer/acl_is" )"
 
-if [ -f "$__object/parameter/acl" ]
+if [ -f "$__object/parameter/source" ]
+then
+    acl_source="$( cat "$__object/parameter/source" )"
+
+    if [ "$acl_source" = '-' ]
+    then
+        acl_should="$( cat "$__object/stdin" )"
+    else
+        acl_should="$( grep -Ev '^#|^$' "$acl_source" )"
+    fi
+elif [ -f "$__object/parameter/entry" ]
+then
+    acl_should="$( cat "$__object/parameter/entry" )"
+elif [ -f "$__object/parameter/acl" ]
 then
     acl_should="$( cat "$__object/parameter/acl" )"
 elif

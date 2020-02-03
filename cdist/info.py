@@ -53,10 +53,7 @@ class Info(object):
 
     @classmethod
     def commandline(cls, args):
-        cfg = cdist.configuration.Configuration(args)
-        configuration = cfg.get_config(section='GLOBAL')
-        conf_dirs = util.resolve_conf_dirs(configuration,
-                                           args.conf_dir)
+        conf_dirs = util.resolve_conf_dirs_from_config_and_args(args)
         c = cls(conf_dirs, args)
         c.run()
 
@@ -170,7 +167,8 @@ class Info(object):
 
     def run(self):
         rv = []
-        for conf_path in self.conf_dirs:
+        for cp in self.conf_dirs:
+            conf_path = os.path.expanduser(cp)
             if self.all or self.display_global_explorers:
                 rv.extend((x, 'E', ) for x in self._get_global_explorers(
                     conf_path))

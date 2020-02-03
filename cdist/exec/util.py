@@ -24,6 +24,7 @@ import os
 from tempfile import TemporaryFile
 
 import cdist
+import cdist.configuration
 
 
 # IMPORTANT:
@@ -200,3 +201,9 @@ def resolve_conf_dirs(configuration, add_conf_dirs):
         conf_dirs.extend(add_conf_dirs)
     conf_dirs = set(conf_dirs)
     return conf_dirs
+
+
+def resolve_conf_dirs_from_config_and_args(args):
+    cfg = cdist.configuration.Configuration(args)
+    configuration = cfg.get_config(section='GLOBAL')
+    return resolve_conf_dirs(configuration, args.conf_dir)
