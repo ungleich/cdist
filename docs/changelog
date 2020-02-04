@@ -3,6 +3,8 @@ Changelog
 
 next:
 	* Type __consul_agent: Add Debian 10 support (Nico Schottelius)
+	* Explorer os_release: Add fallbacks (Dennis Camera)
+	* Types __file, __directory: Add fallback for systems without stat (Dennis Camera)
 
 6.5.0: 2020-01-23
 	* Type __acl: Add --entry parameter to replace --acl, deprecate --acl (Ander Punnar)
