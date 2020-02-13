@@ -39,6 +39,7 @@ host="$( cat "$__object/parameter/host" )"
 
 if [ "$table" != '*' ]
 then
+    # shellcheck disable=SC2016
     table="$( printf '`%s`' "$table" )"
 fi
 
