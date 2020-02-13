@@ -37,13 +37,18 @@ user="$( cat "$__object/parameter/user" )"
 
 host="$( cat "$__object/parameter/host" )"
 
+if [ "$table" != '*' ]
+then
+    table="$( printf '`%s`' "$table" )"
+fi
+
 case "$state_should" in
     present)
-        echo "mysql -e 'grant $privileges on \`$database\`.\`$table\` to \`$user\`@\`$host\`'"
+        echo "mysql -e 'grant $privileges on \`$database\`.$table to \`$user\`@\`$host\`'"
         echo "grant $privileges on $database.$table to $user@$host" >> "$__messages_out"
     ;;
     absent)
-        echo "mysql -e 'revoke $privileges on \`$database\`.\`$table\` from \`$user\`@\`$host\`'"
+        echo "mysql -e 'revoke $privileges on \`$database\`.$table from \`$user\`@\`$host\`'"
         echo "revoke $privileges on $database.$table from $user@$host" >> "$__messages_out"
     ;;
 esac
