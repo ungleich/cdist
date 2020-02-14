@@ -74,6 +74,14 @@ fi
 
 case "$state_should" in
     present)
+        # following is bit ugly, but important hack.
+        # due to how cdist config run works, there isn't
+        # currently better way to do it :(
+        cat << EOF
+if [ ! -f /var/cache/apt/pkgcache.bin ] || [ "\$( stat --format %Y /var/cache/apt/pkgcache.bin )" -lt "\$( date +%s -d '-1 day' )" ]
+then echo apt-get update > /dev/null 2>&1 || true
+fi
+EOF
         if [ -n "$version" ]; then
             name="${name}=${version}"
         fi
