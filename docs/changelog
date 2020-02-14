@@ -6,6 +6,7 @@ next:
 	* Explorer os_release: Add fallbacks (Dennis Camera)
 	* Types __file, __directory: Add fallback for systems without stat (Dennis Camera)
 	* Type __mysql_privileges: Fix quoting (Ander Punnar)
+	* Type __package_apt: Update package index if it is older than one day (Ander Punnar)
 
 6.5.0: 2020-01-23
 	* Type __acl: Add --entry parameter to replace --acl, deprecate --acl (Ander Punnar)
