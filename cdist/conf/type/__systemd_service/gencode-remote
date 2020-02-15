@@ -1,0 +1,98 @@
+#!/bin/sh -e
+# gencode-remote
+#
+# 2020 Matthias Stecher <matthiasstecher at gmx.de>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Checks the given state of the service and set it to the given
+# state. Optionally, it executes the action if service running.
+
+
+# get name of the service
+name="$__object/parameter/name"
+if [ -f "$name" ]; then
+    name="$(cat "$name")"
+else
+    name="$__object_id"
+fi
+
+
+# read current status and parameters
+state="$(cat "$__object/explorer/state")"
+should="$(cat "$__object/parameter/state")"
+
+# if systemd/service does not exist
+if [ -z "$state" ]; then
+    printf "systemd or service '%s' does not exist!\n" "$name" >&2
+    exit 1
+fi
+
+
+# save the action required
+required_action=""
+
+# check the state of the service that should be
+if [ "$state" != "$should" ]; then
+    # select what to do to get the $should state
+    case "$should" in
+        running)
+            if [ "$state" = "stopped" ]; then required_action="start"; fi
+            ;;
+
+        stopped)
+            if [ "$state" = "running" ]; then required_action="stop"; fi
+            ;;
+    esac
+fi
+
+# check if the action can be achieved if given
+if [ -f "$__object/parameter/action" ] \
+    && [ -z "$required_action" ] && [ "$state" = "running" ]; then
+
+    # there must be an action
+    action="$(cat "$__object/parameter/action")"
+
+    # select the action to the required element
+    case "$action" in
+        restart)
+            required_action="restart"
+            ;;
+
+        reload)
+            required_action="reload"
+            ;;
+
+        *)
+            printf "action '%s' does not exist!" "$action" >&2
+            exit 2
+    esac
+
+    # Make a special check: only do this action if a dependency did something
+    # it is required that the dependencies write there action to $__messages_in
+    if [ -f "$__object/parameter/if-required" ]; then
+        # exit here if there are no changes from the dependencies affected (nothing to do)
+        if ! grep -q -f "$__object/require" "$__messages_in"; then exit 0; fi
+    fi
+fi
+
+# print the execution command if a action given
+if [ -n "$required_action" ]; then
+    # also print it as message
+    echo "$required_action" >> "$__messages_out"
+    echo "systemctl $required_action '$name'"
+fi
