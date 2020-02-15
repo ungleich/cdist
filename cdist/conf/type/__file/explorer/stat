@@ -52,6 +52,7 @@ fallback() {
 # nothing to work with, nothing we could do
 [ -e "$destination" ] || exit 0
 
+
 if ! command -v stat >/dev/null
 then
    fallback
@@ -68,7 +69,39 @@ group: %Dg %Sg
 mode: %Lp %Sp
 size: %Dz
 links: %Dl
-   ;;
+" "$destination" | awk '/^type/ { print tolower($0); next } { print }'
+      ;;
+    solaris)
+        ls1="$( ls -ld "$destination" )"
+        ls2="$( ls -ldn "$destination" )"
+
+        if [ -f "$__object/parameter/mode" ]
+        then mode_should="$( cat "$__object/parameter/mode" )"
+        fi
+
+        # yes, it is ugly hack, but if you know better way...
+        if [ -z "$( find "$destination" -perm "$mode_should" )" ]
+        then octets=888
+        else octets="$( echo "$mode_should" | sed 's/^0//' )"
+        fi
+
+        case "$( echo "$ls1" | cut -c1-1 )" in
+            -) echo 'type: regular file' ;;
+            d) echo 'type: directory' ;;
+        esac
+
+        echo "owner: $( echo "$ls2" \
+            | awk '{print $3}' ) $( echo "$ls1" \
+                | awk '{print $3}' )"
+
+        echo "group: $( echo "$ls2" \
+            | awk '{print $4}' ) $( echo "$ls1" \
+                | awk '{print $4}' )"
+
+        echo "mode: $octets $( echo "$ls1" | awk '{print $1}' )"
+        echo "size: $( echo "$ls1" | awk '{print $5}' )"
+        echo "links: $( echo "$ls1" | awk '{print $2}' )"
+    ;;
    *)
       # NOTE: Do not use --printf here as it is not supported by BusyBox stat.
       # NOTE: BusyBox's stat might not support the "-c" option, in which case
