@@ -31,11 +31,11 @@ if [ -f "$__object/parameter/raw" ]; then
 elif [ -f "$__object/parameter/raw_command" ]; then
    entry="$command"
 else
-   minute="$(cat "$__object/parameter/minute" 2>/dev/null || echo "*")"
-   hour="$(cat "$__object/parameter/hour" 2>/dev/null || echo "*")"
-   day_of_month="$(cat "$__object/parameter/day_of_month" 2>/dev/null || echo "*")"
-   month="$(cat "$__object/parameter/month" 2>/dev/null || echo "*")"
-   day_of_week="$(cat "$__object/parameter/day_of_week" 2>/dev/null || echo "*")"
+   minute="$(cat "$__object/parameter/minute")"
+   hour="$(cat "$__object/parameter/hour")"
+   day_of_month="$(cat "$__object/parameter/day_of_month")"
+   month="$(cat "$__object/parameter/month")"
+   day_of_week="$(cat "$__object/parameter/day_of_week")"
    entry="$minute $hour $day_of_month $month $day_of_week $command # $name"
 fi
 
@@ -52,7 +52,7 @@ else
     state_is=absent
 fi
 
-state_should="$(cat "$__object/parameter/state" 2>/dev/null || echo "present")"
+state_should="$(cat "$__object/parameter/state")"
 
 [ "$state_is" = "$state_should" ] && exit 0
 
