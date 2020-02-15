@@ -9,7 +9,7 @@ Changelog
 	* Type __package_apt: Update package index if it is older than one day (Ander Punnar)
 	* Type __cron: Fix job removal if 'is' and 'should' don't match (Matthias Stecher)
 	* New type: __systemd_service (Matthias Stecher)
-	* Type __postgres_role: Fix password command synthax (Timothée Floure)
+	* Type __postgres_role: Fix password command syntax (Timothée Floure)
 
 6.5.0: 2020-01-23
 	* Type __acl: Add --entry parameter to replace --acl, deprecate --acl (Ander Punnar)
