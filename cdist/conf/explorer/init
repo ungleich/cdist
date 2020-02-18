@@ -20,185 +20,278 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Returns the process name of pid 1 ( normaly the init system )
-# for example at linux this value is "init" or "systemd" in most cases
+# Returns the name of the init system (PID 1)
 #
-
-set -e
-
 # Expected values:
 # Linux:
+#  Adélie Linux:
+#    sysvinit+openrc
+#  Alpine Linux:
+#    busybox-init+openrc
+#  ArchLinux:
+#    systemd, sysvinit
+#  CRUX:
+#    sysvinit
+#  Debian:
+#    systemd, upstart, sysvinit, openrc, ???
+#  Devuan:
+#    sysvinit, ???
 #  Gentoo:
-#	 sysvinit, openrc-init
-
+#    sysvinit+openrc, openrc-init, systemd
+#  OpenBMC:
+#    systemd
+#  OpenWrt:
+#    procd, init??
+#  RedHat (RHEL, CentOS, Fedora, RedHat Linux, ...):
+#    systemd, upstart, sysvinit
+#  Slackware:
+#    sysvinit
+#  SuSE:
+#    systemd, sysvinit
+#  Ubuntu:
+#    systemd, upstart, sysvinit
+#
 # GNU:
-#	Debian:
-#	  hurd-init, sysvinit
+#   Debian:
+#     hurd-init, sysvinit
+#
+# BSD:
+#  {Free,Open,Net}BSD:
+#    init
+#
+# Mac OS X:
+#   launchd, init
+#
+# Solaris/Illumos:
+#   smf, init
+
 
 # [root@fedora-12 ~]# readlink /proc/1/exe
 # /sbin/init (deleted)
 # [root@fedora-12 ~]# ls -l /proc/1/exe
 # lrwxrwxrwx. 1 root root 0 2020-01-30 23:00 /proc/1/exe -> /sbin/init (deleted)
 
-# inspired by https://stackoverflow.com/a/33266819
-shreadlink() (
-	CDPATH=
-	target=$1 fname= targetDir=
+set -e
+#set -x  # DEBUG
 
-	# Resolve potential symlinks until the ultimate target is found.
-	while :
-	do
-		if ! test -e "$target"
-		then
-			printf 'ERROR: %s does not exist.\n' "'$target'" >&2
-			return 1
-		fi
-
-		# Change to target dir; necessary for correct resolution of target path.
-		cd "$(dirname -- "$target")"
-
-		fname=$(basename -- "$target") # Extract filename.
-		[ "$fname" = '/' ] && fname='' # !! curiously, `basename /` returns '/'
-
-		[ -L "$fname" ] || break
-
-		# Extract [next] target path, which may be defined
-		# *relative* to the symlink's own directory.
-		# Note: We parse `ls -l` output to find the symlink target
-		#		which is the only POSIX-compliant, albeit somewhat fragile, way.
-		# FIXME: Will break if one of the filenames contain ’ -> ’
-		target=$(ls -l "$fname" | sed -e 's/^.* -> //')
-	done
-
-	# Get canonical dir. path
-	targetDir=$(pwd -P)
-
-	# Output the ultimate target's canonical path.
-	# Note that we manually resolve paths ending in /. and /.. to make sure we have a normalized path.
-	if test "$fname" = '.'
+validate_busybox_init() {
+	# It is quite common to use SysVinit to stack other init systemd
+	# (like OpenRC) on top of it. So we check for that, too.
+	if stacked=$(validate_openrc)
 	then
-		printf '%s\n' "${targetDir%/}"
-	elif test "$fname" = '..'
-	then
-		# Caveat: something like /var/.. will resolve to /private (assuming /var@ -> /private/var), i.e. the '..' is applied
-		# AFTER canonicalization.
-		printf '%s\n' "$(dirname -- "${targetDir}")"
+		echo "busybox-init+${stacked}"
 	else
-		printf '%s/%s\n' "${targetDir%/}" "$fname"
+		echo busybox-init
 	fi
-)
+}
 
+validate_hurd_init() {
+	# FIXME: Test me!
+	test -x /hurd/init || return 1
+	grep -q 'GNU Hurd' /hurd/init || return 1
+	echo hurd-init
+}
 
-case $(uname -s) in
-	Linux|GNU)
-		# if test -f /proc/1/comm
-		# then
-		#	  comm_name=$(cat /proc/1/comm)
-		# else
-			# BusyBox's versions of ps and pgrep do not support some options
-			# depending on which compile-time options have been used.
-			# Both pgrep and ps are tried to get the command name
-		#	  comm_name=$(
-		#		  pgrep -P0 -l 2>/dev/null | awk '/^1[ \t]/ { print $2 }'
-		#		  || ps -o comm= -p 1 2>/dev/null)
-		# fi
+validate_openrc() {
+	test -f /run/openrc/softlevel || return 1
+	echo openrc
+}
 
-		init_exe=$(shreadlink /proc/1/exe)
+validate_procd() {
+	grep -q 'procd' /sbin/procd || return 1
+	echo procd
+}
 
-		if ! test -x "$init_exe"
-		then
-			# On some rare occasions it can happen that the
-			# running init's binary has been replaced. In this
-			# case Linux adjusts the symlink to "X (deleted)"
-			case $init_exe
-			in
-				*' (deleted)')
-					init_exe=${init_exe% (deleted)}
-					test -x "$init_exe" || exit 1
-					;;
-				*)
-					exit 1
-					;;
-			esac
-		fi
+validate_runit() {
+	test -d /run/runit || return 1
+	echo runit
+}
 
-		if test "$init_exe" = '/hurd/init'
-		then
-			# XXX: Could maybe be removed
-			echo hurd-init
-			exit 0
-		fi
+validate_smf() {
+	# XXX: Is this the correct way??
+	test -f /etc/svc/volatile/svc_nonpersist.db || return 1
+	echo smf
+}
 
-		comm_name=$(basename "$init_exe")
-		case $comm_name
+validate_systemd() {
+	# NOTE: sd_booted(3)
+	test -d /run/systemd/system/ || return 1
+	# systemctl --version | sed -e '/^systemd/!d;s/^systemd //'
+	echo systemd
+}
+
+validate_sysvinit() {
+	test -x /sbin/init \
+	 && grep -q 'INIT_VERSION=sysvinit-[0-9.]*' /sbin/init \
+	 || return 1
+
+	# It is quite common to use SysVinit to stack other init systemd
+	# (like OpenRC) on top of it. So we check for that, too.
+	if stacked=$(validate_openrc)
+	then
+		echo "sysvinit+${stacked}"
+	else
+		echo sysvinit
+	fi
+	unset stacked
+}
+
+validate_upstart() {
+	test -x "$(command -v initctl)" || return 1
+	case $(initctl version)
+	in
+		*'(upstart '*')')
+			# if type -d /etc/init
+			# then
+			# 	# modern (DBus-based?) upstart >= 0.5
+			# 	:
+			# elif type -d /etc/events.d
+			# then
+			# 	# ancient upstart
+			# 	:
+			# fi
+			echo upstart
+			;;
+		*)
+			return 1
+			;;
+	esac
+}
+
+find_init_procfs() (
+	# First, check if the required file in procfs exists...
+	test -h /proc/1/exe || return 1
+
+	# Find init executable
+	init_exe=$(ls -l /proc/1/exe 2>/dev/null)
+	init_exe=${init_exe#* -> }
+
+	if ! test -x "$init_exe"
+	then
+		# On some rare occasions it can happen that the
+		# running init's binary has been replaced. In this
+		# case Linux adjusts the symlink to "X (deleted)"
+		case $init_exe
 		in
-			init)
-				:  # handled below
-				;;
-			systemd)
-				# NOTE: sd_booted(3)
-				if test -d /run/systemd/system/
-				then
-					echo systemd
-					exit 0
-				fi
-				# otherwise: treat like "init"
+			*' (deleted)')
+				init_exe=${init_exe% (deleted)}
+				test -x "$init_exe" || exit 1
 				;;
 			*)
-				echo "$comm_name"
-				exit 0
+				exit 1
 				;;
 		esac
+	fi
 
-		# init: it could be anything...
-		case $("$init_exe" --version 2>/dev/null | head -n 1)
-		in
-			SysV*)
-				# This is a little bit more specific than init
-				echo sysvinit
-				exit 0
-				;;
-			*'GNU Hurd'*)
-				echo hurd-init
-				;;
-			*upstart*)
-				echo upstart
-				exit 0
-				;;
-		esac
-		case $("$init_exe" --help 2>/dev/null | head -n 1)
-		in
-			BusyBox*)
-				echo busybox
-				exit 0
-				;;
-		esac
+	echo "${init_exe}"
+)
 
-		echo init
-		;;
-	FreeBSD|OpenBSD)
-		ps -o comm= -p 1 2>/dev/null || true
-		;;
-	Darwin)
-		basename "$(ps -o comm= -p 1 2>/dev/null)"
-		;;
-	SunOS)
-		comm_name=$(ps -o comm= -p 1 2>/dev/null)
-		if test "$(basename "$comm_name")" != 'init'
-		then
-			echo "${comm_name}"
-			exit 0
-		fi
+# BusyBox's versions of ps and pgrep do not support some options
+# depending on which compile-time options have been used.
 
-		# XXX: Is this the correct way??
-		if test -f /etc/svc/volatile/svc_nonpersist.db
-		then
-			echo smf
-			exit 0
-		fi
-		;;
-	*)
-		# return a empty string as unknown value
-		echo ""
-		;;
-esac
+find_init_pgrep() {
+	pgrep -P0 -fl 2>/dev/null | awk -F '[[:blank:]]' '$1 == 1 { print $2 }'
+}
+
+find_init_ps() {
+	case $(uname -s)
+	in
+		Darwin|NetBSD)
+			ps -o ucomm= -p 1 2>/dev/null
+			;;
+		FreeBSD)
+			ps -o command= -p 1 2>/dev/null | cut -d ' ' -f 1
+			;;
+		OpenBSD)
+			ps -o command -p 1 2>/dev/null | tail -n +2 | cut -d ' ' -f 1
+			;;
+		*)
+			ps -o comm= -p 1 2>/dev/null
+			;;
+	esac
+}
+
+find_init() {
+	case $(uname -s)
+	in
+		Linux|GNU|NetBSD)
+			find_init_procfs || find_init_pgrep || find_init_ps
+			;;
+		FreeBSD)
+			find_init_procfs || find_init_ps
+			;;
+		OpenBSD)
+			find_init_pgrep || find_init_ps
+			;;
+		Darwin|FreeBSD|SunOS)
+			find_init_ps
+			;;
+		*)
+			echo "Don't know how to determine init." >&2
+			echo 'Please send a patch.' >&2
+			exit 1
+	esac
+}
+
+validate_by_comm_name() {
+	case $1
+	in
+		busybox)
+			validate_busybox_init
+			;;
+		init)
+			# FIXME: Do some more magic here!
+			echo init
+			;;
+		openrc-init)
+			validate_openrc >/dev/null && echo openrc-init
+			;;
+		runit)
+			validate_runit
+			;;
+		systemd)
+			validate_systemd
+			;;
+		*)
+			# Run validate function by comm name if available.
+			# Fall back to comm name if either it does not exist or
+			# returns non-zero.
+			type "validate_$1" >/dev/null && "validate_$1" || echo $1
+	esac
+}
+
+try_all() {
+	# init: it could be anything...
+	# We try some approaches to gather more information about init without
+	# calling it! On some init systemd this triggers a reinitialisation of
+	# the system which we don't want (e.g. embedded systems).
+
+	validate_sysvinit || \
+	validate_openrc || \
+	validate_runit || \
+	validate_smf || \
+	validate_upstart || \
+	validate_hurd_init || \
+	echo init  # fallback
+}
+
+init=$(find_init)
+
+if test -x "${init}"
+then
+	case $init
+	in
+		/hurd/init)
+			# FIXME: Create validate function
+			echo hurd-init
+			;;
+		*/init)
+			try_all
+			;;
+		*)
+			validate_by_comm_name "$(basename "${init}")"
+			;;
+	esac
+else
+	validate_by_comm_name "${init}"
+fi
