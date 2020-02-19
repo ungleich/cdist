@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Type __update_alternatives: Add state explorer (Ander Punnar)
+
 6.5.1: 2020-02-15
 	* Type __consul_agent: Add Debian 10 support (Nico Schottelius)
 	* Explorer os_release: Add fallbacks (Dennis Camera)
