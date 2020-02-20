@@ -21,7 +21,7 @@
 #
 #
 # Returns the name of the init system (PID 1)
-#
+
 # Expected values:
 # Linux:
 #  Adélie Linux:
@@ -35,122 +35,221 @@
 #  Debian:
 #    systemd, upstart, sysvinit, openrc, ???
 #  Devuan:
-#    sysvinit, ???
+#    sysvinit, sysvinit+openrc
 #  Gentoo:
 #    sysvinit+openrc, openrc-init, systemd
 #  OpenBMC:
 #    systemd
 #  OpenWrt:
-#    procd, init??
+#    procd, init???
 #  RedHat (RHEL, CentOS, Fedora, RedHat Linux, ...):
-#    systemd, upstart, sysvinit
+#    systemd, upstart, upstart-legacy, sysvinit
 #  Slackware:
 #    sysvinit
 #  SuSE:
 #    systemd, sysvinit
 #  Ubuntu:
-#    systemd, upstart, sysvinit
+#    systemd, upstart, upstart-legacy, sysvinit
+#  VoidLinux:
+#    runit
 #
 # GNU:
 #   Debian:
-#     hurd-init, sysvinit
+#     sysvinit, hurd-init
 #
 # BSD:
 #  {Free,Open,Net}BSD:
 #    init
 #
 # Mac OS X:
-#   launchd, init
+#   launchd, init+SystemStarter
 #
 # Solaris/Illumos:
-#   smf, init
+#   smf, init???
 
+# NOTE: init systems can be stacked. This is popular to run OpenRC on top of
+# sysvinit (Gentoo) or busybox-init (Alpine), but can also be used to run runit
+# as a systemd service.  This makes init system detection very complicated
+# (which result is expected?)  This script tries to untangle some combinations,
+# OpenRC on top of sysv or busybox (X+openrc), but will ignore others (runit as
+# a systemd service)
 
-# [root@fedora-12 ~]# readlink /proc/1/exe
-# /sbin/init (deleted)
-# [root@fedora-12 ~]# ls -l /proc/1/exe
-# lrwxrwxrwx. 1 root root 0 2020-01-30 23:00 /proc/1/exe -> /sbin/init (deleted)
+# NOTE: When we have no idea, nothing will be printed!
+
+# NOTE:
+# When trying to gather information about the init system make sure to do so
+# without calling the binary!   On some systems this triggers a reinitialisation
+# of the system which we don't want (e.g. embedded systems).
+
 
 set -e
-#set -x  # DEBUG
 
-validate_busybox_init() {
-	# It is quite common to use SysVinit to stack other init systemd
+KERNEL_NAME=$(uname -s)
+
+KNOWN_INIT_SYSTEMS=$(cat <<EOF
+systemd
+sysvinit
+upstart
+runit
+procd
+smf
+launchd
+init
+hurd_init
+systemstarter
+EOF
+)
+
+
+common_candidates_by_kernel() {
+	case $KERNEL_NAME
+	in
+		FreeBSD|NetBSD|OpenBSD)
+			echo init
+			;;
+		Linux)
+			echo systemd
+			echo sysvinit
+			echo upstart
+			;;
+		GNU)
+			echo sysvinit
+			echo hurd-init
+			;;
+		Darwin)
+			echo launchd
+			echo systemstarter
+			;;
+		SunOS)
+			echo smf
+			;;
+	esac
+}
+
+
+## Helpers
+
+trim() {
+	sed -e 's/^[[:blank:]]*//' -e 's/[[:blank:]]*$//' -e '/^[[:blank:]]*$/d'
+}
+
+unique() {
+	# Delete duplicate lines (keeping input order)
+	awk '!x[$0]++'
+}
+
+
+## Check functions
+# These functions are used to verify if a guess is correct by checking some
+# common property of a running system (presence of a directory in /run etc.)
+
+check_busybox_init() (
+	busybox_path=${1:-/bin/busybox}
+	test -x "${busybox_path}" || return 1
+	grep -q 'BusyBox v[0-9]' "${busybox_path}" || return 1
+
+	# It is quite common to use Busybox init to stack other init systemd
 	# (like OpenRC) on top of it. So we check for that, too.
-	if stacked=$(validate_openrc)
+	if stacked=$(check_openrc)
 	then
 		echo "busybox-init+${stacked}"
 	else
 		echo busybox-init
 	fi
-}
+)
 
-validate_hurd_init() {
-	# FIXME: Test me!
-	test -x /hurd/init || return 1
-	grep -q 'GNU Hurd' /hurd/init || return 1
+check_hurd_init() (
+	init_exe=${1:-/hurd/init}
+	test -x "${init_exe}" || return 1
+	grep -q 'GNU Hurd' "${init_exe}" || return 1
 	echo hurd-init
+)
+
+check_init() {
+	# Checks for various BSD inits...
+	test -x /sbin/init || return 1
+
+	if grep -q -E '(Free|Net|Open)BSD' /sbin/init
+	then
+		echo init
+		return 0
+	fi
 }
 
-validate_openrc() {
+check_launchd() {
+	command -v launchctl >/dev/null 2>&1 || return 1
+	launchctl getenv PATH >/dev/null || return 1
+	echo launchd
+}
+
+check_openrc() {
 	test -f /run/openrc/softlevel || return 1
 	echo openrc
 }
 
-validate_procd() {
-	grep -q 'procd' /sbin/procd || return 1
+check_procd() (
+	procd_path=${1:-/sbin/procd}
+	test -x "${procd_path}" || return 1
+	grep -q 'procd' "${procd_path}" || return 1
 	echo procd
-}
+)
 
-validate_runit() {
+check_runit() {
 	test -d /run/runit || return 1
 	echo runit
 }
 
-validate_smf() {
+check_smf() {
 	# XXX: Is this the correct way??
 	test -f /etc/svc/volatile/svc_nonpersist.db || return 1
 	echo smf
 }
 
-validate_systemd() {
+check_systemd() {
 	# NOTE: sd_booted(3)
 	test -d /run/systemd/system/ || return 1
 	# systemctl --version | sed -e '/^systemd/!d;s/^systemd //'
 	echo systemd
 }
 
-validate_sysvinit() {
-	test -x /sbin/init \
-	 && grep -q 'INIT_VERSION=sysvinit-[0-9.]*' /sbin/init \
-	 || return 1
+check_systemstarter() {
+	test -d /System/Library/StartupItems/ || return 1
+	test -f /System/Library/StartupItems/LoginWindow/StartupParameters.plist || return 1
+	echo init+SystemStarter
+}
+
+check_sysvinit() (
+	init_path=${1:-/sbin/init}
+	grep -q 'INIT_VERSION=sysvinit-[0-9.]*' "${init_path}" || return 1
 
 	# It is quite common to use SysVinit to stack other init systemd
 	# (like OpenRC) on top of it. So we check for that, too.
-	if stacked=$(validate_openrc)
+	if stacked=$(check_openrc)
 	then
 		echo "sysvinit+${stacked}"
 	else
 		echo sysvinit
 	fi
 	unset stacked
-}
+)
 
-validate_upstart() {
+check_upstart() {
 	test -x "$(command -v initctl)" || return 1
 	case $(initctl version)
 	in
 		*'(upstart '*')')
-			# if type -d /etc/init
-			# then
-			# 	# modern (DBus-based?) upstart >= 0.5
-			# 	:
-			# elif type -d /etc/events.d
-			# then
-			# 	# ancient upstart
-			# 	:
-			# fi
-			echo upstart
+			if test -d /etc/init
+			then
+				# modern (DBus-based?) upstart >= 0.5
+				echo upstart
+			elif test -d /etc/event.d
+			then
+				# ancient upstart
+				echo upstart-legacy
+			else
+				# whatever...
+				echo upstart
+			fi
 			;;
 		*)
 			return 1
@@ -163,7 +262,7 @@ find_init_procfs() (
 	test -h /proc/1/exe || return 1
 
 	# Find init executable
-	init_exe=$(ls -l /proc/1/exe 2>/dev/null)
+	init_exe=$(ls -l /proc/1/exe 2>/dev/null) || return 1
 	init_exe=${init_exe#* -> }
 
 	if ! test -x "$init_exe"
@@ -171,20 +270,99 @@ find_init_procfs() (
 		# On some rare occasions it can happen that the
 		# running init's binary has been replaced. In this
 		# case Linux adjusts the symlink to "X (deleted)"
-		case $init_exe
-		in
-			*' (deleted)')
-				init_exe=${init_exe% (deleted)}
-				test -x "$init_exe" || exit 1
-				;;
-			*)
-				exit 1
-				;;
-		esac
+
+		# [root@fedora-12 ~]# readlink /proc/1/exe
+		# /sbin/init (deleted)
+		# [root@fedora-12 ~]# ls -l /proc/1/exe
+		# lrwxrwxrwx. 1 root root 0 2020-01-30 23:00 /proc/1/exe -> /sbin/init (deleted)
+
+		init_exe=${init_exe% (deleted)}
+		test -x "$init_exe" || return 1
 	fi
 
 	echo "${init_exe}"
 )
+
+guess_by_path() {
+	case $1
+	in
+		/bin/busybox)
+			check_busybox_init "$1" && return
+			;;
+		/lib/systemd/systemd)
+			check_systemd "$1" && return
+			;;
+		/hurd/init)
+			check_hurd_init "$1" && return
+			;;
+		/sbin/launchd)
+			check_launchd "$1" && return
+			;;
+		/usr/bin/runit|/sbin/runit)
+			check_runit "$1" && return
+			;;
+		/sbin/openrc-init)
+			if check_openrc "$1" >/dev/null
+			then
+				echo openrc-init
+				return
+			fi
+			;;
+		/sbin/procd)
+			check_procd && return
+			;;
+		/sbin/init|*/init)
+			# init: it could be anything -> (explicit) no match
+			return 1
+			;;
+	esac
+
+	# No match
+	return 1
+}
+
+guess_by_comm_name() {
+	case $1
+	in
+		busybox)
+			check_busybox_init && return
+			;;
+		openrc-init)
+			if check_openrc >/dev/null
+			then
+				echo openrc-init
+				return 0
+			fi
+			;;
+		init)
+			# init could be anything -> no match
+			return 1
+			;;
+		*)
+			# Run check function by comm name if available.
+			# Fall back to comm name if either it does not exist or
+			# returns non-zero.
+			if type "check_$1" >/dev/null
+			then
+				"check_$1" && return
+			else
+				echo "$1" ; return 0
+			fi
+	esac
+
+	return 1
+}
+
+check_list() (
+	# List must be a multi-line input on stdin (one name per line)
+	while read init
+	do
+		"check_${init}" || continue
+		return 0
+	done
+	return 1
+)
+
 
 # BusyBox's versions of ps and pgrep do not support some options
 # depending on which compile-time options have been used.
@@ -194,25 +372,31 @@ find_init_pgrep() {
 }
 
 find_init_ps() {
-	case $(uname -s)
+	case $KERNEL_NAME
 	in
-		Darwin|NetBSD)
-			ps -o ucomm= -p 1 2>/dev/null
+		Darwin)
+			ps -o command -p 1 2>/dev/null | tail -n +2
 			;;
 		FreeBSD)
-			ps -o command= -p 1 2>/dev/null | cut -d ' ' -f 1
+			ps -o args= -p 1 2>/dev/null | cut -d ' ' -f 1
 			;;
-		OpenBSD)
-			ps -o command -p 1 2>/dev/null | tail -n +2 | cut -d ' ' -f 1
-			;;
-		*)
+		Linux)
 			ps -o comm= -p 1 2>/dev/null
 			;;
-	esac
+		NetBSD)
+			ps -o comm= -p 1 2>/dev/null
+			;;
+		OpenBSD)
+			ps -o args -p 1 2>/dev/null | tail -n +2 | cut -d ' ' -f 1
+			;;
+		*)
+			ps -o args= -p 1 2>/dev/null
+			;;
+	esac | trim  # trim trailing whitespace (some ps like Darwin add it)
 }
 
 find_init() {
-	case $(uname -s)
+	case $KERNEL_NAME
 	in
 		Linux|GNU|NetBSD)
 			find_init_procfs || find_init_pgrep || find_init_ps
@@ -233,65 +417,23 @@ find_init() {
 	esac
 }
 
-validate_by_comm_name() {
-	case $1
-	in
-		busybox)
-			validate_busybox_init
-			;;
-		init)
-			# FIXME: Do some more magic here!
-			echo init
-			;;
-		openrc-init)
-			validate_openrc >/dev/null && echo openrc-init
-			;;
-		runit)
-			validate_runit
-			;;
-		systemd)
-			validate_systemd
-			;;
-		*)
-			# Run validate function by comm name if available.
-			# Fall back to comm name if either it does not exist or
-			# returns non-zero.
-			type "validate_$1" >/dev/null && "validate_$1" || echo $1
-	esac
-}
-
-try_all() {
-	# init: it could be anything...
-	# We try some approaches to gather more information about init without
-	# calling it! On some init systemd this triggers a reinitialisation of
-	# the system which we don't want (e.g. embedded systems).
-
-	validate_sysvinit || \
-	validate_openrc || \
-	validate_runit || \
-	validate_smf || \
-	validate_upstart || \
-	validate_hurd_init || \
-	echo init  # fallback
-}
+# -----
 
 init=$(find_init)
 
-if test -x "${init}"
-then
-	case $init
-	in
-		/hurd/init)
-			# FIXME: Create validate function
-			echo hurd-init
-			;;
-		*/init)
-			try_all
-			;;
-		*)
-			validate_by_comm_name "$(basename "${init}")"
-			;;
-	esac
-else
-	validate_by_comm_name "${init}"
-fi
+# If we got a path, guess by the path first (fall back to file name if no match)
+# else guess by file name directly.
+{
+	test -x "${init}" \
+		&& guess_by_path "${init}" \
+		|| guess_by_comm_name "$(basename "${init}")"
+} && exit 0 || true
+
+
+# Guessing based on the file path and name didn’t lead to a definitive result.
+#
+# We go through all of the checks until we find a match. To speed up the
+# process, common cases will be checked first based on the underlying kernel.
+
+{ common_candidates_by_kernel; echo "${KNOWN_INIT_SYSTEMS}"; } \
+	| unique | check_list
