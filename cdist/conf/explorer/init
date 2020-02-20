@@ -310,7 +310,7 @@ guess_by_path() {
 			fi
 			;;
 		/sbin/procd)
-			check_procd && return
+			check_procd "$1" && return
 			;;
 		/sbin/init|*/init)
 			# init: it could be anything -> (explicit) no match
@@ -356,7 +356,7 @@ guess_by_comm_name() {
 
 check_list() (
 	# List must be a multi-line input on stdin (one name per line)
-	while read init
+	while read -r init
 	do
 		"check_${init}" || continue
 		return 0
@@ -408,7 +408,7 @@ find_init() {
 		OpenBSD)
 			find_init_pgrep || find_init_ps
 			;;
-		Darwin|FreeBSD|SunOS)
+		Darwin|SunOS)
 			find_init_ps
 			;;
 		*)
@@ -424,6 +424,7 @@ init=$(find_init)
 
 # If we got a path, guess by the path first (fall back to file name if no match)
 # else guess by file name directly.
+# shellcheck disable=SC2015
 {
 	test -x "${init}" \
 		&& guess_by_path "${init}" \
