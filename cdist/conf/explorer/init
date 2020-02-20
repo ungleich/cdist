@@ -135,7 +135,8 @@ trim() {
 
 unique() {
 	# Delete duplicate lines (keeping input order)
-	awk '!x[$0]++'
+	# NOTE: Solaris AWK breaks without if/print construct.
+	awk '{ if (!x[$0]++) print }'
 }
 
 
