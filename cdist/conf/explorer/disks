@@ -1,13 +1,19 @@
-#!/bin/sh
+#!/bin/sh -e
 
 uname_s="$(uname -s)"
 
-case "${uname_s}" in
+case $uname_s in
     FreeBSD)
         sysctl -n kern.disks
     ;;
-    OpenBSD|NetBSD)
+    OpenBSD)
         sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]+' | xargs
+    ;;
+    NetBSD)
+        PATH="${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
+        sysctl -n hw.disknames \
+        | awk 'BEGIN { RS = " " } /^[lsw]d[0-9]+/' \
+        | xargs
     ;;
     Linux)
         if command -v lsblk > /dev/null
@@ -23,5 +29,3 @@ case "${uname_s}" in
         printf "Don't know how to list disks for %s operating system, if you can please submit a patch\n" "${uname_s}" >&2
     ;;
 esac
-
-exit 0
