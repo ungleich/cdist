@@ -7,13 +7,12 @@ case $uname_s in
         sysctl -n kern.disks
     ;;
     OpenBSD)
-        sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]+' | xargs
+        sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]+'
     ;;
     NetBSD)
         PATH="${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
         sysctl -n hw.disknames \
-        | awk 'BEGIN { RS = " " } /^[lsw]d[0-9]+/' \
-        | xargs
+        | awk 'BEGIN { RS = " " } /^[lsw]d[0-9]+/'
     ;;
     Linux)
         # list of major device numbers toexclude:
@@ -23,7 +22,7 @@ case $uname_s in
 
         if command -v lsblk >/dev/null 2>&1
         then
-            lsblk -e "$(echo "$ign_majors" | tr ' ' ',')" -dno name | xargs
+            lsblk -e "$(echo "$ign_majors" | tr ' ' ',')" -dno name
         elif test -d /sys/block/
         then
             # shellcheck disable=SC2012
@@ -34,8 +33,7 @@ case $uname_s in
                   getline devno < devfile
                   close(devfile)
                   if (devno !~ "^(" ign_majors "):") print
-                }' \
-            | xargs
+                }'
         else
             echo "Don't know how to list disks on Linux without lsblk and sysfs." >&2
             echo 'If you can, please submit a patch.'>&2
@@ -45,4 +43,5 @@ case $uname_s in
         printf "Don't know how to list disks for %s operating system.\n" "${uname_s}" >&2
         printf 'If you can please submit a patch\n' >&2
     ;;
-esac
+esac \
+| xargs
