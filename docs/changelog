@@ -4,6 +4,9 @@ Changelog
 next:
 	* Type __update_alternatives: Add state explorer (Ander Punnar)
 	* Explorer os_version: Add support for Alpine Linux (Jin-Guk Kwon)
+	* Explorer init: Rewrite and support more init systems (Dennis Camera)
+	* New type: __service (Timothée Floure)
+	* Types __consul_*: Add optional parameter for using distribution packages (Timothée Floure)
 
 6.5.1: 2020-02-15
 	* Type __consul_agent: Add Debian 10 support (Nico Schottelius)
