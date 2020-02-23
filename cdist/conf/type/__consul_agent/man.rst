@@ -116,6 +116,9 @@ verify-incoming
 verify-outgoing
    enforce the use of TLS and verify the peers authenticity on outgoing connections
 
+use-distribution-package
+   uses distribution package instead of upstream binary
+
 
 EXAMPLES
 --------
