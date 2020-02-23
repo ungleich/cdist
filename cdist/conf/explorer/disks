@@ -16,16 +16,33 @@ case $uname_s in
         | xargs
     ;;
     Linux)
-        if command -v lsblk > /dev/null
+        # list of major device numbers toexclude:
+        #  ram disks, floppies, cdroms
+        # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
+        ign_majors='1 2 11'
+
+        if command -v lsblk >/dev/null 2>&1
         then
-            # exclude ram disks, floppies and cdroms
-            # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
-            lsblk -e 1,2,11 -dno name | xargs
+            lsblk -e "$(echo "$ign_majors" | tr ' ' ',')" -dno name | xargs
+        elif test -d /sys/block/
+        then
+            # shellcheck disable=SC2012
+            ls -1 /sys/block/ \
+            | awk -v ign_majors="$(echo "$ign_majors" | tr ' ' '|')" '
+                {
+                  devfile = "/sys/block/" $0 "/dev"
+                  getline devno < devfile
+                  close(devfile)
+                  if (devno !~ "^(" ign_majors "):") print
+                }' \
+            | xargs
         else
-            printf "Don't know how to list disks for %s operating system without lsblk, if you can please submit a patch\n" "${uname_s}" >&2
+            echo "Don't know how to list disks on Linux without lsblk and sysfs." >&2
+            echo 'If you can, please submit a patch.'>&2
         fi
     ;;
     *)
-        printf "Don't know how to list disks for %s operating system, if you can please submit a patch\n" "${uname_s}" >&2
+        printf "Don't know how to list disks for %s operating system.\n" "${uname_s}" >&2
+        printf 'If you can please submit a patch\n' >&2
     ;;
 esac
