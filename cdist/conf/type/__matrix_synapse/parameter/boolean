@@ -1,0 +1,5 @@
+allow_registration
+enable_ldap_auth
+ldap_search_mode
+report_stats
+expose_metrics

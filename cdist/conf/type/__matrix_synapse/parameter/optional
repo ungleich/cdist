@@ -1,0 +1,14 @@
+database_host
+database_user
+database_password
+ldap_uri
+ldap_base_dn
+ldap_uid_attribute
+ldap_mail_attribute
+ldap_name_attribute
+ldap_bind_dn
+ldap_bind_password
+ldap_filter
+turn_shared_secret
+turn_user_lifetime
+max_upload_size
