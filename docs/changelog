@@ -8,6 +8,7 @@ next:
 	* New type: __service (Timothée Floure)
 	* Types __consul_*: Add optional parameter for using distribution packages (Timothée Floure)
 	* Explorer disks: Fix NetBSD, support Linux w/o lsblk (Dennis Camera)
+	* Type __directory: Add 'exists' and 'pre-exists' states (Dennis Camera)
 
 6.5.1: 2020-02-15
 	* Type __consul_agent: Add Debian 10 support (Nico Schottelius)
