@@ -31,12 +31,24 @@ if [ "$state_should" = "pre-exists" ]; then
       exit 1
    fi
 
-   if [ "$type" = "file" ]; then
-      exit 0 # nothing to do
-   else
-      echo "File \"$destination\" does not exist"
-      exit 1
-   fi
+   case $type in
+      file)
+         # nothing to do
+         exit 0
+      ;;
+      none)
+         printf 'File "%s" does not exist\n' "$destination" >&2
+         exit 1
+      ;;
+      directory|symlink)
+         printf 'File "%s" exists and is a %s, but should be a regular file\n' "$destination" "$type" >&2
+         exit 1
+      ;;
+      *)
+         printf 'File or directory "%s" is in an unknown state\n' "$destination" >&2
+         exit 1
+      ;;
+   esac
 fi
 
 upload_file=
