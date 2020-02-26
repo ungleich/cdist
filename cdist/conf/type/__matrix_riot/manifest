@@ -1,0 +1,68 @@
+#!/bin/sh -e
+#
+# 2019 Timothée Floure (timothee.floure@ungleich.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+INSTALL_DIR=$(cat "$__object/parameter/install_dir")
+
+default_server_name=$(cat "$__object/parameter/default_server_name")
+brand=$(cat "$__object/parameter/brand")
+default_country_code=$(cat "$__object/parameter/default_country_code")
+room_directory_servers=$(cat "$__object/parameter/room_directory_servers")
+privacy_policy_url=$(cat "$__object/parameter/privacy_policy_url")
+cookie_policy_url=$(cat "$__object/parameter/cookie_policy_url")
+
+export DEFAULT_SERVER_NAME=$default_server_name
+export BRAND=$brand
+export DEFAULT_COUNTRY_CODE=$default_country_code
+export ROOM_DIRECTORY_SERVERS=$room_directory_servers
+export PRIVACY_POLICY_URL=$privacy_policy_url
+export COOKIE_POLICY_URL=$cookie_policy_url
+
+if [ -f "$__object/parameter/homepage" ]; then
+    export EMBED_HOMEPAGE=1
+    homepage=$(cat "$__object/parameter/homepage")
+fi
+
+# Owner of the uploaded files.
+owner=$(cat "$__object/parameter/owner")
+
+# Ensure that curl and tar are installed, as they will be required by the
+# gencode-remote script.
+__package curl --state present
+__package tar --state present
+
+# Generate and deploy configuration file.
+mkdir -p "$__object/files"
+"$__type/files/config.json.sh" > "$__object/files/config.json"
+
+# Install the config.json configuration file. The application's sources are
+# downloaded and deployed by gencode-remote.
+__directory "$INSTALL_DIR" \
+    --owner "$owner" --mode 0755 --parents \
+    --state present
+require="__directory/$INSTALL_DIR" __file "$INSTALL_DIR/config.json" \
+  --source "$__object/files/config.json" \
+  --mode 0664 \
+  --state present
+if [ $EMBED_HOMEPAGE ]; then
+    require="__directory/$INSTALL_DIR" __file "$INSTALL_DIR/home.html" \
+      --source "$homepage" \
+      --mode 0664 \
+      --state present
+fi

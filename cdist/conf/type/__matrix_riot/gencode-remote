@@ -1,0 +1,74 @@
+#!/bin/sh -e
+#
+# 2019 Timothée Floure (timothee.floure@ungleich.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+VERSION=$(cat "$__object/parameter/version")
+INSTALL_DIR=$(cat "$__object/parameter/install_dir")
+OWNER=$(cat "$__object/parameter/owner")
+
+src="riot-v$VERSION"
+archive="$src.tar.gz"
+config='config.json'
+homepage='home.html'
+url="https://github.com/vector-im/riot-web/releases/download/v$VERSION/$archive"
+
+# tar and curl are installed by the __matrix-riot manifest. mktemp is usually
+# provided by coreutils and assumed installed.
+cat << EOF
+set -e
+
+# Ensure that coreutils is installed.
+if [ ! -x \$(which mktemp) ]; then
+  echo "mktemp is not available on the remote host." >&2
+  exit 1
+fi
+
+# Create temporary working directory.
+tmpdir=\$(mktemp -d)
+cd \$tmpdir
+
+# Download and extract sources.
+curl -L '$url' > $archive
+tar xf $archive
+
+# Backup configuration deployed by __matrix_riot.
+cp '$INSTALL_DIR/$config' '$config'
+
+# Backup homepage deployed by __matrix_riot
+if [ -f '$INSTALL_DIR/$homepage' ]; then
+  cp '$INSTALL_DIR/$homepage' '$homepage'
+fi
+
+# Deploy sources and restore configuration.
+rm -r '$INSTALL_DIR'
+mv '$src' '$INSTALL_DIR'
+cp '$config' '$INSTALL_DIR/$config'
+
+# Restore homepage if available.
+if [ -f '$homepage' ]; then
+  cp '$homepage' '$INSTALL_DIR/$homepage'
+fi
+
+# Chown deployed files to requested owner.
+chown -R '$OWNER' '$INSTALL_DIR'
+
+# Remove temporary working directory.
+cd /
+rm -r \$tmpdir
+EOF
