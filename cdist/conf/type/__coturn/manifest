@@ -1,0 +1,55 @@
+#!/bin/sh -e
+#
+# 2020 Timothée Floure (timothee.floure@ungleich.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+__package coturn
+
+# Optional parameters.
+if [ -f "$__object/parameter/use_auth_secret" ]; then
+    export USE_AUTH_SECRET=1
+fi
+
+if [ -f "$__object/parameter/static_auth_secret" ]; then
+    static_auth_secret=$(cat "$__object/parameter/static_auth_secret")
+    export STATIC_AUTH_SECRET=$static_auth_secret
+fi
+
+if [ -f "$__object/parameter/realm" ]; then
+    realm=$(cat "$__object/parameter/realm")
+    export REALM=$realm
+fi
+
+if [ -f "$__object/parameter/no_tcp_relay" ]; then
+    no_tcp_relay=$(cat "$__object/parameter/no_tcp_relay")
+    export NO_TCP_RELAY=$no_tcp_relay
+fi
+
+# Hardcoded.
+coturn_config='/etc/turnserver.conf'
+
+# Generate and deploy configuration file.
+mkdir -p "$__object/files"
+"$__type/files/turnserver.conf.sh" > "$__object/files/turnserver.conf"
+
+__file $coturn_config \
+  --source "$__object/files/turnserver.conf" \
+  --state present
+
+# Restart coturn server.
+require="__file/$coturn_config" __service coturn --action restart
