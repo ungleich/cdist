@@ -109,10 +109,24 @@ case "$state_should" in
       done
    ;;
    pre-exists)
-      if [ "$type" != "directory" ]; then
-         echo "Directory \"$destination\" does not exist" >&2
-         exit 1
-      fi
+      case $type in
+         directory)
+            # all good
+            exit 0
+         ;;
+         none)
+            printf 'Directory "%s" does not exist\n' "$destination" >&2
+            exit 1
+         ;;
+         file|symlink)
+            printf 'File "%s" exists and is a %s, but should be a directory\n' "$destination" "$type" >&2
+            exit 1
+         ;;
+         *)
+            printf 'File or directory "%s" is in an unknown state\n' "$destination" >&2
+            exit 1
+         ;;
+      esac
    ;;
    absent)
         if [ "$type" = "directory" ]; then
