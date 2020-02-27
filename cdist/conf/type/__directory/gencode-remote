@@ -3,6 +3,7 @@
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2013 Steven Armstrong (steven-cdist armstrong.cc)
 # 2014 Daniel Heule (hda at sfs.biz)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -21,8 +22,8 @@
 #
 
 destination="/$__object_id"
-state_should="$(cat "$__object/parameter/state")"
-type="$(cat "$__object/explorer/type")"
+state_should=$(cat "$__object/parameter/state")
+type=$(cat "$__object/explorer/type")
 stat_file="$__object/explorer/stat"
 
 # variable to keep track if we have to set directory attributes
@@ -72,7 +73,7 @@ set_mode() {
 }
 
 case "$state_should" in
-   present)
+   present|exists)
       if [ "$type" != "directory" ]; then
          set_attributes=1
          if [ "$type" != "none" ]; then
@@ -83,6 +84,10 @@ case "$state_should" in
          fi
          echo "mkdir $mkdiropt '$destination'"
          echo "create" >> "$__messages_out"
+      elif [ "$state_should" = 'exists' ]; then
+         # The type is directory and --state exists. We are done and do not
+         # check or set the attributes.
+         exit 0
       fi
 
       # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
@@ -102,6 +107,26 @@ case "$state_should" in
             fi
          fi
       done
+   ;;
+   pre-exists)
+      case $type in
+         directory)
+            # all good
+            exit 0
+         ;;
+         none)
+            printf 'Directory "%s" does not exist\n' "$destination" >&2
+            exit 1
+         ;;
+         file|symlink)
+            printf 'File "%s" exists and is a %s, but should be a directory\n' "$destination" "$type" >&2
+            exit 1
+         ;;
+         *)
+            printf 'File or directory "%s" is in an unknown state\n' "$destination" >&2
+            exit 1
+         ;;
+      esac
    ;;
    absent)
         if [ "$type" = "directory" ]; then

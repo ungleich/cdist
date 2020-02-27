@@ -1,0 +1,15 @@
+#!/bin/sh
+
+manager="$(cat "$__object/explorer/service-manager")"
+
+name=$__object_id
+action="$(cat "$__object/parameter/action")"
+
+case "$manager" in
+	systemd)
+		__systemd_service "$name" --action "$action"
+	;;
+	*)
+		# Unknown: handled by `service $NAME $action` in gencode-remote.
+	;;
+esac

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Assume systemd if systemctl is in PATH.
+if [ "$(command -v systemctl)" ]; then
+	printf "systemd"
+else
+	printf "unknown"
+fi

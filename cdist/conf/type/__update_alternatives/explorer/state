@@ -1,0 +1,8 @@
+#!/bin/sh -e
+path="$(cat "$__object/parameter/path")"
+name="$__object_id"
+link="$(readlink "/etc/alternatives/$name")"
+if [ "$path" = "$link" ]
+then echo present
+else echo absent
+fi

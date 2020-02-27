@@ -45,7 +45,7 @@ action
         Restarts the service
 
 BOOLEAN PARAMETERS
------------------
+------------------
 
 if-required
     Only execute the action if minimum one required type outputs a message to

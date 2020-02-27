@@ -5,6 +5,16 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.5.2: 2020-02-27
+	* Type __update_alternatives: Add state explorer (Ander Punnar)
+	* Explorer os_version: Add support for Alpine Linux (Jin-Guk Kwon)
+	* Explorer init: Rewrite and support more init systems (Dennis Camera)
+	* New type: __service (Timothée Floure)
+	* Types __consul_*: Add optional parameter for using distribution packages (Timothée Floure)
+	* Explorer disks: Fix NetBSD, support Linux w/o lsblk (Dennis Camera)
+	* Type __directory: Add 'exists' and 'pre-exists' states (Dennis Camera)
+	* Type __file: Improve error messages for pre-exists state (Dennis Camera)
+
 6.5.1: 2020-02-15
 	* Type __consul_agent: Add Debian 10 support (Nico Schottelius)
 	* Explorer os_release: Add fallbacks (Dennis Camera)
@@ -13,7 +23,7 @@ next:
 	* Type __package_apt: Update package index if it is older than one day (Ander Punnar)
 	* Type __cron: Fix job removal if 'is' and 'should' don't match (Matthias Stecher)
 	* New type: __systemd_service (Matthias Stecher)
-	* Type __postgres_role: Fix password command synthax (Timothée Floure)
+	* Type __postgres_role: Fix password command syntax (Timothée Floure)
 
 6.5.0: 2020-01-23
 	* Type __acl: Add --entry parameter to replace --acl, deprecate --acl (Ander Punnar)

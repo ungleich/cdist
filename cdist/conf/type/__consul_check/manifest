@@ -19,7 +19,7 @@
 #
 
 name="$(cat "$__object/parameter/name" 2>/dev/null || echo "$__object_id")"
-conf_dir="/etc/consul/conf.d"
+conf_dir=$(cat "$__object/explorer/conf-dir")
 conf_file="check_${name}.json"
 state="$(cat "$__object/parameter/state")"
 

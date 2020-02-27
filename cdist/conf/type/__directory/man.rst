@@ -19,7 +19,18 @@ None.
 OPTIONAL PARAMETERS
 -------------------
 state
-   'present' or 'absent', defaults to 'present'
+   'present', 'absent', 'exists' or 'pre-exists', defaults to 'present' where:
+
+   present
+      the directory exists and the given attributes are set.
+   absent
+      the directory does not exist.
+   exists
+      the directory exists, but its attributes are not altered if it already
+      existed.
+   pre-exists
+      check that the directory exists and is indeed a directory, but do not
+      create or modify it.
 
 group
    Group to chgrp to.
@@ -36,7 +47,7 @@ BOOLEAN PARAMETERS
 parents
    Whether to create parents as well (mkdir -p behaviour).
    Warning: all intermediate directory permissions default
-   to whatever mkdir -p does. 
+   to whatever mkdir -p does.
 
    Usually this means root:root, 0700.
 
