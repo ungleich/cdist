@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2015 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2015-2019 Nico Schottelius (nico-cdist at schottelius.org)
+# 2015-2020 Nico Schottelius (nico-cdist at schottelius.org)
 # 2019 Timothée Floure (timothee.floure at ungleich.ch)
 #
 # This file is part of cdist.
@@ -37,9 +37,21 @@ fi
 # Those are default that might be overriden by os-specific logic.
 
 data_dir="/var/lib/consul"
-conf_dir="/etc/consul/conf.d"
-conf_file="config.json"
+
+
+
 tls_dir="$conf_dir/tls"
+
+case "$os" in
+    alpine)
+        conf_dir="/etc/consul"
+        conf_file="server.json"
+        ;;
+    *)
+        conf_dir="/etc/consul/conf.d"
+        conf_file="config.json"
+        ;;
+esac
 
 ###
 # Sane deployment, based on distribution package when available.
