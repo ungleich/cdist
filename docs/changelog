@@ -3,6 +3,8 @@ Changelog
 
 next:
 	* Type __user: Fix missing shadow for alpine (llnu)
+	* Type __consule_agent: Make conf_dir dependent on OS - fixes
+	Alpine (Nico Schottelius)
 
 6.5.2: 2020-02-27
 	* Type __update_alternatives: Add state explorer (Ander Punnar)
