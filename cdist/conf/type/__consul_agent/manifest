@@ -232,7 +232,7 @@ if [ -f "$__object/parameter/ca-file-source" ] || \
    [ -f "$__object/parameter/cert-file-source" ] || \
    [ -f "$__object/parameter/key-file-source" ]; then
 
-   requires="$config_deployment_requires" __directory $tls_dir \
+   requires="$config_deployment_requires" __directory "$tls_dir" \
      --owner root --group "$group" --mode 750 --state "$state"
 
    # Append to service restart requirements.
