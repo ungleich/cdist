@@ -2,6 +2,7 @@ Changelog
 ---------
 
 next:
+	* Type __cron: Make non parallel due to race condition (Nico Schottelius)
 	* Type __user: Fix missing shadow for alpine (llnu)
 	* Type __consule_agent: Make conf_dir dependent on OS - fixes Alpine (Nico Schottelius)
 	* Type __letsencrypt_cert: Fix typo (Andrew Schleifer)
