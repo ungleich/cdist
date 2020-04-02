@@ -38,7 +38,7 @@ destination="/$__object_id"
 venvparams="$(cat "$__object/parameter/venvparams")"
 pyvenvparam="$__object/parameter/pyvenv"
 
-os=$(cat $__global/explorer/os)
+os=$(cat "$__global/explorer/os")
 
 if [ -f "$pyvenvparam" ]
 then
