@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.5.3: 2020-04-03
 	* Type __cron: Make non parallel due to race condition (Nico Schottelius)
 	* Type __pyvenv: Use python3 -m venv on Alpine (Nico Schottelius)
 	* Type __user: Fix missing shadow for alpine (llnu)
