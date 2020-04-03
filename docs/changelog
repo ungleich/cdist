@@ -5,6 +5,14 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.5.3: 2020-04-03
+	* Type __cron: Make non parallel due to race condition (Nico Schottelius)
+	* Type __pyvenv: Use python3 -m venv on Alpine (Nico Schottelius)
+	* Type __user: Fix missing shadow for alpine (llnu)
+	* Type __consule_agent: Make conf_dir dependent on OS - fixes Alpine (Nico Schottelius)
+	* Type __letsencrypt_cert: Fix typo (Andrew Schleifer)
+	* Type __package_update_index: Fix maxage false positives (Matthias Stecher)
+
 6.5.2: 2020-02-27
 	* Type __update_alternatives: Add state explorer (Ander Punnar)
 	* Explorer os_version: Add support for Alpine Linux (Jin-Guk Kwon)
