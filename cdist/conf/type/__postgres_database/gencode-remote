@@ -43,8 +43,24 @@ if [ "$state_should" != "$state_is" ]; then
          if [ -f "$__object/parameter/owner" ]; then
             owner="-O \"$(cat "$__object/parameter/owner")\""
          fi
+
+         encoding=""
+         if [ -f "$__object/parameter/encoding" ]; then
+            encoding="--encoding \"$(cat "$__object/parameter/encoding")\""
+         fi
+
+         lc_collate=""
+         if [ -f "$__object/parameter/lc-collate" ]; then
+            lc_collate="--lc-collate \"$(cat "$__object/parameter/lc-collate")\""
+         fi
+
+         lc_ctype=""
+         if [ -f "$__object/parameter/lc-ctype" ]; then
+            lc_ctype="--lc-ctype \"$(cat "$__object/parameter/lc-ctype")\""
+         fi
+
          cat << EOF
-su - '$postgres_user' -c "createdb $owner \"$name\""
+su - '$postgres_user' -c "createdb $owner \"$name\" $encoding $lc_collate $lc_ctype"
 EOF
       ;;
       absent)

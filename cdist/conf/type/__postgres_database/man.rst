@@ -14,11 +14,19 @@ This cdist type allows you to create or drop postgres databases.
 OPTIONAL PARAMETERS
 -------------------
 state
-   either 'present' or 'absent', defaults to 'present'.
+   Either 'present' or 'absent', defaults to 'present'.
 
 owner
-   the role owning this database
+   Specifies the database user who will own the new database.
 
+encoding
+   Specifies the character encoding scheme to be used in this database.
+
+lc-collate
+   Specifies the LC_COLLATE setting to be used in this database.
+
+lc-ctype
+   Specifies the LC_CTYPE setting to be used in this database.
 
 EXAMPLES
 --------
