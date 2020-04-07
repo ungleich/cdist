@@ -1,0 +1,101 @@
+#!/bin/sh -e
+#
+# 2020 Timothée Floure (timothee.floure@ungleich.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os=$(cat "$__global/explorer/os")
+case "$os" in
+   debian)
+     # This type assume systemd for service installation.
+   ;;
+   *)
+      printf "Your operating system (%s) is currently not supported by this type (%s)\n" "$os" "${__type##*/}" >&2
+      printf "Please contribute an implementation for it if you can.\n" >&2
+      exit 1
+   ;;
+esac
+
+# Required parameters.
+VERSION=$(cat "$__object/parameter/version")
+if [ -f "$__object/parameter/config" ]; then
+    CONFIG="$(cat "$__object/parameter/config")"
+    if [ "$CONFIG" = "-" ]; then
+        CONFIG=$(cat "$__object/stdin")
+    fi
+fi
+
+# Hardcoded values used in templates.
+export BINARY_PATH=/usr/local/bin/matterbridge
+export CONFIG_PATH=/etc/matterbridge/matterbridge.toml
+export USER=matterbridge
+export GROUP=$USER
+
+# Internal variables.
+artefact="matterbridge-$VERSION-linux-64bit"
+checksum_file="checksums.txt"
+release_download_url=https://github.com/42wim/matterbridge/releases/download
+binary_url="$release_download_url/v$VERSION/$artefact"
+checksum_file_url="$release_download_url/v$VERSION/$checksum_file"
+config_dir=$(dirname $CONFIG_PATH)
+systemd_unit_path='/etc/systemd/system/matterbridge.service'
+
+# Check if curl is available.
+if [ ! -x "$(which curl)" ]; then
+     echo "curl is required for this type, but could not be found. Exiting." &>2
+     exit 1
+fi
+
+# Initialize working directory.
+mkdir -p "$__object/files"
+
+# Download and check matterbridge binary.
+curl -L $binary_url -o "$__object/files/$artefact"
+curl -Ls $checksum_file_url | grep $artefact > "$__object/files/$checksum_file"
+ls $__object/files/ >&2
+cat $__object/files/checksums.txt >&2
+(cd "$__object/files"; sha256sum --check $checksum_file)
+if [ $? -ne 0 ]; then
+    echo "Matterbridge binary checksum failed." >&2
+    exit 1
+fi
+
+# Create service user.
+__user $USER --home "/var/lib/$USER"
+
+# Deploy matterbridge binary.
+require="__user/$USER" __file "$BINARY_PATH" \
+  --source "$__object/files/$artefact" \
+  --owner "$USER" --mode 755
+
+# Generate and deploy configuration file.
+"$__type/files/matterbridge.service.sh" > "$__object/files/matterbridge.service"
+
+require="__user/$USER" __directory "$config_dir" \
+  --owner "$USER" --mode 0755 --parents \
+
+require="__directory/$config_dir" __file "$CONFIG_PATH" \
+  --owner "$USER" \
+  --mode 0640 \
+  --source "$CONFIG"
+
+__file "$systemd_unit_path" \
+  --source "$__object/files/matterbridge.service"
+
+# Deal with init system.
+require="__file/$systemd_unit_path" __start_on_boot matterbridge
+require="__file/$BINARY_PATH __file/$CONFIG_PATH __file/$systemd_unit_path" __service matterbridge --action restart
