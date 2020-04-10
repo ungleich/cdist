@@ -221,6 +221,7 @@ check_systemstarter() {
 
 check_sysvinit() (
 	init_path=${1:-/sbin/init}
+	test -x "${init_path}" || return 1
 	grep -q 'INIT_VERSION=sysvinit-[0-9.]*' "${init_path}" || return 1
 
 	# It is quite common to use SysVinit to stack other init systemd
