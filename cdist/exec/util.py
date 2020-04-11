@@ -22,6 +22,7 @@
 import subprocess
 import os
 from tempfile import TemporaryFile
+from collections import OrderedDict
 
 import cdist
 import cdist.configuration
@@ -199,7 +200,9 @@ def resolve_conf_dirs(configuration, add_conf_dirs):
 
     if add_conf_dirs:
         conf_dirs.extend(add_conf_dirs)
-    conf_dirs = set(conf_dirs)
+
+    # Remove duplicates.
+    conf_dirs = list(OrderedDict.fromkeys(conf_dirs))
     return conf_dirs
 
 
