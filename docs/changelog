@@ -5,6 +5,10 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.5.4: 2020-04-11
+	* Explorer init: Do not grep on non-existent init (Steven Armstrong)
+	* Core: Bugfix to preserve conf dirs order (Steven Armstrong)
+
 6.5.3: 2020-04-03
 	* Type __cron: Make non parallel due to race condition (Nico Schottelius)
 	* Type __pyvenv: Use python3 -m venv on Alpine (Nico Schottelius)
