@@ -28,6 +28,10 @@ lc-collate
 lc-ctype
    Specifies the LC_CTYPE setting to be used in this database.
 
+template
+   Specifies the template database from which to build this database.
+
+
 EXAMPLES
 --------
 

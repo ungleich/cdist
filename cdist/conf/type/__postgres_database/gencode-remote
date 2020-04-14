@@ -44,6 +44,11 @@ if [ "$state_should" != "$state_is" ]; then
             owner="-O \"$(cat "$__object/parameter/owner")\""
          fi
 
+         template=""
+         if [ -f "$__object/parameter/template" ]; then
+            template="--template \"$(cat "$__object/parameter/template")\""
+         fi
+
          encoding=""
          if [ -f "$__object/parameter/encoding" ]; then
             encoding="--encoding \"$(cat "$__object/parameter/encoding")\""
@@ -60,7 +65,7 @@ if [ "$state_should" != "$state_is" ]; then
          fi
 
          cat << EOF
-su - '$postgres_user' -c "createdb $owner \"$name\" $encoding $lc_collate $lc_ctype"
+su - '$postgres_user' -c "createdb $owner \"$name\" $template $encoding $lc_collate $lc_ctype"
 EOF
       ;;
       absent)
