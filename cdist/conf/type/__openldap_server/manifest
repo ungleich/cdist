@@ -168,6 +168,7 @@ if [ -z "${_skip_letsencrypt_cert}" ]; then
         staging=""
     fi
 
+    # shellcheck disable=SC2086
     __letsencrypt_cert "${name}" --admin-email "${admin_email}" \
         --renew-hook "cp ${ETC}/letsencrypt/live/${name}/*.pem ${SLAPD_DIR}/sasl2 && chown -R openldap:openldap ${SLAPD_DIR}/sasl2 && service slapd restart" \
         --automatic-renewal ${staging}
