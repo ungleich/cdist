@@ -9,6 +9,7 @@ slapd_modules=$(cat "${__object}/parameter/module" 2>/dev/null || true)
 schemas=$(cat "${__object}/parameter/schema")
 slapd_urls=$(tr '\n' ' ' < "${__object}/parameter/slapd-url")
 tls_cipher_suite=$(cat "${__object}/parameter/tls-cipher-suite" 2>/dev/null || true)
+extra_config=$(cat "${__object}/parameter/extra-config" || true)
 
 
 os="$(cat "${__global}/explorer/os")"
@@ -230,6 +231,8 @@ index uidNumber,gidNumber,loginShell eq,pres
 index uid,memberUid eq,pres,sub
 index nisMapName,nisMapEntry eq,pres,sub
 index entryCSN,entryUUID eq
+
+${extra_config}
 
 serverid ${serverid}
 EOF
