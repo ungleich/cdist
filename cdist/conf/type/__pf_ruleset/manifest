@@ -40,7 +40,7 @@ __key_value __pf_ruleset/rcvar \
     --key "pf_enable" \
     --value "YES"
 
-require="__key_value/__pf_ruleset/rcvar" __config_file ${rcvar} \
+require="__key_value/__pf_ruleset/rcvar" __config_file "${rcvar}" \
     --source "${source}" \
     --state "${state}" \
     --onchange "${action}"
