@@ -10,6 +10,9 @@ DESCRIPTION
 -----------
 This type is used on \*BSD systems to manage the pf firewall's ruleset.
 
+It will also enable and disable the pf firewall as requested in the `state`
+parameter.
+
 
 REQUIRED PARAMETERS
 -------------------
@@ -20,9 +23,8 @@ state
 OPTIONAL PARAMETERS
 -------------------
 source
-   If supplied, use to define the ruleset to load onto the $__target_host for pf(4).
-   Note that this type is almost useless without a ruleset defined, but it's technically not
-   needed, e.g. for the case of disabling the firewall temporarily.
+   Required when state is "present".
+   Defines the ruleset to load onto the $__target_host for `pf(4)`.
 
 
 EXAMPLES
@@ -30,10 +32,10 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Remove the current ruleset in place
+    # Remove the current ruleset in place and disable pf
     __pf_ruleset --state absent
 
-    # Enable the firewall with the ruleset defined in $__manifest/files/pf.conf
+    # Enable pf with the ruleset defined in $__manifest/files/pf.conf
     __pf_ruleset --state present --source $__manifest/files/pf.conf
 
 
@@ -44,11 +46,13 @@ SEE ALSO
 
 AUTHORS
 -------
+Kamila Součková <coding--@--kamila.is>
 Jake Guffey <jake.guffey--@--eprotex.com>
 
 
 COPYING
 -------
+Copyright \(C) 2016 Kamila Součková.
 Copyright \(C) 2012 Jake Guffey. You can redistribute it
 and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the

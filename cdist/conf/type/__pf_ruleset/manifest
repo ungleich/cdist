@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2012 Jake Guffey (jake.guffey at eprotex.com)
+# 2016 Kamila Součková (coding at kamila.is)
 #
 # This file is part of cdist.
 #
@@ -21,29 +21,26 @@
 # Manage pf(4) on *BSD
 #
 
-# Debug
-#exec >&2
-#set -x
-
-# Remove ${rcvar} in the case of --state absent
-
-state=$(cat "$__object/parameter/state")
-rcvar=$(cat "$__object/explorer/rcvar")
-
-if [ "$state" = "present" ]; then   # There is nothing more for a *remote* script to do
-   exit 0
-elif [ "$state" = "absent" ]; then
-   # --state absent, so ensure that .new doesn't exist and that conf is renamed to .old
-   cat <<EOF
-   if [ -f "${rcvar}.new" ]; then
-      rm "${rcvar}.new"
-   fi
-   if [ -f "${rcvar}" ]; then
-      mv "${rcvar}" "${rcvar}.old"
-   fi
-EOF
-else
-   echo "Unknown state ${state}!" >&2
-   exit 1
+rcvar="$(cat "${__object}/explorer/rcvar")"
+state="$(cat "${__object}/parameter/state")"
+if [ -f "${__object}/parameter/source" ]; then
+    source="$(cat "${__object}/parameter/source")"
 fi
 
+if [ "${state}" = "absent" ]; then
+    action="/etc/rc.d/pf stop"
+else
+    action="/etc/rc.d/pf reload || /etc/rc.d/pf start"
+fi
+
+__key_value __pf_ruleset/rcvar \
+    --state "${state}" \
+    --file /etc/rc.conf \
+    --delimiter "=" \
+    --key "pf_enable" \
+    --value "YES"
+
+require="__key_value/__pf_ruleset/rcvar" __config_file ${rcvar} \
+    --source "${source}" \
+    --state "${state}" \
+    --onchange "${action}"
