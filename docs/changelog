@@ -1,6 +1,16 @@
 Changelog
 ---------
 
+next:
+	* Core: Fix XDG_CONFIG_HOME config file location (Joachim Desroches)
+	* Type __postgres_database: Add encoding, lc-collate, lc-ctype, template parameters (Timothée Floure)
+	* Type __motd: Improve documentation and support for FreeBSD (Evil Ham)
+	* Type __openldap_server: Support extra config parameter (Evil Ham)
+	* Type __postfix: Automagically support more OSs by not checking too much (Evil Ham)
+	* New type: __pf_apply_anchor (Kamila Součková, Evil Ham)
+	* Type __pf_ruleset: Refactor (Kamila Součková, Evil Ham)
+	* Type __pf_apply: Deprecate type (Kamila Součková, Evil Ham)
+
 6.5.4: 2020-04-11
 	* Explorer init: Do not grep on non-existent init (Steven Armstrong)
 	* Core: Bugfix to preserve conf dirs order (Steven Armstrong)
