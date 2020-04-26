@@ -274,7 +274,8 @@ class Configuration(metaclass=Singleton):
              os.path.isfile(_local_config_file))):
         _local_config_file = os.path.join(
             os.environ.get('XDG_CONFIG_HOME',
-                           os.path.expanduser('~/.config/cdist')),
+                           os.path.expanduser('~/.config/')),
+            'cdist',
             _config_basename)
     _dist_config_file = os.path.join(
         os.path.abspath(os.path.join(os.path.dirname(cdist.__file__), "conf")),
