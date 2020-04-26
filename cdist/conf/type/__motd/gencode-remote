@@ -29,7 +29,18 @@ case "$os" in
         echo "uname -snrvm > /var/run/motd"
         echo "cat /etc/motd.tail >> /var/run/motd"
     ;;
+    freebsd)
+        # FreeBSD only updates /etc/motd on boot,
+	# as seen in /etc/rc.d/motd
+	echo "uname -sri > /etc/motd"
+	echo "cat /etc/motd.template >> /etc/motd"
+	# FreeBSD 13 starts treating motd slightly different from previous
+	# versions this ensures hosts have the expected config.
+	echo "rm /etc/motd.template || true"
+	echo "service motd start"
+    ;;
     *)
+        # Other OS tend to treat /etc/motd statically
         exit 0
     ;;
 esac
