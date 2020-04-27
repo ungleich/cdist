@@ -32,6 +32,10 @@ case "$os" in
         sysctl -n hw.ncpuonline
     ;;
 
+    "freebsd"|"netbsd")
+        sysctl -n hw.ncpu
+    ;;
+
     *)
         if [ -r /proc/cpuinfo ]; then
             cores="$(grep "core id" /proc/cpuinfo | sort | uniq | wc -l)"
