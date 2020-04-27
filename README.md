@@ -18,3 +18,11 @@ and [**GitHub** project](https://github.com/ungleich/cdist/pulls).
 Issues can be made and other project management activites happen
 [**only in GitLab**](https://code.ungleich.ch/ungleich-public/cdist)
 (needs [**ungleich** account](https://account.ungleich.ch)).
+
+## Participating
+
+IRC: ``#cdist`` @ freenode
+
+Matrix: ``#cdist:ungleich.ch``
+
+Mattermost: https://chat.ungleich.ch/ungleich/channels/cdist
