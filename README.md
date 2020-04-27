@@ -19,6 +19,9 @@ Issues can be made and other project management activites happen
 [**only in GitLab**](https://code.ungleich.ch/ungleich-public/cdist)
 (needs [**ungleich** account](https://account.ungleich.ch)).
 
+For community-maintained types there is
+[**cdist-contrib** project](https://code.ungleich.ch/ungleich-public/cdist-contrib).
+
 ## Participating
 
 IRC: ``#cdist`` @ freenode
