@@ -280,9 +280,6 @@ class Remote(object):
         assert isinstance(command, (list, tuple)), (
                 "list or tuple argument expected, got: %s" % command)
 
-        if return_output and stdout is not subprocess.PIPE:
-            self.log.debug("return_output is True, ignoring stdout")
-
         close_stdout = False
         close_stderr = False
         if self.save_output_streams:
