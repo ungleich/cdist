@@ -12,6 +12,7 @@ next:
 	* Type __pf_apply: Deprecate type (Kamila Součková, Evil Ham)
 	* Configuration: Add notes to cdist.cfg.skeleton (Evil Ham)
 	* Explorers cpu_cores, memory: Improve *BSD support (Evil Ham)
+	* Core: Remove debug logging noise (Evil Ham)
 
 6.5.4: 2020-04-11
 	* Explorer init: Do not grep on non-existent init (Steven Armstrong)
