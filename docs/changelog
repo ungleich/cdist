@@ -3,7 +3,7 @@ Changelog
 
 next:
 	* Type __pyvenv: Switch to python3 -m venv for Ubuntu (Nico Schottelius)
-
+	* Type __letsencrypt_cert: Whitelist Ubuntu (Nico Schottelius)
 
 6.5.5: 2020-05-01
 	* Core: Fix XDG_CONFIG_HOME config file location (Joachim Desroches)
