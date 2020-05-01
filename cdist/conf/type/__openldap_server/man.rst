@@ -92,6 +92,9 @@ tls-ca
     Required if `tls-cert` is defined.
     Path in the remote hosts to the PEM-encoded CA certificate file.
 
+extra-config
+    Custom settings to be added in `slapd.conf(5)`.
+
 
 OPTIONAL MULTIPLE PARAMETERS
 ----------------------------

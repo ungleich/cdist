@@ -1,2 +1,6 @@
 state
 owner
+encoding
+lc-collate
+lc-ctype
+template

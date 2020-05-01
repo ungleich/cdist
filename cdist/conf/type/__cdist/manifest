@@ -37,6 +37,7 @@ source="$(cat "$__object/parameter/source")"
 # out of it
 home=/home/$username
 
+# shellcheck disable=SC2086
 __user "$username" --home "$home" $shell
 
 require="__user/$username" __directory "$home" \
