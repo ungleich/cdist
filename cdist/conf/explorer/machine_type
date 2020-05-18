@@ -25,7 +25,7 @@ os=$("$__explorer/os")
 vendor_string_to_machine_type() {
     for vendor in vmware bochs kvm qemu virtualbox bhyve; do
         if echo "${1}" | grep -q -i "${vendor}"; then
-            if [ "${vendor}" = "bochs" -o "${vendor}" = "qemu" ]; then
+            if [ "${vendor}" = "bochs" ] || [ "${vendor}" = "qemu" ]; then
                 vendor="kvm"
             fi
             echo "virtual_by_${vendor}"
