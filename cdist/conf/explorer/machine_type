@@ -22,6 +22,18 @@
 
 os=$("$__explorer/os")
 
+vendor_string_to_machine_type() {
+    for vendor in vmware bochs kvm qemu virtualbox bhyve; do
+        if echo "${1}" | grep -q -i "${vendor}"; then
+            if [ "${vendor}" = "bochs" -o "${vendor}" = "qemu" ]; then
+                vendor="kvm"
+            fi
+            echo "virtual_by_${vendor}"
+            exit
+        fi
+    done
+}
+
 case "$os" in
     "freebsd")
         # FreeBSD does not have /proc/cpuinfo even when procfs is used.
@@ -38,65 +50,59 @@ case "$os" in
         fi
     ;;
 
+    "openbsd")
+        # OpenBSD can also use the sysctl's: hw.vendor or hw.product.
+        # Note we can be reasonably sure about a machine being virtualised
+        # as long as we can identify the virtualisation technology.
+        # But not so much about it being physical...
+        # Patches are welcome / reach out if you have better ideas.
+        for sysctl in hw.vendor hw.product; do
+            # This exits if we can make a reasonable judgement
+            vendor_string_to_machine_type "$(sysctl -n "${sysctl}")"
+        done
+    ;;
+
     *)
         # Defaulting to linux for compatibility with previous cdist behaviour
 
-if [ -d "/proc/vz" ] && [ ! -d "/proc/bc" ]; then
-    echo openvz
-    exit
-fi
-
-if [ -e "/proc/1/environ" ] &&
-    tr '\000' '\n' < "/proc/1/environ" | grep -Eiq '^container='; then
-    echo lxc
-    exit
-fi
-
-if [ -r /proc/cpuinfo ]; then
-    # this should only exist on virtual guest machines,
-    # tested on vmware, xen, kvm
-    if grep -q "hypervisor" /proc/cpuinfo; then
-        # this file is aviable in xen guest systems
-        if [ -r /sys/hypervisor/type ]; then
-            if grep -q -i "xen" /sys/hypervisor/type; then
-                echo virtual_by_xen
-                exit 
-            fi
-        else
-            if [ -r /sys/class/dmi/id/product_name ]; then
-                if grep -q -i 'vmware' /sys/class/dmi/id/product_name; then
-                    echo "virtual_by_vmware"
-                    exit
-                elif grep -q -i 'bochs' /sys/class/dmi/id/product_name; then
-                    echo "virtual_by_kvm"
-                    exit 
-                elif grep -q -i 'virtualbox' /sys/class/dmi/id/product_name; then
-                    echo "virtual_by_virtualbox"
-                    exit 
-                fi
-            fi
-
-            if [ -r /sys/class/dmi/id/sys_vendor ]; then
-                if grep -q -i 'qemu' /sys/class/dmi/id/sys_vendor; then
-                    echo "virtual_by_kvm"
-                    exit
-                fi
-            fi
-
-            if [ -r /sys/class/dmi/id/chassis_vendor ]; then
-                if grep -q -i 'qemu' /sys/class/dmi/id/chassis_vendor; then
-                    echo "virtual_by_kvm"
-                    exit
-                fi
-            fi                        
+        if [ -d "/proc/vz" ] && [ ! -d "/proc/bc" ]; then
+            echo openvz
+            exit
         fi
-        echo "virtual_by_unknown"
-        exit
-    else
-        echo "physical"
-        exit
-    fi
-fi
+
+        if [ -e "/proc/1/environ" ] &&
+            tr '\000' '\n' < "/proc/1/environ" | grep -Eiq '^container='; then
+            echo lxc
+            exit
+        fi
+
+        if [ -r /proc/cpuinfo ]; then
+            # this should only exist on virtual guest machines,
+            # tested on vmware, xen, kvm, bhyve
+            if grep -q "hypervisor" /proc/cpuinfo; then
+                # this file is aviable in xen guest systems
+                if [ -r /sys/hypervisor/type ]; then
+                    if grep -q -i "xen" /sys/hypervisor/type; then
+                        echo virtual_by_xen
+                        exit
+                    fi
+                else
+                    for vendor_file in /sys/class/dmi/id/product_name \
+                                       /sys/class/dmi/id/sys_vendor \
+                                       /sys/class/dmi/id/chasis_vendor; do
+                        if [ -r ${vendor_file} ]; then
+                            # This exits if we can make a reasonable judgement
+                            vendor_string_to_machine_type "$(cat "${vendor_file}")"
+                        fi
+                    done
+                fi
+                echo "virtual_by_unknown"
+                exit
+            else
+                echo "physical"
+                exit
+            fi
+        fi
     ;;
 esac
 
