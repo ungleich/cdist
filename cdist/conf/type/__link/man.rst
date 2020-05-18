@@ -18,7 +18,7 @@ source
    Specifies the link source.
 
 type
-   Specifies the link type: Either hard or symoblic.
+   Specifies the link type: Either hard or symbolic.
 
 
 OPTIONAL PARAMETERS
