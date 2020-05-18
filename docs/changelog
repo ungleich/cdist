@@ -7,6 +7,7 @@ next:
 	* Types __cron, __file, __link: Improve manpages (Matthias Stecher)
 	* Explorer machine_type: Add support for FreeBSD and OpenBSD, and simplify Linux code (Evil Ham)
 	* Type __ssh_authorized_key, __ssh_authorized_keys: Improve manpages (Evil Ham)
+	* Type __ssh_authorized_keys: Fix bug where --option was not multiple (Evil Ham)
 
 6.5.5: 2020-05-01
 	* Core: Fix XDG_CONFIG_HOME config file location (Joachim Desroches)
