@@ -2,6 +2,7 @@
 #
 # 2014 Daniel Heule  (hda at sfs.biz)
 # 2014 Thomas Oettli (otho at sfs.biz)
+# 2020 Evilham (contact at evilham.com)
 #
 # This file is part of cdist.
 #
@@ -18,9 +19,27 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
 
-# FIXME: other system types (not linux ...)
+os=$("$__explorer/os")
+
+case "$os" in
+    "freebsd")
+        # FreeBSD does not have /proc/cpuinfo even when procfs is used.
+        # Instead there is a sysctl kern.vm_guest.
+        # Which is 'none' if physical, else the virtualisation.
+        vm_guest="$(sysctl -n kern.vm_guest 2>/dev/null || true)"
+        if [ -n "${vm_guest}" ]; then
+            if [ "${vm_guest}" = "none" ]; then
+                echo "physical"
+                exit
+            fi
+            echo "virtual_by_${vm_guest}"
+            exit
+        fi
+    ;;
+
+    *)
+        # Defaulting to linux for compatibility with previous cdist behaviour
 
 if [ -d "/proc/vz" ] && [ ! -d "/proc/bc" ]; then
     echo openvz
@@ -72,9 +91,13 @@ if [ -r /proc/cpuinfo ]; then
             fi                        
         fi
         echo "virtual_by_unknown"
+        exit
     else
         echo "physical"
+        exit
     fi
-else
-    echo "unknown"
 fi
+    ;;
+esac
+
+echo "unknown"
