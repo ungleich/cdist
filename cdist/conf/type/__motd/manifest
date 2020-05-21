@@ -33,10 +33,6 @@ os=$(cat "$__global/explorer/os")
 
 
 case "$os" in
-   debian|ubuntu|devuan)
-      # Debian-based systems use /etc/motd.tail as a template
-      destination=/etc/motd.tail
-   ;;
    freebsd)
       # FreeBSD uses motd.template to prepend system information on boot
       # (this actually only applies starting with version 13,
