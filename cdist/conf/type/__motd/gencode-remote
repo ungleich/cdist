@@ -22,13 +22,6 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-    debian|ubuntu|devuan)
-
-        # Debian and Ubuntu need to be updated,
-        # as seen in /etc/init.d/bootlogs
-        echo "uname -snrvm > /var/run/motd"
-        echo "cat /etc/motd.tail >> /var/run/motd"
-    ;;
     freebsd)
         # FreeBSD only updates /etc/motd on boot,
 	# as seen in /etc/rc.d/motd
