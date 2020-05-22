@@ -26,7 +26,7 @@
 #
 # init_manifest
 #     Specify default initial manifest.
-# init_mainfest = <path-to-init-manifst>
+# init_manifest = <path-to-init-manifest>
 #
 # inventory_dir
 #     Specify inventory directory.
