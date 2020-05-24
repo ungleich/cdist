@@ -12,6 +12,7 @@ next:
 	* Type __group: Fix --gid on FreeBSD (Ander Punnar)
 	* Configuration: Fix typos in cdist.cfg.skeleton (Jaak Ristioja)
 	* Type __user: Fix user deletion on FreeBSD (Ander Punnar)
+	* Core: Fix double log lines (Darko Poljak)
 
 6.5.5: 2020-05-01
 	* Core: Fix XDG_CONFIG_HOME config file location (Joachim Desroches)
