@@ -5,6 +5,19 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.5.6: 2020-05-25
+	* Type __pyvenv: Switch to python3 -m venv for Ubuntu (Nico Schottelius)
+	* Type __letsencrypt_cert: Whitelist Ubuntu (Nico Schottelius)
+	* Types __cron, __file, __link: Improve manpages (Matthias Stecher)
+	* Explorer machine_type: Add support for FreeBSD and OpenBSD, and simplify Linux code (Evil Ham)
+	* Type __ssh_authorized_key, __ssh_authorized_keys: Improve manpages (Evil Ham)
+	* Type __ssh_authorized_keys: Fix bug where --option was not multiple (Evil Ham)
+	* Type __motd: Debian/Ubuntu/Devuan use /etc/motd (Ander Punnar)
+	* Type __group: Fix --gid on FreeBSD (Ander Punnar)
+	* Configuration: Fix typos in cdist.cfg.skeleton (Jaak Ristioja)
+	* Type __user: Fix user deletion on FreeBSD (Ander Punnar)
+	* Core: Fix double log lines (Darko Poljak)
+
 6.5.5: 2020-05-01
 	* Core: Fix XDG_CONFIG_HOME config file location (Joachim Desroches)
 	* Type __postgres_database: Add encoding, lc-collate, lc-ctype, template parameters (Timothée Floure)

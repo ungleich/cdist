@@ -9,7 +9,7 @@ cdist-type__pyvenv - Create or remove python virtual environment
 DESCRIPTION
 -----------
 This cdist type allows you to create or remove python virtual
-environment using pyvenv.
+environment using pyvenv on python3 -m venv.
 It assumes pyvenv is already installed. Concrete package depends
 on concrete OS and/or OS version/distribution.
 Ensure this for e.g. in your init manifest as in the following example:
@@ -57,7 +57,7 @@ EXAMPLES
 
     __pyvenv /home/services/djangoenv
 
-    # Use specific pyvenv 
+    # Use specific pyvenv
     __pyvenv /home/foo/fooenv --pyvenv /usr/local/bin/pyvenv-3.4
 
     # Create python virtualenv for user foo.
@@ -76,4 +76,3 @@ COPYING
 -------
 Copyright \(C) 2016 Darko Poljak. Free use of this software is
 granted under the terms of the GNU General Public License v3 or later (GPLv3+).
-

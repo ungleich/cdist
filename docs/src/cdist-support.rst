@@ -3,7 +3,7 @@ Support
 
 Chat
 ~~~~
-Chat with us: `ungleich chat <https://chat.ungleich.ch/ungleich/channels/cdist>`_.
+Chat with us on `#cdist:ungleich.ch <https://ungleich.ch/u/projects/open-chat/>`_.
 
 Mailing list
 ~~~~~~~~~~~~

@@ -88,7 +88,7 @@ if [ "$state" = "present" ]; then
          fi
       done
       if [ "$os" = "freebsd" ]; then
-         echo pw groupadd "$@" "$name"
+         echo pw groupadd "$name" "$@"
       else
          echo groupadd "$@" "$name"
       fi
