@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.5.6: 2020-05-25
 	* Type __pyvenv: Switch to python3 -m venv for Ubuntu (Nico Schottelius)
 	* Type __letsencrypt_cert: Whitelist Ubuntu (Nico Schottelius)
 	* Types __cron, __file, __link: Improve manpages (Matthias Stecher)
