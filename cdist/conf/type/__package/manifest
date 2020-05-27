@@ -42,7 +42,7 @@ else
             fi
             ;;
          gentoo) type="emerge" ;;
-         suse) type="zypper" ;;
+         suse|sles) type="zypper" ;;
          openwrt) type="opkg" ;;
          openbsd) type="pkg_openbsd" ;;
          alpine) type="apk" ;;
