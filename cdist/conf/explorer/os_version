@@ -60,7 +60,7 @@ case "$("$__explorer/os")" in
    slackware)
       cat /etc/slackware-version
    ;;
-   suse)
+   suse|sles)
       if [ -f /etc/os-release ]; then
         cat /etc/os-release
       else
