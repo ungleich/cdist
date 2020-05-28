@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+file="$( . "$__type_explorer/file" )"
+
+if [ -f "$file" ]
+then
+    cat "$file"
+fi
