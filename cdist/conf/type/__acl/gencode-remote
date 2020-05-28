@@ -30,7 +30,7 @@ fi
 
 os="$( cat "$__global/explorer/os" )"
 
-acl_path="/$__object_id"
+acl_path="/$(cat "$__object/parameter/target")" || acl_path="/$__object_id"
 
 acl_is="$( cat "$__object/explorer/acl_is" )"
 
