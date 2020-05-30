@@ -55,8 +55,12 @@ _cksum() {
    echo "$1" | cksum | cut -d' ' -f 1
 }
 
+_type_and_key() {
+   echo "$1" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }'
+}
+
 while read -r key; do
-   type_and_key="$(echo "$key" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
+   type_and_key="$( _type_and_key "$key" )"
    object_id="$(_cksum "$file")-$(_cksum "$type_and_key")"
    set -- "$object_id"
    set -- "$@" --file "$file"
@@ -72,3 +76,24 @@ while read -r key; do
    # Ensure __ssh_authorized_key does not read stdin
    __ssh_authorized_key "$@" < /dev/null
 done < "$__object/parameter/key"
+
+if [ -f "$__object/parameter/remove-unknown" ] &&
+    [ -s "$__object/explorer/keys" ]
+then
+    while read -r key
+    do
+        type_and_key="$( _type_and_key "$key" )"
+
+        if grep -Fq "$type_and_key" "$__object/parameter/key"
+        then
+            continue
+        fi
+
+        __ssh_authorized_key "remove-$( _cksum "$file$key" )" \
+            --file "$file" \
+            --key "$key" \
+            --state absent \
+                < /dev/null
+    done \
+        < "$__object/explorer/keys"
+fi
