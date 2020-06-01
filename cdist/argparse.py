@@ -5,6 +5,7 @@ import logging
 import collections
 import functools
 import cdist.configuration
+import cdist.log
 import cdist.preos
 import cdist.info
 
@@ -88,6 +89,13 @@ def check_lower_bounded_int(value, lower_bound, name):
     return val
 
 
+def colored_output_type(val):
+    boolean_states = cdist.configuration.ColoredOutputOption.BOOLEAN_STATES
+    if val not in boolean_states.keys():
+        raise argparse.ArgumentError()
+    return boolean_states[val]
+
+
 def get_parsers():
     global parser
 
@@ -124,6 +132,15 @@ def get_parsers():
                   'overwrites last set value and -v increases last set '
                   'value.'),
             action='count', default=None)
+
+    parser['colored_output'] = argparse.ArgumentParser(add_help=False)
+    parser['colored_output'].add_argument(
+            '--colors',
+            help='Use a colored output for different log levels.'
+                 'It can be a boolean or "auto" (default) which enables this '
+                 'feature if stdout is a tty and disables it otherwise.',
+            action='store', dest='colored_output', required=False,
+            type=colored_output_type)
 
     parser['beta'] = argparse.ArgumentParser(add_help=False)
     parser['beta'].add_argument(
@@ -283,6 +300,7 @@ def get_parsers():
             'host', nargs='*', help='Host(s) to operate on.')
     parser['config'] = parser['sub'].add_parser(
             'config', parents=[parser['loglevel'], parser['beta'],
+                               parser['colored_output'],
                                parser['common'],
                                parser['config_main'],
                                parser['inventory_common'],
@@ -301,6 +319,7 @@ def get_parsers():
 
     parser['add-host'] = parser['invsub'].add_parser(
             'add-host', parents=[parser['loglevel'], parser['beta'],
+                                 parser['colored_output'],
                                  parser['common'],
                                  parser['inventory_common']])
     parser['add-host'].add_argument(
@@ -315,6 +334,7 @@ def get_parsers():
 
     parser['add-tag'] = parser['invsub'].add_parser(
             'add-tag', parents=[parser['loglevel'], parser['beta'],
+                                parser['colored_output'],
                                 parser['common'],
                                 parser['inventory_common']])
     parser['add-tag'].add_argument(
@@ -346,6 +366,7 @@ def get_parsers():
 
     parser['del-host'] = parser['invsub'].add_parser(
             'del-host', parents=[parser['loglevel'], parser['beta'],
+                                 parser['colored_output'],
                                  parser['common'],
                                  parser['inventory_common']])
     parser['del-host'].add_argument(
@@ -363,6 +384,7 @@ def get_parsers():
 
     parser['del-tag'] = parser['invsub'].add_parser(
             'del-tag', parents=[parser['loglevel'], parser['beta'],
+                                parser['colored_output'],
                                 parser['common'],
                                 parser['inventory_common']])
     parser['del-tag'].add_argument(
@@ -398,6 +420,7 @@ def get_parsers():
 
     parser['list'] = parser['invsub'].add_parser(
             'list', parents=[parser['loglevel'], parser['beta'],
+                             parser['colored_output'],
                              parser['common'],
                              parser['inventory_common']])
     parser['list'].add_argument(
@@ -430,7 +453,7 @@ def get_parsers():
 
     # Shell
     parser['shell'] = parser['sub'].add_parser(
-            'shell', parents=[parser['loglevel']])
+            'shell', parents=[parser['loglevel'], parser['colored_output']])
     parser['shell'].add_argument(
             '-s', '--shell',
             help=('Select shell to use, defaults to current shell. Used shell'
@@ -495,9 +518,13 @@ def parse_and_configure(argv, singleton=True):
 
     log = logging.getLogger("cdist")
 
+    config = cfg.get_config()
+    if config.get('GLOBAL', {}).get('colored_output', False):
+        cdist.log.ColorFormatter.USE_COLORS = True
+
     log.verbose("version %s" % cdist.VERSION)
     log.trace('command line args: {}'.format(cfg.command_line_args))
-    log.trace('configuration: {}'.format(cfg.get_config()))
+    log.trace('configuration: {}'.format(config))
     log.trace('configured args: {}'.format(args))
 
     check_beta(vars(args))

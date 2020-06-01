@@ -344,6 +344,11 @@ CDIST_INVENTORY_DIR
 CDIST_BETA
     Enable beta functionalities.
 
+CDIST_COLORED_OUTPUT
+    Use a colored output for different log levels.
+    It can be a boolean or 'auto' (default) which enables this feature if
+    stdout is a tty and disables it otherwise.
+
 CDIST_CACHE_PATH_PATTERN
     Custom cache path pattern.
 eof
