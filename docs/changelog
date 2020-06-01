@@ -4,6 +4,7 @@ Changelog
 next:
 	* Type __ssh_authorized_keys: Add option for removing undefined keys (Ander Punnar)
 	* Core: Support colored log output (Evil Ham)
+	* Documentation: Fix failing man pages build with newer sphinx versions (Darko Poljak)
 
 6.5.6: 2020-05-25
 	* Type __pyvenv: Switch to python3 -m venv for Ubuntu (Nico Schottelius)
