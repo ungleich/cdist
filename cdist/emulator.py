@@ -129,6 +129,9 @@ class Emulator(object):
             # if invalid __cdist_log_level value
             logging.root.setLevel(logging.WARNING)
 
+        colored_log = self.env.get('__cdist_colored_log', 'False')
+        cdist.log.ColorFormatter.USE_COLORS = colored_log == 'True'
+
         self.log = logging.getLogger(self.target_host[0])
 
     def commandline(self):

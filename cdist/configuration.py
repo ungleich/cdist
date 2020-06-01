@@ -27,6 +27,7 @@ import cdist.argparse
 import re
 import multiprocessing
 import logging
+import sys
 
 
 class Singleton(type):
@@ -47,6 +48,7 @@ _VERBOSITY_VALUES = (
 _ARCHIVING_VALUES = (
     'tar', 'tgz', 'tbz2', 'txz', 'none',
 )
+_COLORED_OUTPUT_DEFAULT = sys.stdout.isatty()
 
 
 class OptionBase:
@@ -246,9 +248,15 @@ class LogLevelOption(OptionBase):
         return VerbosityOption().translate(val)
 
 
+class ColoredOutputOption(BooleanOption):
+    BOOLEAN_STATES = dict(configparser.ConfigParser.BOOLEAN_STATES,
+                          auto=_COLORED_OUTPUT_DEFAULT)
+
+
 _ARG_OPTION_MAPPING = {
     'beta': 'beta',
     'cache_path_pattern': 'cache_path_pattern',
+    'colored_output': 'colored_output',
     'conf_dir': 'conf_dir',
     'manifest': 'init_manifest',
     'out_path': 'out_path',
@@ -294,6 +302,7 @@ class Configuration(metaclass=Singleton):
             'remote_shell': StringOption('remote_shell'),
             'cache_path_pattern': StringOption('cache_path_pattern'),
             'conf_dir': ConfDirOption(),
+            'colored_output': ColoredOutputOption('colored_output'),
             'init_manifest': StringOption('init_manifest'),
             'out_path': StringOption('out_path'),
             'remote_out_path': StringOption('remote_out_path'),
@@ -319,6 +328,7 @@ class Configuration(metaclass=Singleton):
         'CDIST_REMOTE_COPY': 'remote_copy',
         'CDIST_INVENTORY_DIR': 'inventory_dir',
         'CDIST_CACHE_PATH_PATTERN': 'cache_path_pattern',
+        'CDIST_COLORED_OUTPUT': 'colored_output',
         '__cdist_log_level': 'verbosity',
     }
     ENV_VAR_BOOLEAN_OPTIONS = ('CDIST_BETA', )
@@ -332,6 +342,7 @@ class Configuration(metaclass=Singleton):
     }
     REQUIRED_DEFAULT_CONFIG_VALUES = {
         'GLOBAL': {
+            'colored_output': _COLORED_OUTPUT_DEFAULT,
             'verbosity': 0,
         },
     }

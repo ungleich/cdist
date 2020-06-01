@@ -15,8 +15,9 @@ SYNOPSIS
 
     cdist banner [-h] [-l LOGLEVEL] [-q] [-v]
 
-    cdist config [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE] [-4]
-                 [-6] [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
+    cdist config [-h] [-l LOGLEVEL] [-q] [-v] [-b]
+                 [--colors COLORED_OUTPUT] [-g CONFIG_FILE] [-4] [-6]
+                 [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
                  [-j [JOBS]] [-n] [-o OUT_PATH] [-P]
                  [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
@@ -24,8 +25,9 @@ SYNOPSIS
                  [-p [HOST_MAX]] [-s] [-t]
                  [host [host ...]]
 
-    cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE] [-4]
-                  [-6] [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
+    cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b]
+                  [--colors COLORED_OUTPUT] [-g CONFIG_FILE] [-4] [-6]
+                  [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
                   [-j [JOBS]] [-n] [-o OUT_PATH] [-P]
                   [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
@@ -36,26 +38,29 @@ SYNOPSIS
     cdist inventory [-h] {add-host,add-tag,del-host,del-tag,list} ...
 
     cdist inventory add-host [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                             [-g CONFIG_FILE] [-I INVENTORY_DIR]
-                             [-f HOSTFILE]
+                             [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
+                             [-I INVENTORY_DIR] [-f HOSTFILE]
                              [host [host ...]]
 
     cdist inventory add-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                            [-g CONFIG_FILE] [-I INVENTORY_DIR]
-                            [-f HOSTFILE] [-T TAGFILE] [-t TAGLIST]
+                            [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
+                            [-I INVENTORY_DIR] [-f HOSTFILE] [-T TAGFILE]
+                            [-t TAGLIST]
                             [host [host ...]]
 
     cdist inventory del-host [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                             [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a]
-                             [-f HOSTFILE]
+                             [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
+                             [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
                              [host [host ...]]
 
     cdist inventory del-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                            [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a]
-                            [-f HOSTFILE] [-T TAGFILE] [-t TAGLIST]
+                            [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
+                            [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
+                            [-T TAGFILE] [-t TAGLIST]
                             [host [host ...]]
 
-    cdist inventory list [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
+    cdist inventory list [-h] [-l LOGLEVEL] [-q] [-v] [-b]
+                         [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
                          [-I INVENTORY_DIR] [-a] [-f HOSTFILE] [-H] [-t]
                          [host [host ...]]
 
@@ -84,9 +89,11 @@ SYNOPSIS
                                        [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
                                        target_dir
 
-    cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [-s SHELL]
+    cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [--colors COLORED_OUTPUT]
+                [-s SHELL]
 
-    cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-g CONFIG_FILE] [-t] [pattern]
+    cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-g CONFIG_FILE] [-t]
+               [pattern]
 
 
 DESCRIPTION
@@ -103,6 +110,11 @@ All commands accept the following options:
 
 **-h, --help**
     Show the help screen.
+
+**--colors COLORED_OUTPUT**
+    Use a colored output for different log levels.It can
+    be a boolean or "auto" (default) which enables this
+    feature if stdout is a tty and disables it otherwise.
 
 **-l LOGLEVEL, --log-level LOGLEVEL**
     Set the specified verbosity level. The levels, in
@@ -892,6 +904,11 @@ CDIST_BETA
 
 CDIST_CACHE_PATH_PATTERN
     Custom cache path pattern.
+
+CDIST_COLORED_OUTPUT
+    Use a colored output for different log levels.
+    It can be a boolean or 'auto' (default) which enables this feature if
+    stdout is a tty and disables it otherwise.
 
 CDIST_CONFIG_FILE
     Custom configuration file.

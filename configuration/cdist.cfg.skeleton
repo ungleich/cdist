@@ -13,6 +13,12 @@
 #     Specify cache path pattern.
 # cache_path_pattern = %h
 #
+# colored_output
+#     Use a colored output for different log levels.
+#     It can be a boolean or 'auto' (default) which enables this feature if
+#     stdout is a tty and disables it otherwise.
+# colored_output = auto
+#
 # conf_dir
 #     List of configuration directories separated with the character conventionally
 #     used by the operating system to separate search path components (as in PATH),
