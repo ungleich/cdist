@@ -59,7 +59,7 @@ typeorder
 
 Object cache overview
 ~~~~~~~~~~~~~~~~~~~~~
-Each object under :strong:`object` directory has its own structurue.
+Each object under :strong:`object` directory has its own structure.
 
 code-local
     code generated from gencode-local, present only if something is
