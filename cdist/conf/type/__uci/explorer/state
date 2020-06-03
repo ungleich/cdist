@@ -40,6 +40,14 @@ values_is=$(uci -s -N -d "${RS}" get "${option}" 2>/dev/null) || {
 	exit 0
 }
 
+if test -f "${__object:?}/parameter/value"
+then
+	should_file="${__object:?}/parameter/value"
+else
+	should_file='/dev/null'
+fi
+
+
 # strip off trailing newline
 printf '%s' "${values_is}" \
 | awk '
@@ -86,4 +94,4 @@ END {
 
 	print state
 }
-' "${__object:?}/parameter/value" RS="${RS}" -
+' "${should_file}" RS="${RS}" -

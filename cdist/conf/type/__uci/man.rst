@@ -20,6 +20,7 @@ REQUIRED PARAMETERS
 -------------------
 value
     The value to be set. Can be used multiple times.
+    This parameter is allowed to be omitted if `--state` is `absent`.
 
     Due to the way cdist handles arguments, values **must not** contain newline
     characters.

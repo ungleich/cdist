@@ -43,6 +43,11 @@ changes_required=false
 case ${state_should}
 in
 	(present)
+		test -s "${__object:?}/parameter/value" || {
+			echo 'The parameter --value is required.' >&2
+			exit 1
+		}
+
 		# NOTE: order is ignored so rearranged is also fine.
 		in_list "${state_is}" 'present' 'rearranged' || changes_required=true
 		;;
