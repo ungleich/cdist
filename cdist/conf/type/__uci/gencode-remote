@@ -1,0 +1,67 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera@ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+in_list() { printf '%s\n' "$@" | { grep -qxF "$(read -r NDL; echo "${NDL}")"; } }
+
+config=${__object_id:?}
+
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
+
+case ${state_should}
+in
+	(present)
+		if in_list "${state_is}" 'present' 'rearranged'
+		then
+			# NOTE: order is ignored so rearranged is also fine.
+			exit 0
+		fi
+
+		if test "$(wc -l "${__object:?}/parameter/value")" -gt 1
+		then
+			# "should" is a list
+			if test "${state_is}" != 'absent'
+			then
+				printf "uci delete '%s'\n" "${config}"
+			fi
+
+			while read -r value
+			do
+				printf "uci add_list '%s'='%s'\n" "${config}" "${value}"
+			done <"${__object:?}/parameter/value"
+		else
+			# "should" is a scalar
+			value=$(cat "${__object:?}/parameter/value")
+			printf "uci set '%s'='%s'\n" "${config}" "${value}"
+		fi
+		;;
+	(absent)
+		if in_list "${state_is}" 'absent'
+		then
+			exit 0
+		fi
+
+		printf "uci delete '%s'\n" "${config}"
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
+esac
