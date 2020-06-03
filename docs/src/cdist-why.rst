@@ -21,7 +21,7 @@ Not only is shell scripting widely known by system engineers,
 but it is also a very powerful language. Here are some features
 which make daily work easy:
 
- * Configuration can react dynamicly on explored values
+ * Configuration can react dynamically on explored values
  * High level string manipulation (using sed, awk, grep)
  * Conditional support (**if, case**)
  * Loop support (**for, while**)
@@ -44,7 +44,7 @@ Cdist requires very little on a target system. Even better,
 in almost all cases all dependencies are usually fulfilled.
 Cdist does not require an agent or high level programming
 languages on the target host: it will run on any host that
-has a **ssh server running** and a posix compatible shell
+has a **ssh server running** and a POSIX compatible shell
 (**/bin/sh**). Compared to other configuration management systems,
 it does not require to open up an additional port.
 
