@@ -89,13 +89,6 @@ def check_lower_bounded_int(value, lower_bound, name):
     return val
 
 
-def colored_output_type(val):
-    boolean_states = cdist.configuration.ColoredOutputOption.BOOLEAN_STATES
-    if val not in boolean_states.keys():
-        raise argparse.ArgumentError()
-    return boolean_states[val]
-
-
 def get_parsers():
     global parser
 
@@ -140,7 +133,7 @@ def get_parsers():
                  'It can be a boolean or "auto" (default) which enables this '
                  'feature if stdout is a tty and disables it otherwise.',
             action='store', dest='colored_output', required=False,
-            type=colored_output_type)
+            choices=cdist.configuration.ColoredOutputOption.CHOICES)
 
     parser['beta'] = argparse.ArgumentParser(add_help=False)
     parser['beta'].add_argument(
@@ -501,7 +494,12 @@ def handle_loglevel(args):
     if hasattr(args, 'quiet') and args.quiet:
         args.verbose = _verbosity_level_off
 
-    logging.root.setLevel(_verbosity_level[args.verbose])
+    logging.getLogger().setLevel(_verbosity_level[args.verbose])
+
+
+def handle_log_colors(args):
+    if cdist.configuration.ColoredOutputOption.translate(args.colored_output):
+        cdist.log.DefaultLog.USE_COLORS = True
 
 
 def parse_and_configure(argv, singleton=True):
@@ -515,16 +513,13 @@ def parse_and_configure(argv, singleton=True):
         raise cdist.Error(str(e))
     # Loglevels are handled globally in here
     handle_loglevel(args)
+    handle_log_colors(args)
 
     log = logging.getLogger("cdist")
 
-    config = cfg.get_config()
-    if config.get('GLOBAL', {}).get('colored_output', False):
-        cdist.log.ColorFormatter.USE_COLORS = True
-
     log.verbose("version %s" % cdist.VERSION)
     log.trace('command line args: {}'.format(cfg.command_line_args))
-    log.trace('configuration: {}'.format(config))
+    log.trace('configuration: {}'.format(cfg.get_config()))
     log.trace('configured args: {}'.format(args))
 
     check_beta(vars(args))

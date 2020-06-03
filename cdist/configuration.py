@@ -48,7 +48,6 @@ _VERBOSITY_VALUES = (
 _ARCHIVING_VALUES = (
     'tar', 'tgz', 'tbz2', 'txz', 'none',
 )
-_COLORED_OUTPUT_DEFAULT = sys.stdout.isatty()
 
 
 class OptionBase:
@@ -249,8 +248,22 @@ class LogLevelOption(OptionBase):
 
 
 class ColoredOutputOption(BooleanOption):
-    BOOLEAN_STATES = dict(configparser.ConfigParser.BOOLEAN_STATES,
-                          auto=_COLORED_OUTPUT_DEFAULT)
+    CHOICES = tuple(configparser.ConfigParser.BOOLEAN_STATES) + ('auto',)
+    DEFAULT = 'auto'
+
+    def get_converter(self):
+        return self.translate
+
+    @staticmethod
+    def translate(val):
+        if 'NO_COLOR' in os.environ:
+            return False
+        elif isinstance(val, bool):
+            return val
+        elif val == 'auto':
+            return sys.stdout.isatty()
+        else:
+            return configparser.ConfigParser.BOOLEAN_STATES[val]
 
 
 _ARG_OPTION_MAPPING = {
@@ -337,12 +350,10 @@ class Configuration(metaclass=Singleton):
     }
 
     ARG_OPTION_MAPPING = _ARG_OPTION_MAPPING
-    ADJUST_ARG_OPTION_MAPPING = {
-       _ARG_OPTION_MAPPING[key]: key for key in _ARG_OPTION_MAPPING
-    }
+    ADJUST_ARG_OPTION_MAPPING = {v: k for k, v in _ARG_OPTION_MAPPING.items()}
     REQUIRED_DEFAULT_CONFIG_VALUES = {
         'GLOBAL': {
-            'colored_output': _COLORED_OUTPUT_DEFAULT,
+            'colored_output': 'auto',
             'verbosity': 0,
         },
     }
@@ -495,8 +506,7 @@ class Configuration(metaclass=Singleton):
             newconfig = self._read_config_file(config_file)
             self._update_config_dict(config, newconfig)
         # command line config file
-        if (self.args and 'config_file' in self.args and
-                self.args['config_file']):
+        if (self.args and self.args.get('config_file', None)):
             newconfig = self._read_config_file(self.args['config_file'])
             self._update_config_dict(config, newconfig)
         # command line

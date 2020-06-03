@@ -203,6 +203,7 @@ class Config(object):
                 cdist.log.setupParallelLogging()
         elif args.timestamp:
             cdist.log.setupTimestampingLogging()
+
         log = logging.getLogger("config")
 
         # No new child process if only one host at a time.

@@ -33,7 +33,7 @@ import sys
 my_dir = op.abspath(op.dirname(__file__))
 fixtures = op.join(my_dir, 'fixtures')
 interpolation_config_file = op.join(fixtures, "interpolation-test.cfg")
-colored_output_default = sys.stdout.isatty()
+colored_output_default = 'auto'
 
 
 def newConfigParser():
