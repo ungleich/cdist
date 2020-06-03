@@ -187,7 +187,8 @@ class ConfigurationTestCase(test.CdistTestCase):
                 'remote_shell': '/bin/sh',
                 'inventory_dir': None,
                 'cache_path_pattern': None,
-                'colored_output': colored_output_default,
+                'colored_output': cc.ColoredOutputOption.translate(
+                    colored_output_default),
                 'conf_dir': None,
                 'init_manifest': None,
                 'out_path': None,
@@ -587,7 +588,8 @@ class ConfigurationTestCase(test.CdistTestCase):
                 'remote_shell': '/usr/bin/sh',
                 'inventory_dir': None,
                 'cache_path_pattern': None,
-                'colored_output': colored_output_default,
+                'colored_output': cc.ColoredOutputOption.translate(
+                    colored_output_default),
                 'conf_dir': [
                     '/opt/cdist/conf',
                     '/usr/local/share/cdist/conf',
@@ -674,7 +676,8 @@ class ConfigurationTestCase(test.CdistTestCase):
                 'remote_shell': '/usr/bin/sh',
                 'inventory_dir': '/var/db/cdist/inventory',
                 'cache_path_pattern': None,
-                'colored_output': colored_output_default,
+                'colored_output': cc.ColoredOutputOption.translate(
+                    colored_output_default),
                 'conf_dir': [
                     '/opt/cdist/conf',
                     '/usr/local/share/cdist/conf',

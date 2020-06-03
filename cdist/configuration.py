@@ -266,6 +266,10 @@ class ColoredOutputOption(BooleanOption):
             return configparser.ConfigParser.BOOLEAN_STATES[val]
 
 
+ColoredOutputOption.DEFAULT = ColoredOutputOption.translate(
+    ColoredOutputOption.DEFAULT)
+
+
 _ARG_OPTION_MAPPING = {
     'beta': 'beta',
     'cache_path_pattern': 'cache_path_pattern',
