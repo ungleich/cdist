@@ -198,7 +198,7 @@ We require package uWSGI present in order to create **/etc/uwsgi/apps-enabled/$u
 Installation of uWSGI also creates configuration layout: **/etc/uwsgi/apps-enabled**.
 If this directory does not exist then **__file** type would error.
 We also use stdin as file content source. For details see `Input from stdin <cdist-type.html#input-from-stdin>`_.
-For feading stdin we use here-document (**<<** operator). It allows redirection of subsequent
+For feeding stdin we use here-document (**<<** operator). It allows redirection of subsequent
 lines read by the shell to the input of a command until a line containing only the delimiter
 and a newline, with no blank characters in between (EOF in our case).
 
@@ -546,7 +546,7 @@ we have changed our **wsgi.py** file uWSGI reloads the application.
 
 Our application selects and lists items from **items** table.
 
-Openning application
+Opening application
 ~~~~~~~~~~~~~~~~~~~~
 
 Finally try the application::
