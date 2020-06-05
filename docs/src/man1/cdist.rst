@@ -112,9 +112,13 @@ All commands accept the following options:
     Show the help screen.
 
 **--colors COLORED_OUTPUT**
-    Use a colored output for different log levels.It can
-    be a boolean or "auto" (default) which enables this
-    feature if stdout is a tty and disables it otherwise.
+    Colorize cdist's output. If enabled, cdist will use different colors for
+    different log levels.
+    COLORED_OUTPUT recognizes the boolean values 'yes'/'no', 'on'/'off',
+    'true'/'false', '1'/'0', and 'auto' (the default).
+
+    If the value is 'auto', colored output is enabled if stdout is a TTY
+    unless the NO_COLOR (https://no-color.org/) environment variable is defined.
 
 **-l LOGLEVEL, --log-level LOGLEVEL**
     Set the specified verbosity level. The levels, in
@@ -168,7 +172,7 @@ Install command is currently in beta.
 
 **-b, --beta**
     Enable beta functionality.
-    
+
 **-C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN**
     Specify custom cache path pattern. If it is not set then
     default hostdir is used. For more info on format see
@@ -191,7 +195,7 @@ Install command is currently in beta.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -306,7 +310,7 @@ Add host(s) to inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -336,7 +340,7 @@ Add tag(s) to inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -379,7 +383,7 @@ Delete host(s) from inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -413,7 +417,7 @@ Delete tag(s) from inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -460,7 +464,7 @@ List inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -685,6 +689,9 @@ The possible keywords and their meanings are as follows:
 :strong:`cache_path_pattern`
     Specify cache path pattern.
 
+:strong:`colored_output`
+    Colorize cdist's output. cf. the :code:`--colors` option.
+
 :strong:`conf_dir`
     List of configuration directories separated with the character conventionally
     used by the operating system to separate search path components (as in PATH),
@@ -738,7 +745,7 @@ The possible keywords and their meanings are as follows:
     in the format: YYYYMMDDHHMMSS.us.
 
 :strong:`verbosity`
-    Set verbosity level. Valid values are: 
+    Set verbosity level. Valid values are:
     'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE' and 'OFF'.
 
 
@@ -770,7 +777,7 @@ cdist/preos
 NOTES
 -----
 cdist detects if host is specified by IPv6 address. If so then remote_copy
-command is executed with host address enclosed in square brackets 
+command is executed with host address enclosed in square brackets
 (see :strong:`scp`\ (1)).
 
 EXAMPLES
@@ -906,9 +913,7 @@ CDIST_CACHE_PATH_PATTERN
     Custom cache path pattern.
 
 CDIST_COLORED_OUTPUT
-    Use a colored output for different log levels.
-    It can be a boolean or 'auto' (default) which enables this feature if
-    stdout is a tty and disables it otherwise.
+    Colorize cdist's output. cf. the :code:`--colors` option.
 
 CDIST_CONFIG_FILE
     Custom configuration file.

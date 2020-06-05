@@ -34,7 +34,7 @@ dest="$__cdist_abs_mydir/$filename"
 cd "$__cdist_abs_mydir"
 
 exec > "$dest"
-cat << eof 
+cat << eof
 Reference
 =========
 Variable, path and type reference for cdist
@@ -51,7 +51,7 @@ eof
     done
 )
 
-cat << eof 
+cat << eof
 
 Paths
 -----
@@ -187,13 +187,13 @@ usable within a object directory:
 
 files
     This directory is reserved for user data and will not be used
-    by cdist at any time. It can be used freely by the type 
+    by cdist at any time. It can be used freely by the type
     (for instance to store template results).
 changed
     This empty file exists in an object directory, if the object has
     code to be executed (either remote or local).
 stdin
-    This file exists and contains data, if data was provided on stdin 
+    This file exists and contains data, if data was provided on stdin
     when the type was called.
 
 
@@ -224,63 +224,87 @@ __cdist_log_level, __cdist_log_level_name
 
     Available for: initial manifest, explorer, type manifest, type explorer,
     type gencode.
+__cdist_colored_log
+    whether or not cdist's log has colors enabled.
+    Is set to the string ``true`` if cdist's output is using colors,
+    otherwise the variable contains the string ``false``.
+
+    Available for: initial manifest, explorer, type manifest, type explorer,
+    type gencode.
 __cdist_dry_run
     Is set only when doing dry run (``-n`` flag).
+
     Available for: initial manifest, explorer, type manifest, type explorer,
     type gencode.
 __explorer
     Directory that contains all global explorers.
+
     Available for: initial manifest, explorer, type explorer, shell.
 __files
     Directory that contains content from the "files" subdirectories
     from the configuration directories.
+
     Available for: initial manifest, type manifest, type gencode, shell.
 __manifest
     Directory that contains the initial manifest.
+
     Available for: initial manifest, type manifest, shell.
 __global
     Directory that contains generic output like explorer.
+
     Available for: initial manifest, type manifest, type gencode, shell.
 __messages_in
     File to read messages from.
+
     Available for: initial manifest, type manifest, type gencode.
 __messages_out
     File to write messages.
+
     Available for: initial manifest, type manifest, type gencode.
 __object
     Directory that contains the current object.
+
     Available for: type manifest, type explorer, type gencode and code scripts.
 __object_id
     The type unique object id.
+
     Available for: type manifest, type explorer, type gencode and code scripts.
-    Note: The leading and the trailing "/" will always be stripped (caused by
-    the filesystem database and ensured by the core).
-    Note: Double slashes ("//") will not be fixed and result in an error.
+
+    | Note: The leading and the trailing "/" will always be stripped (caused by
+      the filesystem database and ensured by the core).
+    | Note: Double slashes ("//") will not be fixed and result in an error.
 __object_name
     The full qualified name of the current object.
+
     Available for: type manifest, type explorer, type gencode.
 __target_host
     The host we are deploying to. This is primary variable. It's content is
     literally the one user passed in.
+
     Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell.
 __target_hostname
     The hostname of host we are deploying to. This variable is derived from
     **__target_host** (using **socket.getaddrinfo(__target_host)** and then
     **socket.gethostbyaddr()**).
+
     Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell.
 __target_fqdn
     The fully qualified domain name of the host we are deploying to.
     This variable is derived from **__target_host**
     (using **socket.getfqdn()**).
+
     Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell.
 __target_host_tags
     Comma separated list of target host tags.
+
     Available for: explorer, initial manifest, type explorer, type manifest, type gencode, shell.
 __type
     Path to the current type.
+
     Available for: type manifest, type gencode.
 __type_explorer
     Directory that contains the type explorers.
+
     Available for: type explorer.
 
 Environment variables (for writing)
