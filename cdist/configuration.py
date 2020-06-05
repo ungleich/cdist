@@ -256,14 +256,12 @@ class ColoredOutputOption(BooleanOption):
 
     @staticmethod
     def translate(val):
-        if 'NO_COLOR' in os.environ:
-            return False
-        elif isinstance(val, bool):
+        if isinstance(val, bool):
             return val
-        elif val == 'auto':
-            return sys.stdout.isatty()
-        else:
+        elif val in configparser.ConfigParser.BOOLEAN_STATES:
             return configparser.ConfigParser.BOOLEAN_STATES[val]
+        elif val == 'auto':
+            return 'NO_COLOR' not in os.environ and sys.stdout.isatty()
 
 
 ColoredOutputOption.DEFAULT = ColoredOutputOption.translate(
