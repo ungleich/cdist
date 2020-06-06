@@ -128,10 +128,9 @@ def get_parsers():
 
     parser['colored_output'] = argparse.ArgumentParser(add_help=False)
     parser['colored_output'].add_argument(
-            '--colors',
-            help='Use a colored output for different log levels.'
-                 'It can be a boolean or "auto" (default) which enables this '
-                 'feature if stdout is a tty and disables it otherwise.',
+            '--colors', metavar='WHEN',
+            help="Colorize cdist's output based on log level; "
+                 "WHEN is 'always', 'never', or 'auto'.",
             action='store', dest='colored_output', required=False,
             choices=cdist.configuration.ColoredOutputOption.CHOICES)
 

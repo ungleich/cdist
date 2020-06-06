@@ -111,11 +111,11 @@ All commands accept the following options:
 **-h, --help**
     Show the help screen.
 
-**--colors COLORED_OUTPUT**
+**--colors WHEN**
     Colorize cdist's output. If enabled, cdist will use different colors for
     different log levels.
-    COLORED_OUTPUT recognizes the boolean values 'yes'/'no', 'on'/'off',
-    'true'/'false', '1'/'0', and 'auto' (the default).
+    COLORED_OUTPUT recognizes the values 'always', 'never',
+    and 'auto' (the default).
 
     If the value is 'auto', colored output is enabled if stdout is a TTY
     unless the NO_COLOR (https://no-color.org/) environment variable is defined.

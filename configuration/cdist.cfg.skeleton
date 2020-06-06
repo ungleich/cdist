@@ -16,10 +16,9 @@
 # colored_output
 #     Colorize cdist's output. If enabled, cdist will use different colors for
 #     different log levels.
-#     Recognized values are 'yes'/'no', 'on'/'off', 'true'/'false', '1'/'0',
-#     and 'auto'
-#     If the value is 'auto', colored output is enabled if stdout is a TTY
-#     unless the NO_COLOR (https://no-color.org/) environment variable is defined.
+#     Recognized values are 'always', 'never', and 'auto'.
+#     If the value is 'auto', colors are enabled if stdout is a TTY unless
+#     the NO_COLOR (https://no-color.org/) environment variable is defined.
 # colored_output = auto
 #
 # conf_dir

@@ -248,7 +248,7 @@ class LogLevelOption(OptionBase):
 
 
 class ColoredOutputOption(BooleanOption):
-    CHOICES = tuple(configparser.ConfigParser.BOOLEAN_STATES) + ('auto',)
+    CHOICES = ('always', 'never', 'auto')
     DEFAULT = 'auto'
 
     def get_converter(self):
@@ -258,8 +258,10 @@ class ColoredOutputOption(BooleanOption):
     def translate(val):
         if isinstance(val, bool):
             return val
-        elif val in configparser.ConfigParser.BOOLEAN_STATES:
-            return configparser.ConfigParser.BOOLEAN_STATES[val]
+        elif val == 'always':
+            return True
+        elif val == 'never':
+            return False
         elif val == 'auto':
             return 'NO_COLOR' not in os.environ and sys.stdout.isatty()
 
