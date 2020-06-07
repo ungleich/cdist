@@ -15,21 +15,19 @@ SYNOPSIS
 
     cdist banner [-h] [-l LOGLEVEL] [-q] [-v]
 
-    cdist config [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                 [--colors COLORED_OUTPUT] [-g CONFIG_FILE] [-4] [-6]
-                 [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
-                 [-j [JOBS]] [-n] [-o OUT_PATH] [-P]
+    cdist config [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                 [-g CONFIG_FILE] [-4] [-6] [-C CACHE_PATH_PATTERN]
+                 [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-P]
                  [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                  [-S] [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE]
                  [-p [HOST_MAX]] [-s] [-t]
                  [host [host ...]]
 
-    cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                  [--colors COLORED_OUTPUT] [-g CONFIG_FILE] [-4] [-6]
-                  [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
-                  [-j [JOBS]] [-n] [-o OUT_PATH] [-P]
-                  [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
+    cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                  [-g CONFIG_FILE] [-4] [-6] [-C CACHE_PATH_PATTERN]
+                  [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
+                  [-P] [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                   [-S] [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE]
                   [-p [HOST_MAX]] [-s] [-t]
@@ -37,35 +35,31 @@ SYNOPSIS
 
     cdist inventory [-h] {add-host,add-tag,del-host,del-tag,list} ...
 
-    cdist inventory add-host [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                             [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
-                             [-I INVENTORY_DIR] [-f HOSTFILE]
+    cdist inventory add-host [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                             [-g CONFIG_FILE] [-I INVENTORY_DIR] [-f HOSTFILE]
                              [host [host ...]]
 
-    cdist inventory add-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                            [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
-                            [-I INVENTORY_DIR] [-f HOSTFILE] [-T TAGFILE]
-                            [-t TAGLIST]
-                            [host [host ...]]
-
-    cdist inventory del-host [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                             [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
-                             [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
-                             [host [host ...]]
-
-    cdist inventory del-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                            [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
-                            [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
+    cdist inventory add-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                            [-g CONFIG_FILE] [-I INVENTORY_DIR] [-f HOSTFILE]
                             [-T TAGFILE] [-t TAGLIST]
                             [host [host ...]]
 
-    cdist inventory list [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                         [--colors COLORED_OUTPUT] [-g CONFIG_FILE]
-                         [-I INVENTORY_DIR] [-a] [-f HOSTFILE] [-H] [-t]
+    cdist inventory del-host [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                             [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a]
+                             [-f HOSTFILE]
+                             [host [host ...]]
+
+    cdist inventory del-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                            [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a]
+                            [-f HOSTFILE] [-T TAGFILE] [-t TAGLIST]
+                            [host [host ...]]
+
+    cdist inventory list [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                         [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
+                         [-H] [-t]
                          [host [host ...]]
 
-    cdist preos [-h] [-l LOGLEVEL] [-q] [-v] [-c CONF_DIR] [-g CONFIG_FILE]
-                [-L]
+    cdist preos [-h] [-l LOGLEVEL] [-q] [-v] [-c CONF_DIR] [-g CONFIG_FILE] [-L]
                 [preos] ...
 
     cdist preos [preos-options] debian [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
@@ -89,8 +83,7 @@ SYNOPSIS
                                        [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
                                        target_dir
 
-    cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [--colors COLORED_OUTPUT]
-                [-s SHELL]
+    cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [--colors WHEN] [-s SHELL]
 
     cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-g CONFIG_FILE] [-t]
                [pattern]
@@ -114,8 +107,7 @@ All commands accept the following options:
 **--colors WHEN**
     Colorize cdist's output. If enabled, cdist will use different colors for
     different log levels.
-    COLORED_OUTPUT recognizes the values 'always', 'never',
-    and 'auto' (the default).
+    WHEN recognizes the values 'always', 'never', and 'auto' (the default).
 
     If the value is 'auto', colored output is enabled if stdout is a TTY
     unless the NO_COLOR (https://no-color.org/) environment variable is defined.
