@@ -14,9 +14,11 @@
 # cache_path_pattern = %h
 #
 # colored_output
-#     Use a colored output for different log levels.
-#     It can be a boolean or 'auto' (default) which enables this feature if
-#     stdout is a tty and disables it otherwise.
+#     Colorize cdist's output. If enabled, cdist will use different colors for
+#     different log levels.
+#     Recognized values are 'always', 'never', and 'auto'.
+#     If the value is 'auto', colors are enabled if stdout is a TTY unless
+#     the NO_COLOR (https://no-color.org/) environment variable is defined.
 # colored_output = auto
 #
 # conf_dir
@@ -51,7 +53,7 @@
 #
 # out_path
 #     Directory to save cdist output in.
-# out_path = 
+# out_path =
 #
 # parallel
 #     Process hosts in parallel. If -1 then the default, number of CPU's in
@@ -77,6 +79,6 @@
 # remote_shell = /bin/sh
 #
 # verbosity
-#     Set verbosity level. Valid values are: 
+#     Set verbosity level. Valid values are:
 #     ERROR, WARNING, INFO, VERBOSE, DEBUG, TRACE and OFF.
 # verbosity = INFO

@@ -51,7 +51,6 @@ logging.trace = _trace
 
 
 class ColorFormatter(logging.Formatter):
-    USE_COLORS = False
     RESET = '\033[0m'
     COLOR_MAP = {
         'ERROR': '\033[0;31m',
@@ -62,20 +61,19 @@ class ColorFormatter(logging.Formatter):
         'TRACE': '\033[0;37m',
     }
 
-    def __init__(self, msg):
-        super().__init__(msg)
+    def __init__(self, fmt):
+        super().__init__(fmt=fmt)
 
     def format(self, record):
         msg = super().format(record)
-        if self.USE_COLORS:
-            color = self.COLOR_MAP.get(record.levelname)
-            if color:
-                msg = color + msg + self.RESET
+        color = self.COLOR_MAP.get(record.levelname)
+        if color:
+            msg = color + msg + self.RESET
         return msg
 
 
 class DefaultLog(logging.Logger):
-
+    USE_COLORS = False
     FORMAT = '%(levelname)s: %(message)s'
 
     class StdoutFilter(logging.Filter):
@@ -90,7 +88,10 @@ class DefaultLog(logging.Logger):
         super().__init__(name)
         self.propagate = False
 
-        formatter = ColorFormatter(self.FORMAT)
+        if self.USE_COLORS:
+            formatter = ColorFormatter(self.FORMAT)
+        else:
+            formatter = logging.Formatter(self.FORMAT)
 
         self.addFilter(self)
 
