@@ -143,6 +143,11 @@ case "$uname_s" in
 esac
 
 if [ -f /etc/os-release ]; then
+   # after sles15, suse don't provide an /etc/SuSE-release anymore, but there is almost no difference between sles and opensuse leap, so call it suse
+   if grep -q ^ID_LIKE=\"suse\" /etc/os-release 2>/dev/null; then
+      echo suse
+      exit 0
+   fi
    # already lowercase, according to:
    # https://www.freedesktop.org/software/systemd/man/os-release.html
    awk -F= '/^ID=/ { if ($2 ~ /^'"'"'(.*)'"'"'$/ || $2 ~ /^"(.*)"$/) { print substr($2, 2, length($2) - 2) } else { print $2 } }' /etc/os-release
