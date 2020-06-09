@@ -29,18 +29,20 @@ import time
 import itertools
 import tempfile
 import multiprocessing
-from cdist.mputil import mp_pool_run, mp_sig_handler
 import atexit
 import shutil
 import socket
+
+from cdist.mputil import mp_pool_run, mp_sig_handler
+from cdist import core, inventory
+from cdist.util.remoteutil import inspect_ssh_mux_opts
+
 import cdist
 import cdist.hostsource
 import cdist.exec.local
 import cdist.exec.remote
 import cdist.util.ipaddr as ipaddr
 import cdist.configuration
-from cdist import core, inventory
-from cdist.util.remoteutil import inspect_ssh_mux_opts
 
 
 def graph_check_cycle(graph):
@@ -195,7 +197,6 @@ class Config(object):
     @classmethod
     def commandline(cls, args):
         """Configure remote system"""
-
         if (args.parallel and args.parallel != 1) or args.jobs:
             if args.timestamp:
                 cdist.log.setupTimestampingParallelLogging()
@@ -382,20 +383,16 @@ class Config(object):
            If operating in parallel then return tuple (host, True|False, )
            so that main process knows for which host function was successful.
         """
-
         log = logging.getLogger(host)
 
-        if args.log_server:
-            # Start a log server so that nested `cdist config` runs have a place
-            # to send their logs to.
-            log_server_socket_dir = tempfile.mkdtemp()
-            log_server_socket = os.path.join(log_server_socket_dir, 'log-server')
-            cls._register_path_for_removal(log_server_socket_dir)
-            log.debug('Starting logging server on: %s', log_server_socket)
-            os.environ['__cdist_log_server_socket_to_export'] = log_server_socket
-            cdist.log.setupLogServer(log_server_socket)
-
         try:
+            if args.log_server:
+                # Start a log server so that nested `cdist config` runs
+                # have a place to send their logs to.
+                log_server_socket_dir = tempfile.mkdtemp()
+                cls._register_path_for_removal(log_server_socket_dir)
+                cdist.log.setupLogServer(log_server_socket_dir, log)
+
             remote_exec, remote_copy, cleanup_cmd = cls._resolve_remote_cmds(
                 args)
             log.debug("remote_exec for host \"{}\": {}".format(

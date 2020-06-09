@@ -20,12 +20,9 @@
 #
 #
 
-import os
-import logging
-import tempfile
-
 import cdist.config
 import cdist.core
+import cdist.log
 
 
 class Install(cdist.config.Config):
@@ -36,8 +33,9 @@ class Install(cdist.config.Config):
         # Always start log server during cdist install so that nested
         # `cdist config` runs have a place to send their logs to.
         args.log_server = True
+
         super().onehost(host, host_tags, host_base_path, host_dir_name, args,
-                parallel, configuration, remove_remote_files_dirs=False)
+                        parallel, configuration, remove_remote_files_dirs)
 
     def object_list(self):
         """Short name for object list retrieval.

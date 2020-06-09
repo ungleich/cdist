@@ -26,6 +26,7 @@ import hashlib
 import cdist.log
 import cdist.version
 
+
 VERSION = cdist.version.VERSION
 
 BANNER = """
@@ -46,6 +47,9 @@ BANNER = """
 REMOTE_COPY = "scp -o User=root -q"
 REMOTE_EXEC = "ssh -o User=root"
 REMOTE_CMDS_CLEANUP_PATTERN = "ssh -o User=root -O exit -S {}"
+
+
+MIN_SUPPORTED_PYTHON_VERSION = '3.5'
 
 
 class Error(Exception):

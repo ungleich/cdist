@@ -21,17 +21,16 @@
 #
 #
 
-import asyncio
-import contextlib
 import datetime
 import logging
 import logging.handlers
+import sys
 import os
+import asyncio
+import contextlib
 import pickle
 import struct
-import sys
 import threading
-import time
 
 
 # Define additional cdist logging levels.
@@ -100,7 +99,8 @@ class DefaultLog(logging.Logger):
 
         if '__cdist_log_server_socket' in os.environ:
             log_server_socket = os.environ['__cdist_log_server_socket']
-            socket_handler = logging.handlers.SocketHandler(log_server_socket, None)
+            socket_handler = logging.handlers.SocketHandler(log_server_socket,
+                                                            None)
             self.addHandler(socket_handler)
         else:
             formatter = CdistFormatter(self.FORMAT)
@@ -184,13 +184,17 @@ async def handle_log_client(reader, writer):
 def run_log_server(server_address):
     # Get a new loop inside the current thread to run the log server.
     loop = asyncio.new_event_loop()
-    loop.create_task(asyncio.start_unix_server(handle_log_client, server_address))
+    loop.create_task(asyncio.start_unix_server(handle_log_client,
+                                               server_address))
     loop.run_forever()
 
 
-def setupLogServer(log_server_socket):
+def setupLogServer(socket_dir, log=logging.getLogger(__name__)):
     """Run a asyncio based unix socket log server in a background thread.
     """
+    log_server_socket = os.path.join(socket_dir, 'log-server')
+    log.debug('Starting logging server on: %s', log_server_socket)
+    os.environ['__cdist_log_server_socket_export'] = log_server_socket
     with contextlib.suppress(FileNotFoundError):
         os.remove(log_server_socket)
     t = threading.Thread(target=run_log_server, args=(log_server_socket,))
