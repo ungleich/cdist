@@ -969,5 +969,5 @@ such case and display a warning message. An example of such a case:
 
 COPYING
 -------
-Copyright \(C) 2011-2019 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2020 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License v3 or later (GPLv3+).
