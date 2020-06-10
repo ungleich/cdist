@@ -8,6 +8,7 @@ next:
 	* Documentation: Fix failing man pages build with newer sphinx versions (Darko Poljak)
 	* Documentation: Fix trivial grammatical mistakes (Jaak Ristioja)
 	* Explorer os: Fix for sles15 (Daniel Heule)
+	* Type __clean_path: Add --path parameter (Ander Punnar)
 
 6.5.6: 2020-05-25
 	* Type __pyvenv: Switch to python3 -m venv for Ubuntu (Nico Schottelius)
