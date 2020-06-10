@@ -18,7 +18,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-path="/$__object_id"
+if [ -f "$__object/parameter/path" ]
+then
+    path="$( cat "$__object/parameter/path" )"
+else
+    path="/$__object_id"
+fi
 
 [ ! -d "$path" ] && exit 0
 
