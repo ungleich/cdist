@@ -60,7 +60,7 @@ def commandline():
 
 
 if __name__ == "__main__":
-    cdistpythonversion = '3.2'
+    cdistpythonversion = '3.5'
     if sys.version < cdistpythonversion:
         print('Python >= {} is required on the source host.'.format(
                 cdistpythonversion), file=sys.stderr)

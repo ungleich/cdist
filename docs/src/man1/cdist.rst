@@ -95,7 +95,7 @@ cdist is the frontend executable to the cdist configuration management.
 It supports different subcommands as explained below.
 
 It is written in Python so it requires :strong:`python`\ (1) to be installed.
-It requires a minimal Python version 3.2.
+It requires a minimal Python version 3.5.
 
 GENERAL
 -------
