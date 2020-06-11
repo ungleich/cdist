@@ -130,7 +130,7 @@ class Emulator(object):
             logging.root.setLevel(logging.WARNING)
 
         colored_log = self.env.get('__cdist_colored_log', 'false')
-        cdist.log.ColorFormatter.USE_COLORS = colored_log == 'true'
+        cdist.log.CdistFormatter.USE_COLORS = colored_log == 'true'
 
         self.log = logging.getLogger(self.target_host[0])
 

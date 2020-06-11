@@ -498,7 +498,7 @@ def handle_loglevel(args):
 
 def handle_log_colors(args):
     if cdist.configuration.ColoredOutputOption.translate(args.colored_output):
-        cdist.log.DefaultLog.USE_COLORS = True
+        cdist.log.CdistFormatter.USE_COLORS = True
 
 
 def parse_and_configure(argv, singleton=True):
