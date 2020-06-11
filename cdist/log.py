@@ -75,7 +75,7 @@ class CdistFormatter(logging.Formatter):
 
 
 class DefaultLog(logging.Logger):
-    FORMAT = '%(levelname)s: %(message)s'
+    FORMAT = '%(levelname)s: %(name)s: %(message)s'
 
     class StdoutFilter(logging.Filter):
         def filter(self, rec):
@@ -91,8 +91,6 @@ class DefaultLog(logging.Logger):
 
         formatter = CdistFormatter(self.FORMAT)
 
-        self.addFilter(self)
-
         stdout_handler = logging.StreamHandler(sys.stdout)
         stdout_handler.addFilter(self.StdoutFilter())
         stdout_handler.setLevel(logging.TRACE)
@@ -105,13 +103,6 @@ class DefaultLog(logging.Logger):
 
         self.addHandler(stdout_handler)
         self.addHandler(stderr_handler)
-
-    def filter(self, record):
-        """Prefix messages with logger name"""
-
-        record.msg = self.name + ": " + str(record.msg)
-
-        return True
 
     def verbose(self, msg, *args, **kwargs):
         self.log(logging.VERBOSE, msg, *args, **kwargs)
@@ -134,7 +125,7 @@ class TimestampingLog(DefaultLog):
 
 
 class ParallelLog(DefaultLog):
-    FORMAT = '%(levelname)s: [%(process)d]: %(message)s'
+    FORMAT = '%(levelname)s: [%(process)d]: %(name)s: %(message)s'
 
 
 class TimestampingParallelLog(TimestampingLog, ParallelLog):
