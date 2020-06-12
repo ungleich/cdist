@@ -23,6 +23,8 @@ batchfile="${__global:?}/tmp/__uci/${transaction_name}.txt"
 
 test -s "${batchfile}" || exit 0
 
+printf 'commit transaction %s\n' "${transaction_name}" >>"${__messages_out:?}"
+
 cat <<'EOF'
 rollback() {
 	uci changes \
