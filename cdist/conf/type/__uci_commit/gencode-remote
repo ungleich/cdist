@@ -18,4 +18,23 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-echo 'uci commit'
+transaction_name=${__object_id:?}
+batchfile="${__global:?}/tmp/__uci/${transaction_name}.txt"
+
+test -s "${batchfile}" || exit 0
+
+cat <<'EOF'
+rollback() {
+	uci changes \
+	| sed -e 's/\..*$//' -e 's/^-//' \
+	| while read -r package
+	  do
+		  uci revert "${package}"
+	  done
+}
+
+EOF
+
+echo "uci batch <<'EOF' && uci commit || rollback"
+cat "${batchfile}"
+echo 'EOF'

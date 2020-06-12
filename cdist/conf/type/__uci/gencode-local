@@ -20,10 +20,26 @@
 
 in_list() { printf '%s\n' "$@" | { grep -qxF "$(read -r NDL; echo "${NDL}")"; } }
 
+uci_cmd() {
+	printf 'printf "%s\n"' "$1"
+	shift
+	printf " '%s'" "$@"
+	printf " >>'%s'\n" "${tmpfile}"
+}
+
 config=${__object_id:?}
 
 state_is=$(cat "${__object:?}/explorer/state")
 state_should=$(cat "${__object:?}/parameter/state")
+
+transaction_name=$(cat "${__object:?}/parameter/transaction")
+
+tmpdir="${__global:?}/tmp/__uci"
+# HACK
+mkdir -p "${tmpdir}"
+
+tmpfile="${tmpdir}/${transaction_name}.txt"
+
 
 case ${state_should}
 in
@@ -44,12 +60,12 @@ in
 
 			while read -r value
 			do
-				printf "uci add_list '%s'='%s'\n" "${config}" "${value}"
+				uci_cmd "add_list '%s'='%s'" "${config}" "${value}"
 			done <"${__object:?}/parameter/value"
 		else
 			# "should" is a scalar
 			value=$(cat "${__object:?}/parameter/value")
-			printf "uci set '%s'='%s'\n" "${config}" "${value}"
+			uci_cmd "set '%s'='%s'" "${config}" "${value}"
 		fi
 		;;
 	(absent)
@@ -58,7 +74,7 @@ in
 			exit 0
 		fi
 
-		printf "uci delete '%s'\n" "${config}"
+		uci_cmd "delete '%s'" "${config}"
 		;;
 	(*)
 		printf 'Invalid --state: %s\n' "${state_should}" >&2

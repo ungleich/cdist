@@ -13,8 +13,7 @@ This cdist type can be used to alter configuration options in OpenWrt's UCI
 system.
 
 Options can be applied in batches if the `--transaction` parameter is used.
-It is important to ensure that the `__uci_commit` object is executed before a
-new transaction is started.
+
 
 REQUIRED PARAMETERS
 -------------------
