@@ -10,6 +10,7 @@ next:
 	* Explorer os: Fix for sles15 (Daniel Heule)
 	* Type __clean_path: Add --path parameter (Ander Punnar)
 	* Core: Increase minimal supported Python version to 3.5 (Darko Poljak)
+	* Core: Add log server for nested logging (Steven Armstrong)
 
 6.5.6: 2020-05-25
 	* Type __pyvenv: Switch to python3 -m venv for Ubuntu (Nico Schottelius)
