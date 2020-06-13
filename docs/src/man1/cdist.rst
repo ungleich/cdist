@@ -17,20 +17,20 @@ SYNOPSIS
 
     cdist config [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
                  [-g CONFIG_FILE] [-4] [-6] [-C CACHE_PATH_PATTERN]
-                 [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH] [-P]
-                 [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
-                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
-                 [-S] [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE]
-                 [-p [HOST_MAX]] [-s] [-t]
+                 [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [--log-server]
+                 [-n] [-o OUT_PATH] [-P] [-R [{tar,tgz,tbz2,txz}]]
+                 [-r REMOTE_OUT_PATH] [--remote-copy REMOTE_COPY]
+                 [--remote-exec REMOTE_EXEC] [-S] [-I INVENTORY_DIR] [-A]
+                 [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                  [host [host ...]]
 
     cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
                   [-g CONFIG_FILE] [-4] [-6] [-C CACHE_PATH_PATTERN]
-                  [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [-n] [-o OUT_PATH]
-                  [-P] [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
-                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
-                  [-S] [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE]
-                  [-p [HOST_MAX]] [-s] [-t]
+                  [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [--log-server]
+                  [-n] [-o OUT_PATH] [-P] [-R [{tar,tgz,tbz2,txz}]]
+                  [-r REMOTE_OUT_PATH] [--remote-copy REMOTE_COPY]
+                  [--remote-exec REMOTE_EXEC] [-S] [-I INVENTORY_DIR] [-A]
+                  [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                   [host [host ...]]
 
     cdist inventory [-h] {add-host,add-tag,del-host,del-tag,list} ...
@@ -201,6 +201,12 @@ Install command is currently in beta.
     jobs. Global explorers, object prepare and object run
     are supported. Without argument CPU count is used by
     default.
+
+**--log-server**
+    Start a log server for sub processes to use. This is
+    mainly useful when running cdist nested from a code-
+    local script. Log server is always implicitly started
+    for 'install' command.
 
 **-n, --dry-run**
     Do not execute code.

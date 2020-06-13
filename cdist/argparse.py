@@ -207,6 +207,13 @@ def get_parsers():
            action='store', dest='jobs',
            const=multiprocessing.cpu_count())
     parser['config_main'].add_argument(
+           '--log-server',
+           action='store_true',
+           help=('Start a log server for sub processes to use. '
+                 'This is mainly useful when running cdist nested '
+                 'from a code-local script. Log server is alwasy '
+                 'implicitly started for \'install\' command.'))
+    parser['config_main'].add_argument(
            '-n', '--dry-run',
            help='Do not execute code.', action='store_true')
     parser['config_main'].add_argument(
