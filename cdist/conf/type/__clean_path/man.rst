@@ -10,7 +10,7 @@ DESCRIPTION
 -----------
 Remove files and directories which match the pattern.
 
-Provided path (as __object_id) must be a directory.
+Provided path must be a directory.
 
 Patterns are passed to ``find``'s ``-regex`` - see ``find(1)`` for more details.
 
@@ -29,6 +29,9 @@ pattern
 
 OPTIONAL PARAMETERS
 -------------------
+path
+   Path which will be cleaned. Defaults to ``$__object_id``.
+
 exclude
    Pattern of files which are excluded from removal.
 
@@ -46,6 +49,11 @@ EXAMPLES
         --exclude '.+\(charset\.conf\|security\.conf\)' \
         --onchange 'service apache2 restart'
 
+    __clean_path apache2-conf-enabled \
+        --path /etc/apache2/conf-enabled \
+        --pattern '.+' \
+        --exclude '.+\(charset\.conf\|security\.conf\)' \
+        --onchange 'service apache2 restart'
 
 AUTHORS
 -------

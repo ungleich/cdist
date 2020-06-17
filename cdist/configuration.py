@@ -27,6 +27,7 @@ import cdist.argparse
 import re
 import multiprocessing
 import logging
+import sys
 
 
 class Singleton(type):
@@ -246,9 +247,33 @@ class LogLevelOption(OptionBase):
         return VerbosityOption().translate(val)
 
 
+class ColoredOutputOption(BooleanOption):
+    CHOICES = ('always', 'never', 'auto')
+    DEFAULT = 'auto'
+
+    def get_converter(self):
+        return self.translate
+
+    @staticmethod
+    def translate(val):
+        if isinstance(val, bool):
+            return val
+        elif val == 'always':
+            return True
+        elif val == 'never':
+            return False
+        elif val == 'auto':
+            return 'NO_COLOR' not in os.environ and sys.stdout.isatty()
+
+
+ColoredOutputOption.DEFAULT = ColoredOutputOption.translate(
+    ColoredOutputOption.DEFAULT)
+
+
 _ARG_OPTION_MAPPING = {
     'beta': 'beta',
     'cache_path_pattern': 'cache_path_pattern',
+    'colored_output': 'colored_output',
     'conf_dir': 'conf_dir',
     'manifest': 'init_manifest',
     'out_path': 'out_path',
@@ -294,6 +319,7 @@ class Configuration(metaclass=Singleton):
             'remote_shell': StringOption('remote_shell'),
             'cache_path_pattern': StringOption('cache_path_pattern'),
             'conf_dir': ConfDirOption(),
+            'colored_output': ColoredOutputOption('colored_output'),
             'init_manifest': StringOption('init_manifest'),
             'out_path': StringOption('out_path'),
             'remote_out_path': StringOption('remote_out_path'),
@@ -319,6 +345,7 @@ class Configuration(metaclass=Singleton):
         'CDIST_REMOTE_COPY': 'remote_copy',
         'CDIST_INVENTORY_DIR': 'inventory_dir',
         'CDIST_CACHE_PATH_PATTERN': 'cache_path_pattern',
+        'CDIST_COLORED_OUTPUT': 'colored_output',
         '__cdist_log_level': 'verbosity',
     }
     ENV_VAR_BOOLEAN_OPTIONS = ('CDIST_BETA', )
@@ -327,11 +354,10 @@ class Configuration(metaclass=Singleton):
     }
 
     ARG_OPTION_MAPPING = _ARG_OPTION_MAPPING
-    ADJUST_ARG_OPTION_MAPPING = {
-       _ARG_OPTION_MAPPING[key]: key for key in _ARG_OPTION_MAPPING
-    }
+    ADJUST_ARG_OPTION_MAPPING = {v: k for k, v in _ARG_OPTION_MAPPING.items()}
     REQUIRED_DEFAULT_CONFIG_VALUES = {
         'GLOBAL': {
+            'colored_output': 'auto',
             'verbosity': 0,
         },
     }
@@ -484,8 +510,7 @@ class Configuration(metaclass=Singleton):
             newconfig = self._read_config_file(config_file)
             self._update_config_dict(config, newconfig)
         # command line config file
-        if (self.args and 'config_file' in self.args and
-                self.args['config_file']):
+        if (self.args and self.args.get('config_file', None)):
             newconfig = self._read_config_file(self.args['config_file'])
             self._update_config_dict(config, newconfig)
         # command line

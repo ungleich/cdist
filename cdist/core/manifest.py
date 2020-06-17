@@ -119,6 +119,8 @@ class Manifest(object):
             '__cdist_log_level': util.log_level_env_var_val(self.log),
             '__cdist_log_level_name': util.log_level_name_env_var_val(
                 self.log),
+            '__cdist_colored_log': str(
+                cdist.log.CdistFormatter.USE_COLORS).lower(),
         }
 
         if dry_run:

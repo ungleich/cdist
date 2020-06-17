@@ -22,6 +22,7 @@
 import fcntl
 import logging
 import os
+import cdist.log
 
 
 log = logging.getLogger('cdist-flock')

@@ -21,7 +21,7 @@ precedence. Configuration option value read from source with higher
 precedence will overwrite option value, if exists, read from source with
 lower precedence. That means that command-line option wins them all.
 
-Users can decide on the local conifguration file location. It can be either
+Users can decide on the local configuration file location. It can be either
 ~/.cdist.cfg or $XDG_CONFIG_HOME/cdist/cdist.cfg. Note that, if both exist,
 then ~/.cdist.cfg is used.
 

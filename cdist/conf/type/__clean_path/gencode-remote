@@ -20,7 +20,12 @@
 
 [ ! -s "$__object/explorer/list" ] && exit 0
 
-path="/$__object_id"
+if [ -f "$__object/parameter/path" ]
+then
+    path="$( cat "$__object/parameter/path" )"
+else
+    path="/$__object_id"
+fi
 
 pattern="$( cat "$__object/parameter/pattern" )"
 

@@ -14,7 +14,7 @@ To upgrade cdist in the current branch use
     make man
     export MANPATH=$MANPATH:$(pwd -P)/doc/man
 
-If you stay on a version branche (i.e. 1.0, 1.1., ...), nothing should break.
+If you stay on a version branch (i.e. 1.0, 1.1., ...), nothing should break.
 The master branch on the other hand is the development branch and may not be
 working, break your setup or eat the tree in your garden.
 
@@ -61,7 +61,7 @@ After that, you can go back and continue the upgrade:
 Update the python package
 -------------------------
 
-To upgrade to the lastet version do
+To upgrade to the latest version do
 
 .. code-block:: sh
 
@@ -158,7 +158,7 @@ Updating from 1.5 to 1.6
 * If you used **\_\_package_apt --preseed**, you need to use the new
   type **\_\_debconf_set_selections** instead.
 * The **\_\_package** types accepted either --state deinstalled or
-  --state uninstaaled. Starting with 1.6, it was made consistently
+  --state uninstalled. Starting with 1.6, it was made consistently
   to --state removed.
 
 Updating from 1.3 to 1.5

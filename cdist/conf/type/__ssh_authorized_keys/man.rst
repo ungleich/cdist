@@ -60,6 +60,9 @@ nofile
    Don't manage existence, ownership and permissions of the the authorized_keys
    file.
 
+remove-unknown
+   Remove undefined keys.
+
 
 EXAMPLES
 --------
@@ -69,6 +72,12 @@ EXAMPLES
     # add your ssh key to remote root's authorized_keys file
     __ssh_authorized_keys root \
        --key "$(cat ~/.ssh/id_rsa.pub)"
+
+    # same as above, but make sure your key is only key in
+    # root's authorized_keys file
+    __ssh_authorized_keys root \
+       --key "$(cat ~/.ssh/id_rsa.pub)" \
+       --remove-unknown
 
     # allow key to login as user-name
     __ssh_authorized_keys user-name \

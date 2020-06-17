@@ -9,15 +9,15 @@ Source Host
 
 This is the machine from which you will configure target hosts.
 
- * /bin/sh: A posix like shell (for instance bash, dash, zsh)
- * Python >= 3.2
+ * /bin/sh: A POSIX like shell (for instance bash, dash, zsh)
+ * Python >= 3.5
  * SSH client
  * sphinx (for building html docs and/or the man pages)
 
 Target Hosts
 ~~~~~~~~~~~~
 
- * /bin/sh: A posix like shell (for instance bash, dash, zsh)
+ * /bin/sh: A POSIX like shell (for instance bash, dash, zsh)
  * SSH server
 
 Install cdist

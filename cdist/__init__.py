@@ -26,6 +26,7 @@ import hashlib
 import cdist.log
 import cdist.version
 
+
 VERSION = cdist.version.VERSION
 
 BANNER = """
@@ -49,6 +50,9 @@ REMOTE_CMDS_CLEANUP_PATTERN = "ssh -o User=root -O exit -S {}"
 
 ORDER_DEP_STATE_NAME = 'order_dep_state'
 TYPEORDER_DEP_NAME = 'typeorder_dep'
+
+
+MIN_SUPPORTED_PYTHON_VERSION = '3.5'
 
 
 class Error(Exception):

@@ -6,6 +6,7 @@ import collections
 import functools
 import cdist.configuration
 import cdist.trigger
+import cdist.log
 import cdist.preos
 import cdist.info
 
@@ -126,6 +127,14 @@ def get_parsers():
                   'value.'),
             action='count', default=None)
 
+    parser['colored_output'] = argparse.ArgumentParser(add_help=False)
+    parser['colored_output'].add_argument(
+            '--colors', metavar='WHEN',
+            help="Colorize cdist's output based on log level; "
+                 "WHEN is 'always', 'never', or 'auto'.",
+            action='store', dest='colored_output', required=False,
+            choices=cdist.configuration.ColoredOutputOption.CHOICES)
+
     parser['beta'] = argparse.ArgumentParser(add_help=False)
     parser['beta'].add_argument(
            '-b', '--beta',
@@ -198,6 +207,13 @@ def get_parsers():
                  'supported. Without argument CPU count is used by default. '),
            action='store', dest='jobs',
            const=multiprocessing.cpu_count())
+    parser['config_main'].add_argument(
+           '--log-server',
+           action='store_true',
+           help=('Start a log server for sub processes to use. '
+                 'This is mainly useful when running cdist nested '
+                 'from a code-local script. Log server is alwasy '
+                 'implicitly started for \'install\' command.'))
     parser['config_main'].add_argument(
            '-n', '--dry-run',
            help='Do not execute code.', action='store_true')
@@ -284,6 +300,7 @@ def get_parsers():
             'host', nargs='*', help='Host(s) to operate on.')
     parser['config'] = parser['sub'].add_parser(
             'config', parents=[parser['loglevel'], parser['beta'],
+                               parser['colored_output'],
                                parser['common'],
                                parser['config_main'],
                                parser['inventory_common'],
@@ -302,6 +319,7 @@ def get_parsers():
 
     parser['add-host'] = parser['invsub'].add_parser(
             'add-host', parents=[parser['loglevel'], parser['beta'],
+                                 parser['colored_output'],
                                  parser['common'],
                                  parser['inventory_common']])
     parser['add-host'].add_argument(
@@ -316,6 +334,7 @@ def get_parsers():
 
     parser['add-tag'] = parser['invsub'].add_parser(
             'add-tag', parents=[parser['loglevel'], parser['beta'],
+                                parser['colored_output'],
                                 parser['common'],
                                 parser['inventory_common']])
     parser['add-tag'].add_argument(
@@ -347,6 +366,7 @@ def get_parsers():
 
     parser['del-host'] = parser['invsub'].add_parser(
             'del-host', parents=[parser['loglevel'], parser['beta'],
+                                 parser['colored_output'],
                                  parser['common'],
                                  parser['inventory_common']])
     parser['del-host'].add_argument(
@@ -364,6 +384,7 @@ def get_parsers():
 
     parser['del-tag'] = parser['invsub'].add_parser(
             'del-tag', parents=[parser['loglevel'], parser['beta'],
+                                parser['colored_output'],
                                 parser['common'],
                                 parser['inventory_common']])
     parser['del-tag'].add_argument(
@@ -399,6 +420,7 @@ def get_parsers():
 
     parser['list'] = parser['invsub'].add_parser(
             'list', parents=[parser['loglevel'], parser['beta'],
+                             parser['colored_output'],
                              parser['common'],
                              parser['inventory_common']])
     parser['list'].add_argument(
@@ -431,7 +453,7 @@ def get_parsers():
 
     # Shell
     parser['shell'] = parser['sub'].add_parser(
-            'shell', parents=[parser['loglevel']])
+            'shell', parents=[parser['loglevel'], parser['colored_output']])
     parser['shell'].add_argument(
             '-s', '--shell',
             help=('Select shell to use, defaults to current shell. Used shell'
@@ -501,7 +523,12 @@ def handle_loglevel(args):
     if hasattr(args, 'quiet') and args.quiet:
         args.verbose = _verbosity_level_off
 
-    logging.root.setLevel(_verbosity_level[args.verbose])
+    logging.getLogger().setLevel(_verbosity_level[args.verbose])
+
+
+def handle_log_colors(args):
+    if cdist.configuration.ColoredOutputOption.translate(args.colored_output):
+        cdist.log.CdistFormatter.USE_COLORS = True
 
 
 def parse_and_configure(argv, singleton=True):
@@ -515,6 +542,7 @@ def parse_and_configure(argv, singleton=True):
         raise cdist.Error(str(e))
     # Loglevels are handled globally in here
     handle_loglevel(args)
+    handle_log_colors(args)
 
     log = logging.getLogger("cdist")
 

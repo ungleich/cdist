@@ -60,10 +60,9 @@ def commandline():
 
 
 if __name__ == "__main__":
-    cdistpythonversion = '3.5'
-    if sys.version < cdistpythonversion:
+    if sys.version < cdist.MIN_SUPPORTED_PYTHON_VERSION:
         print('Python >= {} is required on the source host.'.format(
-                cdistpythonversion), file=sys.stderr)
+                cdist.MIN_SUPPORTED_PYTHON_VERSIO), file=sys.stderr)
         sys.exit(1)
 
     exit_code = 0
