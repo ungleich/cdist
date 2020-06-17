@@ -1,0 +1,35 @@
+#!/bin/sh -e
+
+state_is="$( cat "$__object/explorer/state" )"
+
+if [ "$state_is" = 'present' ]
+then
+    exit 0
+fi
+
+url="$( cat "$__object/parameter/url" )"
+
+cmd="$( cat "$__object/parameter/cmd-get" )"
+
+tmp="$( mktemp )"
+
+dst="/$__object_id"
+
+printf "$cmd > %s\n" \
+    "$url" \
+    "$tmp"
+
+if echo "$__target_host" | grep -Eq '^[0-9a-fA-F:]+$'
+then
+    target_host="[$__target_host]"
+else
+    target_host="$__target_host"
+fi
+
+printf '%s %s %s:%s\n' \
+    "$__remote_copy" \
+    "$tmp" \
+    "$target_host" \
+    "$dst"
+
+echo "rm -f '$tmp'"

@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+dst="/$__object_id"
+
+# shellcheck disable=SC2059
+cmd="$( printf "$( cat "$__object/parameter/cmd-sum" )" "$dst" )"
+
+sum="$( cat "$__object/parameter/sum" )"
+
+if [ -f "$dst" ]
+then
+    if [ "$( eval "$cmd" )" = "$sum" ]
+    then
+        echo 'present'
+    else
+        echo 'mismatch'
+    fi
+else
+    echo 'absent'
+fi
