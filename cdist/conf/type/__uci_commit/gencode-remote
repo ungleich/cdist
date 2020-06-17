@@ -23,20 +23,29 @@ batchfile="${__global:?}/tmp/__uci/${transaction_name}.txt"
 
 test -s "${batchfile}" || exit 0
 
+if test -s "${__object:?}/explorer/changes"
+then
+	echo 'Uncommited UCI changes were found on the target:'
+	cat "${__object:?}/explorer/changes"
+	echo
+	echo 'This can be caused by manual changes or due to a previous failed run.'
+	echo 'Please investigate the situation, revert or commit the changes, and try again.'
+	exit 1
+fi >&2
+
 printf 'commit transaction %s\n' "${transaction_name}" >>"${__messages_out:?}"
 
-cat <<'EOF'
+cat <<CODE
 rollback() {
-	uci changes \
-	| sed -e 's/\..*$//' -e 's/^-//' \
+	uci changes \\
+	| sed -e 's/\..*\$//' -e 's/^-//' \\
 	| while read -r package
 	  do
-		  uci revert "${package}"
+		  uci revert "\${package}"
 	  done
 }
 
+uci batch <<'EOF' && uci commit || rollback
+$(cat "${batchfile}")
 EOF
-
-echo "uci batch <<'EOF' && uci commit || rollback"
-cat "${batchfile}"
-echo 'EOF'
+CODE
