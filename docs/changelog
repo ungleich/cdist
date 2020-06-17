@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.6.0: 2020-06-17
 	* Type __ssh_authorized_keys: Add option for removing undefined keys (Ander Punnar)
 	* Core: Support colored log output (Evil Ham)
 	* Core: Tune colored log output and respect NO_COLOR env var (Dennis Camera)
