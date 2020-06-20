@@ -29,8 +29,7 @@ import glob
 import fnmatch
 
 
-class Info(object):
-
+class Info:
     def __init__(self, conf_dirs, args):
         self.conf_dirs = conf_dirs
         self.all = args.all

@@ -56,7 +56,7 @@ class DefaultList(list):
             return cls(initial.split('\n'))
 
 
-class Emulator(object):
+class Emulator:
     def __init__(self, argv, stdin=sys.stdin.buffer, env=os.environ):
         self.argv = argv
         self.stdin = stdin

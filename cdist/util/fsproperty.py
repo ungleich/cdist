@@ -177,7 +177,7 @@ class DirectoryDict(collections.MutableMapping):
             raise cdist.Error(str(e))
 
 
-class FileBasedProperty(object):
+class FileBasedProperty:
     attribute_class = None
 
     def __init__(self, path):
@@ -189,7 +189,7 @@ class FileBasedProperty(object):
 
         Usage with a sublcass:
 
-        class Foo(object):
+        class Foo:
             # note that the actual DirectoryDict is stored as __parameters
             # on the instance
             parameters = DirectoryDictProperty(

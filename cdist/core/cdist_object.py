@@ -47,7 +47,7 @@ class MissingObjectIdError(cdist.Error):
         return '%s' % (self.message)
 
 
-class CdistObject(object):
+class CdistObject:
     """Represents a cdist object.
 
     All interaction with objects in cdist should be done through this class.

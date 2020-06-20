@@ -70,7 +70,7 @@ def _graph_dfs_cycle(graph, node, path):
     return False
 
 
-class Config(object):
+class Config:
     """Cdist main class to hold arbitrary data"""
 
     # list of paths (files and/or directories) that will be removed on finish
