@@ -53,6 +53,8 @@ in
 		if test "$(wc -l "${__object:?}/parameter/value")" -gt 1
 		then
 			# "should" is a list
+			printf 'set_list %s\n' "${config}" >>"${__messages_out:?}"
+
 			if test "${state_is}" != 'absent'
 			then
 				printf "uci delete '%s'\n" "${config}"
@@ -64,6 +66,8 @@ in
 			done <"${__object:?}/parameter/value"
 		else
 			# "should" is a scalar
+			printf 'set %s\n' "${config}" >>"${__messages_out:?}"
+
 			value=$(cat "${__object:?}/parameter/value")
 			uci_cmd "set '%s'='%s'" "${config}" "${value}"
 		fi
@@ -74,6 +78,7 @@ in
 			exit 0
 		fi
 
+		printf 'delete %s\n' "${config}" >>"${__messages_out:?}"
 		uci_cmd "delete '%s'" "${config}"
 		;;
 	(*)
