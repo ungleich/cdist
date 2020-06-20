@@ -1,0 +1,122 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera@ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+grep_line() { echo "$2" | grep -qxF "$1"; }
+unquote_lines() {
+	sed -e '/^".*"$/{s/^"//;s/"$//}' \
+	    -e '/'"^'.*'"'$/{s/'"^'"'//;s/'"'$"'//}'
+}
+
+append_values() {
+	while read -r _value
+	do
+		set -- "$@" --value "${_value}"
+	done
+	unset _value
+	"$@" </dev/null
+}
+
+section=$(cat "${__object:?}/explorer/match")
+
+state_should=$(cat "${__object:?}/parameter/state")
+transaction_name=$(cat "${__object:?}/parameter/transaction")
+
+case $state_should
+in
+	(present)
+		test -f "${__object:?}/parameter/type" || {
+			echo 'Parameter --type is required.' >&2
+			exit 1
+		}
+		type_is=$(cat "${__object:?}/explorer/type")
+		type_should=$(cat "${__object:?}/parameter/type")
+
+		if test -f "${__object:?}/parameter/option"
+		then
+			optnames_should=$(
+				sed -e 's/=.*$//' "${__object:?}/parameter/option" | sort -u)
+		fi
+
+		if test -n "${type_is}"
+		then
+			if test "${type_is}" != "${type_should##*.}"
+			then
+				# Check if section type matches (section exists and --type provided)
+				printf 'Section type "%s" does not match --type "%s".\n' \
+					"${type_is}" "${type_should}" >&2
+				exit 1
+			fi
+			sect_type=${type_is}
+		else
+			sect_type=${type_should##*.}
+		fi
+
+		if test -z "${section}"
+		then
+			# No section exists and --match was used.
+			# So we generate a new section identifier from $__object_id.
+			case ${__object_id:?}
+			in
+				(*.*) section=${__object_id:?} ;;
+				(*) section="${type_should%%.*}.${__object_id:?}" ;;
+			esac
+		fi
+
+		# Make sure the section itself is present
+		__uci "${section}" --state present --transaction "${transaction_name}" \
+			--value "${sect_type}"
+		export require=__uci/"${section}"
+
+		# Delete options not in "should"
+		sed -e 's/=.*$//;s/^.*\.//' "${__object:?}/explorer/options" \
+		| while read -r optname
+		  do
+			  if ! grep_line "${optname}" "${optnames_should}"
+			  then
+				  __uci "${section}.${optname}" --state absent \
+					  --transaction "${transaction_name}" </dev/null
+			  fi
+		  done
+
+		# Set "should" options
+		echo "${optnames_should}" \
+		| while read -r optname
+		  do
+			  test -n "${optname}" || continue  # ignore empty lines
+
+			  grep "^${optname}=" <"${__object:?}/parameter/option" \
+			  | sed -e 's/^.*=//' \
+			  | unquote_lines \
+			  | append_values \
+				    __uci "${section}.${optname}" --state present \
+					    --transaction "${transaction_name}"
+		  done
+		;;
+	(absent)
+		# if explorer found no section there is nothing to delete
+		test -n "${section}" || exit 0
+
+		__uci "${section}" --state absent --transaction "${transaction_name}"
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
+esac
