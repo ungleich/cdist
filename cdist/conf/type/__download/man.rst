@@ -10,7 +10,13 @@ DESCRIPTION
 -----------
 You must use persistent storage in target host for destination file
 (``$__object_id``) because it will be used for checksum calculation
-in order to decide if file must be downloaded.
+in order to decide if file must be (re-)downloaded.
+
+By default type will try to use following locally installed utilities
+for downloading (in order): ``wget``, ``curl`` or ``fetch``.
+
+Environment variables like ``{http,https,ftp}_proxy`` etc can be used on
+cdist execution (``http_proxy=foo cdist config ...``).
 
 
 REQUIRED PARAMETERS
@@ -19,20 +25,29 @@ url
    URL from which to download the file.
 
 sum
-   Checksum of downloaded file.
+   Checksum of file going to be downloaded.
+   By default output of ``cksum`` without filename is expected.
+   Other hash formats supported with prefixes: ``md5:``, ``sha1:`` and ``sha256:``.
+
+onchange
+   Execute this command after download.
 
 
 OPTIONAL PARAMETERS
 -------------------
 cmd-get
    Command used for downloading.
-   Default is ``wget -O- '%s'``.
    Command must output to ``stdout``.
+   Parameter will be used for ``printf`` and must include only one
+   variable ``%s`` which will become URL.
+   For example: ``wget -O - '%s'``.
 
 cmd-sum
    Command used for checksum calculation.
-   Default is ``md5sum '%s' | awk '{print $1}'``.
    Command output and ``--sum`` parameter must match.
+   Parameter will be used for ``printf`` and must include only one
+   variable ``%s`` which will become destination.
+   For example: ``md5sum '%s' | awk '{print $1}'``.
 
 
 EXAMPLES
@@ -45,7 +60,7 @@ EXAMPLES
     require='__directory/opt/cpma' \
         __download /opt/cpma/cnq3.zip \
             --url https://cdn.playmorepromode.com/files/cnq3/cnq3-1.51.zip \
-            --sum 46da3021ca9eace277115ec9106c5b46
+            --sum md5:46da3021ca9eace277115ec9106c5b46
 
     require='__download/opt/cpma/cnq3.zip' \
         __unpack /opt/cpma/cnq3.zip \

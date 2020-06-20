@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+if [ -f "$__object/parameter/onchange" ] \
+    && grep -Fq "$__object_id:downloaded" "$__messages_in"
+then
+    cat "$__object/parameter/onchange"
+fi
