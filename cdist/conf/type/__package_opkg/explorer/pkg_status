@@ -23,9 +23,9 @@
 # Retrieve the status of a package - parses opkg output
 #
 
-__type_path=${__object%%${__object_id}*}
+readonly __type_path=${__object%%${__object_id}*}
+readonly LOCKFILE="${__type_path}/cdist_opkg.lock"
 
-LOCKFILE="${__type_path}/cdist_opkg.lock"
 _lock() (
 	set -o noclobber
 	until echo $$>"${LOCKFILE}"
