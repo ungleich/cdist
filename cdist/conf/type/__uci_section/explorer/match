@@ -39,8 +39,8 @@ then
 	exit 0
 fi
 
-test -s "${__object:?}/parameter/match" \
-&& test -s "${__object:?}/parameter/type" \
+# shellcheck disable=SC2015
+test -s "${__object:?}/parameter/match" && test -s "${__object:?}/parameter/type" \
 || {
 	echo 'Parameters --match and --type must be used together.' >&2
 	exit 1
