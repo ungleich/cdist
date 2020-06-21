@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # 2013-2019 Steven Armstrong (steven-cdist at armstrong.cc)
