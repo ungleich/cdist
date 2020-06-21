@@ -23,7 +23,9 @@
 # Retrieve the status of a package - parses opkg output
 #
 
-LOCKFILE="${__type_explorer}/cdist_opkg.lock"
+__type_path=${__object%%${__object_id}*}
+
+LOCKFILE="${__type_path}/cdist_opkg.lock"
 _lock() (
 	set -o noclobber
 	until echo $$>"${LOCKFILE}"
@@ -48,9 +50,10 @@ else
 fi
 
 
-# NOTE: We need to lock parallel execution of this explorer because opkg will
-# try to acquire the OPKG lock (usually /var/lock/opkg.lock) using lockf(2) for
-# every operation. It will not wait for the lock but terminate with an error.
+# NOTE: We need to lock parallel execution of type explorers and code-remote
+# because opkg will try to acquire the OPKG lock (usually /var/lock/opkg.lock)
+# using lockf(2) for every operation.
+# It will not wait for the lock but terminate with an error.
 # This leads to incorrect 'absent notpresent' statuses when parallel execution
 # is enabled.
 trap _unlock EXIT
