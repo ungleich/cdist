@@ -30,7 +30,7 @@ import os
 import subprocess
 
 
-class Debian(object):
+class Debian:
     _preos_name = 'debian'
     _cdist_preos = True
 

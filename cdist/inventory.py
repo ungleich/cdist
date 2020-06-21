@@ -79,7 +79,7 @@ def rstrip_nl(s):
     return str.rstrip(s, "\n")
 
 
-class Inventory(object):
+class Inventory:
     """Inventory main class"""
 
     def __init__(self, db_basedir=dist_inventory_db, configuration=None):
