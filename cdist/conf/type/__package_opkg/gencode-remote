@@ -25,9 +25,9 @@
 
 if test -f "${__object}/parameter/name"
 then
-   name=$(cat "${__object}/parameter/name")
+	name=$(cat "${__object}/parameter/name")
 else
-   name=$__object_id
+	name=$__object_id
 fi
 
 state_should=$(cat "${__object}/parameter/state")
@@ -46,34 +46,6 @@ then
 	exit 0
 fi
 
-cat <<'EOF'
-readonly __type_path=${__object%%${__object_id}*}
-readonly LOCKFILE="${__type_path}/cdist_opkg.lock"
-
-_lock() (
-	set -o noclobber
-	until echo $$>"${LOCKFILE}"
-	do
-		while test -f "${LOCKFILE}"; do sleep 1; done
-	done
-
-) 2>/dev/null
-_unlock() {
-	if test -s "${LOCKFILE}" && test "$(cat "${LOCKFILE}")" = $$
-	then
-		rm "${LOCKFILE}"
-	fi
-}
-EOF
-
-# NOTE: We need to lock parallel execution of code-remote to ensure that it is
-# not executed concurrently with a type explorer.
-# opkg will try to acquire the OPKG lock (usually /var/lock/opkg.lock) using
-# lockf(2) for every operation.
-# It will not wait for the lock but terminate with an error leading to an
-# incorrect outcome.
-echo 'trap _unlock EXIT'
-echo '_lock'
 
 case $state_should
 in
