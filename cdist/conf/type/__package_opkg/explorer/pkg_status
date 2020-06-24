@@ -24,21 +24,28 @@
 #
 
 readonly __type_path=${__object%%${__object_id}*}
-readonly LOCKFILE="${__type_path}/cdist_opkg.lock"
+test -d "${__type_path}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
+readonly LOCKDIR="${__type_path:?}/.cdist_opkg.lock.dir"
 
-_lock() (
-	set -o noclobber
-	until echo $$>"${LOCKFILE}"
+_lock() {
+	until mkdir "${LOCKDIR:?}" 2>/dev/null
 	do
-		while test -f "${LOCKFILE}"; do sleep 1; done
+		while test -d "${LOCKDIR}"
+		do
+			# DEBUG: printf 'Locked by PID: %u\n' "$(cat "${LOCKDIR}/pid")"
+			sleep 1
+		done
 	done
-
-) 2>/dev/null
+	echo $$ >"${LOCKDIR:?}/pid"
+}
 _unlock() {
-	if test -s "${LOCKFILE}" && test "$(cat "${LOCKFILE}")" = $$
+	test -d "${LOCKDIR}" || return 0
+	if test -s "${LOCKDIR}/pid"
 	then
-		rm "${LOCKFILE}"
+		test "$(cat "${LOCKDIR}/pid")" = $$ || return 1
+		rm "${LOCKDIR:?}/pid"
 	fi
+	rmdir "${LOCKDIR:?}"
 }
 
 
