@@ -25,28 +25,45 @@
 
 readonly __type_path=${__object%%${__object_id}*}
 test -d "${__type_path}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
-readonly LOCKDIR="${__type_path:?}/.cdist_opkg.lock.dir"
+readonly LOCKFILE="${__type_path:?}/.cdist_opkg.lock"
 
-_lock() {
-	until mkdir "${LOCKDIR:?}" 2>/dev/null
-	do
-		while test -d "${LOCKDIR}"
+if command -v flock >/dev/null 2>&1
+then
+	# use flock (if available) on FD 9
+	_lock() {
+		exec 9<>"${LOCKFILE:?}"
+		flock -x 9
+		echo $$>&9
+	}
+	_unlock() {
+		:>"${LOCKFILE:?}"
+		flock -u 9
+		exec 9<&-
+	}
+else
+	# fallback to mkdir if flock is missing
+	_lock() {
+		until mkdir "${LOCKFILE:?}.dir" 2>/dev/null
 		do
-			# DEBUG: printf 'Locked by PID: %u\n' "$(cat "${LOCKDIR}/pid")"
-			sleep 1
+			while test -d "${LOCKFILE}.dir"
+			do
+				# DEBUG:
+				# printf 'Locked by PID: %u\n' "$(cat "${LOCKFILE}.dir/pid")"
+				sleep 1
+			done
 		done
-	done
-	echo $$ >"${LOCKDIR:?}/pid"
-}
-_unlock() {
-	test -d "${LOCKDIR}" || return 0
-	if test -s "${LOCKDIR}/pid"
-	then
-		test "$(cat "${LOCKDIR}/pid")" = $$ || return 1
-		rm "${LOCKDIR:?}/pid"
-	fi
-	rmdir "${LOCKDIR:?}"
-}
+		echo $$ >"${LOCKFILE:?}.dir/pid"
+	}
+	_unlock() {
+		test -d "${LOCKFILE}.dir" || return 0
+		if test -s "${LOCKFILE}.dir/pid"
+		then
+			test "$(cat "${LOCKFILE}.dir/pid")" = $$ || return 1
+			rm "${LOCKFILE:?}.dir/pid"
+		fi
+		rmdir "${LOCKFILE:?}.dir"
+	}
+fi
 
 
 if test -f "${__object}/parameter/name"
