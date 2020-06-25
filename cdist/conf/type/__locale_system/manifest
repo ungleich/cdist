@@ -26,7 +26,7 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-    debian|ubuntu)
+    debian|devuan|ubuntu)
         locale_conf="/etc/default/locale"
         ;;
     archlinux)
