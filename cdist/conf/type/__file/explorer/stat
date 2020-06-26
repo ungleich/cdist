@@ -34,7 +34,7 @@ fallback() {
    group=$(awk -F: -v uid="$uid" '$3 == uid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/group)
 
    mode_text=$(echo "$ls_line" | awk '{ print $1 }')
-   mode=$(echo "$mode_text" | awk '{ k=0; for (i=0; i<=8; i++) k += ((substr($1, i+2, 1) ~ /[rwx]/) * 2^(8-i)); printf("%0o", k) }')
+   mode=$(echo "$mode_text" | awk '{for(i=8;i>=0;--i){c=substr($1,10-i,1);k+=((c~/[rwxst]/)*2^i);if(!(i%3))k+=(tolower(c)~/[st]/)*2^(9+i/3)}printf("%04o",k)}')
 
    size=$(echo "$ls_line" | awk '{ print $5 }')
    links=$(echo "$ls_line" | awk '{ print $2 }')
@@ -63,13 +63,13 @@ fi
 case $("$__explorer/os")
 in
    freebsd|netbsd|openbsd|macosx)
-      stat -f "type: %HT
+      stat -f 'type: %HT
 owner: %Du %Su
 group: %Dg %Sg
-mode: %Lp %Sp
+mode: %Mp%03Lp %Sp
 size: %Dz
 links: %Dl
-" "$destination" | awk '/^type/ { print tolower($0); next } { print }'
+' "$destination" | awk '/^type/ { print tolower($0); next } { print }'
       ;;
     solaris)
         ls1="$( ls -ld "$destination" )"
@@ -106,11 +106,11 @@ links: %Dl
       # NOTE: Do not use --printf here as it is not supported by BusyBox stat.
       # NOTE: BusyBox's stat might not support the "-c" option, in which case
       #       we fall through to the shell fallback.
-      stat -c "type: %F
+      stat -c 'type: %F
 owner: %u %U
 group: %g %G
-mode: %a %A
+mode: %04a %A
 size: %s
-links: %h" "$destination" 2>/dev/null || fallback
+links: %h' "$destination" 2>/dev/null || fallback
          ;;
 esac
