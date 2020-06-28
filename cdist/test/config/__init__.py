@@ -44,7 +44,7 @@ expected_object_names = sorted([
     '__third/moon'])
 
 
-class CdistObjectErrorContext(object):
+class CdistObjectErrorContext:
     def __init__(self, original_error):
         self.original_error = original_error
 

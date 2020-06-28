@@ -41,7 +41,7 @@ def hostfile_process_line(line, strip_func=str.strip):
         return None
 
 
-class HostSource(object):
+class HostSource:
     """
     Host source object.
     Source can be a sequence or filename (stdin if \'-\').

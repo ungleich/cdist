@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # 2019-2020 Darko Poljak (darko.poljak at gmail.com)
@@ -29,8 +28,7 @@ import glob
 import fnmatch
 
 
-class Info(object):
-
+class Info:
     def __init__(self, conf_dirs, args):
         self.conf_dirs = conf_dirs
         self.all = args.all
