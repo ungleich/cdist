@@ -1,8 +1,10 @@
 #!/bin/sh -e
 
+download="$( cat "$__object/parameter/download" )"
+
 state_is="$( cat "$__object/explorer/state" )"
 
-if [ "$state_is" = 'present' ]
+if [ "$download" != 'local' ] || [ "$state_is" = 'present' ]
 then
     exit 0
 fi

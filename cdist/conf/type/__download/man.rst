@@ -3,26 +3,28 @@ cdist-type__download(7)
 
 NAME
 ----
-cdist-type__download - Download file to local storage and copy it to target host
+cdist-type__download - Download a file
 
 
 DESCRIPTION
 -----------
-You must use persistent storage in target host for destination file
-(``$__object_id``) because it will be used for checksum calculation
-in order to decide if file must be (re-)downloaded.
+Persistent storage for destination file in target host must be used
+(``$__object_id``) because it will be used for checksum calculation in
+order to decide if file must be (re-)downloaded.
 
-By default type will try to use following locally installed utilities
-for downloading (in order): ``wget``, ``curl`` or ``fetch``.
+By default type will try to use ``wget``, ``curl`` or ``fetch`` for
+downloading.  If ``--download remote`` type will fallback to (and
+install) ``wget``.
 
-Environment variables like ``{http,https,ftp}_proxy`` etc can be used on
-cdist execution (``http_proxy=foo cdist config ...``).
+If ``--download local`` (default), then environment variables like
+``{http,https,ftp}_proxy`` etc can be used on cdist execution
+(``http_proxy=foo cdist config ...``).
 
 
 REQUIRED PARAMETERS
 -------------------
 url
-   URL from which to download the file.
+   File's URL.
 
 sum
    Checksum of file going to be downloaded.
@@ -35,6 +37,10 @@ onchange
 
 OPTIONAL PARAMETERS
 -------------------
+download
+   If ``local`` (default), then download file to local storage and copy
+   it to target host. If ``remote``, then download happens in target.
+
 cmd-get
    Command used for downloading.
    Command must output to ``stdout``.
