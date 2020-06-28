@@ -3,6 +3,8 @@ Changelog
 
 next:
 	* New type: __download (Ander Punnar)
+	* Type __locale_system: Add devuan support (Dennis Camera)
+	* Type __package_opkg: Add locking (Dennis Camera)
 
 6.6.0: 2020-06-17
 	* Type __ssh_authorized_keys: Add option for removing undefined keys (Ander Punnar)
