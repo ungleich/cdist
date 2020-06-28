@@ -8,15 +8,14 @@ cdist-type__download - Download a file
 
 DESCRIPTION
 -----------
-Persistent storage for destination file in target host must be used
-(``$__object_id``) because it will be used for checksum calculation in
-order to decide if file must be (re-)downloaded.
+Destination (``$__object_id``) in target host must be persistent storage
+in order to calculate checksum and decide if file must be (re-)downloaded.
 
-By default type will try to use ``wget``, ``curl`` or ``fetch`` for
-downloading.  If ``--download remote`` type will fallback to (and
-install) ``wget``.
+By default type will try to use ``wget``, ``curl`` or ``fetch``.
+If download happens in target (see ``--download``) then type will
+fallback to (and install) ``wget``.
 
-If ``--download local`` (default), then environment variables like
+If download happens in local machine, then environment variables like
 ``{http,https,ftp}_proxy`` etc can be used on cdist execution
 (``http_proxy=foo cdist config ...``).
 
