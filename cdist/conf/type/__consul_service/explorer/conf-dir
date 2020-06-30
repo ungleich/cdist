@@ -1,0 +1,15 @@
+# Determine the configuration directory used by consul.
+
+check_dir () {
+  if [ -d "$1" ]; then
+    printf '%s' "$1"
+    exit
+  fi
+}
+
+check_dir '/etc/consul/conf.d'
+check_dir '/etc/consul.d'
+check_dir '/etc/consul'
+
+echo 'Could not determine consul configuration dir. Exiting.' >&2
+exit 1

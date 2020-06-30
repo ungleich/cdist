@@ -7,12 +7,16 @@ from docutils.io import FileOutput
 from os import path
 from sphinx.util.nodes import inline_all_toctrees
 from sphinx import addnodes
+from sphinx.util import logging
 
 """
     Extension based on sphinx builtin manpage.
     It does not write its own .SH NAME based on config,
     but leaves everything to actual reStructuredText file content.
 """
+
+
+logger = logging.getLogger(__name__)
 
 
 class ManualPageTranslator(sphinx.writers.manpage.ManualPageTranslator):
@@ -28,7 +32,7 @@ class ManualPageWriter(sphinx.writers.manpage.ManualPageWriter):
     def __init__(self, builder):
         super().__init__(builder)
         self.translator_class = (
-            self.builder.translator_class or ManualPageTranslator)
+            self.builder.get_translator_class() or ManualPageTranslator)
 
 
 class ManualPageBuilder(sphinx.builders.manpage.ManualPageBuilder):
@@ -43,7 +47,7 @@ class ManualPageBuilder(sphinx.builders.manpage.ManualPageBuilder):
             components=(docwriter,),
             read_config_files=True).get_default_values()
 
-        self.info(bold('writing... '), nonl=True)
+        logger.info(bold('writing... '), nonl=True)
 
         for info in self.config.man_pages:
             docname, name, description, authors, section = info
@@ -54,7 +58,7 @@ class ManualPageBuilder(sphinx.builders.manpage.ManualPageBuilder):
                     authors = []
 
             targetname = '%s.%s' % (name, section)
-            self.info(darkgreen(targetname) + ' { ', nonl=True)
+            logger.info(darkgreen(targetname) + ' { ', nonl=True)
             destination = FileOutput(
                 destination_path=path.join(self.outdir, targetname),
                 encoding='utf-8')
@@ -63,7 +67,7 @@ class ManualPageBuilder(sphinx.builders.manpage.ManualPageBuilder):
             docnames = set()
             largetree = inline_all_toctrees(self, docnames, docname, tree,
                                             darkgreen, [docname])
-            self.info('} ', nonl=True)
+            logger.info('} ', nonl=True)
             self.env.resolve_references(largetree, docname, self)
             # remove pending_xref nodes
             for pendingnode in largetree.traverse(addnodes.pending_xref):
@@ -76,7 +80,7 @@ class ManualPageBuilder(sphinx.builders.manpage.ManualPageBuilder):
             largetree.settings.section = section
 
             docwriter.write(largetree, destination)
-        self.info()
+        logger.info("")
 
 
 def setup(app):

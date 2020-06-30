@@ -21,6 +21,11 @@ command
 
 OPTIONAL PARAMETERS
 -------------------
+**NOTE**: All time-related parameters (``--minute``, ``--hour``, ``--day_of_month``
+``--month`` and ``--day_of_week``) defaults to ``*``, which means to execute it
+**always**. If you set ``--hour 0`` to execute the cronjob only at midnight, it
+will execute **every** minute in the first hour of the morning all days.
+
 state
    Either present or absent. Defaults to present.
 minute

@@ -27,7 +27,7 @@ import tempfile
 log = logging.getLogger(__name__)
 
 
-class Message(object):
+class Message:
     """Support messaging between types
 
     """

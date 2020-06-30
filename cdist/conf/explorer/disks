@@ -1,27 +1,67 @@
-#!/bin/sh
+#!/bin/sh -e
+#
+# based on previous work by other people, modified by:
+# 2020 Dennis Camera <dennis.camera at ssrq-sds-fds.ch>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# Finds disks of the system (excl. ram disks, floppy, cdrom)
 
 uname_s="$(uname -s)"
 
-case "${uname_s}" in
+case $uname_s in
     FreeBSD)
         sysctl -n kern.disks
     ;;
-    OpenBSD|NetBSD)
-        sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]+' | xargs
+    OpenBSD)
+        sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]+'
+    ;;
+    NetBSD)
+        PATH="${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
+        sysctl -n hw.disknames \
+        | awk 'BEGIN { RS = " " } /^[lsw]d[0-9]+/'
     ;;
     Linux)
-        if command -v lsblk > /dev/null
+        # list of major device numbers toexclude:
+        #  ram disks, floppies, cdroms
+        # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
+        ign_majors='1 2 11'
+
+        if command -v lsblk >/dev/null 2>&1
         then
-            # exclude ram disks, floppies and cdroms
-            # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
-            lsblk -e 1,2,11 -dno name | xargs
+            lsblk -e "$(echo "$ign_majors" | tr ' ' ',')" -dno name
+        elif test -d /sys/block/
+        then
+            # shellcheck disable=SC2012
+            ls -1 /sys/block/ \
+            | awk -v ign_majors="$(echo "$ign_majors" | tr ' ' '|')" '
+                {
+                  devfile = "/sys/block/" $0 "/dev"
+                  getline devno < devfile
+                  close(devfile)
+                  if (devno !~ "^(" ign_majors "):") print
+                }'
         else
-            printf "Don't know how to list disks for %s operating system without lsblk, if you can please submit a patch\n" "${uname_s}" >&2
+            echo "Don't know how to list disks on Linux without lsblk and sysfs." >&2
+            echo 'If you can, please submit a patch.'>&2
         fi
     ;;
     *)
-        printf "Don't know how to list disks for %s operating system, if you can please submit a patch\n" "${uname_s}" >&2
+        printf "Don't know how to list disks for %s operating system.\n" "${uname_s}" >&2
+        printf 'If you can please submit a patch\n' >&2
     ;;
-esac
-
-exit 0
+esac \
+| xargs

@@ -59,13 +59,13 @@ MESSAGES
 --------
 
 change
-    Certificte was changed.
+    Certificate was changed.
 
 create
-    Certificte was created.
+    Certificate was created.
 
 remove
-    Certificte was removed.
+    Certificate was removed.
 
 EXAMPLES
 --------

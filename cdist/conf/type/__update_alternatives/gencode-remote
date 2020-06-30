@@ -17,9 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Setup alternative - no standard way to create, always set
-#
+
+if [ "$(cat "$__object/explorer/state")" = 'present' ]
+then exit 0
+fi
 
 path="$(cat "$__object/parameter/path")"
 name="$__object_id"

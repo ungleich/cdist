@@ -56,7 +56,7 @@ class DefaultList(list):
             return cls(initial.split('\n'))
 
 
-class Emulator(object):
+class Emulator:
     def __init__(self, argv, stdin=sys.stdin.buffer, env=os.environ):
         self.argv = argv
         self.stdin = stdin
@@ -128,6 +128,9 @@ class Emulator(object):
         except (ValueError, TypeError):
             # if invalid __cdist_log_level value
             logging.root.setLevel(logging.WARNING)
+
+        colored_log = self.env.get('__cdist_colored_log', 'false')
+        cdist.log.CdistFormatter.USE_COLORS = colored_log == 'true'
 
         self.log = logging.getLogger(self.target_host[0])
 

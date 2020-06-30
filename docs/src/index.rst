@@ -2,8 +2,9 @@ cdist - usable configuration management
 =======================================
 
 cdist is a usable configuration management system.
-It adheres to the KISS principle and 
+It adheres to the KISS principle and
 is being used in small up to enterprise grade environments.
+It natively supports IPv6 since the first release.
 
 
 .. toctree::

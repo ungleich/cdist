@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # 2010-2015 Nico Schottelius (nico-cdist at schottelius.org)
@@ -29,18 +28,20 @@ import time
 import itertools
 import tempfile
 import multiprocessing
-from cdist.mputil import mp_pool_run, mp_sig_handler
 import atexit
 import shutil
 import socket
+
+from cdist.mputil import mp_pool_run, mp_sig_handler
+from cdist import core, inventory
+from cdist.util.remoteutil import inspect_ssh_mux_opts
+
 import cdist
 import cdist.hostsource
 import cdist.exec.local
 import cdist.exec.remote
 import cdist.util.ipaddr as ipaddr
 import cdist.configuration
-from cdist import core, inventory
-from cdist.util.remoteutil import inspect_ssh_mux_opts
 
 
 def graph_check_cycle(graph):
@@ -70,7 +71,7 @@ def _graph_dfs_cycle(graph, node, path):
     return False
 
 
-class Config(object):
+class Config:
     """Cdist main class to hold arbitrary data"""
 
     # list of paths (files and/or directories) that will be removed on finish
@@ -195,7 +196,6 @@ class Config(object):
     @classmethod
     def commandline(cls, args):
         """Configure remote system"""
-
         if (args.parallel and args.parallel != 1) or args.jobs:
             if args.timestamp:
                 cdist.log.setupTimestampingParallelLogging()
@@ -203,6 +203,7 @@ class Config(object):
                 cdist.log.setupParallelLogging()
         elif args.timestamp:
             cdist.log.setupTimestampingLogging()
+
         log = logging.getLogger("config")
 
         # No new child process if only one host at a time.
@@ -381,10 +382,16 @@ class Config(object):
            If operating in parallel then return tuple (host, True|False, )
            so that main process knows for which host function was successful.
         """
-
         log = logging.getLogger(host)
 
         try:
+            if args.log_server:
+                # Start a log server so that nested `cdist config` runs
+                # have a place to send their logs to.
+                log_server_socket_dir = tempfile.mkdtemp()
+                cls._register_path_for_removal(log_server_socket_dir)
+                cdist.log.setupLogServer(log_server_socket_dir, log)
+
             remote_exec, remote_copy, cleanup_cmd = cls._resolve_remote_cmds(
                 args)
             log.debug("remote_exec for host \"{}\": {}".format(

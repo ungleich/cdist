@@ -13,17 +13,28 @@
 #     Specify cache path pattern.
 # cache_path_pattern = %h
 #
+# colored_output
+#     Colorize cdist's output. If enabled, cdist will use different colors for
+#     different log levels.
+#     Recognized values are 'always', 'never', and 'auto'.
+#     If the value is 'auto', colors are enabled if stdout is a TTY unless
+#     the NO_COLOR (https://no-color.org/) environment variable is defined.
+# colored_output = auto
+#
 # conf_dir
 #     List of configuration directories separated with the character conventionally
 #     used by the operating system to separate search path components (as in PATH),
 #     such as ':' for POSIX or ';' for Windows.
 #     If also specified at command line then values from command line are
 #     appended to this value.
+#     Notice that this works in a "last one wins" fashion, so if a type is redefined
+#     in multiple conf_dirs, the last one in which it is defined will be used.
+#     Consider using a unique prefix for your own roles if this can be an issue.
 # conf_dir = <dir1>:<dir2>
 #
 # init_manifest
 #     Specify default initial manifest.
-# init_mainfest = <path-to-init-manifst>
+# init_manifest = <path-to-init-manifest>
 #
 # inventory_dir
 #     Specify inventory directory.
@@ -42,7 +53,7 @@
 #
 # out_path
 #     Directory to save cdist output in.
-# out_path = 
+# out_path =
 #
 # parallel
 #     Process hosts in parallel. If -1 then the default, number of CPU's in
@@ -68,6 +79,6 @@
 # remote_shell = /bin/sh
 #
 # verbosity
-#     Set verbosity level. Valid values are: 
+#     Set verbosity level. Valid values are:
 #     ERROR, WARNING, INFO, VERBOSE, DEBUG, TRACE and OFF.
 # verbosity = INFO

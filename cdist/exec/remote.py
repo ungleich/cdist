@@ -49,7 +49,7 @@ class DecodeError(cdist.Error):
         return "Cannot decode output of " + " ".join(self.command)
 
 
-class Remote(object):
+class Remote:
     """Execute commands remotely.
 
     All interaction with the remote side should be done through this class.
@@ -279,9 +279,6 @@ class Remote(object):
         """
         assert isinstance(command, (list, tuple)), (
                 "list or tuple argument expected, got: %s" % command)
-
-        if return_output and stdout is not subprocess.PIPE:
-            self.log.debug("return_output is True, ignoring stdout")
 
         close_stdout = False
         close_stderr = False

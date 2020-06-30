@@ -92,7 +92,7 @@ code-remote
 '''
 
 
-class Code(object):
+class Code:
     """Generates and executes cdist code scripts.
 
     """
@@ -115,6 +115,10 @@ class Code(object):
 
         if dry_run:
             self.env['__cdist_dry_run'] = '1'
+
+        if '__cdist_log_server_socket_export' in os.environ:
+            self.env['__cdist_log_server_socket'] = os.environ[
+                '__cdist_log_server_socket_export']
 
     def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.cdist_type

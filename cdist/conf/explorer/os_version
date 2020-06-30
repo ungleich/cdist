@@ -70,4 +70,7 @@ case "$("$__explorer/os")" in
    ubuntu)
       lsb_release -sr
    ;;
+   alpine)
+       cat /etc/alpine-release
+   ;;
 esac

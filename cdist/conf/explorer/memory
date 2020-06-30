@@ -29,7 +29,7 @@ case "$os" in
         echo "$(sysctl -n hw.memsize)/1024" | bc
     ;;
 
-    "openbsd")
+    *"bsd")
         echo "$(sysctl -n hw.physmem) / 1048576" | bc
     ;;
 

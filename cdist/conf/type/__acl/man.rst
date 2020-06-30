@@ -19,6 +19,20 @@ entry
    Set ACL entry following ``getfacl`` output syntax.
 
 
+OPTIONAL PARAMETERS
+-------------------
+source
+   Read ACL entries from stdin or file.
+   Ordering of entries is not important.
+   When reading from file, comments and empty lines are ignored.
+
+file
+   Create/change file with ``__file`` using ``user:group:mode`` pattern.
+
+directory
+   Create/change directory with ``__directory`` using ``user:group:mode`` pattern.
+
+
 BOOLEAN PARAMETERS
 ------------------
 default
@@ -70,6 +84,17 @@ EXAMPLES
         --remove \
         --entry group:secret-project:rwx \
         --entry user:alice:r-x
+
+    # read acl from stdin
+    echo 'user:alice:rwx' \
+        | __acl /path/to/directory --source -
+
+    # create/change directory too
+    __acl /path/to/directory \
+        --default \
+        --remove \
+        --directory root:root:770 \
+        --entry user:nobody:rwx
 
 
 AUTHORS

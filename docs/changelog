@@ -2,6 +2,80 @@ Changelog
 ---------
 
 next:
+	* New type: __download (Ander Punnar)
+	* Type __locale_system: Add devuan support (Dennis Camera)
+	* Type __package_opkg: Add locking (Dennis Camera)
+
+6.6.0: 2020-06-17
+	* Type __ssh_authorized_keys: Add option for removing undefined keys (Ander Punnar)
+	* Core: Support colored log output (Evil Ham)
+	* Core: Tune colored log output and respect NO_COLOR env var (Dennis Camera)
+	* Documentation: Fix failing man pages build with newer sphinx versions (Darko Poljak)
+	* Documentation: Fix trivial grammatical mistakes (Jaak Ristioja)
+	* Explorer os: Fix for sles15 (Daniel Heule)
+	* Type __clean_path: Add --path parameter (Ander Punnar)
+	* Core: Increase minimal supported Python version to 3.5 (Darko Poljak)
+	* Core: Add log server for nested logging (Steven Armstrong)
+
+6.5.6: 2020-05-25
+	* Type __pyvenv: Switch to python3 -m venv for Ubuntu (Nico Schottelius)
+	* Type __letsencrypt_cert: Whitelist Ubuntu (Nico Schottelius)
+	* Types __cron, __file, __link: Improve manpages (Matthias Stecher)
+	* Explorer machine_type: Add support for FreeBSD and OpenBSD, and simplify Linux code (Evil Ham)
+	* Type __ssh_authorized_key, __ssh_authorized_keys: Improve manpages (Evil Ham)
+	* Type __ssh_authorized_keys: Fix bug where --option was not multiple (Evil Ham)
+	* Type __motd: Debian/Ubuntu/Devuan use /etc/motd (Ander Punnar)
+	* Type __group: Fix --gid on FreeBSD (Ander Punnar)
+	* Configuration: Fix typos in cdist.cfg.skeleton (Jaak Ristioja)
+	* Type __user: Fix user deletion on FreeBSD (Ander Punnar)
+	* Core: Fix double log lines (Darko Poljak)
+
+6.5.5: 2020-05-01
+	* Core: Fix XDG_CONFIG_HOME config file location (Joachim Desroches)
+	* Type __postgres_database: Add encoding, lc-collate, lc-ctype, template parameters (Timothée Floure)
+	* Type __motd: Improve documentation and support for FreeBSD (Evil Ham)
+	* Type __openldap_server: Support extra config parameter (Evil Ham)
+	* Type __postfix: Automagically support more OSs by not checking too much (Evil Ham)
+	* New type: __pf_apply_anchor (Kamila Součková, Evil Ham)
+	* Type __pf_ruleset: Refactor (Kamila Součková, Evil Ham)
+	* Type __pf_apply: Deprecate type (Kamila Součková, Evil Ham)
+	* Configuration: Add notes to cdist.cfg.skeleton (Evil Ham)
+	* Explorers cpu_cores, memory: Improve *BSD support (Evil Ham)
+	* Core: Remove debug logging noise (Evil Ham)
+
+6.5.4: 2020-04-11
+	* Explorer init: Do not grep on non-existent init (Steven Armstrong)
+	* Core: Bugfix to preserve conf dirs order (Steven Armstrong)
+
+6.5.3: 2020-04-03
+	* Type __cron: Make non parallel due to race condition (Nico Schottelius)
+	* Type __pyvenv: Use python3 -m venv on Alpine (Nico Schottelius)
+	* Type __user: Fix missing shadow for alpine (llnu)
+	* Type __consule_agent: Make conf_dir dependent on OS - fixes Alpine (Nico Schottelius)
+	* Type __letsencrypt_cert: Fix typo (Andrew Schleifer)
+	* Type __package_update_index: Fix maxage false positives (Matthias Stecher)
+
+6.5.2: 2020-02-27
+	* Type __update_alternatives: Add state explorer (Ander Punnar)
+	* Explorer os_version: Add support for Alpine Linux (Jin-Guk Kwon)
+	* Explorer init: Rewrite and support more init systems (Dennis Camera)
+	* New type: __service (Timothée Floure)
+	* Types __consul_*: Add optional parameter for using distribution packages (Timothée Floure)
+	* Explorer disks: Fix NetBSD, support Linux w/o lsblk (Dennis Camera)
+	* Type __directory: Add 'exists' and 'pre-exists' states (Dennis Camera)
+	* Type __file: Improve error messages for pre-exists state (Dennis Camera)
+
+6.5.1: 2020-02-15
+	* Type __consul_agent: Add Debian 10 support (Nico Schottelius)
+	* Explorer os_release: Add fallbacks (Dennis Camera)
+	* Types __file, __directory: Add fallback for systems without stat (Dennis Camera)
+	* Type __mysql_privileges: Fix quoting (Ander Punnar)
+	* Type __package_apt: Update package index if it is older than one day (Ander Punnar)
+	* Type __cron: Fix job removal if 'is' and 'should' don't match (Matthias Stecher)
+	* New type: __systemd_service (Matthias Stecher)
+	* Type __postgres_role: Fix password command syntax (Timothée Floure)
+
+6.5.0: 2020-01-23
 	* Type __acl: Add --entry parameter to replace --acl, deprecate --acl (Ander Punnar)
 	* Core: preos: Fix missing configuration file usage, support -g, --config-file option (Darko Poljak)
 	* Core info command: Support tilde expansion of conf directories (Darko Poljak)
@@ -13,6 +87,7 @@ next:
 		- match line at the beginning when not regex
 		- fix incorrect 'wrongposition' in state explorer
 		- produce error when file does not exist
+	* Type __acl: Add --source, --file and --directory parameters (Ander Punnar)
 
 6.4.0: 2020-01-04
 	* Type __consul_agent: Don't deploy init script on Alpine anymore, it ships with one itself (Nico Schottelius)

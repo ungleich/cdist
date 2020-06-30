@@ -2,6 +2,7 @@
 #
 # 2011,2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Giel van Schijndel (giel plus cdist at mortis dot eu)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -19,41 +20,50 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Manage packages on OpenWRT and co.
+# Manage packages on OpenWrt, optware, and co.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if test -f "${__object}/parameter/name"
+then
+	name=$(cat "${__object}/parameter/name")
 else
-   name="$__object_id"
+	name=$__object_id
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+state_should=$(cat "${__object}/parameter/state")
+state_is=$(cat "${__object}/explorer/pkg_status")
 
-state_is="$(cat "$__object/explorer/pkg_status")"
-case "$state_is" in
-    absent*)
-       present="$(echo "$state_is" | cut -d ' ' -f 2)"
-       state_is="absent"
-    ;;
+case $state_is
+in
+	(absent*)
+		presence=$(echo "${state_is}" | cut -d ' ' -f 2)
+		state_is='absent'
+		;;
 esac
 
-[ "$state_is" = "$state_should" ] && exit 0
+if test "${state_is}" = "${state_should}"
+then
+	exit 0
+fi
 
-case "$state_should" in
-    present)
-        if [ "$present" = "notpresent" ]; then
-            echo "opkg --verbosity=0 update"
-        fi
-        echo "opkg --verbosity=0 install '$name'"
-        echo "installed" >> "$__messages_out"
-    ;;
-    absent)
-        echo "opkg --verbosity=0 remove '$name'"
-        echo "removed" >> "$__messages_out"
-    ;;
-    *)
-        echo "Unknown state: ${state_should}" >&2
-        exit 1
-    ;;
+
+case $state_should
+in
+	(present)
+		if test "${presence}" = 'notpresent'
+		then
+			echo 'opkg --verbosity=0 update'
+		fi
+
+		printf "opkg --verbosity=0 install '%s'\n" "${name}"
+		echo 'installed' >>"${__messages_out}"
+		;;
+	(absent)
+		printf "opkg --verbosity=0 remove '%s'" "${name}"
+		echo 'removed' >>"${__messages_out}"
+		;;
+	(*)
+		printf 'Unknown state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
 esac

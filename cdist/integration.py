@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # 2017 Darko Poljak (darko.poljak at gmail.com)

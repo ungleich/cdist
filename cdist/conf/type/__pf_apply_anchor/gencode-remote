@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/sh -e
 #
-# 2012 Jake Guffey (jake.guffey at eprotex.com)
+# 2016 Kamila Součková (coding at kamila.is)
 #
 # This file is part of cdist.
 #
@@ -18,24 +18,16 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Get the 256 bit SHA2 checksum of the pf ruleset on the target host.
+# Apply pf(4) ruleset on *BSD
 #
 
-# Debug
-#exec >&2
-#set -x
+ANCHORS_DIR="/etc/pf.d"
 
-# Check /etc/rc.conf for pf's configuration file name. Default to /etc/pf.conf
-# See if file exists and if so, get checksum
-
-RC="/etc/rc.conf"
-TMP="$(grep '^pf_rules=' ${RC} | cut -d= -f2 | sed 's/"//g')"
-PFCONF="${TMP:-"/etc/pf.conf"}"
-
-if [ -f "${PFCONF}" ]; then	# The pf config file exists, find its cksum.
-	cksum -o 1 "${PFCONF}" | cut -d= -f2 | awk '{print $1}'
+if [ -f "${__object}/parameter/anchor_name" ]; then
+    anchor_name="$(cat "${__object}/parameter/anchor_name")"
+else
+    anchor_name="${__object_id}"
 fi
+anchor_file="${ANCHORS_DIR}/${anchor_name}"
 
-# Debug
-#set +x
-
+echo "pfctl -a \"${anchor_name}\" -f \"${anchor_file}\""

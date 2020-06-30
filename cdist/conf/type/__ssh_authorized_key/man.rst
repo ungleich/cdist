@@ -15,25 +15,27 @@ This type was created to be used by the __ssh_authorized_keys type.
 REQUIRED PARAMETERS
 -------------------
 file
-   the authorized_keys file to which the given key should be added
+   The authorized_keys file where the given key should be managed.
 
 key
-   a string containing the ssh keytype, base 64 encoded key and optional
-   trailing comment which shall be added to the given authorized_keys file.
+   The ssh key which shall be managed in this authorized_keys file.
+   Must be a string containing the ssh keytype, base 64 encoded key and
+   optional trailing comment which shall be added to the given
+   authorized_keys file.
 
 
 OPTIONAL PARAMETERS
 -------------------
 comment
-   explicit comment instead of the one which may be trailing the given key
+   Use this comment instead of the one which may be trailing in the key.
 
 option
-   an option to set for this authorized_key entry.
+   An option to set for this authorized_key entry.
    Can be specified multiple times.
    See sshd(8) for available options.
 
 state
-   if the given keys should be 'present' or 'absent', defaults to 'present'.
+   If the managed key should be 'present' or 'absent', defaults to 'present'.
 
 
 MESSAGES
@@ -64,7 +66,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:strong:`cdist__ssh_authorized_keys`\ (7), :strong:`sshd`\ (8)
+:strong:`cdist-type__ssh_authorized_keys`\ (7), :strong:`sshd`\ (8)
 
 
 AUTHORS

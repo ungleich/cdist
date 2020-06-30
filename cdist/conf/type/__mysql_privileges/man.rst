@@ -17,7 +17,7 @@ REQUIRED PARAMETERS
 database
    Name of database.
 
-User
+user
    Name of user.
 
 

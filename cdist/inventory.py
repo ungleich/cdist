@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # 2016 Darko Poljak (darko.poljak at gmail.com)
@@ -80,7 +79,7 @@ def rstrip_nl(s):
     return str.rstrip(s, "\n")
 
 
-class Inventory(object):
+class Inventory:
     """Inventory main class"""
 
     def __init__(self, db_basedir=dist_inventory_db, configuration=None):

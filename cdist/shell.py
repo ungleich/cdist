@@ -32,10 +32,8 @@ import cdist.config
 log = logging.getLogger(__name__)
 
 
-class Shell(object):
-
+class Shell:
     def __init__(self, shell=None):
-
         self.shell = shell
 
         self.target_host = (

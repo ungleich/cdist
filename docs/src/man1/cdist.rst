@@ -15,52 +15,51 @@ SYNOPSIS
 
     cdist banner [-h] [-l LOGLEVEL] [-q] [-v]
 
-    cdist config [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE] [-4]
-                 [-6] [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
-                 [-j [JOBS]] [-n] [-o OUT_PATH] [-P]
-                 [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
-                 [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
-                 [-S] [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE]
-                 [-p [HOST_MAX]] [-s] [-t]
+    cdist config [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                 [-g CONFIG_FILE] [-4] [-6] [-C CACHE_PATH_PATTERN]
+                 [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [--log-server]
+                 [-n] [-o OUT_PATH] [-P] [-R [{tar,tgz,tbz2,txz}]]
+                 [-r REMOTE_OUT_PATH] [--remote-copy REMOTE_COPY]
+                 [--remote-exec REMOTE_EXEC] [-S] [-I INVENTORY_DIR] [-A]
+                 [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                  [host [host ...]]
 
-    cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE] [-4]
-                  [-6] [-C CACHE_PATH_PATTERN] [-c CONF_DIR] [-i MANIFEST]
-                  [-j [JOBS]] [-n] [-o OUT_PATH] [-P]
-                  [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
-                  [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
-                  [-S] [-I INVENTORY_DIR] [-A] [-a] [-f HOSTFILE]
-                  [-p [HOST_MAX]] [-s] [-t]
+    cdist install [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                  [-g CONFIG_FILE] [-4] [-6] [-C CACHE_PATH_PATTERN]
+                  [-c CONF_DIR] [-i MANIFEST] [-j [JOBS]] [--log-server]
+                  [-n] [-o OUT_PATH] [-P] [-R [{tar,tgz,tbz2,txz}]]
+                  [-r REMOTE_OUT_PATH] [--remote-copy REMOTE_COPY]
+                  [--remote-exec REMOTE_EXEC] [-S] [-I INVENTORY_DIR] [-A]
+                  [-a] [-f HOSTFILE] [-p [HOST_MAX]] [-s] [-t]
                   [host [host ...]]
 
     cdist inventory [-h] {add-host,add-tag,del-host,del-tag,list} ...
 
-    cdist inventory add-host [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                             [-g CONFIG_FILE] [-I INVENTORY_DIR]
-                             [-f HOSTFILE]
+    cdist inventory add-host [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                             [-g CONFIG_FILE] [-I INVENTORY_DIR] [-f HOSTFILE]
                              [host [host ...]]
 
-    cdist inventory add-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b]
-                            [-g CONFIG_FILE] [-I INVENTORY_DIR]
-                            [-f HOSTFILE] [-T TAGFILE] [-t TAGLIST]
+    cdist inventory add-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                            [-g CONFIG_FILE] [-I INVENTORY_DIR] [-f HOSTFILE]
+                            [-T TAGFILE] [-t TAGLIST]
                             [host [host ...]]
 
-    cdist inventory del-host [-h] [-l LOGLEVEL] [-q] [-v] [-b]
+    cdist inventory del-host [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
                              [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a]
                              [-f HOSTFILE]
                              [host [host ...]]
 
-    cdist inventory del-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b]
+    cdist inventory del-tag [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
                             [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a]
                             [-f HOSTFILE] [-T TAGFILE] [-t TAGLIST]
                             [host [host ...]]
 
-    cdist inventory list [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-g CONFIG_FILE]
-                         [-I INVENTORY_DIR] [-a] [-f HOSTFILE] [-H] [-t]
+    cdist inventory list [-h] [-l LOGLEVEL] [-q] [-v] [-b] [--colors WHEN]
+                         [-g CONFIG_FILE] [-I INVENTORY_DIR] [-a] [-f HOSTFILE]
+                         [-H] [-t]
                          [host [host ...]]
 
-    cdist preos [-h] [-l LOGLEVEL] [-q] [-v] [-c CONF_DIR] [-g CONFIG_FILE]
-                [-L]
+    cdist preos [-h] [-l LOGLEVEL] [-q] [-v] [-c CONF_DIR] [-g CONFIG_FILE] [-L]
                 [preos] ...
 
     cdist preos [preos-options] debian [-h] [-l LOGLEVEL] [-q] [-v] [-b] [-a ARCH] [-B]
@@ -84,9 +83,10 @@ SYNOPSIS
                                        [-S SCRIPT] [-s SUITE] [-y REMOTE_COPY]
                                        target_dir
 
-    cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [-s SHELL]
+    cdist shell [-h] [-l LOGLEVEL] [-q] [-v] [--colors WHEN] [-s SHELL]
 
-    cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-g CONFIG_FILE] [-t] [pattern]
+    cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-g CONFIG_FILE] [-t]
+               [pattern]
 
 
 DESCRIPTION
@@ -95,7 +95,7 @@ cdist is the frontend executable to the cdist configuration management.
 It supports different subcommands as explained below.
 
 It is written in Python so it requires :strong:`python`\ (1) to be installed.
-It requires a minimal Python version 3.2.
+It requires a minimal Python version 3.5.
 
 GENERAL
 -------
@@ -103,6 +103,14 @@ All commands accept the following options:
 
 **-h, --help**
     Show the help screen.
+
+**--colors WHEN**
+    Colorize cdist's output. If enabled, cdist will use different colors for
+    different log levels.
+    WHEN recognizes the values 'always', 'never', and 'auto' (the default).
+
+    If the value is 'auto', colored output is enabled if stdout is a TTY
+    unless the NO_COLOR (https://no-color.org/) environment variable is defined.
 
 **-l LOGLEVEL, --log-level LOGLEVEL**
     Set the specified verbosity level. The levels, in
@@ -156,7 +164,7 @@ Install command is currently in beta.
 
 **-b, --beta**
     Enable beta functionality.
-    
+
 **-C CACHE_PATH_PATTERN, --cache-path-pattern CACHE_PATH_PATTERN**
     Specify custom cache path pattern. If it is not set then
     default hostdir is used. For more info on format see
@@ -179,7 +187,7 @@ Install command is currently in beta.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -193,6 +201,12 @@ Install command is currently in beta.
     jobs. Global explorers, object prepare and object run
     are supported. Without argument CPU count is used by
     default.
+
+**--log-server**
+    Start a log server for sub processes to use. This is
+    mainly useful when running cdist nested from a code-
+    local script. Log server is always implicitly started
+    for 'install' command.
 
 **-n, --dry-run**
     Do not execute code.
@@ -294,7 +308,7 @@ Add host(s) to inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -324,7 +338,7 @@ Add tag(s) to inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -367,7 +381,7 @@ Delete host(s) from inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -401,7 +415,7 @@ Delete tag(s) from inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -448,7 +462,7 @@ List inventory database.
 
 **-I INVENTORY_DIR, --inventory INVENTORY_DIR**
     Use specified custom inventory directory. Inventory
-    directory is set up by the following rules: if cdist 
+    directory is set up by the following rules: if cdist
     configuration resolves this value then specified
     directory is used, if HOME env var is set then
     ~/.cdit/inventory is used, otherwise distribution
@@ -673,6 +687,9 @@ The possible keywords and their meanings are as follows:
 :strong:`cache_path_pattern`
     Specify cache path pattern.
 
+:strong:`colored_output`
+    Colorize cdist's output. cf. the :code:`--colors` option.
+
 :strong:`conf_dir`
     List of configuration directories separated with the character conventionally
     used by the operating system to separate search path components (as in PATH),
@@ -726,7 +743,7 @@ The possible keywords and their meanings are as follows:
     in the format: YYYYMMDDHHMMSS.us.
 
 :strong:`verbosity`
-    Set verbosity level. Valid values are: 
+    Set verbosity level. Valid values are:
     'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE' and 'OFF'.
 
 
@@ -758,7 +775,7 @@ cdist/preos
 NOTES
 -----
 cdist detects if host is specified by IPv6 address. If so then remote_copy
-command is executed with host address enclosed in square brackets 
+command is executed with host address enclosed in square brackets
 (see :strong:`scp`\ (1)).
 
 EXAMPLES
@@ -893,6 +910,9 @@ CDIST_BETA
 CDIST_CACHE_PATH_PATTERN
     Custom cache path pattern.
 
+CDIST_COLORED_OUTPUT
+    Colorize cdist's output. cf. the :code:`--colors` option.
+
 CDIST_CONFIG_FILE
     Custom configuration file.
 
@@ -955,5 +975,5 @@ such case and display a warning message. An example of such a case:
 
 COPYING
 -------
-Copyright \(C) 2011-2019 Nico Schottelius. Free use of this software is
+Copyright \(C) 2011-2020 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License v3 or later (GPLv3+).

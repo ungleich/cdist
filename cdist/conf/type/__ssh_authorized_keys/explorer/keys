@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+# shellcheck disable=SC1090
+file="$( . "$__type_explorer/file" )"
+
+if [ -f "$file" ]
+then
+    cat "$file"
+fi

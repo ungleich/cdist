@@ -224,6 +224,7 @@ hor_line()
 if [ "${do_global_explorer}" ]
 then
     print_verbose 2 "Dumping global explorers"
+    # shellcheck disable=SC2086
     set -- "$@" ${or} \( \
                 -path "*/explorer/*" -a \
                 ! -path "*/conf/*" -a \

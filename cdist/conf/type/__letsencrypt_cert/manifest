@@ -91,6 +91,9 @@ if [ -z "${certbot_fullpath}" ]; then
 
 			certbot_fullpath=/usr/local/bin/certbot
 		;;
+		ubuntu)
+            __package certbot
+            ;;
 		*)
 			echo "Unsupported os: $os" >&2
 			exit 1

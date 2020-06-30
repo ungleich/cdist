@@ -30,7 +30,7 @@ host="$( cat "$__object/parameter/host" )"
 
 check_privileges="$( 
     mysql -B -N -e "show grants for '$user'@'$host'" \
-        | grep -Ei "^grant $privileges on .$database.\..$table. to " || true )"
+        | grep -Ei "^grant $privileges on .$database.\..?$table.? to " || true )"
 
 if [ -n "$check_privileges" ]
 then

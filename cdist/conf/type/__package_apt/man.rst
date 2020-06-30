@@ -11,6 +11,9 @@ DESCRIPTION
 apt-get is usually used on Debian and variants (like Ubuntu) to
 manage packages.
 
+This type will also update package index, if it is older
+than one day, to avoid missing package error messages.
+
 
 REQUIRED PARAMETERS
 -------------------

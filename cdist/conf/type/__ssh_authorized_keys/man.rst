@@ -20,42 +20,48 @@ then left to the user to ensure that the file exists and that ownership and
 permissions work with ssh.
 
 
-REQUIRED PARAMETERS
--------------------
+REQUIRED MULTIPLE PARAMETERS
+----------------------------
 key
-   the ssh key which shall be added to this authorized_keys file.
-   Must be a string and can be specified multiple times.
+   An ssh key which shall be managed in this authorized_keys file.
+   Must be a string containing the ssh keytype, base 64 encoded key and
+   optional trailing comment which shall be added to the given
+   authorized_keys file.
+   Can be specified multiple times.
 
 
 OPTIONAL PARAMETERS
 -------------------
 comment
-   explicit comment instead of the one which may be trailing the given key
+   Use this comment instead of the one which may be trailing in each key.
 
 file
-   an alternative destination file, defaults to ~$owner/.ssh/authorized_keys
+   An alternative destination file, defaults to ~$owner/.ssh/authorized_keys.
 
 option
-   an option to set for all created authorized_key entries.
+   An option to set for all authorized_key entries in the key parameter.
    Can be specified multiple times.
    See sshd(8) for available options.
 
 owner
-   the user owning the authorized_keys file, defaults to object_id.
+   The user owning the authorized_keys file, defaults to object_id.
 
 state
-   if the given keys should be 'present' or 'absent', defaults to 'present'.
+   If the given keys should be 'present' or 'absent', defaults to 'present'.
 
 
 BOOLEAN PARAMETERS
 ------------------
 noparent
-   don't create or change ownership and permissions of the directory containing
-   the authorized_keys file
+   Don't create or change ownership and permissions of the directory containing
+   the authorized_keys file.
 
 nofile
-   don't manage existence, ownership and permissions of the the authorized_keys
-   file
+   Don't manage existence, ownership and permissions of the the authorized_keys
+   file.
+
+remove-unknown
+   Remove undefined keys.
 
 
 EXAMPLES
@@ -66,6 +72,12 @@ EXAMPLES
     # add your ssh key to remote root's authorized_keys file
     __ssh_authorized_keys root \
        --key "$(cat ~/.ssh/id_rsa.pub)"
+
+    # same as above, but make sure your key is only key in
+    # root's authorized_keys file
+    __ssh_authorized_keys root \
+       --key "$(cat ~/.ssh/id_rsa.pub)" \
+       --remove-unknown
 
     # allow key to login as user-name
     __ssh_authorized_keys user-name \

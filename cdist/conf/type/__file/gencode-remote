@@ -55,36 +55,40 @@ set_owner() {
 }
 
 set_mode() {
-   echo "chmod '$1' '$destination'"
-   echo "chmod '$1'" >> "$__messages_out"
-   fire_onchange=1
+    echo "chmod '$1' '$destination'"
+    echo "chmod '$1'" >> "$__messages_out"
+    fire_onchange=1
 }
 
 case "$state_should" in
-    present|exists|pre-exists)
-    # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
-    #  clearing S_ISUID and S_ISGID bits (see chown(2))
-    for attribute in group owner mode; do
-        if [ -f "$__object/parameter/$attribute" ]; then
-            value_should="$(cat "$__object/parameter/$attribute")"
+    present|exists)
+        # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
+        #  clearing S_ISUID and S_ISGID bits (see chown(2))
+        for attribute in group owner mode; do
+            if [ -f "$__object/parameter/$attribute" ]; then
+                value_should="$(cat "$__object/parameter/$attribute")"
 
-            # change 0xxx format to xxx format => same as stat returns
-            if [ "$attribute" = mode ]; then
-                value_should="$(echo "$value_should" | sed 's/^0\(...\)/\1/')"
+                # change 0xxx format to xxx format => same as stat returns
+                if [ "$attribute" = mode ]; then
+                    value_should="$(echo "$value_should" | sed 's/^0\(...\)/\1/')"
+                fi
+
+                value_is="$(get_current_value "$attribute" "$value_should")"
+                if [ -f "$__object/files/set-attributes" ] || [ "$value_should" != "$value_is" ]; then
+                    "set_$attribute" "$value_should"
+                fi
             fi
-            
-            value_is="$(get_current_value "$attribute" "$value_should")"
-            if [ -f "$__object/files/set-attributes" ] || [ "$value_should" != "$value_is" ]; then
-                "set_$attribute" "$value_should"
-            fi
+        done
+        if [ -f "$__object/files/set-attributes" ]; then
+            # set-attributes is created if file is created or uploaded in gencode-local
+            fire_onchange=1
         fi
-    done
-    if [ -f "$__object/files/set-attributes" ]; then
-        # set-attributes is created if file is created or uploaded in gencode-local
-        fire_onchange=1
-    fi
-
     ;;
+
+    pre-exists)
+        # pre-exists should never reach gencode-remote…
+        exit 1
+   ;;
 
     absent)
         if [ "$type" = "file" ]; then
@@ -101,7 +105,7 @@ case "$state_should" in
 esac
 
 if [ -f "$__object/parameter/onchange" ]; then
-   if [ -n "$fire_onchange" ]; then
-      cat "$__object/parameter/onchange"
-   fi
+    if [ -n "$fire_onchange" ]; then
+        cat "$__object/parameter/onchange"
+    fi
 fi

@@ -25,7 +25,7 @@ people, have a look at `cdist best practice <cdist-best-practice.html>`_.
 Setup working directory and branch
 ----------------------------------
 I assume you have a fresh copy of the cdist tree in ~/cdist, cloned from
-one of the official urls (see `cdist quickstart <cdist-quickstart.html>`_ if you don't).
+one of the official URLs (see `cdist quickstart <cdist-quickstart.html>`_ if you don't).
 Entering the command "git branch" should show you "* master", which indicates
 you are on the **master** branch.
 
