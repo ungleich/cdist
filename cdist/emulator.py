@@ -91,10 +91,6 @@ class Emulator:
         self.type_name = os.path.basename(argv[0])
         self.cdist_type = core.CdistType(self.type_base_path, self.type_name)
 
-        # If set then object alreay exists and this var holds existing
-        # requirements.
-        self._existing_reqs = None
-
         self.__init_log()
 
     def run(self):
@@ -230,9 +226,6 @@ class Emulator:
                 self.parameters[key] = value
 
         if self.cdist_object.exists and 'CDIST_OVERRIDE' not in self.env:
-            # Make existing requirements a set so that we can compare it
-            # later with new requirements.
-            self._existing_reqs = set(self.cdist_object.requirements)
             obj_params = self._object_params_in_context()
             if obj_params != self.parameters:
                 errmsg = ("Object %s already exists with conflicting "
@@ -251,23 +244,26 @@ class Emulator:
             else:
                 self.cdist_object.create()
             self.cdist_object.parameters = self.parameters
-            # record the created object in typeorder file
-            with open(self.typeorder_path, 'a') as typeorderfile:
-                print(self.cdist_object.name, file=typeorderfile)
-            # record the created object in parent object typeorder file
-            __object_name = self.env.get('__object_name', None)
-            depname = self.cdist_object.name
-            if __object_name:
-                parent = self.cdist_object.object_from_name(__object_name)
-                parent.typeorder.append(self.cdist_object.name)
-                if self._order_dep_on():
-                    self.log.trace(('[ORDER_DEP] Adding %s to typeorder dep'
-                                    ' for %s'), depname, parent.name)
-                    parent.typeorder_dep.append(depname)
-            elif self._order_dep_on():
-                self.log.trace('[ORDER_DEP] Adding %s to global typeorder dep',
-                               depname)
-                self._add_typeorder_dep(depname)
+        # Do the following recording even if object exists, but with
+        # different requirements.
+
+        # record the created object in typeorder file
+        with open(self.typeorder_path, 'a') as typeorderfile:
+            print(self.cdist_object.name, file=typeorderfile)
+        # record the created object in parent object typeorder file
+        __object_name = self.env.get('__object_name', None)
+        depname = self.cdist_object.name
+        if __object_name:
+            parent = self.cdist_object.object_from_name(__object_name)
+            parent.typeorder.append(self.cdist_object.name)
+            if self._order_dep_on():
+                self.log.trace(('[ORDER_DEP] Adding %s to typeorder dep'
+                                ' for %s'), depname, parent.name)
+                parent.typeorder_dep.append(depname)
+        elif self._order_dep_on():
+            self.log.trace('[ORDER_DEP] Adding %s to global typeorder dep',
+                           depname)
+            self._add_typeorder_dep(depname)
 
         # Record / Append source
         self.cdist_object.source.append(self.object_source)
@@ -321,8 +317,6 @@ class Emulator:
         # (__file//bar => __file/bar)
         # This ensures pattern matching is done against sanitised list
         self.cdist_object.requirements.append(cdist_object.name)
-
-        return cdist_object.name
 
     def _order_dep_on(self):
         return os.path.exists(self.order_dep_state_path)
@@ -392,7 +386,6 @@ class Emulator:
                 # so do not set a requirement
                 pass
 
-        reqs = set()
         if "require" in self.env:
             requirements = self.env['require']
             self.log.debug("reqs = " + requirements)
@@ -400,23 +393,7 @@ class Emulator:
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0:
                     continue
-                object_name = self.record_requirement(requirement)
-                reqs.add(object_name)
-        if self._existing_reqs is not None:
-            # If object exists then compare existing and new requirements.
-            if self._existing_reqs != reqs:
-                warnmsg = ("Object {} already exists with requirements:\n"
-                           "{}: {}\n"
-                           "{}: {}\n"
-                           "Dependency resolver could not handle dependencies "
-                           "as expected.".format(
-                               self.cdist_object.name,
-                               " ".join(self.cdist_object.source),
-                               self._existing_reqs,
-                               self.object_source,
-                               reqs
-                           ))
-                self.log.warning(warnmsg)
+                self.record_requirement(requirement)
 
     def record_auto_requirements(self):
         """An object shall automatically depend on all objects that it
