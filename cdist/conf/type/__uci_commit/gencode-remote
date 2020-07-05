@@ -23,19 +23,28 @@ batchfile="${__global:?}/tmp/__uci/${transaction_name}.txt"
 
 test -s "${batchfile}" || exit 0
 
-if test -s "${__object:?}/explorer/changes"
+printf 'commit transaction %s\n' "${transaction_name}" >>"${__messages_out:?}"
+
+# NOTE: Uncommited changes are checked in code-remote instead of in an explorer
+#       because in cdist there is no interlocking between explorers and code
+#       execution.
+#       Checking for uncommited changes in an explorer leaves a time slot in
+#       which changes made are not detected by the code.
+#       Furthermore an explorer running concurrently with another transactions
+#       code-remote could lead to a false positive.
+
+cat <<CODE
+changes=\$(uci changes)
+
+if test -n "\${changes}"
 then
 	echo 'Uncommited UCI changes were found on the target:'
-	cat "${__object:?}/explorer/changes"
-	echo
+	printf '%s\n\n' "\${changes}"
 	echo 'This can be caused by manual changes or due to a previous failed run.'
 	echo 'Please investigate the situation, revert or commit the changes, and try again.'
 	exit 1
 fi >&2
 
-printf 'commit transaction %s\n' "${transaction_name}" >>"${__messages_out:?}"
-
-cat <<CODE
 rollback() {
 	uci changes \\
 	| sed -e 's/\..*\$//' -e 's/^-//' \\
