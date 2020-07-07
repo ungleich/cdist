@@ -44,14 +44,14 @@ cmd-get
    Command used for downloading.
    Command must output to ``stdout``.
    Parameter will be used for ``printf`` and must include only one
-   variable ``%s`` which will become URL.
+   format specification ``%s`` which will become URL.
    For example: ``wget -O - '%s'``.
 
 cmd-sum
    Command used for checksum calculation.
    Command output and ``--sum`` parameter must match.
    Parameter will be used for ``printf`` and must include only one
-   variable ``%s`` which will become destination.
+   format specification ``%s`` which will become destination.
    For example: ``md5sum '%s' | awk '{print $1}'``.
 
 
