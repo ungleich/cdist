@@ -25,7 +25,7 @@ then
 
 elif command -v curl > /dev/null
 then
-    cmd="curl -o - '%s'"
+    cmd="curl -L -o - '%s'"
 
 elif command -v fetch > /dev/null
 then
