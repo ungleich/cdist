@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+if [ -f "$__object/parameter/cmd-get" ]
+then
+    cmd="$( cat "$__object/parameter/cmd-get" )"
+
+elif command -v curl > /dev/null
+then
+    cmd="curl -L -o - '%s'"
+
+elif command -v fetch > /dev/null
+then
+    cmd="fetch -o - '%s'"
+
+else
+    cmd="wget -O - '%s'"
+fi
+
+echo "$cmd"
