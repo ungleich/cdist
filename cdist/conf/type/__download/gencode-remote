@@ -19,7 +19,7 @@ then
     echo 'downloaded' > "$__messages_out"
 fi
 
-if [ -f "$__object/parameter/onchange" ] && [ "$state" != "present" ]
+if [ -f "$__object/parameter/onchange" ] && [ "$state_is" != "present" ]
 then
     cat "$__object/parameter/onchange"
 fi
