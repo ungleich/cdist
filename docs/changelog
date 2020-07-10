@@ -7,6 +7,7 @@ next:
 	* Type __package_opkg: Add locking (Dennis Camera)
 	* Type __hosts: Add --alias parameter (Dennis Camera)
 	* Type __user: Fix shadow explorer for OpenBSD (Dennis Camera)
+	* Core: Make emulator-part code consistent; remove faulty warning (Darko Poljak)
 
 6.6.0: 2020-06-17
 	* Type __ssh_authorized_keys: Add option for removing undefined keys (Ander Punnar)
