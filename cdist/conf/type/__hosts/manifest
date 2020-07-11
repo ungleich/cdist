@@ -19,21 +19,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-set -e -u
+set -e
 
 hostname=$__object_id
-state=$(cat "$__object/parameter/state")
-marker="# __hosts/$hostname"
+state=$(cat "${__object}/parameter/state")
+marker="# __hosts/${hostname}"
 
-if [ "$state" = 'absent' ]
+if test "${state}" != 'absent'
 then
-	set -- --regex "$marker"
-else
-	ip=$(cat "$__object/parameter/ip")
-	aliases=$(while read -r a; do printf '\t%s' "$a"; done <"$__object/parameter/alias")
+	ip=$(cat "${__object}/parameter/ip")
+	if test -s "${__object}/parameter/alias"
+	then
+		aliases=$(while read -r a; do printf '\t%s' "$a"; done <"$__object/parameter/alias")
+	fi
 
 	set -- --line "$(printf '%s\t%s%s  %s' \
-		"$ip" "$hostname" "$aliases" "$marker")"
+		"${ip}" "${hostname}" "${aliases}" "${marker}")"
+else
+	set -- --regex "$(echo "${marker}" | sed -e 's/\./\\./')$"
 fi
 
-__line "__hosts/$hostname" --file /etc/hosts --state "$state" "$@"
+__line "/etc/hosts:${hostname}" --file /etc/hosts --state "${state}" "$@"
