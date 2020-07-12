@@ -30,7 +30,7 @@ fallback() {
    gid=$(echo "$ls_line" | awk '{ print $4 }')
 
    owner=$(awk -F: -v uid="$uid" '$3 == uid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/passwd)
-   group=$(awk -F: -v uid="$uid" '$3 == uid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/group)
+   group=$(awk -F: -v gid="$gid" '$3 == gid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/group)
 
    mode_text=$(echo "$ls_line" | awk '{ print $1 }')
    mode=$(echo "$mode_text" | awk '{for(i=8;i>=0;--i){c=substr($1,10-i,1);k+=((c~/[rwxst]/)*2^i);if(!(i%3))k+=(tolower(c)~/[st]/)*2^(9+i/3)}printf("%04o",k)}')
