@@ -8,6 +8,8 @@ next:
 	* Type __hosts: Add --alias parameter (Dennis Camera)
 	* Type __user: Fix shadow explorer for OpenBSD (Dennis Camera)
 	* Core: Make emulator-part code consistent; remove faulty warning (Darko Poljak)
+	* Types __file, __directory: Support setuid, setguid, sticky bits (Dennis Camera)
+	* Type __postfix_master: Fix --option parameter and option expansion (Daniel Fancsali)
 
 6.6.0: 2020-06-17
 	* Type __ssh_authorized_keys: Add option for removing undefined keys (Ander Punnar)
