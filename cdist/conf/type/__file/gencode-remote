@@ -68,9 +68,9 @@ case "$state_should" in
             if [ -f "$__object/parameter/$attribute" ]; then
                 value_should="$(cat "$__object/parameter/$attribute")"
 
-                # change 0xxx format to xxx format => same as stat returns
+                # format mode in four digits => same as stat returns
                 if [ "$attribute" = mode ]; then
-                    value_should="$(echo "$value_should" | sed 's/^0\(...\)/\1/')"
+                    value_should=$(printf '%04u' "${value_should}")
                 fi
 
                 value_is="$(get_current_value "$attribute" "$value_should")"
