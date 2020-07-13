@@ -67,7 +67,7 @@ case "$state_should" in
          remove_entry
       fi
       cat << DONE
-cat >> "$config" << ${__type##*/}_DONE
+cat >> "$config" << "${__type##*/}_DONE"
 $(cat "$entry")
 ${__type##*/}_DONE
 DONE
