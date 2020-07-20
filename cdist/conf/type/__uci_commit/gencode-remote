@@ -45,16 +45,37 @@ then
 	exit 1
 fi >&2
 
-rollback() {
-	uci changes \\
-	| sed -e 's/\..*\$//' -e 's/^-//' \\
-	| while read -r package
-	  do
-		  uci revert "\${package}"
-	  done
+check_errors() {
+	# reads stdin and forwards non-empty lines to stderr.
+	# returns 0 if stdin is empty, else 1.
+	! grep -e . >&2
 }
 
-uci batch <<'EOF' && uci commit || rollback
+commit() {
+	uci commit
+}
+
+rollback() {
+	echo >&2
+	echo 'An error occurred when trying to commit transaction ${transaction_name}!' >&2
+
+	uci changes \\
+	| sed -e 's/^-//' -e 's/\..*\$//' \\
+	| sort -u \\
+	| while read -r _package
+	  do
+		  uci revert "\${_package}"
+		  echo "\${_package}"  # for logging
+	  done \\
+	| awk '
+	  BEGIN { printf "Reverted changes in: " }
+	  { printf "%s%s", (FNR > 1 ? ", " : ""), \$0 }
+	  END { printf "\\n" }' >&2
+
+	return 1
+}
+
+uci batch <<'EOF' 2>&1 | check_errors && commit || rollback
 $(cat "${batchfile}")
 EOF
 CODE
