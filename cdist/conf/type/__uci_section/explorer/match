@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-# This explorer the "prefix" of the section matching --match.
+# This explorer determines the "prefix" of the --type section matching --match
+# if set, or __object_id otherwise.
 
 squote_values() {
 	sed -e '/=".*"$/{s/="/='\''/;s/"$/'\''/}' \
@@ -28,7 +29,7 @@ RS=$(printf '\036')
 
 if ! test -e "${__object:?}/parameter/match"
 then
-	if echo "${__object_id:?}" | grep -qvE '^[^.]+\.[^.]+$'
+	if ! echo "${__object_id:?}" | grep -q -e '^[^.]\{1,\}\.[^.]\{1,\}$'
 	then
 		echo 'Section identifiers are a package and section name separated by a "." (period).' >&2
 		exit 1
@@ -47,16 +48,28 @@ test -s "${__object:?}/parameter/match" && test -s "${__object:?}/parameter/type
 }
 
 # Find by match
-match=$(cat "${__object:?}/parameter/match")
-sect_type_filter=$(cat "${__object:?}/parameter/type")
+# NOTE: Apart from section types all values are printed in single quotes by UCI.
+match=$(head -n 1 "${__object:?}/parameter/match" | squote_values)
 
+if ! grep -q -e '^[^.]\{1,\}\.[^.]\{1,\}$' "${__object:?}/parameter/type"
+then
+	echo 'Section types are a package name and section type separated by a "." (period).' >&2
+	exit 1
+fi
+
+sect_type_filter=$(cat "${__object:?}/parameter/type")
 package_filter=${sect_type_filter%%.*}
-section_filter=${sect_type_filter##*.}
+section_filter=${sect_type_filter#*.}
+# FIXME: Does not work with named sections
 regex="^${package_filter}\.@${section_filter}\[[0-9]\{1,\}\]\.${match%%=*}="
 
 matched_sections=$(
 	uci -s -N -d "${RS}" show "${package_filter}" 2>/dev/null \
 	| grep -e "${regex}" \
+	| while read -r _line
+	  do
+		  if test "${_line#*=}" = "${match#*=}"; then echo "${_line}"; fi
+	  done \
 	| sed -e 's/\.[^.]*=.*$//')
 
 if test "$(echo "${matched_sections}" | wc -l)" -gt 1
