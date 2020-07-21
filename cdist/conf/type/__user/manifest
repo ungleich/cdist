@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2019 Nico Schottelius (nico-cdist at schottelius.org)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -17,16 +18,37 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
 # Manage users.
+#
 
-os=$(cat "$__global/explorer/os")
-
-case "$os" in
-    alpine)
-        __package shadow
-        ;;
-    *)
-        :
-        ;;
+case $(cat "${__global}/explorer/os")
+in
+	(alpine)
+		__package shadow
+		;;
+	(openwrt)
+		case $(cat "${__object}/parameter/state")
+		in
+			(present)
+				if test -s "${__object}/explorer/passwd"
+				then
+					# NOTE: The package might not be required if no changes
+					# are required, but determining if changes are required is
+					# out of scope here, and 40k should be okay, I hope.
+					__package shadow-usermod
+				else
+					__package shadow-useradd
+				fi
+				;;
+			(absent)
+				if test -s "${__object}/explorer/passwd"
+				then
+					__package shadow-userdel
+				fi
+				;;
+		esac
+		;;
+	(*)
+		:
+		;;
 esac
