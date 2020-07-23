@@ -99,7 +99,9 @@ case "$state_should" in
 
             # format mode in four digits => same as stat returns
             if [ "$attribute" = mode ]; then
-                value_should=$(printf '%04u' "${value_should}")
+                # Convert to four-digit octal number (printf interprets
+                # strings with leading 0s as octal!)
+                value_should=$(printf '%04o' "0${value_should}")
             fi
 
             if [ "$set_attributes" = 1 ] || [ "$value_should" != "$value_is" ]; then
