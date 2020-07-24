@@ -25,6 +25,7 @@ case "${os}" in
         SLAPD_DATA_DIR="/var/db/openldap-data"
         SLAPD_RUN_DIR="/var/run/openldap"
         SLAPD_MODULE_PATH="/usr/local/libexec/openldap"
+        SLAPD_MODULE_TYPE="la"
         if [ -z "${slapd_modules}" ]; then
             # It looks like ppolicy and syncprov must be compiled
             slapd_modules="back_mdb back_monitor"
@@ -43,11 +44,32 @@ case "${os}" in
         SLAPD_DATA_DIR="/var/lib/ldap"
         SLAPD_RUN_DIR="/var/run/slapd"
         SLAPD_MODULE_PATH="/usr/lib/ldap"
+        SLAPD_MODULE_TYPE="la"
         if [ -z "${slapd_modules}" ]; then
             slapd_modules="back_mdb ppolicy syncprov back_monitor"
         fi
+        CONF_OWNER="openldap"
+        CONF_GROUP="openldap"
         if [ -z "${tls_cipher_suite}" ]; then
             tls_cipher_suite="NORMAL"
+        fi
+        ;;
+    alpine)
+        PKGS="openldap openldap-clients"
+        ETC="/etc"
+        SLAPD_DIR="/etc/openldap"
+        SLAPD_DATA_DIR="/var/lib/openldap"
+        SLAPD_RUN_DIR="/var/run/openldap"
+        SLAPD_MODULE_PATH="/usr/lib/openldap"
+        SLAPD_MODULE_TYPE="so"
+        if [ -z "${slapd_modules}" ]; then
+            slapd_modules="back_mdb ppolicy syncprov back_monitor"
+            PKGS="$PKGS openldap-back-mdb openldap-back-monitor openldap-overlay-all"
+        fi
+        CONF_OWNER="ldap"
+        CONF_GROUP="$SLAPD_USER"
+        if [ -z "${tls_cipher_suite}" ]; then
+            tls_cipher_suite="DEFAULT"
         fi
         ;;
     *)
@@ -156,6 +178,12 @@ case "${os}" in
                --line "SLAPD_SERVICES=\"${slapd_urls}\"" \
                --state present
         ;;
+    alpine)
+        require="__package/${PKG_MAIN}" __line add_slapd_services \
+               --file ${ETC}/conf.d/slapd \
+               --line "command_args=\"-h '${slapd_urls}'\"" \
+               --state present
+        ;;
     *)
         # Nothing to do here, move on.
         ;;
@@ -170,20 +198,22 @@ if [ -z "${_skip_letsencrypt_cert}" ]; then
     fi
 
     # shellcheck disable=SC2086
-    __letsencrypt_cert "${name}" --admin-email "${admin_email}" \
-        --renew-hook "cp ${ETC}/letsencrypt/live/${name}/*.pem ${SLAPD_DIR}/sasl2 && chown -R openldap:openldap ${SLAPD_DIR}/sasl2 && service slapd restart" \
-        --automatic-renewal ${staging}
+    __directory ${SLAPD_DIR}/sasl2
+    require="__directory/${SLAPD_DIR}/sasl2" __letsencrypt_cert "${name}" \
+        --admin-email "${admin_email}" \
+        --renew-hook "cp ${ETC}/letsencrypt/live/${name}/*.pem ${SLAPD_DIR}/sasl2 && chown -R ${CONF_OWNER}:${CONF_GROUP} ${SLAPD_DIR}/sasl2 && service slapd restart" \
+        --automatic-renewal "${staging}"
 fi
 
 require="__package/${PKG_MAIN}" __directory ${SLAPD_DIR}/slapd.d --state absent
 
 if [ -z "${_skip_letsencrypt_cert}" ]; then
     require="__package/${PKG_MAIN} __letsencrypt_cert/${name}" \
-           __file ${SLAPD_DIR}/slapd.conf --owner ${CONF_OWNER} --group ${CONF_GROUP} --mode 644 \
+           __file "${SLAPD_DIR}/slapd.conf" --owner "${CONF_OWNER}" --group "${CONF_GROUP}" --mode 644 \
            --source "${ldapconf}"
 else
     require="__package/${PKG_MAIN}" \
-           __file ${SLAPD_DIR}/slapd.conf --owner ${CONF_OWNER} --group ${CONF_GROUP} --mode 644 \
+           __file "${SLAPD_DIR}/slapd.conf" --owner "${CONF_OWNER}" --group "${CONF_GROUP}" --mode 644 \
            --source "${ldapconf}"
 fi
 
@@ -210,7 +240,7 @@ done
 # Add specified modules
 echo "modulepath ${SLAPD_MODULE_PATH}" >> "${ldapconf}"
 for module in ${slapd_modules}; do
-    echo "moduleload ${module}.la" >> "${ldapconf}"
+    echo "moduleload ${module}.${SLAPD_MODULE_TYPE}" >> "${ldapconf}"
 done
 
 # Rest of the config
