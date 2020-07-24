@@ -11,6 +11,7 @@ next:
 	* Types __file, __directory: Support setuid, setguid, sticky bits (Dennis Camera)
 	* Type __postfix_master: Fix --option parameter and option expansion (Daniel Fancsali)
 	* Type __user: Install user packages on OpenWrt (Dennis Camera)
+	* Type __openldap_server: Add Alpine support (Timothée Floure)
 
 6.6.0: 2020-06-17
 	* Type __ssh_authorized_keys: Add option for removing undefined keys (Ander Punnar)
