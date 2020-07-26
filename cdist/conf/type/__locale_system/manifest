@@ -24,6 +24,7 @@
 # Configure system-wide locale by modifying i18n file.
 #
 
+key=$__object_id
 onchange_cmd=  # none, by default
 quote_value=false
 
@@ -97,6 +98,25 @@ in
                 ;;
         esac
         ;;
+    suse)
+        os_version=$(cat "${__global}/explorer/os_version")
+        os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
+
+        # https://documentation.suse.com/sles/15-SP2/html/SLES-all/cha-suse.html#sec-suse-l10n
+        if expr "${os_major}" '>=' 15 \& "${os_major}" != 42
+        then
+            # It seems that starting with SuSE 15 the systemd /etc/locale.conf
+            # is the preferred way to set locales, although
+            # /etc/sysconfig/language is still available.
+            # Older documentation doesn't mention /etc/locale.conf, even though
+            # is it created when localectl is used.
+            locale_conf="/etc/locale.conf"
+        else
+            locale_conf="/etc/sysconfig/language"
+            quote_value=true
+            key="RC_${__object_id}"
+        fi
+        ;;
     voidlinux)
         locale_conf="/etc/locale.conf"
         ;;
@@ -110,9 +130,9 @@ esac
 __file "${locale_conf}" --state exists --owner root --group root --mode 0644
 
 require="__file/${locale_conf}" \
-__key_value "${locale_conf}:${__object_id}" \
+__key_value "${locale_conf}:${key}" \
     --file "${locale_conf}" \
-    --key "${__object_id}" \
+    --key "${key}" \
     --delimiter '=' --exact_delimiter \
     --state "$(cat "${__object}/parameter/state")" \
     --value "$(catval "${__object}/parameter/value")" \
