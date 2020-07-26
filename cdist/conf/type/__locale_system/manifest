@@ -99,6 +99,15 @@ in
                 ;;
         esac
         ;;
+    netbsd)
+        # NetBSD doesn't  have a separate configuration file to set locales.
+        # So the shell login file will have to do.
+        # "Non-POSIX" shells like csh will not be updated here.
+
+        locale_conf="/etc/profile"
+        quote_value=true
+        value="$(catval "${__object}/parameter/value"); export ${key}"
+        ;;
     solaris)
         locale_conf="/etc/default/init"
         locale_conf_group="sys"
@@ -172,5 +181,5 @@ __key_value "${locale_conf}:${key}" \
     --key "${key}" \
     --delimiter '=' --exact_delimiter \
     --state "${state_should}" \
-    --value "$(catval "${__object}/parameter/value")" \
+    --value "${value:-$(catval "${__object}/parameter/value")}" \
     --onchange "${onchange_cmd}"
