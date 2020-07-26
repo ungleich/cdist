@@ -141,6 +141,12 @@ in
             locale_conf_mode=0555
         fi
         ;;
+    slackware)
+        # NOTE: lang.csh (csh config) is ignored here.
+        locale_conf="/etc/profile.d/lang.sh"
+        locale_conf_mode=0755
+        key="export ${__object_id}"
+        ;;
     suse)
         os_version=$(cat "${__global}/explorer/os_version")
         os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
@@ -176,7 +182,7 @@ __file "${locale_conf}" --state exists \
     --mode "${locale_conf_mode:-0644}"
 
 require="__file/${locale_conf}" \
-__key_value "${locale_conf}:${key}" \
+__key_value "${locale_conf}:${key#export }" \
     --file "${locale_conf}" \
     --key "${key}" \
     --delimiter '=' --exact_delimiter \
