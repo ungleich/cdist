@@ -27,8 +27,28 @@
 os=$(cat "$__global/explorer/os")
 
 case "$os" in
-    debian|devuan|ubuntu)
+    debian)
+        os_version=$(cat "${__global}/explorer/os_version")
+        if expr "${os_version}" '>=' 4 >/dev/null
+        then
+            # Debian 4 (etch) and later
+            locale_conf="/etc/default/locale"
+        else
+            locale_conf="/etc/environment"
+        fi
+        ;;
+    devuan)
         locale_conf="/etc/default/locale"
+        ;;
+    ubuntu)
+        os_version=$(cat "${__global}/explorer/os_version")
+        if expr "${os_version}" '>=' 6.10 >/dev/null
+        then
+            # Ubuntu 6.10 (edgy) and later
+            locale_conf="/etc/default/locale"
+        else
+            locale_conf="/etc/environment"
+        fi
         ;;
     archlinux)
         locale_conf="/etc/locale.conf"
@@ -61,7 +81,7 @@ case "$os" in
 esac
 
 __file "$locale_conf" \
-       --owner root --group root --mode 644 \
+       --owner root --group root --mode 0644 \
        --state exists
 
 require="__file/$locale_conf" \
