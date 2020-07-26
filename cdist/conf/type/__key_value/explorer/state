@@ -40,7 +40,9 @@ else
 fi
 export key state delimiter value exact_delimiter
 
-awk -f - "$file" <<"AWK_EOF"
+awk_bin=$(PATH=$(getconf PATH 2>/dev/null) && command -v awk || echo awk)
+
+"${awk_bin}" -f - "$file" <<"AWK_EOF"
 BEGIN {
     state=ENVIRON["state"]
     key=ENVIRON["key"]

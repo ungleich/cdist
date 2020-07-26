@@ -24,7 +24,10 @@ if [ -f "$file" ]; then
 else
     touch "$file"
 fi
-awk -f - "$file" >"$tmpfile" <<"AWK_EOF"
+
+awk_bin=$(PATH=$(getconf PATH 2>/dev/null) && command -v awk || echo awk)
+
+"${awk_bin}" -f - "$file" >"$tmpfile" <<"AWK_EOF"
 BEGIN {
     # import variables in a secure way ..
     state=ENVIRON["state"]
