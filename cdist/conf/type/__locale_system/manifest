@@ -24,9 +24,19 @@
 # Configure system-wide locale by modifying i18n file.
 #
 
+onchange_cmd=  # none, by default
+quote_value=false
+
+catval() {
+    # shellcheck disable=SC2059
+    printf "$($quote_value && echo '"%s"' || echo '%s')" "$(cat "$1")"
+}
+
+
 os=$(cat "$__global/explorer/os")
 
-case "$os" in
+case $os
+in
     debian)
         os_version=$(cat "${__global}/explorer/os_version")
         if expr "${os_version}" '>=' 4 >/dev/null
@@ -69,9 +79,23 @@ case "$os" in
         if expr "${version_id}" '>=' 18 >/dev/null
         then
             locale_conf="/etc/locale.conf"
+            quote_value=false
         else
             locale_conf="/etc/sysconfig/i18n"
         fi
+        ;;
+    gentoo)
+        case $(cat "${__global}/explorer/init")
+        in
+            (*openrc*)
+                locale_conf="/etc/env.d/02locale"
+                onchange_cmd="env-update --no-ldconfig"
+                quote_value=true
+                ;;
+            (systemd)
+                locale_conf="/etc/locale.conf"
+                ;;
+        esac
         ;;
     *)
         echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
@@ -80,14 +104,13 @@ case "$os" in
         ;;
 esac
 
-__file "$locale_conf" \
-       --owner root --group root --mode 0644 \
-       --state exists
+__file "${locale_conf}" --state exists --owner root --group root --mode 0644
 
-require="__file/$locale_conf" \
-__key_value "$locale_conf:$__object_id" \
-       --file "$locale_conf" \
-       --key "$__object_id" \
-       --delimiter '=' --exact_delimiter \
-       --state "$(cat "$__object/parameter/state")" \
-       --value "$(cat "$__object/parameter/value")"
+require="__file/${locale_conf}" \
+__key_value "${locale_conf}:${__object_id}" \
+    --file "${locale_conf}" \
+    --key "${__object_id}" \
+    --delimiter '=' --exact_delimiter \
+    --state "$(cat "${__object}/parameter/state")" \
+    --value "$(catval "${__object}/parameter/value")" \
+    --onchange "${onchange_cmd}"
