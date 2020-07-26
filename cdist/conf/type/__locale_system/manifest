@@ -99,9 +99,10 @@ in
                 ;;
         esac
         ;;
-    netbsd)
-        # NetBSD doesn't  have a separate configuration file to set locales.
-        # So the shell login file will have to do.
+    freebsd|netbsd)
+        # NetBSD doesn't have a separate configuration file to set locales.
+        # In FreeBSD locales could be configured via /etc/login.conf but parsing
+        # that would be annoying, so the shell login file will have to do.
         # "Non-POSIX" shells like csh will not be updated here.
 
         locale_conf="/etc/profile"
