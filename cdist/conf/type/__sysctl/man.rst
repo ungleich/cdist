@@ -26,6 +26,13 @@ EXAMPLES
 
     __sysctl net.ipv4.ip_forward --value 1
 
+    # On some operating systems, e.g. NetBSD, to prevent an error if the
+    # MIB style name does not exist (e.g. optional kernel components),
+    # name and value can be separated by `?=`. The same effect can be achieved
+    # in cdist by appending a `?` to the key:
+
+    __sysctl ddb.onpanic? --value -1
+
 
 AUTHORS
 -------
