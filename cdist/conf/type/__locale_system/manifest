@@ -33,6 +33,7 @@ catval() {
     printf "$($quote_value && echo '"%s"' || echo '%s')" "$(cat "$1")"
 }
 
+state_should=$(cat "${__object}/parameter/state")
 
 os=$(cat "$__global/explorer/os")
 
@@ -98,6 +99,39 @@ in
                 ;;
         esac
         ;;
+    solaris)
+        locale_conf="/etc/default/init"
+        locale_conf_group="sys"
+
+        if expr "$(cat "${__global}/explorer/os_version")" '>=' 5.11 >/dev/null
+        then
+            # mode on Oracle Solaris 11 is actually 0444,
+            # but the write bit makes sense, IMO
+            locale_conf_mode=0644
+
+            # Oracle Solaris 11.2 and later uses SMF to store environment info.
+            # This is a hack, but I didn't feel like modifying the whole type
+            # just for some Oracle nonsense.
+            # 11.3 apparently added nlsadm(1m), but it is missing from 11.2.
+            # Illumos continues to use /etc/default/init
+            # NOTE: Remember not to use "cool" POSIX features like -q or -e with
+            # Solaris grep.
+            release_regex='Oracle Solaris 11.[2-9][0-9]*'
+            case $state_should
+            in
+                (present)
+                    svccfg_cmd="svccfg -s svc:/system/environment:init setprop environment/${key} = astring: '$(cat "${__object}/parameter/value")'"
+                    ;;
+                (absent)
+                    svccfg_cmd="svccfg -s svc:/system/environment:init delprop environment/${key}"
+                    ;;
+            esac
+            refresh_cmd='svcadm refresh svc:/system/environment'
+            onchange_cmd="grep '${release_regex}' /etc/release >&- || exit 0; ${svccfg_cmd:-:} && ${refresh_cmd}"
+        else
+            locale_conf_mode=0555
+        fi
+        ;;
     suse)
         os_version=$(cat "${__global}/explorer/os_version")
         os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
@@ -127,13 +161,16 @@ in
         ;;
 esac
 
-__file "${locale_conf}" --state exists --owner root --group root --mode 0644
+__file "${locale_conf}" --state exists \
+    --owner "${locale_conf_owner:-0}" \
+    --group "${locale_conf_group:-0}" \
+    --mode "${locale_conf_mode:-0644}"
 
 require="__file/${locale_conf}" \
 __key_value "${locale_conf}:${key}" \
     --file "${locale_conf}" \
     --key "${key}" \
     --delimiter '=' --exact_delimiter \
-    --state "$(cat "${__object}/parameter/state")" \
+    --state "${state_should}" \
     --value "$(catval "${__object}/parameter/value")" \
     --onchange "${onchange_cmd}"
