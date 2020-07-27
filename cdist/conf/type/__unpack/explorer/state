@@ -1,0 +1,37 @@
+#!/bin/sh -e
+
+src="/$__object_id"
+
+if [ -f "$__object/parameter/sum-file" ]
+then
+    src_sum_was_file="$( cat "$__object/parameter/sum-file" )"
+else
+    src_sum_was_file="$src.cdist__unpack_sum"
+fi
+
+if [ ! -f "$src" ]
+then
+    if [ -n "$__cdist_dry_run" ]
+    then
+        echo 'mismatch'
+    else
+        echo 'missing'
+    fi
+else
+    if [ ! -f "$src_sum_was_file" ]
+    then
+        echo 'mismatch'
+        exit 0
+    fi
+
+    src_sum_was="$( cat "$src_sum_was_file" )"
+
+    src_sum_is="$( cksum "$src" | awk '{ print $1$2 }' )"
+
+    if [ "$src_sum_was" = "$src_sum_is" ]
+    then
+        echo 'match'
+    else
+        echo 'mismatch'
+    fi
+fi
