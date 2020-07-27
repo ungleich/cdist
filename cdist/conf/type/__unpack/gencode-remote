@@ -1,0 +1,75 @@
+#!/bin/sh -e
+
+if grep -Eq '^(missing|match)$' "$__object/explorer/state"
+then
+    exit 0
+fi
+
+os="$( cat "$__global/explorer/os" )"
+
+src="/$__object_id"
+
+dst="$( sed 's/\/$//' "$__object/parameter/destination" )"
+
+cmd=''
+
+case "$src" in
+    *.tar|*.tgz|*.tar.*)
+        cmd="mkdir -p '$dst' && tar --directory='$dst' --extract --file='$src'"
+
+        if [ -f "$__object/parameter/tar-strip" ]
+        then
+            tar_strip="$( cat "$__object/parameter/tar-strip" )"
+
+            cmd="$cmd --strip-components=$tar_strip"
+        fi
+    ;;
+    *.7z)
+        case "$os" in
+            centos|fedora|redhat)
+                cmd='7za'
+            ;;
+            *)
+                cmd='7zr'
+            ;;
+        esac
+
+        cmd="$cmd e -aoa -o'$dst' '$src'"
+    ;;
+    *.bz2)
+        cmd="bunzip2 --stdout '$src' > '$dst'"
+    ;;
+    *.gz)
+        cmd="gunzip --stdout '$src' > '$dst'"
+    ;;
+    *.lzma|*.xz)
+        cmd="xz --uncompress --stdout '$src' > '$dst'"
+    ;;
+    *.rar)
+        cmd="unrar x -o+ '$src' '$dst/'"
+    ;;
+    *.zip)
+        cmd="unzip -o '$src' -d '$dst'"
+    ;;
+esac
+
+if [ -f "$__object/parameter/backup-destination" ]
+then
+    echo "if [ -e '$dst' ]; then mv '$dst' '$dst.cdist__unpack_backup_$( date +%s )'; fi"
+fi
+
+echo "$cmd"
+
+if [ -f "$__object/parameter/sum-file" ]
+then
+    sum_file="$( cat "$__object/parameter/sum-file" )"
+else
+    sum_file="$src.cdist__unpack_sum"
+fi
+
+echo "cksum '$src' | awk '{ print \$1\$2 }' > '$sum_file'"
+
+if [ ! -f "$__object/parameter/preserve-archive" ]
+then
+    echo "rm -f '$src'"
+fi
