@@ -13,6 +13,9 @@ next:
 	* Type __user: Install user packages on OpenWrt (Dennis Camera)
 	* Type __openldap_server: Add Alpine support (Timothée Floure)
 	* Type __pf_apply: Remove deprecated type (Darko Poljak)
+	* Type __package_apt: Fix for legacy APT versions that do not support --no-install-recommends (Dennis Camera)
+	* Type __key_value: Get awk from POSIX PATH (Dennis Camera)
+	* New type: __unpack (Ander Punnar)
 
 6.6.0: 2020-06-17
 	* Type __ssh_authorized_keys: Add option for removing undefined keys (Ander Punnar)
