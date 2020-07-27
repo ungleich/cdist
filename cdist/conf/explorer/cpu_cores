@@ -33,6 +33,7 @@ case "$os" in
     ;;
 
     "freebsd"|"netbsd")
+        PATH=$(getconf PATH)
         sysctl -n hw.ncpu
     ;;
 

@@ -30,9 +30,8 @@ case $uname_s in
         sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]+'
     ;;
     NetBSD)
-        PATH="${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
-        sysctl -n hw.disknames \
-        | awk 'BEGIN { RS = " " } /^[lsw]d[0-9]+/'
+        PATH=$(getconf PATH)
+        sysctl -n hw.disknames | awk -v RS=' ' '/^[lsw]d[0-9]+/'
     ;;
     Linux)
         # list of major device numbers toexclude:
