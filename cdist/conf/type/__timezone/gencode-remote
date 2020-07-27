@@ -22,7 +22,7 @@
 # This type allows to configure the desired localtime timezone.
 
 timezone_is=$(cat "$__object/explorer/timezone_is")
-timezone_should="$__object_id"
+timezone_should=$(cat "$__object/parameter/tz")
 os=$(cat "$__global/explorer/os")
 
 if [ "$timezone_is" = "$timezone_should" ]; then
