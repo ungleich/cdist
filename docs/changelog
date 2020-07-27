@@ -17,6 +17,8 @@ next:
 	* Type __key_value: Get awk from POSIX PATH (Dennis Camera)
 	* New type: __unpack (Ander Punnar)
 	* Type __locale_system: Support more OSes (Dennis Camera)
+	* Explorers cpu_cores, disks, memory: Fix for NetBSD (Dennis Camera)
+	* Type __sysctl: Fix for NetBSD (Dennis Camera)
 
 6.6.0: 2020-06-17
 	* Type __ssh_authorized_keys: Add option for removing undefined keys (Ander Punnar)
