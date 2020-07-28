@@ -94,7 +94,7 @@ code-remote
 '''
 
 
-class Code(object):
+class Code:
     """Generates and executes cdist code scripts.
 
     """

@@ -1,0 +1,58 @@
+#!/bin/sh -e
+
+download="$( cat "$__object/parameter/download" )"
+
+state_is="$( cat "$__object/explorer/state" )"
+
+if [ "$download" != 'local' ] || [ "$state_is" = 'present' ]
+then
+    exit 0
+fi
+
+url="$( cat "$__object/parameter/url" )"
+
+tmp="$( mktemp )"
+
+dst="/$__object_id"
+
+if [ -f "$__object/parameter/cmd-get" ]
+then
+    cmd="$( cat "$__object/parameter/cmd-get" )"
+
+elif command -v wget > /dev/null
+then
+    cmd="wget -O - '%s'"
+
+elif command -v curl > /dev/null
+then
+    cmd="curl -L -o - '%s'"
+
+elif command -v fetch > /dev/null
+then
+    cmd="fetch -o - '%s'"
+
+else
+    echo 'no usable locally installed utility for downloading' >&2
+    exit 1
+fi
+
+printf "$cmd > %s\n" \
+    "$url" \
+    "$tmp"
+
+if echo "$__target_host" | grep -Eq '^[0-9a-fA-F:]+$'
+then
+    target_host="[$__target_host]"
+else
+    target_host="$__target_host"
+fi
+
+printf '%s %s %s:%s\n' \
+    "$__remote_copy" \
+    "$tmp" \
+    "$target_host" \
+    "$dst"
+
+echo "rm -f '$tmp'"
+
+echo 'downloaded' > "$__messages_out"

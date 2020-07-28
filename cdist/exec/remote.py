@@ -49,7 +49,7 @@ class DecodeError(cdist.Error):
         return "Cannot decode output of " + " ".join(self.command)
 
 
-class Remote(object):
+class Remote:
     """Execute commands remotely.
 
     All interaction with the remote side should be done through this class.

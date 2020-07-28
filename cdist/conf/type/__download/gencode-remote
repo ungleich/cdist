@@ -1,0 +1,25 @@
+#!/bin/sh -e
+
+download="$( cat "$__object/parameter/download" )"
+
+state_is="$( cat "$__object/explorer/state" )"
+
+if [ "$download" = 'remote' ] && [ "$state_is" != 'present' ]
+then
+    cmd="$( cat "$__object/explorer/remote_cmd" )"
+
+    url="$( cat "$__object/parameter/url" )"
+
+    dst="/$__object_id"
+
+    printf "$cmd > %s\n" \
+        "$url" \
+        "$dst"
+
+    echo 'downloaded' > "$__messages_out"
+fi
+
+if [ -f "$__object/parameter/onchange" ] && [ "$state_is" != "present" ]
+then
+    cat "$__object/parameter/onchange"
+fi

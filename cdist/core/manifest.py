@@ -95,7 +95,7 @@ class NoInitialManifestError(cdist.Error):
         return repr(self.message)
 
 
-class Manifest(object):
+class Manifest:
     """Executes cdist manifests.
 
     """

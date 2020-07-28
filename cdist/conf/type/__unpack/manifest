@@ -1,0 +1,41 @@
+#!/bin/sh -e
+
+os="$( cat "$__global/explorer/os" )"
+
+src="/$__object_id"
+
+case "$src" in
+    *.7z)
+        __package p7zip
+    ;;
+    *.bz2)
+        case "$os" in
+            freebsd)
+                # bzip2 is part of freebsd base system
+            ;;
+            *)
+                __package bzip2
+            ;;
+        esac
+    ;;
+    *.lzma|*.xz|*.txz)
+        case "$os" in
+            debian|ubuntu|devuan)
+                __package xz-utils
+            ;;
+            alpine|centos)
+                __package xz
+            ;;
+        esac
+    ;;
+    *.rar)
+        case "$os" in
+            debian|ubuntu|devuan|alpine|freebsd)
+                __package unrar
+            ;;
+        esac
+    ;;
+    *.zip)
+        __package unzip
+    ;;
+esac

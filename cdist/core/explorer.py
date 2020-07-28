@@ -63,7 +63,7 @@ type explorer is:
 '''
 
 
-class Explorer(object):
+class Explorer:
     """Executes cdist explorers.
 
     """

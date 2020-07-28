@@ -1,0 +1,72 @@
+#!/bin/sh -e
+
+dst="/$__object_id"
+
+if [ ! -f "$dst" ]
+then
+    echo 'absent'
+    exit 0
+fi
+
+sum_should="$( cat "$__object/parameter/sum" )"
+
+if [ -f "$__object/parameter/cmd-sum" ]
+then
+    # shellcheck disable=SC2059
+    sum_is="$( eval "$( printf \
+        "$( cat "$__object/parameter/cmd-sum" )" \
+        "$dst" )" )"
+else
+    os="$( "$__explorer/os" )"
+
+    if echo "$sum_should" | grep -Eq '^[0-9]+\s[0-9]+$'
+    then
+        sum_is="$( cksum "$dst" | awk '{print $1" "$2}' )"
+
+    elif echo "$sum_should" | grep -Eiq '^md5:[a-f0-9]{32}$'
+    then
+        case "$os" in
+            freebsd)
+                sum_is="md5:$( md5 -q "$dst" )"
+            ;;
+            *)
+                sum_is="md5:$( md5sum "$dst" | awk '{print $1}' )"
+            ;;
+        esac
+
+    elif echo "$sum_should" | grep -Eiq '^sha1:[a-f0-9]{40}$'
+    then
+        case "$os" in
+            freebsd)
+                sum_is="sha1:$( sha1 -q "$dst" )"
+            ;;
+            *)
+                sum_is="sha1:$( sha1sum "$dst" | awk '{print $1}' )"
+            ;;
+        esac
+
+    elif echo "$sum_should" | grep -Eiq '^sha256:[a-f0-9]{64}$'
+    then
+        case "$os" in
+            freebsd)
+                sum_is="sha256:$( sha256 -q "$dst" )"
+            ;;
+            *)
+                sum_is="sha256:$( sha256sum "$dst" | awk '{print $1}' )"
+            ;;
+        esac
+    fi
+fi
+
+if [ -z "$sum_is" ]
+then
+    echo 'no checksum from target' >&2
+    exit 1
+fi
+
+if [ "$sum_is" = "$sum_should" ]
+then
+    echo 'present'
+else
+    echo 'mismatch'
+fi

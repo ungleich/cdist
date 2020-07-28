@@ -30,6 +30,7 @@ case "$os" in
     ;;
 
     *"bsd")
+        PATH=$(getconf PATH)
         echo "$(sysctl -n hw.physmem) / 1048576" | bc
     ;;
 

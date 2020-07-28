@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # 2016 Darko Poljak (darko.poljak at ungleich.ch)
@@ -31,7 +30,7 @@ import os
 import subprocess
 
 
-class Debian(object):
+class Debian:
     _preos_name = 'debian'
     _cdist_preos = True
 

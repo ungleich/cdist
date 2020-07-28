@@ -78,7 +78,7 @@ def get_available_preoses_string(cls):
     return "Available PreOS-es:\n{}".format("\n".join(preoses))
 
 
-class PreOS(object):
+class PreOS:
     preoses = None
 
     @classmethod

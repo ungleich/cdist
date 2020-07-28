@@ -30,10 +30,10 @@ fallback() {
    gid=$(echo "$ls_line" | awk '{ print $4 }')
 
    owner=$(awk -F: -v uid="$uid" '$3 == uid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/passwd)
-   group=$(awk -F: -v uid="$uid" '$3 == uid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/group)
+   group=$(awk -F: -v gid="$gid" '$3 == gid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/group)
 
    mode_text=$(echo "$ls_line" | awk '{ print $1 }')
-   mode=$(echo "$mode_text" | awk '{ k=0; for (i=0; i<=8; i++) k += ((substr($1, i+2, 1) ~ /[rwx]/) * 2^(8-i)); printf("%0o", k) }')
+   mode=$(echo "$mode_text" | awk '{for(i=8;i>=0;--i){c=substr($1,10-i,1);k+=((c~/[rwxst]/)*2^i);if(!(i%3))k+=(tolower(c)~/[lst]/)*2^(9+i/3)}printf("%04o",k)}')
 
    printf 'type: %s\nowner: %d %s\ngroup: %d %s\nmode: %s %s\n' \
       "$("$__type_explorer/type")" \
@@ -45,56 +45,27 @@ fallback() {
 # nothing to work with, nothing we could do
 [ -e "$destination" ] || exit 0
 
-if ! command -v stat >/dev/null
-then
+command -v stat >/dev/null 2>&1 || {
    fallback
    exit
-fi
+}
 
-case $("$__explorer/os") in
-   "freebsd"|"netbsd"|"openbsd"|"macosx")
-      stat -f "type: %HT
+case $("$__explorer/os")
+in
+   freebsd|netbsd|openbsd|macosx)
+      stat -f 'type: %HT
 owner: %Du %Su
 group: %Dg %Sg
-mode: %Lp %Sp
-" "$destination" | awk '/^type/ { print tolower($0); next } { print }'
+mode: %Mp%03Lp %Sp
+' "$destination" | awk '/^type/ { print tolower($0); next } { print }'
       ;;
-    solaris)
-        ls1="$( ls -ld "$destination" )"
-        ls2="$( ls -ldn "$destination" )"
-
-        if [ -f "$__object/parameter/mode" ]
-        then mode_should="$( cat "$__object/parameter/mode" )"
-        fi
-
-        # yes, it is ugly hack, but if you know better way...
-        if [ -z "$( find "$destination" -perm "$mode_should" )" ]
-        then octets=888
-        else octets="$( echo "$mode_should" | sed 's/^0//' )"
-        fi
-
-        case "$( echo "$ls1" | cut -c1-1 )" in
-            -) echo 'type: regular file' ;;
-            d) echo 'type: directory' ;;
-        esac
-
-        echo "owner: $( echo "$ls2" \
-            | awk '{print $3}' ) $( echo "$ls1" \
-                | awk '{print $3}' )"
-
-        echo "group: $( echo "$ls2" \
-            | awk '{print $4}' ) $( echo "$ls1" \
-                | awk '{print $4}' )"
-
-        echo "mode: $octets $( echo "$ls1" | awk '{print $1}' )"
-    ;;
    *)
       # NOTE: Do not use --printf here as it is not supported by BusyBox stat.
       # NOTE: BusyBox's stat might not support the "-c" option, in which case
       #       we fall through to the shell fallback.
-       stat -c "type: %F
+      stat -c 'type: %F
 owner: %u %U
 group: %g %G
-mode: %a %A" "$destination" 2>/dev/null || fallback
-   ;;
+mode: %04a %A' "$destination" 2>/dev/null || fallback
+      ;;
 esac

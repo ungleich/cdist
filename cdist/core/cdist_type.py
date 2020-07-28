@@ -38,7 +38,7 @@ class InvalidTypeError(cdist.Error):
                 self.type_path, self.type_absolute_path, self.source_path)
 
 
-class CdistType(object):
+class CdistType:
     """Represents a cdist type.
 
     All interaction with types in cdist should be done through this class.

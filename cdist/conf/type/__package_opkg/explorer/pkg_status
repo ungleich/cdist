@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2011 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Giel van Schijndel (giel plus cdist at mortis dot eu)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -19,21 +20,78 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the status of a package - parsed opkg output
+# Retrieve the status of a package - parses opkg output
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+readonly __type_path=${__object%%${__object_id}*}
+test -d "${__type_path}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
+readonly LOCKFILE="${__type_path:?}/.cdist_opkg.lock"
+
+if command -v flock >/dev/null 2>&1
+then
+	# use flock (if available) on FD 9
+	_lock() {
+		exec 9<>"${LOCKFILE:?}"
+		flock -x 9
+		echo $$>&9
+	}
+	_unlock() {
+		:>"${LOCKFILE:?}"
+		flock -u 9
+		exec 9<&-
+	}
 else
-   name="$__object_id"
+	# fallback to mkdir if flock is missing
+	_lock() {
+		until mkdir "${LOCKFILE:?}.dir" 2>/dev/null
+		do
+			while test -d "${LOCKFILE}.dir"
+			do
+				# DEBUG:
+				# printf 'Locked by PID: %u\n' "$(cat "${LOCKFILE}.dir/pid")"
+				sleep 1
+			done
+		done
+		echo $$ >"${LOCKFILE:?}.dir/pid"
+	}
+	_unlock() {
+		test -d "${LOCKFILE}.dir" || return 0
+		if test -s "${LOCKFILE}.dir/pid"
+		then
+			test "$(cat "${LOCKFILE}.dir/pid")" = $$ || return 1
+			rm "${LOCKFILE:?}.dir/pid"
+		fi
+		rmdir "${LOCKFILE:?}.dir"
+	}
 fi
 
-# Except dpkg failing, if package is not known / installed
-if opkg status "$name" 2>/dev/null | grep -q "^Status: install user installed$"; then
-   echo "present"
-   exit 0
-elif [ "$(opkg info "$name" 2> /dev/null | wc -l)" -eq 0 ]; then
-   echo "absent notpresent"
-   exit 0
+
+if test -f "${__object}/parameter/name"
+then
+	pkg_name=$(cat "${__object}/parameter/name")
+else
+	pkg_name=$__object_id
 fi
-echo "absent"
+
+
+# NOTE: We need to lock parallel execution of type explorers and code-remote
+# because opkg will try to acquire the OPKG lock (usually /var/lock/opkg.lock)
+# using lockf(2) for every operation.
+# It will not wait for the lock but terminate with an error.
+# This leads to incorrect 'absent notpresent' statuses when parallel execution
+# is enabled.
+trap _unlock EXIT
+_lock
+
+
+# Except opkg failing, if package is not known / installed
+if opkg status "${pkg_name}" 2>/dev/null \
+	| grep -q -e '^Status: [^ ][^ ]* [^ ][^ ]* installed$'
+then
+	echo 'present'
+elif opkg info "${pkg_name}" 2>/dev/null | grep -q .
+then
+	echo 'absent notpresent'
+else
+	echo 'absent'
+fi

@@ -42,7 +42,7 @@ import functools
 CONF_SUBDIRS_LINKED = ["explorer", "files", "manifest", "type", ]
 
 
-class Local(object):
+class Local:
     """Execute commands locally.
 
     All interaction with the local side should be done through this class.

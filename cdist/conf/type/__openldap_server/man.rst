@@ -103,8 +103,8 @@ syncrepl-host
     Set once per host that will replicate the directory.
 
 module
-    LDAP module to load. See `slapd.conf(5)`.
-    Default value is OS-dependent, see manifest.
+    LDAP module to load. See `slapd.conf(5)`. Some dependencies might have to
+    be installed beforehand. Default value is OS-dependent, see manifest.
 
 schema
     Name of LDAP schema to load. Must be the name without extension of a
