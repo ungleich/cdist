@@ -31,8 +31,8 @@ manager-password-hash
     Generate e.g. with: `slappasswd -s weneedgoodsecurity`.
     See `slappasswd(8C)`, `slapd.conf(5)`.
     TODO: implement this: http://blog.adamsbros.org/2015/06/09/openldap-ssha-salted-hashes-by-hand/
-      to derive from the manager-password parameter and ensure idempotency (care with salts).
-      At that point, manager-password-hash should be deprecated and ignored.
+    to derive from the manager-password parameter and ensure idempotency (care with salts).
+    At that point, manager-password-hash should be deprecated and ignored.
 
 serverid
     The server for the directory.
