@@ -163,7 +163,13 @@ in
         key="export ${__object_id}"
         ;;
     suse)
-        os_version=$(cat "${__global}/explorer/os_version")
+        if test -s "${__global}/explorer/os_release"
+        then
+            # shellcheck source=/dev/null
+            os_version=$(. "${__global}/explorer/os_release" && echo "${VERSION}")
+        else
+            os_version=$(sed -n 's/^VERSION\ *=\ *//p' "${__global}/explorer/os_version")
+        fi
         os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
 
         # https://documentation.suse.com/sles/15-SP2/html/SLES-all/cha-suse.html#sec-suse-l10n
