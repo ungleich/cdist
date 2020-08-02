@@ -24,7 +24,20 @@
 # Configure system-wide locale by modifying i18n file.
 #
 
-bccmp() { test "$(bc)" -gt 0; }
+version_ge() {
+    awk -F '[^0-9.]' -v target="${1:?}" '
+    function max(x, y) { return x > y ? x : y }
+    BEGIN {
+        getline
+        nx = split($1, x, ".")
+        ny = split(target, y, ".")
+        for (i = 1; i <= max(nx, ny); ++i) {
+            diff = int(x[i]) - int(y[i])
+            if (diff == 0) continue
+            exit (diff < 0)
+        }
+    }'
+}
 
 
 key=$__object_id
@@ -43,8 +56,7 @@ os=$(cat "$__global/explorer/os")
 case $os
 in
     debian)
-        os_version=$(cat "${__global}/explorer/os_version")
-        if printf '%f >= 4\n' "${os_version}" | bccmp
+        if version_ge 4 <"${__global}/explorer/os_version"
         then
             # Debian 4 (etch) and later
             locale_conf="/etc/default/locale"
@@ -56,8 +68,7 @@ in
         locale_conf="/etc/default/locale"
         ;;
     ubuntu)
-        os_version=$(cat "${__global}/explorer/os_version")
-        if printf '%f >= 6.10\n' "${os_version}" | bccmp
+        if version_ge 6.10 <"${__global}/explorer/os_version"
         then
             # Ubuntu 6.10 (edgy) and later
             locale_conf="/etc/default/locale"
@@ -71,7 +82,7 @@ in
     centos|redhat|scientific)
         # shellcheck source=/dev/null
         version_id=$(. "${__global}/explorer/os_release" && echo "${VERSION_ID:-0}")
-        if printf '%f >= 7\n' "${version_id}" | bccmp
+        if echo "${version_id}" | version_ge 7
         then
             locale_conf="/etc/locale.conf"
         else
@@ -81,7 +92,7 @@ in
     fedora)
         # shellcheck source=/dev/null
         version_id=$(. "${__global}/explorer/os_release" && echo "${VERSION_ID:-0}")
-        if printf '%f >= 18\n' "${version_id}" | bccmp
+        if echo "${version_id}" | version_ge 18
         then
             locale_conf="/etc/locale.conf"
             quote_value=false
@@ -116,8 +127,7 @@ in
         locale_conf="/etc/default/init"
         locale_conf_group="sys"
 
-        os_version=$(cat "${__global}/explorer/os_version")
-        if printf '%f >= 5.11\n' "${os_version}" | bccmp
+        if version_ge 5.11 <"${__global}/explorer/os_version"
         then
             # mode on Oracle Solaris 11 is actually 0444,
             # but the write bit makes sense, IMO
