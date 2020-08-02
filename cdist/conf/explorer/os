@@ -144,7 +144,8 @@ esac
 
 if [ -f /etc/os-release ]; then
    # after sles15, suse don't provide an /etc/SuSE-release anymore, but there is almost no difference between sles and opensuse leap, so call it suse
-   if grep -q ^ID_LIKE=\"suse\" /etc/os-release 2>/dev/null; then
+   if (. /etc/os-release && echo "${ID_LIKE}" | grep -q '\(^\|\ \)suse\($\|\ \)')
+   then
       echo suse
       exit 0
    fi
