@@ -23,6 +23,13 @@ case "$src" in
 
             cmd="$cmd --strip-components=$tar_strip"
         fi
+
+        if [ -f "$__object/parameter/tar-extra-args" ]
+        then
+            tar_extra_args="$( cat "$__object/parameter/tar-extra-args" )"
+
+            cmd="$cmd $tar_extra_args"
+        fi
     ;;
     *.7z)
         case "$os" in

@@ -33,6 +33,10 @@ sum-file
 tar-strip
     Tarball specific. See ``man tar`` for ``--strip-components``.
 
+tar-extra-args
+    Tarball sepcific. Append additional arguments to ``tar`` command.
+    See ``man tar`` for possible arguments.
+
 
 OPTIONAL BOOLEAN PARAMETERS
 ---------------------------
@@ -64,6 +68,13 @@ EXAMPLES
             --backup-destination \
             --preserve-archive \
             --destination /opt/cpma/server
+
+    # example usecase for --tar-* args
+    __unpack /root/strelaysrv.tar.gz \
+        --preserve-archive \
+        --destination /usr/local/bin \
+        --tar-strip 1 \
+        --tar-extra-args '--wildcards "*/strelaysrv"'
 
 
 AUTHORS
