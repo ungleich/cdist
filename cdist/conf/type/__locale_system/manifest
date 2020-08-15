@@ -24,6 +24,22 @@
 # Configure system-wide locale by modifying i18n file.
 #
 
+version_ge() {
+    awk -F '[^0-9.]' -v target="${1:?}" '
+    function max(x, y) { return x > y ? x : y }
+    BEGIN {
+        getline
+        nx = split($1, x, ".")
+        ny = split(target, y, ".")
+        for (i = 1; i <= max(nx, ny); ++i) {
+            diff = int(x[i]) - int(y[i])
+            if (diff == 0) continue
+            exit (diff < 0)
+        }
+    }'
+}
+
+
 key=$__object_id
 onchange_cmd=  # none, by default
 quote_value=false
@@ -40,13 +56,25 @@ os=$(cat "$__global/explorer/os")
 case $os
 in
     debian)
-        locale_conf="/etc/default/locale"
+        if version_ge 4 <"${__global}/explorer/os_version"
+        then
+            # Debian 4 (etch) and later
+            locale_conf="/etc/default/locale"
+        else
+            locale_conf="/etc/environment"
+        fi
         ;;
     devuan)
         locale_conf="/etc/default/locale"
         ;;
     ubuntu)
-        locale_conf="/etc/default/locale"
+        if version_ge 6.10 <"${__global}/explorer/os_version"
+        then
+            # Ubuntu 6.10 (edgy) and later
+            locale_conf="/etc/default/locale"
+        else
+            locale_conf="/etc/environment"
+        fi
         ;;
     archlinux)
         locale_conf="/etc/locale.conf"
@@ -54,7 +82,7 @@ in
     centos|redhat|scientific)
         # shellcheck source=/dev/null
         version_id=$(. "${__global}/explorer/os_release" && echo "${VERSION_ID:-0}")
-        if expr "${version_id}" '>=' 7 >/dev/null
+        if echo "${version_id}" | version_ge 7
         then
             locale_conf="/etc/locale.conf"
         else
@@ -64,7 +92,7 @@ in
     fedora)
         # shellcheck source=/dev/null
         version_id=$(. "${__global}/explorer/os_release" && echo "${VERSION_ID:-0}")
-        if expr "${version_id}" '>=' 18 >/dev/null
+        if echo "${version_id}" | version_ge 18
         then
             locale_conf="/etc/locale.conf"
             quote_value=false
@@ -99,7 +127,7 @@ in
         locale_conf="/etc/default/init"
         locale_conf_group="sys"
 
-        if expr "$(cat "${__global}/explorer/os_version")" '>=' 5.11 >/dev/null
+        if version_ge 5.11 <"${__global}/explorer/os_version"
         then
             # mode on Oracle Solaris 11 is actually 0444,
             # but the write bit makes sense, IMO
@@ -135,7 +163,13 @@ in
         key="export ${__object_id}"
         ;;
     suse)
-        os_version=$(cat "${__global}/explorer/os_version")
+        if test -s "${__global}/explorer/os_release"
+        then
+            # shellcheck source=/dev/null
+            os_version=$(. "${__global}/explorer/os_release" && echo "${VERSION}")
+        else
+            os_version=$(sed -n 's/^VERSION\ *=\ *//p' "${__global}/explorer/os_version")
+        fi
         os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
 
         # https://documentation.suse.com/sles/15-SP2/html/SLES-all/cha-suse.html#sec-suse-l10n
