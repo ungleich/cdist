@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+next:
+	* Type __locale_system: Fix for debian and ubuntu (Ander Punnar)
+	* Type __unpack: Add --tar-extra-args parameter (Ander Punnar)
+	* Explorer os: Fix OS detection for openSUSE (Dennis Camera)
+	* Type __filesystem: Support Alpine Linux (Joachim Desroches)
+
 6.7.0: 2020-07-28
 	* Delete deprecated type: __pf_apply (Darko Poljak)
 	* New type: __download (Ander Punnar)
