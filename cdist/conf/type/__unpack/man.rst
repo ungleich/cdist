@@ -50,6 +50,9 @@ backup-destination
 preserve-archive
     Don't delete archive after unpacking.
 
+onchange
+    Execute this command after unpack.
+
 
 EXAMPLES
 --------

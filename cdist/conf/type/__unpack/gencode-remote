@@ -80,3 +80,8 @@ if [ ! -f "$__object/parameter/preserve-archive" ]
 then
     echo "rm -f '$src'"
 fi
+
+if [ -f "$__object/parameter/onchange" ]
+then
+    cat "$__object/parameter/onchange"
+fi
