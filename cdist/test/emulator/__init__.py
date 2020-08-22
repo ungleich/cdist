@@ -685,6 +685,16 @@ class EmulatorAlreadyExistingRequirementsWarnTestCase(test.CdistTestCase):
         self.env['require'] = '__directory/spam'
         emu = emulator.Emulator(argv, env=self.env)
 
+    def test_parse_require(self):
+        require = " \t \n  \t\t\n\t\na\tb\nc d \te\t\nf\ng\t "
+        expected = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', '', ]
+
+        argv = ['__directory', 'spam']
+        emu = emulator.Emulator(argv, env=self.env)
+        requirements = emu._parse_require(require)
+
+        self.assertEqual(expected, requirements)
+
 
 if __name__ == '__main__':
     import unittest
