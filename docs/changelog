@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.8.0: 2020-09-11
 	* Type __locale_system: Fix for debian and ubuntu (Ander Punnar)
 	* Type __unpack: Add --tar-extra-args parameter (Ander Punnar)
 	* Explorer os: Fix OS detection for openSUSE (Dennis Camera)
