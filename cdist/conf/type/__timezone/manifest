@@ -22,7 +22,7 @@
 #
 # This type allows to configure the desired localtime timezone.
 
-timezone="$__object_id"
+timezone=$(cat "$__object/parameter/tz")
 os=$(cat "$__global/explorer/os")
 
 case "$os" in

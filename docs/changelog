@@ -5,6 +5,19 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.8.0: 2020-09-11
+	* Type __locale_system: Fix for debian and ubuntu (Ander Punnar)
+	* Type __unpack: Add --tar-extra-args parameter (Ander Punnar)
+	* Explorer os: Fix OS detection for openSUSE (Dennis Camera)
+	* Type __filesystem: Support Alpine Linux (Joachim Desroches)
+	* Type __locale_system: Fix version comparison (Dennis Camera)
+	* Type __unpack: Add --onchange parameter (Ander Punnar)
+	* Type __download: Fix manual (Ander Punnar)
+	* Explorer os_version: Convert Debian sid to version number (Dennis Camera)
+	* Core: Expand require delimiter characters, split by consecutive delimiters (Darko Poljak)
+	* Type __timezone: Make singleton (Dennis Camera)
+	* Type __systemd_service: Fix manpage typos (Matthias Stecher)
+
 6.7.0: 2020-07-28
 	* Delete deprecated type: __pf_apply (Darko Poljak)
 	* New type: __download (Ander Punnar)

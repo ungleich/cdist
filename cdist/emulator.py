@@ -25,6 +25,7 @@ import argparse
 import logging
 import os
 import sys
+import re
 
 import cdist
 from cdist import core
@@ -412,11 +413,14 @@ class Emulator:
         if "require" in self.env:
             requirements = self.env['require']
             self.log.debug("reqs = " + requirements)
-            for requirement in requirements.split(" "):
+            for requirement in self._parse_require(requirements):
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0:
                     continue
                 self.record_requirement(requirement)
+
+    def _parse_require(self, require):
+        return re.split(r'[ \t\n]+', require)
 
     def record_auto_requirements(self):
         """An object shall automatically depend on all objects that it

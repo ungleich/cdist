@@ -95,7 +95,8 @@ Dependencies
 ------------
 If you want to describe that something requires something else, just
 setup the variable "require" to contain the requirements. Multiple
-requirements can be added white space separated.
+requirements can be added separated with (optionally consecutive)
+delimiters including space, tab and newline.
 
 ::
 

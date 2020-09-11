@@ -81,7 +81,7 @@ version:
 	}
 
 # Manpages #3: generic part
-man: version $(MANTYPES) $(DOCSREF)
+man: version configskel $(MANTYPES) $(DOCSREF) $(DOCSTYPESREF)
 	$(SPHINXM)
 
 html: version configskel $(MANTYPES) $(DOCSREF) $(DOCSTYPESREF)
@@ -104,7 +104,7 @@ DOTMANTYPES=$(subst /man.rst,.rst,$(DOTMANTYPEPREFIX))
 $(DOTMAN7DSTDIR)/cdist-type%.rst: $(DOTTYPEDIR)/%/man.rst
 	ln -sf "$^" $@
 
-dotman: version $(DOTMANTYPES)
+dotman: version configskel $(DOTMANTYPES) $(DOCSREF) $(DOCSTYPESREF)
 	$(SPHINXM)
 
 ################################################################################

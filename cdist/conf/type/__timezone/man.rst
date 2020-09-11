@@ -14,7 +14,8 @@ This type creates a symlink (/etc/localtime) to the selected timezone
 
 REQUIRED PARAMETERS
 -------------------
-None.
+tz
+    The name of timezone to set.
 
 
 OPTIONAL PARAMETERS
@@ -27,19 +28,24 @@ EXAMPLES
 
 .. code-block:: sh
 
-    #Set up Europe/Andorra as our timezone.
-    __timezone Europe/Andorra
+    # Set up Europe/Andorra as our timezone.
+    __timezone --tz Europe/Andorra
 
-    #Set up US/Central as our timezone.
-    __timezone US/Central
+    # Set up US/Central as our timezone.
+    __timezone --tz US/Central
 
 
 AUTHORS
 -------
-Ramon Salvadó <rsalvado--@--gnuine--dot--com>
+| Steven Armstrong <steven-cdist--@--armstrong.cc>
+| Nico Schottelius <nico-cdist--@--schottelius.org>
+| Ramon Salvadó <rsalvado--@--gnuine--dot--com>
+| Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
 
 
 COPYING
 -------
-Free use of this software is
-granted under the terms of the GNU General Public License version 3 (GPLv3).
+Copyright \(C) 2012-2020 the `AUTHORS`_. You can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.

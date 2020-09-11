@@ -31,7 +31,32 @@ case "$("$__explorer/os")" in
       cat /etc/arch-release
    ;;
    debian)
-      cat /etc/debian_version
+      debian_version=$(cat /etc/debian_version)
+      case $debian_version
+      in
+          testing/unstable)
+              # previous to Debian 4.0 testing/unstable was used
+              # cf. https://metadata.ftp-master.debian.org/changelogs/main/b/base-files/base-files_11_changelog
+              echo 3.99
+              ;;
+          */sid)
+              # sid versions don't have a number, so we decode by codename:
+              case $(expr "$debian_version" : '\([a-z]\{1,\}\)/')
+              in
+                  bullseye) echo 10.99 ;;
+                  buster) echo 9.99 ;;
+                  stretch) echo 8.99 ;;
+                  jessie) echo 7.99 ;;
+                  wheezy) echo 6.99 ;;
+                  squeeze) echo 5.99 ;;
+                  lenny) echo 4.99 ;;
+                  *) exit 1
+              esac
+              ;;
+          *)
+              echo "$debian_version"
+              ;;
+      esac
    ;;
    devuan)
       cat /etc/devuan_version

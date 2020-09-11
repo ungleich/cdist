@@ -30,9 +30,6 @@ sum
    By default output of ``cksum`` without filename is expected.
    Other hash formats supported with prefixes: ``md5:``, ``sha1:`` and ``sha256:``.
 
-onchange
-   Execute this command after download.
-
 
 OPTIONAL PARAMETERS
 -------------------
@@ -53,6 +50,9 @@ cmd-sum
    Parameter will be used for ``printf`` and must include only one
    format specification ``%s`` which will become destination.
    For example: ``md5sum '%s' | awk '{print $1}'``.
+
+onchange
+   Execute this command after download.
 
 
 EXAMPLES
