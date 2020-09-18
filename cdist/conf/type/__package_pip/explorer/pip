@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+for bin in pip3 pip
+do
+    if check="$( command -v "$bin" )"
+    then
+        echo "$check"
+        break
+    fi
+done

@@ -32,7 +32,7 @@ pipparam="$__object/parameter/pip"
 if [ -f "$pipparam" ]; then
     pip=$(cat "$pipparam")
 else
-    pip="pip"
+    pip="$( "$__type_explorer/pip" )"
 fi
 
 # If there is no pip, it may get created from somebody else.

@@ -38,7 +38,12 @@ pipparam="$__object/parameter/pip"
 if [ -f "$pipparam" ]; then
     pip=$(cat "$pipparam")
 else
-    pip="pip"
+    pip="$( cat "$__object/explorer/pip" )"
+    if [ -z "$pip" ]
+    then
+        echo 'pip not found in path' >&2
+        exit 1
+    fi
 fi
 
 runasparam="$__object/parameter/runas"
