@@ -60,7 +60,7 @@ case "$state_should" in
         then
             echo "su -c '$pip install -q $name' $runas"
         else
-            echo $pip install -q "$name"
+            echo "$pip" install -q "$name"
         fi
         echo "installed" >> "$__messages_out"
     ;;
@@ -69,7 +69,7 @@ case "$state_should" in
         then
             echo "su -c '$pip uninstall -q -y $name' $runas"
         else
-            echo $pip uninstall -q -y "$name"
+            echo "$pip" uninstall -q -y "$name"
         fi
         echo "removed" >> "$__messages_out"
     ;;
