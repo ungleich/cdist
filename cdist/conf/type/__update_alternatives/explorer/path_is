@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+path_is="$( update-alternatives --display "$__object_id" 2>/dev/null \
+    | awk '/link currently points to/ {print $5}' )"
+
+if [ -z "$path_is" ]
+then
+    echo "unable to get current path for $__object_id" >&2
+    exit 1
+fi
+
+echo "$path_is"

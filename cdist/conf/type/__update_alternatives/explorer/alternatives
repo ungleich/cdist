@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+update-alternatives --display "$__object_id" 2>/dev/null \
+    | awk -F ' - ' '/priority [0-9]+$/ { print $1 }'

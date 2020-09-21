@@ -1,0 +1,40 @@
+#!/bin/sh -e
+
+# fedora's (update-)alternatives --display output doesn't have
+# "link <name> is <path>" line, but debian does. so, let's find
+# out how they store this information.
+#
+# debian and friends:
+#   https://salsa.debian.org/dpkg-team/dpkg/-/blob/master/utils/update-alternatives.c
+#   see calls to altdb_print_line function
+#
+# fedora and friends:
+#   https://github.com/fedora-sysv/chkconfig/blob/master/alternatives.c
+#   see calls to parseLine function
+#
+# conclusion: it is safe to assume that (master) link is on second line
+
+for altdir in \
+    /var/lib/dpkg/alternatives \
+    /var/lib/alternatives
+do
+    if [ ! -f "$altdir/$__object_id" ]
+    then
+        continue
+    fi
+
+    link="$( awk 'NR==2' "$altdir/$__object_id" )"
+
+    if [ -n "$link" ]
+    then
+        break
+    fi
+done
+
+if [ -z "$link" ]
+then
+    echo "unable to get link for $__object_id" >&2
+    exit 1
+fi
+
+echo "$link"
