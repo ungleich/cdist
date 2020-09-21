@@ -175,9 +175,11 @@ class Config:
             raise cdist.Error(("Cannot read both, manifest and host file, "
                                "from stdin"))
 
-        # if no host source is specified then read hosts from stdin
         if not (args.hostfile or args.host):
-            args.hostfile = '-'
+            if args.tag or args.all_tagged_hosts:
+                raise cdist.Error(("Target host tag(s) missing"))
+            else:
+                raise cdist.Error(("Target host(s) missing"))
 
         if args.manifest == '-':
             # read initial manifest from stdin

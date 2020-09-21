@@ -273,8 +273,7 @@ def get_parsers():
             '-f', '--file',
             help=('Read specified file for a list of additional hosts to '
                   'operate on or if \'-\' is given, read stdin (one host per '
-                  'line). If no host or host file is specified then, by '
-                  'default, read hosts from stdin.'),
+                  'line).'),
             dest='hostfile', required=False)
     parser['config_args'].add_argument(
            '-p', '--parallel', nargs='?', metavar='HOST_MAX',
@@ -326,9 +325,7 @@ def get_parsers():
     parser['add-host'].add_argument(
            '-f', '--file',
            help=('Read additional hosts to add from specified file '
-                 'or from stdin if \'-\' (each host on separate line). '
-                 'If no host or host file is specified then, by default, '
-                 'read from stdin.'),
+                 'or from stdin if \'-\' (each host on separate line). '),
            dest='hostfile', required=False)
 
     parser['add-tag'] = parser['invsub'].add_parser(
@@ -342,20 +339,12 @@ def get_parsers():
     parser['add-tag'].add_argument(
            '-f', '--file',
            help=('Read additional hosts to add tags from specified file '
-                 'or from stdin if \'-\' (each host on separate line). '
-                 'If no host or host file is specified then, by default, '
-                 'read from stdin. If no tags/tagfile nor hosts/hostfile'
-                 ' are specified then tags are read from stdin and are'
-                 ' added to all hosts.'),
+                 'or from stdin if \'-\' (each host on separate line). '),
            dest='hostfile', required=False)
     parser['add-tag'].add_argument(
            '-T', '--tag-file',
            help=('Read additional tags to add from specified file '
-                 'or from stdin if \'-\' (each tag on separate line). '
-                 'If no tag or tag file is specified then, by default, '
-                 'read from stdin. If no tags/tagfile nor hosts/hostfile'
-                 ' are specified then tags are read from stdin and are'
-                 ' added to all hosts.'),
+                 'or from stdin if \'-\' (each tag on separate line). '),
            dest='tagfile', required=False)
     parser['add-tag'].add_argument(
            '-t', '--taglist',
@@ -376,9 +365,7 @@ def get_parsers():
     parser['del-host'].add_argument(
             '-f', '--file',
             help=('Read additional hosts to delete from specified file '
-                  'or from stdin if \'-\' (each host on separate line). '
-                  'If no host or host file is specified then, by default, '
-                  'read from stdin.'),
+                  'or from stdin if \'-\' (each host on separate line). '),
             dest='hostfile', required=False)
 
     parser['del-tag'] = parser['invsub'].add_parser(
@@ -396,20 +383,13 @@ def get_parsers():
     parser['del-tag'].add_argument(
             '-f', '--file',
             help=('Read additional hosts to delete tags for from specified '
-                  'file or from stdin if \'-\' (each host on separate line). '
-                  'If no host or host file is specified then, by default, '
-                  'read from stdin. If no tags/tagfile nor hosts/hostfile'
-                  ' are specified then tags are read from stdin and are'
-                  ' deleted from all hosts.'),
+                  'file or from stdin if \'-\' (each host on separate '
+                  'line). '),
             dest='hostfile', required=False)
     parser['del-tag'].add_argument(
             '-T', '--tag-file',
             help=('Read additional tags from specified file '
-                  'or from stdin if \'-\' (each tag on separate line). '
-                  'If no tag or tag file is specified then, by default, '
-                  'read from stdin. If no tags/tagfile nor'
-                  ' hosts/hostfile are specified then tags are read from'
-                  ' stdin and are added to all hosts.'),
+                  'or from stdin if \'-\' (each tag on separate line). '),
             dest='tagfile', required=False)
     parser['del-tag'].add_argument(
             '-t', '--taglist',
