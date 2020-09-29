@@ -21,6 +21,11 @@
 # Retrieve the status of a package - parsed dpkg output
 #
 
+if ! pkg -N >/dev/null 2>&1; then
+   # Nothing to do if pkg is not bootstrapped
+   exit
+fi
+
 if [ -f "$__object/parameter/name" ]; then
    name="$(cat "$__object/parameter/name")"
 else
