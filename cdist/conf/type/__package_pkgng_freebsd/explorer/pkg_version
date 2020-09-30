@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Retrieve the status of a package - parsed dpkg output
+# Retrieve the status of a package - parsed pkgng output
 #
 
 if ! pkg -N >/dev/null 2>&1; then
