@@ -5,6 +5,7 @@ next:
 	* Core: Clarify stdin input (Darko Poljak)
 	* Type __package_pip: Detect pip binary (Ander Punnar)
 	* Documentation: Add custom remote copy/exec examples (Darko Poljak)
+	* Type __package_pkgng_freebsd: Bootstrap pkg if necessary (Evil Ham)
 
 6.8.0: 2020-09-11
 	* Type __locale_system: Fix for debian and ubuntu (Ander Punnar)
