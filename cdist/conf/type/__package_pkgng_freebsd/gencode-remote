@@ -43,6 +43,7 @@ fi
 repo="$(cat "$__object/parameter/repo")"
 state="$(cat "$__object/parameter/state")"
 curr_version="$(cat "$__object/explorer/pkg_version")"
+pkg_bootstrapped="$(cat "$__object/explorer/pkg_bootstrapped")"
 add_cmd="pkg install -y"
 rm_cmd="pkg delete -y"
 upg_cmd="pkg upgrade -y"
@@ -72,6 +73,10 @@ execcmd(){
          exit 1
          ;;
    esac
+
+   if [ -z "${pkg_bootstrapped}" ]; then
+       echo "pkg bootstrap -y >/dev/null 2>&1"
+   fi
 
    echo "$_cmd >/dev/null 2>&1"   # Silence the output of the command
    echo "status=\$?"
