@@ -7,7 +7,9 @@ action="$(cat "$__object/parameter/action")"
 
 case "$manager" in
 	systemd)
-		__systemd_service "$name" --action "$action"
+		test "$action" = "start" && action="running"
+		test "$action" = "stop"  && action="stopped"
+		__systemd_service "$name" --state "$action"
 	;;
 	*)
 		# Unknown: handled by `service $NAME $action` in gencode-remote.
