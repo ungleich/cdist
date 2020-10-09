@@ -31,7 +31,7 @@ file
 line
     Specifies the line which should be absent or present.
 
-    Must be present, if state is 'present'.
+    Must be present, if state is 'present' or 'replace'.
     Ignored if regex is given and state is 'absent'.
 
 regex
@@ -41,10 +41,13 @@ regex
     If state is 'absent', ensure all lines matching the regular expression
     are absent.
 
+    If state is 'replace', ensure all lines matching the regular expression
+    are exactly 'line'.
+
     The regular expression is interpreted by awk's match function.
 
 state
-    'present' or 'absent', defaults to 'present'
+    'present', 'absent' or 'replace', defaults to 'present'.
 
 onchange
     The code to run if line is added, removed or updated.
@@ -98,6 +101,12 @@ EXAMPLES
         --file /etc/pam.d/password-auth-local \
         --line '-session required pam_exec.so debug log=/tmp/classify.log /usr/local/libexec/classify' \
         --after '^session[[:space:]]+include[[:space:]]+password-auth-ac$'
+
+    # Uncomment as needed and set a value in a configuration file.
+    __line /etc/example.conf \
+        --line 'SomeSetting SomeValue' \
+        --regex '^(#[[:space:]]*)?SomeSetting[[:space:]]' \
+        --state replace
 
 
 SEE ALSO

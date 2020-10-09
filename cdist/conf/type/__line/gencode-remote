@@ -38,7 +38,11 @@ if [ -z "$state_is" ]; then
    exit 1
 fi
 
-if [ "$state_should" = "$state_is" ]; then
+if [ "$state_should" = "$state_is" ] || \
+	{ [ "$state_should" = "present" ] && [ "$state_is" = "matching" ] ;} || \
+	{ [ "$state_should" = "replace" ] && [ "$state_is" = "present" ] ;} ; then
+   # If state matches already, or 'present' is used and regex matches
+   # or 'replace' is used and the exact line is present, then there is
    # nothing to do
    exit 0
 fi
@@ -61,8 +65,8 @@ fi
 add=0
 remove=0
 case "$state_should" in
-   present)
-      if [ "$state_is" = "wrongposition" ]; then
+   present|replace)
+      if [ "$state_is" = "wrongposition" ] || [ "$state_is" = "matching" ]; then
          echo updated >> "$__messages_out"
          remove=1
       else
