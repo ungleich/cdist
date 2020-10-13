@@ -24,10 +24,13 @@ import os
 import hashlib
 
 import cdist.log
-import cdist.version
 
 
-VERSION = cdist.version.VERSION
+try:
+    import cdist.version
+    VERSION = cdist.version.VERSION
+except ModuleNotFoundError:
+    VERSION = 'from git'
 
 BANNER = """
              ..          .       .x+=:.        s
