@@ -22,7 +22,15 @@
 #
 
 import logging
+import os
 import sys
+
+cdist_bin = os.path.abspath(__file__)
+if os.path.islink(cdist_bin):
+    cdist_bin = os.readlink(cdist_bin)
+cdist_dir = os.path.abspath(os.path.join(os.path.dirname(cdist_bin), os.pardir))
+sys.path.insert(0, cdist_dir)
+
 import cdist
 import cdist.argparse
 import cdist.banner
