@@ -27,23 +27,21 @@ import subprocess
 import cdist.log
 
 
+VERSION = 'unknown version'
+
 try:
     import cdist.version
     VERSION = cdist.version.VERSION
 except ModuleNotFoundError:
     cdist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
     if os.path.isdir(os.path.join(cdist_dir, '.git')):
-        run_git = subprocess.run(
-            ['git', 'describe', '--always'],
-            cwd=cdist_dir,
-            capture_output=True,
-            text=True)
-        if run_git.returncode == 0:
-            VERSION = run_git.stdout
-        else:
-            VERSION = 'from git'
-    else:
-        VERSION = 'unknown version'
+        try:
+            VERSION = subprocess.check_output(
+                ['git', 'describe', '--always'],
+                cwd=cdist_dir,
+                universal_newlines=True)
+        except:
+            pass
 
 BANNER = """
              ..          .       .x+=:.        s
