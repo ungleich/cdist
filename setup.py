@@ -59,9 +59,8 @@ setup(
     scripts=["bin/cdist", "bin/cdist-dump", "bin/cdist-new-type"],
     version=cdist.version.VERSION,
     description="A Usable Configuration Management System",
-    author="Nico Schottelius",
-    author_email="nico-cdist-pypi@schottelius.org",
-    url="https://www.cdi.st/",
+    author="cdist contributors",
+    url="https://cdi.st",
     classifiers=[
         "Development Status :: 6 - Mature",
         "Environment :: Console",
