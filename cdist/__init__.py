@@ -22,6 +22,7 @@
 
 import os
 import hashlib
+import subprocess
 
 import cdist.log
 
@@ -30,7 +31,19 @@ try:
     import cdist.version
     VERSION = cdist.version.VERSION
 except ModuleNotFoundError:
-    VERSION = 'unknown version'
+    cdist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+    if os.path.isdir(os.path.join(cdist_dir, '.git')):
+        run_git = subprocess.run(
+            ['git', 'describe', '--always'],
+            cwd=cdist_dir,
+            capture_output=True,
+            text=True)
+        if run_git.returncode == 0:
+            VERSION = str(run_git.stdout)
+        else:
+            VERSION = 'from git'
+    else:
+        VERSION = 'unknown version'
 
 BANNER = """
              ..          .       .x+=:.        s
