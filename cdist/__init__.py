@@ -30,7 +30,7 @@ try:
     import cdist.version
     VERSION = cdist.version.VERSION
 except ModuleNotFoundError:
-    VERSION = 'from git'
+    VERSION = 'unknown version'
 
 BANNER = """
              ..          .       .x+=:.        s
