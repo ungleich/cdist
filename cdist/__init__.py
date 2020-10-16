@@ -39,7 +39,7 @@ except ModuleNotFoundError:
             capture_output=True,
             text=True)
         if run_git.returncode == 0:
-            VERSION = str(run_git.stdout)
+            VERSION = run_git.stdout
         else:
             VERSION = 'from git'
     else:
