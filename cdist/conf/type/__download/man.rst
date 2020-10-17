@@ -69,7 +69,7 @@ EXAMPLES
 
     require='__download/opt/cpma/cnq3.zip' \
         __unpack /opt/cpma/cnq3.zip \
-            --move-existing-destination \
+            --backup-destination \
             --destination /opt/cpma/server
 
 
