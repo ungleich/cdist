@@ -25,16 +25,16 @@ import logging
 import os
 import sys
 
-# try to import cdist and if that fails, then add this file's parent dir to
-# module search path and try again. additionally check if this file is
-# symlinked, so user can symlink this file to, for example, ~/.local/bin.
+# try to import cdist and if that fails,
+# then add this file's parent dir to
+# module search path and try again.
 try:
     import cdist
 except ModuleNotFoundError:
-    cdist_bin = __file__
-    if os.path.islink(cdist_bin):
-        cdist_bin = os.readlink(cdist_bin)
-    cdist_dir = os.path.abspath(os.path.join(os.path.dirname(cdist_bin), os.pardir))
+    cdist_dir = os.path.realpath(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            os.pardir))
     sys.path.insert(0, cdist_dir)
     import cdist
 
