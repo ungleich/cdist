@@ -49,7 +49,7 @@ create version.py:
 
 .. code-block:: sh
 
-    ./bin/build-helper version
+    ./bin/cdist-build-helper version
 
 Then you install it with:
 
@@ -70,7 +70,7 @@ Or directly with distutils:
 
     python setup.py install
 
-Note that `bin/build-helper` script is intended for cdist maintainers.
+Note that `bin/cdist-build-helper` script is intended for cdist maintainers.
 
 
 Available versions in git
