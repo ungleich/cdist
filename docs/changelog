@@ -8,6 +8,7 @@ next:
 	* Type __package_pkgng_freebsd: Bootstrap pkg if necessary (Evil Ham)
 	* Type __service: Fix calling __systemd_service (Mark Verboom)
 	* Type __line: Add 'replace' state (Evil Ham)
+	* Type __download: Fix man page (Matthias Stecher)
 
 6.8.0: 2020-09-11
 	* Type __locale_system: Fix for debian and ubuntu (Ander Punnar)
