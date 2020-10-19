@@ -19,6 +19,12 @@ path
    Use this path for the given alternative
 
 
+BOOLEAN PARAMETERS
+------------------
+install
+   Add (``update-alternatives --install``) missing path to alternatives.
+
+
 EXAMPLES
 --------
 
@@ -36,11 +42,12 @@ SEE ALSO
 AUTHORS
 -------
 Nico Schottelius <nico-cdist--@--schottelius.org>
+Ander Punnar <ander@kvlt.ee>
 
 
 COPYING
 -------
-Copyright \(C) 2013 Nico Schottelius. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
+Copyright \(C) 2013 Nico Schottelius and 2020 Ander Punnar. You can
+redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.

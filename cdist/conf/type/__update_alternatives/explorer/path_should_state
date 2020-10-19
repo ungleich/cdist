@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+if [ -f "$( cat "$__object/parameter/path" )" ]
+then
+    echo 'present'
+else
+    echo 'absent'
+fi
