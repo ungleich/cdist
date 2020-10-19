@@ -12,11 +12,14 @@ Fully supported and tested on Linux (ext4 filesystem), partial support for FreeB
 
 See ``setfacl`` and ``acl`` manpages for more details.
 
+One of ``--entry`` or ``--source`` must be used.
 
-REQUIRED MULTIPLE PARAMETERS
+
+OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
 entry
    Set ACL entry following ``getfacl`` output syntax.
+   Must be used if ``--source`` is not used.
 
 
 OPTIONAL PARAMETERS
@@ -25,6 +28,7 @@ source
    Read ACL entries from stdin or file.
    Ordering of entries is not important.
    When reading from file, comments and empty lines are ignored.
+   Must be used if ``--entry`` is not used.
 
 file
    Create/change file with ``__file`` using ``user:group:mode`` pattern.
@@ -46,12 +50,6 @@ recursive
 remove
    Remove undefined ACL entries.
    ``mask`` and ``other`` entries can't be removed, but only changed.
-
-
-DEPRECATED PARAMETERS
----------------------
-Parameters ``acl``, ``user``, ``group``, ``mask`` and ``other`` are deprecated and they
-will be removed in future versions. Please use ``entry`` parameter instead.
 
 
 EXAMPLES
