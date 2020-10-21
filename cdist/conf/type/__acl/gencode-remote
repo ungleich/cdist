@@ -22,8 +22,8 @@ file_is="$( cat "$__object/explorer/file_is" )"
 
 if [ "$file_is" = 'missing' ] \
     && [ -z "$__cdist_dry_run" ] \
-    && \( [ ! -f "$__object/parameter/file" ] \
-        || [ ! -f "$__object/parameter/directory" ] \)
+    && [ ! -f "$__object/parameter/file" ] \
+    && [ ! -f "$__object/parameter/directory" ]
 then
     exit 0
 fi
@@ -47,27 +47,25 @@ then
 elif [ -f "$__object/parameter/entry" ]
 then
     acl_should="$( cat "$__object/parameter/entry" )"
-elif [ -f "$__object/parameter/acl" ]
-then
-    acl_should="$( cat "$__object/parameter/acl" )"
-elif
-    [ -f "$__object/parameter/user" ] \
-        || [ -f "$__object/parameter/group" ] \
-        || [ -f "$__object/parameter/mask" ] \
-        || [ -f "$__object/parameter/other" ]
-then
-    acl_should="$( for param in user group mask other
-    do
-        [ ! -f "$__object/parameter/$param" ] && continue
-
-        echo "$param" | grep -Eq 'mask|other' && sep=:: || sep=:
-
-        echo "$param$sep$( cat "$__object/parameter/$param" )"
-    done )"
 else
     echo 'no parameters set' >&2
     exit 1
 fi
+
+# instead of setfacl's non-helpful message "Option -m: Invalid argument near character X"
+# let's check if target has necessary users and groups, since mistyped or missing
+# users/groups in target is most common reason.
+echo "$acl_should" \
+    | grep -Po '(user|group):[^:]+' \
+    | sort -u \
+    | while read -r l
+    do
+        if ! grep "$l" -Fxq "$__object/explorer/getent"
+        then
+            echo "no $l' in target" | sed "s/:/ '/" >&2
+            exit 1
+        fi
+    done
 
 if [ -f "$__object/parameter/default" ]
 then
