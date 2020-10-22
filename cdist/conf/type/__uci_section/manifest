@@ -33,6 +33,32 @@ append_values() {
 	"$@" </dev/null
 }
 
+uci_validate_name() {
+	# like util.c uci_validate_name()
+	test -n "$*" && test -z "$(echo "$*" | tr -d '[:alnum:]_')"
+}
+
+## Check section name and error if invalid!
+case ${__object_id:?}
+in
+	(*.*)
+		uci_validate_name "${__object_id%%.*}" || {
+			printf 'Invalid package name: %s\n' "${__object_id%%.*}" >&2
+			exit 1
+		}
+		uci_validate_name "${__object_id#*.}" || {
+			printf 'Invalid section name: %s\n' "${__object_id#*.}" >&2
+			exit 1
+		}
+		;;
+	(*)
+		uci_validate_name "${__object_id:?}" || {
+			printf 'Invalid section name: %s\n' "${__object_id:?}" >&2
+			exit 1
+		}
+		;;
+esac
+
 section=$(cat "${__object:?}/explorer/match")
 
 state_should=$(cat "${__object:?}/parameter/state")
