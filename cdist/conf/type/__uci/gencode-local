@@ -18,14 +18,36 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-in_list() { printf '%s\n' "$@" | { grep -qxF "$(read -r NDL; echo "${NDL}")"; } }
+in_list() {
+	printf '%s\n' "$@" | { grep -qxF "$(read -r ndl; echo "${ndl}")"; }
+}
+
+quote() {
+	for _arg
+	do
+		shift
+		if test -n "$(printf %s "${_arg}" | tr -d -c '\t\n \042-\047\050-\052\073-\077\133\\`|~' | tr -c '' '.')"
+		then
+			# needs quoting
+			set -- "$@" "$(printf "'%s'" "$(printf %s "${_arg}" | sed -e "s/'/'\\\\''/g")")"
+		else
+			set -- "$@" "${_arg}"
+		fi
+	done
+	unset _arg
+
+	# NOTE: Use printf because POSIX echo interprets escape sequences
+	printf '%s' "$*"
+}
 
 uci_cmd() {
-	printf 'printf "%s\n"' "$1"
-	shift
-	printf " '%s'" "$@"
-	printf " >>'%s'\n" "${tmpfile}"
+	# Usage: uci_cmd [UCI ARGUMENTS]...
+	# Will output a shell command to be executed locally to add the given
+	# command to $tmpfile.
+	printf "printf '%%s\\\\n' %s" "$(quote "$(quote "$@")")"
+	printf ' >>%s\n' "$(quote "${tmpfile}")"
 }
+
 
 config=${__object_id:?}
 
@@ -57,19 +79,19 @@ in
 
 			if test "${state_is}" != 'absent'
 			then
-				printf "uci delete '%s'\n" "${config}"
+				uci_cmd delete "${config}"
 			fi
 
 			while read -r value
 			do
-				uci_cmd "add_list '%s'='%s'" "${config}" "${value}"
+				uci_cmd add_list "${config}"="${value}"
 			done <"${__object:?}/parameter/value"
 		else
 			# "should" is a scalar
 			printf 'set %s\n' "${config}" >>"${__messages_out:?}"
 
 			value=$(cat "${__object:?}/parameter/value")
-			uci_cmd "set '%s'='%s'" "${config}" "${value}"
+			uci_cmd set "${config}"="${value}"
 		fi
 		;;
 	(absent)
@@ -79,7 +101,7 @@ in
 		fi
 
 		printf 'delete %s\n' "${config}" >>"${__messages_out:?}"
-		uci_cmd "delete '%s'" "${config}"
+		uci_cmd delete "${config}"
 		;;
 	(*)
 		printf 'Invalid --state: %s\n' "${state_should}" >&2
