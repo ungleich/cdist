@@ -23,6 +23,8 @@ value
     Due to the way cdist handles arguments, values **must not** contain newline
     characters.
 
+    Values do not need special quoting for UCI. The only requirement is that the
+    value is passed to the type as a single shell argument.
 
 OPTIONAL PARAMETERS
 -------------------

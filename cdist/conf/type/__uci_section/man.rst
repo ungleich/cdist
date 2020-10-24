@@ -34,6 +34,10 @@ list
     same ``<option>`` repeatedly.
 
     The value to this parameter is a ``<option>=<value>`` string.
+
+    ``<value>`` does not need special quoting for UCI.
+    The only requirement is that the value is passed to the type as a single
+    shell argument.
 match
     Allows to find a section to "replace" through one of its parameters.
 
@@ -43,6 +47,10 @@ option
     This parameter can be used multiple times to specify multiple options.
 
     The value to this parameter is a ``<option>=<value>`` string.
+
+    ``<value>`` does not need special quoting for UCI.
+    The only requirement is that the value is passed to the type as a single
+    shell argument.
 state
     ``present`` or ``absent``, defaults to ``present``.
 transaction
