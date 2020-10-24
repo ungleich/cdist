@@ -3,14 +3,16 @@ cdist-type__uci_commit(7)
 
 NAME
 ----
-cdist-type__uci_commit - Commit a UCI transaction.
+cdist-type__uci_commit - Commit UCI transactions
 
 
 DESCRIPTION
 -----------
-This type executes the "uci commit" command on the target.
-It is usually not required to use this type. Use the `--transaction` parameter
-of `cdist-type__uci`\ (7) instead.
+This type executes the ``uci commit`` command on the target with the commands
+queued in a transaction.
+It is usually not required to use this type. Use the ``--transaction`` parameter
+of :strong:`cdist-type__uci`\ (7) and :strong:`cdist-type__uci_section`\ (7)
+instead.
 
 
 REQUIRED PARAMETERS
@@ -42,7 +44,7 @@ EXAMPLES
 
 SEE ALSO
 --------
-:strong:`cdist-type__uci`\ (7)
+:strong:`cdist-type__uci`\ (7), :strong:`cdist-type__uci_section`\ (7)
 
 
 AUTHORS

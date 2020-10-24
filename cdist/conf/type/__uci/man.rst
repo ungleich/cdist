@@ -3,23 +3,22 @@ cdist-type__uci(7)
 
 NAME
 ----
-cdist-type__uci - Manage configuration values in OpenWrt's
-Unified Configuration Interface (UCI)
+cdist-type__uci - Manage configuration values in UCI
 
 
 DESCRIPTION
 -----------
-This cdist type can be used to alter configuration options in OpenWrt's UCI
-system.
+This cdist type can be used to alter configuration options in OpenWrt's
+Unified Configuration Interface (UCI) system.
 
-Options can be applied in batches if the `--transaction` parameter is used.
+Options can be applied in batches if the ``--transaction`` parameter is used.
 
 
 REQUIRED PARAMETERS
 -------------------
 value
     The value to be set. Can be used multiple times.
-    This parameter is allowed to be omitted if `--state` is `absent`.
+    This parameter is ignored if ``--state`` is ``absent``.
 
     Due to the way cdist handles arguments, values **must not** contain newline
     characters.
@@ -28,10 +27,10 @@ value
 OPTIONAL PARAMETERS
 -------------------
 state
-    `present` or `absent`, defaults to `present`.
+    ``present`` or ``absent``, defaults to ``present``.
 transaction
     The name of the transaction this option belongs to.
-    If none is given: "default" is used.
+    If none is given: ``default`` is used.
 
 
 BOOLEAN PARAMETERS
