@@ -19,11 +19,15 @@
 #
 
 grep_line() { echo "$2" | grep -qxF "$1"; }
+uci_validate_name() {
+	# like util.c uci_validate_name()
+	test -n "$*" && test -z "$(printf %s "$*" | tr -d '[:alnum:]_' | tr -c '' .)"
+}
+validate_options() { grep -shv -e '^[[:alnum:]_]\{1,\}=' "$@"; }
 unquote_lines() {
 	sed -e '/^".*"$/{s/^"//;s/"$//}' \
 	    -e '/'"^'.*'"'$/{s/'"^'"'//;s/'"'$"'//}'
 }
-
 append_values() {
 	while read -r _value
 	do
@@ -32,11 +36,22 @@ append_values() {
 	unset _value
 	"$@" </dev/null
 }
-
-uci_validate_name() {
-	# like util.c uci_validate_name()
-	test -n "$*" && test -z "$(echo "$*" | tr -d '[:alnum:]_')"
+print_errors() {
+	awk -v prefix="${1:-Found errors:}" -v suffix="${2-}" '
+		BEGIN {
+			if (getline) {
+				print prefix
+				print
+				rc = 1
+			}
+		}
+		{ print }
+		END {
+			if (rc && suffix) print suffix
+			exit rc
+		}' >&2
 }
+
 
 ## Check section name and error if invalid!
 case ${__object_id:?}
@@ -74,12 +89,6 @@ in
 		type_is=$(cat "${__object:?}/explorer/type")
 		type_should=$(cat "${__object:?}/parameter/type")
 
-		if test -f "${__object:?}/parameter/option"
-		then
-			optnames_should=$(
-				sed -e 's/=.*$//' "${__object:?}/parameter/option" | sort -u)
-		fi
-
 		if test -n "${type_is}"
 		then
 			if test "${type_is}" != "${type_should##*.}"
@@ -103,6 +112,17 @@ in
 				(*.*) section=${__object_id:?} ;;
 				(*) section="${type_should%%.*}.${__object_id:?}" ;;
 			esac
+		fi
+
+		# Check options for syntax errors
+		validate_options "${__object:?}/parameter/object" \
+		| print_errors 'Found erroneous options in arguments:'
+
+		# Collect option names
+		if test -f "${__object:?}/parameter/option"
+		then
+			optnames_should=$(
+				sed -e 's/=.*$//' "${__object:?}/parameter/option" | sort -u)
 		fi
 
 		# Make sure the section itself is present
