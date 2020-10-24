@@ -31,6 +31,10 @@ state
 transaction
     The name of the transaction this option belongs to.
     If none is given: ``default`` is used.
+type
+    If the type should generate an option or a list.
+    One of: ``option`` or ``list``.
+    Defaults to auto-detect based on the number of ``--value`` parameters.
 
 
 BOOLEAN PARAMETERS
@@ -46,10 +50,13 @@ EXAMPLES
     # Set the system hostname
     __uci system.@system[0].hostname --value 'OpenWrt'
 
+    # Set DHCP option 252: tell DHCP clients to not ask for proxy information.
+    __uci dhcp.lan.dhcp_option --type list --value '252,"\n"'
+
     # Enable NTP and NTPd (in one transaction)
     __uci system.ntp.enabled --value 1 --transaction ntp
     __uci system.ntp.enable_server --value 1 --transaction ntp
-    __uci system.ntp.server --transaction ntp \
+    __uci system.ntp.server --type list --transaction ntp \
         --value '0.openwrt.pool.ntp.org' \
         --value '1.openwrt.pool.ntp.org' \
         --value '2.openwrt.pool.ntp.org' \
