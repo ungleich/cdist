@@ -24,10 +24,8 @@ quote() {
 
 uci_cmd() {
 	# Usage: uci_cmd [UCI ARGUMENTS]...
-	# Will output a shell command to be executed locally to add the given
-	# command to $tmpfile.
-	printf "printf '%%s\\\\n' %s" "$(quote "$(quote "$@")")"
-	printf ' >>%s\n' "$(quote "${tmpfile}")"
+	mkdir -p "${__object:?}/files"
+	printf '%s\n' "$(quote "$@")" >>"${__object:?}/files/uci_batch.txt"
 }
 
 uci_validate_name() {
