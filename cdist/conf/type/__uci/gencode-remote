@@ -91,3 +91,11 @@ in
 		exit 1
 		;;
 esac
+
+if test -s "${__object:?}/files/uci_batch.txt"
+then
+	cat "${__type:?}/files/uci_apply.sh"
+	printf "uci_apply <<'EOF'\n"
+	cat "${__object:?}/files/uci_batch.txt"
+	printf '\nEOF\n'
+fi
