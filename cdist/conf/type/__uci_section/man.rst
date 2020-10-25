@@ -53,9 +53,6 @@ option
     shell argument.
 state
     ``present`` or ``absent``, defaults to ``present``.
-transaction
-    The name of the transaction this option belongs to.
-    The value will be forwarded to :strong:`cdist-type__uci`\ (7).
 type
     The type of the section in the format: ``<config>.<section-type>``
 
@@ -71,13 +68,13 @@ EXAMPLES
 .. code-block:: sh
 
     # Configure the dropbear daemon
-    __uci_section dropbear --type dropbear.dropbear --transaction sshd \
+    __uci_section dropbear --type dropbear.dropbear \
         --match Port=22 --option Port=22 \
         --option PasswordAuth=off \
         --option RootPasswordAuth=off
 
     # Define a firewall zone comprised of lan and wlan networks
-    __uci_section firewall.internal --type firewall.zone --transaction fw \
+    __uci_section firewall.internal --type firewall.zone \
         --option name='internal' \
         --list network='lan' \
         --list network='wlan' \
@@ -87,7 +84,6 @@ EXAMPLES
 
     # Block SSH access from the guest network
     __uci_section firewall.block_ssh_from_guest --type firewall.rule \
-        --transaction fwrules \
         --option name='Block-SSH-Access-from-Guest' \
         --option src='guest' \
         --option proto='tcp' \
@@ -96,7 +92,6 @@ EXAMPLES
 
     # Configure a Wi-Fi access point
     __uci_section wireless.default_radio0 --type wireless.wifi-iface \
-        --transaction wifi \
         --option device='radio0' \
         --option mode='ap' \
         --option network='wlan' \

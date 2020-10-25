@@ -46,7 +46,6 @@ esac
 section=$(cat "${__object:?}/explorer/match")
 
 state_should=$(cat "${__object:?}/parameter/state")
-transaction_name=$(cat "${__object:?}/parameter/transaction")
 
 case $state_should
 in
@@ -106,8 +105,7 @@ in
 		fi
 
 		# Make sure the section itself is present
-		__uci "${section}" --state present --transaction "${transaction_name}" \
-			--value "${sect_type}"
+		__uci "${section}" --state present --value "${sect_type}"
 		export require=__uci/"${section}"
 
 		# Delete options/lists not in "should"
@@ -115,7 +113,7 @@ in
 		| while read -r optname
 		  do
 			  grep_line "${optname}" "${listnames_should}" "${optnames_should}" || {
-				  __uci "${section}.${optname}" --state absent --transaction "${transaction_name}"
+				  __uci "${section}.${optname}" --state absent
 			  } </dev/null
 		  done
 
@@ -130,14 +128,14 @@ in
 			  | unquote_lines \
 			  | append_values \
 				    __uci "${section}.${_optname}" --state present \
-					    --type "${_type}" --transaction "${transaction_name}"
+					    --type "${_type}"
 		  done
 		;;
 	(absent)
 		# if explorer found no section there is nothing to delete
 		test -n "${section}" || exit 0
 
-		__uci "${section}" --state absent --transaction "${transaction_name}"
+		__uci "${section}" --state absent
 		;;
 	(*)
 		printf 'Invalid --state: %s\n' "${state_should}" >&2
