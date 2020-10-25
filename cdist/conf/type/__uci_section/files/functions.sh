@@ -1,13 +1,6 @@
 # -*- mode: sh; indent-tabs-mode: t -*-
 
-append_values() {
-	while read -r _value
-	do
-		set -- "$@" --value "${_value}"
-	done
-	unset _value
-	"$@" </dev/null
-}
+NL=$(printf '\n '); NL=${NL% }
 
 grep_line() {
 	{ shift; printf '%s\n' "$@"; } | grep -qxF "$1"
@@ -35,6 +28,28 @@ print_errors() {
 			if (rc && suffix) print suffix
 			exit rc
 		}' >&2
+}
+
+quote() {
+	for _arg
+	do
+		shift
+		if test -n "$(printf %s "${_arg}" | tr -d -c '\t\n \042-\047\050-\052\073-\077\133\\`|~' | tr -c '' '.')"
+		then
+			# needs quoting
+			set -- "$@" "$(printf "'%s'" "$(printf %s "${_arg}" | sed -e "s/'/'\\\\''/g")")"
+		else
+			set -- "$@" "${_arg}"
+		fi
+	done
+	unset _arg
+	printf '%s' "$*"
+}
+
+uci_cmd() {
+	# Usage: uci_cmd [UCI ARGUMENTS]...
+	mkdir -p "${__object:?}/files"
+	printf '%s\n' "$(quote "$@")" >>"${__object:?}/files/uci_batch.txt"
 }
 
 uci_validate_name() {

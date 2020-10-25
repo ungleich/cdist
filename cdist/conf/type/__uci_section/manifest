@@ -43,8 +43,6 @@ in
 		;;
 esac
 
-section=$(cat "${__object:?}/explorer/match")
-
 state_should=$(cat "${__object:?}/parameter/state")
 
 case $state_should
@@ -57,85 +55,31 @@ in
 		type_is=$(cat "${__object:?}/explorer/type")
 		type_should=$(cat "${__object:?}/parameter/type")
 
-		if test -n "${type_is}"
+		if test -n "${type_is}" && test "${type_is}" != "${type_should##*.}"
 		then
-			if test "${type_is}" != "${type_should##*.}"
-			then
-				# Check if section type matches (section exists and --type provided)
-				printf 'Section type "%s" does not match --type "%s".\n' \
-					"${type_is}" "${type_should}" >&2
-				exit 1
-			fi
-			sect_type=${type_is}
-		else
-			sect_type=${type_should##*.}
-		fi
-
-		if test -z "${section}"
-		then
-			# No section exists and --match was used.
-			# So we generate a new section identifier from $__object_id.
-			case ${__object_id:?}
-			in
-				(*.*) section=${__object_id:?} ;;
-				(*) section="${type_should%%.*}.${__object_id:?}" ;;
-			esac
+			# Check if section type matches (section exists and --type provided)
+			printf 'Section type "%s" does not match --type "%s".\n' \
+				"${type_is}" "${type_should}" >&2
+			exit 1
 		fi
 
 		# Check options for syntax errors
 		validate_options "${__object:?}/parameter/list" "${__object:?}/parameter/object" \
 		| print_errors 'Found erroneous options in arguments:'
 
-		# Collect option names
-		if test -f "${__object:?}/parameter/list"
+		# Check for duplicate option names
+		if test -s "${__object:?}/parameter/option"
 		then
-			listnames_should=$(
-				sed -e 's/=.*$//' "${__object:?}/parameter/list" | sort -u)
-		fi
-
-		if test -f "${__object:?}/parameter/option"
-		then
-			optnames_should=$(sed -e 's/=.*$//' "${__object:?}/parameter/option" | sort)
-
-			echo "${optnames_should}" \
+			sed -e 's/=.*$//' "${__object:?}/parameter/option" \
+			| sort \
 			| uniq -d \
 			| print_errors \
 				  'Found duplicate --options:' \
 				  "$(printf '\nUse --list for lists, instead.')"
 		fi
-
-		# Make sure the section itself is present
-		__uci "${section}" --state present --value "${sect_type}"
-		export require=__uci/"${section}"
-
-		# Delete options/lists not in "should"
-		sed -e 's/=.*$//;s/^.*\.//' "${__object:?}/explorer/options" \
-		| while read -r optname
-		  do
-			  grep_line "${optname}" "${listnames_should}" "${optnames_should}" || {
-				  __uci "${section}.${optname}" --state absent
-			  } </dev/null
-		  done
-
-		# Set "should" options
-		prefix_lines option "${optnames_should}" list "${listnames_should}" \
-		| while read -r _type _optname
-		  do
-			  test -n "${_type}${_optname}" || continue  # ignore empty lines
-
-			  grep "^${_optname}=" <"${__object:?}/parameter/${_type}" \
-			  | sed -e 's/^.*=//' \
-			  | unquote_lines \
-			  | append_values \
-				    __uci "${section}.${_optname}" --state present \
-					    --type "${_type}"
-		  done
 		;;
 	(absent)
-		# if explorer found no section there is nothing to delete
-		test -n "${section}" || exit 0
-
-		__uci "${section}" --state absent
+		:
 		;;
 	(*)
 		printf 'Invalid --state: %s\n' "${state_should}" >&2
