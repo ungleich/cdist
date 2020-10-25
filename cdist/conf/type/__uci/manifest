@@ -18,15 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# shellcheck source=files/functions.sh
-. "${__type:?}/files/functions.sh"
-
-
 os=$(cat "${__global:?}/explorer/os")
 
-state_is=$(cat "${__object:?}/explorer/state")
 state_should=$(cat "${__object:?}/parameter/state")
-transaction_name=$(cat "${__object:?}/parameter/transaction")
 
 case ${os}
 in
@@ -40,8 +34,6 @@ in
 		;;
 esac
 
-changes_required=false
-
 case ${state_should}
 in
 	(present)
@@ -49,21 +41,11 @@ in
 			echo 'The parameter --value is required.' >&2
 			exit 1
 		}
-
-		# NOTE: order is ignored so rearranged is also fine.
-		in_list "${state_is}" 'present' 'rearranged' || changes_required=true
 		;;
 	(absent)
-		in_list "${state_is}" 'absent' || changes_required=true
 		;;
 	(*)
 		printf 'Invalid --state: %s\n' "${state_should}" >&2
 		exit 1
 		;;
 esac
-
-if ${changes_required}
-then
-	# Make sure the changes are being committed
-	require=${__object_name:?} __uci_commit "${transaction_name}"
-fi

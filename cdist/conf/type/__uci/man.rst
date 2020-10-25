@@ -58,13 +58,11 @@ EXAMPLES
         --value '1.openwrt.pool.ntp.org' \
         --value '2.openwrt.pool.ntp.org' \
         --value '3.openwrt.pool.ntp.org'
-    export require=__uci_commit/ntp
 
 
 SEE ALSO
 --------
 - https://openwrt.org/docs/guide-user/base-system/uci
-- :strong:`cdist-type__uci_commit`\ (7)
 
 
 AUTHORS
