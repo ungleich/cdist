@@ -18,7 +18,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-in_list() { printf '%s\n' "$@" | { grep -qxF "$(read -r ndl; echo "${ndl}")"; } }
+# shellcheck source=files/functions.sh
+. "${__type:?}/files/functions.sh"
+
 
 os=$(cat "${__global:?}/explorer/os")
 
