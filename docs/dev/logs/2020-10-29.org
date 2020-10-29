@@ -1,0 +1,34 @@
+* The scanner, 2020-10-29, Hacking Villa Diesbach
+** Motivation
+   - The purpose of cdist is to ensure systems are in a configured state
+   - If systems reboot into a clean (think: netboot) state they are
+     stuck in an unconfigured mode
+   - We can either trigger *from* those machines
+     - this is what cdist trigger is for
+   - Or we can regulary *scan* for machines
+     - This method does not need any modification to standard OS
+** How it works
+   - cdist scan uses the all nodes multicast group ff02::1
+   - It sends a ping packet there in regular intervals
+   - This even works in non-IPv6 networks, as all operating systems
+     are IPv6 capable and usually IPv6 enabled by default
+     - Link local is always accessible!
+   - cdist scan receives an answer from all alive hosts
+     - These results are stored in ~/.cdist/scan/${hostip}
+     - We record the last_seen date  ~/.cdist/scan/${hostip}/last_seen
+   - After a host is detected, cdist *can* try to configure it
+     - It saves the result (+/- logging needs to be defined) in
+       ~/.cdist/scan/${hostip}/{config, install}_result
+     - If logging is saved: maybe in ~/.cdist/scan/${hostip}/{config, install}_log
+     - Final naming TBD
+** Benefits from the scanning approach
+   - We know when a host is alive/dead
+   - We can use standard OS w/o trigger customisation
+     - Only requirement: we can ssh into it
+     - Can make use f.i. of Alpine Linux w/ ssh keys feeding in
+   - We can trigger regular reconfiguration
+     - If alive && last_config_time > 1d -> reconfigure
+   - Data can be exported to f.i. prometheus
+     - Record when configured (successfully)
+     - Record when seen
+   - Enables configurations in stateless environments
