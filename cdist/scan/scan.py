@@ -50,12 +50,13 @@
 
 from multiprocessing import Process
 import os
-
-# FIXME: fail gracefully if non existent - i.e. "scapy required for scanner - please install python3-scapy"
+import logging
 from scapy.all import *
 
 # Datetime overwrites scapy.all.datetime - needs to be imported AFTER
 import datetime
+
+log = logging.getLogger("scan")
 
 class Trigger(object):
     """
@@ -87,6 +88,7 @@ class Trigger(object):
 
     def trigger(self, interface):
         packet = IPv6(dst=f"ff02::1%{interface}") / ICMPv6EchoRequest()
+        log.debug(f"Sending request on {interface}")
         send(packet, verbose=self.verbose)
 
 class Scanner(object):
@@ -94,18 +96,18 @@ class Scanner(object):
     Scan for replies of hosts, maintain the up-to-date database
     """
 
-    def __init__(self, interfaces=None, outdir=None):
+    def __init__(self, interfaces=None, args=None, outdir=None):
         self.interfaces = interfaces
 
         if outdir:
             self.outdir = outdir
         else:
-            self.outdir = "."
+            self.outdir = os.path.join(os.environ['HOME'], '.cdist', 'scan')
 
     def handle_pkg(self, pkg):
         if ICMPv6EchoReply in pkg:
             host = pkg['IPv6'].src
-            print(f"Host {host} is alive")
+            log.verbose(f"Host {host} is alive")
 
             dir = os.path.join(self.outdir, host)
             fname = os.path.join(dir, "last_seen")
@@ -118,11 +120,19 @@ class Scanner(object):
             with open(fname, "w") as fd:
                 fd.write(f"{now}\n")
 
+    def start(self):
+        self.process = Process(target=self.scan)
+        self.process.start()
+
+    def join(self):
+        self.process.join()
 
     def scan(self):
+        log.debug("Scanning - zzzzz")
         sniff(iface=self.interfaces,
               filter="icmp6",
               prn=self.handle_pkg)
+
 
 
 if __name__ == '__main__':

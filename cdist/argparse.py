@@ -8,10 +8,11 @@ import cdist.configuration
 import cdist.log
 import cdist.preos
 import cdist.info
+import cdist.scan.commandline
 
 
 # set of beta sub-commands
-BETA_COMMANDS = set(('install', 'inventory', ))
+BETA_COMMANDS = set(('install', 'inventory', 'scan', ))
 # set of beta arguments for sub-commands
 BETA_ARGS = {
     'config': set(('tag', 'all_tagged_hosts', 'use_archiving', )),
@@ -469,6 +470,35 @@ def get_parsers():
     parser['info'].add_argument(
             'pattern', nargs='?', help='Glob pattern.')
     parser['info'].set_defaults(func=cdist.info.Info.commandline)
+
+    # Scan = config + further
+    parser['scan'] = parser['sub'].add_parser('scan', add_help=False,
+                                                 parents=[parser['config']])
+
+    parser['scan'] = parser['sub'].add_parser(
+            'scan', parents=[parser['loglevel'],
+                             parser['beta'],
+                             parser['colored_output'],
+                             parser['common'],
+                             parser['config_main']])
+
+    parser['scan'].add_argument(
+        '-m', '--mode', help='Which modes should run',
+        action='append', default=[],
+        choices=['scan', 'trigger'])
+    parser['scan'].add_argument(
+        '--config',
+        action='store_true',
+        help='Try to configure detected hosts')
+    parser['scan'].add_argument(
+        '-I', '--interfaces',
+        action='append',  default=[],
+        help='On which interfaces to scan/trigger')
+    parser['scan'].add_argument(
+        '-d', '--delay',
+        action='store',  default=3600,
+        help='How long to wait before reconfiguring after last try')
+    parser['scan'].set_defaults(func=cdist.scan.commandline.commandline)
 
     for p in parser:
         parser[p].epilog = EPILOG

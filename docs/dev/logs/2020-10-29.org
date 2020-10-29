@@ -32,3 +32,26 @@
      - Record when configured (successfully)
      - Record when seen
    - Enables configurations in stateless environments
+** Sample output v2020-10-29
+23:14] bridge:~% sudo  cdist scan -b -I wlan0 -vv
+VERBOSE: cdist: version 6.8.0-36-g91d99bf0
+VERBOSE: scan: Host fe80::21d:72ff:fe86:46b is alive
+VERBOSE: scan: Host fe80::ce2d:e0ff:fed4:2611 is alive
+VERBOSE: scan: Host fe80::21b:fcff:feee:f4c1 is alive
+VERBOSE: scan: Host fe80::e2ff:f7ff:fe00:20e6 is alive
+VERBOSE: scan: Host fe80::20d:b9ff:fe49:ac11 is alive
+VERBOSE: scan: Host fe80::9e93:4eff:fe6c:c1f4 is alive
+VERBOSE: scan: Host fe80::ce32:e5ff:fe79:7ea7 is alive
+VERBOSE: scan: Host fe80::219:d2ff:feb2:2e12 is alive
+VERBOSE: scan: Host fe80::d66d:6dff:fe33:e00 is alive
+VERBOSE: scan: Host fe80::21b:fcff:feee:f446 is alive
+VERBOSE: scan: Host fe80::21b:fcff:feee:f4b1 is alive
+VERBOSE: scan: Host fe80::20d:b9ff:fe4c:547d is alive
+VERBOSE: scan: Host fe80::bad8:12ff:fe65:313d is alive
+VERBOSE: scan: Host fe80::42b0:34ff:fe6f:f6f0 is alive
+VERBOSE: scan: Host fe80::ba69:f4ff:fec5:6041 is alive
+VERBOSE: scan: Host fe80::f29f:c2ff:fe7c:275e is alive
+VERBOSE: scan: Host fe80::ba69:f4ff:fec5:8db7 is alive
+VERBOSE: scan: Host fe80::42b0:34ff:fe6f:f863 is alive
+VERBOSE: scan: Host fe80::21b:fcff:feee:f4bc is alive
+...
