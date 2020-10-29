@@ -11,6 +11,7 @@ next:
 	* Type __download: Fix man page (Matthias Stecher)
 	* Type __acl: Remove deprecated parameters, fix bugs (Ander Punnar)
 	* Type __update_alternatives: Rewrite, support --install (Ander Punnar)
+	* Type __file: Fix state pre-exists (Dennis Camera)
 
 6.8.0: 2020-09-11
 	* Type __locale_system: Fix for debian and ubuntu (Ander Punnar)
