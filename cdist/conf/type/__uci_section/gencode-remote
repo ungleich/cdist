@@ -70,7 +70,8 @@ in
 		fi
 
 		# Make sure the section itself is present
-		if test "${state_is}" = absent
+		if test "${state_is}" = absent \
+			|| test "${type_is}" != "${type_should#*.}"
 		then
 			printf 'set %s\n' "${section}" >>"${__messages_out:?}"
 			# shellcheck disable=SC2140
@@ -78,7 +79,7 @@ in
 		fi
 
 		# Delete options/lists not in "should"
-		sed -e 's/=.*$//;s/^.*\.//' "${__object:?}/explorer/options" \
+		sed -e 's/=.*$//' "${__object:?}/explorer/options" \
 		| while read -r _optname
 		  do
 			  grep_line "${_optname}" "${listnames_should}" "${optnames_should}" || {
@@ -87,18 +88,55 @@ in
 			  } </dev/null
 		  done
 
-		# Set "should" options
-		prefix_lines option "${optnames_should}" list "${listnames_should}" \
-		| while read -r _type _optname
-		  do
-			  test -n "${_type}${_optname}" || continue  # ignore empty lines
+		opt_proc_error() {
+			printf 'An error occurred during processing of option %s\n' "${1:?}" >&2
+			exit 1
+		}
 
-			  case $_type
+		# Set "should" options
+		echo "${optnames_should}" \
+		| grep -e . \
+		| while read -r _optname
+		  do
+			  _opt_state=$(awk -f "${__type:?}/files/option_state.awk" option "${_optname}") \
+				  || opt_proc_error "${_optname}"
+			  case ${_opt_state}
 			  in
-				  (list)
+				  (invalid)
+					  opt_proc_error "${_optname}"
+					  ;;
+				  (present)
+					  ;;
+				  (*)
+					  printf 'set %s\n' "${section}.${_optname}" >>"${__messages_out:?}"
+
+					  # shellcheck disable=SC2140
+					  uci_cmd set "${section}.${_optname}"="$(
+						  grep -e "^${_optname}=" "${__object:?}/parameter/option" \
+						  | sed -e 's/^.*=//' \
+						  | unquote_lines \
+						  | head -n 1)"
+					  ;;
+			  esac
+		  done
+
+		echo "${listnames_should}" \
+		| grep -e . \
+		| while read -r _optname
+		  do
+			  _list_state=$(awk -f "${__type:?}/files/option_state.awk" list "${_optname}") \
+				  || opt_proc_error "${_optname}"
+			  case ${_list_state}
+			  in
+				  (invalid)
+					  opt_proc_error "${_optname}"
+					  ;;
+				  (present)
+					  ;;
+				  (*)
 					  printf 'set_list %s\n' "${section}.${_optname}" >>"${__messages_out:?}"
 
-					  if grep -q -e "^${_optname}=" "${__object:?}/explorer/options"
+					  if test "${_list_state}" != absent
 					  then
 						  uci_cmd delete "${section}.${_optname}"
 					  fi
@@ -111,16 +149,6 @@ in
 						    # shellcheck disable=SC2140
 						    uci_cmd add_list "${section}.${_optname}"="${_value}"
 					    done
-					  ;;
-				  (option)
-					  printf 'set %s\n' "${section}.${_optname}" >>"${__messages_out:?}"
-
-					  # shellcheck disable=SC2140
-					  uci_cmd set "${section}.${_optname}"="$(
-						  grep "^${_optname}=" "${__object:?}/parameter/option" \
-						  | sed -e 's/^.*=//' \
-						  | unquote_lines \
-						  | head -n 1)"
 					  ;;
 			  esac
 		  done

@@ -25,4 +25,24 @@ section=$("${__type_explorer:?}/match")
 test -n "${section}" || exit 0
 
 uci -s -N -d "${RS}" show "${section}" 2>/dev/null \
-| grep -v -e "^${section}=" || true
+| awk -v VSEP="${RS}" '
+  {
+	  # Strip off the config and section parts
+	  is_opt = sub(/^([^.]*\.){2}/, "")
+
+	  if (!is_opt) {
+		  # this line represents the section -> skip
+		  next
+	  }
+
+	  if (index($0, VSEP)) {
+		  # Put values each on a line, like --option and --list parameters
+		  opt = substr($0, 1, index($0, "=") - 1)
+		  split(substr($0, length(opt) + 2), values, VSEP)
+		  for (i in values) {
+			  printf "%s=%s\n", opt, values[i]
+		  }
+	  } else {
+		  print
+	  }
+  }'

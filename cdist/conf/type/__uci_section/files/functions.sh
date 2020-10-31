@@ -6,14 +6,6 @@ grep_line() {
 	{ shift; printf '%s\n' "$@"; } | grep -qxF "$1"
 }
 
-prefix_lines() {
-	while test $# -gt 0
-	do
-		echo "$2" | awk -v prefix="$1" '$0 { printf "%s %s\n", prefix, $0 }'
-		shift; shift
-	done
-}
-
 print_errors() {
 	awk -v prefix="${1:-Found errors:}" -v suffix="${2-}" '
 		BEGIN {
