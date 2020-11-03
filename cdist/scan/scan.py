@@ -30,9 +30,12 @@
 # Scanner logic
 #  - save results to configdir:
 #     basedir = ~/.cdist/scan/<ipv6-address>
-#     last_seen = ~/.cdist/scan/<ipv6-address>/last_seen -- record unix time or similar
-#     last_configured = ~/.cdist/scan/<ipv6-address>/last_configured -- record unix time or similar
-#     last_installed = ~/.cdist/scan/<ipv6-address>/last_configured -- record unix time or similar
+#     last_seen = ~/.cdist/scan/<ipv6-address>/last_seen -- record unix time
+#           or similar
+#     last_configured = ~/.cdist/scan/<ipv6-address>/last_configured -- record
+#           unix time or similar
+#     last_installed = ~/.cdist/scan/<ipv6-address>/last_configured -- record
+#           unix time or similar
 #
 #
 #
@@ -57,6 +60,7 @@ from scapy.all import *
 import datetime
 
 log = logging.getLogger("scan")
+
 
 class Trigger(object):
     """
@@ -90,6 +94,7 @@ class Trigger(object):
         packet = IPv6(dst=f"ff02::1%{interface}") / ICMPv6EchoRequest()
         log.debug(f"Sending request on {interface}")
         send(packet, verbose=self.verbose)
+
 
 class Scanner(object):
     """
@@ -132,7 +137,6 @@ class Scanner(object):
         sniff(iface=self.interfaces,
               filter="icmp6",
               prn=self.handle_pkg)
-
 
 
 if __name__ == '__main__':

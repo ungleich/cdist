@@ -37,7 +37,7 @@ def commandline(args):
 
     if not args.mode:
         # By default scan and trigger, but do not call any action
-        args.mode = ['scan', 'trigger' ]
+        args.mode = ['scan', 'trigger', ]
 
     if 'trigger' in args.mode:
         t = scan.Trigger(interfaces=args.interfaces)
