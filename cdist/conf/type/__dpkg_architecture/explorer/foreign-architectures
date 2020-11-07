@@ -1,0 +1,8 @@
+#!/bin/sh -e
+# __dpkg_architecture/explorer/foreign-architectures
+
+# Print all additional architectures
+
+
+# print or die in the gencode-remote
+dpkg --print-foreign-architectures || true

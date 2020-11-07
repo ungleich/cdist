@@ -1,0 +1,8 @@
+#!/bin/sh -e
+# __dpkg_architecture/explorer/architecture
+
+# Get the main architecture of this machine
+
+
+# print or die in the gencode-remote
+dpkg --print-architecture || true
