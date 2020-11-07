@@ -13,6 +13,7 @@ next:
 	* Type __update_alternatives: Rewrite, support --install (Ander Punnar)
 	* Type __file: Fix state pre-exists (Dennis Camera)
 	* Type __apt_norecommends: Use 00InstallRecommends file as debian-installer does (Dennis Camera)
+	* New types: __uci, __uci_section (Dennis Camera)
 	* Core: Introduce scanner (noninvasive, beta) (Nico Schottelius)
 
 6.8.0: 2020-09-11
