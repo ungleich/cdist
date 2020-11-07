@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.9.0: 2020-11-07
 	* Core: Clarify stdin input (Darko Poljak)
 	* Type __package_pip: Detect pip binary (Ander Punnar)
 	* Documentation: Add custom remote copy/exec examples (Darko Poljak)
