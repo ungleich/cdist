@@ -371,7 +371,6 @@ eof
 Manual steps post release:
     - cdist-web
     - send generated mailinglist.tmp mail
-    - twitter
 eof
     ;;
 

@@ -1,0 +1,103 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# This explorer determines the "prefix" of the --type section matching --match
+# if set, or __object_id otherwise.
+
+RS=$(printf '\036')
+NL=$(printf '\n '); NL=${NL% }
+
+squote_values() {
+	sed -e '/=".*"$/{s/="/='\''/;s/"$/'\''/}' \
+	    -e "/='.*'$/"'!{s/=/='\''/;s/$/'\''/}'
+}
+count_lines() (
+	IFS=${NL?}
+	# shellcheck disable=SC2048,SC2086
+	set -f -- $*; echo $#
+)
+
+echo "${__object_id:?}" | grep -q -e '^[^.]\{1,\}\.[^.]\{1,\}$' || {
+	echo 'Section identifiers are a package and section name separated by a "." (period).' >&2
+	exit 1
+}
+
+test -s "${__object:?}/parameter/match" || {
+	# If no --match is given, we take the __object_id as the section identifier.
+	echo "${__object_id:?}"
+	exit 0
+}
+test -s "${__object:?}/parameter/type" || {
+	echo 'Parameters --match and --type must be used together.' >&2
+	exit 1
+}
+
+sect_type_param=$(cat "${__object:?}/parameter/type")
+expr "${sect_type_param}" : '[^.]\{1,\}\.[^.]\{1,\}$' >/dev/null 2>&1 || {
+	echo 'Section types are a package name and section type separated by a "." (period).' >&2
+	exit 1
+}
+package_filter=${sect_type_param%%.*}
+section_filter=${sect_type_param#*.}
+
+# Find by --match
+# NOTE: Apart from section types all values are printed in single quotes by uci show.
+match=$(head -n 1 "${__object:?}/parameter/match" | squote_values)
+
+if uci -s -N get "${__object_id:?}" >/dev/null 2>&1
+then
+	# Named section exists: ensure if --match applies to it
+	# if the "matched" option does not exist (e.g. empty section) we use the
+	# section unconditionally.
+	if match_value_is=$(uci -s -N get "${__object_id:?}.${match%%=*}" 2>/dev/null)
+	then
+		match_value_should=$(expr "${match}" : ".*='\\(.*\\)'$")
+
+		test "${match_value_is}" = "${match_value_should}" || {
+			printf 'Named section "%s" does not match --match "%s"\n' \
+				   "${__object_id:?}" "${match}" >&2
+			exit 1
+		}
+	fi
+
+	echo "${__object_id:?}"
+	exit 0
+fi
+
+# No correctly named section exists already: find one to which --match applies
+regex="^${package_filter}\\.@${section_filter}\\[[0-9]\\{1,\\}\\]\\.${match%%=*}="
+
+matched_sections=$(
+	uci -s -N -d "${RS}" show "${package_filter}" 2>/dev/null \
+	| grep -e "${regex}" \
+	| while read -r _line
+	  do
+		  if test "${_line#*=}" = "${match#*=}"
+		  then
+			  echo "${_line}"
+		  fi
+	  done \
+	| sed -e 's/\.[^.]*=.*$//')
+
+test "$(count_lines "${matched_sections}")" -le 1 || {
+	printf 'Found multiple matching sections:\n%s\n' "${matched_sections}" >&2
+	exit 1
+}
+
+echo "${matched_sections}"

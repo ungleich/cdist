@@ -1,0 +1,101 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera@ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# shellcheck source=cdist/conf/type/__uci/files/functions.sh
+. "${__type:?}/files/functions.sh"
+
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
+
+config=${__object_id:?}
+uci_validate_tuple "${config}"
+
+
+case ${state_should}
+in
+	(present)
+		if in_list "${state_is}" 'present' 'rearranged'
+		then
+			# NOTE: order is ignored so rearranged is also fine.
+			exit 0
+		fi
+
+		# Determine type
+		type=$(cat "${__object:?}/parameter/type" 2>/dev/null || true)
+		case ${type}
+		in
+			(option|list) ;;
+			('')
+				# Guess type by the number of values
+				test "$(wc -l "${__object:?}/parameter/value")" -gt 1 \
+					 && type=list \
+					 || type=option
+				;;
+			(*)
+				printf 'Invalid --type: %s\n' "${type}" >&2
+				exit 1
+				;;
+		esac
+
+		case ${type}
+		in
+			(list)
+				printf 'set_list %s\n' "${config}" >>"${__messages_out:?}"
+
+				if test "${state_is}" != 'absent'
+				then
+					uci_cmd delete "${config}"
+				fi
+
+				while read -r value
+				do
+					uci_cmd add_list "${config}"="${value}"
+				done <"${__object:?}/parameter/value"
+				;;
+			(option)
+				printf 'set %s\n' "${config}" >>"${__messages_out:?}"
+
+				value=$(cat "${__object:?}/parameter/value")
+				uci_cmd set "${config}"="${value}"
+				;;
+		esac
+		;;
+	(absent)
+		if in_list "${state_is}" 'absent'
+		then
+			exit 0
+		fi
+
+		printf 'delete %s\n' "${config}" >>"${__messages_out:?}"
+		uci_cmd delete "${config}"
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
+esac
+
+if test -s "${__object:?}/files/uci_batch.txt"
+then
+	cat "${__type:?}/files/uci_apply.sh"
+	printf "uci_apply <<'EOF'\n"
+	cat "${__object:?}/files/uci_batch.txt"
+	printf '\nEOF\n'
+fi

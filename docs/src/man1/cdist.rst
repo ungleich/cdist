@@ -187,10 +187,8 @@ Install command is currently in beta.
 
 **-f HOSTFILE, --file HOSTFILE**
     Read specified file for a list of additional hosts to operate on
-    or if '-' is given, read stdin (one host per line).
-    If no host or host file is specified then, by default,
-    read hosts from stdin. For the file format see
-    :strong:`HOSTFILE FORMAT` below.
+    or if '-' is given, read stdin (one host per line). For the file
+    format see :strong:`HOSTFILE FORMAT` below.
 
 **-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
@@ -309,9 +307,8 @@ Add host(s) to inventory database.
 
 **-f HOSTFILE, --file HOSTFILE**
     Read additional hosts to add from specified file or
-    from stdin if '-' (each host on separate line). If no
-    host or host file is specified then, by default, read
-    from stdin. Hostfile format is the same as config hostfile format.
+    from stdin if '-' (each host on separate line).
+    Hostfile format is the same as config hostfile format.
 
 **-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
@@ -337,11 +334,8 @@ Add tag(s) to inventory database.
 
 **-f HOSTFILE, --file HOSTFILE**
     Read additional hosts to add tags from specified file
-    or from stdin if '-' (each host on separate line). If
-    no host or host file is specified then, by default,
-    read from stdin. If no tags/tagfile nor hosts/hostfile
-    are specified then tags are read from stdin and are
-    added to all hosts. Hostfile format is the same as config hostfile format.
+    or from stdin if '-' (each host on separate line).
+    Hostfile format is the same as config hostfile format.
 
 **-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
@@ -356,11 +350,8 @@ Add tag(s) to inventory database.
 
 **-T TAGFILE, --tag-file TAGFILE**
     Read additional tags to add from specified file or
-    from stdin if '-' (each tag on separate line). If no
-    tag or tag file is specified then, by default, read
-    from stdin. If no tags/tagfile nor hosts/hostfile are
-    specified then tags are read from stdin and are added
-    to all hosts. Tagfile format is the same as config hostfile format.
+    from stdin if '-' (each tag on separate line).
+    Tagfile format is the same as config hostfile format.
 
 **-t TAGLIST, --taglist TAGLIST**
     Tag list to be added for specified host(s), comma
@@ -382,9 +373,8 @@ Delete host(s) from inventory database.
 
 **-f HOSTFILE, --file HOSTFILE**
     Read additional hosts to delete from specified file or
-    from stdin if '-' (each host on separate line). If no
-    host or host file is specified then, by default, read
-    from stdin. Hostfile format is the same as config hostfile format.
+    from stdin if '-' (each host on separate line).
+    Hostfile format is the same as config hostfile format.
 
 **-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
@@ -414,11 +404,8 @@ Delete tag(s) from inventory database.
 **-f HOSTFILE, --file HOSTFILE**
     Read additional hosts to delete tags for from
     specified file or from stdin if '-' (each host on
-    separate line). If no host or host file is specified
-    then, by default, read from stdin. If no tags/tagfile
-    nor hosts/hostfile are specified then tags are read
-    from stdin and are deleted from all hosts. Hostfile
-    format is the same as config hostfile format.
+    separate line). Hostfile format is the same as
+    config hostfile format.
 
 **-g CONFIG_FILE, --config-file CONFIG_FILE**
     Use specified custom configuration file.
@@ -433,11 +420,8 @@ Delete tag(s) from inventory database.
 
 **-T TAGFILE, --tag-file TAGFILE**
     Read additional tags from specified file or from stdin
-    if '-' (each tag on separate line). If no tag or tag
-    file is specified then, by default, read from stdin.
-    If no tags/tagfile nor hosts/hostfile are specified
-    then tags are read from stdin and are added to all
-    hosts. Tagfile format is the same as config hostfile format.
+    if '-' (each tag on separate line).
+    Tagfile format is the same as config hostfile format.
 
 **-t TAGLIST, --taglist TAGLIST**
     Tag list to be deleted for specified host(s), comma

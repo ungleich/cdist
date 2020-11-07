@@ -9,10 +9,11 @@ import cdist.trigger
 import cdist.log
 import cdist.preos
 import cdist.info
+import cdist.scan.commandline
 
 
 # set of beta sub-commands
-BETA_COMMANDS = set(('install', 'inventory', 'trigger', ))
+BETA_COMMANDS = set(('install', 'inventory', 'scan', 'trigger', ))
 # set of beta arguments for sub-commands
 BETA_ARGS = {
     'config': set(('tag', 'all_tagged_hosts', 'use_archiving', )),
@@ -274,8 +275,7 @@ def get_parsers():
             '-f', '--file',
             help=('Read specified file for a list of additional hosts to '
                   'operate on or if \'-\' is given, read stdin (one host per '
-                  'line). If no host or host file is specified then, by '
-                  'default, read hosts from stdin.'),
+                  'line).'),
             dest='hostfile', required=False)
     parser['config_args'].add_argument(
            '-p', '--parallel', nargs='?', metavar='HOST_MAX',
@@ -327,9 +327,7 @@ def get_parsers():
     parser['add-host'].add_argument(
            '-f', '--file',
            help=('Read additional hosts to add from specified file '
-                 'or from stdin if \'-\' (each host on separate line). '
-                 'If no host or host file is specified then, by default, '
-                 'read from stdin.'),
+                 'or from stdin if \'-\' (each host on separate line). '),
            dest='hostfile', required=False)
 
     parser['add-tag'] = parser['invsub'].add_parser(
@@ -343,20 +341,12 @@ def get_parsers():
     parser['add-tag'].add_argument(
            '-f', '--file',
            help=('Read additional hosts to add tags from specified file '
-                 'or from stdin if \'-\' (each host on separate line). '
-                 'If no host or host file is specified then, by default, '
-                 'read from stdin. If no tags/tagfile nor hosts/hostfile'
-                 ' are specified then tags are read from stdin and are'
-                 ' added to all hosts.'),
+                 'or from stdin if \'-\' (each host on separate line). '),
            dest='hostfile', required=False)
     parser['add-tag'].add_argument(
            '-T', '--tag-file',
            help=('Read additional tags to add from specified file '
-                 'or from stdin if \'-\' (each tag on separate line). '
-                 'If no tag or tag file is specified then, by default, '
-                 'read from stdin. If no tags/tagfile nor hosts/hostfile'
-                 ' are specified then tags are read from stdin and are'
-                 ' added to all hosts.'),
+                 'or from stdin if \'-\' (each tag on separate line). '),
            dest='tagfile', required=False)
     parser['add-tag'].add_argument(
            '-t', '--taglist',
@@ -377,9 +367,7 @@ def get_parsers():
     parser['del-host'].add_argument(
             '-f', '--file',
             help=('Read additional hosts to delete from specified file '
-                  'or from stdin if \'-\' (each host on separate line). '
-                  'If no host or host file is specified then, by default, '
-                  'read from stdin.'),
+                  'or from stdin if \'-\' (each host on separate line). '),
             dest='hostfile', required=False)
 
     parser['del-tag'] = parser['invsub'].add_parser(
@@ -397,20 +385,13 @@ def get_parsers():
     parser['del-tag'].add_argument(
             '-f', '--file',
             help=('Read additional hosts to delete tags for from specified '
-                  'file or from stdin if \'-\' (each host on separate line). '
-                  'If no host or host file is specified then, by default, '
-                  'read from stdin. If no tags/tagfile nor hosts/hostfile'
-                  ' are specified then tags are read from stdin and are'
-                  ' deleted from all hosts.'),
+                  'file or from stdin if \'-\' (each host on separate '
+                  'line). '),
             dest='hostfile', required=False)
     parser['del-tag'].add_argument(
             '-T', '--tag-file',
             help=('Read additional tags from specified file '
-                  'or from stdin if \'-\' (each tag on separate line). '
-                  'If no tag or tag file is specified then, by default, '
-                  'read from stdin. If no tags/tagfile nor'
-                  ' hosts/hostfile are specified then tags are read from'
-                  ' stdin and are added to all hosts.'),
+                  'or from stdin if \'-\' (each tag on separate line). '),
             dest='tagfile', required=False)
     parser['del-tag'].add_argument(
             '-t', '--taglist',
@@ -490,6 +471,35 @@ def get_parsers():
     parser['info'].add_argument(
             'pattern', nargs='?', help='Glob pattern.')
     parser['info'].set_defaults(func=cdist.info.Info.commandline)
+
+    # Scan = config + further
+    parser['scan'] = parser['sub'].add_parser('scan', add_help=False,
+                                              parents=[parser['config']])
+
+    parser['scan'] = parser['sub'].add_parser(
+            'scan', parents=[parser['loglevel'],
+                             parser['beta'],
+                             parser['colored_output'],
+                             parser['common'],
+                             parser['config_main']])
+
+    parser['scan'].add_argument(
+        '-m', '--mode', help='Which modes should run',
+        action='append', default=[],
+        choices=['scan', 'trigger'])
+    parser['scan'].add_argument(
+        '--config',
+        action='store_true',
+        help='Try to configure detected hosts')
+    parser['scan'].add_argument(
+        '-I', '--interfaces',
+        action='append',  default=[],
+        help='On which interfaces to scan/trigger')
+    parser['scan'].add_argument(
+        '-d', '--delay',
+        action='store',  default=3600,
+        help='How long to wait before reconfiguring after last try')
+    parser['scan'].set_defaults(func=cdist.scan.commandline.commandline)
 
     # Trigger
     parser['trigger'] = parser['sub'].add_parser(

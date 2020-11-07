@@ -1,0 +1,174 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera@ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# shellcheck source=cdist/conf/type/__uci_section/files/functions.sh
+. "${__type:?}/files/functions.sh"
+
+
+section=$(cat "${__object:?}/explorer/match")
+
+state_is=$(test -s "${__object:?}/explorer/type" && echo present || echo absent)
+state_should=$(cat "${__object:?}/parameter/state")
+
+case $state_should
+in
+	(present)
+		test -f "${__object:?}/parameter/type" || {
+			echo 'Parameter --type is required.' >&2
+			exit 1
+		}
+
+		type_is=$(cat "${__object:?}/explorer/type")
+		type_should=$(cat "${__object:?}/parameter/type")
+
+		if test -n "${type_is}"
+		then
+			sect_type=${type_is}
+		else
+			sect_type=${type_should##*.}
+		fi
+
+		if test -z "${section}"
+		then
+			# No section exists and --match was used.
+			# So we generate a new section identifier from $__object_id.
+			case ${__object_id:?}
+			in
+				(*.*) section=${__object_id:?} ;;
+				(*) section="${type_should%%.*}.${__object_id:?}" ;;
+			esac
+		fi
+
+		# Collect option names
+		if test -f "${__object:?}/parameter/list"
+		then
+			listnames_should=$(
+				sed -e 's/=.*$//' "${__object:?}/parameter/list" | sort -u)
+		fi
+
+		if test -f "${__object:?}/parameter/option"
+		then
+			optnames_should=$(
+				sed -e 's/=.*$//' "${__object:?}/parameter/option" | sort -u)
+		fi
+
+		# Make sure the section itself is present
+		if test "${state_is}" = absent \
+			|| test "${type_is}" != "${type_should#*.}"
+		then
+			printf 'set %s\n' "${section}" >>"${__messages_out:?}"
+			# shellcheck disable=SC2140
+			uci_cmd set "${section}"="${sect_type}"
+		fi
+
+		# Delete options/lists not in "should"
+		sed -e 's/=.*$//' "${__object:?}/explorer/options" \
+		| while read -r _optname
+		  do
+			  grep_line "${_optname}" "${listnames_should}" "${optnames_should}" || {
+				  printf 'delete %s\n' "${section}.${_optname}" >>"${__messages_out:?}"
+				  uci_cmd delete "${section}.${_optname}"
+			  } </dev/null
+		  done
+
+		opt_proc_error() {
+			printf 'An error occurred during processing of option %s\n' "${1:?}" >&2
+			exit 1
+		}
+
+		# Set "should" options
+		echo "${optnames_should}" \
+		| grep -e . \
+		| while read -r _optname
+		  do
+			  _opt_state=$(awk -f "${__type:?}/files/option_state.awk" option "${_optname}") \
+				  || opt_proc_error "${_optname}"
+			  case ${_opt_state}
+			  in
+				  (invalid)
+					  opt_proc_error "${_optname}"
+					  ;;
+				  (present)
+					  ;;
+				  (*)
+					  printf 'set %s\n' "${section}.${_optname}" >>"${__messages_out:?}"
+
+					  # shellcheck disable=SC2140
+					  uci_cmd set "${section}.${_optname}"="$(
+						  grep -e "^${_optname}=" "${__object:?}/parameter/option" \
+						  | sed -e 's/^.*=//' \
+						  | unquote_lines \
+						  | head -n 1)"
+					  ;;
+			  esac
+		  done
+
+		echo "${listnames_should}" \
+		| grep -e . \
+		| while read -r _optname
+		  do
+			  _list_state=$(awk -f "${__type:?}/files/option_state.awk" list "${_optname}") \
+				  || opt_proc_error "${_optname}"
+			  case ${_list_state}
+			  in
+				  (invalid)
+					  opt_proc_error "${_optname}"
+					  ;;
+				  (present)
+					  ;;
+				  (*)
+					  printf 'set_list %s\n' "${section}.${_optname}" >>"${__messages_out:?}"
+
+					  if test "${_list_state}" != absent
+					  then
+						  uci_cmd delete "${section}.${_optname}"
+					  fi
+
+					  grep "^${_optname}=" "${__object:?}/parameter/list" \
+					  | sed -e 's/^.*=//' \
+					  | unquote_lines \
+					  | while read -r _value
+					    do
+						    # shellcheck disable=SC2140
+						    uci_cmd add_list "${section}.${_optname}"="${_value}"
+					    done
+					  ;;
+			  esac
+		  done
+		;;
+	(absent)
+		if test "${state_is}" = absent
+		then
+			# if explorer found no section there is nothing to delete
+			exit 0
+		fi
+
+		printf 'delete %s\n' "${section}" >>"${__messages_out:?}"
+		uci_cmd delete "${section}"
+		;;
+esac
+
+if test -s "${__object:?}/files/uci_batch.txt"
+then
+	cat "${__type:?}/files/uci_apply.sh"
+	printf "uci_apply <<'EOF'\n"
+	cat "${__object:?}/files/uci_batch.txt"
+	printf '\nEOF\n'
+fi

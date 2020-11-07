@@ -38,7 +38,12 @@ pipparam="$__object/parameter/pip"
 if [ -f "$pipparam" ]; then
     pip=$(cat "$pipparam")
 else
-    pip="pip"
+    pip="$( cat "$__object/explorer/pip" )"
+    if [ -z "$pip" ]
+    then
+        echo 'pip not found in path' >&2
+        exit 1
+    fi
 fi
 
 runasparam="$__object/parameter/runas"
@@ -55,7 +60,7 @@ case "$state_should" in
         then
             echo "su -c '$pip install -q $name' $runas"
         else
-            echo $pip install -q "$name"
+            echo "$pip" install -q "$name"
         fi
         echo "installed" >> "$__messages_out"
     ;;
@@ -64,7 +69,7 @@ case "$state_should" in
         then
             echo "su -c '$pip uninstall -q -y $name' $runas"
         else
-            echo $pip uninstall -q -y "$name"
+            echo "$pip" uninstall -q -y "$name"
         fi
         echo "removed" >> "$__messages_out"
     ;;

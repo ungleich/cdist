@@ -299,7 +299,7 @@ class InventoryHost(Inventory):
         self.all = all
 
         if not self.hosts and not self.hostfile:
-            self.hostfile = "-"
+            raise cdist.Error("Host(s) missing")
 
     def _new_hostpath(self, hostpath):
         # create empty file
@@ -355,7 +355,7 @@ class InventoryTag(Inventory):
         else:
             self.allhosts = False
         if not self.tags and not self.tagfile:
-            self.tagfile = "-"
+            raise cdist.Error("Tag(s) missing")
 
         if self.hostfile == "-" and self.tagfile == "-":
             raise cdist.Error("Cannot read both, hosts and tags, from stdin")

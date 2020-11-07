@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -19,26 +20,28 @@
 #
 
 
-os=$(cat "$__global/explorer/os")
+os=$(cat "${__global:?}/explorer/os")
 
-case "$os" in
-   ubuntu|debian|devuan)
-      # No stinking recommends thank you very much.
-      # If I want something installed I will do so myself.
-      __file /etc/apt/apt.conf.d/99-no-recommends \
-         --owner root --group root --mode 644 \
-         --source - << DONE
-APT::Install-Recommends "0";
-APT::Install-Suggests "0";
-APT::AutoRemove::RecommendsImportant "0";
-APT::AutoRemove::SuggestsImportant "0";
-DONE
-   ;;
-   *)
-      cat >&2 << DONE
+case ${os}
+in
+	(ubuntu|debian|devuan)
+		__file /etc/apt/apt.conf.d/00InstallRecommends --state present \
+			--owner root --group root --mode 0644 --source - <<-'EOF'
+		APT::Install-Recommends "false";
+		APT::Install-Suggests "false";
+		APT::AutoRemove::RecommendsImportant "false";
+		APT::AutoRemove::SuggestsImportant "false";
+		EOF
+
+		# TODO: Remove the following object after some time
+		require=__file/etc/apt/apt.conf.d/00InstallRecommends \
+		__file /etc/apt/apt.conf.d/99-no-recommends --state absent
+		;;
+	(*)
+		cat >&2 <<EOF
 The developer of this type (${__type##*/}) did not think your operating system
 ($os) would have any use for it. If you think otherwise please submit a patch.
-DONE
-      exit 1
-   ;;
+EOF
+		exit 1
+		;;
 esac

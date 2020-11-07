@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2020 Ander Punnar (ander@kvlt.ee)
 #
 # This file is part of cdist.
 #
@@ -16,12 +17,38 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
-#
 
-if [ "$(cat "$__object/explorer/state")" = 'present' ]
-then exit 0
+path_is="$( cat "$__object/explorer/path_is" )"
+
+path_should="$( cat "$__object/parameter/path" )"
+
+if [ "$path_is" = "$path_should" ]
+then
+    exit 0
 fi
 
-path="$(cat "$__object/parameter/path")"
+if [ "$( cat "$__object/explorer/path_should_state" )" = 'absent' ] && [ -z "$__cdist_dry_run" ]
+then
+    echo "$path_should does not exist in target" >&2
+    exit 1
+fi
+
 name="$__object_id"
-echo "update-alternatives --quiet --set '$name' '$path'"
+
+alternatives="$( cat "$__object/explorer/alternatives" )"
+
+if ! echo "$alternatives" | grep -Fxq "$path_should"
+then
+    if [ ! -f "$__object/parameter/install" ]
+    then
+        echo "$path_should is not in $name alternatives." >&2
+        echo 'Please install missing packages or use --install to add path to alternatives.' >&2
+        exit 1
+    fi
+
+    link="$( cat "$__object/explorer/link" )"
+
+    echo "update-alternatives --install '$link' '$name' '$path_should' 1000"
+fi
+
+echo "update-alternatives --set '$name' '$path_should'"

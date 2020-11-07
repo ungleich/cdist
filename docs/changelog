@@ -5,6 +5,21 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.9.0: 2020-11-07
+	* Core: Clarify stdin input (Darko Poljak)
+	* Type __package_pip: Detect pip binary (Ander Punnar)
+	* Documentation: Add custom remote copy/exec examples (Darko Poljak)
+	* Type __package_pkgng_freebsd: Bootstrap pkg if necessary (Evil Ham)
+	* Type __service: Fix calling __systemd_service (Mark Verboom)
+	* Type __line: Add 'replace' state (Evil Ham)
+	* Type __download: Fix man page (Matthias Stecher)
+	* Type __acl: Remove deprecated parameters, fix bugs (Ander Punnar)
+	* Type __update_alternatives: Rewrite, support --install (Ander Punnar)
+	* Type __file: Fix state pre-exists (Dennis Camera)
+	* Type __apt_norecommends: Use 00InstallRecommends file as debian-installer does (Dennis Camera)
+	* New types: __uci, __uci_section (Dennis Camera)
+	* Core: Introduce scanner (noninvasive, beta) (Nico Schottelius)
+
 6.8.0: 2020-09-11
 	* Type __locale_system: Fix for debian and ubuntu (Ander Punnar)
 	* Type __unpack: Add --tar-extra-args parameter (Ander Punnar)

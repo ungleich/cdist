@@ -53,8 +53,10 @@ function _find(_text, _pattern) {
 BEGIN {
    getline anchor < (ENVIRON["__object"] "/parameter/" position)
    getline pattern < (ENVIRON["__object"] "/parameter/" needle)
+   getline line < (ENVIRON["__object"] "/parameter/line")
 
    found_line = 0
+   correct_line = 0
    correct_pos = (position != "after" && position != "before")
 }
 {
@@ -63,15 +65,18 @@ BEGIN {
          getline
          if (_find($0, pattern)) {
             found_line++
+	    if (index($0, line) == 1) { correct_line++ }
             correct_pos = 1
             exit 0
          }
       } else if (_find($0, pattern)) {
          found_line++
+         if (index($0, line) == 1) { correct_line++ }
       }
    } else if (position == "before") {
       if (_find($0, pattern)) {
          found_line++
+         if (index($0, line) == 1) { correct_line++ }
          getline
          if (match($0, anchor)) {
             correct_pos = 1
@@ -81,13 +86,18 @@ BEGIN {
    } else {
       if (_find($0, pattern)) {
          found_line++
+         if (index($0, line) == 1) { correct_line++ }
          exit 0
       }
    }
 }
 END {
    if (found_line && correct_pos) {
-      print "present"
+      if (correct_line) {
+        print "present"
+      } else {
+        print "matching"
+      }
    } else if (found_line) {
       print "wrongposition"
    } else {

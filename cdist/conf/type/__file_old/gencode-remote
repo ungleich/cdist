@@ -87,11 +87,6 @@ case "$state_should" in
         fi
     ;;
 
-    pre-exists)
-        # pre-exists should never reach gencode-remote…
-        exit 1
-   ;;
-
     absent)
         if [ "$type" = "file" ]; then
             echo "rm -f '$destination'"
