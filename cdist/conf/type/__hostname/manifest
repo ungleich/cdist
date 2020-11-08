@@ -149,6 +149,10 @@ in
     openbsd)
         echo "$name_should" | __file /etc/myname --source -
     ;;
+    openwrt)
+        __uci system.@system[0].hostname --value "$name_should"
+            # --transaction hostname
+    ;;
     slackware)
         # We write the FQDN into /etc/HOSTNAME.  But /etc/rc.d/rc.M will only
         # read the first component from this file and set it as the running

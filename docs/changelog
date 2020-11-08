@@ -5,6 +5,12 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.9.1: 2020-11-08
+	* Type __file: Fix state pre-exists (Dennis Camera)
+	* Type __hostname: Add support for OpenWrt (Dennis Camera)
+	* New type: __dpkg_architecture (Matthias Stecher)
+	* Type __package_apt: Add --install-recommends parameter (Matthias Stecher)
+
 6.9.0: 2020-11-07
 	* Core: Clarify stdin input (Darko Poljak)
 	* Type __package_pip: Detect pip binary (Ander Punnar)
