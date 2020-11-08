@@ -35,7 +35,8 @@ charmap=$(echo "$locale" | cut -d . -f 2)
 # W-T-F!
 locale_remove=$(echo "$locale" | sed 's/UTF-8/utf8/')
 
-state=$(cat "$__object/parameter/state")
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
 
 os=$(cat "$__global/explorer/os")
 
@@ -46,7 +47,15 @@ case "$os" in
         ;;
 esac
 
-case "$state" in
+# NOTE: If state explorer fails (e.g. locale(1) missing), the following check
+#       will always fail and let definition/removal run.
+if test "${state_is}" = "${state_should}"
+then
+	exit 0
+fi
+
+case ${state_should}
+in
     present)
         echo localedef -A "$alias" -f "$charmap" -i "$input" "$locale"
     ;;
