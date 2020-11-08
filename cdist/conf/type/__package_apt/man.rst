@@ -9,7 +9,9 @@ cdist-type__package_apt - Manage packages with apt-get
 DESCRIPTION
 -----------
 apt-get is usually used on Debian and variants (like Ubuntu) to
-manage packages.
+manage packages. The package will be installed without recommended
+or suggested packages. If such packages are required, install them
+separatly or use the parameter ``--install-recommends``.
 
 This type will also update package index, if it is older
 than one day, to avoid missing package error messages.
@@ -23,7 +25,7 @@ None
 OPTIONAL PARAMETERS
 -------------------
 name
-   If supplied, use the name and not the object id as the package name.
+    If supplied, use the name and not the object id as the package name.
 
 state
     Either "present" or "absent", defaults to "present"
@@ -39,6 +41,15 @@ version
 
 BOOLEAN PARAMETERS
 ------------------
+install-recommends
+    If the package will be installed, it also installs recommended packages
+    with it. It will not install recommended packages if the original package
+    is already installed.
+
+    In most cases, it is recommended to install recommended packages separatly
+    to control which additional packages will be installed to avoid useless
+    installed packages.
+
 purge-if-absent
     If this parameter is given when state is `absent`, the package is
     purged from the system (using `--purge`).

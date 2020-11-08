@@ -42,6 +42,13 @@ else
    target_release=""
 fi
 
+if [ -f "$__object/parameter/install-recommends" ]; then
+    # required if __apt_norecommends is used
+    recommendsparam="-o APT::Install-Recommends=1"
+else
+    recommendsparam="-o APT::Install-Recommends=0"
+fi
+
 if [ -f "$__object/parameter/purge-if-absent" ]; then
 	purgeparam="--purge"
 else
@@ -62,15 +69,15 @@ case "$state_is" in
     ;;
 esac
 
-# Hint if we need to avoid questions at some point:
-# DEBIAN_PRIORITY=critical can reduce the number of questions
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes -o APT::Install-Recommends=0 -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
-
 if [ "$state_is" = "$state_should" ]; then
     if [ -z "$version" ] || [ "$version" = "$version_is" ]; then
         exit 0;
     fi
 fi
+
+# Hint if we need to avoid questions at some point:
+# DEBIAN_PRIORITY=critical can reduce the number of questions
+aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
 
 case "$state_should" in
     present)
@@ -85,7 +92,7 @@ EOF
         if [ -n "$version" ]; then
             name="${name}=${version}"
         fi
-        echo "$aptget install $target_release '$name'"
+        echo "$aptget $recommendsparam install $target_release '$name'"
         echo "installed" >> "$__messages_out"
     ;;
     absent)
