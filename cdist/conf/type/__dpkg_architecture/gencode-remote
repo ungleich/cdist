@@ -1,0 +1,82 @@
+#!/bin/sh -e
+# __dpkg_architecture/gencode-remote
+#
+# 2020 Matthias Stecher <matthiasstecher at gmx.de>
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+# Get parameter and explorer
+state_should="$(cat "$__object/parameter/state")"
+arch_wanted="$__object_id"
+main_arch="$(cat "$__object/explorer/architecture")"
+
+# Exit here if dpkg do not work (empty explorer)
+if [ -z "$main_arch" ]; then
+    echo "dpkg is not available or unable to detect a architecture!" >&2
+    exit 1
+fi
+
+
+# Check if requested architecture is the main one
+if [ "$arch_wanted" = "$main_arch" ]; then
+    # higher than present; we can not remove it
+    state_is="present"
+    caution="yes"
+
+# Check if the architecture not already used
+elif grep -qFx "$arch_wanted" "$__object/explorer/foreign-architectures"; then
+    state_is="present"
+
+# arch does not exist
+else
+    state_is="absent"
+fi
+
+
+# Check what to do
+if [ "$state_is" != "$state_should" ]; then
+    case "$state_should" in
+        present)
+            # print add code
+            printf "dpkg --add-architecture '%s'\n" "$arch_wanted"
+            # updating the index to make the new architecture available
+            echo "apt update"
+
+            echo added >> "$__messages_out"
+            ;;
+
+        absent)
+            if [ "$caution" ]; then
+                printf "can not remove the main arch '%s' of the system!\n" "$main_arch" >&2
+                exit 1
+            fi
+
+            # removing all existing packages for the architecture
+            printf "apt purge '.*:%s'\n" "$arch_wanted"
+            # print remove code
+            printf "dpkg --remove-architecture '%s'\n" "$arch_wanted"
+
+            echo removed >> "$__messages_out"
+            ;;
+
+        *)
+            printf "state '%s' is unknown!\n" "$state_should" >&2
+            exit 1
+            ;;
+    esac
+fi
