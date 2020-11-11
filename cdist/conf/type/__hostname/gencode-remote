@@ -79,7 +79,7 @@ in
     (solaris)
         echo "uname -S '${name_should}'"
         ;;
-    (slackware|suse|opensuse-leap)
+    (slackware|suse)
         # We do not read from /etc/HOSTNAME, because the running
         # hostname is the first component only while the file contains
         # the FQDN.

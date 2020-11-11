@@ -42,7 +42,7 @@ else
             # Hostname is FQDN
             name_should=${__target_host:?}
             ;;
-        (suse|opensuse-leap)
+        (suse)
             name_should=${__target_host:?}
 
             # Classic SuSE stores the FQDN in /etc/HOSTNAME, while
@@ -157,7 +157,7 @@ in
     (solaris)
         echo "${name_should}" | __file /etc/nodename --source -
         ;;
-    (suse|opensuse-leap)
+    (suse)
         # Modern SuSE provides /etc/HOSTNAME as a symlink for
         # backwards-compatibility. Unfortunately it cannot be used
         # here as __file does not follow the symlink.
