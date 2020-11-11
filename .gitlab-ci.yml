@@ -6,15 +6,15 @@ image: code.ungleich.ch:5050/ungleich-public/cdist/cdist-ci:latest
 unit_tests:
     stage: test
     script:
-        - ./bin/build-helper version
-        - ./bin/build-helper test
+        - ./bin/cdist-build-helper version
+        - ./bin/cdist-build-helper test
 
 pycodestyle:
     stage: test
     script:
-        - ./bin/build-helper pycodestyle
+        - ./bin/cdist-build-helper pycodestyle
 
 shellcheck:
     stage: test
     script:
-        - ./bin/build-helper shellcheck
+        - ./bin/cdist-build-helper shellcheck

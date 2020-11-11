@@ -495,7 +495,7 @@ eof
     ;;
 
     shellcheck-build-helper)
-        ${SHELLCHECKCMD} ./bin/build-helper
+        ${SHELLCHECKCMD} ./bin/cdist-build-helper
     ;;
 
     check-shellcheck)
