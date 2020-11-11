@@ -1,20 +1,23 @@
+---
+image: code.ungleich.ch:5050/ungleich-public/cdist/cdist-ci:latest
+
 stages:
     - test
 
-image: code.ungleich.ch:5050/ungleich-public/cdist/cdist-ci:latest
+before_script:
+    - ./bin/cdist-build-helper version
 
-unit_tests:
+shellcheck:
     stage: test
     script:
-        - ./bin/cdist-build-helper version
-        - ./bin/cdist-build-helper test
+        - ./bin/cdist-build-helper shellcheck
 
 pycodestyle:
     stage: test
     script:
         - ./bin/cdist-build-helper pycodestyle
 
-shellcheck:
+unit_tests:
     stage: test
     script:
-        - ./bin/cdist-build-helper shellcheck
+        - ./bin/cdist-build-helper test
