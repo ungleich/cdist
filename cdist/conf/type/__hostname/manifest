@@ -25,8 +25,6 @@ set_hostname_systemd() {
 }
 
 os=$(cat "${__global:?}/explorer/os")
-os_version=$(cat "${__global:?}/explorer/os_version")
-os_major=$(echo "${os_version}" | grep -o '^[0-9][0-9]*' || true)
 
 max_len=$(cat "${__object:?}/explorer/max_len")
 has_hostnamectl=$(cat "${__object:?}/explorer/has_hostnamectl")
@@ -38,23 +36,9 @@ else
     case ${os}
     in
         # RedHat-derivatives and BSDs
-        (centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|slackware)
+        (centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|slackware|suse)
             # Hostname is FQDN
             name_should=${__target_host:?}
-            ;;
-        (suse)
-            name_should=${__target_host:?}
-
-            # Classic SuSE stores the FQDN in /etc/HOSTNAME, while
-            # systemd does not. The running hostname is the first
-            # component in both cases.
-            # In versions before 15.x, the FQDN is stored in /etc/hostname.
-            if test -n "${has_hostnamectl}" \
-                    && test "${os_major}" -ge 15 \
-                    && test "${os_major}" -ne 42
-            then
-                name_should=${name_should%%.*}
-            fi
             ;;
         *)
             # Hostname is only first component of FQDN on all other systems.
@@ -158,6 +142,27 @@ in
         echo "${name_should}" | __file /etc/nodename --source -
         ;;
     (suse)
+        if test -s "${__global:?}/explorer/os_release"
+        then
+            # shellcheck source=/dev/null
+            os_version=$(. "${__global:?}/explorer/os_release" && echo "${VERSION}")
+        else
+            os_version=$(sed -n 's/^VERSION\ *=\ *//p' "${__global:?}/explorer/os_version")
+        fi
+        os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
+
+        # Classic SuSE stores the FQDN in /etc/HOSTNAME, while
+        # systemd does not. The running hostname is the first
+        # component in both cases.
+        # In versions before 15.x, the FQDN is stored in /etc/hostname.
+        if test -n "${has_hostnamectl}" \
+                && test "${os_major}" -ge 15 \
+                && test "${os_major}" -ne 42
+        then
+            # strip away everything but the first part from $name_should
+            name_should=${name_should%%.*}
+        fi
+
         # Modern SuSE provides /etc/HOSTNAME as a symlink for
         # backwards-compatibility. Unfortunately it cannot be used
         # here as __file does not follow the symlink.
