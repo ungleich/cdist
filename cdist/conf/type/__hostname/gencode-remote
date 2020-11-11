@@ -20,26 +20,27 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os=$(cat "$__global/explorer/os")
-name_running=$(cat "$__global/explorer/hostname")
-has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
+os=$(cat "${__global:?}/explorer/os")
+name_running=$(cat "${__global:?}/explorer/hostname")
+has_hostnamectl=$(cat "${__object:?}/explorer/has_hostnamectl")
 
 
-if test -s "$__object/parameter/name"
+if test -s "${__object:?}/parameter/name"
 then
-    name_should=$(cat "$__object/parameter/name")
+    name_should=$(cat "${__object:?}/parameter/name")
 else
-    case $os
+    case ${os}
     in
         # RedHat-derivatives and BSDs
-        centos|fedora|redhat|scientific|freebsd|macosx|netbsd|openbsd)
+        (centos|fedora|redhat|scientific|freebsd|macosx|netbsd|openbsd)
             # Hostname is FQDN
-            name_should="${__target_host}"
-        ;;
-        *)
+            name_should=${__target_host:?}
+            ;;
+        (*)
             # Hostname is only first component of FQDN
-            name_should="${__target_host%%.*}"
-        ;;
+            name_should=${__target_host:?}
+            name_should=${name_should%%.*}
+            ;;
     esac
 fi
 
@@ -47,46 +48,46 @@ fi
 ################################################################################
 # Check if the (running) hostname is already correct
 #
-test "$name_running" != "$name_should" || exit 0
+test "${name_running}" != "${name_should}" || exit 0
 
 
 ################################################################################
 # Setup hostname
 #
-echo 'changed' >>"$__messages_out"
+echo 'changed' >>"${__messages_out:?}"
 
 # Use the good old way to set the hostname.
-case $os
+case ${os}
 in
-    alpine|debian|devuan|ubuntu)
+    (alpine|debian|devuan|ubuntu)
         echo 'hostname -F /etc/hostname'
-    ;;
-    archlinux)
+        ;;
+    (archlinux)
         echo 'command -v hostnamectl >/dev/null 2>&1' \
-            "&& hostnamectl set-hostname '$name_should'" \
-            "|| hostname '$name_should'"
-    ;;
-    centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|gentoo|void)
-        echo "hostname '$name_should'"
-    ;;
-    openwrt)
-        echo "echo '$name_should' >/proc/sys/kernel/hostname"
-    ;;
-    macosx)
-        echo "scutil --set HostName '$name_should'"
-    ;;
-    solaris)
-        echo "uname -S '$name_should'"
-    ;;
-    slackware|suse|opensuse-leap)
+            "&& hostnamectl set-hostname '${name_should}'" \
+            "|| hostname '${name_should}'"
+        ;;
+    (centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|gentoo|void)
+        echo "hostname '${name_should}'"
+        ;;
+    (openwrt)
+        echo "echo '${name_should}' >/proc/sys/kernel/hostname"
+        ;;
+    (macosx)
+        echo "scutil --set HostName '${name_should}'"
+        ;;
+    (solaris)
+        echo "uname -S '${name_should}'"
+        ;;
+    (slackware|suse|opensuse-leap)
         # We do not read from /etc/HOSTNAME, because the running
         # hostname is the first component only while the file contains
         # the FQDN.
-        echo "hostname '$name_should'"
-    ;;
-    *)
+        echo "hostname '${name_should}'"
+        ;;
+    (*)
         # Fall back to set the hostname using hostnamectl, if available.
-        if test -n "$has_hostnamectl"
+        if test -n "${has_hostnamectl}"
         then
             # Don't use hostnamectl as the primary means to set the hostname for
             # systemd systems, because it cannot be trusted to work reliably and
@@ -97,7 +98,8 @@ in
             echo "test \"\$(hostname)\" = \"\$(cat /etc/hostname)\"" \
                  " || hostname -F /etc/hostname"
         else
-            printf "echo 'Unsupported OS: %s' >&2\nexit 1\n" "$os"
+            printf "echo 'Unsupported OS: %s' >&2\n" "${os}"
+            printf 'exit 1\n'
         fi
-    ;;
+        ;;
 esac

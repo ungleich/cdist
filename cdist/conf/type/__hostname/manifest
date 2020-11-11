@@ -20,69 +20,65 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-not_supported() {
-    echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
-    echo "Please contribute an implementation for it if you can." >&2
-    exit 1
-}
-
 set_hostname_systemd() {
     echo "$1" | __file /etc/hostname --source -
 }
 
-os=$(cat "$__global/explorer/os")
-os_version=$(cat "$__global/explorer/os_version")
-os_major=$(echo "$os_version" | grep -o '^[0-9][0-9]*' || true)
+os=$(cat "${__global:?}/explorer/os")
+os_version=$(cat "${__global:?}/explorer/os_version")
+os_major=$(echo "${os_version}" | grep -o '^[0-9][0-9]*' || true)
 
-max_len=$(cat "$__object/explorer/max_len")
-has_hostnamectl=$(cat "$__object/explorer/has_hostnamectl")
+max_len=$(cat "${__object:?}/explorer/max_len")
+has_hostnamectl=$(cat "${__object:?}/explorer/has_hostnamectl")
 
-if test -s "$__object/parameter/name"
+if test -s "${__object:?}/parameter/name"
 then
-    name_should=$(cat "$__object/parameter/name")
+    name_should=$(cat "${__object:?}/parameter/name")
 else
-    case $os
+    case ${os}
     in
         # RedHat-derivatives and BSDs
-        centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|slackware)
+        (centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|slackware)
             # Hostname is FQDN
-            name_should="${__target_host}"
-        ;;
-        suse|opensuse-leap)
+            name_should=${__target_host:?}
+            ;;
+        (suse|opensuse-leap)
+            name_should=${__target_host:?}
+
             # Classic SuSE stores the FQDN in /etc/HOSTNAME, while
             # systemd does not. The running hostname is the first
             # component in both cases.
             # In versions before 15.x, the FQDN is stored in /etc/hostname.
-            if test -n "$has_hostnamectl" && test "$os_major" -ge 15 \
-                    && test "$os_major" -ne 42
+            if test -n "${has_hostnamectl}" \
+                    && test "${os_major}" -ge 15 \
+                    && test "${os_major}" -ne 42
             then
-                name_should="${__target_host%%.*}"
-            else
-                name_should="${__target_host}"
+                name_should=${name_should%%.*}
             fi
-        ;;
+            ;;
         *)
             # Hostname is only first component of FQDN on all other systems.
-            name_should="${__target_host%%.*}"
-        ;;
+            name_should=${__target_host:?}
+            name_should=${name_should%%.*}
+            ;;
     esac
 fi
 
-if test -n "$max_len" && test "$(printf '%s' "$name_should" | wc -c)" -gt "$max_len"
+if test -n "${max_len}" && test "$(printf '%s' "${name_should}" | wc -c)" -gt "${max_len}"
 then
     printf "Host name too long. Up to %u characters allowed.\n" "${max_len}" >&2
     exit 1
 fi
 
-case $os
+case ${os}
 in
-    alpine|debian|devuan|ubuntu|void)
-        echo "$name_should" | __file /etc/hostname --source -
-    ;;
-    archlinux)
-        if test -n "$has_hostnamectl"
+    (alpine|debian|devuan|ubuntu|void)
+        echo "${name_should}" | __file /etc/hostname --source -
+        ;;
+    (archlinux)
+        if test -n "${has_hostnamectl}"
         then
-            set_hostname_systemd "$name_should"
+            set_hostname_systemd "${name_should}"
         else
             echo 'Ancient ArchLinux variants without hostnamectl are not supported.' >&2
             exit 1
@@ -97,8 +93,8 @@ in
             #     --value "\"$name_should\""
         fi
         ;;
-    centos|fedora|redhat|scientific)
-        if test -z "$has_hostnamectl"
+    (centos|fedora|redhat|scientific)
+        if test -z "${has_hostnamectl}"
         then
             # Only write to /etc/sysconfig/network on non-systemd versions.
             # On systemd-based versions this entry is ignored.
@@ -106,63 +102,62 @@ in
                 --file /etc/sysconfig/network \
                 --delimiter '=' --exact_delimiter \
                 --key HOSTNAME \
-                --value "\"$name_should\""
+                --value "\"${name_should}\""
         else
-            set_hostname_systemd "$name_should"
+            set_hostname_systemd "${name_should}"
         fi
-    ;;
-    gentoo)
+        ;;
+    (gentoo)
         # Only write to /etc/conf.d/hostname on OpenRC-based installations.
         # On systemd use hostnamectl(1) in gencode-remote.
-        if test -z "$has_hostnamectl"
+        if test -z "${has_hostnamectl}"
         then
             __key_value '/etc/conf.d/hostname:hostname' \
                 --file /etc/conf.d/hostname \
                 --delimiter '=' --exact_delimiter \
                 --key 'hostname' \
-                --value "\"$name_should\""
+                --value "\"${name_should}\""
         else
             set_hostname_systemd "$name_should"
         fi
-    ;;
-    freebsd)
+        ;;
+    (freebsd)
         __key_value '/etc/rc.conf:hostname' \
             --file /etc/rc.conf \
             --delimiter '=' --exact_delimiter \
             --key 'hostname' \
-            --value "\"$name_should\""
-    ;;
-    macosx)
+            --value "\"${name_should}\""
+        ;;
+    (macosx)
         # handled in gencode-remote
-        :
-    ;;
-    netbsd)
+        ;;
+    (netbsd)
         __key_value '/etc/rc.conf:hostname' \
             --file /etc/rc.conf \
             --delimiter '=' --exact_delimiter \
             --key 'hostname' \
-            --value "\"$name_should\""
+            --value "\"${name_should}\""
 
         # To avoid confusion, ensure that the hostname is only stored once.
         __file /etc/myname --state absent
-    ;;
-    openbsd)
-        echo "$name_should" | __file /etc/myname --source -
-    ;;
-    openwrt)
-        __uci system.@system[0].hostname --value "$name_should"
+        ;;
+    (openbsd)
+        echo "${name_should}" | __file /etc/myname --source -
+        ;;
+    (openwrt)
+        __uci system.@system[0].hostname --value "${name_should}"
             # --transaction hostname
-    ;;
-    slackware)
+        ;;
+    (slackware)
         # We write the FQDN into /etc/HOSTNAME.  But /etc/rc.d/rc.M will only
         # read the first component from this file and set it as the running
         # hostname on boot.
-        echo "$name_should" | __file /etc/HOSTNAME --source -
-    ;;
-    solaris)
-        echo "$name_should" | __file /etc/nodename --source -
-    ;;
-    suse|opensuse-leap)
+        echo "${name_should}" | __file /etc/HOSTNAME --source -
+        ;;
+    (solaris)
+        echo "${name_should}" | __file /etc/nodename --source -
+        ;;
+    (suse|opensuse-leap)
         # Modern SuSE provides /etc/HOSTNAME as a symlink for
         # backwards-compatibility. Unfortunately it cannot be used
         # here as __file does not follow the symlink.
@@ -171,23 +166,25 @@ in
         # not work correctly on openSUSE 12.x which provides
         # hostnamectl but not /etc/hostname.
 
-        if test -n "$has_hostnamectl" -a "$os_major" -gt 12
+        if test -n "${has_hostnamectl}" -a "${os_major}" -gt 12
         then
-            hostname_file='/etc/hostname'
+            hostname_file=/etc/hostname
         else
-            hostname_file='/etc/HOSTNAME'
+            hostname_file=/etc/HOSTNAME
         fi
 
-        echo "$name_should" | __file "$hostname_file" --source -
-    ;;
-    *)
+        echo "${name_should}" | __file "${hostname_file}" --source -
+        ;;
+    (*)
         # On other operating systems we fall back to systemd's
         # hostnamectl if available…
-        if test -n "$has_hostnamectl"
+        if test -n "${has_hostnamectl}"
         then
-            set_hostname_systemd "$name_should"
+            set_hostname_systemd "${name_should}"
         else
-            not_supported
+            echo "Your operating system (${os}) is currently not supported by this type (${__type##*/})." >&2
+            echo "Please contribute an implementation for it if you can." >&2
+            exit 1
         fi
-    ;;
+        ;;
 esac
