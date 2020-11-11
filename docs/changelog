@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+next:
+	* Documentation: Fix examples in best practice (Dennis Camera)
+	* Type __locale: Add state explorer (Matthias Stecher)
+	* Core: Reorganize scripts, version generation (Ander Punnar)
+
 6.9.1: 2020-11-08
 	* Type __file: Fix state pre-exists (Dennis Camera)
 	* Type __hostname: Add support for OpenWrt (Dennis Camera)
