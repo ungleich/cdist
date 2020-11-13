@@ -45,7 +45,7 @@ usage() {
         shellcheck-manifests
         shellcheck-local-gencodes
         shellcheck-remote-gencodes
-        shellcheck-scripts
+        shellcheck-bin
         shellcheck-gencodes
         shellcheck-types
         shellcheck
@@ -100,7 +100,7 @@ case "$option" in
                     if (\$0 ~ /^$end/) {
                         exit
                     } else {
-                        print \$0 
+                        print \$0
                     }
                 }
             }" "$basedir/docs/changelog"
@@ -135,7 +135,7 @@ case "$option" in
 
         version=$1; shift
 
-        ( 
+        (
         cat << eof
 Subject: cdist $version has been released
 
@@ -336,7 +336,7 @@ eof
         make docs-clean
         make docs
 
-        ############################################################# 
+        #############################################################
         # Everything green, let's do the release
 
         # Tag the current commit
@@ -405,7 +405,7 @@ eof
     ;;
 
     pycodestyle|pep8)
-        pycodestyle "${basedir}" "${basedir}/scripts/cdist"
+        pycodestyle "${basedir}" "${basedir}/bin/cdist"
     ;;
 
     check-pycodestyle)
@@ -460,9 +460,10 @@ eof
         test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
-    shellcheck-scripts)
+    # NOTE: shellcheck-scripts is kept for compatibility
+    shellcheck-bin|shellcheck-scripts)
         # shellcheck disable=SC2086
-        ${SHELLCHECKCMD} scripts/cdist-dump scripts/cdist-new-type > "${SHELLCHECKTMP}"
+        ${SHELLCHECKCMD} bin/cdist-dump bin/cdist-new-type > "${SHELLCHECKTMP}"
         test ! -s "${SHELLCHECKTMP}" || { cat "${SHELLCHECKTMP}"; exit 1; }
     ;;
 
@@ -480,7 +481,7 @@ eof
     shellcheck)
         "$0" shellcheck-global-explorers || exit 1
         "$0" shellcheck-types || exit 1
-        "$0" shellcheck-scripts || exit 1
+        "$0" shellcheck-bin || exit 1
     ;;
 
     shellcheck-type-files)

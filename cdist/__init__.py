@@ -33,14 +33,15 @@ try:
     import cdist.version
     VERSION = cdist.version.VERSION
 except ModuleNotFoundError:
-    cdist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+    cdist_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), os.pardir))
     if os.path.isdir(os.path.join(cdist_dir, '.git')):
         try:
             VERSION = subprocess.check_output(
                 ['git', 'describe', '--always'],
                 cwd=cdist_dir,
                 universal_newlines=True)
-        except:
+        except Exception:
             pass
 
 BANNER = """
