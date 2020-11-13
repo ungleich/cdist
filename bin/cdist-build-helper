@@ -468,20 +468,26 @@ eof
     ;;
 
     shellcheck-gencodes)
-        "$0" shellcheck-local-gencodes || exit 1
-        "$0" shellcheck-remote-gencodes || exit 1
+        errors=false
+        "$0" shellcheck-local-gencodes || errors=true
+        "$0" shellcheck-remote-gencodes || errors=true
+        ! $errors || exit 1
     ;;
 
     shellcheck-types)
-        "$0" shellcheck-type-explorers || exit 1
-        "$0" shellcheck-manifests || exit 1
-        "$0" shellcheck-gencodes || exit 1
+        errors=false
+        "$0" shellcheck-type-explorers || errors=true
+        "$0" shellcheck-manifests || errors=true
+        "$0" shellcheck-gencodes || errors=true
+        ! $errors || exit 1
     ;;
 
     shellcheck)
-        "$0" shellcheck-global-explorers || exit 1
-        "$0" shellcheck-types || exit 1
-        "$0" shellcheck-bin || exit 1
+        errors=false
+        "$0" shellcheck-global-explorers || errors=true
+        "$0" shellcheck-types || errors=true
+        "$0" shellcheck-bin || errors=true
+        ! $errors || exit 1
     ;;
 
     shellcheck-type-files)
@@ -491,8 +497,10 @@ eof
     ;;
 
     shellcheck-with-files)
-        "$0" shellcheck || exit 1
-        "$0" shellcheck-type-files || exit 1
+        errors=false
+        "$0" shellcheck || errors=true
+        "$0" shellcheck-type-files || errors=true
+        ! $errors || exit 1
     ;;
 
     shellcheck-build-helper)
