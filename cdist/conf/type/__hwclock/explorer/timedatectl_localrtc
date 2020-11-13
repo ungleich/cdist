@@ -1,0 +1,27 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints the LocalRTC property using timedatectl on systemd-based systems.
+#
+
+command -v timedatectl >/dev/null 2>&1 || exit 0
+
+# NOTE: Older versions of timedatectl do not support `timedatectl show'
+timedatectl --no-pager status \
+| awk -F': ' '$1 ~ "RTC in local TZ$" { sub(/[ \t]*$/, "", $2); print $2 }'
