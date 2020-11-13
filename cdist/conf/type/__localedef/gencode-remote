@@ -21,6 +21,11 @@
 # Manage system locales using localedef(1).
 #
 
+# shellcheck source=cdist/conf/type/__localedef/files/lib/locale.sh
+. "${__type:?}/files/lib/locale.sh"
+# shellcheck source=cdist/conf/type/__localedef/files/lib/glibc.sh
+. "${__type:?}/files/lib/glibc.sh"
+
 state_is=$(cat "${__object:?}/explorer/state")
 state_should=$(cat "${__object:?}/parameter/state")
 
@@ -45,30 +50,6 @@ then
 	printf '__object_id is: %s\n' "${locale}" >&2
 	exit 1
 fi
-
-parse_locale() {
-	# This function will split locales into their parts. Locale strings are
-	# usually of the form: [language[_territory][.codeset][@modifier]]
-	# For simplicity, language and territory are not separated by this function.
-	# Old Linux systems were also using "english" or "german" as locale strings.
-	# Usage: parse_locale locale_str lang_var codeset_var modifier_var
-	eval "${2:?}"="$(expr "$1" : '\([^.@]*\)')"
-	eval "${3:?}"="$(expr "$1" : '[^.]*\.\([^@]*\)')"
-	eval "${4:?}"="$(expr "$1" : '.*@\(.*\)$')"
-}
-
-format_locale() {
-	# Usage: format_locale language codeset modifier
-	printf '%s' "$1"
-	test -z "$2" || printf '.%s' "$2"
-	test -z "$3" || printf '@%s' "$3"
-	printf '\n'
-}
-
-gnu_normalize_codeset() {
-	echo "$*" | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]'
-}
-
 
 : "${lang=}" "${codeset=}" "${modifier=}"  # declare variables for shellcheck
 parse_locale "${locale}" lang codeset modifier
