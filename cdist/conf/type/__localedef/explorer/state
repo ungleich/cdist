@@ -25,7 +25,13 @@
 #    the main locale (and possibly aliases) is present
 #  absent:
 #    neither the main locale nor any aliases are present
+#  alias-present:
+#    the main locale is absent, but at least one of its aliases is present
 #
+
+# Hardcoded, create a pull request in case it is at another location for
+# some other distro. (cf. gencode-remote)
+aliasfile='/usr/share/locale/locale.alias'
 
 command -v locale >/dev/null 2>&1 || exit 0
 
@@ -68,4 +74,27 @@ locale_available() (
 	}
 )
 
-locale_available "${__object_id:?}" && echo present || echo absent
+if locale_available "${__object_id:?}"
+then
+	echo present
+else
+	# NOTE: locale.alias can be symlinked.
+	if test -e "${aliasfile}"
+	then
+		# Check if one of the aliases of the locale is defined
+		baselocale=$(
+			parse_locale "${__object_id:?}" _lang _codeset _modifiers \
+			&& format_locale "${_lang}" "${_codeset}")
+		while read -r _alias _localename
+		do
+			if test "${_localename}" = "${baselocale}" \
+				&& echo "${locales}" | grep -qxF "${_alias}"
+			then
+				echo alias-present
+				exit 0
+			fi
+		done <"${aliasfile}"
+	fi
+
+	echo absent
+fi

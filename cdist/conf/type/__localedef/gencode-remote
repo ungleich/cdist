@@ -94,9 +94,12 @@ in
 				        localedef --delete-from-archive "\${_alias}"
 				    fi
 				done <'${aliasfile}'
-
-				localedef --delete-from-archive '${main_localename}'
 				EOF
+
+				if test "${state_is}" = present
+				then
+					printf "localedef --delete-from-archive '%s'\n" "${main_localename}"
+				fi
 				;;
 		esac
 		;;
