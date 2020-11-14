@@ -84,8 +84,19 @@ in
 				EOF
 				;;
 			(absent)
-				localename=$(format_locale "${lang}" "$(gnu_normalize_codeset "${codeset}")" "${modifier}")
-				printf "localedef --delete-from-archive '%s'\n" "${localename}"
+				main_localename=$(format_locale "${lang}" "$(gnu_normalize_codeset "${codeset}")" "${modifier}")
+
+				cat <<-EOF
+				while read -r _alias _localename
+				do
+				    if test "\${_localename}" = '$(format_locale "${lang}" "${codeset}")'
+				    then
+				        localedef --delete-from-archive "\${_alias}"
+				    fi
+				done <'${aliasfile}'
+
+				localedef --delete-from-archive '${main_localename}'
+				EOF
 				;;
 		esac
 		;;

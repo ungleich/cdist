@@ -13,6 +13,11 @@ This cdist type allows you to define locales on the system using
 On systems that don't support definition of new locales, the type will raise an
 error.
 
+**NB:** This type respects the glibc ``locale.alias`` file,
+i.e. it defines alias locales or deletes aliases of a locale when it is removed.
+It is not possible, however, to use alias names to define locales or only remove
+certain aliases of a locale.
+
 
 OPTIONAL PARAMETERS
 -------------------
