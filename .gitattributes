@@ -4,5 +4,5 @@
 docs/speeches export-ignore
 docs/video export-ignore
 docs/src/man7 export-ignore
-bin/build-helper export-ignore
+bin/cdist-build-helper export-ignore
 README-maintainers export-ignore
