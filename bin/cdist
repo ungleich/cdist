@@ -25,25 +25,23 @@ import logging
 import os
 import sys
 
-# try to import cdist and if that fails,
-# then add this file's parent dir to
-# module search path and try again.
-try:
-    import cdist
-except ModuleNotFoundError:
-    cdist_dir = os.path.realpath(
-        os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
-            os.pardir))
+# See if this file's parent is cdist module
+# and if so add it to module search path.
+cdist_dir = os.path.realpath(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        os.pardir))
+cdist_init_dir = os.path.join(cdist_dir, 'cdist', '__init__.py')
+if os.path.exists(cdist_init_dir):
     sys.path.insert(0, cdist_dir)
-    import cdist
 
-import cdist.argparse
-import cdist.banner
-import cdist.config
-import cdist.install
-import cdist.shell
-import cdist.inventory
+import cdist            # noqa 402
+import cdist.argparse   # noqa 402
+import cdist.banner     # noqa 402
+import cdist.config     # noqa 402
+import cdist.install    # noqa 402
+import cdist.shell      # noqa 402
+import cdist.inventory  # noqa 402
 
 
 def commandline():
