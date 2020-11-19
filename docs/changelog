@@ -6,6 +6,8 @@ next:
 	* Type __locale: Add state explorer (Matthias Stecher)
 	* Core: Reorganize scripts, version generation (Ander Punnar, Dennis Camera)
 	* New type: __hwclock (Dennis Camera)
+	* Type __hostname: Fix guessing SuSE OS version (Dennis Camera)
+	* New type: __sshd_config (Dennis Camera)
 
 6.9.1: 2020-11-08
 	* Type __file: Fix state pre-exists (Dennis Camera)
