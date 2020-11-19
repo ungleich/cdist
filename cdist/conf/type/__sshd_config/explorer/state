@@ -1,0 +1,121 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# Determines the current state of the config option.
+# Possible output:
+#  - present: "should" option present in config file
+#  - default: the "should" option is the default -> don’t know if present
+#  - absent: no such option present in config file
+#
+
+joinlines() { sed -n -e H -e "\${x;s/^\\n//;s/\\n/${1:?}/g;p;}"; }
+trlower() { tr '[:upper:]' '[:lower:]'; }
+tolower() { printf '%s' "$*" | trlower; }
+
+default_value() {
+	sshd -T -f /dev/null -C "$(make_conn_spec)" \
+	| sed -n -e 's/^'"$(tolower "${1:?}")"'[[:blank:]]\{1,\}//p'
+}
+
+make_conn_spec() {
+	if test -s "${__object:?}/parameter/match"
+	then
+		_match_file="${__object:?}/parameter/match"
+	else
+		_match_file='/dev/null'
+	fi
+
+	for _kw in \
+		addr=Address \
+		user=User \
+		host=Host \
+		laddr=LocalAddress \
+		lport=LocalPort \
+		rdomain=RDomain
+	do
+		_specname=${_kw%%=*}
+		_confname=$(tolower "${_kw#*=}")
+		while read -r _k _v
+		do
+			if test "$(tolower "${_k}")" = "${_confname}"
+			then
+				printf '%s=%s\n' "${_specname}" "${_v}"
+				continue 2
+			fi
+		done <"${_match_file}"
+
+		# NOTE: Print test spec even for empty keys to suppress errors like:
+		#  'Match User' in configuration but 'user' not in connection test specification.
+		# except lport:
+		#  Invalid port '' in test mode specification lport=
+		test "${_specname}" = 'lport' || printf '%s=\n' "${_specname}"
+	done \
+	| joinlines ','
+	unset _match_file
+}
+
+sshd_config_file=$(cat "${__object:?}/parameter/file")
+state_should=$(cat "${__object:?}/parameter/state")
+
+if test -s "${__object:?}/parameter/option"
+then
+	option_name=$(cat "${__object:?}/parameter/option")
+else
+	option_name=${__object_id:?}
+fi
+
+value_should=$(cat "${__object:?}/parameter/value" 2>/dev/null) \
+|| test "${state_should}" = absent || exit 0  # param optional if --state absent
+
+command -v sshd >/dev/null 2>&1 || {
+	echo 'Cannot find sshd.' >&2
+	exit 1
+}
+
+test -e "${sshd_config_file}" || {
+	echo 'absent'
+	exit 0
+}
+
+value_is=$(
+	sshd -T -f "${sshd_config_file}" -C "$(make_conn_spec)" \
+	| sed -n -e 's/^'"$(tolower "${option_name}")"'[[:blank:]]\{1,\}//p')
+
+if printf '%s\n' "${value_is}" | {
+		if test -n "${value_should}"
+		then
+			grep -q -x -F "${value_should}"
+		else
+			# if no value provided, assume "any" value
+			grep -q -e .
+		fi
+	}
+then
+	if default_value "${option_name}" | grep -q -x -F "${value_is}"
+	then
+		# Might produce false positives for default values.
+		# TODO: Manual checking should be done, but for simplicity, this case is
+		#       currently ignored here.
+		echo default
+	else
+		echo present
+	fi
+else
+	echo absent
+fi
