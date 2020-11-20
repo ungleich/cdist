@@ -1,0 +1,136 @@
+#!/bin/sh -e
+#
+# 2013-2019 Nico Schottelius (nico-cdist at schottelius.org)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# Manage system locales using localedef(1).
+#
+
+# shellcheck source=cdist/conf/type/__localedef/files/lib/locale.sh
+. "${__type:?}/files/lib/locale.sh"
+# shellcheck source=cdist/conf/type/__localedef/files/lib/glibc.sh
+. "${__type:?}/files/lib/glibc.sh"
+
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
+
+test "${state_should}" = 'present' -o "${state_should}" = 'absent' || {
+	printf 'Invalid state: %s\n' "${state_should}" >&2
+	exit 1
+}
+
+# NOTE: If state explorer fails (e.g. locale(1) missing), the following check
+#       will always fail and let definition/removal run.
+if test "${state_is}" = "${state_should}"
+then
+	exit 0
+fi
+
+locale=${__object_id:?}
+os=$(cat "${__global:?}/explorer/os")
+
+if expr "${locale}" : '.*/' >/dev/null
+then
+	printf 'Paths as locales are not supported.\n' >&2
+	printf '__object_id is: %s\n' "${locale}" >&2
+	exit 1
+fi
+
+: "${lang=}" "${codeset=}" "${modifier=}"  # declare variables for shellcheck
+parse_locale "${locale}" lang codeset modifier
+
+
+case ${os}
+in
+	(alpine|openwrt)
+		printf '%s does not support locales.\n' "${os}" >&2
+		exit 1
+		;;
+	(archlinux|debian|devuan|ubuntu|suse|centos|fedora|redhat|scientific)
+		# FIXME: The code below only works for glibc-based installations.
+
+		# NOTE: Hardcoded, create a pull request in case it is at another
+		#       location for some opther distro.
+		# NOTE: locale.alias can be symlinked (e.g. Debian)
+		aliasfile='/usr/share/locale/locale.alias'
+
+		case ${state_should}
+		in
+			(present)
+				input=$(format_locale "${lang}" '' "${modifier}")
+				cat <<-EOF
+				set --
+				if test -e '${aliasfile}'
+				then
+					set -- -A '${aliasfile}'
+				fi
+
+				localedef -i '${input}' -f '${codeset}' "\$@" '${locale}'
+				EOF
+				;;
+			(absent)
+				main_localename=$(format_locale "${lang}" "$(gnu_normalize_codeset "${codeset}")" "${modifier}")
+
+				cat <<-EOF
+				while read -r _alias _localename
+				do
+				    if test "\${_localename}" = '$(format_locale "${lang}" "${codeset}")'
+				    then
+				        localedef --delete-from-archive "\${_alias}"
+				    fi
+				done <'${aliasfile}'
+				EOF
+
+				if test "${state_is}" = present
+				then
+					printf "localedef --delete-from-archive '%s'\n" "${main_localename}"
+				fi
+				;;
+		esac
+		;;
+	(freebsd)
+		case ${state_should}
+		in
+			(present)
+				if expr "$(grep -oe '^[0-9]*' "${__global:?}/explorer/os_version")" '>=' 11 >/dev/null
+				then
+					# localedef(1) is available with FreeBSD >= 11
+					printf "localedef -i '%s' -f '%s' '%s'\n" "${input}" "${codeset}" "${locale}"
+				else
+					printf 'localedef(1) was added to FreeBSD starting with version 11.\n' >&2
+					printf 'Please upgrade your FreeBSD installation to use %s.\n' "${__type##*/}" >&2
+					exit 1
+				fi
+				;;
+			(absent)
+				printf "rm -R '/usr/share/locale/%s'\n" "${locale}"
+				;;
+		esac
+		;;
+	(netbsd|openbsd)
+		# NetBSD/OpenBSD are missing localedef(1).
+		# We also do not delete defined locales because they can't be recreated.
+		echo "${os} is lacking localedef(1). Locale management unavailable." >&2
+		exit 1
+		;;
+	(*)
+		echo "Your operating system (${os}) is currently not supported by this type (${__type##*/})." >&2
+		echo "Please contribute an implementation for it if you can." >&2
+		exit 1
+		;;
+esac
