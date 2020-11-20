@@ -143,16 +143,17 @@ class Emulator:
                 level = logging.WARNING
         else:
             level = logging.WARNING
+        self.log = logging.getLogger(self.target_host[0])
         try:
             logging.root.setLevel(level)
+            self.log.setLevel(level)
         except (ValueError, TypeError):
             # if invalid __cdist_log_level value
             logging.root.setLevel(logging.WARNING)
+            self.log.setLevel(logging.WARNING)
 
         colored_log = self.env.get('__cdist_colored_log', 'false')
         cdist.log.CdistFormatter.USE_COLORS = colored_log == 'true'
-
-        self.log = logging.getLogger(self.target_host[0])
 
     def get_args_parser(self):
         parser = argparse.ArgumentParser(add_help=False,

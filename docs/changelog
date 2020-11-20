@@ -5,6 +5,16 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.9.2: 2020-11-20
+	* Documentation: Fix examples in best practice (Dennis Camera)
+	* Type __locale: Add state explorer (Matthias Stecher)
+	* Core: Reorganize scripts, version generation (Ander Punnar, Dennis Camera)
+	* New type: __hwclock (Dennis Camera)
+	* Type __hostname: Fix guessing SuSE OS version (Dennis Camera)
+	* New type: __sshd_config (Dennis Camera)
+	* New type: __localedef (Dennis Camera)
+	* Type __locale: Deprecate in favor of __localedef (Dennis Camera)
+
 6.9.1: 2020-11-08
 	* Type __file: Fix state pre-exists (Dennis Camera)
 	* Type __hostname: Add support for OpenWrt (Dennis Camera)

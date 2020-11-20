@@ -200,15 +200,15 @@ of cdist:
 .. code-block:: sh
 
     # Singleton type without parameter
-    echo __ungleich_munin_server | cdist --initial-manifest - munin.panter.ch
+    echo __ungleich_munin_server | cdist config --initial-manifest - munin.panter.ch
 
     # Singleton type with parameter
     echo __ungleich_munin_node --allow 1.2.3.4 | \
-        cdist --initial-manifest - rails-19.panter.ch
+        cdist config --initial-manifest - rails-19.panter.ch
 
     # Normal type
     echo __file /tmp/stdintest --mode 0644 | \
-        cdist --initial-manifest - cdist-dev-01.ungleich.ch
+        cdist config --initial-manifest - cdist-dev-01.ungleich.ch
 
 
 Other content in cdist repository

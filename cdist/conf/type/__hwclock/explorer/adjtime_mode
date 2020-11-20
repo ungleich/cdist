@@ -1,0 +1,28 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints the clock mode read from the /etc/adjtime file, if present.
+#
+
+# not all operating systems use an adjfile
+test -f /etc/adjtime || exit 0
+
+# 3rd line is clock mode
+# adjtime(5) https://man7.org/linux/man-pages/man5/adjtime.5.html
+sed -n 3p /etc/adjtime

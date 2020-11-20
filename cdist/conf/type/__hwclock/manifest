@@ -1,0 +1,222 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera@ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# TODO: Consider supporting BADYEAR
+
+os=$(cat "${__global:?}/explorer/os")
+mode=$(cat "${__object:?}/parameter/mode")
+
+has_systemd_timedatectl=$(test -s "${__object:?}/explorer/timedatectl_localrtc" && echo true || echo false)
+
+
+case ${mode}
+in
+	(localtime)
+		local_clock=true
+		;;
+	(UTC|utc)
+		local_clock=false
+		;;
+	(*)
+		printf 'Invalid value for --mode: %s\n' "${mode}" >&2
+		printf 'Acceptable values are: UTC, localtime.\n' >&2
+		exit 1
+esac
+
+
+case ${os}
+in
+	(alpine|gentoo)
+		if ! $has_systemd_timedatectl
+		then
+			# NOTE: Gentoo also supports systemd, in which case /etc/conf.d is
+			#       not used. So we check for systemd presence here and only
+			#       update /etc/conf.d if systemd is not installed.
+			# https://wiki.gentoo.org/wiki/System_time#Hardware_clock
+
+			export CDIST_ORDER_DEPENDENCY=true
+			__file /etc/conf.d/hwclock --state present \
+				--owner root --group root --mode 0644
+			__key_value /etc/conf.d/hwclock:clock \
+				--file /etc/conf.d/hwclock \
+				--key clock \
+				--delimiter '=' --exact_delimiter \
+				--value "\"$($local_clock && echo local || echo UTC)\""
+			unset CDIST_ORDER_DEPENDENCY
+		fi
+		;;
+	(centos|fedora|redhat|scientific)
+		os_version=$(cat "${__global:?}/explorer/os_version")
+		os_major=$(expr "${os_version}" : '.* release \([0-9]*\)')
+		case ${os}
+		in
+			(centos|scientific)
+				update_sysconfig=$(test "${os_major}" -lt 6 && echo true || echo false)
+				;;
+			(fedora)
+				update_sysconfig=$(test "${os_major}" -lt 10 && echo true || echo false)
+				;;
+			(redhat|*)
+				case ${os_version}
+				in
+					('Red Hat Enterprise Linux'*)
+						update_sysconfig=$(test "${os_major}" -lt 6 && echo true || echo false)
+						;;
+					('Red Hat Linux'*)
+						update_sysconfig=true
+						;;
+					(*)
+						printf 'Could not determine Red Hat distribution.\n' >&2
+						printf "Please contribute an implementation for it if you can.\n" >&2
+						exit 1
+						;;
+				esac
+				;;
+		esac
+
+		if ${update_sysconfig:?}
+		then
+			export CDIST_ORDER_DEPENDENCY=true
+			__file /etc/sysconfig/clock --state present \
+				--owner root --group root --mode 0644
+			__key_value /etc/sysconfig/clock:UTC \
+				--file /etc/sysconfig/clock \
+				--key UTC \
+				--delimiter '=' --exact_delimiter \
+				--value "$($local_clock && echo false || echo true)"
+			unset CDIST_ORDER_DEPENDENCY
+		fi
+		;;
+	(debian|devuan|ubuntu)
+		os_major=$(sed 's/[^0-9].*$//' "${__global:?}/explorer/os_version")
+
+		case ${os}
+		in
+			(debian)
+				if test "${os_major}" -ge 7
+				then
+					update_rcS=false
+				elif test "${os_major}" -ge 3
+				then
+					update_rcS=true
+				else
+					# Debian 2.2 should be supportable using rcS.
+					# Debian 2.1 uses the ancient GMT key.
+					# Debian 1.3 does not have rcS.
+					printf "Your operating system (Debian %s) is currently not supported by this type (%s)\n" \
+						"$(cat "${__global:?}/explorer/os_version")" "${__type##*/}" >&2
+					printf "Please contribute an implementation for it if you can.\n" >&2
+					exit 1
+				fi
+				;;
+			(devuan)
+				update_rcS=false
+				;;
+			(ubuntu)
+				update_rcS=$(test "${os_major}" -lt 16 && echo true || echo false)
+				;;
+		esac
+
+		if ${update_rcS}
+		then
+			export CDIST_ORDER_DEPENDENCY=true
+			__file /etc/default/rcS --state present \
+				--owner root --group root --mode 0644
+			__key_value /etc/default/rcS:UTC \
+				--file /etc/default/rcS \
+				--key UTC \
+				--delimiter '=' --exact_delimiter \
+				--value "$($local_clock && echo no || echo yes)"
+			unset CDIST_ORDER_DEPENDENCY
+		fi		  
+		;;
+	(freebsd)
+		# cf. adjkerntz(8)
+		__file /etc/wall_cmos_clock \
+			--state "$($local_clock && echo present || echo absent)" \
+			--owner root --group wheel --mode 0444
+		;;
+	(netbsd)
+		# https://wiki.netbsd.org/guide/boot/#index9h2
+		__key_value /etc/rc.conf:rtclocaltime \
+			--file /etc/rc.conf \
+			--key rtclocaltime \
+			--delimiter '=' --exact_delimiter \
+			--value "$($local_clock && echo YES || echo NO)"
+		;;
+	(slackware)
+		__file /etc/hardwareclock --owner root --group root --mode 0644 \
+			--source - <<-EOF
+		# /etc/hardwareclock
+		#
+		# Tells how the hardware clock time is stored.
+		# This file is managed by cdist.
+
+		$($local_clock && echo localtime || echo UTC)
+		EOF
+		;;
+	(suse)
+		if test -s "${__global:?}/explorer/os_release"
+		then
+			# shellcheck source=/dev/null
+			os_version=$(. "${__global:?}/explorer/os_release" && echo "${VERSION}")
+		else
+			os_version=$(sed -n 's/^VERSION\ *=\ *//p' "${__global:?}/explorer/os_version")
+		fi
+		os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
+
+		# TODO: Consider using `yast2 timezone set hwclock' instead
+		if expr "${os_major}" \< 12
+		then
+			# Starting with SuSE 12 (first systemd-based version)
+			# /etc/sysconfig/clock does not contain the HWCLOCK line
+			# anymore.
+			# With SuSE 13, it has been reduced to TIMEZONE configuration.
+			__key_value /etc/sysconfig/clock:HWCLOCK \
+				--file /etc/sysconfig/clock \
+				--delimiter '=' --exact_delimiter \
+				--key HWCLOCK \
+				--value "$($local_clock && echo '"--localtime"' || echo '"-u"')"
+		fi
+		;;
+	(void)
+		export CDIST_ORDER_DEPENDENCY=true
+		__file /etc/rc.conf \
+			--owner root --group root --mode 0644 \
+			--state present
+		__key_value /etc/rc.conf:HARDWARECLOCK \
+			--file /etc/rc.conf \
+			--delimiter '=' --exact_delimiter \
+			--key HARDWARECLOCK \
+			--value "\"$($local_clock && echo localtime || echo UTC)\""
+		unset CDIST_ORDER_DEPENDENCY
+		;;
+	(*)
+		if ! $has_systemd_timedatectl
+		then
+			printf "Your operating system (%s) is currently not supported by this type (%s)\n" "$os" "${__type##*/}" >&2
+			printf "Please contribute an implementation for it if you can.\n" >&2
+			exit 1
+		fi
+		;;
+esac
+
+# NOTE: timedatectl set-local-rtc for systemd is in gencode-remote
+# NOTE: /etc/adjtime is also updated in gencode-remote

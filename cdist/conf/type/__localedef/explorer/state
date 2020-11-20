@@ -1,0 +1,100 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# This explorer determines if the locale is defined on the target system.
+# Will print nothing on error.
+#
+# Possible output:
+#  present:
+#    the main locale (and possibly aliases) is present
+#  absent:
+#    neither the main locale nor any aliases are present
+#  alias-present:
+#    the main locale is absent, but at least one of its aliases is present
+#
+
+# Hardcoded, create a pull request in case it is at another location for
+# some other distro. (cf. gencode-remote)
+aliasfile='/usr/share/locale/locale.alias'
+
+command -v locale >/dev/null 2>&1 || exit 0
+
+locales=$(locale -a)
+
+parse_locale() {
+	# This function will split locales into their parts. Locale strings are
+	# usually of the form: [language[_territory][.codeset][@modifier]]
+	# For simplicity, language and territory are not separated by this function.
+	# Old Linux systems were also using "english" or "german" as locale strings.
+	# Usage: parse_locale locale_str lang_var codeset_var modifier_var
+	eval "${2:?}"="$(expr "$1" : '\([^.@]*\)')"
+	eval "${3:?}"="$(expr "$1" : '[^.]*\.\([^@]*\)')"
+	eval "${4:?}"="$(expr "$1" : '.*@\(.*\)$')"
+}
+
+format_locale() {
+	# Usage: format_locale language codeset modifier
+	printf '%s' "$1"
+	test -z "$2" || printf '.%s' "$2"
+	test -z "$3" || printf '@%s' "$3"
+	printf '\n'
+}
+
+gnu_normalize_codeset() {
+	# reimplementation of glibc/locale/programs/localedef.c normalize_codeset()
+	echo "$*" | tr '[:upper:]' '[:lower:]' | tr -cd '[:alnum:]'
+}
+
+locale_available() (
+	echo "${locales}" | grep -qxF "$1" || {
+		# glibc uses "normalized" locale names in archives.
+		# If a locale is stored in an archive, the normalized name will be
+		# printed by locale, so that needs to be checked, too.
+		localename=$(
+			parse_locale "$1" _lang _codeset _modifier \
+			&& format_locale "${_lang:?}" "$(gnu_normalize_codeset "${_codeset?}")" \
+			   "${_modifier?}")
+		echo "${locales}" | grep -qxF "${localename}"
+	}
+)
+
+if locale_available "${__object_id:?}"
+then
+	echo present
+else
+	# NOTE: locale.alias can be symlinked.
+	if test -e "${aliasfile}"
+	then
+		# Check if one of the aliases of the locale is defined
+		baselocale=$(
+			parse_locale "${__object_id:?}" _lang _codeset _modifiers \
+			&& format_locale "${_lang}" "${_codeset}")
+		while read -r _alias _localename
+		do
+			if test "${_localename}" = "${baselocale}" \
+				&& echo "${locales}" | grep -qxF "${_alias}"
+			then
+				echo alias-present
+				exit 0
+			fi
+		done <"${aliasfile}"
+	fi
+
+	echo absent
+fi
