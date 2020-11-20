@@ -8,6 +8,8 @@ next:
 	* New type: __hwclock (Dennis Camera)
 	* Type __hostname: Fix guessing SuSE OS version (Dennis Camera)
 	* New type: __sshd_config (Dennis Camera)
+	* New type: __localedef (Dennis Camera)
+	* Type __locale: Deprecate in favor of __localedef (Dennis Camera)
 
 6.9.1: 2020-11-08
 	* Type __file: Fix state pre-exists (Dennis Camera)
