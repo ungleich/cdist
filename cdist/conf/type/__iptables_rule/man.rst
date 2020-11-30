@@ -25,6 +25,24 @@ state
    'present' or 'absent', defaults to 'present'
 
 
+BOOLEAN PARAMETERS
+------------------
+All rules without any of this parameter will be threaten like ``--v4`` because
+of backward compatibility.
+
+v4
+    Explicitly set it as rule for IPv4. If IPv6 is set, too, it will be
+    threaten like ``--all``. Will be the default if nothing else is set.
+
+v6
+    Explicitly set it as rule for IPv6. If IPv4 is set, too, it will be
+    threaten like ``--all``.
+
+all
+    Set the rule for both IPv4 and IPv6. It will be saved separately from the
+    other rules.
+
+
 EXAMPLES
 --------
 
@@ -48,6 +66,16 @@ EXAMPLES
         --state absent
 
 
+    # IPv4-only rule for ICMPv4
+    __iptables_rule icmp-v4 --v4 --rule "-A INPUT -p icmp -j ACCEPT"
+    # IPv6-only rule for ICMPv6
+    __iptables_rule icmp-v6 --v6 --rule "-A INPUT -p icmpv6 -j ACCEPT"
+
+    # doing something for the dual stack
+    __iptables_rule fwd-eth0-eth1 --v4 --v6 --rule "-A INPUT -i eth0 -o eth1 -j ACCEPT"
+    __iptables_rule fwd-eth1-eth0 --all --rule "-A -o eth1 -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT"
+
+
 SEE ALSO
 --------
 :strong:`cdist-type__iptables_apply`\ (7), :strong:`iptables`\ (8)
@@ -56,11 +84,13 @@ SEE ALSO
 AUTHORS
 -------
 Nico Schottelius <nico-cdist--@--schottelius.org>
+Matthias Stecher <matthiasstecher--@--gmx.de>
 
 
 COPYING
 -------
-Copyright \(C) 2013 Nico Schottelius. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2013 Nico Schottelius.
+Copyright \(C) 2020 Matthias Stecher.
+You can redistribute it and/or modify it under the terms of the GNU
+General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
