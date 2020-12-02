@@ -61,6 +61,7 @@ gothrough() {
 }
 
 # Shortcut for iptables command to do IPv4 and v6
+# only applies to the "reset" target
 iptables() {
     command iptables "$@"
     command ip6tables "$@"
