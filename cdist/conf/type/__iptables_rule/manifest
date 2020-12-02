@@ -34,8 +34,8 @@ if [ -f "$__object/parameter/v6" ]; then
     specific_dir="$base_dir/v6"
 fi
 # If rules should be set for both protocols
-if ([ "$only_v4" = "yes" ] && [ "$only_v6" = "yes" ]) \
-    || [ -f "$__object/parameter/all" ]; then
+if { [ "$only_v4" = "yes" ] && [ "$only_v6" = "yes" ]; } ||
+    [ -f "$__object/parameter/all" ]; then
 
     # all to a specific directory
     specific_dir="$base_dir/all"
