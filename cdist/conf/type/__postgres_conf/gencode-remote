@@ -1,0 +1,92 @@
+#!/bin/sh -e
+# -*- mode: sh; indent-tabs-mode: t -*-
+#
+# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020 Beni Ruef (bernhard.ruef at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os=$(cat "${__global}/explorer/os")
+state_should=$(cat "${__object}/parameter/state")
+
+if [ "${state_should}" != 'present' ] && [ "${state_should}" != 'absent' ]
+then
+	echo "Invalid state '${state_should}'." \
+	     'Only "present" and "absent" are acceptable' >&2
+	exit 1
+fi
+
+if [ "${state_should}" = 'present' ] && [ ! -f "${__object}/parameter/value" ]
+then
+	echo 'Missing required parameter "value"' >&2
+	exit 1
+fi
+
+# Parameters
+conf_name="${__object_id}"
+if [ -f "${__object}/parameter/value" ]
+then
+	conf_value=$(cat "${__object}/parameter/value")
+fi
+
+if [ "${state_should}" = 'present' ]
+then
+	set_command="ALTER SYSTEM SET ${conf_name} = '${conf_value}'"
+	check_command="SHOW ${conf_name}"
+else
+	set_command="ALTER SYSTEM SET ${conf_name} = DEFAULT"
+fi
+
+case $os
+in
+	openbsd|devuan)
+		case $os
+		in
+			openbsd)
+				postgres_user='_postgresql'
+				restart_command='/etc/rc.d/postgresql restart'
+				;;
+			devuan)
+				postgres_user='postgres'
+				restart_command='/etc/init.d/postgresql restart'
+				;;
+		esac
+		# needs two separate psql commands because ALTER SYSTEM
+		# cannot run inside a transaction block
+		cat <<-EOF
+		su - ${postgres_user} -c "psql postgres -twAc \
+			\"${set_command}\""
+		su - ${postgres_user} -c "psql postgres -twAc \
+			\"SELECT pg_reload_conf()\""
+		EOF
+		# check success (makes only sense if setting to a non-default value)
+		# and restart server if needed
+		if [ "${state_should}" = 'present' ]
+		then
+			cat <<-EOF
+			if [ \$(su - ${postgres_user} -c "psql postgres -twAc \"SHOW ${conf_name}\"") != '${conf_value}' ]
+			then
+				${restart_command}
+			fi
+			EOF
+		fi
+		;;
+	*)
+		echo "Unsupported OS: ${os}" >&2
+		exit 1
+		;;
+esac
