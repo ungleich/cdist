@@ -5,6 +5,9 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.9.3: 2020-12-04
+	* pip install: Add cdist.scan to packages in setup.py (Dennis Camera)
+
 6.9.2: 2020-11-20
 	* Documentation: Fix examples in best practice (Dennis Camera)
 	* Type __locale: Add state explorer (Matthias Stecher)
