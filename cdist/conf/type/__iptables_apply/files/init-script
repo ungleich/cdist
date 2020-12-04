@@ -1,28 +1,4 @@
 #!/bin/sh
-#
-# 2013 Nico Schottelius (nico-cdist at schottelius.org)
-# 2020 Matthias Stecher (matthiasstecher at gmx.de)
-#
-# This file is distributed with cdist.
-#
-# cdist is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cdist is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
-#
-#
-# Originally written by:
-#   Nico Schottelius
-#   Zürisee, Mon Sep  2 18:38:27 CEST 2013
-#
 ### BEGIN INIT INFO
 # Provides:          iptables
 # Required-Start:    $local_fs $remote_fs
@@ -34,6 +10,16 @@
 # Description:       Applies all rules found in /etc/iptables.d
 #                    and saves/restores previous status
 ### END INIT INFO
+
+# Originally written by:
+#   Nico Schottelius
+#   Zürisee, Mon Sep  2 18:38:27 CEST 2013
+#
+# 2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2020 Matthias Stecher (matthiasstecher at gmx.de)
+#
+# This file is distributed with cdist and licenced under the
+# GNU GPLv3+ WITHOUT ANY WARRANTY.
 
 
 # Read files and execute the content with the given commands
