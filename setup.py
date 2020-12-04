@@ -54,7 +54,7 @@ os.chdir(cur)
 
 setup(
     name="cdist",
-    packages=["cdist", "cdist.core", "cdist.exec", "cdist.util", ],
+    packages=["cdist", "cdist.core", "cdist.exec", "cdist.scan", "cdist.util"],
     package_data={'cdist': package_data},
     scripts=["bin/cdist", "bin/cdist-dump", "bin/cdist-new-type"],
     version=cdist.version.VERSION,
