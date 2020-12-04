@@ -41,7 +41,7 @@ None
 EXAMPLES
 --------
 
-None (__iptables_apply is used by __iptables_rule automaticly)
+None (__iptables_apply is used by __iptables_rule automatically)
 
 
 SEE ALSO

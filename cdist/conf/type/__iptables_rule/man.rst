@@ -31,7 +31,7 @@ state
 
 BOOLEAN PARAMETERS
 ------------------
-All rules without any of this parameter will be threaten like ``--v4`` because
+All rules without any of these parameters will be treated like ``--v4`` because
 of backward compatibility.
 
 v4
