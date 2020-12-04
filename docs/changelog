@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* pip install: Add cdist.scan to packages in setup.py (Dennis Camera)
+
 6.9.2: 2020-11-20
 	* Documentation: Fix examples in best practice (Dennis Camera)
 	* Type __locale: Add state explorer (Matthias Stecher)
