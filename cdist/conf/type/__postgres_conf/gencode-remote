@@ -20,8 +20,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os=$(cat "${__global}/explorer/os")
-state_should=$(cat "${__object}/parameter/state")
+os=$(cat "${__global:?}/explorer/os")
+state_should=$(cat "${__object:?}/parameter/state")
 
 if [ "${state_should}" != 'present' ] && [ "${state_should}" != 'absent' ]
 then
@@ -37,7 +37,7 @@ then
 fi
 
 # Parameters
-conf_name="${__object_id}"
+conf_name="${__object_id:?}"
 if [ -f "${__object}/parameter/value" ]
 then
 	conf_value=$(cat "${__object}/parameter/value")
@@ -46,7 +46,6 @@ fi
 if [ "${state_should}" = 'present' ]
 then
 	set_command="ALTER SYSTEM SET ${conf_name} = '${conf_value}'"
-	check_command="SHOW ${conf_name}"
 else
 	set_command="ALTER SYSTEM SET ${conf_name} = DEFAULT"
 fi
