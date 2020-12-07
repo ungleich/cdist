@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+next:
+	* __package_pkgng_freebsd: Fix bootstrapping pkg (Dennis Camera)
+	* Core: Deal with deprecated imp in unit tests (Evil Ham)
+
 6.9.3: 2020-12-04
 	* pip install: Add cdist.scan to packages in setup.py (Dennis Camera)
 
