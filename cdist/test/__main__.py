@@ -20,7 +20,7 @@
 #
 #
 
-import imp
+import importlib
 import os
 import sys
 import unittest
@@ -37,8 +37,9 @@ for possible_test in os.listdir(base_dir):
 
 suites = []
 for test_module in test_modules:
-    module_parameters = imp.find_module(test_module, [base_dir])
-    module = imp.load_module("cdist.test." + test_module, *module_parameters)
+    module_spec = importlib.util.find_spec("cdist.test.{}".format(test_module))
+    module = importlib.util.module_from_spec(module_spec)
+    module_spec.loader.exec_module(module)
 
     suite = unittest.defaultTestLoader.loadTestsFromModule(module)
     # print("Got suite: " + suite.__str__())
