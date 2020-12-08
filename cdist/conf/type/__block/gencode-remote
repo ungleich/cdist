@@ -46,28 +46,29 @@ fi
 
 remove_block() {
    cat << DONE
-tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
+tmpfile=\$(mktemp ${quoted_file}.cdist.XXXXXXXXXX)
 # preserve ownership and permissions of existing file
-if [ -f "$file" ]; then
-   cp -p "$file" "\$tmpfile"
+if [ -f $quoted_file ]; then
+   cp -p $quoted_file "\$tmpfile"
 fi
-awk -v prefix=^$(quote "$prefix")\$ -v suffix=^$(quote "$suffix")\$ '
+awk -v prefix=$(quote "$prefix") -v suffix=$(quote "$suffix") '
 {
-   if (match(\$0,prefix)) {
+   if (\$0 == prefix) {
       triggered=1
    }
    if (triggered) {
-      if (match(\$0,suffix)) {
+      if (\$0 == suffix) {
          triggered=0
       }
    } else {
       print
    }
-}' "$file" > "\$tmpfile"
-mv -f "\$tmpfile" "$file"
+}' $quoted_file > "\$tmpfile"
+mv -f "\$tmpfile" $quoted_file
 DONE
 }
 
+quoted_file="$(quote "$file")"
 case "$state_should" in
    present)
       if [ "$state_is" = "changed" ]; then
@@ -77,7 +78,7 @@ case "$state_should" in
          echo add >> "$__messages_out"
       fi
       cat << DONE
-cat >> "$file" << ${__type##*/}_DONE
+cat >> $quoted_file << '${__type##*/}_DONE'
 $(cat "$block")
 ${__type##*/}_DONE
 DONE
