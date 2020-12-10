@@ -45,7 +45,7 @@ fi
 
 if [ "${state_should}" = 'present' ]
 then
-	set_command="ALTER SYSTEM SET ${conf_name} = '${conf_value}'"
+	set_command="ALTER SYSTEM SET ${conf_name} = ${conf_value}"
 else
 	set_command="ALTER SYSTEM SET ${conf_name} = DEFAULT"
 fi
