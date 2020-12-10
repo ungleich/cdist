@@ -1,0 +1,59 @@
+#!/bin/sh -e
+# __debian_backports/manifest
+#
+# 2020 Matthias Stecher (matthiasstecher at gmx.de)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Enables/disables backports repository. Utilies __apt_source for it.
+#
+
+
+# detect backport distribution
+os="$(cat "$__global/explorer/os")"
+case "$os" in
+    debian)
+        # distribution codename from /etc/os-release
+        # lsb_release may not be given in all debian installations
+        dist="$(
+            . "$__global/explorer/os-release"
+            printf "%s" "$VERSION_CODENAME"
+        )"
+        ;;
+    *)
+        printf "Backports for %s are not supported!\n" "$os" >&2
+        exit 1
+        ;;
+esac
+
+# error if no codename given (e.g. on Debian unstable)
+if [ -z "$dist" ]; then
+    printf "No backports for unkown version of distribution %s!\n" "$os" >&2
+    exit 1
+fi
+
+
+# parameters
+state="$(cat "$__object/parameter/state")"
+mirror="$(cat "$__object/parameter/mirror")"
+
+# install the given backports repository
+__apt_source "${dist}-backports" \
+    --state "$state" \
+    --distribution "${dist}-backports" \
+    --component main \
+    --uri "$mirror"
