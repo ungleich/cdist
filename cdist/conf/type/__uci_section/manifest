@@ -1,0 +1,88 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera@ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# shellcheck source=cdist/conf/type/__uci_section/files/functions.sh
+. "${__type:?}/files/functions.sh"
+
+
+## Check section name and error if invalid!
+case ${__object_id:?}
+in
+	(*.*)
+		uci_validate_name "${__object_id%%.*}" || {
+			printf 'Invalid package name: %s\n' "${__object_id%%.*}" >&2
+			exit 1
+		}
+		uci_validate_name "${__object_id#*.}" || {
+			printf 'Invalid section name: %s\n' "${__object_id#*.}" >&2
+			exit 1
+		}
+		;;
+	(*)
+		uci_validate_name "${__object_id:?}" || {
+			printf 'Invalid section name: %s\n' "${__object_id:?}" >&2
+			exit 1
+		}
+		;;
+esac
+
+state_should=$(cat "${__object:?}/parameter/state")
+
+case $state_should
+in
+	(present)
+		test -f "${__object:?}/parameter/type" || {
+			echo 'Parameter --type is required.' >&2
+			exit 1
+		}
+		type_is=$(cat "${__object:?}/explorer/type")
+		type_should=$(cat "${__object:?}/parameter/type")
+
+		if test -n "${type_is}" && test "${type_is}" != "${type_should##*.}"
+		then
+			# Check if section type matches (section exists and --type provided)
+			printf 'Section type "%s" does not match --type "%s".\n' \
+				"${type_is}" "${type_should}" >&2
+			exit 1
+		fi
+
+		# Check options for syntax errors
+		validate_options "${__object:?}/parameter/list" "${__object:?}/parameter/object" \
+		| print_errors 'Found erroneous options in arguments:'
+
+		# Check for duplicate option names
+		if test -s "${__object:?}/parameter/option"
+		then
+			sed -e 's/=.*$//' "${__object:?}/parameter/option" \
+			| sort \
+			| uniq -d \
+			| print_errors \
+				  'Found duplicate --options:' \
+				  "$(printf '\nUse --list for lists, instead.')"
+		fi
+		;;
+	(absent)
+		:
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
+esac

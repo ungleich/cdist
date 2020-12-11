@@ -473,7 +473,7 @@ def get_parsers():
 
     # Scan = config + further
     parser['scan'] = parser['sub'].add_parser('scan', add_help=False,
-                                                 parents=[parser['config']])
+                                              parents=[parser['config']])
 
     parser['scan'] = parser['sub'].add_parser(
             'scan', parents=[parser['loglevel'],

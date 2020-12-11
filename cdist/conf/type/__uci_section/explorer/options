@@ -1,0 +1,48 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# This explorer retrieves the current options of the configuration section.
+
+RS=$(printf '\036')
+
+section=$("${__type_explorer:?}/match")
+test -n "${section}" || exit 0
+
+uci -s -N -d "${RS}" show "${section}" 2>/dev/null \
+| awk -v VSEP="${RS}" '
+  {
+	  # Strip off the config and section parts
+	  is_opt = sub(/^([^.]*\.){2}/, "")
+
+	  if (!is_opt) {
+		  # this line represents the section -> skip
+		  next
+	  }
+
+	  if (index($0, VSEP)) {
+		  # Put values each on a line, like --option and --list parameters
+		  opt = substr($0, 1, index($0, "=") - 1)
+		  split(substr($0, length(opt) + 2), values, VSEP)
+		  for (i in values) {
+			  printf "%s=%s\n", opt, values[i]
+		  }
+	  } else {
+		  print
+	  }
+  }'

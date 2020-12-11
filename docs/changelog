@@ -2,6 +2,31 @@ Changelog
 ---------
 
 next:
+	* __package_pkgng_freebsd: Fix bootstrapping pkg (Dennis Camera)
+	* Core: Deal with deprecated imp in unit tests (Evil Ham)
+	* Type __iptables: Add IPv6 support (Matthias Stecher)
+	* Type __block: Fix escaping in here-doc (Matthias Stecher)
+
+6.9.3: 2020-12-04
+	* pip install: Add cdist.scan to packages in setup.py (Dennis Camera)
+
+6.9.2: 2020-11-20
+	* Documentation: Fix examples in best practice (Dennis Camera)
+	* Type __locale: Add state explorer (Matthias Stecher)
+	* Core: Reorganize scripts, version generation (Ander Punnar, Dennis Camera)
+	* New type: __hwclock (Dennis Camera)
+	* Type __hostname: Fix guessing SuSE OS version (Dennis Camera)
+	* New type: __sshd_config (Dennis Camera)
+	* New type: __localedef (Dennis Camera)
+	* Type __locale: Deprecate in favor of __localedef (Dennis Camera)
+
+6.9.1: 2020-11-08
+	* Type __file: Fix state pre-exists (Dennis Camera)
+	* Type __hostname: Add support for OpenWrt (Dennis Camera)
+	* New type: __dpkg_architecture (Matthias Stecher)
+	* Type __package_apt: Add --install-recommends parameter (Matthias Stecher)
+
+6.9.0: 2020-11-07
 	* Core: Clarify stdin input (Darko Poljak)
 	* Type __package_pip: Detect pip binary (Ander Punnar)
 	* Documentation: Add custom remote copy/exec examples (Darko Poljak)
@@ -12,6 +37,9 @@ next:
 	* Type __acl: Remove deprecated parameters, fix bugs (Ander Punnar)
 	* Type __update_alternatives: Rewrite, support --install (Ander Punnar)
 	* Type __file: Fix state pre-exists (Dennis Camera)
+	* Type __apt_norecommends: Use 00InstallRecommends file as debian-installer does (Dennis Camera)
+	* New types: __uci, __uci_section (Dennis Camera)
+	* Core: Introduce scanner (noninvasive, beta) (Nico Schottelius)
 
 6.8.0: 2020-09-11
 	* Type __locale_system: Fix for debian and ubuntu (Ander Punnar)

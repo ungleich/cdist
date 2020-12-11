@@ -202,7 +202,7 @@ class ConfigRunTestCase(test.CdistTestCase):
             host_dir_name=self.hostdir,
             # exec_path can not derivated from sys.argv in case of unittest
             exec_path=os.path.abspath(os.path.join(
-                my_dir, '../../../scripts/cdist')),
+                my_dir, '../../../bin/cdist')),
             initial_manifest=os.path.join(fixtures,
                                           'manifest/dryrun_manifest'),
             add_conf_dirs=[fixtures])
@@ -219,7 +219,7 @@ class ConfigRunTestCase(test.CdistTestCase):
             base_root_path=self.host_base_path,
             host_dir_name=self.hostdir,
             exec_path=os.path.abspath(os.path.join(
-                my_dir, '../../../scripts/cdist')),
+                my_dir, '../../../bin/cdist')),
             initial_manifest=os.path.join(
                 fixtures, 'manifest/init-deps-resolver'),
             add_conf_dirs=[fixtures])

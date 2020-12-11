@@ -1,0 +1,36 @@
+#!/bin/sh -e
+# __locale/explorer/state
+#
+# 2020 Matthias Stecher (matthiasstecher at gmx.de)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Check if the locale is already installed on the system.
+# Outputs 'present' or 'absent' depending if the locale exists.
+#
+
+
+# Get user-defined locale
+# locale name is echoed differently than the user propably set it (for UTF-8)
+locale="$(echo "$__object_id" | sed 's/UTF-8/utf8/')"
+
+# Check if the given locale exists on the system
+if localedef --list-archive | grep -qFx "$locale"; then
+    echo present
+else
+    echo absent
+fi

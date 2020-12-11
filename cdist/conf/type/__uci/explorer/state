@@ -1,0 +1,110 @@
+#!/bin/sh
+#
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+# This explorer retrieves the current state of the configuration option
+# The output of this explorer is one of these values:
+#   present
+#     The configuration option is present and has the value of the
+#     parameter --value.
+#   absent
+#     The configuration option is not defined.
+#   different
+#     The configuration option is present but has a different value than the
+#     parameter --value.
+#   rearranged
+#     The configuration option is present (a list) and has the same values as
+#     the parameter --value, but in a different order.
+
+RS=$(printf '\036')
+
+option=${__object_id:?}
+
+values_is=$(uci -s -N -d "${RS}" get "${option}" 2>/dev/null) || {
+	echo absent
+	exit 0
+}
+
+if test -f "${__object:?}/parameter/value"
+then
+	should_file="${__object:?}/parameter/value"
+else
+	should_file='/dev/null'
+fi
+
+
+# strip off trailing newline
+printf '%s' "${values_is}" \
+| awk '
+function unquote(s) {
+	# simplified dequoting of single quoted strings
+	if (s ~ /^'\''.*'\''$/) {
+		s = substr(s, 2, length(s) - 2)
+		sub(/'"'\\\\''"'/, "'\''", s)
+	}
+	return s
+}
+
+BEGIN {
+	state = "present"  # assume all is fine
+}
+NR == FNR {
+	# memoize "should" state
+	should[FNR] = $0
+	should_count++
+
+	# go to next line (important!)
+	next
+}
+
+# compare "is" state
+
+{ $0 = unquote($0) }
+
+$0 == should[FNR] { next }
+
+FNR > should_count {
+	# there are more "is" records than "should" -> definitely different
+	state = "different"
+	exit
+}
+
+{
+	# see if we can find the value somewhere in should
+	for (i in should) {
+		if ($0 == should[i]) {
+			# ... value found -> rearranged
+			# FIXME: Duplicate values are not properly handled here. Do they matter?
+			state = "rearranged"
+			next
+		}
+	}
+
+	state = "different"
+	exit
+}
+
+END {
+	if (FNR < should_count) {
+		# "is" was shorter than "should" -> different
+		state = "different"
+	}
+
+	print state
+}
+' "${should_file}" RS="${RS}" -

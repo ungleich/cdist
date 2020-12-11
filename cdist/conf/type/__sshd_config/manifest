@@ -1,0 +1,48 @@
+#!/bin/sh -e
+#
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os=$(cat "${__global:?}/explorer/os")
+
+state_should=$(cat "${__object:?}/parameter/state")
+
+case ${os}
+in
+	(alpine|centos|fedora|redhat|scientific|debian|devuan|ubuntu)
+		if test "${state_should}" != 'absent'
+		then
+			__package openssh-server --state present
+		fi
+		;;
+	(archlinux|gentoo|slackware|suse)
+		if test "${state_should}" != 'absent'
+		then
+			__package openssh --state present
+		fi
+		;;
+	(freebsd|netbsd|openbsd)
+		# whitelist
+		;;
+	(*)
+		printf 'Your operating system (%s) is currently not supported by this type (%s)\n' \
+			"${os}" "${__type##*/}" >&2
+		printf 'Please contribute an implementation for it if you can.\n' >&2
+		exit 1
+		;;
+esac

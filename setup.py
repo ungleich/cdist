@@ -6,7 +6,7 @@ import subprocess
 
 
 # We have it only if it is a git cloned repo.
-build_helper = os.path.join('bin', 'build-helper')
+build_helper = os.path.join('bin', 'cdist-build-helper')
 # Version file path.
 version_file = os.path.join('cdist', 'version.py')
 # If we have build-helper we could be a git repo.
@@ -54,14 +54,13 @@ os.chdir(cur)
 
 setup(
     name="cdist",
-    packages=["cdist", "cdist.core", "cdist.exec", "cdist.util", ],
+    packages=["cdist", "cdist.core", "cdist.exec", "cdist.scan", "cdist.util"],
     package_data={'cdist': package_data},
-    scripts=["scripts/cdist", "scripts/cdist-dump", "scripts/cdist-new-type"],
+    scripts=["bin/cdist", "bin/cdist-dump", "bin/cdist-new-type"],
     version=cdist.version.VERSION,
     description="A Usable Configuration Management System",
-    author="Nico Schottelius",
-    author_email="nico-cdist-pypi@schottelius.org",
-    url="https://www.cdi.st/",
+    author="cdist contributors",
+    url="https://cdi.st",
     classifiers=[
         "Development Status :: 6 - Mature",
         "Environment :: Console",

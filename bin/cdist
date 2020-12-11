@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2010-2016 Nico Schottelius (nico-cdist at schottelius.org)
+# 2016 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of cdist.
 #
@@ -20,14 +21,81 @@
 #
 #
 
-# Wrapper for real script to allow execution from checkout
-dir=${0%/*}
+import logging
+import os
+import sys
 
-# Ensure version is present - the bundled/shipped version contains a static version,
-# the git version contains a dynamic version
-"$dir/build-helper" version
+# See if this file's parent is cdist module
+# and if so add it to module search path.
+cdist_dir = os.path.realpath(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        os.pardir))
+cdist_init_dir = os.path.join(cdist_dir, 'cdist', '__init__.py')
+if os.path.exists(cdist_init_dir):
+    sys.path.insert(0, cdist_dir)
 
-libdir=$(cd "${dir}/../" && pwd -P)
-export PYTHONPATH="${libdir}"
+import cdist            # noqa 402
+import cdist.argparse   # noqa 402
+import cdist.banner     # noqa 402
+import cdist.config     # noqa 402
+import cdist.install    # noqa 402
+import cdist.shell      # noqa 402
+import cdist.inventory  # noqa 402
 
-"$dir/../scripts/cdist" "$@"
+
+def commandline():
+    """Parse command line"""
+
+    # preos subcommand hack
+    if len(sys.argv) > 1 and sys.argv[1] == 'preos':
+        return cdist.preos.PreOS.commandline(sys.argv[1:])
+    parser, cfg = cdist.argparse.parse_and_configure(sys.argv[1:])
+    args = cfg.get_args()
+
+    # Work around python 3.3 bug:
+    # http://bugs.python.org/issue16308
+    # http://bugs.python.org/issue9253
+
+    # FIXME: catching AttributeError also hides
+    # real problems.. try a different way
+
+    # FIXME: we always print main help, not
+    # the help of the actual parser being used!
+    try:
+        getattr(args, "func")
+    except AttributeError:
+        parser['main'].print_help()
+        sys.exit(0)
+
+    args.func(args)
+
+
+if __name__ == "__main__":
+    if sys.version < cdist.MIN_SUPPORTED_PYTHON_VERSION:
+        print('Python >= {} is required on the source host.'.format(
+                cdist.MIN_SUPPORTED_PYTHON_VERSIO), file=sys.stderr)
+        sys.exit(1)
+
+    exit_code = 0
+
+    try:
+        import re
+        import os
+
+        if re.match("__", os.path.basename(sys.argv[0])):
+            import cdist.emulator
+            emulator = cdist.emulator.Emulator(sys.argv)
+            emulator.run()
+        else:
+            commandline()
+
+    except KeyboardInterrupt:
+        exit_code = 2
+
+    except cdist.Error as e:
+        log = logging.getLogger("cdist")
+        log.error(e)
+        exit_code = 1
+
+    sys.exit(exit_code)
