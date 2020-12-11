@@ -67,7 +67,7 @@ in
 		# needs two separate psql commands because ALTER SYSTEM
 		# cannot run inside a transaction block
 		cat <<-EOF
-		su - ${postgres_user} -c "psql postgres -twAc \
+		su - ${postgres_user} -c "psql postgres -qwc \
 			\"${set_command}\""
 		su - ${postgres_user} -c "psql postgres -twAc \
 			\"SELECT pg_reload_conf()\""
