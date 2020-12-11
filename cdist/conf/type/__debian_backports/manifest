@@ -30,6 +30,7 @@ case "$os" in
         # distribution codename from /etc/os-release
         # lsb_release may not be given in all debian installations
         dist="$(
+            # shellcheck disable=SC1090
             . "$__global/explorer/os-release"
             printf "%s" "$VERSION_CODENAME"
         )"
