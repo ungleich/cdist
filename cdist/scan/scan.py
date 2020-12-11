@@ -56,6 +56,8 @@ from scapy.all import *
 # Datetime overwrites scapy.all.datetime - needs to be imported AFTER
 import datetime
 
+import cdist.config
+
 log = logging.getLogger("scan")
 
 class Trigger(object):
@@ -119,6 +121,19 @@ class Scanner(object):
             # FIXME: maybe adjust the format so we can easily parse again
             with open(fname, "w") as fd:
                 fd.write(f"{now}\n")
+
+    def config(self):
+        """
+        Configure a host
+
+        - Assume we are only called if necessary
+        - However we need to ensure to not run in parallel
+        - Maybe keep dict storing per host processes
+        - Save the result
+        - Save the output -> probably aligned to config mode
+
+        """
+
 
     def start(self):
         self.process = Process(target=self.scan)
