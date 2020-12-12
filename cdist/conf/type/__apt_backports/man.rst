@@ -9,8 +9,11 @@ cdist-type__apt_backports - Install backports
 DESCRIPTION
 -----------
 This singleton type installs backports for the current OS release.
-It aborts if backports are not supported for the specified OS or no
-version codename could be fetched (like Debian unstable).
+It aborts if backports are not supported for the specified OS or
+no version codename could be fetched (like Debian unstable).
+
+The package index will be automatically updated by the type
+:strong:`cdist-type__apt_update_index`\ (7) if required.
 
 It supports backports from following OSes:
 
@@ -59,12 +62,9 @@ EXAMPLES
    __apt_backports --state absent
    __apt_backports --state present --mirror "http://ftp.de.debian.org/debian/"
 
-   # update
-   require="__apt_backports" __apt_update_index
-
    # install a backports package
    # currently for the buster release backports
-   require="__apt_update_index" __package_apt wireguard \
+   require="__apt_backports" __package_apt wireguard \
         --target-release buster-backports
 
 
@@ -90,6 +90,7 @@ SEE ALSO
 `Official Debian Backports site <https://backports.debian.org/>`_
 
 :strong:`cdist-type__apt_source`\ (7)
+:strong:`cdist-type__apt_update_index`\ (7)
 
 
 AUTHORS

@@ -19,7 +19,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Enables/disables backports repository. Utilies __apt_source for it.
+# Enables/disables backports repository. Utilises __apt_source for it.
 #
 
 
@@ -79,3 +79,6 @@ __apt_source "${dist}-backports" \
     --distribution "${dist}-backports" \
     --component "$components" \
     --uri "$mirror"
+
+# update the index if the source changed
+require="__apt_source/${dist}-backports" __apt_update_index
