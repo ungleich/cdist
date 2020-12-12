@@ -28,7 +28,7 @@
 #  lsb_release may not be given in all installations
 codename_os_release() {
     # shellcheck disable=SC1090
-    . "$__global/explorer/os-release"
+    . "$__global/explorer/os_release"
     printf "%s" "$VERSION_CODENAME"
 }
 
