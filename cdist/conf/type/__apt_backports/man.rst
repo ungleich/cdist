@@ -12,6 +12,12 @@ This singleton type installs backports for the current OS release.
 It aborts if backports are not supported for the specified OS or no
 version codename could be fetched (like Debian unstable).
 
+It supports backports from following OSes:
+
+- Debian
+- Devuan
+- Ubuntu
+
 
 REQUIRED PARAMETERS
 -------------------
