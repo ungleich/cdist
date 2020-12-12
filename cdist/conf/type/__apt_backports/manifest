@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# __debian_backports/manifest
+# __apt_backports/manifest
 #
 # 2020 Matthias Stecher (matthiasstecher at gmx.de)
 #
@@ -23,18 +23,34 @@
 #
 
 
+# Get the distribution codename by /etc/os-release.
+#  is already executed in a subshell by string substitution
+#  lsb_release may not be given in all installations
+codename_os_release() {
+    # shellcheck disable=SC1090
+    . "$__global/explorer/os-release"
+    printf "%s" "$VERSION_CODENAME"
+}
+
 # detect backport distribution
 os="$(cat "$__global/explorer/os")"
 case "$os" in
     debian)
-        # distribution codename from /etc/os-release
-        # lsb_release may not be given in all debian installations
-        dist="$(
-            # shellcheck disable=SC1090
-            . "$__global/explorer/os-release"
-            printf "%s" "$VERSION_CODENAME"
-        )"
+        dist="$( codename_os_release )"
+        components="main"
+        mirror="http://deb.debian.org/debian/"
         ;;
+    devuan)
+        dist="$( codename_os_release )"
+        components="main"
+        mirror="http://deb.devuan.org/merged"
+        ;;
+    ubuntu)
+        dist="$( codename_os_release )"
+        components="main restricted universe multiverse"
+        mirror="http://archive.ubuntu.com/ubuntu"
+        ;;
+
     *)
         printf "Backports for %s are not supported!\n" "$os" >&2
         exit 1
@@ -50,11 +66,16 @@ fi
 
 # parameters
 state="$(cat "$__object/parameter/state")"
-mirror="$(cat "$__object/parameter/mirror")"
+
+# mirror already set for the os, only override user-values
+if [ -f "$__object/parameter/mirror" ]; then
+    mirror="$(cat "$__object/parameter/mirror")"
+fi
+
 
 # install the given backports repository
 __apt_source "${dist}-backports" \
     --state "$state" \
     --distribution "${dist}-backports" \
-    --component main \
+    --component "$components" \
     --uri "$mirror"

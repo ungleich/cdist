@@ -3,13 +3,13 @@ cdist-type__debian_backports(7)
 
 NAME
 ----
-cdist-type__debian_backports - Install backports for Debain systems
+cdist-type__apt_backports - Install backports
 
 
 DESCRIPTION
 -----------
-This singleton type installs backports for the current Debian version.
-It aborts if backports are not supported for the specified os or no
+This singleton type installs backports for the current OS release.
+It aborts if backports are not supported for the specified OS or no
 version codename could be fetched (like Debian unstable).
 
 
@@ -27,8 +27,8 @@ state
     Will be directly passed to :strong:`cdist-type__apt_source`\ (7).
 
 mirror
-    The mirror to fetch the backports from. Will defaults to the Debian default
-    `<http://deb.debian.org/debian/>`_.
+    The mirror to fetch the backports from. Will defaults to the generic
+    mirror of the current OS.
 
     Will be directly passed to :strong:`cdist-type__apt_source`\ (7).
 
@@ -49,12 +49,12 @@ EXAMPLES
 .. code-block:: sh
 
    # setup the backports
-   __debian_backports
-   __debian_backports --state absent
-   __debian_backports --state present --mirror "http://ftp.de.debian.org/debian/"
+   __apt_backports
+   __apt_backports --state absent
+   __apt_backports --state present --mirror "http://ftp.de.debian.org/debian/"
 
    # update
-   require="__debian_backports" __apt_update_index
+   require="__apt_backports" __apt_update_index
 
    # install a backports package
    # currently for the buster release backports
@@ -68,6 +68,15 @@ Aborts if the detected os is not Debian.
 
 Aborts if no distribuition codename could be detected. This is common for the
 unstable distribution, but there is no backports repository for it already.
+
+
+CAVEATS
+-------
+For Ubuntu, it setup all componenents for the backports repository: ``main``,
+``restricted``, ``universe`` and ``multiverse``. The user may not want to
+install proprietary packages, which will only be installed if the user
+explicitly uses the backports target-release. The user may change this behavior
+to install backports packages without the need of explicitly select it.
 
 
 SEE ALSO
