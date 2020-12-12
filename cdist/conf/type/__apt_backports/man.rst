@@ -12,8 +12,7 @@ This singleton type installs backports for the current OS release.
 It aborts if backports are not supported for the specified OS or
 no version codename could be fetched (like Debian unstable).
 
-The package index will be automatically updated by the type
-:strong:`cdist-type__apt_update_index`\ (7) if required.
+The package index will be automatically updated if required.
 
 It supports backports from following OSes:
 
@@ -90,7 +89,6 @@ SEE ALSO
 `Official Debian Backports site <https://backports.debian.org/>`_
 
 :strong:`cdist-type__apt_source`\ (7)
-:strong:`cdist-type__apt_update_index`\ (7)
 
 
 AUTHORS
