@@ -11,55 +11,61 @@
 #
 # cdist is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-case "$(cat "${__global}/explorer/os")"
+case $(cat "${__global:?}/explorer/os")
 in
-    netbsd)
-        postgres_user='pgsql'
-        ;;
-    openbsd)
-        postgres_user='_postgresql'
-        ;;
-    *)
-        postgres_user='postgres'
-        ;;
+	(netbsd)
+		postgres_user='pgsql'
+		;;
+	(openbsd)
+		postgres_user='_postgresql'
+		;;
+	(*)
+		postgres_user='postgres'
+		;;
 esac
 
 
-name="$__object_id"
-state_is="$(cat "$__object/explorer/state")"
-state_should="$(cat "$__object/parameter/state")"
+rolename=${__object_id:?}
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
 
-[ "$state_is" = "$state_should" ] && exit 0
+if test "${state_is}" = "${state_should}"
+then
+	exit 0
+fi
 
-case "$state_should" in
-    present)
-        if [ -f "$__object/parameter/password" ]; then
-            password="$(cat "$__object/parameter/password")"
-        fi
-        booleans=""
-        for boolean in login createdb createrole superuser; do
-            if [ ! -f "$__object/parameter/$boolean" ]; then
-                boolean="no${boolean}"
-            fi
-            upper=$(echo $boolean | tr '[:lower:]' '[:upper:]')
-            booleans="$booleans $upper"
-        done
+case ${state_should}
+in
+	(present)
+		if test -f "${__object:?}/parameter/password"
+		then
+			password=$(cat "${__object:?}/parameter/password")
+		fi
+		booleans=
+		for boolean in login createdb createrole superuser
+		do
+			if test ! -f "${__object:?}/parameter/${boolean}"
+			then
+				boolean="no${boolean}"
+			fi
+			booleans="${booleans} $(echo ${boolean} | tr '[:lower:]' '[:upper:]')"
+		done
 
-        [ -n "$password" ] && password="PASSWORD '$password'"
-        cat << EOF
-su - '$postgres_user' -c "psql postgres -wc \"CREATE ROLE \\\\\"$name\\\\\" WITH $password $booleans;\""
+		[ -n "${password}" ] && password="PASSWORD '${password}'"
+		cat << EOF
+su - '${postgres_user}' -c "psql postgres -wc 'CREATE ROLE \\"${rolename}\\" WITH ${password} ${booleans};'"
 EOF
-    ;;
-    absent)
-        cat << EOF
-su - '$postgres_user' -c "dropuser \"$name\""
+		;;
+	(absent)
+		cat << EOF
+su - '${postgres_user}' -c "dropuser '${rolename}'"
 EOF
-    ;;
+		;;
 esac

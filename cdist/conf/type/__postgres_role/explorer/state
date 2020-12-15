@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
 #
@@ -11,32 +11,32 @@
 #
 # cdist is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-case "$("${__explorer}/os")"
+case $("${__explorer:?}/os")
 in
-    netbsd)
-        postgres_user='pgsql'
-        ;;
-    openbsd)
-        postgres_user='_postgresql'
-        ;;
-    *)
-        postgres_user='postgres'
-        ;;
+	(netbsd)
+		postgres_user='pgsql'
+		;;
+	(openbsd)
+		postgres_user='_postgresql'
+		;;
+	(*)
+		postgres_user='postgres'
+		;;
 esac
 
 
-name="$__object_id"
+rolename=${__object_id:?}
 
-if test -n "$(su - "$postgres_user" -c "psql postgres -twAc \"SELECT 1 FROM pg_roles WHERE rolname='$name'\"")"
+if test -n "$(su - "${postgres_user}" -c "psql postgres -twAc \"SELECT 1 FROM pg_roles WHERE rolname='${rolename}'\"")"
 then
-    echo 'present'
+	echo 'present'
 else
-    echo 'absent'
+	echo 'absent'
 fi
