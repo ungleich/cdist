@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -17,6 +18,15 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+
+quote() {
+	if test $# -gt 0
+	then
+		printf '%s' "$*"
+	else
+		cat -
+	fi | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
+}
 
 case $(cat "${__global:?}/explorer/os")
 in
@@ -44,28 +54,55 @@ fi
 case ${state_should}
 in
 	(present)
-		if test -f "${__object:?}/parameter/password"
+		if test -s "${__object:?}/parameter/password"
 		then
-			password=$(cat "${__object:?}/parameter/password")
+			quoted_password=$(
+				delim='$$'
+				while grep -q -F "${delim}" "${__object:?}/parameter/password"
+				do
+					delim="\$$(LC_ALL=C tr -cd '[:alpha:]' </dev/urandom | dd bs=1 count=4 2>/dev/null)$"
+				done
+
+				raw_passwd=$(cat "${__object:?}/parameter/password"; printf .)
+				# shellcheck disable=SC2016
+				printf '%s%s%s' "${delim}" "${raw_passwd%?.}" "${delim}"
+			)
 		fi
+
 		booleans=
 		for boolean in login createdb createrole superuser
 		do
-			if test ! -f "${__object:?}/parameter/${boolean}"
-			then
-				boolean="no${boolean}"
-			fi
-			booleans="${booleans} $(echo ${boolean} | tr '[:lower:]' '[:upper:]')"
+			booleans="${booleans}${booleans:+ }$(
+				if test -f "${__object:?}/parameter/${boolean}"
+				then
+					echo "${boolean}"
+				else
+					echo "no${boolean}"
+				fi \
+				| tr '[:lower:]' '[:upper:]')"
 		done
 
-		[ -n "${password}" ] && password="PASSWORD '${password}'"
-		cat << EOF
-su - '${postgres_user}' -c "psql postgres -wc 'CREATE ROLE \\"${rolename}\\" WITH ${password} ${booleans};'"
-EOF
+		case ${state_is}
+		in
+			(absent)
+				query=$(printf 'CREATE ROLE "%s" WITH %s PASSWORD %s;' \
+					"${rolename}" "${booleans}" "${quoted_password:-NULL}")
+				;;
+			(different)
+				query=$(printf 'ALTER ROLE "%s" WITH %s PASSWORD %s;' \
+					"${rolename}" "${booleans}" "${quoted_password:-NULL}")
+				;;
+			(*)
+				exit 1	# TODO: error msg
+				;;
+		esac
+
+		psql_cmd=$(printf 'psql postgres -wc %s' "$(quote "${query}")" | quote)
+		printf "su -l '%s' -c %s\\n" "${postgres_user}" "${psql_cmd}"
 		;;
 	(absent)
-		cat << EOF
-su - '${postgres_user}' -c "dropuser '${rolename}'"
-EOF
+		printf "su -l '%s' -c 'dropuser '\\\\'%s\\\\'\\n" \
+			"${postgres_user}" \
+			"$(quote "${rolename}")"
 		;;
 esac
