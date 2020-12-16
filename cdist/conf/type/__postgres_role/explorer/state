@@ -34,9 +34,23 @@ esac
 
 rolename=${__object_id:?}
 
+
+psql_query() {
+	su -l "${postgres_user}" -c "$(
+		printf "psql -F '\034' -R '\036' -wAc '%s'" \
+		"$(printf %s "$*" | sed "s/'/'\\\\''/g")"
+	)"
+}
+
+password_check_login() (
+	PGPASSWORD=$(cat "${__object:?}/parameter/password"; printf .)
+	PGPASSWORD=${PGPASSWORD%?.}
+	export PGPASSWORD
+	psql -w -h localhost -U "${rolename}" template1 -c '\q' >/dev/null 2>&1
+)
+
 role_properties=$(
-	cmd=$(printf "psql -F '\034' -R '\036' -wAc \"SELECT * FROM pg_roles WHERE rolname='%s'\"" "${rolename}")
-	su -l "${postgres_user}" -c "${cmd}" \
+	psql_query "SELECT * FROM pg_roles WHERE rolname = '${rolename}'" \
 	| awk '
 	  BEGIN { RS = "\036"; FS = "\034" }
 	  /^\([0-9]+ rows?\)/ { exit }
@@ -69,12 +83,62 @@ then
 		)
 
 		test "${bool_is}" = "${bool_should}" || {
-			echo 'different'
-			exit 0
+			state='different properties'
 		}
 	done
 
-	echo 'present'
+	# Check password
+	passwd_stored=$(
+		psql_query "SELECT rolpassword FROM pg_authid WHERE rolname = '${rolename}'" \
+		| awk 'BEGIN { RS = "\036" } NR == 2'
+		printf .
+	)
+	passwd_stored=${passwd_stored%?.}
+
+	passwd_should=$(cat "${__object}/parameter/password"; printf .)
+	passwd_should=${passwd_should%?.}
+
+	if expr "${passwd_stored}" : 'SCRAM-SHA-256\$.*$' >/dev/null
+	then
+		# SCRAM-SHA-256 "encrypted" password
+		# NOTE: There is currently no easy way to check SCRAM passwords
+		password_check_login || state="${state:-different} password"
+	elif expr "${passwd_stored}" : 'md5[0-9a-f]\{32\}$' >/dev/null
+	then
+		# MD5 "encrypted" password
+		if command -v md5sum >/dev/null 2>&1
+		then
+			should_md5=$(
+				printf '%s%s' "${passwd_should}" "${rolename}" \
+				| md5sum - | sed -e 's/[^0-9a-f]*$//')
+		elif command -v gmd5sum >/dev/null 2>&1
+		then
+			should_md5=$(
+				printf '%s%s' "${passwd_should}" "${rolename}" \
+				| gmd5sum - | sed -e 's/[^0-9a-f]*$//')
+		elif command -v openssl >/dev/null 2>&1
+		then
+			should_md5=$(
+				printf '%s%s' "${passwd_should}" "${rolename}" \
+				| openssl dgst -md5 | sed 's/^.* //')
+		fi
+
+		if test -n "${should_md5}"
+		then
+			test "${passwd_stored}" = "md5${should_md5}" \
+			|| state="${state:-different} password"
+		else
+			password_check_login || state="${state:-different} password"
+		fi
+	else
+		# unencrypted password (unsupported since PostgreSQL 10)
+		test "${passwd_stored}" = "${passwd_should}" \
+		|| state="${state:-different} password"
+	fi
+
+	test -n "${state}" || state='present'
 else
-	echo 'absent'
+	state='absent'
 fi
+
+echo "${state}"

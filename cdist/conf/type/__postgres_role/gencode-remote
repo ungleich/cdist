@@ -58,7 +58,9 @@ in
 		then
 			quoted_password=$(
 				delim='$$'
-				while grep -q -F "${delim}" "${__object:?}/parameter/password"
+				# NOTE: Strip away trailing $ because with it the check breaks
+				#       if the password ends with $ + random value.
+				while grep -q -F "${delim%$}" "${__object:?}/parameter/password"
 				do
 					delim="\$$(LC_ALL=C tr -cd '[:alpha:]' </dev/urandom | dd bs=1 count=4 2>/dev/null)$"
 				done
@@ -88,12 +90,23 @@ in
 				query=$(printf 'CREATE ROLE "%s" WITH %s PASSWORD %s;' \
 					"${rolename}" "${booleans}" "${quoted_password:-NULL}")
 				;;
-			(different)
-				query=$(printf 'ALTER ROLE "%s" WITH %s PASSWORD %s;' \
-					"${rolename}" "${booleans}" "${quoted_password:-NULL}")
+			(different*)
+				query="ALTER ROLE \"${rolename}\" WITH"
+
+				if expr "${state_is}" : 'different.*properties' >/dev/null
+				then
+					query="${query} ${booleans}"
+				fi
+				if expr "${state_is}" : 'different.*password' >/dev/null
+				then
+					query="${query} PASSWORD ${quoted_password:-NULL}"
+				fi
+
+				query="${query};"
 				;;
 			(*)
-				exit 1	# TODO: error msg
+				printf 'Invalid state reported by state explorer: %s\n' "${state_is}" >&2
+				exit 1
 				;;
 		esac
 
