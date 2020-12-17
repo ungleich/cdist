@@ -51,27 +51,29 @@ then
 	exit 0
 fi
 
-		if test -s "${__object:?}/parameter/password"
-		then
-			quoted_password=$(
-				delim='$$'
-				# NOTE: Strip away trailing $ because with it the check breaks
-				#       if the password ends with $ + random value.
-				while grep -q -F "${delim%$}" "${__object:?}/parameter/password"
-				do
-					delim="\$$(LC_ALL=C tr -cd '[:alpha:]' </dev/urandom | dd bs=1 count=4 2>/dev/null)$"
-				done
 psql_query() {
 	printf 'su -l %s -c %s\n' \
 		"$(quote "${postgres_user}")" \
 		"$(quote "psql postgres -wc $(quote "$1")")"
 }
 
-				raw_passwd=$(cat "${__object:?}/parameter/password"; printf .)
-				# shellcheck disable=SC2016
-				printf '%s%s%s' "${delim}" "${raw_passwd%?.}" "${delim}"
-			)
-		fi
+psql_set_password() {
+	# NOTE: Always make sure that the password does not end up in psql_history!
+	if test -s "${__object:?}/parameter/password"
+	then
+		cat <<-EOF
+		exec 3< "\${__object:?}/parameter/password"
+		su -l '${postgres_user}' -c 'psql -q postgres -w' <<'SQL'
+		\set HISTFILE /dev/null
+		\set pw \`cat <&3\`
+		ALTER ROLE "${rolename}" WITH PASSWORD :'pw';
+		SQL
+		exec 3<&-
+		EOF
+	else
+		psql_query "ALTER ROLE \"${rolename}\" WITH PASSWORD NULL;"
+	fi
+}
 
 role_properties_should() {
 	_props=
@@ -96,8 +98,8 @@ in
 		case ${state_is}
 		in
 			(absent)
-				psql_query "$(printf 'CREATE ROLE "%s" WITH %s PASSWORD %s;' \
-					"${rolename}" "$(role_properties_should)" "${quoted_password:-NULL}")"
+				psql_query "CREATE ROLE \"${rolename}\" WITH $(role_properties_should);"
+				psql_set_password
 				;;
 			(different*)
 				if expr "${state_is}" : 'different.*properties' >/dev/null
@@ -107,7 +109,7 @@ in
 
 				if expr "${state_is}" : 'different.*password' >/dev/null
 				then
-					psql_query "ALTER ROLE \"${rolename}\" WITH PASSWORD ${quoted_password:-NULL};"
+					psql_set_password
 				fi
 				;;
 			(*)
