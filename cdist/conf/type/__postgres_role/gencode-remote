@@ -54,7 +54,7 @@ fi
 psql_query() {
 	printf 'su -l %s -c %s\n' \
 		"$(quote "${postgres_user}")" \
-		"$(quote "psql postgres -wc $(quote "$1")")"
+		"$(quote "psql postgres -q -w -c $(quote "$1")")"
 }
 
 psql_set_password() {
@@ -63,7 +63,7 @@ psql_set_password() {
 	then
 		cat <<-EOF
 		exec 3< "\${__object:?}/parameter/password"
-		su -l '${postgres_user}' -c 'psql -q postgres -w' <<'SQL'
+		su -l '${postgres_user}' -c 'psql -q -w postgres' <<'SQL'
 		\set HISTFILE /dev/null
 		\set pw \`cat <&3\`
 		ALTER ROLE "${rolename}" WITH PASSWORD :'pw';

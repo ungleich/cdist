@@ -37,7 +37,7 @@ rolename=${__object_id:?}
 
 psql_query() {
 	su -l "${postgres_user}" -c "$(
-		printf "psql -F '\034' -R '\036' -wAc '%s'" \
+		printf "psql -q -F '\034' -R '\036' -wAc '%s'" \
 		"$(printf %s "$*" | sed "s/'/'\\\\''/g")"
 	)"
 }
@@ -46,7 +46,7 @@ password_check_login() (
 	PGPASSWORD=$(cat "${__object:?}/parameter/password"; printf .)
 	PGPASSWORD=${PGPASSWORD%?.}
 	export PGPASSWORD
-	psql -w -h localhost -U "${rolename}" template1 -c '\q' >/dev/null 2>&1
+	psql -q -w -h localhost -U "${rolename}" template1 -c '\q' >/dev/null 2>&1
 )
 
 role_properties=$(
