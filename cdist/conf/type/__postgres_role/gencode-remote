@@ -51,9 +51,6 @@ then
 	exit 0
 fi
 
-case ${state_should}
-in
-	(present)
 		if test -s "${__object:?}/parameter/password"
 		then
 			quoted_password=$(
@@ -64,6 +61,11 @@ in
 				do
 					delim="\$$(LC_ALL=C tr -cd '[:alpha:]' </dev/urandom | dd bs=1 count=4 2>/dev/null)$"
 				done
+psql_query() {
+	printf 'su -l %s -c %s\n' \
+		"$(quote "${postgres_user}")" \
+		"$(quote "psql postgres -wc $(quote "$1")")"
+}
 
 				raw_passwd=$(cat "${__object:?}/parameter/password"; printf .)
 				# shellcheck disable=SC2016
@@ -71,51 +73,52 @@ in
 			)
 		fi
 
-		booleans=
-		for boolean in login createdb createrole superuser
-		do
-			booleans="${booleans}${booleans:+ }$(
-				if test -f "${__object:?}/parameter/${boolean}"
-				then
-					echo "${boolean}"
-				else
-					echo "no${boolean}"
-				fi \
-				| tr '[:lower:]' '[:upper:]')"
-		done
+role_properties_should() {
+	_props=
+	for _prop in login createdb createrole superuser
+	do
+		_props="${_props}${_props:+ }$(
+			if test -f "${__object:?}/parameter/${_prop}"
+			then
+				echo "${_prop}"
+			else
+				echo "no${_prop}"
+			fi \
+			| tr '[:lower:]' '[:upper:]')"
+	done
+	printf '%s\n' "${_props}"
+	unset _prop _props
+}
 
+case ${state_should}
+in
+	(present)
 		case ${state_is}
 		in
 			(absent)
-				query=$(printf 'CREATE ROLE "%s" WITH %s PASSWORD %s;' \
-					"${rolename}" "${booleans}" "${quoted_password:-NULL}")
+				psql_query "$(printf 'CREATE ROLE "%s" WITH %s PASSWORD %s;' \
+					"${rolename}" "$(role_properties_should)" "${quoted_password:-NULL}")"
 				;;
 			(different*)
-				query="ALTER ROLE \"${rolename}\" WITH"
-
 				if expr "${state_is}" : 'different.*properties' >/dev/null
 				then
-					query="${query} ${booleans}"
-				fi
-				if expr "${state_is}" : 'different.*password' >/dev/null
-				then
-					query="${query} PASSWORD ${quoted_password:-NULL}"
+					psql_query "ALTER ROLE \"${rolename}\" WITH $(role_properties_should);"
 				fi
 
-				query="${query};"
+				if expr "${state_is}" : 'different.*password' >/dev/null
+				then
+					psql_query "ALTER ROLE \"${rolename}\" WITH PASSWORD ${quoted_password:-NULL};"
+				fi
 				;;
 			(*)
 				printf 'Invalid state reported by state explorer: %s\n' "${state_is}" >&2
 				exit 1
 				;;
 		esac
-
-		psql_cmd=$(printf 'psql postgres -wc %s' "$(quote "${query}")" | quote)
-		printf "su -l '%s' -c %s\\n" "${postgres_user}" "${psql_cmd}"
 		;;
 	(absent)
-		printf "su -l '%s' -c 'dropuser '\\\\'%s\\\\'\\n" \
-			"${postgres_user}" \
-			"$(quote "${rolename}")"
+		printf 'su -l %s -c %s\n' \
+			"$(quote "${postgres_user}")" \
+			"$(quote "dropuser $(quote "${rolename}")")"
 		;;
 esac
