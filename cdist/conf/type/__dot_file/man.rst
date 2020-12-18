@@ -25,6 +25,9 @@ user
 OPTIONAL PARAMETERS
 -------------------
 
+dirmode
+    forwarded to :strong:`__directory` type as mode
+
 mode
     forwarded to :strong:`__file` type
 
