@@ -2,10 +2,13 @@ Changelog
 ---------
 
 next:
-	* __package_pkgng_freebsd: Fix bootstrapping pkg (Dennis Camera)
+	* Type __package_pkgng_freebsd: Fix bootstrapping pkg (Dennis Camera)
 	* Core: Deal with deprecated imp in unit tests (Evil Ham)
 	* Type __iptables: Add IPv6 support (Matthias Stecher)
 	* Type __block: Fix escaping in here-doc (Matthias Stecher)
+	* Explorer os_version: Improve FreeBSD support (Evil Ham)
+	* New type: __apt_backports (Matthias Stecher)
+	* Type __dot_file: Add dirmode parameter (Mark Verboom)
 
 6.9.3: 2020-12-04
 	* pip install: Add cdist.scan to packages in setup.py (Dennis Camera)

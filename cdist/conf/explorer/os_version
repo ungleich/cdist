@@ -70,6 +70,11 @@ case "$("$__explorer/os")" in
    macosx)
       sw_vers -productVersion
    ;;
+   freebsd)
+      # Apparently uname -r is not a reliable way to get the patch level.
+      # See: https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=251743
+      freebsd-version
+   ;;
    *bsd|solaris)
       uname -r
    ;;
