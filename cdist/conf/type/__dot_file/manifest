@@ -19,6 +19,7 @@ set -eu
 user="$(cat "${__object}/parameter/user")"
 home="$(cat "${__object}/explorer/home")"
 primary_group="$(cat "${__object}/explorer/primary_group")"
+dirmode="$(cat "${__object}/parameter/dirmode")"
 
 # Create parent directory. Type __directory has flag 'parents', but it
 # will leave us with root-owned directory in user home, which is not
@@ -36,6 +37,7 @@ export CDIST_ORDER_DEPENDENCY
 for dir ; do
 	__directory "${home}/${dir}"   \
 	    --group "${primary_group}" \
+            --mode "${dirmode}" \
 	    --owner "${user}"
 done
 

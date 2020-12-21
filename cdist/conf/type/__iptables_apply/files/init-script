@@ -1,7 +1,4 @@
 #!/bin/sh
-# Nico Schottelius
-# Zürisee, Mon Sep  2 18:38:27 CEST 2013
-#
 ### BEGIN INIT INFO
 # Provides:          iptables
 # Required-Start:    $local_fs $remote_fs
@@ -14,34 +11,72 @@
 #                    and saves/restores previous status
 ### END INIT INFO
 
+# Originally written by:
+#   Nico Schottelius
+#   Zürisee, Mon Sep  2 18:38:27 CEST 2013
+#
+# 2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2020 Matthias Stecher (matthiasstecher at gmx.de)
+#
+# This file is distributed with cdist and licenced under the
+# GNU GPLv3+ WITHOUT ANY WARRANTY.
+
+
+# Read files and execute the content with the given commands
+#
+# Arguments:
+#  1:    Directory
+#  2..n: Commands which should be used to execute the file content
+gothrough() {
+    cd "$1" || return
+    shift
+
+    # iterate through all rules and continue if it's not a file
+    for rule in *; do
+        [ -f "$rule" ] || continue
+        echo "Appling iptables rule $rule ..."
+
+        # execute it with all commands specificed
+        ruleparam="$(cat "$rule")"
+        for cmd in "$@"; do
+            # Command and Rule should be split.
+            # shellcheck disable=SC2046
+            command $cmd $ruleparam
+        done
+    done
+}
+
+# Shortcut for iptables command to do IPv4 and v6
+# only applies to the "reset" target
+iptables() {
+    command iptables "$@"
+    command ip6tables "$@"
+}
 
 basedir=/etc/iptables.d
-status="${basedir}/.pre-start"
+status4="${basedir}/.pre-start"
+status6="${basedir}/.pre-start6"
 
 case $1 in
     start)
         # Save status
-        iptables-save > "$status"
+        iptables-save > "$status4"
+        ip6tables-save > "$status6"
 
         # Apply our ruleset
-        cd "$basedir" || exit
-        count="$(find . ! -name . -prune | wc -l)"
-
-        # Only do something if there are rules
-        if [ "$count" -ge 1 ]; then
-            for rule in *; do
-                echo "Applying iptables rule $rule ..."
-                # Rule should be split.
-                # shellcheck disable=SC2046
-                iptables $(cat "$rule")
-            done
-        fi
+        gothrough "$basedir"     iptables
+        #gothrough "$basedir/v4"  iptables  # conflicts with $basedir
+        gothrough "$basedir/v6"  ip6tables
+        gothrough "$basedir/all" iptables  ip6tables
     ;;
 
     stop)
         # Restore from status before, if there is something to restore
-        if [ -f "$status" ]; then
-            iptables-restore < "$status"
+        if [ -f "$status4" ]; then
+            iptables-restore < "$status4"
+        fi
+        if [ -f "$status6" ]; then
+            ip6tables-restore < "$status6"
         fi
     ;;
     restart)

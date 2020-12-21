@@ -1,0 +1,81 @@
+#!/bin/sh -e
+# __apt_backports/manifest
+#
+# 2020 Matthias Stecher (matthiasstecher at gmx.de)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Enables/disables backports repository. Utilises __apt_source for it.
+#
+
+
+# Get the distribution codename by /etc/os-release.
+#  is already executed in a subshell by string substitution
+#  lsb_release may not be given in all installations
+codename_os_release() {
+    # shellcheck disable=SC1090
+    . "$__global/explorer/os_release"
+    printf "%s" "$VERSION_CODENAME"
+}
+
+# detect backport distribution
+os="$(cat "$__global/explorer/os")"
+case "$os" in
+    debian)
+        dist="$( codename_os_release )"
+        components="main"
+        mirror="http://deb.debian.org/debian/"
+        ;;
+    devuan)
+        dist="$( codename_os_release )"
+        components="main"
+        mirror="http://deb.devuan.org/merged"
+        ;;
+    ubuntu)
+        dist="$( codename_os_release )"
+        components="main restricted universe multiverse"
+        mirror="http://archive.ubuntu.com/ubuntu"
+        ;;
+
+    *)
+        printf "Backports for %s are not supported!\n" "$os" >&2
+        exit 1
+        ;;
+esac
+
+# error if no codename given (e.g. on Debian unstable)
+if [ -z "$dist" ]; then
+    printf "No backports for unkown version of distribution %s!\n" "$os" >&2
+    exit 1
+fi
+
+
+# parameters
+state="$(cat "$__object/parameter/state")"
+
+# mirror already set for the os, only override user-values
+if [ -f "$__object/parameter/mirror" ]; then
+    mirror="$(cat "$__object/parameter/mirror")"
+fi
+
+
+# install the given backports repository
+__apt_source "${dist}-backports" \
+    --state "$state" \
+    --distribution "${dist}-backports" \
+    --component "$components" \
+    --uri "$mirror"
