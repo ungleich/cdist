@@ -79,6 +79,10 @@ BUGS
 - ``Include`` directives are ignored.
 - Config options are not added/removed to/from the config file if their value is
   the default value.
+- | The explorer will incorrectly report ``absent`` if OpenSSH internally
+    transforms one value to another (e.g. ``permitrootlogin prohibit-password``
+    is transformed to ``permitrootlogin without-password``).
+  | Workaround: Use the value that OpenSSH uses internally.
 
 
 AUTHORS
