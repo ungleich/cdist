@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.9.4: 2020-12-21
 	* Type __package_pkgng_freebsd: Fix bootstrapping pkg (Dennis Camera)
 	* Core: Deal with deprecated imp in unit tests (Evil Ham)
 	* Type __iptables: Add IPv6 support (Matthias Stecher)
