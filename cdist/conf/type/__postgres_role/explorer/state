@@ -95,13 +95,20 @@ then
 	)
 	passwd_stored=${passwd_stored%?.}
 
-	passwd_should=$(cat "${__object}/parameter/password"; printf .)
+	if test -f "${__object:?}/parameter/password"
+	then
+		passwd_should=$(cat "${__object:?}/parameter/password"; printf .)
+	fi
 	passwd_should=${passwd_should%?.}
 
-	if expr "${passwd_stored}" : 'SCRAM-SHA-256\$.*$' >/dev/null
+	if test -z "${passwd_stored}"
+	then
+		test -z "${passwd_should}" || state="${state:-different} password"
+	elif expr "${passwd_stored}" : 'SCRAM-SHA-256\$.*$' >/dev/null
 	then
 		# SCRAM-SHA-256 "encrypted" password
-		# NOTE: There is currently no easy way to check SCRAM passwords
+		# NOTE: There is currently no easy way to check SCRAM passwords without
+		#       logging in
 		password_check_login || state="${state:-different} password"
 	elif expr "${passwd_stored}" : 'md5[0-9a-f]\{32\}$' >/dev/null
 	then
