@@ -22,7 +22,7 @@ set -e
 if [ "${debug}" ]
 then
     set -x
-    cdist_params="${cdist_params} -d"
+    cdist_params="${cdist_params} -l 3"
 fi
 
 bootstrap_dir="${target_dir}"
