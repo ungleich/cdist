@@ -1,0 +1,60 @@
+#!/bin/sh -e
+# -*- mode: sh; indent-tabs-mode: t -*-
+#
+# 2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os=$("${__explorer:?}/os")
+
+case ${os}
+in
+	(openbsd)
+		postgres_user='_postgresql'
+		;;
+	(devuan)
+		postgres_user='postgres'
+		;;
+	(*)
+		echo "Unsupported OS: ${os}" >&2
+		exit 1
+		;;
+esac
+
+conf_name=${__object_id:?}
+
+if su - "${postgres_user}" -c "psql postgres -twAc 'SHOW ${conf_name}'" \
+	| cmp -s "${__object:?}/parameter/value" -
+then
+	echo present
+else
+	case $(su - "${postgres_user}" -c "psql postgres -tAwc \"SELECT source FROM pg_settings WHERE name = '${conf_name}'\"")
+	in
+		('')
+			# invalid configuration parameter
+			# (error message was already printed by SHOW command above.
+			#  Yes, it's a hack)
+			exit 1
+			;;
+		(default)
+			echo absent
+			;;
+		(*)
+			echo different
+			;;
+	esac
+fi

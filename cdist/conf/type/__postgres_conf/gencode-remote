@@ -1,7 +1,7 @@
 #!/bin/sh -e
 # -*- mode: sh; indent-tabs-mode: t -*-
 #
-# 2019 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2019-2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 # 2020 Beni Ruef (bernhard.ruef at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
@@ -21,71 +21,92 @@
 #
 
 os=$(cat "${__global:?}/explorer/os")
+state_is=$(cat "${__object:?}/explorer/state")
 state_should=$(cat "${__object:?}/parameter/state")
 
-if [ "${state_should}" != 'present' ] && [ "${state_should}" != 'absent' ]
+conf_name=${__object_id:?}
+
+if test "${state_is}" = "${state_should}"
 then
-	echo "Invalid state '${state_should}'." \
-	     'Only "present" and "absent" are acceptable' >&2
-	exit 1
+	exit 0
 fi
 
-if [ "${state_should}" = 'present' ] && [ ! -f "${__object}/parameter/value" ]
-then
-	echo 'Missing required parameter "value"' >&2
-	exit 1
-fi
-
-# Parameters
-conf_name="${__object_id:?}"
-if [ -f "${__object}/parameter/value" ]
-then
-	conf_value=$(cat "${__object}/parameter/value")
-fi
-
-if [ "${state_should}" = 'present' ]
-then
-	set_command="ALTER SYSTEM SET ${conf_name} = ${conf_value}"
-else
-	set_command="ALTER SYSTEM SET ${conf_name} = DEFAULT"
-fi
-
-case $os
-in
-	openbsd|devuan)
-		case $os
-		in
-			openbsd)
-				postgres_user='_postgresql'
-				restart_command='/etc/rc.d/postgresql restart'
-				;;
-			devuan)
-				postgres_user='postgres'
-				restart_command='/etc/init.d/postgresql restart'
-				;;
-		esac
-		# needs two separate psql commands because ALTER SYSTEM
-		# cannot run inside a transaction block
-		cat <<-EOF
-		su - ${postgres_user} -c "psql postgres -qwc \
-			\"${set_command}\""
-		su - ${postgres_user} -c "psql postgres -twAc \
-			\"SELECT pg_reload_conf()\""
-		EOF
-		# check success (makes only sense if setting to a non-default value)
-		# and restart server if needed
-		if [ "${state_should}" = 'present' ]
+quote() {
+	for _arg
+	do
+		shift
+		if test -n "$(printf '%s' "${_arg}" | tr -d -c '\t\n \042-\047\050-\052\073-\077\133\\`|~' | tr -c '' '.')"
 		then
-			cat <<-EOF
-			if [ \$(su - ${postgres_user} -c "psql postgres -twAc \"SHOW ${conf_name}\"") != '${conf_value}' ]
-			then
-				${restart_command}
-			fi
-			EOF
+			# needs quoting
+			set -- "$@" "'$(printf '%s' "${_arg}" | sed -e "s/'/'\\\\''/g")'"
+		else
+			set -- "$@" "${_arg}"
 		fi
+	done
+	unset _arg
+
+	# NOTE: Use printf because POSIX echo interprets escape sequences
+	printf '%s' "$*"
+}
+
+case ${os}
+in
+	(openbsd)
+		postgres_user='_postgresql'
+		restart_command='/etc/rc.d/postgresql restart'
 		;;
-	*)
+	(devuan)
+		postgres_user='postgres'
+		restart_command='/etc/init.d/postgresql restart'
+		;;
+	(*)
 		echo "Unsupported OS: ${os}" >&2
 		exit 1
 		;;
 esac
+
+
+psql_cmd() {
+	printf 'su - %s -c %s\n' "$(quote "${postgres_user}")" "$(quote "$(quote psql "$@")")"
+}
+
+case ${state_should}
+in
+	(present)
+		test -s "${__object:?}/parameter/value" || {
+			echo 'Missing required parameter --value' >&2
+			exit 1
+		}
+
+		cat <<-EOF
+		exec 3< "\${__object:?}/parameter/value"
+		$(psql_cmd postgres -tAw) <<'SQL'
+		\\set conf_value \`cat <&3\`
+		ALTER SYSTEM SET ${conf_name} = :'conf_value';
+		SELECT pg_reload_conf();
+		SQL
+		exec 3<&-
+		EOF
+		;;
+	(absent)
+		psql_cmd postgres -qwc "ALTER SYSTEM SET ${conf_name} TO DEFAULT"
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		printf 'Only "present" and "absent" are acceptable.\n' >&2
+		exit 1
+		;;
+esac
+
+# check success (makes only sense if setting to a non-default value)
+# and restart server if needed
+if test "${state_should}" = 'present'
+then
+	cat <<-EOF
+
+	$(psql_cmd postgres -twAc "SHOW ${conf_name}") \\
+	| cmp -s "\${__object:?}/parameter/value" - || {
+		${restart_command}
+	}
+	EOF
+fi
