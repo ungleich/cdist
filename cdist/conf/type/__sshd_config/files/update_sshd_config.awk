@@ -89,7 +89,7 @@ function strdelim(s) { return strdelim_internal(s, 1) }
 function strdelimw(s) { return strdelim_internal(s, 0) }
 
 function singleton_option(opt) {
-	return tolower(opt) !~ /^(acceptenv|allowgroups|allowusers|authenticationmethods|authorizedkeysfile|denygroups|denyusers|hostcertificate|hostkey|listenaddress|logverbose|permitlisten|permitopen|port|setenv|subsystem)$/
+	return tolower(opt) !~ /^(acceptenv|allowgroups|allowusers|denygroups|denyusers|hostcertificate|hostkey|listenaddress|logverbose|permitlisten|permitopen|port|setenv|subsystem)$/
 }
 
 function print_update() {

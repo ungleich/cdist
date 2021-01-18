@@ -91,7 +91,8 @@ awk $(drop_awk_comments "${__type:?}/files/update_sshd_config.awk") \\
 
 cmp -s $(quote "${sshd_config_file}") $(quote "${sshd_config_file}.tmp") || {
 	sshd -t -f $(quote "${sshd_config_file}.tmp") \\
-	&& cat $(quote "${sshd_config_file}.tmp") >$(quote "${sshd_config_file}")
+	&& cat $(quote "${sshd_config_file}.tmp") >$(quote "${sshd_config_file}") \\
+	|| exit  # stop if sshd_config file check fails
 }
 rm -f $(quote "${sshd_config_file}.tmp")
 EOF
