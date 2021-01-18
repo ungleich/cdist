@@ -139,7 +139,6 @@ class Scanner(object):
 
         """
 
-
     def start(self):
         self.process = Process(target=self.scan)
         self.process.start()
