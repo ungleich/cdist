@@ -42,7 +42,8 @@ if su - "${postgres_user}" -c "psql postgres -twAc 'SHOW ${conf_name}'" \
 then
 	echo present
 else
-	case $(su - "${postgres_user}" -c "psql postgres -tAwc \"SELECT CASE WHEN source = 'default' OR setting = boot_val THEN 'default' ELSE source END FROM pg_settings WHERE name = '${conf_name}'\"")
+	# NOTE: SHOW/SET are case-insentitive, so this command should also be.
+	case $(su - "${postgres_user}" -c "psql postgres -tAwc \"SELECT CASE WHEN source = 'default' OR setting = boot_val THEN 'default' ELSE source END FROM pg_settings WHERE lower(name) = lower('${conf_name}')\"")
 	in
 		('')
 			# invalid configuration parameter

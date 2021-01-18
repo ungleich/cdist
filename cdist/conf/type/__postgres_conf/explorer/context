@@ -39,4 +39,5 @@ esac
 
 conf_name=${__object_id:?}
 
-su - "${postgres_user}" -c "psql postgres -twAc \"SELECT context FROM pg_settings WHERE name = '${conf_name}'\""
+# NOTE: SHOW/SET are case-insentitive, so this command should also be.
+su - "${postgres_user}" -c "psql postgres -twAc \"SELECT context FROM pg_settings WHERE lower(name) = lower('${conf_name}')\""
