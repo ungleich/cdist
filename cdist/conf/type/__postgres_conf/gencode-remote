@@ -53,11 +53,9 @@ case ${os}
 in
 	(openbsd)
 		postgres_user='_postgresql'
-		restart_command='/etc/rc.d/postgresql restart'
 		;;
 	(devuan)
 		postgres_user='postgres'
-		restart_command='/etc/init.d/postgresql restart'
 		;;
 	(*)
 		echo "Unsupported OS: ${os}" >&2
@@ -103,6 +101,37 @@ cat <<EOF
 
 if test 't' = "\$($(psql_cmd postgres -twAc "SELECT pending_restart FROM pg_settings WHERE lower(name) = lower('${conf_name}')"))"
 then
-	${restart_command}
+	$(
+		init=$(cat "${__global:?}/explorer/init")
+		case ${init}
+		in
+			(systemd)
+				echo 'systemctl restart postgresql.service'
+				;;
+			(*openrc*)
+				echo 'rc-service postgresql restart'
+				;;
+			(sysvinit)
+				echo '/etc/init.d/postgresql restart'
+				;;
+			(init)
+				case $(cat "${__global:?}/explorer/kernel_name")
+				in
+					(FreeBSD)
+						echo 'service postgresql restart'
+						;;
+					(OpenBSD|NetBSD)
+						echo '/etc/rc.d/postgresql restart'
+						;;
+					(*)
+						echo "Unsupported operating system. Don't know how to restart services." >&2
+						exit 1
+				esac
+				;;
+			(*)
+				printf "Don't know how to restart services with your init (%s)\n" "${init}" >&2
+				exit 1
+		esac
+	)
 fi
 EOF
