@@ -98,15 +98,11 @@ in
 		;;
 esac
 
-# check success (makes only sense if setting to a non-default value)
-# and restart server if needed
-if test "${state_should}" = 'present'
-then
-	cat <<-EOF
+# Restart PostgreSQL server if required to apply new configuration value
+cat <<EOF
 
-	$(psql_cmd postgres -twAc "SHOW ${conf_name}") \\
-	| cmp -s "\${__object:?}/parameter/value" - || {
-		${restart_command}
-	}
-	EOF
+if test 't' = "\$($(psql_cmd postgres -twAc "SELECT pending_restart FROM pg_settings WHERE lower(name) = lower('${conf_name}')"))"
+then
+	${restart_command}
 fi
+EOF
