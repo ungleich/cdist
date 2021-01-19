@@ -51,15 +51,14 @@ quote() {
 
 case ${os}
 in
+	(netbsd)
+		postgres_user='pgsql'
+		;;
 	(openbsd)
 		postgres_user='_postgresql'
 		;;
-	(devuan)
-		postgres_user='postgres'
-		;;
 	(*)
-		echo "Unsupported OS: ${os}" >&2
-		exit 1
+		postgres_user='postgres'
 		;;
 esac
 
