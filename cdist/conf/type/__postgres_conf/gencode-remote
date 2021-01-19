@@ -78,7 +78,7 @@ in
 
 		cat <<-EOF
 		exec 3< "\${__object:?}/parameter/value"
-		$(psql_cmd postgres -tAw -v ON_ERROR_STOP=on) <<'SQL'
+		$(psql_cmd postgres -tAwq -o /dev/null -v ON_ERROR_STOP=on) <<'SQL'
 		\\set conf_value \`cat <&3\`
 		ALTER SYSTEM SET ${conf_name} = :'conf_value';
 		SELECT pg_reload_conf();
