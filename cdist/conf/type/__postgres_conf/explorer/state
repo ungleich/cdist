@@ -37,6 +37,11 @@ esac
 
 conf_name=${__object_id:?}
 
+su - "${postgres_user}" -c 'psql postgres -c "SELECT 1"' >/dev/null || {
+	echo 'Connection to PostgreSQL server failed' >&2
+	exit 1
+}
+
 if su - "${postgres_user}" -c "psql postgres -twAc 'SHOW ${conf_name}'" \
 	| cmp -s "${__object:?}/parameter/value" -
 then
