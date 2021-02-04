@@ -56,6 +56,19 @@ fi
 
 case "$state_should" in
     present)
+        if [ -f "$__object/parameter/extra" ]
+        then
+            while read extra
+            do
+                if [ "$extras" ]; then
+                    extras="$extras,$extra"
+                else
+                    extras="$extra"
+                fi
+            done < "$__object/parameter/extra"
+            name="${name}[${extras}]"
+        fi
+
         if [ "$runas" ]
         then
             echo "su -c '$pip install -q $name' $runas"

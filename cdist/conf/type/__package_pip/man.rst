@@ -22,6 +22,11 @@ OPTIONAL PARAMETERS
 name
     If supplied, use the name and not the object id as the package name.
 
+extra
+    Extra optional dependencies which should be installed along the selected
+    package. Can be specified multiple times. Will only be applied if the
+    package actually will be installed, but will not explicitly checked.
+
 pip
     Instead of using pip from PATH, use the specific pip path.
 
@@ -45,6 +50,14 @@ EXAMPLES
 
     # Use pip in a virtualenv located at /foo/shinken_virtualenv as user foo
     __package_pip pyro --state present --pip /foo/shinken_virtualenv/bin/pip --runas foo
+
+    # Install package with optional dependencies
+    __package_pip mautrix-telegram --extra speedups --extra webp_convert --extra hq_thumbnails
+    # or do a little cheating
+    __package_pip mautrix-telegram --extra speedups,webp_convert,hq_thumbnails
+
+    # or take all extras
+    __package_pip mautrix-telegram --extra all
 
 
 SEE ALSO
