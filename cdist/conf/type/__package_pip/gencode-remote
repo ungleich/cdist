@@ -58,7 +58,7 @@ case "$state_should" in
     present)
         if [ -f "$__object/parameter/extra" ]
         then
-            while read extra
+            while read -r extra
             do
                 if [ "$extras" ]; then
                     extras="$extras,$extra"
