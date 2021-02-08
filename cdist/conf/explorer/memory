@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2014 Daniel Heule  (hda at sfs.biz)
 # 2014 Thomas Oettli (otho at sfs.biz)
 # Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
+# 2020 Dennis Camera <dennis.camera at ssrq-sds-fds.ch>
 #
 # This file is part of cdist.
 #
@@ -19,24 +20,74 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
+# Returns the amount of memory physically installed in the system, or if that
+# cannot be determined the amount available to the operating system kernel,
+# in kibibytes (kiB).
 
-# FIXME: other system types (not linux ...)
+str2bytes() {
+	awk -F' ' '
+	$2 ==   "B" || !$2 { print $1 }
+	$2 ==  "kB" { print $1 * 1000 }
+	$2 ==  "MB" { print $1 * 1000 * 1000 }
+	$2 ==  "GB" { print $1 * 1000 * 1000 * 1000 }
+	$2 ==  "TB" { print $1 * 1000 * 1000 * 1000 * 1000 }
+	$2 == "kiB" { print $1 * 1024 }
+	$2 == "MiB" { print $1 * 1024 * 1024 }
+	$2 == "GiB" { print $1 * 1024 * 1024 * 1024 }
+	$2 == "TiB" { print $1 * 1024 * 1024 * 1024 * 1024 }'
+}
 
-os=$("$__explorer/os")
-case "$os" in
-    "macosx")
-        echo "$(sysctl -n hw.memsize)/1024" | bc
-    ;;
+bytes2kib() {
+	set -- "$(cat)"
+	test "$1" -gt 0 && echo $(($1 / 1024))
+}
 
-    *"bsd")
-        PATH=$(getconf PATH)
-        echo "$(sysctl -n hw.physmem) / 1048576" | bc
-    ;;
 
-    *)
-    if [ -r /proc/meminfo ]; then
-        grep "MemTotal:" /proc/meminfo | awk '{print $2}'
-    fi
-    ;;
+case $(uname -s)
+in
+	(Darwin)
+		sysctl -n hw.memsize | bytes2kib
+		;;
+	(FreeBSD)
+		sysctl -n hw.realmem | bytes2kib
+		;;
+	(NetBSD|OpenBSD)
+		# NOTE: This reports "usable" memory, not physically installed memory.
+		command -p sysctl -n hw.physmem | bytes2kib
+		;;
+	(SunOS)
+		# Make sure that awk from xpg4 is used for the scripts to work
+		export PATH="/usr/xpg4/bin:${PATH}"
+		prtconf \
+		| awk -F ': ' '
+		  $1 == "Memory size" { sub(/Megabytes/, "MiB", $2); print $2 }
+		  /^$/ { exit }' \
+		| str2bytes \
+		| bytes2kib
+		;;
+	(Linux)
+		if test -d /sys/devices/system/memory
+		then
+			# Use memory blocks if the architecture (e.g. x86, PPC64, s390)
+			# supports them (they denote physical memory)
+			num_mem_blocks=$(cat /sys/devices/system/memory/memory[0-9]*/state | grep -cxF online)
+			mem_block_size=$(cat /sys/devices/system/memory/block_size_bytes)
+
+			echo $((num_mem_blocks * 0x$mem_block_size)) | bytes2kib && exit
+		fi
+		if test -r /proc/meminfo
+		then
+			# Fall back to meminfo file on other architectures (e.g. ARM, MIPS,
+			# PowerPC)
+			# NOTE: This is "usable" memory, not physically installed memory.
+			awk -F ': +' '$1 == "MemTotal" { sub(/B$/, "iB", $2); print $2 }' /proc/meminfo \
+			| str2bytes \
+			| bytes2kib
+		fi
+		;;
+	(*)
+		printf "Your kernel (%s) is currently not supported by the memory explorer\n" "$(uname -s)" >&2
+		printf "Please contribute an implementation for it if you can.\n" >&2
+		exit 1
+		;;
 esac
