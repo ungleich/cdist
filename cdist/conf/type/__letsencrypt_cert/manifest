@@ -206,7 +206,8 @@ EOF
 
 		hook_contents_tail="$(cat <<EOF
 if [ -n "\${APPLY_HOOK}" ]; then
-$(sed -e 's/^/	/' "${hook_source}")
+# Messing with indentation can eff up the users' scripts, let's not
+$(cat "${hook_source}")
 fi
 EOF
 )"
