@@ -206,7 +206,7 @@ EOF
 
 		hook_contents_tail="$(cat <<EOF
 if [ -n "\${APPLY_HOOK}" ]; then
-$(sed -e 's/^/	//' "${hook_source}")
+$(sed -e 's/^/	/' "${hook_source}")
 fi
 EOF
 )"
