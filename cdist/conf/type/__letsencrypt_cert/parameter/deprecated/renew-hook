@@ -1,0 +1,2 @@
+This parameter has been deprecated in favour of --deploy-hook.
+See: https://code.ungleich.ch/ungleich-public/cdist/-/issues/853

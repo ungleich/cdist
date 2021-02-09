@@ -1,18 +1,20 @@
 #!/bin/sh
 
 certbot_fullpath="$(cat "${__object:?}/explorer/certbot-path")"
+state=$(cat "${__object}/parameter/state")
+os="$(cat "${__global:?}/explorer/os")"
 
 if [ -z "${certbot_fullpath}" ]; then
-	os="$(cat "${__global:?}/explorer/os")"
 	os_version="$(cat "${__global}/explorer/os_version")"
-
+	# Use this, very common value, as a default. It is OS-dependent
+	certbot_fullpath="/usr/bin/certbot"
 	case "$os" in
-        archlinux)
-            __package certbot
-            ;;
-        alpine)
-            __package certbot
-            ;;
+		archlinux)
+			__package certbot
+		;;
+		alpine)
+			__package certbot
+		;;
 		debian)
 			case "$os_version" in
 				8*)
@@ -48,9 +50,7 @@ if [ -z "${certbot_fullpath}" ]; then
 					exit 1
 				;;
 			esac
-
-			certbot_fullpath=/usr/bin/certbot
-			;;
+		;;
 		devuan)
 			case "$os_version" in
 				jessie)
@@ -83,17 +83,14 @@ if [ -z "${certbot_fullpath}" ]; then
 					exit 1
 				;;
 			esac
-
-			certbot_fullpath=/usr/bin/certbot
 		;;
 		freebsd)
-			__package py27-certbot
-
-			certbot_fullpath=/usr/local/bin/certbot
+			__package py37-certbot
+			certbot_fullpath="/usr/local/bin/certbot"
 		;;
 		ubuntu)
-            __package certbot
-            ;;
+			__package certbot
+		;;
 		*)
 			echo "Unsupported os: $os" >&2
 			exit 1
@@ -101,18 +98,130 @@ if [ -z "${certbot_fullpath}" ]; then
 	esac
 fi
 
-if [ -f "${__object}/parameter/automatic-renewal" ]; then
-	renew_hook_param="${__object}/parameter/renew-hook"
-	renew_hook=""
-	if [ -f "${renew_hook_param}" ]; then
-		while read -r hook; do
-			renew_hook="${renew_hook} --renew-hook \"${hook}\""
-		done < "${renew_hook_param}"
-	fi
+# Other OS-dependent values that we want to set every time
+LE_DIR="/etc/letsencrypt"
+certbot_cronjob_state="absent"
+case "$os" in
+	archlinux|alpine)
+		certbot_cronjob_state="present"
+	;;
+	freebsd)
+		LE_DIR="/usr/local/etc/letsencrypt"
+		# FreeBSD uses periodic(8) instead of crontabs for this
+		__line "periodic.conf_weekly_certbot" \
+			--file "/etc/periodic.conf" \
+			--regex "^(#[[:space:]]*)?weekly_certbot_enable=.*" \
+			--state "replace" \
+			--line 'weekly_certbot_enable="YES"'
+	;;
+	*)
+	;;
+esac
 
-	__cron letsencrypt-certbot  \
-		--user root \
-		--command "${certbot_fullpath} renew -q ${renew_hook}" \
-		--hour 0 \
-		--minute 47
+# This is only necessary in certain OS
+__cron letsencrypt-certbot \
+	--user root \
+	--command "${certbot_fullpath} renew -q" \
+	--hour 0 \
+	--minute 47 \
+	--state "${certbot_cronjob_state}"
+
+# Ensure hook directories
+HOOKS_DIR="${LE_DIR}/renewal-hooks"
+__directory "${LE_DIR}" --mode 0755
+require="__directory/${LE_DIR}" __directory "${HOOKS_DIR}" --mode 0755
+
+if [ -f "${__object}/parameter/domain" ]; then
+	domains="$(sort "${__object}/parameter/domain")"
+else
+	domains="${__object_id}"
 fi
+
+# Install hooks as needed
+for hook in deploy pre post; do
+	# Using something unique and specific to this object
+	hook_file="${HOOKS_DIR}/${hook}/${__object_id}.cdist.sh"
+	# Reasonable defaults
+	hook_source="${__object}/parameter/${hook}-hook"
+	hook_state="absent"
+	hook_contents_head="#!/bin/sh -e"
+	hook_contents_logic=""
+	hook_contents_tail=""
+
+	# Backwards compatibility
+	# Remove this when renew-hook is removed
+	# Falling back to renew-hook if deploy-hook is not passed
+	if [ "${hook}" = "deploy" ] && [ ! -f "${hook_source}" ]; then
+		hook_source="${__object}/parameter/renew-hook"
+	fi
+	if [ "${state}" = "present" ] && \
+		[ -f "${hook_source}" ]; then
+		# This hook is to be installed, let's generate it with some
+		# safety boilerplate
+		# Since certbot runs all hooks for all renewal processes
+		# (at each state for deploy, pre, post), it is up to us to
+		# differentiate whether or not the hook must run
+		hook_state="present"
+		hook_contents_head="$(cat <<EOF
+#!/bin/sh -e
+#
+# Managed remotely with https://cdi.st
+#
+# Domains for which this hook is supposed to apply
+lineage="${LE_DIR}/live/${__object_id}"
+domains="\$(cat <<eof
+${domains}
+eof
+)"
+EOF
+)"
+		case "${hook}" in
+			pre|post)
+				# Certbot is kind of terrible, we have
+				# no way of knowing what domain/lineage the
+				# hook is running for
+				hook_contents_logic="$(cat <<EOF
+# pre/post-hooks apply always due to a certbot limitation
+APPLY_HOOK="YES"
+EOF
+)"
+			;;
+			deploy)
+				hook_contents_logic="$(cat <<EOF
+# certbot defines these:
+# RENEWED_DOMAINS: DOMAIN1,DOMAIN2
+# RENEWED_LINEAGE: /etc/letsencrypt/live/__object_id
+# It feels more stable to use RENEWED_LINEAGE
+if [ "\${lineage}" = "\${RENEWED_LINEAGE}" ]; then
+	APPLY_HOOK="YES"
+fi
+EOF
+)"
+			;;
+			*)
+				echo "Unknown hook '${hook}'" >> /dev/stderr
+				exit 1
+			;;
+		esac
+
+		hook_contents_tail="$(cat <<EOF
+if [ -n "\${APPLY_HOOK}" ]; then
+$(sed -e 's/^/	//' "${hook_source}")
+fi
+EOF
+)"
+	fi
+	# Ensure hook directory exists
+	require="__directory/${HOOKS_DIR}" __directory "${HOOKS_DIR}/${hook}" \
+		--mode 0755
+	require="__directory/${HOOKS_DIR}/${hook}" __file "${hook_file}" \
+		--mode 0555 \
+		--source '-' \
+		--state "${hook_state}" <<EOF
+${hook_contents_head}
+
+${hook_contents_logic}
+
+${hook_contents_tail}
+EOF
+done
