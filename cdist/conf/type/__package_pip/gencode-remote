@@ -2,6 +2,7 @@
 #
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
 # 2016 Darko Poljak (darko.poljak at gmail.com)
+# 2021 Matthias Stecher (matthiasstecher at gmx.de)
 #
 # This file is part of cdist.
 #
@@ -58,14 +59,17 @@ case "$state_should" in
     present)
         if [ -f "$__object/parameter/extra" ]
         then
-            while read -r extra
-            do
-                if [ "$extras" ]; then
-                    extras="$extras,$extra"
-                else
-                    extras="$extra"
-                fi
-            done < "$__object/parameter/extra"
+            mkdir "$__object/files"
+            # sort and generalize all extras
+            sed 's/,/\n/g' "$__object/parameter/extra" | sort > "$__object/files/extras-params"
+            sort "$__object/explorer/extras" > "$__object/files/extras-explorer"
+
+            # assemble extras
+            # all extras are passed to pip in a comma-separated list
+            extras="$(comm -23 \
+                "$__object/files/extras-params" "$__object/files/extras-explorer" \
+                | sed ':a; $!N; s/\n/,/; ta'  # loops through all input lines and add commas between them
+            )"
             name="${name}[${extras}]"
         fi
 
