@@ -34,7 +34,7 @@ then
     pip_freeze="$__object/files/pip-freeze.tmp"
     pip3 freeze > "$pip_freeze"
 
-    for extra in $(cat "$__object/parameter/extra" | tr ',' '\n')
+    for extra in $(tr ',' '\n' < "$__object/parameter/extra")
     do
         # create a grep BRE pattern to search all packages
         grep_pattern="$(
