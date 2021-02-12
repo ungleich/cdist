@@ -34,7 +34,14 @@ then
     pip_freeze="$__object/files/pip-freeze.tmp"
     pip3 freeze > "$pip_freeze"
 
-    for extra in $(tr ',' '\n' < "$__object/parameter/extra")
+    # If all is set, it searches all available extras to separatly check them.
+    # It would work with just 'all' (cause dependencies are given), but will
+    # not update if one extra is already present. Side effect is that it will
+    # not use [all] but instead name all extras seperatly.
+    for extra in $(if grep -qFx all "$__object/parameter/extra";
+        then awk -F': ' '$1 == "Provides-Extra" && $2 != "all"{print $2}' "$distinfo_dir/METADATA";
+        else tr ',' '\n' < "$__object/parameter/extra";
+        fi)
     do
         # create a grep BRE pattern to search all packages
         grep_pattern="$(
