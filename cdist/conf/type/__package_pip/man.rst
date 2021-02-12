@@ -24,8 +24,14 @@ name
 
 extra
     Extra optional dependencies which should be installed along the selected
-    package. Can be specified multiple times. Will only be applied if the
-    package actually will be installed, but will not explicitly checked.
+    package. Can be specified multiple times. Multiple extra optional
+    dependencies can also be specified in a comma-separated list to provide
+    a more pip-natvie style.
+
+    Extra optional dependencies will be installed even when the base package
+    is already installed. Notice that the type will not remove installed extras
+    that are not explicitly named for the type because pip does not offer a
+    management for orphaned packages and they may be used by other packages.
 
 pip
     Instead of using pip from PATH, use the specific pip path.
@@ -53,8 +59,8 @@ EXAMPLES
 
     # Install package with optional dependencies
     __package_pip mautrix-telegram --extra speedups --extra webp_convert --extra hq_thumbnails
-    # or do a little cheating
-    __package_pip mautrix-telegram --extra speedups,webp_convert,hq_thumbnails
+    # the extras can also be specified comma-separated
+    __package_pip mautrix-telegram --extra speedups,webp_convert,hq_thumbnails --extra postgres
 
     # or take all extras
     __package_pip mautrix-telegram --extra all
@@ -67,12 +73,13 @@ SEE ALSO
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
+| Nico Schottelius <nico-cdist--@--schottelius.org>
+| Matthias Stecher <matthiasstecher--@--gmx.de>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Nico Schottelius. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2012 Nico Schottelius, 2021 Matthias Stecher. You can
+redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either
+version 3 of the License, or (at your option) any later version.

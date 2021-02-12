@@ -35,15 +35,16 @@ then
     pip3 freeze > "$pip_freeze"
 
     # If all is set, it searches all available extras to separatly check them.
-    # It would work with just 'all' (cause dependencies are given), but will
-    # not update if one extra is already present. Side effect is that it will
-    # not use [all] but instead name all extras seperatly.
+    # It would work with just 'all' (cause dependencies are specified for
+    # 'all'), but will not update if one extra is already present. Side effect
+    # is that it will not use [all] but instead name all extras seperatly.
     for extra in $(if grep -qFx all "$__object/parameter/extra";
         then awk -F': ' '$1 == "Provides-Extra" && $2 != "all"{print $2}' "$distinfo_dir/METADATA";
         else tr ',' '\n' < "$__object/parameter/extra";
         fi)
     do
         # create a grep BRE pattern to search all packages
+        # maybe a file full of patterns for -F could be written
         grep_pattern="$(
             awk -F'(: | ; )' -v check="$extra" '
                 $1 == "Requires-Dist" {
