@@ -57,7 +57,8 @@ then
 
         # echo the extra if no packages where found for it
         # if there is no pattern, we don't need to search ;-)
-        if [ "$grep_pattern" ] && ! grep -q "$grep_pattern" "$pip_freeze"
+        # pip matches packages case-insensetive, we need to do that, too
+        if [ "$grep_pattern" ] && ! grep -qi "$grep_pattern" "$pip_freeze"
         then
             echo "$extra"
         fi
