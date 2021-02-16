@@ -1,0 +1,64 @@
+#!/bin/sh -e
+# -*- mode: sh; indent-tabs-mode: t -*-
+#
+# 2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+os=$("${__explorer:?}/os")
+
+case ${os}
+in
+	(alpine)
+		echo 'postgres'
+		;;
+	(centos|rhel|scientific)
+		echo 'postgres'
+		;;
+	(debian|devuan|ubuntu)
+		echo 'postgres'
+		;;
+	(freebsd)
+		test -x /usr/local/etc/rc.d/postgresql || {
+			printf 'could not find postgresql rc script./n' >&2
+			exit 1
+		}
+		pg_status=$(/usr/local/etc/rc.d/postgresql onestatus) || {
+			printf 'postgresql daemon is not running.\n' >&2
+			exit 1
+		}
+		pg_pid=$(printf '%s\n' "${pg_status}" \
+			| sed -n 's/^pg_ctl:.*(PID: *\([0-9]*\))$/\1/p')
+
+		# PostgreSQL < 9.6: pgsql
+		# PostgreSQL >= 9.6: postgres
+		ps -o user -p "${pg_pid}" | sed -n '2p'
+		;;
+	(netbsd)
+		echo 'pgsql'
+		;;
+	(openbsd)
+		echo '_postgresql'
+		;;
+	(suse)
+		echo 'postgres'
+		;;
+	(*)
+		echo "Unsupported OS: ${os}" >&2
+		exit 1
+		;;
+esac

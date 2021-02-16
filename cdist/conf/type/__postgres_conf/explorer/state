@@ -19,21 +19,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os=$("${__explorer:?}/os")
-
-case ${os}
-in
-	(openbsd)
-		postgres_user='_postgresql'
-		;;
-	(devuan)
-		postgres_user='postgres'
-		;;
-	(*)
-		echo "Unsupported OS: ${os}" >&2
-		exit 1
-		;;
-esac
+postgres_user=$("${__type_explorer:?}/postgres_user")
 
 conf_name=${__object_id:?}
 

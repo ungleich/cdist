@@ -20,9 +20,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os=$(cat "${__global:?}/explorer/os")
 state_is=$(cat "${__object:?}/explorer/state")
 state_should=$(cat "${__object:?}/parameter/state")
+postgres_user=$(cat "${__object:?}/explorer/postgres_user")
 
 conf_name=${__object_id:?}
 
@@ -48,19 +48,6 @@ quote() {
 	# NOTE: Use printf because POSIX echo interprets escape sequences
 	printf '%s' "$*"
 }
-
-case ${os}
-in
-	(netbsd)
-		postgres_user='pgsql'
-		;;
-	(openbsd)
-		postgres_user='_postgresql'
-		;;
-	(*)
-		postgres_user='postgres'
-		;;
-esac
 
 
 psql_cmd() {
@@ -117,7 +104,7 @@ then
 				case $(cat "${__global:?}/explorer/kernel_name")
 				in
 					(FreeBSD)
-						echo 'service postgresql restart'
+						echo '/usr/local/etc/rc.d/postgresql restart'
 						;;
 					(OpenBSD|NetBSD)
 						echo '/etc/rc.d/postgresql restart'
