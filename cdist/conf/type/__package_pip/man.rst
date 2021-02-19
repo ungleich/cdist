@@ -24,9 +24,8 @@ name
 
 extra
     Extra optional dependencies which should be installed along the selected
-    package. Can be specified multiple times. Multiple extra optional
-    dependencies can also be specified in a comma-separated list to provide
-    a more pip-natvie style.
+    package. Can be specified multiple times. Multiple extras can be passed
+    in one `--extra` as a comma-separated list.
 
     Extra optional dependencies will be installed even when the base package
     is already installed. Notice that the type will not remove installed extras
