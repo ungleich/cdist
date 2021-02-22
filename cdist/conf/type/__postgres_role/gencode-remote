@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -11,55 +12,117 @@
 #
 # cdist is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-case "$(cat "${__global}/explorer/os")"
+quote() {
+	if test $# -gt 0
+	then
+		printf '%s' "$*"
+	else
+		cat -
+	fi | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
+}
+
+case $(cat "${__global:?}/explorer/os")
 in
-    netbsd)
-        postgres_user='pgsql'
-        ;;
-    openbsd)
-        postgres_user='_postgresql'
-        ;;
-    *)
-        postgres_user='postgres'
-        ;;
+	(netbsd)
+		postgres_user='pgsql'
+		;;
+	(openbsd)
+		postgres_user='_postgresql'
+		;;
+	(*)
+		postgres_user='postgres'
+		;;
 esac
 
 
-name="$__object_id"
-state_is="$(cat "$__object/explorer/state")"
-state_should="$(cat "$__object/parameter/state")"
+rolename=${__object_id:?}
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
 
-[ "$state_is" = "$state_should" ] && exit 0
+if test "${state_is}" = "${state_should}"
+then
+	exit 0
+fi
 
-case "$state_should" in
-    present)
-        if [ -f "$__object/parameter/password" ]; then
-            password="$(cat "$__object/parameter/password")"
-        fi
-        booleans=""
-        for boolean in login createdb createrole superuser; do
-            if [ ! -f "$__object/parameter/$boolean" ]; then
-                boolean="no${boolean}"
-            fi
-            upper=$(echo $boolean | tr '[:lower:]' '[:upper:]')
-            booleans="$booleans $upper"
-        done
+psql_query() {
+	printf 'su -l %s -c %s\n' \
+		"$(quote "${postgres_user}")" \
+		"$(quote "psql postgres -q -w -c $(quote "$1")")"
+}
 
-        [ -n "$password" ] && password="PASSWORD '$password'"
-        cat << EOF
-su - '$postgres_user' -c "psql postgres -wc \"CREATE ROLE \\\\\"$name\\\\\" WITH $password $booleans;\""
-EOF
-    ;;
-    absent)
-        cat << EOF
-su - '$postgres_user' -c "dropuser \"$name\""
-EOF
-    ;;
+psql_set_password() {
+	# NOTE: Always make sure that the password does not end up in psql_history!
+	# NOTE: Never set an empty string as the password, because they can be
+	#       interpreted differently by different tooling.
+	if test -s "${__object:?}/parameter/password"
+	then
+		cat <<-EOF
+		exec 3< "\${__object:?}/parameter/password"
+		su -l '${postgres_user}' -c 'psql -q -w postgres' <<'SQL'
+		\set HISTFILE /dev/null
+		\set pw \`cat <&3\`
+		ALTER ROLE "${rolename}" WITH PASSWORD :'pw';
+		SQL
+		exec 3<&-
+		EOF
+	else
+		psql_query "ALTER ROLE \"${rolename}\" WITH PASSWORD NULL;"
+	fi
+}
+
+role_properties_should() {
+	_props=
+	for _prop in login createdb createrole superuser
+	do
+		_props="${_props}${_props:+ }$(
+			if test -f "${__object:?}/parameter/${_prop}"
+			then
+				echo "${_prop}"
+			else
+				echo "no${_prop}"
+			fi \
+			| tr '[:lower:]' '[:upper:]')"
+	done
+	printf '%s\n' "${_props}"
+	unset _prop _props
+}
+
+case ${state_should}
+in
+	(present)
+		case ${state_is}
+		in
+			(absent)
+				psql_query "CREATE ROLE \"${rolename}\" WITH $(role_properties_should);"
+				psql_set_password
+				;;
+			(different*)
+				if expr "${state_is}" : 'different.*properties' >/dev/null
+				then
+					psql_query "ALTER ROLE \"${rolename}\" WITH $(role_properties_should);"
+				fi
+
+				if expr "${state_is}" : 'different.*password' >/dev/null
+				then
+					psql_set_password
+				fi
+				;;
+			(*)
+				printf 'Invalid state reported by state explorer: %s\n' "${state_is}" >&2
+				exit 1
+				;;
+		esac
+		;;
+	(absent)
+		printf 'su -l %s -c %s\n' \
+			"$(quote "${postgres_user}")" \
+			"$(quote "dropuser $(quote "${rolename}")")"
+		;;
 esac
