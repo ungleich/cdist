@@ -48,7 +48,7 @@ case $distribution in
 esac
 
 
-__file /etc/apt/preferences.d/$name \
+__file "/etc/apt/preferences.d/$name" \
     --owner root --group root --mode 0644 \
     --state "$state" \
     --source - << EOF
