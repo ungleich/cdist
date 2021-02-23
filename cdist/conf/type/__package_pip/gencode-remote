@@ -2,6 +2,7 @@
 #
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
 # 2016 Darko Poljak (darko.poljak at gmail.com)
+# 2021 Matthias Stecher (matthiasstecher at gmx.de)
 #
 # This file is part of cdist.
 #
@@ -25,7 +26,10 @@
 state_is=$(cat "$__object/explorer/state")
 state_should="$(cat "$__object/parameter/state")"
 
-[ "$state_is" = "$state_should" ] && exit 0
+# short circuit if state is the same and no extras to install
+[ "$state_is" = "$state_should" ] && ! [ -s "$__object/explorer/extras" ] \
+    && exit 0
+
 
 nameparam="$__object/parameter/name"
 if [ -f "$nameparam" ]; then
@@ -56,6 +60,14 @@ fi
 
 case "$state_should" in
     present)
+        if [ -s "$__object/explorer/extras" ]
+        then
+            # all extras are passed to pip in a comma-separated list in the name
+            # sed loops through all input lines and add commas between them
+            extras="$(sed ':a; $!N; s/\n/,/; ta' "$__object/explorer/extras")"
+            name="${name}[${extras}]"
+        fi
+
         if [ "$runas" ]
         then
             echo "su -c '$pip install -q $name' $runas"
