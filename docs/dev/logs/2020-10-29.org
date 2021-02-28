@@ -54,4 +54,12 @@ VERBOSE: scan: Host fe80::f29f:c2ff:fe7c:275e is alive
 VERBOSE: scan: Host fe80::ba69:f4ff:fec5:8db7 is alive
 VERBOSE: scan: Host fe80::42b0:34ff:fe6f:f863 is alive
 VERBOSE: scan: Host fe80::21b:fcff:feee:f4bc is alive
-...
+** Better usage -> saving the env
+    sudo -E cdist scan -b -I wlan0 -vv
+** TODO Implement actual configuration step
+   - Also serves as a nice PoC
+   - Might need to escape literal IPv6 addresses for scp
+** TODO Define how to map link local address to something useful
+   - via reverse DNS?
+   - via link local in manifest?
+** TODO define ignorehosts?

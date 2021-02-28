@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# 2021 Matthias Stecher (matthiasstecher at gmx.de)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Checks if the given extras are really installed or not. It will be
+# done by querring all dependencies for that extra and return it as
+# "to be installed" if no dependency was found.
+#
+
+
+distinfo_dir="$("$__type_explorer/distinfo-dir")"
+
+# check if we have something to check
+if [ "$distinfo_dir" ] && [ -s "$__object/parameter/extra" ]
+then
+    # save cause freezing is slow
+    mkdir "$__object/files"
+    pip_freeze="$__object/files/pip-freeze.tmp"
+    pip3 freeze > "$pip_freeze"
+
+    # If all is set, it searches all available extras to separatly check them.
+    # It would work with just 'all' (cause dependencies are specified for
+    # 'all'), but will not update if one extra is already present. Side effect
+    # is that it will not use [all] but instead name all extras seperatly.
+    for extra in $(if grep -qFx all "$__object/parameter/extra";
+        then awk -F': ' '$1 == "Provides-Extra" && $2 != "all"{print $2}' "$distinfo_dir/METADATA";
+        else tr ',' '\n' < "$__object/parameter/extra";
+        fi)
+    do
+        # create a grep BRE pattern to search all packages
+        # maybe a file full of patterns for -F could be written
+        grep_pattern="$(
+            awk -F'(: | ; )' -v check="$extra" '
+                $1 == "Requires-Dist" {
+                    split($2, r, " ");
+                    sub("extra == ", "", $3); gsub("'"'"'", "", $3);
+                    if($3 == check) print r[1]
+                }' "$distinfo_dir/METADATA" \
+                | sed ':a; $!N; s/\n/\\|/; ta'
+        )"
+
+        # echo the extra if no packages where found for it
+        # if there is no pattern, we don't need to search ;-)
+        # pip matches packages case-insensetive, we need to do that, too
+        if [ "$grep_pattern" ] && ! grep -qi "$grep_pattern" "$pip_freeze"
+        then
+            echo "$extra"
+        fi
+    done
+fi

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2021 Matthias Stecher (matthiasstecher at gmx.de)
 #
 # This file is part of cdist.
 #
@@ -17,9 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Development supported by Local AG (www.local.ch)
-#
+
 
 nameparam="$__object/parameter/name"
 if [ -f "$nameparam" ]; then
@@ -35,15 +33,13 @@ else
     pip="$( "$__type_explorer/pip" )"
 fi
 
-# If there is no pip, it may get created from somebody else.
-# If it will be created, there is probably no package installed.
-if ! command -v "$pip" >/dev/null 2>&1; then
-    echo absent
-else
 
-    if "$pip" freeze | grep -i -q "^$name=="; then
-        echo present
-    else
-        echo absent
-    fi
+if command -v "$pip" >/dev/null 2>&1; then
+    # assemble the path where pip stores all pip package info
+    "$pip" show "$name" \
+        | awk -F': ' '
+            $1 == "Name" {name=$2; gsub(/-/,"_",name); next}
+            $1 == "Version" {version=$2; next}
+            $1 == "Location" {location=$2; next}
+            END {if (version != "") printf "%s/%s-%s.dist-info", location, name, version}'
 fi
