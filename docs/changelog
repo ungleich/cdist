@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Type __pyvenv: Fix user example in man page (Dennis Camera)
+
 6.9.5: 2021-02-28
 	* Core: preos: Fix passing cdist debug parameter (Darko Poljak)
 	* Type __sshd_config: Produce error if invalid config is generated, fix processing of AuthenticationMethods and AuthorizedKeysFile, document explorer bug (Dennis Camera)
