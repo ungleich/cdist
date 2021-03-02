@@ -61,7 +61,7 @@ EXAMPLES
     __pyvenv /home/foo/fooenv --pyvenv /usr/local/bin/pyvenv-3.4
 
     # Create python virtualenv for user foo.
-    __pyvenv /home/foo/fooenv --group foo --user foo
+    __pyvenv /home/foo/fooenv --group foo --owner foo
 
     # Create python virtualenv with specific parameters.
     __pyvenv /home/services/djangoenv --venvparams "--copies --system-site-packages"
