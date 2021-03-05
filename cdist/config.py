@@ -420,6 +420,9 @@ class Config:
                 exec_path=sys.argv[0],
                 save_output_streams=args.save_output_streams)
 
+            # Make __global state dir available to custom remote scripts.
+            os.environ['__global'] = local.base_path
+
             remote = cdist.exec.remote.Remote(
                 target_host=target_host,
                 remote_exec=remote_exec,
