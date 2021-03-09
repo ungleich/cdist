@@ -25,6 +25,7 @@ type_and_key="$(tr ' ' '\n' < "$__object/parameter/key"| awk '/^(ssh|ecdsa)-[^ ]
 if [ -n "${type_and_key}" ]
 then
     file="$(cat "$__object/parameter/file")"
+    test -e "$file" || exit 0
 
     # get any entries that match the type and key
 
