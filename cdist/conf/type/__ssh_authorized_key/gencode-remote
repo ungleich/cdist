@@ -37,9 +37,9 @@ tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
 # preserve ownership and permissions of existing file
 if [ -f "$file" ]; then
    cp -p "$file" "\$tmpfile"
+   grep -v -F -x '$line' '$file' >\$tmpfile
 fi
-grep -v -F -x '$line' '$file' > \$tmpfile || true
-mv -f "\$tmpfile" "$file"
+cat "\$tmpfile" >"$file"
 DONE
 }
 
