@@ -4,6 +4,7 @@ Changelog
 next:
 	* Type __pyvenv: Fix user example in man page (Dennis Camera)
 	* Core: config: Make local state directory available to custom remotes (Steven Armstrong
+	* Type __ssh_authorized_key: grep only if file exists (Dennis Camera)
 
 6.9.5: 2021-02-28
 	* Core: preos: Fix passing cdist debug parameter (Darko Poljak)
