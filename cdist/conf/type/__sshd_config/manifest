@@ -39,7 +39,14 @@ in
 	(freebsd|netbsd|openbsd)
 		# whitelist
 		;;
+	(openbmc-phosphor)
+		# whitelist
+		# OpenBMC can be configured with dropbear and OpenSSH.
+		# If dropbear is used, the state explorer will already fail because it
+		# cannot find the sshd binary.
+		;;
 	(*)
+		: "${__type:?}"  # make shellcheck happy
 		printf 'Your operating system (%s) is currently not supported by this type (%s)\n' \
 			"${os}" "${__type##*/}" >&2
 		printf 'Please contribute an implementation for it if you can.\n' >&2
