@@ -61,6 +61,14 @@ Object cache overview
 ~~~~~~~~~~~~~~~~~~~~~
 Each object under :strong:`object` directory has its own structure.
 
+autorequire
+    file containing a list of object auto requirements
+
+children
+    file containing a list of object children, i.e. objects of types that this
+    type reuses (along with 'parents' it is used for maintaining parent-child
+    relationship graph)
+
 code-local
     code generated from gencode-local, present only if something is
     generated
@@ -79,6 +87,15 @@ files
 parameter
     directory containing type parameter named files containing parameter
     values   
+
+parents
+    file containing a list of object parents, i.e. objects of types that reuse
+    this type (along with 'children' it is used for maintaining parent-child
+    relationship graph); objects without parents are objects specified in init
+    manifest
+
+require
+    file containing a list of object requirements
 
 source
     this type's source (init manifest)
