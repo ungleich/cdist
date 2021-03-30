@@ -86,8 +86,7 @@ class ObjectClassTestCase(test.CdistTestCase):
 
     def test_create_singleton(self):
         """Check whether creating an object without id (singleton) works"""
-        singleton = self.expected_objects[0].object_from_name(
-                "__test_singleton")
+        self.expected_objects[0].object_from_name("__test_singleton")
         # came here - everything fine
 
     def test_create_singleton_not_singleton_type(self):
@@ -126,16 +125,16 @@ class ObjectIdTestCase(test.CdistTestCase):
 
     def test_object_id_contains_object_marker(self):
         cdist_type = core.CdistType(type_base_path, '__third')
-        illegal_object_id = (
-            'object_id/may/not/contain/%s/anywhere' % OBJECT_MARKER_NAME)
+        illegal_object_id = 'object_id/may/not/contain/{}/anywhere'.format(
+            OBJECT_MARKER_NAME)
         with self.assertRaises(core.IllegalObjectIdError):
             core.CdistObject(cdist_type, self.object_base_path,
                              OBJECT_MARKER_NAME, illegal_object_id)
 
     def test_object_id_contains_object_marker_string(self):
         cdist_type = core.CdistType(type_base_path, '__third')
-        illegal_object_id = (
-            'object_id/may/contain_%s_in_filename' % OBJECT_MARKER_NAME)
+        illegal_object_id = 'object_id/may/contain_{}_in_filename'.format(
+            OBJECT_MARKER_NAME)
         core.CdistObject(cdist_type, self.object_base_path,
                          OBJECT_MARKER_NAME, illegal_object_id)
         # if we get here, the test passed
@@ -195,28 +194,32 @@ class ObjectTestCase(test.CdistTestCase):
 
     def test_path(self):
         self.assertEqual(self.cdist_object.path,
-                         "__third/moon/%s" % OBJECT_MARKER_NAME)
+                         "__third/moon/{}".format(OBJECT_MARKER_NAME))
 
     def test_absolute_path(self):
         self.assertEqual(self.cdist_object.absolute_path,
                          os.path.join(self.object_base_path,
-                                      "__third/moon/%s" % OBJECT_MARKER_NAME))
+                                      "__third/moon/{}".format(
+                                          OBJECT_MARKER_NAME)))
 
     def test_code_local_path(self):
         self.assertEqual(self.cdist_object.code_local_path,
-                         "__third/moon/%s/code-local" % OBJECT_MARKER_NAME)
+                         "__third/moon/{}/code-local".format(
+                             OBJECT_MARKER_NAME))
 
     def test_code_remote_path(self):
         self.assertEqual(self.cdist_object.code_remote_path,
-                         "__third/moon/%s/code-remote" % OBJECT_MARKER_NAME)
+                         "__third/moon/{}/code-remote".format(
+                             OBJECT_MARKER_NAME))
 
     def test_parameter_path(self):
         self.assertEqual(self.cdist_object.parameter_path,
-                         "__third/moon/%s/parameter" % OBJECT_MARKER_NAME)
+                         "__third/moon/{}/parameter".format(
+                             OBJECT_MARKER_NAME))
 
     def test_explorer_path(self):
         self.assertEqual(self.cdist_object.explorer_path,
-                         "__third/moon/%s/explorer" % OBJECT_MARKER_NAME)
+                         "__third/moon/{}/explorer".format(OBJECT_MARKER_NAME))
 
     def test_parameters(self):
         expected_parameters = {'planet': 'Saturn', 'name': 'Prometheus'}

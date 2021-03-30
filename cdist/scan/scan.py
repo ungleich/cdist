@@ -93,7 +93,7 @@ class Trigger(object):
             time.sleep(self.sleeptime)
 
     def trigger(self, interface):
-        packet = IPv6(dst=f"ff02::1%{interface}") / ICMPv6EchoRequest()
+        packet = IPv6(dst="ff02::1{}".format(interface)) / ICMPv6EchoRequest()
         log.debug("Sending request on %s", interface)
         send(packet, verbose=self.verbose)
 

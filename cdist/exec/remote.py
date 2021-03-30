@@ -24,12 +24,10 @@ import os
 import glob
 import subprocess
 import logging
-import multiprocessing
 
 import cdist
 import cdist.exec.util as util
 import cdist.util.ipaddr as ipaddr
-from cdist.mputil import mp_pool_run
 
 
 def _wrap_addr(addr):
@@ -262,9 +260,10 @@ class Remote:
         # remotely in e.g. csh and setting up CDIST_REMOTE_SHELL to e.g.
         # /bin/csh will execute this script in the right way.
         if env:
-            remote_env = [" export %s=%s;" % item for item in env.items()]
-            string_cmd = ("/bin/sh -c '" + " ".join(remote_env) +
-                          " ".join(command) + "'")
+            remote_env = [" export {env[0]}={env[1]};".format(env=item)
+                          for item in env.items()]
+            string_cmd = ("/bin/sh -c '{}{}'").format(" ".join(remote_env),
+                                                      " ".join(command))
             cmd.append(string_cmd)
         else:
             cmd.extend(command)
@@ -278,7 +277,7 @@ class Remote:
 
         """
         assert isinstance(command, (list, tuple)), (
-                "list or tuple argument expected, got: %s" % command)
+                "list or tuple argument expected, got: {}".format(command))
 
         close_stdout = False
         close_stderr = False

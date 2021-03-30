@@ -67,7 +67,7 @@ class MessageTestCase(test.CdistTestCase):
     def test_message_merge_prefix(self):
         """Ensure messages are merged and are prefixed"""
 
-        expectedcontent = "%s:%s" % (self.prefix, self.content)
+        expectedcontent = "{}:{}".format(self.prefix, self.content)
 
         out = self.message.env['__messages_out']
 

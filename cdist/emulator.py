@@ -36,8 +36,8 @@ from cdist.core.manifest import Manifest
 class MissingRequiredEnvironmentVariableError(cdist.Error):
     def __init__(self, name):
         self.name = name
-        self.message = ("Emulator requires the environment variable %s to be "
-                        "setup" % self.name)
+        self.message = ("Emulator requires the environment variable {} to be "
+                        "setup").format(self.name)
 
     def __str__(self):
         return self.message
@@ -231,13 +231,13 @@ class Emulator:
         if self.cdist_object.exists and 'CDIST_OVERRIDE' not in self.env:
             obj_params = self._object_params_in_context()
             if obj_params != self.parameters:
-                errmsg = ("Object %s already exists with conflicting "
-                          "parameters:\n%s: %s\n%s: %s" % (
+                errmsg = ("Object {} already exists with conflicting "
+                          "parameters:\n{}: {}\n{}: {}").format(
                               self.cdist_object.name,
                               " ".join(self.cdist_object.source),
                               obj_params,
                               self.object_source,
-                              self.parameters))
+                              self.parameters)
                 raise cdist.Error(errmsg)
         else:
             if self.cdist_object.exists:
@@ -292,7 +292,7 @@ class Emulator:
                         fd.write(chunk)
                         chunk = self._read_stdin()
             except EnvironmentError as e:
-                raise cdist.Error('Failed to read from stdin: %s' % e)
+                raise cdist.Error('Failed to read from stdin: {}'.format(e))
 
     def record_requirement(self, requirement):
         """record requirement and return recorded requirement"""

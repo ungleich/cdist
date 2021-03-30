@@ -190,7 +190,7 @@ class Config:
                     fd.write(sys.stdin.read())
             except (IOError, OSError) as e:
                 raise cdist.Error(("Creating tempfile for stdin data "
-                                   "failed: %s" % e))
+                                   "failed: {}").format(e))
 
             args.manifest = initial_manifest_temp_path
             atexit.register(lambda: os.remove(initial_manifest_temp_path))
@@ -764,7 +764,7 @@ class Config:
 
             raise cdist.UnresolvableRequirementsError(
                     ("The requirements of the following objects could not be "
-                     "resolved:\n%s") % ("\n".join(info_string)))
+                     "resolved:\n{}").format("\n".join(info_string)))
 
     def _handle_deprecation(self, cdist_object):
         cdist_type = cdist_object.cdist_type

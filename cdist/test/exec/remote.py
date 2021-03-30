@@ -47,8 +47,8 @@ class RemoteTestCase(test.CdistTestCase):
             args = (self.target_host,)
         kwargs.setdefault('base_path', self.base_path)
         user = getpass.getuser()
-        kwargs.setdefault('remote_exec', 'ssh -o User=%s -q' % user)
-        kwargs.setdefault('remote_copy', 'scp -o User=%s -q' % user)
+        kwargs.setdefault('remote_exec', 'ssh -o User={} -q'.format(user))
+        kwargs.setdefault('remote_copy', 'scp -o User={} -q'.format(user))
         if 'stdout_base_path' not in kwargs:
             stdout_path = os.path.join(self.temp_dir, 'stdout')
             os.makedirs(stdout_path, exist_ok=True)
@@ -170,7 +170,7 @@ class RemoteTestCase(test.CdistTestCase):
         r = self.create_remote(remote_exec=remote_exec,
                                remote_copy=remote_copy)
         self.assertEqual(r.run('true', return_output=True),
-                         "%s\n" % self.target_host[0])
+                         "{}\n".format(self.target_host[0]))
 
     def test_run_script_target_host_in_env(self):
         handle, remote_exec_path = self.mkstemp(dir=self.temp_dir)
@@ -185,7 +185,7 @@ class RemoteTestCase(test.CdistTestCase):
         with os.fdopen(handle, "w") as fd:
             fd.writelines(["#!/bin/sh\n", "true"])
         self.assertEqual(r.run_script(script, return_output=True),
-                         "%s\n" % self.target_host[0])
+                         "{}\n".format(self.target_host[0]))
 
     def test_run_script_with_env_target_host_in_env(self):
         handle, script = self.mkstemp(dir=self.temp_dir)

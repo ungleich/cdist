@@ -152,7 +152,7 @@ class Local:
 
     def _setup_object_marker_file(self):
         with open(self.object_marker_file, 'w') as fd:
-            fd.write("%s\n" % self.object_marker_name)
+            fd.write("{}\n".format(self.object_marker_name))
 
         self.log.trace("Object marker %s saved in %s",
                        self.object_marker_name, self.object_marker_file)
@@ -184,7 +184,7 @@ class Local:
 
         """
         assert isinstance(command, (list, tuple)), (
-                "list or tuple argument expected, got: %s" % command)
+                "list or tuple argument expected, got: {}".format(command))
 
         quiet = self.quiet_mode or quiet_mode
         do_save_output = save_output and not quiet and self.save_output_streams
@@ -352,8 +352,9 @@ class Local:
                     try:
                         os.symlink(src, dst)
                     except OSError as e:
-                        raise cdist.Error("Linking %s %s to %s failed: %s" % (
-                            sub_dir, src, dst, e.__str__()))
+                        raise cdist.Error(
+                            "Linking {} {} to {} failed: {}".format(
+                                sub_dir, src, dst, e.__str__()))
 
     def _link_types_for_emulator(self):
         """Link emulator to types"""
@@ -366,5 +367,5 @@ class Local:
                 os.symlink(src, dst)
             except OSError as e:
                 raise cdist.Error(
-                        "Linking emulator from %s to %s failed: %s" % (
+                        "Linking emulator from {} to {} failed: {}".format(
                             src, dst, e.__str__()))
