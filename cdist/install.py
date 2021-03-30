@@ -47,4 +47,4 @@ class Install(cdist.config.Config):
                 yield cdist_object
             else:
                 self.log.debug("Running in install mode, ignoring non install"
-                               "object: {0}".format(cdist_object))
+                               "object: %s", cdist_object)

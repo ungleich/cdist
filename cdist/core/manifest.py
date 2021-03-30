@@ -161,7 +161,7 @@ class Manifest:
             raise NoInitialManifestError(initial_manifest, user_supplied)
 
         message_prefix = "initialmanifest"
-        self.log.verbose("Running initial manifest " + initial_manifest)
+        self.log.verbose("Running initial manifest %s", initial_manifest)
         which = "init"
         if self.local.save_output_streams:
             stderr_path = os.path.join(self.local.stderr_base_path, which)

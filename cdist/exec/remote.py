@@ -176,19 +176,19 @@ class Remote:
                 # create archive
                 tarpath, fcnt = autil.tar(source, self.archiving_mode)
                 if tarpath is None:
-                    self.log.trace(("Files count {} is lower than {} limit, "
-                                    "skipping archiving").format(
-                                        fcnt, autil.FILES_LIMIT))
+                    self.log.trace("Files count %d is lower than %d limit, "
+                                   "skipping archiving",
+                                   fcnt, autil.FILES_LIMIT)
                 else:
-                    self.log.trace(("Archiving mode, tarpath: %s, file count: "
-                                    "%s"), tarpath, fcnt)
+                    self.log.trace("Archiving mode, tarpath: %s, file count: "
+                                   "%s", tarpath, fcnt)
                     # get archive name
                     tarname = os.path.basename(tarpath)
                     self.log.trace("Archiving mode tarname: %s", tarname)
                     # archive path at the remote
                     desttarpath = os.path.join(destination, tarname)
-                    self.log.trace(
-                        "Archiving mode desttarpath: %s", desttarpath)
+                    self.log.trace("Archiving mode desttarpath: %s",
+                                   desttarpath)
                     # transfer archive to the remote side
                     self.log.trace("Archiving mode: transferring")
                     self._transfer_file(tarpath, desttarpath)

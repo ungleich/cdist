@@ -94,7 +94,7 @@ class Trigger(object):
 
     def trigger(self, interface):
         packet = IPv6(dst=f"ff02::1%{interface}") / ICMPv6EchoRequest()
-        log.debug(f"Sending request on {interface}")
+        log.debug("Sending request on %s", interface)
         send(packet, verbose=self.verbose)
 
 
@@ -114,7 +114,7 @@ class Scanner(object):
     def handle_pkg(self, pkg):
         if ICMPv6EchoReply in pkg:
             host = pkg['IPv6'].src
-            log.verbose(f"Host {host} is alive")
+            log.verbose("Host %s is alive", host)
 
             dir = os.path.join(self.outdir, host)
             fname = os.path.join(dir, "last_seen")

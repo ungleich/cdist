@@ -533,10 +533,10 @@ def parse_and_configure(argv, singleton=True):
 
     log = logging.getLogger("cdist")
 
-    log.verbose("version %s" % cdist.VERSION)
-    log.trace('command line args: {}'.format(cfg.command_line_args))
-    log.trace('configuration: {}'.format(cfg.get_config()))
-    log.trace('configured args: {}'.format(args))
+    log.verbose("version %s", cdist.VERSION)
+    log.trace('command line args: %s', cfg.command_line_args)
+    log.trace('configuration: %s', cfg.get_config())
+    log.trace('configured args: %s', args)
 
     check_beta(vars(args))
 

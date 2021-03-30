@@ -107,8 +107,8 @@ class Emulator:
             self.record_requirements()
             self.record_auto_requirements()
             self.record_parent_child_relationships()
-            self.log.trace("Finished %s %s" % (
-                self.cdist_object.path, self.parameters))
+            self.log.trace("Finished %s %s", self.cdist_object.path,
+                           self.parameters)
 
     def __init_log(self):
         """Setup logging facility"""
@@ -170,7 +170,7 @@ class Emulator:
 
         # And finally parse/verify parameter
         self.args = parser.parse_args(self.argv[1:])
-        self.log.trace('Args: %s' % self.args)
+        self.log.trace('Args: %s', self.args)
 
     def init_object(self):
         # Initialize object - and ensure it is not in args
@@ -241,8 +241,8 @@ class Emulator:
                 raise cdist.Error(errmsg)
         else:
             if self.cdist_object.exists:
-                self.log.debug(('Object %s override forced with '
-                                'CDIST_OVERRIDE'), self.cdist_object.name)
+                self.log.debug('Object %s override forced with CDIST_OVERRIDE',
+                               self.cdist_object.name)
                 self.cdist_object.create(True)
             else:
                 self.cdist_object.create()
@@ -260,8 +260,8 @@ class Emulator:
             parent = self.cdist_object.object_from_name(__object_name)
             parent.typeorder.append(self.cdist_object.name)
             if self._order_dep_on():
-                self.log.trace(('[ORDER_DEP] Adding %s to typeorder dep'
-                                ' for %s'), depname, parent.name)
+                self.log.trace('[ORDER_DEP] Adding %s to typeorder dep for %s',
+                               depname, parent.name)
                 parent.typeorder_dep.append(depname)
         elif self._order_dep_on():
             self.log.trace('[ORDER_DEP] Adding %s to global typeorder dep',
@@ -301,16 +301,14 @@ class Emulator:
         try:
             cdist_object = self.cdist_object.object_from_name(requirement)
         except core.cdist_type.InvalidTypeError as e:
-            self.log.error(("%s requires object %s, but type %s does not"
-                            " exist. Defined at %s" % (
-                                self.cdist_object.name,
-                                requirement, e.name, self.object_source)))
+            self.log.error("%s requires object %s, but type %s does not"
+                           " exist. Defined at %s", self.cdist_object.name,
+                           requirement, e.name, self.object_source)
             raise
         except core.cdist_object.MissingObjectIdError:
-            self.log.error(("%s requires object %s without object id."
-                            " Defined at %s" % (self.cdist_object.name,
-                                                requirement,
-                                                self.object_source)))
+            self.log.error("%s requires object %s without object id."
+                           " Defined at %s", self.cdist_object.name,
+                           requirement, self.object_source)
             raise
 
         self.log.debug("Recording requirement %s for %s",
@@ -380,10 +378,9 @@ class Emulator:
                         self.env['require'] += " " + lastcreatedtype
                 else:
                     self.env['require'] = lastcreatedtype
-                self.log.debug(("Injecting require for "
-                                "CDIST_ORDER_DEPENDENCY: %s for %s"),
-                               lastcreatedtype,
-                               self.cdist_object.name)
+                self.log.debug("Injecting require for"
+                               " CDIST_ORDER_DEPENDENCY: %s for %s",
+                               lastcreatedtype, self.cdist_object.name)
             except IndexError:
                 # if no second last line, we are on the first type,
                 # so do not set a requirement
@@ -391,7 +388,7 @@ class Emulator:
 
         if "require" in self.env:
             requirements = self.env['require']
-            self.log.debug("reqs = " + requirements)
+            self.log.debug("reqs = %s", requirements)
             for requirement in self._parse_require(requirements):
                 # Ignore empty fields - probably the only field anyway
                 if len(requirement) == 0:

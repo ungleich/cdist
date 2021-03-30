@@ -82,9 +82,9 @@ class CdistType:
                 yield cls(base_path, name)
             except InvalidTypeError as e:
                 # ignore invalid type, log warning and continue
-                msg = "Ignoring invalid type '%s' at '%s' defined at '%s'" % (
-                    e.type_path, e.type_absolute_path, e.source_path)
-                cls.log.warning(msg)
+                cls.log.warning("Ignoring invalid type '%s' at '%s' defined"
+                                " at '%s'", e.type_path, e.type_absolute_path,
+                                e.source_path)
                 # remove invalid from runtime conf dir
                 os.remove(e.type_absolute_path)
 

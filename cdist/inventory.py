@@ -92,7 +92,7 @@ class Inventory:
         self.init_db()
 
     def init_db(self):
-        self.log.trace("Init db: {}".format(self.db_basedir))
+        self.log.trace("Init db: %s", self.db_basedir)
         if not os.path.exists(self.db_basedir):
             os.makedirs(self.db_basedir, exist_ok=True)
         elif not os.path.isdir(self.db_basedir):
@@ -182,9 +182,9 @@ class Inventory:
         configuration = cfg.get_config(section='GLOBAL')
         determine_default_inventory_dir(args, configuration)
 
-        log.debug("Using inventory: {}".format(args.inventory_dir))
-        log.trace("Inventory args: {}".format(vars(args)))
-        log.trace("Inventory command: {}".format(args.subcommand))
+        log.debug("Using inventory: %s", args.inventory_dir)
+        log.trace("Inventory args: %s", vars(args))
+        log.trace("Inventory command: %s", args.subcommand)
 
         if args.subcommand == "list":
             c = InventoryList(hosts=args.host, istag=args.tag,
@@ -237,16 +237,16 @@ class InventoryList(Inventory):
     def _do_list(self, it_tags, it_hosts, check_func):
         if (it_tags is not None):
             param_tags = set(it_tags)
-            self.log.trace("param_tags: {}".format(param_tags))
+            self.log.trace("param_tags: %s", param_tags)
         else:
             param_tags = set()
         for host in it_hosts:
-            self.log.trace("host: {}".format(host))
+            self.log.trace("host: %s", host)
             tags = self._get_host_tags(host)
             if tags is None:
-                self.log.debug("Host \'{}\' not found, skipped".format(host))
+                self.log.debug("Host \'%s\' not found, skipped", host)
                 continue
-            self.log.trace("tags: {}".format(tags))
+            self.log.trace("tags: %s", tags)
             if check_func(tags, param_tags):
                 yield host, tags
 
@@ -308,11 +308,11 @@ class InventoryHost(Inventory):
 
     def _action(self, host):
         if self.action == "add":
-            self.log.debug("Adding host \'{}\'".format(host))
+            self.log.debug("Adding host \'%s\'", host)
         elif self.action == "del":
-            self.log.debug("Deleting host \'{}\'".format(host))
+            self.log.debug("Deleting host \'%s\'", host)
         hostpath = self._host_path(host)
-        self.log.trace("hostpath: {}".format(hostpath))
+        self.log.trace("hostpath: %s", hostpath)
         if self.action == "add" and not os.path.exists(hostpath):
             self._new_hostpath(hostpath)
         else:
@@ -372,23 +372,23 @@ class InventoryTag(Inventory):
             print("Host \'{}\' does not exist, skipping".format(host),
                   file=sys.stderr)
             return
-        self.log.trace("existing host_tags: {}".format(host_tags))
+        self.log.trace("existing host_tags: %s", host_tags)
         if self.action == "del" and self.all:
             host_tags = set()
         else:
             for tag in self.input_tags:
                 if self.action == "add":
-                    self.log.debug("Adding tag \'{}\' for host \'{}\'".format(
-                        tag, host))
+                    self.log.debug("Adding tag \'%s\' for host \'%s\'",
+                                   tag, host)
                     host_tags.add(tag)
                 elif self.action == "del":
-                    self.log.debug("Deleting tag \'{}\' for host "
-                                   "\'{}\'".format(tag, host))
+                    self.log.debug("Deleting tag \'%s\' for host \'%s\'",
+                                   tag, host)
                     if tag in host_tags:
                         host_tags.remove(tag)
-        self.log.trace("new host tags: {}".format(host_tags))
+        self.log.trace("new host tags: %s", host_tags)
         if not self._write_host_tags(host, host_tags):
-            self.log.trace("{} does not exist, skipped".format(host))
+            self.log.trace("%s does not exist, skipped", host)
 
     def run(self):
         if self.allhosts:

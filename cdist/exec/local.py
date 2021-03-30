@@ -154,8 +154,8 @@ class Local:
         with open(self.object_marker_file, 'w') as fd:
             fd.write("%s\n" % self.object_marker_name)
 
-        self.log.trace("Object marker %s saved in %s" % (
-            self.object_marker_name, self.object_marker_file))
+        self.log.trace("Object marker %s saved in %s",
+                       self.object_marker_name, self.object_marker_file)
 
     def _init_cache_dir(self, cache_dir):
         home_dir = cdist.home_dir()
@@ -289,14 +289,12 @@ class Local:
         return cache_subpath
 
     def save_cache(self, start_time=time.time()):
-        self.log.trace("cache subpath pattern: {}".format(
-            self.cache_path_pattern))
+        self.log.trace("cache subpath pattern: %s", self.cache_path_pattern)
         cache_subpath = self._cache_subpath(start_time,
                                             self.cache_path_pattern)
-        self.log.debug("cache subpath: {}".format(cache_subpath))
+        self.log.debug("cache subpath: %s", cache_subpath)
         destination = os.path.join(self.cache_path, cache_subpath)
-        self.log.trace(("Saving cache: " + self.base_path + " to " +
-                        destination))
+        self.log.trace("Saving cache %s to %s", self.base_path, destination)
 
         if not os.path.exists(destination):
             shutil.move(self.base_path, destination)
@@ -332,7 +330,7 @@ class Local:
 
         # Iterate over all directories and link the to the output dir
         for conf_dir in self.conf_dirs:
-            self.log.debug("Checking conf_dir %s ..." % (conf_dir))
+            self.log.debug("Checking conf_dir %s ...", conf_dir)
             for sub_dir in CONF_SUBDIRS_LINKED:
                 current_dir = os.path.join(conf_dir, sub_dir)
 
@@ -350,7 +348,7 @@ class Local:
                     if os.path.exists(dst):
                         os.unlink(dst)
 
-                    self.log.trace("Linking %s to %s ..." % (src, dst))
+                    self.log.trace("Linking %s to %s ...", src, dst)
                     try:
                         os.symlink(src, dst)
                     except OSError as e:

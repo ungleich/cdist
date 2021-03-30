@@ -166,7 +166,7 @@ class Debian:
             args.pxe_boot_dir = os.path.realpath(args.pxe_boot_dir)
 
         cdist.argparse.handle_loglevel(args)
-        log.debug("preos: {}, args: {}".format(cls._preos_name, args))
+        log.debug("preos: %s, args: %s", cls._preos_name, args)
         try:
             env = vars(args)
             new_env = {}
@@ -190,27 +190,30 @@ class Debian:
             env = new_env
             env.update(os.environ)
             cls.update_env(env)
-            log.debug("preos: {} env: {}".format(cls._preos_name, env))
+            log.debug("preos: %s env: %s", cls._preos_name, env)
+
+            if log.getEffectiveLevel() <= logging.INFO:
+                info_msg = ["Running preos: {}, suite: {}, arch: {}".format(
+                    cls._preos_name, args.suite, args.arch), ]
+                if args.mirror:
+                    info_msg.append("mirror: {}".format(args.mirror))
+                if args.script:
+                    info_msg.append("script: {}".format(args.script))
+                if args.bootstrap:
+                    info_msg.append("bootstrapping")
+                if args.configure:
+                    info_msg.append("configuring")
+                if args.pxe_boot_dir:
+                    info_msg.append("creating PXE")
+                if args.drive:
+                    info_msg.append("creating bootable drive")
+                log.info(info_msg)
+
             cmd = os.path.join(cls._files_dir, "code")
-            info_msg = ["Running preos: {}, suite: {}, arch: {}".format(
-                cls._preos_name, args.suite, args.arch), ]
-            if args.mirror:
-                info_msg.append("mirror: {}".format(args.mirror))
-            if args.script:
-                info_msg.append("script: {}".format(args.script))
-            if args.bootstrap:
-                info_msg.append("bootstrapping")
-            if args.configure:
-                info_msg.append("configuring")
-            if args.pxe_boot_dir:
-                info_msg.append("creating PXE")
-            if args.drive:
-                info_msg.append("creating bootable drive")
-            log.info(info_msg)
-            log.debug("cmd={}".format(cmd))
+            log.debug("cmd=%s", cmd)
             subprocess.check_call(cmd, env=env, shell=True)
         except subprocess.CalledProcessError as e:
-            log.error("preos {} failed: {}".format(cls._preos_name, e))
+            log.error("preos %s failed: %s", cls._preos_name, e)
 
 
 class Ubuntu(Debian):
