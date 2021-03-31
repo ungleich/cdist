@@ -247,6 +247,13 @@ class CdistObject:
             lambda obj: os.path.join(obj.absolute_path, 'typeorder'))
     typeorder_dep = fsproperty.FileListProperty(
             lambda obj: os.path.join(obj.absolute_path, 'typeorder_dep'))
+    # objects without parents are objects specified in init manifest
+    parents = fsproperty.FileListProperty(
+            lambda obj: os.path.join(obj.absolute_path, 'parents'))
+    # objects without children are object of types that do not reuse other
+    # types
+    children = fsproperty.FileListProperty(
+            lambda obj: os.path.join(obj.absolute_path, 'children'))
 
     def cleanup(self):
         try:

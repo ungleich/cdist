@@ -106,6 +106,7 @@ class Emulator:
             self.save_stdin()
             self.record_requirements()
             self.record_auto_requirements()
+            self.record_parent_child_relationships()
             self.log.trace("Finished %s %s" % (
                 self.cdist_object.path, self.parameters))
 
@@ -420,3 +421,21 @@ class Emulator:
                 self.log.debug("Recording autorequirement %s for %s",
                                current_object.name, parent.name)
                 parent.autorequire.append(current_object.name)
+
+    def record_parent_child_relationships(self):
+        # __object_name is the name of the object whose type manifest is
+        # currently executed
+        __object_name = self.env.get('__object_name', None)
+        if __object_name:
+            # The object whose type manifest is currently run
+            parent = self.cdist_object.object_from_name(__object_name)
+            # The object currently being defined
+            current_object = self.cdist_object
+            if current_object.name not in parent.children:
+                self.log.debug("Recording child %s for %s",
+                               current_object.name, parent.name)
+                parent.children.append(current_object.name)
+            if parent.name not in current_object.parents:
+                self.log.debug("Recording parent %s for %s",
+                               parent.name, current_object.name)
+                current_object.parents.append(parent.name)
