@@ -6,6 +6,7 @@ next:
 	* Core: config: Make local state directory available to custom remotes (Steven Armstrong
 	* Type __ssh_authorized_key: grep only if file exists (Dennis Camera)
 	* Type __sshd_config: Whitelist OpenBMC (Dennis Camera)
+	* Core: Maintain object relationship graph in cdist cache (Darko Poljak)
 
 6.9.5: 2021-02-28
 	* Core: preos: Fix passing cdist debug parameter (Darko Poljak)
