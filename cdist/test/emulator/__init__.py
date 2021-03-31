@@ -84,8 +84,8 @@ class EmulatorTestCase(test.CdistTestCase):
 
     def test_illegal_object_id_requirement(self):
         argv = ['__file', '/tmp/foobar']
-        self.env['require'] = (
-                "__file/bad/id/with/%s/inside") % self.local.object_marker_name
+        self.env['require'] = "__file/bad/id/with/{}/inside".format(
+            self.local.object_marker_name)
         emu = emulator.Emulator(argv, env=self.env)
         self.assertRaises(core.IllegalObjectIdError, emu.run)
 

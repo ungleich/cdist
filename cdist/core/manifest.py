@@ -80,13 +80,12 @@ class NoInitialManifestError(cdist.Error):
 
         if user_supplied:
             if os.path.islink(manifest_path):
-                self.message = "%s: %s -> %s" % (
-                        msg_header, manifest_path,
-                        os.path.realpath(manifest_path))
+                self.message = "{}: {} -> {}".format(
+                    msg_header, manifest_path, os.path.realpath(manifest_path))
             else:
-                self.message = "%s: %s" % (msg_header, manifest_path)
+                self.message = "{}: {}".format(msg_header, manifest_path)
         else:
-            self.message = "%s" % (msg_header)
+            self.message = "{}".format(msg_header)
 
     def __str__(self):
         return repr(self.message)
@@ -107,7 +106,7 @@ class Manifest:
         self._open_logger()
 
         self.env = {
-            'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
+            'PATH': "{}:{}".format(self.local.bin_path, os.environ['PATH']),
             # for use in type emulator
             '__cdist_type_base_path': self.local.type_path,
             '__global': self.local.base_path,
@@ -161,7 +160,7 @@ class Manifest:
             raise NoInitialManifestError(initial_manifest, user_supplied)
 
         message_prefix = "initialmanifest"
-        self.log.verbose("Running initial manifest " + initial_manifest)
+        self.log.verbose("Running initial manifest %s", initial_manifest)
         which = "init"
         if self.local.save_output_streams:
             stderr_path = os.path.join(self.local.stderr_base_path, which)

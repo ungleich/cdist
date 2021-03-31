@@ -65,7 +65,7 @@ class Shell:
     def _init_environment(self):
         self.env = os.environ.copy()
         additional_env = {
-            'PATH': "%s:%s" % (self.local.bin_path, os.environ['PATH']),
+            'PATH': "{}:{}".format(self.local.bin_path, os.environ['PATH']),
             # for use in type emulator
             '__cdist_type_base_path': self.local.type_path,
             '__cdist_manifest': "cdist shell",

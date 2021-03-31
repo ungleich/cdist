@@ -122,8 +122,8 @@ class Code:
 
     def _run_gencode(self, cdist_object, which):
         cdist_type = cdist_object.cdist_type
-        script = os.path.join(self.local.type_path,
-                              getattr(cdist_type, 'gencode_%s_path' % which))
+        gencode_attr = getattr(cdist_type, 'gencode_{}_path'.format(which))
+        script = os.path.join(self.local.type_path, gencode_attr)
         if os.path.isfile(script):
             env = os.environ.copy()
             env.update(self.env)
@@ -167,8 +167,8 @@ class Code:
 
     def _run_code(self, cdist_object, which, env=None):
         which_exec = getattr(self, which)
-        script = os.path.join(which_exec.object_path,
-                              getattr(cdist_object, 'code_%s_path' % which))
+        code_attr = getattr(cdist_object, 'code_{}_path'.format(which))
+        script = os.path.join(which_exec.object_path, code_attr)
         if which_exec.save_output_streams:
             stderr_path = os.path.join(cdist_object.stderr_path,
                                        'code-' + which)

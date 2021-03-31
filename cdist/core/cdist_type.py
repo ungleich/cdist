@@ -34,7 +34,7 @@ class InvalidTypeError(cdist.Error):
         self.source_path = os.path.realpath(self.type_absolute_path)
 
     def __str__(self):
-        return "Invalid type '%s' at '%s' defined at '%s'" % (
+        return "Invalid type '{}' at '{}' defined at '{}'".format(
                 self.type_path, self.type_absolute_path, self.source_path)
 
 
@@ -82,9 +82,9 @@ class CdistType:
                 yield cls(base_path, name)
             except InvalidTypeError as e:
                 # ignore invalid type, log warning and continue
-                msg = "Ignoring invalid type '%s' at '%s' defined at '%s'" % (
-                    e.type_path, e.type_absolute_path, e.source_path)
-                cls.log.warning(msg)
+                cls.log.warning("Ignoring invalid type '%s' at '%s' defined"
+                                " at '%s'", e.type_path, e.type_absolute_path,
+                                e.source_path)
                 # remove invalid from runtime conf dir
                 os.remove(e.type_absolute_path)
 
@@ -109,7 +109,7 @@ class CdistType:
         return cls._instances[name]
 
     def __repr__(self):
-        return '<CdistType %s>' % self.name
+        return '<CdistType {}>'.format(self.name)
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.name == other.name
