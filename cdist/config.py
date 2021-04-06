@@ -537,7 +537,7 @@ class Config:
         objects_changed = False
 
         for cdist_object in self.object_list():
-            if cdist_object.requirements_unfinished(
+            if cdist_object.has_requirements_unfinished(
                     cdist_object.requirements):
                 """We cannot do anything for this poor object"""
                 continue
@@ -548,7 +548,7 @@ class Config:
                 self.object_prepare(cdist_object)
                 objects_changed = True
 
-            if cdist_object.requirements_unfinished(
+            if cdist_object.has_requirements_unfinished(
                     cdist_object.autorequire):
                 """The previous step created objects we depend on -
                     wait for them
@@ -567,7 +567,8 @@ class Config:
 
         cargo = []
         for cdist_object in self.object_list():
-            if cdist_object.requirements_unfinished(cdist_object.requirements):
+            if cdist_object.has_requirements_unfinished(
+                    cdist_object.requirements):
                 """We cannot do anything for this poor object"""
                 continue
 
@@ -621,12 +622,13 @@ class Config:
 
         del cargo[:]
         for cdist_object in self.object_list():
-            if cdist_object.requirements_unfinished(cdist_object.requirements):
+            if cdist_object.has_requirements_unfinished(
+                    cdist_object.requirements):
                 """We cannot do anything for this poor object"""
                 continue
 
             if cdist_object.state == core.CdistObject.STATE_PREPARED:
-                if cdist_object.requirements_unfinished(
+                if cdist_object.has_requirements_unfinished(
                         cdist_object.autorequire):
                     """The previous step created objects we depend on -
                     wait for them

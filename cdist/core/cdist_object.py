@@ -280,7 +280,7 @@ class CdistObject:
                                '{}: {}').format(self, error))
 
     def requirements_unfinished(self, requirements):
-        """Return state whether requirements are satisfied"""
+        """Return unsatisfied requirements"""
 
         object_list = []
 
@@ -291,3 +291,14 @@ class CdistObject:
                 object_list.append(cdist_object)
 
         return object_list
+
+    def has_requirements_unfinished(self, requirements):
+        """Return whether requirements are satisfied"""
+
+        for requirement in requirements:
+            cdist_object = self.object_from_name(requirement)
+
+            if cdist_object.state != self.STATE_DONE:
+                return True
+
+        return False
