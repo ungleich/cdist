@@ -699,20 +699,22 @@ class Config:
             check for cycles.
         '''
         graph = {}
-        for cdist_object in self.object_list():
+
+        def _add_requirements(cdist_object, requirements):
             obj_name = cdist_object.name
             if obj_name not in graph:
                 graph[obj_name] = []
+
+            for requirement in cdist_object.requirements_unfinished(
+                    requirements):
+                graph[obj_name].append(requirement.name)
+
+        for cdist_object in self.object_list():
             if cdist_object.state == cdist_object.STATE_DONE:
                 continue
 
-            for requirement in cdist_object.requirements_unfinished(
-                    cdist_object.requirements):
-                graph[obj_name].append(requirement.name)
-
-            for requirement in cdist_object.requirements_unfinished(
-                    cdist_object.autorequire):
-                graph[obj_name].append(requirement.name)
+            _add_requirements(cdist_object, cdist_object.requirements)
+            _add_requirements(cdist_object, cdist_object.autorequire)
         return graph_check_cycle(graph)
 
     def iterate_until_finished(self):
