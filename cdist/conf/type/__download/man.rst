@@ -8,9 +8,6 @@ cdist-type__download - Download a file
 
 DESCRIPTION
 -----------
-Destination (``$__object_id``) in target host must be persistent storage
-in order to calculate checksum and decide if file must be (re-)downloaded.
-
 By default type will try to use ``wget``, ``curl`` or ``fetch``.
 If download happens in target (see ``--download``) then type will
 fallback to (and install) ``wget``.
@@ -25,14 +22,14 @@ REQUIRED PARAMETERS
 url
    File's URL.
 
-sum
-   Checksum of file going to be downloaded.
-   By default output of ``cksum`` without filename is expected.
-   Other hash formats supported with prefixes: ``md5:``, ``sha1:`` and ``sha256:``.
-
 
 OPTIONAL PARAMETERS
 -------------------
+sum
+   Checksum is used to decide if existing destination file must be redownloaded.
+   By default output of ``cksum`` without filename is expected.
+   Other hash formats supported with prefixes: ``md5:``, ``sha1:`` and ``sha256:``.
+
 download
    If ``local`` (default), then download file to local storage and copy
    it to target host. If ``remote``, then download happens in target.
@@ -81,7 +78,7 @@ Ander Punnar <ander-at-kvlt-dot-ee>
 
 COPYING
 -------
-Copyright \(C) 2020 Ander Punnar. You can redistribute it
+Copyright \(C) 2021 Ander Punnar. You can redistribute it
 and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
