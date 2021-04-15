@@ -27,6 +27,10 @@ psql_exec() {
 	su - "${postgres_user}" -c "psql postgres -twAc $(quote "$*")"
 }
 
+psql_conf_source() {
+	# NOTE: SHOW/SET are case-insentitive, so this command should also be.
+	psql_exec "SELECT CASE WHEN source = 'default' OR setting = boot_val THEN 'default' ELSE source END FROM pg_settings WHERE lower(name) = lower('$1')"
+}
 psql_conf_cmp() {
 	test "$(psql_exec "SHOW $1")" = "$2"
 }
@@ -40,8 +44,7 @@ if psql_conf_cmp "${conf_name}" "$(cat "${__object:?}/parameter/value")"
 then
 	echo present
 else
-	# NOTE: SHOW/SET are case-insentitive, so this command should also be.
-	case $(psql_exec "SELECT CASE WHEN source = 'default' OR setting = boot_val THEN 'default' ELSE source END FROM pg_settings WHERE lower(name) = lower('${conf_name}')")
+	case $(psql_conf_source "${conf_name}")
 	in
 		('')
 			# invalid configuration parameter
