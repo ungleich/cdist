@@ -28,20 +28,7 @@ quote() {
 	fi | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
 }
 
-case $(cat "${__global:?}/explorer/os")
-in
-	(netbsd)
-		postgres_user='pgsql'
-		;;
-	(openbsd)
-		postgres_user='_postgresql'
-		;;
-	(*)
-		postgres_user='postgres'
-		;;
-esac
-
-
+postgres_user=$(cat "${__object:?}/explorer/postgres_user")
 rolename=${__object_id:?}
 state_is=$(cat "${__object:?}/explorer/state")
 state_should=$(cat "${__object:?}/parameter/state")

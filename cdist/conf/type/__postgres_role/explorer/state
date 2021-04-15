@@ -19,19 +19,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-case $("${__explorer:?}/os")
-in
-	(netbsd)
-		postgres_user='pgsql'
-		;;
-	(openbsd)
-		postgres_user='_postgresql'
-		;;
-	(*)
-		postgres_user='postgres'
-		;;
-esac
-
+postgres_user=$("${__type_explorer:?}/postgres_user")
 rolename=${__object_id:?}
 
 
