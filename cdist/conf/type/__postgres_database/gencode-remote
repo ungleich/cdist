@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -18,49 +19,63 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+quote() {
+	for _arg
+	do
+		shift
+		if test -n "$(printf '%s' "${_arg}" | tr -d -c '\t\n \042-\047\050-\052\073-\077\133\\`|~' | tr -c '' '.')"
+		then
+			# needs quoting
+			set -- "$@" "'$(printf '%s' "${_arg}" | sed -e "s/'/'\\\\''/g")'"
+		else
+			set -- "$@" "${_arg}"
+		fi
+	done
+	unset _arg
 
+	# NOTE: Use printf because POSIX echo interprets escape sequences
+	printf '%s' "$*"
+}
 
-name="$__object_id"
-state_should="$(cat "$__object/parameter/state")"
-state_is="$(cat "$__object/explorer/state")"
 postgres_user=$(cat "${__object:?}/explorer/postgres_user")
 
-if [ "$state_should" != "$state_is" ]; then
-   case "$state_should" in
-      present)
-         owner=""
-         if [ -f "$__object/parameter/owner" ]; then
-            owner="-O \"$(cat "$__object/parameter/owner")\""
-         fi
+dbname=${__object_id:?}
+state_should=$(cat "${__object:?}/parameter/state")
+state_is=$(cat "${__object:?}/explorer/state")
 
-         template=""
-         if [ -f "$__object/parameter/template" ]; then
-            template="--template \"$(cat "$__object/parameter/template")\""
-         fi
-
-         encoding=""
-         if [ -f "$__object/parameter/encoding" ]; then
-            encoding="--encoding \"$(cat "$__object/parameter/encoding")\""
-         fi
-
-         lc_collate=""
-         if [ -f "$__object/parameter/lc-collate" ]; then
-            lc_collate="--lc-collate \"$(cat "$__object/parameter/lc-collate")\""
-         fi
-
-         lc_ctype=""
-         if [ -f "$__object/parameter/lc-ctype" ]; then
-            lc_ctype="--lc-ctype \"$(cat "$__object/parameter/lc-ctype")\""
-         fi
-
-         cat << EOF
-su - '$postgres_user' -c "createdb $owner \"$name\" $template $encoding $lc_collate $lc_ctype"
-EOF
-      ;;
-      absent)
-         cat << EOF
-su - '$postgres_user' -c "dropdb \"$name\""
-EOF
-      ;;
-   esac
+if test "${state_should}" = "$state_is"
+then
+	exit 0
 fi
+
+case ${state_should}
+in
+	(present)
+		set --
+
+		while read -r param_name opt
+		do
+			if test -f "${__object:?}/parameter/${param_name}"
+			then
+				set -- "$@" "${opt}" "$(cat "${__object:?}/parameter/${param_name}")"
+			fi
+		done <<-'EOF'
+		owner -O
+		template --template
+		encoding --encoding
+		lc_collate --lc-collate
+		lc_ctype --lc-ctype
+		EOF
+
+		set -- "$@" "${dbname}"
+
+		cat <<-EOF
+		su - $(quote "${postgres_user}") -c $(quote "$(quote createdb "$@")")
+		EOF
+		;;
+	(absent)
+		cat <<-EOF
+		su - $(quote "${postgres_user}") -c $(quote "$(quote dropdb "${dbname}")")
+		EOF
+		;;
+esac
