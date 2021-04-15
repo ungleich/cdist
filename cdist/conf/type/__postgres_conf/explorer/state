@@ -22,6 +22,52 @@
 postgres_user=$("${__type_explorer:?}/postgres_user")
 conf_name=${__object_id:?}
 
+tolower() { printf '%s' "$*" | tr '[:upper:]' '[:lower:]'; }
+
+tobytes() {
+	# NOTE: This function treats everything as base 2.
+	#       It is not compatible with SI units.
+	awk 'BEGIN { FS = "\n" }
+	/TB$/ { $0 = ($0 * 1024) "GB" }
+	/GB$/ { $0 = ($0 * 1024) "MB" }
+	/MB$/ { $0 = ($0 * 1024) "kB" }
+	/kB$/ { $0 = ($0 * 1024) "B" }
+	 /B?$/ { sub(/ *B?$/, "") }
+	($0*1) == $0  # is number
+	' <<-EOF
+	$1
+	EOF
+}
+
+tomillisecs() {
+	awk 'BEGIN { FS = "\n" }
+	    /d$/ { $0 = ($0 * 24) "h" }
+	    /h$/ { $0 = ($0 * 60) "min" }
+	  /min$/ { $0 = ($0 * 60) "s" }
+	/[^m]s$/ { $0 = ($0 * 1000) "ms" }
+	   /ms$/ { $0 *= 1 }
+	($0*1) == $0  # is number
+	' <<-EOF
+	$1
+	EOF
+}
+
+tobool() {
+	# prints either 'on' or 'off'
+	case $(tolower "$1")
+	in
+		(t|true|y|yes|on|1)
+			echo 'on' ;;
+		(f|false|n|no|off|0)
+			echo 'off' ;;
+		(*)
+			printf 'Inavlid bool value: %s\n' "$2" >&2
+			return 1
+			;;
+	esac
+	return 0
+}
+
 quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
 psql_exec() {
 	su - "${postgres_user}" -c "psql postgres -twAc $(quote "$*")"
@@ -31,9 +77,123 @@ psql_conf_source() {
 	# NOTE: SHOW/SET are case-insentitive, so this command should also be.
 	psql_exec "SELECT CASE WHEN source = 'default' OR setting = boot_val THEN 'default' ELSE source END FROM pg_settings WHERE lower(name) = lower('$1')"
 }
-psql_conf_cmp() {
-	test "$(psql_exec "SHOW $1")" = "$2"
-}
+psql_conf_cmp() (
+	IFS='|' read -r lower_name vartype setting unit <<-EOF
+	$(psql_exec "SELECT lower(name), vartype, setting, unit FROM pg_settings WHERE lower(name) = lower('$1')")
+	EOF
+
+	should_value=$2
+	is_value=${setting}
+
+	# The following case contains special cases for special settings.
+	case ${lower_name}
+	in
+		(archive_command)
+			if test "${setting}" = '(disabled)'
+			then
+				# DAFUQ PostgreSQL?!
+				# PostgreSQL returns (disabled) if the feature is inactive.
+				# We cannot compare the values unless it is enabled, first.
+				return 0
+			fi
+			;;
+		(archive_mode|backslash_quote|constraint_exclusion|force_parallel_mode|huge_pages|synchronous_commit)
+			# Although only 'on', 'off' are documented, PostgreSQL accepts all
+			# the "likely" variants of "on" and "off".
+			case $(tolower "${should_value}")
+			in
+				(on|off|true|false|yes|no|1|0)
+					should_value=$(tobool "${should_value}")
+					;;
+			esac
+			;;
+	esac
+
+	case ${vartype}
+	in
+		(bool)
+			test -z "${unit}" || {
+				# please fix the explorer if this error occurs.
+				printf 'units are not supported for vartype: %s\n' "${vartype}" >&2
+				exit 1
+			}
+
+			should_value=$(tobool "${should_value}")
+
+			test "${is_value}" = "${should_value}"
+			;;
+		(enum)
+			test -z "${unit}" || {
+				# please fix the explorer if this error occurs.
+				printf 'units are not supported with vartype: %s\n' "${vartype}" >&2
+				exit 1
+			}
+
+			# NOTE: All enums that are currently defined are lower case, but
+			#       PostgreSQL also accepts upper case spelling.
+			should_value=$(tolower "$2")
+
+			test "${is_value}" = "${should_value}"
+			;;
+		(integer)
+			# split multiples from unit, first (e.g. 8kB -> 8, kB)
+			case ${unit}
+			in
+				([0-9]*)
+					multiple=${unit%%[!0-9]*}
+					unit=${unit##*[0-9 ]}
+					;;
+				(*) multiple=1 ;;
+			esac
+
+			is_value=$((setting * multiple))${unit}
+
+			if expr "${should_value}" : '-\{0,1\}[0-9]*$' >/dev/null
+			then
+				# default unit
+				should_value=$((should_value * multiple))${unit}
+			fi
+
+			# then, do conversion
+			# NOTE: these conversions work for integers only!
+			case ${unit}
+			in
+				(B|[kMGT]B)
+					# bytes
+					is_bytes=$(tobytes "${is_value}")
+					should_bytes=$(tobytes "${should_value}")
+
+					test $((is_bytes)) -eq $((should_bytes))
+					;;
+				(ms|s|min|h|d)
+					# seconds
+					is_ms=$(tomillisecs "${is_value}")
+					should_ms=$(tomillisecs "${should_value}")
+
+					test $((is_ms)) -eq $((should_ms))
+					;;
+				('')
+					# no unit
+					is_int=${is_value}
+					should_int=${should_value}
+
+					test $((is_int)) -eq $((should_int))
+					;;
+			esac
+			;;
+		(real|string)
+			# NOTE: reals could possibly have units, but currently there none.
+
+			test -z "${unit}" || {
+				# please fix the explorer if this error occurs.
+				printf 'units are not supported with vartype: %s\n' "${vartype}" >&2
+				exit 1
+			}
+
+			test "${is_value}" = "${should_value}"
+			;;
+	esac
+)
 
 psql_exec 'SELECT 1' >/dev/null || {
 	echo 'Connection to PostgreSQL server failed' >&2
