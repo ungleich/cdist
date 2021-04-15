@@ -200,23 +200,24 @@ psql_exec 'SELECT 1' >/dev/null || {
 	exit 1
 }
 
-if psql_conf_cmp "${conf_name}" "$(cat "${__object:?}/parameter/value")"
-then
-	echo present
-else
-	case $(psql_conf_source "${conf_name}")
-	in
-		('')
-			# invalid configuration parameter
-			# (error message was already printed by SHOW command above.
-			#  Yes, it's a hack)
-			exit 1
-			;;
-		(default)
-			echo absent
-			;;
-		(*)
+case $(psql_conf_source "${conf_name}")
+in
+	('')
+		printf 'Invalid configuration parameter: %s\n' "${conf_name}" >&2
+		exit 1
+		;;
+	(default)
+		echo absent
+		;;
+	(*)
+		if ! test -f "${__object:?}/parameter/value"
+		then
+			echo present
+		elif psql_conf_cmp "${conf_name}" "$(cat "${__object:?}/parameter/value")"
+		then
+			echo present
+		else
 			echo different
-			;;
-	esac
-fi
+		fi
+		;;
+esac
