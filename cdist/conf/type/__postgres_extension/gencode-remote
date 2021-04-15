@@ -22,18 +22,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-case "$(cat "${__global}/explorer/os")"
-in
-   netbsd)
-      postgres_user='pgsql'
-      ;;
-   openbsd)
-      postgres_user='_postgresql'
-      ;;
-   *)
-      postgres_user='postgres'
-      ;;
-esac
+postgres_user=$(cat "${__object:?}/explorer/postgres_user")
 
 
 dbname=$(    echo "$__object_id" | cut -d":" -f1 )
