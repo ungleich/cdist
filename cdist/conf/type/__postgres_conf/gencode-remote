@@ -57,7 +57,7 @@ psql_cmd() {
 case ${state_should}
 in
 	(present)
-		test -s "${__object:?}/parameter/value" || {
+		test -n "${__object:?}/parameter/value" || {
 			echo 'Missing required parameter --value' >&2
 			exit 1
 		}
