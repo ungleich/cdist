@@ -20,21 +20,24 @@
 #
 
 postgres_user=$("${__type_explorer:?}/postgres_user")
-
 conf_name=${__object_id:?}
 
-su - "${postgres_user}" -c 'psql postgres -c "SELECT 1"' >/dev/null || {
+quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+psql_exec() {
+	su - "${postgres_user}" -c "psql postgres -twAc $(quote "$*")"
+}
+
+psql_exec 'SELECT 1' >/dev/null || {
 	echo 'Connection to PostgreSQL server failed' >&2
 	exit 1
 }
 
-if su - "${postgres_user}" -c "psql postgres -twAc 'SHOW ${conf_name}'" \
-	| cmp -s "${__object:?}/parameter/value" -
+if psql_exec "SHOW ${conf_name}" | cmp -s "${__object:?}/parameter/value" -
 then
 	echo present
 else
 	# NOTE: SHOW/SET are case-insentitive, so this command should also be.
-	case $(su - "${postgres_user}" -c "psql postgres -tAwc \"SELECT CASE WHEN source = 'default' OR setting = boot_val THEN 'default' ELSE source END FROM pg_settings WHERE lower(name) = lower('${conf_name}')\"")
+	case $(psql_exec "SELECT CASE WHEN source = 'default' OR setting = boot_val THEN 'default' ELSE source END FROM pg_settings WHERE lower(name) = lower('${conf_name}')")
 	in
 		('')
 			# invalid configuration parameter
