@@ -21,9 +21,14 @@
 
 postgres_user=$("${__type_explorer:?}/postgres_user")
 
-name=${__object_id:?}
+dbname=${__object_id:?}
 
-if test -n "$(su - "${postgres_user}" -c "psql postgres -twAc \"SELECT 1 FROM pg_database WHERE datname='${name}'\"")"
+quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+psql_exec() {
+	su - "${postgres_user}" -c "psql $(quote "$1") -twAc $(quote "$2")"
+}
+
+if psql_exec postgres "SELECT datname FROM pg_database" | grep -qFx "${dbname}"
 then
 	echo 'present'
 else
