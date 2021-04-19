@@ -43,8 +43,7 @@ role_properties=$(
 	  BEGIN { RS = "\036"; FS = "\034" }
 	  /^\([0-9]+ rows?\)/ { exit }
 	  NR == 1 { for (i = 1; i <= NF; i++) cols[i] = $i; next }
-	  NR == 2 { for (i = 1; i <= NF; i++) printf "%s=%s\n", cols[i], $i }
-	  '
+	  NR == 2 { for (i = 1; i <= NF; i++) printf "%s=%s\n", cols[i], $i }'
 )
 
 if test -n "${role_properties}"
@@ -78,12 +77,10 @@ then
 	# Check password
 	passwd_stored=$(
 		psql_query "SELECT rolpassword FROM pg_authid WHERE rolname = '${rolename}'" \
-		| awk 'BEGIN { RS = "\036" } NR == 2'
-		printf .
-	)
-	passwd_stored=${passwd_stored%?.}
+		| awk 'BEGIN { RS = "\036" } NR == 2 { printf "%s.", $0 }')
+	passwd_stored=${passwd_stored%.}
 
-	if test -f "${__object:?}/parameter/password"
+	if test -s "${__object:?}/parameter/password"
 	then
 		passwd_should=$(cat "${__object:?}/parameter/password"; printf .)
 	fi

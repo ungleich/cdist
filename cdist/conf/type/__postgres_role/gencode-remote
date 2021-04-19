@@ -46,7 +46,7 @@ psql_query() {
 
 psql_set_password() {
 	# NOTE: Always make sure that the password does not end up in psql_history!
-	# NOTE: Never set an empty string as the password, because they can be
+	# NOTE: Never set an empty string as the password, because it can be
 	#       interpreted differently by different tooling.
 	if test -s "${__object:?}/parameter/password"
 	then
