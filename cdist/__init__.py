@@ -64,7 +64,7 @@ REMOTE_EXEC = "ssh -o User=root"
 REMOTE_CMDS_CLEANUP_PATTERN = "ssh -o User=root -O exit -S {}"
 
 
-MIN_SUPPORTED_PYTHON_VERSION = '3.5'
+MIN_SUPPORTED_PYTHON_VERSION = (3, 5)
 
 
 class Error(Exception):
