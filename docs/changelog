@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.9.6: 2021-04-20
 	* Type __pyvenv: Fix user example in man page (Dennis Camera)
 	* Core: config: Make local state directory available to custom remotes (Steven Armstrong
 	* Type __ssh_authorized_key: grep only if file exists (Dennis Camera)
