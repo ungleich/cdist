@@ -872,7 +872,7 @@ class Config:
             if not self.dry_run:
                 if cdist_object.code_local:
                     self.log.trace("Executing local code for %s",
-                                   cdist_object.ame))
+                                   cdist_object.name)
                     self._timeit(self.code.run_code_local,
                                  "Type run code local for {}".format(
                                      cdist_object.name))(cdist_object)
