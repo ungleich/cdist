@@ -24,12 +24,10 @@ import os
 import glob
 import subprocess
 import logging
-import multiprocessing
 
 import cdist
 import cdist.exec.util as util
 import cdist.util.ipaddr as ipaddr
-from cdist.mputil import mp_pool_run
 
 
 def _wrap_addr(addr):
@@ -176,19 +174,19 @@ class Remote:
                 # create archive
                 tarpath, fcnt = autil.tar(source, self.archiving_mode)
                 if tarpath is None:
-                    self.log.trace(("Files count {} is lower than {} limit, "
-                                    "skipping archiving").format(
-                                        fcnt, autil.FILES_LIMIT))
+                    self.log.trace("Files count %d is lower than %d limit, "
+                                   "skipping archiving",
+                                   fcnt, autil.FILES_LIMIT)
                 else:
-                    self.log.trace(("Archiving mode, tarpath: %s, file count: "
-                                    "%s"), tarpath, fcnt)
+                    self.log.trace("Archiving mode, tarpath: %s, file count: "
+                                   "%s", tarpath, fcnt)
                     # get archive name
                     tarname = os.path.basename(tarpath)
                     self.log.trace("Archiving mode tarname: %s", tarname)
                     # archive path at the remote
                     desttarpath = os.path.join(destination, tarname)
-                    self.log.trace(
-                        "Archiving mode desttarpath: %s", desttarpath)
+                    self.log.trace("Archiving mode desttarpath: %s",
+                                   desttarpath)
                     # transfer archive to the remote side
                     self.log.trace("Archiving mode: transferring")
                     self._transfer_file(tarpath, desttarpath)
@@ -262,9 +260,10 @@ class Remote:
         # remotely in e.g. csh and setting up CDIST_REMOTE_SHELL to e.g.
         # /bin/csh will execute this script in the right way.
         if env:
-            remote_env = [" export %s=%s;" % item for item in env.items()]
-            string_cmd = ("/bin/sh -c '" + " ".join(remote_env) +
-                          " ".join(command) + "'")
+            remote_env = [" export {env[0]}={env[1]};".format(env=item)
+                          for item in env.items()]
+            string_cmd = ("/bin/sh -c '{}{}'").format(" ".join(remote_env),
+                                                      " ".join(command))
             cmd.append(string_cmd)
         else:
             cmd.extend(command)
@@ -278,7 +277,7 @@ class Remote:
 
         """
         assert isinstance(command, (list, tuple)), (
-                "list or tuple argument expected, got: %s" % command)
+                "list or tuple argument expected, got: {}".format(command))
 
         close_stdout = False
         close_stderr = False

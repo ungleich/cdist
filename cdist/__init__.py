@@ -67,7 +67,7 @@ ORDER_DEP_STATE_NAME = 'order_dep_state'
 TYPEORDER_DEP_NAME = 'typeorder_dep'
 
 
-MIN_SUPPORTED_PYTHON_VERSION = '3.5'
+MIN_SUPPORTED_PYTHON_VERSION = (3, 5)
 
 
 class Error(Exception):

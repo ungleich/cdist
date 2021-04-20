@@ -193,7 +193,7 @@ class Config:
                     fd.write(sys.stdin.read())
             except (IOError, OSError) as e:
                 raise cdist.Error(("Creating tempfile for stdin data "
-                                   "failed: %s" % e))
+                                   "failed: {}").format(e))
 
             args.manifest = initial_manifest_temp_path
             atexit.register(lambda: os.remove(initial_manifest_temp_path))
@@ -276,15 +276,15 @@ class Config:
                     host_tags = None
             host_base_path, hostdir = cls.create_host_base_dirs(
                 host, base_root_path)
-            log.debug("Base root path for target host \"{}\" is \"{}\"".format(
-                host, host_base_path))
+            log.debug("Base root path for target host \"%s\" is \"%s\"",
+                      host, host_base_path)
 
             hostcnt += 1
             if args.parallel:
                 pargs = (host, host_tags, host_base_path, hostdir, args, True,
                          configuration)
-                log.trace(("Args for multiprocessing operation "
-                           "for host {}: {}".format(host, pargs)))
+                log.trace("Args for multiprocessing operation for host %s: %s",
+                          host, pargs)
                 process_args.append(pargs)
             else:
                 try:
@@ -301,10 +301,10 @@ class Config:
             except cdist.Error:
                 failed_hosts.append(host)
         elif args.parallel:
-            log.trace("Multiprocessing start method is {}".format(
-                multiprocessing.get_start_method()))
-            log.trace(("Starting multiprocessing Pool for {} "
-                       "parallel host operation".format(args.parallel)))
+            log.trace("Multiprocessing start method is %s",
+                      multiprocessing.get_start_method())
+            log.trace("Starting multiprocessing Pool for %d parallel host"
+                      " operation", args.parallel)
 
             results = mp_pool_run(cls.onehost,
                                   process_args,
@@ -399,16 +399,13 @@ class Config:
 
             remote_exec, remote_copy, cleanup_cmd = cls._resolve_remote_cmds(
                 args)
-            log.debug("remote_exec for host \"{}\": {}".format(
-                host, remote_exec))
-            log.debug("remote_copy for host \"{}\": {}".format(
-                host, remote_copy))
+            log.debug("remote_exec for host \"%s\": %s", host, remote_exec)
+            log.debug("remote_copy for host \"%s\": %s", host, remote_copy)
 
             family = cls._address_family(args)
-            log.debug("address family: {}".format(family))
+            log.debug("address family: %s", family)
             target_host = cls.resolve_target_addresses(host, family)
-            log.debug("target_host for host \"{}\": {}".format(
-                host, target_host))
+            log.debug("target_host for host \"%s\": %s", host, target_host)
 
             local = cdist.exec.local.Local(
                 target_host=target_host,
@@ -422,6 +419,9 @@ class Config:
                 configuration=configuration,
                 exec_path=sys.argv[0],
                 save_output_streams=args.save_output_streams)
+
+            # Make __global state dir available to custom remote scripts.
+            os.environ['__global'] = local.base_path
 
             remote = cdist.exec.remote.Remote(
                 target_host=target_host,
@@ -475,8 +475,8 @@ class Config:
         """Do what is most often done: deploy & cleanup"""
         start_time = time.time()
 
-        self.log.info("Starting {} run".format(
-            'dry' if self.dry_run else 'configuration'))
+        self.log.info("Starting %s run",
+                      'dry' if self.dry_run else 'configuration')
 
         self._init_files_dirs()
         self.local.collect_python_types()
@@ -495,9 +495,9 @@ class Config:
         self._remove_files_dirs()
 
         self.local.save_cache(start_time)
-        self.log.info("Finished {} run in {:.2f} seconds".format(
+        self.log.info("Finished %s run in %.2f seconds",
                       'dry' if self.dry_run else 'successful',
-                      time.time() - start_time))
+                      time.time() - start_time)
 
     def cleanup(self):
         self.log.debug("Running cleanup commands")
@@ -521,8 +521,8 @@ class Config:
                 self.local.object_path, self.local.type_path,
                 self.local.object_marker_name):
             if cdist_object.cdist_type.is_install:
-                self.log.debug(("Running in config mode, ignoring install "
-                                "object: {0}").format(cdist_object))
+                self.log.debug("Running in config mode, ignoring install "
+                               "object: %s", cdist_object)
             else:
                 yield cdist_object
 
@@ -542,7 +542,7 @@ class Config:
         objects_changed = False
 
         for cdist_object in self.object_list():
-            if cdist_object.requirements_unfinished(
+            if cdist_object.has_requirements_unfinished(
                     cdist_object.requirements):
                 """We cannot do anything for this poor object"""
                 continue
@@ -553,7 +553,7 @@ class Config:
                 self.object_prepare(cdist_object)
                 objects_changed = True
 
-            if cdist_object.requirements_unfinished(
+            if cdist_object.has_requirements_unfinished(
                     cdist_object.autorequire):
                 """The previous step created objects we depend on -
                     wait for them
@@ -567,13 +567,13 @@ class Config:
         return objects_changed
 
     def _iterate_once_parallel(self):
-        self.log.debug("Iteration in parallel mode in {} jobs".format(
-            self.jobs))
+        self.log.debug("Iteration in parallel mode in %d jobs", self.jobs)
         objects_changed = False
 
         cargo = []
         for cdist_object in self.object_list():
-            if cdist_object.requirements_unfinished(cdist_object.requirements):
+            if cdist_object.has_requirements_unfinished(
+                    cdist_object.requirements):
                 """We cannot do anything for this poor object"""
                 continue
 
@@ -590,8 +590,8 @@ class Config:
             self.object_prepare(cargo[0])
             objects_changed = True
         elif cargo:
-            self.log.trace("Multiprocessing start method is {}".format(
-                multiprocessing.get_start_method()))
+            self.log.trace("Multiprocessing start method is %s",
+                           multiprocessing.get_start_method())
 
             self.log.trace("Multiprocessing cargo: %s", cargo)
 
@@ -605,9 +605,8 @@ class Config:
                                 "sequentially"))
                 self.explorer.transfer_type_explorers(cargo_types.pop())
             else:
-                self.log.trace(("Starting multiprocessing Pool for {} "
-                                "parallel types explorers transferring".format(
-                                    nt)))
+                self.log.trace("Starting multiprocessing Pool for %d "
+                               "parallel types explorers transferring", nt)
                 args = [
                     (ct, ) for ct in cargo_types
                 ]
@@ -616,8 +615,8 @@ class Config:
                 self.log.trace(("Multiprocessing for parallel transferring "
                                 "types' explorers finished"))
 
-            self.log.trace(("Starting multiprocessing Pool for {} parallel "
-                            "objects preparation".format(n)))
+            self.log.trace("Starting multiprocessing Pool for %d parallel "
+                           "objects preparation", n)
             args = [
                 (c, False, ) for c in cargo
             ]
@@ -628,12 +627,13 @@ class Config:
 
         del cargo[:]
         for cdist_object in self.object_list():
-            if cdist_object.requirements_unfinished(cdist_object.requirements):
+            if cdist_object.has_requirements_unfinished(
+                    cdist_object.requirements):
                 """We cannot do anything for this poor object"""
                 continue
 
             if cdist_object.state == core.CdistObject.STATE_PREPARED:
-                if cdist_object.requirements_unfinished(
+                if cdist_object.has_requirements_unfinished(
                         cdist_object.autorequire):
                     """The previous step created objects we depend on -
                     wait for them
@@ -669,10 +669,10 @@ class Config:
                 self.object_run(chunk[0])
                 objects_changed = True
             elif chunk:
-                self.log.trace("Multiprocessing start method is {}".format(
-                    multiprocessing.get_start_method()))
-                self.log.trace(("Starting multiprocessing Pool for {} "
-                               "parallel object run".format(n)))
+                self.log.trace("Multiprocessing start method is %s",
+                               multiprocessing.get_start_method())
+                self.log.trace("Starting multiprocessing Pool for %d "
+                               "parallel object run", n)
                 args = [
                     (c, ) for c in chunk
                 ]
@@ -704,20 +704,22 @@ class Config:
             check for cycles.
         '''
         graph = {}
-        for cdist_object in self.object_list():
+
+        def _add_requirements(cdist_object, requirements):
             obj_name = cdist_object.name
             if obj_name not in graph:
                 graph[obj_name] = []
+
+            for requirement in cdist_object.requirements_unfinished(
+                    requirements):
+                graph[obj_name].append(requirement.name)
+
+        for cdist_object in self.object_list():
             if cdist_object.state == cdist_object.STATE_DONE:
                 continue
 
-            for requirement in cdist_object.requirements_unfinished(
-                    cdist_object.requirements):
-                graph[obj_name].append(requirement.name)
-
-            for requirement in cdist_object.requirements_unfinished(
-                    cdist_object.autorequire):
-                graph[obj_name].append(requirement.name)
+            _add_requirements(cdist_object, cdist_object.requirements)
+            _add_requirements(cdist_object, cdist_object.autorequire)
         return graph_check_cycle(graph)
 
     def iterate_until_finished(self):
@@ -771,7 +773,7 @@ class Config:
 
             raise cdist.UnresolvableRequirementsError(
                     ("The requirements of the following objects could not be "
-                     "resolved:\n%s") % ("\n".join(info_string)))
+                     "resolved:\n{}").format("\n".join(info_string)))
 
     def _handle_deprecation(self, cdist_object):
         cdist_type = cdist_object.cdist_type
@@ -811,9 +813,10 @@ class Config:
     def object_prepare(self, cdist_object, transfer_type_explorers=True):
         """Prepare object: Run type explorer + manifest"""
         self._handle_deprecation(cdist_object)
-        self.log.verbose("Preparing object {}".format(cdist_object.name))
-        self.log.verbose(
-            "Running manifest and explorers for " + cdist_object.name)
+        self.log.verbose("Preparing object %s", cdist_object.name)
+        self.log.verbose("Running manifest and explorers for %s",
+                         cdist_object.name)
+        self.explorer.run_type_explorers(cdist_object, transfer_type_explorers)
         try:
             self.log.verbose("Preparing object {}".format(cdist_object.name))
             self.log.verbose(
@@ -838,13 +841,13 @@ class Config:
     def object_run(self, cdist_object):
         """Run gencode and code for an object"""
         try:
-            self.log.verbose("Running object " + cdist_object.name)
+            self.log.verbose("Running object %s", cdist_object.name)
             if cdist_object.state == core.CdistObject.STATE_DONE:
                 raise cdist.Error(("Attempting to run an already finished "
-                                   "object: %s"), cdist_object)
+                                   "object: {}").format(cdist_object))
 
             # Generate
-            self.log.debug("Generating code for %s" % (cdist_object.name))
+            self.log.debug("Generating code for %s", cdist_object.name)
             if pytype_util.is_python_type(cdist_object.cdist_type):
                 cdist_object.code_local = ''
                 cdist_object.code_remote = self._timeit(
@@ -865,24 +868,24 @@ class Config:
 
             # Execute
             if cdist_object.code_local or cdist_object.code_remote:
-                self.log.info("Processing %s" % (cdist_object.name))
+                self.log.info("Processing %s", cdist_object.name)
             if not self.dry_run:
                 if cdist_object.code_local:
-                    self.log.trace("Executing local code for %s"
-                                   % (cdist_object.name))
+                    self.log.trace("Executing local code for %s",
+                                   cdist_object.ame))
                     self._timeit(self.code.run_code_local,
                                  "Type run code local for {}".format(
                                      cdist_object.name))(cdist_object)
                 if cdist_object.code_remote:
-                    self.log.trace("Executing remote code for %s"
-                                   % (cdist_object.name))
+                    self.log.trace("Executing remote code for %s",
+                                   cdist_object.name)
                     self.code.transfer_code_remote(cdist_object)
                     self._timeit(self.code.run_code_remote,
                                  "Type run code remote for {}".format(
                                      cdist_object.name))(cdist_object)
 
             # Mark this object as done
-            self.log.trace("Finishing run of " + cdist_object.name)
+            self.log.trace("Finishing run of %s", cdist_object.name)
             cdist_object.state = core.CdistObject.STATE_DONE
         except cdist.Error as e:
             raise cdist.CdistObjectError(cdist_object, e)

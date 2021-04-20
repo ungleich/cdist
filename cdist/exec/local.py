@@ -155,10 +155,10 @@ class Local:
 
     def _setup_object_marker_file(self):
         with open(self.object_marker_file, 'w') as fd:
-            fd.write("%s\n" % self.object_marker_name)
+            fd.write("{}\n".format(self.object_marker_name))
 
-        self.log.trace("Object marker %s saved in %s" % (
-            self.object_marker_name, self.object_marker_file))
+        self.log.trace("Object marker %s saved in %s",
+                       self.object_marker_name, self.object_marker_file)
 
     def _init_cache_dir(self, cache_dir):
         home_dir = cdist.home_dir()
@@ -187,7 +187,7 @@ class Local:
 
         """
         assert isinstance(command, (list, tuple)), (
-                "list or tuple argument expected, got: %s" % command)
+                "list or tuple argument expected, got: {}".format(command))
 
         quiet = self.quiet_mode or quiet_mode
         do_save_output = save_output and not quiet and self.save_output_streams
@@ -292,14 +292,12 @@ class Local:
         return cache_subpath
 
     def save_cache(self, start_time=time.time()):
-        self.log.trace("cache subpath pattern: {}".format(
-            self.cache_path_pattern))
+        self.log.trace("cache subpath pattern: %s", self.cache_path_pattern)
         cache_subpath = self._cache_subpath(start_time,
                                             self.cache_path_pattern)
-        self.log.debug("cache subpath: {}".format(cache_subpath))
+        self.log.debug("cache subpath: %s", cache_subpath)
         destination = os.path.join(self.cache_path, cache_subpath)
-        self.log.trace(("Saving cache: " + self.base_path + " to " +
-                        destination))
+        self.log.trace("Saving cache %s to %s", self.base_path, destination)
 
         if not os.path.exists(destination):
             shutil.move(self.base_path, destination)
@@ -335,7 +333,7 @@ class Local:
 
         # Iterate over all directories and link the to the output dir
         for conf_dir in self.conf_dirs:
-            self.log.debug("Checking conf_dir %s ..." % (conf_dir))
+            self.log.debug("Checking conf_dir %s ...", conf_dir)
             for sub_dir in CONF_SUBDIRS_LINKED:
                 current_dir = os.path.join(conf_dir, sub_dir)
 
@@ -353,12 +351,13 @@ class Local:
                     if os.path.exists(dst):
                         os.unlink(dst)
 
-                    self.log.trace("Linking %s to %s ..." % (src, dst))
+                    self.log.trace("Linking %s to %s ...", src, dst)
                     try:
                         os.symlink(src, dst)
                     except OSError as e:
-                        raise cdist.Error("Linking %s %s to %s failed: %s" % (
-                            sub_dir, src, dst, e.__str__()))
+                        raise cdist.Error(
+                            "Linking {} {} to {} failed: {}".format(
+                                sub_dir, src, dst, e.__str__()))
 
     def _link_types_for_emulator(self):
         """Link emulator to types"""
@@ -371,7 +370,7 @@ class Local:
                 os.symlink(src, dst)
             except OSError as e:
                 raise cdist.Error(
-                        "Linking emulator from %s to %s failed: %s" % (
+                        "Linking emulator from {} to {} failed: {}".format(
                             src, dst, e.__str__()))
 
     def collect_python_types(self):

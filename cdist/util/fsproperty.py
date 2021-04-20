@@ -30,7 +30,7 @@ class AbsolutePathRequiredError(cdist.Error):
         self.path = path
 
     def __str__(self):
-        return 'Absolute path required, got: %s' % self.path
+        return 'Absolute path required, got: {}'.format(self.path)
 
 
 class FileList(collections.MutableSequence):
@@ -218,7 +218,7 @@ class FileBasedProperty:
 
     def _get_attribute(self, instance, owner):
         name = self._get_property_name(owner)
-        attribute_name = '__%s' % name
+        attribute_name = '__{}'.format(name)
         if not hasattr(instance, attribute_name):
             path = self._get_path(instance)
             attribute_instance = self.attribute_class(path)

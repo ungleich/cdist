@@ -72,9 +72,11 @@ def commandline():
 
 
 if __name__ == "__main__":
-    if sys.version < cdist.MIN_SUPPORTED_PYTHON_VERSION:
-        print('Python >= {} is required on the source host.'.format(
-                cdist.MIN_SUPPORTED_PYTHON_VERSIO), file=sys.stderr)
+    if sys.version_info[:3] < cdist.MIN_SUPPORTED_PYTHON_VERSION:
+        print(
+            'Python >= {} is required on the source host.'.format(
+                ".".join(map(str, cdist.MIN_SUPPORTED_PYTHON_VERSION))),
+            file=sys.stderr)
         sys.exit(1)
 
     exit_code = 0

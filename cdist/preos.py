@@ -49,7 +49,7 @@ def scan_preos_dir_plugins(dir):
                 c = cm[1]
                 yield from preos_plugin(c)
         except ImportError as e:
-            log.warning("Cannot import '{}': {}".format(module_name, e))
+            log.warning("Cannot import '%s': %s", module_name, e)
 
 
 def find_preos_plugins():
@@ -102,7 +102,7 @@ class PreOS:
         parser.add_argument('remainder_args', nargs=argparse.REMAINDER)
         args = parser.parse_args(argv[1:])
         cdist.argparse.handle_loglevel(args)
-        log.debug("preos args : {}".format(args))
+        log.debug("preos args : %s", args)
 
         conf_dirs = util.resolve_conf_dirs_from_config_and_args(args)
 
@@ -122,7 +122,7 @@ class PreOS:
                 func_args = [preos, args.remainder_args, ]
             else:
                 func_args = [args.remainder_args, ]
-            log.info("Running preos : {}".format(preos_name))
+            log.info("Running preos : %s", preos_name)
             func(*func_args)
         else:
             raise cdist.Error(

@@ -5,6 +5,16 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.9.6: 2021-04-20
+	* Type __pyvenv: Fix user example in man page (Dennis Camera)
+	* Core: config: Make local state directory available to custom remotes (Steven Armstrong
+	* Type __ssh_authorized_key: grep only if file exists (Dennis Camera)
+	* Type __sshd_config: Whitelist OpenBMC (Dennis Camera)
+	* Core: Maintain object relationship graph in cdist cache (Darko Poljak)
+	* Type __git: Fix numeric owner and group handling (Dennis Camera)
+	* Type __pyvenv: Fix numeric owner and group handling (Dennis Camera)
+	* Type __download: Make sum parameter optional (Ander Punnar)
+
 6.9.5: 2021-02-28
 	* Core: preos: Fix passing cdist debug parameter (Darko Poljak)
 	* Type __sshd_config: Produce error if invalid config is generated, fix processing of AuthenticationMethods and AuthorizedKeysFile, document explorer bug (Dennis Camera)

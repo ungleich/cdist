@@ -131,18 +131,17 @@ class Explorer:
             self._run_global_explorer(explorer, out_path)
 
     def _run_global_explorers_parallel(self, out_path):
-        self.log.debug("Running global explorers in {} parallel jobs".format(
-            self.jobs))
-        self.log.trace("Multiprocessing start method is {}".format(
-            multiprocessing.get_start_method()))
-        self.log.trace(("Starting multiprocessing Pool for global "
-                       "explorers run"))
+        self.log.debug("Running global explorers in %s parallel jobs",
+                       self.jobs)
+        self.log.trace("Multiprocessing start method is %s",
+                       multiprocessing.get_start_method())
+        self.log.trace("Starting multiprocessing Pool for global explorers"
+                       " run")
         args = [
             (e, out_path, ) for e in self.list_global_explorer_names()
         ]
         mp_pool_run(self._run_global_explorer, args, jobs=self.jobs)
-        self.log.trace(("Multiprocessing run for global explorers "
-                        "finished"))
+        self.log.trace("Multiprocessing run for global explorers finished")
 
     # logger is not pickable, so remove it when we pickle
     def __getstate__(self):
@@ -161,8 +160,8 @@ class Explorer:
         self.remote.transfer(self.local.global_explorer_path,
                              self.remote.global_explorer_path,
                              self.jobs)
-        self.remote.run(["chmod", "0700",
-                         "%s/*" % (self.remote.global_explorer_path)])
+        self.remote.run(["chmod", "0700", "{}/*".format(
+            self.remote.global_explorer_path)])
 
     def run_global_explorer(self, explorer):
         """Run the given global explorer and return it's output."""
@@ -184,15 +183,14 @@ class Explorer:
         in the object.
 
         """
-        self.log.verbose("Running type explorers for {}".format(
-            cdist_object.cdist_type))
+        self.log.verbose("Running type explorers for %s",
+                         cdist_object.cdist_type)
         if transfer_type_explorers:
             self.log.trace("Transferring type explorers for type: %s",
                            cdist_object.cdist_type)
             self.transfer_type_explorers(cdist_object.cdist_type)
         else:
-            self.log.trace(("No need for transferring type explorers for "
-                            "type: %s"),
+            self.log.trace("No need for transferring type explorers for %s",
                            cdist_object.cdist_type)
         self.log.trace("Transferring object parameters for object: %s",
                        cdist_object.name)
@@ -236,15 +234,15 @@ class Explorer:
            remote side."""
         if cdist_type.explorers:
             if cdist_type.name in self._type_explorers_transferred:
-                self.log.trace(("Skipping retransfer of type explorers "
-                                "for: %s"), cdist_type)
+                self.log.trace("Skipping retransfer of type explorers for: %s",
+                               cdist_type)
             else:
                 source = os.path.join(self.local.type_path,
                                       cdist_type.explorer_path)
                 destination = os.path.join(self.remote.type_path,
                                            cdist_type.explorer_path)
                 self.remote.transfer(source, destination)
-                self.remote.run(["chmod", "0700", "%s/*" % (destination)])
+                self.remote.run(["chmod", "0700", "{}/*".format(destination)])
                 self._type_explorers_transferred.append(cdist_type.name)
 
     def transfer_object_parameters(self, cdist_object):

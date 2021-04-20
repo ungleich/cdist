@@ -34,17 +34,17 @@ class IllegalObjectIdError(cdist.Error):
         self.message = message or 'Illegal object id'
 
     def __str__(self):
-        return '%s: %s' % (self.message, self.object_id)
+        return '{}: {}'.format(self.message, self.object_id)
 
 
 class MissingObjectIdError(cdist.Error):
     def __init__(self, type_name):
         self.type_name = type_name
-        self.message = ("Type %s requires object id (is not a "
-                        "singleton type)") % self.type_name
+        self.message = ("Type {} requires object id (is not a "
+                        "singleton type)").format(self.type_name)
 
     def __str__(self):
-        return '%s' % (self.message)
+        return '{}'.format(self.message)
 
 
 class CdistObject:
@@ -142,7 +142,7 @@ class CdistObject:
             if self.object_marker in self.object_id.split(os.sep):
                 raise IllegalObjectIdError(
                         self.object_id, ('object_id may not contain '
-                                         '\'%s\'') % self.object_marker)
+                                         '\'{}\'').format(self.object_marker))
             if '//' in self.object_id:
                 raise IllegalObjectIdError(
                         self.object_id, 'object_id may not contain //')
@@ -189,7 +189,7 @@ class CdistObject:
                               object_id=object_id)
 
     def __repr__(self):
-        return '<CdistObject %s>' % self.name
+        return '<CdistObject {}>'.format(self.name)
 
     def __eq__(self, other):
         """define equality as 'name is the same'"""
@@ -247,6 +247,13 @@ class CdistObject:
             lambda obj: os.path.join(obj.absolute_path, 'typeorder'))
     typeorder_dep = fsproperty.FileListProperty(
             lambda obj: os.path.join(obj.absolute_path, 'typeorder_dep'))
+    # objects without parents are objects specified in init manifest
+    parents = fsproperty.FileListProperty(
+            lambda obj: os.path.join(obj.absolute_path, 'parents'))
+    # objects without children are object of types that do not reuse other
+    # types
+    children = fsproperty.FileListProperty(
+            lambda obj: os.path.join(obj.absolute_path, 'children'))
 
     def cleanup(self):
         try:
@@ -270,10 +277,10 @@ class CdistObject:
                 os.makedirs(path, exist_ok=allow_overwrite)
         except EnvironmentError as error:
             raise cdist.Error(('Error creating directories for cdist object: '
-                               '%s: %s') % (self, error))
+                               '{}: {}').format(self, error))
 
     def requirements_unfinished(self, requirements):
-        """Return state whether requirements are satisfied"""
+        """Return unsatisfied requirements"""
 
         object_list = []
 
@@ -284,3 +291,14 @@ class CdistObject:
                 object_list.append(cdist_object)
 
         return object_list
+
+    def has_requirements_unfinished(self, requirements):
+        """Return whether requirements are satisfied"""
+
+        for requirement in requirements:
+            cdist_object = self.object_from_name(requirement)
+
+            if cdist_object.state != self.STATE_DONE:
+                return True
+
+        return False

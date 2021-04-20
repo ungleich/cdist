@@ -8,6 +8,12 @@ then
     exit 0
 fi
 
+if [ ! -f "$__object/parameter/sum" ]
+then
+    echo 'present'
+    exit 0
+fi
+
 sum_should="$( cat "$__object/parameter/sum" )"
 
 if [ -f "$__object/parameter/cmd-sum" ]
