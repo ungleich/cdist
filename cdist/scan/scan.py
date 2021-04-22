@@ -61,20 +61,22 @@ import datetime
 
 import cdist.config
 
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger("scan")
-
 
 class Trigger(object):
     """
     Trigger an ICMPv6EchoReply from all hosts that are alive
     """
 
-    def __init__(self, interfaces=None, verbose=False):
+    def __init__(self, interfaces, sleeptime, verbose=False):
         self.interfaces = interfaces
+
+        # Used by scapy / send in trigger/2.
         self.verbose = verbose
 
-        # Wait 5 seconds before triggering again - FIXME: add parameter
-        self.sleeptime = 5
+        # Delay in seconds between sent ICMPv6EchoRequests.
+        self.sleeptime = sleeptime
 
     def start(self):
         self.processes = []
@@ -93,9 +95,12 @@ class Trigger(object):
             time.sleep(self.sleeptime)
 
     def trigger(self, interface):
-        packet = IPv6(dst="ff02::1{}".format(interface)) / ICMPv6EchoRequest()
-        log.debug("Sending request on %s", interface)
-        send(packet, verbose=self.verbose)
+        try:
+            log.debug("Sending ICMPv6EchoRequest on %s", interface)
+            packet = IPv6(dst="ff02::1%{}".format(interface)) / ICMPv6EchoRequest()
+            send(packet, verbose=self.verbose)
+        except Exception as e:
+            log.error( "Could not send ICMPv6EchoRequest: %s", e)
 
 
 class Scanner(object):
@@ -103,7 +108,7 @@ class Scanner(object):
     Scan for replies of hosts, maintain the up-to-date database
     """
 
-    def __init__(self, interfaces=None, args=None, outdir=None):
+    def __init__(self, interfaces, args=None, outdir=None):
         self.interfaces = interfaces
 
         if outdir:
@@ -148,47 +153,9 @@ class Scanner(object):
 
     def scan(self):
         log.debug("Scanning - zzzzz")
-        sniff(iface=self.interfaces,
-              filter="icmp6",
-              prn=self.handle_pkg)
-
-
-if __name__ == '__main__':
-    t = Trigger(interfaces=["wlan0"])
-    t.start()
-
-    # Scanner can listen on many interfaces at the same time
-    s = Scanner(interfaces=["wlan0"])
-    s.scan()
-
-    # Join back the trigger processes
-    t.join()
-
-    # Test in my lan shows:
-    # [18:48] bridge:cdist% ls -1d fe80::*
-    # fe80::142d:f0a5:725b:1103
-    # fe80::20d:b9ff:fe49:ac11
-    # fe80::20d:b9ff:fe4c:547d
-    # fe80::219:d2ff:feb2:2e12
-    # fe80::21b:fcff:feee:f446
-    # fe80::21b:fcff:feee:f45c
-    # fe80::21b:fcff:feee:f4b1
-    # fe80::21b:fcff:feee:f4ba
-    # fe80::21b:fcff:feee:f4bc
-    # fe80::21b:fcff:feee:f4c1
-    # fe80::21d:72ff:fe86:46b
-    # fe80::42b0:34ff:fe6f:f6f0
-    # fe80::42b0:34ff:fe6f:f863
-    # fe80::42b0:34ff:fe6f:f9b2
-    # fe80::4a5d:60ff:fea1:e55f
-    # fe80::77a3:5e3f:82cc:f2e5
-    # fe80::9e93:4eff:fe6c:c1f4
-    # fe80::ba69:f4ff:fec5:6041
-    # fe80::ba69:f4ff:fec5:8db7
-    # fe80::bad8:12ff:fe65:313d
-    # fe80::bad8:12ff:fe65:d9b1
-    # fe80::ce2d:e0ff:fed4:2611
-    # fe80::ce32:e5ff:fe79:7ea7
-    # fe80::d66d:6dff:fe33:e00
-    # fe80::e2ff:f7ff:fe00:20e6
-    # fe80::f29f:c2ff:fe7c:275e
+        try:
+            sniff(iface=self.interfaces,
+                  filter="icmp6",
+                  prn=self.handle_pkg)
+        except Exception as e:
+            log.error( "Could not start listener: %s", e)

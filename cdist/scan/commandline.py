@@ -24,26 +24,29 @@ import sys
 
 log = logging.getLogger("scan")
 
-
-# define this outside of the class to not handle scapy import errors by default
+# CLI processing is defined outside of the main scan class to handle
+# non-available optional scapy dependency (instead of crashing mid-flight).
 def commandline(args):
     log.debug(args)
 
+    # Check if we have the optional scapy dependency available.
     try:
         import cdist.scan.scan as scan
     except ModuleNotFoundError:
-        print('cdist scan requires scapy to be installed! Exiting.',
-                file=sys.stderr)
+        log.error('cdist scan requires scapy to be installed. Exiting.')
         sys.exit(1)
 
-    processes = []
-
+    # Default operation mode.
     if not args.mode:
-        # By default scan and trigger, but do not call any action
+        # By default scan and trigger, but do not call any action.
         args.mode = ['scan', 'trigger', ]
 
+    # We run each component in a separate process since they
+    # must not block on each other.
+    processes = []
+
     if 'trigger' in args.mode:
-        t = scan.Trigger(interfaces=args.interfaces)
+        t = scan.Trigger(interfaces=args.interfaces, sleeptime=args.trigger_delay)
         t.start()
         processes.append(t)
         log.debug("Trigger started")

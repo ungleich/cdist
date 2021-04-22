@@ -492,12 +492,16 @@ def get_parsers():
         help='Try to configure detected hosts')
     parser['scan'].add_argument(
         '-I', '--interfaces',
-        action='append',  default=[],
+        action='append',  default=[], required=True,
         help='On which interfaces to scan/trigger')
     parser['scan'].add_argument(
         '-d', '--delay',
-        action='store',  default=3600,
-        help='How long to wait before reconfiguring after last try')
+        action='store',  default=3600, type=int,
+        help='How long (seconds) to wait before reconfiguring after last try')
+    parser['scan'].add_argument(
+        '-t', '--trigger-delay',
+        action='store',  default=5, type=int,
+        help='How long (seconds) to wait between ICMPv6 echo requests')
     parser['scan'].set_defaults(func=cdist.scan.commandline.commandline)
 
     for p in parser:
