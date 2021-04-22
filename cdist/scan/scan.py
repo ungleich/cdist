@@ -132,6 +132,23 @@ class Scanner(object):
             with open(fname, "w") as fd:
                 fd.write(f"{now}\n")
 
+    def list(self):
+        hosts = dict()
+        for linklocal_addr in os.listdir(self.outdir):
+            workdir = os.path.join(self.outdir, linklocal_addr)
+            # We ignore any (unexpected) file in this directory.
+            if os.path.isdir(workdir):
+                last_seen='-'
+                last_seen_file = os.path.join(workdir, 'last_seen')
+                if os.path.isfile(last_seen_file):
+                    with open(last_seen_file, "r") as fd:
+                        last_seen = fd.readline()
+
+                hosts[linklocal_addr] = {'last_seen': last_seen}
+
+        return hosts
+
+
     def config(self):
         """
         Configure a host

@@ -487,6 +487,10 @@ def get_parsers():
         action='append', default=[],
         choices=['scan', 'trigger'])
     parser['scan'].add_argument(
+        '--list',
+        action='store_true',
+        help='List the known hosts and exit')
+    parser['scan'].add_argument(
         '--config',
         action='store_true',
         help='Try to configure detected hosts')
