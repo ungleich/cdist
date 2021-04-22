@@ -20,6 +20,7 @@
 #
 
 import logging
+import sys
 
 log = logging.getLogger("scan")
 
@@ -31,7 +32,9 @@ def commandline(args):
     try:
         import cdist.scan.scan as scan
     except ModuleNotFoundError:
-        print('cdist scan requires scapy to be installed')
+        print('cdist scan requires scapy to be installed! Exiting.',
+                file=sys.stderr)
+        sys.exit(1)
 
     processes = []
 
