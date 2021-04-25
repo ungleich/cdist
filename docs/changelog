@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* New type: __postgres_conf (Beni Ruef, Dennis Camera)
+
 6.9.6: 2021-04-20
 	* Type __pyvenv: Fix user example in man page (Dennis Camera)
 	* Core: config: Make local state directory available to custom remotes (Steven Armstrong
