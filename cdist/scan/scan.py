@@ -63,6 +63,69 @@ import cdist.config
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger("scan")
+datetime_format = '%Y-%m-%d %H:%M:%S'
+
+class Host(object):
+    def __init__(self, addr, outdir, name_mapper=None):
+        self.addr = addr
+        self.workdir = os.path.join(outdir, addr)
+        self.name_mapper = name_mapper
+
+        os.makedirs(self.workdir, exist_ok=True)
+
+    def __get(self, key, default=None):
+        fname = os.path.join(self.workdir, key)
+        value=default
+        if os.path.isfile(fname):
+            with open(fname, "r") as fd:
+                value = fd.readline()
+        return value
+
+    def __set(self, key, value):
+        fname = os.path.join(self.workdir, key)
+        with open(fname, "w") as fd:
+            fd.write(f"{value}")
+
+    def name(self, default=None):
+        if self.name_mapper == None:
+            return default
+
+        fpath = os.path.join(os.getcwd(), self.name_mapper)
+        if os.path.isfile(fpath) and os.access(fpath, os.X_OK):
+             out = subprocess.run([fpath, self.addr], capture_output=True)
+             if out.returncode != 0:
+                 return default
+             else:
+                value = out.stdout.decode()
+                return (None if len(value) == 0 else value)
+        else:
+            return default
+
+    def address(self):
+        return self.addr
+
+    def last_seen(self, default=None):
+        raw = self.__get('last_seen')
+        if raw:
+            return datetime.datetime.strptime(raw, datetime_format)
+        else:
+            return default
+
+    def last_configured(self, default=None):
+        raw = self.__get('last_configured')
+        if raw:
+            return datetime.datetime.strptime(raw, datetime_format)
+        else:
+            return default
+
+    def seen(self):
+        now = datetime.datetime.now().strftime(datetime_format)
+        self.__set('last_seen', now)
+
+    def configure(self):
+        # TODO: configure.
+        now = datetime.datetime.now().strftime(datetime_format)
+        self.__set('last_configured', now)
 
 class Trigger(object):
     """
@@ -108,48 +171,43 @@ class Scanner(object):
     Scan for replies of hosts, maintain the up-to-date database
     """
 
-    def __init__(self, interfaces, args=None, outdir=None):
+    def __init__(self, interfaces, autoconfigure=False, outdir=None, name_mapper=None):
         self.interfaces = interfaces
+        self.autoconfigure=autoconfigure
+        self.name_mapper = name_mapper
+        self.config_delay = datetime.timedelta(seconds=3600)
 
         if outdir:
             self.outdir = outdir
         else:
             self.outdir = os.path.join(os.environ['HOME'], '.cdist', 'scan')
+        os.makedirs(self.outdir, exist_ok=True)
+
+        self.running_configs = {}
 
     def handle_pkg(self, pkg):
         if ICMPv6EchoReply in pkg:
-            host = pkg['IPv6'].src
-            log.verbose("Host %s is alive", host)
+            host = Host(pkg['IPv6'].src, self.outdir, self.name_mapper)
+            if host.name():
+                log.verbose("Host %s (%s) is alive", host.name(), host.address())
+            else:
+                log.verbose("Host %s is alive", host.address())
+            host.seen()
 
-            dir = os.path.join(self.outdir, host)
-            fname = os.path.join(dir, "last_seen")
-
-            now = datetime.datetime.now()
-
-            os.makedirs(dir, exist_ok=True)
-
-            # FIXME: maybe adjust the format so we can easily parse again
-            with open(fname, "w") as fd:
-                fd.write(f"{now}\n")
+            # TODO check last config.
+            if self.autoconfigure and \
+                    host.last_configured(default=datetime.datetime.min) + self.config_delay < datetime.datetime.now():
+                self.config(host)
 
     def list(self):
-        hosts = dict()
-        for linklocal_addr in os.listdir(self.outdir):
-            workdir = os.path.join(self.outdir, linklocal_addr)
-            # We ignore any (unexpected) file in this directory.
-            if os.path.isdir(workdir):
-                last_seen='-'
-                last_seen_file = os.path.join(workdir, 'last_seen')
-                if os.path.isfile(last_seen_file):
-                    with open(last_seen_file, "r") as fd:
-                        last_seen = fd.readline()
-
-                hosts[linklocal_addr] = {'last_seen': last_seen}
+        hosts = []
+        for addr in os.listdir(self.outdir):
+            hosts.append(Host(addr, self.outdir, self.name_mapper))
 
         return hosts
 
 
-    def config(self):
+    def config(self, host):
         """
         Configure a host
 
@@ -158,8 +216,18 @@ class Scanner(object):
         - Maybe keep dict storing per host processes
         - Save the result
         - Save the output -> probably aligned to config mode
-
         """
+
+        if host.name() == None:
+            log.debug("config - could not resolve name for %s, aborting.", host.address())
+            return
+
+        if self.running_configs.get(host.name()) != None:
+            log.debug("config - is already running for %s, aborting.", host.name())
+
+        log.info("config - running against host %s.", host.name())
+        p = host.configure()
+        self.running_configs[host.name()] = p
 
     def start(self):
         self.process = Process(target=self.scan)

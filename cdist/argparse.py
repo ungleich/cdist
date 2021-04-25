@@ -485,7 +485,7 @@ def get_parsers():
     parser['scan'].add_argument(
         '-m', '--mode', help='Which modes should run',
         action='append', default=[],
-        choices=['scan', 'trigger'])
+        choices=['scan', 'trigger', 'config'])
     parser['scan'].add_argument(
         '--list',
         action='store_true',
@@ -498,6 +498,10 @@ def get_parsers():
         '-I', '--interfaces',
         action='append',  default=[], required=True,
         help='On which interfaces to scan/trigger')
+    parser['scan'].add_argument(
+        '--name-mapper',
+        action='store',  default=None,
+        help='Map addresses to names, required for config mode')
     parser['scan'].add_argument(
         '-d', '--delay',
         action='store',  default=3600, type=int,

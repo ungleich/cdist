@@ -37,7 +37,10 @@ def run(scan, args):
         log.debug("Trigger started")
 
     if 'scan' in args.mode:
-        s = scan.Scanner(interfaces=args.interfaces, args=args)
+        s = scan.Scanner(
+                autoconfigure='config' in args.mode,
+                interfaces=args.interfaces,
+                name_mapper=args.name_mapper)
         s.start()
         processes.append(s)
         log.debug("Scanner started")
@@ -46,24 +49,27 @@ def run(scan, args):
         process.join()
 
 def list(scan, args):
-    s = scan.Scanner(interfaces=args.interfaces, args=args)
+    s = scan.Scanner(interfaces=args.interfaces, name_mapper=args.name_mapper)
     hosts = s.list()
 
     # A full IPv6 addresses id composed of 8 blocks of 4 hexa chars +
     # 6 colons.
     ipv6_max_size = 8 * 4 + 10
-    # We format dates as follow: YYYY-MM-DD HH:MM:SS
-    date_max_size =              8 + 2    + 6 + 2
+    date_max_size = len(datetime.now().strftime(scan.datetime_format))
+    name_max_size = 25
 
-    print("{} | {}".format(
-        'link-local address'.ljust(ipv6_max_size),
-        'last seen'.ljust(date_max_size)))
-    print('=' * (ipv6_max_size + 3 + date_max_size))
-    for addr in hosts:
-        last_seen = datetime.strftime(
-                datetime.strptime(hosts[addr]['last_seen'].strip(), '%Y-%m-%d %H:%M:%S.%f'),
-                '%Y-%m-%d %H:%M:%S')
-        print("{} | {}".format(addr.ljust(ipv6_max_size),last_seen.ljust(date_max_size)))
+    print("{} | {} | {} | {}".format(
+        'name'.ljust(name_max_size),
+        'address'.ljust(ipv6_max_size),
+        'last seen'.ljust(date_max_size),
+        'last configured'.ljust(date_max_size)))
+    print('=' * (name_max_size + 3 + ipv6_max_size + 2 * (3 + date_max_size)))
+    for host in hosts:
+        print("{} | {} | {} | {}".format(
+            host.name(default='-').ljust(name_max_size),
+            host.address().ljust(ipv6_max_size),
+            host.last_seen().ljust(date_max_size),
+            host.last_configured().ljust(date_max_size)))
 
 # CLI processing is defined outside of the main scan class to handle
 # non-available optional scapy dependency (instead of crashing mid-flight).
@@ -81,6 +87,11 @@ def commandline(args):
     if not args.mode:
         # By default scan and trigger, but do not call any action.
         args.mode = ['scan', 'trigger', ]
+
+    if 'config' in args.mode and args.name_mapper == None:
+        print('--name-mapper must be specified for scanner config mode.',
+                file=sys.stderr)
+        sys.exit(1)
 
     # Print known hosts and exit is --list is specified - do not start
     # the scanner.
