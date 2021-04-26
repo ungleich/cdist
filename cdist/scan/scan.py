@@ -122,8 +122,20 @@ class Host(object):
         now = datetime.datetime.now().strftime(datetime_format)
         self.__set('last_seen', now)
 
+    # XXX: There's no easy way to use the config module without feeding it with
+    # CLI args. Might as well call everything from scratch!
     def configure(self):
-        # TODO: configure.
+        target = self.name() or self.address()
+        cmd = ['cdist', 'config', '-v', target ]
+
+        fname = os.path.join(self.workdir, 'last_configuration_log')
+        with open(fname, "w") as fd:
+            log.debug("Executing: %s", cmd)
+            completed_process = subprocess.run(cmd, stdout=fd, stderr=fd)
+            if completed_process.returncode != 0:
+                log.error("%s return with non-zero code %i - see %s for details.",
+                        cmd, completed_process.returncode, fname)
+
         now = datetime.datetime.now().strftime(datetime_format)
         self.__set('last_configured', now)
 
@@ -194,7 +206,7 @@ class Scanner(object):
                 log.verbose("Host %s is alive", host.address())
             host.seen()
 
-            # TODO check last config.
+            # Configure if needed.
             if self.autoconfigure and \
                     host.last_configured(default=datetime.datetime.min) + self.config_delay < datetime.datetime.now():
                 self.config(host)
@@ -206,27 +218,18 @@ class Scanner(object):
 
         return hosts
 
-
     def config(self, host):
-        """
-        Configure a host
-
-        - Assume we are only called if necessary
-        - However we need to ensure to not run in parallel
-        - Maybe keep dict storing per host processes
-        - Save the result
-        - Save the output -> probably aligned to config mode
-        """
-
         if host.name() == None:
             log.debug("config - could not resolve name for %s, aborting.", host.address())
             return
 
-        if self.running_configs.get(host.name()) != None:
+        previous_config_process = self.running_configs.get(host.name())
+        if previous_config_process != None and previous_config_process.is_alive():
             log.debug("config - is already running for %s, aborting.", host.name())
 
-        log.info("config - running against host %s.", host.name())
-        p = host.configure()
+        log.info("config - running against host %s (%s).", host.name(), host.address())
+        p = Process(target=host.configure())
+        p.start()
         self.running_configs[host.name()] = p
 
     def start(self):
