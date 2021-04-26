@@ -34,6 +34,7 @@ It natively supports IPv6 since the first release.
    cdist-parallelization
    cdist-inventory
    cdist-preos
+   cdist-scan
    cdist-integration
    cdist-reference
    cdist-best-practice

@@ -19,38 +19,6 @@
 #
 #
 
-#
-# Interface to be implemented:
-# - cdist scan --mode {scan, trigger, install, config}, --mode can be repeated
-#   scan: scan / listen for icmp6 replies
-#   trigger: send trigger to multicast
-#   config: configure newly detected hosts
-#   install: install newly detected hosts
-#
-# Scanner logic
-#  - save results to configdir:
-#     basedir = ~/.cdist/scan/<ipv6-address>
-#     last_seen = ~/.cdist/scan/<ipv6-address>/last_seen -- record unix time
-#           or similar
-#     last_configured = ~/.cdist/scan/<ipv6-address>/last_configured -- record
-#           unix time or similar
-#     last_installed = ~/.cdist/scan/<ipv6-address>/last_configured -- record
-#           unix time or similar
-#
-#
-#
-#
-# cdist scan --list
-#       Show all known hosts including last seen flag
-#
-# Logic for reconfiguration:
-#
-#  - record when configured last time
-#  - introduce a parameter --reconfigure-after that takes time argument
-#  - reconfigure if a) host alive and b) reconfigure-after time passed
-#
-
-
 from multiprocessing import Process
 import os
 import logging
