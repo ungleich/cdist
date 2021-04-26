@@ -97,7 +97,7 @@ class Host(object):
                  return default
              else:
                 value = out.stdout.decode()
-                return (None if len(value) == 0 else value)
+                return (default if len(value) == 0 else value)
         else:
             return default
 

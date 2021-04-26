@@ -65,11 +65,17 @@ def list(scan, args):
         'last configured'.ljust(date_max_size)))
     print('=' * (name_max_size + 3 + ipv6_max_size + 2 * (3 + date_max_size)))
     for host in hosts:
+        last_seen = host.last_seen()
+        last_seen = last_seen.strftime(scan.datetime_format) if last_seen else '-'
+
+        last_configured = host.last_configured()
+        last_configured = last_configured.strftime(scan.datetime_format) if last_configured else '-'
+
         print("{} | {} | {} | {}".format(
             host.name(default='-').ljust(name_max_size),
             host.address().ljust(ipv6_max_size),
-            host.last_seen().ljust(date_max_size),
-            host.last_configured().ljust(date_max_size)))
+            last_seen.ljust(date_max_size),
+            last_configured.ljust(date_max_size)))
 
 # CLI processing is defined outside of the main scan class to handle
 # non-available optional scapy dependency (instead of crashing mid-flight).
