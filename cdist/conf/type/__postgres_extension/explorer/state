@@ -1,11 +1,7 @@
 #!/bin/sh -e
+# -*- mode: sh; indent-tabs-mode: t -*-
 #
-# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2013 Tomas Pospisek (tpo_deb at sourcepole.ch)
 # 2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
-#
-# This type was created by Tomas Pospisek based on the
-# __postgres_role type by Steven Armstrong.
 #
 # This file is part of cdist.
 #
@@ -22,39 +18,24 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-
-postgres_user=$(cat "${__object:?}/explorer/postgres_user")
+# Prints "present" if the extension is currently installed.
+# "absent" otherwise.
 
 quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
-psql_cmd() {
-	printf 'su - %s -c %s\n' \
-		"$(quote "${postgres_user}")" \
-		"$(quote psql "$(quote "$1")" -c "$(quote "$2")")"
-}
 
+postgres_user=$("${__type_explorer:?}/postgres_user")
 
 IFS=: read -r dbname extname <<EOF
 ${__object_id:?}
 EOF
 
-state_is=$(cat "${__object:?}/explorer/state")
-state_should=$(cat "${__object:?}/parameter/state")
+psql_exec() {
+	su - "${postgres_user}" -c "psql $(quote "$1") -twAc $(quote "$2")"
+}
 
-if test "${state_is}" = "${state_should}"
+if psql_exec "${dbname}" 'SELECT extname FROM pg_extension' | grep -qFx "${extname}"
 then
-	exit 0
+	echo present
+else
+	echo absent
 fi
-
-case ${state_should}
-in
-	(present)
-		psql_cmd "${dbname}" "CREATE EXTENSION ${extname}"
-		;;
-	(absent)
-		psql_cmd "${dbname}" "DROP EXTENSION ${extname}"
-		;;
-	(*)
-		printf 'Invalid --state: %s\n' "${state_should}" >&2
-		exit 1
-		;;
-esac
