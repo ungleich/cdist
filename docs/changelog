@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* New type: __postgres_conf (Beni Ruef, Dennis Camera)
+	* Types __postgres_*: Improve OS support and do some cleanup (Dennis Camera)
 
 6.9.6: 2021-04-20
 	* Type __pyvenv: Fix user example in man page (Dennis Camera)
