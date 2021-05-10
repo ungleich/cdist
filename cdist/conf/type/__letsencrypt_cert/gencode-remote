@@ -1,6 +1,10 @@
 #!/bin/sh -e
 
-certificate_exists=$(cat "${__object:?}/explorer/certificate-exists")
+_explorer_var() {
+	grep "^$1:" "${__object:?}/explorer/certificate-data" | cut -d ':' -f 2-
+}
+
+certificate_exists="$(_explorer_var certificate_exists)"
 name="${__object_id:?}"
 state=$(cat "${__object}/parameter/state")
 
@@ -29,8 +33,9 @@ case "${state}" in
 		fi
 
 		if [ "${certificate_exists}" = "yes" ]; then
-			existing_domains="${__object}/explorer/certificate-domains"
-			certificate_is_test=$(cat "${__object}/explorer/certificate-is-test")
+			existing_domains=$(mktemp "${TMPDIR:-/tmp}/existing_domains.cdist.XXXXXXXXXX")
+			tail -n +4 "${__object:?}/explorer/certificate-data" | grep -v '^$' > "${existing_domains}"
+			certificate_is_test="$(_explorer_var certificate_is_test)"
 
 			sort -uo "${requested_domains}" "${requested_domains}"
 			sort -uo "${existing_domains}" "${existing_domains}"
