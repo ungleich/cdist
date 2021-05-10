@@ -1,6 +1,6 @@
 #!/bin/sh
 
-certbot_fullpath="$(cat "${__object:?}/explorer/certbot-path")"
+certbot_fullpath="$(grep "^certbot_path:" "${__object:?}/explorer/certificate-data" | cut -d ':' -f 2-)"
 state=$(cat "${__object}/parameter/state")
 os="$(cat "${__global:?}/explorer/os")"
 
