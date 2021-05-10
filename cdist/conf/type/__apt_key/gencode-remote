@@ -25,11 +25,7 @@ else
 fi
 state_should="$(cat "$__object/parameter/state")"
 state_is="$(cat "$__object/explorer/state")"
-
-if [ "$state_should" = "$state_is" ]; then
-   # nothing to do
-   exit 0
-fi
+method="$(cat "$__object/key_method")"
 
 keydir="$(cat "$__object/parameter/keydir")"
 keyfile="$keydir/$__object_id.gpg"
@@ -37,30 +33,18 @@ keyfile="$keydir/$__object_id.gpg"
 case "$state_should" in
    present)
       keyserver="$(cat "$__object/parameter/keyserver")"
-
-      if [ -f "$__object/parameter/uri" ]; then
-         uri="$(cat "$__object/parameter/uri")"
-
-         if [ -d "$keydir" ]; then
-            cat << EOF
-
-curl -s -L \\
-    -o "$keyfile" \\
-    "$uri"
-
-key="\$( cat "$keyfile" )"
-
-if echo "\$key" | grep -Fq 'BEGIN PGP PUBLIC KEY BLOCK'
-then
-    echo "\$key" | gpg --dearmor > "$keyfile"
-fi
-
-EOF
-         else
-            # fallback to deprecated apt-key
-            echo "curl -s -L '$uri' | apt-key add -"
+      # Using __download or __file as key source
+      # Propagate messages if needed
+      if [ "${method}" = "uri" ] || [ "${method}" = "source" ]; then
+         if grep -Eq "^__(file|download)$keyfile" "$__messages_in"; then
+            echo "added '$keyid'" >> "$__messages_out"
          fi
-      elif [ -d "$keydir" ]; then
+         exit 0
+      elif [ "${state_is}" = "present" ]; then
+         exit 0
+      fi
+      # Using key servers to fetch the key
+      if [ ! -f "$__object/parameter/use-deprecated-apt-key" ]; then
          # we need to kill gpg after 30 seconds, because gpg
          # can get stuck if keyserver is not responding.
          # exporting env var and not exit 1,
@@ -100,13 +84,16 @@ EOF
       echo "added '$keyid'" >> "$__messages_out"
    ;;
    absent)
-      if [ -f "$keyfile" ]; then
-         echo "rm '$keyfile'"
-      else
+      # Removal for keys added from a keyserver without this flag
+      # is done in the manifest
+      if [ "$state_is" != "absent" ] && \
+            [ -f "$__object/parameter/use-deprecated-apt-key" ]; then
          # fallback to deprecated apt-key
          echo "apt-key del \"$keyid\""
+         echo "removed '$keyid'" >> "$__messages_out"
+      # Propagate messages if needed
+      elif grep -Eq "^__file$keyfile" "$__messages_in"; then
+         echo "removed '$keyid'" >> "$__messages_out"
       fi
-
-      echo "removed '$keyid'" >> "$__messages_out"
    ;;
 esac

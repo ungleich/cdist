@@ -1,5 +1,6 @@
-state
+keydir
 keyid
 keyserver
-keydir
+source
+state
 uri
