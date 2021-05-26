@@ -8,7 +8,8 @@ periodically. It is especially useful in netboot-based environment where hosts
 boot unconfigured, and to ensure your infrastructure stays in sync with your
 configuration.
 
-This feature is still consider to be in **beta** stage.
+This feature is still consider to be in **beta** stage, and only operate on
+IPv6 (including link-local).
 
 Usage (Examples)
 ----------------
@@ -79,21 +80,3 @@ Resolving name from `PTR` DNS record:
   done
 
   dig +short -x "$1" | sed -e 's/.$//'
-
-
-Trigger Source Script
----------------------
-
-This script returns a list of addresses (separated by a newline) to be used by
-`trigger` mode. It is not used to map names. The script must be executable.
-
-Simplest script:
-
-.. code-block:: sh
-  #!/bin/sh
-
-  cat << EOF
-  server1.domain.tld
-  server2.domain.tld
-  server3.domain.tld
-  EOF
