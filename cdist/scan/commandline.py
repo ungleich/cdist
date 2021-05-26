@@ -25,13 +25,15 @@ from datetime import datetime
 
 log = logging.getLogger("scan")
 
+
 def run(scan, args):
     # We run each component in a separate process since they
     # must not block on each other.
     processes = []
 
     if 'trigger' in args.mode:
-        t = scan.Trigger(interfaces=args.interfaces, sleeptime=args.trigger_delay)
+        t = scan.Trigger(interfaces=args.interfaces,
+                         sleeptime=args.trigger_delay)
         t.start()
         processes.append(t)
         log.debug("Trigger started")
@@ -47,6 +49,7 @@ def run(scan, args):
 
     for process in processes:
         process.join()
+
 
 def list(scan, args):
     s = scan.Scanner(interfaces=args.interfaces, name_mapper=args.name_mapper)
@@ -66,16 +69,23 @@ def list(scan, args):
     print('=' * (name_max_size + 3 + ipv6_max_size + 2 * (3 + date_max_size)))
     for host in hosts:
         last_seen = host.last_seen()
-        last_seen = last_seen.strftime(scan.datetime_format) if last_seen else '-'
+        if last_seen:
+            last_seen = last_seen.strftime(scan.datetime_format)
+        else:
+            last_seen = '-'
 
         last_configured = host.last_configured()
-        last_configured = last_configured.strftime(scan.datetime_format) if last_configured else '-'
+        if last_configured:
+            last_configured = last_configured.strftime(scan.datetime_format)
+        else:
+            '-'
 
         print("{} | {} | {} | {}".format(
             host.name(default='-').ljust(name_max_size),
             host.address().ljust(ipv6_max_size),
             last_seen.ljust(date_max_size),
             last_configured.ljust(date_max_size)))
+
 
 # CLI processing is defined outside of the main scan class to handle
 # non-available optional scapy dependency (instead of crashing mid-flight).
@@ -94,9 +104,9 @@ def commandline(args):
         # By default scan and trigger, but do not call any action.
         args.mode = ['scan', 'trigger', ]
 
-    if 'config' in args.mode and args.name_mapper == None:
+    if 'config' in args.mode and args.name_mapper is None:
         print('--name-mapper must be specified for scanner config mode.',
-                file=sys.stderr)
+              file=sys.stderr)
         sys.exit(1)
 
     # Print known hosts and exit is --list is specified - do not start

@@ -33,6 +33,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger("scan")
 datetime_format = '%Y-%m-%d %H:%M:%S'
 
+
 class Host(object):
     def __init__(self, addr, outdir, name_mapper=None):
         self.addr = addr
@@ -43,7 +44,7 @@ class Host(object):
 
     def __get(self, key, default=None):
         fname = os.path.join(self.workdir, key)
-        value=default
+        value = default
         if os.path.isfile(fname):
             with open(fname, "r") as fd:
                 value = fd.readline()
@@ -55,15 +56,15 @@ class Host(object):
             fd.write(f"{value}")
 
     def name(self, default=None):
-        if self.name_mapper == None:
+        if self.name_mapper is None:
             return default
 
         fpath = os.path.join(os.getcwd(), self.name_mapper)
         if os.path.isfile(fpath) and os.access(fpath, os.X_OK):
-             out = subprocess.run([fpath, self.addr], capture_output=True)
-             if out.returncode != 0:
-                 return default
-             else:
+            out = subprocess.run([fpath, self.addr], capture_output=True)
+            if out.returncode != 0:
+                return default
+            else:
                 value = out.stdout.decode()
                 return (default if len(value) == 0 else value)
         else:
@@ -94,18 +95,19 @@ class Host(object):
     # CLI args. Might as well call everything from scratch!
     def configure(self):
         target = self.name() or self.address()
-        cmd = ['cdist', 'config', '-v', target ]
+        cmd = ['cdist', 'config', '-v', target]
 
         fname = os.path.join(self.workdir, 'last_configuration_log')
         with open(fname, "w") as fd:
             log.debug("Executing: %s", cmd)
             completed_process = subprocess.run(cmd, stdout=fd, stderr=fd)
             if completed_process.returncode != 0:
-                log.error("%s return with non-zero code %i - see %s for details.",
-                        cmd, completed_process.returncode, fname)
+                log.error("%s return with non-zero code %i - see %s for \
+                        details.", cmd, completed_process.returncode, fname)
 
         now = datetime.datetime.now().strftime(datetime_format)
         self.__set('last_configured', now)
+
 
 class Trigger(object):
     """
@@ -140,10 +142,12 @@ class Trigger(object):
     def trigger(self, interface):
         try:
             log.debug("Sending ICMPv6EchoRequest on %s", interface)
-            packet = IPv6(dst="ff02::1%{}".format(interface)) / ICMPv6EchoRequest()
+            packet = IPv6(
+                    dst="ff02::1%{}".format(interface)
+                    ) / ICMPv6EchoRequest()
             send(packet, verbose=self.verbose)
         except Exception as e:
-            log.error( "Could not send ICMPv6EchoRequest: %s", e)
+            log.error("Could not send ICMPv6EchoRequest: %s", e)
 
 
 class Scanner(object):
@@ -151,9 +155,10 @@ class Scanner(object):
     Scan for replies of hosts, maintain the up-to-date database
     """
 
-    def __init__(self, interfaces, autoconfigure=False, outdir=None, name_mapper=None):
+    def __init__(self, interfaces, autoconfigure=False, outdir=None,
+                 name_mapper=None):
         self.interfaces = interfaces
-        self.autoconfigure=autoconfigure
+        self.autoconfigure = autoconfigure
         self.name_mapper = name_mapper
         self.config_delay = datetime.timedelta(seconds=3600)
 
@@ -169,14 +174,17 @@ class Scanner(object):
         if ICMPv6EchoReply in pkg:
             host = Host(pkg['IPv6'].src, self.outdir, self.name_mapper)
             if host.name():
-                log.verbose("Host %s (%s) is alive", host.name(), host.address())
+                log.verbose("Host %s (%s) is alive", host.name(),
+                            host.address())
             else:
                 log.verbose("Host %s is alive", host.address())
+
             host.seen()
 
             # Configure if needed.
             if self.autoconfigure and \
-                    host.last_configured(default=datetime.datetime.min) + self.config_delay < datetime.datetime.now():
+                    host.last_configured(default=datetime.datetime.min) + \
+                    self.config_delay < datetime.datetime.now():
                 self.config(host)
 
     def list(self):
@@ -187,15 +195,19 @@ class Scanner(object):
         return hosts
 
     def config(self, host):
-        if host.name() == None:
-            log.debug("config - could not resolve name for %s, aborting.", host.address())
+        if host.name() is None:
+            log.debug("config - could not resolve name for %s, aborting.",
+                      host.address())
             return
 
         previous_config_process = self.running_configs.get(host.name())
-        if previous_config_process != None and previous_config_process.is_alive():
-            log.debug("config - is already running for %s, aborting.", host.name())
+        if previous_config_process is not None and \
+                previous_config_process.is_alive():
+            log.debug("config - is already running for %s, aborting.",
+                      host.name())
 
-        log.info("config - running against host %s (%s).", host.name(), host.address())
+        log.info("config - running against host %s (%s).", host.name(),
+                 host.address())
         p = Process(target=host.configure())
         p.start()
         self.running_configs[host.name()] = p
@@ -214,4 +226,4 @@ class Scanner(object):
                   filter="icmp6",
                   prn=self.handle_pkg)
         except Exception as e:
-            log.error( "Could not start listener: %s", e)
+            log.error("Could not start listener: %s", e)
