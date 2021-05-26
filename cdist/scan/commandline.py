@@ -32,7 +32,7 @@ def run(scan, args):
     processes = []
 
     if 'trigger' in args.mode:
-        t = scan.Trigger(interfaces=args.interfaces,
+        t = scan.Trigger(interfaces=args.interface,
                          sleeptime=args.trigger_delay)
         t.start()
         processes.append(t)
@@ -41,7 +41,7 @@ def run(scan, args):
     if 'scan' in args.mode:
         s = scan.Scanner(
                 autoconfigure='config' in args.mode,
-                interfaces=args.interfaces,
+                interfaces=args.interface,
                 name_mapper=args.name_mapper)
         s.start()
         processes.append(s)
@@ -52,7 +52,7 @@ def run(scan, args):
 
 
 def list(scan, args):
-    s = scan.Scanner(interfaces=args.interfaces, name_mapper=args.name_mapper)
+    s = scan.Scanner(interfaces=args.interface, name_mapper=args.name_mapper)
     hosts = s.list()
 
     # A full IPv6 addresses id composed of 8 blocks of 4 hexa chars +
@@ -75,10 +75,10 @@ def list(scan, args):
             last_seen = '-'
 
         last_configured = host.last_configured()
-        if last_configured:
+        if last_configured is not None:
             last_configured = last_configured.strftime(scan.datetime_format)
         else:
-            '-'
+            last_configured = '-'
 
         print("{} | {} | {} | {}".format(
             host.name(default='-').ljust(name_max_size),

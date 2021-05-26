@@ -495,7 +495,7 @@ def get_parsers():
         action='store_true',
         help='Try to configure detected hosts')
     parser['scan'].add_argument(
-        '-I', '--interfaces',
+        '-I', '--interface',
         action='append',  default=[], required=True,
         help='On which interfaces to scan/trigger')
     parser['scan'].add_argument(
@@ -503,7 +503,7 @@ def get_parsers():
         action='store',  default=None,
         help='Map addresses to names, required for config mode')
     parser['scan'].add_argument(
-        '-d', '--delay',
+        '-d', '--config-delay',
         action='store',  default=3600, type=int,
         help='How long (seconds) to wait before reconfiguring after last try')
     parser['scan'].add_argument(
