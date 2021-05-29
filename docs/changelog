@@ -6,7 +6,8 @@ next:
 	* Types __postgres_*: Improve OS support and do some cleanup (Dennis Camera)
 	* Type __apt_key_uri: Deprecate in favour of __apt_key --uri (Evilham)
 	* Type __apt_key: Documentation improvements, support in-type/in-manifest provision with --source, make fallback to apt-key(8) explicit with --use-deprecated-apt-key (Evilham)
-	* Type __letsencrypt_cert: Bugfix, performance; revamp explorers, add locking.
+	* Type __letsencrypt_cert: Bugfix, performance; revamp explorers, add locking (Evilham)
+	* Type __git: Fix group explorer (Ander Punnar)
 
 6.9.6: 2021-04-20
 	* Type __pyvenv: Fix user example in man page (Dennis Camera)
