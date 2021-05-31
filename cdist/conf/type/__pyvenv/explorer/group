@@ -14,6 +14,11 @@ then
 	then
 		printf '%u\n' "${group_gid}"
 	else
-		printf '%s\n' "$(id -u -n "${group_gid}")"
+		if command -v getent >/dev/null 2>&1
+		then
+			getent group "${group_gid}" | cut -d : -f 1
+		else
+			awk -F: -v gid="${group_gid}" '$3 == gid { print $1 }' /etc/group
+		fi
 	fi
 fi
