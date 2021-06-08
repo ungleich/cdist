@@ -58,8 +58,8 @@ SEE ALSO
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
-Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
+| Nico Schottelius <nico-cdist--@--schottelius.org>
+| Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
 
 
 COPYING
