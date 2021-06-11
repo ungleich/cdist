@@ -19,9 +19,17 @@
 #
 
 
+name="$__object_id"
+
 os=$(cat "$__global/explorer/os")
 state="$(cat "$__object/parameter/state")"
-package="$(cat "$__object/parameter/package")"
+
+if [ -f "$__object/parameter/package" ]; then
+    package="$(cat "$__object/parameter/package")"
+else
+    package=$name
+fi
+
 distribution="$(cat "$__object/parameter/distribution")"
 priority="$(cat "$__object/parameter/priority")"
 
@@ -31,12 +39,9 @@ case "$os" in
    ;;
    *)
       printf "This type is specific to Debian and it's derivatives" >&2
-      printf "If you feel there's an equivalent functionality in %s, please contribute..." "$os" >&2
       exit 1
    ;;
 esac
-
-name="$__object_id"
 
 case $distribution in
     stabletesting|unsatbel|experimental)
