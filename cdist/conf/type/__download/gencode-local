@@ -11,34 +11,133 @@ fi
 
 url="$( cat "$__object/parameter/url" )"
 
-tmp="$( mktemp )"
-
-dst="/$__object_id"
+if [ -f "$__object/parameter/destination" ]
+then
+    dst="$( cat "$__object/parameter/destination" )"
+else
+    dst="/$__object_id"
+fi
 
 if [ -f "$__object/parameter/cmd-get" ]
 then
     cmd="$( cat "$__object/parameter/cmd-get" )"
 
-elif command -v wget > /dev/null
-then
-    cmd="wget -O - '%s'"
-
 elif command -v curl > /dev/null
 then
-    cmd="curl -L -o - '%s'"
+    cmd="curl -sSL -o - '%s'"
 
 elif command -v fetch > /dev/null
 then
     cmd="fetch -o - '%s'"
 
+elif command -v wget > /dev/null
+then
+    cmd="wget -O - '%s'"
+
 else
-    echo 'no usable locally installed utility for downloading' >&2
+    echo 'local download failed, no usable utility' >&2
     exit 1
 fi
 
-printf "$cmd > %s\n" \
-    "$url" \
-    "$tmp"
+echo "download_tmp=\"\$( mktemp )\""
+
+# shellcheck disable=SC2059
+printf "$cmd > \"\$download_tmp\"\n" "$url"
+
+if [ -f "$__object/parameter/sum" ]
+then
+    sum_should="$( cat "$__object/parameter/sum" )"
+
+    if [ -f "$__object/parameter/cmd-sum" ]
+    then
+        local_cmd_sum="$( cat "$__object/parameter/cmd-sum" )"
+    else
+        if echo "$sum_should" | grep -Fq ':'
+        then
+            sum_hash="$( echo "$sum_should" | cut -d : -f 1 )"
+
+            sum_should="$( echo "$sum_should" | cut -d : -f 2 )"
+        else
+            if echo "$sum_should" | grep -Eq '^[0-9]+\s[0-9]+$'
+            then
+                sum_hash='cksum'
+            elif
+                echo "$sum_should" | grep -Eiq '^[a-f0-9]{32}$'
+            then
+                sum_hash='md5'
+            elif
+                echo "$sum_should" | grep -Eiq '^[a-f0-9]{40}$'
+            then
+                sum_hash='sha1'
+            elif
+                echo "$sum_should" | grep -Eiq '^[a-f0-9]{64}$'
+            then
+                sum_hash='sha256'
+            else
+                echo 'hash format detection failed' >&2
+                exit 1
+            fi
+        fi
+
+        case "$sum_hash" in
+            cksum)
+                local_cmd_sum="cksum %s | awk '{print \$1\" \"\$2}'"
+            ;;
+            md5)
+                if command -v md5 > /dev/null
+                then
+                    local_cmd_sum="md5 -q %s"
+                elif
+                    command -v md5sum > /dev/null
+                then
+                    local_cmd_sum="md5sum %s | awk '{print \$1}'"
+                fi
+            ;;
+            sha1)
+                if command -v sha1 > /dev/null
+                then
+                    local_cmd_sum="sha1 -q %s"
+                elif
+                    command -v sha1sum > /dev/null
+                then
+                    local_cmd_sum="sha1sum %s | awk '{print \$1}'"
+                fi
+            ;;
+            sha256)
+                if command -v sha256 > /dev/null
+                then
+                    local_cmd_sum="sha256 -q %s"
+                elif
+                    command -v sha256sum > /dev/null
+                then
+                    local_cmd_sum="sha256sum %s | awk '{print \$1}'"
+                fi
+            ;;
+            *)
+                # we arrive here only if --sum is given with unknown format prefix
+                echo "unknown hash format: $sum_hash" >&2
+                exit 1
+            ;;
+        esac
+
+        if [ -z "$local_cmd_sum" ]
+        then
+            echo 'local checksum verification failed, no usable utility' >&2
+            exit 1
+        fi
+    fi
+
+    # shellcheck disable=SC2059
+    echo "sum_is=\"\$( $( printf "$local_cmd_sum" "\"\$download_tmp\"" ) )\""
+
+    echo "if [ \"\$sum_is\" != '$sum_should' ]; then"
+
+    echo "echo 'local download checksum mismatch' >&2"
+
+    echo "rm -f \"\$download_tmp\""
+
+    echo 'exit 1; fi'
+fi
 
 if echo "$__target_host" | grep -Eq '^[0-9a-fA-F:]+$'
 then
@@ -47,12 +146,10 @@ else
     target_host="$__target_host"
 fi
 
-printf '%s %s %s:%s\n' \
+# shellcheck disable=SC2016
+printf '%s "$download_tmp" %s:%s\n' \
     "$__remote_copy" \
-    "$tmp" \
     "$target_host" \
     "$dst"
 
-echo "rm -f '$tmp'"
-
-echo 'downloaded' > "$__messages_out"
+echo "rm -f \"\$download_tmp\""

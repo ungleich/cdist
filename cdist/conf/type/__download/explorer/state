@@ -1,6 +1,11 @@
 #!/bin/sh -e
 
-dst="/$__object_id"
+if [ -f "$__object/parameter/destination" ]
+then
+    dst="$( cat "$__object/parameter/destination" )"
+else
+    dst="/$__object_id"
+fi
 
 if [ ! -f "$dst" ]
 then
@@ -16,57 +21,18 @@ fi
 
 sum_should="$( cat "$__object/parameter/sum" )"
 
-if [ -f "$__object/parameter/cmd-sum" ]
+if echo "$sum_should" | grep -Fq ':'
 then
-    # shellcheck disable=SC2059
-    sum_is="$( eval "$( printf \
-        "$( cat "$__object/parameter/cmd-sum" )" \
-        "$dst" )" )"
-else
-    os="$( "$__explorer/os" )"
-
-    if echo "$sum_should" | grep -Eq '^[0-9]+\s[0-9]+$'
-    then
-        sum_is="$( cksum "$dst" | awk '{print $1" "$2}' )"
-
-    elif echo "$sum_should" | grep -Eiq '^md5:[a-f0-9]{32}$'
-    then
-        case "$os" in
-            freebsd)
-                sum_is="md5:$( md5 -q "$dst" )"
-            ;;
-            *)
-                sum_is="md5:$( md5sum "$dst" | awk '{print $1}' )"
-            ;;
-        esac
-
-    elif echo "$sum_should" | grep -Eiq '^sha1:[a-f0-9]{40}$'
-    then
-        case "$os" in
-            freebsd)
-                sum_is="sha1:$( sha1 -q "$dst" )"
-            ;;
-            *)
-                sum_is="sha1:$( sha1sum "$dst" | awk '{print $1}' )"
-            ;;
-        esac
-
-    elif echo "$sum_should" | grep -Eiq '^sha256:[a-f0-9]{64}$'
-    then
-        case "$os" in
-            freebsd)
-                sum_is="sha256:$( sha256 -q "$dst" )"
-            ;;
-            *)
-                sum_is="sha256:$( sha256sum "$dst" | awk '{print $1}' )"
-            ;;
-        esac
-    fi
+    sum_should="$( echo "$sum_should" | cut -d : -f 2 )"
 fi
+
+sum_cmd="$( "$__type_explorer/remote_cmd_sum" )"
+
+sum_is="$( eval "$( printf "$sum_cmd" "'$dst'" )" )"
 
 if [ -z "$sum_is" ]
 then
-    echo 'no checksum from target' >&2
+    echo 'existing destination checksum failed' >&2
     exit 1
 fi
 
