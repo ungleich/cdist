@@ -36,5 +36,5 @@ fi
 
 echo rsync -a \
     --no-owner --no-group \
-    -e "$__remote_exec" \
+    -e \"$__remote_exec\" \
     -q "$@" "${source}/" "${remote_user}@${__target_host}:${destination}"
