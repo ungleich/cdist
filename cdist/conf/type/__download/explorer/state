@@ -28,6 +28,7 @@ fi
 
 sum_cmd="$( "$__type_explorer/remote_cmd_sum" )"
 
+# shellcheck disable=SC2059
 sum_is="$( eval "$( printf "$sum_cmd" "'$dst'" )" )"
 
 if [ -z "$sum_is" ]
