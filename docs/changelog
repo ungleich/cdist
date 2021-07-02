@@ -9,6 +9,8 @@ next:
 	* Type __letsencrypt_cert: Bugfix, performance; revamp explorers, add locking (Evilham)
 	* Type __git: Fix group explorer (Ander Punnar)
 	* Type __pyvenv: Fix group explorer (Dennis Camera)
+	* Type __download: Improve checksum verification, add optional --destination (Ander Punnar)
+	* Type __debconf_set_selections: Add state explorer (Dennis Camera)
 
 6.9.6: 2021-04-20
 	* Type __pyvenv: Fix user example in man page (Dennis Camera)
