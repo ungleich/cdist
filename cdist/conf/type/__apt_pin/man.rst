@@ -3,12 +3,12 @@ cdist-type__apt_pin(7)
 
 NAME
 ----
-cdist-type__apt_pin - TODO
+cdist-type__apt_pin - Manage apt pinning rules
 
 
 DESCRIPTION
 -----------
-This space intentionally left blank.
+Adds/removes/edits rules to pin some packages to a specific distribution. Useful if using multiple debian repositories at the same time. (Useful, if one wants to use a few specific packages from backports or perhaps Debain testing... or even sid.)
 
 
 REQUIRED PARAMETERS
@@ -20,7 +20,7 @@ distribution
 OPTIONAL PARAMETERS
 -------------------
 package
-   Package name or glob/RE expression to match multiple packages. If not specified `__object_id` is used.
+   Package name, glob or regular expression to match (multiple) packages. If not specified `__object_id` is used.
 
 priority
    The priority value to assign to matching packages. Deafults to 500. (To match the default target distro's priority)
@@ -28,7 +28,6 @@ priority
 state
    Will be passed to underlying `__file` type; see there for valid values and defaults.
 
-None.
 
 
 BOOLEAN PARAMETERS
@@ -41,8 +40,8 @@ EXAMPLES
 
 .. code-block:: sh
 
-   # Add the bullseye repo to buster, but do not install any pacakges by default
-   # only if explicitely asked for
+   # Add the bullseye repo to buster, but do not install any packages by default,
+   # only if explicitely asked for (-1 means "never" for apt)
     __apt_pin bullseye-default \
        --package "*" \
        --distribution bullseye \
@@ -52,19 +51,19 @@ EXAMPLES
        --uri http://deb.debian.org/debian/ \
        --distribution bullseye \
        --component main
-       # TODO
-       __apt_pin
 
     __apt_pin foo --package "foo foo-*" --distribution bullseye
 
-    __foo # Installs the `foo` package internally
+    __foo # Assuming, this installs the `foo` package internally
 
-    __package foo-plugin-extras
+    __package foo-plugin-extras # Assuming we also need some extra stuff
 
 
 SEE ALSO
 --------
-:strong:`apt_preferences`\ (7)
+:strong:`apt_preferences`\ (5)
+:strong:`cdist-type__apt_source`\ (7)
+:strong:`cdist-type__apt_backports`\ (7)
 :strong:`cdist-type__file`\ (7)
 
 AUTHORS
