@@ -88,6 +88,9 @@ SYNOPSIS
     cdist info [-h] [-a] [-c CONF_DIR] [-e] [-F] [-f] [-g CONFIG_FILE] [-t]
                [pattern]
 
+    cdist scan -I INTERFACE [--m MODE] [--name-mapper PATH_TO_SCRIPT] [--list]
+               [-d CONFIG_DELAY] [-t TRIGGER_DELAY]
+
 
 DESCRIPTION
 -----------
@@ -641,6 +644,31 @@ Display information for cdist (global explorers, types).
 **-t, --types**
     Display info for types.
 
+SCAN
+----
+
+Runs cdist as a daemon that discover/watch on hosts and reconfigure them
+periodically.
+
+**-I INTERFACE, --interfaces INTERFACE**
+    Interface to listen on. Can be specified multiple times.
+
+**-m MODE, --mode MODE**
+    Scanner components to enable. Can be specified multiple time to enable more
+    than one component. Supported modes are: scan, trigger and config. Defaults
+    to tiggger and scan.
+
+**--name-mapper PATH_TO_SCRIPT**
+    Path to script used to resolve a remote host name from an IPv6 address.
+
+**--list**
+    List known hosts and exit.
+
+**-d CONFIG_DELAY, --config-delay CONFIG_DELAY**
+    How long (seconds) to wait before reconfiguring after last try (config mode only).
+
+**-t TRIGGER_DELAY, --tigger-delay TRIGGER_DELAY**
+    How long (seconds) to wait between ICMPv6 echo requests (trigger mode only).
 
 CONFIGURATION
 -------------
