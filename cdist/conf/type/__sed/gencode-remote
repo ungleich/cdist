@@ -32,6 +32,7 @@ if ! echo "$script" \
     | diff "$file_from_target" - \
     > /dev/null
 then
+    # shellcheck disable=SC2016
     echo 'tmp="$( mktemp )"'
 
     echo "$sed_cmd -f - '$file' > \"\$tmp\" << EOF"
@@ -41,6 +42,12 @@ then
     echo 'EOF'
 
     echo "cp \"\$tmp\" '$file'"
-    
+
+    # shellcheck disable=SC2016
     echo 'rm -f "$tmp"'
+
+    if [ -f "$__object/parameter/onchange" ]
+    then
+        cat "$__object/parameter/onchange"
+    fi
 fi
