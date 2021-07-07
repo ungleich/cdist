@@ -1,0 +1,46 @@
+#!/bin/sh -e
+
+if [ -f "$__object/parameter/file" ]
+then
+    file="$( cat "$__object/parameter/file" )"
+else
+    file="/$__object_id"
+fi
+
+script="$( cat "$__object/parameter/script" )"
+
+if [ "$script" = '-' ]
+then
+    script="$( cat "$__object/stdin" )"
+elif
+    [ -f "$script" ]
+then
+    script="$( cat "$script" )"
+fi
+
+file_from_target="$__object/explorer/file"
+
+sed_cmd='sed'
+
+if [ -f "$__object/parameter/regexp-extended" ]
+then
+    sed_cmd="$sed_cmd --regexp-extended"
+fi
+
+if ! echo "$script" \
+    | "$sed_cmd" -f - "$file_from_target" \
+    | diff "$file_from_target" - \
+    > /dev/null
+then
+    echo 'tmp="$( mktemp )"'
+
+    echo "$sed_cmd -f - '$file' > \"\$tmp\" << EOF"
+
+    echo "$script"
+
+    echo 'EOF'
+
+    echo "cp \"\$tmp\" '$file'"
+    
+    echo 'rm -f "$tmp"'
+fi

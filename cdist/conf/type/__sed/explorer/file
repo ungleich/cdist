@@ -1,0 +1,22 @@
+#!/bin/sh -e
+
+if [ -f "$__object/parameter/file" ]
+then
+    file="$( cat "$__object/parameter/file" )"
+else
+    file="/$__object_id"
+fi
+
+if [ -f "$file" ]
+then
+    if [ -s "$file" ]
+    then
+        cat "$file"
+    else
+        echo "$file is empty" >&2
+        exit 1
+    fi
+else
+    echo "$file do not exist" >&2
+    exit 1
+fi
