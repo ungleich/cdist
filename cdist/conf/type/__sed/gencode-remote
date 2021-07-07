@@ -27,27 +27,31 @@ then
     sed_cmd="$sed_cmd --regexp-extended"
 fi
 
-if ! echo "$script" \
+if echo "$script" \
     | "$sed_cmd" -f - "$file_from_target" \
     | diff "$file_from_target" - \
     > /dev/null
 then
-    # shellcheck disable=SC2016
-    echo 'tmp="$( mktemp )"'
+    exit 0
+fi
 
-    echo "$sed_cmd -f - '$file' > \"\$tmp\" << EOF"
+# shellcheck disable=SC2016
+echo 'tmp="$( mktemp )"'
 
-    echo "$script"
+echo "$sed_cmd -f - '$file' > \"\$tmp\" << EOF"
 
-    echo 'EOF'
+echo "$script"
 
-    echo "cp \"\$tmp\" '$file'"
+echo 'EOF'
 
-    # shellcheck disable=SC2016
-    echo 'rm -f "$tmp"'
+echo "cp \"\$tmp\" '$file'"
 
-    if [ -f "$__object/parameter/onchange" ]
-    then
-        cat "$__object/parameter/onchange"
-    fi
+# shellcheck disable=SC2016
+echo 'rm -f "$tmp"'
+
+echo 'change' >> "$__messages_out"
+
+if [ -f "$__object/parameter/onchange" ]
+then
+    cat "$__object/parameter/onchange"
 fi
