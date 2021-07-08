@@ -13,6 +13,7 @@ next:
 	* Type __debconf_set_selections: Add state explorer (Dennis Camera)
 	* Core: Implement usable cdist scan (Timothée Floure)
 	* New type: __snakeoil_cert (Ander Punnar)
+	* Type __rsync: Honour $__remote_exec env var (Daniel Fancsali)
 
 6.9.6: 2021-04-20
 	* Type __pyvenv: Fix user example in man page (Dennis Camera)
