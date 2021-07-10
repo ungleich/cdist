@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.9.7: 2021-07-10
 	* New type: __postgres_conf (Beni Ruef, Dennis Camera)
 	* Types __postgres_*: Improve OS support and do some cleanup (Dennis Camera)
 	* Type __apt_key_uri: Deprecate in favour of __apt_key --uri (Evilham)
