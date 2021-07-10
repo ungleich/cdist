@@ -57,6 +57,7 @@ resolved name to stdout - if any. The script must be executable.
 Simplest script:
 
 .. code-block:: sh
+
   #!/bin/sh
 
   case "$1" in
@@ -71,6 +72,7 @@ Simplest script:
 Resolving name from `PTR` DNS record:
 
 .. code-block:: sh
+
   #!/bin/sh
 
   for cmd in dig sed; do
