@@ -486,19 +486,31 @@ def get_parsers():
     parser['scan'].add_argument(
         '-m', '--mode', help='Which modes should run',
         action='append', default=[],
-        choices=['scan', 'trigger'])
+        choices=['scan', 'trigger', 'config'])
+    parser['scan'].add_argument(
+        '--list',
+        action='store_true',
+        help='List the known hosts and exit')
     parser['scan'].add_argument(
         '--config',
         action='store_true',
         help='Try to configure detected hosts')
     parser['scan'].add_argument(
-        '-I', '--interfaces',
-        action='append',  default=[],
+        '-I', '--interface',
+        action='append',  default=[], required=True,
         help='On which interfaces to scan/trigger')
     parser['scan'].add_argument(
-        '-d', '--delay',
-        action='store',  default=3600,
-        help='How long to wait before reconfiguring after last try')
+        '--name-mapper',
+        action='store',  default=None,
+        help='Map addresses to names, required for config mode')
+    parser['scan'].add_argument(
+        '-d', '--config-delay',
+        action='store',  default=3600, type=int,
+        help='How long (seconds) to wait before reconfiguring after last try')
+    parser['scan'].add_argument(
+        '-t', '--trigger-delay',
+        action='store',  default=5, type=int,
+        help='How long (seconds) to wait between ICMPv6 echo requests')
     parser['scan'].set_defaults(func=cdist.scan.commandline.commandline)
 
     # Trigger

@@ -27,18 +27,25 @@ else
    keyid="$__object_id"
 fi
 
+# From apt-key(8):
+#   Use of apt-key is deprecated, except for the use of apt-key del in
+#   maintainer scripts to remove existing keys from the main keyring.
+#   If such usage of apt-key is desired the additional installation of
+#   the GNU Privacy Guard suite (packaged in gnupg) is required.
+if [ -f "${__object}/parameter/use-deprecated-apt-key" ]; then
+   if apt-key export "$keyid" | head -n 1 | grep -Fqe "BEGIN PGP PUBLIC KEY BLOCK"
+      then echo present
+      else echo absent
+   fi
+   exit
+fi
+
 keydir="$(cat "$__object/parameter/keydir")"
 keyfile="$keydir/$__object_id.gpg"
 
-if [ -d "$keydir" ]
+if [ -f "$keyfile" ]
 then
-   if [ -f "$keyfile" ]
-   then echo present
-   else echo absent
-   fi
-else
-   # fallback to deprecated apt-key
-   apt-key export "$keyid" | head -n 1 | grep -Fqe "BEGIN PGP PUBLIC KEY BLOCK" \
-      && echo present \
-      || echo absent
+   echo present
+   exit
 fi
+echo absent

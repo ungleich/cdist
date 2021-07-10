@@ -6,17 +6,51 @@ state_is="$( cat "$__object/explorer/state" )"
 
 if [ "$download" = 'remote' ] && [ "$state_is" != 'present' ]
 then
-    cmd="$( cat "$__object/explorer/remote_cmd" )"
+    cmd_get="$( cat "$__object/explorer/remote_cmd_get" )"
 
     url="$( cat "$__object/parameter/url" )"
 
-    dst="/$__object_id"
+    if [ -f "$__object/parameter/destination" ]
+    then
+        dst="$( cat "$__object/parameter/destination" )"
+    else
+        dst="/$__object_id"
+    fi
 
-    printf "$cmd > %s\n" \
-        "$url" \
-        "$dst"
+    echo "download_tmp=\"\$( mktemp )\""
 
-    echo 'downloaded' > "$__messages_out"
+    # shellcheck disable=SC2059
+    printf "$cmd_get > \"\$download_tmp\"\n" "$url"
+
+    if [ -f "$__object/parameter/sum" ]
+    then
+        sum_should="$( cat "$__object/parameter/sum" )"
+
+        if [ -f "$__object/parameter/cmd-sum" ]
+        then
+            remote_cmd_sum="$( cat "$__object/parameter/cmd-sum" )"
+        else
+            remote_cmd_sum="$( cat "$__object/explorer/remote_cmd_sum" )"
+
+            if echo "$sum_should" | grep -Fq ':'
+            then
+                sum_should="$( echo "$sum_should" | cut -d : -f 2 )"
+            fi
+        fi
+
+        # shellcheck disable=SC2059
+        echo "sum_is=\"\$( $( printf "$remote_cmd_sum" "\"\$download_tmp\"" ) )\""
+
+        echo "if [ \"\$sum_is\" != '$sum_should' ]; then"
+
+        echo "echo 'remote download checksum mismatch' >&2"
+
+        echo "rm -f \"\$download_tmp\""
+
+        echo 'exit 1; fi'
+    fi
+
+    echo "mv \"\$download_tmp\" '$dst'"
 fi
 
 if [ -f "$__object/parameter/onchange" ] && [ "$state_is" != "present" ]

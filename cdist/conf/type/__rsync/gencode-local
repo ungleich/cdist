@@ -34,6 +34,8 @@ if [ -f "$__object/parameter/rsync-opts" ]; then
     done < "$__object/parameter/rsync-opts"
 fi
 
+# shellcheck disable=SC2086
 echo rsync -a \
     --no-owner --no-group \
+    -e \"${__remote_exec}\" \
     -q "$@" "${source}/" "${remote_user}@${__target_host}:${destination}"

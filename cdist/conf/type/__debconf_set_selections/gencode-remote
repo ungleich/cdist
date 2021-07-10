@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2011-2014 Nico Schottelius (nico-cdist at schottelius.org)
+# 2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -17,16 +18,37 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Setup selections
-#
 
-filename="$(cat "$__object/parameter/file")"
-
-if [ "$filename" = "-" ]; then
-    filename="$__object/stdin"
+if test -f "${__object:?}/parameter/line"
+then
+	filename="${__object:?}/parameter/line"
+elif test -s "${__object:?}/parameter/file"
+then
+	filename=$(cat "${__object:?}/parameter/file")
+	if test "${filename}" = '-'
+	then
+		filename="${__object:?}/stdin"
+	fi
+else
+	printf 'Neither --line nor --file set.\n' >&2
+	exit 1
 fi
 
-echo "debconf-set-selections << __file-eof"
-cat "$filename"
-echo "__file-eof"
+# setting no lines makes no sense
+test -s "${filename}" || exit 0
+
+state_is=$(cat "${__object:?}/explorer/state")
+
+if test "${state_is}" != 'present'
+then
+	cat <<-CODE
+	debconf-set-selections <<'EOF'
+	$(cat "${filename}")
+	EOF
+	CODE
+
+	awk '
+		{
+			printf "set %s %s %s %s\n", $1, $2, $3, $4
+		}' "${filename}" >>"${__messages_out:?}"
+fi

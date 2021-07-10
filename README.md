@@ -24,8 +24,8 @@ For community-maintained types there is
 
 ## Participating
 
-IRC: ``#cdist`` @ freenode
+IRC: ``#cdist`` @ [libera](https://libera.chat)
 
 Matrix: ``#cdist:ungleich.ch``
 
-Mattermost: https://chat.ungleich.ch/ungleich/channels/cdist
+Matrix and IRC are bridged.

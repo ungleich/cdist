@@ -19,38 +19,6 @@
 #
 #
 
-#
-# Interface to be implemented:
-# - cdist scan --mode {scan, trigger, install, config}, --mode can be repeated
-#   scan: scan / listen for icmp6 replies
-#   trigger: send trigger to multicast
-#   config: configure newly detected hosts
-#   install: install newly detected hosts
-#
-# Scanner logic
-#  - save results to configdir:
-#     basedir = ~/.cdist/scan/<ipv6-address>
-#     last_seen = ~/.cdist/scan/<ipv6-address>/last_seen -- record unix time
-#           or similar
-#     last_configured = ~/.cdist/scan/<ipv6-address>/last_configured -- record
-#           unix time or similar
-#     last_installed = ~/.cdist/scan/<ipv6-address>/last_configured -- record
-#           unix time or similar
-#
-#
-#
-#
-# cdist scan --list
-#       Show all known hosts including last seen flag
-#
-# Logic for reconfiguration:
-#
-#  - record when configured last time
-#  - introduce a parameter --reconfigure-after that takes time argument
-#  - reconfigure if a) host alive and b) reconfigure-after time passed
-#
-
-
 from multiprocessing import Process
 import os
 import logging
@@ -61,7 +29,84 @@ import datetime
 
 import cdist.config
 
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger("scan")
+datetime_format = '%Y-%m-%d %H:%M:%S'
+
+
+class Host(object):
+    def __init__(self, addr, outdir, name_mapper=None):
+        self.addr = addr
+        self.workdir = os.path.join(outdir, addr)
+        self.name_mapper = name_mapper
+
+        os.makedirs(self.workdir, exist_ok=True)
+
+    def __get(self, key, default=None):
+        fname = os.path.join(self.workdir, key)
+        value = default
+        if os.path.isfile(fname):
+            with open(fname, "r") as fd:
+                value = fd.readline()
+        return value
+
+    def __set(self, key, value):
+        fname = os.path.join(self.workdir, key)
+        with open(fname, "w") as fd:
+            fd.write(f"{value}")
+
+    def name(self, default=None):
+        if self.name_mapper is None:
+            return default
+
+        fpath = os.path.join(os.getcwd(), self.name_mapper)
+        if os.path.isfile(fpath) and os.access(fpath, os.X_OK):
+            out = subprocess.run([fpath, self.addr], capture_output=True)
+            if out.returncode != 0:
+                return default
+            else:
+                value = out.stdout.decode()
+                return (default if len(value) == 0 else value)
+        else:
+            return default
+
+    def address(self):
+        return self.addr
+
+    def last_seen(self, default=None):
+        raw = self.__get('last_seen')
+        if raw:
+            return datetime.datetime.strptime(raw, datetime_format)
+        else:
+            return default
+
+    def last_configured(self, default=None):
+        raw = self.__get('last_configured')
+        if raw:
+            return datetime.datetime.strptime(raw, datetime_format)
+        else:
+            return default
+
+    def seen(self):
+        now = datetime.datetime.now().strftime(datetime_format)
+        self.__set('last_seen', now)
+
+    # XXX: There's no easy way to use the config module without feeding it with
+    # CLI args. Might as well call everything from scratch!
+    def configure(self):
+        target = self.name() or self.address()
+        cmd = ['cdist', 'config', '-v', target]
+
+        fname = os.path.join(self.workdir, 'last_configuration_log')
+        with open(fname, "w") as fd:
+            log.debug("Executing: %s", cmd)
+            completed_process = subprocess.run(cmd, stdout=fd, stderr=fd)
+            if completed_process.returncode != 0:
+                log.error("%s return with non-zero code %i - see %s for \
+                        details.", cmd, completed_process.returncode, fname)
+
+        now = datetime.datetime.now().strftime(datetime_format)
+        self.__set('last_configured', now)
 
 
 class Trigger(object):
@@ -69,12 +114,14 @@ class Trigger(object):
     Trigger an ICMPv6EchoReply from all hosts that are alive
     """
 
-    def __init__(self, interfaces=None, verbose=False):
+    def __init__(self, interfaces, sleeptime, verbose=False):
         self.interfaces = interfaces
+
+        # Used by scapy / send in trigger/2.
         self.verbose = verbose
 
-        # Wait 5 seconds before triggering again - FIXME: add parameter
-        self.sleeptime = 5
+        # Delay in seconds between sent ICMPv6EchoRequests.
+        self.sleeptime = sleeptime
 
     def start(self):
         self.processes = []
@@ -93,9 +140,14 @@ class Trigger(object):
             time.sleep(self.sleeptime)
 
     def trigger(self, interface):
-        packet = IPv6(dst="ff02::1{}".format(interface)) / ICMPv6EchoRequest()
-        log.debug("Sending request on %s", interface)
-        send(packet, verbose=self.verbose)
+        try:
+            log.debug("Sending ICMPv6EchoRequest on %s", interface)
+            packet = IPv6(
+                    dst="ff02::1%{}".format(interface)
+                    ) / ICMPv6EchoRequest()
+            send(packet, verbose=self.verbose)
+        except Exception as e:
+            log.error("Could not send ICMPv6EchoRequest: %s", e)
 
 
 class Scanner(object):
@@ -103,41 +155,62 @@ class Scanner(object):
     Scan for replies of hosts, maintain the up-to-date database
     """
 
-    def __init__(self, interfaces=None, args=None, outdir=None):
+    def __init__(self, interfaces, autoconfigure=False, outdir=None,
+                 name_mapper=None):
         self.interfaces = interfaces
+        self.autoconfigure = autoconfigure
+        self.name_mapper = name_mapper
+        self.config_delay = datetime.timedelta(seconds=3600)
 
         if outdir:
             self.outdir = outdir
         else:
             self.outdir = os.path.join(os.environ['HOME'], '.cdist', 'scan')
+        os.makedirs(self.outdir, exist_ok=True)
+
+        self.running_configs = {}
 
     def handle_pkg(self, pkg):
         if ICMPv6EchoReply in pkg:
-            host = pkg['IPv6'].src
-            log.verbose("Host %s is alive", host)
+            host = Host(pkg['IPv6'].src, self.outdir, self.name_mapper)
+            if host.name():
+                log.verbose("Host %s (%s) is alive", host.name(),
+                            host.address())
+            else:
+                log.verbose("Host %s is alive", host.address())
 
-            dir = os.path.join(self.outdir, host)
-            fname = os.path.join(dir, "last_seen")
+            host.seen()
 
-            now = datetime.datetime.now()
+            # Configure if needed.
+            if self.autoconfigure and \
+                    host.last_configured(default=datetime.datetime.min) + \
+                    self.config_delay < datetime.datetime.now():
+                self.config(host)
 
-            os.makedirs(dir, exist_ok=True)
+    def list(self):
+        hosts = []
+        for addr in os.listdir(self.outdir):
+            hosts.append(Host(addr, self.outdir, self.name_mapper))
 
-            # FIXME: maybe adjust the format so we can easily parse again
-            with open(fname, "w") as fd:
-                fd.write(f"{now}\n")
+        return hosts
 
-    def config(self):
-        """
-        Configure a host
+    def config(self, host):
+        if host.name() is None:
+            log.debug("config - could not resolve name for %s, aborting.",
+                      host.address())
+            return
 
-        - Assume we are only called if necessary
-        - However we need to ensure to not run in parallel
-        - Maybe keep dict storing per host processes
-        - Save the result
-        - Save the output -> probably aligned to config mode
+        previous_config_process = self.running_configs.get(host.name())
+        if previous_config_process is not None and \
+                previous_config_process.is_alive():
+            log.debug("config - is already running for %s, aborting.",
+                      host.name())
 
-        """
+        log.info("config - running against host %s (%s).", host.name(),
+                 host.address())
+        p = Process(target=host.configure())
+        p.start()
+        self.running_configs[host.name()] = p
 
     def start(self):
         self.process = Process(target=self.scan)
@@ -148,47 +221,9 @@ class Scanner(object):
 
     def scan(self):
         log.debug("Scanning - zzzzz")
-        sniff(iface=self.interfaces,
-              filter="icmp6",
-              prn=self.handle_pkg)
-
-
-if __name__ == '__main__':
-    t = Trigger(interfaces=["wlan0"])
-    t.start()
-
-    # Scanner can listen on many interfaces at the same time
-    s = Scanner(interfaces=["wlan0"])
-    s.scan()
-
-    # Join back the trigger processes
-    t.join()
-
-    # Test in my lan shows:
-    # [18:48] bridge:cdist% ls -1d fe80::*
-    # fe80::142d:f0a5:725b:1103
-    # fe80::20d:b9ff:fe49:ac11
-    # fe80::20d:b9ff:fe4c:547d
-    # fe80::219:d2ff:feb2:2e12
-    # fe80::21b:fcff:feee:f446
-    # fe80::21b:fcff:feee:f45c
-    # fe80::21b:fcff:feee:f4b1
-    # fe80::21b:fcff:feee:f4ba
-    # fe80::21b:fcff:feee:f4bc
-    # fe80::21b:fcff:feee:f4c1
-    # fe80::21d:72ff:fe86:46b
-    # fe80::42b0:34ff:fe6f:f6f0
-    # fe80::42b0:34ff:fe6f:f863
-    # fe80::42b0:34ff:fe6f:f9b2
-    # fe80::4a5d:60ff:fea1:e55f
-    # fe80::77a3:5e3f:82cc:f2e5
-    # fe80::9e93:4eff:fe6c:c1f4
-    # fe80::ba69:f4ff:fec5:6041
-    # fe80::ba69:f4ff:fec5:8db7
-    # fe80::bad8:12ff:fe65:313d
-    # fe80::bad8:12ff:fe65:d9b1
-    # fe80::ce2d:e0ff:fed4:2611
-    # fe80::ce32:e5ff:fe79:7ea7
-    # fe80::d66d:6dff:fe33:e00
-    # fe80::e2ff:f7ff:fe00:20e6
-    # fe80::f29f:c2ff:fe7c:275e
+        try:
+            sniff(iface=self.interfaces,
+                  filter="icmp6",
+                  prn=self.handle_pkg)
+        except Exception as e:
+            log.error("Could not start listener: %s", e)

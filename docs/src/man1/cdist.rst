@@ -97,6 +97,8 @@ SYNOPSIS
                   [-R [{tar,tgz,tbz2,txz}]] [-r REMOTE_OUT_PATH]
                   [--remote-copy REMOTE_COPY] [--remote-exec REMOTE_EXEC]
                   [-S] [-D DIRECTORY] [-H HTTP_PORT] [--ipv6] [-O SOURCE]
+    cdist scan -I INTERFACE [--m MODE] [--name-mapper PATH_TO_SCRIPT] [--list]
+               [-d CONFIG_DELAY] [-t TRIGGER_DELAY]
 
 
 DESCRIPTION
@@ -748,6 +750,31 @@ This command returns the following response codes to client requests:
 **-S, --disable-saving-output-streams**
     Disable saving output streams.
 
+SCAN
+----
+
+Runs cdist as a daemon that discover/watch on hosts and reconfigure them
+periodically.
+
+**-I INTERFACE, --interfaces INTERFACE**
+    Interface to listen on. Can be specified multiple times.
+
+**-m MODE, --mode MODE**
+    Scanner components to enable. Can be specified multiple time to enable more
+    than one component. Supported modes are: scan, trigger and config. Defaults
+    to tiggger and scan.
+
+**--name-mapper PATH_TO_SCRIPT**
+    Path to script used to resolve a remote host name from an IPv6 address.
+
+**--list**
+    List known hosts and exit.
+
+**-d CONFIG_DELAY, --config-delay CONFIG_DELAY**
+    How long (seconds) to wait before reconfiguring after last try (config mode only).
+
+**-t TRIGGER_DELAY, --tigger-delay TRIGGER_DELAY**
+    How long (seconds) to wait between ICMPv6 echo requests (trigger mode only).
 
 CONFIGURATION
 -------------

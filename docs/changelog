@@ -5,6 +5,20 @@ next:
 	* Core: Add trigger functionality (Nico Schottelius, Darko Poljak)
 	* Core: Implement core support for python types (Darko Poljak)
 
+6.9.7: 2021-07-10
+	* New type: __postgres_conf (Beni Ruef, Dennis Camera)
+	* Types __postgres_*: Improve OS support and do some cleanup (Dennis Camera)
+	* Type __apt_key_uri: Deprecate in favour of __apt_key --uri (Evilham)
+	* Type __apt_key: Documentation improvements, support in-type/in-manifest provision with --source, make fallback to apt-key(8) explicit with --use-deprecated-apt-key (Evilham)
+	* Type __letsencrypt_cert: Bugfix, performance; revamp explorers, add locking (Evilham)
+	* Type __git: Fix group explorer (Ander Punnar)
+	* Type __pyvenv: Fix group explorer (Dennis Camera)
+	* Type __download: Improve checksum verification, add optional --destination (Ander Punnar)
+	* Type __debconf_set_selections: Add state explorer (Dennis Camera)
+	* Core: Implement usable cdist scan (Timothée Floure)
+	* New type: __snakeoil_cert (Ander Punnar)
+	* Type __rsync: Honour $__remote_exec env var (Daniel Fancsali)
+
 6.9.6: 2021-04-20
 	* Type __pyvenv: Fix user example in man page (Dennis Camera)
 	* Core: config: Make local state directory available to custom remotes (Steven Armstrong
