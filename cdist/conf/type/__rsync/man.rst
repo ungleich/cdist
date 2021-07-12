@@ -3,112 +3,73 @@ cdist-type__rsync(7)
 
 NAME
 ----
-cdist-type__rsync - Mirror directories using rsync
+cdist-type__rsync - Mirror directories using ``rsync``
 
 
 DESCRIPTION
 -----------
-WARNING: This type is of BETA quality:
-
-- it has not been tested widely
-- interfaces *may* change
-- if there is a better approach to solve the problem -> the type may even vanish
-
-If you are fine with these constraints, please read on.
-
-
-This cdist type allows you to mirror local directories to the
-target host using rsync. Rsync will be installed in the manifest of the type.
-If group or owner are giveng, a recursive chown will be executed on the 
-target host.
-
-A slash will be appended to the source directory so that only the contents
-of the directory are taken and not the directory name itself.
+The purpose of this type is to bring power of ``rsync`` into ``cdist``.
 
 
 REQUIRED PARAMETERS
 -------------------
 source
-    Where to take files from
+   Source directory in local machine.
+   If source is directory, slash (``/``) will be added to source and destination paths.
 
 
 OPTIONAL PARAMETERS
 -------------------
-group
-   Group to chgrp to.
+destination
+   Destination directory. Defaults to ``$__object_id``.
 
 owner
-   User to chown to.
+   Will be passed to ``rsync`` as ``--chown=OWNER``.
+   Read ``rsync(1)`` for more details.
 
-destination
-    Use this as the base destination instead of the object id
+group
+   Will be passed to ``rsync`` as ``--chown=:GROUP``.
+   Read ``rsync(1)`` for more details.
+
+mode
+   Will be passed to ``rsync`` as ``--chmod=MODE``.
+   Read ``rsync(1)`` for more details.
+
+options
+   Defaults to ``--recursive --links --perms --times``.
+   Due to `bug in Python's argparse<https://bugs.python.org/issue9334>`_, value must be prefixed with ``\``.
 
 remote-user
-    Use this user instead of the default "root" for rsync operations.
+   Defaults to ``root``.
 
 
 OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
-rsync-opts
-    Use this option to give rsync options with.
-    See rsync(1) for available options.
-    Only "--" options are supported.
-    Write the options without the beginning "--"
-    Can be specified multiple times.
-
-
-MESSAGES
---------
-NONE
+option
+   Pass additional options to ``rsync``.
+   See ``rsync(1)`` for all possible options.
+   Due to `bug in Python's argparse<https://bugs.python.org/issue9334>`_, value must be prefixed with ``\``.
 
 
 EXAMPLES
 --------
-
 .. code-block:: sh
 
-    # You can use any source directory
-    __rsync /tmp/testdir \
-        --source /etc
-
-    # Use source from type
-    __rsync /etc \
-        --source "$__type/files/package"
-
-    # Allow multiple __rsync objects to write to the same dir
-    __rsync mystuff \
-        --destination /usr/local/bin \
-        --source "$__type/files/package"
-
-    __rsync otherstuff \
-        --destination /usr/local/bin \
-        --source "$__type/files/package2"
-
-    # Use rsync option --exclude
-    __rsync /tmp/testdir \
-        --source /etc \
-        --rsync-opts exclude=sshd_conf
-
-    # Use rsync with multiple options --exclude --dry-run
-    __rsync /tmp/testing \
-        --source /home/tester \
-        --rsync-opts exclude=id_rsa \
-        --rsync-opts dry-run
-
-
-SEE ALSO
---------
-:strong:`rsync`\ (1)
+    __rsync /var/www/example.com \
+        --owner root \
+        --group www-data \
+        --mode 'D750,F640' \
+        --source "$__files/example.com/www"
 
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
+Ander Punnar <ander-at-kvlt-dot-ee>
 
 
 COPYING
 -------
-Copyright \(C) 2015 Nico Schottelius. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2021 Ander Punnar. You can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option)
+any later version.
