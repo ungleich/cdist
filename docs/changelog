@@ -3,6 +3,7 @@ Changelog
 
 next:
 	* Type __rsync: Rewrite (Ander Punnar)
+	* New type: __apt_pin (Daniel Fancsali)
 
 6.9.7: 2021-07-10
 	* New type: __postgres_conf (Beni Ruef, Dennis Camera)
