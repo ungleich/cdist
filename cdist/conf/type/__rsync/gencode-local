@@ -90,11 +90,15 @@ fi
 # 4. to understand how that cryptic regex works, please
 #    open rsync manpage and read about --itemize-changes.
 
+export RSYNC_RSH="$__remote_exec"
+
 # shellcheck disable=SC2086
 if ! rsync --dry-run --itemize-changes $options "$src" "$remote_user@$__target_host:$dst" \
     | grep -E '^(<|>|c|h|\.|\*)[fdL][cstTpogunbax\.\+\?]+\s' >&2
 then
     exit 0
 fi
+
+echo "export RSYNC_RSH='$__remote_exec'"
 
 echo "rsync $options $src $remote_user@$__target_host:$dst"
