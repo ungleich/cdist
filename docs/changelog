@@ -4,6 +4,7 @@ Changelog
 next:
 	* Type __rsync: Rewrite (Ander Punnar)
 	* New type: __apt_pin (Daniel Fancsali)
+	* Explorer os_version: Convert Devuan ceres to version number (Dennis Camera)
 
 6.9.7: 2021-07-10
 	* New type: __postgres_conf (Beni Ruef, Dennis Camera)
@@ -146,7 +147,7 @@ next:
 	* Type __pf_ruleset: Refactor (Kamila Součková, Evil Ham)
 	* Type __pf_apply: Deprecate type (Kamila Součková, Evil Ham)
 	* Configuration: Add notes to cdist.cfg.skeleton (Evil Ham)
-	* Explorers cpu_cores, memory: Improve *BSD support (Evil Ham)
+	* Explorers cpu_cores, memory: Improve BSD support (Evil Ham)
 	* Core: Remove debug logging noise (Evil Ham)
 
 6.5.4: 2020-04-11
@@ -211,7 +212,7 @@ next:
 	* Documentation: PreOS english nitpicking (Evil Ham)
 	* Documentation: Add installing from source with signature verification (Darko Poljak)
 	* Core: preos: Support top command logging options, custom conf-dir option and CDIST_PATH env var (Darko Poljak)
-	* Type __start_on_boot: Docs: remove unsupported *BSD claim (Evil Ham)
+	* Type __start_on_boot: Docs: remove unsupported BSD claim (Evil Ham)
 	* New type: __openldap_server (Evil Ham)
 
 6.2.0: 2019-11-30
@@ -1070,9 +1071,9 @@ next:
 	* Removed type __removeline (replaced by __line) (Nico Schottelius)
 	* Type __directory: Parameter --parents and --recursive are now boolean (Nico Schottelius)
 	* Type __package_apt, __package_luarocks, __package_opkg,
-		__package_pacman, __package_pkg_freebsd, __package_pkg_openbsd,
-		__package_rubygem, __package_yum, __process:
-			Parameter state accepts only "present" and "absent" (Nico Schottelius)
+	  __package_pacman, __package_pkg_freebsd, __package_pkg_openbsd,
+	  __package_rubygem, __package_yum, __process:
+	  Parameter state accepts only "present" and "absent" (Nico Schottelius)
 	* Dist: Initial support for pypi packaging (Nico Schottelius)
 
 2.0.15: 2012-11-02
