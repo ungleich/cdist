@@ -36,25 +36,27 @@ import threading
 logging.OFF = logging.CRITICAL + 10  # disable logging
 logging.addLevelName(logging.OFF, 'OFF')
 
+
 logging.VERBOSE = logging.INFO - 5
 logging.addLevelName(logging.VERBOSE, 'VERBOSE')
 
 
-def _verbose(msg, *args, **kwargs):
-    logging.log(logging.VERBOSE, msg, *args, **kwargs)
+def _verbose(self, msg, *args, **kwargs):
+    self.log(logging.VERBOSE, msg, args, **kwargs)
 
 
-logging.verbose = _verbose
+logging.Logger.verbose = _verbose
+
 
 logging.TRACE = logging.DEBUG - 5
 logging.addLevelName(logging.TRACE, 'TRACE')
 
 
-def _trace(msg, *args, **kwargs):
-    logging.log(logging.TRACE, msg, *args, **kwargs)
+def _trace(self, msg, *args, **kwargs):
+    self.log(logging.TRACE, msg, *args, **kwargs)
 
 
-logging.trace = _trace
+logging.Logger.trace = _trace
 
 
 class CdistFormatter(logging.Formatter):
