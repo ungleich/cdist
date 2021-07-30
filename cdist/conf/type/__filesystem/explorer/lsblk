@@ -27,7 +27,7 @@ else
 fi
 
 case "$os" in
-    alpine|centos|fedora|redhat|suse|gentoo)
+    alpine|centos|fedora|gentoo|redhat|suse|ubuntu)
         if [ ! -x "$(command -v lsblk)" ]; then
             echo "lsblk is required for __filesystem type" >&2
             exit 1
