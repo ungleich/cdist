@@ -26,17 +26,19 @@
 # VERB does not have a special meaning, it is just for better readability.
 #
 # e.g.
+# container
 # container on lxc
 # virtual by kvm-spapr
 #
-# The third word of each line can be composed of different parts concatenated with a `-'
-# (minus) character, with each component being a specification of the previous,
-# e.g.:
+# The third word of each line (except the first) can be composed of different
+# parts concatenated with a `-' (minus) character, with each component being
+# a specification of the previous, e.g.:
 #  - lxc-libvirt             (LXC container, managed by libvirt)
 #  - lpar-s390 / lpar-power  (LPAR running on IBM S/390 or POWER, respectively)
 #  - xen-hvm / xen-pv        (Xen HVM vs para-virtualization)
 #
-# If this explorer cannot determine any information it will print nothing.
+# If this explorer cannot collect enough information about virtualization it
+# will fall back to 'physical'.
 #
 
 # Add /sbin and /usr/sbin to the path so we can find system
@@ -119,6 +121,10 @@ has_cpuinfo() { test -e /proc/cpuinfo; }
 
 get_sysctl() {
 	is_command sysctl && sysctl -n "$1" 2>/dev/null
+}
+
+detected_layer() {
+	test -n "${_toplayer:-}" || echo "${_toplayer:=${1:?}}"
 }
 
 
@@ -895,6 +901,7 @@ for stage in \
 	pid_1 cgroup files os_specific
 do
 	ctengine=$(run_stage ct ${stage}) || continue
+	detected_layer 'container'
 	is_contained=true
 	if test -n "${ctengine}"
 	then
@@ -916,6 +923,7 @@ for stage in \
 	os_specific hyp_specific sys_hypervisor dt dmi cpuinfo arch_specific
 do
 	hypervisor=$(run_stage vm ${stage}) || continue
+	detected_layer 'virtual machine'
 	is_virtual=true
 	if test -n "${hypervisor}"
 	then
@@ -929,3 +937,8 @@ then
 	# we are virtual.
 	echo virtual
 fi
+
+
+# Fallback
+
+detected_layer physical
