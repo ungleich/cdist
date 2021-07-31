@@ -130,6 +130,25 @@ detected_layer() {
 
 # Check for container
 
+has_ct_systemd() {
+	is_command systemd-detect-virt && systemd-detect-virt --help | grep -q -e '^  -c'
+}
+
+check_ct_systemd() (
+	_ctengine=$(systemd-detect-virt -c 2>/dev/null) &&
+	case ${_ctengine}
+	in
+		(''|'none')
+			return 1 ;;
+		('container-other')
+			return 0 ;;
+		('systemd-nspawn')
+			echo systemd_nspawn ;;
+		(*)
+			echo "${_ctengine}" ;;
+	esac
+)
+
 has_ct_pid_1() {
 	test -r /run/systemd/container -o -r /proc/1/environ
 }
@@ -266,6 +285,32 @@ guess_hypervisor_from_cpu_model() {
 			return 1 ;;
 	esac
 }
+
+has_vm_systemd() {
+	is_command systemd-detect-virt && systemd-detect-virt --help | grep -q -e '^  -v'
+}
+
+check_vm_systemd() (
+	_hypervisor=$(systemd-detect-virt -v 2>/dev/null) &&
+	case ${_hypervisor}
+	in
+		(''|'none')
+			return 1 ;;
+		('amazon')
+			echo aws ;;
+		('bochs')
+			echo kvm ;;
+		('microsoft')
+			# assumption
+			echo hyperv ;;
+		('oracle')
+			echo virtualbox ;;
+		('vm-other')
+			return 0 ;;
+		(*)
+			echo "${_hypervisor}" ;;
+	esac
+)
 
 has_vm_cpuinfo() { has_cpuinfo; }
 
@@ -839,7 +884,7 @@ run_stage() {
 # Execute container stages
 
 for stage in \
-	pid_1 cgroup files os_specific
+	systemd pid_1 cgroup files os_specific
 do
 	ctengine=$(run_stage ct ${stage}) || continue
 	detected_layer 'container'
@@ -861,7 +906,7 @@ fi
 # Execute virtual machine / hypervisor stages
 
 for stage in \
-	os_specific hyp_specific sys_hypervisor dt dmi cpuinfo arch_specific
+	systemd os_specific hyp_specific sys_hypervisor dt dmi cpuinfo arch_specific
 do
 	hypervisor=$(run_stage vm ${stage}) || continue
 	detected_layer 'virtual machine'
