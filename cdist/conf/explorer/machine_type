@@ -379,65 +379,6 @@ check_vm_arch_specific() {
 			fi
 			;;
 		(i?86|x86*|amd64|i86pc)
-			# Check CPUID
-			#
-			# Many fullvirt hypervisors give an indication through CPUID.  Use
-			# the virt-what helper program to get this information if available.
-
-			for CPUID_HELPER in \
-				$(command -v virt-what-cpuid-helper 2>/dev/null) \
-				/usr/lib/x86_64-*/virt-what-cpuid-helper \
-				/usr/lib/i?86-*/virt-what-cpuid-helper \
-				/usr/lib/virt-what/virt-what-cpuid-helper
-			do
-				if test -x "${CPUID_HELPER:?}"; then break; fi
-			done
-
-			if test -x "${CPUID_HELPER-}"
-			then
-				case $(command "${CPUID_HELPER}")
-				in
-					('bhyve bhyve ')
-						echo bhyve
-						;;
-					('LKVMLKVMLKVM')
-						echo lkvm
-						;;
-					('KVMKVMKVM')
-						echo kvm
-						;;
-					('TCGTCGTCGTCG')
-						echo qemu-tcg
-						;;
-					('Microsoft Hv')
-						# http://blogs.msdn.com/b/sqlosteam/archive/2010/10/30/is-this-real-the-metaphysics-of-hardware-virtualization.aspx
-						echo hyperv
-						;;
-					('OpenBSDVMM58')
-						# OpenBSD/VMM
-						echo openbsd_vmm
-						;;
-					('VMwareVMware')
-						# check added by Chetan Loke.
-						echo vmware
-						;;
-					('XenVMMXenVMM')
-						if has dmi
-						then
-							# https://access.redhat.com/solutions/222903
-							echo xen-hvm
-						else
-							echo xen-paravirt
-						fi
-						;;
-					(*)
-						return 1 ;;
-				esac
-				return 0
-			fi
-
-			unset CPUID_HELPER
-
 			# VMM CPUID flag denotes that this system is running under a VMM
 			if is_oneof "${uname_s}" Darwin
 			then
