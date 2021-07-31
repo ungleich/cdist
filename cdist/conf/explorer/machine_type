@@ -53,6 +53,21 @@ uname_s=$(uname -s)
 
 is_command() { command -v "$1" >/dev/null 2>&1; }
 
+files_same() {
+	# shellcheck disable=SC2012
+	LC_ALL=C df -P "$1" "$2" 2>/dev/null | {
+		read -r _  # skip header line
+		read -r fs1 _ _ _ _ mp1
+		read -r fs2 _ _ _ _ mp2
+		test "${fs1}" = "${fs2}" -a "${mp1}" = "${mp2}" || return 1
+	} &&
+	ls -1Ldi "$1" "$2" 2>/dev/null | {
+		read -r ino1 _
+		read -r ino2 _
+		test "${ino1}" = "${ino2}" || return 1
+	}
+}
+
 is_oneof() (
 	x=$1; shift
 	for y
@@ -127,6 +142,32 @@ detected_layer() {
 	test -n "${_toplayer:-}" || echo "${_toplayer:=${1:?}}"
 }
 
+
+# Check for chroot
+
+has_chroot_systemd() {
+	is_command systemd-detect-virt && systemd-detect-virt --help | grep -q -e '^  -r'
+}
+
+check_chroot_systemd() {
+	systemd-detect-virt -r
+}
+
+has_chroot_debian_ischroot() {
+	is_command ischroot
+}
+
+check_chroot_debian_ischroot() {
+	ischroot --default-false
+}
+
+has_chroot_procfs() {
+	test -d /proc/
+}
+
+check_chroot_procfs() {
+	test -e /proc/1/root && ! files_same /proc/1/root /
+}
 
 # Check for container
 
@@ -879,6 +920,18 @@ run_stage() {
 	fi \
 	&& "check_$1_$2"
 }
+
+
+# Execute chroot stages
+
+for stage in \
+	procfs debian_ischroot systemd
+do
+	run_stage chroot ${stage} || continue
+	detected_layer 'chroot'
+	echo chroot
+	break
+done
 
 
 # Execute container stages
