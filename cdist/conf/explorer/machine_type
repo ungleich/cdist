@@ -166,7 +166,28 @@ has_chroot_procfs() {
 }
 
 check_chroot_procfs() {
-	test -e /proc/1/root && ! files_same /proc/1/root /
+	if test -e /proc/1/root && ! files_same /proc/1/root /
+	then
+		# try to determine where the chroot has been mounted
+		(
+			rootdev=$(LC_ALL=C df -P / | awk 'NR==2{print $1}')
+
+			if test -e "${rootdev}"
+			then
+				# escape chroot to determine where the device containing the
+				# chroot's / is mounted
+				rootdevmnt=$(LC_ALL=C chroot /proc/1/root df -P "${rootdev}" | awk 'NR==2{print $6}')
+
+				# shellcheck disable=SC2012
+				root_ino=$(ls -1di / | awk '{print $1}')
+
+				# Get mount point
+				chroot /proc/1/root find "${rootdevmnt}" -xdev -type d -inum "${root_ino}"
+			fi
+		)
+		return 0
+	fi
+	return 1
 }
 
 # Check for container
@@ -927,11 +948,20 @@ run_stage() {
 for stage in \
 	procfs debian_ischroot systemd
 do
-	run_stage chroot ${stage} || continue
+	chrootpnt=$(run_stage chroot ${stage}) || continue
+	is_chrooted=true
 	detected_layer 'chroot'
-	echo chroot
-	break
+	if test -n "${chrootpnt}"
+	then
+		echo chroot at "${chrootpnt}"
+		break
+	fi
 done
+if ${is_chrooted:-false} && test -z "${chrootpnt}"
+then
+	# could determine chroot, but not its mount point
+	echo chroot
+fi
 
 
 # Execute container stages
