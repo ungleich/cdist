@@ -165,30 +165,52 @@ has_chroot_procfs() {
 	test -d /proc/
 }
 
-check_chroot_procfs() {
+check_chroot_procfs() (
+	is_chroot=false  # default
 	if test -e /proc/1/root && ! files_same /proc/1/root /
 	then
-		# try to determine where the chroot has been mounted
-		(
-			rootdev=$(LC_ALL=C df -P / | awk 'NR==2{print $1}')
-
-			if test -e "${rootdev}"
-			then
-				# escape chroot to determine where the device containing the
-				# chroot's / is mounted
-				rootdevmnt=$(LC_ALL=C chroot /proc/1/root df -P "${rootdev}" | awk 'NR==2{print $6}')
-
-				# shellcheck disable=SC2012
-				root_ino=$(ls -1di / | awk '{print $1}')
-
-				# Get mount point
-				chroot /proc/1/root find "${rootdevmnt}" -xdev -type d -inum "${root_ino}"
-			fi
-		)
-		return 0
+		is_chroot=true
 	fi
-	return 1
-}
+	if test -e /proc/1/mountinfo -a -e /proc/self/mountinfo
+	then
+		has_mountinfo=true
+		cmp -s /proc/1/mountinfo /proc/self/mountinfo || is_chroot=true
+	fi
+
+	if ${is_chroot}
+	then
+		# try to determine where the chroot has been mounted
+		rootdev=$(LC_ALL=C df -P / | awk 'NR==2{print $1}')
+
+		if test -e "${rootdev}"
+		then
+			# escape chroot to determine where the device containing the
+			# chroot's / is mounted
+			rootdevmnt=$(LC_ALL=C chroot /proc/1/root df -P "${rootdev}" | awk 'NR==2{print $6}')
+
+			# shellcheck disable=SC2012
+			root_ino=$(ls -1di / | awk '{print $1}')
+
+			# escape chroot and find mount point by inode
+			chroot /proc/1/root find "${rootdevmnt}" -xdev -type d -inum "${root_ino}"
+		elif ${has_mountinfo}
+		then
+			while read -r mntid _ _ _ cmntpnt _
+			do
+				read -r _ _ _ _ hmntpnt _ <<-EOF
+				$(grep -e "^$((mntid)) " /proc/1/mountinfo)
+				EOF
+				printf '%s\n' "${hmntpnt%${cmntpnt}}"
+			done </proc/self/mountinfo \
+			| sort -u \
+			| head -n 1  # just take the first...
+		fi
+
+		return 0
+	else
+		return 1
+	fi
+)
 
 # Check for container
 
