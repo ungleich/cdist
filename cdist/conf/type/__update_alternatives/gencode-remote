@@ -38,16 +38,19 @@ name=${__object_id:?}
 
 if ! grep -Fxq "$path_should" "${__object:?}/explorer/alternatives"
 then
-    if [ ! -f "$__object/parameter/install" ]
+    if [ -f "${__object:?}/parameter/install" ]
     then
+        link="$( cat "${__object:?}/explorer/link" )"
+        echo "update-alternatives --install '$link' '$name' '$path_should' 1000"
+    elif [ -z "${__cdist_dry_run+dry run}" ]
+    then
+        # NOTE: ignore error for dry-runs because a package providing the link
+        #       to be installed might be managed by another cdist object (which
+        #       wasn't executed, because dry run…).
         echo "$path_should is not in $name alternatives." >&2
         echo 'Please install missing packages or use --install to add path to alternatives.' >&2
         exit 1
     fi
-
-    link="$( cat "$__object/explorer/link" )"
-
-    echo "update-alternatives --install '$link' '$name' '$path_should' 1000"
 fi
 
 echo "update-alternatives --set '$name' '$path_should'"
