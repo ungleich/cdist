@@ -18,26 +18,25 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 
-path_is="$( cat "$__object/explorer/path_is" )"
+path_is="$( cat "${__object:?}/explorer/path_is" )"
 
-path_should="$( cat "$__object/parameter/path" )"
+path_should="$( cat "${__object:?}/parameter/path" )"
 
 if [ "$path_is" = "$path_should" ]
 then
     exit 0
 fi
 
-if [ "$( cat "$__object/explorer/path_should_state" )" = 'absent' ] && [ -z "$__cdist_dry_run" ]
+if [ "$( cat "${__object:?}/explorer/path_should_state" )" = 'absent' ] \
+    && [ -z "${__cdist_dry_run+dry run}" ]
 then
     echo "$path_should does not exist in target" >&2
     exit 1
 fi
 
-name="$__object_id"
+name=${__object_id:?}
 
-alternatives="$( cat "$__object/explorer/alternatives" )"
-
-if ! echo "$alternatives" | grep -Fxq "$path_should"
+if ! grep -Fxq "$path_should" "${__object:?}/explorer/alternatives"
 then
     if [ ! -f "$__object/parameter/install" ]
     then

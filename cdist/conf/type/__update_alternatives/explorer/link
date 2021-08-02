@@ -18,12 +18,12 @@ for altdir in \
     /var/lib/dpkg/alternatives \
     /var/lib/alternatives
 do
-    if [ ! -f "$altdir/$__object_id" ]
+    if [ ! -f "$altdir/${__object_id:?}" ]
     then
         continue
     fi
 
-    link="$( awk 'NR==2' "$altdir/$__object_id" )"
+    link="$( awk 'NR==2' "$altdir/${__object_id:?}" )"
 
     if [ -n "$link" ]
     then
@@ -33,7 +33,7 @@ done
 
 if [ -z "$link" ]
 then
-    echo "unable to get link for $__object_id" >&2
+    echo "unable to get link for ${__object_id:?}" >&2
     exit 1
 fi
 
