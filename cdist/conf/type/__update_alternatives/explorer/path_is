@@ -1,7 +1,8 @@
 #!/bin/sh -e
 
-path_is="$( update-alternatives --display "${__object_id:?}" 2>/dev/null \
-    | awk '/link currently points to/ {print $5}' )"
+path_is=$(
+    LC_ALL=C update-alternatives --display "${__object_id?}" 2>/dev/null \
+    | awk '/link currently points to/ { print $5 }')
 
 if [ -z "$path_is" ] && [ -z "${__cdist_dry_run+dry run}" ]
 then
