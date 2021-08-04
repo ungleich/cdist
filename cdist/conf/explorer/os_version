@@ -89,7 +89,14 @@ in
    freebsd)
       # Apparently uname -r is not a reliable way to get the patch level.
       # See: https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=251743
-      freebsd-version
+      if command -v freebsd-version >/dev/null 2>&1
+      then
+         # get userland version
+         freebsd-version -u
+      else
+         # fallback to kernel release for FreeBSD < 10.0
+         uname -r
+      fi
    ;;
    *bsd|solaris)
       uname -r
