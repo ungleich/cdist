@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-if [ -f "$( cat "$__object/parameter/path" )" ]
+if [ -f "$( cat "${__object:?}/parameter/path" )" ]
 then
     echo 'present'
 else

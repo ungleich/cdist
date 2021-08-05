@@ -18,37 +18,39 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 
-path_is="$( cat "$__object/explorer/path_is" )"
+path_is="$( cat "${__object:?}/explorer/path_is" )"
 
-path_should="$( cat "$__object/parameter/path" )"
+path_should="$( cat "${__object:?}/parameter/path" )"
 
 if [ "$path_is" = "$path_should" ]
 then
     exit 0
 fi
 
-if [ "$( cat "$__object/explorer/path_should_state" )" = 'absent' ] && [ -z "$__cdist_dry_run" ]
+if [ "$( cat "${__object:?}/explorer/path_should_state" )" = 'absent' ] \
+    && [ -z "${__cdist_dry_run+dry run}" ]
 then
     echo "$path_should does not exist in target" >&2
     exit 1
 fi
 
-name="$__object_id"
+name=${__object_id:?}
 
-alternatives="$( cat "$__object/explorer/alternatives" )"
-
-if ! echo "$alternatives" | grep -Fxq "$path_should"
+if ! grep -Fxq "$path_should" "${__object:?}/explorer/alternatives"
 then
-    if [ ! -f "$__object/parameter/install" ]
+    if [ -f "${__object:?}/parameter/install" ]
     then
+        link="$( cat "${__object:?}/explorer/link" )"
+        echo "update-alternatives --install '$link' '$name' '$path_should' 1000"
+    elif [ -z "${__cdist_dry_run+dry run}" ]
+    then
+        # NOTE: ignore error for dry-runs because a package providing the link
+        #       to be installed might be managed by another cdist object (which
+        #       wasn't executed, because dry run…).
         echo "$path_should is not in $name alternatives." >&2
         echo 'Please install missing packages or use --install to add path to alternatives.' >&2
         exit 1
     fi
-
-    link="$( cat "$__object/explorer/link" )"
-
-    echo "update-alternatives --install '$link' '$name' '$path_should' 1000"
 fi
 
 echo "update-alternatives --set '$name' '$path_should'"
