@@ -21,6 +21,17 @@
 # All os variables are lower case
 #
 
+rc_getvar() {
+   awk -F= -v varname="$2" '
+      function unquote(s) {
+         if (s ~ /^".*"$/ || s ~ /^'\''.*'\''$/)
+            return substr(s, 2, length(s) - 2)
+         else
+            return s
+      }
+      $1 == varname { print unquote(substr($0, index($0, "=") + 1)) }' "$1"
+}
+
 case $("${__explorer:?}/os")
 in
    amazon)
@@ -114,7 +125,20 @@ in
       fi
    ;;
    ubuntu)
-      lsb_release -sr
+      if command -v lsb_release >/dev/null 2>&1
+      then
+         lsb_release -sr
+      elif test -r /usr/lib/os-release
+      then
+         # fallback to /usr/lib/os-release if lsb_release is not present (like
+         # on minimized Ubuntu installations)
+         rc_getvar /usr/lib/os-release VERSION_ID
+      elif test -r /etc/lsb-release
+      then
+         # extract DISTRIB_RELEASE= variable from /etc/lsb-release on old
+         # versions without /usr/lib/os-release.
+         rc_getvar /etc/lsb-release DISTRIB_RELEASE
+      fi
    ;;
    alpine)
        cat /etc/alpine-release
