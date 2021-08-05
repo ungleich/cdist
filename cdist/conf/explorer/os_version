@@ -95,7 +95,8 @@ in
       cat /etc/gentoo-release
    ;;
    macosx)
-      sw_vers -productVersion
+      # NOTE: Legacy versions (< 10.3) do not support options
+      sw_vers | awk -F ':[ \t]+' '$1 == "ProductVersion" { print $2 }'
    ;;
    freebsd)
       # Apparently uname -r is not a reliable way to get the patch level.
