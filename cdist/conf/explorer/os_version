@@ -63,7 +63,7 @@ in
                   wheezy) echo 6.99 ;;
                   squeeze) echo 5.99 ;;
                   lenny) echo 4.99 ;;
-                  *) exit 1
+                  *) echo 99.99 ;;
               esac
               ;;
           *)
