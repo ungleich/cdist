@@ -54,6 +54,8 @@ in
               # sid versions don't have a number, so we decode by codename:
               case $(expr "$debian_version" : '\([a-z]\{1,\}\)/')
               in
+                  trixie) echo 12.99 ;;
+                  bookworm) echo 11.99 ;;
                   bullseye) echo 10.99 ;;
                   buster) echo 9.99 ;;
                   stretch) echo 8.99 ;;
