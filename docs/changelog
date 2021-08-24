@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-next:
+6.9.8: 2021-08-24
 	* Type __rsync: Rewrite (Ander Punnar)
 	* New type: __apt_pin (Daniel Fancsali)
 	* Explorer os_version: Convert Devuan ceres to version number (Dennis Camera)
