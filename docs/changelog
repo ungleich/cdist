@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+next:
+	* Explorer machine_type: Rewrite (Dennis Camera)
+
 6.9.8: 2021-08-24
 	* Type __rsync: Rewrite (Ander Punnar)
 	* New type: __apt_pin (Daniel Fancsali)
