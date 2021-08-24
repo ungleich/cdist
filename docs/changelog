@@ -12,6 +12,7 @@ next:
 	* Explorer memory: Fix conversion of large numbers (>= 2GiB) (Dennis Camera)
 	* Type __update_alternatives: Fix dry run and non-English systems (Dennis Camera)
 	* Explorer os_version: Fix for FreeBSD < 10.0 and for legacy Mac OS X versions (Dennis Camera)
+	* Explorer os_version: Add bookworm and trixie debian code names, fallback to 99.99 for unknown code name in sid (Ander Punnar)
 
 6.9.7: 2021-07-10
 	* New type: __postgres_conf (Beni Ruef, Dennis Camera)
