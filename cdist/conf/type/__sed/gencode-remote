@@ -12,10 +12,6 @@ script="$( cat "$__object/parameter/script" )"
 if [ "$script" = '-' ]
 then
     script="$( cat "$__object/stdin" )"
-elif
-    [ -f "$script" ]
-then
-    script="$( cat "$script" )"
 fi
 
 file_from_target="$__object/explorer/file"
