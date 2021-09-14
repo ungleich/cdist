@@ -24,7 +24,7 @@ sed_cmd='sed'
 
 if [ -f "$__object/parameter/regexp-extended" ]
 then
-    sed_cmd="$sed_cmd --regexp-extended"
+    sed_cmd="$sed_cmd -E"
 fi
 
 if echo "$script" \
