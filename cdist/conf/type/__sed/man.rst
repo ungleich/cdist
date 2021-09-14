@@ -8,35 +8,40 @@ cdist-type__sed - Transform text files with ``sed``
 
 DESCRIPTION
 -----------
-TODO
+Transform text files with ``sed``.
 
 
 REQUIRED MULTIPLE PARAMETERS
 ----------------------------
 script
-   TODO
+   ``sed`` script.
+   If ``-`` then the script is read from ``stdin``.
 
 
 OPTIONAL PARAMETERS
 -------------------
 file
-   TODO
+   Path to the file. Defaults to ``$__object_id``.
 
 onchange
-   TODO
+   Execute this command if ``sed`` changes file.
 
 
 BOOLEAN PARAMETERS
 ------------------
 regexp-extended
-   TODO
+   Use extended regular expressions in the script.
+   Might not be supported with every ``sed`` version.
 
 
 EXAMPLES
 --------
+
 .. code-block:: sh
 
-   true
+   __sed /tmp/foobar --script 's/foo/bar/'
+
+   echo 's/foo/bar/' | __sed foobar --file /tmp/foobar --script -
 
 
 AUTHORS
