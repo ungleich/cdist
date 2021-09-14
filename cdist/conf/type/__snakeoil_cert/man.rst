@@ -38,6 +38,7 @@ cert-path
 EXAMPLES
 --------
 .. code-block:: sh
+
 	__snakeoil_cert localhost-rsa \
 	    --common-name localhost \
 	    --key-type rsa:4096

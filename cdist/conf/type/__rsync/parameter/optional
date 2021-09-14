@@ -1,4 +1,6 @@
 destination
-owner
 group
+mode
+options
+owner
 remote-user

@@ -37,6 +37,7 @@ assert ()                 #  If condition false,
 	then
 		echo "Assertion failed:  \"$1\""
 		# shellcheck disable=SC2039
+		# shellcheck disable=SC3044
 		echo "File \"$0\", line $lineno, called by $(caller 0)"
 		exit $E_ASSERT_FAILED
 	fi

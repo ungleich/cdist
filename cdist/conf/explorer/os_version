@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2020-2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -17,12 +18,22 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
 # All os variables are lower case
 #
-#
 
-case "$("$__explorer/os")" in
+rc_getvar() {
+   awk -F= -v varname="$2" '
+      function unquote(s) {
+         if (s ~ /^".*"$/ || s ~ /^'\''.*'\''$/)
+            return substr(s, 2, length(s) - 2)
+         else
+            return s
+      }
+      $1 == varname { print unquote(substr($0, index($0, "=") + 1)) }' "$1"
+}
+
+case $("${__explorer:?}/os")
+in
    amazon)
       cat /etc/system-release
    ;;
@@ -43,6 +54,8 @@ case "$("$__explorer/os")" in
               # sid versions don't have a number, so we decode by codename:
               case $(expr "$debian_version" : '\([a-z]\{1,\}\)/')
               in
+                  trixie) echo 12.99 ;;
+                  bookworm) echo 11.99 ;;
                   bullseye) echo 10.99 ;;
                   buster) echo 9.99 ;;
                   stretch) echo 8.99 ;;
@@ -50,7 +63,7 @@ case "$("$__explorer/os")" in
                   wheezy) echo 6.99 ;;
                   squeeze) echo 5.99 ;;
                   lenny) echo 4.99 ;;
-                  *) exit 1
+                  *) echo 99.99 ;;
               esac
               ;;
           *)
@@ -59,7 +72,23 @@ case "$("$__explorer/os")" in
       esac
    ;;
    devuan)
-      cat /etc/devuan_version
+      devuan_version=$(cat /etc/devuan_version)
+      case ${devuan_version}
+      in
+         (*/ceres)
+            # ceres versions don't have a number, so we decode by codename:
+            case ${devuan_version}
+            in
+               (chimaera/ceres) echo 3.99 ;;
+               (beowulf/ceres) echo 2.99 ;;
+               (ascii/ceres) echo 1.99 ;;
+               (*) exit 1
+            esac
+            ;;
+         (*)
+            echo "${devuan_version}"
+            ;;
+      esac
    ;;
    fedora)
       cat /etc/fedora-release
@@ -68,12 +97,20 @@ case "$("$__explorer/os")" in
       cat /etc/gentoo-release
    ;;
    macosx)
-      sw_vers -productVersion
+      # NOTE: Legacy versions (< 10.3) do not support options
+      sw_vers | awk -F ':[ \t]+' '$1 == "ProductVersion" { print $2 }'
    ;;
    freebsd)
       # Apparently uname -r is not a reliable way to get the patch level.
       # See: https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=251743
-      freebsd-version
+      if command -v freebsd-version >/dev/null 2>&1
+      then
+         # get userland version
+         freebsd-version -u
+      else
+         # fallback to kernel release for FreeBSD < 10.0
+         uname -r
+      fi
    ;;
    *bsd|solaris)
       uname -r
@@ -98,7 +135,20 @@ case "$("$__explorer/os")" in
       fi
    ;;
    ubuntu)
-      lsb_release -sr
+      if command -v lsb_release >/dev/null 2>&1
+      then
+         lsb_release -sr
+      elif test -r /usr/lib/os-release
+      then
+         # fallback to /usr/lib/os-release if lsb_release is not present (like
+         # on minimized Ubuntu installations)
+         rc_getvar /usr/lib/os-release VERSION_ID
+      elif test -r /etc/lsb-release
+      then
+         # extract DISTRIB_RELEASE= variable from /etc/lsb-release on old
+         # versions without /usr/lib/os-release.
+         rc_getvar /etc/lsb-release DISTRIB_RELEASE
+      fi
    ;;
    alpine)
        cat /etc/alpine-release

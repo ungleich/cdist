@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'cdist'
-copyright = 'ungleich GmbH 2020'
+copyright = 'ungleich GmbH 2021'
 # author = 'Darko Poljak'
 
 # The version info for the project you're documenting, acts as replacement for

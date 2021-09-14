@@ -1,0 +1,63 @@
+#!/bin/sh -e
+#
+# 2021 Daniel Fancsali (fancsali@gmail.com)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+name="$__object_id"
+
+os=$(cat "$__global/explorer/os")
+state="$(cat "$__object/parameter/state")"
+
+if [ -f "$__object/parameter/package" ]; then
+    package="$(cat "$__object/parameter/package")"
+else
+    package=$name
+fi
+
+distribution="$(cat "$__object/parameter/distribution")"
+priority="$(cat "$__object/parameter/priority")"
+
+
+case "$os" in
+   debian|ubuntu|devuan)
+   ;;
+   *)
+      printf "This type is specific to Debian and it's derivatives" >&2
+      exit 1
+   ;;
+esac
+
+case $distribution in
+    stable|testing|unstable|experimental)
+        pin="release a=$distribution"
+        ;;
+    *)
+        pin="release n=$distribution"
+        ;;
+esac
+
+
+__file "/etc/apt/preferences.d/$name" \
+    --owner root --group root --mode 0644 \
+    --state "$state" \
+    --source - << EOF
+Package: $package
+Pin: $pin
+Pin-Priority: $priority
+EOF
