@@ -35,8 +35,11 @@ then
     exit 0
 fi
 
+# we can't use -i, because it's not posix, so we fly with tempfile and cp
+# and we use cp because we want to preserve destination file's attributes
+
 # shellcheck disable=SC2016
-echo 'tmp="$( mktemp )"'
+echo 'tmp="$__object/tempfile"'
 
 echo "$sed_cmd -f - '$file' > \"\$tmp\" << EOF"
 
