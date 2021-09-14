@@ -7,10 +7,10 @@ else
     file="/$__object_id"
 fi
 
-if [ -f "$file" ]
+if [ ! -e "$file" ]
 then
-    cat "$file"
-else
     echo "$file do not exist" >&2
     exit 1
 fi
+
+cat "$file"
