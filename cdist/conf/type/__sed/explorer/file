@@ -9,7 +9,7 @@ fi
 
 if [ ! -e "$file" ]
 then
-    echo "$file do not exist" >&2
+    echo "$file does not exist" >&2
     exit 1
 fi
 
