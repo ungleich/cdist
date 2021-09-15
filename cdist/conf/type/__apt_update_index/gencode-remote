@@ -18,9 +18,23 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+
+# There are special arguments to apt(8) to prevent aborts if apt woudn't been
+# updated after the 19th April 2021 till the bullseye release. The additional
+# arguments acknoledge the happend suite change (the apt(8) update does the
+# same by itself).
+#
+# Using '-o $config' instead of the --allow-releaseinfo-change-* parameter
+# allows backward compatablility to pre-buster Debian versions.
+#
+# See more: ticket #861
+# https://code.ungleich.ch/ungleich-public/cdist/-/issues/861
+apt_opts="-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true"
+
 # run 'apt-get update' if anything in /etc/apt is newer then /var/lib/apt/lists
+#   it will be run a second time on error as a redundancy messure to success
 cat << DONE
 if find /etc/apt -mindepth 1 -cnewer /var/lib/apt/lists | grep . > /dev/null; then
-   apt-get update || apt-get update
+   apt-get $apt_opts update || apt-get $apt_opts update
 fi
 DONE
