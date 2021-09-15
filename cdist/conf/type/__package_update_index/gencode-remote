@@ -41,7 +41,19 @@ fi
 case "$type" in
     yum) ;;
     apt)
-        echo "apt-get --quiet update"
+        # There are special arguments to apt(8) to prevent aborts if apt woudn't been
+        # updated after the 19th April 2021 till the bullseye release. The additional
+        # arguments acknoledge the happend suite change (the apt(8) update does the
+        # same by itself).
+        #
+        # Using '-o $config' instead of the --allow-releaseinfo-change-* parameter
+        # allows backward compatablility to pre-buster Debian versions.
+        #
+        # See more: ticket #861
+        # https://code.ungleich.ch/ungleich-public/cdist/-/issues/861
+        apt_opts="-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true"
+
+        echo "apt-get --quiet $apt_opts update"
         echo "apt-cache updated (age was: $currage)" >> "$__messages_out"
         ;;
     pacman)
