@@ -14,6 +14,8 @@ then
     script="$( cat "$__object/stdin" )"
 fi
 
+# since stdin is not available in explorer, we pull file from target with explorer
+
 file_from_target="$__object/explorer/file"
 
 sed_cmd='sed'
@@ -23,10 +25,10 @@ then
     sed_cmd="$sed_cmd -E"
 fi
 
-if echo "$script" \
-    | "$sed_cmd" -f - "$file_from_target" \
-    | diff "$file_from_target" - \
-    > /dev/null
+# do sed dry run, diff result and if no change, then there's nothing to do
+# also redirect diff's output to stderr for debugging purposes
+
+if echo "$script" | "$sed_cmd" -f - "$file_from_target" | diff -u "$file_from_target" - >&2
 then
     exit 0
 fi
