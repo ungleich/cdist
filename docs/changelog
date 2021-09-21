@@ -3,6 +3,11 @@ Changelog
 
 next:
 	* Explorer machine_type: Rewrite (Dennis Camera)
+	* New type: __sed (Ander Punnar)
+	* Type __apt_update_index: Fix complaint about suite change (Matthias Stecher)
+	* Type __package_update_index: Fix complaint about suite change (Matthias Stecher)
+	* Type __apt_source: Fix complaint about suite change (Matthias Stecher)
+	* Type __package_apt: Fix complaint about suite change (Matthias Stecher)
 
 6.9.8: 2021-08-24
 	* Type __rsync: Rewrite (Ander Punnar)
