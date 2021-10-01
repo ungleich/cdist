@@ -15,7 +15,7 @@ case $os in
                 # Differntation not needed anymore
                 apt_source_distribution=stable
                 ;;
-            10*)
+            10*|11*)
                 # Differntation not needed anymore
                 apt_source_distribution=stable
                 ;;

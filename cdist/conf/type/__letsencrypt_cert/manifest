@@ -41,7 +41,7 @@ if [ -z "${certbot_fullpath}" ]; then
 					require="__apt_source/stretch-backports" __package_apt certbot \
 						--target-release stretch-backports
 				;;
-				10*)
+				10*|11*)
 					__package_apt certbot
 				;;
 
