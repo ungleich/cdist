@@ -8,6 +8,7 @@ next:
 	* Type __package_update_index: Fix complaint about suite change (Matthias Stecher)
 	* Type __apt_source: Fix complaint about suite change (Matthias Stecher)
 	* Type __package_apt: Fix complaint about suite change (Matthias Stecher)
+	* Type __debconf_set_selections: Fix bug where --file was unsupported (Evilham)
 
 6.9.8: 2021-08-24
 	* Type __rsync: Rewrite (Ander Punnar)
