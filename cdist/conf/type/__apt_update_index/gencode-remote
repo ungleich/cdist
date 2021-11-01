@@ -20,7 +20,8 @@
 
 # run 'apt-get update' if anything in /etc/apt is newer then /var/lib/apt/lists
 cat << DONE
-if find /etc/apt -mindepth 1 -cnewer /var/lib/apt/lists | grep . > /dev/null; then
+newer_sources=\$(find /etc/apt -mindepth 1 -cnewer /var/lib/apt/lists)
+if [ ! -d /var/lib/apt/lists ] || [ -n "${newer_sources}" ]; then
    apt-get update || apt-get update
 fi
 DONE
