@@ -4,6 +4,7 @@ Changelog
 next:
 	* Explorer machine_type: Rewrite (Dennis Camera)
 	* New type: __sed (Ander Punnar)
+	* New type: __haproxy_dualstack (Evilham and ungleich)
 	* Type __apt_update_index: Fix complaint about suite change (Matthias Stecher)
 	* Type __package_update_index: Fix complaint about suite change (Matthias Stecher)
 	* Type __apt_source: Fix complaint about suite change (Matthias Stecher)
