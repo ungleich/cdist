@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2021 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -21,19 +22,48 @@
 # Retrieve the status of a package - parsed dpkg output
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+breify() {
+	# Convert arguments to a POSIX BRE-compatible form, i.e. escape special
+	# characters (incl. delimiter)
+	printf '%s' "$*" | sed -e 's/[].^$*\[]/\\&/g' -e 's:/:\\/:g'
+}
+
+
+if test -f "${__object}/parameter/name"
+then
+	name=$(cat "${__object:?}/parameter/name")
 else
-   name="$__object_id"
+	name=${__object_id:?}
 fi
 
-# Except dpkg failing, if package is not known / installed
-packages="$(apt-cache showpkg "$name" | sed -e "1,/Reverse Provides:/d" | cut -d ' ' -f 1) $name"
-for p in $packages; do
-    if dpkg -s "$p" 2>/dev/null | grep --quiet "^Status: install ok installed$" ; then
-       version=$(dpkg -s "$p" 2>/dev/null | grep "^Version:" | cut -d ' ' -f 2)
-       echo "present $p $version"
-       exit 0
-    fi
+state_dir=$(apt-config dump | sed -n -e 's/^Dir::State  *"\(.*\)";$/\/\1/p')
+extended_states_file=${state_dir%/}/extended_states
+
+# if $name is e.g. editor, check if any editor is installed instead
+rprovides=$(apt-cache showpkg "${name}" | sed -e '1,/^Reverse Provides:/d' -e 's/ .*$//')
+
+for pkg in ${name} ${rprovides}
+do
+	if dpkg -s "${pkg}" 2>/dev/null | grep -qxF 'Status: install ok installed'
+	then
+		version=$(dpkg -s "${pkg}" 2>/dev/null | sed -n -e 's/^Version:  *//p')
+
+		if test -f "${extended_states_file}"
+		then
+			# On Debian >= 5 check if the package is auto installed
+
+			# NOTE: instead of using apt-mark(8) parse the extended_states file
+			#       directly. apt-mark is sloow and didn't have a stable
+			#       interface in older Debian versions.
+			is_auto=$(sed -n -e '/^Package: '$(breify "${name}")'$/,/^$/!d' -e 's/^Auto-Installed: *//p' "${extended_states_file}")
+		fi
+
+		# NOTE: older versions don't have apt-mark -> all packages are manual
+		auto_word=$(test $((is_auto)) -ne 0 && echo auto || echo manual)
+
+		echo "present ${auto_word} ${pkg} ${version}"
+		exit 0
+	fi
 done
+
 echo absent
