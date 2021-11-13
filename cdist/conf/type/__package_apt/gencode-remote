@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
+# 2021 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -56,31 +57,36 @@ else
 fi
 
 
-# FIXME: use grep directly, state is a list, not a line!
-state_is="$(cat "$__object/explorer/state")"
-case "$state_is" in
-    present*)
-       name="$(echo "$state_is" | cut -d ' ' -f 2)"
-       version_is="$(echo "$state_is" | cut -d ' ' -f 3)"
-       state_is="present"
-    ;;
-    *)
-       version_is=""
-    ;;
-esac
-
-if [ "$state_is" = "$state_should" ]; then
-    if [ -z "$version" ] || [ "$version" = "$version_is" ]; then
-        exit 0;
-    fi
-fi
+read -r state_is auto_state name version_is <"${__object:?}/explorer/state"
 
 # Hint if we need to avoid questions at some point:
 # DEBIAN_PRIORITY=critical can reduce the number of questions
 aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
 
-case "$state_should" in
+case ${state_should}
+in
     present)
+        if test "${state_is}" = 'present'
+        then
+            if test -z "${version}" || test "${version}" = "${version_is}"
+            then
+                if test "${auto_state}" = 'auto'
+                then
+                    # package is installed, but marked auto -> mark it manual so
+                    # that it doesn't get removed by apt-get autoremove.
+
+                    echo 'head -n1 "$(command -v apt-mark)" | grep -qvF python \'
+                    # new implementation (Debian >= 7)
+                    echo "&& apt-mark manual '${name}' \\"
+                    # old Python implementation (Debian 5-7)
+                    echo "|| apt-mark unmarkauto '${name}'"
+                    # NOTE: older versions don't need to be supported because
+                    # they will always be manual
+                fi
+                exit 0
+            fi
+        fi
+
         # There are special arguments to apt(8) to prevent aborts if apt woudn't been
         # updated after the 19th April 2021 till the bullseye release. The additional
         # arguments acknoledge the happend suite change (the apt(8) update does the
@@ -104,12 +110,15 @@ EOF
         if [ -n "$version" ]; then
             name="${name}=${version}"
         fi
-        echo "$aptget $recommendsparam install $target_release '$name'"
-        echo "installed" >> "$__messages_out"
+
+        echo "${aptget} ${recommendsparam} install ${target_release} '${name}'"
+        echo 'installed' >>"${__messages_out:?}"
     ;;
     absent)
-        echo "$aptget remove $purgeparam '$name'"
-        echo "removed" >> "$__messages_out"
+        test "${state_is}" != 'absent' || exit 0
+
+        echo "${aptget} remove ${purgeparam} '${name}'"
+        echo 'removed' >>"${__messages_out:?}"
     ;;
     *)
         echo "Unknown state: $state_should" >&2
