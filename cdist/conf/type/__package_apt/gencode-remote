@@ -28,14 +28,8 @@ else
    name="$__object_id"
 fi
 
-state_should="$(cat "$__object/parameter/state")"
-
-version_param="$__object/parameter/version"
-
-version=""
-if [ -f "$version_param" ]; then
-    version="$(cat "$version_param")"
-fi
+state_should=$(cat "${__object:?}/parameter/state")
+version_should=$(cat "${__object:?}/parameter/version" 2>/dev/null) || true
 
 if [ -f "$__object/parameter/target-release" ]; then
    target_release="--target-release $(cat "$__object/parameter/target-release")"
@@ -57,7 +51,7 @@ else
 fi
 
 
-read -r state_is auto_state name version_is <"${__object:?}/explorer/state"
+read -r state_is auto_state name_is version_is <"${__object:?}/explorer/state"
 
 # Hint if we need to avoid questions at some point:
 # DEBIAN_PRIORITY=critical can reduce the number of questions
@@ -66,25 +60,40 @@ aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes -o Dpkg::Options::=
 case ${state_should}
 in
     present)
-        if test "${state_is}" = 'present'
+        if test -n "${version_should}" -a "${version_should}" != "${version_is}"
         then
-            if test -z "${version}" || test "${version}" = "${version_is}"
+            # other version should be installed
+            name="${name}=${version_should}"
+            aptget="${aptget:?} -o APT::Get::allow-downgrades=true"
+        elif test "${state_is}" = 'present'
+        then
+            if test "${auto_state}" = 'auto'
             then
-                if test "${auto_state}" = 'auto'
-                then
-                    # package is installed, but marked auto -> mark it manual so
-                    # that it doesn't get removed by apt-get autoremove.
+                # package is installed, but marked auto -> mark it manual so
+                # that it doesn't get removed by apt-get autoremove.
 
-                    echo 'head -n1 "$(command -v apt-mark)" | grep -qvF python \'
-                    # new implementation (Debian >= 7)
-                    echo "&& apt-mark manual '${name}' \\"
-                    # old Python implementation (Debian 5-7)
-                    echo "|| apt-mark unmarkauto '${name}'"
-                    # NOTE: older versions don't need to be supported because
-                    # they will always be manual
-                fi
-                exit 0
+                # NOTE: There are two implementations of apt-mark(8) with a
+                # different API. Although the new implementation (C++) still
+                # supports the API of the old implementation (Python), it is
+                # marked as deprecated:
+                # https://salsa.debian.org/apt-team/apt/-/blob/0.8.15/cmdline/apt-mark.cc#L105
+                #
+                # Debian < 5 (without apt-mark) don't need to be supported,
+                # because the state explorer will report all packages as manual
+                # for those.
+                echo 'if ! head -n1 "$(command -v apt-mark)" | grep -qF python'
+
+                # new C++ implementation (Debian >= 7)
+                echo "then apt-mark manual '${name_is}' >/dev/null"
+
+                # old Python implementation (Debian 5-6)
+                echo "else apt-mark unmarkauto '${name_is}'"
+
+                echo 'fi'
             fi
+
+            # package already installed -> exit
+            exit 0
         fi
 
         # There are special arguments to apt(8) to prevent aborts if apt woudn't been
@@ -107,9 +116,6 @@ if [ ! -f /var/cache/apt/pkgcache.bin ] || [ "\$( stat --format %Y /var/cache/ap
 then echo apt-get $apt_opts update > /dev/null 2>&1 || true
 fi
 EOF
-        if [ -n "$version" ]; then
-            name="${name}=${version}"
-        fi
 
         echo "${aptget} ${recommendsparam} install ${target_release} '${name}'"
         echo 'installed' >>"${__messages_out:?}"
@@ -117,7 +123,7 @@ EOF
     absent)
         test "${state_is}" != 'absent' || exit 0
 
-        echo "${aptget} remove ${purgeparam} '${name}'"
+        echo "${aptget} remove ${purgeparam} '${name_is}'"
         echo 'removed' >>"${__messages_out:?}"
     ;;
     *)
