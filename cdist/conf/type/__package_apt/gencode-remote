@@ -72,13 +72,24 @@ in
                 # package is installed, but marked auto -> mark it manual so
                 # that it doesn't get removed by apt-get autoremove.
 
-                echo 'head -n1 "$(command -v apt-mark)" | grep -qvF python \'
-                # new implementation (Debian >= 7)
-                echo "&& apt-mark manual '${name_is}' \\"
-                # old Python implementation (Debian 5-7)
-                echo "|| apt-mark unmarkauto '${name_is}'"
-                # NOTE: older versions don't need to be supported because
-                # they will always be manual
+                # NOTE: There are two implementations of apt-mark(8) with a
+                # different API. Although the new implementation (C++) still
+                # supports the API of the old implementation (Python), it is
+                # marked as deprecated:
+                # https://salsa.debian.org/apt-team/apt/-/blob/0.8.15/cmdline/apt-mark.cc#L105
+                #
+                # Debian < 5 (without apt-mark) don't need to be supported,
+                # because the state explorer will report all packages as manual
+                # for those.
+                echo 'if ! head -n1 "$(command -v apt-mark)" | grep -qF python'
+
+                # new C++ implementation (Debian >= 7)
+                echo "then apt-mark manual '${name_is}' >/dev/null"
+
+                # old Python implementation (Debian 5-6)
+                echo "else apt-mark unmarkauto '${name_is}'"
+
+                echo 'fi'
             fi
 
             # package already installed -> exit
