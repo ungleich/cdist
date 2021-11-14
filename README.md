@@ -10,13 +10,11 @@ or at **``docs/src``** for manual in **reStructuredText** format.
 
 ## Contributing
 
-Merge/Pull requests can be made in both
-[upstream **GitLab**](https://code.ungleich.ch/ungleich-public/cdist/merge_requests)
-(managed by [**ungleich**](https://ungleich.ch))
-and [**GitHub** project](https://github.com/ungleich/cdist/pulls).
+Pull requests can be made in both [upstream](https://code.ungleich.ch/ungleich-public/cdist)
+(managed by [**ungleich**](https://ungleich.ch)) and [GitHub](https://github.com/ungleich/cdist).
 
 Issues can be made and other project management activites happen
-[**only in GitLab**](https://code.ungleich.ch/ungleich-public/cdist)
+[**only in upstream**](https://code.ungleich.ch/ungleich-public/cdist)
 (needs [**ungleich** account](https://account.ungleich.ch)).
 
 For community-maintained types there is
