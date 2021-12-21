@@ -268,7 +268,7 @@ class CdistType:
                 for name in cdist.core.listdir(defaults_dir):
                     try:
                         with open(os.path.join(defaults_dir, name)) as fd:
-                            defaults[name] = fd.read().strip()
+                            defaults[name] = fd.read().rstrip("\n")
                     except EnvironmentError:
                         pass  # Swallow errors raised by open() or read()
             except EnvironmentError:

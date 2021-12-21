@@ -12,6 +12,7 @@ next:
 	* Type __debconf_set_selections: Fix bug where --file was unsupported (Evilham)
 	* Types __letsencrypt_cert, __grafana_dashboard: Improve bullseye support (Evilham)
 	* Type __package_apt: Mark already installed packages as manual (Dennis Camera)
+	* Core: Strip only trailing new lines from parameter defaults, instead of leading and trailing whitespace (Dennis Camera)
 
 6.9.8: 2021-08-24
 	* Type __rsync: Rewrite (Ander Punnar)
