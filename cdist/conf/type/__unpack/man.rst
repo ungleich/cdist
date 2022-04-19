@@ -8,9 +8,9 @@ cdist-type__unpack - Unpack archives
 
 DESCRIPTION
 -----------
-Unpack ``.tar``, ``.tgz``, ``.tar.*``, ``.7z``, ``.bz2``, ``.gz``,
-``.lzma``, ``.xz``, ``.rar`` and ``.zip`` archives. Archive type is
-detected by extension.
+Unpack ``.tar``, ``.tgz``, ``.tar.*``, ``.txz``, ``.tbz2``, ``.7z``,
+``.bz2``, ``.gz``, ``.lzma``, ``.xz``, ``.rar`` and ``.zip`` archives.
+Archive type is detected by extension.
 
 To achieve idempotency, checksum file will be created in target. See
 ``--sum-file`` parameter for details.

@@ -8,7 +8,7 @@ case "$src" in
     *.7z)
         __package p7zip
     ;;
-    *.bz2)
+    *.bz2|*.tbz2)
         case "$os" in
             freebsd)
                 # bzip2 is part of freebsd base system

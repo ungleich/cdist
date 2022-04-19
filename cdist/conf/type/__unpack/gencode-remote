@@ -14,7 +14,7 @@ dst="$( sed 's/\/$//' "$__object/parameter/destination" )"
 cmd=''
 
 case "$src" in
-    *.tar|*.tgz|*.tar.*)
+    *.tar|*.tgz|*.tar.*|*.txz|*.tbz2)
         cmd="mkdir -p '$dst' && tar --directory='$dst' --extract --file='$src'"
 
         if [ -f "$__object/parameter/tar-strip" ]
