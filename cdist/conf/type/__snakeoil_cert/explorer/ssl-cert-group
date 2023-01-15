@@ -1,8 +1,0 @@
-#!/bin/sh -e
-
-if grep -Eq '^ssl-cert:' /etc/group
-then
-    echo 'present'
-else
-    echo 'absent'
-fi

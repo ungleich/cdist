@@ -1,9 +1,0 @@
-when all objects of a type are applied, then run the types gencode-{local,remote} scripts
-
---------------------------------------------------------------------------------
-
-__mein_type/
-   type/ # executed when all objects of this type have been applied
-      gencode-local 
-      gencode-remote
-

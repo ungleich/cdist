@@ -1,7 +1,0 @@
-cdist-mass-deploy -p ikq02.ethz.ch; 142
-cdist-mass-deploy -p ikq02.ethz.ch ikq03.ethz.ch; 194
-cdist-mass-deploy -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch; 271
-cdist-mass-deploy -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch ikq05.ethz.ch; 328
-cdist-mass-deploy -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch ikq05.ethz.ch ikq06.ethz.ch; 456
-cdist-mass-deploy -p ikq02.ethz.ch ikq03.ethz.ch ikq04.ethz.ch ikq05.ethz.ch ikq06.ethz.ch ikq07.ethz.ch; 568
-

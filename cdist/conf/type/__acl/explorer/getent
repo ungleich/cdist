@@ -1,4 +1,0 @@
-#!/bin/sh -e
-
-getent passwd | awk -F: '{print "user:"$1}'
-getent group | awk -F: '{print "group:"$1}'

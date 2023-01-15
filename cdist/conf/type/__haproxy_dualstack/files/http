@@ -1,8 +1,0 @@
-frontend http
-	bind	BIND@:80
-	mode	http
-	option	httplog
-	default_backend	http
-
-backend http
-	mode	http

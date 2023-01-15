@@ -1,3 +1,0 @@
-include docs/changelog
-recursive-include docs/gfx *.png *.text
-recursive-include docs *.text *.html *.1 *.7

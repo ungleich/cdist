@@ -1,4 +1,0 @@
-#!/bin/sh -e
-
-# shellcheck disable=SC2016
-__line go_in_path --line 'export PATH=/usr/local/go/bin:$PATH' --file /etc/profile

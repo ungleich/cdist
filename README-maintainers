@@ -1,4 +1,0 @@
-Maintainers should use ./bin/cdist-build-helper script.
-
-Makefile is intended for end users. It can be used for non-maintaining
-targets that can be run from pure source (without git repository).

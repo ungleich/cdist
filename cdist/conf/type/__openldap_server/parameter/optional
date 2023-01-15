@@ -1,9 +1,0 @@
-description
-syncrepl-credentials
-syncrepl-searchbase
-admin-email
-tls-cipher-suite
-tls-cert
-tls-privkey
-tls-ca
-extra-config

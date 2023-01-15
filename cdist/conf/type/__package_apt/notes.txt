@@ -1,3 +1,0 @@
-# All you ever wanted to know about apt/apt-get
-http://wiki.ubuntuusers.de/apt-get
-

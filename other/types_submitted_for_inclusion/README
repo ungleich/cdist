@@ -1,6 +1,0 @@
-The types in this directory were submitted / thought to be
-included into cdist, but for some reason did not make it into
-conf/type/.
-
-The reason for the type not being included into conf/type/
-is documented in README.inclusion.

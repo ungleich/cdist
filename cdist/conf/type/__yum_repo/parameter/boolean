@@ -1,5 +1,0 @@
-enabled
-repo_gpgcheck
-disablegroups
-keepalive
-skip_if_unavailable

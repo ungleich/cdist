@@ -1,9 +1,0 @@
-Run: 78s (1 minutes)
-[13:25] kr:cdist-nutzung% mytime cdist-deploy-to ikq02.ethz.ch
-
-% mit dash, eth, x201, Mit Apr 27 13:41:49 CEST 2011
-data = [ 0 73 77 89 107 130 151 180 197 228 251 260 199 295 335 276 ]
-plot(0:size(data2)(2)-1, data2)
-
-
-

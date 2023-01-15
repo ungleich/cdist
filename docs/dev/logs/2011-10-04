@@ -1,3 +1,0 @@
-Testing for single tests:
-   PYTHONPATH=$PYTHONPATH:$(pwd -P)/lib python3 -m unittest cdist.test.test_install.Install.test_explorer_ran
-

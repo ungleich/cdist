@@ -1,9 +1,0 @@
-Fun with yum:
-
-[root@brett ~]# yum --assumeyes --quiet install "vim"
-Package 2:vim-enhanced-7.3.056-1.fc14.x86_64 already installed and latest version
-[root@brett ~]# rpm -q vim
-package vim is not installed
-[root@brett ~]# 
-
-(Me || yum) == dumb?

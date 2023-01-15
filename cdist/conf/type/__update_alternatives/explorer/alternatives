@@ -1,4 +1,0 @@
-#!/bin/sh -e
-
-LC_ALL=C update-alternatives --display "${__object_id:?}" 2>/dev/null \
-| awk -F ' - ' '/priority [0-9]+$/ { print $1 }'

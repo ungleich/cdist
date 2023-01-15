@@ -1,3 +1,0 @@
-- Use one pipe-shell for type execution
-- Parallelise gencode and code-run of all objects
-- Diff against local cache only instead of real target

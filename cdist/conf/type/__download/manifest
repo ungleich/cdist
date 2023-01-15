@@ -1,6 +1,0 @@
-#!/bin/sh -e
-
-if grep -Eq '^wget' "$__object/explorer/remote_cmd_get"
-then
-    __package wget
-fi

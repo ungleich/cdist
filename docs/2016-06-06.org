@@ -1,7 +1,0 @@
-* Enhance cdist speed
-** Start separate server with own option
-** Reconfigure normal sshd with appropriate options
-** Start various own daemons
-** Use custom multiplexing protocol
-** Support native Python code
-*** Use manifest.py instead of manifest if available

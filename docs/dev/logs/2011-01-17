@@ -1,3 +1,0 @@
-Steven:
-   Type == Provider == Module?
-   No need for providers like in Puppet (=> Providers can reuse other providers)

@@ -1,4 +1,0 @@
-Debugging cdist:
-
-[0:13] kr:cdist-nutzung% ./local/update-local-core && __cdist_debug=1 __cdist_local_base_dir=/tmp/cdist cdist-deploy-to ikq04.ethz.ch
-

@@ -1,6 +1,0 @@
-#
-# cdist managed - do not change
-#
-Include = /etc/pacman.d/options
-Include = /etc/pacman.d/repo_*
-Include = /etc/pacman.d/plain_file_*

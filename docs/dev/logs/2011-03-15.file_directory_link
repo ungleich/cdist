@@ -1,7 +1,0 @@
-Proposal for new types, which replace __file:
-
-x __directory /etc [--mode --owner --group --parents [yes|no] ]
-
-x __link /destination --source abc --type [symbolic|hard]
-
-x __file /etc/passwd [--source] --mode --owner --group

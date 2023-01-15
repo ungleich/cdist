@@ -1,1 +1,0 @@
-cdist-mass-deploy -p bach10.ethz.ch bach12.ethz.ch bach14.ethz.ch bach19.ethz.ch bach20.ethz.ch bach21.ethz.ch bach22.ethz.ch bach23.ethz.ch bach24.ethz.ch bach25.ethz.ch bach26.ethz.ch 165.77s user 143.46s system 47% cpu 10:44.88 total

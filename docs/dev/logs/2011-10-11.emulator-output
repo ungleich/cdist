@@ -1,8 +1,0 @@
-Debug:
-DEBUG: Namespace(name=None, state='installed')
-DEBUG: Object output dir = /home/users/nico/.tmp/tmpsdaonx/out/object/__package_pacman/zsh/.cdist
-DEBUG: Object param dir = /home/users/nico/.tmp/tmpsdaonx/out/object/__package_pacman/zsh/.cdist/parameter
-DEBUG: /home/users/nico/.tmp/tmpsdaonx/out/object/__package_pacman/zsh/.cdist/parameter/state<-state = installed
-DEBUG: zsh:Writing requirements: 
-DEBUG: Finished __package_pacman/zsh{'state': 'installed', 'name': None}
-

@@ -1,3 +1,0 @@
-apt-key(8) will last be available in Debian 11 and Ubuntu 22.04.
-Use this flag *only* to migrate to placing a keyring directly in the
-/etc/apt/trusted.gpg.d/ directory with a descriptive name.

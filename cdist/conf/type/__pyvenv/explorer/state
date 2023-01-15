@@ -1,9 +1,0 @@
-#!/bin/sh
-
-destination="/$__object_id"
-
-if [ -d "$destination" ]; then
-   echo present
-else
-   echo absent
-fi

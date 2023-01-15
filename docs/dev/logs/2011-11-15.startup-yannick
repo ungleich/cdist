@@ -1,9 +1,0 @@
-- create new branch
-- entry point = conf/manifest/init
-- make man for reference
-- doc: change to version directory
-
-- add sudo example
-- ports are configured in ~/.ssh/config 
-- cdist daustrap $rechner
-    - alles gut mit enimal passwort eingeben

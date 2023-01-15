@@ -1,9 +1,0 @@
-#!/bin/sh
-
-echo "__target_host: $__target_host"
-echo "__target_hostname: $__target_hostname"
-echo "__target_fqdn: $__target_fqdn"
-echo "__explorer: $__explorer"
-echo "__target_host_tags: $__target_host_tags"
-echo "__cdist_log_level: $__cdist_log_level"
-echo "__cdist_log_level_name: $__cdist_log_level_name"

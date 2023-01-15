@@ -1,3 +1,0 @@
-./make-test-files.sh
-./make-init-manifest.sh | cdist config -i - localhost
-sudo find /tmp/cdist__unpack_test/ -type f -exec cat {} \; | sort

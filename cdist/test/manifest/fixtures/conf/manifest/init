@@ -1,4 +1,0 @@
-#!/bin/sh
-
-__planet Saturn
-__moon Prometheus --planet Saturn

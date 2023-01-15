@@ -1,8 +1,0 @@
-service
-private
-unpriv
-chroot
-wakeup
-maxproc
-comment
-state

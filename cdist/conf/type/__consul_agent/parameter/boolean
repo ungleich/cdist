@@ -1,9 +1,0 @@
-disable-remote-exec
-disable-update-check
-leave-on-terminate
-rejoin-after-leave
-server
-enable-syslog
-verify-incoming
-verify-outgoing
-use-distribution-package

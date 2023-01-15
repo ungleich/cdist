@@ -1,7 +1,0 @@
-Inherit / subshell:
-
-#
-
-Shell parameters that are set by variable assignment (see the set special built-in) or from the System Interfaces volume of IEEE Std 1003.1-2001 environment inherited by the shell when it begins (see the export special built-in)
-
-http://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_12

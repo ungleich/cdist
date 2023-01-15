@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ -x /usr/bin/q ]; then
-    echo "true"
-else
-    echo "false"
-fi

@@ -1,8 +1,0 @@
-require="__package/pkg-config" \
-        __package libxml2 --version "2.7.8_1" --state installed --pkgsite http://192.168.196.70
-
-Kein
-    INFO: www: Generating and executing code for __package_pkg_freebsd/libxml2
-
-für
-    __package/libxml2

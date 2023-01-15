@@ -1,6 +1,0 @@
-- fix handling of fixed strings
-    - ensure special characters are not interpreted
-[12:18] bento:~% cat /etc/bash.bashrc
-cat: /etc/bash.bashrc: Permission denied
-[12:19] bento:~% 
-
